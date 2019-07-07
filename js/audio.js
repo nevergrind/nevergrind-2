@@ -17,25 +17,22 @@ var audio = {
 			x.play();
 		});
 	},
-	ext: (function(a){
-		return !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, '')) ? 'mp3' : 'ogg'
-	})(document.createElement('audio')),
-	on: (function(a){
-		return !!a.canPlayType ? true : false;
-	})(document.createElement('audio')),
-	play: function(foo, bg){
-		if (foo) {
+	ext: 'mp3',
+	on: true,
+	play: function(track, bg){
+		if (track) {
 			if (bg){
 				// music
 				if (ng.config.audio.musicVolume){
 					dom.bgmusic.pause();
-					dom.bgmusic.src = "music/" + foo + ".mp3";
+					dom.bgmusic.src = "music/" + track + ".mp3";
 					dom.bgmusic.volume = ng.config.audio.musicVolume / 100;
 				}
-			} else {
+			}
+			else {
 				// sfx
 				if (ng.config.audio.soundVolume){
-					var sfx = new Audio("sound/" + foo + ".mp3");
+					var sfx = new Audio("sound/" + track + ".mp3");
 					sfx.volume = ng.config.audio.soundVolume / 100;
 					sfx.play();
 				}
@@ -148,7 +145,8 @@ audio.init = (function(){
 	if (config === null){
 		// initialize
 		audio.save();
-	} else {
+	}
+	else {
 		var foo = JSON.parse(config);
 		if (ng.config.audio.musicOn === undefined){
 			ng.config.audio = foo.audio;
