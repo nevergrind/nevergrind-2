@@ -1,5 +1,14 @@
+Thumbs.db
+nevergrind-2.js
+*.min.js
+*.min.css
+
 /build-ng2
+/sound
+/music
 /docs
 /mobs
 /mobs-archive
 /mobs-huge
+/img2
+/steamworks

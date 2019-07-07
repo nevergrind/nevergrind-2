@@ -6,9 +6,10 @@
 	}
 	if (!isset($link)){
 		if($_SERVER["SERVER_NAME"] === "localhost"){
-			$link = mysqli_connect('localhost:3306', 'root', '', 'nevergrind') or exit('Could not connect to the database!');
+			$link = mysqli_connect('localhost:3306', 'root', '', 'nevergrind') or die("Can't connect");
 		} else {
 			require $_SERVER['DOCUMENT_ROOT'] . '/ng2/php/values/dbpw.php';
-			$link = mysqli_connect('localhost', 'nevergri_fw', $dbpw, 'nevergri_ngLocal') or exit('Could not connect to the database!');
+			$link = mysqli_connect('localhost', 'nevergri_fw', $dbpw, 'nevergri_ngLocal') or die("Can't connect!!!!");
 		}
 	}
+?>

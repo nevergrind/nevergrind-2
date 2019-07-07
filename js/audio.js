@@ -140,7 +140,6 @@ var audio = {
 	}
 }
 audio.init = (function(){
-	// console.info("Checking local data...");
 	var config = localStorage.getItem('config');
 	if (config === null){
 		// initialize

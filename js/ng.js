@@ -320,38 +320,15 @@ var ng = {
 		// socket.removePlayer(my.account);
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'php/deleteFromFwtitle.php'
+			url: app.url + 'php/logout.php'
+		}).done(function() {
+			ng.msg("Logout successful");
+			localStorage.removeItem('email');
+			localStorage.removeItem('token');
+			location.reload();
+		}).fail(function() {
+			ng.msg("Logout failed.");
 		});
-		
-		try {
-			FB.getLoginStatus(function(ret) {
-				ret.authResponse && FB.logout(function(response) {});
-			});
-		} catch (err){
-			console.info('Facebook OAuth error: ', err);
-		}
-		
-		try {
-			var auth2 = gapi.auth2.getAuthInstance();
-			auth2.signOut().then(function(){
-			});
-		} catch (err){
-			console.info('Google OAuth error: ', err);
-		}
-		
-		setTimeout(function(){
-			$.ajax({
-				type: 'GET',
-				url: app.url + 'php/logout.php'
-			}).done(function(data) {
-				ng.msg("Logout successful");
-				localStorage.removeItem('email');
-				localStorage.removeItem('token');
-				location.reload();
-			}).fail(function() {
-				ng.msg("Logout failed.");
-			});
-		}, 1000);
 	},
 	goCreateCharacter: function(){
 		ng.lock(1);
@@ -409,6 +386,7 @@ var ng = {
 		});
 	},
 	initGame: function(){
+		console.info('app.url', app.url)
 		$.ajax({
 			type: 'GET',
 			url: app.url + 'php2/init-game.php'
@@ -462,10 +440,9 @@ var ng = {
 };
 
 ng.init = (function(){
-	// console.info("Initializing game...");
 	$.ajaxSetup({
 		type: 'POST',
-		timeout: 5000
+		timeout: 3000
 	});
 	TweenLite.defaultEase = Quad.easeOut;
 })();
