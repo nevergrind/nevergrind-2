@@ -132,8 +132,8 @@ var ng = {
 	resists: ['bleed', 'poison', 'arcane', 'lightning', 'fire', 'cold'],
 	dungeon: ['traps', 'treasure', 'scout', 'pulling'],
 	gameDuration: 0,
-	delay: init.isMobile ? 0 : .5,
-	modalSpeed: init.isMobile ? 0 : .5,
+	delay: .5,
+	modalSpeed: .5,
 	friends: [],
 	ignore: [],
 	joinedGame: false,
@@ -190,44 +190,7 @@ var ng = {
 			}
 		});
 	},
-	updateUserInfo: function(){
-		if (location.hostname !== 'localhost'){
-			$.ajax({
-				async: true,
-				type: 'GET',
-				dataType: 'jsonp',
-				url: 'https://geoip-db.com/json/geoip.php?jsonp=?'
-			}).done(function(data){
-				data.latitude += '';
-				data.longitude += '';
-				ng.geo = data;
-				$.ajax({
-					url: app.url + 'php/updateUserInfo.php',
-					data: {
-						location: ng.geo
-					}
-				}).done(function(){
-					localStorage.setItem('geo', JSON.stringify(ng.geo));
-					localStorage.setItem('geoSeason', 1);
-					localStorage.setItem('geoTime', Date.now());
-				});
-				//console.info('loc: ', ng.geo);
-			});
-		}
-	},
 	checkPlayerData: function(){
-		// not a guest
-		var geo = localStorage.getItem(my.account+ '_geo');
-		var geoTime = localStorage.getItem(my.account+ '_geoTime');
-		var geoSeason = localStorage.getItem(my.account+ '_geoSeason');
-		if (geoTime !== null || geoSeason === null){
-			// longer than 90 days?
-			if ((Date.now() - geoTime) > 7776000 || geoSeason === null){
-				ng.updateUserInfo();
-			}
-		} else if (geo === null){
-			ng.updateUserInfo();
-		}
 		// ignore list
 		var ignore = localStorage.getItem('ignore');
 		if (ignore !== null){
@@ -254,9 +217,9 @@ var ng = {
 	keepAlive: function(){
 		$.ajax({
 			type: 'GET',
-			url: app.url + "php/keepAlive.php"
+			url: app.url + "api/session/keep-alive.php"
 		}).always(function() {
-			setTimeout(ng.keepAlive, 120000);
+			setTimeout(ng.keepAlive, 180000);
 		});
 	},
 	msg: function(msg, d){
@@ -264,16 +227,6 @@ var ng = {
 		if (d === undefined || d < 2){
 			d = 2;
 		}
-		// unlock game modal?
-        /*if (msg.indexOf('unlock-game') > -1){
-            modal.show({
-                key: 'unlock-game',
-                focus: 1
-            });
-            TweenMax.set('#msg', {
-                visibility: 'hidden'
-            });
-        }*/
 		TweenMax.to(dom.msg, d, {
 			overwrite: 1,
 			startAt: {
@@ -292,27 +245,22 @@ var ng = {
 			}
 		});
 	},
-	split: function(e, msg, d){
+	split: function(id, msg, d){
 		if (d === undefined){
 			d = .01;
 		}
-		var e = document.getElementById(e);
+		var e = document.getElementById(id);
 		e.innerHTML = msg;
-		if (init.isMobile){
-			
-		}
-		else if (e !== null){
-			var split = new SplitText(e, {
-					type: "words,chars"
-				});
-			TweenMax.staggerFromTo(split.chars, d, {
-				immediateRender: true,
-				alpha: 0
-			}, {
-				delay: .1,
-				alpha: 1
-			}, .01);
-		}
+		var split = new SplitText(e, {
+				type: "words,chars"
+			});
+		TweenMax.staggerFromTo(split.chars, d, {
+			immediateRender: true,
+			alpha: 0
+		}, {
+			delay: .1,
+			alpha: 1
+		}, .01);
 	},
 	logout: function(){
 		if (ng.locked) return;
@@ -320,7 +268,7 @@ var ng = {
 		// socket.removePlayer(my.account);
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'php/logout.php'
+			url: app.url + 'api/account/logout.php'
 		}).done(function() {
 			ng.msg("Logout successful");
 			localStorage.removeItem('email');
@@ -370,7 +318,7 @@ var ng = {
 		
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'php2/create/getStatMap.php'
+			url: app.url + 'api/create/getStatMap.php'
 		}).done(function(r){
 			var r = r.statMap;
 			ng.races.forEach(function(v){
@@ -386,13 +334,11 @@ var ng = {
 		});
 	},
 	initGame: function(){
-		console.info('app.url', app.url)
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'php2/init-game.php'
+			url: app.url + 'api/init-game.php'
 		}).done(function(r){
 			console.info('init-game', r.account, r);
-
 			app.initialized = 1;
 			if (r.account) {
 				app.account = my.account = r.account; // for global reference

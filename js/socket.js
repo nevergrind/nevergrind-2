@@ -47,7 +47,7 @@ var socket = {
 					chat.lastWhisper.name = data.name;
 					// callback to sender
 					$.ajax({
-						url: app.url + 'php2/chat/send.php',
+						url: app.url + 'api/chat/send.php',
 						data: {
 							action: 'receive',
 							msg: chat.whisper.parse(data.msg),

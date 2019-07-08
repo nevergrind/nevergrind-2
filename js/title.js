@@ -7,7 +7,7 @@ var title = {
 				ng.initGame();
 				game.session.timer = setTimeout(function(){
 					ng.keepAlive();
-				}, 180000);
+				});
 				// init events
 				var x = env.click;
 				ng.events(x);

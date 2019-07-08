@@ -118,7 +118,7 @@ var mission = {
 	init: function() {
 		ng.lock(1);
 		$.ajax({
-			url: app.url + 'php2/mission/load-mission-data.php'
+			url: app.url + 'api/mission/load-mission-data.php'
 		}).done(function(data) {
 			console.info('load-mission-data', data.mission);
 			mission.loaded = 1;
@@ -239,7 +239,7 @@ var mission = {
 		console.info("LOADING QUESTS: ", id);
 		ng.lock(1);
 		$.ajax({
-			url: app.url + 'php2/mission/load-zone-missions.php',
+			url: app.url + 'api/mission/load-zone-missions.php',
 			data: {
 				id: id
 			}
@@ -307,7 +307,7 @@ var mission = {
 		if (party.isSoloOrLeading()) {
 			ng.lock(1);
 			$.ajax({
-				url: app.url + 'php2/mission/embark-quest.php',
+				url: app.url + 'api/mission/embark-quest.php',
 				data: {
 					quest: mission.quests[my.selectedQuest]
 				}
@@ -334,7 +334,7 @@ var mission = {
 			if (my.quest.level) {
 				dungeon.go();
 				/*$.ajax({
-					url: app.url + 'php2/mission/notify-party-embarked.php'
+					url: app.url + 'api/mission/notify-party-embarked.php'
 				}).done(function(data) {
 					console.info(data);
 				});*/
@@ -369,7 +369,7 @@ var mission = {
 		else {
 			ng.lock(1);
 			$.ajax({
-				url: app.url + 'php2/mission/abandon-quest.php'
+				url: app.url + 'api/mission/abandon-quest.php'
 			}).done(function (data) {
 				console.info('abandon ', data);
 			}).fail(function (data) {
@@ -396,7 +396,7 @@ var mission = {
 						// reset session quest for non-leaders
 						$.ajax({
 							type: 'GET',
-							url: app.url + 'php2/session/init-quest.php'
+							url: app.url + 'api/session/init-quest.php'
 						}).done(function(){
 							mission.abortCallback();
 						}).fail(function(){
@@ -412,7 +412,7 @@ var mission = {
 		game.heartbeat.enabled = 0;
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'php2/chat/delete-from-players.php'
+			url: app.url + 'api/chat/delete-from-players.php'
 		});
 		mission.initQuest();
 		// rejoin main chat

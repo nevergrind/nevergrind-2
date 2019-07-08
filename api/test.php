@@ -132,7 +132,6 @@
 	}
 	
 	if ($_SERVER["SERVER_NAME"] === "localhost x"){
-		require('values.php');
 		require('db.php');
 		
 		

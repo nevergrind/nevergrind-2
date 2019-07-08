@@ -25,7 +25,7 @@ var guild = {
 		console.info("Name: ", name);
 		ng.lock();
 		$.ajax({
-			url: app.url + 'php2/guild/create.php',
+			url: app.url + 'api/guild/create.php',
 			data: {
 				// replace
 				name: name.replace(/ +/g, " ").trim()
@@ -61,7 +61,7 @@ var guild = {
 			if (name) {
 				chat.log('Sent guild invite to '+ name +'.', 'chat-warning');
 				$.ajax({
-					url: app.url + 'php2/guild/invite.php',
+					url: app.url + 'api/guild/invite.php',
 					data: {
 						player: name
 					}
@@ -81,7 +81,7 @@ var guild = {
 		console.info("JOINING GUILD!", z);
 		// clicked CONFIRM
 		$.ajax({
-			url: app.url + 'php2/guild/join.php',
+			url: app.url + 'api/guild/join.php',
 			data: {
 				row: z.row,
 				guildName: z.guildName
@@ -103,7 +103,7 @@ var guild = {
 		console.info("Quitting guild!");
 		var o = my.guild;
 		$.ajax({
-			url: app.url + 'php2/guild/quit.php'
+			url: app.url + 'api/guild/quit.php'
 		}).done(function(data){
 			my.guild = guild.Guild(); // nice!
 			console.info("guild.quit() response ", data);
@@ -122,7 +122,7 @@ var guild = {
 		}
 		else {
 			$.ajax({
-				url: app.url + 'php2/guild/boot.php',
+				url: app.url + 'api/guild/boot.php',
 				data: {
 					name: name
 				}
@@ -139,7 +139,7 @@ var guild = {
 		chat.log(data.msg, 'chat-warning');
 		if (data.name === my.name) {
 			$.ajax({
-				url: app.url + 'php2/guild/quit.php',
+				url: app.url + 'api/guild/quit.php',
 				data: {
 					action: 'boot'
 				}
@@ -157,7 +157,7 @@ var guild = {
 		}
 		else {
 			$.ajax({
-				url: app.url + 'php2/guild/promote.php',
+				url: app.url + 'api/guild/promote.php',
 				data: {
 					name: name
 				}
@@ -179,7 +179,7 @@ var guild = {
 		}
 		else {
 			$.ajax({
-				url: app.url + 'php2/guild/leader.php',
+				url: app.url + 'api/guild/leader.php',
 				data: {
 					name: name
 				}
@@ -202,7 +202,7 @@ var guild = {
 		if (data.name === my.name) {
 			$.ajax({
 				type: 'GET',
-				url: app.url + 'php2/guild/update-session.php'
+				url: app.url + 'api/guild/update-session.php'
 			}).done(function (data) {
 				console.info('update-session: ', data);
 				my.guild = data.guild;
@@ -220,7 +220,7 @@ var guild = {
 	motd: function(msg) {
 		if (my.guild.rank > 1) return;
 		$.ajax({
-			url: app.url + 'php2/guild/motd.php',
+			url: app.url + 'api/guild/motd.php',
 			data: {
 				msg: msg
 			}
@@ -238,7 +238,7 @@ var guild = {
 		ng.lock(1);
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'php2/guild/get-member-list.php'
+			url: app.url + 'api/guild/get-member-list.php'
 		}).done(function (data) {
 			console.info(data);
 			setTimeout(function(){

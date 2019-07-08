@@ -1,5 +1,4 @@
 <?php
-require('../php/values.php');
 header('Content-Type: application/json');
 session_start();
 ini_set('session.gc_maxlifetime', 86400);

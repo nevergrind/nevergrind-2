@@ -118,22 +118,6 @@ var my = {
 		DOM.hud.style.visibility = 'hidden';
 	},
 	nextTarget: function(backwards){},
-	exitGame: function(bypass){
-		if (ng.view === 'game'){
-			var r = confirm("Are you sure you want to surrender?");
-		}
-		if (r || bypass || ng.view !== 'game'){
-			ng.lock(1);
-			$.ajax({
-				url: app.url + 'php/exitGame.php',
-				data: {
-					view: ng.view
-				}
-			}).always(function(){
-				location.reload();
-			});
-		}
-	},
 	selectedQuest: '',
 	quest: {},
 };

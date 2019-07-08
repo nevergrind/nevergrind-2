@@ -6,7 +6,7 @@ var town = {
 			ng.lock(1);
 			chat.size.large();
 			$.ajax({
-				url: app.url + 'php2/character/load-character.php',
+				url: app.url + 'api/character/load-character.php',
 				data: {
 					row: create.selected
 				}

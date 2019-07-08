@@ -86,13 +86,6 @@ input:-webkit-autofill {
 #tosWrap {
 	margin: .5rem;
 }
-#forgotPasswordWrap{
-	margin-top: 0;
-}
-#forgotPassword{
-	color: #aef;
-	cursor: url('cursor/pointer.cur'), pointer;
-}
 
 
 body{

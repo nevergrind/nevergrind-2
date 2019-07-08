@@ -343,7 +343,7 @@ var chat = {
 					chat.log('You sent ' + chat.mode.name + ' a whisper, but you are currently ignoring him.', 'chat-warning');
 				}
 				$.ajax({
-					url: app.url + 'php2/chat/send.php',
+					url: app.url + 'api/chat/send.php',
 					data: {
 						action: 'send',
 						msg: msg,
@@ -370,7 +370,7 @@ var chat = {
 						}
 						else {
 							$.ajax({
-								url: app.url + 'php2/chat/send.php',
+								url: app.url + 'api/chat/send.php',
 								data: {
 									msg: o.msg,
 									class: o.class,
@@ -452,7 +452,7 @@ var chat = {
 		msg = a.join(" ");
 		if (msg[0] !== '/') {
 			$.ajax({
-				url: app.url + 'php2/chat/send.php',
+				url: app.url + 'api/chat/send.php',
 				data: {
 					msg: msg,
 					class: 'chat-emote',
@@ -499,7 +499,7 @@ var chat = {
 		var id = my.getPartyMemberIdByName(name);
 		if ((my.party[0].isLeader || bypass) && my.p_id && id) {
 			$.ajax({
-				url: app.url + 'php2/chat/promote.php',
+				url: app.url + 'api/chat/promote.php',
 				data: {
 					name: name,
 					leaderId: id
@@ -519,7 +519,7 @@ var chat = {
 			var count = my.partyCount();
 			$.ajax({
 				type: 'POST',
-				url: app.url + 'php2/chat/disband.php',
+				url: app.url + 'api/chat/disband.php',
 				data: {
 					count: count
 				}
@@ -547,7 +547,7 @@ var chat = {
 		var id = my.getPartyMemberIdByName(name);
 		if ((my.party[0].isLeader || bypass) && my.p_id && id) {
 			$.ajax({
-				url: app.url + 'php2/chat/boot.php',
+				url: app.url + 'api/chat/boot.php',
 				data: {
 					name: name,
 					id: id
@@ -576,7 +576,7 @@ var chat = {
 			if (p) {
 				chat.log('Sent party invite to '+ p +'.', 'chat-warning');
 				$.ajax({
-					url: app.url + 'php2/chat/invite.php',
+					url: app.url + 'api/chat/invite.php',
 					data: {
 						player: p
 					}
@@ -601,7 +601,7 @@ var chat = {
 			setTimeout(function(){
 				$.ajax({
 					type: 'GET',
-					url: app.url + 'php2/chat/camp.php'
+					url: app.url + 'api/chat/camp.php'
 				}).done(function(){
 					location.reload();
 				}).fail(function(){
@@ -724,7 +724,7 @@ var chat = {
 			// clicked CONFIRM
 			console.info('party.join: ', z);
 			$.ajax({
-				url: app.url + 'php2/chat/party-join.php',
+				url: app.url + 'api/chat/party-join.php',
 				data: {
 					row: z.row,
 					cId: z.cId
@@ -767,7 +767,7 @@ var chat = {
 			ng.friends = ng.friends || [];
 			$.ajax({
 				type: 'GET',
-				url: app.url + 'php2/chat/friend-get.php',
+				url: app.url + 'api/chat/friend-get.php',
 			}).done(function(data){
 				ng.friends = data;
 			});
@@ -777,7 +777,7 @@ var chat = {
 			if (ng.friends.length){
 				$.ajax({
 					type: 'GET',
-					url: app.url + 'php2/chat/friend-status.php'
+					url: app.url + 'api/chat/friend-status.php'
 				}).done(function(r){
 					ng.friends = r.friends;
 					console.info(r);
@@ -811,7 +811,7 @@ var chat = {
 			}
 			else if (o.length > 1 && o !== my.name) {
 				$.ajax({
-					url: app.url + 'php2/chat/friend-add.php',
+					url: app.url + 'api/chat/friend-add.php',
 					data: {
 						friend: o
 					}
@@ -840,7 +840,7 @@ var chat = {
 		remove: function(o) {
 			if (o.length > 1 && o !== my.name && ng.friends.indexOf(o) > -1) {
 				$.ajax({
-					url: app.url + 'php2/chat/friend-remove.php',
+					url: app.url + 'api/chat/friend-remove.php',
 					data: {
 						friend: o
 					}
@@ -922,7 +922,7 @@ var chat = {
 	played: function() {
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'php2/chat/played.php'
+			url: app.url + 'api/chat/played.php'
 		}).done(function(r) {
 			var sessionLen = Date.now() - JSON.parse(sessionStorage.getItem('startTime')),
 				durationStr = chat.toPlaytime(~~(sessionLen / 100000));
@@ -957,7 +957,7 @@ var chat = {
 		all: function(){
 			$.ajax({
 				type: 'GET',
-				url: app.url + 'php2/chat/who-all.php'
+				url: app.url + 'api/chat/who-all.php'
 			}).done(function(r){
 				console.info('who ', r);
 				if (r.len) {
@@ -981,7 +981,7 @@ var chat = {
 		class: function(job){
 			console.info('who.class ', job);
 			$.ajax({
-				url: app.url + 'php2/chat/who-class.php',
+				url: app.url + 'api/chat/who-class.php',
 				data: {
 					job: job
 				}
@@ -1049,7 +1049,7 @@ var chat = {
 					// remove from channel
 					if (channel !== my.channel) {
 						$.ajax({
-							url: app.url + 'php2/chat/set-channel.php',
+							url: app.url + 'api/chat/set-channel.php',
 							data: {
 								channel: channel
 							}
@@ -1067,7 +1067,7 @@ var chat = {
 			console.info(my.channel, chat.default);
 			if (my.channel !== chat.default) {
 				$.ajax({
-					url: app.url + 'php2/chat/set-channel.php',
+					url: app.url + 'api/chat/set-channel.php',
 					data: {
 						channel: chat.default
 					}
@@ -1098,7 +1098,7 @@ var chat = {
 	updateChannel: function() {
 		if (ng.view === 'town') {
 			$.ajax({
-				url: app.url + 'php2/chat/update-channel.php',
+				url: app.url + 'api/chat/update-channel.php',
 				data: {
 					channel: chat.default
 				}

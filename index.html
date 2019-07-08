@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head id='head'>
 	<title>Nevergrind 2</title>
 	<meta charset="utf-8">
@@ -23,13 +24,14 @@
 		app.socketUrl = app.isApp ?
 			'nevergrind.com' : location.hostname;
 		app.isLocal = location.hostname.indexOf('localhost') > -1;
-		app.loginUrl = app.isLocal ? '' : 'https://nevergrind.com';
+		app.loginUrl = app.isLocal ? '/ng2/' : 'https://nevergrind.com/ng2/';
 	</script>
 	<link rel="stylesheet" href="css/libs/bootstrap4.min.css">
 	<link rel="stylesheet" href="css/libs/font-awesome.min.css">
 </head>
 
 <body id="body">
+
 <script>
 	(function(d){
 		var link = d.createElement('link');
@@ -50,18 +52,14 @@
 			<fieldset>
 				<p>
 					<div>
-						<a id="createAccount" class="login-actions strongShadow">Create an Account</a>
+						<a id="createAccount" class="login-actions strongShadow">Create Account</a>
 					</div>
 					<div>or</div>
 					<div>
-						<a id="gotoAccount" class="login-actions strongShadow">Login with your Neverworks Account</a>
+						<a id="gotoAccount" class="login-actions strongShadow">Login</a>
 					</div>
 				</p>
 				<div id="login-form-contents"></div>
-
-				<hr class="fancy-hr">
-				<div>Problems?</div>
-				<div>Contact: support@nevergrind.com</div>
 			</fieldset>
 		</form>
 	</div>
@@ -568,11 +566,7 @@
 					'<input type="checkbox" id="rememberMe" name="rememberMe" checked> Remember Me' +
 				'</label>' +
 				'<input id="login-btn" type="submit" value="Login" class="ng-btn" />' +
-				'<div class="error-msg text-shadow"></div>' +
-				'<div id="forgotPasswordWrap">' +
-					'<a title="Neverworks Games will send you an email. Click the link to reset your password." ' +
-						'id="forgotPassword">Forgot Password?</a>' +
-				'</div>';
+				'<div class="error-msg text-shadow"></div>';
 			return s;
 		},
 		getCreateHtml: function() {
@@ -607,10 +601,6 @@
 					'maxlength="16" ' +
 					'placeholder="Account Name" ' +
 					'required="required" /></label>' +
-				'<div id="tosWrap" class="create-account">' +
-					'<span id="tos" class="aqua">' +
-					'<a target="_blank" href="//nevergrind.com/blog/terms-of-service/">Terms of Service</a> | <a target="_blank" href="//nevergrind.com/blog/privacy-policy/">Privacy Policy</a></span>' +
-				'</div>' +
 				'<input id="create-account" type="submit" value="Create" class="ng-btn strongShadow" />' +
 				'<div class="error-msg text-shadow"></div>';
 			return s;
@@ -645,19 +635,18 @@
 				account = acc.toLowerCase();
 			$.ajax({
 				type: 'POST',
-				url: app.loginUrl + '/ng2/php/master1.php',
+				url: app.loginUrl + 'api/account/create-account.php',
 				data: {
-					run: "createAccount",
 					email: email,
 					account: account,
-					password: pw,
-					promo: ''
+					password: pw
 				}
 			}).done(function(data) {
 				if (data.indexOf("Account Created") === -1){
 					// something went wrong
 					loginMsg(data);
-				} else {
+				}
+				else {
 					loginMsg("Account Created! Reloading!");
 					setTimeout(function(){
 						location.reload();
@@ -708,30 +697,6 @@
 	$('#login').on('click', function() {
 		loginAuthenticate();
 	});
-	$("#login-form-contents").on('click', '#forgotPassword', function() {
-		if (this.textContent === "Checking...") {
-			return;
-		}
-		var email = $("#loginEmail").val().toLowerCase();
-		var msg = "Forgot Password?";
-		$("#forgotPassword").text("Checking...");
-		if (!email || email.length < 3) {
-			loginMsg("Enter a valid email address");
-			$("#forgotPassword").text(msg);
-			return;
-		}
-		loginMsg("Checking account status...");
-		$.ajax({
-			url: app.loginUrl + '/ng2/php/master1.php',
-			data: {
-				run: "forgotPassword",
-				email: email
-			}
-		}).done(function(data){
-			loginMsg(data, 0, 0, 8000);
-			$("#forgotPassword").text(msg);
-		});
-	});
 
 	var loginFocusInput = false,
 		loginAuthenticationLock = false;
@@ -778,9 +743,8 @@
 
 		$.ajax({
 			type: 'POST',
-			url: app.loginUrl + '/ng2/php/master1.php',
+			url: app.loginUrl + 'api/authenticate.php',
 			data: {
-				run: 'authenticate',
 				email: loginEmail,
 				password: $("#password").val()
 			}
