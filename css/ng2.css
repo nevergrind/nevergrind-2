@@ -362,7 +362,9 @@ body {
 	min-height: 900px;
 	max-height: 1080px;
 	overflow: hidden;
-	overflow-y: auto
+	overflow-y: auto;
+	visibility: visible;
+	cursor: url('cursor/normal.cur'), auto;
 }
 input {
 	cursor: text;
@@ -709,14 +711,6 @@ tbody {
 #logout {
 	font-size: .875rem;
 	color: #fff
-}
-.flex-row {
-	display: flex;
-	flex-direction: row
-}
-.flex-column {
-	display: flex;
-	flex-direction: column
 }
 #create-attr {
 	flex-grow: 1;
@@ -2057,8 +2051,20 @@ background-clip: content-box;
 	opacity: 0;
 }
 
-/* show game */
-body {
-	visibility: visible;
-	cursor: url('cursor/normal.cur'), auto;
+/* flex styles */
+.flex-row {
+	display: flex;
+	flex-direction: row
+}
+.flex-column {
+	display: flex;
+	flex-direction: column
+}
+
+/* bootstrap replacements */
+.wrap-fluid {
+
+}
+.col-6 {
+	flex-basis: 50%;
 }

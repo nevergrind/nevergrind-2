@@ -102,7 +102,7 @@ var modal = {
 						'<input id="card-cvc" type="text" maxlength="4" autocomplete="off" class="form-control ng-blue-input text-shadow"/>'+
 					'</p>'+
 
-					'<p class="container-fluid snug">'+
+					'<p class="wrap-fluid snug">'+
 						'<div class="row justify-content-between">'+
 							'<div class="col">'+
 								'<label>Expiration Month (MM) </label>'+

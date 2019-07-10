@@ -26,7 +26,7 @@
 		app.isLocal = location.hostname.indexOf('localhost') > -1;
 		app.loginUrl = app.isLocal ? '/ng2/' : 'https://nevergrind.com/ng2/';
 	</script>
-	<link rel="stylesheet" href="css/libs/bootstrap4.min.css">
+	<!--link rel="stylesheet" href="css/libs/bootstrap4.min.css"-->
 	<link rel="stylesheet" href="css/libs/font-awesome.min.css">
 </head>
 
@@ -98,8 +98,8 @@
 			</div>
 		</header>
 
-		<div id="title-screen-wrap" class="container-fluid text-shadow">
-			<div id="title-menu-wrap" class="row title-menu-row">
+		<div id="title-screen-wrap" class="wrap-fluid text-shadow">
+			<div id="title-menu-wrap" class="row title-menu-row flex-row">
 				<div class="col-6 title-bg-color">
 					<div class="title-ch-create-col justify-content-start text-center">
 						<h1>
@@ -178,7 +178,7 @@
 
 	<div id="scene-title-create-character" class="none">
 
-		<div class="container-fluid text-shadow">
+		<div class="wrap-fluid text-shadow">
 			<div class="row title-menu-row stag-blue">
 				<div class="col-2 tight">
 					<div class="title-ch-create-col">
@@ -222,7 +222,7 @@
 							</div>
 						</div>
 
-						<div id="gender-wrap" class="container-fluid">
+						<div id="gender-wrap" class="wrap-fluid">
 							<div class="row justify-content-between">
 								<div class="col-8 tight">Male</div>
 								<div class="col-2 tight select-gender-col">
@@ -249,7 +249,7 @@
 							<div>Type: <span id="type-value"></span></div>
 
 							<div class="character-info-header">Resistances</div>
-							<div class="container-fluid">
+							<div class="wrap-fluid">
 								<div class="row">
 									<div class="col-6 tight">
 										<div>Bleed: <span id="bleed-value" class="pull-right"></span></div>
@@ -265,7 +265,7 @@
 							</div>
 
 							<div class="character-info-header">Dungeon</div>
-							<div class="container-fluid">
+							<div class="wrap-fluid">
 								<div class="row">
 									<div class="col-6 tight">
 										<div>Traps: <span id="traps-value" class="pull-right"></span></div>
@@ -520,8 +520,21 @@
 <div id="lock-overlay" class="overlay"></div>
 <div id="msg" class="text-shadow no-pointer"></div>
 
+<script src="js/libs/jquery.min.js"></script>
 <script src="js/libs/lodash.min.js"></script>
-<script src="js/libs/libs.min.js"></script>
+<script src="js/libs/easelJS.min.js"></script>
+
+<script src="js/libs/gsap/TweenMax.min.js"></script>
+<script src="js/libs/gsap/ThrowPropsPlugin.min.js"></script>
+<script src="js/libs/gsap/DrawSVGPlugin.min.js"></script>
+<script src="js/libs/gsap/SplitText.min.js"></script>
+<script src="js/libs/gsap/EaselPlugin.min.js"></script>
+
+<!-- bootstrap4 -->
+<!--script src="js/libs/popper.min.js"></script>
+<script src="js/libs/bootstrap4.min.js"></script-->
+
+<script src="js/libs/autobahn.min.js"></script>
 
 <script>
 	var login = {
@@ -662,7 +675,7 @@
 	}
 	login.init();
 	// loginModal.php
-	var loginFadeTimer = new TweenMax.delayedCall(0, '');;
+	var loginFadeTimer = new TweenMax.delayedCall(0, '');
 	function fadeOut(){
 		loginFadeTimer.kill();
 		loginFadeTimer = TweenMax.to('.error-msg', 0, {
@@ -698,8 +711,8 @@
 		loginAuthenticate();
 	});
 
-	var loginFocusInput = false,
-		loginAuthenticationLock = false;
+	var loginFocusInput = false;
+	var loginAuthenticationLock = false;
 
 	$(".loginInputs").on('focus', function() {
 		loginFocusInput = true;
@@ -749,24 +762,21 @@
 				password: $("#password").val()
 			}
 		}).done(function(data){
-			loginGotoRefer(data);
+			if (data === "Login successful!"){
+				location.reload();
+			}
+			else {
+				if (!suppress){
+					loginMsg(data);
+					console.error(data);
+				}
+			}
 		}).fail(function(data) {
 			loginMsg(data.statusText);
 		}).always(function(){
 			loginAuthenticationLock = false;
 		});
 		return false; // prevent form submission
-	}
-	function loginGotoRefer(data){
-		if (data === "Login successful!"){
-			location.reload();
-		}
-		else {
-			if (!suppress){
-				loginMsg(data);
-				console.error(data);
-			}
-		}
 	}
 
 	(function(){
@@ -830,5 +840,6 @@
 
 	})(document);
 </script>
+
 </body>
 </html>
