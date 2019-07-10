@@ -1,5 +1,5 @@
 <?php
-require '../header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 
 // standardize the name
 
@@ -30,7 +30,7 @@ if (!ctype_alpha($nameCheck)){
 	exit('This name contains illegal characters!');
 }
 // name is not taken
-require('../db.php');
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // check if this guild name is taken
 $stmt = $link->prepare('select name from ng2_guilds where name=?');

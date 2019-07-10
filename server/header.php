@@ -1,4 +1,4 @@
 <?php
-require 'session-start.php';
+session_start();
 header('Content-Type: application/json');
 $r = [];

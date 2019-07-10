@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../db.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 function getRandomString($length)
 {

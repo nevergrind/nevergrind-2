@@ -1,6 +1,6 @@
 <?php
-require '../header.php';
-require('../db.php');
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 // are they even there
 $stmt = $link->prepare('select friend from ng2_friends where friend=? and account=?');
 $stmt->bind_param('ss', $_POST['friend'], $_SESSION['account']);

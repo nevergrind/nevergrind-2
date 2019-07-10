@@ -1,6 +1,6 @@
 <?php
 if ($_SERVER["SERVER_NAME"] === "localhost"){
-	require '../../db.php';
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 	$name = "Mythical Sword";
 	$damage = 12;

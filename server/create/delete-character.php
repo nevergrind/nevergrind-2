@@ -1,9 +1,9 @@
 <?php
-	require '../header.php';
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 	
 	$f['row'] = $_POST['row'];
 	// name is not taken
-	require('../db.php');
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	$query = "select row from ng2_chars where row=? and account=?";
 	$stmt = $link->prepare($query);
 	$stmt->bind_param('ss', $f['row'], $_SESSION['account']);

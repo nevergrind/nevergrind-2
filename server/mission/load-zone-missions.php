@@ -1,7 +1,7 @@
 <?php
 
-require '../header.php';
-require '../db.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 $stmt = $link->prepare('SELECT m.row, m.level, m.title, z.zone, m.mob_id, m.description 
 	FROM ng2_mission_list m

@@ -10,7 +10,7 @@
 	}
 </style>
 <?php
-	require('db.php');
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 
 	use GuzzleHttp\Client;
@@ -132,7 +132,7 @@
 	}
 	
 	if ($_SERVER["SERVER_NAME"] === "localhost x"){
-		require('db.php');
+		require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 		
 		
 		require 'item/baseItem.php';

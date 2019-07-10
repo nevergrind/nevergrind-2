@@ -1,5 +1,5 @@
 <?php
-	require '../header.php';
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 	
 	$f = $_POST['form'];
 	
@@ -17,7 +17,7 @@
 		exit('This name contains illegal characters!');
 	}
 	// name is not taken
-	require('../db.php');
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	$query = "select name from ng2_chars where name=?";
 	$stmt = $link->prepare($query);
 	$stmt->bind_param('s', $f['name']);

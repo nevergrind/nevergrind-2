@@ -1,6 +1,6 @@
 <?php
 if ($_SERVER["SERVER_NAME"] === "localhost"){
-    require '../../db.php';
+    require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
     require 'getEquipJobs.php';
 
     $query = "insert into ng2_loot (

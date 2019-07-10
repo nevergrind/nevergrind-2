@@ -1,6 +1,6 @@
 <?php
-require 'session-start.php';
-require 'db.php';
+session_start();
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 $now = time();
 if ($_SESSION['ng2']['played']) {

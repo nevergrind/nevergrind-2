@@ -1,6 +1,6 @@
 <?php
-require '../header.php';
-require('../db.php');
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // get targeted player.id and party id by name
 $query = 'select p.id, g.c_id from ng2_players p left join ng2_parties g on p.id=g.c_id where p.name=? limit 1';

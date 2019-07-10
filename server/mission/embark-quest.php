@@ -1,7 +1,7 @@
 <?php
 
-require '../header.php';
-require '../db.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 $mobId = isset($_POST['quest']['mobId']) ?
 	$_POST['quest']['mobId'] * 1 : $_POST['quest']['mob_id'] * 1;
 

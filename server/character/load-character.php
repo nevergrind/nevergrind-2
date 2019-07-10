@@ -1,6 +1,6 @@
 <?php
-	require '../header.php';
-	require('../db.php');
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	// delete all from ng2_players to clean up the table
 	mysqli_query($link, 'delete from ng2_players where timestamp < date_sub(now(), interval 60 second)');
 

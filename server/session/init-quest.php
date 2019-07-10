@@ -1,6 +1,6 @@
 <?php
-require '../session-start.php';
-require  '../db.php';
+session_start();
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 $_SESSION['quest'] = [
 	'row' => 0,
 	'zone' => '',

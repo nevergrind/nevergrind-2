@@ -1,6 +1,6 @@
 <?php
-require '../header.php';
-require('../db.php');
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // Count number of players in the party already
 $query = 'SELECT count(row) count FROM ng2_parties where p_id=?';

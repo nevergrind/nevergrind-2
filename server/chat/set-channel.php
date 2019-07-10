@@ -1,6 +1,6 @@
 <?php
-require '../header.php';
-require('../db.php');
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 // limit to 18
 $_POST['channel'] = substr($_POST['channel'], 0, 16);
 $illegal = array("\\", "/", ":", "*", "?", ">", "<");

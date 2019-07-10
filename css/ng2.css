@@ -121,7 +121,7 @@ body{
 #mainBG{
 	width: 100%;
 	height: 1080;
-	background: url('/img2/ng2-bg.jpg')
+	background: url('/images/ng2-bg.jpg')
 }
 label{
 	font-weight: normal;
@@ -1671,7 +1671,7 @@ background-clip: content-box;
 }
 .bar-col-icon {
 	position: relative;
-	background: url('../img2/job-icons.png');
+	background: url('../images/job-icons.png');
 	background-size: 1400% 100%;
 	width: 2.56rem;
 	height: 2.56rem;
@@ -1687,7 +1687,7 @@ background-clip: content-box;
 	right: 0;
 	width: .8rem;
 	height: .8rem;
-	background: url('../img2/is-leader-20-2.png');
+	background: url('../images/is-leader-20-2.png');
 	background-size: 100%;
 }
 .bar-col-data {

@@ -1,7 +1,7 @@
 <?php
 
-require '../header.php';
-require('../db.php');
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // get channel players
 $stmt = $link->prepare('select id, name, level, race, job from ng2_players where zone=? and timestamp > date_sub(now(), interval 15 second) order by row desc');

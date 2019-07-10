@@ -278,8 +278,8 @@ gulp.task('build-ng2', [
 	]).pipe(gulp.dest('./build-ng2/music'));
 
 	gulp.src([
-		'./img2/**/*'
-	]).pipe(gulp.dest('./build-ng2/img2'));
+		'./images/**/*'
+	]).pipe(gulp.dest('./build-ng2/images'));
 
 	gulp.src([
 		'./mobs/**/*'
@@ -424,7 +424,7 @@ gulp.task("build-icon", function(){
 		resourceType: "Icongroup",
 		resourceName: "IDR_MAINFRAME",
 		lang: 1033,
-		resourceFile: "./build/img2/desktop.ico"
+		resourceFile: "./build/images/desktop.ico"
 	}, function(error){
 		//stuff
 	});

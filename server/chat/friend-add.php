@@ -1,6 +1,6 @@
 <?php
-require '../header.php';
-require('../db.php');
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 // is our friends list full?
 $stmt = $link->prepare('select count(friend) from ng2_friends where account=?');
 $stmt->bind_param('s', $_SESSION['account']);

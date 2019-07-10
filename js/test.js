@@ -21,20 +21,23 @@ var test = {
 		}
 	},
 	orcs: function(){
+		var max = 100;
 		$("#title-container-wrap").css('display', 'none');
+		$('#scene-title-select-character, .test-orcs').remove();
 
 		var e2 = document.getElementById('ng2-logo-wrap');
-		for (var i=0; i<1000; i++){
+		for (var i=0; i<max; i++){
 			var e = document.createElement('img');
 			e.id = 'mob' + i;
-			e.className = 'abs';
-			e.style.top = ~~(Math.random() * 600) +'px';
-			e.style.left = ~~(Math.random() * 900) +'px';
+			e.className = 'abs test-orcs';
+			e.style.top = ~~(Math.random() * 100) +'%';
+			e.style.left = ~~(Math.random() * 100) +'%';
+			e.style.transform = 'translateX(-50%)';
 			e.src = 'images/an orc.png';
 			e2.appendChild(e);
 		}
 
-		for (var i=0; i<1000; i++){
+		for (var i=0; i<max; i++){
 			(function(){
 				var z = document.getElementById("mob" + i);
 

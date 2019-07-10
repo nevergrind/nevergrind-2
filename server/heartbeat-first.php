@@ -1,10 +1,10 @@
 <?php
-require 'header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 if (!isset($_SESSION['account'])) {
 	header('HTTP/1.1 500 Your session has expired.');
 }
 else {
-	require 'db.php';
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 	$r['hp'] = $_SESSION['ng2']['hp'];
 	$r['mp'] = $_SESSION['ng2']['mp'];

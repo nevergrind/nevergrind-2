@@ -1,5 +1,5 @@
 <?php
-require '../session-start.php';
+session_start();
 require 'init-ng.php';
 require 'init-party.php';
 require 'init-guild.php';

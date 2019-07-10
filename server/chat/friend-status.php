@@ -1,6 +1,6 @@
 <?php
-require '../header.php';
-require '../db.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 // get online players
 $result = mysqli_query($link,
 	'select p.name, p.level, p.race, p.job, g.name guild

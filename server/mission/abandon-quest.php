@@ -1,7 +1,7 @@
 <?php
 
-require '../header.php';
-require '../db.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 require_once '../zmq.php';
 if ($_SESSION['party']['id']) {
