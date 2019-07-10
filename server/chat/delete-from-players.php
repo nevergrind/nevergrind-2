@@ -1,5 +1,5 @@
 <?php
-require '../header-session-start.php';
+require '../session-start.php';
 require '../db.php';
 // from players log
 $stmt = $link->prepare('delete from ng2_players where account=?');

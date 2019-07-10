@@ -222,7 +222,7 @@ var bar = {
 		if (my.p_id) {
 			$.ajax({
 				type: 'GET',
-				url: app.url + 'api/chat/party-get-all.php'
+				url: app.url + 'server/chat/party-get-all.php'
 			}).done(function (data) {
 				console.info('getParty ', data);
 				var npIndex = 1;

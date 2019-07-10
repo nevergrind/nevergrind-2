@@ -217,7 +217,7 @@ var ng = {
 	keepAlive: function(){
 		$.ajax({
 			type: 'GET',
-			url: app.url + "api/session/keep-alive.php"
+			url: app.url + "server/session/keep-alive.php"
 		}).always(function() {
 			setTimeout(ng.keepAlive, 180000);
 		});
@@ -268,7 +268,7 @@ var ng = {
 		// socket.removePlayer(my.account);
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'api/account/logout.php'
+			url: app.url + 'server/account/logout.php'
 		}).done(function() {
 			ng.msg("Logout successful");
 			localStorage.removeItem('email');
@@ -318,7 +318,7 @@ var ng = {
 		
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'api/create/getStatMap.php'
+			url: app.url + 'server/create/getStatMap.php'
 		}).done(function(r){
 			var r = r.statMap;
 			ng.races.forEach(function(v){
@@ -336,7 +336,7 @@ var ng = {
 	initGame: function(){
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'api/init-game.php'
+			url: app.url + 'server/init-game.php'
 		}).done(function(r){
 			console.info('init-game', r.account, r);
 			app.initialized = 1;

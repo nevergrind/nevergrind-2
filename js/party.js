@@ -8,7 +8,7 @@ var party = {
 				data: {
 					quest: data.quest
 				},
-				url: app.url + 'api/mission/update-quest.php'
+				url: app.url + 'server/mission/update-quest.php'
 			}).done(function (data) {
 				console.info('missionUpdate ', data);
 				town.aside.selected === 'town-mission' && mission.showEmbark();

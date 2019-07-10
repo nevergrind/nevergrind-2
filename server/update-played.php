@@ -1,5 +1,5 @@
 <?php
-require 'header-session-start.php';
+require 'session-start.php';
 require 'db.php';
 
 $now = time();

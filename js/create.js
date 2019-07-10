@@ -152,7 +152,7 @@ var create = {
 				f.shortJob = ng.toJobShort(f.job);
 				// send to server
 				$.ajax({
-					url: app.url + 'api/create/create-character.php',
+					url: app.url + 'server/create/create-character.php',
 					data: {
 						form: f
 					}
@@ -173,7 +173,7 @@ var create = {
 			if (ng.playerCardClicks++ === 1) {
 				$.ajax({
 					type: 'GET',
-					url: app.url + 'api/session/init-character.php'
+					url: app.url + 'server/session/init-character.php'
 				})
 			}
 		});
@@ -183,7 +183,7 @@ var create = {
 		if (ng.locked) return;
 		ng.lock();
 		$.ajax({
-			url: app.url + 'api/create/delete-character.php',
+			url: app.url + 'server/create/delete-character.php',
 			data: {
 				row: create.selected
 			}

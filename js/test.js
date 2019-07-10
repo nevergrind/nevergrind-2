@@ -44,7 +44,7 @@ var test = {
 
 				var tl = new TimelineMax({
 					onUpdate: function(){
-						filters.hueRotate(z, filters);
+						test.filters.hueRotate(z, filters);
 					},
 					repeat: -1
 				});

@@ -635,7 +635,7 @@
 				account = acc.toLowerCase();
 			$.ajax({
 				type: 'POST',
-				url: app.loginUrl + 'api/account/create-account.php',
+				url: app.loginUrl + 'server/account/create-account.php',
 				data: {
 					email: email,
 					account: account,
@@ -743,7 +743,7 @@
 
 		$.ajax({
 			type: 'POST',
-			url: app.loginUrl + 'api/authenticate.php',
+			url: app.loginUrl + 'server/authenticate.php',
 			data: {
 				email: loginEmail,
 				password: $("#password").val()

@@ -62,7 +62,7 @@ var game = {
 			game.ping.start = Date.now();
 			$.ajax({
 				type: 'GET',
-				url: app.url + 'api/heartbeat-first.php'
+				url: app.url + 'server/heartbeat-first.php'
 			}).done(function (data) {
 				data.name = my.name;
 				game.heartbeat.timer = setTimeout(game.heartbeat.send, 5000);
@@ -76,7 +76,7 @@ var game = {
 			if (game.heartbeat.enabled) {
 				$.ajax({
 					type: 'GET',
-					url: app.url + 'api/heartbeat.php'
+					url: app.url + 'server/heartbeat.php'
 				}).done(function (data) {
 					game.heartbeat.success++;
 					if (game.heartbeat.successiveFails) {
@@ -162,7 +162,7 @@ var game = {
 		send: function() {
 			$.ajax({
 				type: 'GET',
-				url: app.url + 'api/update-played.php'
+				url: app.url + 'server/update-played.php'
 			}).always(function(){
 				!app.isLocal && console.clear();
 			});
@@ -221,7 +221,7 @@ var game = {
 				if (ng.view === 'town') {
 					$.ajax({
 						type: 'GET',
-						url: app.url + 'api/chat/sanity-chat.php'
+						url: app.url + 'server/chat/sanity-chat.php'
 					}).done(function (data) {
 						for (var i = 0, len = data.players.length; i < len; i++) {
 							data.players[i] *= 1;
