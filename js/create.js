@@ -168,8 +168,8 @@ var create = {
 		});
 		$("#ch-card-list").on(x, '.select-player-card', function(){
 			var z = $(this);
-			var id = create.selected = z.data('row');
-			var id = create.name = z.data('name');
+			create.selected = z.data('row');
+			create.name = z.data('name');
 			if (ng.playerCardClicks++ === 1) {
 				$.ajax({
 					type: 'GET',

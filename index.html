@@ -14,7 +14,7 @@
 	</style>
 	<script>
 		var app = {
-			version: '0.0.114',
+			version: '2019.0.115',
 			initialized: 0, // init-game returned
 			isApp: location.protocol === 'chrome-extension:' ? 1 : 0,
 			account: ''
@@ -27,17 +27,27 @@
 		app.loginUrl = app.isLocal ? '/ng2/' : 'https://nevergrind.com/ng2/';
 	</script>
 	<!--link rel="stylesheet" href="css/libs/bootstrap4.min.css"-->
-	<link rel="stylesheet" href="css/libs/font-awesome.min.css">
+	<!--link rel="stylesheet" href="css/libs/font-awesome.min.css"-->
 </head>
 
 <body id="body">
 
 <script>
 	(function(d){
-		var link = d.createElement('link');
-		link.href = 'css/ng2' + (app.isLocal ? '.css' : '.min.css') + '?v='+ app.version;
-		link.rel = 'stylesheet';
-		document.write(link.outerHTML);
+		var css = app.isLocal ?
+			[
+				'main',
+				'character-create',
+			] :
+			['ng2'];
+		var suffix = app.isLocal ? '.css' : '.min.css';
+		css.forEach(function(file) {
+			var link = d.createElement('link');
+			link.href = 'css/' + file + suffix + '?v='+ app.version;
+			link.rel = 'stylesheet';
+			document.write(link.outerHTML);
+
+		});
 	})(document);
 </script>
 
@@ -46,17 +56,16 @@
 	<div id="login-container">
 		<form id="loginWrap"
 			  accept-charset="UTF-8"
-			  class="strongShadow"
 			  method="post"
 			  onSubmit="return loginAuthenticate(this);">
 			<fieldset>
 				<p>
 					<div>
-						<a id="createAccount" class="login-actions strongShadow">Create Account</a>
+						<a id="createAccount" class="login-actions">Create Account</a>
 					</div>
 					<div>or</div>
 					<div>
-						<a id="gotoAccount" class="login-actions strongShadow">Login</a>
+						<a id="gotoAccount" class="login-actions">Login</a>
 					</div>
 				</p>
 				<div id="login-form-contents"></div>
@@ -67,59 +76,32 @@
 
 <div id="scene-title" class="scene no-select">
 	<div id="ng2-logo-wrap" class="scene">
-		<img src="images/ng2-bg2.jpg" id="ng2-bg" class="img-bg">
-		<img id="neverworks-logo" src="/ng2/images/neverworks.png">
+		<img id="ng2-bg" src="images/ng2-bg2.jpg" class="img-bg">
+		<img id="neverworks-logo" src="images/neverworks.png">
 		<div id="version" class="text-shadow"></div>
 	</div>
 
 	<div id="scene-title-select-character">
 
-		<header id="title-header" class="text-primary text-shadow">
+		<header id="title-header" class="text-primary">
 			<div class="title-column">
 				<a id="logout" class="ng-btn pointer">Loading...</a>
 			</div>
-
-			<div id="social-icons" class="text-primary title-column">
-				<a href="https://twitch.tv/maelfyn">
-					<i class="fa fa-twitch text-primary pointer"></i>
-				</a>
-				<a href="https://youtube.com/c/Maelfyn">
-					<i class="fa fa-youtube text-primary pointer"></i>
-				</a>
-				<a href="https://discord.gg/n2gp8rC">
-					<i class="fa fa-discord text-primary pointer"></i>
-				</a>
-				<a href="https://www.facebook.com/maelfyn">
-					<i class="fa fa-facebook text-primary pointer"></i>
-				</a>
-				<a href="https://twitter.com/maelfyn">
-					<i class="fa fa-twitter text-primary pointer"></i>
-				</a>
-			</div>
 		</header>
 
-		<div id="title-screen-wrap" class="wrap-fluid text-shadow">
-			<div id="title-menu-wrap" class="row title-menu-row flex-row">
-				<div class="col-6 title-bg-color">
-					<div class="title-ch-create-col justify-content-start text-center">
+		<div id="title-screen-wrap" class="text-shadow">
+			<div id="title-menu-wrap" class="title-menu-row flex-row" style="justify-content: start">
+				<div class="flex-50 title-bg-color">
+					<div class="title-ch-create-col text-center" style="justify-content: start">
 						<h1>
-							<div>Nevergrind 2<br>
-								Cooperative Multiplayer<br>
-								Browser RPG
-							</div>
+							<div>Nevergrind 2</div>
+							<div>Cooperative Multiplayer</div>
+							<div>Role-Playing Game</div>
 							<div class="small">developed by</div>
-							<img class="neverworks" src="images/neverworks-txt.png" alt="Neverworks Games">
+							<img class="neverworks" src="images/neverworks-txt.png" style="display: block; margin: 3px auto">
 							<hr class="fancy-hr-dark">
 						</h1>
 						<img id="ng2-logo" src="images/nevergrind-2-logo-480.png">
-
-						<section>
-							<div>Our Other HTML5 Games</div>
-							<div>
-								<a href="/classic" title="Single-player Browser RPG">Classic Nevergrind</a> |
-								<a href="/games/firmament-wars" title="Multiplayer Strategy Game">Firmament Wars</a>
-							</div>
-						</section>
 
 						<section>
 							<div>Nevergrind Links</div>
@@ -149,23 +131,23 @@
 					</div>
 				</div>
 
-				<div class="col-6 title-bg-trans">
+				<div class="flex-50 title-bg-trans">
 					<div id="title-select-character" class="title-ch-create-col">
 						<!-- well top -->
-						<div id="title-well-top" class="title-ch-well ng-blue text-center">
+						<div id="title-well-top" class="title-ch-well text-center">
 							<a id="delete-character"
-							   class="btn btn-lg ng-btn title-btn-margin">Delete</a>
+							   class="ng-btn title-btn-margin">Delete</a>
 							<a id="go-create-character"
-							   class="btn btn-lg ng-btn title-btn-margin">Create</a>
+							   class="ng-btn title-btn-margin no-select">Create</a>
 						</div>
 						<!-- char cards -->
 						<div id="ch-card-base" class="stag-blue">
 							<div id="ch-card-list"></div>
 						</div>
 						<!-- well bottom -->
-						<div id="title-well-bottom" class="title-ch-well ng-blue text-center">
+						<div id="title-well-bottom" class="title-ch-well text-center">
 							<a id="enter-world"
-							   class="btn btn-sm ng-btn title-btn-margin">
+							   class="ng-btn title-btn-margin">
 								Enter World
 							</a>
 						</div>
@@ -178,58 +160,58 @@
 
 	<div id="scene-title-create-character" class="none">
 
-		<div class="wrap-fluid text-shadow">
-			<div class="row title-menu-row stag-blue">
-				<div class="col-2 tight">
+		<div class="text-shadow">
+			<div class="flex-row title-menu-row stag-blue">
+				<div class="flex-16 tight">
 					<div class="title-ch-create-col">
 
 						<div id="race-wrap">
 							<div class="select-create-wrap">
-								<div class="select-race">Barbarian</div>
+								<div class="select-race no-select">Barbarian</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Dark Elf</div>
+								<div class="select-race no-select">Dark Elf</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Dwarf</div>
+								<div class="select-race no-select">Dwarf</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Erudite</div>
+								<div class="select-race no-select">Erudite</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Gnome</div>
+								<div class="select-race no-select">Gnome</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Half Elf</div>
+								<div class="select-race no-select">Half Elf</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Halfling</div>
+								<div class="select-race no-select">Halfling</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">High Elf</div>
+								<div class="select-race no-select">High Elf</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Human</div>
+								<div class="select-race no-select">Human</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Ogre</div>
+								<div class="select-race no-select">Ogre</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Troll</div>
+								<div class="select-race no-select">Troll</div>
 							</div>
 							<div class="select-create-wrap">
-								<div class="select-race">Wood Elf</div>
+								<div class="select-race no-select">Wood Elf</div>
 							</div>
 						</div>
 
-						<div id="gender-wrap" class="wrap-fluid">
-							<div class="row justify-content-between">
+						<div id="gender-wrap">
+							<div style="justify-content: between">
 								<div class="col-8 tight">Male</div>
-								<div class="col-2 tight select-gender-col">
+								<div class="flex-16 tight select-gender-col">
 									<div id="Male" class="select-radial select-gender active"></div>
 								</div>
 								<div class="col-8 tight">Female</div>
-								<div class="col-2 tight select-gender-col">
+								<div class="flex-16 tight select-gender-col">
 									<div id="Female" class="select-radial select-gender"></div>
 								</div>
 							</div>
@@ -249,14 +231,14 @@
 							<div>Type: <span id="type-value"></span></div>
 
 							<div class="character-info-header">Resistances</div>
-							<div class="wrap-fluid">
-								<div class="row">
-									<div class="col-6 tight">
+							<div>
+								<div>
+									<div class="flex-50 tight">
 										<div>Bleed: <span id="bleed-value" class="pull-right"></span></div>
 										<div>Poison: <span id="poison-value" class="pull-right"></span></div>
 										<div>Arcane: <span id="arcane-value" class="pull-right"></span></div>
 									</div>
-									<div class="col-6 tight">
+									<div class="flex-50 tight">
 										<div>Lightning: <span id="lightning-value" class="pull-right"></span></div>
 										<div>Fire: <span id="fire-value" class="pull-right"></span></div>
 										<div>Cold: <span id="cold-value" class="pull-right"></span></div>
@@ -265,13 +247,13 @@
 							</div>
 
 							<div class="character-info-header">Dungeon</div>
-							<div class="wrap-fluid">
-								<div class="row">
-									<div class="col-6 tight">
+							<div>
+								<div>
+									<div class="flex-50 tight">
 										<div>Traps: <span id="traps-value" class="pull-right"></span></div>
 										<div>Treasure: <span id="treasure-value" class="pull-right"></span></div>
 									</div>
-									<div class="col-6 tight">
+									<div class="flex-50 tight">
 										<div>Scout: <span id="scout-value" class="pull-right"></span></div>
 										<div>Pulling: <span id="pulling-value" class="pull-right"></span></div>
 									</div>
@@ -294,57 +276,57 @@
 					</div>
 				</div>
 
-				<div class="col-3 tight">
+				<div class="flex-25 tight">
 					<div class="title-ch-create-col">
 
 						<div id="class-wrap">
 							<div class="select-create-wrap">
-								<div id="create-Bard" class="select-class disabled">Bard</div>
+								<div id="create-Bard" class="select-class disabled no-select">Bard</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Cleric" class="select-class disabled">Cleric</div>
+								<div id="create-Cleric" class="select-class disabled no-select">Cleric</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Druid" class="select-class disabled">Druid</div>
+								<div id="create-Druid" class="select-class disabled no-select">Druid</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Enchanter" class="select-class disabled">Enchanter</div>
+								<div id="create-Enchanter" class="select-class disabled no-select">Enchanter</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Magician" class="select-class disabled">Magician</div>
+								<div id="create-Magician" class="select-class disabled no-select">Magician</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Monk" class="select-class disabled">Monk</div>
+								<div id="create-Monk" class="select-class disabled no-select">Monk</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Necromancer" class="select-class disabled">Necromancer</div>
+								<div id="create-Necromancer" class="select-class disabled no-select">Necromancer</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Paladin" class="select-class disabled">Paladin</div>
+								<div id="create-Paladin" class="select-class disabled no-select">Paladin</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Ranger" class="select-class disabled">Ranger</div>
+								<div id="create-Ranger" class="select-class disabled no-select">Ranger</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Rogue" class="select-class disabled">Rogue</div>
+								<div id="create-Rogue" class="select-class disabled no-select">Rogue</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Shadowknight" class="select-class disabled">Shadowknight</div>
+								<div id="create-Shadowknight" class="select-class disabled no-select">Shadowknight</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Shaman" class="select-class disabled">Shaman</div>
+								<div id="create-Shaman" class="select-class disabled no-select">Shaman</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Warrior" class="select-class disabled">Warrior</div>
+								<div id="create-Warrior" class="select-class disabled no-select">Warrior</div>
 							</div>
 							<div class="select-create-wrap">
-								<div id="create-Wizard" class="select-class disabled">Wizard</div>
+								<div id="create-Wizard" class="select-class disabled no-select">Wizard</div>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="col-3 tight">
+				<div class="flex-25 tight">
 					<div class="title-ch-create-col flex-column">
 						<div id="create-attr">
 							<div id="create-attr-remaining" class="flex-row">
@@ -361,8 +343,8 @@
 							</div>
 
 							<div class="flex-row cr-ch-row">
-								<div class="create-attr-type col-6">STR</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="create-attr-type flex-50">STR</div>
+								<div class="flex-8 cr-ch-btn-col">
 									<div>–</div>
 									<div data-id="str" class="select-radial attr-minus-1"></div>
 								</div>
@@ -372,15 +354,15 @@
 											 class="create-attr-value create-attr-dynamic">0</div>
 									</div>
 								</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="flex-8 cr-ch-btn-col">
 									<div>+</div>
 									<div data-id="str" class="select-radial attr-add-1"></div>
 								</div>
 							</div>
 
 							<div class="flex-row cr-ch-row">
-								<div class="create-attr-type col-6">STA</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="create-attr-type flex-50">STA</div>
+								<div class="flex-8 cr-ch-btn-col">
 									<div>–</div>
 									<div data-id="sta" class="select-radial attr-minus-1"></div>
 								</div>
@@ -390,15 +372,15 @@
 											 class="create-attr-value create-attr-dynamic">0</div>
 									</div>
 								</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="flex-8 cr-ch-btn-col">
 									<div>+</div>
 									<div data-id="sta" class="select-radial attr-add-1"></div>
 								</div>
 							</div>
 
 							<div class="flex-row cr-ch-row">
-								<div class="create-attr-type col-6">AGI</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="create-attr-type flex-50">AGI</div>
+								<div class="flex-8 cr-ch-btn-col">
 									<div>–</div>
 									<div data-id="agi" class="select-radial attr-minus-1"></div>
 								</div>
@@ -408,15 +390,15 @@
 											 class="create-attr-value create-attr-dynamic">0</div>
 									</div>
 								</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="flex-8 cr-ch-btn-col">
 									<div>+</div>
 									<div data-id="agi" class="select-radial attr-add-1"></div>
 								</div>
 							</div>
 
 							<div class="flex-row cr-ch-row">
-								<div class="create-attr-type col-6">DEX</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="create-attr-type flex-50">DEX</div>
+								<div class="flex-8 cr-ch-btn-col">
 									<div>–</div>
 									<div data-id="dex" class="select-radial attr-minus-1"></div>
 								</div>
@@ -426,15 +408,15 @@
 											 class="create-attr-value create-attr-dynamic">0</div>
 									</div>
 								</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="flex-8 cr-ch-btn-col">
 									<div>+</div>
 									<div data-id="dex" class="select-radial attr-add-1"></div>
 								</div>
 							</div>
 
 							<div class="flex-row cr-ch-row">
-								<div class="create-attr-type col-6">WIS</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="create-attr-type flex-50">WIS</div>
+								<div class="flex-8 cr-ch-btn-col">
 									<div>–</div>
 									<div data-id="wis" class="select-radial attr-minus-1"></div>
 								</div>
@@ -444,15 +426,15 @@
 											 class="create-attr-value create-attr-dynamic">0</div>
 									</div>
 								</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="flex-8 cr-ch-btn-col">
 									<div>+</div>
 									<div data-id="wis" class="select-radial attr-add-1"></div>
 								</div>
 							</div>
 
 							<div class="flex-row cr-ch-row">
-								<div class="create-attr-type col-6">INT</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="create-attr-type flex-50">INT</div>
+								<div class="flex-8 cr-ch-btn-col">
 									<div>–</div>
 									<div data-id="intel" class="select-radial attr-minus-1"></div>
 								</div>
@@ -462,15 +444,15 @@
 											 class="create-attr-value create-attr-dynamic">0</div>
 									</div>
 								</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="flex-8 cr-ch-btn-col">
 									<div>+</div>
 									<div data-id="intel" class="select-radial attr-add-1"></div>
 								</div>
 							</div>
 
 							<div class="flex-row cr-ch-row">
-								<div class="create-attr-type col-6">CHA</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="create-attr-type flex-50">CHA</div>
+								<div class="flex-8 cr-ch-btn-col">
 									<div>–</div>
 									<div data-id="cha" class="select-radial attr-minus-1"></div>
 								</div>
@@ -480,7 +462,7 @@
 											 class="create-attr-value create-attr-dynamic">0</div>
 									</div>
 								</div>
-								<div class="col-1 cr-ch-btn-col">
+								<div class="flex-8 cr-ch-btn-col">
 									<div>+</div>
 									<div data-id="cha" class="select-radial attr-add-1"></div>
 								</div>
@@ -555,37 +537,35 @@
 		},
 		getLoginHtml: function(){
 			var s =
-				'<label class="textLeft" for="loginEmail">Account or Email Address' +
+				'<div style="margin-bottom: .2rem">Account or Email Address</div>' +
 				'<input name="username"' +
 					'type="text"' +
 					'id="loginEmail"' +
-					'class="loginInputs text-shadow"' +
+					'class="loginInputs"' +
 					'maxlength="255"' +
 					'placeholder="Account or Email Address"' +
 					'required="required"' +
 					'spellcheck="false"/>' +
-				'</label>' +
-				'<label class="textLeft" for="password">Password' +
-					'<input name="password"' +
-						'type="password"' +
-						'id="password"' +
-						'class="loginInputs text-shadow"' +
-						'maxlength="20"' +
-						'auto-complete="current-password"' +
-						'placeholder="Password"' +
-						'required="required" />' +
-				'</label>' +
-				'<label for="rememberMe">' +
+				'<div style="margin: .2rem">Password</div>' +
+				'<input name="password"' +
+					'type="password"' +
+					'id="password"' +
+					'class="loginInputs"' +
+					'maxlength="20"' +
+					'auto-complete="current-password"' +
+					'placeholder="Password"' +
+					'required="required" />' +
+				'<div for="rememberMe" style="display: flex; justify-content: center; align-items: center; margin: .2rem">' +
 					'<input type="checkbox" id="rememberMe" name="rememberMe" checked> Remember Me' +
-				'</label>' +
+				'</div>' +
 				'<input id="login-btn" type="submit" value="Login" class="ng-btn" />' +
-				'<div class="error-msg text-shadow"></div>';
+				'<div class="error-msg"></div>';
 			return s;
 		},
 		getCreateHtml: function() {
 			var s =
-				'<label class="textLeft" for="loginEmail">Email Address' +
-					'<input name="username" ' +
+				'<div style="margin: .2rem">Email Address</div>' +
+				'<input name="username" ' +
 					'type="text" ' +
 					'id="loginEmail" ' +
 					'class="loginInputs" ' +
@@ -593,19 +573,17 @@
 					'auto-complete="disabled" '+
 					'placeholder="Account or Email Address" ' +
 					'required="required" ' +
-					'spellcheck="false"/></label>' +
-				'<label class="textLeft" ' +
-					'for="password">Password' +
-					'<input name="password" ' +
+					'spellcheck="false"/>' +
+				'<div style="margin: .2rem">Password</div>' +
+				'<input name="password" ' +
 					'type="password" ' +
 					'id="password" ' +
 					'auto-complete="disabled" '+
 					'class="loginInputs" ' +
 					'maxlength="20" ' +
-					'placeholder="Password" required="required" /></label>' +
-				'<label class="textLeft create-account signupHeader" ' +
-					'for="loginAccount">Account Name' +
-					'<input name="account" ' +
+					'placeholder="Password" required="required" />' +
+				'<div class="create-account" style="margin: .2rem">Account Name</div>' +
+				'<input name="account" ' +
 					'type="text" ' +
 					'name="account" ' +
 					'auto-complete="disabled" '+
@@ -613,9 +591,9 @@
 					'class="loginInputs create-account" ' +
 					'maxlength="16" ' +
 					'placeholder="Account Name" ' +
-					'required="required" /></label>' +
-				'<input id="create-account" type="submit" value="Create" class="ng-btn strongShadow" />' +
-				'<div class="error-msg text-shadow"></div>';
+					'required="required" /></div>' +
+				'<input id="create-account" type="submit" value="Create" class="ng-btn" style="margin: 1rem 0 .2rem" />' +
+				'<div class="error-msg"></div>';
 			return s;
 		},
 		createAccount: function() {

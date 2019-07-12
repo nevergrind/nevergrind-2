@@ -375,7 +375,7 @@ var ng = {
 			s +=
 				'<div data-row="'+ d.row +'" '+
 				'data-name="'+ d.name +'" '+
-				'class="btn btn-lg ch-card center select-player-card">'+
+				'class="ch-card center select-player-card text-center">'+
 				'<div class="ch-card-name">'+ d.name +'</div>'+
 				'<div class="ch-card-details">'+ d.level +' '+ d.race +' '+ ng.toJobLong(d.job) +'</div>'+
 				'</div>';
