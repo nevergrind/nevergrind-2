@@ -133,14 +133,14 @@ var mission = {
 		// delegation
 		if (!mission.delegated) {
 			mission.delegated = 1;
-			$("#scene-town").on(env.click, '.mission-zone', function() {
+			$("#scene-town").on('mousedown', '.mission-zone', function() {
 				console.info(".mission-zone CLICK");
 				mission.toggleZone($(this));
-			}).on(env.click, '.mission-quest-item', function() {
+			}).on('mousedown', '.mission-quest-item', function() {
 				mission.clickQuest($(this));
-			}).on(env.click, '#mission-embark', function(){
+			}).on('mousedown', '#mission-embark', function(){
 				mission.embark();
-			}).on(env.click, '#mission-abandon', function() {
+			}).on('mousedown', '#mission-abandon', function() {
 				mission.abandon();
 			});
 		}

@@ -21,7 +21,7 @@ var test = {
 		}
 	},
 	orcs: function(){
-		var max = 100;
+		var max = 10;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
@@ -33,9 +33,16 @@ var test = {
 			e.style.position = 'absolute';
 			e.style.top = ~~(Math.random() * 100) +'%';
 			e.style.left = ~~(Math.random() * 100) +'%';
-			e.style.transform = 'translateX(-50%)';
+			e.style.transform = 'translate(-50%, -50%)';
 			e.src = 'images/an orc.png';
 			e2.appendChild(e);
+			/*TweenMax.to(e, 2, {
+				startAt: { rotation: 0 },
+				rotation: 360,
+				repeat: -1,
+				ease: Linear.easeIn,
+				yoyo: true
+			})*/
 		}
 
 		for (var i=0; i<max; i++){

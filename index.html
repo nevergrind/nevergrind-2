@@ -37,6 +37,7 @@
 		var css = app.isLocal ?
 			[
 				'main',
+				'flex',
 				'character-create',
 			] :
 			['ng2'];
@@ -57,7 +58,7 @@
 		<form id="loginWrap"
 			  accept-charset="UTF-8"
 			  method="post"
-			  onSubmit="return loginAuthenticate(this);">
+			  onSubmit="return login.authenticate(this);">
 			<fieldset>
 				<p>
 					<div>
@@ -220,7 +221,7 @@
 					</div>
 				</div>
 
-				<div id="ch-cr-detail-col" class="col-4 tight">
+				<div id="ch-cr-detail-col" class="flex-33 tight">
 					<div class="title-ch-create-col">
 
 						<div id="create-info">
@@ -519,259 +520,6 @@
 <script src="js/libs/autobahn.min.js"></script>
 
 <script>
-	var login = {
-		lock: 0,
-		init: function() {
-			setTimeout(function(){
-				document.getElementById('login-form-contents').innerHTML = login.getLoginHtml();
-				$("#loginWrap").attr('onSubmit', 'return loginAuthenticate(this)');
-			});
-			$("#gotoAccount").on('click', function(){
-				document.getElementById('login-form-contents').innerHTML = login.getLoginHtml();
-				$("#loginWrap").attr('onSubmit', 'return loginAuthenticate(this)');
-			});
-			$("#createAccount").on('click', function(){
-				document.getElementById('login-form-contents').innerHTML = login.getCreateHtml();
-				$("#loginWrap").attr('onSubmit', 'return login.createAccount(this)');
-			});
-		},
-		getLoginHtml: function(){
-			var s =
-				'<div style="margin-bottom: .2rem">Account or Email Address</div>' +
-				'<input name="username"' +
-					'type="text"' +
-					'id="loginEmail"' +
-					'class="loginInputs"' +
-					'maxlength="255"' +
-					'placeholder="Account or Email Address"' +
-					'required="required"' +
-					'spellcheck="false"/>' +
-				'<div style="margin: .2rem">Password</div>' +
-				'<input name="password"' +
-					'type="password"' +
-					'id="password"' +
-					'class="loginInputs"' +
-					'maxlength="20"' +
-					'auto-complete="current-password"' +
-					'placeholder="Password"' +
-					'required="required" />' +
-				'<div for="rememberMe" style="display: flex; justify-content: center; align-items: center; margin: .2rem">' +
-					'<input type="checkbox" id="rememberMe" name="rememberMe" checked> Remember Me' +
-				'</div>' +
-				'<input id="login-btn" type="submit" value="Login" class="ng-btn" />' +
-				'<div class="error-msg"></div>';
-			return s;
-		},
-		getCreateHtml: function() {
-			var s =
-				'<div style="margin: .2rem">Email Address</div>' +
-				'<input name="username" ' +
-					'type="text" ' +
-					'id="loginEmail" ' +
-					'class="loginInputs" ' +
-					'maxlength="255" ' +
-					'auto-complete="disabled" '+
-					'placeholder="Account or Email Address" ' +
-					'required="required" ' +
-					'spellcheck="false"/>' +
-				'<div style="margin: .2rem">Password</div>' +
-				'<input name="password" ' +
-					'type="password" ' +
-					'id="password" ' +
-					'auto-complete="disabled" '+
-					'class="loginInputs" ' +
-					'maxlength="20" ' +
-					'placeholder="Password" required="required" />' +
-				'<div class="create-account" style="margin: .2rem">Account Name</div>' +
-				'<input name="account" ' +
-					'type="text" ' +
-					'name="account" ' +
-					'auto-complete="disabled" '+
-					'id="loginAccount" ' +
-					'class="loginInputs create-account" ' +
-					'maxlength="16" ' +
-					'placeholder="Account Name" ' +
-					'required="required" /></div>' +
-				'<input id="create-account" type="submit" value="Create" class="ng-btn" style="margin: 1rem 0 .2rem" />' +
-				'<div class="error-msg"></div>';
-			return s;
-		},
-		createAccount: function() {
-			if (login.lock) {
-				return false;
-			}
-			var pw = $("#password").val(),
-				acc = $("#loginAccount").val();
-
-			if (acc.length < 2) {
-				loginMsg("Your account name must be more than two characters long.");
-				return false;
-			}
-			if (acc.length > 16) {
-				loginMsg("Your account name must be less than 16 characters long.");
-				return false;
-			}
-			var tempAcc = acc.replace('_', '');
-			if (tempAcc.match(/[a-z0-9]/gi, '').length < tempAcc.length) {
-				loginMsg("Your account name should only contain letters, numbers, and underscores.");
-				return false;
-			}
-			if (pw.length < 6) {
-				loginMsg("Your password must be at least six characters long.");
-				return false;
-			}
-			loginMsg("Connecting to server...");
-			login.lock = 1;
-			var email = $("#loginEmail").val().toLowerCase(),
-				account = acc.toLowerCase();
-			$.ajax({
-				type: 'POST',
-				url: app.loginUrl + 'server/account/create-account.php',
-				data: {
-					email: email,
-					account: account,
-					password: pw
-				}
-			}).done(function(data) {
-				if (data.indexOf("Account Created") === -1){
-					// something went wrong
-					loginMsg(data);
-				}
-				else {
-					loginMsg("Account Created! Reloading!");
-					setTimeout(function(){
-						location.reload();
-					}, 100);
-				}
-			}).fail(function() {
-				loginMsg("There was a problem communicating with the server.");
-			}).always(function() {
-				login.lock = 0;
-			});
-			return false; // prevent form submission
-		}
-	}
-	login.init();
-	// loginModal.php
-	var loginFadeTimer = new TweenMax.delayedCall(0, '');
-	function fadeOut(){
-		loginFadeTimer.kill();
-		loginFadeTimer = TweenMax.to('.error-msg', 0, {
-			opacity: 1,
-			height: 'auto',
-			display: 'block',
-			onComplete: function(){
-				TweenMax.to('.error-msg', 1, {
-					delay: 8,
-					transformOrigin: '50% 0',
-					transformPerspective: 500,
-					rotationX: -90,
-					height: 0,
-					opacity: 0,
-					onComplete: function(){
-						$(".error-msg").html('');
-					}
-				});
-			}
-		});
-	}
-	function loginMsg(msg){
-		var str = "<div>" + msg + "</div>";
-		$(".error-msg").html(str);
-		fadeOut();
-		TweenMax.set('.error-msg', {
-			transformOrigin: '50% 0',
-			transformPerspective: 500,
-			rotationX: 0
-		})
-	}
-	$('#login').on('click', function() {
-		loginAuthenticate();
-	});
-
-	var loginFocusInput = false;
-	var loginAuthenticationLock = false;
-
-	$(".loginInputs").on('focus', function() {
-		loginFocusInput = true;
-	}).on('blur', function() {
-		loginFocusInput = false;
-	});
-	// delegate login events
-	$("#login-form-contents").on('click', '#login-btn', function(){
-		loginAuthenticate();
-	}).on('click', '#create-account', function(){
-		login.createAccount();
-	});
-
-	$('.loginInputs').on('keydown', function(e){
-		// hit enter
-		if(e.keyCode === 13){
-			loginAuthenticate();
-		}
-	});
-	function loginAuthenticate(f) {
-		if (loginAuthenticationLock === true) {
-			return false;
-		}
-		if ($("#loginEmail").val().length < 3) {
-			loginMsg("This is not a valid email address.");
-			return false;
-		}
-		if ($("#password").val().length < 6 && !token) {
-			loginMsg("Passwords must be at least six characters long.");
-			return false;
-		}
-		var loginEmail = $("#loginEmail").val().toLowerCase();
-		if ($("#rememberMe").prop('checked')){
-			localStorage.setItem('email', loginEmail);
-			localStorage.setItem('token', token);
-		} else {
-			localStorage.removeItem('email');
-		}
-		loginMsg("Connecting to server...");
-		loginAuthenticationLock = true;
-
-		$.ajax({
-			type: 'POST',
-			url: app.loginUrl + 'server/authenticate.php',
-			data: {
-				email: loginEmail,
-				password: $("#password").val()
-			}
-		}).done(function(data){
-			if (data === "Login successful!"){
-				location.reload();
-			}
-			else {
-				if (!suppress){
-					loginMsg(data);
-					console.error(data);
-				}
-			}
-		}).fail(function(data) {
-			loginMsg(data.statusText);
-		}).always(function(){
-			loginAuthenticationLock = false;
-		});
-		return false; // prevent form submission
-	}
-
-	(function(){
-		email = localStorage.getItem('email');
-		token = localStorage.getItem('token');
-	})();
-</script>
-<script>
-
-	// only try if not logged in
-	function notLoggedIn() {
-		$("#login-modal").css({
-			visibility: 'visible'
-		});
-		$("#logout").remove();
-	}
-
 	(function(d){
 		var files = ['nevergrind-2'];
 		var ext = '.min';
@@ -779,35 +527,36 @@
 		if (app.isLocal){
 			ext = '';
 			files = [
-				"init",
-				"create",
-				"ng",
-				"env",
-				"my",
-				"dom",
-				"modal",
-				"audio",
-				"game",
-				"title",
-				"context",
-				"events",
-				"socket",
-				"chat",
-				"bar",
-				"battle",
-				"mobs",
-				"mob",
-				"town",
-				"guild",
-				"cache",
-				"route",
-				"mission",
-				"dungeon",
-				"skills",
-				"zone",
-				"party",
-				"button",
-				"test"
+				'login',
+				'create',
+				'ng',
+				'env',
+				'my',
+				'dom',
+				'modal',
+				'audio',
+				'game',
+				'title',
+				'context',
+				'events',
+				'socket',
+				'chat',
+				'bar',
+				'battle',
+				'mobs',
+				'mob',
+				'town',
+				'guild',
+				'cache',
+				'route',
+				'mission',
+				'dungeon',
+				'skills',
+				'zone',
+				'party',
+				'button',
+				'test',
+				'init',
 			]
 		}
 		_.each(files, function(file) {

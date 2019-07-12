@@ -515,11 +515,11 @@ var create = {
 	},
 	setRandomGender: function(){
 		var e = $(".select-gender:eq("+ ~~(Math.random() * 2) +")");
-		e.length && e.trigger(env.click);
+		e.length && e.trigger('mousedown');
 	},
 	setRandomRace: function(){
 		var e = $(".select-race:eq("+ ~~(Math.random() * 12) +")");
-		e.length && e.trigger(env.click);
+		e.length && e.trigger('mousedown');
 	},
 	// triggered by clicking race
 	setRandomClass: function(race){
@@ -540,7 +540,7 @@ var create = {
 		var e = $(".select-class:not(.disabled)"),
 			len = e.length;
 		e = e.eq(~~(Math.random() * len));
-		e.length && e.trigger(env.click);
+		e.length && e.trigger('mousedown');
 	}
 };
 

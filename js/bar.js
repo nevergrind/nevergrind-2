@@ -16,22 +16,22 @@ var bar = {
 			// draw all bars
 			bar.setAllBars();
 			// bar events
-			$("#bar-wrap").on(env.context, '.bar-col-icon', function (e) {
+			$("#bar-wrap").on('click contextmenu', '.bar-col-icon', function (e) {
 				var id = $(this).attr('id'),
 					arr = id.split("-"),
 					slot = arr[3] * 1;
 
 				console.info(id, slot, my.party[slot].name);
 				context.getPartyMenu(my.party[slot].name);
-			}).on(env.click, '#bar-camp', function () {
+			}).on('mousedown', '#bar-camp', function () {
 				chat.camp();
-			}).on(env.click, '#bar-stats', function () {
+			}).on('mousedown', '#bar-stats', function () {
 				console.info($(this).attr('id'));
-			}).on(env.click, '#bar-inventory', function () {
+			}).on('mousedown', '#bar-inventory', function () {
 				console.info($(this).attr('id'));
-			}).on(env.click, '#bar-options', function () {
+			}).on('mousedown', '#bar-options', function () {
 				console.info($(this).attr('id'));
-			}).on(env.click, '#bar-mission-abandon', function () {
+			}).on('mousedown', '#bar-mission-abandon', function () {
 				mission.abandon();
 			});
 		}

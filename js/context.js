@@ -3,9 +3,9 @@ var context = {
 	openDate: 0,
 	isInside: 0,
 	isOpen: 0,
-	init: (function(){
+	init: function(){
 		var e = $("#tooltip-social-wrap");
-		e.on(env.click, '.context-items', function(e){
+		e.on('mousedown', '.context-items', function(e){
 			console.info('context-items clicked: ', $(this).attr('id'));
 			context.click($(this).attr('id'));
 		});
@@ -20,7 +20,7 @@ var context = {
 				}
 			}, 1000);
 		});
-	})(),
+	},
 	click: function(id) {
 		console.info("click!", id, context.player);
 		context.action[ng.camel(id)]();

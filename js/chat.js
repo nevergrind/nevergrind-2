@@ -139,13 +139,13 @@ var chat = {
 				chat.hasFocus = 0;
 			});
 
-			$("#chat-prompt").on(env.click, '.chat-prompt-yes', function(e){
+			$("#chat-prompt").on('mousedown', '.chat-prompt-yes', function(e){
 				chat.prompt.confirm($(this).data());
-			}).on(env.click, '.chat-prompt-no', function(e){
+			}).on('mousedown', '.chat-prompt-no', function(e){
 				chat.prompt.deny($(this).data());
 			});
 
-			$("#chat-room").on(env.context, '.chat-player', function() {
+			$("#chat-room").on('click contextmenu', '.chat-player', function() {
 				var id = $(this).parent().attr('id'),
 					arr = id.split("-"),
 					text = $(this).text(),

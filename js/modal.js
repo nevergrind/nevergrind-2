@@ -31,11 +31,11 @@ var modal = {
 			top: 50
 		});
 		// assign events
-		$("#modal-dismiss, #modal-overlay").on(env.click, function(){
+		$("#modal-dismiss, #modal-overlay").on('mousedown', function(){
 			modal.hide();
 		});
 		// confirm event actions
-		$('#modal-wrap').on(env.click, '#delete-character-confirm', function(){
+		$('#modal-wrap').on('mousedown', '#delete-character-confirm', function(){
 			create.deleteCharacter();
 		});
 		if (e.focus) {

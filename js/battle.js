@@ -48,7 +48,7 @@ var battle = {
 		return s;
 	},
 	events: function(){
-		$(".mob-alive, .mob-dead, .mob-details").on(env.click, function(){
+		$(".mob-alive, .mob-dead, .mob-details").on('mousedown', function(){
 			battle.setTarget(this.getAttribute('index') * 1);
 		});
 	},

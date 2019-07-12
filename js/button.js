@@ -12,7 +12,7 @@ var button = {
 		}
 		button.wrap.innerHTML = s;
 		if (!button.initialized) {
-			$("#button-wrap").on(env.click, '.class-btn', function() {
+			$("#button-wrap").on('mousedown', '.class-btn', function() {
 				var id = this.id.substr(10) * 1;
 				console.info('CLICKED SKILL: ', id, typeof id);
 				skills[my.job].route(id);

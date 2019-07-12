@@ -3,7 +3,7 @@ onbeforeunload = function(){
 	game.exit();
 }
 
-$(document).on(env.click, function(e){
+$(document).on('mousedown', function(e){
 	context.hideCheck();
 	e.preventDefault();
 	return false;
@@ -64,7 +64,7 @@ $(document).on(env.click, function(e){
 
 		}
 		if (ng.view === 'title'){
-			if (!ng.isModalOpen && !init.isMobile){
+			if (!ng.isModalOpen){
 				$("#create-character-name").focus();
 			}
 		} else {

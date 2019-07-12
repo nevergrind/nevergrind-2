@@ -1,6 +1,6 @@
 // title.js
 var title = {
-	init: (function(){
+	init: function(){
 		$(document).ready(function(){
 			// console.info("Initializing title screen...");
 			setTimeout(function() {
@@ -9,13 +9,13 @@ var title = {
 					ng.keepAlive();
 				});
 				// init events
-				var x = env.click;
+				var x = 'mousedown';
 				ng.events(x);
 				create.events(x);
 				audio.events();
 			}, 100);
 		});
-	})(),
+	},
 	test: function() {
 		// nada
 	}

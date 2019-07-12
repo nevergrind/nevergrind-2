@@ -17,12 +17,11 @@ var ng = {
 		$("body").on('dragstart', 'img', function(e) {
 			e.preventDefault();
 		});
-		$("#enter-world").on(env.click, function(){
+		$("#enter-world").on('mousedown', function(){
 			town.go();
 		});
 
-		$(window).on('resize orientationchange focus', function() {
-			// env.resizeWindow();
+		$(window).on('resize focus', function() {
 			// debounce resize
 			clearTimeout(ng.resizeTimer);
 			ng.resizeTimer = setTimeout(function(){
@@ -348,7 +347,7 @@ var ng = {
 				$("#login-modal").remove();
 			}
 			else {
-				notLoggedIn();
+				login.notLoggedIn();
 			}
 			document.getElementById('version').textContent = 'Version ' + app.version;
 
@@ -381,7 +380,7 @@ var ng = {
 				'</div>';
 		});
 		document.getElementById('ch-card-list').innerHTML = s;
-		$(".select-player-card:first").trigger(env.click);
+		$(".select-player-card:first").trigger('mousedown');
 	}
 };
 
