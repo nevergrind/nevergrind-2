@@ -1,5 +1,66 @@
 // audio.js
 var audio = {
+	init: function() {
+		var config = localStorage.getItem('config');
+		var initComplete = false;
+		var musicSlider = $("#musicSlider");
+		var soundSlider = $("#soundSlider");
+
+		if (config === null){
+			// initialize
+			audio.save();
+		}
+		else {
+			config = JSON.parse(config);
+			if (ng.config.audio.musicOn === undefined){
+				ng.config.audio = config.audio;
+			}
+		}
+		// console.info("Initializing audio...", g.config.audio);
+		audio.load.title();
+		if (!ng.config.audio.musicVolume){
+			audio.pause();
+		}
+		else {
+			audio.musicStart();
+		}
+		if (musicSlider.length){
+			musicSlider.slider({
+				min: 0,
+				max: 100,
+				value: ng.config.audio.musicVolume,
+				formatter: function(value) {
+					if (initComplete){
+						audio.setMusicVolume(value);
+						return value;
+					}
+					else {
+						return ng.config.audio.musicVolume;
+					}
+				}
+			}).slider('setValue', ng.config.audio.musicVolume);
+		}
+		if (soundSlider.length){
+			soundSlider.slider({
+				min: 0,
+				max: 100,
+				value: ng.config.audio.soundVolume,
+				tooltip_position: 'bottom',
+				formatter: function(value) {
+					if (initComplete){
+						audio.setSoundVolume(value);
+						return value;
+					}
+					else {
+						return ng.config.audio.soundVolume
+					}
+				}
+			}).on('slideStop', function(val){
+				audio.play('machine0');
+			}).slider('setValue', ng.config.audio.soundVolume);
+		}
+		initComplete = true;
+	},
 	events: function(){
 		$("#bgmusic").on('ended', function() {
 			var x = document.getElementById('bgmusic');
@@ -41,8 +102,7 @@ var audio = {
 	},
 	save: function(){
 		// save to storage
-		var foo = JSON.stringify(ng.config);
-		localStorage.setItem('config', foo);
+		localStorage.setItem('config', JSON.stringify(ng.config));
 	},
 	setMusicVolume: function(val){
 		if (ng.config.audio.musicVolume){
@@ -139,61 +199,3 @@ var audio = {
 		}
 	}
 }
-audio.init = (function(){
-	var config = localStorage.getItem('config');
-	if (config === null){
-		// initialize
-		audio.save();
-	}
-	else {
-		var foo = JSON.parse(config);
-		if (ng.config.audio.musicOn === undefined){
-			ng.config.audio = foo.audio;
-		}
-	}
-	// console.info("Initializing audio...", g.config.audio);
-	audio.load.title();
-	if (!ng.config.audio.musicVolume){
-		audio.pause();
-	} else {
-		audio.musicStart();
-	}
-	var initComplete = false;
-	var e = $("#musicSlider");
-	if (e.length){
-		e.slider({
-			min  : 0, 
-			max  : 100, 
-			value: ng.config.audio.musicVolume,
-			formatter: function(value) {
-				if (initComplete){
-					audio.setMusicVolume(value);
-					return value;
-				} else {
-					return ng.config.audio.musicVolume;
-				}
-			}
-		}).slider('setValue', ng.config.audio.musicVolume);
-	}
-	var e = $("#soundSlider");
-	if (e.length){
-		$("#soundSlider").slider({
-			min  : 0, 
-			max  : 100, 
-			value: ng.config.audio.soundVolume,
-			tooltip_position: 'bottom',
-			formatter: function(value) {
-				if (initComplete){
-					audio.setSoundVolume(value);
-					return value;
-				} else {
-					return ng.config.audio.soundVolume
-				}
-			}
-		}).on('slideStop', function(val){
-			audio.play('machine0');
-		}).slider('setValue', ng.config.audio.soundVolume);
-	}
-	initComplete = true;
-})();
-//audio.gameMusicInit();

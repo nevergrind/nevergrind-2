@@ -1,6 +1,13 @@
 // core.js
 var ng = {
 	id: 0,
+	init: function() {
+		$.ajaxSetup({
+			type: 'POST',
+			timeout: 3000
+		});
+		TweenLite.defaultEase = Quad.easeOut;
+	},
 	getId: function() {
 		ng.id++;
 		if (ng.id > 999999999) {
@@ -383,11 +390,3 @@ var ng = {
 		$(".select-player-card:first").trigger('mousedown');
 	}
 };
-
-ng.init = (function(){
-	$.ajaxSetup({
-		type: 'POST',
-		timeout: 3000
-	});
-	TweenLite.defaultEase = Quad.easeOut;
-})();
