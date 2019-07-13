@@ -1,5 +1,14 @@
-var party = {
-	missionUpdate: function (data) {
+var party;
+(function() {
+	party = {
+		missionUpdate: missionUpdate,
+		length: length,
+		isSoloOrLeading: isSoloOrLeading,
+		notifyMissionStatus: notifyMissionStatus,
+		promotePlayer: promotePlayer,
+	};
+	//////////////////////////////////////
+	function missionUpdate(data) {
 		console.info("MISSION UPDATE! ", data);
 		mission.setQuest(data.quest);
 		my.zoneMobs = data.zoneMobs;
@@ -25,29 +34,29 @@ var party = {
 				}, game.questDelay);
 			});
 		}
-	},
-	length: function() {
+	}
+	function length() {
 		var count = 0;
 		my.party.forEach(function(v) {
 			if (v.name) count++;
 		});
 		return count;
-	},
-	isSoloOrLeading: function() {
+	}
+	function isSoloOrLeading() {
 		var leading = 0;
 		var partyLen = party.length();
 		if (partyLen === 1 || partyLen > 1 && my.party[0].isLeader) {
 			leading = 1;
 		}
 		return leading;
-	},
-	notifyMissionStatus: function(data) {
+	}
+	function notifyMissionStatus(data) {
 		ng.msg(data.msg, 6);
 		if (data.action === 'abandon') {
 			mission.abort();
 		}
-	},
-	promotePlayer: function() {
+	}
+	function promotePlayer() {
 		if (party.length() > 1) {
 			var name = '';
 			my.party.forEach(function(v, i) {
@@ -60,4 +69,4 @@ var party = {
 			name && chat.sendMsg('/promote ' + name);
 		}
 	}
-}
+})();

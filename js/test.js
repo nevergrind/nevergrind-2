@@ -1,33 +1,63 @@
-// test methods
-var test = {
-	chat: {
-		id: 999999999,
-		room: function(){
-			for (var i=0; i<100; i++) {
-				var c = ng.toJobShort(ng.jobs[~~(Math.random() * 14)]);
-				socket.zmq.publish(chat.getChannel(), {
-					route: 'chat->add',
-					row: test.chat.id+i,
-					level: Math.ceil(Math.random() * 50),
-					job: c,
-					name: 'WWWWWWWWWWWWWWWW'
-				});
-			}
+var test;
+(function() {
+	var c;
+	var i;
+	var e;
+	var z;
+	var filters;
+
+	test = {
+		chat: {
+			id: 999999999,
+			room: chatRoom,
+			log: chatLog
 		},
-		log: function() {
-			for (var i=0; i<10; i++) {
-				chat.sendMsg('/flist');
-			}
+		orcs: orcs,
+		battle: battle.testInit,
+		filters: {
+			/*
+			blur(5px)
+			hue-rotate(360deg)
+			brightness(100%)
+			contrast(100%)
+			shadow(100%) (chrome not supported?)
+			grayscale(100%)
+			invert(100%)
+			opacity(100%)
+			saturate(100%)
+			sepia(100%)
+			 */
+			hueRotate: hueRotate,
+			death: death,
+			effect: effect
+		},
+	}
+	///////////////////////////////////
+	function chatRoom() {
+		for (i=0; i<100; i++) {
+			c = ng.toJobShort(ng.jobs[~~(Math.random() * 14)]);
+			socket.zmq.publish(chat.getChannel(), {
+				route: 'chat->add',
+				row: test.chat.id+i,
+				level: Math.ceil(Math.random() * 50),
+				job: c,
+				name: 'WWWWWWWWWWWWWWWW'
+			});
 		}
-	},
-	orcs: function(){
-		var max = 10;
+	}
+	function chatLog() {
+		for (i=0; i<10; i++) {
+			chat.sendMsg('/flist');
+		}
+	}
+	function orcs(count) {
+		var max = count || 100;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
 		var e2 = document.getElementById('ng2-logo-wrap');
-		for (var i=0; i<max; i++){
-			var e = document.createElement('img');
+		for (i=0; i<max; i++){
+			e = document.createElement('img');
 			e.id = 'mob' + i;
 			e.className = 'test-orcs';
 			e.style.position = 'absolute';
@@ -45,55 +75,38 @@ var test = {
 			})*/
 		}
 
-		for (var i=0; i<max; i++){
-			(function(){
-				var z = document.getElementById("mob" + i);
-
-				var filters = {
-					hue: "hue-rotate(0deg)"
-				};
-
-				var tl = new TimelineMax({
-					onUpdate: function(){
-						test.filters.hueRotate(z, filters);
-					},
-					repeat: -1
-				});
-				tl.to(filters, Math.random() * 6 + 1, {
-					hue: "hue-rotate(360deg)"
-				});
-			})();
+		for (i=0; i<max; i++){
+			animateOrc(i);
 		}
-	},
-	filters: {
-		/*
-		blur(5px)
-		hue-rotate(360deg)
-		brightness(100%)
-		contrast(100%)
-		shadow(100%) (chrome not supported?)
-		grayscale(100%)
-		invert(100%)
-		opacity(100%)
-		saturate(100%)
-		sepia(100%)
-		 */
-		hueRotate: function(z, filters){
-			z.style.filter = 'grayscale(100%) sepia(100%) saturate(1000%) ' + filters.hue;
-		},
-		death: function(z, filters){
-			z.style.filter = filters.opacity + ' ' + filters.brightness;
-		},
-		effect: function(z, filters, key){
-			z.style.filter = filters[key];
-			/*
-			test.filters.effect(mob.element, {
-			  saturate: 'saturate(2500%)'
-			}, 'saturate');
-			 */
-		}
-	},
-	battle: function() {
-		battle.testInit();
 	}
-}
+	function animateOrc(i) {
+		z = document.getElementById("mob" + i);
+
+		filters = {
+			hue: "hue-rotate(0deg)"
+		};
+
+		var tl = new TimelineMax({
+			onUpdate: test.filters.hueRotate,
+			onUpdateParams: [z, filters],
+			repeat: -1
+		});
+		tl.to(filters, Math.random() * 6 + 1, {
+			hue: "hue-rotate(360deg)"
+		});
+	}
+	function hueRotate(z, filters) {
+		z.style.filter = 'grayscale(100%) sepia(100%) saturate(1000%) ' + filters.hue;
+	}
+	function death(z, filters) {
+		z.style.filter = filters.opacity + ' ' + filters.brightness;
+	}
+	function effect(z, filters, key) {
+		z.style.filter = filters[key];
+	}
+	/*
+	test.filters.effect(mob.element, {
+	  saturate: 'saturate(2500%)'
+	}, 'saturate');
+	 */
+})();

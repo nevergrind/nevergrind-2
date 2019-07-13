@@ -1,9 +1,31 @@
-// modal.js
-var modal = {
-	isOpen: 0,
-	overlay: document.getElementById('modal-overlay'),
-	wrap: document.getElementById('modal-wrap'),
-	show: function(e){
+var modal;
+(function() {
+	modal = {
+		isOpen: 0,
+		overlay: document.getElementById('modal-overlay'),
+		wrap: document.getElementById('modal-wrap'),
+		headerContents: {
+			playerIdleBoot: '<div id="modal-header">Disconnected</div>',
+			deleteCharacter: '<div id="modal-header">Delete '+ create.name +'?</div>',
+		},
+		bodyContents: {
+			playerIdleBoot:
+			'<div id="modal-body">'+
+				'<p>You have been disconnected from the server.</p>'+
+			'</div>',
+			deleteCharacter:
+			'<div id="modal-body">'+
+				'<p>Are you sure you want to delete this character?</p>'+
+			'</div>',
+		},
+		show: show,
+		hide: hide,
+		header: header,
+		body: body,
+		footer: footer,
+	};
+	////////////////////////////////
+	function show(e) {
 		modal.isOpen = 1;
 		e.camelKey = ng.camel(e.key);
 		var s = '<div class="stag-blue">'+
@@ -12,7 +34,7 @@ var modal = {
 					(e.hideFooter ? '' : modal.footer(e)) +
 				'</div>';
 		modal.wrap.innerHTML = s;
-		
+
 		modal.isOpen = true;
 		TweenMax.to(modal.overlay, .3, {
 			startAt: {
@@ -43,8 +65,8 @@ var modal = {
                 $("#modal-wrap input:first").focus();
             }, 100);
         }
-    },
-	hide: function(){
+	}
+	function hide() {
 		TweenMax.to([modal.overlay, modal.wrap], .3, {
 			overwrite: 0,
 			alpha: 0,
@@ -56,29 +78,14 @@ var modal = {
 				});
 			}
 		});
-		
-	},
-	header: function(e){
-		var z = {
-			playerIdleBoot: '<div id="modal-header">Disconnected</div>',
-			deleteCharacter: '<div id="modal-header">Delete '+ create.name +'?</div>',
-		}
-		return z[e.camelKey];
-	},
-	body: function(e){
-		var z = {
-			playerIdleBoot:
-			'<div id="modal-body">'+
-				'<p>You have been disconnected from the server.</p>'+
-			'</div>',
-			deleteCharacter:
-			'<div id="modal-body">'+
-				'<p>Are you sure you want to delete this character?</p>'+
-			'</div>',
-		}
-		return z[e.camelKey];
-	},
-	footer: function(e){
+	}
+	function header(e) {
+		return modal.headerContents[e.camelKey];
+	}
+	function body(e) {
+		return modal.bodyContents[e.camelKey];
+	}
+	function footer(e) {
 		var str =
 			'<div id="modal-footer" class="text-center">'+
 				'<a id="modal-dismiss" class="ng-btn modal-buttons">Cancel</a>'+
@@ -86,4 +93,4 @@ var modal = {
 			'</div>';
 		return str;
 	}
-};
+})();

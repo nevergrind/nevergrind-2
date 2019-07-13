@@ -1,99 +1,127 @@
-var mission = {
-	data: {},
-	loaded: 0,
-	delegated: 0,
-	zones: [
-		{
-			name: 'Ashenflow Peak',
-			level: 35,
-			id: 14,
-			isOpen: 0
-		},
-		{
-			name: 'Galeblast Fortress',
-			level: 35,
-			id: 13,
-			isOpen: 0
-		},
-		{
-			name: 'Anuran Ruins',
-			level: 32,
-			id: 12,
-			isOpen: 0
-		},
-		{
-			name: 'Fahlnir Citadel',
-			level: 28,
-			id: 11,
-			isOpen: 0
-		},
-		{
-			name: 'Temple of Prenssor',
-			level: 24,
-			id: 10,
-			isOpen: 0
-		},
-		{
-			name: "Arcturin's Crypt",
-			level: 20,
-			id: 9,
-			isOpen: 0
-		},
-		{
-			name: 'Sylong Mausoleum',
-			level: 16,
-			id: 8,
-			isOpen: 0
-		},
-		{
-			name: 'Kordata Cove',
-			level: 12,
-			id: 7,
-			isOpen: 0
-		},
-		{
-			name: "Babel's Bastille",
-			level: 8,
-			id: 6,
-			isOpen: 0
-		},
-		{
-			name: 'Lanfeld Refuge',
-			level: 5,
-			id: 5,
-			isOpen: 0
-		},
-		{
-			name: 'Riven Grotto',
-			level: 5,
-			id: 4,
-			isOpen: 0
-		},
-		{
-			name: 'Greenthorn Cavern',
-			level: 5,
-			id: 3,
-			isOpen: 0
-		},
-		{
-			name: 'Tendolin Hollow',
-			level: 1,
-			id: 2,
-			isOpen: 0
-		},
-		{
-			name: 'Salubrin Den',
-			level: 1,
-			id: 1,
-			isOpen: 0
-		}
-	],
-	resetMissionLists: function() {
+var mission;
+(function() {
+	mission = {
+		data: {},
+		loaded: 0,
+		delegated: 0,
+		zones: [
+			{
+				name: 'Ashenflow Peak',
+				level: 35,
+				id: 14,
+				isOpen: 0
+			},
+			{
+				name: 'Galeblast Fortress',
+				level: 35,
+				id: 13,
+				isOpen: 0
+			},
+			{
+				name: 'Anuran Ruins',
+				level: 32,
+				id: 12,
+				isOpen: 0
+			},
+			{
+				name: 'Fahlnir Citadel',
+				level: 28,
+				id: 11,
+				isOpen: 0
+			},
+			{
+				name: 'Temple of Prenssor',
+				level: 24,
+				id: 10,
+				isOpen: 0
+			},
+			{
+				name: "Arcturin's Crypt",
+				level: 20,
+				id: 9,
+				isOpen: 0
+			},
+			{
+				name: 'Sylong Mausoleum',
+				level: 16,
+				id: 8,
+				isOpen: 0
+			},
+			{
+				name: 'Kordata Cove',
+				level: 12,
+				id: 7,
+				isOpen: 0
+			},
+			{
+				name: "Babel's Bastille",
+				level: 8,
+				id: 6,
+				isOpen: 0
+			},
+			{
+				name: 'Lanfeld Refuge',
+				level: 5,
+				id: 5,
+				isOpen: 0
+			},
+			{
+				name: 'Riven Grotto',
+				level: 5,
+				id: 4,
+				isOpen: 0
+			},
+			{
+				name: 'Greenthorn Cavern',
+				level: 5,
+				id: 3,
+				isOpen: 0
+			},
+			{
+				name: 'Tendolin Hollow',
+				level: 1,
+				id: 2,
+				isOpen: 0
+			},
+			{
+				name: 'Salubrin Den',
+				level: 1,
+				id: 1,
+				isOpen: 0
+			}
+		],
+		quests: [],
+		resetMissionLists: resetMissionLists,
+		getDiffClass: getDiffClass,
+		init: init,
+		showEmbark: showEmbark,
+		updateTitle: updateTitle,
+		asideHtmlHead: asideHtmlHead,
+		asideHtml: asideHtml,
+		asideFooter: asideFooter,
+		questHtml: questHtml,
+		show: show,
+		updateTitle: updateTitle,
+		updateAll: updateAll,
+		loadQuests: loadQuests,
+		toggleZone: toggleZone,
+		findIndexById: findIndexById,
+		clickQuest: clickQuest,
+		embark: embark,
+		initQuest: initQuest,
+		setQuest: setQuest,
+		abandon: abandon,
+		abort: abort,
+		abortCallback: abortCallback,
+		openFirstTwoZones: openFirstTwoZones,
+	}
+	///////////////////////////////////////////////
+	function resetMissionLists() {
 		mission.zones.forEach(function(v) {
 			v.isOpen = 0;
 		});
-	},
-	getDiffClass: function(minQuestLvl) {
+	}
+	function getDiffClass(minQuestLvl) {
 		var resp = 'mission-grey';
 		if (minQuestLvl >= my.level + 3) {
 			resp = 'mission-red';
@@ -114,8 +142,8 @@ var mission = {
 			resp = 'mission-green';
 		}
 		return resp;
-	},
-	init: function() {
+	}
+	function init() {
 		ng.lock(1);
 		$.ajax({
 			url: app.url + 'server/mission/load-mission-data.php'
@@ -144,15 +172,15 @@ var mission = {
 				mission.abandon();
 			});
 		}
-	},
-	showEmbark: function() {
+	}
+	function showEmbark() {
 		$("#mission-help").css('display', 'none');
 		$("#mission-embark").css('display', 'block');
-	},
-	updateTitle: function() {
+	}
+	function updateTitle() {
 		$("#mission-title").html(mission.quests[my.selectedQuest].title);
-	},
-	asideHtmlHead: function() {
+	}
+	function asideHtmlHead() {
 		var headMsg = 'Mission Counter',
 			helpMsg = 'The party leader must select a zone and embark to begin!',
 			embarkClass = 'none',
@@ -176,8 +204,8 @@ var mission = {
 			'<div id="mission-help" class=" '+ helpClass +'">'+ helpMsg +'</div>' +
 		'</div>';
 		return s;
-	},
-	asideHtml: function() {
+	}
+	function asideHtml() {
 		var s = '';
 		mission.zones.forEach(function(v) {
 			if (my.level >= v.level) {
@@ -196,8 +224,8 @@ var mission = {
 			}
 		});
 		return s;
-	},
-	asideFooter: function() {
+	}
+	function asideFooter() {
 		var s = '';
 		if (party.isSoloOrLeading()) {
 			s +=
@@ -206,8 +234,8 @@ var mission = {
 			'</div>';
 		}
 		return s;
-	},
-	questHtml: function(data) {
+	}
+	function questHtml(data) {
 		console.info('load-zone-missions', data);
 		var str = '';
 		data.quests !== undefined &&
@@ -222,17 +250,17 @@ var mission = {
 		});
 		if (!str) str = '<div class="mission-quest-item">No missions found.</div>';
 		$("#mission-zone-" + data.id).html(str);
-	},
-	show: function() {
+	}
+	function show() {
 		$('#mission-counter').html(mission.asideHtml());
-	},
-	updateTitle: function() {
+	}
+	function updateTitle() {
 		$("#mission-title").html(my.quest.title);
-	},
-	updateAll: function() {
+	}
+	function updateAll() {
 		$("#aside-menu").html(town.aside.menu['town-mission']());
-	},
-	loadQuests: function(id) {
+	}
+	function loadQuests(id) {
 		// get quests from server side
 		// start with salubrin den
 		// store in session... return session if it's set for that zone
@@ -255,8 +283,8 @@ var mission = {
 			ng.msg(data.responseText);
 			ng.unlock();
 		});
-	},
-	toggleZone: function(that) {
+	}
+	function toggleZone(that) {
 		 console.info("toggleZone: ", that.data('id'));
 		var index = mission.findIndexById(that.data('id') * 1),
 			id = mission.zones[index].id,
@@ -280,8 +308,8 @@ var mission = {
 			o.isOpen = 1;
 			mission.loadQuests(id);
 		}
-	},
-	findIndexById: function(id) {
+	}
+	function findIndexById(id) {
 		var resp = 0;
 		mission.zones.forEach(function(v, i) {
 			if (id === v.id) {
@@ -289,9 +317,8 @@ var mission = {
 			}
 		});
 		return resp;
-	},
-	quests: [],
-	clickQuest: function(that) {
+	}
+	function clickQuest(that) {
 		var id = that.data('id') * 1;
 		if (id && party.isSoloOrLeading()) {
 			my.selectedQuest = id;
@@ -302,8 +329,8 @@ var mission = {
 		else {
 			// TODO: non-party member needs to see something... EMBARK?
 		}
-	},
-	embark: function() {
+	}
+	function embark() {
 		if (party.isSoloOrLeading()) {
 			ng.lock(1);
 			$.ajax({
@@ -344,18 +371,18 @@ var mission = {
 			}
 		}
 		$(".close-aside").trigger('click');
-	},
-	initQuest: function() {
+	}
+	function initQuest() {
 		my.selectedQuest = '';
 		my.quest = {};
 		mission.updateAll();
-	},
-	setQuest: function(quest) {
+	}
+	function setQuest(quest) {
 		console.info("SETTING QUEST", quest);
 		my.selectedQuest = quest.row;
 		my.quest = quest;
-	},
-	abandon: function() {
+	}
+	function abandon() {
 		// clicked flag
 		if (!my.quest.level) {
 			chat.log("You have not started a mission!", "chat-warning");
@@ -380,8 +407,8 @@ var mission = {
 				}, game.questDelay);
 			});
 		}
-	},
-	abort: function() {
+	}
+	function abort() {
 		setTimeout(function() {
 			button.hide();
 			chat.log('Mission abandoned!', 'chat-warning');
@@ -406,8 +433,8 @@ var mission = {
 				})();
 			}
 		});
-	},
-	abortCallback: function() {
+	}
+	function abortCallback() {
 		// init client and transition back to town
 		game.heartbeat.enabled = 0;
 		$.ajax({
@@ -432,8 +459,8 @@ var mission = {
 			// this must be in place to prevent heartbeat updates while going back to town
 			game.heartbeat.enabled = 1;
 		}, game.questDelay);
-	},
-	openFirstTwoZones: function() {
+	}
+	function openFirstTwoZones() {
 		for (var i=0; i<2; i++) {
 			var e = $(".mission-zone").eq(i).get(0);
 			if (e !== undefined) {
@@ -441,4 +468,4 @@ var mission = {
 			}
 		}
 	}
-}
+})();

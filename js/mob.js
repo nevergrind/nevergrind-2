@@ -1,17 +1,45 @@
-// test methods
-var mob = {
-	test: 0, // used to enable test mode to show all animations looping
-	imageKeysLen: 0,
-	index: 0,
-	cache: {},
-	imageKeys: [],
-	getRandomMobKey: function(){
+var mob;
+(function() {
+	mob = {
+		test: 0, // used to enable test mode to show all animations looping
+		imageKeysLen: 0,
+		index: 0,
+		cache: {},
+		imageKeys: [],
+		initialized: 0,
+		max: 9,
+		element: {},
+		animationActive: 0,
+		frame: 1,
+		deathState: 0,
+		getRandomMobKey: getRandomMobKey,
+		init: init,
+		// configs, resets (active animations) and idles mobs in one call for start of combat
+		setMob: setMob,
+		// size only
+		sizeMob: sizeMob,
+		setClickBox: setClickBox,
+		setSrc: setSrc,
+		resetIdle: resetIdle,
+		idle: idle,
+		hit: hit,
+		attack: attack,
+		special: special,
+		death: death,
+		blur: blur,
+		brightness: brightness,
+		contrast: contrast,
+		grayscale: grayscale,
+		invert: invert,
+		saturate: saturate,
+		sepia: sepia,
+	};
+	//////////////////////////////////////////////////
+	function getRandomMobKey() {
 		var i = ~~(Math.random() * mob.imageKeysLen);
 		return mob.imageKeys[i];
-	},
-	initialized: 0,
-	max: 9,
-	init: function(){
+	}
+	function init() {
 		mob.imageKeys = Object.keys(mobs.images);
 		mob.imageKeysLen = mob.imageKeys.length;
 		battle.show();
@@ -42,12 +70,8 @@ var mob = {
 				mobs[i].dom[e] = document.getElementById('mob-'+ e +'-' + i);
 			});
 		}
-	},
-	element: {},
-	animationActive: 0,
-	frame: 1,
-	// configs, resets (active animations) and idles mobs in one call for start of combat
-	setMob: function(i, mobKey) {
+	}
+	function setMob(i, mobKey) {
 		// m.size = m.size;
 		mobs[i].type = mobKey;
 		// combine/assign image object props to mobs[index]
@@ -56,9 +80,8 @@ var mob = {
 		mob.sizeMob(i);
 		mob.resetIdle(i);
 		mob.idle(i);
-	},
-	// size only
-	sizeMob: function(index){
+	}
+	function sizeMob(index) {
 		var m = mobs[index];
 		// set dom
 		var w = ~~(m.size * (mobs.images[m.type].w));
@@ -88,8 +111,8 @@ var mob = {
 		m.dom.center.style.left = (m.box.cx - 11) + 'px';
 		m.dom.center.style.bottom = (m.box.cy - 11) + 'px';
 		mob.setClickBox(m);
-	},
-	setClickBox: function(m){
+	}
+	function setClickBox(m) {
 		// alive box
 		m.dom.alive.style.left = ((m.clickAliveW  * m.size) * -.5) + 'px';
 		m.dom.alive.style.bottom = (m.clickAliveY  * m.size) + 'px';
@@ -102,19 +125,19 @@ var mob = {
 		m.dom.dead.style.width = (m.clickDeadW * m.size) + 'px';
 		m.dom.dead.style.height = (m.clickDeadH * m.size) + 'px';
 		m.dom.dead.style.display = m.hp ? 'none' : 'block';
-	},
-	setSrc: function(i){
+	}
+	function setSrc(i) {
 		mobs[i].frame = ~~mobs[i].frame;
 		if (mobs[i].frame !== mobs[i].lastFrame) {
 			mobs[i].dom.img.src = 'mobs/' + mobs[i].type + '/' + mobs[i].frame + '.png';
 			mobs[i].lastFrame = mobs[i].frame;
 		}
-	},
-	resetIdle: function(i){
+	}
+	function resetIdle(i) {
 		mobs[i].animationActive = 0;
 		mob.idle(mobs[i].index, 1);
-	},
-	idle: function(i, skip){
+	}
+	function idle(i, skip) {
 		var m = mobs[i],
 			startFrame = 1,
 			endFrame = 5.9,
@@ -129,18 +152,17 @@ var mob = {
 			repeat: -1,
 			repeatDelay: m.speed,
 			ease: Sine.easeOut,
-			onUpdate: function(){
-				mob.setSrc(m.index);
-			}
+			onUpdate: mob.setSrc,
+			onUpdateParams: [m.index],
 		});
 		if (skip) return;
-		TweenMax.delayedCall(.25, function(){
+		mob.test && TweenMax.delayedCall(.25, function(){
 			console.info('mob.test ', mob.test);
-			mob.test && mob.hit(m.index);
+			mob.hit(m.index);
 			//mob.death();
 		})
-	},
-	hit: function(i){
+	}
+	function hit(i) {
 		var m = mobs[i];
 		if (m.animationActive) return;
 		m.animationActive = 1;
@@ -157,20 +179,20 @@ var mob = {
 			ease: Linear.easeNone,
 			yoyo: true,
 			repeat: 1,
-			onUpdate: function(){
-				mob.setSrc(m.index);
-			},
-			onComplete: function(){
-				mob.resetIdle(m.index);
-				if (mob.test){
-					TweenMax.delayedCall(.5, function() {
-						mob.attack(m.index, 1);
-					});
-				}
-			}
+			onUpdate: mob.setSrc,
+			onUpdateParams: [m.index],
+			onComplete: hitComplete
 		});
-	},
-	attack: function(i, force){
+	}
+	function hitComplete() {
+		mob.resetIdle(m.index);
+		if (mob.test){
+			TweenMax.delayedCall(.5, function() {
+				mob.attack(m.index, 1);
+			});
+		}
+	}
+	function attack(i, force) {
 		var m = mobs[i];
 		if (m.animationActive) return;
 		m.animationActive = 1;
@@ -192,32 +214,32 @@ var mob = {
 			overwrite: 1,
 			frame: endFrame,
 			ease: Linear.easeNone,
-			onUpdate: function() {
-				mob.setSrc(m.index);
-			},
-			onComplete: function() {
-				mob.resetIdle(m.index);
-				if (mob.test){
-					if (force === 1){
-						TweenMax.delayedCall(.5, function() {
-							mob.attack(m.index, 2);
-						});
-					}
-					else if (force === 3){
-						TweenMax.delayedCall(.5, function() {
-							mob.death(m.index);
-						});
-					}
-					else {
-						TweenMax.delayedCall(.5, function() {
-							mob.special(m.index);
-						});
-					}
-				}
-			}
+			onUpdate: mob.setSrc,
+			onUpdateParams: [m.index],
+			onComplete: attackComplete
 		});
-	},
-	special: function(i){
+	}
+	function attackComplete() {
+		mob.resetIdle(m.index);
+		if (mob.test){
+			if (force === 1){
+				TweenMax.delayedCall(.5, function() {
+					mob.attack(m.index, 2);
+				});
+			}
+			else if (force === 3){
+				TweenMax.delayedCall(.5, function() {
+					mob.death(m.index);
+				});
+			}
+			else {
+				TweenMax.delayedCall(.5, function() {
+					mob.special(m.index);
+				});
+			}
+		}
+	}
+	function special(i) {
 		var m = mobs[i];
 		if (m.animationActive) return;
 		if (!m.enableSpecial) {
@@ -239,21 +261,21 @@ var mob = {
 				ease: Linear.easeNone,
 				yoyo: m.yoyo,
 				repeat: m.yoyo ? 1 : 0,
-				onUpdate: function () {
-					mob.setSrc(m.index);
-				},
-				onComplete: function () {
-					mob.resetIdle(m.index);
-					if (mob.test) {
-						TweenMax.delayedCall(.5, function () {
-							mob.death(m.index);
-						});
-					}
-				}
+				onUpdate: mob.setSrc,
+				onUpdateParams: [m.index],
+				onComplete: specialComplete
 			});
 		}
-	},
-	death: function(i){
+	}
+	function specialComplete() {
+		mob.resetIdle(m.index);
+		if (mob.test) {
+			TweenMax.delayedCall(.5, function () {
+				mob.death(m.index);
+			});
+		}
+	}
+	function death(i) {
 		var m = mobs[i];
 		if (m.deathState) return;
 		m.deathState = 1;
@@ -276,43 +298,42 @@ var mob = {
 			overwrite: 1,
 			frame: endFrame,
 			ease: Linear.easeNone,
-			onUpdate: function () {
-				mob.setSrc(m.index);
+			onUpdate: mob.setSrc,
+			onUpdateParams: [m.index],
+			onComplete: deathComplete
+		});
+	}
+	function deathComplete() {
+		var filters = {
+				opacity: 'opacity(100%)',
+				brightness: "brightness(100%)"
 			},
-			onComplete: function() {
-				var filters = {
-						opacity: 'opacity(100%)',
-						brightness: "brightness(100%)"
-					},
-					e = m.dom.wrap;
+			e = m.dom.wrap;
 
-				var tl = new TimelineMax({
-					onUpdate: function () {
-						test.filters.death(e, filters);
-					}
-				});
-				tl.to(filters, 2, {
-					opacity: 'opacity(0%)',
-					brightness: "brightness(0%)",
-					ease: Linear.easeIn,
-					onComplete: function () {
-						if (mob.test) {
-							m.hp = 1;
-							mob.sizeMob(m.index);
-							mob.idle(m.index);
-						}
-						TweenMax.delayedCall(.1, function () {
-							m.deathState = 0;
-							m.animationActive = 0;
-							e.style.filter = 'opacity(100%) brightness(100%)';
-						});
-					}
+		var tl = new TimelineMax({
+			onUpdate: function () {
+				test.filters.death(e, filters);
+			}
+		});
+		tl.to(filters, 2, {
+			opacity: 'opacity(0%)',
+			brightness: "brightness(0%)",
+			ease: Linear.easeIn,
+			onComplete: function () {
+				if (mob.test) {
+					m.hp = 1;
+					mob.sizeMob(m.index);
+					mob.idle(m.index);
+				}
+				TweenMax.delayedCall(.1, function () {
+					m.deathState = 0;
+					m.animationActive = 0;
+					e.style.filter = 'opacity(100%) brightness(100%)';
 				});
 			}
 		});
-	},
-	deathState: 0,
-	blur: function(){
+	}
+	function blur() {
 		var e = document.getElementById('sprite'),
 			type = 'blur',
 			filters = {
@@ -323,12 +344,11 @@ var mob = {
 			blur: type + '(5px)',
 			yoyo: true,
 			repeat: -1,
-			onUpdate: function(){
-				mob.filters.effect(e, filters, type);
-			}
+			onUpdate: mob.filters.effect,
+			onUpdateParams: [e, filters, type]
 		});
-	},
-	brightness: function(){
+	}
+	function brightness() {
 		var e = document.getElementById('sprite'),
 			type = 'brightness',
 			filters = {
@@ -339,12 +359,11 @@ var mob = {
 			brightness: type + '(100%)',
 			yoyo: true,
 			repeat: -1,
-			onUpdate: function(){
-				mob.filters.effect(e, filters, type);
-			}
+			onUpdate: mob.filters.effect,
+			onUpdateParams: [e, filters, type]
 		});
-	},
-	contrast: function(){
+	}
+	function contrast() {
 		var e = document.getElementById('sprite'),
 			type = 'contrast',
 			filters = {
@@ -355,12 +374,11 @@ var mob = {
 			contrast: type + '(200%)',
 			yoyo: true,
 			repeat: -1,
-			onUpdate: function(){
-				mob.filters.effect(e, filters, type);
-			}
+			onUpdate: mob.filters.effect,
+			onUpdateParams: [e, filters, type]
 		});
-	},
-	grayscale: function(){
+	}
+	function grayscale() {
 		var e = document.getElementById('sprite'),
 			type = 'grayscale',
 			filters = {
@@ -371,12 +389,11 @@ var mob = {
 			grayscale: type + '(100%)',
 			yoyo: true,
 			repeat: -1,
-			onUpdate: function(){
-				mob.filters.effect(e, filters, type);
-			}
+			onUpdate: mob.filters.effect,
+			onUpdateParams: [e, filters, type]
 		});
-	},
-	invert: function(){
+	}
+	function invert() {
 		var e = document.getElementById('sprite'),
 			type = 'invert',
 			filters = {
@@ -387,12 +404,11 @@ var mob = {
 			invert: type + '(400%)',
 			yoyo: true,
 			repeat: -1,
-			onUpdate: function(){
-				mob.filters.effect(e, filters, type);
-			}
+			onUpdate: mob.filters.effect,
+			onUpdateParams: [e, filters, type]
 		});
-	},
-	saturate: function(){
+	}
+	function saturate() {
 		var e = document.getElementById('sprite'),
 			type = 'saturate',
 			filters = {
@@ -403,12 +419,11 @@ var mob = {
 			saturate: type + '(500%)',
 			yoyo: true,
 			repeat: -1,
-			onUpdate: function(){
-				mob.filters.effect(e, filters, type);
-			}
+			onUpdate: mob.filters.effect,
+			onUpdateParams: [e, filters, type]
 		});
-	},
-	sepia: function(){
+	}
+	function sepia() {
 		var e = document.getElementById('sprite'),
 			type = 'sepia',
 			filters = {
@@ -419,9 +434,9 @@ var mob = {
 			sepia: type + '(100%)',
 			yoyo: true,
 			repeat: -1,
-			onUpdate: function(){
-				mob.filters.effect(e, filters, type);
-			}
+			onUpdate: mob.filters.effect,
+			onUpdateParams: [e, filters, type]
 		});
 	}
-}
+
+})();
