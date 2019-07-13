@@ -22,7 +22,7 @@ var route = {
 	},
 	party: function(data, r) {
 		if (r === 'party->hb') {
-			bar.heartbeat.receive(data);
+			bar.heartbeatReceive(data);
 		}
 		else if (r === 'party->updateBars') {
 			bar.updateBars(data);
@@ -34,19 +34,19 @@ var route = {
 			party.missionUpdate(data);
 		}
 		else if (r === 'party->linkdead') {
-			bar.heartbeat.linkdead(data);
+			bar.heartbeatLinkdead(data);
 		}
 		else if (r === 'party->join') {
-			bar.party.join(data);
+			bar.partyJoin(data);
 		}
 		else if (r === 'party->disband') {
-			bar.party.disband(data);
+			bar.partyDisband(data);
 		}
 		else if (r === 'party->promote') {
-			bar.party.promote(data);
+			bar.partyPromote(data);
 		}
 		else if (r === 'party->boot') {
-			bar.party.boot(data);
+			bar.partyBoot(data);
 		}
 		else if (r === 'party->bootme') {
 			// remove booted player

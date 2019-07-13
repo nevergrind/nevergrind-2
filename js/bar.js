@@ -1,6 +1,32 @@
-var bar = {
-	initialized: 0,
-	init: function() {
+var bar;
+(function() {
+	bar = {
+		dom: {},
+		initialized: 0,
+		init: init,
+		html: html,
+		setHp: setHp,
+		setMp: setMp,
+		header: header,
+		disband: disband,
+		setBars: setBars,
+		linkdead: linkdead,
+		getParty: getParty,
+		hideParty: hideParty,
+		partyJoin: partyJoin,
+		setEvents: setEvents,
+		partyBoot: partyBoot,
+		setAllBars: setAllBars,
+		updateBars: updateBars,
+		partyDisband: partyDisband,
+		partyPromote: partyPromote,
+		getPlayerHtml: getPlayerHtml,
+		updatePlayerBar: updatePlayerBar,
+		heartbeatReceive: heartbeatReceive,
+		getPlayerInnerHtml: getPlayerInnerHtml,
+	}
+	//////////////////////////////////////////////
+	function init() {
 		if (!bar.initialized) {
 			bar.initialized = 1;
 			var e = document.getElementById('bar-wrap');
@@ -35,8 +61,8 @@ var bar = {
 				mission.abandon();
 			});
 		}
-	},
-	setEvents: function(i) {
+	}
+	function setEvents(i) {
 		bar.dom[i] = {
 			playerWrap: document.getElementById('bar-player-wrap-' + i),
 			name: document.getElementById('bar-name-' + i),
@@ -48,23 +74,22 @@ var bar = {
 
 		bar.dom.ping = document.getElementById('bar-ping');
 		bar.dom.socket = document.getElementById('bar-socket');
-	},
-	dom: {},
-	getPlayerHtml: function(p, i, ignoreWrap) {
+	}
+	function getPlayerHtml(player, index, ignoreWrap) {
 		// get bar for one player
 		var s = '';
 		if (!ignoreWrap) {
-			s += '<div id="bar-player-wrap-' + i + '" '+
-			'class="bar-player-wrap' + (!i ? ' bar-player-wrap-me' : '') + '" ' +
-				'style="display: '+ (i === 0 ? 'flex' : 'none') +'">';
+			s += '<div id="bar-player-wrap-' + index + '" '+
+			'class="bar-player-wrap' + (!index ? ' bar-player-wrap-me' : '') + '" ' +
+				'style="display: '+ (index === 0 ? 'flex' : 'none') +'">';
 		}
-		s += bar.getPlayerInnerHtml(p, i);
+		s += bar.getPlayerInnerHtml(player, index);
 		if (!ignoreWrap) {
 			s += '</div>';
 		}
 		return s;
-	},
-	header: function() {
+	}
+	function header() {
 		var s = '';
 		s +=
 		'<div id="bar-lag">' +
@@ -79,27 +104,27 @@ var bar = {
 			'<i id="bar-mission-abandon" class="fa fa-flag bar-icons" title="Abandon Mission"></i>' +
 		'</div>';
 		return s;
-	},
-	getPlayerInnerHtml: function(p, i) {
+	}
+	function getPlayerInnerHtml(player, index) {
 		// inner portion of getPlayerHtml
 		var s =
-		'<div id="bar-col-icon-'+ i +'" class="bar-col-icon player-icon-'+ p.job +'">' +
-			//'<div id="bar-level-'+ i +'" class="bar-level no-pointer">'+ p.level +'</div>' +
-			'<div id="bar-is-leader-'+ i +'" class="bar-is-leader '+ (p.isLeader ? 'block' : 'none') +' no-pointer"></div>' +
+		'<div id="bar-col-icon-'+ index +'" class="bar-col-icon player-icon-'+ player.job +'">' +
+			//'<div id="bar-level-'+ i +'" class="bar-level no-pointer">'+ player.level +'</div>' +
+			'<div id="bar-is-leader-'+ index +'" class="bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></div>' +
 		'</div>' +
-		'<div class="'+ (!i ? 'bar-col-data' : 'bar-col-data-sm') +'">' +
-			'<div id="bar-name-'+ i +'" class="bar-hp-name ellipsis">'+ p.name +'</div>' +
-			'<div id="bar-hp-wrap-'+ i +'" class="bar-any-wrap">' +
-				'<div id="bar-hp-fg-'+ i +'" class="bar-hp-fg"></div>' +
+		'<div class="'+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'">' +
+			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis">'+ player.name +'</div>' +
+			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +
+				'<div id="bar-hp-fg-'+ index +'" class="bar-hp-fg"></div>' +
 				//'<div id="bar-hp-bg-'+ i +'" class="bar-any-bg"></div>' +
 			'</div>' +
-			'<div id="bar-mp-wrap-'+ i +'" class="bar-any-wrap">' +
-				'<div id="bar-mp-fg-'+ i +'" class="bar-mp-fg"></div>' +
+			'<div id="bar-mp-wrap-'+ index +'" class="bar-any-wrap">' +
+				'<div id="bar-mp-fg-'+ index +'" class="bar-mp-fg"></div>' +
 			'</div>' +
 		'</div>';
 		return s;
-	},
-	html: function() {
+	}
+	function html() {
 		// my bar
 		var s = bar.header();
 		// party bars
@@ -109,25 +134,25 @@ var bar = {
 		}
 		s += '</div>';
 		return s;
-	},
-	updatePlayerBar: function(index) {
+	}
+	function updatePlayerBar(index) {
 		bar.dom[index].playerWrap.style.display = 'flex';
 		bar.dom[index].playerWrap.innerHTML = bar.getPlayerInnerHtml(my.party[index], index);
 		bar.setEvents(index);
 		bar.setBars(index, 0);
-	},
-	setAllBars: function() {
+	}
+	function setAllBars() {
 		// draw all hp/mp values using my.party data
 		for (var i=0; i<game.maxPlayers; i++) {
 			bar.setHp(i);
 			bar.setMp(i);
 		}
-	},
-	setBars: function(index, delay) {
+	}
+	function setBars(index, delay) {
 		bar.setHp(index, delay);
 		bar.setMp(index, delay);
-	},
-	updateBars: function(data) {
+	}
+	function updateBars(data) {
 		for (var i=0, len=my.party.length; i<len; i++) {
 			if (data.name === my.party[i].name) {
 				if (data.hp) {
@@ -140,8 +165,8 @@ var bar = {
 				}
 			}
 		}
-	},
-	setHp: function(index, delay) {
+	}
+	function setHp(index, delay) {
 		if (!my.party[index].name) return;
 		var percent = ~~((my.party[index].hp / my.party[index].maxHp) * 100) + '%',
 				delay = delay === undefined ? .3 : delay;
@@ -151,8 +176,8 @@ var bar = {
 		/*TweenMax.to(bar.dom[index].hpBg, .5, {
 			width: percent
 		});*/
-	},
-	setMp: function(index, delay) {
+	}
+	function setMp(index, delay) {
 		if (!my.party[index].name) return;
 		if (my.party[index].maxMp) {
 			var percent = ~~((my.party[index].mp / my.party[index].maxMp) * 100) + '%',
@@ -164,60 +189,56 @@ var bar = {
 		else {
 			bar.dom[index].mpWrap.style.display = 'none';
 		}
-	},
-	party: {
-		// from ZMQ
-		join: function(data) {
-			console.info('bar.party.join ', data);
-			chat.log(data.msg, 'chat-warning');
-			// refresh party bars
-			bar.getParty();
-		},
-		disband: function(data) {
-			var index = 0,
-				name = '',
-				electNewLeader = 0;
-			// did the leader disband or somehow get booted?
-			my.party.forEach(function(v, i) {
-				if (data.row === v.id) {
-					index = i;
-					name = v.name;
-					if (v.isLeader) {
-						electNewLeader = 1;
-					}
-				}
-			});
-			// disbanded player found
-			if (index) {
-				// reset client data to default
-				my.party[index] = my.Party();
-				document.getElementById('bar-player-wrap-' + index).style.display = 'none';
-				chat.log(name + " has disbanded the party.", 'chat-warning');
-				// elect new leader if client's id is lowest
-				if (electNewLeader && my.isLowestPartyIdMine()) {
-					chat.promote(my.getNewLeaderName(), 1);
+	}
+	function partyJoin(data) {
+		console.info('bar.party.join ', data);
+		chat.log(data.msg, 'chat-warning');
+		// refresh party bars
+		bar.getParty();
+	}
+	function partyDisband(data) {
+		var index = 0,
+			name = '',
+			electNewLeader = 0;
+		// did the leader disband or somehow get booted?
+		my.party.forEach(function(v, i) {
+			if (data.row === v.id) {
+				index = i;
+				name = v.name;
+				if (v.isLeader) {
+					electNewLeader = 1;
 				}
 			}
-			// disband if it's me
-			// console.info('disband: ', data.row, my.id);
-			data.row === my.row && chat.sendMsg('/disband');
-
-		},
-		promote: function(data) {
-			chat.log(data.name + " has been promoted to party leader.", 'chat-warning');
-			// refresh party bars
-			bar.getParty();
-		},
-		boot: function(data) {
-			console.info('bar.party.boot ', data);
-			chat.log(data.name + " has been booted from the party.", 'chat-warning');
-			// refresh party bars
-			data.row *= 1;
-			bar.party.disband(data);
-			bar.getParty();
+		});
+		// disbanded player found
+		if (index) {
+			// reset client data to default
+			my.party[index] = my.Party();
+			document.getElementById('bar-player-wrap-' + index).style.display = 'none';
+			chat.log(name + " has disbanded the party.", 'chat-warning');
+			// elect new leader if client's id is lowest
+			if (electNewLeader && my.isLowestPartyIdMine()) {
+				chat.promote(my.getNewLeaderName(), 1);
+			}
 		}
-	},
-	getParty: function() {
+		// disband if it's me
+		// console.info('disband: ', data.row, my.id);
+		data.row === my.row && chat.sendMsg('/disband');
+	}
+	function partyPromote(data) {
+		chat.log(data.name + " has been promoted to party leader.", 'chat-warning');
+		// refresh party bars
+		bar.getParty();
+	}
+	function partyBoot(data) {
+		console.info('bar.party.boot ', data);
+		chat.log(data.name + " has been booted from the party.", 'chat-warning');
+		// refresh party bars
+		data.row *= 1;
+		bar.party.disband(data);
+		bar.getParty();
+	}
+	function getParty() {
 		console.info("Drawing all bars!");
 		if (my.p_id) {
 			$.ajax({
@@ -250,8 +271,8 @@ var bar = {
 				}
 			});
 		}
-	},
-	disband: function() {
+	}
+	function disband() {
 		my.party.forEach(function(v, i){
 			if (i) {
 				// set client value
@@ -264,36 +285,28 @@ var bar = {
 		my.p_id = 0;
 		my.party[0].isLeader = 0;
 		document.getElementById('bar-is-leader-0').style.display = 'none';
-	},
-	hideParty: function() {
+	}
+	function hideParty() {
 		my.party.forEach(function(v, i){
 			if (i) {
 				document.getElementById('bar-player-wrap-' + i).style.display = 'none';
 			}
 		});
-	},
-	heartbeat: {
-		receive: function(data) {
-			console.info('%c party heartbeat.receive id:', "background: #0ff", data.id);
-			var index = 0;
-			// check everyone except me
-			for (var i=1; i<6; i++) {
-				if (data.id === my.party[i].id) {
-					index = i;
-				}
-			}
-			if (index) {
-				my.resetClientPartyValues(index);
-			}
-		},
-		linkdead: function(data) {
-			chat.log(data.name + ' has gone linkdead.', 'chat-warning');
-		}
-	},
-	get: function() {
-
-	},
-	events: function() {
-
 	}
-}
+	function heartbeatReceive(data) {
+		console.info('%c party heartbeat.receive id:', "background: #0ff", data.id);
+		var index = 0;
+		// check everyone except me
+		for (var i=1; i<6; i++) {
+			if (data.id === my.party[i].id) {
+				index = i;
+			}
+		}
+		if (index) {
+			my.resetClientPartyValues(index);
+		}
+	}
+	function linkdead(data) {
+			chat.log(data.name + ' has gone linkdead.', 'chat-warning');
+	}
+})();

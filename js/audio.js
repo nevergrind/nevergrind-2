@@ -1,5 +1,5 @@
 // audio.js
-var audio = {};
+var audio;
 (function() {
 	audio = {
 		ext: 'mp3',

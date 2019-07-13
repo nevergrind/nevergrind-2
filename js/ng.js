@@ -1,5 +1,5 @@
 // ng.js
-var ng = {};
+var ng;
 (function() {
 	ng = {
 		id: 0,
