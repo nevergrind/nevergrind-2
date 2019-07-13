@@ -1,5 +1,18 @@
 'use strict';
 var login;
+var d;
+var i;
+var j;
+var x;
+var y;
+var z;
+var el;
+var el2;
+var key;
+var val;
+var foo;
+var bar;
+var index;
 (function() {
 	login = {
 		lock: 0,

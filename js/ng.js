@@ -1,21 +1,145 @@
-// core.js
-var ng = {
-	id: 0,
-	init: function() {
+// ng.js
+var ng = {};
+(function() {
+	ng = {
+		id: 0,
+		resizeTimer: 0,
+		loadMsg:
+			"<div class='text-shadow text-center now-loading'>Loading... <i class='fa fa-cog fa-spin load-cog'></i></div>",
+		attrs: ['str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha'],
+		resists: ['bleed', 'poison', 'arcane', 'lightning', 'fire', 'cold'],
+		dungeon: ['traps', 'treasure', 'scout', 'pulling'],
+		gameDuration: 0,
+		delay: .5,
+		modalSpeed: .5,
+		friends: [],
+		ignore: [],
+		joinedGame: false,
+		searchingGame: false,
+		defaultTitle: 'Nevergrind 2',
+		titleFlashing: false,
+		name: "",
+		password: "",
+		view: "title",
+		resizeX: 1,
+		resizeY: 1,
+		chatOn: false,
+		lastKey: 0,
+		lockOverlay: document.getElementById("lock-overlay"),
+		startTime: Date.now(),
+		locked: 0,
+		loadAttempts: 0,
+		isModalOpen: false,
+		races: [
+			'Barbarian',
+			'Dark Elf',
+			'Dwarf',
+			'Erudite',
+			'Gnome',
+			'Half Elf',
+			'Halfling',
+			'High Elf',
+			'Human',
+			'Ogre',
+			'Troll',
+			'Wood Elf'
+		],
+		jobs: [
+			'Bard',
+			'Cleric',
+			'Druid',
+			'Enchanter',
+			'Magician',
+			'Monk',
+			'Necromancer',
+			'Paladin',
+			'Ranger',
+			'Rogue',
+			'Shadowknight',
+			'Shaman',
+			'Warrior',
+			'Wizard'
+		],
+		jobShort: {
+			Bard: 'BRD',
+			Cleric: 'CLR',
+			Druid: 'DRU',
+			Enchanter: 'ENC',
+			Magician: 'MAG',
+			Monk: 'MNK',
+			Necromancer: 'NEC',
+			Paladin: 'PLD',
+			Ranger: 'RNG',
+			Rogue: 'ROG',
+			Shadowknight: 'SHD',
+			Shaman: 'SHM',
+			Warrior: 'WAR',
+			Wizard: 'WIZ'
+		},
+		jobLong: {
+			BRD: 'Bard',
+			CLR: 'Cleric',
+			DRU: 'Druid',
+			ENC: 'Enchanter',
+			MAG: 'Magician',
+			MNK: 'Monk',
+			NEC: 'Necromancer',
+			PLD: 'Paladin',
+			RNG: 'Ranger',
+			ROG: 'Rogue',
+			SHD: 'Shadowknight',
+			SHM: 'Shaman',
+			WAR: 'Warrior',
+			WIZ: 'Wizard'
+		},
+		config: {
+			audio: {
+				musicVolume: 10,
+				soundVolume: 50
+			}
+		},
+		geo: {},
+		playerCardClicks: 0,
+		TM: TM,
+		TDC: TDC,
+		msg: msg,
+		init: init,
+		copy: copy,
+		lock: lock,
+		split: split,
+		getId: getId,
+		camel: camel,
+		events: events,
+		unlock: unlock,
+		logout: logout,
+		setScene: setScene,
+		initGame: initGame,
+		keepAlive: keepAlive,
+		toJobLong: toJobLong,
+		toJobShort: toJobShort,
+		disconnect: disconnect,
+		unlockFade: unlockFade,
+		checkPlayerData: checkPlayerData,
+		getJobShortKeys: getJobShortKeys,
+		goCreateCharacter: goCreateCharacter,
+		displayAllCharacters: displayAllCharacters,
+	}
+	///////////////////////////////
+	function init() {
 		$.ajaxSetup({
 			type: 'POST',
 			timeout: 3000
 		});
 		TweenLite.defaultEase = Quad.easeOut;
-	},
-	getId: function() {
+	}
+	function getId() {
 		ng.id++;
 		if (ng.id > 999999999) {
 			ng.id = 1;
 		}
 		return ng.id;
-	},
-	events: function(){
+	}
+	function events() {
 		$(window).focus(function(){
 			/*document.title = g.defaultTitle;
 			ng.titleFlashing = false;*/
@@ -44,8 +168,8 @@ var ng = {
 		}).on('load', function(){
 			env.resizeWindow();
 		});
-	},
-	disconnect: function(msg) {
+	}
+	function disconnect(msg) {
 		ng.view = 'disconnected';
 		// turn off all events
 		$(document).add('*').off();
@@ -56,132 +180,43 @@ var ng = {
 		setTimeout(function() {
 			location.reload();
 		}, 12000);
-	},
-	resizeTimer: 0,
-	races: [
-		'Barbarian',
-		'Dark Elf',
-		'Dwarf',
-		'Erudite',
-		'Gnome',
-		'Half Elf',
-		'Halfling',
-		'High Elf',
-		'Human',
-		'Ogre',
-		'Troll',
-		'Wood Elf'
-	],
-	jobs: [
-		'Bard',
-		'Cleric',
-		'Druid',
-		'Enchanter',
-		'Magician',
-		'Monk',
-		'Necromancer',
-		'Paladin',
-		'Ranger',
-		'Rogue',
-		'Shadowknight',
-		'Shaman',
-		'Warrior',
-		'Wizard'
-	],
-	jobShort: {
-		Bard: 'BRD',
-		Cleric: 'CLR',
-		Druid: 'DRU',
-		Enchanter: 'ENC',
-		Magician: 'MAG',
-		Monk: 'MNK',
-		Necromancer: 'NEC',
-		Paladin: 'PLD',
-		Ranger: 'RNG',
-		Rogue: 'ROG',
-		Shadowknight: 'SHD',
-		Shaman: 'SHM',
-		Warrior: 'WAR',
-		Wizard: 'WIZ'
-	},
-	toJobShort: function(key){
+	}
+	function toJobShort(key) {
 		return ng.jobShort[key];
-	},
-	jobLong: {
-		BRD: 'Bard',
-		CLR: 'Cleric',
-		DRU: 'Druid',
-		ENC: 'Enchanter',
-		MAG: 'Magician',
-		MNK: 'Monk',
-		NEC: 'Necromancer',
-		PLD: 'Paladin',
-		RNG: 'Ranger',
-		ROG: 'Rogue',
-		SHD: 'Shadowknight',
-		SHM: 'Shaman',
-		WAR: 'Warrior',
-		WIZ: 'Wizard'
-	},
-	toJobLong: function(key){
+	}
+	function toJobLong(key) {
 		return ng.jobLong[key];
-	},
-	getJobShortKeys: function() {
+	}
+	function getJobShortKeys() {
 		return Object.keys(ng.jobLong);
-	},
-	copy: function(o){
+	}
+	function copy(o) {
 		return JSON.parse(JSON.stringify(o));
-	},
-	loadMsg:
-		"<div class='text-shadow text-center now-loading'>Loading... <i class='fa fa-cog fa-spin load-cog'></i></div>",
-	attrs: ['str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha'],
-	resists: ['bleed', 'poison', 'arcane', 'lightning', 'fire', 'cold'],
-	dungeon: ['traps', 'treasure', 'scout', 'pulling'],
-	gameDuration: 0,
-	delay: .5,
-	modalSpeed: .5,
-	friends: [],
-	ignore: [],
-	joinedGame: false,
-	searchingGame: false,
-	defaultTitle: 'Nevergrind 2',
-	titleFlashing: false,
-	name: "",
-	password: "",
-	view: "title",
-	resizeX: 1,
-	resizeY: 1,
-	chatOn: false,
-	lastKey: 0,
-	lockOverlay: document.getElementById("lock-overlay"),
-	startTime: Date.now(),
-	locked: 0,
-	loadAttempts: 0,
-	isModalOpen: false,
-	setScene: function(scene){
+	}
+	function setScene(scene) {
 		// remove defaults and set via js
 		$(".scene").removeClass('none')
 			.css('display', 'none');
 		document.getElementById('scene-' + scene).style.display = 'block';
 		ng.view = scene;
-	},
-	camel: function(str){
+	}
+	function camel(str) {
 		str = str.split("-");
 		for (var i=1, len=str.length; i<len; i++){
 			str[i] = str[i].charAt(0).toUpperCase() + str[i].substr(1);
 		}
 		return str.join("");
-	},
-	lock: function(hide){
+	}
+	function lock(hide) {
 		ng.lockOverlay.style.display = "block";
 		ng.lockOverlay.style.opacity = hide ? 0 : 1;
 		ng.locked = 1;
-	},
-	unlock: function(){
+	}
+	function unlock() {
 		ng.lockOverlay.style.display = "none";
 		ng.locked = 0;
-	},
-	unlockFade: function(d){
+	}
+	function unlockFade(d) {
 		if (!d){
 			d = 1;
 		}
@@ -195,40 +230,33 @@ var ng = {
 				ng.lockOverlay.style.display = 'none';
 			}
 		});
-	},
-	checkPlayerData: function(){
+	}
+	function checkPlayerData() {
 		// ignore list
 		var ignore = localStorage.getItem('ignore');
 		if (ignore !== null){
 			ng.ignore = JSON.parse(ignore);
 		} else {
-			var foo = []; 
+			var foo = [];
 			localStorage.setItem('ignore', JSON.stringify(foo));
 		}
-	},
-	TDC: function(){
+	}
+	function TDC() {
 		return new TweenMax.delayedCall(0, '');
-	},
-	TM: function(o){
+	}
+	function TM(o) {
 		o = o || {};
 		return new TimelineMax(o);
-	},
-	config: {
-		audio: {
-			musicVolume: 10,
-			soundVolume: 50
-		}
-	},
-	geo: {},
-	keepAlive: function(){
+	}
+	function keepAlive() {
 		$.ajax({
 			type: 'GET',
 			url: app.url + "server/session/keep-alive.php"
 		}).always(function() {
 			setTimeout(ng.keepAlive, 180000);
 		});
-	},
-	msg: function(msg, d){
+	}
+	function msg(msg, d) {
 		dom.msg.innerHTML = msg;
 		if (d === undefined || d < 2){
 			d = 2;
@@ -250,8 +278,8 @@ var ng = {
 				});
 			}
 		});
-	},
-	split: function(id, msg, d){
+	}
+	function split(id, msg, d) {
 		if (d === undefined){
 			d = .01;
 		}
@@ -267,8 +295,8 @@ var ng = {
 			delay: .1,
 			alpha: 1
 		}, .01);
-	},
-	logout: function(){
+	}
+	function logout() {
 		if (ng.locked) return;
 		ng.lock();
 		// socket.removePlayer(my.account);
@@ -283,8 +311,8 @@ var ng = {
 		}).fail(function() {
 			ng.msg("Logout failed.");
 		});
-	},
-	goCreateCharacter: function(){
+	}
+	function goCreateCharacter() {
 		ng.lock(1);
 		var z = '#scene-title-select-character',
 			prom = 0,
@@ -321,7 +349,7 @@ var ng = {
 				allDone();
 			}
 		});
-		
+
 		$.ajax({
 			type: 'GET',
 			url: app.url + 'server/create/getStatMap.php'
@@ -338,8 +366,8 @@ var ng = {
             $("#create-character-name").val('');
 			allDone();
 		});
-	},
-	initGame: function(){
+	}
+	function initGame() {
 		$.ajax({
 			type: 'GET',
 			url: app.url + 'server/init-game.php'
@@ -372,9 +400,8 @@ var ng = {
 				sessionStorage.clear();
 			}
 		});
-	},
-	playerCardClicks: 0,
-	displayAllCharacters: function(r){
+	}
+	function displayAllCharacters(r) {
 		var s = '';
 		r.forEach(function(d){
 			// #ch-card-list
@@ -389,4 +416,4 @@ var ng = {
 		document.getElementById('ch-card-list').innerHTML = s;
 		$(".select-player-card:first").trigger('mousedown');
 	}
-};
+})();

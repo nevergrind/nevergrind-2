@@ -1,6 +1,40 @@
 // audio.js
-var audio = {
-	init: function() {
+var audio = {};
+(function() {
+	audio = {
+		ext: 'mp3',
+		on: true,
+		// rotating music tracks in game
+		trackIndex: ~~(Math.random() * 8),
+		tracks: [
+			'ArcLight',
+			'Blackmoor Colossus',
+			'Blackmoor Tides',
+			'Dark Descent',
+			'Heroic Demise',
+			"Ireland's Coast",
+			'Salt Marsh Birds',
+			'Snowland Loop',
+			'soliliquoy',
+			'The Dark Amulet'
+		],
+		cache: {},
+		play: play,
+		init: init,
+		save: save,
+		fade: fade,
+		pause: pause,
+		events: events,
+		loadGame: loadGame,
+		loadTitle: loadTitle,
+		musicStart: musicStart,
+		gameMusicInit: gameMusicInit,
+		setSoundVolume: setSoundVolume,
+		setMusicVolume: setMusicVolume,
+		gameMusicPlayNext: gameMusicPlayNext,
+	}
+	///////////////////////////////////////////
+	function init(){
 		var config = localStorage.getItem('config');
 		var initComplete = false;
 		var musicSlider = $("#musicSlider");
@@ -17,7 +51,7 @@ var audio = {
 			}
 		}
 		// console.info("Initializing audio...", g.config.audio);
-		audio.load.title();
+		audio.loadTitle();
 		if (!ng.config.audio.musicVolume){
 			audio.pause();
 		}
@@ -60,8 +94,8 @@ var audio = {
 			}).slider('setValue', ng.config.audio.soundVolume);
 		}
 		initComplete = true;
-	},
-	events: function(){
+	}
+	function events() {
 		$("#bgmusic").on('ended', function() {
 			var x = document.getElementById('bgmusic');
 			x.currentTime = 0;
@@ -77,10 +111,8 @@ var audio = {
 			x.currentTime = 0;
 			x.play();
 		});
-	},
-	ext: 'mp3',
-	on: true,
-	play: function(track, bg){
+	}
+	function play(track, bg) {
 		if (track) {
 			if (bg){
 				// music
@@ -99,12 +131,12 @@ var audio = {
 				}
 			}
 		}
-	},
-	save: function(){
+	}
+	function save() {
 		// save to storage
 		localStorage.setItem('config', JSON.stringify(ng.config));
-	},
-	setMusicVolume: function(val){
+	}
+	function setMusicVolume(val) {
 		if (ng.config.audio.musicVolume){
 			if (!val){
 				audio.pause();
@@ -116,36 +148,22 @@ var audio = {
 		dom.bgmusic.volume = val / 100;
 		ng.config.audio.musicVolume = val;
 		audio.save();
-	},
-	setSoundVolume: function(val){
+	}
+	function setSoundVolume(val) {
 		ng.config.audio.soundVolume = val;
 		audio.save();
-	},
-	pause: function(){
+	}
+	function pause() {
 		dom.bgmusic.pause();
-	},
-	gameMusicInit: function(){
+	}
+	function gameMusicInit() {
 		if (ng.config.audio.musicVolume){
 			audio.pause();
 			dom.bgmusic.loop = false;
 			audio.gameMusicPlayNext();
 		}
-	},
-	// rotating music tracks in game
-	trackIndex: ~~(Math.random() * 8),
-	tracks: [
-		'ArcLight',
-		'Blackmoor Colossus',
-		'Blackmoor Tides',
-		'Dark Descent',
-		'Heroic Demise',
-		"Ireland's Coast",
-		'Salt Marsh Birds',
-		'Snowland Loop',
-		'soliliquoy',
-		'The Dark Amulet'
-	],
-	gameMusicPlayNext: function(){
+	}
+	function gameMusicPlayNext() {
 		// FIX IT SO IT USES BGAUDIO
 		audio.totalTracks = audio.tracks.length;
 		var nowPlaying = audio.tracks[++audio.trackIndex % audio.totalTracks];
@@ -156,8 +174,8 @@ var audio = {
 			audio.gameMusicPlayNext();
 		}
 		console.info("PLAYING: ", nowPlaying);
-	},
-	fade: function(){
+	}
+	function fade() {
 		var x = {
 			vol: ng.config.audio.musicVolume / 100
 		}
@@ -168,29 +186,26 @@ var audio = {
 				dom.bgmusic.volume = x.vol;
 			}
 		});
-	},
-	cache: {},
-	load: {
-		title: function(){
-			var x = [
-				'bash'
-			];
-			for (var i=0, len=x.length; i<len; i++){
-				var z = x[i];
-				audio.cache[z] = new Audio("sound/" + z + ".mp3");
-			}
-		},
-		game: function(){
-			var x = [
-				'bash'
-			];
-			for (var i=0, len=x.length; i<len; i++){
-				var z = x[i];
-				audio.cache[z] = new Audio("sound/" + z + ".mp3");
-			}
+	}
+	function loadTitle() {
+		var x = [
+			'bash'
+		];
+		for (var i=0, len=x.length; i<len; i++){
+			var z = x[i];
+			audio.cache[z] = new Audio("sound/" + z + ".mp3");
 		}
-	},
-	musicStart: function(){
+	}
+	function loadGame() {
+		var x = [
+			'bash'
+		];
+		for (var i=0, len=x.length; i<len; i++){
+			var z = x[i];
+			audio.cache[z] = new Audio("sound/" + z + ".mp3");
+		}
+	}
+	function musicStart() {
 		if (ng.view !== 'game'){
 			// audio.play("ArcLight", 1);
 			// audio.play("WaitingBetweenWorlds", 1);
@@ -198,4 +213,4 @@ var audio = {
 			audio.gameMusicPlayNext();
 		}
 	}
-}
+})();
