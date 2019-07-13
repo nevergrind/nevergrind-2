@@ -1,5 +1,36 @@
-var guild = {
-	Guild: function() {
+var guild;
+(function() {
+	guild = {
+		hasFocus: 0,
+		ranks: [
+			'Leader',
+			'Officer',
+			'Member'
+		],
+		memberList: [],
+		Guild: Guild,
+		format: format,
+		create: create,
+		invite: invite,
+		join: join,
+		hasJoined: hasJoined,
+		quit: quit,
+		hasQuit: hasQuit,
+		boot: boot,
+		wasBooted: wasBooted,
+		promote: promote,
+		wasPromoted: wasPromoted,
+		leader: leader,
+		wasLeader: wasLeader,
+		updateSession: updateSession,
+		motdParse: motdParse,
+		motd: motd,
+		zmqMotd: zmqMotd,
+		getMembers: getMembers,
+		setGuildList: setGuildList,
+	}
+	/////////////////////////////////////////////
+	function Guild() {
 		return {
 			id: 0,
 			rank: 0,
@@ -9,17 +40,11 @@ var guild = {
 			name: '',
 			memberList: []
 		}
-	},
-	format: function(s) {
+	}
+	function format(s) {
 		return s.guild ? (' &lt;' + s.guild + '&gt;') : '';
-	},
-	hasFocus: 0,
-	ranks: [
-		'Leader',
-		'Officer',
-		'Member'
-	],
-	create: function() {
+	}
+	function create() {
 		if (ng.locked) return;
 		var name = $("#guild-input").val().replace(/ +/g, " ").trim();
 		console.info("Name: ", name);
@@ -46,8 +71,8 @@ var guild = {
 		}).always(function(){
 			ng.unlock();
 		});
-	},
-	invite: function(name) {
+	}
+	function invite(name) {
 		if (my.name === name) {
 			chat.log("You can't invite yourself to a guild. Go to the Guild Hall to create a guild.", "chat-warning");
 		}
@@ -75,8 +100,8 @@ var guild = {
 				chat.log("Syntax: /invite [player_name]", "chat-warning");
 			}
 		}
-	},
-	join: function(z) {
+	}
+	function join(z) {
 		if (my.guild.id) return;
 		console.info("JOINING GUILD!", z);
 		// clicked CONFIRM
@@ -94,11 +119,11 @@ var guild = {
 			console.info("Oh no", data);
 			chat.log(data.responseText, 'chat-warning');
 		});
-	},
-	hasJoined: function(z) {
+	}
+	function hasJoined(z) {
 		chat.log(z.msg, 'chat-warning');
-	},
-	quit: function() {
+	}
+	function quit() {
 		if (!my.guild.id) return;
 		console.info("Quitting guild!");
 		var o = my.guild;
@@ -112,11 +137,11 @@ var guild = {
 		}).fail(function(data){
 			chat.log(data.responseText, 'chat-warning');
 		});
-	},
-	hasQuit: function(r) {
+	}
+	function hasQuit(r) {
 		chat.log(r.msg, 'chat-warning')
-	},
-	boot: function(name) {
+	}
+	function boot(name) {
 		if (my.guild.rank > 1) {
 			chat.log("Only the guild Leader and Officers can boot people from the guild", 'chat-warning');
 		}
@@ -132,8 +157,8 @@ var guild = {
 				chat.log(data.responseText, 'chat-warning');
 			});
 		}
-	},
-	wasBooted: function(data) {
+	}
+	function wasBooted(data) {
 		if (!my.guild.id) return;
 		console.info("Booting! ", data);
 		chat.log(data.msg, 'chat-warning');
@@ -150,8 +175,8 @@ var guild = {
 				chat.log(data.responseText, 'chat-warning');
 			});
 		}
-	},
-	promote: function(name) {
+	}
+	function promote(name) {
 		if (my.guild.rank > 1) {
 			chat.log("Only the guild Leader and Officers can promote members.", 'chat-warning');
 		}
@@ -167,13 +192,13 @@ var guild = {
 				chat.log(data.responseText, 'chat-warning');
 			});
 		}
-	},
-	wasPromoted: function(data) {
+	}
+	function wasPromoted(data) {
 		if (!my.guild.id) return;
 		chat.log(data.msg, 'chat-warning');
 		guild.updateSession(data);
-	},
-	leader: function(name) {
+	}
+	function leader(name) {
 		if (my.guild.rank > 0) {
 			chat.log("Only the guild Leader can assign a new leader.", 'chat-warning');
 		}
@@ -191,14 +216,13 @@ var guild = {
 				chat.log(data.responseText, 'chat-warning');
 			});
 		}
-	},
-	wasLeader: function(data) {
+	}
+	function wasLeader(data) {
 		if (!my.guild.id) return;
 		chat.log(data.msg, 'chat-warning');
 		guild.updateSession(data);
-
-	},
-	updateSession: function(data) {
+	}
+	function updateSession(data) {
 		if (data.name === my.name) {
 			$.ajax({
 				type: 'GET',
@@ -211,13 +235,13 @@ var guild = {
 				chat.log(data.responseText, 'chat-warning');
 			});
 		}
-	},
-	motdParse: function(msg) {
+	}
+	function motdParse(msg) {
 		var a = msg.replace(/ +/g, " ").split(" ");
 		a.shift();
 		return a.join(" ");
-	},
-	motd: function(msg) {
+	}
+	function motd(msg) {
 		if (my.guild.rank > 1) return;
 		$.ajax({
 			url: app.url + 'server/guild/motd.php',
@@ -229,11 +253,11 @@ var guild = {
 		}).fail(function (data) {
 			chat.log(data.responseText, 'chat-warning');
 		});
-	},
-	zmqMotd: function(data) {
+	}
+	function zmqMotd(data) {
 		chat.log(data.msg, 'chat-guild');
-	},
-	getMembers: function(throttleTime) {
+	}
+	function getMembers(throttleTime) {
 		if (!my.guild.id) return;
 		ng.lock(1);
 		$.ajax({
@@ -252,9 +276,8 @@ var guild = {
 				ng.unlock();
 			}, throttleTime);
 		});
-	},
-	memberList: [],
-	setGuildList: function(data) {
+	}
+	function setGuildList(data) {
 		var s = '';
 		guild.memberList = data.memberList;
 		guild.memberList.forEach(function(v){
@@ -262,4 +285,4 @@ var guild = {
 		});
 		$("#aside-guild-members").html(s);
 	}
-}
+})();

@@ -4,7 +4,7 @@ var town = {
 		if (create.selected) {
 			game.emptyScenesExcept('scene-town');
 			ng.lock(1);
-			chat.size.large();
+			chat.sizeLarge();
 			$.ajax({
 				url: app.url + 'server/character/load-character.php',
 				data: {
@@ -36,8 +36,8 @@ var town = {
 				ng.setScene('town');
 				chat.init();
 				socket.init();
-				chat.friend.init();
-				chat.ignore.init();
+				chat.friendInit();
+				chat.ignoreInit();
 				// things that only happen once
 				chat.log("There are currently " + data.count + " players exploring Vandamor.", 'chat-emote');
 				// init town ?

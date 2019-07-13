@@ -138,7 +138,7 @@
 			else {
 				// always works town, dungeon and combat
 				if (chat.hasFocus) {
-					if (chat.mode.change()) {
+					if (chat.modeChange()) {
 						// changing chat mode - matches possible mode change
 						return false;
 					}
@@ -148,7 +148,7 @@
 						if (chat.history[chat.historyIndex - 1] !== undefined) {
 							var o = chat.history[--chat.historyIndex];
 							chat.dom.chatInput.value = o.msg;
-							chat.mode.change(o);
+							chat.modeChange(o);
 						}
 					}
 					else if (code === 40) {
@@ -160,7 +160,7 @@
 						else if (chat.history[chat.historyIndex + 1] !== undefined) {
 							var o = chat.history[++chat.historyIndex];
 							chat.dom.chatInput.value = o.msg;
-							chat.mode.change(o);
+							chat.modeChange(o);
 						}
 					}
 					else if (code === 13) {

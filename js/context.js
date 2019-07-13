@@ -55,7 +55,7 @@ var context;
 	}
 	function whisper() {
 		chat.dom.chatInput.value = '';
-		chat.mode.change({
+		chat.modeChange({
 			msg: '',
 			mode: '@',
 			name: context.player

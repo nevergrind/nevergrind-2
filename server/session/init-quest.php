@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+	session_start();
+}
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 $_SESSION['quest'] = [
 	'row' => 0,

@@ -18,7 +18,7 @@ var battle;
 	//////////////////////////////////////
 	function go() {
 		if (ng.view === 'battle') return;
-		chat.size.small();
+		chat.sizeSmall();
 		mob.init();
 		game.emptyScenesExcept('scene-battle');
 		ng.setScene('battle');

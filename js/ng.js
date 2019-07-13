@@ -357,7 +357,6 @@ var ng;
 			else {
 				login.notLoggedIn();
 			}
-			document.getElementById('version').textContent = 'Version ' + app.version;
 
 			var h = location.hash;
 			if (app.isLocal) {

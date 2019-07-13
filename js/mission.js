@@ -416,7 +416,7 @@ var mission = {
 		});
 		mission.initQuest();
 		// rejoin main chat
-		chat.join.channel('town', 1);
+		chat.joinChannel('town', 1);
 		TweenMax.to('#scene-dungeon', 2, {
 			delay: 1,
 			opacity: 0
@@ -424,9 +424,9 @@ var mission = {
 		setTimeout(function () {
 			ng.unlock();
 			town.go();
-			chat.broadcast.add();
+			chat.broadcastAdd();
 			chat.setHeader();
-			chat.mode.change({
+			chat.modeChange({
 				mode: '/say'
 			});
 			// this must be in place to prevent heartbeat updates while going back to town

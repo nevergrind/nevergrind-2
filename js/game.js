@@ -1,4 +1,5 @@
 // game specific data
+
 var game = {
 	maxPlayers: 6,
 	init: 0,
@@ -247,7 +248,7 @@ var game = {
 	exit: function() {
 		// from town
 		if (socket.enabled) {
-			chat.broadcast.remove();
+			chat.broadcastRemove();
 			if (my.p_id) {
 				// boot from party
 				/*

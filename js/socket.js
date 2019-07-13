@@ -50,7 +50,7 @@ var socket = {
 						url: app.url + 'server/chat/send.php',
 						data: {
 							action: 'receive',
-							msg: chat.whisper.parse(data.msg),
+							msg: chat.whisperParse(data.msg),
 							class: 'chat-whisper',
 							category: 'name:' + data.name
 						}
@@ -63,18 +63,18 @@ var socket = {
 							name: data.name
 						}
 					}
-					data.msg = chat.whisper.to(data) + chat.whisper.parse(data.msg);
+					data.msg = chat.whisperTo(data) + chat.whisperParse(data.msg);
 					route.town(data, 'chat->log');
 				}
 				// guild invite
 				else if (data.action === 'guild-invite') {
 					console.info("guild invite received! ", data);
-					chat.prompt.add(data);
+					chat.promptAdd(data);
 				}
 				// party invite
 				else if (data.action === 'party-invite') {
 					console.info("party invite received! ", data);
-					chat.prompt.add(data);
+					chat.promptAdd(data);
 				}
 				else if (data.action === 'party-invite-deny') {
 					chat.log(data.name + " has denied your party invite.", 'chat-warning');
@@ -141,7 +141,7 @@ var socket = {
 
 			// keep alive?
 			// let everyone know I am here
-			chat.broadcast.add();
+			chat.broadcastAdd();
 			chat.setHeader();
 			// notify friends I'm online
 			socket.zmq.publish('friend:' + my.name, {
@@ -154,7 +154,7 @@ var socket = {
 		ng.friends.forEach(function(v){
 			socket.unsubscribe('friend:' + v);
 			socket.zmq.subscribe('friend:' + v, function(topic, data) {
-				chat.friend.notify(topic, data);
+				chat.friendNotify(topic, data);
 			});
 		});
 	},

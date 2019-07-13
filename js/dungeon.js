@@ -3,16 +3,16 @@ var dungeon = {
 		if (ng.view === 'dungeon') return;
 		game.emptyScenesExcept('scene-dungeon');
 		// remove from town chat
-		chat.broadcast.remove();
+		chat.broadcastRemove();
 		my.channel && socket.unsubscribe(chat.getChannel());
 		// set new channel data
 		my.channel = '';
 		// force change to party chat if in town chat
-		chat.mode.command === '/say' &&
-			chat.mode.change({
+		chat.modeCommand === '/say' &&
+			chat.modeChange({
 				mode: '/party'
 			});
-		chat.size.small();
+		chat.sizeSmall();
 		ng.setScene('dungeon');
 		dungeon.init();
 		console.info("DUNGEON GO");
