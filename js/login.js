@@ -1,5 +1,6 @@
 'use strict';
 var login;
+var a;
 var d;
 var i;
 var j;
@@ -9,6 +10,7 @@ var y;
 var z;
 var el;
 var el2;
+var arr;
 var str;
 var key;
 var val;

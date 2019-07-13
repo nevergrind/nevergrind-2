@@ -1,37 +1,57 @@
-
-// player data values
-var my = {
-	lastDifficulty: 'Very Easy',
-	mouse: {
-		x: 0,
-		y: 0
-	},
-	channel: '',
-	lastReceivedWhisper: '',
-	p_id: 0,
-	leader: '',
-	isLeader: 0,
-	zoneMobs: [],
-	party: [],
-	guild: {
-		id: 0,
-		rank: '',
-		memberNumber: 0,
-		motd: '',
-		members: 0,
-		name: ''
-	},
-	guildChannel: function() {
+var my;
+(function() {
+	my = {
+		lastDifficulty: 'Very Easy',
+		mouse: {
+			x: 0,
+			y: 0
+		},
+		channel: '',
+		lastReceivedWhisper: '',
+		p_id: 0,
+		leader: '',
+		isLeader: 0,
+		zoneMobs: [],
+		party: [],
+		guild: {
+			id: 0,
+			rank: '',
+			memberNumber: 0,
+			motd: '',
+			members: 0,
+			name: ''
+		},
+		team: 0,
+		slot: 1,
+		tgt: 1,
+		attackOn: false,
+		hudTimer: ng.TDC(),
+		selectedQuest: '',
+		quest: {},
+		hud: hud,
+		Party: Party,
+		clearHud: clearHud,
+		partyCount: partyCount,
+		guildChannel: guildChannel,
+		getPartyNames: getPartyNames,
+		getNewLeaderName: getNewLeaderName,
+		getPartySlotByRow: getPartySlotByRow,
+		isLowestPartyIdMine: isLowestPartyIdMine,
+		resetClientPartyValues: resetClientPartyValues,
+		getPartyMemberIdByName: getPartyMemberIdByName,
+	}
+	////////////////////////////////////
+	function guildChannel() {
 		return 'guild:' + my.guild.id;
-	},
-	getPartyNames: function(){
+	}
+	function getPartyNames() {
 		var a = [];
 		my.party.forEach(function(v){
 			v.name && a.push(v.name);
 		});
 		return a;
-	},
-	isLowestPartyIdMine: function() {
+	}
+	function isLowestPartyIdMine() {
 		var lowestId = my.party[0].id;
 		my.party.forEach(function(v) {
 			if (v.id && v.id < lowestId) {
@@ -39,8 +59,8 @@ var my = {
 			}
 		});
 		return lowestId === my.party[0].id;
-	},
-	getNewLeaderName: function() {
+	}
+	function getNewLeaderName() {
 		var lowestId = my.party[0].id,
 			name = my.party[0].name;
 		my.party.forEach(function(v) {
@@ -49,8 +69,8 @@ var my = {
 			}
 		});
 		return name;
-	},
-	getPartyMemberIdByName: function(name) {
+	}
+	function getPartyMemberIdByName(name) {
 		var id = 0;
 		my.party.forEach(function(v) {
 			if (v.name === name) {
@@ -58,8 +78,8 @@ var my = {
 			}
 		});
 		return id;
-	},
-	getPartySlotByRow: function(id) {
+	}
+	function getPartySlotByRow(id) {
 		var slot = 0;
 		my.party.forEach(function(v, i) {
 			if (v.id === id) {
@@ -67,8 +87,8 @@ var my = {
 			}
 		});
 		return slot;
-	},
-	partyCount: function() {
+	}
+	function partyCount() {
 		var count = 0;
 		my.party.forEach(function(v, i) {
 			if (v.name) {
@@ -76,8 +96,8 @@ var my = {
 			}
 		});
 		return count;
-	},
-	Party: function() {
+	}
+	function Party() {
 		return {
 			row: 0, // not updated from server - failing at life
 			id: 0, // when updated
@@ -91,17 +111,12 @@ var my = {
 			maxMp: 0,
 			heartbeat: Date.now()
 		}
-	},
-	resetClientPartyValues: function(s) {
+	}
+	function resetClientPartyValues(s) {
 		my.party[s].heartbeat = Date.now();
 		my.party[s].linkdead = 0;
-	},
-	team: 0,
-	slot: 1,
-	tgt: 1,
-	attackOn: false,
-	hudTimer: ng.TDC(),
-	hud: function(msg, d){
+	}
+	function hud(msg, d) {
 		my.hudTimer.kill();
 		DOM.hud.style.visibility = 'visible';
 		DOM.hud.textContent = msg;
@@ -112,12 +127,9 @@ var my = {
 				}
 			});
 		}
-	},
-	clearHud: function(){
+	}
+	function clearHud() {
 		my.hudTimer.kill();
 		DOM.hud.style.visibility = 'hidden';
-	},
-	nextTarget: function(backwards){},
-	selectedQuest: '',
-	quest: {},
-};
+	}
+})();

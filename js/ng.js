@@ -140,34 +140,7 @@ var ng;
 		return ng.id;
 	}
 	function events() {
-		$(window).focus(function(){
-			/*document.title = g.defaultTitle;
-			ng.titleFlashing = false;*/
-		});
-		// should be delegating no drag start
-		$("body").on('dragstart', 'img', function(e) {
-			e.preventDefault();
-		});
-		$("#enter-world").on('mousedown', function(){
-			town.go();
-		});
-
-		$(window).on('resize focus', function() {
-			// debounce resize
-			clearTimeout(ng.resizeTimer);
-			ng.resizeTimer = setTimeout(function(){
-				if (chat.initialized) {
-					chat.scrollBottom();
-				}
-				if (ng.view === 'battle') {
-					for (var i=0; i<mob.max; i++) {
-						mob.sizeMob(i);
-					}
-				}
-			}, 50);
-		}).on('load', function(){
-			env.resizeWindow();
-		});
+		$("#enter-world").on('mousedown', town.go);
 	}
 	function disconnect(msg) {
 		ng.view = 'disconnected';

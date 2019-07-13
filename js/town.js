@@ -432,7 +432,7 @@ var town = {
 	},
 	preload: function() {
 		var p = 'img2/town/';
-		cache.preload.images([
+		cache.preloadImages([
 			p + 'arwen-reinhardt.png',
 			p + 'halas.jpg',
 			p + 'miranda-crossheart.png',

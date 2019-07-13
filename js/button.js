@@ -1,7 +1,13 @@
-var button = {
-	initialized: 0,
-	wrap: document.getElementById('button-wrap'),
-	init: function() {
+var button;
+(function() {
+	button = {
+		initialized: 0,
+		wrap: document.getElementById('button-wrap'),
+		init: init,
+		hide: hide,
+	}
+	//////////////////////////////////
+	function init() {
 		var s = '';
 		// skill buttons
 		for (var i=0; i<10; i++) {
@@ -27,10 +33,10 @@ var button = {
 
 			}, 1000);
 		}
-	},
-	hide: function() {
+	}
+	function hide() {
 		TweenMax.set(button.wrap, {
 			display: 'none'
 		});
 	}
-}
+})();

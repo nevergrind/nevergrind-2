@@ -24,7 +24,7 @@ var dungeon = {
 	initialized: 0,
 	init: function() {
 		my.zoneMobs.length && my.zoneMobs.forEach(function(v){
-			cache.preload.mob(v);
+			cache.preloadMob(v);
 		});
 		if (dungeon.initialized) {
 			document.getElementById('scene-dungeon').style.display = 'block';
@@ -36,9 +36,6 @@ var dungeon = {
 		}
 		chat.scrollBottom();
 		// delegate
-	},
-	events: function() {
-
 	},
 	html: function() {
 		var s =
