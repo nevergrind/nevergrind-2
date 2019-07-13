@@ -1,6 +1,12 @@
-// route.js
-var route = {
-	town: function(data, r) {
+var route;
+(function() {
+	route = {
+		town: town,
+		party: party,
+		guild: guild,
+	}
+	///////////////////////////////////////////////////////
+	function town(data, r) {
 		if (r === 'chat->log') {
 			if (data.name === my.name) {
 				chat.log(data.msg, data.class);
@@ -19,8 +25,8 @@ var route = {
 		else if (r === 'chat->remove') {
 			chat.removePlayer(data);
 		}
-	},
-	party: function(data, r) {
+	}
+	function party(data, r) {
 		if (r === 'party->hb') {
 			bar.heartbeatReceive(data);
 		}
@@ -73,12 +79,10 @@ var route = {
 					chat.promote(my.name, 1);
 				}
 			}
-			setTimeout(function(){
-				bar.getParty();
-			}, 1000);
+			setTimeout(bar.getParty, 1000);
 		}
-	},
-	guild: function(data, r) {
+	}
+	function guild(data, r) {
 		if (r === 'guild->hasJoined') {
 			guild.hasJoined(data);
 		}
@@ -98,4 +102,4 @@ var route = {
 			guild.zmqMotd(data);
 		}
 	}
-};
+})();

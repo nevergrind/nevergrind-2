@@ -1,5 +1,14 @@
-var dungeon = {
-	go: function() {
+var dungeon;
+(function() {
+	dungeon = {
+		initialized: 0,
+		go: go,
+		init: init,
+		html: html,
+		enterCombat: enterCombat,
+	};
+	///////////////////////////////////////
+	function go() {
 		if (ng.view === 'dungeon') return;
 		game.emptyScenesExcept('scene-dungeon');
 		// remove from town chat
@@ -20,9 +29,8 @@ var dungeon = {
 			delay: 1,
 			opacity: 1
 		});
-	},
-	initialized: 0,
-	init: function() {
+	}
+	function init() {
 		my.zoneMobs.length && my.zoneMobs.forEach(function(v){
 			cache.preloadMob(v);
 		});
@@ -36,14 +44,14 @@ var dungeon = {
 		}
 		chat.scrollBottom();
 		// delegate
-	},
-	html: function() {
+	}
+	function html() {
 		var s =
 		'<img id="dungeon-bg" class="img-bg" src="img2/dungeon/braxxen1.jpg">';
 
 		return s;
-	},
-	enterCombat: function() {
+	}
+	function enterCombat() {
 		console.info("ENTERING COMBAT");
 	}
-}
+})();

@@ -42,13 +42,12 @@
 			] :
 			['ng2'];
 		var suffix = app.isLocal ? '.css' : '.min.css';
-		css.forEach(function(file) {
+		for (var i=0, len = css.length; i<len; i++) {
 			var link = d.createElement('link');
-			link.href = 'css/' + file + suffix + '?v='+ app.version;
+			link.href = 'css/' + css[i] + suffix + '?v='+ app.version;
 			link.rel = 'stylesheet';
 			document.write(link.outerHTML);
-
-		});
+		}
 	})(document);
 </script>
 

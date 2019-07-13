@@ -71,7 +71,6 @@ gulp.task('minify-ng2-js', function() {
 		.pipe(rename('nevergrind-2.min.js'))
 		.pipe(gulp.dest('./js'));
 });
-
 gulp.task('minify-png', function(){
 	var img = 'dragon-fire';
 	var source = 'mobs';
@@ -86,7 +85,6 @@ gulp.task('minify-png', function(){
 		console.info("Images minified with quant: " + img)
 	});
 });
-
 gulp.task('resize-png', function(){
 	// add minify-png pipe
 	var img = 'toadlok';
@@ -114,6 +112,78 @@ gulp.task('resize-png', function(){
 		});
 	});
 });
+gulp.task('clean-ng2', [], function(){
+	console.info("Cleaning out ng2 build directory...");
+	return gulp.src("./build-ng2/*", {
+		read: false
+	}).pipe(clean());
+});
+gulp.task('build-ng2', ['minify-css', 'minify-ng2-js', 'clean-ng2'], function(){
+	// move app files
+	gulp.src([
+		'./index.html',
+		'./package.json',
+		'./greenworks.js',
+		'./steam_appid.txt',
+		'./nwjs/**/*'
+	]).pipe(gulp.dest('./build-ng2'));
+	// js
+	gulp.src([
+		'./lib/*'
+	]).pipe(gulp.dest('./build-ng2/lib'));
+	gulp.src([
+		'./js/nevergrind-2.min.js'
+	]).pipe(gulp.dest('./build-ng2/js'));
+
+	// css
+	gulp.src([
+		'./css/cursor/*',
+	]).pipe(gulp.dest('./build-ng2/css/cursor'));
+	gulp.src([
+		'./css/fonts/*',
+	]).pipe(gulp.dest('./build-ng2/css/fonts'));
+	gulp.src([
+		'./css/libs/*',
+	]).pipe(gulp.dest('./build-ng2/css/libs'));
+	gulp.src([
+		'./css/ng2.min.css'
+	]).pipe(gulp.dest('./build-ng2/css'));
+
+	// fonts
+	gulp.src([
+		'./fonts/*'
+	]).pipe(gulp.dest('./build-ng2/fonts'));
+
+	// sound & music
+	gulp.src([
+		'./sound/*'
+	]).pipe(gulp.dest('./build-ng2/sound'));
+	gulp.src([
+		'./music/*'
+	]).pipe(gulp.dest('./build-ng2/music'));
+
+	// images
+	gulp.src([
+		'./images/**/*'
+	]).pipe(gulp.dest('./build-ng2/images'));
+
+	// mobs
+	gulp.src([
+		'./mobs/**/*'
+	]).pipe(gulp.dest('./build-ng2/mobs'));
+});
+// renames nw.exe to firmament-wars.exe
+gulp.task('rename', function() {
+	gulp.src("./build-fw/nw.exe")
+		.pipe(clean())
+		.pipe(rename("firmament-wars.exe"))
+		.pipe(gulp.dest("./build-fw"));
+})
+gulp.task('default', function(){
+	gulp.run('minify-css', 'minify-ng2-js');
+});
+
+
 /*
 gulp.task('resize-sprite', function(){
 	// add minify-png pipe
@@ -146,75 +216,3 @@ gulp.task('resize-sprite', function(){
 		});
 	});
 });*/
-
-
-gulp.task('clean-ng2', [], function(){
-	console.info("Cleaning out ng2 build directory...");
-	return gulp.src("./build-ng2/*", {
-		read: false
-	}).pipe(clean());
-});
-
-gulp.task('build-ng2', [
-	'minify-css',
-	'minify-ng2-js',
-	'clean-ng2'
-], function(){
-	// move app files
-	gulp.src([
-		'./index.html',
-		'./package.json',
-		'./greenworks.js',
-		'./steam_appid.txt',
-		'./nwjs/**/*'
-	]).pipe(gulp.dest('./build-ng2'));
-
-	gulp.src([
-		'./lib/*'
-	]).pipe(gulp.dest('./build-ng2/lib'));
-
-	gulp.src([
-		'./js/nevergrind-2.min.js'
-	]).pipe(gulp.dest('./build-ng2/js'));
-
-	gulp.src([
-		'./css/**/*'
-	]).pipe(gulp.dest('./build-ng2/css'));
-
-	gulp.src([
-		'./fonts/*'
-	]).pipe(gulp.dest('./build-ng2/fonts'));
-
-	gulp.src([
-		'./sound/*'
-	]).pipe(gulp.dest('./build-ng2/sound'));
-
-	gulp.src([
-		'./music/*'
-	]).pipe(gulp.dest('./build-ng2/music'));
-
-	gulp.src([
-		'./images/**/*'
-	]).pipe(gulp.dest('./build-ng2/images'));
-
-	gulp.src([
-		'./mobs/**/*'
-	]).pipe(gulp.dest('./build-ng2/mobs'));
-	/*
-	gulp.src([
-		'./mobs/*'
-	]).pipe(gulp.dest('./build-ng2/mobs'));
-	*/
-});
-
-gulp.task('rename', function() {
-	gulp.src("./build-fw/nw.exe")
-		.pipe(clean())
-		.pipe(rename("firmament-wars.exe"))
-		.pipe(gulp.dest("./build-fw"));
-})
-
-
-gulp.task('default', function(){
-	gulp.run('minify-css', 'minify-ng2-js');
-});

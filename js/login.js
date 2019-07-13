@@ -1,5 +1,4 @@
 'use strict';
-var login;
 var a;
 var d;
 var i;
@@ -18,6 +17,7 @@ var foo;
 var bar;
 var html;
 var index;
+var login;
 (function() {
 	login = {
 		lock: 0,
