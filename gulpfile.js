@@ -28,6 +28,7 @@ gulp.task('resize-sprite', resizeSprite);
 //////////////////////////////////////////////
 function minifyCss() {
 	var css = [
+		'login',
 		'main',
 		'flex',
 		'character-create',
@@ -142,7 +143,7 @@ function buildNg2(isSdk) {
 		'./steam_appid.txt',
 		(isSdk ? './nwjs-sdk/**/*' : './nwjs/**/*')
 	]).pipe(gulp.dest('./build-ng2'))
-		.on('end', renameExe);;
+		.on('end', renameExe);
 	// js
 	gulp.src([
 		'./js/libs/**/*'

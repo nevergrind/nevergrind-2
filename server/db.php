@@ -1,10 +1,7 @@
 <?php
-if ($_SERVER['SERVER_NAME'] === 'localhost') {
-	$link = mysqli_connect('localhost', 'root', '', 'nevergrind');
-}
-else {
-	$link = mysqli_connect('localhost', 'root', 'ng2', 'nevergrind');
-}
+$link = $_SERVER['SERVER_NAME'] === 'localhost' ?
+	mysqli_connect('localhost:3306', 'root', '', 'nevergrind') :
+	mysqli_connect('localhost', 'ng2', 'ng2', 'nevergrind');
 if (!$link) {
-	die('Database connection failure: ' . mysqli_error($link));
+	die('Database connection failure: ');
 }

@@ -33,3 +33,6 @@
 	background: rgba(0, 0, 0, .8);
 	z-index: 99999999;
 }
+#login-btn {
+	margin: 1rem 0 .5rem;
+}

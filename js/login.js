@@ -21,8 +21,6 @@ var login;
 (function() {
 	login = {
 		lock: 0,
-		email: localStorage.getItem('email'),
-		token: localStorage.getItem('token'),
 		fadeTimer: new TweenMax.delayedCall(0, ''),
 		focusInput: false,
 		authenticationLock: false,
@@ -67,13 +65,13 @@ var login;
 	}
 	function getLoginHtml() {
 		var s =
-			'<div style="margin-bottom: .2rem">Account or Email Address</div>' +
+			'<div style="margin-bottom: .2rem">Account</div>' +
 			'<input name="username"' +
 				'type="text"' +
-				'id="loginEmail"' +
+				'id="account"' +
 				'class="loginInputs"' +
 				'maxlength="255"' +
-				'placeholder="Account or Email Address"' +
+				'placeholder="Account Name"' +
 				'required="required"' +
 				'spellcheck="false"/>' +
 			'<div style="margin: .2rem">Password</div>' +
@@ -85,8 +83,6 @@ var login;
 				'auto-complete="current-password"' +
 				'placeholder="Password"' +
 				'required="required" />' +
-			'<div for="rememberMe" style="display: flex; justify-content: center; align-items: center; margin: .2rem">' +
-				'<input type="checkbox" id="rememberMe" name="rememberMe" checked> Remember Me' +
 			'</div>' +
 			'<input id="login-btn" type="submit" value="Login" class="ng-btn" />' +
 			'<div class="error-msg"></div>';
@@ -94,34 +90,22 @@ var login;
 	}
 	function getCreateHtml() {
 		var s =
-			'<div style="margin: .2rem">Email Address</div>' +
-			'<input name="username" ' +
-				'type="text" ' +
-				'id="loginEmail" ' +
+			'<div style="margin: .2rem">Account</div>' +
+			'<input type="text" ' +
+				'id="account" ' +
 				'class="loginInputs" ' +
-				'maxlength="255" ' +
+				'maxlength="16" ' +
 				'auto-complete="disabled" '+
-				'placeholder="Account or Email Address" ' +
+				'placeholder="Enter Account Name" ' +
 				'required="required" ' +
 				'spellcheck="false"/>' +
 			'<div style="margin: .2rem">Password</div>' +
-			'<input name="password" ' +
-				'type="password" ' +
+			'<input type="password" ' +
 				'id="password" ' +
 				'auto-complete="disabled" '+
 				'class="loginInputs" ' +
 				'maxlength="20" ' +
 				'placeholder="Password" required="required" />' +
-			'<div class="create-account" style="margin: .2rem">Account Name</div>' +
-			'<input name="account" ' +
-				'type="text" ' +
-				'name="account" ' +
-				'auto-complete="disabled" '+
-				'id="loginAccount" ' +
-				'class="loginInputs create-account" ' +
-				'maxlength="16" ' +
-				'placeholder="Account Name" ' +
-				'required="required" /></div>' +
 			'<input id="create-account" type="submit" value="Create" class="ng-btn" style="margin: 1rem 0 .2rem" />' +
 			'<div class="error-msg"></div>';
 		return s;
@@ -130,18 +114,18 @@ var login;
 		if (login.lock) {
 			return false;
 		}
-		var pw = $("#password").val(),
-			acc = $("#loginAccount").val();
+		var pw = $("#password").val();
+		var account = $("#account").val().toLowerCase();
 
-		if (acc.length < 2) {
+		if (account.length < 3) {
 			login.msg("Your account name must be more than two characters long.");
 			return false;
 		}
-		if (acc.length > 16) {
+		if (account.length > 16) {
 			login.msg("Your account name must be less than 16 characters long.");
 			return false;
 		}
-		var tempAcc = acc.replace('_', '');
+		var tempAcc = account.replace('_', '');
 		if (tempAcc.match(/[a-z0-9]/gi, '').length < tempAcc.length) {
 			login.msg("Your account name should only contain letters, numbers, and underscores.");
 			return false;
@@ -152,13 +136,10 @@ var login;
 		}
 		login.msg("Connecting to server...");
 		login.lock = 1;
-		var email = $("#loginEmail").val().toLowerCase();
-		var account = acc.toLowerCase();
 		$.ajax({
 			type: 'POST',
-			url: app.loginUrl + 'server/account/create-account.php',
+			url: app.url + 'server/account/create-account.php',
 			data: {
-				email: email,
 				account: account,
 				password: pw
 			}
@@ -215,33 +196,21 @@ var login;
 		if (login.authenticationLock === true) {
 			return false;
 		}
-		var email = $("#loginEmail").val().toLowerCase();
+		var account = $("#account").val().toLowerCase();
 		var password = $("#password").val();
-		if (email.length < 3) {
-			login.msg("This is not a valid email address.");
+		if (account.length < 3) {
+			login.msg("This is not a valid account name.");
 			return false;
 		}
 		if (password.length < 6 && !login.token) {
 			login.msg("Passwords must be at least six characters long.");
 			return false;
 		}
-		if ($("#rememberMe").prop('checked')){
-			localStorage.setItem('email', email);
-			localStorage.setItem('token', login.token);
-		}
-		else {
-			localStorage.removeItem('email');
-		}
 		login.msg("Connecting to server...");
 		login.authenticationLock = true;
-
-		$.ajax({
-			type: 'POST',
-			url: app.loginUrl + 'server/authenticate.php',
-			data: {
-				email: email,
-				password: password
-			}
+		$.post(app.url + 'server/authenticate.php', {
+			account: account,
+			password: password
 		}).done(function(data){
 			if (data === "Login successful!"){
 				location.reload();
@@ -255,7 +224,6 @@ var login;
 		}).always(function(){
 			login.authenticationLock = false;
 		});
-		return false; // prevent form submission
 	}
 	function notLoggedIn() {
 		$("#login-modal").css({

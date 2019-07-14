@@ -1,15 +1,5 @@
 <?php
 	session_start();
-?>
-<style>
-	pre {
-		border: 1px solid #444;
-		background: #ddd;
-		padding: 10px 20px;
-		border-radius: 5px;
-	}
-</style>
-<?php
 	$date = date("D M d, Y G:i");
 	$rand = mt_rand(0, 100);
 
@@ -24,6 +14,28 @@
 		$count = mysqli_num_rows($result);
 		echo 'count: ' . $count . '<br>';
 	}
+	////// test prepared statement
+	$email = 'chrome5@test.com';
+	$query = 'select email from accounts where email=?';
+	$stmt = $link->prepare($query);
+	$stmt->bind_param('s', $email);
+	$stmt->execute();
+	$stmt->store_result();
+	$count = $stmt->num_rows;
+	if ($count > 0) {
+		// email address exists
+		echo "This email address has already registered an account!<br>";
+	}
+	else {
+		echo 'Did not find email address: ' . $email . '<br>';
+	}
+
+	$account = 'chrome9';
+	$password = '123456';
+	$query = 'insert into `accounts` (`account`, `password`) VALUES (?, ?)';
+	$stmt = $link->prepare($query);
+	$stmt->bind_param('ss', $account, $password);
+	$stmt->execute();
 
 
 	echo 'Have a great day!<br>';

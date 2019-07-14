@@ -5,7 +5,7 @@
   "description": "multiplayer-cooperative-rpg",
   "product_string": "Nevergrind 2",
   "nodejs": true,
-  "domain": "nevergrind.com",
+  "domain": "ec2-34-220-110-228.us-west-2.compute.amazonaws.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/maelfyn/nevergrind2"
@@ -47,11 +47,7 @@
     "platformKeys",
     "sessions",
     "storage",
-    "https://geoip-db.com",
-    "*://www.google-analytics.com",
-    "*://apis.google.com",
-    "*://*.google.com",
-    "*://nevergrind.com/*"
+    "*://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/*"
   ],
   "os": [
     "win64",

@@ -16,15 +16,12 @@
 		var app = {
 			version: '2019.0.115',
 			initialized: 0, // init-game returned
-			isApp: location.protocol === 'chrome-extension:' ? 1 : 0,
+			isApp: location.protocol === 'chrome-extension:',
 			account: ''
 		};
-		app.url = app.isApp ? 'http://34.220.110.228/ng2/' : '';
-		//app.url = 'http://34.220.110.228/ng2/';
-		app.socketUrl = 'ws://34.220.110.228/wss2/';
-		app.isLocal = location.hostname.indexOf('localhost') > -1;
-		app.loginUrl = app.isLocal ? '/ng2/' : 'http://34.220.110.228.com/ng2/';
-		//app.loginUrl = 'http://nevergrind.com/ng2/';
+		app.url = app.isApp ? 'http://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/ng2/' : '';
+		app.socketUrl = 'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/wss2/';
+		app.isLocal = !app.isApp;
 	</script>
 	<!--link rel="stylesheet" href="css/libs/bootstrap4.min.css"-->
 	<!--link rel="stylesheet" href="css/libs/font-awesome.min.css"-->
@@ -497,11 +494,12 @@
 <script src="js/libs/gsap/SplitText.min.js"></script>
 <script src="js/libs/gsap/EaselPlugin.min.js"></script>
 
+<script src="js/libs/autobahn.min.js"></script>
+
 <!-- bootstrap4 -->
 <!--script src="js/libs/popper.min.js"></script>
 <script src="js/libs/bootstrap4.min.js"></script-->
 
-<script src="js/libs/autobahn.min.js"></script>
 
 <script>
 	(function(d){
