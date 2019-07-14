@@ -59,9 +59,11 @@
 			}
 	}
 	function mousedown(e) {
-		context.hideCheck();
-		e.preventDefault();
-		return false;
+		if (context.isOpen) {
+			context.hideCheck();
+			e.preventDefault();
+			return false;
+		}
 	}
 	function mousemove(e) {
 		my.mouse.x = e.clientX;

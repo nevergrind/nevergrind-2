@@ -226,7 +226,7 @@ var ng;
 			type: 'GET',
 			url: app.url + "server/session/keep-alive.php"
 		}).always(function() {
-			setTimeout(ng.keepAlive, 180000);
+			setTimeout(ng.keepAlive, 150000);
 		});
 	}
 	function msg(msg, d) {

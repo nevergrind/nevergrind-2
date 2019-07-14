@@ -19,12 +19,12 @@
 			isApp: location.protocol === 'chrome-extension:' ? 1 : 0,
 			account: ''
 		};
-		app.url = app.isApp ?
-			'https://nevergrind.com/ng2-test-server/' : '';
-		app.socketUrl = app.isApp ?
-			'nevergrind.com' : location.hostname;
+		app.url = app.isApp ? 'http://34.220.110.228/ng2/' : '';
+		//app.url = 'http://34.220.110.228/ng2/';
+		app.socketUrl = 'ws://34.220.110.228/wss2/';
 		app.isLocal = location.hostname.indexOf('localhost') > -1;
-		app.loginUrl = app.isLocal ? '/ng2/' : 'https://nevergrind.com/ng2/';
+		app.loginUrl = app.isLocal ? '/ng2/' : 'http://34.220.110.228.com/ng2/';
+		//app.loginUrl = 'http://nevergrind.com/ng2/';
 	</script>
 	<!--link rel="stylesheet" href="css/libs/bootstrap4.min.css"-->
 	<!--link rel="stylesheet" href="css/libs/font-awesome.min.css"-->
@@ -36,6 +36,7 @@
 	(function(d){
 		var css = app.isLocal ?
 			[
+				'login',
 				'main',
 				'flex',
 				'character-create',
@@ -54,23 +55,20 @@
 <div id="login-modal">
 	<div id="login-backdrop"></div>
 	<div id="login-container">
-		<form id="loginWrap"
+		<div id="loginWrap"
 			  accept-charset="UTF-8"
-			  method="post"
-			  onSubmit="return login.authenticate(this);">
-			<fieldset>
-				<p>
-					<div>
-						<a id="createAccount" class="login-actions">Create Account</a>
-					</div>
-					<div>or</div>
-					<div>
-						<a id="gotoAccount" class="login-actions">Login</a>
-					</div>
-				</p>
-				<div id="login-form-contents"></div>
-			</fieldset>
-		</form>
+			  method="post">
+			<p>
+				<div>
+					<a id="createAccount" class="login-actions">Create Account</a>
+				</div>
+				<div>or</div>
+				<div>
+					<a id="gotoAccount" class="login-actions">Login</a>
+				</div>
+			</p>
+			<div id="login-form-contents"></div>
+		</div>
 	</div>
 </div> <!-- end login -->
 
@@ -253,7 +251,7 @@
 
 						<div id="create-character-name-wrap">
 							<input id="create-character-name"
-								   class="form-control ng-blue-input text-shadow"
+								   class="ng-blue-input text-shadow"
 								   type="text"
 								   maxlength="16"
 								   spellcheck="false"

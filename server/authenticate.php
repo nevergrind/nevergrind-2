@@ -7,6 +7,7 @@ if (!isset($_POST['password'])) {
 }
 $email = $_POST['email'];
 $password = $_POST['password'];
+
 // non-SSO login
 $account = '';
 // Get account name to set it

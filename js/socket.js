@@ -107,7 +107,7 @@ var socket;
 	}
 	function init() {
 		// is player logged in?
-		socket.zmq = new ab.Session('wss://' + app.socketUrl + '/wss2/',
+		socket.zmq = new ab.Session(app.socketUrl,
 			socket.connectionSuccess,
 			socket.connectionFailure, {
 			// options

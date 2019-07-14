@@ -38,7 +38,6 @@ var login;
 	//////////////////////////////
 	function init() {
 		// events
-		$('#login').on('click', login.authenticate);
 		$(".loginInputs").on('focus', function() {
 			login.focusInput = true;
 		}).on('blur', function() {
@@ -51,25 +50,19 @@ var login;
 			}
 		});
 		// delegate login events
-		$("#login-form-contents").on('click', '#login-btn', function(){
-			login.authenticate();
-		}).on('click', '#create-account', function(){
-			login.createAccount();
-		});
+		$("#login-form-contents").on('click', '#login-btn', login.authenticate)
+			.on('click', '#create-account', login.createAccount);
+
 		setTimeout(function(){
-			document.getElementById('login-form-contents').innerHTML =
-				login.getLoginHtml();
-			$("#loginWrap").attr('onSubmit', 'return login.authenticate(this)');
+			document.getElementById('login-form-contents').innerHTML = login.getLoginHtml();
 		});
+
 		$("#gotoAccount").on('click', function(){
-			document.getElementById('login-form-contents').innerHTML =
-				login.getLoginHtml();
-			$("#loginWrap").attr('onSubmit', 'return login.authenticate(this)');
+			document.getElementById('login-form-contents').innerHTML = login.getLoginHtml();
 		});
+
 		$("#createAccount").on('click', function(){
-			document.getElementById('login-form-contents').innerHTML =
-				login.getCreateHtml();
-			$("#loginWrap").attr('onSubmit', 'return login.createAccount(this)');
+			document.getElementById('login-form-contents').innerHTML = login.getCreateHtml();
 		});
 	}
 	function getLoginHtml() {
@@ -218,7 +211,7 @@ var login;
 			rotationX: 0
 		});
 	}
-	function authenticate(f) {
+	function authenticate() {
 		if (login.authenticationLock === true) {
 			return false;
 		}
@@ -254,10 +247,8 @@ var login;
 				location.reload();
 			}
 			else {
-				if (!suppress){
-					login.msg(data);
-					console.error(data);
-				}
+				login.msg(data);
+				console.error(data);
 			}
 		}).fail(function(data) {
 			login.msg(data.statusText);

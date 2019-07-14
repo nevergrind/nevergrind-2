@@ -10,7 +10,24 @@
 	}
 </style>
 <?php
+	$date = date("D M d, Y G:i");
+	$rand = mt_rand(0, 100);
+
+	echo 'Date/Time: '. $date . '<br>';
+	echo 'Microtime: '. microtime(true) . '<br>';
+	echo 'Your random number from 1-100 is: '. $rand . '<br>';
+	echo 'start<br>';
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
+	echo 'test<br>';
+
+	if ($result = mysqli_query($link, 'SELECT row FROM accounts')) {
+		$count = mysqli_num_rows($result);
+		echo 'count: ' . $count . '<br>';
+	}
+
+
+	echo 'Have a great day!<br>';
+	exit;
 
 
 	use GuzzleHttp\Client;
