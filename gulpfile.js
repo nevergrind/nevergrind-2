@@ -1,5 +1,5 @@
-
-const gulp = require('gulp');
+// requires
+var gulp = require('gulp');
 // var minifyHTML = require('gulp-minify-html'); // Minify HTML
 var clean = require('gulp-rimraf'); // delete folder contents
 var cleanCSS = require('gulp-clean-css'); // Minify the CSS
@@ -10,8 +10,23 @@ var rename = require('gulp-rename');
 var imagemin = require('imagemin');
 var imageminPngquant = require('imagemin-pngquant');
 var imageResize = require('gulp-image-resize');
+// variables
+var buildNg2Tasks = ['minify-css', 'minify-ng2-js', 'clean-ng2'];
+// tasks
+gulp.task('minify-css', minifyCss);
+gulp.task('minify-ng2-js', minifyJs);
+gulp.task('minify-png', minifyPng);
+gulp.task('resize-png', resizePng);
+gulp.task('clean-ng2', [], cleanNg2);
+// need build-ng2-sdk task for testing
+gulp.task('build-ng2', buildNg2Tasks, function() { buildNg2(false); });
+gulp.task('build-ng2-sdk', buildNg2Tasks, function() { buildNg2(true); });
+gulp.task('rename', renameExe);
+gulp.task('default', defaultTask);
+gulp.task('resize-sprite', resizeSprite);
 
-gulp.task('minify-css', function(){
+//////////////////////////////////////////////
+function minifyCss() {
 	var css = [
 		'main',
 		'flex',
@@ -25,8 +40,8 @@ gulp.task('minify-css', function(){
 		.pipe(cleanCSS())
 		.pipe(rename('ng2.min.css'))
 		.pipe(gulp.dest('./css'));
-});
-gulp.task('minify-ng2-js', function() {
+}
+function minifyJs() {
 	var js = [
 		'beginWrap',
 		'login',
@@ -70,8 +85,8 @@ gulp.task('minify-ng2-js', function() {
 		.pipe(uglify())
 		.pipe(rename('nevergrind-2.min.js'))
 		.pipe(gulp.dest('./js'));
-});
-gulp.task('minify-png', function(){
+}
+function minifyPng() {
 	var img = 'dragon-fire';
 	var source = 'mobs';
 	return imagemin(['./mobs/'+ img +'/*'], './mobs/'+ img +'/', {
@@ -84,8 +99,8 @@ gulp.task('minify-png', function(){
 	}).then(function(){
 		console.info("Images minified with quant: " + img)
 	});
-});
-gulp.task('resize-png', function(){
+}
+function resizePng() {
 	// add minify-png pipe
 	var img = 'toadlok';
 	var promise = new Promise(function(resolve) {
@@ -111,26 +126,27 @@ gulp.task('resize-png', function(){
 			console.info("Images minified with quant: " + img)
 		});
 	});
-});
-gulp.task('clean-ng2', [], function(){
+}
+function cleanNg2() {
 	console.info("Cleaning out ng2 build directory...");
 	return gulp.src("./build-ng2/*", {
 		read: false
 	}).pipe(clean());
-});
-gulp.task('build-ng2', ['minify-css', 'minify-ng2-js', 'clean-ng2'], function(){
+}
+function buildNg2(isSdk) {
 	// move app files
 	gulp.src([
 		'./index.html',
 		'./package.json',
 		'./greenworks.js',
 		'./steam_appid.txt',
-		'./nwjs/**/*'
-	]).pipe(gulp.dest('./build-ng2'));
+		(isSdk ? './nwjs-sdk/**/*' : './nwjs/**/*')
+	]).pipe(gulp.dest('./build-ng2'))
+		.on('end', renameExe);;
 	// js
 	gulp.src([
-		'./lib/*'
-	]).pipe(gulp.dest('./build-ng2/lib'));
+		'./js/libs/**/*'
+	]).pipe(gulp.dest('./build-ng2/js/libs'));
 	gulp.src([
 		'./js/nevergrind-2.min.js'
 	]).pipe(gulp.dest('./build-ng2/js'));
@@ -171,21 +187,20 @@ gulp.task('build-ng2', ['minify-css', 'minify-ng2-js', 'clean-ng2'], function(){
 	gulp.src([
 		'./mobs/**/*'
 	]).pipe(gulp.dest('./build-ng2/mobs'));
-});
-// renames nw.exe to firmament-wars.exe
-gulp.task('rename', function() {
-	gulp.src("./build-fw/nw.exe")
-		.pipe(clean())
-		.pipe(rename("firmament-wars.exe"))
-		.pipe(gulp.dest("./build-fw"));
-})
-gulp.task('default', function(){
+}
+function defaultTask() {
 	gulp.run('minify-css', 'minify-ng2-js');
-});
-
-
-/*
-gulp.task('resize-sprite', function(){
+}
+function renameExe() {
+	var from = 'nw.exe';
+	var to = 'nevergrind-2.exe';
+	console.log('renaming from ' + from + ' to ' + to);
+	gulp.src("./build-ng2/" + from)
+		.pipe(clean())
+		.pipe(rename(to))
+		.pipe(gulp.dest("./build-ng2"));
+}
+function resizeSprite() {
 	// add minify-png pipe
 	var img = 'dragon',
 		h = 2100,
@@ -215,4 +230,4 @@ gulp.task('resize-sprite', function(){
 			console.info("Spritemap minified with quant: " + img)
 		});
 	});
-});*/
+}
