@@ -13,3 +13,5 @@ nevergrind-2.js
 /images
 /steamworks
 /node_modules
+/nwjs
+/nwjs-sdk
