@@ -344,12 +344,6 @@ var ng;
 
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'server/test.php'
-		}).done(function(r) {
-			console.info('test', r);
-		});
-		$.ajax({
-			type: 'GET',
 			url: app.url + 'server/init-game.php'
 		}).done(function(r){
 			console.info('init-game', r.account, r);

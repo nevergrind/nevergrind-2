@@ -1,4 +1,10 @@
+<style>
+	html {
+		font-size: 2.5rem;
+	}
+</style>
 <?php
+	$now = microtime(true);
 	session_start();
 	$date = date("D M d, Y G:i");
 	$rand = mt_rand(0, 100);
@@ -10,35 +16,30 @@
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	echo 'test<br>';
 
-	if ($result = mysqli_query($link, 'SELECT row FROM accounts')) {
+	if ($result = mysqli_query($link, 'SELECT row FROM `accounts`')) {
 		$count = mysqli_num_rows($result);
-		echo 'count: ' . $count . '<br>';
+		echo 'Total accounts in the account table: ' . $count . '<br>';
 	}
 	////// test prepared statement
-	$email = 'chrome5@test.com';
-	$query = 'select email from accounts where email=?';
+	$account = 'chrome5';
+	$query = 'select account from `accounts` where account=?';
 	$stmt = $link->prepare($query);
-	$stmt->bind_param('s', $email);
+	$stmt->bind_param('s', $account);
 	$stmt->execute();
 	$stmt->store_result();
 	$count = $stmt->num_rows;
 	if ($count > 0) {
 		// email address exists
-		echo "This email address has already registered an account!<br>";
+		echo 'Account: '. $account .' has already registered an account!<br>';
 	}
 	else {
-		echo 'Did not find email address: ' . $email . '<br>';
+		echo 'Did not find email address: ' . $account . '<br>';
 	}
-
-	$account = 'chrome9';
-	$password = '123456';
-	$query = 'insert into `accounts` (`account`, `password`) VALUES (?, ?)';
-	$stmt = $link->prepare($query);
-	$stmt->bind_param('ss', $account, $password);
-	$stmt->execute();
 
 
 	echo 'Have a great day!<br>';
+	$time = microtime(true) - $now;
+	echo 'This script took '. $time .' seconds to complete!';
 	exit;
 
 
@@ -86,7 +87,7 @@
 		echo '<br>This name contains illegal characters!<br>';
 	}
 	// AM I IN A PARTY
-	$stmt = $link->prepare('SELECT count(row) count FROM ng2_parties where c_id=?');
+	$stmt = $link->prepare('SELECT count(row) count FROM `parties` where c_id=?');
 	$stmt->bind_param('s', $_SESSION['ng2']['row']);
 	$stmt->execute();
 	$stmt->bind_result($dbCount);
@@ -96,7 +97,7 @@
 	}
 	echo "inParty: ". $inParty .'<br>';
 
-	$stmt = $link->prepare('select name from ng2_guilds where name=?');
+	$stmt = $link->prepare('select name from `guilds` where name=?');
 	$stmt->bind_param('s', $formattedName);
 	$stmt->execute();
 	$stmt->bind_result($formattedName);
@@ -189,7 +190,7 @@
 		$queryValues = itemLoop(2);
 		echo '<pre>$queryValues: '. $queryValues .'</pre>';
 		
-		$query = 'insert into ng2_items (
+		$query = 'insert into `items` (
 			charRow, 
 			uniqueId, 
 			slotType, 
@@ -238,19 +239,7 @@
 		addStartingSkills($f);
 		echo "<pre>addStartingSkills"; var_dump($f); echo "</pre>";
 		
-		$query = "select row from ng2_paid where account=?";
-		$stmt = $link->prepare($query);
-		$stmt->bind_param('s', $_SESSION['account']);
-		$stmt->execute();
-		$stmt->store_result();
-		$count = $stmt->num_rows;
-		$paid = 0;
-		if($count > 0){
-			$paid = 1;
-		}
-		echo '<pre>PAID: '. $paid .'</pre>';
-		
-		$query = "select row from ng2_chars where account=?";
+		$query = "select row from `characters` where account=?";
 		$stmt = $link->prepare($query);
 		$stmt->bind_param('s', $_SESSION['account']);
 		$stmt->execute();

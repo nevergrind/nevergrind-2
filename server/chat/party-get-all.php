@@ -13,8 +13,8 @@ $query = 'select
 	g.maxHp, 
 	g.mp, 
 	g.maxMp 
-	from ng2_players p 
-	join ng2_parties g  
+	from `players` p 
+	join `parties` g  
 	on p.id=g.c_id
 	where g.p_id=?
 	limit 6';

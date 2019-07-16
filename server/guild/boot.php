@@ -7,7 +7,7 @@ if (!empty($_SESSION['guild']) && $_SESSION['guild']['rank'] < 2) {
 	// make sure they don't outrank me
 
 	// find player row by name
-	$stmt = $link->prepare('select row from ng2_chars where name=?');
+	$stmt = $link->prepare('select row from `characters` where name=?');
 	$stmt->bind_param('s', $_POST['name']);
 	$stmt->execute();
 	$stmt->bind_result($dbRow);
@@ -16,7 +16,7 @@ if (!empty($_SESSION['guild']) && $_SESSION['guild']['rank'] < 2) {
 		$row = $dbRow;
 	}
 	// check rank
-	$stmt = $link->prepare('select rank from ng2_guild_members where c_id=?');
+	$stmt = $link->prepare('select rank from `guild_members` where c_id=?');
 	$stmt->bind_param('i', $row);
 	$stmt->execute();
 	$stmt->bind_result($dbRank);

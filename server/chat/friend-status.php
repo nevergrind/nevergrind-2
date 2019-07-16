@@ -4,10 +4,10 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 // get online players
 $result = mysqli_query($link,
 	'select p.name, p.level, p.race, p.job, g.name guild
-			from ng2_players p 
-			left join ng2_guild_members m
+			from `players` p 
+			left join `guild_members` m
 			on p.id=m.c_id 
-			left join ng2_guilds g
+			left join `guilds` g
 			on m.g_id=g.row
 			where p.timestamp > date_sub(now(), interval 15 second)'
 );
@@ -30,7 +30,7 @@ if ($result->num_rows){
 // get friends
 $r['friends'] = [];
 
-$query = 'select friend from `ng2_friends` where account=?';
+$query = 'select friend from `friends` where account=?';
 $stmt = $link->prepare($query);
 $stmt->bind_param('s', $_SESSION['account']);
 $stmt->execute();

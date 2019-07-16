@@ -10,12 +10,12 @@ if ($_POST['channel']) {
 	$r['fullChannel'] = 'ng2:'. $_POST['channel'];
 
 	// update my zone/channel
-	$stmt = $link->prepare('update ng2_players set zone=? where id=?');
+	$stmt = $link->prepare('update `players` set zone=? where id=?');
 	$stmt->bind_param('ss', $r['fullChannel'], $_SESSION['ng2']['row']);
 	$stmt->execute();
 
 	// get channel players
-	$stmt = $link->prepare('select id, name, level, race, job from ng2_players where zone=? and timestamp > date_sub(now(), interval 15 second) order by row desc');
+	$stmt = $link->prepare('select id, name, level, race, job from `players` where zone=? and timestamp > date_sub(now(), interval 15 second) order by row desc');
 	$stmt->bind_param('s', $r['fullChannel']);
 	$stmt->execute();
 	$stmt->bind_result($id, $name, $level, $race, $job);

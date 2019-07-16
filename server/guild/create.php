@@ -33,7 +33,7 @@ if (!ctype_alpha($nameCheck)){
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // check if this guild name is taken
-$stmt = $link->prepare('select name from ng2_guilds where name=?');
+$stmt = $link->prepare('select name from `guilds` where name=?');
 $stmt->bind_param('s', $name);
 $stmt->execute();
 $stmt->store_result();
@@ -43,7 +43,7 @@ if ($stmt->num_rows) {
 }
 
 // make sure I'm not in a guild
-$stmt = $link->prepare('select row from ng2_guild_members where c_id=?');
+$stmt = $link->prepare('select row from `guild_members` where c_id=?');
 $stmt->bind_param('s', $_SESSION['ng2']['row']);
 $stmt->execute();
 $stmt->store_result();
@@ -51,14 +51,14 @@ $stmt->store_result();
 if ($stmt->num_rows) {
 	exit("You are already in a guild!");
 }
-// add to ng2_guilds
-$stmt = $link->prepare("insert into ng2_guilds (`name`) values (?)");
+// add to `guilds`
+$stmt = $link->prepare("insert into `guilds` (`name`) values (?)");
 $stmt->bind_param('s', $name);
 $stmt->execute();
 $g_id = mysqli_insert_id($link);
 
-// add to ng2_guild_members
-$stmt = $link->prepare("insert into ng2_guild_members (rank, c_id, g_id, member_number) values (0, ?, ?, 1)");
+// add to `guild_members`
+$stmt = $link->prepare("insert into `guild_members` (rank, c_id, g_id, member_number) values (0, ?, ?, 1)");
 $stmt->bind_param('si', $_SESSION['ng2']['row'], $g_id);
 $stmt->execute();
 // get guild id

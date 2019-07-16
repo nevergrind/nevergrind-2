@@ -37,7 +37,7 @@
 	}
 
 /*
-insert into ng2_equip_jobs (`equipJobs`) values
+insert into `equip_jobs` (`equipJobs`) values
 (''),
 ('0'),
 ('NEC ENC MAG WIZ'),

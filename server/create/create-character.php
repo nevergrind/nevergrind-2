@@ -18,7 +18,7 @@
 	}
 	// name is not taken
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-	$query = "select name from ng2_chars where name=?";
+	$query = "select name from `characters` where name=?";
 	$stmt = $link->prepare($query);
 	$stmt->bind_param('s', $f['name']);
 	$stmt->execute();
@@ -37,7 +37,7 @@
 	}
 
 	// how many characters do they have?
-	$query = "select row from ng2_chars where account=? and deleted=0";
+	$query = "select row from `characters` where account=? and deleted=0";
 	$stmt = $link->prepare($query);
 	$stmt->bind_param('s', $_SESSION['account']);
 	$stmt->execute();
@@ -125,7 +125,7 @@
 	addStartingSkills($f);
 	
 	// success
-	$query = 'insert into ng2_chars (
+	$query = 'insert into `characters` (
 		`account`, 
 		`name`, 
 		`gender`, 
@@ -176,7 +176,7 @@
 	}
 	$queryValues = getItemString($r['row'], $slots, 1);
 
-	$query = 'insert into ng2_items (
+	$query = 'insert into `items` (
 		charRow, 
 		uniqueId, 
 		slotType, 
@@ -252,7 +252,7 @@
 	// type 0 is equipment
 	$queryValues = getItemString($r['row'], $slots, 0);
 	
-	$query = 'insert into ng2_items (
+	$query = 'insert into `items` (
 		charRow, 
 		uniqueId, 
 		slotType, 
@@ -286,7 +286,7 @@
 	$stmt->execute();
 	
 	// add mission data
-	$query = 'insert into ng2_missions (c_id) VALUES (?)';
+	$query = 'insert into `missions` (c_id) VALUES (?)';
 	$stmt = $link->prepare($query);
 	$stmt->bind_param('s', $f['row']);
 	$stmt->execute();

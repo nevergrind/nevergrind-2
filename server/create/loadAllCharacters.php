@@ -1,5 +1,5 @@
 <?php
-	$query = 'select row, name, level, race, job from `ng2_chars` where account=? and deleted=0';
+	$query = 'select row, name, level, race, job from `characters` where account=? and deleted=0';
 	$stmt = $link->prepare($query);
 	$stmt->bind_param('s', $_SESSION['account']);
 	$stmt->execute();

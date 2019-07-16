@@ -3,7 +3,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // Count number of players in the party already
-$query = 'SELECT count(row) count FROM ng2_parties where p_id=?';
+$query = 'SELECT count(row) count FROM `parties` where p_id=?';
 $stmt = $link->prepare($query);
 $stmt->bind_param('s', $_POST['row']);
 $stmt->execute();
@@ -21,7 +21,7 @@ if ($partyCount >= 1 && $partyCount < 6) {
 		// not leading a party yet
 		require '../session/init-party.php';
 
-		$stmt = $link->prepare('insert into ng2_parties (c_id, p_id, hp, maxHp, mp, maxMp) values (?, ?, ?, ?, ?, ?)');
+		$stmt = $link->prepare('insert into `parties` (c_id, p_id, hp, maxHp, mp, maxMp) values (?, ?, ?, ?, ?, ?)');
 
 		$stmt->bind_param('ssiiii',
 			$_SESSION['ng2']['row'],
@@ -37,8 +37,8 @@ if ($partyCount >= 1 && $partyCount < 6) {
 		$c_id = $_POST['cId'] * 1;
 		$stmt = $link->prepare(
 			'select m.row, m.zone, m.level, m.mob_id, m.title, m.description 
-			from ng2_players p 
-			join ng2_mission_list m 
+			from `players` p 
+			join `mission_list` m 
 			on p.mission_id=m.row
 			where p.id=?'
 		);
@@ -57,7 +57,7 @@ if ($partyCount >= 1 && $partyCount < 6) {
 			];
 		}
 		// update db
-		$stmt = $link->prepare('update ng2_players set mission_id=? where id=?');
+		$stmt = $link->prepare('update `players` set mission_id=? where id=?');
 		$stmt->bind_param('ii', $mission_id, $_SESSION['ng2']['row']);
 		$stmt->execute();
 

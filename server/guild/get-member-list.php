@@ -3,8 +3,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 $query = 'select c.level, c.name, c.race, c.job 
-from ng2_chars c
-left join ng2_guild_members m
+from `characters` c
+left join `guild_members` m
 on c.row=m.c_id 
 where m.g_id=?
 order by c.level';

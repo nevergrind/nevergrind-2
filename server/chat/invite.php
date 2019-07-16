@@ -3,7 +3,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // get targeted player.id and party id by name
-$query = 'select p.id, g.c_id from ng2_players p left join ng2_parties g on p.id=g.c_id where p.name=? limit 1';
+$query = 'select p.id, g.c_id from `players` p left join `parties` g on p.id=g.c_id where p.name=? limit 1';
 $stmt = $link->prepare($query);
 $stmt->bind_param('s', $_POST['player']);
 $stmt->execute();
@@ -42,7 +42,7 @@ if (is_null($r['c_id'])) {
 		$newParty = 1;
 		require '../session/init-party.php';
 		$stmt = mysqli_query($link,
-			'insert into ng2_parties (is_leader, c_id, hp, maxHp, mp, maxMp) VALUES (1, '. $_SESSION['ng2']['row'] .', '.
+			'insert into `parties` (is_leader, c_id, hp, maxHp, mp, maxMp) VALUES (1, '. $_SESSION['ng2']['row'] .', '.
 			$_SESSION['ng2']['hp'] .', '.
 			$_SESSION['ng2']['maxHp'] .', '.
 			$_SESSION['ng2']['mp'] .', '.
@@ -55,7 +55,7 @@ if (is_null($r['c_id'])) {
 
 		// update p_id with what I just inserted with
 		$stmt = mysqli_query($link,
-			'update ng2_parties set p_id='. $p_id .' where row='. $p_id
+			'update `parties` set p_id='. $p_id .' where row='. $p_id
 		);
 	}
 	// send invite

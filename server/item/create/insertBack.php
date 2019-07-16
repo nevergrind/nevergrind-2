@@ -10,7 +10,7 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
     $equipSlots = 'back';
     $getEquipJobs = getEquipJobs('cloth');
 
-    $query = "insert into ng2_loot (
+    $query = "insert into `loot` (
 			name, itemLevel, damage, delay, armor, hp, mp, str, sta, agi, dex, wis, intel, cha, bleed, poison, arcane,
 			lightning, cold, fire, xPos, yPos, effect, rarityType, equipSlots, equipJobs, req ) VALUES (
 			'$name',

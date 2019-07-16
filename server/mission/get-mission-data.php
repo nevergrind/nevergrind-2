@@ -15,7 +15,7 @@ $query = 'select
 	sylong_mausoleum,
 	galeblast_fortress,
 	ashenflow_peak
-	from `ng2_missions` 
+	from `missions` 
 	where c_id=? 
 	limit 1';
 

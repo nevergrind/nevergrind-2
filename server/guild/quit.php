@@ -5,7 +5,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 if (!empty($_SESSION['guild']) &&
 	isset($_SESSION['guild']['id']) ) {
 	// check length
-	$query = "select members from ng2_guilds where row=?";
+	$query = "select members from `guilds` where row=?";
 	$stmt = $link->prepare($query);
 	$stmt->bind_param('s', $_SESSION['guild']['id']);
 	$stmt->execute();
@@ -22,20 +22,20 @@ if (!empty($_SESSION['guild']) &&
 		}
 	}
 	// delete member from guild
-	$stmt = $link->prepare('delete from ng2_guild_members where c_id=?');
+	$stmt = $link->prepare('delete from `guild_members` where c_id=?');
 	$stmt->bind_param('s', $_SESSION['ng2']['row']);
 	$stmt->execute();
 	// if it has zero members delete the guild, too
 	$totalMembers = $totalMembers - 1;
 	if (!$totalMembers) {
 		// delete the guild
-		$stmt = $link->prepare('delete from ng2_guilds where row=?');
+		$stmt = $link->prepare('delete from `guilds` where row=?');
 		$stmt->bind_param('s', $_SESSION['guild']['id']);
 		$stmt->execute();
 	}
 	else {
 		// subtract from member count
-		$query = 'update ng2_guilds set members=members-1 where row=?';
+		$query = 'update `guilds` set members=members-1 where row=?';
 		$stmt = $link->prepare($query);
 		$stmt->bind_param('s', $_SESSION['guild']['id']);
 		$stmt->execute();

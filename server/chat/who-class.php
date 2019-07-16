@@ -4,10 +4,10 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // get online players of that class only
 $query = 'select p.name, p.level, p.race, p.job, g.name guild 
-from ng2_players p
-left join ng2_guild_members m
+from `players` p
+left join `guild_members` m
 on p.id=m.c_id 
-left join ng2_guilds g
+left join `guilds` g
 on m.g_id=g.row
 where job=? 
 and timestamp > date_sub(now(), interval 15 second)';
@@ -28,7 +28,7 @@ while ($stmt->fetch()) {
 }
 
 // get count of that class
-$query = 'select count(row) len from `ng2_players` where job=? and timestamp > date_sub(now(), interval 15 second)';
+$query = 'select count(row) len from `players` where job=? and timestamp > date_sub(now(), interval 15 second)';
 $stmt = $link->prepare($query);
 $stmt->bind_param('s', $_POST['job']);
 $stmt->execute();

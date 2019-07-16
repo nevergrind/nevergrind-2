@@ -28,10 +28,7 @@ gulp.task('resize-sprite', resizeSprite);
 //////////////////////////////////////////////
 function minifyCss() {
 	var css = [
-		'login',
 		'main',
-		'flex',
-		'character-create',
 	].map(function(file) {
 		return './css/' + file + '.css';
 	});

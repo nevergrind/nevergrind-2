@@ -31,14 +31,7 @@
 
 <script>
 	(function(d){
-		var css = app.isLocal ?
-			[
-				'login',
-				'main',
-				'flex',
-				'character-create',
-			] :
-			['ng2'];
+		var css = app.isLocal ? ['main',] : ['ng2'];
 		var suffix = app.isLocal ? '.css' : '.min.css';
 		for (var i=0, len = css.length; i<len; i++) {
 			var link = d.createElement('link');
@@ -91,7 +84,7 @@
 			<div id="title-menu-wrap"
 				 class="title-menu-row flex-row"
 				 style="height: 42rem; justify-content: start">
-				<div class="flex-50 title-bg-color">
+				<div class="flex-row flex-50 title-bg-color">
 					<div class="title-ch-create-col text-center" style="justify-content: start">
 						<h1>
 							<div>Nevergrind 2</div>
@@ -113,8 +106,8 @@
 					</div>
 				</div>
 
-				<div class="flex-50 title-bg-trans">
-					<div id="title-select-character" class="title-ch-create-col">
+				<div class="flex-column flex-50 title-bg-trans">
+					<div id="title-select-character" class="title-ch-create-col flex-1">
 						<!-- well top -->
 						<div id="title-well-top" class="title-ch-well text-center">
 							<a id="delete-character"

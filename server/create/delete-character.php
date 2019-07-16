@@ -4,7 +4,7 @@
 	$f['row'] = $_POST['row'];
 	// name is not taken
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-	$query = "select row from ng2_chars where row=? and account=?";
+	$query = "select row from `characters` where row=? and account=?";
 	$stmt = $link->prepare($query);
 	$stmt->bind_param('ss', $f['row'], $_SESSION['account']);
 	$stmt->execute();
@@ -14,7 +14,7 @@
 		while($stmt->fetch()){
 			$row = $db_row;
 		}
-		$query = 'update ng2_chars set deleted=1, name=NULL where row=?';
+		$query = 'update `characters` set deleted=1, name=NULL where row=?';
 		$stmt = $link->prepare($query);
 		$stmt->bind_param('i', $row);
 		$stmt->execute();

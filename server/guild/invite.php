@@ -6,8 +6,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 $query = 'select 
 	p.id, 
 	g.c_id 
-	from ng2_players p 
-	left join ng2_guild_members g 
+	from `players` p 
+	left join `guild_members` g 
 	on p.id=g.c_id 
 	where p.name=? limit 1';
 

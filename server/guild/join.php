@@ -3,7 +3,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // Count number of players in the party already
-$query = 'SELECT row count FROM ng2_guild_members where c_id=?';
+$query = 'SELECT row count FROM `guild_members` where c_id=?';
 $stmt = $link->prepare($query);
 $stmt->bind_param('s', $_POST['row']);
 $stmt->execute();
@@ -11,13 +11,13 @@ $stmt->store_result();
 
 if ($stmt->num_rows) exit("You are already in a guild.");
 // increment guild member count
-$query = 'update ng2_guilds set members=members+1, member_number=member_number+1 where row=?';
+$query = 'update `guilds` set members=members+1, member_number=member_number+1 where row=?';
 $stmt = $link->prepare($query);
 $stmt->bind_param('s', $_POST['row']);
 $stmt->execute();
 
 // get guild number
-$query = 'SELECT member_number FROM ng2_guilds where row=?';
+$query = 'SELECT member_number FROM `guilds` where row=?';
 $stmt = $link->prepare($query);
 $stmt->bind_param('s', $_POST['row']);
 $stmt->execute();
@@ -28,7 +28,7 @@ while ($stmt->fetch()){
 }
 
 // insert into member table
-$stmt = $link->prepare('insert into ng2_guild_members (
+$stmt = $link->prepare('insert into `guild_members` (
 	rank, c_id, g_id, member_number
 	) values (
 	2, ?, ?, '. $memberNumber .')');

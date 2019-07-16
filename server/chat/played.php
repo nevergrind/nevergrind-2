@@ -2,7 +2,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-$query = 'select created, playtime from `ng2_chars` where row=? limit 1';
+$query = 'select created, playtime from `characters` where row=? limit 1';
 $stmt = $link->prepare($query);
 $stmt->bind_param('s', $_SESSION['ng2']['row']);
 $stmt->execute();

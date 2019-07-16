@@ -4,8 +4,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 $stmt = $link->prepare('SELECT m.row, m.level, m.title, z.zone, m.mob_id, m.description 
-	FROM ng2_mission_list m
-	join ng2_zones z
+	FROM `mission_list` m
+	join `zones` z
 	on m.zone=z.row
 	where m.zone=?');
 $stmt->bind_param('s', $_POST['id']);

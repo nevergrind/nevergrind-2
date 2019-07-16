@@ -1,6 +1,6 @@
 <?php
 	/*
-	insert into ng2_items (
+	insert into `items` (
 			charRow, 
 			type (0 eq, 1 inv)
 			$slots (key is slot, value is lootRow)

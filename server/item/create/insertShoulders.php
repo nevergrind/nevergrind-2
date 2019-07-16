@@ -3,7 +3,7 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
     require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
     require 'getEquipJobs.php';
 
-    $query = "insert into ng2_loot (
+    $query = "insert into `loot` (
 			name,
 			itemLevel,
 			damage,

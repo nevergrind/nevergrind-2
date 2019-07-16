@@ -1,13 +1,13 @@
 <?php
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-	// delete all from ng2_players to clean up the table
-	mysqli_query($link, 'delete from ng2_players where timestamp < date_sub(now(), interval 60 second)');
+	// delete all from `players` to clean up the table
+	mysqli_query($link, 'delete from `players` where timestamp < date_sub(now(), interval 60 second)');
 
 	// are they already logged in?
 	if ($_SERVER["SERVER_NAME"] !== "localhost") {
 		// prevent double login
-		$query = 'SELECT count(row) count FROM ng2_players where account=? and timestamp > date_sub(now(), interval 15 second)';
+		$query = 'SELECT count(row) count FROM `players` where account=? and timestamp > date_sub(now(), interval 15 second)';
 		$stmt = $link->prepare($query);
 		$stmt->bind_param('s', $_SESSION['account']);
 		$stmt->execute();
@@ -31,7 +31,7 @@
 	 	oneHandSlash, twoHandSlash, oneHandBlunt, twoHandBlunt, piercing, handToHand,
 	 	dodge, parry, riposte,
 	 	alteration, conjuration, evocation
-	 	from `ng2_chars` where account=? and row=? limit 1';
+	 	from `characters` where account=? and row=? limit 1';
 	$stmt = $link->prepare($query);
 	$stmt->bind_param('ss', $_SESSION['account'], $_POST['row']);
 	$stmt->execute();
@@ -103,7 +103,7 @@
 			$_SESSION['ng2'][$key] = $val;
 		}
 		// assign session hp/mp cache values if a non -1 value was found
-		// this helps avoid relying on hp/mp value in ng2_chars AND parties table
+		// this helps avoid relying on hp/mp value in `characters` AND parties table
 		if ($cacheHp >= 0) {
 			$_SESSION['ng2']['hp'] = $cacheHp;
 			$r['characterData']['hp'] = $cacheHp;
@@ -118,7 +118,7 @@
 		else {
 			require '../session/init-party.php';
 			// delete from parties if player data is known
-			mysqli_query($link, 'delete from ng2_parties where c_id='. $_SESSION['ng2']['row']);
+			mysqli_query($link, 'delete from `parties` where c_id='. $_SESSION['ng2']['row']);
 		}
 
 		if (!isset($_SESSION['quest'])) {
@@ -135,7 +135,7 @@
 		require 'setEquipmentValues.php';
 		/*
 		// update player heartbeat table
-		$stmt = $link->prepare('insert into ng2_players 
+		$stmt = $link->prepare('insert into `players`
 			(`id`, `account`, `name`, `level`, `race`, `job`, `zone`) 
 			values (?, ?, ?, ?, ?, ?, ?) 
 			on duplicate key update timestamp=now()');
@@ -153,7 +153,7 @@
 		// count active players
 		$result = mysqli_query(
 			$link,
-			'SELECT count(row) count FROM `ng2_players` where timestamp > date_sub(now(), interval 15 second)'
+			'SELECT count(row) count FROM `players` where timestamp > date_sub(now(), interval 15 second)'
 		);
 		$r['count'] = 0;
 		while ($row = mysqli_fetch_assoc($result)){
@@ -165,7 +165,7 @@
 		// get all players in chat room
 		$result = mysqli_query(
 			$link,
-			'SELECT id, name, level, race, job FROM `ng2_players` where zone="ng2:town" and timestamp > date_sub(now(), interval 15 second)'
+			'SELECT id, name, level, race, job FROM `players` where zone="ng2:town" and timestamp > date_sub(now(), interval 15 second)'
 		);
 		$r['players'] = [];
 		$i = 0;

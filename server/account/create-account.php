@@ -6,7 +6,6 @@ $link = $_SERVER['SERVER_NAME'] === 'localhost' ?
 	mysqli_connect('localhost', 'ng2', 'ng2', 'nevergrind');
 
 $account = strtolower($_POST['account']);
-$password = $_POST['password'];
 
 // all alphabetic?
 if (!ctype_alnum(str_replace('_', '', $account))) {
@@ -22,13 +21,8 @@ if (strlen($account) > 16) {
 	echo "Your account name must be between 2-16 characters long.";
 	exit;
 }
-//check password length
-if (strlen($password) < 6) {
-	echo "Your password must be at least six characters long";
-	exit;
-}
 // check that account does not exist
-$query = 'select account from accounts where account=?';
+$query = 'select account from `accounts` where account=?';
 $stmt = $link->prepare($query);
 $stmt->bind_param('s', $account);
 $stmt->execute();
@@ -41,9 +35,9 @@ if ($count > 0) {
 }
 
 // create account
-$query = 'insert into `accounts` (`account`, `password`) VALUES (?, ?)';
+$query = 'insert into `accounts` (`account`) VALUES (?)';
 $stmt = $link->prepare($query);
-$stmt->bind_param('ss', $account, $password);
+$stmt->bind_param('s', $account);
 $stmt->execute();
 
 $_SESSION['account'] = $account;

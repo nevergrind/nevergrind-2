@@ -2,10 +2,10 @@
 
 // load all zone mob images and preload them client-side
  $stmt = $link->prepare('SELECT i.name
-	FROM ng2_mobs m
-	join ng2_mob_img i
+	FROM `mobs` m
+	join `mob_img` i
 	on m.img=i.row
-	join ng2_zones z
+	join `zones` z
 	on m.zone=z.row
 	where z.zone=?
 	group by i.name');

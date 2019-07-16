@@ -1,3 +1,4 @@
+/* login styles */
 #loginWrap {
 	position: absolute;
 	left: 0;
@@ -18,6 +19,11 @@
 #login-modal {
 	visibility: hidden;
 }
+#login-form-contents {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
 #login-modal, #login-container {
 	position: absolute;
 	width: 100%;
@@ -33,6 +39,11 @@
 	background: rgba(0, 0, 0, .8);
 	z-index: 99999999;
 }
+#account {
+	width: 10rem;
+	border: 2px inset #05b;
+	padding: .1rem .3rem;
+}
 #login-btn {
 	margin: 1rem 0 .5rem;
 }
@@ -41,37 +52,30 @@
 	font-family: Cinzel;
 	src: url(../fonts/Cinzel-Regular.otf)
 }
-
 @font-face {
 	font-family: Roboto;
 	src: url(../fonts/Roboto-Regular.ttf)
 }
-
 @font-face {
 	font-family: Roboto Condensed;
 	src: url(../fonts/RobotoCondensed-Regular.ttf)
 }
-
 @font-face {
 	font-family: Quatro, Roboto Slab;
 	src: url(../fonts/RobotoSlab-Regular.ttf)
 }
-
 @font-face {
 	font-family: Play;
 	src: url(../fonts/Play.ttf)
 }
-
 @font-face {
 	font-family: Imfell;
 	src: url(../fonts/IM-Fell-English-SC.ttf)
 }
-
 @font-face {
 	font-family: Quatro;
 	src: url(../fonts/Quattrocento.ttf)
 }
-
 @font-face {
 	font-family: Tinos;
 	src: url(../fonts/tinos.ttf)
@@ -300,7 +304,8 @@ tbody {
 	margin: 4px auto
 }
 .title-bg-color {
-	background: #00214d
+	background: #00214d;
+	padding: .1rem .3rem;
 }
 .title-bg-trans {
 	margin: 0;
@@ -1710,6 +1715,7 @@ background-clip: content-box;
 .flex-16 { flex-basis: 16.666% }
 .flex-8 { flex-basis: 8.333% }
 
+
 #create-attr {
 	flex-grow: 1;
 	padding-top: 1rem
@@ -1783,11 +1789,11 @@ background-clip: content-box;
 	background: #013;
 	margin: .2rem 0;
 	border: .1rem ridge #444;
-	height: 99%
 }
 #title-select-character {
 	background: rgba(0, 0, 0, 0);
-	box-shadow: .1rem 0 #00214d inset, -.1rem 0 #00214d inset
+	box-shadow: .1rem 0 #00214d inset, -.1rem 0 #00214d inset;
+	flex: 1;
 }
 #ch-cr-detail-col {
 	display: flex;

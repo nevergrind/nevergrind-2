@@ -1,26 +1,9 @@
 'use strict';
-var a;
-var d;
-var i;
-var j;
-var s;
-var x;
-var y;
-var z;
-var el;
-var el2;
-var arr;
-var str;
-var key;
-var val;
-var foo;
-var bar;
-var html;
-var index;
 var login;
 (function() {
 	login = {
 		lock: 0,
+		account: localStorage.getItem('account'),
 		fadeTimer: new TweenMax.delayedCall(0, ''),
 		focusInput: false,
 		authenticationLock: false,
@@ -29,9 +12,9 @@ var login;
 		fadeOut: fadeOut,
 		notLoggedIn: notLoggedIn,
 		authenticate: authenticate,
-		getLoginHtml: getLoginHtml,
+		setLoginHtml: setLoginHtml,
 		createAccount: createAccount,
-		getCreateHtml: getCreateHtml,
+		setCreateHtml: setCreateHtml,
 	};
 	//////////////////////////////
 	function init() {
@@ -51,20 +34,14 @@ var login;
 		$("#login-form-contents").on('click', '#login-btn', login.authenticate)
 			.on('click', '#create-account', login.createAccount);
 
-		setTimeout(function(){
-			document.getElementById('login-form-contents').innerHTML = login.getLoginHtml();
-		});
+		setLoginHtml();
 
-		$("#gotoAccount").on('click', function(){
-			document.getElementById('login-form-contents').innerHTML = login.getLoginHtml();
-		});
+		$("#gotoAccount").on('click', setLoginHtml);
 
-		$("#createAccount").on('click', function(){
-			document.getElementById('login-form-contents').innerHTML = login.getCreateHtml();
-		});
+		$("#createAccount").on('click', setCreateHtml);
 	}
-	function getLoginHtml() {
-		var s =
+	function setLoginHtml() {
+		var html =
 			'<div style="margin-bottom: .2rem">Account</div>' +
 			'<input name="username"' +
 				'type="text"' +
@@ -74,22 +51,15 @@ var login;
 				'placeholder="Account Name"' +
 				'required="required"' +
 				'spellcheck="false"/>' +
-			'<div style="margin: .2rem">Password</div>' +
-			'<input name="password"' +
-				'type="password"' +
-				'id="password"' +
-				'class="loginInputs"' +
-				'maxlength="20"' +
-				'auto-complete="current-password"' +
-				'placeholder="Password"' +
-				'required="required" />' +
-			'</div>' +
 			'<input id="login-btn" type="submit" value="Login" class="ng-btn" />' +
 			'<div class="error-msg"></div>';
-		return s;
+		document.getElementById('login-form-contents').innerHTML = html;
+		if (login.account !== null) {
+			$('#account').val(login.account);
+		}
 	}
-	function getCreateHtml() {
-		var s =
+	function setCreateHtml() {
+		var html =
 			'<div style="margin: .2rem">Account</div>' +
 			'<input type="text" ' +
 				'id="account" ' +
@@ -99,22 +69,14 @@ var login;
 				'placeholder="Enter Account Name" ' +
 				'required="required" ' +
 				'spellcheck="false"/>' +
-			'<div style="margin: .2rem">Password</div>' +
-			'<input type="password" ' +
-				'id="password" ' +
-				'auto-complete="disabled" '+
-				'class="loginInputs" ' +
-				'maxlength="20" ' +
-				'placeholder="Password" required="required" />' +
 			'<input id="create-account" type="submit" value="Create" class="ng-btn" style="margin: 1rem 0 .2rem" />' +
 			'<div class="error-msg"></div>';
-		return s;
+		document.getElementById('login-form-contents').innerHTML = html;
 	}
 	function createAccount() {
 		if (login.lock) {
 			return false;
 		}
-		var pw = $("#password").val();
 		var account = $("#account").val().toLowerCase();
 
 		if (account.length < 3) {
@@ -130,22 +92,14 @@ var login;
 			login.msg("Your account name should only contain letters, numbers, and underscores.");
 			return false;
 		}
-		if (pw.length < 6) {
-			login.msg("Your password must be at least six characters long.");
-			return false;
-		}
 		login.msg("Connecting to server...");
 		login.lock = 1;
-		$.ajax({
-			type: 'POST',
-			url: app.url + 'server/account/create-account.php',
-			data: {
-				account: account,
-				password: pw
-			}
+		$.post(app.url + 'server/account/create-account.php', {
+			account: account
 		}).done(function(data) {
 			if (data.indexOf("Account Created") === -1){
 				// something went wrong
+				localStorage.setItem('account', account);
 				login.msg(data);
 			}
 			else {
@@ -197,22 +151,17 @@ var login;
 			return false;
 		}
 		var account = $("#account").val().toLowerCase();
-		var password = $("#password").val();
 		if (account.length < 3) {
 			login.msg("This is not a valid account name.");
 			return false;
 		}
-		if (password.length < 6 && !login.token) {
-			login.msg("Passwords must be at least six characters long.");
-			return false;
-		}
 		login.msg("Connecting to server...");
 		login.authenticationLock = true;
-		$.post(app.url + 'server/authenticate.php', {
-			account: account,
-			password: password
+		$.post(app.url + 'server/account/authenticate.php', {
+			account: account
 		}).done(function(data){
 			if (data === "Login successful!"){
+				localStorage.setItem('account', account);
 				location.reload();
 			}
 			else {

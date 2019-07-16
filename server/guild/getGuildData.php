@@ -6,8 +6,8 @@ $stmt = $link->prepare('select m.rank,
 	n.motd,
 	n.members,
 	n.name 
-	from ng2_guild_members m 
-	left join ng2_guilds n 
+	from `guild_members` m 
+	left join `guilds` n 
 	on m.g_id=n.row 
 	where m.c_id=? 
 	limit 1');

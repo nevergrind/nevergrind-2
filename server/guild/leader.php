@@ -6,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 if (!empty($_SESSION['guild']) &&
 	$_SESSION['guild']['rank'] < 1) {
 	// find player row by name
-	$stmt = $link->prepare('select row from ng2_chars where name=?');
+	$stmt = $link->prepare('select row from `characters` where name=?');
 	$stmt->bind_param('s', $_POST['name']);
 	$stmt->execute();
 	$stmt->bind_result($dbId);
@@ -17,12 +17,12 @@ if (!empty($_SESSION['guild']) &&
 	}
 
 	// promote name
-	$stmt = $link->prepare('update ng2_guild_members set rank=0 where c_id=?');
+	$stmt = $link->prepare('update `guild_members` set rank=0 where c_id=?');
 	$stmt->bind_param('s', $c_id);
 	$stmt->execute();
 
 	// demote self
-	$stmt = $link->prepare('update ng2_guild_members set rank=1 where c_id=?');
+	$stmt = $link->prepare('update `guild_members` set rank=1 where c_id=?');
 	$stmt->bind_param('s', $_SESSION['ng2']['row']);
 	$stmt->execute();
 
