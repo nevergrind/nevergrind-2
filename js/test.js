@@ -36,7 +36,7 @@ var test;
 	function chatRoom() {
 		for (i=0; i<100; i++) {
 			c = ng.toJobShort(ng.jobs[~~(Math.random() * 14)]);
-			socket.zmq.publish(chat.getChannel(), {
+			socket.publish(chat.getChannel(), {
 				route: 'chat->add',
 				row: test.chat.id+i,
 				level: Math.ceil(Math.random() * 50),

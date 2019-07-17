@@ -767,7 +767,7 @@ var chat;
 	function promptDeny(data) {
 		console.info('deny ', data);
 		$("#"+ data.action +"-"+ data.row).remove();
-		socket.zmq.publish("name:"+ data.name, {
+		socket.publish("name:"+ data.name, {
 			action: data.action + '-deny',
 			name: my.name
 		});
@@ -871,12 +871,9 @@ var chat;
 				}
 				else {
 					chat.log('You have added ' + o + ' to your friend list.', 'chat-warning');
-					socket.zmq.subscribe('friend:'+ o, function(topic, data) {
-						chat.friendNotify(topic, data);
-					});
-
+					socket.subscribe('friend:'+ o, chat.friendNotify);
 					if (!~ng.friends.indexOf(o)) {
-						socket.zmq.publish('name:' + o, {
+						socket.publish('name:' + o, {
 							name: my.name,
 							route: "friend>addedMe"
 						});
@@ -1132,9 +1129,7 @@ var chat;
 		// set new channel data
 		my.channel = data.channel;
 		chat.log('You have joined channel: ' + data.channel, 'chat-warning');
-		socket.zmq.subscribe(data.fullChannel, function (topic, data) {
-			socket.routeMainChat(topic, data);
-		});
+		socket.subscribe(data.fullChannel, socket.routeMainChat);
 		// add to chat channel
 		chat.setHeader();
 		chat.broadcastAdd();
@@ -1176,7 +1171,7 @@ var chat;
 	function broadcastAdd() {
 		// player broadcasts updates from client
 		console.info('broadcast.add', chat.getChannel());
-		socket.zmq.publish(chat.getChannel(), {
+		socket.publish(chat.getChannel(), {
 			route: 'chat->add',
 			row: my.row,
 			level: my.level,
@@ -1187,7 +1182,7 @@ var chat;
 	function broadcastRemove() {
 		console.info('broadcast.remove');
 		try {
-			socket.zmq.publish(chat.getChannel(), {
+			socket.publish(chat.getChannel(), {
 				route: 'chat->remove',
 				row: my.row
 			});

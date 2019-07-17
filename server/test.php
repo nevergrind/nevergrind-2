@@ -1,8 +1,49 @@
 <style>
 	html {
-		font-size: 2.5rem;
+		font-size: 2rem;
 	}
 </style>
+<script src="/ng2/js/autobahn-2.min.js"></script>
+<script>
+
+var connection = new autobahn.Connection({
+	url: 'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com:9090/',
+	realm: 'realm1'
+});
+connection.onopen = onOpen;
+console.info('connection instantiated...');
+connection.open();
+//////////////////////////////////////
+function onOpen(session) {
+	console.warn("Connection successful!", session);
+	session = session;
+
+	session.subscribe('test', function(arr, obj){
+		console.log("Event:", arr, obj);
+		var el = document.createElement('div');
+		el.innerHTML = 'socket reported: ' + arr[0];
+		document.body.appendChild(el);
+		var el2 = document.createElement('div');
+		el2.innerHTML = 'socket reported: ' + obj.date;
+		document.body.appendChild(el2);
+	});
+	session.publish('test', ['Hello, flat earth!'], {
+		date: Date.now()
+	}, {
+		exclude_me: false
+	});
+	// call/register example
+	/*function add2(args) {
+		return args[0] + args[1];
+	}
+	session.register('com.myapp.add2', add2);
+	session.call('com.myapp.add2', [2, 3]).then(callDone);
+	function callDone(res) {
+		console.log("Result:", res);
+	}*/
+}
+
+</script>
 <?php
 	$now = microtime(true);
 	session_start();
@@ -60,6 +101,7 @@
 	$result = $steam->run(new \Steam\Command\Apps\GetAppList());
 
 	var_dump($result);
+
 	/*
 	$_SESSION['ng2']['hp'] = 1;
 	if ($_SESSION['ng2']['mp']) {

@@ -1,9 +1,15 @@
 var socket;
 (function() {
 	socket = {
+		connection: void 0,
 		enabled: 0,
 		initialConnection: 1,
+		subs: {}, // active channel subscriptions - required to unsub
+		subscribe: subscribe,
 		unsubscribe: unsubscribe,
+		publish: publish,
+		registerSubscription: registerSubscription,
+		hello: hello,
 		joinGame: joinGame,
 		initWhisper: initWhisper,
 		init: init,
@@ -15,9 +21,28 @@ var socket;
 		initGuild: initGuild,
 	}
 	////////////////////////////////////////
+	function subscribe(topic, callback) {
+		if (typeof socket.subs[topic] !== 'object' ||
+			!socket.subs[topic].active) {
+			socket.session.subscribe(topic, callback).then(registerSubscription);
+		}
+	}
+	function publish(topic, obj, excludeMe) {
+		console.info(topic, obj, excludeMe);
+		socket.session.publish(topic, [], obj, {
+			exclude_me: !!excludeMe
+		});
+	}
+	function hello(arr, obj) {
+		console.log("socket test received:", arr, obj);
+	}
+	function registerSubscription(sub) {
+		console.info('registering topic', sub);
+		socket.subs[sub.topic] = sub;
+	}
 	function unsubscribe(channel) {
 		try {
-			socket.zmq.unsubscribe(channel);
+			socket.session.unsubscribe(channel);
 		} catch(err) {
 			console.info(err);
 		}
@@ -29,27 +54,28 @@ var socket;
 				socket.unsubscribe('game:' + game.id);
 				// game updates
 				console.info("Subscribing to game:" + game.id);
-				socket.zmq.subscribe('game:' + game.id, function(topic, data) {
-					if (ng.ignore.indexOf(data.account) === -1){
-						title.chatReceive(data);
-					}
-				});
+				socket.subscribe('game:' + game.id, joinGameCallback);
 			}
 			else {
 				setTimeout(retry, 100);
 			}
 		})();
 	}
+	function joinGameCallback(topic, data) {
+		if (ng.ignore.indexOf(data.account) === -1){
+			title.chatReceive(data);
+		}
+	}
 	function initWhisper() {
 		if (socket.enabled) {
 			var channel = 'hb:' + my.name;
 			// heartbeat
 			console.info("subscribing to heartbeat channel: ", channel);
-			socket.zmq.subscribe(channel, game.socket.heartbeatCallback);
+			socket.subscribe(channel, game.socket.heartbeatCallback);
 			// whisper
 			channel = 'name:' + my.name;
 			console.info("subscribing to whisper channel: ", channel);
-			socket.zmq.subscribe(channel, routeToWhisper);
+			socket.subscribe(channel, routeToWhisper);
 		}
 	}
 	function routeToWhisper(topic, data) {
@@ -106,13 +132,35 @@ var socket;
 		}
 	}
 	function init() {
-		// is player logged in?
-		socket.zmq = new ab.Session(app.socketUrl,
-			socket.connectionSuccess,
-			socket.connectionFailure, {
-			// options
-			'skipSubprotocolCheck': true
+		socket.connection = new autobahn.Connection({
+			url: 'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com:9090/',
+			realm: 'realm1'
 		});
+		console.info('connection instantiated...');
+
+		socket.connection.onopen = onOpen;
+
+		function onOpen(session) {
+			console.warn("Connection successful!", session);
+			socket.session = session;
+
+			socket.subscribe('test', hello);
+			socket.publish('test', {
+				date: Date.now()
+			});
+			// call/register example
+			/*function add2(args) {
+				return args[0] + args[1];
+			}
+			session.register('com.myapp.add2', add2);
+			session.call('com.myapp.add2', [2, 3]).then(callDone);
+			function callDone(res) {
+				console.log("Result:", res);
+			}*/
+			socket.connectionSuccess();
+		}
+
+		socket.connection.open();
 	}
 	function connectionFailure(code, reason) {
 		console.info('Websocket connection closed. Code: '+code+'; reason: '+reason);
@@ -135,7 +183,7 @@ var socket;
 			// subscribe to admin broadcasts
 			var admin = 'admin:broadcast';
 			console.info("subscribing to channel: ", admin);
-			socket.zmq.subscribe(admin, routeToAdmin);
+			socket.subscribe(admin, routeToAdmin);
 
 			(function retry(){
 				if (my.name){
@@ -153,7 +201,7 @@ var socket;
 			chat.broadcastAdd();
 			chat.setHeader();
 			// notify friends I'm online
-			socket.zmq.publish('friend:' + my.name, {
+			socket.publish('friend:' + my.name, {
 				name: my.name,
 				route: 'on'
 			});
@@ -166,7 +214,7 @@ var socket;
 	function initFriendAlerts() {
 		ng.friends.forEach(function(v){
 			socket.unsubscribe('friend:' + v);
-			socket.zmq.subscribe('friend:' + v, chat.friendNotify);
+			socket.subscribe('friend:' + v, chat.friendNotify);
 		});
 	}
 	function initParty(row) {
@@ -178,7 +226,7 @@ var socket;
 		console.info("subscribing to channel: ", party);
 		try {
 			// for some reason I need this when I rejoin town; whatever
-			socket.zmq.subscribe(party, routeToParty);
+			socket.subscribe(party, routeToParty);
 		}
 		catch (err) {
 			console.info('socket.initParty ', err);
@@ -198,7 +246,7 @@ var socket;
 		if (my.guild.id) {
 			console.info("subscribing to guild channel: ", my.guildChannel());
 			my.guild.motd && chat.log('Guild Message of the day: ' + my.guild.motd, 'chat-guild');
-			socket.zmq.subscribe(my.guildChannel(), routeToGuild);
+			socket.subscribe(my.guildChannel(), routeToGuild);
 		}
 	}
 	function routeToGuild(topic, data) {
