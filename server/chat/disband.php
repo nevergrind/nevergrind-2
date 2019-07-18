@@ -6,13 +6,13 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 if ($_SESSION['party']['id']) {
 	// delete from party
 	$stmt = $link->prepare('delete from `parties` where c_id=?');
-	$stmt->bind_param('s', $_SESSION['ng2']['row']);
+	$stmt->bind_param('s', $_SESSION['row']);
 	$stmt->execute();
 
 	// bars notify party members
 	require_once '../zmq.php';
 	$zmq = [
-		'row' => $_SESSION['ng2']['row'],
+		'row' => $_SESSION['row'],
 		'route' => 'party->disband',
 		'class' => 'chat-warning',
 		'category' => 'party:'. $_SESSION['party']['id']

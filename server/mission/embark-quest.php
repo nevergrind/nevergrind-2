@@ -17,10 +17,10 @@ $_SESSION['quest'] = [
 ];
 $dungeon = 'dng:' . $_POST['quest']['zone'];
 $stmt = $link->prepare('update `players` set mission_id=?, zone=? where id=?');
-$stmt->bind_param('isi', $mission_id, $dungeon, $_SESSION['ng2']['row']);
+$stmt->bind_param('isi', $mission_id, $dungeon, $_SESSION['row']);
 $stmt->execute();
 
-$_SESSION['ng2']['zone'] = '';
+$_SESSION['zone'] = '';
 
 require 'get-zone-mobs.php';
 
@@ -40,7 +40,7 @@ if (!$_SESSION['party']['id'] || $_SESSION['party']['isLeader']) {
 }
 if ($_SESSION['party']['id']) {
 	$zmq = [
-		'msg' => $_SESSION['ng2']['name'] . ' has embarked into ' . $_SESSION['quest']['zone'],
+		'msg' => $_SESSION['name'] . ' has embarked into ' . $_SESSION['quest']['zone'],
 		'route' => 'chat->log',
 		'class' => 'chat-quest',
 		'category' => 'party:'. $_SESSION['party']['id']
@@ -60,7 +60,7 @@ else {
 		'msg' => 'Mission started: ' . $_SESSION['quest']['title'],
 		'route' => 'party->notifyMissionStatus',
 		'routeTo' => 'party',
-		'category' => 'name:'. $_SESSION['ng2']['name']
+		'category' => 'name:'. $_SESSION['name']
 	];
 }
 $socket->send(json_encode($zmq));

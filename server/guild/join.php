@@ -33,7 +33,7 @@ $stmt = $link->prepare('insert into `guild_members` (
 	) values (
 	2, ?, ?, '. $memberNumber .')');
 
-$stmt->bind_param('is', $_SESSION['ng2']['row'], $_POST['row']);
+$stmt->bind_param('is', $_SESSION['row'], $_POST['row']);
 $stmt->execute();
 
 // get guild info
@@ -42,7 +42,7 @@ require '../guild/getGuildData.php';
 // notify party
 require_once '../zmq.php';
 $zmq = [
-	'msg' => $_SESSION['ng2']['name'] . ' has joined ' . $_POST['guildName'] .'.',
+	'msg' => $_SESSION['name'] . ' has joined ' . $_POST['guildName'] .'.',
 	'route' => 'guild->hasJoined',
 	'category' => 'guild:'. $_POST['row']
 ];

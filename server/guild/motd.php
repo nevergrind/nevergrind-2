@@ -13,7 +13,7 @@ if (!empty($_SESSION['guild']) &&
 	// notify guild members
 	require_once '../zmq.php';
 	$zmq = [
-		'msg' => $_SESSION['ng2']['name'] . ' has set a new message of the day:<br>' . $_POST['msg'],
+		'msg' => $_SESSION['name'] . ' has set a new message of the day:<br>' . $_POST['msg'],
 		'route' => 'guild->motd',
 		'category' => 'guild:'. $_SESSION['guild']['id']
 	];

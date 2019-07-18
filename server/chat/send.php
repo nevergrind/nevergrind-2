@@ -5,9 +5,9 @@
     require_once '../zmq.php';
 	$zmq = [
 		'msg' => $postMsg,
-		'name' => $_SESSION['ng2']['name'],
-		'level' => $_SESSION['ng2']['level'],
-		'job' => $_SESSION['ng2']['job'],
+		'name' => $_SESSION['name'],
+		'level' => $_SESSION['level'],
+		'job' => $_SESSION['job'],
 		'class' => $_POST['class'],
 		'route' => 'chat->log'
 	];

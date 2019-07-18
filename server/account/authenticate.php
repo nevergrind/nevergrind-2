@@ -2,6 +2,7 @@
 $account = $_POST['account'];
 
 // Get account name to set it
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 $query = "select account from `accounts` where account=? limit 1";
 if ($stmt = $link->prepare($query)) {
@@ -11,7 +12,7 @@ if ($stmt = $link->prepare($query)) {
 	$count = $stmt->num_rows;
 	if (!$count) {
 		// nothing found
-		echo "Login Not Successful.";
+		header('HTTP/1.1 500 Login Failure');
 		exit;
 	}
 }
@@ -20,7 +21,7 @@ else {
 	exit;
 }
 // login success
-session_start();
 $_SESSION['account'] = $account;
-
-echo "Login successful!";
+$r['success'] = true;
+$r['account'] = $_SESSION['account'];
+echo json_encode($r);

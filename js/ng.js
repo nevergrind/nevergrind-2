@@ -346,7 +346,7 @@ var ng;
 			type: 'GET',
 			url: app.url + 'server/init-game.php'
 		}).done(function(r){
-			console.info('init-game', r.account, r);
+			console.info('init-game', r);
 			app.initialized = 1;
 			if (r.account) {
 				app.account = my.account = r.account; // for global reference
@@ -369,9 +369,7 @@ var ng;
 				}
 			}
 
-			if (r.resetSession === null) {
-				sessionStorage.clear();
-			}
+			r.resetLocalSession && sessionStorage.clear();
 		});
 	}
 	function displayAllCharacters(r) {

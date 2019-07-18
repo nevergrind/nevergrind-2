@@ -5,7 +5,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // get channel players
 $stmt = $link->prepare('select id, name, level, race, job from `players` where zone=? and timestamp > date_sub(now(), interval 15 second) order by row desc');
-$stmt->bind_param('s', $_SESSION['ng2']['zone']);
+$stmt->bind_param('s', $_SESSION['zone']);
 $stmt->execute();
 $stmt->bind_result($id, $name, $level, $race, $job);
 

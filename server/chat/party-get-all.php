@@ -41,11 +41,11 @@ while($stmt->fetch()){
 		'maxMp' => $maxMp
 	];
 	$r['party'][$i++] = $arr;
-	if ($_SESSION['ng2']['name'] === $name) {
+	if ($_SESSION['name'] === $name) {
 		// set session values for my character
 		foreach ($arr as $key => $val) {
 			if ($key !== 'isLeader') {
-				$_SESSION['ng2'][$key] = $val;
+				$_SESSION[$key] = $val;
 			}
 		}
 		$_SESSION['party']['isLeader'] = $isLeader;

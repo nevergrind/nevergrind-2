@@ -11,7 +11,7 @@ if ($_POST['channel']) {
 
 	// update my zone/channel
 	$stmt = $link->prepare('update `players` set zone=? where id=?');
-	$stmt->bind_param('ss', $r['fullChannel'], $_SESSION['ng2']['row']);
+	$stmt->bind_param('ss', $r['fullChannel'], $_SESSION['row']);
 	$stmt->execute();
 
 	// get channel players
@@ -32,7 +32,7 @@ if ($_POST['channel']) {
 		];
 	}
 
-	$_SESSION['ng2']['zone'] = $r['fullChannel'];
+	$_SESSION['zone'] = $r['fullChannel'];
 	echo json_encode($r);
 }
 else {

@@ -6,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 require_once '../zmq.php';
 if ($_SESSION['party']['id']) {
 	$zmq = [
-		'msg' => $_SESSION['ng2']['name'] . ' has abandoned the mission.',
+		'msg' => $_SESSION['name'] . ' has abandoned the mission.',
 		'route' => 'chat->log',
 		'class' => 'chat-quest',
 		'category' => 'party:' . $_SESSION['party']['id']
@@ -32,7 +32,7 @@ else {
 		'route' => 'party->notifyMissionStatus',
 		'action' => 'abandon',
 		'routeTo' => 'party',
-		'category' => 'name:'. $_SESSION['ng2']['name']
+		'category' => 'name:'. $_SESSION['name']
 	];
 	$socket->send(json_encode($zmq));
 }

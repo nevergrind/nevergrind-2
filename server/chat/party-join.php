@@ -24,12 +24,12 @@ if ($partyCount >= 1 && $partyCount < 6) {
 		$stmt = $link->prepare('insert into `parties` (c_id, p_id, hp, maxHp, mp, maxMp) values (?, ?, ?, ?, ?, ?)');
 
 		$stmt->bind_param('ssiiii',
-			$_SESSION['ng2']['row'],
+			$_SESSION['row'],
 			$_POST['row'],
-			$_SESSION['ng2']['hp'],
-			$_SESSION['ng2']['maxHp'],
-			$_SESSION['ng2']['mp'],
-			$_SESSION['ng2']['maxMp']);
+			$_SESSION['hp'],
+			$_SESSION['maxHp'],
+			$_SESSION['mp'],
+			$_SESSION['maxMp']);
 
 		$stmt->execute();
 
@@ -58,7 +58,7 @@ if ($partyCount >= 1 && $partyCount < 6) {
 		}
 		// update db
 		$stmt = $link->prepare('update `players` set mission_id=? where id=?');
-		$stmt->bind_param('ii', $mission_id, $_SESSION['ng2']['row']);
+		$stmt->bind_param('ii', $mission_id, $_SESSION['row']);
 		$stmt->execute();
 
 		$_SESSION['party'] = [
@@ -73,7 +73,7 @@ if ($partyCount >= 1 && $partyCount < 6) {
 		// notify party
 		require_once '../zmq.php';
 		$zmq = [
-			'msg' => $_SESSION['ng2']['name'] . ' has joined the party.',
+			'msg' => $_SESSION['name'] . ' has joined the party.',
 			'route' => 'party->join',
 			'category' => 'party:'. $_POST['row']
 		];

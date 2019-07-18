@@ -23,7 +23,7 @@ if (!empty($_SESSION['guild']) &&
 	}
 	// delete member from guild
 	$stmt = $link->prepare('delete from `guild_members` where c_id=?');
-	$stmt->bind_param('s', $_SESSION['ng2']['row']);
+	$stmt->bind_param('s', $_SESSION['row']);
 	$stmt->execute();
 	// if it has zero members delete the guild, too
 	$totalMembers = $totalMembers - 1;
@@ -45,7 +45,7 @@ if (!empty($_SESSION['guild']) &&
 	require_once '../zmq.php';
 	$zmq = new stdClass();
 	if (!isset($_POST['action'])) {
-		$zmq->msg = $_SESSION['ng2']['name'] . ' has left '. $_SESSION['guild']['name'] .'.';
+		$zmq->msg = $_SESSION['name'] . ' has left '. $_SESSION['guild']['name'] .'.';
 	}
 	$zmq->route = 'guild->quit';
 	$zmq->category = 'guild:'. $_SESSION['guild']['id'];

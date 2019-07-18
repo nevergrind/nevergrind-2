@@ -1,11 +1,9 @@
 <?php
-$_SESSION['ng2'] = [
-	'row' => 0,
-	'name' => '',
-	'hp' => 0,
-	'mp' => 0,
-	'leader' => '',
-	'zone' => 'ng2:town',
-	'level' => 0,
-	'played' => time()
-];
+$_SESSION['row'] = 0;
+$_SESSION['name'] = '';
+$_SESSION['hp'] = 0;
+$_SESSION['mp'] = 0;
+$_SESSION['leader'] = '';
+$_SESSION['zone'] = 'ng2:town';
+$_SESSION['level'] = 0;
+$_SESSION['played'] = time();

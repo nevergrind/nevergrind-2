@@ -1,9 +1,6 @@
 <?php
 session_start();
-// require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-$link = $_SERVER['SERVER_NAME'] === 'localhost' ?
-	mysqli_connect('localhost', 'root', '', 'nevergrind') :
-	mysqli_connect('localhost', 'ng2', 'ng2', 'nevergrind');
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 $account = strtolower($_POST['account']);
 

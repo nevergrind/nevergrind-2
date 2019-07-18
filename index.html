@@ -20,7 +20,10 @@
 			isApp: location.protocol === 'chrome-extension:',
 			account: ''
 		};
-		app.url = app.isApp ? 'http://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/ng2/' : '';
+		// remove if server goes down
+		app.url = app.isApp ?
+			'http://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/ng2/' : '';
+		// app.url = 'http://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/ng2/';
 		app.socketUrl = 'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/wss2/';
 		app.isLocal = !app.isApp;
 	</script>

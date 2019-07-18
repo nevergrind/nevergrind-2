@@ -23,7 +23,7 @@ if (!empty($_SESSION['guild']) &&
 
 	// demote self
 	$stmt = $link->prepare('update `guild_members` set rank=1 where c_id=?');
-	$stmt->bind_param('s', $_SESSION['ng2']['row']);
+	$stmt->bind_param('s', $_SESSION['row']);
 	$stmt->execute();
 
 	$_SESSION['guild']['rank'] = 1;
@@ -32,7 +32,7 @@ if (!empty($_SESSION['guild']) &&
 	require_once '../zmq.php';
 	$zmq = [
 		'name' => $_POST['name'],
-		'msg' => $_POST['name'] . ' has been promoted to guild Leader by '. $_SESSION['ng2']['name'] .'.',
+		'msg' => $_POST['name'] . ' has been promoted to guild Leader by '. $_SESSION['name'] .'.',
 		'route' => 'guild->leader',
 		'category' => 'guild:'. $_SESSION['guild']['id']
 	];

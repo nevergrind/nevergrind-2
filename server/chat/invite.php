@@ -26,7 +26,7 @@ if (is_null($r['id']) ) {
 if (is_null($r['c_id'])) {
 
 	// cannot send invites from dungeon
-	if (!$_SESSION['ng2']['zone']) {
+	if (!$_SESSION['zone']) {
 		exit("You cannot invite adventurers from the depths of a dungeon.");
 	}
 
@@ -42,11 +42,11 @@ if (is_null($r['c_id'])) {
 		$newParty = 1;
 		require '../session/init-party.php';
 		$stmt = mysqli_query($link,
-			'insert into `parties` (is_leader, c_id, hp, maxHp, mp, maxMp) VALUES (1, '. $_SESSION['ng2']['row'] .', '.
-			$_SESSION['ng2']['hp'] .', '.
-			$_SESSION['ng2']['maxHp'] .', '.
-			$_SESSION['ng2']['mp'] .', '.
-			$_SESSION['ng2']['maxMp'] .')'
+			'insert into `parties` (is_leader, c_id, hp, maxHp, mp, maxMp) VALUES (1, '. $_SESSION['row'] .', '.
+			$_SESSION['hp'] .', '.
+			$_SESSION['maxHp'] .', '.
+			$_SESSION['mp'] .', '.
+			$_SESSION['maxMp'] .')'
 		);
 
 		// last insert id is GET value
@@ -62,9 +62,9 @@ if (is_null($r['c_id'])) {
 	require_once '../zmq.php';
 	$zmq = [
 		'row' => $_SESSION['party']['id'],
-		'msg' => $_SESSION['ng2']['name'] . ' has invited you to join his party.',
-		'name' => $_SESSION['ng2']['name'],
-		'cId' => $_SESSION['ng2']['row'],
+		'msg' => $_SESSION['name'] . ' has invited you to join his party.',
+		'name' => $_SESSION['name'],
+		'cId' => $_SESSION['row'],
 		'action' => 'party-invite',
 		'css' => 'prompt-party-invite',
 		'category' => 'name:'. $_POST['player']

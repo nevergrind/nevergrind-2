@@ -43,8 +43,8 @@ if (is_null($r['c_id'])) {
 	require_once '../zmq.php';
 	$zmq = [
 		'row' => $_SESSION['guild']['id'],
-		'msg' => $_SESSION['ng2']['name'] . ' has invited you to join the guild: '. $_SESSION['guild']['name'],
-		'name' => $_SESSION['ng2']['name'],
+		'msg' => $_SESSION['name'] . ' has invited you to join the guild: '. $_SESSION['guild']['name'],
+		'name' => $_SESSION['name'],
 		'guildName' => $_SESSION['guild']['name'],
 		'action' => 'guild-invite',
 		'css' => 'prompt-guild-invite',

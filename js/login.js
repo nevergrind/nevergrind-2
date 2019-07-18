@@ -150,7 +150,7 @@ var login;
 		if (login.authenticationLock === true) {
 			return false;
 		}
-		var account = $("#account").val().toLowerCase();
+		var account = _.toLower($("#account").val());
 		if (account.length < 3) {
 			login.msg("This is not a valid account name.");
 			return false;
@@ -160,7 +160,8 @@ var login;
 		$.post(app.url + 'server/account/authenticate.php', {
 			account: account
 		}).done(function(data){
-			if (data === "Login successful!"){
+			console.info('data', data.success, data.account);
+			if (data.success){
 				localStorage.setItem('account', account);
 				location.reload();
 			}

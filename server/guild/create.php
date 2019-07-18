@@ -44,7 +44,7 @@ if ($stmt->num_rows) {
 
 // make sure I'm not in a guild
 $stmt = $link->prepare('select row from `guild_members` where c_id=?');
-$stmt->bind_param('s', $_SESSION['ng2']['row']);
+$stmt->bind_param('s', $_SESSION['row']);
 $stmt->execute();
 $stmt->store_result();
 
@@ -59,7 +59,7 @@ $g_id = mysqli_insert_id($link);
 
 // add to `guild_members`
 $stmt = $link->prepare("insert into `guild_members` (rank, c_id, g_id, member_number) values (0, ?, ?, 1)");
-$stmt->bind_param('si', $_SESSION['ng2']['row'], $g_id);
+$stmt->bind_param('si', $_SESSION['row'], $g_id);
 $stmt->execute();
 // get guild id
 $lastInsert = mysqli_insert_id($link);

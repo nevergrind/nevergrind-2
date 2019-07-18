@@ -2,12 +2,12 @@
 	$preMsg = strip_tags($_POST['msg']);
 
 	!$preMsg && exit('no message found');
-	!isset($_SESSION['ng2']['name']) && exit('Session not found');
+	!isset($_SESSION['name']) && exit('Session not found');
 
 	function getPrefix() {
-		return '[' . $_SESSION['ng2']['level'] .':<span class="chat-'.
-			$_SESSION['ng2']['job'] .'">'.
-			$_SESSION['ng2']['name'] . '</span>]';
+		return '[' . $_SESSION['level'] .':<span class="chat-'.
+			$_SESSION['job'] .'">'.
+			$_SESSION['name'] . '</span>]';
 	}
 
 	if ($_POST['class'] === 'chat-whisper') {
@@ -18,7 +18,7 @@
 			$postMsg = getPrefix() . ' says: ' . $preMsg;
 		}
 		else if ($_POST['class'] === 'chat-emote') {
-			$postMsg = $_SESSION['ng2']['name'] . ' ' . $preMsg;
+			$postMsg = $_SESSION['name'] . ' ' . $preMsg;
 		}
 		else if ($_POST['class'] === 'chat-guild') {
 			// needs a guild channel pubsub

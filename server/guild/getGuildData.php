@@ -11,7 +11,7 @@ $stmt = $link->prepare('select m.rank,
 	on m.g_id=n.row 
 	where m.c_id=? 
 	limit 1');
-$stmt->bind_param('s', $_SESSION['ng2']['row']);
+$stmt->bind_param('s', $_SESSION['row']);
 $stmt->execute();
 $stmt->bind_result($rank, $g_id, $member_number, $motd, $members, $name);
 // default value

@@ -33,7 +33,7 @@ if (!empty($_SESSION['guild']) && $_SESSION['guild']['rank'] < 2) {
 	require_once '../zmq.php';
 	$zmq = [
 		'name' => $_POST['name'],
-		'msg' => $_POST['name'] . ' has been booted by  '. $_SESSION['ng2']['name'] .'!',
+		'msg' => $_POST['name'] . ' has been booted by  '. $_SESSION['name'] .'!',
 		'route' => 'guild->boot',
 		'category' => 'guild:'. $_SESSION['guild']['id']
 	];

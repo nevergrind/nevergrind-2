@@ -17,7 +17,7 @@ if ($_SESSION['party']['id']) {
 	// notify party members
 	require_once '../zmq.php';
 	$zmq = [
-		'row' => $_SESSION['ng2']['row'],
+		'row' => $_SESSION['row'],
 		'name' => $_POST['name'],
 		'route' => 'party->promote',
 		'category' => 'party:'. $_SESSION['party']['id']

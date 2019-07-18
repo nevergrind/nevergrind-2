@@ -90,24 +90,24 @@
 	if ($i) {
 		$cacheHp = -1;
 		$cacheMp = -1;
-		if (isset($_SESSION['ng2']) &&
-			isset($_SESSION['ng2']['hp']) &&
-			$_SESSION['ng2']['hp'] > 0) {
+		if (isset($_SESSION) &&
+			isset($_SESSION['hp']) &&
+			$_SESSION['hp'] > 0) {
 			// pre-cache hp/mp values if they exist
-			$cacheHp = $_SESSION['ng2']['hp'];
-			$cacheMp = $_SESSION['ng2']['mp'];
+			$cacheHp = $_SESSION['hp'];
+			$cacheMp = $_SESSION['mp'];
 		}
 		require '../session/init-ng.php';
 		// set session values for my character
 		foreach ($r['characterData'] as $key => $val) {
-			$_SESSION['ng2'][$key] = $val;
+			$_SESSION[$key] = $val;
 		}
 		// assign session hp/mp cache values if a non -1 value was found
 		// this helps avoid relying on hp/mp value in `characters` AND parties table
 		if ($cacheHp >= 0) {
-			$_SESSION['ng2']['hp'] = $cacheHp;
+			$_SESSION['hp'] = $cacheHp;
 			$r['characterData']['hp'] = $cacheHp;
-			$_SESSION['ng2']['mp'] = $cacheMp;
+			$_SESSION['mp'] = $cacheMp;
 			$r['characterData']['mp'] = $cacheMp;
 		}
 
@@ -118,7 +118,7 @@
 		else {
 			require '../session/init-party.php';
 			// delete from parties if player data is known
-			mysqli_query($link, 'delete from `parties` where c_id='. $_SESSION['ng2']['row']);
+			mysqli_query($link, 'delete from `parties` where c_id='. $_SESSION['row']);
 		}
 
 		if (!isset($_SESSION['quest'])) {
@@ -141,13 +141,13 @@
 			on duplicate key update timestamp=now()');
 
 		$stmt->bind_param('ississs',
-			$_SESSION['ng2']['row'],
+			$_SESSION['row'],
 			$_SESSION['account'],
-			$_SESSION['ng2']['name'],
-			$_SESSION['ng2']['level'],
-			$_SESSION['ng2']['race'],
-			$_SESSION['ng2']['job'],
-			$_SESSION['ng2']['zone']);
+			$_SESSION['name'],
+			$_SESSION['level'],
+			$_SESSION['race'],
+			$_SESSION['job'],
+			$_SESSION['zone']);
 		*/
 
 		// count active players

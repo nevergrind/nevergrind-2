@@ -20,7 +20,7 @@ $query = 'select
 	limit 1';
 
 $stmt = $link->prepare($query);
-$stmt->bind_param('s', $_SESSION['ng2']['row']);
+$stmt->bind_param('s', $_SESSION['row']);
 $stmt->execute();
 $stmt->bind_result(
 	$salubrin_den,

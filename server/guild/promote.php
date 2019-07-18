@@ -26,7 +26,7 @@ if (!empty($_SESSION['guild']) &&
 	require_once '../zmq.php';
 	$zmq = [
 		'name' => $_POST['name'],
-		'msg' => $_POST['name'] . ' has been promoted to Officer by '. $_SESSION['ng2']['name'] .'.',
+		'msg' => $_POST['name'] . ' has been promoted to Officer by '. $_SESSION['name'] .'.',
 		'route' => 'guild->promote',
 		'category' => 'guild:'. $_SESSION['guild']['id']
 	];

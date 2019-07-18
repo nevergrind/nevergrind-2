@@ -3,6 +3,7 @@
 		font-size: 2rem;
 	}
 </style>
+<link rel="shortcut icon" href="#">
 <script src="/ng2/js/autobahn-2.min.js"></script>
 <script>
 
@@ -23,11 +24,8 @@ function onOpen(session) {
 		var el = document.createElement('div');
 		el.innerHTML = 'socket reported: ' + arr[0];
 		document.body.appendChild(el);
-		var el2 = document.createElement('div');
-		el2.innerHTML = 'socket reported: ' + obj.date;
-		document.body.appendChild(el2);
 	});
-	session.publish('test', ['Hello, flat earth!'], {
+	session.publish('test', ['Hello, earth!'], {
 		date: Date.now()
 	}, {
 		exclude_me: false
@@ -36,6 +34,7 @@ function onOpen(session) {
 	/*function add2(args) {
 		return args[0] + args[1];
 	}
+
 	session.register('com.myapp.add2', add2);
 	session.call('com.myapp.add2', [2, 3]).then(callDone);
 	function callDone(res) {
@@ -45,41 +44,57 @@ function onOpen(session) {
 
 </script>
 <?php
-	$now = microtime(true);
 	session_start();
+	$now = microtime(true);
+
 	$date = date("D M d, Y G:i");
 	$rand = mt_rand(0, 100);
-
 	echo 'Date/Time: '. $date . '<br>';
 	echo 'Microtime: '. microtime(true) . '<br>';
 	echo 'Your random number from 1-100 is: '. $rand . '<br>';
-	echo 'start<br>';
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-	echo 'test<br>';
 
 	if ($result = mysqli_query($link, 'SELECT row FROM `accounts`')) {
 		$count = mysqli_num_rows($result);
 		echo 'Total accounts in the account table: ' . $count . '<br>';
 	}
-	////// test prepared statement
-	$account = 'chrome5';
-	$query = 'select account from `accounts` where account=?';
-	$stmt = $link->prepare($query);
-	$stmt->bind_param('s', $account);
-	$stmt->execute();
-	$stmt->store_result();
-	$count = $stmt->num_rows;
-	if ($count > 0) {
-		// email address exists
-		echo 'Account: '. $account .' has already registered an account!<br>';
-	}
-	else {
-		echo 'Did not find email address: ' . $account . '<br>';
-	}
+	// memcached check
+	/*$memcache = new Memcache();
+	$memcache->connect('127.0.0.1', 11211);
+	$memcache->set('time', time());
+	$cacheVal = $memcache->get($key);
+	echo 'Cached value: ' . $cacheVal . '<br>';*/
 
 
-	echo 'Have a great day!<br>';
+	// primitive apcu test
+	$val = 5;
+	$apcStart = microtime(true);
+	for ($i = 0; $i < 1e4; $i++) {
+		apcu_store('test', $val);
+		$bar = apcu_fetch('test');
+	}
+	$apcEnd = microtime(true) - $apcStart;
+	echo '<br>APCu primitive set & get test x10000: ' . $apcEnd . '<br>';
+
+	// object apcu test
+	$obj = [
+		'name' => 'Bob',
+		'age' => 35,
+		'class' => 'Ranger'
+	];
+	$apcStart = microtime(true);
+	for ($i = 0; $i < 1e4; $i++) {
+		apcu_store('obj', json_encode($obj));
+		$bar = json_decode(apcu_fetch('obj'));
+	}
+	$apcEnd = microtime(true) - $apcStart;
+	echo '<br>APCu object set & get test x 10000: ' . $apcEnd . '<br>';
+
+
 	$time = microtime(true) - $now;
+	echo 'session:<br>';
+	echo var_export($_SESSION);
+	echo '<br><br>';
 	echo 'This script took '. $time .' seconds to complete!';
 	exit;
 

@@ -12,5 +12,5 @@ $_SESSION['quest'] = [
 	'description' => ''
 ];
 $stmt = $link->prepare('update `players` set mission_id=0, zone="ng2:town" where id=?');
-$stmt->bind_param('i', $_SESSION['ng2']['row']);
+$stmt->bind_param('i', $_SESSION['row']);
 $stmt->execute();
