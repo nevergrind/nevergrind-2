@@ -38,7 +38,7 @@ var battle;
 		test.battle();
 	}
 	function html() {
-		var s = '<img id="battle-bg" class="img-bg" src="img2/bg/fw2.jpg">',
+		var s = '<img id="battle-bg" class="img-bg" src="images/bg/fw2.jpg">',
 			test = '';
 
 		for (var i=0; i<mob.max; i++){
@@ -55,7 +55,7 @@ var battle;
 				'</div>' +
 				'<div id="mob-shadow-' +i+ '" class="mob-shadow"></div>' +
 				'<div class="mob-img-wrap">' +
-					'<img id="mob-img-' +i+ '" class="mob-img" src="img2/blank.png">' +
+					'<img id="mob-img-' +i+ '" class="mob-img" src="images/blank.png">' +
 				'</div>' +
 				'<div id="mob-alive-' +i+ '" class="mob-alive" index="' + i + '"></div>' +
 				'<div id="mob-dead-' +i+ '" class="mob-dead" index="' + i + '"></div>' +

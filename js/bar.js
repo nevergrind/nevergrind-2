@@ -31,9 +31,9 @@ var bar;
 			bar.initialized = 1;
 			var e = getById('bar-wrap');
 			e.innerHTML = bar.html();
-			$(".bar-icons").tooltip({
+			/*$(".bar-icons").tooltip({
 				animation: false
-			});
+			});*/
 			e.style.display = 'block';
 
 			for (var i = 0; i < game.maxPlayers; i++) {
@@ -281,7 +281,7 @@ var bar;
 		});
 		bar.hideParty();
 		// update server
-		socket.unsubscribe('party:'+ my.p_id);
+		socket.unsubscribe('party_'+ my.p_id);
 		my.p_id = 0;
 		my.party[0].isLeader = 0;
 		getById('bar-is-leader-0').style.display = 'none';

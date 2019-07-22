@@ -135,7 +135,7 @@ var town;
 				(function repeat() {
 					if (socket.enabled) {
 						// stuff to do after the socket wakes up
-						socket.initParty(my.p_id);
+						socket.listenParty(my.p_id);
 						bar.getParty();
 						chat.sendMsg('/join');
 
@@ -183,7 +183,7 @@ var town;
 	}
 	function html() {
 		var s =
-			'<img id="town-bg" class="img-bg" src="img2/town2.jpg">'+
+			'<img id="town-bg" class="img-bg" src="images/town2.jpg">'+
 			'<div id="town-menu" class="text-shadow">'+
 				'<div id="town-merchant" class="ng-btn town-action">Merchant</div>' +
 				'<div id="town-trainer" class="ng-btn town-action">Skill Trainer</div>' +
@@ -201,8 +201,8 @@ var town;
 	}
 	function htmlTownMerchant() {
 		var s =
-		'<img class="aside-bg" src="img2/town/halas.jpg">' +
-		'<img class="aside-npc" src="img2/town/rendo-surefoot.png">' +
+		'<img class="aside-bg" src="images/town/halas.jpg">' +
+		'<img class="aside-npc" src="images/town/rendo-surefoot.png">' +
 		'<div class="aside-text">' +
 			'<div class="aside-title-wrap stag-blue">' +
 				'<div class="aside-title">Merchant</div>' +
@@ -213,8 +213,8 @@ var town;
 	}
 	function htmlTownTrainer() {
 		var s =
-		'<img class="aside-bg" src="img2/town/surefall.jpg">' +
-		'<img class="aside-npc" src="img2/town/arwen-reinhardt.png">' +
+		'<img class="aside-bg" src="images/town/surefall.jpg">' +
+		'<img class="aside-npc" src="images/town/arwen-reinhardt.png">' +
 		'<div class="aside-text">' +
 			'<div class="aside-title-wrap stag-blue">' +
 				'<div class="aside-title">Skill Trainer</div>' +
@@ -225,8 +225,8 @@ var town;
 	}
 	function htmlTownGuild() {
 		var s =
-		'<img class="aside-bg" src="img2/town/poh.jpg">' +
-		'<img class="aside-npc" src="img2/town/valeska-windcrest.png">' +
+		'<img class="aside-bg" src="images/town/poh.jpg">' +
+		'<img class="aside-npc" src="images/town/valeska-windcrest.png">' +
 		'<div class="aside-text">' +
 			'<div class="aside-title-wrap stag-blue">' +
 				'<div class="aside-title">Guild Hall</div>' +
@@ -240,8 +240,8 @@ var town;
 	}
 	function htmlTownMission() {
 		var s =
-		'<img class="aside-bg" src="img2/town/neriak.jpg">' +
-		'<img class="aside-npc" src="img2/town/miranda-crossheart.png">' +
+		'<img class="aside-bg" src="images/town/neriak.jpg">' +
+		'<img class="aside-npc" src="images/town/miranda-crossheart.png">' +
 		'<div class="aside-text">' +
 			'<div class="aside-title-wrap stag-blue">' +
 				'<div class="aside-title">Mission Counter</div>' +
@@ -479,7 +479,7 @@ var town;
 		}
 	}
 	function preload() {
-		var p = 'img2/town/';
+		var p = 'images/town/';
 		cache.preloadImages([
 			p + 'arwen-reinhardt.png',
 			p + 'halas.jpg',
@@ -489,8 +489,8 @@ var town;
 			p + 'rendo-surefoot.png',
 			p + 'surefall.jpg',
 			p + 'valeska-windcrest.png',
-			'img2/dungeon/braxxen1.jpg',
-			'img2/skills/' + my.job + '.png'
+			'images/dungeon/braxxen1.jpg',
+			'images/skills/' + my.job + '.png'
 		])
 	}
 })();

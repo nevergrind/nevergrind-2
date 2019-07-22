@@ -16,13 +16,11 @@ if ($_SESSION['party']['id']) {
 
 	// notify party members
 	require_once '../zmq.php';
-	$zmq = [
+	zmqSend('party_'. $_SESSION['party']['id'], [
 		'row' => $_SESSION['row'],
 		'name' => $_POST['name'],
-		'route' => 'party->promote',
-		'category' => 'party:'. $_SESSION['party']['id']
-	];
-	$socket->send(json_encode($zmq));
+		'route' => 'party->promote'
+	]);
 	echo json_encode($r);
 }
 else {

@@ -9,12 +9,12 @@
 		'level' => $_SESSION['level'],
 		'job' => $_SESSION['job'],
 		'class' => $_POST['class'],
-		'route' => 'chat->log'
+		'route' => 'chat->log',
+		'category' => $_POST['category']
 	];
 
 	if ($_POST['class'] === 'chat-whisper') {
 		$zmq['action'] = $_POST['action'];
 	}
 
-	$zmq['category'] = $_POST['category'];
-	$socket->send(json_encode($zmq));
+	zmqSend($_POST['category'], $zmq);

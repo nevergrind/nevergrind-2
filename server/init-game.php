@@ -7,7 +7,7 @@ $empty = empty($_SESSION['account']);
 $r['empty'] = $empty;
 
 $r['resetLocalSession'] = true;
-if (isset($_SESSION['ng2']['name'])) {
+if (isset($_SESSION['name'])) {
 	$r['resetLocalSession'] = false;
 }
 if (!$empty) {

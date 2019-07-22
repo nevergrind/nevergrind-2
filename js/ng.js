@@ -150,9 +150,7 @@ var ng;
 		var e = getById('scene-error');
 		e.style.display = 'block';
 		e.innerHTML = msg || 'You have been disconnected from the server';
-		setTimeout(function() {
-			location.reload();
-		}, 12000);
+		setTimeout(location.reload, 12000);
 	}
 	function toJobShort(key) {
 		return ng.jobShort[key];
@@ -226,7 +224,7 @@ var ng;
 			type: 'GET',
 			url: app.url + "server/session/keep-alive.php"
 		}).always(function() {
-			setTimeout(ng.keepAlive, 150000);
+			setTimeout(ng.keepAlive, 170000);
 		});
 	}
 	function msg(msg, d) {
@@ -342,10 +340,7 @@ var ng;
 	}
 	function initGame() {
 
-		$.ajax({
-			type: 'GET',
-			url: app.url + 'server/init-game.php'
-		}).done(function(r){
+		$.get(app.url + 'server/init-game.php').done(function(r){
 			console.info('init-game', r);
 			app.initialized = 1;
 			if (r.account) {

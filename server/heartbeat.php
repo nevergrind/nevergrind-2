@@ -17,40 +17,38 @@ else {
 
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	// tick HP & MP
-	$_SESSION['ng2']['hp'] += $_SESSION['ng2']['hpRegen'];
-	if ($_SESSION['ng2']['hp'] > $_SESSION['ng2']['maxHp']) {
-		$_SESSION['ng2']['hp'] = $_SESSION['ng2']['maxHp'];
+	$_SESSION['hp'] += $_SESSION['hpRegen'];
+	if ($_SESSION['hp'] > $_SESSION['maxHp']) {
+		$_SESSION['hp'] = $_SESSION['maxHp'];
 	}
-	$r['hp'] = $_SESSION['ng2']['hp'];
+	$r['hp'] = $_SESSION['hp'];
 
-	$_SESSION['ng2']['mp'] += $_SESSION['ng2']['mpRegen'];
-	if ($_SESSION['ng2']['mp'] > $_SESSION['ng2']['maxMp']) {
-		$_SESSION['ng2']['mp'] = $_SESSION['ng2']['maxMp'];
+	$_SESSION['mp'] += $_SESSION['mpRegen'];
+	if ($_SESSION['mp'] > $_SESSION['maxMp']) {
+		$_SESSION['mp'] = $_SESSION['maxMp'];
 	}
-	$r['mp'] = $_SESSION['ng2']['mp'];
+	$r['mp'] = $_SESSION['mp'];
 
 	$stmt = $db->prepare('update `players` set timestamp=now() where id=?');
-	$stmt->bind_param('i', $_SESSION['ng2']['row']);
+	$stmt->bind_param('i', $_SESSION['row']);
 	$stmt->execute();
 
 	// update `parties` hp/mp
 	if ($_SESSION['party']['id']) {
 		$stmt = $db->prepare('update `parties` set hp=?, mp=? where c_id=?');
 		$stmt->bind_param('iii',
-			$_SESSION['ng2']['hp'],
-			$_SESSION['ng2']['mp'],
-			$_SESSION['ng2']['row']);
+			$_SESSION['hp'],
+			$_SESSION['mp'],
+			$_SESSION['row']);
 		$stmt->execute();
 
 		require_once 'zmq.php';
-		$zmq = [
-			'hp' => $_SESSION['ng2']['hp'],
-			'mp' => $_SESSION['ng2']['mp'],
-			'name' => $_SESSION['ng2']['name'],
-			'route' => 'party->updateBars',
-			'category' => 'party:'. $_SESSION['party']['id']
-		];
-		$socket->send(json_encode($zmq));
+		zmqSend('party_'. $_SESSION['party']['id'], [
+			'hp' => $_SESSION['hp'],
+			'mp' => $_SESSION['mp'],
+			'name' => $_SESSION['name'],
+			'route' => 'party->updateBars'
+		]);
 	}
 
 	echo json_encode($r);

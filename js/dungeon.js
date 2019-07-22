@@ -47,7 +47,7 @@ var dungeon;
 	}
 	function html() {
 		var s =
-		'<img id="dungeon-bg" class="img-bg" src="img2/dungeon/braxxen1.jpg">';
+		'<img id="dungeon-bg" class="img-bg" src="images/dungeon/braxxen1.jpg">';
 
 		return s;
 	}

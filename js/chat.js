@@ -1,7 +1,7 @@
 var chat;
 (function() {
 	chat = {
-		prefix: 'ng2:',
+		prefix: 'ng2_',
 		default: 'town',
 		initialized: 0,
 		isClicked: false,
@@ -406,7 +406,7 @@ var chat;
 						action: 'send',
 						msg: msg,
 						class: 'chat-whisper',
-						category: 'name:' + chat.modeName
+						category: 'name_' + chat.modeName
 					}
 				});
 			}
@@ -423,7 +423,7 @@ var chat;
 						chat.log("You are not in a guild.", 'chat-warning');
 					}
 					else {
-						if (o.category === 'ng2:') {
+						if (o.category === 'ng2_') {
 							chat.log("You cannot communicate in town while in a dungeon", "chat-warning");
 						}
 						else {
@@ -471,17 +471,17 @@ var chat;
 			o.class = 'chat-normal';
 		}
 		else if (parse.first === '/p') {
-			o.category = 'party:' + my.p_id;
+			o.category = 'party_' + my.p_id;
 			o.msg = shortCommandMsg;
 			o.class = 'chat-party';
 		}
 		else if (chat.modeCommand === '/party'){
-			o.category = 'party:' + my.p_id;
+			o.category = 'party_' + my.p_id;
 			o.msg = msg;
 			o.class = 'chat-party';
 		}
 		else if (parse.first === '/g') {
-			o.category = 'guild:' + my.guild.id;
+			o.category = 'guild_' + my.guild.id;
 			o.msg = shortCommandMsg;
 			o.class = 'chat-guild';
 		}
@@ -491,7 +491,7 @@ var chat;
 			o.class = 'chat-guild';
 		}
 		else if (parse.first === '/broadcast'){
-			o.category = 'admin:broadcast';
+			o.category = 'admin_broadcast';
 			o.msg = parse.command;
 			o.class = 'chat-broadcast';
 		}
@@ -641,7 +641,7 @@ var chat;
 						my.party[0].isLeader = 1;
 						bar.updatePlayerBar(0);
 					}
-					socket.initParty(r.p_id);
+					socket.listenParty(r.p_id);
 				}).fail(function(r){
 					chat.log(r.responseText, 'chat-warning');
 				});
@@ -767,7 +767,7 @@ var chat;
 	function promptDeny(data) {
 		console.info('deny ', data);
 		$("#"+ data.action +"-"+ data.row).remove();
-		socket.publish("name:"+ data.name, {
+		socket.publish("name_"+ data.name, {
 			action: data.action + '-deny',
 			name: my.name
 		});
@@ -784,7 +784,7 @@ var chat;
 		}).done(function(data){
 			console.info("party-join.php ", data);
 			chat.log("You have joined the party.", "chat-warning");
-			socket.initParty(z.row);
+			socket.listenParty(z.row);
 			bar.getParty();
 		}).fail(function(data){
 			console.info("Oh no", data);
@@ -871,9 +871,9 @@ var chat;
 				}
 				else {
 					chat.log('You have added ' + o + ' to your friend list.', 'chat-warning');
-					socket.subscribe('friend:'+ o, chat.friendNotify);
+					socket.subscribe('friend_'+ o, chat.friendNotify);
 					if (!~ng.friends.indexOf(o)) {
-						socket.publish('name:' + o, {
+						socket.publish('name_' + o, {
 							name: my.name,
 							route: "friend>addedMe"
 						});
@@ -901,7 +901,7 @@ var chat;
 						var index = ng.friends.indexOf(o);
 						ng.friends.splice(index, 1);
 					}
-					socket.unsubscribe('friend:'+ o);
+					socket.unsubscribe('friend_'+ o);
 				}
 			});
 		}
@@ -1128,7 +1128,6 @@ var chat;
 		my.channel && socket.unsubscribe(chat.getChannel());
 		// set new channel data
 		my.channel = data.channel;
-		chat.log('You have joined channel: ' + data.channel, 'chat-warning');
 		socket.subscribe(data.fullChannel, socket.routeMainChat);
 		// add to chat channel
 		chat.setHeader();

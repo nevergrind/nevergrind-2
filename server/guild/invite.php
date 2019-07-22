@@ -41,16 +41,14 @@ if (is_null($r['c_id'])) {
 	}
 	// send guild invite
 	require_once '../zmq.php';
-	$zmq = [
+	zmqSend('name_'. $_POST['player'], [
 		'row' => $_SESSION['guild']['id'],
 		'msg' => $_SESSION['name'] . ' has invited you to join the guild: '. $_SESSION['guild']['name'],
 		'name' => $_SESSION['name'],
 		'guildName' => $_SESSION['guild']['name'],
 		'action' => 'guild-invite',
-		'css' => 'prompt-guild-invite',
-		'category' => 'name:'. $_POST['player']
-	];
-	$socket->send(json_encode($zmq));
+		'css' => 'prompt-guild-invite'
+	]);
 	echo json_encode($r);
 }
 else {

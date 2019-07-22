@@ -11,19 +11,16 @@ var socket;
 		registerSubscription: registerSubscription,
 		testReceived: testReceived,
 		joinGame: joinGame,
-		initWhisper: initWhisper,
 		init: init,
-		connectionSuccess: connectionSuccess,
-		connectionFailure: connectionFailure,
 		routeMainChat: routeMainChat,
-		initFriendAlerts: initFriendAlerts,
-		initParty: initParty,
-		initGuild: initGuild,
+		listenParty: listenParty,
+		listenGuild: listenGuild,
 	}
 	////////////////////////////////////////
 	function subscribe(topic, callback) {
 		if (typeof socket.subs[topic] !== 'object' ||
 			!socket.subs[topic].active) {
+			console.info("subscribing:", topic, callback.name);
 			socket.session.subscribe(topic, callback).then(registerSubscription);
 		}
 	}
@@ -41,20 +38,24 @@ var socket;
 		socket.subs[sub.topic] = sub;
 	}
 	function unsubscribe(channel) {
-		try {
-			socket.session.unsubscribe(channel);
-		} catch(err) {
-			console.info(err);
+		if (typeof socket.subs[channel] === 'object') {
+			try {
+				console.warn("Trying to unsubscribe from:");
+				console.info(socket.subs[channel]);
+				socket.session.unsubscribe(socket.subs[channel]);
+			}
+			catch(err) {
+				console.warn('Could not unsubscribe: ', err);
+			}
 		}
 	}
 	function joinGame() {
 		(function retry(){
 			if (socket.enabled){
-				socket.unsubscribe('title:' + my.channel);
-				socket.unsubscribe('game:' + game.id);
+				socket.unsubscribe('title_' + my.channel);
+				socket.unsubscribe('game_' + game.id);
 				// game updates
-				console.info("Subscribing to game:" + game.id);
-				socket.subscribe('game:' + game.id, joinGameCallback);
+				socket.subscribe('game_' + game.id, joinGameCallback);
 			}
 			else {
 				setTimeout(retry, 100);
@@ -66,17 +67,17 @@ var socket;
 			title.chatReceive(data);
 		}
 	}
-	function initWhisper() {
-		if (socket.enabled) {
-			var channel = 'hb:' + my.name;
-			// heartbeat
-			console.info("subscribing to heartbeat channel: ", channel);
-			socket.subscribe(channel, game.socket.heartbeatCallback);
-			// whisper
-			channel = 'name:' + my.name;
-			console.info("subscribing to whisper channel: ", channel);
-			socket.subscribe(channel, routeToWhisper);
-		}
+	function listenHeartbeat() {
+		socket.subscribe('hb_' + my.name, game.socket.heartbeatCallback);
+	}
+	function listenWhisper() {
+		socket.subscribe('name_' + my.name, routeToWhisper);
+	}
+	function listenFriendAlerts() {
+		ng.friends.forEach(function(v){
+			socket.unsubscribe('friend_' + v);
+			socket.subscribe('friend_' + v, chat.friendNotify);
+		});
 	}
 	function routeToWhisper(topic, data) {
 		if (data.routeTo === 'party') {
@@ -94,7 +95,7 @@ var socket;
 					action: 'receive',
 					msg: chat.whisperParse(data.msg),
 					class: 'chat-whisper',
-					category: 'name:' + data.name
+					category: 'name_' + data.name
 				}
 			});
 		}
@@ -136,72 +137,42 @@ var socket;
 			url: app.socketUrl,
 			realm: 'realm1'
 		});
-		console.info('connection instantiated...');
-
-		socket.connection.onopen = onOpen;
-
-		function onOpen(session) {
-			console.warn("Connection successful!", session);
-			socket.session = session;
-
-			socket.subscribe('test', testReceived);
-			socket.publish('test', {
-				date: Date.now()
-			});
-			// call/register example
-			/*function add2(args) {
-				return args[0] + args[1];
-			}
-			session.register('com.myapp.add2', add2);
-			session.call('com.myapp.add2', [2, 3]).then(callDone);
-			function callDone(res) {
-				console.log("Result:", res);
-			}*/
-			socket.connectionSuccess();
-		}
-
+		socket.connection.onopen = connectionSuccess;
 		socket.connection.open();
-	}
-	function connectionFailure(code, reason) {
-		console.info('Websocket connection closed. Code: '+code+'; reason: '+reason);
-		// on close/fail
-		console.debug('WebSocket connection failed. Retrying...');
-		socket.enabled = 0;
-		setTimeout(socket.init, 100);
 	}
 	function routeMainChat(topic, data) {
 		// console.info('rx ', topic, data);
 		route.town(data, data.route);
 	}
-	function connectionSuccess() {
+	function connectionSuccess(session) {
+		console.warn("Connection successful!", session);
+		socket.session = session;
 		socket.enabled = 1;
-		console.info("Socket connection established with server");
 		// chat updates
 		if (socket.initialConnection) {
 			socket.initialConnection = 0;
 
 			// subscribe to admin broadcasts
-			var admin = 'admin:broadcast';
-			console.info("subscribing to channel: ", admin);
-			socket.subscribe(admin, routeToAdmin);
-
-			(function retry(){
+			socket.subscribe('admin_broadcast', routeToAdmin);
+			return;
+			/*(function retry(){
 				if (my.name){
-					socket.initWhisper();
-					socket.initFriendAlerts();
-					socket.initGuild();
+					listenHeartbeat();
+					listenWhisper();
+					listenFriendAlerts();
+					socket.listenGuild();
 				}
 				else {
 					setTimeout(retry, 200);
 				}
-			})();
+			})();*/
 
 			// keep alive?
 			// let everyone know I am here
 			chat.broadcastAdd();
 			chat.setHeader();
 			// notify friends I'm online
-			socket.publish('friend:' + my.name, {
+			socket.publish('friend_' + my.name, {
 				name: my.name,
 				route: 'on'
 			});
@@ -211,25 +182,17 @@ var socket;
 		console.info('rx ', topic, data);
 		route.town(data, data.route);
 	}
-	function initFriendAlerts() {
-		ng.friends.forEach(function(v){
-			socket.unsubscribe('friend:' + v);
-			socket.subscribe('friend:' + v, chat.friendNotify);
-		});
-	}
-	function initParty(row) {
+	function listenParty(row) {
 		// unsub to current party?
-		socket.unsubscribe('party:'+ my.p_id);
+		socket.unsubscribe('party_'+ my.p_id);
 		// sub to party
-		var party = 'party:' + row;
 		my.p_id = row;
-		console.info("subscribing to channel: ", party);
 		try {
 			// for some reason I need this when I rejoin town; whatever
-			socket.subscribe(party, routeToParty);
+			socket.subscribe('party_' + row, routeToParty);
 		}
 		catch (err) {
-			console.info('socket.initParty ', err);
+			console.info('socket.listenParty ', err);
 		}
 	}
 	function routeToParty(topic, data) {
@@ -241,10 +204,9 @@ var socket;
 			route.party(data, data.route);
 		}
 	}
-	function initGuild() {
+	function listenGuild() {
 		// subscribe to test guild for now
 		if (my.guild.id) {
-			console.info("subscribing to guild channel: ", my.guildChannel());
 			my.guild.motd && chat.log('Guild Message of the day: ' + my.guild.motd, 'chat-guild');
 			socket.subscribe(my.guildChannel(), routeToGuild);
 		}

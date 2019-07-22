@@ -6,41 +6,39 @@ if (!isset($_SESSION['account'])) {
 else {
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-	$r['hp'] = $_SESSION['ng2']['hp'];
-	$r['mp'] = $_SESSION['ng2']['mp'];
+	$r['hp'] = $_SESSION['hp'];
+	$r['mp'] = $_SESSION['mp'];
 
 	$stmt = $db->prepare('insert into `players` 
 		(`id`, `account`, `name`, `level`, `race`, `job`, `zone`) 
 		values (?, ?, ?, ?, ?, ?, ?)');
 
 	$stmt->bind_param('ississs',
-		$_SESSION['ng2']['row'],
+		$_SESSION['row'],
 		$_SESSION['account'],
-		$_SESSION['ng2']['name'],
-		$_SESSION['ng2']['level'],
-		$_SESSION['ng2']['race'],
-		$_SESSION['ng2']['job'],
-		$_SESSION['ng2']['zone']);
+		$_SESSION['name'],
+		$_SESSION['level'],
+		$_SESSION['race'],
+		$_SESSION['job'],
+		$_SESSION['zone']);
 	$stmt->execute();
 
 	// update `parties` hp/mp
 	if ($_SESSION['party']['id']) {
 		$stmt = $db->prepare('update `parties` set hp=?, mp=? where c_id=?');
 		$stmt->bind_param('iii',
-			$_SESSION['ng2']['hp'],
-			$_SESSION['ng2']['mp'],
-			$_SESSION['ng2']['row']);
+			$_SESSION['hp'],
+			$_SESSION['mp'],
+			$_SESSION['row']);
 		$stmt->execute();
 
 		require_once 'zmq.php';
-		$zmq = [
-			'hp' =>	$_SESSION['ng2']['hp'],
-			'mp' =>	$_SESSION['ng2']['mp'],
-			'name' =>	$_SESSION['ng2']['name'],
-			'route' =>	'party->updateBars',
-			'category' =>	'party:'. $_SESSION['party']['id']
-		];
-		$socket->send(json_encode($zmq));
+		zmqSend('party_'. $_SESSION['party']['id'], [
+			'hp' =>	$_SESSION['hp'],
+			'mp' =>	$_SESSION['mp'],
+			'name' =>	$_SESSION['name'],
+			'route' =>	'party->updateBars'
+		]);
 	}
 
 	echo json_encode($r);

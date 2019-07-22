@@ -10,6 +10,6 @@ $_SESSION['quest'] = [
 	'title' => '',
 	'description' => ''
 ];
-$stmt = $db->prepare('update `players` set mission_id=0, zone="ng2:town" where id=?');
+$stmt = $db->prepare('update `players` set mission_id=0, zone="ng2_town" where id=?');
 $stmt->bind_param('i', $_SESSION['row']);
 $stmt->execute();

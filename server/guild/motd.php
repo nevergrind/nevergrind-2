@@ -12,12 +12,10 @@ if (!empty($_SESSION['guild']) &&
 
 	// notify guild members
 	require_once '../zmq.php';
-	$zmq = [
+	zmqSend('guild:'. $_SESSION['guild']['id'], [
 		'msg' => $_SESSION['name'] . ' has set a new message of the day:<br>' . $_POST['msg'],
-		'route' => 'guild->motd',
-		'category' => 'guild:'. $_SESSION['guild']['id']
-	];
-	$socket->send(json_encode($zmq));
+		'route' => 'guild->motd'
+	]);
 
 	echo json_encode($r);
 }

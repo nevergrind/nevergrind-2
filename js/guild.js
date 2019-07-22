@@ -60,7 +60,7 @@ var guild;
 			my.guild = data.guild;
 			chat.log('Valeska Windcrest says, "By the powers vested in me, I hereby declare you supreme sovereign Leader of a new guild: ' + data.guild.name +'."');
 			chat.log('Type /help to view guild commands', 'chat-emote');
-			socket.initGuild();
+			socket.listenGuild();
 			// redraw the #aside-menu with new option
 			town.aside.update('town-guild');
 			guild.getMembers();
@@ -114,7 +114,7 @@ var guild;
 		}).done(function(data){
 			my.guild = data.guild;
 			chat.log("You have joined the guild: "+ data.guild.name, "chat-warning");
-			socket.initGuild();
+			socket.listenGuild();
 		}).fail(function(data){
 			console.info("Oh no", data);
 			chat.log(data.responseText, 'chat-warning');

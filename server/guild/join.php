@@ -41,11 +41,9 @@ require '../guild/get-guild-data.php';
 
 // notify party
 require_once '../zmq.php';
-$zmq = [
+zmqSend('guild:'. $_POST['row'], [
 	'msg' => $_SESSION['name'] . ' has joined ' . $_POST['guildName'] .'.',
-	'route' => 'guild->hasJoined',
-	'category' => 'guild:'. $_POST['row']
-];
-$socket->send(json_encode($zmq));
+	'route' => 'guild->hasJoined'
+]);
 
 echo json_encode($r);

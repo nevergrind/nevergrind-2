@@ -44,7 +44,7 @@ var game;
 			start: playedStart,
 			send: playedSend,
 		},
-		oneWay: oneWay,
+		pingOneWay: pingOneWay,
 		roundTrip: roundTrip,
 		pingColor: pingColor,
 		start: start,
@@ -71,7 +71,7 @@ var game;
 		getPetName: getPetName,
 	}
 	///////////////////////////////////////////////
-	function oneWay() {
+	function pingOneWay() {
 		return ~~((Date.now() - game.pingStart) / 2);
 	}
 	function roundTrip() {
@@ -135,12 +135,11 @@ var game;
 				console.info("heartbeat data: ", data);
 				data.name = my.name;
 				bar.updateBars(data);
-			}).fail(function(data){
-				game.heartbeatCallbackFail(data);
-			}).always(function() {
+			}).fail(game.heartbeatCallbackFail)
+				.always(function() {
 				game.heartbeat.timer = setTimeout(game.heartbeatSend, 5000);
 				game.heartbeat.attempts++;
-				var ping = game.pingoneWay();
+				var ping = game.pingOneWay();
 				console.info("%c Ping: ", 'background: #0f0', ping +'ms', "Ratio: " + ((game.heartbeat.success / game.heartbeat.attempts)*100) + "%");
 
 				bar.dom.ping.innerHTML =
@@ -175,7 +174,7 @@ var game;
 	function socketSend() {
 		// console.info("%c Last socket send: ", "background: #0ff", Date.now() - game.socket.sendTime);
 		game.socket.sendTime = Date.now();
-		socket.publish('hb:' + my.name, {});
+		socket.publish('hb_' + my.name, {});
 	}
 	function socketCheckTimeout() {
 		// longer than interval plus checkTolerance? disconnect (failed 2x)
@@ -183,7 +182,8 @@ var game;
 
 		console.info("%c Socket ping: ", "background: #08f", diff + 'ms');
 		if (diff > game.socket.expired) {
-			ng.disconnect();
+			console.warn('something wrong with the socket... please investigate...');
+			//ng.disconnect();
 		}
 	}
 	function socketHeartbeatCallback() {
@@ -214,7 +214,7 @@ var game;
 	function partySend() {
 		console.info("Sending party heartbeats....");
 		try {
-			socket.publish('party:' + my.p_id, {
+			socket.publish('party_' + my.p_id, {
 				id: my.row,
 				route: 'party->hb'
 			});
@@ -235,7 +235,7 @@ var game;
 			}
 		}
 		linkdead.forEach(function(name){
-			socket.publish('party:' + my.p_id, {
+			socket.publish('party_' + my.p_id, {
 				name: name,
 				route: 'party->linkdead'
 			});
@@ -285,7 +285,7 @@ var game;
 				*/
 			}
 			// notify friends
-			socket.publish('friend:' + my.name, {
+			socket.publish('friend_' + my.name, {
 				name: my.name,
 				route: 'off'
 			});

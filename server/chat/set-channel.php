@@ -7,7 +7,7 @@ $illegal = array("\\", "/", ":", "*", "?", ">", "<");
 $_POST['channel'] = str_replace($illegal, "", $_POST['channel']);
 if ($_POST['channel']) {
 	$r['channel'] = $_POST['channel'];
-	$r['fullChannel'] = 'ng2:'. $_POST['channel'];
+	$r['fullChannel'] = 'ng2_'. $_POST['channel'];
 
 	// update my zone/channel
 	$stmt = $db->prepare('update `players` set zone=? where id=?');

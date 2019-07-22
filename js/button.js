@@ -14,7 +14,7 @@ var button;
 			s +=
 			'<div id="class-btn-'+ i +'" '+
 				'class="class-btn" '+
-				'style="background-image: url(img2/skills/'+ my.job +'.png)"></div>';
+				'style="background-image: url(images/skills/'+ my.job +'.png)"></div>';
 		}
 		button.wrap.innerHTML = s;
 		if (!button.initialized) {
