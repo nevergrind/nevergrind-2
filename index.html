@@ -2,7 +2,6 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 <head id='head'>
-	<title>Nevergrind 2</title>
 	<meta charset="utf-8">
 	<meta http-equiv="Cache-control" content="no-cache">
 	<meta name="viewport"
@@ -12,8 +11,14 @@
 			visibility: hidden;
 		}
 	</style>
-	<link rel="shortcut icon" href="#"> <!-- stupid error -->
-	<script>
+	<link rel="shortcut icon" href="favicon.png"> <!-- stupid error -->
+	<!--link rel="stylesheet" href="css/libs/bootstrap4.min.css"-->
+	<!--link rel="stylesheet" href="css/libs/font-awesome.min.css"-->
+</head>
+
+<body id="body">
+
+<script>
 		var app = {
 			version: '2019.0.115',
 			initialized: 0, // init-game returned
@@ -24,19 +29,12 @@
 		app.url = app.isApp ?
 			'http://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/ng2/' : '';
 		// app.url = 'http://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/ng2/';
-		app.socketUrl = 'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/wss2/';
-		app.isLocal = !app.isApp;
-	</script>
-	<!--link rel="stylesheet" href="css/libs/bootstrap4.min.css"-->
-	<!--link rel="stylesheet" href="css/libs/font-awesome.min.css"-->
-</head>
-
-<body id="body">
-
-<script>
+		app.socketUrl = app.isApp ?
+			'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com:9090/' :
+			'ws://127.0.0.1:9090';
 	(function(d){
-		var css = app.isLocal ? ['main',] : ['ng2'];
-		var suffix = app.isLocal ? '.css' : '.min.css';
+		var css = app.isApp ? ['ng2'] : ['main'];
+		var suffix = app.isApp ? '.min.css' : '.css';
 		for (var i=0, len = css.length; i<len; i++) {
 			var link = d.createElement('link');
 			link.href = 'css/' + css[i] + suffix + '?v='+ app.version;
@@ -503,9 +501,10 @@
 		var files = ['nevergrind-2'];
 		var ext = '.min';
 		var script;
-		if (app.isLocal){
+		if (!app.isApp){
 			ext = '';
 			files = [
+				'alias',
 				'login',
 				'create',
 				'ng',

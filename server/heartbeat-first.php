@@ -9,7 +9,7 @@ else {
 	$r['hp'] = $_SESSION['ng2']['hp'];
 	$r['mp'] = $_SESSION['ng2']['mp'];
 
-	$stmt = $link->prepare('insert into `players` 
+	$stmt = $db->prepare('insert into `players` 
 		(`id`, `account`, `name`, `level`, `race`, `job`, `zone`) 
 		values (?, ?, ?, ?, ?, ?, ?)');
 
@@ -25,7 +25,7 @@ else {
 
 	// update `parties` hp/mp
 	if ($_SESSION['party']['id']) {
-		$stmt = $link->prepare('update `parties` set hp=?, mp=? where c_id=?');
+		$stmt = $db->prepare('update `parties` set hp=?, mp=? where c_id=?');
 		$stmt->bind_param('iii',
 			$_SESSION['ng2']['hp'],
 			$_SESSION['ng2']['mp'],

@@ -2,8 +2,8 @@ var modal;
 (function() {
 	modal = {
 		isOpen: 0,
-		overlay: document.getElementById('modal-overlay'),
-		wrap: document.getElementById('modal-wrap'),
+		overlay: getById('modal-overlay'),
+		wrap: getById('modal-wrap'),
 		headerContents: {
 			playerIdleBoot: '<div id="modal-header">Disconnected</div>',
 			deleteCharacter: '<div id="modal-header">Delete '+ create.name +'?</div>',

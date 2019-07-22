@@ -42,6 +42,7 @@ function minifyCss() {
 function minifyJs() {
 	var js = [
 		'beginWrap',
+		'alias',
 		'login',
 		'create',
 		'ng',

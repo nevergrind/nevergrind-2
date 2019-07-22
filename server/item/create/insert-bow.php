@@ -2,19 +2,22 @@
 if ($_SERVER["SERVER_NAME"] === "localhost"){
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-	$name = "Monarch";
-	$damage = 0;
-	$delay = 0;
+	$name = "Hydra Bow";
+	$damage = 12;
+	$delay = 43;
 
-	$armor = 28;
+	$armor = 0;
 	$itemLevel = 35;
-	$yPos = 7; // 10-15
-	$getEquipJobs = 'shield';
 
+	$yPos = 13; // 8-12
+	$getEquipJobs = 'bow';
+
+	$hp = 0;
+	$mp = 0;
+
+	$xPos = 11;
+	$equipSlots = 'range';
 	$req = 0;
-
-	$xPos = 12;
-	$equipSlots = 'secondary';
 
 	$query = "insert into `loot` (
 			name, itemLevel, damage, delay, armor, hp, mp, str, sta, agi, dex, wis, intel, cha, bleed, poison, arcane,
@@ -24,8 +27,8 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
 			$damage, "./*damage*/"
 			$delay, "./*delay*/"
 			$armor, "./*armor*/"
-			0,"./*hp*/"
-			0, "./*mp*/"
+			$hp,"./*hp*/"
+			$mp, "./*mp*/"
 			0, "./*str*/"
 			0, "./*sta*/"
 			0, "./*agi*/"
@@ -47,6 +50,6 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
 			'". $getEquipJobs ."',
 			$req "./*req*/"
 		)";
-	mysqli_query($link, $query);
+	mysqli_query($db, $query);
 	echo 'Inserted '. $name .'! '. microtime(1);
 }

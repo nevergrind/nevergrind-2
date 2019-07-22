@@ -3,7 +3,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-$stmt = $link->prepare('SELECT m.row, m.level, m.title, z.zone, m.mob_id, m.description 
+$stmt = $db->prepare('SELECT m.row, m.level, m.title, z.zone, m.mob_id, m.description 
 	FROM `mission_list` m
 	join `zones` z
 	on m.zone=z.row

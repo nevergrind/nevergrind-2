@@ -3,7 +3,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // get online players
-$result = mysqli_query($link,
+$result = mysqli_query($db,
 	'select p.name, p.level, p.race, p.job, g.name guild 
 	from `players` p
 	left join `guild_members` m
@@ -28,7 +28,7 @@ if ($result->num_rows){
 }
 // total
 $result = mysqli_query(
-	$link,
+	$db,
 	'SELECT count(row) count FROM `players` where timestamp > date_sub(now(), interval 15 second)'
 );
 $r['len'] = 0;

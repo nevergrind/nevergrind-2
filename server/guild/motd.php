@@ -6,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 if (!empty($_SESSION['guild']) &&
 	$_SESSION['guild']['rank'] < 2) {
 	// delete from party
-	$stmt = $link->prepare('update `guilds` set motd=? where row=?');
+	$stmt = $db->prepare('update `guilds` set motd=? where row=?');
 	$stmt->bind_param('si', $_POST['msg'], $_SESSION['guild']['id']);
 	$stmt->execute();
 

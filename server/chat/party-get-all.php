@@ -18,7 +18,7 @@ $query = 'select
 	on p.id=g.c_id
 	where g.p_id=?
 	limit 6';
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $_SESSION['party']['id']);
 $stmt->execute();
 $stmt->store_result();

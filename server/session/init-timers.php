@@ -1,4 +1,2 @@
 <?php
-$_SESSION['timers'] = [
-	'heartbeat' => time()
-];
+$_SESSION['timer']['heartbeat'] = time();

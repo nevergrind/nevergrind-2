@@ -8,7 +8,7 @@ left join `guild_members` m
 on c.row=m.c_id 
 where m.g_id=?
 order by c.level';
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $_SESSION['guild']['id']);
 $stmt->execute();
 $stmt->bind_result($level, $name, $race, $job);

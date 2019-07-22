@@ -1,22 +1,20 @@
 <?php
 if ($_SERVER["SERVER_NAME"] === "localhost"){
     require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-    require 'getEquipJobs.php';
+    require 'get-equip-jobs.php';
 
-    $name = "Gilded Bracers";
-    $itemLevel = 32;
+    $name = "Astral Cloak";
     $armor = 10;
+    $xPos = 3;
     $yPos = 15;
-    $getEquipJobs = getEquipJobs('plate');
-
-    $xPos = 5;
-    $equipSlots = 'wrist';
+    $equipSlots = 'back';
+    $getEquipJobs = getEquipJobs('cloth');
 
     $query = "insert into `loot` (
 			name, itemLevel, damage, delay, armor, hp, mp, str, sta, agi, dex, wis, intel, cha, bleed, poison, arcane,
 			lightning, cold, fire, xPos, yPos, effect, rarityType, equipSlots, equipJobs, req ) VALUES (
 			'$name',
-			$itemLevel, "./*itemLevel*/"
+			0, "./*itemLevel*/"
 			0, "./*damage*/"
 			0, "./*delay*/"
 			$armor, "./*armor*/"
@@ -43,5 +41,5 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
 			'". $getEquipJobs ."',
 			0 "./*req*/"
 		)";
-    mysqli_query($link, $query);
+    mysqli_query($db, $query);
 }

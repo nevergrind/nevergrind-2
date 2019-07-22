@@ -1,7 +1,7 @@
 <?php
 if ($_SERVER["SERVER_NAME"] === "localhost"){
     require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-    require 'getEquipJobs.php';
+    require 'get-equip-jobs.php';
 
     $query = "insert into `loot` (
 			name,
@@ -60,5 +60,5 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
 			'". getEquipJobs('plate') ."',
 			0 "./*req*/"
 		)";
-    mysqli_query($link, $query);
+    mysqli_query($db, $query);
 }

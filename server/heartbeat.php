@@ -6,9 +6,9 @@ if (!isset($_SESSION['account'])) {
 else {
 
 	$now = time();
-	if ($_SESSION['timers']['heartbeat']) {
-		if ($now - $_SESSION['timers']['heartbeat'] >= 5) {
-			$_SESSION['timers']['heartbeat'] = $now;
+	if ($_SESSION['timer']['heartbeat']) {
+		if ($now - $_SESSION['timer']['heartbeat'] >= 5) {
+			$_SESSION['timer']['heartbeat'] = $now;
 		}
 		else {
 			exit('Timing invalid');
@@ -29,13 +29,13 @@ else {
 	}
 	$r['mp'] = $_SESSION['ng2']['mp'];
 
-	$stmt = $link->prepare('update `players` set timestamp=now() where id=?');
+	$stmt = $db->prepare('update `players` set timestamp=now() where id=?');
 	$stmt->bind_param('i', $_SESSION['ng2']['row']);
 	$stmt->execute();
 
 	// update `parties` hp/mp
 	if ($_SESSION['party']['id']) {
-		$stmt = $link->prepare('update `parties` set hp=?, mp=? where c_id=?');
+		$stmt = $db->prepare('update `parties` set hp=?, mp=? where c_id=?');
 		$stmt->bind_param('iii',
 			$_SESSION['ng2']['hp'],
 			$_SESSION['ng2']['mp'],

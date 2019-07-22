@@ -2,7 +2,7 @@ var button;
 (function() {
 	button = {
 		initialized: 0,
-		wrap: document.getElementById('button-wrap'),
+		wrap: getById('button-wrap'),
 		init: init,
 		hide: hide,
 	}

@@ -2,7 +2,7 @@
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	$query = 'select friend from `friends` where account=?';
-	$stmt = $link->prepare($query);
+	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $_SESSION['account']);
 	$stmt->execute();
 	$stmt->bind_result($friend);

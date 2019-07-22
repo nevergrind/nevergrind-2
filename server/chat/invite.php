@@ -4,7 +4,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // get targeted player.id and party id by name
 $query = 'select p.id, g.c_id from `players` p left join `parties` g on p.id=g.c_id where p.name=? limit 1';
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $_POST['player']);
 $stmt->execute();
 $stmt->bind_result($id, $c_id);
@@ -41,7 +41,7 @@ if (is_null($r['c_id'])) {
 		// create new party with me as leader
 		$newParty = 1;
 		require '../session/init-party.php';
-		$stmt = mysqli_query($link,
+		$stmt = mysqli_query($db,
 			'insert into `parties` (is_leader, c_id, hp, maxHp, mp, maxMp) VALUES (1, '. $_SESSION['row'] .', '.
 			$_SESSION['hp'] .', '.
 			$_SESSION['maxHp'] .', '.
@@ -50,11 +50,11 @@ if (is_null($r['c_id'])) {
 		);
 
 		// last insert id is GET value
-		$p_id = $_SESSION['party']['id'] = mysqli_insert_id($link);
+		$p_id = $_SESSION['party']['id'] = mysqli_insert_id($db);
 		$_SESSION['party']['isLeader'] = 1;
 
 		// update p_id with what I just inserted with
-		$stmt = mysqli_query($link,
+		$stmt = mysqli_query($db,
 			'update `parties` set p_id='. $p_id .' where row='. $p_id
 		);
 	}

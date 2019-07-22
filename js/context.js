@@ -177,7 +177,7 @@ var context;
 	}
 	function show(s) {
 		if (!s) return;
-		var e = document.getElementById('tooltip-social-wrap');
+		var e = getById('tooltip-social-wrap');
 		e.innerHTML = s;
 		e.style.top = context.posY() + 'px';
 		e.style.left = context.posX() + 'px';
@@ -186,7 +186,7 @@ var context;
 		context.openDate = Date.now();
 	}
 	function hide() {
-		document.getElementById('tooltip-social-wrap').style.visibility = 'hidden';
+		getById('tooltip-social-wrap').style.visibility = 'hidden';
 		context.isOpen = 0;
 	}
 	function hideCheck() {

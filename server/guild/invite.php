@@ -11,7 +11,7 @@ $query = 'select
 	on p.id=g.c_id 
 	where p.name=? limit 1';
 
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $_POST['player']);
 $stmt->execute();
 $stmt->bind_result($id, $c_id);

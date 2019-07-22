@@ -35,10 +35,10 @@ var dungeon;
 			cache.preloadMob(v);
 		});
 		if (dungeon.initialized) {
-			document.getElementById('scene-dungeon').style.display = 'block';
+			getById('scene-dungeon').style.display = 'block';
 		}
 		else {
-			document.getElementById('scene-dungeon').innerHTML = dungeon.html();
+			getById('scene-dungeon').innerHTML = dungeon.html();
 			battle.events();
 			button.init();
 		}

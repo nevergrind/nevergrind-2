@@ -2,13 +2,13 @@
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	// delete all from `players` to clean up the table
-	mysqli_query($link, 'delete from `players` where timestamp < date_sub(now(), interval 60 second)');
+	mysqli_query($db, 'delete from `players` where timestamp < date_sub(now(), interval 60 second)');
 
 	// are they already logged in?
 	if ($_SERVER["SERVER_NAME"] !== "localhost") {
 		// prevent double login
 		$query = 'SELECT count(row) count FROM `players` where account=? and timestamp > date_sub(now(), interval 15 second)';
-		$stmt = $link->prepare($query);
+		$stmt = $db->prepare($query);
 		$stmt->bind_param('s', $_SESSION['account']);
 		$stmt->execute();
 		$stmt->bind_result($account);
@@ -32,7 +32,7 @@
 	 	dodge, parry, riposte,
 	 	alteration, conjuration, evocation
 	 	from `characters` where account=? and row=? limit 1';
-	$stmt = $link->prepare($query);
+	$stmt = $db->prepare($query);
 	$stmt->bind_param('ss', $_SESSION['account'], $_POST['row']);
 	$stmt->execute();
 	$stmt->store_result();
@@ -118,16 +118,10 @@
 		else {
 			require '../session/init-party.php';
 			// delete from parties if player data is known
-			mysqli_query($link, 'delete from `parties` where c_id='. $_SESSION['row']);
+			mysqli_query($db, 'delete from `parties` where c_id='. $_SESSION['row']);
 		}
 
-		if (!isset($_SESSION['quest'])) {
-			require '../session/init-quest.php';
-		}
-		else {
-			require '../session/init-quest.php';
-
-		}
+		require '../session/init-quest.php';
 		// init session values
 		require '../session/init-guild.php';
 
@@ -135,7 +129,7 @@
 		require 'setEquipmentValues.php';
 		/*
 		// update player heartbeat table
-		$stmt = $link->prepare('insert into `players`
+		$stmt = $db->prepare('insert into `players`
 			(`id`, `account`, `name`, `level`, `race`, `job`, `zone`) 
 			values (?, ?, ?, ?, ?, ?, ?) 
 			on duplicate key update timestamp=now()');
@@ -152,7 +146,7 @@
 
 		// count active players
 		$result = mysqli_query(
-			$link,
+			$db,
 			'SELECT count(row) count FROM `players` where timestamp > date_sub(now(), interval 15 second)'
 		);
 		$r['count'] = 0;
@@ -164,7 +158,7 @@
 
 		// get all players in chat room
 		$result = mysqli_query(
-			$link,
+			$db,
 			'SELECT id, name, level, race, job FROM `players` where zone="ng2:town" and timestamp > date_sub(now(), interval 15 second)'
 		);
 		$r['players'] = [];
@@ -181,7 +175,7 @@
 			}
 		}*/
 		// get guild info
-		require '../guild/getGuildData.php';
+		require '../guild/get-guild-data.php';
 
 		// get mission info
 		$cacheQuest = '';

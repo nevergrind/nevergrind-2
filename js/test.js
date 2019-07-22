@@ -35,11 +35,11 @@ var test;
 	///////////////////////////////////
 	function chatRoom() {
 		for (i=0; i<100; i++) {
-			c = ng.toJobShort(ng.jobs[~~(Math.random() * 14)]);
+			c = ng.toJobShort(ng.jobs[~~(rand() * 14)]);
 			socket.publish(chat.getChannel(), {
 				route: 'chat->add',
 				row: test.chat.id+i,
-				level: Math.ceil(Math.random() * 50),
+				level: Math.ceil(rand() * 50),
 				job: c,
 				name: 'WWWWWWWWWWWWWWWW'
 			});
@@ -55,14 +55,14 @@ var test;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
-		var e2 = document.getElementById('ng2-logo-wrap');
+		var e2 = getById('ng2-logo-wrap');
 		for (i=0; i<max; i++){
-			e = document.createElement('img');
+			e = createElement('img');
 			e.id = 'mob' + i;
 			e.className = 'test-orcs';
 			e.style.position = 'absolute';
-			e.style.top = ~~(Math.random() * 100) +'%';
-			e.style.left = ~~(Math.random() * 100) +'%';
+			e.style.top = ~~(rand() * 100) +'%';
+			e.style.left = ~~(rand() * 100) +'%';
 			e.style.transform = 'translate(-50%, -50%)';
 			e.src = 'images/an orc.png';
 			e2.appendChild(e);
@@ -80,7 +80,7 @@ var test;
 		}
 	}
 	function animateOrc(i) {
-		z = document.getElementById("mob" + i);
+		z = getById("mob" + i);
 
 		filters = {
 			hue: "hue-rotate(0deg)"
@@ -91,7 +91,7 @@ var test;
 			onUpdateParams: [z, filters],
 			repeat: -1
 		});
-		tl.to(filters, Math.random() * 6 + 1, {
+		tl.to(filters, rand() * 6 + 1, {
 			hue: "hue-rotate(360deg)"
 		});
 	}

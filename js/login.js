@@ -1,4 +1,5 @@
 'use strict';
+
 var login;
 (function() {
 	login = {
@@ -53,7 +54,7 @@ var login;
 				'spellcheck="false"/>' +
 			'<input id="login-btn" type="submit" value="Login" class="ng-btn" />' +
 			'<div class="error-msg"></div>';
-		document.getElementById('login-form-contents').innerHTML = html;
+		getById('login-form-contents').innerHTML = html;
 		if (login.account !== null) {
 			$('#account').val(login.account);
 		}
@@ -71,7 +72,7 @@ var login;
 				'spellcheck="false"/>' +
 			'<input id="create-account" type="submit" value="Create" class="ng-btn" style="margin: 1rem 0 .2rem" />' +
 			'<div class="error-msg"></div>';
-		document.getElementById('login-form-contents').innerHTML = html;
+		getById('login-form-contents').innerHTML = html;
 	}
 	function createAccount() {
 		if (login.lock) {

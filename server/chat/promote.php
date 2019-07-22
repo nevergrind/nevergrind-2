@@ -5,12 +5,12 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 // not leading a party yet
 if ($_SESSION['party']['id']) {
 	// set all to non-leader
-	$stmt = $link->prepare('update `parties` set is_leader=0 where p_id=?');
+	$stmt = $db->prepare('update `parties` set is_leader=0 where p_id=?');
 	$stmt->bind_param('i', $_SESSION['party']['id']);
 	$stmt->execute();
 
 	// promote to leader by id
-	$stmt = $link->prepare('update `parties` set is_leader=1 where c_id=?');
+	$stmt = $db->prepare('update `parties` set is_leader=1 where c_id=?');
 	$stmt->bind_param('s', $_POST['leaderId']);
 	$stmt->execute();
 

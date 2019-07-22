@@ -29,7 +29,7 @@ var bar;
 	function init() {
 		if (!bar.initialized) {
 			bar.initialized = 1;
-			var e = document.getElementById('bar-wrap');
+			var e = getById('bar-wrap');
 			e.innerHTML = bar.html();
 			$(".bar-icons").tooltip({
 				animation: false
@@ -64,16 +64,16 @@ var bar;
 	}
 	function setEvents(i) {
 		bar.dom[i] = {
-			playerWrap: document.getElementById('bar-player-wrap-' + i),
-			name: document.getElementById('bar-name-' + i),
-			hpFg: document.getElementById('bar-hp-fg-' + i),
-			// hpBg: document.getElementById('bar-hp-bg-' + i),
-			mpWrap: document.getElementById('bar-mp-wrap-' + i),
-			mpFg: document.getElementById('bar-mp-fg-' + i),
+			playerWrap: getById('bar-player-wrap-' + i),
+			name: getById('bar-name-' + i),
+			hpFg: getById('bar-hp-fg-' + i),
+			// hpBg: getById('bar-hp-bg-' + i),
+			mpWrap: getById('bar-mp-wrap-' + i),
+			mpFg: getById('bar-mp-fg-' + i),
 		}
 
-		bar.dom.ping = document.getElementById('bar-ping');
-		bar.dom.socket = document.getElementById('bar-socket');
+		bar.dom.ping = getById('bar-ping');
+		bar.dom.socket = getById('bar-socket');
 	}
 	function getPlayerHtml(player, index, ignoreWrap) {
 		// get bar for one player
@@ -214,7 +214,7 @@ var bar;
 		if (index) {
 			// reset client data to default
 			my.party[index] = my.Party();
-			document.getElementById('bar-player-wrap-' + index).style.display = 'none';
+			getById('bar-player-wrap-' + index).style.display = 'none';
 			chat.log(name + " has disbanded the party.", 'chat-warning');
 			// elect new leader if client's id is lowest
 			if (electNewLeader && my.isLowestPartyIdMine()) {
@@ -265,7 +265,7 @@ var bar;
 				for (var i=len; i<game.maxPlayers; i++) {
 					if (i) {
 						// never overwrite self
-						document.getElementById('bar-player-wrap-' + i).style.display = 'none';
+						getById('bar-player-wrap-' + i).style.display = 'none';
 						my.party[i] = my.Party();
 					}
 				}
@@ -284,12 +284,12 @@ var bar;
 		socket.unsubscribe('party:'+ my.p_id);
 		my.p_id = 0;
 		my.party[0].isLeader = 0;
-		document.getElementById('bar-is-leader-0').style.display = 'none';
+		getById('bar-is-leader-0').style.display = 'none';
 	}
 	function hideParty() {
 		my.party.forEach(function(v, i){
 			if (i) {
-				document.getElementById('bar-player-wrap-' + i).style.display = 'none';
+				getById('bar-player-wrap-' + i).style.display = 'none';
 			}
 		});
 	}

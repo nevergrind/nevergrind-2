@@ -2,17 +2,16 @@
 if ($_SERVER["SERVER_NAME"] === "localhost"){
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-	$name = "Thunder Hammer";
-	$damage = 13;
-	$delay = 43;
+	$name = "Caduceus";
+	$damage = 8;
+	$delay = 37;
 	$armor = 0;
 	$itemLevel = 35;
-	$yPos = 15;
-	$getEquipJobs = '2hb';
-	$req = 0;
+	$yPos = 7;
+	$getEquipJobs = '1hb';
 
 	$xPos = 10;
-	$equipSlots = 'primary';
+	$equipSlots = 'primary secondary';
 
 	$query = "insert into `loot` (
 			name, itemLevel, damage, delay, armor, hp, mp, str, sta, agi, dex, wis, intel, cha, bleed, poison, arcane,
@@ -43,8 +42,8 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
 			0,"./*rarityType*/"
 			'$equipSlots', "./*equipSlots*/"
 			'". $getEquipJobs ."',
-			$req "./*req*/"
+			0 "./*req*/"
 		)";
-	mysqli_query($link, $query);
+	mysqli_query($db, $query);
 	echo 'Inserted '. $name .'! '. microtime(1);
 }

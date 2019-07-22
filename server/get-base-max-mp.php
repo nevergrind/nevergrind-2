@@ -1,7 +1,7 @@
 <?php
 function getBaseMaxMp($hero){
 	$lvl = $hero['level'];
-	require 'enum/noManaJobs.php';
+	require 'enum/no-mana-jobs.php';
 	if (in_array($hero['job'], $noManaJobs, true)){
 		return 0;
 	}

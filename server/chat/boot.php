@@ -4,7 +4,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 if ($_SESSION['party']['id']) {
 	// delete from party
-	$stmt = $link->prepare('delete from `parties` where c_id=?');
+	$stmt = $db->prepare('delete from `parties` where c_id=?');
 	$stmt->bind_param('s', $_POST['id']);
 	$stmt->execute();
 

@@ -2,33 +2,25 @@
 if ($_SERVER["SERVER_NAME"] === "localhost"){
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-	$name = "Gold Amulet";
-	$damage = 0;
-	$delay = 0;
+    $name = "Plated Belt";
+    $itemLevel = 30;
+    $armor = 9;
+    $yPos = 7;
+    $getEquipJobs = 'plate';
 
-	$armor = 0;
-	$itemLevel = 20;
+    $xPos = 7;
+    $equipSlots = 'waist';
 
-	$yPos = 5; // 1-5
-	$getEquipJobs = 'all';
-
-	$hp = 2;
-	$mp = 2;
-
-	$xPos = 0;
-	$equipSlots = 'neck';
-	$req = 0;
-
-	$query = "insert into `loot` (
+    $query = "insert into `loot` (
 			name, itemLevel, damage, delay, armor, hp, mp, str, sta, agi, dex, wis, intel, cha, bleed, poison, arcane,
 			lightning, cold, fire, xPos, yPos, effect, rarityType, equipSlots, equipJobs, req ) VALUES (
 			'$name',
 			$itemLevel, "./*itemLevel*/"
-			$damage, "./*damage*/"
-			$delay, "./*delay*/"
+			0, "./*damage*/"
+			0, "./*delay*/"
 			$armor, "./*armor*/"
-			$hp,"./*hp*/"
-			$mp, "./*mp*/"
+			0,"./*hp*/"
+			0, "./*mp*/"
 			0, "./*str*/"
 			0, "./*sta*/"
 			0, "./*agi*/"
@@ -48,8 +40,7 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
 			0,"./*rarityType*/"
 			'$equipSlots', "./*equipSlots*/"
 			'". $getEquipJobs ."',
-			$req "./*req*/"
+			0 "./*req*/"
 		)";
-	mysqli_query($link, $query);
-	echo 'Inserted '. $name .'! '. microtime(1);
+    mysqli_query($db, $query);
 }

@@ -1,7 +1,7 @@
 <?php
 if ($_SERVER["SERVER_NAME"] === "localhost"){
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-	require 'initInsertItem.php';
+	require 'init-insert-item.php';
 
 	// must change
 	$name = "Glyphed Cowl";
@@ -63,6 +63,6 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
 			'". $getEquipJobs ."',
 			$req
 		)";
-	mysqli_query($link, $query);
+	mysqli_query($db, $query);
 	echo 'Inserted '. $name .'! '. microtime(1);
 }

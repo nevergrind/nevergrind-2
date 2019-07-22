@@ -1,5 +1,5 @@
 <?php
-	session_start();
+	require_once '../session/start.php';
 	require('prepare.php');
 	
     require_once '../zmq.php';

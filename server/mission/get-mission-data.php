@@ -19,7 +19,7 @@ $query = 'select
 	where c_id=? 
 	limit 1';
 
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $_SESSION['row']);
 $stmt->execute();
 $stmt->bind_result(

@@ -80,9 +80,9 @@
 
 		ng.lastKey = key;
 
-		app.isLocal && console.info('keydown: ', key, code);
+		console.info('keydown: ', key, code);
 		// local only
-		if (app.isLocal) {
+		if (!app.isApp) {
 			if (!chat.hasFocus && ng.view !== "title") {
 				// key input view router
 				if (key === 'b') {

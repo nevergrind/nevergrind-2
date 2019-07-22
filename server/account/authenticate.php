@@ -5,7 +5,7 @@ $account = $_POST['account'];
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 $query = "select account from `accounts` where account=? limit 1";
-if ($stmt = $link->prepare($query)) {
+if ($stmt = $db->prepare($query)) {
 	$stmt->bind_param('s', $account);
 	$stmt->execute();
 	$stmt->store_result();

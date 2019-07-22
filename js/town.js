@@ -119,7 +119,7 @@ var town;
 				// things that only happen once
 				chat.log("There are currently " + data.count + " players exploring Vandamor.", 'chat-emote');
 				// init town ?
-				document.getElementById('scene-town').innerHTML = town.html();
+				getById('scene-town').innerHTML = town.html();
 				town.events();
 				$("#scene-title").remove();
 				town.init();
@@ -164,7 +164,7 @@ var town;
 				})();
 
 				// route to battle in local mode
-				if (app.isLocal) {
+				if (!app.isApp) {
 					if (data.quest.level) {
 						if (location.hash === '#battle') {
 							battle.go();
@@ -337,7 +337,7 @@ var town;
 			mission.resetMissionLists();
 		}
 		// create aside
-		var e = document.createElement('div');
+		var e = createElement('div');
 		e.className = 'town-aside text-shadow';
 		// set aside HTML
 		var type = _.camelCase(id);
@@ -355,7 +355,7 @@ var town;
 			html = town.aside.html.townMission(id);
 		}
 		e.innerHTML = html;
-		document.getElementById('scene-town').appendChild(e);
+		getById('scene-town').appendChild(e);
 		// animate aside things
 		setTimeout(function() {
 			TweenMax.set('.now-loading', {

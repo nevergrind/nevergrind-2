@@ -183,7 +183,7 @@ var chat;
 	function init() {
 		// default initialization of chat
 		if (!chat.initialized) {
-			var e = document.getElementById('chat-wrap');
+			var e = getById('chat-wrap');
 			e.innerHTML = '';
 			e.style.display = 'flex';
 			e.innerHTML = chat.html();
@@ -219,13 +219,13 @@ var chat;
 				context.getChatMenu(name);
 			});
 			// dom cache
-			chat.dom.chatRoom = document.getElementById('chat-room');
-			chat.dom.chatHeader = document.getElementById('chat-header');
-			chat.dom.chatLog = document.getElementById('chat-log');
-			chat.dom.chatInput = document.getElementById('chat-input');
-			chat.dom.chatInputMode = document.getElementById('chat-input-mode');
-			chat.dom.chatModeMsg = document.getElementById('chat-mode-msg');
-			chat.dom.chatPrompt = document.getElementById('chat-prompt');
+			chat.dom.chatRoom = getById('chat-room');
+			chat.dom.chatHeader = getById('chat-header');
+			chat.dom.chatLog = getById('chat-log');
+			chat.dom.chatInput = getById('chat-input');
+			chat.dom.chatInputMode = getById('chat-input-mode');
+			chat.dom.chatModeMsg = getById('chat-mode-msg');
+			chat.dom.chatPrompt = getById('chat-prompt');
 		}
 		else {
 			// returned from dungeon
@@ -238,7 +238,7 @@ var chat;
 			while (chat.dom.chatLog.childElementCount >= 500) {
 				chat.dom.chatLog.removeChild(chat.dom.chatLog.firstChild);
 			}
-			var z = document.createElement('div');
+			var z = createElement('div');
 			if (route){
 				z.className = route;
 			}
@@ -707,7 +707,7 @@ var chat;
 	}
 	function promptAdd(data) {
 		var s = '',
-			e = document.createElement('div'),
+			e = createElement('div'),
 			id = ng.getId();
 
 		console.info('prompt.add', data);
@@ -919,11 +919,11 @@ var chat;
 			h = 0;
 
 		if (minLeft >= 1440) {
-			d = Math.floor(minLeft / 1440);
+			d = floor(minLeft / 1440);
 			minLeft = (minLeft % 1440);
 		}
 		if (minLeft >= 60) {
-			h = Math.floor(minLeft / 60);
+			h = floor(minLeft / 60);
 			minLeft = (minLeft % 60);
 		}
 		var m = minLeft,
@@ -1151,7 +1151,7 @@ var chat;
 	function addPlayer(v) {
 		// players receive update from socket
 		if (chat.inChannel.indexOf(v.row) === -1) {
-			var e = document.createElement('div');
+			var e = createElement('div');
 			e.innerHTML =
 			'<div id="chat-player-'+ v.row +'">'+
 				'<span class="chat-player">['+ v.level +':<span class="chat-'+ v.job +'">'+ v.name +'</span>]</span>'+
@@ -1162,7 +1162,7 @@ var chat;
 		}
 	}
 	function removePlayer(v) {
-		var e = document.getElementById('chat-player-' + v.row);
+		var e = getById('chat-player-' + v.row);
 		e !== null && e.parentNode.removeChild(e);
 		var index = chat.inChannel.indexOf(v.row);
 		chat.inChannel.splice(index, 1);

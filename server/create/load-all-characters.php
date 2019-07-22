@@ -1,6 +1,6 @@
 <?php
 	$query = 'select row, name, level, race, job from `characters` where account=? and deleted=0';
-	$stmt = $link->prepare($query);
+	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $_SESSION['account']);
 	$stmt->execute();
 	$stmt->store_result();

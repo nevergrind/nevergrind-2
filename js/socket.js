@@ -9,7 +9,7 @@ var socket;
 		unsubscribe: unsubscribe,
 		publish: publish,
 		registerSubscription: registerSubscription,
-		hello: hello,
+		testReceived: testReceived,
 		joinGame: joinGame,
 		initWhisper: initWhisper,
 		init: init,
@@ -33,8 +33,8 @@ var socket;
 			exclude_me: !!excludeMe
 		});
 	}
-	function hello(arr, obj) {
-		console.log("socket test received:", arr, obj);
+	function testReceived(arr, obj) {
+		console.log("testReceived socket test received:", arr, obj);
 	}
 	function registerSubscription(sub) {
 		console.info('registering topic', sub);
@@ -133,7 +133,7 @@ var socket;
 	}
 	function init() {
 		socket.connection = new autobahn.Connection({
-			url: 'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com:9090/',
+			url: app.socketUrl,
 			realm: 'realm1'
 		});
 		console.info('connection instantiated...');
@@ -144,7 +144,7 @@ var socket;
 			console.warn("Connection successful!", session);
 			socket.session = session;
 
-			socket.subscribe('test', hello);
+			socket.subscribe('test', testReceived);
 			socket.publish('test', {
 				date: Date.now()
 			});

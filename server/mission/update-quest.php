@@ -18,7 +18,7 @@ $_SESSION['quest'] = [
 $_SESSION['zone'] = '';
 
 $dungeon = 'dng:' . $_POST['quest']['zone'];
-$stmt = $link->prepare('update `players` set mission_id=?, zone=? where id=?');
+$stmt = $db->prepare('update `players` set mission_id=?, zone=? where id=?');
 $stmt->bind_param('isi', $mission_id, $dungeon, $_SESSION['row']);
 $stmt->execute();
 

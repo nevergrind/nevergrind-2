@@ -2,7 +2,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 // get online players
-$result = mysqli_query($link,
+$result = mysqli_query($db,
 	'select p.name, p.level, p.race, p.job, g.name guild
 			from `players` p 
 			left join `guild_members` m
@@ -31,7 +31,7 @@ if ($result->num_rows){
 $r['friends'] = [];
 
 $query = 'select friend from `friends` where account=?';
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $_SESSION['account']);
 $stmt->execute();
 $stmt->bind_result($friend);

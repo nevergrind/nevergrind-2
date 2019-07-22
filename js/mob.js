@@ -36,7 +36,7 @@ var mob;
 	};
 	//////////////////////////////////////////////////
 	function getRandomMobKey() {
-		var i = ~~(Math.random() * mob.imageKeysLen);
+		var i = ~~(rand() * mob.imageKeysLen);
 		return mob.imageKeys[i];
 	}
 	function init() {
@@ -67,7 +67,7 @@ var mob;
 			'name',
 			'shadow',
 			'bar'].forEach(function(e){
-				mobs[i].dom[e] = document.getElementById('mob-'+ e +'-' + i);
+				mobs[i].dom[e] = getById('mob-'+ e +'-' + i);
 			});
 		}
 	}
@@ -198,7 +198,7 @@ var mob;
 		m.animationActive = 1;
 		var tl = ng.TM(),
 			foo = force === 1 || force === 2 ?
-				force : !Math.round(Math.random()) ? 1 : 2;
+				force : !Math.round(rand()) ? 1 : 2;
 		if (!m.enableSecondary) {
 			foo = 1;
 		}
@@ -334,7 +334,7 @@ var mob;
 		});
 	}
 	function blur() {
-		var e = document.getElementById('sprite'),
+		var e = getById('sprite'),
 			type = 'blur',
 			filters = {
 				blur: type + '(0px)'
@@ -349,7 +349,7 @@ var mob;
 		});
 	}
 	function brightness() {
-		var e = document.getElementById('sprite'),
+		var e = getById('sprite'),
 			type = 'brightness',
 			filters = {
 				brightness: type + '(0%)'
@@ -364,7 +364,7 @@ var mob;
 		});
 	}
 	function contrast() {
-		var e = document.getElementById('sprite'),
+		var e = getById('sprite'),
 			type = 'contrast',
 			filters = {
 				contrast: type + '(0%)'
@@ -379,7 +379,7 @@ var mob;
 		});
 	}
 	function grayscale() {
-		var e = document.getElementById('sprite'),
+		var e = getById('sprite'),
 			type = 'grayscale',
 			filters = {
 				grayscale: type + '(0%)'
@@ -394,7 +394,7 @@ var mob;
 		});
 	}
 	function invert() {
-		var e = document.getElementById('sprite'),
+		var e = getById('sprite'),
 			type = 'invert',
 			filters = {
 				invert: type + '(0%)'
@@ -409,7 +409,7 @@ var mob;
 		});
 	}
 	function saturate() {
-		var e = document.getElementById('sprite'),
+		var e = getById('sprite'),
 			type = 'saturate',
 			filters = {
 				saturate: type + '(0%)'
@@ -424,7 +424,7 @@ var mob;
 		});
 	}
 	function sepia() {
-		var e = document.getElementById('sprite'),
+		var e = getById('sprite'),
 			type = 'sepia',
 			filters = {
 				sepia: type + '(0%)'

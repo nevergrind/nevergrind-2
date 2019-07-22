@@ -25,7 +25,7 @@ var ng;
 		resizeY: 1,
 		chatOn: false,
 		lastKey: 0,
-		lockOverlay: document.getElementById("lock-overlay"),
+		lockOverlay: getById("lock-overlay"),
 		startTime: Date.now(),
 		locked: 0,
 		loadAttempts: 0,
@@ -147,7 +147,7 @@ var ng;
 		// turn off all events
 		$(document).add('*').off();
 		$("main > *").css('display', 'none');
-		var e = document.getElementById('scene-error');
+		var e = getById('scene-error');
 		e.style.display = 'block';
 		e.innerHTML = msg || 'You have been disconnected from the server';
 		setTimeout(function() {
@@ -170,7 +170,7 @@ var ng;
 		// remove defaults and set via js
 		$(".scene").removeClass('none')
 			.css('display', 'none');
-		document.getElementById('scene-' + scene).style.display = 'block';
+		getById('scene-' + scene).style.display = 'block';
 		ng.view = scene;
 	}
 	function camel(str) {
@@ -256,7 +256,7 @@ var ng;
 		if (d === undefined){
 			d = .01;
 		}
-		var e = document.getElementById(id);
+		var e = getById(id);
 		e.innerHTML = msg;
 		var split = new SplitText(e, {
 				type: "words,chars"
@@ -325,7 +325,7 @@ var ng;
 
 		$.ajax({
 			type: 'GET',
-			url: app.url + 'server/create/getStatMap.php'
+			url: app.url + 'server/create/get-stat-map.php'
 		}).done(function(r){
 			var r = r.statMap;
 			ng.races.forEach(function(v){
@@ -350,7 +350,7 @@ var ng;
 			app.initialized = 1;
 			if (r.account) {
 				app.account = my.account = r.account; // for global reference
-				document.getElementById('logout').textContent = 'Logout ' + r.account;
+				getById('logout').textContent = 'Logout ' + r.account;
 				ng.displayAllCharacters(r.characterData);
 				ng.checkPlayerData();
 				$("#login-modal").remove();
@@ -360,7 +360,7 @@ var ng;
 			}
 
 			var h = location.hash;
-			if (app.isLocal) {
+			if (!app.isApp) {
 				// initial hashtag routing
 				if (h === '#town' ||
 					h === '#battle' ||
@@ -384,7 +384,7 @@ var ng;
 				'<div class="ch-card-details">'+ d.level +' '+ d.race +' '+ ng.toJobLong(d.job) +'</div>'+
 				'</div>';
 		});
-		document.getElementById('ch-card-list').innerHTML = s;
+		getById('ch-card-list').innerHTML = s;
 		$(".select-player-card:first").trigger('mousedown');
 	}
 })();

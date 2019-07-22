@@ -71,10 +71,10 @@ var battle;
 	function show() {
 		ng.setScene('battle');
 		if (battle.initialized) {
-			document.getElementById('scene-battle').style.display = 'block';
+			getById('scene-battle').style.display = 'block';
 		}
 		else {
-			document.getElementById('scene-battle').innerHTML = battle.html();
+			getById('scene-battle').innerHTML = battle.html();
 			battle.events();
 			battle.isInit = 1;
 		}

@@ -1,6 +1,6 @@
 <?php
 
-$stmt = $link->prepare('select m.rank, 
+$stmt = $db->prepare('select m.rank, 
 	m.g_id, 
 	m.member_number,
 	n.motd,
@@ -14,6 +14,7 @@ $stmt = $link->prepare('select m.rank,
 $stmt->bind_param('s', $_SESSION['row']);
 $stmt->execute();
 $stmt->bind_result($rank, $g_id, $member_number, $motd, $members, $name);
+
 // default value
 require '../session/init-guild.php';
 

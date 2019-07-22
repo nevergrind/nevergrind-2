@@ -141,21 +141,21 @@ var create;
 			var attr = $(this).data('id');
 			if (create.form.left < 10 &&
 				(create.form[attr] - create.base[attr] > 0) ){
-				document.getElementById('create-points-' + attr).innerHTML = --create.form[attr];
-				document.getElementById('create-points-remaining').innerHTML = ++create.form.left;
+				getById('create-points-' + attr).innerHTML = --create.form[attr];
+				getById('create-points-remaining').innerHTML = ++create.form.left;
 			}
 		});
 		$(".attr-add-1").on(x, function(){
 			var attr = $(this).data('id');
 			if (create.form.left){
-				document.getElementById('create-points-' + attr).innerHTML = ++create.form[attr];
-				document.getElementById('create-points-remaining').innerHTML = --create.form.left;
+				getById('create-points-' + attr).innerHTML = ++create.form[attr];
+				getById('create-points-remaining').innerHTML = --create.form.left;
 			}
 		});
 		$("#create-character-back").on(x, function(){
 			ng.lock(1);
 			ng.initGame();
-			var z = document.getElementById('scene-title-create-character');
+			var z = getById('scene-title-create-character');
 			TweenMax.to(z, .6, {
 				y: 20,
 				opacity: 0,
@@ -262,19 +262,19 @@ var create;
 		return create.jobAttrs[job];
 	}
 	function set(key, val) {
-		document.getElementById(key + '-value').innerHTML = create.form[key] = val;
+		getById(key + '-value').innerHTML = create.form[key] = val;
 		// details
 		ng.split('create-details', create.msg(key, val));
 		if (key === 'job'){
-			document.getElementById('type-value').innerHTML = create.types[val];
+			getById('type-value').innerHTML = create.types[val];
 		}
 		// resists
 		ng.resists.forEach(function(v, i){
-			document.getElementById(v + '-value').innerHTML = create.getResist(v);
+			getById(v + '-value').innerHTML = create.getResist(v);
 		});
 		// dungeon
 		ng.dungeon.forEach(function(v, i){
-			document.getElementById(v + '-value').innerHTML = create.getDungeon(v);
+			getById(v + '-value').innerHTML = create.getDungeon(v);
 		});
 		// reset attr
 		if (key !== 'gender' && create.form.race){
@@ -286,12 +286,12 @@ var create;
 			// set initial attr values
 			$(".create-attr-value").removeClass('active');
 			ng.attrs.forEach(function(v, i){
-				var e = document.getElementById('create-points-' + v);
+				var e = getById('create-points-' + v);
 				e.innerHTML = create.form[v] = create.base[v] = raceAttr[i];
 				if (jobAttr[i]){
 					e.className = e.className + ' active';
 				}
-				document.getElementById('create-points-remaining').innerHTML = create.form.left = 10;
+				getById('create-points-remaining').innerHTML = create.form.left = 10;
 			});
 			// reset form bonuses
 		}
@@ -530,11 +530,11 @@ var create;
 		return v;
 	}
 	function setRandomGender() {
-		var e = $(".select-gender:eq("+ ~~(Math.random() * 2) +")");
+		var e = $(".select-gender:eq("+ ~~(rand() * 2) +")");
 		e.length && e.trigger('mousedown');
 	}
 	function setRandomRace() {
-		var e = $(".select-race:eq("+ ~~(Math.random() * 12) +")");
+		var e = $(".select-race:eq("+ ~~(rand() * 12) +")");
 		e.length && e.trigger('mousedown');
 	}
 	function setRandomClass(race) {
@@ -555,7 +555,7 @@ var create;
 		// add active to selection
 		var e = $(".select-class:not(.disabled)"),
 			len = e.length;
-		e = e.eq(~~(Math.random() * len));
+		e = e.eq(~~(rand() * len));
 		e.length && e.trigger('mousedown');
 	}
 })();

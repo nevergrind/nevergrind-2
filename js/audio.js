@@ -5,7 +5,7 @@ var audio;
 		ext: 'mp3',
 		on: true,
 		// rotating music tracks in game
-		trackIndex: ~~(Math.random() * 8),
+		trackIndex: ~~(rand() * 8),
 		tracks: [
 			'ArcLight',
 			'Blackmoor Colossus',
@@ -97,17 +97,17 @@ var audio;
 	}
 	function events() {
 		$("#bgmusic").on('ended', function() {
-			var x = document.getElementById('bgmusic');
+			var x = getById('bgmusic');
 			x.currentTime = 0;
 			x.play();
 		});
 		$("#bgamb1").on('ended', function() {
-			var x = document.getElementById('bgamb1');
+			var x = getById('bgamb1');
 			x.currentTime = 0;
 			x.play();
 		});
 		$("#bgamb2").on('ended', function() {
-			var x = document.getElementById('bgamb2');
+			var x = getById('bgamb2');
 			x.currentTime = 0;
 			x.play();
 		});

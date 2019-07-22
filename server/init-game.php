@@ -1,6 +1,6 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
+require 'header.php';
+require 'db.php';
 
 $empty = empty($_SESSION['account']);
 
@@ -12,7 +12,7 @@ if (isset($_SESSION['ng2']['name'])) {
 }
 if (!$empty) {
 	$r['account'] = $_SESSION['account'];
-	require 'create/loadAllCharacters.php';
+	require 'create/load-all-characters.php';
 }
 
 require 'session/init-timers.php';

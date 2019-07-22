@@ -19,7 +19,7 @@
 	// name is not taken
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	$query = "select name from `characters` where name=?";
-	$stmt = $link->prepare($query);
+	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $f['name']);
 	$stmt->execute();
 	$stmt->store_result();
@@ -38,7 +38,7 @@
 
 	// how many characters do they have?
 	$query = "select row from `characters` where account=? and deleted=0";
-	$stmt = $link->prepare($query);
+	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $_SESSION['account']);
 	$stmt->execute();
 	$stmt->store_result();
@@ -58,7 +58,7 @@
 		$f['gender'] = 'Male';
 	}
 	// validate race
-	require '../statMap.php';
+	require '../stat-map.php';
 	$raceKeys = array_keys($statMap);
 	if (!in_array($f['race'], $raceKeys, true)){
 		$f['race'] = 'Human';
@@ -100,28 +100,28 @@
 		exit('That race/class combination has the wrong attribute totals! '. $clientTotal .' vs '. $serverTotal);
 	}
 	// check resists
-	require '../getResist.php';
+	require '../get-resist.php';
 	require '../enum/resists.php';
 	foreach ($resists as $type){
 		$f[$type] = getResist($type, $f);
 	}
 	
 	// check dungeon
-	require '../getDungeonSkill.php';
-	require '../enum/dungeonSkills.php';
+	require '../get-dungeon-skill.php';
+	require '../enum/dungeon-skills.php';
 	foreach ($dungeonSkills as $type){
 		$f[$type] = getDungeonSkill($type, $f);
 	}
 	// hp
 	$f['level'] = 1;
-	require '../getBaseMaxHp.php';
+	require '../get-base-max-hp.php';
 	$f['hp'] = $f['maxHp'] = getBaseMaxHp($f);
 	// mp
-	require '../getBaseMaxMp.php';
+	require '../get-base-max-mp.php';
 	$f['mp'] = $f['maxMp'] = getBaseMaxMp($f);
 	
 	// default skill values
-	require 'addStartingSkills.php';
+	require 'add-starting-skills.php';
 	addStartingSkills($f);
 	
 	// success
@@ -154,7 +154,7 @@
 		`conjuration`
 	) VALUES (
 		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-	$stmt = $link->prepare($query);
+	$stmt = $db->prepare($query);
 	$stmt->bind_param('sssssiiiiiiiiiiiiiiiiiiiii', 
 		$_SESSION['account'], $f['name'], $f['gender'], $f['race'], $f['shortJob'],
 		$f['hp'], $f['maxHp'], $f['mp'], $f['maxMp'], $f['str'], 
@@ -164,11 +164,11 @@
 		$f['conjuration']);
 	$stmt->execute();
 	
-	$r['row'] = mysqli_insert_id($link);
+	$r['row'] = mysqli_insert_id($db);
 	// add inventory data
 
 	// insert items
-	require '../item/getItemString.php';
+	require '../item/get-item-string.php';
 	$loops = 32;
 	$slots = [];
 	for ($i = 0; $i < $loops; $i++){
@@ -189,7 +189,7 @@
 		$uniqueId[$i] = $r['row'] . '-1' . $i;
 	}
 
-	$stmt = $link->prepare($query);
+	$stmt = $db->prepare($query);
 	$stmt->bind_param('ssssssssssssssssssssssssssssssss',
 		$uniqueId[0],
 		$uniqueId[1],
@@ -265,7 +265,7 @@
 		$uniqueId[$i] = $r['row'] . '-0' . $i;
 	}
 	
-	$stmt = $link->prepare($query);
+	$stmt = $db->prepare($query);
 	$stmt->bind_param('ssssssssssssssss', 
 		$uniqueId[0], 
 		$uniqueId[1], 
@@ -287,7 +287,7 @@
 	
 	// add mission data
 	$query = 'insert into `missions` (c_id) VALUES (?)';
-	$stmt = $link->prepare($query);
+	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $f['row']);
 	$stmt->execute();
 	

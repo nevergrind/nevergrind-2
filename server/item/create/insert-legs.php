@@ -1,34 +1,26 @@
 <?php
 if ($_SERVER["SERVER_NAME"] === "localhost"){
-	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
+    require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-	$name = "Hydra Bow";
-	$damage = 12;
-	$delay = 43;
+    $name = "Royal Legplates";
+    $itemLevel = 33;
+    $armor = 16;
+    $yPos = 15;
+    $getEquipJobs = 'plate';
 
-	$armor = 0;
-	$itemLevel = 35;
+    $xPos = 8;
+    $equipSlots = 'legs';
 
-	$yPos = 13; // 8-12
-	$getEquipJobs = 'bow';
-
-	$hp = 0;
-	$mp = 0;
-
-	$xPos = 11;
-	$equipSlots = 'range';
-	$req = 0;
-
-	$query = "insert into `loot` (
+    $query = "insert into `loot` (
 			name, itemLevel, damage, delay, armor, hp, mp, str, sta, agi, dex, wis, intel, cha, bleed, poison, arcane,
 			lightning, cold, fire, xPos, yPos, effect, rarityType, equipSlots, equipJobs, req ) VALUES (
 			'$name',
 			$itemLevel, "./*itemLevel*/"
-			$damage, "./*damage*/"
-			$delay, "./*delay*/"
+			0, "./*damage*/"
+			0, "./*delay*/"
 			$armor, "./*armor*/"
-			$hp,"./*hp*/"
-			$mp, "./*mp*/"
+			0,"./*hp*/"
+			0, "./*mp*/"
 			0, "./*str*/"
 			0, "./*sta*/"
 			0, "./*agi*/"
@@ -48,8 +40,8 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
 			0,"./*rarityType*/"
 			'$equipSlots', "./*equipSlots*/"
 			'". $getEquipJobs ."',
-			$req "./*req*/"
+			0 "./*req*/"
 		)";
-	mysqli_query($link, $query);
-	echo 'Inserted '. $name .'! '. microtime(1);
+    mysqli_query($db, $query);
+    echo 'Inserted '. $name .'! '. microtime(1);
 }

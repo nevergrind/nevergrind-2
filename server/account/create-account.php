@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../session/start.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 $account = strtolower($_POST['account']);
@@ -20,7 +20,7 @@ if (strlen($account) > 16) {
 }
 // check that account does not exist
 $query = 'select account from `accounts` where account=?';
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $account);
 $stmt->execute();
 $stmt->store_result();
@@ -33,7 +33,7 @@ if ($count > 0) {
 
 // create account
 $query = 'insert into `accounts` (`account`) VALUES (?)';
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $account);
 $stmt->execute();
 

@@ -200,8 +200,6 @@ var game;
 		$.ajax({
 			type: 'GET',
 			url: app.url + 'server/update-played.php'
-		}).always(function(){
-			!app.isLocal && console.clear();
 		});
 	}
 	function partyStart() {
@@ -300,10 +298,10 @@ var game;
 	function emptyScenesExcept(scene) {
 		game.scenes.forEach(function(v) {
 			if (v === scene) {
-				document.getElementById(v).style.opacity = 0;
+				getById(v).style.opacity = 0;
 			}
 			else {
-				document.getElementById(v).innerHTML = '';
+				getById(v).innerHTML = '';
 			}
 		});
 	}
@@ -363,8 +361,8 @@ var game;
 				""
 			];
 
-		return s1[~~(Math.random() * s1.length)] +
-			s2[~~(Math.random() * s2.length)]+
-			s3[~~(Math.random() * s3.length)];
+		return s1[~~(rand() * s1.length)] +
+			s2[~~(rand() * s2.length)]+
+			s3[~~(rand() * s3.length)];
 	}
 })();

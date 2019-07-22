@@ -11,7 +11,7 @@ left join `guilds` g
 on m.g_id=g.row
 where job=? 
 and timestamp > date_sub(now(), interval 15 second)';
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $_POST['job']);
 $stmt->execute();
 $stmt->bind_result($name, $level, $race, $job, $guild);
@@ -29,7 +29,7 @@ while ($stmt->fetch()) {
 
 // get count of that class
 $query = 'select count(row) len from `players` where job=? and timestamp > date_sub(now(), interval 15 second)';
-$stmt = $link->prepare($query);
+$stmt = $db->prepare($query);
 $stmt->bind_param('s', $_POST['job']);
 $stmt->execute();
 $stmt->bind_result($len);
