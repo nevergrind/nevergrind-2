@@ -60,7 +60,7 @@ if (is_null($r['c_id'])) {
 	}
 	// send invite
 	require_once '../zmq.php';
-	zmqSend('name_'. $_POST['player'], [
+	zmqSend('name'. $_POST['player'], [
 		'row' => $_SESSION['party']['id'],
 		'msg' => $_SESSION['name'] . ' has invited you to join his party.',
 		'name' => $_SESSION['name'],

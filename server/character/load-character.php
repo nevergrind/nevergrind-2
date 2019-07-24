@@ -159,7 +159,7 @@
 		// get all players in chat room
 		$result = mysqli_query(
 			$db,
-			'SELECT id, name, level, race, job FROM `players` where zone="ng2_town" and timestamp > date_sub(now(), interval 15 second)'
+			'SELECT id, name, level, race, job FROM `players` where zone="ng2town" and timestamp > date_sub(now(), interval 15 second)'
 		);
 		$r['players'] = [];
 		$i = 0;

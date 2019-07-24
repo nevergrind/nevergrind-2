@@ -18,6 +18,7 @@ var socket;
 	}
 	////////////////////////////////////////
 	function subscribe(topic, callback) {
+		topic = _.toLower(topic);
 		if (typeof socket.subs[topic] !== 'object' ||
 			!socket.subs[topic].active) {
 			console.info("subscribing:", topic, callback.name);
@@ -25,7 +26,8 @@ var socket;
 		}
 	}
 	function publish(topic, obj, excludeMe) {
-		console.info(topic, obj, excludeMe);
+		topic = _.toLower(topic);
+		console.info('publishing: ', topic, obj);
 		socket.session.publish(topic, [], obj, {
 			exclude_me: !!excludeMe
 		});
@@ -52,10 +54,10 @@ var socket;
 	function joinGame() {
 		(function retry(){
 			if (socket.enabled){
-				socket.unsubscribe('title_' + my.channel);
-				socket.unsubscribe('game_' + game.id);
+				socket.unsubscribe('title' + my.channel);
+				socket.unsubscribe('game' + game.id);
 				// game updates
-				socket.subscribe('game_' + game.id, joinGameCallback);
+				socket.subscribe('game' + game.id, joinGameCallback);
 			}
 			else {
 				setTimeout(retry, 100);
@@ -68,15 +70,15 @@ var socket;
 		}
 	}
 	function listenHeartbeat() {
-		socket.subscribe('hb_' + my.name, game.socket.heartbeatCallback);
+		socket.subscribe('hb' + my.name, game.socket.heartbeatCallback);
 	}
 	function listenWhisper() {
-		socket.subscribe('name_' + my.name, routeToWhisper);
+		socket.subscribe('name' + my.name, routeToWhisper);
 	}
 	function listenFriendAlerts() {
 		ng.friends.forEach(function(v){
-			socket.unsubscribe('friend_' + v);
-			socket.subscribe('friend_' + v, chat.friendNotify);
+			socket.unsubscribe('friend' + v);
+			socket.subscribe('friend' + v, chat.friendNotify);
 		});
 	}
 	function routeToWhisper(topic, data) {
@@ -141,7 +143,7 @@ var socket;
 		socket.connection.open();
 	}
 	function routeMainChat(topic, data) {
-		// console.info('rx ', topic, data);
+		console.info('rx ', topic, data);
 		route.town(data, data.route);
 	}
 	function connectionSuccess(session) {
@@ -153,9 +155,9 @@ var socket;
 			socket.initialConnection = 0;
 
 			// subscribe to admin broadcasts
-			socket.subscribe('admin_broadcast', routeToAdmin);
-			return;
-			/*(function retry(){
+			socket.subscribe('adminbroadcast', routeToAdmin);
+			//return;
+			(function retry(){
 				if (my.name){
 					listenHeartbeat();
 					listenWhisper();
@@ -165,14 +167,14 @@ var socket;
 				else {
 					setTimeout(retry, 200);
 				}
-			})();*/
+			})();
 
 			// keep alive?
 			// let everyone know I am here
 			chat.broadcastAdd();
 			chat.setHeader();
 			// notify friends I'm online
-			socket.publish('friend_' + my.name, {
+			socket.publish('friend' + my.name, {
 				name: my.name,
 				route: 'on'
 			});
@@ -184,12 +186,12 @@ var socket;
 	}
 	function listenParty(row) {
 		// unsub to current party?
-		socket.unsubscribe('party_'+ my.p_id);
+		socket.unsubscribe('party'+ my.p_id);
 		// sub to party
 		my.p_id = row;
 		try {
 			// for some reason I need this when I rejoin town; whatever
-			socket.subscribe('party_' + row, routeToParty);
+			socket.subscribe('party' + row, routeToParty);
 		}
 		catch (err) {
 			console.info('socket.listenParty ', err);

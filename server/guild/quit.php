@@ -48,7 +48,7 @@ if (!empty($_SESSION['guild']) &&
 		$zmq['msg'] = $_SESSION['name'] . ' has left '. $_SESSION['guild']['name'] .'.';
 	}
 	$zmq['route'] = 'guild->quit';
-	zmqSend('guild:'. $_SESSION['guild']['id'], $zmq);
+	zmqSend('guild'. $_SESSION['guild']['id'], $zmq);
 
 	// set guild session values
 	require '../session/init-guild.php';

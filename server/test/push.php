@@ -1,45 +1,33 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/thruway/vendor/voryx/thruway/Examples/bootstrap.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/thruway/vendor/voryx/thruway/Examples/bootstrap.php';
 
-$connection = new \Thruway\Connection([
+$GLOBALS['socket'] = new \Thruway\Connection([
 	'realm' => 'realm1',
 	'url' => $_SERVER['SERVER_NAME'] === 'localhost' ?
 		'ws://127.0.0.1:9090' : 'ws://0.0.0.0:9090'
 ]);
 
-$channel = 'test';
-$msg = 'Hello, server!';
-
-$connection->on('open', function (\Thruway\ClientSession $session) use ($connection) {
-	global $channel, $msg;
-	$session->publish($channel, [ $msg ], [ 'time' => microtime(true) ], [
-		'acknowledge' => true
-	])->then(function () use ($connection) {
-		global $channel, $msg;
-		$connection->close();
-		echo 'Published "' . $msg . '" to channel: ' . $channel;
+function testPush($channel, $obj) {
+	$GLOBALS['channel'] = $channel;
+	$GLOBALS['obj'] = $obj;
+	$GLOBALS['socket']->on('open', function (\Thruway\ClientSession $session) {
+		$session->publish($GLOBALS['channel'], [], $GLOBALS['obj'], [
+			'acknowledge' => true
+		])->then(function () {
+			$GLOBALS['socket']->close();
+			echo '<pre>Published to channel: ' . $GLOBALS['channel'] . '</pre>';
+		});
 	});
-});
-$connection->open();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/thruway/vendor/voryx/thruway/Examples/bootstrap.php';
+	$GLOBALS['socket']->open();
+}
 
-$connection = new \Thruway\Connection([
-	'realm' => 'realm1',
-	'url' => $_SERVER['SERVER_NAME'] === 'localhost' ?
-		'ws://127.0.0.1:9090' : 'ws://0.0.0.0:9090'
+$channel = 'testqqqq1234';
+testPush($channel, [
+	'time' => microtime(true)
 ]);
-
-$channel = 'test';
-$msg = 'Hello, server!';
-
-$connection->on('open', function (\Thruway\ClientSession $session) use ($connection) {
-	global $channel, $msg;
-	$session->publish($channel, [ $msg ], [ 'time' => microtime(true) ], [
-		'acknowledge' => true
-	])->then(function () use ($connection) {
-		global $channel, $msg;
-		$connection->close();
-		echo 'Published "' . $msg . '" to channel: ' . $channel;
-	});
-});
-$connection->open();
+/*
+require_once '../zmq.php';
+zmqSend('ng2town', [
+	'testing' => time()
+]);
+ */

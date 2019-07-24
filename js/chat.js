@@ -1,7 +1,7 @@
 var chat;
 (function() {
 	chat = {
-		prefix: 'ng2_',
+		prefix: 'ng2',
 		default: 'town',
 		initialized: 0,
 		isClicked: false,
@@ -423,7 +423,7 @@ var chat;
 						chat.log("You are not in a guild.", 'chat-warning');
 					}
 					else {
-						if (o.category === 'ng2_') {
+						if (o.category === 'ng2') {
 							chat.log("You cannot communicate in town while in a dungeon", "chat-warning");
 						}
 						else {
@@ -752,7 +752,7 @@ var chat;
 		id: 2
 		row: 188
 		 */
-		// use data.row to join ng2_parties
+		// use data.row to join ng2parties
 		// actually add me to the party and ZMQ msg on callback success
 		// and call a method to draw the whole party including hp, mp, names etc
 		// party table needs extra values... hp, mp, buffs, etc
@@ -767,7 +767,7 @@ var chat;
 	function promptDeny(data) {
 		console.info('deny ', data);
 		$("#"+ data.action +"-"+ data.row).remove();
-		socket.publish("name_"+ data.name, {
+		socket.publish("name"+ data.name, {
 			action: data.action + '-deny',
 			name: my.name
 		});
@@ -871,9 +871,9 @@ var chat;
 				}
 				else {
 					chat.log('You have added ' + o + ' to your friend list.', 'chat-warning');
-					socket.subscribe('friend_'+ o, chat.friendNotify);
+					socket.subscribe('friend'+ o, chat.friendNotify);
 					if (!~ng.friends.indexOf(o)) {
-						socket.publish('name_' + o, {
+						socket.publish('name' + o, {
 							name: my.name,
 							route: "friend>addedMe"
 						});
@@ -901,7 +901,7 @@ var chat;
 						var index = ng.friends.indexOf(o);
 						ng.friends.splice(index, 1);
 					}
-					socket.unsubscribe('friend_'+ o);
+					socket.unsubscribe('friend'+ o);
 				}
 			});
 		}

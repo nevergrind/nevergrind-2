@@ -24,7 +24,7 @@ if (!empty($_SESSION['guild']) &&
 
 	// notify guild members
 	require_once '../zmq.php';
-	zmqSend('guild:'. $_SESSION['guild']['id'], [
+	zmqSend('guild'. $_SESSION['guild']['id'], [
 		'name' => $_POST['name'],
 		'msg' => $_POST['name'] . ' has been promoted to Officer by '. $_SESSION['name'] .'.',
 		'route' => 'guild->promote'

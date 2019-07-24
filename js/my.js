@@ -42,7 +42,7 @@ var my;
 	}
 	////////////////////////////////////
 	function guildChannel() {
-		return 'guild:' + my.guild.id;
+		return 'guild' + my.guild.id;
 	}
 	function getPartyNames() {
 		var a = [];

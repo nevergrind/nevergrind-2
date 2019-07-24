@@ -43,7 +43,7 @@ else {
 		$stmt->execute();
 
 		require_once 'zmq.php';
-		zmqSend('party_'. $_SESSION['party']['id'], [
+		zmqSend('party'. $_SESSION['party']['id'], [
 			'hp' => $_SESSION['hp'],
 			'mp' => $_SESSION['mp'],
 			'name' => $_SESSION['name'],

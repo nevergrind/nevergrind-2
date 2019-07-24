@@ -133,7 +133,7 @@ var guild;
 			my.guild = guild.Guild(); // nice!
 			console.info("guild.quit() response ", data);
 			chat.log("You have quit the guild: "+ o.name, "chat-warning");
-			socket.unsubscribe('guild:'+ o.id);
+			socket.unsubscribe('guild'+ o.id);
 		}).fail(function(data){
 			chat.log(data.responseText, 'chat-warning');
 		});
@@ -169,7 +169,7 @@ var guild;
 					action: 'boot'
 				}
 			}).done(function(){
-				socket.unsubscribe('guild:'+ my.guild.id);
+				socket.unsubscribe('guild'+ my.guild.id);
 				my.guild = guild.Guild(); // nice!
 			}).fail(function(data){
 				chat.log(data.responseText, 'chat-warning');

@@ -31,8 +31,23 @@ var test;
 			death: death,
 			effect: effect
 		},
+		channel: 'testqqqq1234',
+		socketSub: socketSub,
+		socketPub: socketPub,
 	}
 	///////////////////////////////////
+	function socketSub() {
+		socket.subscribe(test.channel, testRx);
+		//////////////////////////
+		function testRx(arr, obj) {
+			console.info('test received', arr, obj);
+		}
+	}
+	function socketPub() {
+		socket.publish(test.channel, {
+			date: Date.now()
+		});
+	}
 	function chatRoom() {
 		for (i=0; i<100; i++) {
 			c = ng.toJobShort(ng.jobs[~~(rand() * 14)]);

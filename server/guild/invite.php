@@ -41,7 +41,7 @@ if (is_null($r['c_id'])) {
 	}
 	// send guild invite
 	require_once '../zmq.php';
-	zmqSend('name_'. $_POST['player'], [
+	zmqSend('name'. $_POST['player'], [
 		'row' => $_SESSION['guild']['id'],
 		'msg' => $_SESSION['name'] . ' has invited you to join the guild: '. $_SESSION['guild']['name'],
 		'name' => $_SESSION['name'],

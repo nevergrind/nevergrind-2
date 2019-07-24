@@ -11,7 +11,7 @@ if ($_SESSION['party']['id']) {
 
 	// bars notify party members
 	require_once '../zmq.php';
-	zmqSend('party_'. $_SESSION['party']['id'], [
+	zmqSend('party'. $_SESSION['party']['id'], [
 		'row' => $_SESSION['row'],
 		'route' => 'party->disband',
 		'class' => 'chat-warning'

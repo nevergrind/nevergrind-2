@@ -174,7 +174,7 @@ var game;
 	function socketSend() {
 		// console.info("%c Last socket send: ", "background: #0ff", Date.now() - game.socket.sendTime);
 		game.socket.sendTime = Date.now();
-		socket.publish('hb_' + my.name, {});
+		socket.publish('hb' + my.name, {});
 	}
 	function socketCheckTimeout() {
 		// longer than interval plus checkTolerance? disconnect (failed 2x)
@@ -214,7 +214,7 @@ var game;
 	function partySend() {
 		console.info("Sending party heartbeats....");
 		try {
-			socket.publish('party_' + my.p_id, {
+			socket.publish('party' + my.p_id, {
 				id: my.row,
 				route: 'party->hb'
 			});
@@ -235,7 +235,7 @@ var game;
 			}
 		}
 		linkdead.forEach(function(name){
-			socket.publish('party_' + my.p_id, {
+			socket.publish('party' + my.p_id, {
 				name: name,
 				route: 'party->linkdead'
 			});
@@ -277,7 +277,7 @@ var game;
 			if (my.p_id) {
 				// boot from party
 				/*
-				socket.publish('party:' + my.p_id, {
+				socket.publish('party' + my.p_id, {
 					id: my.row,
 					name: my.name,
 					route: 'party->bootme'
@@ -285,11 +285,11 @@ var game;
 				*/
 			}
 			// notify friends
-			socket.publish('friend_' + my.name, {
+			socket.publish('friend' + my.name, {
 				name: my.name,
 				route: 'off'
 			});
-			socket.session.close();
+			socket.connection.close();
 		}
 	}
 	function resync() {

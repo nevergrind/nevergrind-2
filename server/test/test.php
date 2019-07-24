@@ -85,11 +85,11 @@ for ($i = 0; $i < 1e4; $i++) {
 }
 $apcEnd = microtime(true) - $apcStart;
 echo '<br>APCu object set & get test x 10000:<br> ' . $apcEnd . '<br>';
-echo '<pre>' . var_export($bar) . '</pre>';
+echo '<pre>' . print_r($bar, true) . '</pre>';
 
 $time = microtime(true) - $now;
 echo 'session:<br>';
-echo var_export($_SESSION);
+echo '<pre>' . print_r($_SESSION, true) .'</pre>';
 echo '<br><br>';
 echo 'This script took '. $time .' seconds to complete!';
 

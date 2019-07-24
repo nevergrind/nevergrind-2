@@ -176,9 +176,7 @@ var town;
 				}
 			}).fail(function(data){
 				ng.disconnect(data.responseText);
-			}).always(function(){
-				ng.unlock();
-			});
+			}).always(ng.unlock);
 		}
 	}
 	function html() {
@@ -233,7 +231,7 @@ var town;
 				town.aside.html.close +
 			'</div>' +
 			'<div id="aside-menu">' +
-				town.aside.menu[id]() +
+				town.aside.menu.townGuild() +
 			'</div>' +
 		'</div>';
 		return s;
@@ -248,7 +246,7 @@ var town;
 				town.aside.html.close +
 			'</div>' +
 			'<div id="aside-menu">' +
-				town.aside.menu[id]() +
+				town.aside.menu.townMission() +
 			'</div>' +
 		'</div>';
 		return s;

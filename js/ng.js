@@ -140,7 +140,9 @@ var ng;
 		return ng.id;
 	}
 	function events() {
-		$("#enter-world").on('mousedown', town.go);
+		$("#enter-world").on('mousedown', function(){
+			town.go();
+		});
 	}
 	function disconnect(msg) {
 		ng.view = 'disconnected';

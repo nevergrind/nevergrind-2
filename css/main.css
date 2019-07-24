@@ -1420,6 +1420,7 @@ background-clip: content-box;
 	flex: 0;
 	align-self: center;
 	transition: color ease .3s;
+	color: #a22;
 }
 
 .close-aside:hover {

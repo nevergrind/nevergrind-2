@@ -72,7 +72,7 @@ if ($partyCount >= 1 && $partyCount < 6) {
 
 		// notify party
 		require_once '../zmq.php';
-		zmqSend('party_'. $_POST['row'], [
+		zmqSend('party'. $_POST['row'], [
 			'msg' => $_SESSION['name'] . ' has joined the party.',
 			'route' => 'party->join'
 		]);

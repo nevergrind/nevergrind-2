@@ -281,7 +281,7 @@ var bar;
 		});
 		bar.hideParty();
 		// update server
-		socket.unsubscribe('party_'+ my.p_id);
+		socket.unsubscribe('party'+ my.p_id);
 		my.p_id = 0;
 		my.party[0].isLeader = 0;
 		getById('bar-is-leader-0').style.display = 'none';
