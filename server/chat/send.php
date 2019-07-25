@@ -16,6 +16,4 @@
 	if ($_POST['class'] === 'chat-whisper') {
 		$zmq['action'] = $_POST['action'];
 	}
-	error_log('sending to ' . $_POST['category']);
-	error_log(print_r($zmq, true));
 	zmqSend($_POST['category'], $zmq);

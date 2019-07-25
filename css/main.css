@@ -1126,7 +1126,7 @@ background-clip: content-box;
 	line-height: 1.2;
 }
 
-#bar-header {
+#bar-main-menu {
 	display: flex;
 	justify-content: space-around;
 	padding: .2rem 0;
@@ -1331,8 +1331,8 @@ background-clip: content-box;
 }
 
 /* tooltip social wrap */
-#tooltip-social-wrap {
-	position: absolute;
+#context-wrap {
+	position: fixed;
 	visibility: hidden;
 	width: 8rem;
 	font: .9rem/1.5 Cinzel, Palatino Linotype, serif;
@@ -1349,19 +1349,44 @@ background-clip: content-box;
 	border-bottom: 1px solid #048;
 	transition: background 100ms ease-out;
 }
-
 .context-items:last-child {
 	border-bottom: 0;
 }
-
 .context-items:hover {
 	background: #05b;
 }
-
 .context-items:active {
 	background: #994;
 }
-
+/* context */
+#popover-wrap {
+	position: fixed;
+	visibility: hidden;
+	opacity: 0;
+	width: auto;
+	font: .9rem/1.5 Cinzel, Palatino Linotype, serif;
+	border: 2px ridge #ffb700;
+	z-index: 2;
+	padding: .25rem .5rem;
+	border-radius: 4px;
+	transform: translate(-50%, 0%);
+	background: radial-gradient(farthest-corner at 0% 0%, rgba(16, 32, 80, 1), rgba(0, 0, 0, 1));
+}
+/* tooltip - items and skills? */
+#tooltip-wrap {
+	position: fixed;
+	visibility: hidden;
+	opacity: 0;
+	width: auto;
+	min-width: 20rem;
+	font: .9rem/1.5 Cinzel, Palatino Linotype, serif;
+	border: 2px ridge #ffb700;
+	z-index: 2;
+	padding: .25rem .5rem;
+	border-radius: 4px;
+	transform: translate(-50%, 0%);
+	background: radial-gradient(farthest-corner at 0% 0%, rgba(16, 32, 80, 1), rgba(0, 0, 0, 1));
+}
 /* town menu */
 #town-menu {
 	position: absolute;

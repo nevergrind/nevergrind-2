@@ -278,8 +278,8 @@ var create;
 		});
 		// reset attr
 		if (key !== 'gender' && create.form.race){
-			var raceAttr = ng.copy(create.getRaceAttrs(create.form.race)),
-				jobAttr = ng.copy(create.getJobAttrs(create.form.job));
+			var raceAttr = _.deepClone(create.getRaceAttrs(create.form.race)),
+				jobAttr = _.deepClone(create.getJobAttrs(create.form.job));
 			jobAttr.forEach(function(v, i){
 				raceAttr[i] += v;
 			});

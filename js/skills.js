@@ -380,11 +380,11 @@ var skills;
 	};
 
 	// what is the point of this?
-	var shortClassKeys = ng.getJobShortKeys();
+	var shortClassKeys = _.keys(ng.jobLong);
 	for (var key in skills) {
 		if (key !== 'ALL') {
 			// this is a player class
-			skills[key].skillKeys = Object.keys(skills[key]);
+			skills[key].skillKeys = _.keys(skills[key]);
 			skills[key].skillKeys.unshift('toggleAutoAttack');
 			skills[key].skillKeys.unshift('pull');
 			for (var k2 in skills.ALL) {

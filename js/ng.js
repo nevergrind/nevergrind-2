@@ -104,11 +104,9 @@ var ng;
 		TDC: TDC,
 		msg: msg,
 		init: init,
-		copy: copy,
 		lock: lock,
 		split: split,
 		getId: getId,
-		camel: camel,
 		events: events,
 		unlock: unlock,
 		logout: logout,
@@ -120,7 +118,6 @@ var ng;
 		disconnect: disconnect,
 		unlockFade: unlockFade,
 		checkPlayerData: checkPlayerData,
-		getJobShortKeys: getJobShortKeys,
 		goCreateCharacter: goCreateCharacter,
 		displayAllCharacters: displayAllCharacters,
 	}
@@ -140,9 +137,7 @@ var ng;
 		return ng.id;
 	}
 	function events() {
-		$("#enter-world").on('mousedown', function(){
-			town.go();
-		});
+		$("#enter-world").on('mousedown', town.go);
 	}
 	function disconnect(msg) {
 		ng.view = 'disconnected';
@@ -160,25 +155,12 @@ var ng;
 	function toJobLong(key) {
 		return ng.jobLong[key];
 	}
-	function getJobShortKeys() {
-		return Object.keys(ng.jobLong);
-	}
-	function copy(o) {
-		return JSON.parse(JSON.stringify(o));
-	}
 	function setScene(scene) {
 		// remove defaults and set via js
 		$(".scene").removeClass('none')
 			.css('display', 'none');
 		getById('scene-' + scene).style.display = 'block';
 		ng.view = scene;
-	}
-	function camel(str) {
-		str = str.split("-");
-		for (var i=1, len=str.length; i<len; i++){
-			str[i] = str[i].charAt(0).toUpperCase() + str[i].substr(1);
-		}
-		return str.join("");
 	}
 	function lock(hide) {
 		ng.lockOverlay.style.display = "block";

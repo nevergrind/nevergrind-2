@@ -256,7 +256,7 @@ var game;
 				}
 				var newChatArray = [];
 				chat.inChannel.forEach(function (v) {
-					if (!~data.players.indexOf(v)) {
+					if (!data.players.includes(v)) {
 						$("#chat-player-" + v).remove();
 					}
 					else {

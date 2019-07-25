@@ -3,18 +3,18 @@ var context;
 	var z;
 	var isMenuAbove;
 	var yAdjust;
+
 	context = {
+		id: '',
 		timer: 0,
 		isOpen: 0,
 		player: '',
 		padding: 10,
 		openDate: 0,
 		isInside: 0,
-		halfWidth: ~~($("#tooltip-social-wrap").width() / 2),
+		halfWidth: ~~($("#context-wrap").width() / 2),
 		init: init,
 		boot: boot,
-		posX: posX,
-		posY: posY,
 		show: show,
 		hide: hide,
 		click: click,
@@ -34,7 +34,7 @@ var context;
 	}
 	////////////////////////////////////
 	function init() {
-		$("#tooltip-social-wrap").on('mousedown', '.context-items', function (e) {
+		$("#context-wrap").on('mousedown', '.context-items', function (e) {
 			console.info('context-items clicked: ', $(this).attr('id'));
 			context.click($(this).attr('id'));
 		}).on('mouseenter', function () {
@@ -50,7 +50,7 @@ var context;
 	}
 	function click(id) {
 		console.info("click!", id, context.player);
-		context.action[ng.camel(id)]();
+		context.action[_.camelCase(id)]();
 		context.hide();
 	}
 	function whisper() {
@@ -99,7 +99,8 @@ var context;
 			if (my.p_id) {
 				s += '<div id="context-disband" ' + z + '>Disband</div>';
 			}
-		} else {
+		}
+		else {
 			// promote
 			if (my.party[0].isLeader) {
 				s += '<div id="context-boot" ' + z + '>Boot</div>';
@@ -108,14 +109,14 @@ var context;
 			// whisper
 			s += '<div id="context-whisper" ' + z + '>Whisper</div>';
 			// friend list
-			if (~ng.friends.indexOf(context.player)) {
+			if (ng.friends.includes(context.player)) {
 				s += '<div id="context-remove-friend" ' + z + '>Unfriend</div>';
 			}
 			else {
 				s += '<div id="context-add-friend" ' + z + '>Friend</div>';
 			}
 			// ignore list
-			if (~ng.ignore.indexOf(context.player)) {
+			if (ng.ignore.includes(context.player)) {
 				s += '<div id="context-remove-ignore" ' + z + '>Unignore</div>';
 			}
 			else {
@@ -130,19 +131,19 @@ var context;
 		var z = ' class="context-items"',
 			s = '';
 		// is this guy in my party?
-		if (!~my.getPartyNames().indexOf(context.player)) {
+		if (!my.getPartyNames().includes(context.player)) {
 			s += '<div id="context-invite" ' + z + '>Invite</div>';
 		}
 		s += '<div id="context-whisper" ' + z + '>Whisper</div>';
 		// friend list
-		if (~ng.friends.indexOf(context.player)) {
+		if (ng.friends.includes(context.player)) {
 			s += '<div id="context-remove-friend" ' + z + '>Unfriend</div>';
 		}
 		else {
 			s += '<div id="context-add-friend" ' + z + '>Friend</div>';
 		}
 		// ignore list
-		if (~ng.ignore.indexOf(context.player)) {
+		if (ng.ignore.includes(context.player)) {
 			s += '<div id="context-remove-ignore" ' + z + '>Unignore</div>';
 		}
 		else {
@@ -172,21 +173,21 @@ var context;
 	function posY() {
 		// determine Y adjustment
 		isMenuAbove = my.mouse.y < window.innerHeight / 2;
-		yAdjust = isMenuAbove ? 15 : (~~$("#tooltip-social-wrap").height() + 15) * -1;
+		yAdjust = isMenuAbove ? 15 : (~~$("#context-wrap").height() + 15) * -1;
 		return my.mouse.y + yAdjust;
 	}
 	function show(s) {
 		if (!s) return;
-		var e = getById('tooltip-social-wrap');
+		var e = getById('context-wrap');
 		e.innerHTML = s;
-		e.style.top = context.posY() + 'px';
-		e.style.left = context.posX() + 'px';
+		e.style.top = posY() + 'px';
+		e.style.left = posX() + 'px';
 		e.style.visibility = 'visible';
 		context.isOpen = 1;
 		context.openDate = Date.now();
 	}
 	function hide() {
-		getById('tooltip-social-wrap').style.visibility = 'hidden';
+		getById('context-wrap').style.visibility = 'hidden';
 		context.isOpen = 0;
 	}
 	function hideCheck() {

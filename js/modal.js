@@ -27,7 +27,7 @@ var modal;
 	////////////////////////////////
 	function show(e) {
 		modal.isOpen = 1;
-		e.camelKey = ng.camel(e.key);
+		e.camelKey = _.camelCase(e.key);
 		var s = '<div class="stag-blue">'+
 					modal.header(e) +
 					modal.body(e) +

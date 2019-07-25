@@ -54,6 +54,7 @@ function minifyJs() {
 		'game',
 		'title',
 		'context',
+		'popover',
 		'events',
 		'socket',
 		'chat',

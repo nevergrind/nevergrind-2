@@ -210,7 +210,6 @@ var chat;
 
 			$("#chat-room").on('click contextmenu', '.chat-player', function() {
 				var id = $(this).parent().attr('id'),
-					arr = id.split("-"),
 					text = $(this).text(),
 					a2 = text.split(":"),
 					name = a2[1].replace(/\]/g, '').trim();
@@ -856,7 +855,7 @@ var chat;
 		}
 	}
 	function friendAdd(o) {
-		if (~ng.friends.indexOf(o)) {
+		if (ng.friends.includes(o)) {
 			chat.log(o + " is already your friend.", 'chat-warning');
 		}
 		else if (o.length > 1 && o !== my.name) {
@@ -872,7 +871,7 @@ var chat;
 				else {
 					chat.log('You have added ' + o + ' to your friend list.', 'chat-warning');
 					socket.subscribe('friend'+ o, chat.friendNotify);
-					if (!~ng.friends.indexOf(o)) {
+					if (!ng.friends.includes(o)) {
 						socket.publish('name' + o, {
 							name: my.name,
 							route: "friend>addedMe"
@@ -989,7 +988,7 @@ var chat;
 			return ng.jobShort[longJob];
 		}
 		else {
-			var shortJobs = Object.keys(ng.jobLong),
+			var shortJobs = _.keys(ng.jobLong),
 				job = job.toUpperCase();
 			if (shortJobs.indexOf(job)) {
 				// is it on the short job list?

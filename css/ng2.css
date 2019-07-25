@@ -1126,7 +1126,7 @@ background-clip: content-box;
 	line-height: 1.2;
 }
 
-#bar-header {
+#bar-menu {
 	display: flex;
 	justify-content: space-around;
 	padding: .2rem 0;

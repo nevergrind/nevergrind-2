@@ -23,7 +23,7 @@ var cache;
 	function preloadImages(a) {
 		var e;
 		a.forEach(function(v){
-			if (v && !~cache.imageStrings.indexOf(v)) {
+			if (v && !cache.imageStrings.includes(v)) {
 				e = new Image();
 				e.src = v;
 				cache.images.push(e);
@@ -34,7 +34,7 @@ var cache;
 	function preloadAudio(a) {
 		var e;
 		a.forEach(function(v){
-			if (!~cache.audioStrings.indexOf(v)) {
+			if (!cache.audioStrings.includes(v)) {
 				e = new Audio();
 				e.src = v;
 				cache.audio.push(e);

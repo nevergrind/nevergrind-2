@@ -8,7 +8,7 @@ $GLOBALS['socket'] = new \Thruway\Connection([
 ]);
 
 function zmqSend($channel, $obj) {
-	$GLOBALS['channel'] = $channel;
+	$GLOBALS['channel'] = strtolower($channel);
 	$GLOBALS['obj'] = $obj;
 	$GLOBALS['socket']->on('open', function (\Thruway\ClientSession $session) {
 		$session->publish($GLOBALS['channel'], [], $GLOBALS['obj'], [

@@ -31,7 +31,7 @@ var test;
 			death: death,
 			effect: effect
 		},
-		channel: 'testqqqq1234',
+		channel: 'com.myapp.hello',
 		socketSub: socketSub,
 		socketPub: socketPub,
 	}

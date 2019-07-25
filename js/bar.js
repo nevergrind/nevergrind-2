@@ -49,16 +49,20 @@ var bar;
 
 				console.info(id, slot, my.party[slot].name);
 				context.getPartyMenu(my.party[slot].name);
-			}).on('mousedown', '#bar-camp', function () {
-				chat.camp();
-			}).on('mousedown', '#bar-stats', function () {
+			}).on('mousedown', '#bar-camp', chat.camp)
+				.on('mousedown', '#bar-stats', function () {
 				console.info($(this).attr('id'));
 			}).on('mousedown', '#bar-inventory', function () {
 				console.info($(this).attr('id'));
 			}).on('mousedown', '#bar-options', function () {
 				console.info($(this).attr('id'));
-			}).on('mousedown', '#bar-mission-abandon', function () {
-				mission.abandon();
+			}).on('mousedown', '#bar-mission-abandon', mission.abandon)
+				.on('mouseenter', '.bar-icons', function() {
+				var id = $(this).attr('id');
+				popover.setMainMenuHtml(id);
+			}).on('mouseleave', '.bar-icons', function() {
+				console.info('mouse leave');
+				popover.hide();
 			});
 		}
 	}
@@ -96,12 +100,12 @@ var bar;
 			'<span id="bar-ping"><i class="fa fa-exchange"></i></span>' +
 			'<span id="bar-socket"><i class="fa fa-exchange"></i></span>' +
 		'</div>' +
-		'<div id="bar-header">' +
-			'<i id="bar-camp" class="fa fa-power-off bar-icons" title="Camp"></i>' +
-			'<i id="bar-stats" class="fa fa-user-circle-o bar-icons" title="Stat Sheet"></i>' +
-			'<i id="bar-inventory" class="fa fa-suitcase bar-icons" title="Inventory"></i>' +
-			'<i id="bar-options" class="fa fa-gear bar-icons" title="Options"></i>' +
-			'<i id="bar-mission-abandon" class="fa fa-flag bar-icons" title="Abandon Mission"></i>' +
+		'<div id="bar-main-menu">' +
+			'<i id="bar-camp" class="fa fa-power-off bar-icons"></i>' +
+			'<i id="bar-stats" class="fa fa-user-circle-o bar-icons"></i>' +
+			'<i id="bar-inventory" class="fa fa-suitcase bar-icons"></i>' +
+			'<i id="bar-options" class="fa fa-gear bar-icons"></i>' +
+			'<i id="bar-mission-abandon" class="fa fa-flag bar-icons"></i>' +
 		'</div>';
 		return s;
 	}
