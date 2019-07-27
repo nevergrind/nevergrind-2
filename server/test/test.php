@@ -21,21 +21,19 @@ function onOpen(session) {
 	session = session;
 
 	session.subscribe('test', function(arr, obj){
-		console.log("Event:", arr, obj);
+		obj.time *= 1000;
+		console.log("Event:", arr, new Date(obj.time));
 		var el = document.createElement('div');
-		el.innerHTML = 'socket reported: ' + arr[0] + ' at ' + obj.time;
+		el.innerHTML = 'socket pushed at ' + new Date(obj.time);
 		document.body.appendChild(el);
-	});
-	session.publish('test', ['Hello, client!'], {
-		time: Date.now()
-	}, {
-		exclude_me: false
 	});
 }
 
 </script>
 <?php
 require_once '../session/start.php';
+echo '__DIR__ ' . __DIR__ . '<br>';
+echo '$_SERVER[\'DOCUMENT_ROOT\']' . $_SERVER['DOCUMENT_ROOT'] . '<br>';
 $now = microtime(true);
 
 require '../db.php';
@@ -44,12 +42,6 @@ if ($result = mysqli_query($db, 'SELECT row FROM `accounts`')) {
 	$count = mysqli_num_rows($result);
 	echo 'Total accounts in the account table: ' . $count . '<br>';
 }
-// memcached check
-/*$memcache = new Memcache();
-$memcache->connect('127.0.0.1', 11211);
-$memcache->set('time', time());
-$cacheVal = $memcache->get($key);
-echo 'Cached value: ' . $cacheVal . '<br>';*/
 
 $val = 5;
 // session get/set test
@@ -87,22 +79,53 @@ $apcEnd = microtime(true) - $apcStart;
 echo '<br>APCu object set & get test x 10000:<br> ' . $apcEnd . '<br>';
 echo '<pre>' . print_r($bar, true) . '</pre>';
 
+
+$loops = 1;
+// start push loop
+$zmqStart = microtime(true);
+for ($i = 0; $i < $loops; $i++) {
+	require '../zmq.php';
+	zmqSend('test', [
+		'time' => microtime(true)
+	]);
+}
+$zmqEnd = microtime(true) - $zmqStart;
+echo '<br>zmq push test x 1:<br> ' . $zmqEnd . '<br>';
+
+
+$zmqStart = microtime(true);
+$client = new \Thruway\Peer\Client('realm1');
+$client->setAttemptRetry(false);
+$client->addTransportProvider(new \Thruway\Transport\PawlTransportProvider('ws://127.0.0.1:9090'));
+$client->on('open', function (\Thruway\ClientSession $clientSession) {
+	global $loops;
+    for ($i = 0; $i < $loops; $i++) {
+        $clientSession->publish('test',
+			['$client push'],
+			['time' => microtime(true)]
+		);
+    }
+    $clientSession->close();
+});
+$client->start();
+$zmqEnd = microtime(true) - $zmqStart;
+echo '<br>zmq push test x ' . $loops .':<br> ' . $zmqEnd . '<br>';
+
+
 $time = microtime(true) - $now;
-echo 'session:<br>';
-echo '<pre>' . print_r($_SESSION, true) .'</pre>';
 echo '<br><br>';
 echo 'This script took '. $time .' seconds to complete!';
 
 
 exit;
 
-
+/*
 use GuzzleHttp\Client;
 use Steam\Configuration;
 use Steam\Runner\GuzzleRunner;
 use Steam\Runner\DecodeJsonStringRunner;
 use Steam\Steam;
-use Steam\Utility\GuzzleUrlBuilder;
+use Steam\Utility\GuzzleUrlBuilder;*/
 
 $steam = new Steam(new Configuration([
 	Configuration::STEAM_KEY => 'cd221eb1bc1da0df4dbb9260c9865fe649117f70dcd636c1e92059e1286fe2e0'

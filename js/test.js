@@ -31,7 +31,7 @@ var test;
 			death: death,
 			effect: effect
 		},
-		channel: 'com.myapp.hello',
+		channel: 'test',
 		socketSub: socketSub,
 		socketPub: socketPub,
 	}
@@ -39,8 +39,8 @@ var test;
 	function socketSub() {
 		socket.subscribe(test.channel, testRx);
 		//////////////////////////
-		function testRx(arr, obj) {
-			console.info('test received', arr, obj);
+		function testRx(arr) {
+			//console.info('test received', arr[0].category, new Date(arr[0].time * 1000));
 		}
 	}
 	function socketPub() {

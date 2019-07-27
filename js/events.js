@@ -80,7 +80,7 @@
 
 		ng.lastKey = key;
 
-		console.info('keydown: ', key, code);
+		// console.info('keydown: ', key, code);
 		// local only
 		if (!app.isApp) {
 			if (!chat.hasFocus && ng.view !== "title") {

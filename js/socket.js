@@ -3,6 +3,8 @@ var socket;
 	socket = {
 		connection: void 0,
 		enabled: 0,
+		emptyArray: [],
+		noExcludeObj: { exclude_me: false },
 		initialConnection: 1,
 		subs: {}, // active channel subscriptions - required to unsub
 		subscribe: subscribe,
@@ -28,9 +30,7 @@ var socket;
 	function publish(topic, obj, excludeMe) {
 		topic = _.toLower(topic);
 		console.info('publishing: ', topic, obj);
-		socket.session.publish(topic, [], obj, {
-			exclude_me: !!excludeMe
-		});
+		socket.session.publish(topic, socket.emptyArray, obj, socket.noExcludeObj);
 	}
 	function testReceived(arr, obj) {
 		console.log("testReceived socket test received:", arr, obj);
@@ -156,6 +156,7 @@ var socket;
 
 			// subscribe to admin broadcasts
 			socket.subscribe('adminbroadcast', routeToAdmin);
+			!app.isApp && test.socketSub();
 			//return;
 			(function retry(){
 				if (my.name){
