@@ -59,15 +59,16 @@ if (is_null($r['c_id'])) {
 		);
 	}
 	// send invite
-	require_once '../zmq.php';
-	zmqSend('name'. $_POST['player'], [
+	require '../zmq.php';
+	$socket->send(json_encode([
+		'category' => 'name'. $_POST['player'],
 		'row' => $_SESSION['party']['id'],
 		'msg' => $_SESSION['name'] . ' has invited you to join his party.',
 		'name' => $_SESSION['name'],
 		'cId' => $_SESSION['row'],
 		'action' => 'party-invite',
 		'css' => 'prompt-party-invite'
-	]);
+	]));
 
 	$r['newParty'] = $newParty;
 	$r['p_id'] = $_SESSION['party']['id'];

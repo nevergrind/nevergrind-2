@@ -27,7 +27,7 @@ var socket;
 			socket.session.subscribe(topic, callback).then(registerSubscription);
 		}
 	}
-	function publish(topic, obj, excludeMe) {
+	function publish(topic, obj) {
 		topic = _.toLower(topic);
 		console.info('publishing: ', topic, obj);
 		socket.session.publish(topic, socket.emptyArray, obj, socket.noExcludeObj);
@@ -36,7 +36,7 @@ var socket;
 		console.log("testReceived socket test received:", arr, obj);
 	}
 	function registerSubscription(sub) {
-		console.info('registering topic', sub);
+		console.info('registerSubscription', sub);
 		socket.subs[sub.topic] = sub;
 	}
 	function unsubscribe(channel) {
@@ -64,9 +64,9 @@ var socket;
 			}
 		})();
 	}
-	function joinGameCallback(topic, data) {
-		if (ng.ignore.indexOf(data.account) === -1){
-			title.chatReceive(data);
+	function joinGameCallback(data) {
+		if (ng.ignore.indexOf(data[0].account) === -1){
+			title.chatReceive(data[0]);
 		}
 	}
 	function listenHeartbeat() {
@@ -81,7 +81,8 @@ var socket;
 			socket.subscribe('friend' + v, chat.friendNotify);
 		});
 	}
-	function routeToWhisper(topic, data) {
+	function routeToWhisper(data) {
+		data = data[0];
 		if (data.routeTo === 'party') {
 			route.party(data, data.route);
 		}
@@ -142,8 +143,10 @@ var socket;
 		socket.connection.onopen = connectionSuccess;
 		socket.connection.open();
 	}
-	function routeMainChat(topic, data) {
-		console.info('rx ', topic, data);
+	function routeMainChat(data, obj) {
+		data = typeof data[0] === 'object' ?
+			data[0] : obj;
+		console.info('rx ', data, obj);
 		route.town(data, data.route);
 	}
 	function connectionSuccess(session) {
@@ -156,7 +159,7 @@ var socket;
 
 			// subscribe to admin broadcasts
 			socket.subscribe('adminbroadcast', routeToAdmin);
-			!app.isApp && test.socketSub();
+			test.socketSub();
 			//return;
 			(function retry(){
 				if (my.name){
@@ -181,9 +184,9 @@ var socket;
 			});
 		}
 	}
-	function routeToAdmin(topic, data) {
-		console.info('rx ', topic, data);
-		route.town(data, data.route);
+	function routeToAdmin(data) {
+		console.info('rx ', data[0]);
+		route.town(data[0], data[0].route);
 	}
 	function listenParty(row) {
 		// unsub to current party?
@@ -198,14 +201,16 @@ var socket;
 			console.info('socket.listenParty ', err);
 		}
 	}
-	function routeToParty(topic, data) {
-		// console.info('party rx ', topic, data);
+	function routeToParty(data, obj) {
+		data = typeof data[0] === 'object' ?
+			data[0] : obj;
 		if (data.route === 'chat->log') {
 			route.town(data, data.route);
 		}
 		else {
 			route.party(data, data.route);
 		}
+		// console.info('party rx ', topic, data);
 	}
 	function listenGuild() {
 		// subscribe to test guild for now
@@ -214,8 +219,9 @@ var socket;
 			socket.subscribe(my.guildChannel(), routeToGuild);
 		}
 	}
-	function routeToGuild(topic, data) {
-		console.info('rx ', topic, data);
+	function routeToGuild(data) {
+		data = data[0];
+		console.info('rx ', data);
 		if (data.route === 'chat->log') {
 			route.town(data, data.route);
 		}

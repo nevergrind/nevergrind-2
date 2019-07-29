@@ -69,7 +69,6 @@ var chat;
 		whoAll: whoAll,
 		whoClass: whoClass,
 		scrollBottom: scrollBottom,
-		setRoom: setRoom,
 		setHeader: setHeader,
 		joinParse: joinParse,
 		joinChannel: joinChannel,
@@ -77,9 +76,9 @@ var chat;
 		joinChangeCallback: joinChangeCallback,
 		updateChannel: updateChannel,
 		addPlayer: addPlayer,
+		clearLog: clearLog,
 		removePlayer: removePlayer,
 		broadcastAdd: broadcastAdd,
-		broadcastRemove: broadcastRemove,
 		sizeSmall: sizeSmall,
 		sizeLarge: sizeLarge,
 	}
@@ -98,8 +97,7 @@ var chat;
 				'<div id="chat-log">' +
 					'<div>Welcome to Broken.net!</div>' +
 					'<div>You have entered Vandamor.</div>' +
-					'<div class="chat-warning">Nevergrind 2 is still in development, but feel free to test it out!</div>' +
-					'<div class="chat-emote">Type /help or /h for a list of chat commands.</div>' +
+					'<div class="chat-warning">Type /help or /h for a list of chat commands.</div>' +
 				'</div>' +
 				'<div id="chat-prompt" class="no-select">'+
 				'</div>' +
@@ -118,7 +116,7 @@ var chat;
 			mode = mode.replace(/^\s+/g, '');
 
 		if (mode === '/say' && !my.channel) {
-			chat.log("You cannot communicate in town while in a dungeon", "chat-warning");
+			log("You cannot communicate in town while in a dungeon", "chat-warning");
 			setTimeout(function() {
 				// wipe input after keyup to get rid of /say
 				$("#chat-input").val('');
@@ -298,7 +296,7 @@ var chat;
 				'<div '+ z +'>/camp: Exit the game.</div>',
 			];
 		for (var i=0, len=s.length; i<len; i++) {
-			chat.log(s[i]);
+			log(s[i]);
 		}
 	}
 	function sendMsg(input) {
@@ -358,10 +356,10 @@ var chat;
 			chat.camp();
 		}
 		else if (msgLower === '/played') {
-			chat.played();
+			played();
 		}
 		else if (msgLower.indexOf('/join') === 0) {
-			chat.joinChannel(chat.joinParse(msg));
+			chat.joinChannel(joinParse(msg));
 		}
 		else if (msgLower === '/clear') {
 			chat.clearChatLog();
@@ -397,7 +395,7 @@ var chat;
 			// whisper
 			if (my.name !== chat.modeName) {
 				if (~ng.ignore.indexOf(chat.modeName)) {
-					chat.log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', 'chat-warning');
+					log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', 'chat-warning');
 				}
 				$.ajax({
 					url: app.url + 'server/chat/send.php',
@@ -416,14 +414,14 @@ var chat;
 				if (o.msg[0] !== '/') {
 					console.info(o);
 					if (!my.p_id && o.category.indexOf('party') === 0) {
-						chat.log("You are not in a party.", 'chat-warning');
+						log("You are not in a party.", 'chat-warning');
 					}
 					else if (!my.guild.id && o.category.indexOf('guild') === 0) {
-						chat.log("You are not in a guild.", 'chat-warning');
+						log("You are not in a guild.", 'chat-warning');
 					}
 					else {
 						if (o.category === 'ng2') {
-							chat.log("You cannot communicate in town while in a dungeon", "chat-warning");
+							log("You cannot communicate in town while in a dungeon", "chat-warning");
 						}
 						else {
 							$.ajax({
@@ -526,17 +524,17 @@ var chat;
 				ng.ignore.forEach(function(v) {
 					s += '<div class="chat-emote">' + v + '</div>';
 				});
-				chat.log(s);
+				log(s);
 			}
 			else {
-				chat.log("Nobody is on your friends list yet.", 'chat-warning');
+				log("Nobody is on your friends list yet.", 'chat-warning');
 			}
 	}
 	function ignoreAdd(o) {
 			if (o !== my.name) {
 				ng.ignore.push(o);
 				localStorage.setItem('ignore', JSON.stringify(ng.ignore));
-				chat.log('You have added ' + o + ' to your ignore list.', 'chat-warning');
+				log('You have added ' + o + ' to your ignore list.', 'chat-warning');
 			}
 	}
 	function ignoreRemove(o) {
@@ -545,7 +543,7 @@ var chat;
 				ng.ignore.splice(index, 1);
 			}
 			localStorage.setItem('ignore', JSON.stringify(ng.ignore));
-			chat.log('You have removed ' + o + ' from your ignore list.', 'chat-warning');
+			log('You have removed ' + o + ' from your ignore list.', 'chat-warning');
 	}
 	function promote(name, bypass) {
 		console.info('/promote ', name, bypass);
@@ -561,13 +559,13 @@ var chat;
 			}).done(function (data) {
 				// console.info('promote ', data);
 			}).fail(function (r) {
-				chat.log(r.responseText, 'chat-warning');
+				log(r.responseText, 'chat-warning');
 			});
 		}
 	}
 	function disband() {
 		if (ng.view === 'battle') {
-			chat.log("You cannot disband the party during battle!", "chat-warning");
+			log("You cannot disband the party during battle!", "chat-warning");
 		}
 		else {
 			var count = my.partyCount();
@@ -589,7 +587,7 @@ var chat;
 				bar.disband();
 				mission.abort();
 			}).fail(function(r) {
-				chat.log(r.responseText, 'chat-warning');
+				log(r.responseText, 'chat-warning');
 			}).always(function() {
 				ng.unlock();
 			});
@@ -609,26 +607,26 @@ var chat;
 			}).done(function (data) {
 				console.info('boot ', data);
 			}).fail(function (r) {
-				chat.log(r.responseText, 'chat-warning');
+				log(r.responseText, 'chat-warning');
 			});
 		}
 	}
 	function invite(p) {
 		if (my.name === p) {
-			chat.log("You can't invite yourself to a party.", "chat-warning");
+			log("You can't invite yourself to a party.", "chat-warning");
 		}
 		else if (my.p_id && !my.party[0].isLeader) {
-			chat.log("Only the party leader may send invites.", "chat-warning");
+			log("Only the party leader may send invites.", "chat-warning");
 		}
 		else if (my.quest.level) {
-			chat.log("You cannot invite adventurers to the party after starting the mission.", "chat-warning");
+			log("You cannot invite adventurers to the party after starting the mission.", "chat-warning");
 		}
 		else if (!my.channel) {
-			chat.log("You cannot invite adventurers from the depths of a dungeon.", "chat-warning");
+			log("You cannot invite adventurers from the depths of a dungeon.", "chat-warning");
 		}
 		else {
 			if (p) {
-				chat.log('Sent party invite to '+ p +'.', 'chat-warning');
+				log('Sent party invite to '+ p +'.', 'chat-warning');
 				$.ajax({
 					url: app.url + 'server/chat/invite.php',
 					data: {
@@ -642,11 +640,11 @@ var chat;
 					}
 					socket.listenParty(r.p_id);
 				}).fail(function(r){
-					chat.log(r.responseText, 'chat-warning');
+					log(r.responseText, 'chat-warning');
 				});
 			}
 			else {
-				chat.log("Syntax: /invite [player_name]", "chat-warning");
+				log("Syntax: /invite [player_name]", "chat-warning");
 			}
 		}
 	}
@@ -659,15 +657,15 @@ var chat;
 				}).done(function(){
 					location.reload();
 				}).fail(function(){
-					chat.log('Failed to camp successfully.', 'chat-alert');
+					log('Failed to camp successfully.', 'chat-alert');
 				});
 			}, 500);
 		}
 		if (ng.view !== 'town') {
-			chat.log("You can only camp in town!", "chat-warning");
+			log("You can only camp in town!", "chat-warning");
 		}
 		else {
-			chat.log('Camping...', 'chat-warning');
+			log('Camping...', 'chat-warning');
 			game.exit();
 			if (my.p_id) {
 				if (my.party[0].isLeader) {
@@ -687,7 +685,7 @@ var chat;
 						setTimeout(repeat, 100, ++count);
 					}
 					else {
-						chat.log("Failed to camp successfully.", "chat-warning");
+						log("Failed to camp successfully.", "chat-warning");
 					}
 				}
 			})(0);
@@ -741,7 +739,7 @@ var chat;
 			$("#" + e.id).remove();
 		}, 30000);
 
-		chat.log(data.msg, 'chat-warning');
+		log(data.msg, 'chat-warning');
 	}
 	function promptConfirm(data) {
 		// join party by player id?
@@ -782,12 +780,12 @@ var chat;
 			}
 		}).done(function(data){
 			console.info("party-join.php ", data);
-			chat.log("You have joined the party.", "chat-warning");
+			log("You have joined the party.", "chat-warning");
 			socket.listenParty(z.row);
 			bar.getParty();
 		}).fail(function(data){
 			console.info("Oh no", data);
-			chat.log(data.responseText, 'chat-warning');
+			log(data.responseText, 'chat-warning');
 		});
 	}
 	function partyParse(msg) { // 2-part upper case
@@ -821,7 +819,7 @@ var chat;
 		});
 	}
 	function friendList() {
-		chat.log('<div class="chat-warning">Checking friends list...</div>');
+		log('<div class="chat-warning">Checking friends list...</div>');
 		if (ng.friends.length){
 			$.ajax({
 				type: 'GET',
@@ -846,17 +844,17 @@ var chat;
 					}
 				});
 
-				chat.log(str);
+				log(str);
 			});
 		}
 		else {
-			chat.log("<div>You don't have any friends!</div>");
-			chat.log("<div class='chat-emote'>Use /friend [name] to add a new friend.</div>");
+			log("<div>You don't have any friends!</div>");
+			log("<div class='chat-emote'>Use /friend [name] to add a new friend.</div>");
 		}
 	}
 	function friendAdd(o) {
 		if (ng.friends.includes(o)) {
-			chat.log(o + " is already your friend.", 'chat-warning');
+			log(o + " is already your friend.", 'chat-warning');
 		}
 		else if (o.length > 1 && o !== my.name) {
 			$.ajax({
@@ -866,10 +864,10 @@ var chat;
 				}
 			}).done(function(data){
 				if (data.error) {
-					chat.log(data.error, 'chat-warning');
+					log(data.error, 'chat-warning');
 				}
 				else {
-					chat.log('You have added ' + o + ' to your friend list.', 'chat-warning');
+					log('You have added ' + o + ' to your friend list.', 'chat-warning');
 					socket.subscribe('friend'+ o, chat.friendNotify);
 					if (!ng.friends.includes(o)) {
 						socket.publish('name' + o, {
@@ -892,10 +890,10 @@ var chat;
 				}
 			}).done(function(data){
 				if (data.error) {
-					chat.log(data.error, 'chat-warning');
+					log(data.error, 'chat-warning');
 				}
 				else {
-					chat.log('You have removed ' + o + ' from your friend list.', 'chat-warning');
+					log('You have removed ' + o + ' from your friend list.', 'chat-warning');
 					while (ng.friends.indexOf(o) > -1) {
 						var index = ng.friends.indexOf(o);
 						ng.friends.splice(index, 1);
@@ -905,12 +903,14 @@ var chat;
 			});
 		}
 	}
-	function friendNotify(topic, data) {
+	function friendNotify(data, obj) {
+		data = typeof data[0] === 'object' ?
+			data[0] : obj;
 		if (data.route === 'on') {
-			chat.log(data.name + ' has come online.', 'chat-warning');
+			log(data.name + ' has come online.', 'chat-warning');
 		}
 		else {
-			chat.log(data.name + ' has gone offline.', 'chat-warning');
+			log(data.name + ' has gone offline.', 'chat-warning');
 		}
 	}
 	function toPlaytime(minLeft) {
@@ -971,9 +971,9 @@ var chat;
 		}).done(function(r) {
 			var sessionLen = Date.now() - JSON.parse(sessionStorage.getItem('startTime')),
 				durationStr = chat.toPlaytime(~~(sessionLen / 100000));
-			chat.log("Character created: " + chat.toCreateString(r.created), 'chat-warning');
-			chat.log("Current session duration: " + durationStr, 'chat-whisper');
-			chat.log("Total character playtime: " + chat.toPlaytime(r.playtime), 'chat-whisper');
+			log("Character created: " + chat.toCreateString(r.created), 'chat-warning');
+			log("Current session duration: " + durationStr, 'chat-whisper');
+			log("Total character playtime: " + chat.toPlaytime(r.playtime), 'chat-whisper');
 		});
 	}
 	function whoParse(msg) {
@@ -1006,7 +1006,7 @@ var chat;
 		}).done(function(r){
 			console.info('who ', r);
 			if (r.len) {
-				chat.log(chat.divider + "There " + (r.len > 1 ? "are" : "is") +" currently "+
+				log(chat.divider + "There " + (r.len > 1 ? "are" : "is") +" currently "+
 					r.len + " "+ (r.len > 1 ? "players" : "players") +" in Vandamor.", "chat-warning");
 				// online
 				var str = '';
@@ -1016,10 +1016,10 @@ var chat;
 						v.level +' '+ ng.jobLong[v.job] +'] '+ v.name + ' ('+ v.race +
 						')' + guild.format(v) +'</div>';
 				});
-				chat.log(str, 'chat-whisper');
+				log(str, 'chat-whisper');
 			}
 			else {
-				chat.log("Nobody is currently in Vandamor.", "chat-warning");
+				log("Nobody is currently in Vandamor.", "chat-warning");
 			}
 		});
 	}
@@ -1034,7 +1034,7 @@ var chat;
 			console.info('r ', r);
 			var jobLong = ng.toJobLong(job);
 			if (r.len) {
-				chat.log(chat.divider + "There " + (r.len > 1 ? "are" : "is") +" currently "+
+				log(chat.divider + "There " + (r.len > 1 ? "are" : "is") +" currently "+
 					r.len + " "+ (r.len > 1 ? jobLong + 's' : jobLong) +" in Vandamor.", "chat-warning");
 				// online
 				var str = '';
@@ -1044,13 +1044,13 @@ var chat;
 						v.level +' '+ ng.jobLong[v.job] +'] '+ v.name + ' ('+ v.race +
 						')' + guild.format(v) +'</div>';
 				});
-				chat.log(str, 'chat-whisper');
+				log(str, 'chat-whisper');
 			}
 			else if (!jobLong) {
-				chat.log("No results found. Try searching by a class name /who cleric.", "chat-warning");
+				log("No results found. Try searching by a class name /who cleric.", "chat-warning");
 			}
 			else {
-				chat.log("Currently there are no " + jobLong + "s in Vandamor.", "chat-warning");
+				log("Currently there are no " + jobLong + "s in Vandamor.", "chat-warning");
 			}
 		});
 	}
@@ -1074,6 +1074,9 @@ var chat;
 			chat.dom.chatRoom.innerHTML = s;
 		}
 	}
+	function clearLog() {
+		chat.dom.chatLog.innerHTML = '';
+	}
 	function setHeader() {
 		// or chat.inChannel.length ?
 		chat.dom.chatHeader.innerHTML = my.channel + '&thinsp;(' + $(".chat-player").length + ')';
@@ -1095,7 +1098,10 @@ var chat;
 							channel: channel
 						}
 					}).done(function (data) {
-						chat.joinChangeCallback(data);
+						clearLog();
+						log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>')
+						console.info('joinChannel', data);
+						joinChangeCallback(data);
 					});
 				}
 			}
@@ -1113,21 +1119,21 @@ var chat;
 					channel: chat.default
 				}
 			}).done(function (data) {
-				chat.joinChangeCallback(data);
+				joinChangeCallback(data);
 			});
 		}
 	}
 	function joinChangeCallback(data) {
-		chat.broadcastRemove();
+		broadcastRemove();
 		console.info("You have changed channel to: ", data);
-		chat.setRoom(data.players);
+		setRoom(data.players);
 		// removes id
 		//socket.removePlayer(my.account);
 		// unsubs
 		my.channel && socket.unsubscribe(chat.getChannel());
 		// set new channel data
 		my.channel = data.channel;
-		socket.subscribe(data.fullChannel, socket.routeMainChat);
+		socket.subscribe(data.fullChannel, socket.routeMainChat); // main chat channel
 		// add to chat channel
 		chat.setHeader();
 		chat.broadcastAdd();
@@ -1141,7 +1147,7 @@ var chat;
 				}
 			}).done(function (data) {
 				console.info("updateChannel: ", data);
-				chat.setRoom(data.players);
+				setRoom(data.players);
 				chat.setHeader();
 			});
 		}

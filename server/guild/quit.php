@@ -42,13 +42,14 @@ if (!empty($_SESSION['guild']) &&
 	}
 
 	// notify guild members
-	require_once '../zmq.php';
+	require '../zmq.php';
 	$zmq = [];
 	if (!isset($_POST['action'])) {
 		$zmq['msg'] = $_SESSION['name'] . ' has left '. $_SESSION['guild']['name'] .'.';
 	}
 	$zmq['route'] = 'guild->quit';
-	zmqSend('guild'. $_SESSION['guild']['id'], $zmq);
+	$zmq['category'] = 'guild'. $_SESSION['guild']['id'];
+	$socket->send(json_encode($zmq));
 
 	// set guild session values
 	require '../session/init-guild.php';

@@ -40,10 +40,11 @@ $stmt->execute();
 require '../guild/get-guild-data.php';
 
 // notify party
-require_once '../zmq.php';
-zmqSend('guild'. $_POST['row'], [
+require '../zmq.php';
+$socket->send(json_encode([
+	'category' => 'guild'. $_POST['row'],
 	'msg' => $_SESSION['name'] . ' has joined ' . $_POST['guildName'] .'.',
 	'route' => 'guild->hasJoined'
-]);
+]));
 
 echo json_encode($r);

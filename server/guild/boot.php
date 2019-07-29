@@ -30,12 +30,13 @@ if (!empty($_SESSION['guild']) && $_SESSION['guild']['rank'] < 2) {
 	}
 
 	// notify party members
-	require_once '../zmq.php';
-	zmqSend('guild'. $_SESSION['guild']['id'], [
+	require '../zmq.php';
+	$socket->send(json_encode([
+		'category' => 'guild'. $_SESSION['guild']['id'],
 		'name' => $_POST['name'],
 		'msg' => $_POST['name'] . ' has been booted by  '. $_SESSION['name'] .'!',
 		'route' => 'guild->boot'
-	]);
+	]));
 	echo json_encode($r);
 }
 else {

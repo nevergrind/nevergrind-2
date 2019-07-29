@@ -1,6 +1,6 @@
 <style>
 	html {
-		font-size: 2rem;
+		font-size: 1.5rem;
 	}
 </style>
 <script src="/ng2/js/libs/autobahn-2.min.js"></script>
@@ -17,16 +17,27 @@ console.info('connection instantiated...');
 connection.open();
 //////////////////////////////////////
 function onOpen(session) {
+	var start;
+	var end;
 	console.warn("Connection successful!", session);
 	session = session;
 
-	session.subscribe('test', function(arr, obj){
-		obj.time *= 1000;
-		console.log("Event:", arr, new Date(obj.time));
-		var el = document.createElement('div');
-		el.innerHTML = 'socket pushed at ' + new Date(obj.time);
-		document.body.appendChild(el);
-	});
+	session.subscribe('test', testPush);
+	function testPush(arr) {
+		if (arr[0].loop === 0) {
+			start = Date.now();
+		}
+		if (arr[0].loop === 999) {
+			end = Date.now();
+			var time = arr[0].time * 1000;
+			var total = end - start;
+			console.info(arr[0], time);
+			console.warn('total time: ', total);
+			var el = document.createElement('div');
+			el.innerHTML = 'Timestamp: ' + time + ' - Total client time (first to last): ' + total;
+			document.body.appendChild(el);
+		}
+	}
 }
 
 </script>
@@ -43,24 +54,25 @@ if ($result = mysqli_query($db, 'SELECT row FROM `accounts`')) {
 	echo 'Total accounts in the account table: ' . $count . '<br>';
 }
 
+$loops = 1e3;
 $val = 5;
 // session get/set test
 $apcStart = microtime(true);
-for ($i = 0; $i < 1e4; $i++) {
+for ($i = 0; $i < $loops; $i++) {
 	$_SESSION['val'] = $val;
 	$bar = $_SESSION['val'];
 }
 $apcEnd = microtime(true) - $apcStart;
-echo '<br>$_SESSION primitive set & get test x10000:<br> ' . $apcEnd . '<br>';
+echo '<br>$_SESSION primitive set & get test x '. $loops .':<br> ' . $apcEnd . '<br>';
 
 // primitive apcu test
 $apcStart = microtime(true);
-for ($i = 0; $i < 1e4; $i++) {
+for ($i = 0; $i < $loops; $i++) {
 	apcu_store('test', $val);
 	$bar = apcu_fetch('test');
 }
 $apcEnd = microtime(true) - $apcStart;
-echo '<br>APCu primitive set & get test x10000:<br> ' . $apcEnd . '<br>';
+echo '<br>APCu primitive set & get test x'. $loops .':<br> ' . $apcEnd . '<br>';
 
 // object apcu test
 $obj = [
@@ -71,51 +83,18 @@ $obj = [
 	'level' => 50
 ];
 $apcStart = microtime(true);
-for ($i = 0; $i < 1e4; $i++) {
+for ($i = 0; $i < $loops; $i++) {
 	apcu_store('obj', json_encode($obj));
 	$bar = json_decode(apcu_fetch('obj'), true);
 }
 $apcEnd = microtime(true) - $apcStart;
-echo '<br>APCu object set & get test x 10000:<br> ' . $apcEnd . '<br>';
+echo '<br>APCu object set & get test x '. $loops .':<br> ' . $apcEnd . '<br>';
 echo '<pre>' . print_r($bar, true) . '</pre>';
 
-
-$loops = 1;
-// start push loop
-$zmqStart = microtime(true);
-for ($i = 0; $i < $loops; $i++) {
-	require '../zmq.php';
-	zmqSend('test', [
-		'time' => microtime(true)
-	]);
-}
-$zmqEnd = microtime(true) - $zmqStart;
-echo '<br>zmq push test x 1:<br> ' . $zmqEnd . '<br>';
-
-
-$zmqStart = microtime(true);
-$client = new \Thruway\Peer\Client('realm1');
-$client->setAttemptRetry(false);
-$client->addTransportProvider(new \Thruway\Transport\PawlTransportProvider('ws://127.0.0.1:9090'));
-$client->on('open', function (\Thruway\ClientSession $clientSession) {
-	global $loops;
-    for ($i = 0; $i < $loops; $i++) {
-        $clientSession->publish('test',
-			['$client push'],
-			['time' => microtime(true)]
-		);
-    }
-    $clientSession->close();
-});
-$client->start();
-$zmqEnd = microtime(true) - $zmqStart;
-echo '<br>zmq push test x ' . $loops .':<br> ' . $zmqEnd . '<br>';
-
-
+// total script time
 $time = microtime(true) - $now;
 echo '<br><br>';
 echo 'This script took '. $time .' seconds to complete!';
-
 
 exit;
 

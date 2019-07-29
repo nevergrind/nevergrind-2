@@ -9,12 +9,13 @@ if ($_SESSION['party']['id']) {
 	$stmt->execute();
 
 	// notify party members
-	require_once '../zmq.php';
-	zmqSend('party'. $_SESSION['party']['id'], [
+	require '../zmq.php';
+	$socket->send(json_encode([
+		'category' => 'party'. $_SESSION['party']['id'],
 		'row' => $_POST['id'],
 		'name' => $_POST['name'],
 		'route' => 'party->boot'
-	]);
+	]));
 	echo json_encode($r);
 }
 else {

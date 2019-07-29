@@ -29,12 +29,13 @@ if (!empty($_SESSION['guild']) &&
 	$_SESSION['guild']['rank'] = 1;
 
 	// notify guild members
-	require_once '../zmq.php';
-	zmqSend('guild'. $_SESSION['guild']['id'], [
+	require '../zmq.php';
+	$socket->send(json_encode([
+		'category' => 'guild'. $_SESSION['guild']['id'],
 		'name' => $_POST['name'],
 		'msg' => $_POST['name'] . ' has been promoted to guild Leader by '. $_SESSION['name'] .'.',
 		'route' => 'guild->leader'
-	]);
+	]));
 	echo json_encode($r);
 }
 else {

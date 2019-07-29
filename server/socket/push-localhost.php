@@ -1,6 +1,5 @@
 <?php
-// require $_SERVER['DOCUMENT_ROOT'] . '/thruway/vendor/autoload.php';
-require '/jet/app/www/default/thruway/vendor/autoload.php';
+require 'D:\xampp-7-1\htdocs\thruway\vendor\autoload.php';
 
 echo microtime(true) . ' Starting react/zmq loop...';
 
@@ -11,7 +10,7 @@ $pusher->on('open', function ($session) use ($loop) {
 	echo 'Socket opened...';
     $context = new React\ZMQ\Context($loop);
     $pull    = $context->getSocket(ZMQ::SOCKET_PULL);
-    $pull->bind('tcp://0.0.0.0:5555');
+    $pull->bind('tcp://127.0.0.1:5555');
 
     $pull->on('message', function ($entry) use ($session) {
         $entryData = json_decode($entry, true);

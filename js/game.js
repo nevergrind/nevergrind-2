@@ -273,7 +273,7 @@ var game;
 	function exit() {
 		// from town
 		if (socket.enabled) {
-			chat.broadcastRemove();
+			broadcastRemove();
 			if (my.p_id) {
 				// boot from party
 				/*

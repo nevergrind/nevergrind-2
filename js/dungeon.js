@@ -12,7 +12,7 @@ var dungeon;
 		if (ng.view === 'dungeon') return;
 		game.emptyScenesExcept('scene-dungeon');
 		// remove from town chat
-		chat.broadcastRemove();
+		broadcastRemove();
 		my.channel && socket.unsubscribe(chat.getChannel());
 		// set new channel data
 		my.channel = '';
@@ -46,10 +46,7 @@ var dungeon;
 		// delegate
 	}
 	function html() {
-		var s =
-		'<img id="dungeon-bg" class="img-bg" src="images/dungeon/braxxen1.jpg">';
-
-		return s;
+		return '<img id="dungeon-bg" class="img-bg" src="images/dungeon/braxxen1.jpg">';
 	}
 	function enterCombat() {
 		console.info("ENTERING COMBAT");

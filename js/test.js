@@ -4,6 +4,8 @@ var test;
 	var i;
 	var e;
 	var z;
+	var start;
+	var end;
 	var filters;
 
 	test = {
@@ -31,20 +33,28 @@ var test;
 			death: death,
 			effect: effect
 		},
-		channel: 'test',
 		socketSub: socketSub,
 		socketPub: socketPub,
 	}
 	///////////////////////////////////
 	function socketSub() {
-		socket.subscribe(test.channel, testRx);
+		socket.subscribe('test', testRx);
 		//////////////////////////
-		function testRx(arr) {
-			//console.info('test received', arr[0].category, new Date(arr[0].time * 1000));
+		function testRx(arr, obj) {
+			arr = typeof arr[0] === 'object' ?
+				arr[0] : obj;
+			if (arr.loop === 0) {
+				console.info('test received', arr.category, arr.loop, arr.time);
+				start = Date.now();
+			}
+			if (arr.loop === 999) {
+				end = Date.now();
+				console.warn('Total time: ', end - start, 'ms');
+			}
 		}
 	}
 	function socketPub() {
-		socket.publish(test.channel, {
+		socket.publish('test', {
 			date: Date.now()
 		});
 	}

@@ -174,9 +174,10 @@ var town;
 						}
 					}
 				}
+				ng.unlock();
 			}).fail(function(data){
 				ng.disconnect(data.responseText);
-			}).always(ng.unlock);
+			});
 		}
 	}
 	function html() {

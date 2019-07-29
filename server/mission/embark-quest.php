@@ -24,24 +24,26 @@ $_SESSION['zone'] = '';
 
 require 'get-zone-mobs.php';
 
-require_once '../zmq.php';
+require '../zmq.php';
 
 $_SESSION['party']['mission_id'] = $_POST['quest']['row'] * 1;
 if (!$_SESSION['party']['id'] || $_SESSION['party']['isLeader']) {
 	// solo/leader broadcasts mission update to party
 	// my.quest updates
-	zmqSend('party'. $_SESSION['party']['id'], [
+	$socket->send(json_encode([
+		'category' => 'party'. $_SESSION['party']['id'],
 		'quest' => $_SESSION['quest'],
 		'zoneMobs' => $r['zoneMobs'],
 		'route' => 'party->missionUpdate'
-	]);
+	]));
 }
 if ($_SESSION['party']['id']) {
-	zmqSend('party'. $_SESSION['party']['id'], [
+	$socket->send(json_encode([
+		'category' => 'party'. $_SESSION['party']['id'],
 		'msg' => $_SESSION['name'] . ' has embarked into ' . $_SESSION['quest']['zone'],
 		'route' => 'chat->log',
 		'class' => 'chat-quest'
-	]);
+	]));
 }
 
 if ($_SESSION['party']['isLeader']) {
@@ -59,7 +61,7 @@ else {
 		'category' => 'name'. $_SESSION['name']
 	];
 }
-zmqSend($zmq['category'], $zmq);
+$socket->send(json_encode($zmq));
 
 
 $r['quest'] = $_SESSION['quest']['row'];

@@ -10,12 +10,14 @@ if ($_SESSION['party']['id']) {
 	$stmt->execute();
 
 	// bars notify party members
-	require_once '../zmq.php';
-	zmqSend('party'. $_SESSION['party']['id'], [
+	require '../zmq.php';
+
+	$socket->send(json_encode([
+		'category' => 'party'. $_SESSION['party']['id'],
 		'row' => $_SESSION['row'],
 		'route' => 'party->disband',
 		'class' => 'chat-warning'
-	]);
+	]));
 
 	// set party session values
 	require '../session/init-party.php';

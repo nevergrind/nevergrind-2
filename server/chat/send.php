@@ -1,7 +1,7 @@
 <?php
 	require_once '../session/start.php';
 	require('prepare.php');
-	require_once '../zmq.php';
+	require '../zmq.php';
 
 	$zmq = [
 		'msg' => $postMsg,
@@ -16,4 +16,5 @@
 	if ($_POST['class'] === 'chat-whisper') {
 		$zmq['action'] = $_POST['action'];
 	}
-	zmqSend($_POST['category'], $zmq);
+	$zmq['category'] = $_POST['category'];
+	$socket->send(json_encode($zmq));
