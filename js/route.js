@@ -66,7 +66,7 @@ var route;
 			//console.info("%c party->bootme", "background: #ff0", promote);
 			// only boot if I'm the lowest id!
 			if (my.isLowestPartyIdMine()) {
-				//console.info('isLowestPartyIdMine ! YES PROMOTE! ', _.deepClone(my.party));
+				//console.info('isLowestPartyIdMine ! YES PROMOTE! ', _.cloneDeep(my.party));
 				chat.boot(data.name, 1);
 				if (my.partyCount() === 1) {
 					// disband if one-man party

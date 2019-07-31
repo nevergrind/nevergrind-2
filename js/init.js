@@ -4,3 +4,4 @@ ng.init();
 audio.init();
 //audio.gameMusicInit();
 context.init();
+$('script').remove();

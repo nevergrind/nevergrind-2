@@ -269,40 +269,13 @@ var ng;
 	}
 	function goCreateCharacter() {
 		ng.lock(1);
-		var z = '#scene-title-select-character',
-			prom = 0,
-			allDone = function(){
-				if (++prom === 2){
-					ng.unlock();
-					// init create screen and show
-					TweenMax.set(z, {
-						display: 'none',
-						opacity: 1
-					});
-					create.setRandomGender();
-					create.setRandomRace();
-					TweenMax.to('#scene-title-create-character', .6, {
-						startAt: {
-							display: 'block',
-							y: 20,
-							opacity: 0
-						},
-						y: 0,
-						opacity: 1,
-						onComplete: function(){
-                            $("#create-character-name").focus();
-							ng.unlock();
-						}
-					});
-				}
-			};
+		var z = '#scene-title-select-character';
+		var prom = 0;
 		// hide
 		TweenMax.to(z, .6, {
 			y: 20,
 			opacity: 0,
-			onComplete: function(){
-				allDone();
-			}
+			onComplete: allDone
 		});
 
 		$.ajax({
@@ -321,9 +294,35 @@ var ng;
             $("#create-character-name").val('');
 			allDone();
 		});
+		///////////////////////////////////////////////////
+		function allDone(){
+			if (++prom === 2){
+				ng.unlock();
+				// init create screen and show
+				TweenMax.set(z, {
+					display: 'none',
+					opacity: 1
+				});
+				create.form = create.getEmptyForm();
+				create.setRandomGender();
+				create.setRandomRace();
+				TweenMax.to('#scene-title-create-character', .6, {
+					startAt: {
+						display: 'flex',
+						y: 20,
+						opacity: 0
+					},
+					y: 0,
+					opacity: 1,
+					onComplete: function(){
+						$("#create-character-name").focus();
+						ng.unlock();
+					}
+				});
+			}
+		}
 	}
 	function initGame() {
-
 		$.get(app.url + 'server/init-game.php').done(function(r){
 			console.info('init-game', r);
 			app.initialized = 1;
@@ -366,4 +365,5 @@ var ng;
 		getById('ch-card-list').innerHTML = s;
 		$(".select-player-card:first").trigger('mousedown');
 	}
+	// private ///////////////////////////////////////////////////////
 })();

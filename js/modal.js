@@ -4,36 +4,43 @@ var modal;
 		isOpen: 0,
 		overlay: getById('modal-overlay'),
 		wrap: getById('modal-wrap'),
-		headerContents: {
-			playerIdleBoot: '<div id="modal-header">Disconnected</div>',
-			deleteCharacter: '<div id="modal-header">Delete '+ create.name +'?</div>',
+		playerIdleBoot: {
+			header: function() {
+				return '<div id="modal-header">Disconnected</div>';
+			},
+			body: function() {
+				return '<div id="modal-body">' +
+					'<p>You have been disconnected from the server.</p>' +
+				'</div>';
+			}
 		},
-		bodyContents: {
-			playerIdleBoot:
-			'<div id="modal-body">'+
-				'<p>You have been disconnected from the server.</p>'+
-			'</div>',
-			deleteCharacter:
-			'<div id="modal-body">'+
-				'<p>Are you sure you want to delete this character?</p>'+
-			'</div>',
+		deleteCharacter: {
+			header: function() {
+				return '<div id="modal-header">Delete '+ create.name +'?</div>';
+			},
+			body: function() {
+				return '<div id="modal-body">' +
+					'<p>Are you sure you want to delete this character?</p>' +
+				'</div>';
+			}
 		},
 		show: show,
-		hide: hide,
-		header: header,
-		body: body,
-		footer: footer,
+		hide: hide
 	};
-	////////////////////////////////
+	// public ////////////////////////////////////////////////////////////////////
 	function show(e) {
 		modal.isOpen = 1;
-		e.camelKey = _.camelCase(e.key);
-		var s = '<div class="stag-blue">'+
-					modal.header(e) +
-					modal.body(e) +
-					(e.hideFooter ? '' : modal.footer(e)) +
+		var camelKey = _.camelCase(e.key);
+		var html = '<div class="stag-blue">'+
+					// header
+					(typeof modal[camelKey].header === 'function' ?
+						modal[camelKey].header() : '') +
+					modal[camelKey].body() +
+					// footer
+					(typeof modal[camelKey].footer === 'function' ?
+						modal[camelKey].footer() : defaultFooter(e)) +
 				'</div>';
-		modal.wrap.innerHTML = s;
+		modal.wrap.innerHTML = html;
 
 		modal.isOpen = true;
 		TweenMax.to(modal.overlay, .3, {
@@ -47,19 +54,17 @@ var modal;
 			startAt: {
 				visibility: 'visible',
 				alpha: 0,
-				top: 30
+				y: -20
 			},
 			alpha: 1,
-			top: 50
+			y: 0
 		});
 		// assign events
 		$("#modal-dismiss, #modal-overlay").on('mousedown', function(){
 			modal.hide();
 		});
 		// confirm event actions
-		$('#modal-wrap').on('mousedown', '#delete-character-confirm', function(){
-			create.deleteCharacter();
-		});
+		$('#modal-wrap').on('mousedown', '#delete-character-confirm', create.deleteCharacter);
 		if (e.focus) {
             setTimeout(function () {
                 $("#modal-wrap input:first").focus();
@@ -79,13 +84,8 @@ var modal;
 			}
 		});
 	}
-	function header(e) {
-		return modal.headerContents[e.camelKey];
-	}
-	function body(e) {
-		return modal.bodyContents[e.camelKey];
-	}
-	function footer(e) {
+	// private ////////////////////////////////////////////////////////////////////
+	function defaultFooter(e) {
 		var str =
 			'<div id="modal-footer" class="text-center">'+
 				'<a id="modal-dismiss" class="ng-btn modal-buttons">Cancel</a>'+

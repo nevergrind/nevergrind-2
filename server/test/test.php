@@ -20,7 +20,6 @@ function onOpen(session) {
 	var start;
 	var end;
 	console.warn("Connection successful!", session);
-	session = session;
 
 	session.subscribe('test', testPush);
 	function testPush(arr) {

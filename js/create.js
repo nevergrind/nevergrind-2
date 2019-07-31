@@ -11,21 +11,7 @@ var create;
 			intel: 0,
 			cha: 0
 		},
-		form: {
-			race: '',
-			job: '',
-			gender: '',
-			name: '',
-			str: 0,
-			sta: 0,
-			agi: 0,
-			dex: 0,
-			wis: 0,
-			intel: 0,
-			cha: 0,
-			left: 10,
-			maxLeft: 10
-		},
+		form: getEmptyForm(),
 		possibleJobs: {},
 		raceAttrs: {},
 		jobAttrs: {},
@@ -90,11 +76,12 @@ var create;
 		set: set,
 		getResist: getResist,
 		getDungeon: getDungeon,
+		getEmptyForm: getEmptyForm,
 		setRandomGender: setRandomGender,
 		setRandomRace: setRandomRace,
 		setRandomClass: setRandomClass,
 	};
-	////////////////////////////////////////
+	// public //////////////////////////////////////
 	function events(x) {
 		$("#logout").on(x, function() {
 			ng.logout();
@@ -105,9 +92,7 @@ var create;
 		});
 		$('.ch-card:first').trigger(x);
 		// create character
-		$("#go-create-character").on(x, function(){
-			ng.goCreateCharacter();
-		});
+		$("#go-create-character").on(x, ng.goCreateCharacter);
 		$("#delete-character").on(x, function(){
 			modal.show({
 				key: 'delete-character'
@@ -166,15 +151,13 @@ var create;
 					});
 					TweenMax.to('#scene-title-select-character', .6, {
 						startAt: {
-							display: 'block',
+							display: 'flex',
 							y: 20,
 							opacity: 0
 						},
 						y: 0,
 						opacity: 1,
-						onComplete: function(){
-							ng.unlock();
-						}
+						onComplete: ng.unlock
 					});
 				}
 			});
@@ -209,7 +192,6 @@ var create;
 						form: f
 					}
 				}).done(function(r){
-					console.info('Created character: ', r);
 					ng.msg(r.hero.name + ' has been created!');
 					$("#create-character-back").trigger(x);
 				}).fail(function(r){
@@ -278,8 +260,8 @@ var create;
 		});
 		// reset attr
 		if (key !== 'gender' && create.form.race){
-			var raceAttr = _.deepClone(create.getRaceAttrs(create.form.race)),
-				jobAttr = _.deepClone(create.getJobAttrs(create.form.job));
+			var raceAttr = _.cloneDeep(create.getRaceAttrs(create.form.race)),
+				jobAttr = _.cloneDeep(create.getJobAttrs(create.form.job));
 			jobAttr.forEach(function(v, i){
 				raceAttr[i] += v;
 			});
@@ -558,4 +540,22 @@ var create;
 		e = e.eq(~~(rand() * len));
 		e.length && e.trigger('mousedown');
 	}
+	function getEmptyForm() {
+		return {
+			race: '',
+			job: '',
+			gender: '',
+			name: '',
+			str: 0,
+			sta: 0,
+			agi: 0,
+			dex: 0,
+			wis: 0,
+			intel: 0,
+			cha: 0,
+			left: 10,
+			maxLeft: 10
+		}
+	}
+	// private /////////////////////////////////////////////////
 })();

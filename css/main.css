@@ -61,7 +61,7 @@
 	src: url(../fonts/RobotoCondensed-Regular.ttf)
 }
 @font-face {
-	font-family: Quatro, Roboto Slab;
+	font-family: Roboto Slab;
 	src: url(../fonts/RobotoSlab-Regular.ttf)
 }
 @font-face {
@@ -79,6 +79,10 @@
 @font-face {
 	font-family: Tinos;
 	src: url(../fonts/tinos.ttf)
+}
+@font-face {
+	font-family: VCR;
+	src: url(../fonts/vcr.ttf)
 }
 
 :focus {
@@ -146,7 +150,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	margin: 0 auto;
-	position: relative;
+	position: fixed;
 	font-family: Play, Roboto, Arial, sans-serif;
 	background: #000;
 	color: #fff;
@@ -186,6 +190,7 @@ h2 {
 
 h1 {
 	font-family: Cinzel, Palatino Linotype, serif;
+	text-transform: uppercase;
 	text-align: center;
 	margin-bottom: 12px
 }
@@ -326,23 +331,28 @@ tbody {
 }
 .title-menu-row {
 	color: #fff;
-	border-radius: 0 0 5px 5px;
+	border-radius: 5px;
+	justify-content: start;
 	border-top: none
 }
-#scene-title-select-character {
-	font-size: .8rem
+#scene-title {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
-#scene-title-create-character,
 #scene-title-select-character {
+	font-size: .8rem;
+	height: 39rem;
+}
+#scene-title-create-character {
+	display: none;
+}
+.title-cc-wrap {
 	position: relative;
-	top: 0;
-	left: 0;
-	right: 0;
 	margin: 0 auto;
 	width: 100%;
 	max-width: 1280px;
 	min-width: 360px;
-	max-height: 1080px;
 	overflow: hidden
 }
 #title-header {
@@ -502,7 +512,7 @@ tbody {
 
 .overlay,
 .scene {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -1724,15 +1734,23 @@ background-clip: content-box;
 }
 
 /* flex styles */
-.flex-row {
+.flex {
 	display: flex;
 	flex-direction: row;
 }
-.flex-column {
+.flex-col {
 	display: flex;
 	flex-direction: column;
 }
 .flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.space-between {
+	justify-content: space-between;
+}
+.flex-align-center {
 	align-items: center;
 }
 .flex-50 { flex-basis: 50% }
@@ -1740,21 +1758,31 @@ background-clip: content-box;
 .flex-25 { flex-basis: 25% }
 .flex-16 { flex-basis: 16.666% }
 .flex-8 { flex-basis: 8.333% }
-
+.flex-1 { flex: 1 }
+/* pads and margins */
+.pad-4 {
+	padding: .2rem;
+}
 
 #create-attr {
-	flex-grow: 1;
-	padding-top: 1rem
+	flex-grow: 1
+}
+#create-menu-wrap {
+	padding: .2rem;
 }
 .cr-ch-row div {
+	color: #8bf;
 	margin: 0;
 	padding: 0;
-	text-align: center
+	text-align: center;
 }
 .cr-ch-btn-col {
 	line-height: 1;
 	color: #048;
 	text-shadow: 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000
+}
+.cc-plus-minus {
+	padding-top: .2rem!important;
 }
 .create-attr-wrap {
 	padding: 0 .1rem;
@@ -1766,6 +1794,7 @@ background-clip: content-box;
 }
 #create-attr-remaining {
 	justify-content: space-evenly;
+	padding: .25rem;
 	line-height: 1
 }
 #create-points-label {
@@ -1788,6 +1817,7 @@ background-clip: content-box;
 }
 .create-attr-square {
 	position: relative;
+	margin-right: 1.2rem;
 	width: 3rem;
 	height: 3rem;
 	border: .2rem groove #579
@@ -1813,8 +1843,10 @@ background-clip: content-box;
 	flex-direction: column;
 	justify-content: space-between;
 	background: #013;
-	margin: .2rem 0;
 	border: .1rem ridge #444;
+}
+#title-screen-wrap {
+	flex: 1;
 }
 #title-select-character {
 	background: rgba(0, 0, 0, 0);
@@ -1906,13 +1938,22 @@ background-clip: content-box;
 	color: #048
 }
 #gender-wrap {
-	margin-top: 1rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	flex: 1;
+	margin: .5rem;
 	font: 1.25rem Quatro, Roboto Slab;
 	line-height: 1;
-	text-transform: uppercase
+	text-transform: uppercase;
 }
 .select-gender-col {
+	display: flex;
+	margin-right: .5rem;
 	align-self: center
+}
+.select-gender {
+	align-self: center;
 }
 .select-radial {
 	display: inline-block;
@@ -1935,11 +1976,21 @@ background-clip: content-box;
 	text-transform: uppercase
 }
 #create-info {
-	font-size: .75rem;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	font-size: .8rem;
 	padding: 0 .1rem
 }
+#create-overview {
+	font-size: 1rem;
+}
 #create-details {
-	width: 100%
+	margin: .2rem 0;
+	padding: .2rem;
+	flex: 1;
+	border: 1px solid #125;
+	background: #147;
 }
 #create-character-name-wrap {
 	border: 1px solid #579;
@@ -1952,11 +2003,8 @@ background-clip: content-box;
 	margin: .5rem;
 	border: .1rem inset #025;
 	border-radius: 0;
-	text-transform: capitalize
+	text-transform: capitalize;
 }
 #create-character-name:focus {
 	box-shadow: none
-}
-#create-attr-btn-wrap button {
-	margin: .3rem .2rem 0
 }
