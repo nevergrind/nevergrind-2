@@ -84,7 +84,7 @@ var chat;
 	}
 	///////////////////////////////////////////
 	function getChannel() {
-		return chat.prefix + my.channel;
+		return _.toLower(chat.prefix + my.channel);
 	}
 	function html() {
 	// receives channel prop from index.php
@@ -189,7 +189,7 @@ var chat;
 			chat.initialized = 1;
 			// show
 			// prevents auto scroll while scrolling
-			$("#chat-log").on('mousedown', function(){
+			$("#chat-log").on('click', function(){
 				chat.isClicked = 1;
 			}).on('mouseup', function(){
 				chat.isClicked = 0;
@@ -200,9 +200,9 @@ var chat;
 				chat.hasFocus = 0;
 			});
 
-			$("#chat-prompt").on('mousedown', '.chat-prompt-yes', function(e){
+			$("#chat-prompt").on('click', '.chat-prompt-yes', function(e){
 				chat.promptConfirm($(this).data());
-			}).on('mousedown', '.chat-prompt-no', function(e){
+			}).on('click', '.chat-prompt-no', function(e){
 				chat.promptDeny($(this).data());
 			});
 
@@ -403,7 +403,7 @@ var chat;
 						action: 'send',
 						msg: msg,
 						class: 'chat-whisper',
-						category: 'name_' + chat.modeName
+						category: 'name' + _.toLower(chat.modeName)
 					}
 				});
 			}
@@ -429,7 +429,7 @@ var chat;
 								data: {
 									msg: o.msg,
 									class: o.class,
-									category: o.category
+									category: _.toLower(o.category)
 								}
 							});
 						}
@@ -553,7 +553,7 @@ var chat;
 			$.ajax({
 				url: app.url + 'server/chat/promote.php',
 				data: {
-					name: name,
+					name: _.toLower(name),
 					leaderId: id
 				}
 			}).done(function (data) {
@@ -601,7 +601,7 @@ var chat;
 			$.ajax({
 				url: app.url + 'server/chat/boot.php',
 				data: {
-					name: name,
+					name: _.toLower(name),
 					id: id
 				}
 			}).done(function (data) {
@@ -627,10 +627,11 @@ var chat;
 		else {
 			if (p) {
 				log('Sent party invite to '+ p +'.', 'chat-warning');
+				console.info('p', p);
 				$.ajax({
 					url: app.url + 'server/chat/invite.php',
 					data: {
-						player: p
+						player: _.toLower(p)
 					}
 				}).done(function(r){
 					console.info('invite ', r);
@@ -651,14 +652,10 @@ var chat;
 	function camp() {
 		function callbackSuccess() {
 			setTimeout(function(){
-				$.ajax({
-					type: 'GET',
-					url: app.url + 'server/chat/camp.php'
-				}).done(function(){
-					location.reload();
-				}).fail(function(){
-					log('Failed to camp successfully.', 'chat-alert');
-				});
+				$.get(app.url + 'server/chat/camp.php').done(location.reload)
+					.fail(function(){
+						log('Failed to camp successfully.', 'chat-alert');
+					});
 			}, 500);
 		}
 		if (ng.view !== 'town') {
@@ -811,20 +808,14 @@ var chat;
 	}
 	function friendInit() {
 		ng.friends = ng.friends || [];
-		$.ajax({
-			type: 'GET',
-			url: app.url + 'server/chat/friend-get.php',
-		}).done(function(data){
+		$.get(app.url + 'server/chat/friend-get.php').done(function(data){
 			ng.friends = data;
 		});
 	}
 	function friendList() {
 		log('<div class="chat-warning">Checking friends list...</div>');
 		if (ng.friends.length){
-			$.ajax({
-				type: 'GET',
-				url: app.url + 'server/chat/friend-status.php'
-			}).done(function(r){
+			$.get(app.url + 'server/chat/friend-status.php').done(function(r){
 				ng.friends = r.friends;
 				console.info(r);
 				var str = chat.divider + '<div>Friend List ('+ r.friends.length +')</div>';
@@ -860,7 +851,7 @@ var chat;
 			$.ajax({
 				url: app.url + 'server/chat/friend-add.php',
 				data: {
-					friend: o
+					friend: _.toLower(o)
 				}
 			}).done(function(data){
 				if (data.error) {
@@ -886,7 +877,7 @@ var chat;
 			$.ajax({
 				url: app.url + 'server/chat/friend-remove.php',
 				data: {
-					friend: o
+					friend: _.toLower(o)
 				}
 			}).done(function(data){
 				if (data.error) {
@@ -965,10 +956,7 @@ var chat;
 		return d.toDateString() + ' ' + d.toLocaleTimeString();
 	}
 	function played() {
-		$.ajax({
-			type: 'GET',
-			url: app.url + 'server/chat/played.php'
-		}).done(function(r) {
+		$.get(app.url + 'server/chat/played.php').done(function(r) {
 			var sessionLen = Date.now() - JSON.parse(sessionStorage.getItem('startTime')),
 				durationStr = chat.toPlaytime(~~(sessionLen / 100000));
 			log("Character created: " + chat.toCreateString(r.created), 'chat-warning');
@@ -1000,10 +988,7 @@ var chat;
 		}
 	}
 	function whoAll() {
-		$.ajax({
-			type: 'GET',
-			url: app.url + 'server/chat/who-all.php'
-		}).done(function(r){
+		$.get(app.url + 'server/chat/who-all.php').done(function(r){
 			console.info('who ', r);
 			if (r.len) {
 				log(chat.divider + "There " + (r.len > 1 ? "are" : "is") +" currently "+

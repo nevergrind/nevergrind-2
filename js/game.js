@@ -108,10 +108,7 @@ var game;
 	}
 	function heartbeatStart() {
 		game.pingStart = Date.now();
-		$.ajax({
-			type: 'GET',
-			url: app.url + 'server/heartbeat-first.php'
-		}).done(function (data) {
+		$.get(app.url + 'server/heartbeat-first.php').done(function (data) {
 			data.name = my.name;
 			game.heartbeat.timer = setTimeout(game.heartbeatSend, 5000);
 			bar.updateBars(data);
@@ -122,10 +119,7 @@ var game;
 		game.pingStart = Date.now();
 		clearTimeout(game.heartbeat.timer);
 		if (game.heartbeat.enabled) {
-			$.ajax({
-				type: 'GET',
-				url: app.url + 'server/heartbeat.php'
-			}).done(function (data) {
+			$.get(app.url + 'server/heartbeat.php').done(function (data) {
 				game.heartbeat.success++;
 				if (game.heartbeat.successiveFails) {
 					// this does nothing right now, but maybe later?!
@@ -197,10 +191,7 @@ var game;
 		game.played.timer = setInterval(game.played.send, 60000);
 	}
 	function playedSend() {
-		$.ajax({
-			type: 'GET',
-			url: app.url + 'server/update-played.php'
-		});
+		$.get(app.url + 'server/update-played.php');
 	}
 	function partyStart() {
 		clearInterval(game.sanity.party.timer);
@@ -247,10 +238,7 @@ var game;
 	}
 	function chatSend() {
 		if (ng.view === 'town') {
-			$.ajax({
-				type: 'GET',
-				url: app.url + 'server/chat/sanity-chat.php'
-			}).done(function (data) {
+			$.get(app.url + 'server/chat/sanity-chat.php').done(function (data) {
 				for (var i = 0, len = data.players.length; i < len; i++) {
 					data.players[i] *= 1;
 				}

@@ -9,6 +9,8 @@ $stmt->bind_param('s', $_POST['player']);
 $stmt->execute();
 $stmt->bind_result($id, $c_id);
 
+error_log('name' . $_POST['player']);
+
 $r['id'] = null;
 $r['c_id'] = null;
 
@@ -59,8 +61,7 @@ if (is_null($r['c_id'])) {
 		);
 	}
 	// send invite
-	require '../zmq.php';
-	$socket->send(json_encode([
+	$data = [
 		'category' => 'name'. $_POST['player'],
 		'row' => $_SESSION['party']['id'],
 		'msg' => $_SESSION['name'] . ' has invited you to join his party.',
@@ -68,7 +69,10 @@ if (is_null($r['c_id'])) {
 		'cId' => $_SESSION['row'],
 		'action' => 'party-invite',
 		'css' => 'prompt-party-invite'
-	]));
+	];
+	error_log(print_r($data, true));
+	require '../zmq.php';
+	$socket->send(json_encode($data));
 
 	$r['newParty'] = $newParty;
 	$r['p_id'] = $_SESSION['party']['id'];

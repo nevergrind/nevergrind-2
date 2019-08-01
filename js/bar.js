@@ -49,14 +49,14 @@ var bar;
 
 				console.info(id, slot, my.party[slot].name);
 				context.getPartyMenu(my.party[slot].name);
-			}).on('mousedown', '#bar-camp', chat.camp)
-				.on('mousedown', '#bar-stats', function () {
+			}).on('click', '#bar-camp', chat.camp)
+				.on('click', '#bar-stats', function () {
 				console.info($(this).attr('id'));
-			}).on('mousedown', '#bar-inventory', function () {
+			}).on('click', '#bar-inventory', function () {
 				console.info($(this).attr('id'));
-			}).on('mousedown', '#bar-options', function () {
+			}).on('click', '#bar-options', function () {
 				console.info($(this).attr('id'));
-			}).on('mousedown', '#bar-mission-abandon', mission.abandon)
+			}).on('click', '#bar-mission-abandon', mission.abandon)
 				.on('mouseenter', '.bar-icons', function() {
 				var id = $(this).attr('id');
 				popover.setMainMenuHtml(id);
@@ -236,19 +236,16 @@ var bar;
 	}
 	function partyBoot(data) {
 		console.info('bar.party.boot ', data);
-		chat.log(data.name + " has been booted from the party.", 'chat-warning');
+		chat.log(_.capitalize(data.name) + " has been booted from the party.", 'chat-warning');
 		// refresh party bars
 		data.row *= 1;
-		bar.party.disband(data);
+		bar.partyDisband(data);
 		bar.getParty();
 	}
 	function getParty() {
 		console.info("Drawing all bars!");
 		if (my.p_id) {
-			$.ajax({
-				type: 'GET',
-				url: app.url + 'server/chat/party-get-all.php'
-			}).done(function (data) {
+			$.get(app.url + 'server/chat/party-get-all.php').done(function (data) {
 				console.info('getParty ', data);
 				var npIndex = 1;
 				data.party.forEach(function(v, i){

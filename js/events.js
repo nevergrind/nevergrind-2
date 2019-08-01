@@ -12,7 +12,7 @@
 	// document events
 	$(document)
 		.on('mousemove', mousemove)
-		.on('mousedown', mousedown)
+		.on('click', mousedown)
 		.on('keydown', keydown)
 		.ready(ready);
 
@@ -28,7 +28,7 @@
 		ng.initGame();
 		game.session.timer = setTimeout(ng.keepAlive, 170000);
 		// init events
-		var x = 'mousedown';
+		var x = 'click';
 		ng.events(x);
 		create.events(x);
 		audio.events();

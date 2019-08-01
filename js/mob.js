@@ -181,10 +181,11 @@ var mob;
 			repeat: 1,
 			onUpdate: mob.setSrc,
 			onUpdateParams: [m.index],
-			onComplete: hitComplete
+			onComplete: hitComplete,
+			onCompleteParams: [m]
 		});
 	}
-	function hitComplete() {
+	function hitComplete(m) {
 		mob.resetIdle(m.index);
 		if (mob.test){
 			TweenMax.delayedCall(.5, function() {
@@ -216,10 +217,11 @@ var mob;
 			ease: Linear.easeNone,
 			onUpdate: mob.setSrc,
 			onUpdateParams: [m.index],
-			onComplete: attackComplete
+			onComplete: attackComplete,
+			onCompleteParams: [m, force]
 		});
 	}
-	function attackComplete() {
+	function attackComplete(m, force) {
 		mob.resetIdle(m.index);
 		if (mob.test){
 			if (force === 1){
@@ -263,11 +265,12 @@ var mob;
 				repeat: m.yoyo ? 1 : 0,
 				onUpdate: mob.setSrc,
 				onUpdateParams: [m.index],
-				onComplete: specialComplete
+				onComplete: specialComplete,
+				onCompleteParams: [m]
 			});
 		}
 	}
-	function specialComplete() {
+	function specialComplete(m) {
 		mob.resetIdle(m.index);
 		if (mob.test) {
 			TweenMax.delayedCall(.5, function () {
@@ -300,15 +303,16 @@ var mob;
 			ease: Linear.easeNone,
 			onUpdate: mob.setSrc,
 			onUpdateParams: [m.index],
-			onComplete: deathComplete
+			onComplete: deathComplete,
+			onCompleteParams: [m]
 		});
 	}
-	function deathComplete() {
+	function deathComplete(m) {
 		var filters = {
 				opacity: 'opacity(100%)',
 				brightness: "brightness(100%)"
-			},
-			e = m.dom.wrap;
+			};
+		var e = m.dom.wrap;
 
 		var tl = new TimelineMax({
 			onUpdate: function () {
@@ -319,18 +323,20 @@ var mob;
 			opacity: 'opacity(0%)',
 			brightness: "brightness(0%)",
 			ease: Linear.easeIn,
-			onComplete: function () {
-				if (mob.test) {
-					m.hp = 1;
-					mob.sizeMob(m.index);
-					mob.idle(m.index);
-				}
-				TweenMax.delayedCall(.1, function () {
-					m.deathState = 0;
-					m.animationActive = 0;
-					e.style.filter = 'opacity(100%) brightness(100%)';
-				});
-			}
+			onComplete: deathCompleteFade,
+			onCompleteParams: [m, e]
+		});
+	}
+	function deathCompleteFade(m, e) {
+		if (mob.test) {
+			m.hp = 1;
+			mob.sizeMob(m.index);
+			mob.idle(m.index);
+		}
+		TweenMax.delayedCall(.1, function () {
+			m.deathState = 0;
+			m.animationActive = 0;
+			e.style.filter = 'opacity(100%) brightness(100%)';
 		});
 	}
 	function blur() {

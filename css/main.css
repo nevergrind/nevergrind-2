@@ -258,6 +258,9 @@ tbody {
 .no-select {
 	user-select: none;
 }
+.no-pointer {
+	pointer-events: none;
+}
 
 .none {
 	display: none
@@ -1908,6 +1911,8 @@ background-clip: content-box;
 	0 0 2px #000, 0 0 4px #000, 0 0 8px #000, 0 0 12px #000
 }
 .select-create-wrap {
+	text-transform: uppercase;
+	font-weight: bold;
 	border: .2rem groove #579
 }
 .select-class,

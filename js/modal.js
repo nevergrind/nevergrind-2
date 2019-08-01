@@ -60,11 +60,11 @@ var modal;
 			y: 0
 		});
 		// assign events
-		$("#modal-dismiss, #modal-overlay").on('mousedown', function(){
+		$("#modal-dismiss, #modal-overlay").on('click', function(){
 			modal.hide();
 		});
 		// confirm event actions
-		$('#modal-wrap').on('mousedown', '#delete-character-confirm', create.deleteCharacter);
+		$('#modal-wrap').on('click', '#delete-character-confirm', create.deleteCharacter);
 		if (e.focus) {
             setTimeout(function () {
                 $("#modal-wrap input:first").focus();

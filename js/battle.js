@@ -64,7 +64,7 @@ var battle;
 		return s;
 	}
 	function events() {
-		$(".mob-alive, .mob-dead, .mob-details").on('mousedown', function(){
+		$(".mob-alive, .mob-dead, .mob-details").on('click', function(){
 			battle.setTarget(this.getAttribute('index') * 1);
 		});
 	}

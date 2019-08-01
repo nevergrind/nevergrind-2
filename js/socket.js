@@ -11,7 +11,6 @@ var socket;
 		unsubscribe: unsubscribe,
 		publish: publish,
 		registerSubscription: registerSubscription,
-		testReceived: testReceived,
 		joinGame: joinGame,
 		init: init,
 		routeMainChat: routeMainChat,
@@ -32,14 +31,12 @@ var socket;
 		console.info('publishing: ', topic, obj);
 		socket.session.publish(topic, socket.emptyArray, obj, socket.noExcludeObj);
 	}
-	function testReceived(arr, obj) {
-		console.log("testReceived socket test received:", arr, obj);
-	}
 	function registerSubscription(sub) {
 		console.info('registerSubscription', sub);
 		socket.subs[sub.topic] = sub;
 	}
 	function unsubscribe(channel) {
+		channel = _.toLower(channel);
 		if (typeof socket.subs[channel] === 'object') {
 			try {
 				console.warn("Trying to unsubscribe from:");
@@ -82,6 +79,7 @@ var socket;
 		});
 	}
 	function routeToWhisper(data) {
+		console.info('routeToWhisper', data);
 		data = data[0];
 		if (data.routeTo === 'party') {
 			route.party(data, data.route);
@@ -98,7 +96,7 @@ var socket;
 					action: 'receive',
 					msg: chat.whisperParse(data.msg),
 					class: 'chat-whisper',
-					category: 'name_' + data.name
+					category: 'name' + _.toLower(data.name)
 				}
 			});
 		}

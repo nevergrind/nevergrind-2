@@ -426,7 +426,7 @@ var town;
 	function events() {
 		if (!town.delegated) {
 			town.delegated = 1;
-			$("#scene-town").on('mousedown', '.close-aside', function(){
+			$("#scene-town").on('click', '.close-aside', function(){
 				// close town asides
 				town.aside.selected = '';
 				var e = $(".town-aside");
@@ -441,17 +441,17 @@ var town;
 					x: '-50%',
 					y: '-50%'
 				});
-			}).on('mousedown', '#guild-create', function(){
+			}).on('click', '#guild-create', function(){
 				// create a guild
 				guild.create();
-			}).on('mousedown' + ' focus', '#guild-input', function() {
+			}).on('click' + ' focus', '#guild-input', function() {
 				guild.hasFocus = 1;
 			}).on('blur', '#guild-input', function() {
 				guild.hasFocus = 0;
-			}).on('mousedown', '#guild-member-refresh-icon', function() {
+			}).on('click', '#guild-member-refresh-icon', function() {
 				$("#aside-guild-members").html(ng.loadMsg);
 				guild.getMembers(1500);
-			}).on('mousedown', '.town-action', function(){
+			}).on('click', '.town-action', function(){
 				town.aside.init($(this).attr('id'));
 			});
 		}

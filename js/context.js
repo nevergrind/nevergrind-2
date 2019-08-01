@@ -14,27 +14,27 @@ var context;
 		isInside: 0,
 		halfWidth: ~~($("#context-wrap").width() / 2),
 		init: init,
-		boot: boot,
+		contextBoot: contextBoot,
 		show: show,
 		hide: hide,
 		click: click,
-		invite: invite,
-		whisper: whisper,
-		disband: disband,
-		promote: promote,
+		contextDisband: contextDisband,
+		contextPromote: contextPromote,
 		hideCheck: hideCheck,
-		addFriend: addFriend,
-		addIgnore: addIgnore,
+		contextInvite: contextInvite,
+		contextWhisper: contextWhisper,
+		contextAddFriend: contextAddFriend,
+		contextAddIgnore: contextAddIgnore,
 		getChatMenu: getChatMenu,
-		removeFriend: removeFriend,
-		removeIgnore: removeIgnore,
+		contextRemoveFriend: contextRemoveFriend,
+		contextRemoveIgnore: contextRemoveIgnore,
 		getPartyMenu: getPartyMenu,
 		setChatMenuHtml: setChatMenuHtml,
 		setPartyMenuHtml: setPartyMenuHtml,
 	}
 	////////////////////////////////////
 	function init() {
-		$("#context-wrap").on('mousedown', '.context-items', function (e) {
+		$("#context-wrap").on('click', '.context-items', function (e) {
 			console.info('context-items clicked: ', $(this).attr('id'));
 			context.click($(this).attr('id'));
 		}).on('mouseenter', function () {
@@ -50,10 +50,10 @@ var context;
 	}
 	function click(id) {
 		console.info("click!", id, context.player);
-		context.action[_.camelCase(id)]();
+		context[_.camelCase(id)]();
 		context.hide();
 	}
-	function whisper() {
+	function contextWhisper() {
 		chat.dom.chatInput.value = '';
 		chat.modeChange({
 			msg: '',
@@ -62,28 +62,28 @@ var context;
 		});
 		chat.dom.chatInput.focus();
 	}
-	function invite() {
-		chat.sendMsg('/invite ' + context.player);
-	}
-	function removeFriend() {
-		chat.sendMsg('/friend remove ' + context.player);
-	}
-	function addFriend() {
+	function contextAddFriend() {
 		chat.sendMsg('/friend add ' + context.player);
 	}
-	function removeIgnore() {
-		chat.sendMsg('/ignore remove ' + context.player);
-	}
-	function addIgnore() {
+	function contextAddIgnore() {
 			chat.sendMsg('/ignore add ' + context.player);
 	}
-	function disband() {
+	function contextInvite() {
+		chat.sendMsg('/invite ' + context.player);
+	}
+	function contextRemoveFriend() {
+		chat.sendMsg('/friend remove ' + context.player);
+	}
+	function contextRemoveIgnore() {
+		chat.sendMsg('/ignore remove ' + context.player);
+	}
+	function contextDisband() {
 		chat.sendMsg('/disband');
 	}
-	function promote() {
+	function contextPromote() {
 		chat.sendMsg('/promote ' + context.player);
 	}
-	function boot() {
+	function contextBoot() {
 			chat.sendMsg('/boot ' + context.player);
 	}
 	function setPartyMenuHtml() {

@@ -88,7 +88,7 @@ var guild;
 				$.ajax({
 					url: app.url + 'server/guild/invite.php',
 					data: {
-						player: name
+						player: _.toLower(name)
 					}
 				}).done(function(r){
 					// nothing
@@ -149,7 +149,7 @@ var guild;
 			$.ajax({
 				url: app.url + 'server/guild/boot.php',
 				data: {
-					name: name
+					name: _.toLower(name)
 				}
 			}).done(function () {
 				// nothing
@@ -184,7 +184,7 @@ var guild;
 			$.ajax({
 				url: app.url + 'server/guild/promote.php',
 				data: {
-					name: name
+					name: _.toLower(name)
 				}
 			}).done(function () {
 				// nothing
@@ -206,7 +206,7 @@ var guild;
 			$.ajax({
 				url: app.url + 'server/guild/leader.php',
 				data: {
-					name: name
+					name: _.toLower(name)
 				}
 			}).done(function (data) {
 				console.info('leader: ', data);
@@ -224,10 +224,7 @@ var guild;
 	}
 	function updateSession(data) {
 		if (data.name === my.name) {
-			$.ajax({
-				type: 'GET',
-				url: app.url + 'server/guild/update-session.php'
-			}).done(function (data) {
+			$.get(app.url + 'server/guild/update-session.php').done(function (data) {
 				console.info('update-session: ', data);
 				my.guild = data.guild;
 				// nothing
@@ -260,10 +257,7 @@ var guild;
 	function getMembers(throttleTime) {
 		if (!my.guild.id) return;
 		ng.lock(1);
-		$.ajax({
-			type: 'GET',
-			url: app.url + 'server/guild/get-member-list.php'
-		}).done(function (data) {
+		$.get(app.url + 'server/guild/get-member-list.php').done(function (data) {
 			console.info(data);
 			setTimeout(function(){
 				guild.setGuildList(data);

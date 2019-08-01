@@ -1,6 +1,7 @@
 var create;
 (function() {
 	create = {
+		whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzBackspace',
 		selected: 0,
 		base: {
 			str: 0,
@@ -119,8 +120,14 @@ var create;
 			$(this).addClass('active');
 			create.set('gender', gender);
 		});
-		$("#create-character-name").on('change textInput input', function(){
-			create.form.name = $(this).val().trim().replace(/ /g, '');
+		$("#create-character-name").on('change keydown keyup', function(e){
+			if (_.includes(create.whitelist, e.key)) {
+				var val = $(this).val().trim();
+				create.form.name = val.replace(/[^A-z]/g, '');
+			}
+			else {
+				return false;
+			}
 		});
 		$(".attr-minus-1").on(x, function(){
 			var attr = $(this).data('id');
@@ -167,8 +174,9 @@ var create;
 			if (ng.locked) return;
 
 			ng.lock(1);
-			var f = create.form,
-				err = '';
+			var f = create.form;
+			var err = '';
+			f.name = getCleanName(f.name);
 			if (!f.name){
 				err = 'Your character needs a name!';
 				$("#create-character-name").focus();
@@ -182,7 +190,8 @@ var create;
 			if (err){
 				ng.msg(err);
 				ng.unlock();
-			} else {
+			}
+			else {
 				// final adds
 				f.shortJob = ng.toJobShort(f.job);
 				// send to server
@@ -205,10 +214,7 @@ var create;
 			create.selected = z.data('row');
 			create.name = z.data('name');
 			if (ng.playerCardClicks++ === 1) {
-				$.ajax({
-					type: 'GET',
-					url: app.url + 'server/session/init-character.php'
-				})
+				$.get(app.url + 'server/session/init-character.php')
 			}
 		});
 	}
@@ -513,11 +519,11 @@ var create;
 	}
 	function setRandomGender() {
 		var e = $(".select-gender:eq("+ ~~(rand() * 2) +")");
-		e.length && e.trigger('mousedown');
+		e.length && e.trigger('click');
 	}
 	function setRandomRace() {
 		var e = $(".select-race:eq("+ ~~(rand() * 12) +")");
-		e.length && e.trigger('mousedown');
+		e.length && e.trigger('click');
 	}
 	function setRandomClass(race) {
 		// triggered by clicking race
@@ -538,7 +544,7 @@ var create;
 		var e = $(".select-class:not(.disabled)"),
 			len = e.length;
 		e = e.eq(~~(rand() * len));
-		e.length && e.trigger('mousedown');
+		e.length && e.trigger('click');
 	}
 	function getEmptyForm() {
 		return {
@@ -558,4 +564,9 @@ var create;
 		}
 	}
 	// private /////////////////////////////////////////////////
+	function getCleanName(name) {
+		return _.capitalize(_.map(name, function(char) {
+			return _.includes(create.whitelist, char) ? char : '';
+		}).join(''));
+	}
 })();

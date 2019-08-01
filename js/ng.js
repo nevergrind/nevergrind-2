@@ -125,7 +125,7 @@ var ng;
 	function init() {
 		$.ajaxSetup({
 			type: 'POST',
-			timeout: 3000
+			timeout: 4000
 		});
 		TweenLite.defaultEase = Quad.easeOut;
 	}
@@ -137,7 +137,7 @@ var ng;
 		return ng.id;
 	}
 	function events() {
-		$("#enter-world").on('mousedown', town.go);
+		$("#enter-world").on('click', town.go);
 	}
 	function disconnect(msg) {
 		ng.view = 'disconnected';
@@ -204,10 +204,7 @@ var ng;
 		return new TimelineMax(o);
 	}
 	function keepAlive() {
-		$.ajax({
-			type: 'GET',
-			url: app.url + "server/session/keep-alive.php"
-		}).always(function() {
+		$.get(app.url + 'server/session/keep-alive.php').always(function() {
 			setTimeout(ng.keepAlive, 170000);
 		});
 	}
@@ -255,10 +252,7 @@ var ng;
 		if (ng.locked) return;
 		ng.lock();
 		// socket.removePlayer(my.account);
-		$.ajax({
-			type: 'GET',
-			url: app.url + 'server/account/logout.php'
-		}).done(function() {
+		$.get(app.url + 'server/account/logout.php').done(function() {
 			ng.msg("Logout successful");
 			localStorage.removeItem('email');
 			localStorage.removeItem('token');
@@ -278,10 +272,7 @@ var ng;
 			onComplete: allDone
 		});
 
-		$.ajax({
-			type: 'GET',
-			url: app.url + 'server/create/get-stat-map.php'
-		}).done(function(r){
+		$.get(app.url + 'server/create/get-stat-map.php').done(function(r){
 			var r = r.statMap;
 			ng.races.forEach(function(v){
 				create.raceAttrs[v] = r[v].attrs;
@@ -363,7 +354,7 @@ var ng;
 				'</div>';
 		});
 		getById('ch-card-list').innerHTML = s;
-		$(".select-player-card:first").trigger('mousedown');
+		$(".select-player-card:first").trigger('click');
 	}
 	// private ///////////////////////////////////////////////////////
 })();
