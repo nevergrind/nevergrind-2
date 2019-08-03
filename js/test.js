@@ -14,7 +14,7 @@ var test;
 			room: chatRoom,
 			log: chatLog
 		},
-		orcs: orcs,
+		orcs,
 		battle: battle.testInit,
 		filters: {
 			/*
@@ -29,12 +29,12 @@ var test;
 			saturate(100%)
 			sepia(100%)
 			 */
-			hueRotate: hueRotate,
-			death: death,
-			effect: effect
+			hueRotate,
+			death,
+			effect
 		},
-		socketSub: socketSub,
-		socketPub: socketPub,
+		socketSub,
+		socketPub,
 	}
 	///////////////////////////////////
 	function socketSub() {

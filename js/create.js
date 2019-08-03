@@ -68,19 +68,19 @@ var create;
 				Wizard: 'Wizards are a magical DPS class that can only wear cloth armor. Instead of opting for trickery or pets, they focus on raw magical power. Wizards have a powerful and diverse arsenal of spells at their disposal that make quick work of their prey.'
 			}
 		},
-		events: events,
-		deleteCharacter: deleteCharacter,
-		msg: msg,
-		getPossibleJobs: getPossibleJobs,
-		getRaceAttrs: getRaceAttrs,
-		getJobAttrs: getJobAttrs,
-		set: set,
-		getResist: getResist,
-		getDungeon: getDungeon,
-		getEmptyForm: getEmptyForm,
-		setRandomGender: setRandomGender,
-		setRandomRace: setRandomRace,
-		setRandomClass: setRandomClass,
+		events,
+		deleteCharacter,
+		msg,
+		getPossibleJobs,
+		getRaceAttrs,
+		getJobAttrs,
+		set,
+		getResist,
+		getDungeon,
+		getEmptyForm,
+		setRandomGender,
+		setRandomRace,
+		setRandomClass,
 	};
 	// public //////////////////////////////////////
 	function events(x) {

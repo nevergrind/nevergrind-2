@@ -1,11 +1,11 @@
 var party;
 (function() {
 	party = {
-		missionUpdate: missionUpdate,
-		length: length,
-		isSoloOrLeading: isSoloOrLeading,
-		notifyMissionStatus: notifyMissionStatus,
-		promotePlayer: promotePlayer,
+		missionUpdate,
+		length,
+		isSoloOrLeading,
+		notifyMissionStatus,
+		promotePlayer,
 	};
 	//////////////////////////////////////
 	function missionUpdate(data) {

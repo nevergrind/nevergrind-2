@@ -5,12 +5,12 @@ var cache;
 		imageStrings: [], // string values
 		audio: [],
 		audioStrings: [],
-		clearAll: clearAll,
-		preloadMob: preloadMob,
-		clearAudio: clearAudio,
-		clearImages: clearImages,
-		preloadAudio: preloadAudio,
-		preloadImages: preloadImages,
+		clearAll,
+		preloadMob,
+		clearAudio,
+		clearImages,
+		preloadAudio,
+		preloadImages,
 	}
 	///////////////////////
 	function preloadMob(type) {

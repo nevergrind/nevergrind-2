@@ -1,9 +1,9 @@
 var route;
 (function() {
 	route = {
-		town: town,
-		party: party,
-		guild: guild,
+		town,
+		party,
+		guild,
 	}
 	///////////////////////////////////////////////////////
 	function town(data, r) {

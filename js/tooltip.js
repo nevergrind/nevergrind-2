@@ -4,8 +4,8 @@ var tooltip;
 		timer: 0,
 		isOpen: 0,
 		openDate: 0,
-		hide: hide,
-		show: show
+		hide,
+		show
 	};
 	//////////////////////////////////////////////////
 	function show(html) {

@@ -141,7 +141,7 @@
 			$_SESSION['level'],
 			$_SESSION['race'],
 			$_SESSION['job'],
-			$_SESSION['zone']);
+			$_SESSION['chatChannel']);
 		*/
 
 		// count active players

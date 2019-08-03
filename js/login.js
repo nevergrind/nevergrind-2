@@ -8,14 +8,14 @@ var login;
 		fadeTimer: new TweenMax.delayedCall(0, ''),
 		focusInput: false,
 		authenticationLock: false,
-		msg: msg,
-		init: init,
-		fadeOut: fadeOut,
-		notLoggedIn: notLoggedIn,
-		authenticate: authenticate,
-		setLoginHtml: setLoginHtml,
-		createAccount: createAccount,
-		setCreateHtml: setCreateHtml,
+		msg,
+		init,
+		fadeOut,
+		notLoggedIn,
+		authenticate,
+		setLoginHtml,
+		createAccount,
+		setCreateHtml,
 	};
 	//////////////////////////////
 	function init() {

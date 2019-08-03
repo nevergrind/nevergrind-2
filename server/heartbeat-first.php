@@ -20,7 +20,7 @@ else {
 		$_SESSION['level'],
 		$_SESSION['race'],
 		$_SESSION['job'],
-		$_SESSION['zone']);
+		$_SESSION['chatChannel']);
 	$stmt->execute();
 
 	// update parties hp/mp

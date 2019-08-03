@@ -3,8 +3,8 @@ var button;
 	button = {
 		initialized: 0,
 		wrap: getById('button-wrap'),
-		init: init,
-		hide: hide,
+		init,
+		hide,
 	}
 	//////////////////////////////////
 	function init() {

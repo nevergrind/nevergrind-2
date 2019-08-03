@@ -15,7 +15,7 @@ $_SESSION['quest'] = [
 	'description' => $_POST['quest']['description']
 ];
 
-$_SESSION['zone'] = '';
+$_SESSION['chatChannel'] = '';
 
 $dungeon = 'dng:' . $_POST['quest']['zone'];
 $stmt = $db->prepare('update `players` set mission_id=?, zone=? where id=?');

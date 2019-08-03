@@ -28,7 +28,7 @@ if (is_null($r['id']) ) {
 if (is_null($r['c_id'])) {
 
 	// cannot send invites from dungeon
-	if (!$_SESSION['zone']) {
+	if (!$_SESSION['chatChannel']) {
 		exit("You cannot invite adventurers from the depths of a dungeon.");
 	}
 

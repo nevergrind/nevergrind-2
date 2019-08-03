@@ -69,12 +69,12 @@ var town;
 			}
 		}
 	},
-		go: go,
-		html: html,
-		update: update,
-		events: events,
-		init: init,
-		preload: preload,
+		go,
+		html,
+		update,
+		events,
+		init,
+		preload,
 	}
 	////////////////////////////////////////////
 	function go() {

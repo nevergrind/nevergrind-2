@@ -2,10 +2,10 @@ var dungeon;
 (function() {
 	dungeon = {
 		initialized: 0,
-		go: go,
-		init: init,
-		html: html,
-		enterCombat: enterCombat,
+		go,
+		init,
+		html,
+		enterCombat,
 	};
 	///////////////////////////////////////
 	function go() {

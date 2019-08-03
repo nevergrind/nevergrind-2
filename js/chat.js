@@ -452,9 +452,9 @@ var chat;
 			category: chat.getChannel(),
 			msg: msg,
 			class: 'chat-normal'
-		},
-			parse = chat.parseMsg(msg),
-			a = msg.split(" ");
+		};
+		var parse = chat.parseMsg(msg);
+		var a = msg.split(" ");
 
 		a.shift();
 		var shortCommandMsg = a.join(" ");
@@ -466,27 +466,27 @@ var chat;
 			o.class = 'chat-normal';
 		}
 		else if (parse.first === '/p') {
-			o.category = 'party_' + my.p_id;
+			o.category = 'party' + my.p_id;
 			o.msg = shortCommandMsg;
 			o.class = 'chat-party';
 		}
 		else if (chat.modeCommand === '/party'){
-			o.category = 'party_' + my.p_id;
+			o.category = 'party' + my.p_id;
 			o.msg = msg;
 			o.class = 'chat-party';
 		}
 		else if (parse.first === '/g') {
-			o.category = 'guild_' + my.guild.id;
+			o.category = 'guild' + my.guild.id;
 			o.msg = shortCommandMsg;
 			o.class = 'chat-guild';
 		}
 		else if (chat.modeCommand === '/guild'){
-			o.category = 'guild:' + my.guild.id;
+			o.category = 'guild' + my.guild.id;
 			o.msg = msg;
 			o.class = 'chat-guild';
 		}
 		else if (parse.first === '/broadcast'){
-			o.category = 'admin_broadcast';
+			o.category = 'adminbroadcast';
 			o.msg = parse.command;
 			o.class = 'chat-broadcast';
 		}
@@ -1067,9 +1067,7 @@ var chat;
 		if (my.channel !== chat.default) {
 			$.post(app.url + 'chat/set-channel.php', {
 				channel: chat.default
-			}).done(function (data) {
-				joinChangeCallback(data);
-			});
+			}).done(joinChangeCallback);
 		}
 	}
 	function joinChangeCallback(data) {
@@ -1078,11 +1076,11 @@ var chat;
 		setRoom(data.players);
 		// removes id
 		//socket.removePlayer(my.account);
-		// unsubs
+		// unsub prior channel
 		my.channel && socket.unsubscribe(chat.getChannel());
 		// set new channel data
 		my.channel = data.channel;
-		socket.subscribe(data.fullChannel, socket.routeMainChat); // main chat channel
+		socket.subscribe('ng2' + data.channel, socket.routeMainChat); // main chat channel
 		// add to chat channel
 		chat.setHeader();
 		chat.broadcastAdd();

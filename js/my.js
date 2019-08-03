@@ -28,22 +28,18 @@ var my;
 		hudTimer: ng.TDC(),
 		selectedQuest: '',
 		quest: {},
-		hud: hud,
-		Party: Party,
-		clearHud: clearHud,
-		partyCount: partyCount,
-		guildChannel: guildChannel,
-		getPartyNames: getPartyNames,
-		getNewLeaderName: getNewLeaderName,
-		getPartySlotByRow: getPartySlotByRow,
-		isLowestPartyIdMine: isLowestPartyIdMine,
-		resetClientPartyValues: resetClientPartyValues,
-		getPartyMemberIdByName: getPartyMemberIdByName,
+		hud,
+		Party,
+		clearHud,
+		partyCount,
+		getPartyNames,
+		getNewLeaderName,
+		getPartySlotByRow,
+		isLowestPartyIdMine,
+		resetClientPartyValues,
+		getPartyMemberIdByName,
 	}
 	////////////////////////////////////
-	function guildChannel() {
-		return 'guild' + my.guild.id;
-	}
 	function getPartyNames() {
 		var a = [];
 		my.party.forEach(function(v){

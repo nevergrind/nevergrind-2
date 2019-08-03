@@ -24,8 +24,8 @@ var modal;
 				'</div>';
 			}
 		},
-		show: show,
-		hide: hide
+		show,
+		hide
 	};
 	// public ////////////////////////////////////////////////////////////////////
 	function show(e) {

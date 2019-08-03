@@ -7,15 +7,15 @@ var socket;
 		noExcludeObj: { exclude_me: false },
 		initialConnection: 1,
 		subs: {}, // active channel subscriptions - required to unsub
-		subscribe: subscribe,
-		unsubscribe: unsubscribe,
-		publish: publish,
-		registerSubscription: registerSubscription,
-		joinGame: joinGame,
-		init: init,
-		routeMainChat: routeMainChat,
-		listenParty: listenParty,
-		listenGuild: listenGuild,
+		subscribe,
+		unsubscribe,
+		publish,
+		registerSubscription,
+		joinGame,
+		init,
+		routeMainChat,
+		listenParty,
+		listenGuild,
 	}
 	////////////////////////////////////////
 	function subscribe(topic, callback) {
@@ -208,7 +208,7 @@ var socket;
 		// subscribe to test guild for now
 		if (my.guild.id) {
 			my.guild.motd && chat.log('Guild Message of the day: ' + my.guild.motd, 'chat-guild');
-			socket.subscribe(my.guildChannel(), routeToGuild);
+			socket.subscribe('guild' + my.guild.id, routeToGuild);
 		}
 	}
 	function routeToGuild(data) {

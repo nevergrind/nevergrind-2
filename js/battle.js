@@ -6,14 +6,14 @@ var battle;
 		boxCoordsCenter: [192,576,960,1344,1728,384,768,1152,1536],
 		// never changes
 		boxCoordsBottom: [180,180,180,180,180,280,280,280,280],
-		go: go,
-		show: show,
-		html: html,
-		events: events,
-		getBox: getBox,
-		testInit: testInit,
-		setTarget: setTarget,
-		getResponsiveCenter: getResponsiveCenter,
+		go,
+		show,
+		html,
+		events,
+		getBox,
+		testInit,
+		setTarget,
+		getResponsiveCenter,
 	}
 	//////////////////////////////////////
 	function go() {
