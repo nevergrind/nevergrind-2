@@ -49,12 +49,9 @@ var guild;
 		var name = $("#guild-input").val().replace(/ +/g, " ").trim();
 		console.info("Name: ", name);
 		ng.lock();
-		$.ajax({
-			url: app.url + 'server/guild/create.php',
-			data: {
-				// replace
-				name: name.replace(/ +/g, " ").trim()
-			}
+		$.post(app.url + 'guild/create.php', {
+			// replace
+			name: name.replace(/ +/g, " ").trim()
 		}).done(function(data) {
 			console.info('create', data.guild);
 			my.guild = data.guild;
@@ -85,11 +82,8 @@ var guild;
 		else {
 			if (name) {
 				chat.log('Sent guild invite to '+ name +'.', 'chat-warning');
-				$.ajax({
-					url: app.url + 'server/guild/invite.php',
-					data: {
-						player: _.toLower(name)
-					}
+				$.post(app.url + 'guild/invite.php', {
+					player: _.toLower(name)
 				}).done(function(r){
 					// nothing
 				}).fail(function(r){
@@ -105,12 +99,9 @@ var guild;
 		if (my.guild.id) return;
 		console.info("JOINING GUILD!", z);
 		// clicked CONFIRM
-		$.ajax({
-			url: app.url + 'server/guild/join.php',
-			data: {
-				row: z.row,
-				guildName: z.guildName
-			}
+		$.post(app.url + 'guild/join.php', {
+			row: z.row,
+			guildName: z.guildName
 		}).done(function(data){
 			my.guild = data.guild;
 			chat.log("You have joined the guild: "+ data.guild.name, "chat-warning");
@@ -127,9 +118,7 @@ var guild;
 		if (!my.guild.id) return;
 		console.info("Quitting guild!");
 		var o = my.guild;
-		$.ajax({
-			url: app.url + 'server/guild/quit.php'
-		}).done(function(data){
+		$.get(app.url + 'guild/quit.php').done(function(data){
 			my.guild = guild.Guild(); // nice!
 			console.info("guild.quit() response ", data);
 			chat.log("You have quit the guild: "+ o.name, "chat-warning");
@@ -146,13 +135,8 @@ var guild;
 			chat.log("Only the guild Leader and Officers can boot people from the guild", 'chat-warning');
 		}
 		else {
-			$.ajax({
-				url: app.url + 'server/guild/boot.php',
-				data: {
-					name: _.toLower(name)
-				}
-			}).done(function () {
-				// nothing
+			$.post(app.url + 'guild/boot.php', {
+				name: _.toLower(name)
 			}).fail(function (data) {
 				chat.log(data.responseText, 'chat-warning');
 			});
@@ -163,11 +147,8 @@ var guild;
 		console.info("Booting! ", data);
 		chat.log(data.msg, 'chat-warning');
 		if (data.name === my.name) {
-			$.ajax({
-				url: app.url + 'server/guild/quit.php',
-				data: {
-					action: 'boot'
-				}
+			$.post(app.url + 'guild/quit.php', {
+				action: 'boot'
 			}).done(function(){
 				socket.unsubscribe('guild'+ my.guild.id);
 				my.guild = guild.Guild(); // nice!
@@ -181,11 +162,8 @@ var guild;
 			chat.log("Only the guild Leader and Officers can promote members.", 'chat-warning');
 		}
 		else {
-			$.ajax({
-				url: app.url + 'server/guild/promote.php',
-				data: {
-					name: _.toLower(name)
-				}
+			$.post(app.url + 'guild/promote.php', {
+				name: _.toLower(name)
 			}).done(function () {
 				// nothing
 			}).fail(function (data) {
@@ -203,11 +181,8 @@ var guild;
 			chat.log("Only the guild Leader can assign a new leader.", 'chat-warning');
 		}
 		else {
-			$.ajax({
-				url: app.url + 'server/guild/leader.php',
-				data: {
-					name: _.toLower(name)
-				}
+			$.post(app.url + 'guild/leader.php', {
+				name: _.toLower(name)
 			}).done(function (data) {
 				console.info('leader: ', data);
 				my.guild.rank = 1;
@@ -224,7 +199,7 @@ var guild;
 	}
 	function updateSession(data) {
 		if (data.name === my.name) {
-			$.get(app.url + 'server/guild/update-session.php').done(function (data) {
+			$.get(app.url + 'guild/update-session.php').done(function (data) {
 				console.info('update-session: ', data);
 				my.guild = data.guild;
 				// nothing
@@ -240,11 +215,8 @@ var guild;
 	}
 	function motd(msg) {
 		if (my.guild.rank > 1) return;
-		$.ajax({
-			url: app.url + 'server/guild/motd.php',
-			data: {
-				msg: msg
-			}
+		$.post(app.url + 'guild/motd.php', {
+			msg: msg
 		}).done(function (data) {
 			// nothing
 		}).fail(function (data) {
@@ -257,7 +229,7 @@ var guild;
 	function getMembers(throttleTime) {
 		if (!my.guild.id) return;
 		ng.lock(1);
-		$.get(app.url + 'server/guild/get-member-list.php').done(function (data) {
+		$.get(app.url + 'guild/get-member-list.php').done(function (data) {
 			console.info(data);
 			setTimeout(function(){
 				guild.setGuildList(data);

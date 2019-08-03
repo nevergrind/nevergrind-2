@@ -33,7 +33,7 @@ else {
 	$stmt->bind_param('i', $_SESSION['row']);
 	$stmt->execute();
 
-	// update `parties` hp/mp
+	// update parties hp/mp
 	if ($_SESSION['party']['id']) {
 		$stmt = $db->prepare('update `parties` set hp=?, mp=? where c_id=?');
 		$stmt->bind_param('iii',

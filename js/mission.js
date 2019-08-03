@@ -145,7 +145,7 @@ var mission;
 	}
 	function init() {
 		ng.lock(1);
-		$.get(app.url + 'server/mission/load-mission-data.php').done(function(data) {
+		$.get(app.url + 'mission/load-mission-data.php').done(function(data) {
 			console.info('load-mission-data', data.mission);
 			mission.loaded = 1;
 			mission.data = data.mission;
@@ -264,11 +264,8 @@ var mission;
 		// store in session... return session if it's set for that zone
 		console.info("LOADING QUESTS: ", id);
 		ng.lock(1);
-		$.ajax({
-			url: app.url + 'server/mission/load-zone-missions.php',
-			data: {
-				id: id
-			}
+		$.post(app.url + 'mission/load-zone-missions.php', {
+			id: id
 		}).done(function(data) {
 			data.id = id;
 			ng.unlock();
@@ -331,11 +328,8 @@ var mission;
 	function embark() {
 		if (party.isSoloOrLeading()) {
 			ng.lock(1);
-			$.ajax({
-				url: app.url + 'server/mission/embark-quest.php',
-				data: {
-					quest: mission.quests[my.selectedQuest]
-				}
+			$.post(app.url + 'mission/embark-quest.php', {
+				quest: mission.quests[my.selectedQuest]
 			}).done(function(data) {
 				console.info('embark isLeader! ', data);
 				mission.setQuest(mission.quests[my.selectedQuest]);
@@ -358,9 +352,7 @@ var mission;
 			// joining
 			if (my.quest.level) {
 				dungeon.go();
-				/*$.ajax({
-					url: app.url + 'server/mission/notify-party-embarked.php'
-				}).done(function(data) {
+				/*$.get(app.url + 'mission/notify-party-embarked.php').done(function(data) {
 					console.info(data);
 				});*/
 			}
@@ -393,7 +385,7 @@ var mission;
 		}
 		else {
 			ng.lock(1);
-			$.get(app.url + 'server/mission/abandon-quest.php').done(function (data) {
+			$.get(app.url + 'mission/abandon-quest.php').done(function (data) {
 				console.info('abandon ', data);
 			}).fail(function (data) {
 				chat.log(data.responseText, 'chat-alert');
@@ -417,7 +409,7 @@ var mission;
 					}
 					else {
 						// reset session quest for non-leaders
-						$.get(app.url + 'server/session/init-quest.php').done(mission.abortCallback)
+						$.get(app.url + 'session/init-quest.php').done(mission.abortCallback)
 							.fail(repeat);
 					}
 				})();
@@ -427,7 +419,7 @@ var mission;
 	function abortCallback() {
 		// init client and transition back to town
 		game.heartbeat.enabled = 0;
-		$.get(app.url + 'server/chat/delete-from-players.php');
+		$.get(app.url + 'chat/delete-from-players.php');
 		mission.initQuest();
 		// rejoin main chat
 		chat.joinChannel('town', 1);

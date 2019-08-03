@@ -1,24 +1,14 @@
 // game specific data
 var game;
 (function() {
+	/** public */
 	game = {
 		maxPlayers: 6,
-		init: 0,
 		session: {
 			timer: 0
 		},
 		questDelay: 3000,
-		pingColors: [
-			'',
-			'chat-warning',
-			'chat-alert'
-		],
 		start: Date.now(),
-		scenes: [
-			'scene-town',
-			'scene-dungeon',
-			'scene-battle'
-		],
 		heartbeat: {
 			enabled: 1,
 			timer: 0,
@@ -27,121 +17,100 @@ var game;
 			successiveFails: 0,
 			attempts: 0,
 		},
-		socket: {
+		initSocket,
+		heartbeatListen,
+		exit,
+		emptyScenesExcept,
+		getPetName,
+	};
+	/** private */
+	var pingStart = 0;
+	var isSocketInit = false;
+	var scenes = [
+		'scene-town',
+		'scene-dungeon',
+		'scene-battle'
+	];
+	var pingColors = [
+		'',
+		'chat-warning',
+		'chat-alert'
+	];
+	var sanity = {
+		party: {
 			timer: 0,
-			checkTimer: 0,
-			sendTime: 0,
-			receiveTime: 0,
-			interval: 5000,
-			expired: 16000,
-			start: socketStart,
-			send: socketSend,
-			checkTimeout: socketCheckTimeout,
-			heartbeatCallback: socketHeartbeatCallback,
+			partyStart,
+			partySend,
+			partyCheck,
 		},
-		played: {
+		chat: {
 			timer: 0,
-			start: playedStart,
-			send: playedSend,
-		},
-		pingOneWay: pingOneWay,
-		roundTrip: roundTrip,
-		pingColor: pingColor,
-		start: start,
-		updateChatRoomStart: updateChatRoomStart,
-		heartbeatStart: heartbeatStart,
-		heartbeatSend: heartbeatSend,
-		heartbeatCallbackFail: heartbeatCallbackFail,
-		sanity: {
-			party: {
-				timer: 0,
-				start: partyStart,
-				send: partySend,
-				check: partyCheck,
-			},
-			chat: {
-				timer: 0,
-				start: chatStart,
-				send: chatSend,
-			}
-		},
-		exit: exit,
-		resync: resync,
-		emptyScenesExcept: emptyScenesExcept,
-		getPetName: getPetName,
-	}
-	///////////////////////////////////////////////
-	function pingOneWay() {
-		return ~~((Date.now() - game.pingStart) / 2);
-	}
-	function roundTrip() {
-		return Date.now() - game.pingStart;
-	}
-	function pingColor(ping) {
-		var index;
-		if (ping < 150) {
-			index = 0;
+			chatStart,
+			chatSend,
 		}
-		else if (ping < 350) {
-			index = 1;
-		}
-		else {
-			index = 2;
-		}
-		return game.pingColors[index];
-	}
-	function start() {
+	};
+	var gameSocket = {
+		timer: 0,
+		sendTime: 0,
+		receiveTime: 0,
+		interval: 5000,
+		expired: 16000,
+		activate,
+		heartbeatCallback,
+	};
+	var played = {
+		timer: 0,
+		playedStart,
+		playedSend,
+	};
+	/////////////////////////////////////////////////////
+	/** public */
+	function initSocket() {
 		// only called once
-		if (!game.init) {
-			game.init = 1;
+		if (!isSocketInit) {
+			isSocketInit = true;
 			clearTimeout(game.session.timer);
-			game.updateChatRoomStart();
-			game.heartbeatStart();
-			game.socket.start();
-			game.played.start();
-			game.sanity.party.start();
-			game.sanity.chat.start();
+			updateChatRoomStart();
+			heartbeatStart();
+			gameSocket.activate();
+			played.playedStart();
+			sanity.party.partyStart();
+			sanity.chat.chatStart();
 		}
 	}
-	function updateChatRoomStart() {
-		setInterval(chat.updateChannel, 15000);
-	}
-	function heartbeatStart() {
-		game.pingStart = Date.now();
-		$.get(app.url + 'server/heartbeat-first.php').done(function (data) {
-			data.name = my.name;
-			game.heartbeat.timer = setTimeout(game.heartbeatSend, 5000);
-			bar.updateBars(data);
-		});
+	function heartbeatListen() {
+		socket.subscribe('hb' + my.name, heartbeatCallback);
 	}
 	function heartbeatSend() {
-		console.info("%c Last heartbeat interval: ", "background: #ff0", Date.now() - game.pingStart +'ms');
-		game.pingStart = Date.now();
+		console.info("%c Last heartbeat interval: ", "background: #ff0", Date.now() - pingStart +'ms');
+		pingStart = Date.now();
 		clearTimeout(game.heartbeat.timer);
+
 		if (game.heartbeat.enabled) {
-			$.get(app.url + 'server/heartbeat.php').done(function (data) {
+			$.get(app.url + 'heartbeat.php').done(function (data) {
 				game.heartbeat.success++;
 				if (game.heartbeat.successiveFails) {
 					// this does nothing right now, but maybe later?!
-					game.resync();
+					resync();
 				}
 				game.heartbeat.successiveFails = 0;
 				console.info("heartbeat data: ", data);
 				data.name = my.name;
 				bar.updateBars(data);
-			}).fail(game.heartbeatCallbackFail)
+			}).fail(heartbeatCallbackFail)
 				.always(function() {
-				game.heartbeat.timer = setTimeout(game.heartbeatSend, 5000);
+				game.heartbeat.timer = setTimeout(heartbeatSend, 5000);
 				game.heartbeat.attempts++;
-				var ping = game.pingOneWay();
+				var ping = ~~((Date.now() - pingStart) / 2);
+
 				console.info("%c Ping: ", 'background: #0f0', ping +'ms', "Ratio: " + ((game.heartbeat.success / game.heartbeat.attempts)*100) + "%");
 
 				bar.dom.ping.innerHTML =
-					'<span class="'+ game.pingColor(ping) +'">' + (ping) + 'ms</span>';
+					'<span class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>';
 			});
 		}
 		else {
-			game.heartbeatCallbackFail({
+			heartbeatCallbackFail({
 				responseText: "You failed to find your way back to town."
 			});
 		}
@@ -152,53 +121,52 @@ var game;
 		game.heartbeat.successiveFails++;
 		game.heartbeat.successiveFails > 1 && ng.disconnect(data.responseText);
 	}
-	function socketStart() {
+	function activate() {
 		setTimeout(function() {
 			TweenMax.to('#bar-lag', .5, {
 				opacity: 1
 			});
-		}, game.socket.interval);
-		game.socket.sendTime = Date.now();
-		game.socket.receiveTime = Date.now();
-		clearInterval(game.socket.checkTimer);
-		game.socket.checkTimer = setInterval(game.socket.checkTimeout, game.socket.interval);
-		clearInterval(game.socket.timer);
-		game.socket.timer = setInterval(game.socket.send, game.socket.interval);
+		}, gameSocket.interval);
+		gameSocket.sendTime = Date.now();
+		gameSocket.receiveTime = Date.now();
+		clearInterval(gameSocket.timer);
+		gameSocket.timer = setInterval(socketSend, gameSocket.interval);
 	}
 	function socketSend() {
-		// console.info("%c Last socket send: ", "background: #0ff", Date.now() - game.socket.sendTime);
-		game.socket.sendTime = Date.now();
+		checkDiscoTimer();
+		// console.info("%c Last socket send: ", "background: #0ff", Date.now() - gameSocket.sendTime);
+		gameSocket.sendTime = Date.now();
 		socket.publish('hb' + my.name, {});
 	}
-	function socketCheckTimeout() {
+	function checkDiscoTimer() {
 		// longer than interval plus checkTolerance? disconnect (failed 2x)
-		var diff = Date.now() - game.socket.receiveTime;
+		var diff = Date.now() - gameSocket.receiveTime;
 
 		console.info("%c Socket ping: ", "background: #08f", diff + 'ms');
-		if (diff > game.socket.expired) {
+		if (diff > gameSocket.expired) {
 			console.warn('something wrong with the socket... please investigate...');
-			//ng.disconnect();
+			ng.disconnect();
 		}
 	}
-	function socketHeartbeatCallback() {
-		game.socket.receiveTime = Date.now();
-		var ping = game.socket.receiveTime - game.socket.sendTime;
+	function heartbeatCallback() {
+		gameSocket.receiveTime = Date.now();
+		var ping = gameSocket.receiveTime - gameSocket.sendTime;
 		bar.dom.socket.innerHTML =
-			'<span class="'+ game.pingColor(ping) +'">' + (ping) + 'ms</span>';
+			'<span class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>';
 	}
 	function playedStart() {
-		clearInterval(game.played.timer);
-		game.played.timer = setInterval(game.played.send, 60000);
+		clearInterval(played.timer);
+		played.timer = setInterval(played.playedSend, 60000);
 	}
 	function playedSend() {
-		$.get(app.url + 'server/update-played.php');
+		$.get(app.url + 'update-played.php');
 	}
 	function partyStart() {
-		clearInterval(game.sanity.party.timer);
-		game.sanity.party.timer = setInterval(function(){
+		clearInterval(sanity.party.timer);
+		sanity.party.timer = setInterval(function(){
 			if (my.p_id) {
-				game.sanity.party.send();
-				game.sanity.party.check();
+				sanity.party.partySend();
+				sanity.party.partyCheck();
 			}
 		}, 5000);
 	}
@@ -210,17 +178,17 @@ var game;
 				route: 'party->hb'
 			});
 		} catch (err) {
-			console.info('sanity.party.send', err);
+			console.info('sanity.party.partySend', err);
 		}
 	}
 	function partyCheck() {
 		var now = Date.now(),
 			linkdead = [];
 		for (var i=1; i<6; i++) {
-			console.info("Checking: ", my.party[i].id, now - my.party[i].heartbeat > game.socket.interval * 2)
+			console.info("Checking: ", my.party[i].id, now - my.party[i].heartbeat > gameSocket.interval * 2)
 			if (my.party[i].id &&
 				!my.party[i].linkdead &&
-				(now - my.party[i].heartbeat > game.socket.interval * 2)) {
+				(now - my.party[i].heartbeat > gameSocket.interval * 2)) {
 				linkdead.push(my.party[i].name);
 				my.party[i].linkdead = 1;
 			}
@@ -233,12 +201,12 @@ var game;
 		});
 	}
 	function chatStart() {
-		clearInterval(game.sanity.chat.timer);
-		game.sanity.chat.timer = setInterval(game.sanity.chat.send, 60000);
+		clearInterval(sanity.chat.timer);
+		sanity.chat.timer = setInterval(sanity.chat.chatSend, 60000);
 	}
 	function chatSend() {
 		if (ng.view === 'town') {
-			$.get(app.url + 'server/chat/sanity-chat.php').done(function (data) {
+			$.get(app.url + 'chat/sanity-chat.php').done(function (data) {
 				for (var i = 0, len = data.players.length; i < len; i++) {
 					data.players[i] *= 1;
 				}
@@ -260,8 +228,8 @@ var game;
 	}
 	function exit() {
 		// from town
-		if (socket.enabled) {
-			broadcastRemove();
+		if (gameSocket.enabled) {
+			chat.broadcastRemove();
 			if (my.p_id) {
 				// boot from party
 				/*
@@ -280,11 +248,8 @@ var game;
 			socket.connection.close();
 		}
 	}
-	function resync() {
-		// do nothing!
-	}
 	function emptyScenesExcept(scene) {
-		game.scenes.forEach(function(v) {
+		scenes.forEach(function(v) {
 			if (v === scene) {
 				getById(v).style.opacity = 0;
 			}
@@ -352,5 +317,34 @@ var game;
 		return s1[~~(rand() * s1.length)] +
 			s2[~~(rand() * s2.length)]+
 			s3[~~(rand() * s3.length)];
+	}
+
+	/** private */
+	function heartbeatStart() {
+		pingStart = Date.now();
+		$.get(app.url + 'heartbeat-first.php').done(function (data) {
+			data.name = my.name;
+			game.heartbeat.timer = setTimeout(heartbeatSend, 5000);
+			bar.updateBars(data);
+		});
+	}
+	function getPingColor(ping) {
+		var index;
+		if (ping < 150) {
+			index = 0;
+		}
+		else if (ping < 350) {
+			index = 1;
+		}
+		else {
+			index = 2;
+		}
+		return pingColors[index];
+	}
+	function updateChatRoomStart() {
+		setInterval(chat.updateChannel, 15000);
+	}
+	function resync() {
+		// do nothing!
 	}
 })();

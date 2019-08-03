@@ -13,11 +13,8 @@ var party;
 		mission.setQuest(data.quest);
 		my.zoneMobs = data.zoneMobs;
 		if (my.p_id && !my.party[0].isLeader) {
-			$.ajax({
-				data: {
-					quest: data.quest
-				},
-				url: app.url + 'server/mission/update-quest.php'
+			$.post(app.url + 'mission/update-quest.php', {
+				quest: data.quest
 			}).done(function (data) {
 				console.info('missionUpdate ', data);
 				town.aside.selected === 'town-mission' && mission.showEmbark();

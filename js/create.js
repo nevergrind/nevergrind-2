@@ -195,11 +195,8 @@ var create;
 				// final adds
 				f.shortJob = ng.toJobShort(f.job);
 				// send to server
-				$.ajax({
-					url: app.url + 'server/create/create-character.php',
-					data: {
-						form: f
-					}
+				$.post(app.url + 'create/create-character.php', {
+					form: f
 				}).done(function(r){
 					ng.msg(r.hero.name + ' has been created!');
 					$("#create-character-back").trigger(x);
@@ -214,7 +211,7 @@ var create;
 			create.selected = z.data('row');
 			create.name = z.data('name');
 			if (ng.playerCardClicks++ === 1) {
-				$.get(app.url + 'server/session/init-character.php')
+				$.get(app.url + 'session/init-character.php')
 			}
 		});
 	}
@@ -222,11 +219,8 @@ var create;
 		// send to server
 		if (ng.locked) return;
 		ng.lock();
-		$.ajax({
-			url: app.url + 'server/create/delete-character.php',
-			data: {
-				row: create.selected
-			}
+		$.post(app.url + 'create/delete-character.php', {
+			row: create.selected
 		}).done(function(r){
 			console.info('Deleted character: ', r);
 			ng.msg(create.name + ' has been deleted!');

@@ -245,7 +245,7 @@ var bar;
 	function getParty() {
 		console.info("Drawing all bars!");
 		if (my.p_id) {
-			$.get(app.url + 'server/chat/party-get-all.php').done(function (data) {
+			$.get(app.url + 'chat/party-get-all.php').done(function (data) {
 				console.info('getParty ', data);
 				var npIndex = 1;
 				data.party.forEach(function(v, i){

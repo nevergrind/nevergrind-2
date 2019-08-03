@@ -1,7 +1,6 @@
 <?php
 	require_once '../session/start.php';
 	require('prepare.php');
-	require '../zmq.php';
 
 	$zmq = [
 		'msg' => $postMsg,
@@ -17,4 +16,5 @@
 		$zmq['action'] = $_POST['action'];
 	}
 	$zmq['category'] = $_POST['category'];
+	require '../zmq.php';
 	$socket->send(json_encode($zmq));

@@ -66,9 +66,6 @@ var socket;
 			title.chatReceive(data[0]);
 		}
 	}
-	function listenHeartbeat() {
-		socket.subscribe('hb' + my.name, game.socket.heartbeatCallback);
-	}
 	function listenWhisper() {
 		socket.subscribe('name' + my.name, routeToWhisper);
 	}
@@ -90,14 +87,11 @@ var socket;
 			route.town(data, data.route);
 			chat.lastWhisper.name = data.name;
 			// callback to sender
-			$.ajax({
-				url: app.url + 'server/chat/send.php',
-				data: {
-					action: 'receive',
-					msg: chat.whisperParse(data.msg),
-					class: 'chat-whisper',
-					category: 'name' + _.toLower(data.name)
-				}
+			$.post(app.url + 'chat/send.php', {
+				action: 'receive',
+				msg: chat.whisperParse(data.msg),
+				class: 'chat-whisper',
+				category: 'name' + _.toLower(data.name)
 			});
 		}
 		// receive pong
@@ -161,7 +155,7 @@ var socket;
 			//return;
 			(function retry(){
 				if (my.name){
-					listenHeartbeat();
+					game.heartbeatListen();
 					listenWhisper();
 					listenFriendAlerts();
 					socket.listenGuild();

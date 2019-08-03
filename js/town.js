@@ -83,11 +83,8 @@ var town;
 			game.emptyScenesExcept('scene-town');
 			ng.lock(1);
 			chat.sizeLarge();
-			$.ajax({
-				url: app.url + 'server/character/load-character.php',
-				data: {
-					row: create.selected
-				}
+			$.post(app.url + 'character/load-character.php', {
+				row: create.selected
 			}).done(function(data) {
 				console.info('load-character: ', data);
 				var z = data.characterData;
@@ -123,7 +120,7 @@ var town;
 				town.events();
 				$("#scene-title").remove();
 				town.init();
-				game.start();
+				game.initSocket();
 				bar.init();
 				// I'm in a party!
 				if (data.party !== undefined && data.party.id) {

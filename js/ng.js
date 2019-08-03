@@ -204,7 +204,7 @@ var ng;
 		return new TimelineMax(o);
 	}
 	function keepAlive() {
-		$.get(app.url + 'server/session/keep-alive.php').always(function() {
+		$.get(app.url + 'session/keep-alive.php').always(function() {
 			setTimeout(ng.keepAlive, 170000);
 		});
 	}
@@ -252,7 +252,7 @@ var ng;
 		if (ng.locked) return;
 		ng.lock();
 		// socket.removePlayer(my.account);
-		$.get(app.url + 'server/account/logout.php').done(function() {
+		$.get(app.url + 'account/logout.php').done(function() {
 			ng.msg("Logout successful");
 			localStorage.removeItem('email');
 			localStorage.removeItem('token');
@@ -272,7 +272,7 @@ var ng;
 			onComplete: allDone
 		});
 
-		$.get(app.url + 'server/create/get-stat-map.php').done(function(r){
+		$.get(app.url + 'create/get-stat-map.php').done(function(r){
 			var r = r.statMap;
 			ng.races.forEach(function(v){
 				create.raceAttrs[v] = r[v].attrs;
@@ -314,7 +314,7 @@ var ng;
 		}
 	}
 	function initGame() {
-		$.get(app.url + 'server/init-game.php').done(function(r){
+		$.get(app.url + 'init-game.php').done(function(r){
 			console.info('init-game', r);
 			app.initialized = 1;
 			if (r.account) {

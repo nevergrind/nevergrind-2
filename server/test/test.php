@@ -41,10 +41,12 @@ function onOpen(session) {
 
 </script>
 <?php
+$now = microtime(true);
+
 require_once '../session/start.php';
+
 echo '__DIR__ ' . __DIR__ . '<br>';
 echo '$_SERVER[\'DOCUMENT_ROOT\']' . $_SERVER['DOCUMENT_ROOT'] . '<br>';
-$now = microtime(true);
 
 require '../db.php';
 
@@ -53,8 +55,16 @@ if ($result = mysqli_query($db, 'SELECT row FROM `accounts`')) {
 	echo 'Total accounts in the account table: ' . $count . '<br>';
 }
 
-$loops = 1e3;
+$loops = 100000;
 $val = 5;
+$obj = [
+	'name' => 'Bob',
+	'age' => 35,
+	'class' => 'Ranger',
+	'isCool' => true,
+	'level' => 50
+];
+
 // session get/set test
 $apcStart = microtime(true);
 for ($i = 0; $i < $loops; $i++) {
@@ -66,29 +76,24 @@ echo '<br>$_SESSION primitive set & get test x '. $loops .':<br> ' . $apcEnd . '
 
 // primitive apcu test
 $apcStart = microtime(true);
-for ($i = 0; $i < $loops; $i++) {
-	apcu_store('test', $val);
-	$bar = apcu_fetch('test');
+for ($i=0; $i < $loops; $i++) {
+	apcu_store('test' . $i, $val);
+	$bar = apcu_fetch('test' . $i);
 }
 $apcEnd = microtime(true) - $apcStart;
 echo '<br>APCu primitive set & get test x'. $loops .':<br> ' . $apcEnd . '<br>';
 
-// object apcu test
-$obj = [
-	'name' => 'Bob',
-	'age' => 35,
-	'class' => 'Ranger',
-	'isCool' => true,
-	'level' => 50
-];
+// primitive object test
 $apcStart = microtime(true);
-for ($i = 0; $i < $loops; $i++) {
-	apcu_store('obj', json_encode($obj));
-	$bar = json_decode(apcu_fetch('obj'), true);
+
+for ($i=0; $i < $loops; $i++) {
+	apcu_store('obj' . $i, $obj);
+	$bar = apcu_fetch('obj' . $i);
 }
 $apcEnd = microtime(true) - $apcStart;
 echo '<br>APCu object set & get test x '. $loops .':<br> ' . $apcEnd . '<br>';
-echo '<pre>' . print_r($bar, true) . '</pre>';
+echo '<pre>$obj ' . print_r($obj, true) . '</pre>';
+echo '<pre>$bar ' . print_r($bar, true) . '</pre>';
 
 // total script time
 $time = microtime(true) - $now;

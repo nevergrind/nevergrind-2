@@ -1,5 +1,6 @@
 var chat;
 (function() {
+	/** public */
 	chat = {
 		prefix: 'ng2',
 		default: 'town',
@@ -24,65 +25,68 @@ var chat;
 		],
 		modeCommand: '/say',
 		modeName: '',
-		log: log,
-		init: init,
-		html: html,
-		getChannel: getChannel,
-		modeChange: modeChange,
-		modeSet: modeSet,
-		updateHistory: updateHistory,
-		help: help,
-		sendMsg: sendMsg,
-		parseMsg: parseMsg,
-		getMsgObject: getMsgObject,
-		clear: clear,
-		clearChatLog: clearChatLog,
-		emote: emote,
-		ignoreInit: ignoreInit,
-		ignoreList: ignoreList,
-		ignoreAdd: ignoreAdd,
-		ignoreRemove: ignoreRemove,
-		promote: promote,
-		disband: disband,
-		boot: boot,
-		invite: invite,
-		camp: camp,
-		reply: reply,
-		promptAdd: promptAdd,
-		promptConfirm: promptConfirm,
-		promptDeny: promptDeny,
-		partyJoin: partyJoin,
-		partyParse: partyParse,
-		whisperParse: whisperParse,
-		whisperPrefix: whisperPrefix,
-		whisperTo: whisperTo,
-		friendParse: friendParse,
-		friendInit: friendInit,
-		friendList: friendList,
-		friendAdd: friendAdd,
-		friendRemove: friendRemove,
-		friendNotify: friendNotify,
-		toPlaytime: toPlaytime,
-		toCreateString: toCreateString,
-		played: played,
-		whoParse: whoParse,
-		whoAll: whoAll,
-		whoClass: whoClass,
-		scrollBottom: scrollBottom,
-		setHeader: setHeader,
-		joinParse: joinParse,
-		joinChannel: joinChannel,
-		joinDefault: joinDefault,
-		joinChangeCallback: joinChangeCallback,
-		updateChannel: updateChannel,
-		addPlayer: addPlayer,
-		clearLog: clearLog,
-		removePlayer: removePlayer,
-		broadcastAdd: broadcastAdd,
-		sizeSmall: sizeSmall,
-		sizeLarge: sizeLarge,
+		log,
+		init,
+		html,
+		getChannel,
+		modeChange,
+		modeSet,
+		updateHistory,
+		help,
+		sendMsg,
+		parseMsg,
+		getMsgObject,
+		clear,
+		clearChatLog,
+		emote,
+		ignoreInit,
+		ignoreList,
+		ignoreAdd,
+		ignoreRemove,
+		promote,
+		disband,
+		boot,
+		invite,
+		camp,
+		reply,
+		promptAdd,
+		promptConfirm,
+		promptDeny,
+		partyJoin,
+		partyParse,
+		whisperParse,
+		whisperPrefix,
+		whisperTo,
+		friendParse,
+		friendInit,
+		friendList,
+		friendAdd,
+		friendRemove,
+		friendNotify,
+		toPlaytime,
+		toCreateString,
+		played,
+		whoParse,
+		whoAll,
+		whoClass,
+		scrollBottom,
+		setHeader,
+		joinParse,
+		joinChannel,
+		joinDefault,
+		joinChangeCallback,
+		updateChannel,
+		broadcastRemove,
+		addPlayer,
+		clearLog,
+		removePlayer,
+		broadcastAdd,
+		sizeSmall,
+		sizeLarge,
 	}
-	///////////////////////////////////////////
+	/** private */
+
+	/** public */
 	function getChannel() {
 		return _.toLower(chat.prefix + my.channel);
 	}
@@ -397,14 +401,11 @@ var chat;
 				if (~ng.ignore.indexOf(chat.modeName)) {
 					log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', 'chat-warning');
 				}
-				$.ajax({
-					url: app.url + 'server/chat/send.php',
-					data: {
-						action: 'send',
-						msg: msg,
-						class: 'chat-whisper',
-						category: 'name' + _.toLower(chat.modeName)
-					}
+				$.post(app.url + 'chat/send.php', {
+					action: 'send',
+					msg: msg,
+					class: 'chat-whisper',
+					category: 'name' + _.toLower(chat.modeName)
 				});
 			}
 		}
@@ -424,13 +425,10 @@ var chat;
 							log("You cannot communicate in town while in a dungeon", "chat-warning");
 						}
 						else {
-							$.ajax({
-								url: app.url + 'server/chat/send.php',
-								data: {
-									msg: o.msg,
-									class: o.class,
-									category: _.toLower(o.category)
-								}
+							$.post(app.url + 'chat/send.php', {
+								msg: o.msg,
+								class: o.class,
+								category: _.toLower(o.category)
 							});
 						}
 					}
@@ -505,13 +503,10 @@ var chat;
 		a.shift();
 		msg = a.join(" ");
 		if (msg[0] !== '/') {
-			$.ajax({
-				url: app.url + 'server/chat/send.php',
-				data: {
-					msg: msg,
-					class: 'chat-emote',
-					category: chat.getChannel()
-				}
+			$.post(app.url + 'chat/send.php', {
+				msg: msg,
+				class: 'chat-emote',
+				category: chat.getChannel()
 			});
 		}
 	}
@@ -550,12 +545,9 @@ var chat;
 		// must be leader or bypass by auto-election when leader leaves
 		var id = my.getPartyMemberIdByName(name);
 		if ((my.party[0].isLeader || bypass) && my.p_id && id) {
-			$.ajax({
-				url: app.url + 'server/chat/promote.php',
-				data: {
-					name: _.toLower(name),
-					leaderId: id
-				}
+			$.post(app.url + 'chat/promote.php', {
+				name: _.toLower(name),
+				leaderId: id
 			}).done(function (data) {
 				// console.info('promote ', data);
 			}).fail(function (r) {
@@ -569,12 +561,8 @@ var chat;
 		}
 		else {
 			var count = my.partyCount();
-			$.ajax({
-				type: 'POST',
-				url: app.url + 'server/chat/disband.php',
-				data: {
-					count: count
-				}
+			$.post(app.url + 'chat/disband.php', {
+				count: count
 			}).done(function(r){
 				// console.info('disband ', r);
 				if (count > 1) {
@@ -598,12 +586,9 @@ var chat;
 		// must be leader or bypass by auto-election when leader leaves
 		var id = my.getPartyMemberIdByName(name);
 		if ((my.party[0].isLeader || bypass) && my.p_id && id) {
-			$.ajax({
-				url: app.url + 'server/chat/boot.php',
-				data: {
-					name: _.toLower(name),
-					id: id
-				}
+			$.post(app.url + 'chat/boot.php', {
+				name: _.toLower(name),
+				id: id
 			}).done(function (data) {
 				console.info('boot ', data);
 			}).fail(function (r) {
@@ -628,11 +613,8 @@ var chat;
 			if (p) {
 				log('Sent party invite to '+ p +'.', 'chat-warning');
 				console.info('p', p);
-				$.ajax({
-					url: app.url + 'server/chat/invite.php',
-					data: {
-						player: _.toLower(p)
-					}
+				$.post(app.url + 'chat/invite.php', {
+					player: _.toLower(p)
 				}).done(function(r){
 					console.info('invite ', r);
 					if (r.newParty) {
@@ -652,7 +634,7 @@ var chat;
 	function camp() {
 		function callbackSuccess() {
 			setTimeout(function(){
-				$.get(app.url + 'server/chat/camp.php').done(location.reload)
+				$.get(app.url + 'chat/camp.php').done(location.reload)
 					.fail(function(){
 						log('Failed to camp successfully.', 'chat-alert');
 					});
@@ -769,12 +751,9 @@ var chat;
 	function partyJoin(z) {
 		// clicked CONFIRM
 		console.info('party.join: ', z);
-		$.ajax({
-			url: app.url + 'server/chat/party-join.php',
-			data: {
-				row: z.row,
-				cId: z.cId
-			}
+		$.post(app.url + 'chat/party-join.php', {
+			row: z.row,
+			cId: z.cId
 		}).done(function(data){
 			console.info("party-join.php ", data);
 			log("You have joined the party.", "chat-warning");
@@ -808,14 +787,14 @@ var chat;
 	}
 	function friendInit() {
 		ng.friends = ng.friends || [];
-		$.get(app.url + 'server/chat/friend-get.php').done(function(data){
+		$.get(app.url + 'chat/friend-get.php').done(function(data){
 			ng.friends = data;
 		});
 	}
 	function friendList() {
 		log('<div class="chat-warning">Checking friends list...</div>');
 		if (ng.friends.length){
-			$.get(app.url + 'server/chat/friend-status.php').done(function(r){
+			$.get(app.url + 'chat/friend-status.php').done(function(r){
 				ng.friends = r.friends;
 				console.info(r);
 				var str = chat.divider + '<div>Friend List ('+ r.friends.length +')</div>';
@@ -848,11 +827,8 @@ var chat;
 			log(o + " is already your friend.", 'chat-warning');
 		}
 		else if (o.length > 1 && o !== my.name) {
-			$.ajax({
-				url: app.url + 'server/chat/friend-add.php',
-				data: {
-					friend: _.toLower(o)
-				}
+			$.post(app.url + 'chat/friend-add.php', {
+				friend: _.toLower(o)
 			}).done(function(data){
 				if (data.error) {
 					log(data.error, 'chat-warning');
@@ -874,11 +850,8 @@ var chat;
 	}
 	function friendRemove(o) {
 		if (o.length > 1 && o !== my.name && ng.friends.indexOf(o) > -1) {
-			$.ajax({
-				url: app.url + 'server/chat/friend-remove.php',
-				data: {
-					friend: _.toLower(o)
-				}
+			$.post(app.url + 'chat/friend-remove.php', {
+				friend: _.toLower(o)
 			}).done(function(data){
 				if (data.error) {
 					log(data.error, 'chat-warning');
@@ -956,7 +929,7 @@ var chat;
 		return d.toDateString() + ' ' + d.toLocaleTimeString();
 	}
 	function played() {
-		$.get(app.url + 'server/chat/played.php').done(function(r) {
+		$.get(app.url + 'chat/played.php').done(function(r) {
 			var sessionLen = Date.now() - JSON.parse(sessionStorage.getItem('startTime')),
 				durationStr = chat.toPlaytime(~~(sessionLen / 100000));
 			log("Character created: " + chat.toCreateString(r.created), 'chat-warning');
@@ -988,7 +961,7 @@ var chat;
 		}
 	}
 	function whoAll() {
-		$.get(app.url + 'server/chat/who-all.php').done(function(r){
+		$.get(app.url + 'chat/who-all.php').done(function(r){
 			console.info('who ', r);
 			if (r.len) {
 				log(chat.divider + "There " + (r.len > 1 ? "are" : "is") +" currently "+
@@ -1010,11 +983,8 @@ var chat;
 	}
 	function whoClass(job) {
 		console.info('who.class ', job);
-		$.ajax({
-			url: app.url + 'server/chat/who-class.php',
-			data: {
-				job: job
-			}
+		$.post(app.url + 'chat/who-class.php', {
+			job: job
 		}).done(function(r){
 			console.info('r ', r);
 			var jobLong = ng.toJobLong(job);
@@ -1077,11 +1047,8 @@ var chat;
 			if (channel) {
 				// remove from channel
 				if (channel !== my.channel) {
-					$.ajax({
-						url: app.url + 'server/chat/set-channel.php',
-						data: {
-							channel: channel
-						}
+					$.post(app.url + 'chat/set-channel.php', {
+						channel: channel
 					}).done(function (data) {
 						clearLog();
 						log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>')
@@ -1098,11 +1065,8 @@ var chat;
 	function joinDefault() {
 		console.info(my.channel, chat.default);
 		if (my.channel !== chat.default) {
-			$.ajax({
-				url: app.url + 'server/chat/set-channel.php',
-				data: {
-					channel: chat.default
-				}
+			$.post(app.url + 'chat/set-channel.php', {
+				channel: chat.default
 			}).done(function (data) {
 				joinChangeCallback(data);
 			});
@@ -1125,11 +1089,8 @@ var chat;
 	}
 	function updateChannel() {
 		if (ng.view === 'town') {
-			$.ajax({
-				url: app.url + 'server/chat/update-channel.php',
-				data: {
-					channel: chat.default
-				}
+			$.post(app.url + 'chat/update-channel.php', {
+				channel: chat.default
 			}).done(function (data) {
 				console.info("updateChannel: ", data);
 				setRoom(data.players);
