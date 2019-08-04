@@ -127,35 +127,8 @@
 
 		// set hp/mp regen, etc
 		require 'setEquipmentValues.php';
+
 		/*
-		// update player heartbeat table
-		$stmt = $db->prepare('insert into `players`
-			(`id`, `account`, `name`, `level`, `race`, `job`, `zone`) 
-			values (?, ?, ?, ?, ?, ?, ?) 
-			on duplicate key update timestamp=now()');
-
-		$stmt->bind_param('ississs',
-			$_SESSION['row'],
-			$_SESSION['account'],
-			$_SESSION['name'],
-			$_SESSION['level'],
-			$_SESSION['race'],
-			$_SESSION['job'],
-			$_SESSION['chatChannel']);
-		*/
-
-		// count active players
-		$result = mysqli_query(
-			$db,
-			'SELECT count(row) count FROM `players` where timestamp > date_sub(now(), interval 15 second)'
-		);
-		$r['count'] = 0;
-		while ($row = mysqli_fetch_assoc($result)){
-			$r['count'] = $row['count'];
-		}
-		/*
-
-
 		// get all players in chat room
 		$result = mysqli_query(
 			$db,

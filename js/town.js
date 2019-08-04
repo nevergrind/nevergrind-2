@@ -111,8 +111,8 @@ var town;
 				ng.setScene('town');
 				chat.init();
 				socket.init();
-				chat.friendInit();
-				chat.ignoreInit();
+				friend.init();
+				ignore.init();
 				// things that only happen once
 				chat.log("There are currently " + data.count + " players exploring Vandamor.", 'chat-emote');
 				// init town ?
@@ -134,20 +134,13 @@ var town;
 						socket.listenParty(my.p_id);
 						bar.getParty();
 						chat.sendMsg('/join');
-
-						// reveal scene based on session data
-						if (data.dungeon) {
-							dungeon.go();
-						}
-						else {
-							// town
-							TweenMax.to('#scene-town', .5, {
-								delay: .5,
-								opacity: 1,
-								onComplete: ng.unlock
-							});
-							bar.setAjaxPing();
-						}
+						// town
+						TweenMax.to('#scene-town', .5, {
+							delay: .5,
+							opacity: 1,
+							onComplete: ng.unlock
+						});
+						bar.setAjaxPing();
 					}
 					else {
 						setTimeout(repeat, 100);

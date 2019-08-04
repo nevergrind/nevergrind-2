@@ -90,7 +90,7 @@ var game;
 					obj.route = 'chat->hb';
 					socket.publish(chat.getChannel(), obj);
 				}
-				else {
+				if (my.p_id) {
 					obj.route = 'party->hb';
 					socket.publish('party' + my.p_id, obj);
 				}
@@ -329,12 +329,12 @@ var game;
 		// guild invite
 		else if (data.action === 'guild-invite') {
 			console.info("guild invite received! ", data);
-			chat.promptAdd(data);
+			toast.add(data);
 		}
 		// party invite
 		else if (data.action === 'party-invite') {
 			console.info("party invite received! ", data);
-			chat.promptAdd(data);
+			toast.add(data);
 		}
 		else if (data.action === 'party-invite-deny') {
 			chat.log(data.name + " has denied your party invite.", 'chat-warning');
@@ -352,7 +352,7 @@ var game;
 	function listenFriendAlerts() {
 		ng.friends.forEach(function(v){
 			socket.unsubscribe('friend' + v);
-			socket.subscribe('friend' + v, chat.friendNotify);
+			socket.subscribe('friend' + v, friend.notify);
 		});
 	}
 	function upsertRoom(player) {
@@ -360,9 +360,7 @@ var game;
 		var index = _.findIndex(chat.presence, { row: player.row });
 		if (index >= 0) {
 			// update
-			console.warn('updating player time', time);
 			chat.presence[index].time = time;
-			console.info('updating player time');
 		}
 		else {
 			// add
@@ -391,7 +389,6 @@ var game;
 			if (diff > heartbeat.expired) {
 				removePlayer(player);
 			}
-			console.info('diff', diff);
 		})
 	}
 	function removePlayer(v) {

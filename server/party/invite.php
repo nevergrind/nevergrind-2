@@ -1,5 +1,7 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+//require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+//require '../session/init-party.php';
+/*
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // get targeted player.id and party id by name
@@ -8,8 +10,6 @@ $stmt = $db->prepare($query);
 $stmt->bind_param('s', $_POST['player']);
 $stmt->execute();
 $stmt->bind_result($id, $c_id);
-
-error_log('name' . $_POST['player']);
 
 $r['id'] = null;
 $r['c_id'] = null;
@@ -42,7 +42,6 @@ if (is_null($r['c_id'])) {
 	else {
 		// create new party with me as leader
 		$newParty = 1;
-		require '../session/init-party.php';
 		$stmt = mysqli_query($db,
 			'insert into `parties` (is_leader, c_id, hp, maxHp, mp, maxMp) VALUES (1, '. $_SESSION['row'] .', '.
 			$_SESSION['hp'] .', '.
@@ -80,4 +79,4 @@ if (is_null($r['c_id'])) {
 }
 else {
 	exit("Player is already in a party.");
-}
+}*/

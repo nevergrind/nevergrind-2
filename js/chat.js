@@ -39,30 +39,11 @@ var chat;
 		clear,
 		clearChatLog,
 		emote,
-		ignoreInit,
-		ignoreList,
-		ignoreAdd,
-		ignoreRemove,
-		promote,
-		disband,
-		boot,
-		invite,
 		camp,
 		reply,
-		promptAdd,
-		promptConfirm,
-		promptDeny,
-		partyJoin,
-		partyParse,
 		whisperParse,
 		whisperPrefix,
 		whisperTo,
-		friendParse,
-		friendInit,
-		friendList,
-		friendAdd,
-		friendRemove,
-		friendNotify,
 		toPlaytime,
 		toCreateString,
 		played,
@@ -201,9 +182,9 @@ var chat;
 			});
 
 			$("#chat-prompt").on('click', '.chat-prompt-yes', function(e){
-				chat.promptConfirm($(this).data());
+				toast.confirm($(this).data());
 			}).on('click', '.chat-prompt-no', function(e){
-				chat.promptDeny($(this).data());
+				toast.deny($(this).data());
 			});
 
 			$("#chat-room").on('click contextmenu', '.chat-player', function() {
@@ -341,16 +322,16 @@ var chat;
 			guild.invite(chat.partyParse(msg));
 		}
 		else if (msgLower.indexOf('/promote') === 0) {
-			chat.promote(chat.partyParse(msg));
+			party.promote(chat.partyParse(msg));
 		}
 		else if (msgLower.indexOf('/boot') === 0) {
-			chat.boot(chat.partyParse(msg));
+			party.boot(chat.partyParse(msg));
 		}
 		else if (msgLower === '/disband') {
-			chat.disband();
+			party.disband();
 		}
 		else if (msgLower.indexOf('/invite') === 0) {
-			chat.invite(chat.partyParse(msg));
+			party.invite(chat.partyParse(msg));
 		}
 		else if (msgLower === '/camp') {
 			chat.camp();
@@ -371,22 +352,22 @@ var chat;
 			chat.whoClass(chat.whoParse(msg));
 		}
 		else if (msgLower === '/ignore') {
-			chat.ignoreList();
+			ignore.list();
 		}
 		else if (msgLower.indexOf('/ignore remove') === 0) {
-			chat.ignoreRemove(chat.friendParse(msg));
+			ignore.remove(friend.parse(msg));
 		}
 		else if (msgLower.indexOf('/ignore add') === 0) {
-			chat.ignoreAdd(chat.friendParse(msg));
+			ignore.add(friend.parse(msg));
 		}
 		else if (msgLower === '/friends' || msgLower === '/flist') {
-			chat.friendList();
+			friend.list();
 		}
 		else if (msgLower.indexOf('/friend remove') === 0) {
-			chat.friendRemove(chat.friendParse(msg));
+			friend.remove(friend.parse(msg));
 		}
 		else if (msgLower.indexOf('/friend add') === 0) {
-			chat.friendAdd(chat.friendParse(msg));
+			friend.add(friend.parse(msg));
 		}
 		else if (msgLower.indexOf('/me') === 0 || msgLower.indexOf('/em') === 0) {
 			chat.emote(msg);
@@ -506,127 +487,6 @@ var chat;
 			});
 		}
 	}
-	function ignoreInit() {
-			ng.ignore = JSON.parse(localStorage.getItem('ignore')) || ng.ignore;
-	}
-	function ignoreList() {
-			if (ng.ignore.length) {
-				var s = chat.divider + '<div class="chat-warning">Checking ignore list...</div>';
-				ng.ignore.forEach(function(v) {
-					s += '<div class="chat-emote">' + v + '</div>';
-				});
-				log(s);
-			}
-			else {
-				log("Nobody is on your friends list yet.", 'chat-warning');
-			}
-	}
-	function ignoreAdd(o) {
-			if (o !== my.name) {
-				ng.ignore.push(o);
-				localStorage.setItem('ignore', JSON.stringify(ng.ignore));
-				log('You have added ' + o + ' to your ignore list.', 'chat-warning');
-			}
-	}
-	function ignoreRemove(o) {
-			while (ng.ignore.indexOf(o) > -1) {
-				var index = ng.ignore.indexOf(o);
-				ng.ignore.splice(index, 1);
-			}
-			localStorage.setItem('ignore', JSON.stringify(ng.ignore));
-			log('You have removed ' + o + ' from your ignore list.', 'chat-warning');
-	}
-	function promote(name, bypass) {
-		console.info('/promote ', name, bypass);
-		// must be leader or bypass by auto-election when leader leaves
-		var id = my.getPartyMemberIdByName(name);
-		if ((my.party[0].isLeader || bypass) && my.p_id && id) {
-			$.post(app.url + 'chat/promote.php', {
-				name: _.toLower(name),
-				leaderId: id
-			}).done(function (data) {
-				// console.info('promote ', data);
-			}).fail(function (r) {
-				log(r.responseText, 'chat-warning');
-			});
-		}
-	}
-	function disband() {
-		if (ng.view === 'battle') {
-			log("You cannot disband the party during battle!", "chat-warning");
-		}
-		else {
-			var count = my.partyCount();
-			$.post(app.url + 'chat/disband.php', {
-				count: count
-			}).done(function(r){
-				// console.info('disband ', r);
-				if (count > 1) {
-
-				}
-				if (my.p_id) {
-					my.quest.level && ng.msg('Mission abandoned: '+ my.quest.title);
-				}
-				mission.initQuest();
-				bar.disband();
-				mission.abort();
-			}).fail(function(r) {
-				log(r.responseText, 'chat-warning');
-			}).always(function() {
-				ng.unlock();
-			});
-		}
-	}
-	function boot(name, bypass) {
-		console.info('/promote ', name, bypass);
-		// must be leader or bypass by auto-election when leader leaves
-		var id = my.getPartyMemberIdByName(name);
-		if ((my.party[0].isLeader || bypass) && my.p_id && id) {
-			$.post(app.url + 'chat/boot.php', {
-				name: _.toLower(name),
-				id: id
-			}).done(function (data) {
-				console.info('boot ', data);
-			}).fail(function (r) {
-				log(r.responseText, 'chat-warning');
-			});
-		}
-	}
-	function invite(p) {
-		if (my.name === p) {
-			log("You can't invite yourself to a party.", "chat-warning");
-		}
-		else if (my.p_id && !my.party[0].isLeader) {
-			log("Only the party leader may send invites.", "chat-warning");
-		}
-		else if (my.quest.level) {
-			log("You cannot invite adventurers to the party after starting the mission.", "chat-warning");
-		}
-		else if (!my.channel) {
-			log("You cannot invite adventurers from the depths of a dungeon.", "chat-warning");
-		}
-		else {
-			if (p) {
-				log('Sent party invite to '+ p +'.', 'chat-warning');
-				console.info('p', p);
-				$.post(app.url + 'chat/invite.php', {
-					player: _.toLower(p)
-				}).done(function(r){
-					console.info('invite ', r);
-					if (r.newParty) {
-						my.party[0].isLeader = 1;
-						bar.updatePlayerBar(0);
-					}
-					socket.listenParty(r.p_id);
-				}).fail(function(r){
-					log(r.responseText, 'chat-warning');
-				});
-			}
-			else {
-				log("Syntax: /invite [player_name]", "chat-warning");
-			}
-		}
-	}
 	function camp() {
 		if (ng.view === 'town') {
 			log('Camping...', 'chat-warning');
@@ -671,94 +531,6 @@ var chat;
 			chat.dom.chatInput.focus();
 		}
 	}
-	function promptAdd(data) {
-		var s = '',
-			e = createElement('div'),
-			id = ng.getId();
-
-		console.info('prompt.add', data);
-		e.id = data.action +'-'+ data.row;
-		e.className = 'prompt-row prompt-row-' + id + ' ' + data.css;
-		// write innerHTML
-		s +=
-			'<div class="chat-prompt-msg stag-blue">'+ data.msg +'</div>' + // col 1
-			'<div class="chat-prompt-options stag-blue">'+ // col 2
-				'<span data-row="'+ data.row +'" '+
-					'data-id="'+ id +'" '+
-					'data-action="'+ data.action +'" '+
-					'data-c-id="'+ data.cId +'" '+
-					'data-guild-name="'+ data.guildName +'" '+
-					'class="chat-prompt-btn chat-prompt-yes">'+
-					'<i class="fa fa-check chat-prompt-yes-icon"></i>&thinsp;Confirm'+
-				'</span>' +
-				'<span data-row="'+ data.row +'" '+
-					'data-id="'+ id +'" '+
-					'data-name="'+ data.name +'"'+
-					'data-action="'+ data.action +'" '+
-					'class="chat-prompt-btn chat-prompt-no">'+
-					'<i class="fa fa-times chat-prompt-no-icon"></i>&thinsp;Deny'+
-				'</span>' +
-			'</div>';
-
-		e.innerHTML = s;
-		// remove double invites?
-		$('#'+ data.action +'-' + data.row).remove();
-		chat.dom.chatPrompt.appendChild(e);
-		setTimeout(function() {
-			$("#" + e.id).remove();
-		}, 30000);
-
-		log(data.msg, 'chat-warning');
-	}
-	function promptConfirm(data) {
-		// join party by player id?
-		$("#"+ data.action +"-"+ data.row).remove();
-		/*
-		action: "party-invite"
-		id: 2
-		row: 188
-		 */
-		// use data.row to join ng2parties
-		// actually add me to the party and ZMQ msg on callback success
-		// and call a method to draw the whole party including hp, mp, names etc
-		// party table needs extra values... hp, mp, buffs, etc
-		console.info('Prompt confirmed: ', data.action, data.row, data);
-		if (data.action === 'party-invite') {
-			chat.partyJoin(data);
-		}
-		else if (data.action === 'guild-invite') {
-			guild.join(data);
-		}
-	}
-	function promptDeny(data) {
-		console.info('deny ', data);
-		$("#"+ data.action +"-"+ data.row).remove();
-		socket.publish("name"+ data.name, {
-			action: data.action + '-deny',
-			name: my.name
-		});
-	}
-	function partyJoin(z) {
-		// clicked CONFIRM
-		console.info('party.join: ', z);
-		$.post(app.url + 'chat/party-join.php', {
-			row: z.row,
-			cId: z.cId
-		}).done(function(data){
-			console.info("party-join.php ", data);
-			log("You have joined the party.", "chat-warning");
-			socket.listenParty(z.row);
-			bar.getParty();
-		}).fail(function(data){
-			console.info("Oh no", data);
-			log(data.responseText, 'chat-warning');
-		});
-	}
-	function partyParse(msg) { // 2-part upper case
-		var a = msg.replace(/ +/g, " ").split(" ");
-		return a[1] === undefined ?
-			'' : (a[1][0].toUpperCase() + a[1].substr(1).toLowerCase()).trim();
-	}
 	function whisperParse(msg) {
 		// 2-part parse lower case
 		var a = msg.split("whispers: ");
@@ -769,103 +541,6 @@ var chat;
 	}
 	function whisperTo(data) {
 		return 'You whispered to ' + data.name + ': ';
-	}
-	function friendParse(o) {
-		// 3-part parse
-		var a = o.replace(/ +/g, " ").split(" ");
-		return a[2][0].toUpperCase() + a[2].substr(1).toLowerCase().trim();
-	}
-	function friendInit() {
-		ng.friends = ng.friends || [];
-		$.get(app.url + 'chat/friend-get.php').done(function(data){
-			ng.friends = data;
-		});
-	}
-	function friendList() {
-		log('<div class="chat-warning">Checking friends list...</div>');
-		if (ng.friends.length){
-			$.get(app.url + 'chat/friend-status.php').done(function(r){
-				ng.friends = r.friends;
-				console.info(r);
-				var str = chat.divider + '<div>Friend List ('+ r.friends.length +')</div>';
-
-				ng.friends.forEach(function(name, i){
-					var index = r.players.indexOf(name);
-					if (index > -1){
-						var s = r.stats[index];
-						// online
-						str +=
-							'<div class="chat-whisper">[' +
-							s.level +' '+ ng.jobLong[s.job] +'] '+ ng.friends[i] + ' ('+ s.race +
-							')' + guild.format(s) + '</div>';
-					} else {
-						// offline
-						str += '<div class="chat-emote">[Offline] ' + name +'</div>';
-					}
-				});
-
-				log(str);
-			});
-		}
-		else {
-			log("<div>You don't have any friends!</div>");
-			log("<div class='chat-emote'>Use /friend [name] to add a new friend.</div>");
-		}
-	}
-	function friendAdd(o) {
-		if (ng.friends.includes(o)) {
-			log(o + " is already your friend.", 'chat-warning');
-		}
-		else if (o.length > 1 && o !== my.name) {
-			$.post(app.url + 'chat/friend-add.php', {
-				friend: _.toLower(o)
-			}).done(function(data){
-				if (data.error) {
-					log(data.error, 'chat-warning');
-				}
-				else {
-					log('You have added ' + o + ' to your friend list.', 'chat-warning');
-					socket.subscribe('friend'+ o, chat.friendNotify);
-					if (!ng.friends.includes(o)) {
-						socket.publish('name' + o, {
-							name: my.name,
-							route: "friend>addedMe"
-						});
-					}
-
-					ng.friends.push(o);
-				}
-			});
-		}
-	}
-	function friendRemove(o) {
-		if (o.length > 1 && o !== my.name && ng.friends.indexOf(o) > -1) {
-			$.post(app.url + 'chat/friend-remove.php', {
-				friend: _.toLower(o)
-			}).done(function(data){
-				if (data.error) {
-					log(data.error, 'chat-warning');
-				}
-				else {
-					log('You have removed ' + o + ' from your friend list.', 'chat-warning');
-					while (ng.friends.indexOf(o) > -1) {
-						var index = ng.friends.indexOf(o);
-						ng.friends.splice(index, 1);
-					}
-					socket.unsubscribe('friend'+ o);
-				}
-			});
-		}
-	}
-	function friendNotify(data, obj) {
-		data = typeof data[0] === 'object' ?
-			data[0] : obj;
-		if (data.route === 'on') {
-			log(data.name + ' has come online.', 'chat-warning');
-		}
-		else {
-			log(data.name + ' has gone offline.', 'chat-warning');
-		}
 	}
 	function toPlaytime(minLeft) {
 		var d = 0,

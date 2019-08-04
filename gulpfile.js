@@ -58,6 +58,9 @@ function minifyJs() {
 		'events',
 		'socket',
 		'chat',
+		'friend',
+		'ignore',
+		'toast',
 		'bar',
 		'battle',
 		'mobs',
@@ -82,7 +85,7 @@ function minifyJs() {
 		.pipe(concat('nevergrind-2.js'))
 		.pipe(gulp.dest('./js'))
 		.pipe(stripDebug()) // watch out for this for nwjs - can't see console statements
-		.pipe(uglify())
+		//.pipe(uglify()) // needs update?
 		.pipe(rename('nevergrind-2.min.js'))
 		.pipe(gulp.dest('./js'));
 }

@@ -223,7 +223,7 @@ var bar;
 			chat.log(name + " has disbanded the party.", 'chat-warning');
 			// elect new leader if client's id is lowest
 			if (electNewLeader && my.isLowestPartyIdMine()) {
-				chat.promote(my.getNewLeaderName(), 1);
+				party.promote(my.getNewLeaderName(), 1);
 			}
 		}
 		// disband if it's me
