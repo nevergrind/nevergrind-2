@@ -26,7 +26,7 @@
 	}
 	function readyFire() {
 		ng.initGame();
-		game.session.timer = setTimeout(ng.keepAlive, 170000);
+		game.session.timer = setTimeout(ng.keepAlive, game.ajax.interval);
 		// init events
 		var x = 'click';
 		ng.events(x);

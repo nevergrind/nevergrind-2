@@ -18,6 +18,7 @@ var bar;
 		partyBoot,
 		setAllBars,
 		updateBars,
+		setAjaxPing,
 		partyDisband,
 		partyPromote,
 		getPlayerHtml,
@@ -242,8 +243,14 @@ var bar;
 		bar.partyDisband(data);
 		bar.getParty();
 	}
+	function setAjaxPing() {
+		var ping = ~~((game.ajax.receiveTime - game.ajax.sendTime) / 2);
+		bar.dom.ping.innerHTML =
+			'<span class="'+ game.getPingColor(ping) +'">' + (ping) + 'ms</span>';
+
+	}
 	function getParty() {
-		console.info("Drawing all bars!");
+		//console.info("Drawing all bars!");
 		if (my.p_id) {
 			$.get(app.url + 'chat/party-get-all.php').done(function (data) {
 				console.info('getParty ', data);

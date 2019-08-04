@@ -7,19 +7,22 @@ var game;
 		session: {
 			timer: 0
 		},
+		ajax: {
+			interval: 15000,
+			sendTime: 0,
+			receiveTime: 0
+		},
 		questDelay: 3000,
 		start: Date.now(),
-		heartbeat: {
-			enabled: 1,
-			timer: 0,
-			success: 0,
-			fails: 0,
-			successiveFails: 0,
-			attempts: 0,
-		},
+		heartbeatEnabled: true,
+		upsertRoom,
+		removePlayer,
 		initSocket,
-		heartbeatListen,
+		heartbeatSend,
+		heartbeatReceived,
+		requestPresence,
 		exit,
+		getPingColor,
 		emptyScenesExcept,
 		getPetName,
 	};
@@ -36,27 +39,13 @@ var game;
 		'chat-warning',
 		'chat-alert'
 	];
-	var sanity = {
-		party: {
-			timer: 0,
-			partyStart,
-			partySend,
-			partyCheck,
-		},
-		chat: {
-			timer: 0,
-			chatStart,
-			chatSend,
-		}
-	};
-	var gameSocket = {
+	var heartbeat = {
 		timer: 0,
 		sendTime: 0,
 		receiveTime: 0,
 		interval: 5000,
-		expired: 16000,
+		expired: 12000,
 		activate,
-		heartbeatCallback,
 	};
 	var played = {
 		timer: 0,
@@ -69,167 +58,69 @@ var game;
 		// only called once
 		if (!isSocketInit) {
 			isSocketInit = true;
-			clearTimeout(game.session.timer);
-			updateChatRoomStart();
-			heartbeatStart();
-			gameSocket.activate();
+			pingStart = Date.now();
+			heartbeat.activate();
 			played.playedStart();
-			sanity.party.partyStart();
-			sanity.chat.chatStart();
+			/*sanity.party.partyStart();
+			sanity.chat.chatStart();*/
+			listenWhisper();
+			listenFriendAlerts();
+			socket.listenGuild();
+			game.requestPresence();
 		}
-	}
-	function heartbeatListen() {
-		socket.subscribe('hb' + my.name, heartbeatCallback);
 	}
 	function heartbeatSend() {
-		console.info("%c Last heartbeat interval: ", "background: #ff0", Date.now() - pingStart +'ms');
-		pingStart = Date.now();
-		clearTimeout(game.heartbeat.timer);
-
-		if (game.heartbeat.enabled) {
-			$.get(app.url + 'heartbeat.php').done(function (data) {
-				game.heartbeat.success++;
-				if (game.heartbeat.successiveFails) {
-					// this does nothing right now, but maybe later?!
-					resync();
+		if (game.heartbeatEnabled) {
+			var time = Date.now();
+			// check disconnect
+			var diff = time - heartbeat.receiveTime;
+			console.info("%c Socket ping: ", "background: #08f", diff + 'ms');
+			if (diff > heartbeat.expired) {
+				console.warn('something wrong with the socket... please investigate...');
+				ng.disconnect();
+			}
+			else {
+				var obj = {
+					row: my.row,
+					level: my.level,
+					job: my.job,
+					name: my.name
 				}
-				game.heartbeat.successiveFails = 0;
-				console.info("heartbeat data: ", data);
-				data.name = my.name;
-				bar.updateBars(data);
-			}).fail(heartbeatCallbackFail)
-				.always(function() {
-				game.heartbeat.timer = setTimeout(heartbeatSend, 5000);
-				game.heartbeat.attempts++;
-				var ping = ~~((Date.now() - pingStart) / 2);
-
-				console.info("%c Ping: ", 'background: #0f0', ping +'ms', "Ratio: " + ((game.heartbeat.success / game.heartbeat.attempts)*100) + "%");
-
-				bar.dom.ping.innerHTML =
-					'<span class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>';
-			});
-		}
-		else {
-			heartbeatCallbackFail({
-				responseText: "You failed to find your way back to town."
-			});
-		}
-	}
-	function heartbeatCallbackFail(data) {
-		console.info('%c heartbeatCallback', 'background: #f00', data.responseText);
-		game.heartbeat.fails++;
-		game.heartbeat.successiveFails++;
-		game.heartbeat.successiveFails > 1 && ng.disconnect(data.responseText);
-	}
-	function activate() {
-		setTimeout(function() {
-			TweenMax.to('#bar-lag', .5, {
-				opacity: 1
-			});
-		}, gameSocket.interval);
-		gameSocket.sendTime = Date.now();
-		gameSocket.receiveTime = Date.now();
-		clearInterval(gameSocket.timer);
-		gameSocket.timer = setInterval(socketSend, gameSocket.interval);
-	}
-	function socketSend() {
-		checkDiscoTimer();
-		// console.info("%c Last socket send: ", "background: #0ff", Date.now() - gameSocket.sendTime);
-		gameSocket.sendTime = Date.now();
-		socket.publish('hb' + my.name, {});
-	}
-	function checkDiscoTimer() {
-		// longer than interval plus checkTolerance? disconnect (failed 2x)
-		var diff = Date.now() - gameSocket.receiveTime;
-
-		console.info("%c Socket ping: ", "background: #08f", diff + 'ms');
-		if (diff > gameSocket.expired) {
-			console.warn('something wrong with the socket... please investigate...');
-			ng.disconnect();
-		}
-	}
-	function heartbeatCallback() {
-		gameSocket.receiveTime = Date.now();
-		var ping = gameSocket.receiveTime - gameSocket.sendTime;
-		bar.dom.socket.innerHTML =
-			'<span class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>';
-	}
-	function playedStart() {
-		clearInterval(played.timer);
-		played.timer = setInterval(played.playedSend, 60000);
-	}
-	function playedSend() {
-		$.get(app.url + 'update-played.php');
-	}
-	function partyStart() {
-		clearInterval(sanity.party.timer);
-		sanity.party.timer = setInterval(function(){
-			if (my.p_id) {
-				sanity.party.partySend();
-				sanity.party.partyCheck();
-			}
-		}, 5000);
-	}
-	function partySend() {
-		console.info("Sending party heartbeats....");
-		try {
-			socket.publish('party' + my.p_id, {
-				id: my.row,
-				route: 'party->hb'
-			});
-		} catch (err) {
-			console.info('sanity.party.partySend', err);
-		}
-	}
-	function partyCheck() {
-		var now = Date.now(),
-			linkdead = [];
-		for (var i=1; i<6; i++) {
-			console.info("Checking: ", my.party[i].id, now - my.party[i].heartbeat > gameSocket.interval * 2)
-			if (my.party[i].id &&
-				!my.party[i].linkdead &&
-				(now - my.party[i].heartbeat > gameSocket.interval * 2)) {
-				linkdead.push(my.party[i].name);
-				my.party[i].linkdead = 1;
+				if (ng.view === 'town') {
+					obj.route = 'chat->hb';
+					socket.publish(chat.getChannel(), obj);
+				}
+				else {
+					obj.route = 'party->hb';
+					socket.publish('party' + my.p_id, obj);
+				}
+				heartbeat.sendTime = time;
 			}
 		}
-		linkdead.forEach(function(name){
-			socket.publish('party' + my.p_id, {
-				name: name,
-				route: 'party->linkdead'
-			});
+		clearTimeout(heartbeat.timer);
+		heartbeat.timer = setTimeout(heartbeatSend, heartbeat.interval);
+	}
+	function heartbeatReceived(data) {
+		if (data.name === my.name) {
+			heartbeat.receiveTime = Date.now();
+			var ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
+			console.info("heartbeat data: ", data);
+
+			bar.dom.socket.innerHTML =
+				'<span class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>';
+			bar.updateBars(data);
+		}
+		upsertRoom(data);
+	}
+	function requestPresence() {
+		socket.publish(chat.getChannel(), {
+			route: 'chat->getPresence'
 		});
-	}
-	function chatStart() {
-		clearInterval(sanity.chat.timer);
-		sanity.chat.timer = setInterval(sanity.chat.chatSend, 60000);
-	}
-	function chatSend() {
-		if (ng.view === 'town') {
-			$.get(app.url + 'chat/sanity-chat.php').done(function (data) {
-				for (var i = 0, len = data.players.length; i < len; i++) {
-					data.players[i] *= 1;
-				}
-				var newChatArray = [];
-				chat.inChannel.forEach(function (v) {
-					if (!data.players.includes(v)) {
-						$("#chat-player-" + v).remove();
-					}
-					else {
-						newChatArray.push(v);
-					}
-				});
-				if (newChatArray.length) {
-					chat.inChannel = newChatArray;
-					chat.setHeader();
-				}
-			});
-		}
 	}
 	function exit() {
 		// from town
-		if (gameSocket.enabled) {
-			chat.broadcastRemove();
+		if (heartbeat.enabled) {
+			chat.publishRemove();
 			if (my.p_id) {
 				// boot from party
 				/*
@@ -320,13 +211,196 @@ var game;
 	}
 
 	/** private */
-	function heartbeatStart() {
-		pingStart = Date.now();
-		$.get(app.url + 'heartbeat-first.php').done(function (data) {
-			data.name = my.name;
-			game.heartbeat.timer = setTimeout(heartbeatSend, 5000);
-			bar.updateBars(data);
+	function activate() {
+		setTimeout(function() {
+			TweenMax.to('#bar-lag', .5, {
+				opacity: 1
+			});
+		}, heartbeat.interval);
+		heartbeat.sendTime = Date.now();
+		heartbeat.receiveTime = Date.now();
+		clearTimeout(heartbeat.timer);
+		heartbeat.timer = setTimeout(heartbeatSend, heartbeat.interval);
+	}
+	/*function partyStart() {
+		clearInterval(sanity.party.timer);
+		sanity.party.timer = setInterval(function(){
+			if (my.p_id) {
+				sanity.party.partySend();
+				sanity.party.partyCheck();
+			}
+		}, 5000);
+	}
+	function partySend() {
+		console.info("Sending party heartbeats....");
+		try {
+			socket.publish('party' + my.p_id, {
+				id: my.row,
+				route: 'party->hb'
+			});
+		} catch (err) {
+			console.info('sanity.party.partySend', err);
+		}
+	}
+	function partyCheck() {
+		var now = Date.now(),
+			linkdead = [];
+		for (var i=1; i<6; i++) {
+			console.info("Checking: ", my.party[i].id, now - my.party[i].heartbeat > heartbeat.interval * 2)
+			if (my.party[i].id &&
+				!my.party[i].linkdead &&
+				(now - my.party[i].heartbeat > heartbeat.interval * 2)) {
+				linkdead.push(my.party[i].name);
+				my.party[i].linkdead = 1;
+			}
+		}
+		linkdead.forEach(function(name){
+			socket.publish('party' + my.p_id, {
+				name: name,
+				route: 'party->linkdead'
+			});
 		});
+	}*/
+	/*function chatStart() {
+		clearInterval(sanity.chat.timer);
+		sanity.chat.timer = setInterval(sanity.chat.chatSend, 60000);
+	}*/
+	/*function chatSend() {
+		if (ng.view === 'town') {
+			$.get(app.url + 'chat/sanity-chat.php').done(function (data) {
+				for (var i = 0, len = data.players.length; i < len; i++) {
+					data.players[i] *= 1;
+				}
+				var newChatArray = [];
+				chat.presence.forEach(function (v) {
+					if (!data.players.includes(v)) {
+						$("#chat-player-" + v).remove();
+					}
+					else {
+						newChatArray.push(v);
+					}
+				});
+				if (newChatArray.length) {
+					chat.presence = newChatArray;
+					chat.setHeader();
+				}
+			});
+		}
+	}*/
+	function playedStart() {
+		clearInterval(played.timer);
+		played.timer = setInterval(played.playedSend, 60000);
+	}
+	function playedSend() {
+		$.get(app.url + 'update-played.php');
+	}
+	function listenWhisper() {
+		socket.subscribe('name' + my.name, routeToWhisper);
+	}
+	function routeToWhisper(data) {
+		console.info('routeToWhisper', data);
+		data = data[0];
+		if (data.routeTo === 'party') {
+			route.party(data, data.route);
+		}
+		else if (data.action === 'send') {
+			console.info('Sent whisper: ', data);
+			// report message
+			route.town(data, data.route);
+			chat.lastWhisper.name = data.name;
+			// callback to sender
+			$.post(app.url + 'chat/send.php', {
+				action: 'receive',
+				msg: chat.whisperParse(data.msg),
+				class: 'chat-whisper',
+				category: 'name' + _.toLower(data.name)
+			});
+		}
+		// receive pong
+		else if (data.action === 'receive') {
+			if (!chat.lastWhisper.name) {
+				chat.lastWhisper = {
+					name: data.name
+				}
+			}
+			data.msg = chat.whisperTo(data) + chat.whisperParse(data.msg);
+			route.town(data, 'chat->log');
+		}
+		// guild invite
+		else if (data.action === 'guild-invite') {
+			console.info("guild invite received! ", data);
+			chat.promptAdd(data);
+		}
+		// party invite
+		else if (data.action === 'party-invite') {
+			console.info("party invite received! ", data);
+			chat.promptAdd(data);
+		}
+		else if (data.action === 'party-invite-deny') {
+			chat.log(data.name + " has denied your party invite.", 'chat-warning');
+		}
+		else if (data.action === 'guild-invite-deny') {
+			chat.log(data.name + " has denied your guild invite.", 'chat-warning');
+		}
+		else if (data.action === 'party-accept') {
+			chat.log(data.name + " has joined the party.", 'chat-warning');
+		}
+		else if (data.route === 'friend>addedMe') {
+			chat.log(data.name + " has added you to their friend list.", 'chat-warning');
+		}
+	}
+	function listenFriendAlerts() {
+		ng.friends.forEach(function(v){
+			socket.unsubscribe('friend' + v);
+			socket.subscribe('friend' + v, chat.friendNotify);
+		});
+	}
+	function upsertRoom(player) {
+		var time = Date.now();
+		var index = _.findIndex(chat.presence, { row: player.row });
+		if (index >= 0) {
+			// update
+			console.warn('updating player time', time);
+			chat.presence[index].time = time;
+			console.info('updating player time');
+		}
+		else {
+			// add
+			console.warn('adding player', player);
+			chat.presence.push({
+				row: player.row,
+				job: player.job,
+				level: player.level,
+				name: player.name,
+				time: time
+			});
+			var el = createElement('div');
+			el.id = 'chat-player-' + player.row;
+			el.innerHTML =
+				'<span class="chat-player">' +
+					'['+ player.level +':<span class="chat-'+ player.job +'">'+ player.name +'</span>]' +
+				'</span>';
+			chat.dom.chatRoom.appendChild(el);
+		}
+		auditRoom(time);
+		chat.setHeader();
+	}
+	function auditRoom(time) {
+		chat.presence.forEach(function(player) {
+			var diff = time - player.time;
+			if (diff > heartbeat.expired) {
+				removePlayer(player);
+			}
+			console.info('diff', diff);
+		})
+	}
+	function removePlayer(v) {
+		console.info('removing player: ', v.row);
+		var index = _.findIndex(chat.presence, { row: v.row });
+		_.pullAt(chat.presence, [ index ]);
+		var el = getById('chat-player-' + v.row);
+		el !== null && el.parentNode.removeChild(el);
+		chat.setHeader();
 	}
 	function getPingColor(ping) {
 		var index;
@@ -340,11 +414,5 @@ var game;
 			index = 2;
 		}
 		return pingColors[index];
-	}
-	function updateChatRoomStart() {
-		setInterval(chat.updateChannel, 15000);
-	}
-	function resync() {
-		// do nothing!
 	}
 })();

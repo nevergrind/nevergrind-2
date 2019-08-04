@@ -22,17 +22,17 @@ var socket;
 		topic = _.toLower(topic);
 		if (typeof socket.subs[topic] !== 'object' ||
 			!socket.subs[topic].active) {
-			console.info("subscribing:", topic, callback.name);
+			//console.info("subscribing:", topic, callback.name);
 			socket.session.subscribe(topic, callback).then(registerSubscription);
 		}
 	}
 	function publish(topic, obj) {
 		topic = _.toLower(topic);
-		console.info('publishing: ', topic, obj);
+		//console.info('publishing: ', topic, obj);
 		socket.session.publish(topic, socket.emptyArray, obj, socket.noExcludeObj);
 	}
 	function registerSubscription(sub) {
-		console.info('registerSubscription', sub);
+		//console.info('registerSubscription', sub);
 		socket.subs[sub.topic] = sub;
 	}
 	function unsubscribe(channel) {
@@ -66,67 +66,6 @@ var socket;
 			title.chatReceive(data[0]);
 		}
 	}
-	function listenWhisper() {
-		socket.subscribe('name' + my.name, routeToWhisper);
-	}
-	function listenFriendAlerts() {
-		ng.friends.forEach(function(v){
-			socket.unsubscribe('friend' + v);
-			socket.subscribe('friend' + v, chat.friendNotify);
-		});
-	}
-	function routeToWhisper(data) {
-		console.info('routeToWhisper', data);
-		data = data[0];
-		if (data.routeTo === 'party') {
-			route.party(data, data.route);
-		}
-		else if (data.action === 'send') {
-			console.info('Sent whisper: ', data);
-			// report message
-			route.town(data, data.route);
-			chat.lastWhisper.name = data.name;
-			// callback to sender
-			$.post(app.url + 'chat/send.php', {
-				action: 'receive',
-				msg: chat.whisperParse(data.msg),
-				class: 'chat-whisper',
-				category: 'name' + _.toLower(data.name)
-			});
-		}
-		// receive pong
-		else if (data.action === 'receive') {
-			if (!chat.lastWhisper.name) {
-				chat.lastWhisper = {
-					name: data.name
-				}
-			}
-			data.msg = chat.whisperTo(data) + chat.whisperParse(data.msg);
-			route.town(data, 'chat->log');
-		}
-		// guild invite
-		else if (data.action === 'guild-invite') {
-			console.info("guild invite received! ", data);
-			chat.promptAdd(data);
-		}
-		// party invite
-		else if (data.action === 'party-invite') {
-			console.info("party invite received! ", data);
-			chat.promptAdd(data);
-		}
-		else if (data.action === 'party-invite-deny') {
-			chat.log(data.name + " has denied your party invite.", 'chat-warning');
-		}
-		else if (data.action === 'guild-invite-deny') {
-			chat.log(data.name + " has denied your guild invite.", 'chat-warning');
-		}
-		else if (data.action === 'party-accept') {
-			chat.log(data.name + " has joined the party.", 'chat-warning');
-		}
-		else if (data.route === 'friend>addedMe') {
-			chat.log(data.name + " has added you to their friend list.", 'chat-warning');
-		}
-	}
 	function init() {
 		socket.connection = new autobahn.Connection({
 			url: app.socketUrl,
@@ -138,7 +77,6 @@ var socket;
 	function routeMainChat(data, obj) {
 		data = typeof data[0] === 'object' ?
 			data[0] : obj;
-		console.info('rx ', data, obj);
 		route.town(data, data.route);
 	}
 	function connectionSuccess(session) {
@@ -155,20 +93,12 @@ var socket;
 			//return;
 			(function retry(){
 				if (my.name){
-					game.heartbeatListen();
-					listenWhisper();
-					listenFriendAlerts();
-					socket.listenGuild();
+					game.initSocket();
 				}
 				else {
 					setTimeout(retry, 200);
 				}
 			})();
-
-			// keep alive?
-			// let everyone know I am here
-			chat.broadcastAdd();
-			chat.setHeader();
 			// notify friends I'm online
 			socket.publish('friend' + my.name, {
 				name: my.name,

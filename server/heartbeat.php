@@ -4,8 +4,7 @@ if (!isset($_SESSION['account'])) {
 	header('HTTP/1.1 500 Your session has expired.');
 }
 else {
-
-	$now = time();
+	/*$now = time();
 	if ($_SESSION['timer']['heartbeat']) {
 		if ($now - $_SESSION['timer']['heartbeat'] >= 5) {
 			$_SESSION['timer']['heartbeat'] = $now;
@@ -13,9 +12,9 @@ else {
 		else {
 			exit('Timing invalid');
 		}
-	}
+	}*/
 
-	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
+	//require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	// tick HP & MP
 	$_SESSION['hp'] += $_SESSION['hpRegen'];
 	if ($_SESSION['hp'] > $_SESSION['maxHp']) {
@@ -29,7 +28,7 @@ else {
 	}
 	$r['mp'] = $_SESSION['mp'];
 
-	$stmt = $db->prepare('update `players` set timestamp=now() where id=?');
+	/*$stmt = $db->prepare('update `players` set timestamp=now() where id=?');
 	$stmt->bind_param('i', $_SESSION['row']);
 	$stmt->execute();
 
@@ -50,7 +49,7 @@ else {
 			'name' => $_SESSION['name'],
 			'route' => 'party->updateBars'
 		]));
-	}
+	}*/
 
 	echo json_encode($r);
 }

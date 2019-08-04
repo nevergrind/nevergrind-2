@@ -204,8 +204,15 @@ var ng;
 		return new TimelineMax(o);
 	}
 	function keepAlive() {
-		$.get(app.url + 'session/keep-alive.php').always(function() {
-			setTimeout(ng.keepAlive, 170000);
+		clearTimeout(game.session.timer);
+		game.ajax.sendTime = Date.now();
+		$.get(app.url + 'session/keep-alive.php').done(function() {
+			game.ajax.receiveTime = Date.now();
+			if (ng.view !== 'title') {
+				bar.setAjaxPing();
+			}
+		}).always(function() {
+			game.session.timer = setTimeout(keepAlive, game.ajax.interval);
 		});
 	}
 	function msg(msg, d) {
@@ -339,6 +346,7 @@ var ng;
 			}
 
 			r.resetLocalSession && sessionStorage.clear();
+			ng.keepAlive();
 		});
 	}
 	function displayAllCharacters(r) {

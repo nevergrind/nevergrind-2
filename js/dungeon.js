@@ -12,7 +12,7 @@ var dungeon;
 		if (ng.view === 'dungeon') return;
 		game.emptyScenesExcept('scene-dungeon');
 		// remove from town chat
-		chat.broadcastRemove();
+		chat.publishRemove();
 		my.channel && socket.unsubscribe(chat.getChannel());
 		// set new channel data
 		my.channel = '';

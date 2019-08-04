@@ -35,7 +35,6 @@ var tooltip;
 		var el = $('#tooltip-wrap');
 		var padding = parseInt(el.css('padding-left'), 10) * 2;
 		var tooltipHalfWidth = padding * 2 + el.width() / 2;
-		console.info('tooltipHalfWidth', tooltipHalfWidth);
 		if (my.mouse.x < tooltipHalfWidth) {
 			// too small
 			my.mouse.x += tooltipHalfWidth / 2;

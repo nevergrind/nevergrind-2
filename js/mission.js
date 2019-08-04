@@ -418,7 +418,7 @@ var mission;
 	}
 	function abortCallback() {
 		// init client and transition back to town
-		game.heartbeat.enabled = 0;
+		game.heartbeatEnabled = false;
 		$.get(app.url + 'chat/delete-from-players.php');
 		mission.initQuest();
 		// rejoin main chat
@@ -430,13 +430,12 @@ var mission;
 		setTimeout(function () {
 			ng.unlock();
 			town.go();
-			chat.broadcastAdd();
-			chat.setHeader();
+			game.requestPresence();
 			chat.modeChange({
 				mode: '/say'
 			});
 			// this must be in place to prevent heartbeat updates while going back to town
-			game.heartbeat.enabled = 1;
+			game.heartbeatEnabled = true;
 		}, game.questDelay);
 	}
 	function openFirstTwoZones() {

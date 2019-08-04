@@ -17,7 +17,7 @@ var chat;
 		history: [],
 		divider: '<div class="chat-emote">========================================</div>',
 		whispers: {},
-		inChannel: [],
+		presence: [],
 		modeTypes: [
 			'/say',
 			'/party',
@@ -75,12 +75,8 @@ var chat;
 		joinChannel,
 		joinDefault,
 		joinChangeCallback,
-		updateChannel,
-		broadcastRemove,
-		addPlayer,
+		publishRemove,
 		clearLog,
-		removePlayer,
-		broadcastAdd,
 		sizeSmall,
 		sizeLarge,
 	}
@@ -632,18 +628,7 @@ var chat;
 		}
 	}
 	function camp() {
-		function callbackSuccess() {
-			setTimeout(function(){
-				$.get(app.url + 'chat/camp.php').done(location.reload)
-					.fail(function(){
-						log('Failed to camp successfully.', 'chat-alert');
-					});
-			}, 500);
-		}
-		if (ng.view !== 'town') {
-			log("You can only camp in town!", "chat-warning");
-		}
-		else {
+		if (ng.view === 'town') {
 			log('Camping...', 'chat-warning');
 			game.exit();
 			if (my.p_id) {
@@ -657,7 +642,9 @@ var chat;
 			(function repeat(count) {
 				if (!my.p_id) {
 					// successfully disbanded
-					callbackSuccess();
+					setTimeout(function() {
+						location.reload();
+					}, 500);
 				}
 				else {
 					if (count < 30) {
@@ -668,6 +655,9 @@ var chat;
 					}
 				}
 			})(0);
+		}
+		else {
+			log("You can only camp in town!", "chat-warning");
 		}
 	}
 	function reply() {
@@ -1014,27 +1004,13 @@ var chat;
 			chat.dom.chatLog.scrollTop = chat.dom.chatLog.scrollHeight;
 		}
 	}
-	function setRoom(data) {
-		console.info('setRoom', data.length, data);
-		var s = '';
-		chat.inChannel = [];
-		data.forEach(function(v){
-			chat.inChannel.push(v.id * 1);
-			s +=
-			'<div id="chat-player-'+ v.id +'">'+
-				'<span class="chat-player">['+ v.level +':<span class="chat-'+ v.job +'">'+ v.name +'</span>]</span>'+
-			'</div>';
-		});
-		if (s) {
-			chat.dom.chatRoom.innerHTML = s;
-		}
-	}
 	function clearLog() {
 		chat.dom.chatLog.innerHTML = '';
 	}
 	function setHeader() {
-		// or chat.inChannel.length ?
-		chat.dom.chatHeader.innerHTML = my.channel + '&thinsp;(' + $(".chat-player").length + ')';
+		// or chat.presence.length ?
+		chat.dom.chatHeader.innerHTML =
+			my.channel + '&thinsp;(' + chat.presence.length + ')';
 	}
 	function joinParse(msg) {
 		// 2 part parse lower case
@@ -1051,7 +1027,7 @@ var chat;
 						channel: channel
 					}).done(function (data) {
 						clearLog();
-						log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>')
+						log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>');
 						console.info('joinChannel', data);
 						joinChangeCallback(data);
 					});
@@ -1063,7 +1039,6 @@ var chat;
 		}
 	}
 	function joinDefault() {
-		console.info(my.channel, chat.default);
 		if (my.channel !== chat.default) {
 			$.post(app.url + 'chat/set-channel.php', {
 				channel: chat.default
@@ -1071,72 +1046,32 @@ var chat;
 		}
 	}
 	function joinChangeCallback(data) {
-		broadcastRemove();
-		console.info("You have changed channel to: ", data);
-		setRoom(data.players);
-		// removes id
-		//socket.removePlayer(my.account);
+		publishRemove();
+		console.info("You have changed channel to: ", data.channel);
 		// unsub prior channel
 		my.channel && socket.unsubscribe(chat.getChannel());
 		// set new channel data
 		my.channel = data.channel;
 		socket.subscribe('ng2' + data.channel, socket.routeMainChat); // main chat channel
 		// add to chat channel
-		chat.setHeader();
-		chat.broadcastAdd();
-	}
-	function updateChannel() {
-		if (ng.view === 'town') {
-			$.post(app.url + 'chat/update-channel.php', {
-				channel: chat.default
-			}).done(function (data) {
-				console.info("updateChannel: ", data);
-				setRoom(data.players);
-				chat.setHeader();
-			});
-		}
-	}
-	function addPlayer(v) {
-		// players receive update from socket
-		if (chat.inChannel.indexOf(v.row) === -1) {
-			var e = createElement('div');
-			e.innerHTML =
-			'<div id="chat-player-'+ v.row +'">'+
-				'<span class="chat-player">['+ v.level +':<span class="chat-'+ v.job +'">'+ v.name +'</span>]</span>'+
-			'</div>';
-			chat.dom.chatRoom.appendChild(e);
-			chat.inChannel.push(v.row);
-			chat.setHeader();
-		}
-	}
-	function removePlayer(v) {
-		var e = getById('chat-player-' + v.row);
-		e !== null && e.parentNode.removeChild(e);
-		var index = chat.inChannel.indexOf(v.row);
-		chat.inChannel.splice(index, 1);
-		chat.setHeader();
-	}
-	function broadcastAdd() {
-		// player broadcasts updates from client
-		console.info('broadcast.add', chat.getChannel());
-		socket.publish(chat.getChannel(), {
-			route: 'chat->add',
+		chat.presence = [];
+		$('#chat-room').empty();
+		game.upsertRoom({
 			row: my.row,
 			level: my.level,
 			job: my.job,
-			name: my.name
+			name: my.name,
+			time: Date.now()
 		});
+		game.requestPresence();
+		chat.setHeader();
+		game.heartbeatSend();
 	}
-	function broadcastRemove() {
-		console.info('broadcast.remove');
-		try {
-			socket.publish(chat.getChannel(), {
-				route: 'chat->remove',
-				row: my.row
-			});
-		} catch (err) {
-			console.info('broadcast.remove: ', err);
-		}
+	function publishRemove() {
+		socket.publish(chat.getChannel(), {
+			route: 'chat->remove',
+			row: my.row
+		});
 	}
 	function sizeSmall() {
 		TweenMax.set('#chat-present-wrap', {

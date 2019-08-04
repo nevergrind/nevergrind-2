@@ -120,7 +120,6 @@ var town;
 				town.events();
 				$("#scene-title").remove();
 				town.init();
-				game.initSocket();
 				bar.init();
 				// I'm in a party!
 				if (data.party !== undefined && data.party.id) {
@@ -145,14 +144,9 @@ var town;
 							TweenMax.to('#scene-town', .5, {
 								delay: .5,
 								opacity: 1,
-								onComplete: function() {
-									ng.unlock();
-									// sometimes players slip between gaps :(
-									setTimeout(function() {
-										// chat.updateChannel();
-									}, 2500);
-								}
+								onComplete: ng.unlock
 							});
+							bar.setAjaxPing();
 						}
 					}
 					else {

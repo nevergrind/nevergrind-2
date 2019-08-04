@@ -4,12 +4,12 @@ if (!isset($_SESSION['account'])) {
 	header('HTTP/1.1 500 Your session has expired.');
 }
 else {
-	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
+	// require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 	$r['hp'] = $_SESSION['hp'];
 	$r['mp'] = $_SESSION['mp'];
 
-	$stmt = $db->prepare('insert into `players` 
+	/*$stmt = $db->prepare('insert into `players`
 		(`id`, `account`, `name`, `level`, `race`, `job`, `zone`) 
 		values (?, ?, ?, ?, ?, ?, ?)');
 
@@ -21,10 +21,10 @@ else {
 		$_SESSION['race'],
 		$_SESSION['job'],
 		$_SESSION['chatChannel']);
-	$stmt->execute();
+	$stmt->execute();*/
 
 	// update parties hp/mp
-	if ($_SESSION['party']['id']) {
+	/*if ($_SESSION['party']['id']) {
 		$stmt = $db->prepare('update `parties` set hp=?, mp=? where c_id=?');
 		$stmt->bind_param('iii',
 			$_SESSION['hp'],
@@ -40,7 +40,7 @@ else {
 			'name' =>	$_SESSION['name'],
 			'route' =>	'party->updateBars'
 		]));
-	}
+	}*/
 
 	echo json_encode($r);
 }

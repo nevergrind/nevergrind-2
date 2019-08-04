@@ -32,7 +32,7 @@ function onOpen(session) {
 			var total = end - start;
 			console.info(arr[0], time);
 			console.warn('total time: ', total);
-			var el = document.createElement('div');
+			var el = createElement('div');
 			el.innerHTML = 'Timestamp: ' + time + ' - Total client time (first to last): ' + total;
 			document.body.appendChild(el);
 		}
@@ -47,6 +47,7 @@ require_once '../session/start.php';
 
 echo '__DIR__ ' . __DIR__ . '<br>';
 echo '$_SERVER[\'DOCUMENT_ROOT\']' . $_SERVER['DOCUMENT_ROOT'] . '<br>';
+echo 'time ' . microtime(true) * 1000 . '<br>';
 
 require '../db.php';
 

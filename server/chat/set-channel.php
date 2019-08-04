@@ -10,7 +10,7 @@ if ($_POST['channel']) {
 	$newChannel = 'ng2' . $_POST['channel'];
 
 	// update my zone/channel
-	$stmt = $db->prepare('update `players` set zone=? where id=?');
+	/*$stmt = $db->prepare('update `players` set zone=? where id=?');
 	$stmt->bind_param('ss', $newChannel, $_SESSION['row']);
 	$stmt->execute();
 
@@ -30,7 +30,7 @@ if ($_POST['channel']) {
 			'race' => $race,
 			'job' => $job
 		];
-	}
+	}*/
 
 	$_SESSION['chatChannel'] = $newChannel;
 	echo json_encode($r);

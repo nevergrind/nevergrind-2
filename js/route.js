@@ -7,7 +7,10 @@ var route;
 	}
 	///////////////////////////////////////////////////////
 	function town(data, r) {
-		if (r === 'chat->log') {
+		if (r === 'chat->hb') {
+			game.heartbeatReceived(data);
+		}
+		else if (r === 'chat->log') {
 			if (data.name === my.name) {
 				chat.log(data.msg, data.class);
 			}
@@ -19,11 +22,15 @@ var route;
 			}
 		}
 		else if (r === 'chat->add') {
-			// console.info('chat.inChannel', data.row, chat.inChannel);
-			chat.addPlayer(data);
+			// console.info('chat.presence', data.row, chat.presence);
+			game.upsertRoom(data);
 		}
 		else if (r === 'chat->remove') {
-			chat.removePlayer(data);
+			game.removePlayer(data);
+		}
+		else if (r === 'chat->getPresence') {
+			console.warn('getPresence received! broadcasting!')
+			game.heartbeatSend();
 		}
 	}
 	function party(data, r) {

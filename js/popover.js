@@ -19,7 +19,6 @@ var popover;
 	//////////////////////////////////////////////////
 
 	function setMainMenuHtml(id) {
-		console.info('id', id);
 		if (!id) return;
 		var html = mainMenuPopovers[id];
 		html && popover.show(html);
