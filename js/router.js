@@ -1,11 +1,16 @@
-var route;
+var router;
 (function() {
-	route = {
+	router = {
+		normalizeInput,
 		town,
 		party,
 		guild,
 	}
 	///////////////////////////////////////////////////////
+	function normalizeInput(arr, obj) {
+		return typeof arr[0] === 'object' ?
+			arr[0] : obj;
+	}
 	function town(data, r) {
 		if (r === 'chat->hb') {
 			game.heartbeatReceived(data);
@@ -34,8 +39,9 @@ var route;
 		}
 	}
 	function party(data, r) {
+		console.info('party', data, r);
 		if (r === 'party->hb') {
-			bar.heartbeatReceive(data);
+			game.heartbeatReceivedParty(data);
 		}
 		else if (r === 'party->updateBars') {
 			bar.updateBars(data);
@@ -65,11 +71,11 @@ var route;
 			// remove booted player
 			var slot = my.getPartySlotByRow(data.id * 1),
 				promote = 0;
-			if (my.party[slot].isLeader) {
+			if (party.presence[slot].isLeader) {
 				// we must promote a new leader
 				promote = 1;
 			}
-			my.party[slot] = my.Party();
+			party.presence[slot] = my.Party();
 			//console.info("%c party->bootme", "background: #ff0", promote);
 			// only boot if I'm the lowest id!
 			if (my.isLowestPartyIdMine()) {
@@ -87,6 +93,10 @@ var route;
 				}
 			}
 			setTimeout(bar.getParty, 1000);
+		}
+		else if (r === 'party->getPresence') {
+			console.warn('getPresence received! broadcasting!')
+			game.heartbeatSend();
 		}
 	}
 	function guild(data, r) {

@@ -21,8 +21,8 @@ var toast;
 				'<span data-row="'+ data.row +'" '+
 					'data-id="'+ id +'" '+
 					'data-action="'+ data.action +'" '+
-					'data-c-id="'+ data.cId +'" '+
-					'data-guild-name="'+ data.guildName +'" '+
+					'data-c-id="'+ data.row +'" '+
+					'data-guild-name="'+ (data.guildName ? data.guildName : "") +'" '+
 					'class="chat-prompt-btn chat-prompt-yes">'+
 					'<i class="fa fa-check chat-prompt-yes-icon"></i>&thinsp;Confirm'+
 				'</span>' +

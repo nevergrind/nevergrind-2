@@ -102,7 +102,7 @@ var context;
 		}
 		else {
 			// promote
-			if (my.party[0].isLeader) {
+			if (party.presence[0].isLeader) {
 				s += '<div id="context-boot" ' + z + '>Boot</div>';
 				s += '<div id="context-promote" ' + z + '>Promote</div>';
 			}

@@ -9,6 +9,8 @@ var guild;
 		],
 		memberList: [],
 		Guild,
+		listen,
+		route,
 		format,
 		create,
 		invite,
@@ -30,6 +32,23 @@ var guild;
 		setGuildList,
 	}
 	/////////////////////////////////////////////
+	function listen() {
+		// subscribe to test guild for now
+		if (my.guild.id) {
+			my.guild.motd && chat.log('Guild Message of the day: ' + my.guild.motd, 'chat-guild');
+			socket.subscribe('guild' + my.guild.id, guild.route);
+		}
+	}
+	function route(data, obj) {
+		data = router.normalizeInput(data, obj);
+		console.info('rx ', data);
+		if (data.route === 'chat->log') {
+			router.town(data, data.route);
+		}
+		else {
+			router.guild(data, data.route);
+		}
+	}
 	function Guild() {
 		return {
 			id: 0,
@@ -57,7 +76,7 @@ var guild;
 			my.guild = data.guild;
 			chat.log('Valeska Windcrest says, "By the powers vested in me, I hereby declare you supreme sovereign Leader of a new guild: ' + data.guild.name +'."');
 			chat.log('Type /help to view guild commands', 'chat-emote');
-			socket.listenGuild();
+			guild.listen();
 			// redraw the #aside-menu with new option
 			town.aside.update('town-guild');
 			guild.getMembers();
@@ -105,7 +124,7 @@ var guild;
 		}).done(function(data){
 			my.guild = data.guild;
 			chat.log("You have joined the guild: "+ data.guild.name, "chat-warning");
-			socket.listenGuild();
+			guild.listen();
 		}).fail(function(data){
 			console.info("Oh no", data);
 			chat.log(data.responseText, 'chat-warning');

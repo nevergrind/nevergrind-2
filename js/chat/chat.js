@@ -492,7 +492,7 @@ var chat;
 			log('Camping...', 'chat-warning');
 			game.exit();
 			if (my.p_id) {
-				if (my.party[0].isLeader) {
+				if (party.presence[0].isLeader) {
 					// promote
 					party.promotePlayer();
 				}

@@ -92,10 +92,10 @@ var town;
 				my.job = z.job;
 				my.race = z.race;
 				my.level = z.level;
-				my.row = z.row;
-				my.party[0] = z;
-				my.party[0].isLeader = 0;
-				my.resetClientPartyValues(0);
+				my.row = my.p_id = z.row;
+				party.presence[0] = z;
+				party.presence[0].isLeader = 1;
+				my.updateHeartbeat(0);
 				my.guild = data.guild;
 				if (data.quest.level) {
 					// quest still active
@@ -104,10 +104,8 @@ var town;
 				}
 
 				// init party member values
-				for (var i=1; i<game.maxPlayers; i++) {
-					my.party[i] = my.Party();
-				}
-				console.info('my.party[0]: ', my.party[0]);
+				party.presence[0] = my.Party();
+				console.info('party.presence[0]: ', party.presence[0]);
 				ng.setScene('town');
 				chat.init();
 				socket.init();
@@ -130,8 +128,7 @@ var town;
 				(function repeat() {
 					if (socket.enabled) {
 						// stuff to do after the socket wakes up
-						socket.listenParty(my.p_id);
-						bar.getParty();
+						party.listen(my.p_id);
 						chat.sendMsg('/join');
 						// town
 						TweenMax.to('#scene-town', .5, {

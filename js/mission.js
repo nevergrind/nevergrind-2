@@ -404,7 +404,7 @@ var mission;
 				chat.log('Returning to town...', 'chat-warning');
 				ng.lock(1);
 				(function repeat(){
-					if (my.party[0].isLeader) {
+					if (party.presence[0].isLeader) {
 						mission.abortCallback();
 					}
 					else {

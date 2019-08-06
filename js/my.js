@@ -10,9 +10,8 @@ var my;
 		lastReceivedWhisper: '',
 		p_id: 0,
 		leader: '',
-		isLeader: 0,
+		isLeader: 1,
 		zoneMobs: [],
-		party: [],
 		guild: {
 			id: 0,
 			rank: '',
@@ -36,30 +35,30 @@ var my;
 		getNewLeaderName,
 		getPartySlotByRow,
 		isLowestPartyIdMine,
-		resetClientPartyValues,
+		updateHeartbeat,
 		getPartyMemberIdByName,
 	}
 	////////////////////////////////////
 	function getPartyNames() {
 		var a = [];
-		my.party.forEach(function(v){
+		party.presence.forEach(function(v){
 			v.name && a.push(v.name);
 		});
 		return a;
 	}
 	function isLowestPartyIdMine() {
-		var lowestId = my.party[0].id;
-		my.party.forEach(function(v) {
+		var lowestId = party.presence[0].id;
+		party.presence.forEach(function(v) {
 			if (v.id && v.id < lowestId) {
 				lowestId = v.id;
 			}
 		});
-		return lowestId === my.party[0].id;
+		return lowestId === party.presence[0].id;
 	}
 	function getNewLeaderName() {
-		var lowestId = my.party[0].id,
-			name = my.party[0].name;
-		my.party.forEach(function(v) {
+		var lowestId = party.presence[0].id,
+			name = party.presence[0].name;
+		party.presence.forEach(function(v) {
 			if (v.id && v.id < lowestId) {
 				name = v.name;
 			}
@@ -68,17 +67,17 @@ var my;
 	}
 	function getPartyMemberIdByName(name) {
 		var id = 0;
-		my.party.forEach(function(v) {
+		party.presence.forEach(function(v) {
 			if (v.name === name) {
 				id = v.id;
 			}
 		});
 		return id;
 	}
-	function getPartySlotByRow(id) {
+	function getPartySlotByRow(row) {
 		var slot = 0;
-		my.party.forEach(function(v, i) {
-			if (v.id === id) {
+		party.presence.forEach(function(v, i) {
+			if (v.id === row) {
 				slot = i;
 			}
 		});
@@ -86,7 +85,7 @@ var my;
 	}
 	function partyCount() {
 		var count = 0;
-		my.party.forEach(function(v, i) {
+		party.presence.forEach(function(v) {
 			if (v.name) {
 				count++;
 			}
@@ -105,12 +104,13 @@ var my;
 			maxHp: 0,
 			mp: 0,
 			maxMp: 0,
+			isHidden: true,
 			heartbeat: Date.now()
 		}
 	}
-	function resetClientPartyValues(s) {
-		my.party[s].heartbeat = Date.now();
-		my.party[s].linkdead = 0;
+	function updateHeartbeat(s) {
+		party.presence[s].heartbeat = Date.now();
+		party.presence[s].linkdead = 0;
 	}
 	function hud(msg, d) {
 		my.hudTimer.kill();

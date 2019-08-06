@@ -97,8 +97,7 @@ var friend;
 		}
 	}
 	function notify(data, obj) {
-		data = typeof data[0] === 'object' ?
-			data[0] : obj;
+		data = router.normalizeInput(data, obj);
 		if (data.route === 'on') {
 			chat.log(data.name + ' has come online.', 'chat-warning');
 		}

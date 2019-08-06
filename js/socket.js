@@ -10,12 +10,8 @@ var socket;
 		subscribe,
 		unsubscribe,
 		publish,
-		registerSubscription,
-		joinGame,
 		init,
 		routeMainChat,
-		listenParty,
-		listenGuild,
 	}
 	////////////////////////////////////////
 	function subscribe(topic, callback) {
@@ -75,9 +71,8 @@ var socket;
 		socket.connection.open();
 	}
 	function routeMainChat(data, obj) {
-		data = typeof data[0] === 'object' ?
-			data[0] : obj;
-		route.town(data, data.route);
+		data = router.normalizeInput(data, obj);
+		router.town(data, data.route);
 	}
 	function connectionSuccess(session) {
 		console.warn("Connection successful!", session);
@@ -108,47 +103,6 @@ var socket;
 	}
 	function routeToAdmin(data) {
 		console.info('rx ', data[0]);
-		route.town(data[0], data[0].route);
-	}
-	function listenParty(row) {
-		// unsub to current party?
-		socket.unsubscribe('party'+ my.p_id);
-		// sub to party
-		my.p_id = row;
-		try {
-			// for some reason I need this when I rejoin town; whatever
-			socket.subscribe('party' + row, routeToParty);
-		}
-		catch (err) {
-			console.info('socket.listenParty ', err);
-		}
-	}
-	function routeToParty(data, obj) {
-		data = typeof data[0] === 'object' ?
-			data[0] : obj;
-		if (data.route === 'chat->log') {
-			route.town(data, data.route);
-		}
-		else {
-			route.party(data, data.route);
-		}
-		// console.info('party rx ', topic, data);
-	}
-	function listenGuild() {
-		// subscribe to test guild for now
-		if (my.guild.id) {
-			my.guild.motd && chat.log('Guild Message of the day: ' + my.guild.motd, 'chat-guild');
-			socket.subscribe('guild' + my.guild.id, routeToGuild);
-		}
-	}
-	function routeToGuild(data) {
-		data = data[0];
-		console.info('rx ', data);
-		if (data.route === 'chat->log') {
-			route.town(data, data.route);
-		}
-		else {
-			route.guild(data, data.route);
-		}
+		router.town(data[0], data[0].route);
 	}
 })();

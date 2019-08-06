@@ -3,7 +3,6 @@ var game;
 (function() {
 	/** public */
 	game = {
-		maxPlayers: 6,
 		session: {
 			timer: 0
 		},
@@ -20,6 +19,8 @@ var game;
 		initSocket,
 		heartbeatSend,
 		heartbeatReceived,
+		heartbeatReceivedParty,
+		heartbeatTimeout,
 		requestPresence,
 		exit,
 		getPingColor,
@@ -61,11 +62,10 @@ var game;
 			pingStart = Date.now();
 			heartbeat.activate();
 			played.playedStart();
-			/*sanity.party.partyStart();
-			sanity.chat.chatStart();*/
-			listenWhisper();
+			whisper.listen();
+			party.listen(my.row);
 			listenFriendAlerts();
-			socket.listenGuild();
+			guild.listen();
 			game.requestPresence();
 		}
 	}
@@ -85,20 +85,25 @@ var game;
 					level: my.level,
 					job: my.job,
 					name: my.name
-				}
+				};
 				if (ng.view === 'town') {
 					obj.route = 'chat->hb';
 					socket.publish(chat.getChannel(), obj);
 				}
-				if (my.p_id) {
+				if (my.partyCount() > 1 || ng.view !== 'town') {
+					// don't broadcast if it's just me in town
+					// always broadcast while out of town
 					obj.route = 'party->hb';
-					socket.publish('party' + my.p_id, obj);
+					socket.publish('party' + my.p_id, Object.assign(obj,
+						_.pick(party.presence[0], [
+							'hp', 'maxHp', 'mp', 'maxMp', 'isLeader'
+						])
+					));
 				}
 				heartbeat.sendTime = time;
 			}
 		}
-		clearTimeout(heartbeat.timer);
-		heartbeat.timer = setTimeout(heartbeatSend, heartbeat.interval);
+		heartbeatTimeout();
 	}
 	function heartbeatReceived(data) {
 		if (data.name === my.name) {
@@ -111,6 +116,24 @@ var game;
 			bar.updateBars(data);
 		}
 		upsertRoom(data);
+	}
+	function heartbeatReceivedParty(data) {
+		console.info('%c party heartbeat.receive id:', "background: #0ff", data);
+		heartbeat.receiveTime = Date.now();
+		var index = 0;
+		// check everyone except me
+		party.presence.forEach(function(v, i) {
+			if (i && v.id === party.presence[i].id) {
+				index = i;
+			}
+		})
+		if (index) {
+			my.updateHeartbeat(index);
+		}
+	}
+	function heartbeatTimeout() {
+		clearTimeout(heartbeat.timer);
+		heartbeat.timer = setTimeout(heartbeatSend, heartbeat.interval);
 	}
 	function requestPresence() {
 		socket.publish(chat.getChannel(), {
@@ -219,8 +242,7 @@ var game;
 		}, heartbeat.interval);
 		heartbeat.sendTime = Date.now();
 		heartbeat.receiveTime = Date.now();
-		clearTimeout(heartbeat.timer);
-		heartbeat.timer = setTimeout(heartbeatSend, heartbeat.interval);
+		heartbeatTimeout();
 	}
 	/*function partyStart() {
 		clearInterval(sanity.party.timer);
@@ -246,12 +268,12 @@ var game;
 		var now = Date.now(),
 			linkdead = [];
 		for (var i=1; i<6; i++) {
-			console.info("Checking: ", my.party[i].id, now - my.party[i].heartbeat > heartbeat.interval * 2)
-			if (my.party[i].id &&
-				!my.party[i].linkdead &&
-				(now - my.party[i].heartbeat > heartbeat.interval * 2)) {
-				linkdead.push(my.party[i].name);
-				my.party[i].linkdead = 1;
+			console.info("Checking: ", party.presence[i].id, now - party.presence[i].heartbeat > heartbeat.interval * 2)
+			if (party.presence[i].id &&
+				!party.presence[i].linkdead &&
+				(now - party.presence[i].heartbeat > heartbeat.interval * 2)) {
+				linkdead.push(party.presence[i].name);
+				party.presence[i].linkdead = 1;
 			}
 		}
 		linkdead.forEach(function(name){
@@ -261,93 +283,12 @@ var game;
 			});
 		});
 	}*/
-	/*function chatStart() {
-		clearInterval(sanity.chat.timer);
-		sanity.chat.timer = setInterval(sanity.chat.chatSend, 60000);
-	}*/
-	/*function chatSend() {
-		if (ng.view === 'town') {
-			$.get(app.url + 'chat/sanity-chat.php').done(function (data) {
-				for (var i = 0, len = data.players.length; i < len; i++) {
-					data.players[i] *= 1;
-				}
-				var newChatArray = [];
-				chat.presence.forEach(function (v) {
-					if (!data.players.includes(v)) {
-						$("#chat-player-" + v).remove();
-					}
-					else {
-						newChatArray.push(v);
-					}
-				});
-				if (newChatArray.length) {
-					chat.presence = newChatArray;
-					chat.setHeader();
-				}
-			});
-		}
-	}*/
 	function playedStart() {
 		clearInterval(played.timer);
 		played.timer = setInterval(played.playedSend, 60000);
 	}
 	function playedSend() {
 		$.get(app.url + 'update-played.php');
-	}
-	function listenWhisper() {
-		socket.subscribe('name' + my.name, routeToWhisper);
-	}
-	function routeToWhisper(data) {
-		console.info('routeToWhisper', data);
-		data = data[0];
-		if (data.routeTo === 'party') {
-			route.party(data, data.route);
-		}
-		else if (data.action === 'send') {
-			console.info('Sent whisper: ', data);
-			// report message
-			route.town(data, data.route);
-			chat.lastWhisper.name = data.name;
-			// callback to sender
-			$.post(app.url + 'chat/send.php', {
-				action: 'receive',
-				msg: chat.whisperParse(data.msg),
-				class: 'chat-whisper',
-				category: 'name' + _.toLower(data.name)
-			});
-		}
-		// receive pong
-		else if (data.action === 'receive') {
-			if (!chat.lastWhisper.name) {
-				chat.lastWhisper = {
-					name: data.name
-				}
-			}
-			data.msg = chat.whisperTo(data) + chat.whisperParse(data.msg);
-			route.town(data, 'chat->log');
-		}
-		// guild invite
-		else if (data.action === 'guild-invite') {
-			console.info("guild invite received! ", data);
-			toast.add(data);
-		}
-		// party invite
-		else if (data.action === 'party-invite') {
-			console.info("party invite received! ", data);
-			toast.add(data);
-		}
-		else if (data.action === 'party-invite-deny') {
-			chat.log(data.name + " has denied your party invite.", 'chat-warning');
-		}
-		else if (data.action === 'guild-invite-deny') {
-			chat.log(data.name + " has denied your guild invite.", 'chat-warning');
-		}
-		else if (data.action === 'party-accept') {
-			chat.log(data.name + " has joined the party.", 'chat-warning');
-		}
-		else if (data.route === 'friend>addedMe') {
-			chat.log(data.name + " has added you to their friend list.", 'chat-warning');
-		}
 	}
 	function listenFriendAlerts() {
 		ng.friends.forEach(function(v){
