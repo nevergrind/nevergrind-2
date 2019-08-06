@@ -307,31 +307,31 @@ var chat;
 			guild.motd(guild.motdParse(msg));
 		}
 		else if (msgLower.indexOf('/gleader') === 0) {
-			guild.leader(chat.partyParse(msg));
+			guild.leader(party.parse(msg));
 		}
 		else if (msgLower.indexOf('/gpromote') === 0) {
-			guild.promote(chat.partyParse(msg));
+			guild.promote(party.parse(msg));
 		}
 		else if (msgLower.indexOf('/gboot') === 0) {
-			guild.boot(chat.partyParse(msg));
+			guild.boot(party.parse(msg));
 		}
 		else if (msgLower === '/gquit') {
 			guild.quit();
 		}
 		else if (msgLower.indexOf('/ginvite') === 0) {
-			guild.invite(chat.partyParse(msg));
+			guild.invite(party.parse(msg));
 		}
 		else if (msgLower.indexOf('/promote') === 0) {
-			party.promote(chat.partyParse(msg));
+			party.promote(party.parse(msg));
 		}
 		else if (msgLower.indexOf('/boot') === 0) {
-			party.boot(chat.partyParse(msg));
+			party.boot(party.parse(msg));
 		}
 		else if (msgLower === '/disband') {
 			party.disband();
 		}
 		else if (msgLower.indexOf('/invite') === 0) {
-			party.invite(chat.partyParse(msg));
+			party.invite(party.parse(msg));
 		}
 		else if (msgLower === '/camp') {
 			chat.camp();

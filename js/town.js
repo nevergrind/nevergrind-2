@@ -114,7 +114,6 @@ var town;
 				friend.init();
 				ignore.init();
 				// things that only happen once
-				chat.log("There are currently " + data.count + " players exploring Vandamor.", 'chat-emote');
 				// init town ?
 				getById('scene-town').innerHTML = town.html();
 				town.events();

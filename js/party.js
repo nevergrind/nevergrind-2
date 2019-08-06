@@ -16,20 +16,20 @@ var party;
 	//////////////////////////////////////
 	function invite(name) {
 		if (my.name === name) {
-			log("You can't invite yourself to a party.", "chat-warning");
+			chat.log("You can't invite yourself to a party.", "chat-warning");
 		}
 		else if (my.p_id && !my.party[0].isLeader) {
-			log("Only the party leader may send invites.", "chat-warning");
+			chat.log("Only the party leader may send invites.", "chat-warning");
 		}
 		else if (my.quest.level) {
-			log("You cannot invite adventurers to the party after starting the mission.", "chat-warning");
+			chat.log("You cannot invite adventurers to the party after starting the mission.", "chat-warning");
 		}
-		else if (ng.view === 'town') {
-			log("You cannot invite adventurers from the depths of a dungeon.", "chat-warning");
+		else if (ng.view !== 'town') {
+			chat.log("You cannot invite adventurers from the depths of a dungeon.", "chat-warning");
 		}
 		else {
 			if (name) {
-				log('Sent party invite to '+ name +'.', 'chat-warning');
+				chat.log('Sent party invite to '+ name +'.', 'chat-warning');
 				console.info('name', name);
 				$.post(app.url + 'party/invite.php', {
 					player: _.toLower(name)
@@ -41,11 +41,11 @@ var party;
 					}
 					socket.listenParty(r.p_id);
 				}).fail(function(r){
-					log(r.responseText, 'chat-warning');
+					chat.log(r.responseText, 'chat-warning');
 				});
 			}
 			else {
-				log("Syntax: /invite [player_name]", "chat-warning");
+				chat.log("Syntax: /invite [player_name]", "chat-warning");
 			}
 		}
 	}
@@ -60,7 +60,7 @@ var party;
 			}).done(function (data) {
 				// console.info('promote ', data);
 			}).fail(function (r) {
-				log(r.responseText, 'chat-warning');
+				chat.log(r.responseText, 'chat-warning');
 			});
 		}
 	}
@@ -72,12 +72,12 @@ var party;
 			cId: z.cId
 		}).done(function(data){
 			console.info("party-join.php ", data);
-			log("You have joined the party.", "chat-warning");
+			chat.log("You have joined the party.", "chat-warning");
 			socket.listenParty(z.row);
 			bar.getParty();
 		}).fail(function(data){
 			console.info("Oh no", data);
-			log(data.responseText, 'chat-warning');
+			chat.log(data.responseText, 'chat-warning');
 		});
 	}
 	function parse(msg) { // 2-part upper case
@@ -87,7 +87,7 @@ var party;
 	}
 	function disband() {
 		if (ng.view === 'battle') {
-			log("You cannot disband the party during battle!", "chat-warning");
+			chat.log("You cannot disband the party during battle!", "chat-warning");
 		}
 		else {
 			var count = my.partyCount();
@@ -105,7 +105,7 @@ var party;
 				bar.disband();
 				mission.abort();
 			}).fail(function(r) {
-				log(r.responseText, 'chat-warning');
+				chat.log(r.responseText, 'chat-warning');
 			}).always(function() {
 				ng.unlock();
 			});
@@ -122,7 +122,7 @@ var party;
 			}).done(function (data) {
 				console.info('boot ', data);
 			}).fail(function (r) {
-				log(r.responseText, 'chat-warning');
+				chat.log(r.responseText, 'chat-warning');
 			});
 		}
 	}
