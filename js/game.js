@@ -3,6 +3,7 @@ var game;
 (function() {
 	/** public */
 	game = {
+		heartbeatExpired: 12000,
 		session: {
 			timer: 0
 		},
@@ -21,7 +22,7 @@ var game;
 		heartbeatReceived,
 		heartbeatReceivedParty,
 		heartbeatTimeout,
-		requestPresence,
+		getPresence,
 		exit,
 		getPingColor,
 		emptyScenesExcept,
@@ -53,6 +54,15 @@ var game;
 		playedStart,
 		playedSend,
 	};
+	// pooled variables
+	var time;
+	var index;
+	var diff;
+	var obj;
+	var ping;
+	var i;
+	var len;
+	var el;
 	/////////////////////////////////////////////////////
 	/** public */
 	function initSocket() {
@@ -63,43 +73,41 @@ var game;
 			heartbeat.activate();
 			played.playedStart();
 			whisper.listen();
-			party.listen(my.row);
 			listenFriendAlerts();
 			guild.listen();
-			game.requestPresence();
+			game.getPresence();
 		}
 	}
 	function heartbeatSend() {
 		if (game.heartbeatEnabled) {
-			var time = Date.now();
+			time = Date.now();
 			// check disconnect
-			var diff = time - heartbeat.receiveTime;
-			console.info("%c Socket ping: ", "background: #08f", diff + 'ms');
-			if (diff > heartbeat.expired) {
+			diff = time - heartbeat.receiveTime;
+			if (diff > game.heartbeatExpired) {
 				console.warn('something wrong with the socket... please investigate...');
 				ng.disconnect();
 			}
 			else {
-				var obj = {
+				obj = {
 					row: my.row,
 					level: my.level,
 					job: my.job,
 					name: my.name
 				};
 				if (ng.view === 'town') {
+					// town chat traffic
 					obj.route = 'chat->hb';
 					socket.publish(chat.getChannel(), obj);
 				}
-				if (my.partyCount() > 1 || ng.view !== 'town') {
-					// don't broadcast if it's just me in town
-					// always broadcast while out of town
-					obj.route = 'party->hb';
-					socket.publish('party' + my.p_id, Object.assign(obj,
-						_.pick(party.presence[0], [
-							'hp', 'maxHp', 'mp', 'maxMp', 'isLeader'
-						])
-					));
-				}
+				// party traffic
+				obj.route = 'party->hb';
+				socket.publish('party' + my.partyId, Object.assign(obj,
+					_.pick(my, [
+						'name', 'hp', 'maxHp', 'mp', 'maxMp', 'job', 'isLeader'
+					])
+				));
+				console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
+
 				heartbeat.sendTime = time;
 			}
 		}
@@ -108,46 +116,81 @@ var game;
 	function heartbeatReceived(data) {
 		if (data.name === my.name) {
 			heartbeat.receiveTime = Date.now();
-			var ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
-			console.info("heartbeat data: ", data);
-
+			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
+			console.info("%c town heartbeatReceived: ", "background: #0bf", data);
 			bar.dom.socket.innerHTML =
 				'<span class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>';
-			bar.updateBars(data);
+			bar.updatePlayerBar(data);
 		}
 		upsertRoom(data);
 	}
 	function heartbeatReceivedParty(data) {
-		console.info('%c party heartbeat.receive id:', "background: #0ff", data);
-		heartbeat.receiveTime = Date.now();
-		var index = 0;
-		// check everyone except me
-		party.presence.forEach(function(v, i) {
-			if (i && v.id === party.presence[i].id) {
-				index = i;
-			}
-		})
-		if (index) {
-			my.updateHeartbeat(index);
-		}
+		console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #0ff", data);
+		party.upsertParty(data);
 	}
 	function heartbeatTimeout() {
 		clearTimeout(heartbeat.timer);
 		heartbeat.timer = setTimeout(heartbeatSend, heartbeat.interval);
 	}
-	function requestPresence() {
+	function getPresence() {
 		socket.publish(chat.getChannel(), {
 			route: 'chat->getPresence'
 		});
+	}
+	function upsertRoom(player) {
+		time = Date.now();
+		index = _.findIndex(chat.presence, { row: player.row });
+		if (index >= 0) {
+			// update
+			chat.presence[index].time = time;
+		}
+		else {
+			// add
+			console.warn('adding player', player);
+			chat.presence.push({
+				row: player.row,
+				job: player.job,
+				level: player.level,
+				name: player.name,
+				time: time
+			});
+			var el = createElement('div');
+			el.id = 'chat-player-' + player.row;
+			el.innerHTML =
+				'<span class="chat-player">' +
+					'['+ player.level +':<span class="chat-'+ player.job +'">'+ player.name +'</span>]' +
+				'</span>';
+			chat.dom.chatRoom.appendChild(el);
+		}
+		auditRoom(time);
+		chat.setHeader();
+	}
+	function auditRoom(time) {
+		i=0;
+		len=chat.presence.length;
+		for (; i<len; i++) {
+			diff = time - chat.presence[i].time;
+			if (diff > game.heartbeatExpired) {
+				removePlayer(chat.presence[i]);
+			}
+		}
+	}
+	function removePlayer(player) {
+		console.info('removing player: ', player.row);
+		index = _.findIndex(chat.presence, { row: player.row });
+		_.pullAt(chat.presence, [ index ]);
+		el = getById('chat-player-' + player.row);
+		el !== null && el.parentNode.removeChild(el);
+		chat.setHeader();
 	}
 	function exit() {
 		// from town
 		if (heartbeat.enabled) {
 			chat.publishRemove();
-			if (my.p_id) {
+			if (my.partyId) {
 				// boot from party
 				/*
-				socket.publish('party' + my.p_id, {
+				socket.publish('party' + my.partyId, {
 					id: my.row,
 					name: my.name,
 					route: 'party->bootme'
@@ -233,7 +276,6 @@ var game;
 			s3[~~(rand() * s3.length)];
 	}
 
-	/** private */
 	function activate() {
 		setTimeout(function() {
 			TweenMax.to('#bar-lag', .5, {
@@ -247,7 +289,7 @@ var game;
 	/*function partyStart() {
 		clearInterval(sanity.party.timer);
 		sanity.party.timer = setInterval(function(){
-			if (my.p_id) {
+			if (my.partyId) {
 				sanity.party.partySend();
 				sanity.party.partyCheck();
 			}
@@ -256,7 +298,7 @@ var game;
 	function partySend() {
 		console.info("Sending party heartbeats....");
 		try {
-			socket.publish('party' + my.p_id, {
+			socket.publish('party' + my.partyId, {
 				id: my.row,
 				route: 'party->hb'
 			});
@@ -277,7 +319,7 @@ var game;
 			}
 		}
 		linkdead.forEach(function(name){
-			socket.publish('party' + my.p_id, {
+			socket.publish('party' + my.partyId, {
 				name: name,
 				route: 'party->linkdead'
 			});
@@ -295,50 +337,6 @@ var game;
 			socket.unsubscribe('friend' + v);
 			socket.subscribe('friend' + v, friend.notify);
 		});
-	}
-	function upsertRoom(player) {
-		var time = Date.now();
-		var index = _.findIndex(chat.presence, { row: player.row });
-		if (index >= 0) {
-			// update
-			chat.presence[index].time = time;
-		}
-		else {
-			// add
-			console.warn('adding player', player);
-			chat.presence.push({
-				row: player.row,
-				job: player.job,
-				level: player.level,
-				name: player.name,
-				time: time
-			});
-			var el = createElement('div');
-			el.id = 'chat-player-' + player.row;
-			el.innerHTML =
-				'<span class="chat-player">' +
-					'['+ player.level +':<span class="chat-'+ player.job +'">'+ player.name +'</span>]' +
-				'</span>';
-			chat.dom.chatRoom.appendChild(el);
-		}
-		auditRoom(time);
-		chat.setHeader();
-	}
-	function auditRoom(time) {
-		chat.presence.forEach(function(player) {
-			var diff = time - player.time;
-			if (diff > heartbeat.expired) {
-				removePlayer(player);
-			}
-		})
-	}
-	function removePlayer(v) {
-		console.info('removing player: ', v.row);
-		var index = _.findIndex(chat.presence, { row: v.row });
-		_.pullAt(chat.presence, [ index ]);
-		var el = getById('chat-player-' + v.row);
-		el !== null && el.parentNode.removeChild(el);
-		chat.setHeader();
 	}
 	function getPingColor(ping) {
 		var index;

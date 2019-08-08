@@ -34,17 +34,15 @@ var router;
 			game.removePlayer(data);
 		}
 		else if (r === 'chat->getPresence') {
-			console.warn('getPresence received! broadcasting!')
 			game.heartbeatSend();
 		}
 	}
 	function party(data, r) {
-		console.info('party', data, r);
 		if (r === 'party->hb') {
 			game.heartbeatReceivedParty(data);
 		}
-		else if (r === 'party->updateBars') {
-			bar.updateBars(data);
+		else if (r === 'party->updatePlayerBar') {
+			bar.updatePlayerBar(data);
 		}
 		else if (r === 'party->notifyMissionStatus') {
 			party.notifyMissionStatus(data);
@@ -81,7 +79,7 @@ var router;
 			if (my.isLowestPartyIdMine()) {
 				//console.info('isLowestPartyIdMine ! YES PROMOTE! ', _.cloneDeep(my.party));
 				party.boot(data.name, 1);
-				if (my.partyCount() === 1) {
+				if (party.presence.length === 1) {
 					// disband if one-man party
 					console.info('partyCount === 1 ');
 					party.disband();
@@ -95,7 +93,7 @@ var router;
 			setTimeout(bar.getParty, 1000);
 		}
 		else if (r === 'party->getPresence') {
-			console.warn('getPresence received! broadcasting!')
+			console.warn('getPresence received! broadcasting!');
 			game.heartbeatSend();
 		}
 	}

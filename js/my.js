@@ -8,9 +8,9 @@ var my;
 		},
 		channel: '',
 		lastReceivedWhisper: '',
-		p_id: 0,
+		partyId: 0,
 		leader: '',
-		isLeader: 1,
+		isLeader: true,
 		zoneMobs: [],
 		guild: {
 			id: 0,
@@ -30,12 +30,10 @@ var my;
 		hud,
 		Party,
 		clearHud,
-		partyCount,
 		getPartyNames,
 		getNewLeaderName,
 		getPartySlotByRow,
 		isLowestPartyIdMine,
-		updateHeartbeat,
 		getPartyMemberIdByName,
 	}
 	////////////////////////////////////
@@ -83,21 +81,12 @@ var my;
 		});
 		return slot;
 	}
-	function partyCount() {
-		var count = 0;
-		party.presence.forEach(function(v) {
-			if (v.name) {
-				count++;
-			}
-		});
-		return count;
-	}
-	function Party() {
+	function Party(isLeader) {
 		return {
 			row: 0, // not updated from server - failing at life
 			id: 0, // when updated
 			name: '',
-			isLeader: 0,
+			isLeader: isLeader || false,
 			job: '',
 			level: 0,
 			hp: 0,
@@ -106,11 +95,7 @@ var my;
 			maxMp: 0,
 			isHidden: true,
 			heartbeat: Date.now()
-		}
-	}
-	function updateHeartbeat(s) {
-		party.presence[s].heartbeat = Date.now();
-		party.presence[s].linkdead = 0;
+		};
 	}
 	function hud(msg, d) {
 		my.hudTimer.kill();

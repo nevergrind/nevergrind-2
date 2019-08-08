@@ -38,7 +38,7 @@ else {
 			'hp' =>	$_SESSION['hp'],
 			'mp' =>	$_SESSION['mp'],
 			'name' =>	$_SESSION['name'],
-			'route' =>	'party->updateBars'
+			'route' =>	'party->updatePlayerBar'
 		]));
 	}*/
 

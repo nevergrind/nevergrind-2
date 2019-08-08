@@ -52,7 +52,7 @@ if (is_null($r['c_id'])) {
 
 		// last insert id is GET value
 		$p_id = $_SESSION['party']['id'] = mysqli_insert_id($db);
-		$_SESSION['party']['isLeader'] = 1;
+		$_SESSION['party']['isLeader'] = true;
 
 		// update p_id with what I just inserted with
 		$stmt = mysqli_query($db,

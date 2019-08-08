@@ -50,7 +50,6 @@ var popover;
 		var el = $('#popover-wrap');
 		var padding = parseInt(el.css('padding-left'), 10) * 2;
 		var popoverHalfWidth = padding * 2 + el.width() / 2;
-		console.info('popoverHalfWidth', popoverHalfWidth);
 		if (my.mouse.x < popoverHalfWidth) {
 			// too small
 			my.mouse.x += popoverHalfWidth / 2;

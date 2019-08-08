@@ -4,43 +4,39 @@ var bar;
 		dom: {},
 		initialized: 0,
 		init,
-		html,
-		setHp,
-		setMp,
-		header,
 		disband,
-		setBars,
 		linkdead,
-		getParty,
+		getPresence,
 		hideParty,
 		partyJoin,
-		setEvents,
 		partyBoot,
-		setAllBars,
-		updateBars,
+		updatePlayerBar,
 		setAjaxPing,
 		partyDisband,
 		partyPromote,
-		getPlayerHtml,
-		updatePlayerBar,
-		getPlayerInnerHtml,
-	}
+		addPlayerBar,
+	};
+	var index;
+	var player; // temp bar data
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
 			bar.initialized = 1;
 			var e = getById('bar-wrap');
-			e.innerHTML = bar.html();
-			/*$(".bar-icons").tooltip({
-				animation: false
-			});*/
+			// my bar
+			var html = getBarHeader();
+			// party bars
+			html += '<div id="bar-all-player-wrap">';
+			for (var i=0; i<party.maxPlayers; i++) {
+				html += getPlayerBarHtml({}, i, true);
+			}
+			html += '</div>';
+			e.innerHTML = html;
 			e.style.display = 'block';
 
-			for (var i = 0; i < party.maxPlayers; i++) {
-				bar.setEvents(i);
-			}
+			bar.dom.ping = getById('bar-ping');
+			bar.dom.socket = getById('bar-socket');
 			// draw all bars
-			bar.setAllBars();
 			// bar events
 			$("#bar-wrap").on('click contextmenu', '.bar-col-icon', function (e) {
 				var id = $(this).attr('id'),
@@ -60,40 +56,20 @@ var bar;
 				.on('mouseenter', '.bar-icons', function() {
 				var id = $(this).attr('id');
 				popover.setMainMenuHtml(id);
-			}).on('mouseleave', '.bar-icons', function() {
-				console.info('mouse leave');
-				popover.hide();
-			});
+			}).on('mouseleave', '.bar-icons', popover.hide);
 		}
 	}
-	function setEvents(i) {
-		bar.dom[i] = {
-			playerWrap: getById('bar-player-wrap-' + i),
-			name: getById('bar-name-' + i),
-			hpFg: getById('bar-hp-fg-' + i),
-			// hpBg: getById('bar-hp-bg-' + i),
-			mpWrap: getById('bar-mp-wrap-' + i),
-			mpFg: getById('bar-mp-fg-' + i),
+	function cachePlayerBars(index) {
+		bar.dom[index] = {
+			playerWrap: getById('bar-player-wrap-' + index),
+			name: getById('bar-name-' + index),
+			hpFg: getById('bar-hp-fg-' + index),
+			// hpBg: getById('bar-hp-bg-' + index),
+			mpWrap: getById('bar-mp-wrap-' + index),
+			mpFg: getById('bar-mp-fg-' + index),
 		}
-
-		bar.dom.ping = getById('bar-ping');
-		bar.dom.socket = getById('bar-socket');
 	}
-	function getPlayerHtml(player, index, ignoreWrap) {
-		// get bar for one player
-		var s = '';
-		if (!ignoreWrap) {
-			s += '<div id="bar-player-wrap-' + index + '" '+
-			'class="bar-player-wrap' + (!index ? ' bar-player-wrap-me' : '') + '" ' +
-				'style="display: '+ (index === 0 ? 'flex' : 'none') +'">';
-		}
-		s += bar.getPlayerInnerHtml(player, index);
-		if (!ignoreWrap) {
-			s += '</div>';
-		}
-		return s;
-	}
-	function header() {
+	function getBarHeader() {
 		var s = '';
 		s +=
 		'<div id="bar-lag">' +
@@ -109,14 +85,18 @@ var bar;
 		'</div>';
 		return s;
 	}
-	function getPlayerInnerHtml(player, index) {
+	function getPlayerBarHtml(player, index, includeWrapper) {
 		player = player || {};
-		// inner portion of getPlayerHtml
-		var s =
-		'<div id="bar-col-icon-'+ index +'" class="bar-col-icon player-icon-'+ (player.job || "WAR") +'">' +
+		var s = '';
+		if (includeWrapper) {
+			s += '<div id="bar-player-wrap-' + index + '" '+ 'class="bar-player-wrap' + (!index ? ' bar-player-wrap-me' : '') + '" ' + 'style="display: '+ (index === 0 ? 'flex' : 'none') +'">';
+		}
+		// job icon
+		s += '<div id="bar-col-icon-'+ index +'" class="bar-col-icon player-icon-'+ (player.job || "WAR") +'">' +
 			//'<div id="bar-level-'+ i +'" class="bar-level no-pointer">'+ player.level +'</div>' +
 			'<div id="bar-is-leader-'+ index +'" class="bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></div>' +
 		'</div>' +
+		// bars
 		'<div class="'+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'">' +
 			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis">'+ (player.name || '') +'</div>' +
 			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +
@@ -127,72 +107,85 @@ var bar;
 				'<div id="bar-mp-fg-'+ index +'" class="bar-mp-fg"></div>' +
 			'</div>' +
 		'</div>';
-		return s;
-	}
-	function html() {
-		// my bar
-		var s = bar.header();
-		// party bars
-		s += '<div id="bar-all-player-wrap">';
-		for (var i=0; i<party.maxPlayers; i++) {
-			s += bar.getPlayerHtml(party.presence[i], i);
+		if (includeWrapper) {
+			s += '</div>';
 		}
-		s += '</div>';
 		return s;
 	}
-	function updatePlayerBar(index) {
+	function updatePlayerBar(data) {
+		index = _.findIndex(party.presence, { row: data.row });
+		if (index === -1) return;
+		player = party.presence[index];
+		if (data.hp !== player.hp || data.maxHp !== player.maxHp) {
+			player.hp = data.hp;
+			player.maxHp = data.maxHp;
+			setHp(index);
+		}
+		if (data.mp !== player.mp || data.maxMp !== player.maxMp) {
+			player.mp = data.mp;
+			player.maxMp = data.maxMp;
+			setMp(index);
+		}
+		if (data.isLeader !== player.isLeader) {
+			player.isLeader = data.isLeader;
+			// set UI helmet
+		}
+		if (data.job !== player.job) {
+			player.job = data.job;
+			// set UI job
+		}
+		if (data.level !== player.level) {
+			player.level = data.level;
+			// set UI level
+		}
+		if (data.row !== player.row) {
+			player.row = data.row;
+		}
+		if (data.name !== player.name) {
+			player.name = data.name;
+
+		}
+	}
+	function addPlayerBar(index) {
+		if (typeof bar.dom[index] === 'undefined') {
+			cachePlayerBars(index);
+		}
 		bar.dom[index].playerWrap.style.display = 'flex';
-		bar.dom[index].playerWrap.innerHTML = bar.getPlayerInnerHtml(party.presence[index], index);
-		bar.setEvents(index);
-		bar.setBars(index, 0);
-	}
-	function setAllBars() {
-		// draw all hp/mp values using my.party data
-		for (var i=0; i<party.maxPlayers; i++) {
-			bar.setHp(i);
-			bar.setMp(i);
-		}
-	}
-	function setBars(index, delay) {
-		bar.setHp(index, delay);
-		bar.setMp(index, delay);
-	}
-	function updateBars(data) {
-		for (var i=0, len=party.presence.length; i<len; i++) {
-			if (data.name === party.presence[i].name) {
-				if (data.hp) {
-					party.presence[i].hp = data.hp;
-					bar.setHp(i);
-				}
-				if (data.mp) {
-					party.presence[i].mp = data.mp;
-					bar.setMp(i);
-				}
-			}
-		}
+		bar.dom[index].playerWrap.innerHTML = getPlayerBarHtml(party.presence[index], index);
 	}
 	function setHp(index, delay) {
-		if (typeof party.presence[index] === 'undefined' || !party.presence[index].name) return;
-		var percent = ~~((party.presence[index].hp / party.presence[index].maxHp) * 100) + '%',
-				delay = delay === undefined ? .3 : delay;
-		TweenMax.to(bar.dom[index].hpFg, delay, {
-			width: percent
-		});
-		/*TweenMax.to(bar.dom[index].hpBg, .5, {
-			width: percent
-		});*/
-	}
-	function setMp(index, delay) {
-		if (typeof party.presence[index] === 'undefined' || !party.presence[index].name) return;
-		if (party.presence[index].maxMp) {
-			var percent = ~~((party.presence[index].mp / party.presence[index].maxMp) * 100) + '%',
-				delay = delay === undefined ? .3 : delay;
-			TweenMax.to(bar.dom[index].mpFg, delay, {
-				width: percent
-			});
+		if (typeof party.presence[index] === 'undefined' ||
+			!party.presence[index].name) {
+			console.warn("NOT DRAWING BAR");
 		}
 		else {
-			bar.dom[index].mpWrap.style.display = 'none';
+			var percent = ~~((party.presence[index].hp / party.presence[index].maxHp) * 100) + '%',
+					delay = delay === undefined ? .3 : delay;
+			TweenMax.to(bar.dom[index].hpFg, delay, {
+				width: percent
+			});
+			/*TweenMax.to(bar.dom[index].hpBg, .5, {
+				width: percent
+			});*/
+
+		}
+	}
+	function setMp(index, delay) {
+		if (typeof party.presence[index] === 'undefined' ||
+			!party.presence[index].name) {
+			console.warn("NOT DRAWING BAR");
+		}
+		else {
+			if (party.presence[index].maxMp) {
+				var percent = ~~((party.presence[index].mp / party.presence[index].maxMp) * 100) + '%',
+					delay = delay === undefined ? .3 : delay;
+				TweenMax.to(bar.dom[index].mpFg, delay, {
+					width: percent
+				});
+			}
+			else {
+				bar.dom[index].mpWrap.style.display = 'none';
+			}
 		}
 	}
 
@@ -204,7 +197,7 @@ var bar;
 		console.info('bar.party.join ', data);
 		chat.log(data.msg, 'chat-warning');
 		// refresh party bars
-		bar.getParty();
+		bar.getPresence();
 	}
 	function partyDisband(data) {
 		var index = 0,
@@ -238,7 +231,7 @@ var bar;
 	function partyPromote(data) {
 		chat.log(data.name + " has been promoted to party leader.", 'chat-warning');
 		// refresh party bars
-		bar.getParty();
+		bar.getPresence();
 	}
 	function partyBoot(data) {
 		console.info('bar.party.boot ', data);
@@ -246,7 +239,7 @@ var bar;
 		// refresh party bars
 		data.row *= 1;
 		bar.partyDisband(data);
-		bar.getParty();
+		bar.getPresence();
 	}
 	function setAjaxPing() {
 		var ping = ~~((game.ajax.receiveTime - game.ajax.sendTime) / 2);
@@ -254,66 +247,10 @@ var bar;
 			'<span class="'+ game.getPingColor(ping) +'">' + (ping) + 'ms</span>';
 
 	}
-	function getParty() {
-		socket.publish('party' + my.p_id, {
+	function getPresence() {
+		socket.publish('party' + my.partyId, {
 			route: 'party->getPresence',
 		});
-		//console.info("Drawing all bars!");
-		/*if (my.p_id) {
-			$.get(app.url + 'chat/party-get-all.php').done(function (data) {
-				console.info('getParty ', data);
-				var npIndex = 1;
-				data.party.forEach(function(v, i){
-					console.info('SET BARS ', i, v);
-					if (v.name === my.name) {
-						party.presence[0] = v;
-						my.updateHeartbeat(0);
-						bar.updatePlayerBar(0);
-					}
-					else {
-						party.presence[npIndex] = v;
-						my.updateHeartbeat(npIndex);
-						bar.updatePlayerBar(npIndex++);
-					}
-				});
-				// hide empty rows
-				var len = data.party.length;
-				for (var i=len; i<party.maxPlayers; i++) {
-					if (i) {
-						// never overwrite self
-						getById('bar-player-wrap-' + i).style.display = 'none';
-						party.presence[i] = my.Party();
-					}
-				}
-			});
-		}*/
-	}
-	function upsertParty(data) {
-		console.info('setParty', data);
-		if (data.name === my.name) {
-			party.presence[0] = data;
-			my.updateHeartbeat(0);
-			bar.updatePlayerBar(0);
-		}
-		else {
-			if (party.presence.length < party.maxPlayers) {
-				party.presence.push(Object.assign(my.Party(), data));
-				var len = party.presence.length;
-				my.updateHeartbeat(len);
-				bar.updatePlayerBar(len);
-			}
-			else {
-				// broadcast reject join to player
-			}
-		}
-		// hide empty rows
-		party.presence.forEach(function(v, i) {
-			if (i) {
-				// never hide self
-				getById('bar-player-wrap-' + i).style.display = v.name ?
-					'block' : 'none';
-			}
-		})
 	}
 	function disband() {
 		party.presence.forEach(function(v, i){
@@ -324,9 +261,9 @@ var bar;
 		});
 		bar.hideParty();
 		// update server
-		socket.unsubscribe('party'+ my.p_id);
-		my.p_id = 0;
-		party.presence[0].isLeader = 0;
+		socket.unsubscribe('party'+ my.partyId);
+		my.partyId = my.row;
+		party.presence[0].isLeader = false;
 		getById('bar-is-leader-0').style.display = 'none';
 	}
 	function hideParty() {

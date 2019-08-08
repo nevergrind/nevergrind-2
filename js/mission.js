@@ -430,7 +430,7 @@ var mission;
 		setTimeout(function () {
 			ng.unlock();
 			town.go();
-			game.requestPresence();
+			game.getPresence();
 			chat.modeChange({
 				mode: '/say'
 			});

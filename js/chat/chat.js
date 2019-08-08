@@ -391,7 +391,7 @@ var chat;
 				var o = chat.getMsgObject(msg);
 				if (o.msg[0] !== '/') {
 					console.info(o);
-					if (!my.p_id && o.category.indexOf('party') === 0) {
+					if (!my.partyId && o.category.indexOf('party') === 0) {
 						log("You are not in a party.", 'chat-warning');
 					}
 					else if (!my.guild.id && o.category.indexOf('guild') === 0) {
@@ -443,12 +443,12 @@ var chat;
 			o.class = 'chat-normal';
 		}
 		else if (parse.first === '/p') {
-			o.category = 'party' + my.p_id;
+			o.category = 'party' + my.partyId;
 			o.msg = shortCommandMsg;
 			o.class = 'chat-party';
 		}
 		else if (chat.modeCommand === '/party'){
-			o.category = 'party' + my.p_id;
+			o.category = 'party' + my.partyId;
 			o.msg = msg;
 			o.class = 'chat-party';
 		}
@@ -491,7 +491,7 @@ var chat;
 		if (ng.view === 'town') {
 			log('Camping...', 'chat-warning');
 			game.exit();
-			if (my.p_id) {
+			if (my.partyId) {
 				if (party.presence[0].isLeader) {
 					// promote
 					party.promotePlayer();
@@ -500,7 +500,7 @@ var chat;
 				chat.sendMsg('/disband')
 			}
 			(function repeat(count) {
-				if (!my.p_id) {
+				if (!my.partyId) {
 					// successfully disbanded
 					setTimeout(function() {
 						location.reload();
@@ -738,7 +738,7 @@ var chat;
 			name: my.name,
 			time: Date.now()
 		});
-		game.requestPresence();
+		game.getPresence();
 		chat.setHeader();
 		game.heartbeatSend();
 	}

@@ -1,7 +1,7 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-
+/*
 // get my character data
 $query = 'select 
 	g.is_leader,
@@ -51,5 +51,5 @@ while($stmt->fetch()){
 		$_SESSION['party']['isLeader'] = $isLeader;
 
 	}
-}
+}*/
 echo json_encode($r);

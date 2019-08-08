@@ -63,7 +63,7 @@ if ($partyCount >= 1 && $partyCount < 6) {
 
 		$_SESSION['party'] = [
 			'id' => $_POST['row'] * 1,
-			'isLeader' => 0,
+			'isLeader' => false,
 			'mission_id' => $mission_id
 		];
 
