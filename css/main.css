@@ -1233,7 +1233,7 @@ background-clip: content-box;
 	right: 0;
 	width: .8rem;
 	height: .8rem;
-	background: url('../images/is-leader-20-2.png');
+	background: url('../images/is-leader-64.png');
 	background-size: 100%;
 }
 
@@ -1756,6 +1756,7 @@ background-clip: content-box;
 .flex-align-center {
 	align-items: center;
 }
+.flex-75 { flex-basis: 75% }
 .flex-50 { flex-basis: 50% }
 .flex-33 { flex-basis: 33.33% }
 .flex-25 { flex-basis: 25% }
@@ -1988,7 +1989,16 @@ background-clip: content-box;
 	padding: 0 .1rem
 }
 #create-overview {
+	display: flex;
 	font-size: 1rem;
+}
+#create-overview-stats {
+	display: flex;
+	flex: 1;
+}
+#create-portrait {
+	margin: .2rem;
+	width: 9rem;
 }
 #create-details {
 	margin: .2rem 0;

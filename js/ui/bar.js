@@ -67,6 +67,7 @@ var bar;
 			// hpBg: getById('bar-hp-bg-' + index),
 			mpWrap: getById('bar-mp-wrap-' + index),
 			mpFg: getById('bar-mp-fg-' + index),
+			isLeader: getById('bar-is-leader-' + index),
 		}
 	}
 	function getBarHeader() {
@@ -129,6 +130,14 @@ var bar;
 		if (data.isLeader !== player.isLeader) {
 			player.isLeader = data.isLeader;
 			// set UI helmet
+			if (player.isLeader) {
+				getById('bar-is-leader-' + index).classList.remove('none');
+			}
+			else {
+				getById('bar-is-leader-' + index).classList.add('none');
+			}
+
+			console.warn('isLeader', data.row, index, player.isLeader);
 		}
 		if (data.job !== player.job) {
 			player.job = data.job;
