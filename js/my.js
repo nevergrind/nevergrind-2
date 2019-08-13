@@ -34,7 +34,6 @@ var my;
 		getNewLeaderName,
 		getPartySlotByRow,
 		isLowestPartyIdMine,
-		getPartyMemberIdByName,
 	}
 	////////////////////////////////////
 	function getPartyNames() {
@@ -62,15 +61,6 @@ var my;
 			}
 		});
 		return name;
-	}
-	function getPartyMemberIdByName(name) {
-		var id = 0;
-		party.presence.forEach(function(v) {
-			if (v.name === name) {
-				id = v.id;
-			}
-		});
-		return id;
 	}
 	function getPartySlotByRow(row) {
 		var slot = 0;

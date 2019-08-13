@@ -2,16 +2,16 @@ var router;
 (function() {
 	router = {
 		normalizeInput,
-		town,
-		party,
-		guild,
+		toTown,
+		toParty,
+		toGuild,
 	}
 	///////////////////////////////////////////////////////
 	function normalizeInput(arr, obj) {
 		return typeof arr[0] === 'object' ?
 			arr[0] : obj;
 	}
-	function town(data, r) {
+	function toTown(data, r) {
 		if (r === 'chat->hb') {
 			game.heartbeatReceived(data);
 		}
@@ -37,7 +37,7 @@ var router;
 			game.heartbeatSend();
 		}
 	}
-	function party(data, r) {
+	function toParty(data, r) {
 		if (r === 'party->hb') {
 			game.heartbeatReceivedParty(data);
 		}
@@ -53,17 +53,20 @@ var router;
 		else if (r === 'party->linkdead') {
 			bar.heartbeatLinkdead(data);
 		}
-		else if (r === 'party->join') {
-			bar.partyJoin(data);
+		else if (r === 'party->notifyJoin') {
+			party.notifyJoin(data);
+		}
+		else if (r === 'party->joinRequest') {
+			party.joinAck(data);
 		}
 		else if (r === 'party->disband') {
-			bar.partyDisband(data);
+			party.partyDisband(data);
 		}
 		else if (r === 'party->promote') {
-			bar.partyPromote(data);
+			party.notifyPromote(data);
 		}
 		else if (r === 'party->boot') {
-			bar.partyBoot(data);
+			party.notifyBoot(data);
 		}
 		else if (r === 'party->bootme') {
 			// remove booted player
@@ -74,7 +77,6 @@ var router;
 				promote = 1;
 			}
 			party.presence[slot] = my.Party();
-			//console.info("%c party->bootme", "background: #ff0", promote);
 			// only boot if I'm the lowest id!
 			if (my.isLowestPartyIdMine()) {
 				//console.info('isLowestPartyIdMine ! YES PROMOTE! ', _.cloneDeep(my.party));
@@ -97,7 +99,7 @@ var router;
 			game.heartbeatSend();
 		}
 	}
-	function guild(data, r) {
+	function toGuild(data, r) {
 		if (r === 'guild->hasJoined') {
 			guild.hasJoined(data);
 		}

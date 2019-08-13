@@ -594,53 +594,50 @@ tbody {
 }
 
 #mob-wrap-0 {
-	bottom: 180px;
 	left: 10%;
 	z-index: 1
 }
 
 #mob-wrap-1 {
-	bottom: 180px;
 	left: 30%;
 	z-index: 1
 }
 
 #mob-wrap-2 {
-	bottom: 180px;
 	left: 50%;
 	z-index: 1
 }
 
 #mob-wrap-3 {
-	bottom: 180px;
 	left: 70%;
 	z-index: 1
 }
 
 #mob-wrap-4 {
-	bottom: 180px;
 	left: 90%;
 	z-index: 1
 }
 
 #mob-wrap-5 {
-	bottom: 280px;
 	left: 20%
 }
 
 #mob-wrap-6 {
-	bottom: 280px;
 	left: 40%;
 }
 
 #mob-wrap-7 {
-	bottom: 280px;
 	left: 60%;
 }
 
 #mob-wrap-8 {
-	bottom: 280px;
 	left: 80%;
+}
+.mob-front-row {
+	bottom: 220px;
+}
+.mob-back-row {
+	bottom: 330px;
 }
 
 .mob-details {
@@ -680,7 +677,7 @@ tbody {
 	left: -200px;
 	bottom: 30px;
 	border-radius: 50%;
-	background: rgba(0, 0, 0, .3);
+	background: radial-gradient(farthest-side at 50% 50%, rgba(0, 0, 0, .8) 0%, rgba(0, 0, 0, .8) 30%, rgba(0, 0, 0, 0) 100%);
 	height: 40px;
 	width: 400px;
 	z-index: 0;
@@ -1190,25 +1187,25 @@ background-clip: content-box;
 	margin-bottom: .2rem;
 }
 
-.bar-player-wrap-me .bar-col-icon {
+.bar-player-wrap:first .bar-col-icon {
 	width: 3.2rem;
 	height: 3.2rem;
 }
 
-.bar-player-wrap-me .bar-hp-name {
+.bar-player-wrap:first .bar-hp-name {
 	font-size: 1.25rem;
 }
 
-.bar-player-wrap-me .bar-any-wrap {
+.bar-player-wrap:first .bar-any-wrap {
 	margin: .125rem .25rem;
 	height: .5rem;
 }
 
-.bar-player-wrap-me .bar-level-wrap {
+.bar-player-wrap:first .bar-level-wrap {
 	font-size: 1.125rem;
 }
 
-.bar-player-wrap-me .bar-is-leader {
+.bar-player-wrap:first .bar-is-leader {
 	width: 1rem;
 	height: 1rem;
 }

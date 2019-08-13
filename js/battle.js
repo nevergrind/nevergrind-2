@@ -11,7 +11,6 @@ var battle;
 		html,
 		events,
 		getBox,
-		testInit,
 		setTarget,
 		getResponsiveCenter,
 	}
@@ -38,15 +37,15 @@ var battle;
 		test.battle();
 	}
 	function html() {
-		var s = '<img id="battle-bg" class="img-bg" src="images/bg/fw2.jpg">',
-			test = '';
+		var s = '<img id="battle-bg" class="img-bg" src="images/bg/fw-zoom.jpg">';
+		var test = '';
 
 		for (var i=0; i<mob.max; i++){
 			//test = i === 2 ? "" : " test";
 			test = '';
 			s +=
 			'<div id="mob-center-' +i+ '" class="mob-center"></div>' +
-			'<div id="mob-wrap-' +i+ '" class="mob-wrap' + test +'">' +
+			'<div id="mob-wrap-' +i+ '" class="mob-wrap' + test + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
 				'<div id="mob-details-' +i+ '" class="mob-details" index="' + i + '">' +
 					'<div id="mob-name-' +i+ '" class="mob-name text-shadow"></div>' +
 					'<div id="mob-bar-' +i+ '" class="mob-bar">' +
@@ -82,16 +81,6 @@ var battle;
 	function setTarget(i) {
 		console.info("Setting target ", i, Date.now());
 	}
-	function testInit() {
-		var mobKey = '';
-		mob.test = 1;
-		for (var i=0; i<mob.max; i++){
-			// mobKey = mob.getRandomMobKey();
-			mobKey = 'toadlok';
-			cache.preloadMob(mobKey);
-			mob.setMob(i, mobKey);
-		}
-	}
 	function getResponsiveCenter(i) {
 		// responsive center
 		return ~~(battle.boxCoordsCenter[i] * (window.innerWidth / 1920));
@@ -102,7 +91,7 @@ var battle;
 			cy = ~~(battle.boxCoordsBottom[i] + (mobs[i].imgCy * mobs[i].size));
 
 		return x = {
-			x: ~~(c - (mobs[i].w * .5)),
+			x: ~~(c - (mobs[i].width * .5)),
 			y: battle.boxCoordsBottom[i],
 			cx: c,
 			cy: cy

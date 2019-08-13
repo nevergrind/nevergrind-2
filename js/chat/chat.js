@@ -303,34 +303,34 @@ var chat;
 			leader
 			boot
 		 */
-		else if (msgLower.indexOf('/motd') === 0) {
+		else if (msgLower.startsWith('/motd')) {
 			guild.motd(guild.motdParse(msg));
 		}
-		else if (msgLower.indexOf('/gleader') === 0) {
+		else if (msgLower.startsWith('/gleader')) {
 			guild.leader(party.parse(msg));
 		}
-		else if (msgLower.indexOf('/gpromote') === 0) {
+		else if (msgLower.startsWith('/gpromote')) {
 			guild.promote(party.parse(msg));
 		}
-		else if (msgLower.indexOf('/gboot') === 0) {
+		else if (msgLower.startsWith('/gboot')) {
 			guild.boot(party.parse(msg));
 		}
 		else if (msgLower === '/gquit') {
 			guild.quit();
 		}
-		else if (msgLower.indexOf('/ginvite') === 0) {
+		else if (msgLower.startsWith('/ginvite')) {
 			guild.invite(party.parse(msg));
 		}
-		else if (msgLower.indexOf('/promote') === 0) {
+		else if (msgLower.startsWith('/promote')) {
 			party.promote(party.parse(msg));
 		}
-		else if (msgLower.indexOf('/boot') === 0) {
+		else if (msgLower.startsWith('/boot')) {
 			party.boot(party.parse(msg));
 		}
 		else if (msgLower === '/disband') {
 			party.disband();
 		}
-		else if (msgLower.indexOf('/invite') === 0) {
+		else if (msgLower.startsWith('/invite')) {
 			party.invite(party.parse(msg));
 		}
 		else if (msgLower === '/camp') {
@@ -339,7 +339,7 @@ var chat;
 		else if (msgLower === '/played') {
 			played();
 		}
-		else if (msgLower.indexOf('/join') === 0) {
+		else if (msgLower.startsWith('/join')) {
 			chat.joinChannel(joinParse(msg));
 		}
 		else if (msgLower === '/clear') {
@@ -348,34 +348,34 @@ var chat;
 		else if (msgLower === '/who') {
 			chat.whoAll();
 		}
-		else if (msgLower.indexOf('/who ') === 0 && msgLower.length > 5) {
+		else if (msgLower.startsWith('/who ') && msgLower.length > 5) {
 			chat.whoClass(chat.whoParse(msg));
 		}
 		else if (msgLower === '/ignore') {
 			ignore.list();
 		}
-		else if (msgLower.indexOf('/ignore remove') === 0) {
+		else if (msgLower.startsWith('/ignore remove')) {
 			ignore.remove(friend.parse(msg));
 		}
-		else if (msgLower.indexOf('/ignore add') === 0) {
+		else if (msgLower.startsWith('/ignore add')) {
 			ignore.add(friend.parse(msg));
 		}
 		else if (msgLower === '/friends' || msgLower === '/flist') {
 			friend.list();
 		}
-		else if (msgLower.indexOf('/friend remove') === 0) {
+		else if (msgLower.startsWith('/friend remove')) {
 			friend.remove(friend.parse(msg));
 		}
-		else if (msgLower.indexOf('/friend add') === 0) {
+		else if (msgLower.startsWith('/friend add')) {
 			friend.add(friend.parse(msg));
 		}
-		else if (msgLower.indexOf('/me') === 0 || msgLower.indexOf('/em') === 0) {
+		else if (msgLower.startsWith('/me') || msgLower.startsWith('/em')) {
 			chat.emote(msg);
 		}
 		else if (chat.modeCommand === '@'){
 			// whisper
 			if (my.name !== chat.modeName) {
-				if (~ng.ignore.indexOf(chat.modeName)) {
+				if (ng.ignore.includes(chat.modeName)) {
 					log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', 'chat-warning');
 				}
 				$.post(app.url + 'chat/send.php', {
@@ -391,10 +391,10 @@ var chat;
 				var o = chat.getMsgObject(msg);
 				if (o.msg[0] !== '/') {
 					console.info(o);
-					if (!my.partyId && o.category.indexOf('party') === 0) {
+					if (!my.partyId && o.category.startsWith('party')) {
 						log("You are not in a party.", 'chat-warning');
 					}
-					else if (!my.guild.id && o.category.indexOf('guild') === 0) {
+					else if (!my.guild.id && o.category.startsWith('guild')) {
 						log("You are not in a guild.", 'chat-warning');
 					}
 					else {
@@ -753,6 +753,8 @@ var chat;
 			display: 'none'
 		});
 		TweenMax.set('#chat-wrap', {
+			bottom: '0',
+			top: 'auto',
 			height: '25vh',
 			width: '35vw'
 		});
@@ -765,6 +767,8 @@ var chat;
 				display: 'flex'
 			});
 			TweenMax.set('#chat-wrap', {
+				top: '0',
+				bottom: 'auto',
 				height: '50vh',
 				width: '50vw'
 			});

@@ -418,7 +418,7 @@ var mission;
 	}
 	function abortCallback() {
 		// init client and transition back to town
-		game.heartbeatEnabled = false;
+		//game.heartbeatEnabled = false;
 		$.get(app.url + 'chat/delete-from-players.php');
 		mission.initQuest();
 		// rejoin main chat

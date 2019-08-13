@@ -3,7 +3,7 @@ var game;
 (function() {
 	/** public */
 	game = {
-		heartbeatExpired: 12000,
+		heartbeatExpired: app.isApp ? 12000 : 6000,
 		session: {
 			timer: 0
 		},
@@ -101,9 +101,10 @@ var game;
 				}
 				// party traffic
 				obj.route = 'party->hb';
+				obj.isLeader = typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true;
 				socket.publish('party' + my.partyId, Object.assign(obj,
 					_.pick(my, [
-						'name', 'hp', 'maxHp', 'mp', 'maxMp', 'job', 'isLeader'
+						'name', 'hp', 'maxHp', 'mp', 'maxMp', 'job', 'partyId'
 					])
 				));
 				console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
@@ -115,17 +116,20 @@ var game;
 	}
 	function heartbeatReceived(data) {
 		if (data.name === my.name) {
+			console.info("%c town heartbeatReceived: ", "background: #0bf", data);
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
-			console.info("%c town heartbeatReceived: ", "background: #0bf", data);
-			bar.dom.socket.innerHTML =
-				'<span class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>';
-			bar.updatePlayerBar(data);
+			bar.updatePing(ping);
 		}
 		upsertRoom(data);
 	}
 	function heartbeatReceivedParty(data) {
 		console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #0ff", data);
+		if (data.name === my.name) {
+			heartbeat.receiveTime = Date.now();
+			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
+			bar.updatePing(ping);
+		}
 		party.upsertParty(data);
 	}
 	function heartbeatTimeout() {
@@ -166,14 +170,12 @@ var game;
 		chat.setHeader();
 	}
 	function auditRoom(time) {
-		i=0;
-		len=chat.presence.length;
-		for (; i<len; i++) {
-			diff = time - chat.presence[i].time;
+		chat.presence.forEach(function(player) {
+			diff = time - player.time;
 			if (diff > game.heartbeatExpired) {
-				removePlayer(chat.presence[i]);
+				removePlayer(player);
 			}
-		}
+		})
 	}
 	function removePlayer(player) {
 		console.info('removing player: ', player.row);

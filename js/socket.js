@@ -72,7 +72,7 @@ var socket;
 	}
 	function routeMainChat(data, obj) {
 		data = router.normalizeInput(data, obj);
-		router.town(data, data.route);
+		router.toTown(data, data.route);
 	}
 	function connectionSuccess(session) {
 		console.warn("Connection successful!", session);
@@ -103,6 +103,6 @@ var socket;
 	}
 	function routeToAdmin(data) {
 		console.info('rx ', data[0]);
-		router.town(data[0], data[0].route);
+		router.toTown(data[0], data[0].route);
 	}
 })();

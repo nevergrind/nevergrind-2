@@ -49,7 +49,7 @@ var toast;
 		// join party by player id?
 		$("#"+ data.action +"-"+ data.row).remove();
 		/*
-		action: "party-invite"
+		route: "party-invite"
 		id: 2
 		row: 188
 		 */
@@ -59,7 +59,7 @@ var toast;
 		// party table needs extra values... hp, mp, buffs, etc
 		console.info('Prompt confirmed: ', data.action, data.row, data);
 		if (data.action === 'party-invite') {
-			party.join(data);
+			party.joinRequest(data);
 		}
 		else if (data.action === 'guild-invite') {
 			guild.join(data);
@@ -69,7 +69,7 @@ var toast;
 		console.info('deny ', data);
 		$("#"+ data.action +"-"+ data.row).remove();
 		socket.publish("name"+ data.name, {
-			action: data.action + '-deny',
+			route: data.action + '-deny',
 			name: my.name
 		});
 	}

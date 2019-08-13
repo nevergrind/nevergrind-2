@@ -4,20 +4,17 @@ var bar;
 		dom: {},
 		initialized: 0,
 		init,
-		disband,
 		linkdead,
-		getPresence,
 		hideParty,
-		partyJoin,
-		partyBoot,
 		updatePlayerBar,
+		addPlayer,
 		setAjaxPing,
-		partyDisband,
-		partyPromote,
-		addPlayerBar,
+		updatePing,
 	};
 	var index;
 	var player; // temp bar data
+	var pingTimer;
+	var ajaxTimer;
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
@@ -27,9 +24,9 @@ var bar;
 			var html = getBarHeader();
 			// party bars
 			html += '<div id="bar-all-player-wrap">';
-			for (var i=0; i<party.maxPlayers; i++) {
+			/*for (var i=0; i<party.maxPlayers; i++) {
 				html += getPlayerBarHtml({}, i, true);
-			}
+			}*/
 			html += '</div>';
 			e.innerHTML = html;
 			e.style.display = 'block';
@@ -41,10 +38,10 @@ var bar;
 			$("#bar-wrap").on('click contextmenu', '.bar-col-icon', function (e) {
 				var id = $(this).attr('id'),
 					arr = id.split("-"),
-					slot = arr[3] * 1;
+					slot = _.findIndex(party.presence, { row: arr[3] * 1 });
 
-				console.info(id, slot, party.presence[slot].name);
 				context.getPartyMenu(party.presence[slot].name);
+				console.info(id, slot, party.presence[slot].name);
 			}).on('click', '#bar-camp', chat.camp)
 				.on('click', '#bar-stats', function () {
 				console.info($(this).attr('id'));
@@ -70,6 +67,16 @@ var bar;
 			isLeader: getById('bar-is-leader-' + index),
 		}
 	}
+	function addPlayer(player, index) {
+		if (typeof bar.dom[index] === 'undefined') {
+			var el = createElement('div');
+			el.id = 'bar-player-wrap-' + index;
+			el.className = 'bar-player-wrap';
+			el.innerHTML = getPlayerBarHtml(player, index);
+			getById('bar-all-player-wrap').appendChild(el);
+			cachePlayerBars(index);
+		}
+	}
 	function getBarHeader() {
 		var s = '';
 		s +=
@@ -86,12 +93,9 @@ var bar;
 		'</div>';
 		return s;
 	}
-	function getPlayerBarHtml(player, index, includeWrapper) {
+	function getPlayerBarHtml(player, index) {
 		player = player || {};
 		var s = '';
-		if (includeWrapper) {
-			s += '<div id="bar-player-wrap-' + index + '" '+ 'class="bar-player-wrap' + (!index ? ' bar-player-wrap-me' : '') + '" ' + 'style="display: '+ (index === 0 ? 'flex' : 'none') +'">';
-		}
 		// job icon
 		s += '<div id="bar-col-icon-'+ index +'" class="bar-col-icon player-icon-'+ (player.job || "WAR") +'">' +
 			//'<div id="bar-level-'+ i +'" class="bar-level no-pointer">'+ player.level +'</div>' +
@@ -108,11 +112,13 @@ var bar;
 				'<div id="bar-mp-fg-'+ index +'" class="bar-mp-fg"></div>' +
 			'</div>' +
 		'</div>';
-		if (includeWrapper) {
-			s += '</div>';
-		}
 		return s;
 	}
+
+	/**
+	 * Update every part of one player's bar; only updates if there is a difference in the data
+	 * @param data
+	 */
 	function updatePlayerBar(data) {
 		index = _.findIndex(party.presence, { row: data.row });
 		if (index === -1) return;
@@ -130,13 +136,12 @@ var bar;
 		if (data.isLeader !== player.isLeader) {
 			player.isLeader = data.isLeader;
 			// set UI helmet
-			if (player.isLeader) {
-				getById('bar-is-leader-' + index).classList.remove('none');
+			if (player.isLeader && party.presence.length >= 2) {
+				getById('bar-is-leader-' + data.row).classList.remove('none');
 			}
 			else {
-				getById('bar-is-leader-' + index).classList.add('none');
+				getById('bar-is-leader-' + data.row).classList.add('none');
 			}
-
 			console.warn('isLeader', data.row, index, player.isLeader);
 		}
 		if (data.job !== player.job) {
@@ -155,12 +160,13 @@ var bar;
 
 		}
 	}
-	function addPlayerBar(index) {
-		if (typeof bar.dom[index] === 'undefined') {
-			cachePlayerBars(index);
-		}
-		bar.dom[index].playerWrap.style.display = 'flex';
-		bar.dom[index].playerWrap.innerHTML = getPlayerBarHtml(party.presence[index], index);
+	function updatePing(ping) {
+		clearTimeout(pingTimer);
+		pingTimer = setTimeout(updatePingDone, 100, ping);
+	}
+	function updatePingDone(ping) {
+		bar.dom.socket.innerHTML =
+			'<span class="'+ game.getPingColor(ping) +'">' + (ping) + 'ms</span>';
 	}
 	function setHp(index, delay) {
 		if (typeof party.presence[index] === 'undefined' ||
@@ -197,83 +203,15 @@ var bar;
 			}
 		}
 	}
-
-	/**
-	 * Member has joined the party; send party data immediately
-	 * @param data
-	 */
-	function partyJoin(data) {
-		console.info('bar.party.join ', data);
-		chat.log(data.msg, 'chat-warning');
-		// refresh party bars
-		bar.getPresence();
-	}
-	function partyDisband(data) {
-		var index = 0,
-			name = '',
-			electNewLeader = 0;
-		// did the leader disband or somehow get booted?
-		party.presence.forEach(function(v, i) {
-			if (data.row === v.id) {
-				index = i;
-				name = v.name;
-				if (v.isLeader) {
-					electNewLeader = 1;
-				}
-			}
-		});
-		// disbanded player found
-		if (index) {
-			// reset client data to default
-			party.presence[index] = my.Party();
-			getById('bar-player-wrap-' + index).style.display = 'none';
-			chat.log(name + " has disbanded the party.", 'chat-warning');
-			// elect new leader if client's id is lowest
-			if (electNewLeader && my.isLowestPartyIdMine()) {
-				party.promote(my.getNewLeaderName(), 1);
-			}
-		}
-		// disband if it's me
-		// console.info('disband: ', data.row, my.id);
-		data.row === my.row && chat.sendMsg('/disband');
-	}
-	function partyPromote(data) {
-		chat.log(data.name + " has been promoted to party leader.", 'chat-warning');
-		// refresh party bars
-		bar.getPresence();
-	}
-	function partyBoot(data) {
-		console.info('bar.party.boot ', data);
-		chat.log(_.capitalize(data.name) + " has been booted from the party.", 'chat-warning');
-		// refresh party bars
-		data.row *= 1;
-		bar.partyDisband(data);
-		bar.getPresence();
-	}
 	function setAjaxPing() {
+		clearTimeout(ajaxTimer);
+		ajaxTimer = setTimeout(setAjaxPingDone, 100);
+	}
+	function setAjaxPingDone() {
 		var ping = ~~((game.ajax.receiveTime - game.ajax.sendTime) / 2);
 		bar.dom.ping.innerHTML =
 			'<span class="'+ game.getPingColor(ping) +'">' + (ping) + 'ms</span>';
 
-	}
-	function getPresence() {
-		socket.publish('party' + my.partyId, {
-			route: 'party->getPresence',
-		});
-	}
-	function disband() {
-		party.presence.forEach(function(v, i){
-			if (i) {
-				// set client value
-				party.presence[i] = my.Party();
-			}
-		});
-		bar.hideParty();
-		// update server
-		socket.unsubscribe('party'+ my.partyId);
-		my.partyId = my.row;
-		party.presence[0].isLeader = false;
-		getById('bar-is-leader-0').style.display = 'none';
 	}
 	function hideParty() {
 		party.presence.forEach(function(v, i){

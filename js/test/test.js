@@ -15,7 +15,7 @@ var test;
 			log: chatLog
 		},
 		orcs,
-		battle: battle.testInit,
+		battle,
 		filters: {
 			/*
 			blur(5px)
@@ -37,6 +37,19 @@ var test;
 		socketPub,
 	}
 	///////////////////////////////////
+	function battle() {
+		var singleMob = true;
+		var mobKey = '';
+		mob.test = 1;
+		for (var i=0; i<mob.max; i++){
+			if (singleMob && i === 2 || !singleMob) {
+				mobKey = mob.getRandomMobKey();
+				mobKey = 'ice-giant';
+				cache.preloadMob(mobKey);
+				mob.setMob(i, mobKey);
+			}
+		}
+	}
 	function socketSub() {
 		socket.subscribe('test', testRx);
 		//////////////////////////

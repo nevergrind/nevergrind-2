@@ -43,10 +43,10 @@ var guild;
 		data = router.normalizeInput(data, obj);
 		console.info('rx ', data);
 		if (data.route === 'chat->log') {
-			router.town(data, data.route);
+			router.toTown(data, data.route);
 		}
 		else {
-			router.guild(data, data.route);
+			router.toGuild(data, data.route);
 		}
 	}
 	function Guild() {

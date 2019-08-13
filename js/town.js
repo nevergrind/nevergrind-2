@@ -88,7 +88,6 @@ var town;
 			}).done(function(data) {
 				console.info('load-character: ', data);
 				Object.assign(my, data.characterData);
-				my.partyId = party.getUniquePartyChannel();
 				my.guild = data.guild;
 				if (data.quest.level) {
 					// quest still active

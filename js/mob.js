@@ -19,7 +19,6 @@ var mob;
 		// size only
 		sizeMob,
 		setClickBox,
-		setSrc,
 		resetIdle,
 		idle,
 		hit,
@@ -33,6 +32,38 @@ var mob;
 		invert,
 		saturate,
 		sepia,
+	};
+	var frame = {
+		idle: {
+			start: 1,
+			end: 5.999,
+			diff: 4.999
+		},
+		hit: {
+			start: 6,
+			end: 15.999,
+			diff: 9.999
+		},
+		primary: {
+			start: 16,
+			end: 35.999,
+			diff: 19.999
+		},
+		secondary: {
+			start: 36,
+			end: 55.999,
+			diff: 19.999
+		},
+		special: {
+			start: 56,
+			end: 75.999,
+			diff: 19.999
+		},
+		death: {
+			start: 76,
+			end: 105.999,
+			diff: 29.999
+		},
 	};
 	//////////////////////////////////////////////////
 	function getRandomMobKey() {
@@ -77,19 +108,21 @@ var mob;
 		// combine/assign image object props to mobs[index]
 		mobs[i] = Object.assign(mobs[i], mobs.images[mobKey]);
 		// delete mobs[i].cache;
-		mob.sizeMob(i);
+		sizeMob(i);
 		mob.resetIdle(i);
 		mob.idle(i);
 	}
 	function sizeMob(index) {
 		var m = mobs[index];
+		if (!m.type) return;
 		// set dom
-		var w = ~~(m.size * (mobs.images[m.type].w));
+		var w = ~~(m.size * (mobs.images[m.type].width));
 
 		m.box = battle.getBox(m.index);
 		// wrapper
 		// name
 		m.dom.name.innerHTML = m.type.replace(/-/g, ' ');
+		//m.dom.name.innerHTML = 'Miranda Bear';
 		m.dom.details.style.display = 'block';
 		// img
 		m.dom.img.style.left = (w * -.5) + 'px';
@@ -98,7 +131,7 @@ var mob;
 		m.dom.img.src = 'mobs/' + m.type + '/1.png';
 		// details
 		TweenMax.set(m.dom.details, {
-			bottom: m.detailAliveBottom * m.size
+			bottom: m.barAliveBottom * m.size
 		});
 		// shadow
 		m.dom.shadow.style.display = 'block';
@@ -138,173 +171,135 @@ var mob;
 		mob.idle(mobs[i].index, 1);
 	}
 	function idle(i, skip) {
-		var m = mobs[i],
-			startFrame = 1,
-			endFrame = 5.9,
-			diff = endFrame - startFrame;
-
-		TweenMax.to(m, m.speed * diff * 2, {
+		TweenMax.to(mobs[i], mobs[i].speed * frame.idle.diff * 2, {
 			startAt: {
-				frame: startFrame
+				frame: frame.idle.start
 			},
-			frame: endFrame,
+			frame: frame.idle.end,
 			yoyo: true,
 			repeat: -1,
-			repeatDelay: m.speed,
+			repeatDelay: mobs[i].speed,
 			ease: Sine.easeOut,
-			onUpdate: mob.setSrc,
-			onUpdateParams: [m.index],
+			onUpdate: setSrc,
+			onUpdateParams: [mobs[i].index],
 		});
 		if (skip) return;
-		mob.test && TweenMax.delayedCall(.25, function(){
-			console.info('mob.test ', mob.test);
-			mob.hit(m.index);
-			//mob.death();
-		})
+		mob.test && TweenMax.delayedCall(.25, mob.hit, [ mobs[i].index ]);
 	}
 	function hit(i) {
-		var m = mobs[i];
-		if (m.animationActive) return;
-		m.animationActive = 1;
-		var startFrame = 6,
-			endFrame = 15.9,
-			diff = endFrame - startFrame;
+		if (mobs[i].animationActive) return;
+		mobs[i].animationActive = 1;
 
-		TweenMax.to(m, m.speed * diff, {
+		TweenMax.to(mobs[i], mobs[i].speed * frame.hit.diff, {
 			startAt: {
-				frame: startFrame
+				frame: frame.hit.start
 			},
 			overwrite: 1,
-			frame: endFrame,
+			frame: frame.hit.end,
 			ease: Linear.easeNone,
 			yoyo: true,
 			repeat: 1,
-			onUpdate: mob.setSrc,
-			onUpdateParams: [m.index],
+			onUpdate: setSrc,
+			onUpdateParams: [mobs[i].index],
 			onComplete: hitComplete,
-			onCompleteParams: [m]
+			onCompleteParams: [mobs[i]]
 		});
 	}
 	function hitComplete(m) {
 		mob.resetIdle(m.index);
 		if (mob.test){
-			TweenMax.delayedCall(.5, function() {
-				mob.attack(m.index, 1);
-			});
+			TweenMax.delayedCall(.5, mob.attack, [ m.index, 'primary' ]);
 		}
 	}
 	function attack(i, force) {
-		var m = mobs[i];
-		if (m.animationActive) return;
-		m.animationActive = 1;
-		var tl = ng.TM(),
-			foo = force === 1 || force === 2 ?
-				force : !Math.round(rand()) ? 1 : 2;
-		if (!m.enableSecondary) {
-			foo = 1;
+		if (mobs[i].animationActive) return;
+		mobs[i].animationActive = 1;
+		var attackType = force === 'primary' || force === 'secondary' ?
+			force : (Math.round(rand()) ? 'primary' : 'secondary');
+		if (!mobs[i].enableSecondary) {
+			attackType = 'primary';
 		}
-		var startFrame = foo === 1 ?
-				16 : 35.9,
-			endFrame = startFrame + 20,
-			diff = endFrame - startFrame;
 
-		tl.to(m, m.speed * diff, {
+		TweenMax.to(mobs[i], mobs[i].speed * frame[attackType].diff, {
 			startAt: {
-				frame: startFrame
+				frame: frame[attackType].start
 			},
 			overwrite: 1,
-			frame: endFrame,
+			frame: frame[attackType].end,
 			ease: Linear.easeNone,
-			onUpdate: mob.setSrc,
-			onUpdateParams: [m.index],
+			onUpdate: setSrc,
+			onUpdateParams: [mobs[i].index],
 			onComplete: attackComplete,
-			onCompleteParams: [m, force]
+			onCompleteParams: [mobs[i], force]
 		});
 	}
 	function attackComplete(m, force) {
 		mob.resetIdle(m.index);
 		if (mob.test){
-			if (force === 1){
-				TweenMax.delayedCall(.5, function() {
-					mob.attack(m.index, 2);
-				});
+			if (force === 'primary'){
+				TweenMax.delayedCall(.5, mob.attack, [ m.index, 'secondary' ]);
 			}
-			else if (force === 3){
-				TweenMax.delayedCall(.5, function() {
-					mob.death(m.index);
-				});
+			else if (force === 'death'){
+				TweenMax.delayedCall(.5, mob.death, [ m.index ]);
 			}
 			else {
-				TweenMax.delayedCall(.5, function() {
-					mob.special(m.index);
-				});
+				TweenMax.delayedCall(.5, mob.special, [ m.index ]);
 			}
 		}
 	}
 	function special(i) {
-		var m = mobs[i];
-		if (m.animationActive) return;
-		if (!m.enableSpecial) {
-			mob.attack(m.index, 3);
+		if (mobs[i].animationActive) return;
+		if (!mobs[i].enableSpecial) {
+			mob.attack(mobs[i].index, 'death');
 		}
 		else {
-			m.animationActive = 1;
-			var startFrame = 56,
-				endFrame = 75.9,
-				diff = endFrame - startFrame;
+			mobs[i].animationActive = 1;
 
-			var tl = ng.TM();
-			tl.to(m, m.speed * diff, {
+			TweenMax.to(mobs[i], mobs[i].speed * frame.special.diff, {
 				startAt: {
-					frame: startFrame
+					frame: frame.special.start
 				},
 				overwrite: 1,
-				frame: endFrame,
+				frame: frame.special.end,
 				ease: Linear.easeNone,
-				yoyo: m.yoyo,
-				repeat: m.yoyo ? 1 : 0,
-				onUpdate: mob.setSrc,
-				onUpdateParams: [m.index],
+				yoyo: mobs[i].yoyo,
+				repeat: mobs[i].yoyo ? 1 : 0,
+				onUpdate: setSrc,
+				onUpdateParams: [mobs[i].index],
 				onComplete: specialComplete,
-				onCompleteParams: [m]
+				onCompleteParams: [mobs[i]]
 			});
 		}
 	}
 	function specialComplete(m) {
 		mob.resetIdle(m.index);
 		if (mob.test) {
-			TweenMax.delayedCall(.5, function () {
-				mob.death(m.index);
-			});
+			TweenMax.delayedCall(.5, mob.death, [ m.index ]);
 		}
 	}
 	function death(i) {
-		var m = mobs[i];
-		if (m.deathState) return;
-		m.deathState = 1;
-		m.hp = 0;
-		mob.setClickBox(m);
-		m.animationActive = 1;
-		var tl = ng.TM(),
-			startFrame = 76,
-			endFrame = 105.9,
-			diff = endFrame - startFrame,
-			d = m.speed * diff;
-		TweenMax.to(m.dom.details, d, {
-			bottom: m.detailDeathBottom * m.size,
+		if (mobs[i].deathState) return;
+		mobs[i].deathState = 1;
+		mobs[i].hp = 0;
+		mob.setClickBox(mobs[i]);
+		mobs[i].animationActive = 1;
+		var d = mobs[i].speed * frame.death.diff;
+
+		TweenMax.to(mobs[i].dom.details, d, {
+			bottom: mobs[i].barDeathBottom * mobs[i].size,
 			ease: Quart.easeIn
 		});
-		tl.to(m, d, {
+		TweenMax.to(mobs[i], d, {
 			startAt: {
-				frame: startFrame
+				frame: frame.death.start
 			},
 			overwrite: 1,
-			frame: endFrame,
+			frame: frame.death.end,
 			ease: Linear.easeNone,
-			onUpdate: mob.setSrc,
-			onUpdateParams: [m.index],
+			onUpdate: setSrc,
+			onUpdateParams: [mobs[i].index],
 			onComplete: deathComplete,
-			onCompleteParams: [m]
+			onCompleteParams: [mobs[i]]
 		});
 	}
 	function deathComplete(m) {
@@ -330,14 +325,15 @@ var mob;
 	function deathCompleteFade(m, e) {
 		if (mob.test) {
 			m.hp = 1;
-			mob.sizeMob(m.index);
+			sizeMob(m.index);
 			mob.idle(m.index);
 		}
-		TweenMax.delayedCall(.1, function () {
-			m.deathState = 0;
-			m.animationActive = 0;
-			e.style.filter = 'opacity(100%) brightness(100%)';
-		});
+		TweenMax.delayedCall(.1, deathCompleteFadeReset, [ m, e ]);
+	}
+	function deathCompleteFadeReset(m, e) {
+		m.deathState = 0;
+		m.animationActive = 0;
+		e.style.filter = 'opacity(100%) brightness(100%)';
 	}
 	function blur() {
 		var e = getById('sprite'),
