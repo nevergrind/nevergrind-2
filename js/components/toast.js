@@ -59,7 +59,7 @@ var toast;
 		// party table needs extra values... hp, mp, buffs, etc
 		console.info('Prompt confirmed: ', data.action, data.row, data);
 		if (data.action === 'party-invite') {
-			party.joinRequest(data);
+			party.inviteReceived(data);
 		}
 		else if (data.action === 'guild-invite') {
 			guild.join(data);

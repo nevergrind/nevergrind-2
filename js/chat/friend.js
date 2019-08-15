@@ -68,6 +68,7 @@ var friend;
 					if (!ng.friends.includes(o)) {
 						socket.publish('name' + o, {
 							name: my.name,
+							gender: my.gender,
 							action: "friend>addedMe"
 						});
 					}

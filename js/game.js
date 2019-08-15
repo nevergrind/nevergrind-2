@@ -3,7 +3,7 @@ var game;
 (function() {
 	/** public */
 	game = {
-		heartbeatExpired: app.isApp ? 12000 : 6000,
+		heartbeatExpired: app.isApp ? 12000 : 12000,
 		session: {
 			timer: 0
 		},
@@ -189,7 +189,7 @@ var game;
 		// from town
 		if (heartbeat.enabled) {
 			chat.publishRemove();
-			if (my.partyId) {
+			if (party.presence.length > 1) {
 				// boot from party
 				/*
 				socket.publish('party' + my.partyId, {
@@ -291,7 +291,7 @@ var game;
 	/*function partyStart() {
 		clearInterval(sanity.party.timer);
 		sanity.party.timer = setInterval(function(){
-			if (my.partyId) {
+			if (party.presence.length > 1) {
 				sanity.party.partySend();
 				sanity.party.partyCheck();
 			}

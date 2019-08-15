@@ -24,7 +24,7 @@
 	}
 
 	// get my character data
-	$query = 'select row, name, level, race, job, hp, maxHp, mp, maxMp,
+	$query = 'select row, name, lastName, gender, level, race, job, hp, maxHp, mp, maxMp,
 		exp, gold,
 	 	str, sta, agi, dex, wis, intel, cha,
 	 	offense, defense, dualWield, doubleAttack, 
@@ -36,7 +36,7 @@
 	$stmt->bind_param('ss', $_SESSION['account'], $_POST['row']);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($row, $name, $level, $race, $job, $hp, $maxHp, $mp, $maxMp,
+	$stmt->bind_result($row, $name, $lastName, $gender, $level, $race, $job, $hp, $maxHp, $mp, $maxMp,
 		$exp, $gold,
 		$str, $sta, $agi, $dex, $wis, $intel, $cha,
 		$offense, $defense, $dualWield, $doubleAttack,
@@ -51,6 +51,8 @@
 		$r['characterData'] = [
 			'row' => $row,
 			'name' => $name,
+			'lastName' => $lastName,
+			'gender' => $gender,
 			'level' => $level,
 			'race' => $race,
 			'job' => $job,

@@ -60,7 +60,7 @@ var whisper;
 			chat.log(data.name + " has joined the party.", 'chat-warning');
 		}
 		else if (action === 'friend>addedMe') {
-			chat.log(data.name + " has added you to their friend list.", 'chat-warning');
+			chat.log(data.name + " has added you to "+ (my.gender === 'M' ? 'his' : 'her') +" friend list.", 'chat-warning');
 		}
 	}
 })();

@@ -102,7 +102,6 @@ var mission;
 		questHtml,
 		show,
 		updateTitle,
-		updateAll,
 		loadQuests,
 		toggleZone,
 		findIndexById,
@@ -112,7 +111,6 @@ var mission;
 		setQuest,
 		abandon,
 		abort,
-		abortCallback,
 		openFirstTwoZones,
 	}
 	///////////////////////////////////////////////
@@ -365,7 +363,7 @@ var mission;
 	function initQuest() {
 		my.selectedQuest = '';
 		my.quest = {};
-		mission.updateAll();
+		updateAll();
 	}
 	function setQuest(quest) {
 		console.info("SETTING QUEST", quest);
@@ -397,38 +395,22 @@ var mission;
 		}
 	}
 	function abort() {
-		setTimeout(function() {
-			button.hide();
-			chat.log('Mission abandoned!', 'chat-warning');
-			if (ng.view === 'dungeon') {
-				chat.log('Returning to town...', 'chat-warning');
-				ng.lock(1);
-				(function repeat(){
-					if (party.presence[0].isLeader) {
-						mission.abortCallback();
-					}
-					else {
-						// reset session quest for non-leaders
-						$.get(app.url + 'session/init-quest.php').done(mission.abortCallback)
-							.fail(repeat);
-					}
-				})();
-			}
-		});
-	}
-	function abortCallback() {
-		// init client and transition back to town
-		//game.heartbeatEnabled = false;
-		$.get(app.url + 'chat/delete-from-players.php');
-		mission.initQuest();
-		// rejoin main chat
-		chat.joinChannel('town', 1);
-		TweenMax.to('#scene-dungeon', 2, {
-			delay: 1,
-			opacity: 0
-		});
-		setTimeout(function () {
-			ng.unlock();
+		button.hide();
+		chat.log('Mission abandoned!', 'chat-warning');
+		if (ng.view === 'dungeon') {
+			chat.log('Returning to town...', 'chat-warning');
+			ng.lock(1);
+
+			// init client and transition back to town
+			//game.heartbeatEnabled = false;
+			mission.initQuest();
+			// rejoin main chat
+			chat.joinChannel('town', 1);
+			TweenMax.to('#scene-dungeon', 2, {
+				delay: 1,
+				opacity: 0
+			});
+
 			town.go();
 			game.getPresence();
 			chat.modeChange({
@@ -436,7 +418,10 @@ var mission;
 			});
 			// this must be in place to prevent heartbeat updates while going back to town
 			game.heartbeatEnabled = true;
-		}, game.questDelay);
+			setTimeout(function() {
+				ng.unlock();
+			}, 1000);
+		}
 	}
 	function openFirstTwoZones() {
 		for (var i=0; i<2; i++) {

@@ -96,7 +96,7 @@ var context;
 		if (context.player === my.name) {
 			// commands only for me
 			// disband
-			if (my.partyId) {
+			if (party.presence.length > 1) {
 				s += '<div id="context-disband" ' + z + '>Disband</div>';
 			}
 		}

@@ -37,7 +37,7 @@ var battle;
 		test.battle();
 	}
 	function html() {
-		var s = '<img id="battle-bg" class="img-bg" src="images/bg/fw-zoom.jpg">';
+		var s = '<img id="battle-bg" class="img-bg" src="images/bg/fw-zoom2.jpg">';
 		var test = '';
 
 		for (var i=0; i<mob.max; i++){

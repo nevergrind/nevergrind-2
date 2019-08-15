@@ -110,6 +110,8 @@ var ng;
 		events,
 		unlock,
 		logout,
+		dimRetAttr,
+		dimRetSkill,
 		setScene,
 		initGame,
 		keepAlive,
@@ -267,6 +269,34 @@ var ng;
 		}).fail(function() {
 			ng.msg("Logout failed.");
 		});
+	}
+	function dimRetAttr(val) {
+		var damBonus = 0;
+		var maxBonus = 100;
+		var bonusPerPt = 1;
+		var multiplier = bonusPerPt / maxBonus;
+		var bonuses = [];
+
+		while (val-- > 0) {
+			damBonus += bonusPerPt;
+			bonuses.push(bonusPerPt.toFixed(2));
+			bonusPerPt = (maxBonus - damBonus) * multiplier;
+		}
+		console.warn('bonuses: ', bonuses.join(', '));
+		return Math.floor(damBonus); // 92% damage bonus for 255 strength
+	}
+	function dimRetSkill(val) {
+		var skillBonus = 0;
+		var bonusPerPoint = basePoint = 7;
+		var multiplier = .9;
+		var i = 0;
+
+		while (val-- > 0) {
+			skillBonus += bonusPerPoint;
+			console.warn(++i, +bonusPerPoint.toFixed(2), 'total: ', Math.round(skillBonus));
+			bonusPerPoint = bonusPerPoint * multiplier;
+		}
+		return Math.round(skillBonus); // 92% damage bonus for 255 strength
 	}
 	function goCreateCharacter() {
 		ng.lock(1);

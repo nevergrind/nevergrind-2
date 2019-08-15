@@ -14,6 +14,7 @@ var test;
 			room: chatRoom,
 			log: chatLog
 		},
+		send: send,
 		orcs,
 		battle,
 		filters: {
@@ -44,10 +45,18 @@ var test;
 		for (var i=0; i<mob.max; i++){
 			if (singleMob && i === 2 || !singleMob) {
 				mobKey = mob.getRandomMobKey();
-				mobKey = 'ice-giant';
+				//mobKey = 'ice-giant';
 				cache.preloadMob(mobKey);
 				mob.setMob(i, mobKey);
 			}
+		}
+	}
+	function send(loops) {
+		loops = loops || 1e3;
+		for (var i=0; i<loops; i++) {
+			socket.publish('test', {
+				test: ''
+			});
 		}
 	}
 	function socketSub() {

@@ -56,17 +56,17 @@ var router;
 		else if (r === 'party->notifyJoin') {
 			party.notifyJoin(data);
 		}
-		else if (r === 'party->joinRequest') {
+		else if (r === 'party->inviteReceived') {
 			party.joinAck(data);
 		}
 		else if (r === 'party->disband') {
-			party.partyDisband(data);
+			party.disbandReceived(data);
 		}
 		else if (r === 'party->promote') {
-			party.notifyPromote(data);
+			party.promoteReceived(data);
 		}
 		else if (r === 'party->boot') {
-			party.notifyBoot(data);
+			party.bootReceived(data);
 		}
 		else if (r === 'party->bootme') {
 			// remove booted player

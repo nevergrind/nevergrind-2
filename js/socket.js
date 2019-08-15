@@ -35,8 +35,7 @@ var socket;
 		channel = _.toLower(channel);
 		if (typeof socket.subs[channel] === 'object') {
 			try {
-				console.warn("Trying to unsubscribe from:");
-				console.info(socket.subs[channel]);
+				console.warn('Trying to unsubscribe from:', channel);
 				socket.session.unsubscribe(socket.subs[channel]);
 			}
 			catch(err) {

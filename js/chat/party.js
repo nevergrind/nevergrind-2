@@ -12,21 +12,21 @@ var party;
 		listen,
 		promotePlayer,
 		invite,
-		joinRequest,
+		inviteReceived,
 		joinAck,
 		joinConfirmed,
 		notifyJoin,
 		getPresence,
-		notifyPromote,
-		notifyBoot,
-		partyDisband,
-		notifyDisband,
+		promoteReceived,
+		bootReceived,
+		disbandReceived,
 		parse,
 		promote,
 		disband,
 		boot,
 	};
-	sessionStorage.setItem('reloads', party.prefix + 1);
+	party.prefix++;
+	sessionStorage.setItem('reloads', party.prefix);
 	var time;
 	var index;
 	var player;
@@ -40,11 +40,13 @@ var party;
 	 */
 	function listen(row) {
 		// unsub to current party?
-		my.partyId && socket.unsubscribe('party'+ my.partyId);
+		if (my.partyId) {
+			socket.unsubscribe('party' + my.partyId);
+		}
+
 		// sub to party
 		my.partyId = row;
 		try {
-			// for some reason I need this when I rejoin town; whatever ???
 			socket.subscribe('party' + row, route);
 		}
 		catch (err) {
@@ -112,30 +114,43 @@ var party;
 			}
 		})
 	}
-	function removePartyMember(player) {
+
+	/**
+	 * Only check leader on the last loop or if it's a single remove
+	 * @param player
+	 * @param checkLeader
+	 */
+	function removePartyMember(player, checkLeader = true) {
 		if (typeof player === 'object') {
-			console.warn('removing party member: ', player.row);
 			index = _.findIndex(party.presence, { row: player.row });
+			console.warn('removing party member: index', index, 'row', player.row);
 			_.pullAt(party.presence, [ index ]);
 			bar.dom[player.row] = undefined;
 			$('#bar-player-wrap-' + player.row).remove();
 			// elect new leader - only possible if timed out
-			if (player.isLeader && party.presence.length > 1) {
-				electLeader();
-			}
-			if (party.presence.length === 1) {
-				getById('bar-is-leader-' + my.row).classList.add('none');
+			if (checkLeader) {
+				if (player.isLeader && party.presence.length > 1) {
+					electLeader();
+				}
+				if (party.presence.length === 1) {
+					getById('bar-is-leader-' + my.row).classList.add('none');
+				}
 			}
 		}
 	}
-	function getUniquePartyChannel() {
+	function getUniquePartyChannel(increment) {
+		if (increment) {
+			// only increment if previously set
+			party.prefix++;
+			sessionStorage.setItem('reloads', party.prefix);
+		}
 		return +(party.prefix + '0' + my.row);
 	}
 	function promote(name, bypass) {
 		console.info('/promote ', name, bypass);
 		// must be leader or bypass by auto-election when leader leaves
 		var id = my.getPartyMemberIdByName(name);
-		if ((party.presence[0].isLeader || bypass) && my.partyId && id) {
+		if ((party.presence[0].isLeader || bypass) && party.presence.length > 1 && id) {
 			$.post(app.url + 'chat/promote.php', {
 				name: _.toLower(name),
 				leaderId: id
@@ -186,11 +201,11 @@ var party;
 	 * REQUESTER: player has requested or accepted invite to party
 	 * @param data
 	 */
-	function joinRequest(data) {
+	function inviteReceived(data) {
 		// clicked CONFIRM - request join ack
-		console.info('party.joinRequest: ', data);
+		console.info('party.inviteReceived: ', data);
 		socket.publish('party' + data.row, {
-			route: 'party->joinRequest',
+			route: 'party->inviteReceived',
 			name: my.name.toLowerCase(),
 		});
 	}
@@ -244,39 +259,74 @@ var party;
 			route: 'party->getPresence',
 		});
 	}
-	function notifyPromote(data) {
-		chat.log(data.name + " has been promoted to party leader.", 'chat-warning');
-		// refresh party bars
-		party.getPresence();
-	}
 	function boot(name, bypass) {
 		console.info('/boot ', name, bypass);
-		if (my.name === name) {
-			chat.log('You cannot boot yourself! Try disbanding instead.');
+		if (ng.view === 'battle') {
+			chat.log("You cannot boot party members during battle!", "chat-warning");
 		}
 		else {
-			// must be leader or bypass by auto-election when leader leaves
-			if ((party.presence[0].isLeader || bypass) && my.partyId && name) {
-				socket.publish('party' + my.partyId, {
-					name: name,
-					leader: my.name,
-					route: 'party->boot',
-				});
+			if (my.name === name) {
+				chat.log('You cannot boot yourself! Try disbanding instead.');
+			}
+			else {
+				// must be leader or bypass by auto-election when leader leaves
+				if ((party.presence[0].isLeader || bypass) && party.presence.length > 1 && name) {
+					socket.publish('party' + my.partyId, {
+						name: name,
+						leader: my.name,
+						route: 'party->boot',
+					});
+				}
 			}
 		}
 	}
-	function notifyBoot(data) {
-		console.info('party.notifyBoot ', data);
+	function bootReceived(data) {
+		console.warn('party.bootReceived ', data);
 		if (data.name === my.name) {
-			chat.log(data.leader + " has booted you from the party!", 'chat-warning');
-			party.listen(party.getUniquePartyChannel());
-			for (var i=1; i<party.maxPlayers; i++) {
-				removePartyMember(party.presence[i]);
+			var i = party.maxPlayers - 1;
+			for (; i > 0; i--) {
+				removePartyMember(party.presence[i], i === 1);
 			}
+			party.listen(party.getUniquePartyChannel());
+			chat.log(data.leader + " has booted you from the party!", 'chat-warning');
 		}
 		else {
 			var index = _.findIndex(party.presence, { name: data.name });
+			removePartyMember(party.presence[index]);
 			chat.log(data.name + " has been booted from the party.", 'chat-warning');
+		}
+	}
+	function disband() {
+		if (ng.view === 'battle') {
+			chat.log("You cannot disband the party during battle!", "chat-warning");
+		}
+		else {
+			if (party.presence.length > 1) {
+				socket.publish('party' + my.partyId, {
+					name: my.name,
+					route: 'party->disband',
+				});
+				party.listen(party.getUniquePartyChannel());
+			}
+			mission.abort();
+			mission.initQuest();
+		}
+	}
+	function disbandReceived(data) {
+		if (data.name === my.name) {
+			// stuff for disbander
+			my.quest.level && ng.msg('Mission abandoned: '+ my.quest.title);
+			chat.log('You disbanded the party.');
+			var i = party.maxPlayers - 1;
+			for (; i > 0; i--) {
+				removePartyMember(party.presence[i], i === 1);
+			}
+			party.listen(party.getUniquePartyChannel(true));
+		}
+		else {
+			console.warn('disbandReceived', data);
+			var index = _.findIndex(party.presence, { name: data.name });
+			chat.log(data.name + " has disbanded the party.", 'chat-warning');
 			removePartyMember(party.presence[index]);
 		}
 	}
@@ -309,74 +359,10 @@ var party;
 			name && chat.sendMsg('/promote ' + name);
 		}
 	}
-	function partyDisband(data) {
-		var index = 0,
-			name = '',
-			electNewLeader = 0;
-		// did the leader disband or somehow get booted?
-		party.presence.forEach(function(v, i) {
-			if (data.row === v.id) {
-				index = i;
-				name = v.name;
-				if (v.isLeader) {
-					electNewLeader = 1;
-				}
-			}
-		});
-		// disbanded player found
-		if (index) {
-			// reset client data to default
-			party.presence[index] = my.Party();
-			getById('bar-player-wrap-' + index).style.display = 'none';
-			chat.log(name + " has disbanded the party.", 'chat-warning');
-			// elect new leader if client's id is lowest
-			if (electNewLeader && my.isLowestPartyIdMine()) {
-				party.promote(my.getNewLeaderName(), 1);
-			}
-		}
-		// disband if it's me
-		// console.info('disband: ', data.row, my.id);
-		data.row === my.row && chat.sendMsg('/disband');
-	}
-	function notifyDisband() {
-		party.presence.forEach(function(v, i){
-			if (i) {
-				// set client value
-				party.presence[i] = my.Party();
-			}
-		});
-		bar.hideParty();
-		// update server
-		socket.unsubscribe('party'+ my.partyId);
-		my.partyId = my.row;
-		party.presence[0].isLeader = false;
-		getById('bar-is-leader-' + my.row).style.display = 'none';
-	}
-	function disband() {
-		if (ng.view === 'battle') {
-			chat.log("You cannot disband the party during battle!", "chat-warning");
-		}
-		else {
-			var count = party.presence.length;
-			$.post(app.url + 'chat/disband.php', {
-				count: count
-			}).done(function(r){
-				// console.info('disband ', r);
-				if (count > 1) {
-
-				}
-				if (my.partyId) {
-					my.quest.level && ng.msg('Mission abandoned: '+ my.quest.title);
-				}
-				mission.initQuest();
-				party.notifyDisband();
-				mission.abort();
-			}).fail(function(r) {
-				chat.log(r.responseText, 'chat-warning');
-			}).always(function() {
-				ng.unlock();
-			});
-		}
+	function promoteReceived(data) {
+		chat.log(data.name + " has been promoted to party leader.", 'chat-warning');
+		// refresh party bars
+		party.getPresence();
 	}
 	function parse(msg) { // 2-part upper case
 		var a = msg.replace(/ +/g, " ").split(" ");
@@ -387,7 +373,7 @@ var party;
 		console.info("MISSION UPDATE! ", data);
 		mission.setQuest(data.quest);
 		my.zoneMobs = data.zoneMobs;
-		if (my.partyId && !party.presence[0].isLeader) {
+		if (party.presence.length > 1 && !party.presence[0].isLeader) {
 			$.post(app.url + 'mission/update-quest.php', {
 				quest: data.quest
 			}).done(function (data) {

@@ -292,11 +292,6 @@ var chat;
 		/*
 		/random
 		/surname
-		allow to form parties
-			invite
-			disband
-			leader
-			boot
 		allow to form guilds
 			invite
 			disband
@@ -391,7 +386,7 @@ var chat;
 				var o = chat.getMsgObject(msg);
 				if (o.msg[0] !== '/') {
 					console.info(o);
-					if (!my.partyId && o.category.startsWith('party')) {
+					if (party.presence.length === 1 && o.category.startsWith('party')) {
 						log("You are not in a party.", 'chat-warning');
 					}
 					else if (!my.guild.id && o.category.startsWith('guild')) {
@@ -491,7 +486,7 @@ var chat;
 		if (ng.view === 'town') {
 			log('Camping...', 'chat-warning');
 			game.exit();
-			if (my.partyId) {
+			if (party.presence.length > 1) {
 				if (party.presence[0].isLeader) {
 					// promote
 					party.promotePlayer();
@@ -500,7 +495,7 @@ var chat;
 				chat.sendMsg('/disband')
 			}
 			(function repeat(count) {
-				if (!my.partyId) {
+				if (party.presence.length === 1) {
 					// successfully disbanded
 					setTimeout(function() {
 						location.reload();
