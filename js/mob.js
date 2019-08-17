@@ -137,7 +137,7 @@ var mob;
 		m.dom.shadow.style.display = 'block';
 		m.dom.shadow.style.width = ~~((m.shadowWidth * m.size) * 1.5) + 'px';
 		m.dom.shadow.style.height = (m.shadowHeight * m.size) + 'px';
-		m.dom.shadow.style.left = ((m.shadowWidth * m.size ) * -.5) + 'px';
+		// m.dom.shadow.style.left = ((m.shadowWidth * m.size ) * -.5) + 'px';
 		m.dom.shadow.style.bottom = ((m.shadowBottom - (m.shadowHeight * .3))* m.size) + 'px';
 		// test stuff below
 		// center dot

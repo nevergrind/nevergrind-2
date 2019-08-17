@@ -3,7 +3,6 @@
 	var key;
 	var code;
 	// window
-	window.onbeforeunload = game.exit;
 	$(window)
 		.on('resize', resize)
 		.on('load', windowResized)
@@ -26,12 +25,11 @@
 	}
 	function readyFire() {
 		ng.initGame();
-		game.session.timer = setTimeout(ng.keepAlive, game.ajax.interval);
-		// init events
 		var x = 'click';
 		ng.events(x);
 		create.events(x);
 		audio.events();
+		window.onbeforeunload = chat.camp;
 	}
 	function focus(e) {
 		windowResized();

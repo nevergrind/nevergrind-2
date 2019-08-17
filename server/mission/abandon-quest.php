@@ -33,7 +33,5 @@ else {
 	]));
 }
 
-require '../session/init-quest.php';
-
 $r['success'] = 1;
 echo json_encode($r);

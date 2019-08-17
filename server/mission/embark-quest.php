@@ -20,8 +20,6 @@ $stmt = $db->prepare('update `players` set mission_id=?, zone=? where id=?');
 $stmt->bind_param('isi', $mission_id, $dungeon, $_SESSION['row']);
 $stmt->execute();
 
-$_SESSION['chatChannel'] = '';
-
 require 'get-zone-mobs.php';
 
 require '../zmq.php';

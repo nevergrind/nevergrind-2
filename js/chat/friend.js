@@ -10,21 +10,24 @@ var friend;
 	}
 	//////////////////////////////////////////
 	function parse(o) {
-		// 3-part parse
-		var a = o.replace(/ +/g, " ").split(" ");
-		return a[2][0].toUpperCase() + a[2].substr(1).toLowerCase().trim();
+		// returns lower case friend name
+		return _.capitalize(
+			o.replace(/ +/g, " ")
+			.split(" ")[2]
+			.trim()
+		)
 	}
 	function init() {
 		ng.friends = ng.friends || [];
 		$.get(app.url + 'chat/friend-get.php').done(function(data){
-			ng.friends = data;
+			ng.friends = _.map(data, _.capitalize);
 		});
 	}
 	function list() {
 		chat.log('<div class="chat-warning">Checking friends list...</div>');
 		if (ng.friends.length){
 			$.get(app.url + 'chat/friend-status.php').done(function(r){
-				ng.friends = r.friends;
+				ng.friends = _.map(r.friends, _.capitalize);
 				console.info(r);
 				var str = chat.divider + '<div>Friend List ('+ r.friends.length +')</div>';
 
@@ -42,57 +45,62 @@ var friend;
 						str += '<div class="chat-emote">[Offline] ' + name +'</div>';
 					}
 				});
-
 				chat.log(str);
 			});
 		}
 		else {
 			chat.log("<div>You don't have any friends!</div>");
-			chat.log("<div class='chat-emote'>Use /friend [name] to add a new friend.</div>");
+			chat.log("<div class='chat-emote'>Use /friend add [name] to add a new friend.</div>");
 		}
 	}
-	function add(o) {
-		if (ng.friends.includes(o)) {
+	function add(name) {
+		info(name, my.name)
+		if (ng.friends.includes(name)) {
 			chat.log(o + " is already your friend.", 'chat-warning');
 		}
-		else if (o.length > 1 && o !== my.name) {
+		else if (name === my.name) {
+			chat.log("You can't be your own friend!", 'chat-warning');
+		}
+		else if (name.length < 2) {
+			chat.log("Names must be at least two characters long.", 'chat-warning');
+		}
+		else {
 			$.post(app.url + 'chat/friend-add.php', {
-				friend: _.toLower(o)
+				friend: name
 			}).done(function(data){
 				if (data.error) {
 					chat.log(data.error, 'chat-warning');
 				}
 				else {
-					chat.log('You have added ' + o + ' to your friend list.', 'chat-warning');
-					socket.subscribe('friend'+ o, friend.notify);
-					if (!ng.friends.includes(o)) {
-						socket.publish('name' + o, {
-							name: my.name,
-							gender: my.gender,
-							action: "friend>addedMe"
-						});
-					}
-
-					ng.friends.push(o);
+					chat.log('You have added ' + name + ' to your friend list.', 'chat-warning');
+					socket.subscribe('friend' + name, friend.notify);
+					socket.publish('name' + name, {
+						name: my.name,
+						gender: my.gender,
+						action: "friend>addedMe"
+					});
+					ng.friends.push(name);
 				}
 			});
 		}
 	}
-	function remove(o) {
-		if (o.length > 1 && o !== my.name && ng.friends.indexOf(o) > -1) {
+	function remove(name) {
+		if (name.length > 1 &&
+			name !== my.name &&
+			ng.friends.includes(name)) {
 			$.post(app.url + 'chat/friend-remove.php', {
-				friend: _.toLower(o)
+				friend: name
 			}).done(function(data){
 				if (data.error) {
 					chat.log(data.error, 'chat-warning');
 				}
 				else {
-					chat.log('You have removed ' + o + ' from your friend list.', 'chat-warning');
-					while (ng.friends.indexOf(o) > -1) {
-						var index = ng.friends.indexOf(o);
+					chat.log('You have removed ' + name + ' from your friend list.', 'chat-warning');
+					while (ng.friends.includes(name)) {
+						var index = ng.friends.indexOf(name);
 						ng.friends.splice(index, 1);
 					}
-					socket.unsubscribe('friend'+ o);
+					socket.unsubscribe('friend' + name);
 				}
 			});
 		}

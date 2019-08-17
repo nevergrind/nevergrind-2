@@ -107,7 +107,7 @@ var create;
 			create.set('race', race);
 		});
 		$(".select-class").on(x, function(e){
-			if ($(this).get(0).className.indexOf('disabled') === -1){
+			if (!$(this).get(0).className.includes('disabled')){
 				var job = $(this).text();
 				$('.select-class').removeClass('active');
 				$(this).addClass('active');
@@ -210,9 +210,6 @@ var create;
 			var z = $(this);
 			create.selected = z.data('row');
 			create.name = z.data('name');
-			if (ng.playerCardClicks++ === 1) {
-				$.get(app.url + 'session/init-character.php')
-			}
 		});
 	}
 	function deleteCharacter() {
@@ -559,8 +556,6 @@ var create;
 	}
 	// private /////////////////////////////////////////////////
 	function getCleanName(name) {
-		return _.capitalize(_.map(name, function(char) {
-			return _.includes(create.whitelist, char) ? char : '';
-		}).join(''));
+		return _.capitalize(_.map(name, char => _.includes(create.whitelist, char) ? char : '').join(''));
 	}
 })();

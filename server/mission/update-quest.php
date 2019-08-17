@@ -15,15 +15,10 @@ $_SESSION['quest'] = [
 	'description' => $_POST['quest']['description']
 ];
 
-$_SESSION['chatChannel'] = '';
-
 $dungeon = 'dng:' . $_POST['quest']['zone'];
 $stmt = $db->prepare('update `players` set mission_id=?, zone=? where id=?');
 $stmt->bind_param('isi', $mission_id, $dungeon, $_SESSION['row']);
 $stmt->execute();
 
-if ($_SESSION['party']['id']) {
-	$_SESSION['party']['mission_id'] = $_POST['quest']['row'] * 1;
-}
 
 echo json_encode($r);

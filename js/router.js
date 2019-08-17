@@ -19,7 +19,7 @@ var router;
 			if (data.name === my.name) {
 				chat.log(data.msg, data.class);
 			}
-			else if (ng.ignore.indexOf(data.name) === -1) {
+			else if (!ng.ignore.includes(data.name)) {
 				chat.log(data.msg, data.class);
 			}
 			else {
@@ -68,34 +68,7 @@ var router;
 		else if (r === 'party->boot') {
 			party.bootReceived(data);
 		}
-		else if (r === 'party->bootme') {
-			// remove booted player
-			var slot = my.getPartySlotByRow(data.id * 1),
-				promote = 0;
-			if (party.presence[slot].isLeader) {
-				// we must promote a new leader
-				promote = 1;
-			}
-			party.presence[slot] = my.Party();
-			// only boot if I'm the lowest id!
-			if (my.isLowestPartyIdMine()) {
-				//console.info('isLowestPartyIdMine ! YES PROMOTE! ', _.cloneDeep(my.party));
-				party.boot(data.name, 1);
-				if (party.presence.length === 1) {
-					// disband if one-man party
-					console.info('partyCount === 1 ');
-					party.disband();
-				}
-				else if (promote) {
-					// otherwise promote this player to leader
-					//console.info('PROMOTING: ', my.name);
-					party.promote(my.name, 1);
-				}
-			}
-			setTimeout(bar.getParty, 1000);
-		}
 		else if (r === 'party->getPresence') {
-			console.warn('getPresence received! broadcasting!');
 			game.heartbeatSend();
 		}
 	}

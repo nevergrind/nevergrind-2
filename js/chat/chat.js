@@ -3,6 +3,7 @@ var chat;
 	/** public */
 	chat = {
 		prefix: 'ng2',
+		isCamped: false,
 		default: 'town',
 		initialized: 0,
 		isClicked: false,
@@ -15,7 +16,7 @@ var chat;
 		dom: {},
 		historyIndex: 0,
 		history: [],
-		divider: '<div class="chat-emote">========================================</div>',
+		divider: '<div class="chat-emote">======================================</div>',
 		whispers: {},
 		presence: [],
 		modeTypes: [
@@ -106,7 +107,7 @@ var chat;
 		}
 
 		// known standard mode
-		if (chat.modeTypes.indexOf(mode) > -1) {
+		if (chat.modeTypes.includes(mode)) {
 			chat.modeCommand = mode;
 			chat.modeSet(mode);
 			if (!h) {
@@ -124,10 +125,7 @@ var chat;
 			}
 			else {
 				var parse = chat.parseMsg(mode),
-					name = parse.first.substr(1);
-
-				name = name.toLowerCase();
-				name = name[0].toUpperCase() + name.substr(1);
+					name = _.capitalize(parse.first.substr(1));
 			}
 			chat.modeCommand = '@';
 			chat.modeName = name;
@@ -355,7 +353,7 @@ var chat;
 		else if (msgLower.startsWith('/ignore add')) {
 			ignore.add(friend.parse(msg));
 		}
-		else if (msgLower === '/friends' || msgLower === '/flist') {
+		else if (msgLower === '/friends' || msgLower === '/flist' || msgLower === '/friend') {
 			friend.list();
 		}
 		else if (msgLower.startsWith('/friend remove')) {
@@ -483,36 +481,29 @@ var chat;
 		}
 	}
 	function camp() {
-		if (ng.view === 'town') {
-			log('Camping...', 'chat-warning');
-			game.exit();
-			if (party.presence.length > 1) {
-				if (party.presence[0].isLeader) {
-					// promote
-					party.promotePlayer();
-				}
-				// disband
-				chat.sendMsg('/disband')
-			}
-			(function repeat(count) {
-				if (party.presence.length === 1) {
-					// successfully disbanded
-					setTimeout(function() {
-						location.reload();
-					}, 500);
-				}
-				else {
-					if (count < 30) {
-						setTimeout(repeat, 100, ++count);
-					}
-					else {
-						log("Failed to camp successfully.", "chat-warning");
-					}
-				}
-			})(0);
+		if (chat.isCamped) return;
+		chat.isCamped = true;
+		if (ng.view === 'battle') {
+			chat.log('You cannot camp while in battle!')
 		}
 		else {
-			log("You can only camp in town!", "chat-warning");
+			log('Camping...', 'chat-warning');
+			// from town
+			if (ng.view === 'town') {
+				chat.publishRemove()
+			}
+			if (party.presence.length > 1) {
+				// boot from party
+				party.disband()
+			}
+			// notify friends
+			socket.publish('friend' + my.name, {
+				name: my.name,
+				route: 'off'
+			});
+			setTimeout(function() {
+				location.reload();
+			}, 500);
 		}
 	}
 	function reply() {
@@ -601,17 +592,17 @@ var chat;
 			// complex parse for class names
 		var a = msg.replace(/ +/g, " ").split(" "),
 			job = a[1],
-			longJob = job[0].toUpperCase() + job.substr(1).toLowerCase().trim();
+			longJob = _.capitalize(job[0].trim());
 
 		// long name?
-		if (ng.jobs.indexOf(longJob) > -1) {
+		if (ng.jobs.includes(longJob)) {
 			// convert to short
 			return ng.jobShort[longJob];
 		}
 		else {
 			var shortJobs = _.keys(ng.jobLong),
 				job = job.toUpperCase();
-			if (shortJobs.indexOf(job)) {
+			if (shortJobs.includes(job)) {
 				// is it on the short job list?
 				return job;
 			}

@@ -7,23 +7,20 @@ var party;
 		getUniquePartyChannel,
 		missionUpdate,
 		upsertParty,
-		isSoloOrLeading,
 		notifyMissionStatus,
 		listen,
-		promotePlayer,
 		invite,
 		inviteReceived,
 		joinAck,
 		joinConfirmed,
 		notifyJoin,
-		getPresence,
 		promoteReceived,
+		boot,
 		bootReceived,
 		disbandReceived,
 		parse,
 		promote,
 		disband,
-		boot,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -146,21 +143,6 @@ var party;
 		}
 		return +(party.prefix + '0' + my.row);
 	}
-	function promote(name, bypass) {
-		console.info('/promote ', name, bypass);
-		// must be leader or bypass by auto-election when leader leaves
-		var id = my.getPartyMemberIdByName(name);
-		if ((party.presence[0].isLeader || bypass) && party.presence.length > 1 && id) {
-			$.post(app.url + 'chat/promote.php', {
-				name: _.toLower(name),
-				leaderId: id
-			}).done(function (data) {
-				// console.info('promote ', data);
-			}).fail(function (r) {
-				chat.log(r.responseText, 'chat-warning');
-			});
-		}
-	}
 
 	/**
 	 * LEADER: Sends invite to player
@@ -231,15 +213,16 @@ var party;
 	 */
 	function joinConfirmed(data) {
 		console.warn('joinConfirmed', data);
-		party.presence[0].isLeader = false;
+		my.isLeader = party.presence[0].isLeader = false;
 		my.partyId = data.row;
 		party.listen(data.row);
-		socket.publish('party' + my.partyId, {
-			msg: my.name + ' has joined the party.',
-			route: 'party->notifyJoin',
-		});
 		chat.log("You have joined the party.", "chat-warning");
-		//game.heartbeatSend();
+		setTimeout(() => {
+			socket.publish('party' + my.partyId, {
+				msg: my.name + ' has joined the party.',
+				route: 'party->notifyJoin',
+			});
+		}, 100)
 	}
 	/**
 	 * Notify party of new member and get bar state
@@ -249,12 +232,6 @@ var party;
 		console.info('party.notifyJoin ', data);
 		chat.log(data.msg, 'chat-warning');
 		// refresh party bars
-		party.getPresence();
-	}
-	/**
-	 * Get current state of party via requesting heartbeats
-	 */
-	function getPresence() {
 		socket.publish('party' + my.partyId, {
 			route: 'party->getPresence',
 		});
@@ -302,28 +279,26 @@ var party;
 		}
 		else {
 			if (party.presence.length > 1) {
+				my.isLeader = party.presence[0].isLeader = true;
 				socket.publish('party' + my.partyId, {
 					name: my.name,
 					route: 'party->disband',
 				});
-				party.listen(party.getUniquePartyChannel());
+				// stuff for disbander
+				my.quest.level && ng.msg('Mission abandoned: '+ my.quest.title);
+				chat.log('You disbanded the party.');
+				var i = party.maxPlayers - 1;
+				for (; i > 0; i--) {
+					removePartyMember(party.presence[i], i === 1);
+				}
+				party.listen(party.getUniquePartyChannel(true));
 			}
 			mission.abort();
 			mission.initQuest();
 		}
 	}
 	function disbandReceived(data) {
-		if (data.name === my.name) {
-			// stuff for disbander
-			my.quest.level && ng.msg('Mission abandoned: '+ my.quest.title);
-			chat.log('You disbanded the party.');
-			var i = party.maxPlayers - 1;
-			for (; i > 0; i--) {
-				removePartyMember(party.presence[i], i === 1);
-			}
-			party.listen(party.getUniquePartyChannel(true));
-		}
-		else {
+		if (data.name !== my.name) {
 			console.warn('disbandReceived', data);
 			var index = _.findIndex(party.presence, { name: data.name });
 			chat.log(data.name + " has disbanded the party.", 'chat-warning');
@@ -336,38 +311,58 @@ var party;
 		console.warn("Electing a new leader!", player);
 		if (player.name === my.name) {
 			index = 0;
+			my.isLeader = party.presence[index].isLeader = true;
 			game.heartbeatSend();
 			console.warn("New leader!", player.name);
 		}
 		else {
 			index = _.findIndex(party.presence, { row: player.row });
+			party.presence[index].isLeader = true;
 		}
-		console.warn("LEADER INDEX: ", index);
-		party.presence[index].isLeader = true;
+		console.warn("LEADER INDEX: ", index, player.row);
 		getById('bar-is-leader-' + player.row).classList.remove('none');
 	}
-	function promotePlayer() {
-		if (party.presence.length > 1) {
-			var name = '';
-			party.presence.forEach(function(v, i) {
-				if (i) {
-					if (v) {
-						name = v.name;
-					}
-				}
-			});
-			name && chat.sendMsg('/promote ' + name);
+	function promote(name) {
+		console.info('/promote ', name);
+		// must be leader or bypass by auto-election when leader leaves
+		var id = _.findIndex(party.presence, { name: name });
+		if (party.presence[0].isLeader) {
+			if (id >= 1) {
+				my.isLeader = party.presence[0].isLeader = false;
+				socket.publish('party' + my.partyId, {
+					route: 'party->promote',
+					name: name,
+					leaderRow: my.row
+				});
+			}
+			else {
+				chat.log('That player was not found in your party. Did you spell it right?');
+			}
+		}
+		else {
+			chat.log('You must be the leader to promote a party member!');
 		}
 	}
 	function promoteReceived(data) {
-		chat.log(data.name + " has been promoted to party leader.", 'chat-warning');
-		// refresh party bars
-		party.getPresence();
+		var index = _.findIndex(party.presence, { name: data.name });
+		if (index >= 0) {
+			chat.log(data.name + " has been promoted to party leader.", 'chat-warning');
+			console.warn('index', index);
+			party.presence[index].isLeader = true;
+			if (!index) {
+			console.warn('Look at me. I am the leader now');
+				my.isLeader = true;
+			}
+			var oldLeader = _.findIndex(party.presence, { row: data.leaderRow });
+			console.warn('oldLeader', oldLeader);
+			getById('bar-is-leader-' + party.presence[index].row).classList.remove('none');
+			getById('bar-is-leader-' + party.presence[oldLeader].row).classList.add('none');
+		}
 	}
 	function parse(msg) { // 2-part upper case
 		var a = msg.replace(/ +/g, " ").split(" ");
 		return a[1] === undefined ?
-			'' : (a[1][0].toUpperCase() + a[1].substr(1).toLowerCase()).trim();
+			'' : (_.capitalize(a[1].trim()));
 	}
 	function missionUpdate(data) {
 		console.info("MISSION UPDATE! ", data);
@@ -392,14 +387,6 @@ var party;
 				}, game.questDelay);
 			});
 		}
-	}
-	function isSoloOrLeading() {
-		var leading = 0;
-		var partyLen = party.presence.length;
-		if (partyLen === 1 || partyLen > 1 && party.presence[0].isLeader) {
-			leading = 1;
-		}
-		return leading;
 	}
 	function notifyMissionStatus(data) {
 		ng.msg(data.msg, 6);

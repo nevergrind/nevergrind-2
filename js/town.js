@@ -80,6 +80,7 @@ var town;
 	function go() {
 		if (ng.view === 'town') return;
 		if (create.selected) {
+			clearTimeout(game.session.timer);
 			game.emptyScenesExcept('scene-town');
 			ng.lock(1);
 			chat.sizeLarge();
@@ -89,11 +90,6 @@ var town;
 				console.info('load-character: ', data);
 				Object.assign(my, data.characterData);
 				my.guild = data.guild;
-				if (data.quest.level) {
-					// quest still active
-					mission.setQuest(data.quest);
-					my.zoneMobs = data.zoneMobs;
-				}
 
 				// init party member values
 				console.info('party.presence[0]: ', party.presence[0]);
@@ -121,24 +117,12 @@ var town;
 							opacity: 1,
 							onComplete: ng.unlock
 						});
-						bar.setAjaxPing();
 					}
 					else {
 						setTimeout(repeat, 100);
 					}
 				})();
 
-				// route to battle in local mode
-				if (!app.isApp) {
-					if (data.quest.level) {
-						if (location.hash === '#battle') {
-							battle.go();
-						}
-						else if (location.hash === '#dungeon') {
-							dungeon.go();
-						}
-					}
-				}
 				ng.unlock();
 			}).fail(function(data){
 				ng.disconnect(data.responseText);

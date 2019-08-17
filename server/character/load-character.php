@@ -90,8 +90,6 @@
 	}
 
 	if ($i) {
-		$cacheHp = -1;
-		$cacheMp = -1;
 		if (isset($_SESSION) &&
 			isset($_SESSION['hp']) &&
 			$_SESSION['hp'] > 0) {
@@ -101,67 +99,13 @@
 		}
 		require '../session/init-ng.php';
 		// set session values for my character
-		foreach ($r['characterData'] as $key => $val) {
-			$_SESSION[$key] = $val;
-		}
-		// assign session hp/mp cache values if a non -1 value was found
-		// this helps avoid relying on hp/mp value in `characters` AND parties table
-		if ($cacheHp >= 0) {
-			$_SESSION['hp'] = $cacheHp;
-			$r['characterData']['hp'] = $cacheHp;
-			$_SESSION['mp'] = $cacheMp;
-			$r['characterData']['mp'] = $cacheMp;
-		}
+		$_SESSION['row'] = $r['characterData']['row'];
+		$_SESSION['name'] = $r['characterData']['name'];
+		$_SESSION['level'] = $r['characterData']['level'];
+		$_SESSION['job'] = $r['characterData']['job'];
 
-		// init or wipe all party data
-		if (!isset($_SESSION['party'])) {
-			require '../session/init-party.php';
-		}
-		else {
-			require '../session/init-party.php';
-			// delete from parties if player data is known
-			mysqli_query($db, 'delete from `parties` where c_id='. $_SESSION['row']);
-		}
-
-		require '../session/init-quest.php';
-		// init session values
-		require '../session/init-guild.php';
-
-		// set hp/mp regen, etc
-		require 'setEquipmentValues.php';
-
-		/*
-		// get all players in chat room
-		$result = mysqli_query(
-			$db,
-			'SELECT id, name, level, race, job FROM `players` where zone="ng2town" and timestamp > date_sub(now(), interval 15 second)'
-		);
-		$r['players'] = [];
-		$i = 0;
-		if ($result->num_rows) {
-			while ($row = mysqli_fetch_assoc($result)) {
-				$r['players'][$i++] = (object)[
-					'id' => $row['id'],
-					'name' => $row['name'],
-					'level' => $row['level'],
-					'race' => $row['race'],
-					'job' => $row['job'],
-				];
-			}
-		}*/
 		// get guild info
 		require '../guild/get-guild-data.php';
-
-		// get mission info
-		$cacheQuest = '';
-		$r['quest'] = [];
-		if ($_SESSION['quest']['row']) {
-			$cacheQuest = $_SESSION['quest']['zone'];
-			$r['quest'] = $_SESSION['quest'];
-			require '../mission/get-zone-mobs.php';
-		};
-		// set zone from session
-		$r['dungeon'] = $cacheQuest;
 
 		echo json_encode($r);
 	}

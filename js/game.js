@@ -7,11 +7,7 @@ var game;
 		session: {
 			timer: 0
 		},
-		ajax: {
-			interval: 15000,
-			sendTime: 0,
-			receiveTime: 0
-		},
+		pingHistory: [],
 		questDelay: 3000,
 		start: Date.now(),
 		heartbeatEnabled: true,
@@ -23,8 +19,6 @@ var game;
 		heartbeatReceivedParty,
 		heartbeatTimeout,
 		getPresence,
-		exit,
-		getPingColor,
 		emptyScenesExcept,
 		getPetName,
 	};
@@ -35,11 +29,6 @@ var game;
 		'scene-town',
 		'scene-dungeon',
 		'scene-battle'
-	];
-	var pingColors = [
-		'',
-		'chat-warning',
-		'chat-alert'
 	];
 	var heartbeat = {
 		timer: 0,
@@ -116,7 +105,7 @@ var game;
 	}
 	function heartbeatReceived(data) {
 		if (data.name === my.name) {
-			console.info("%c town heartbeatReceived: ", "background: #0bf", data);
+			console.info("%c town heartbeatReceived: ", "background: #0bf", data.name, data);
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
 			bar.updatePing(ping);
@@ -124,7 +113,7 @@ var game;
 		upsertRoom(data);
 	}
 	function heartbeatReceivedParty(data) {
-		console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #0ff", data);
+		console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #0ff", data.name, data);
 		if (data.name === my.name) {
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
@@ -184,28 +173,6 @@ var game;
 		el = getById('chat-player-' + player.row);
 		el !== null && el.parentNode.removeChild(el);
 		chat.setHeader();
-	}
-	function exit() {
-		// from town
-		if (heartbeat.enabled) {
-			chat.publishRemove();
-			if (party.presence.length > 1) {
-				// boot from party
-				/*
-				socket.publish('party' + my.partyId, {
-					id: my.row,
-					name: my.name,
-					route: 'party->bootme'
-				});
-				*/
-			}
-			// notify friends
-			socket.publish('friend' + my.name, {
-				name: my.name,
-				route: 'off'
-			});
-			socket.connection.close();
-		}
 	}
 	function emptyScenesExcept(scene) {
 		scenes.forEach(function(v) {
@@ -339,18 +306,5 @@ var game;
 			socket.unsubscribe('friend' + v);
 			socket.subscribe('friend' + v, friend.notify);
 		});
-	}
-	function getPingColor(ping) {
-		var index;
-		if (ping < 150) {
-			index = 0;
-		}
-		else if (ping < 350) {
-			index = 1;
-		}
-		else {
-			index = 2;
-		}
-		return pingColors[index];
 	}
 })();

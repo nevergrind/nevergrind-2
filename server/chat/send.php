@@ -15,6 +15,5 @@
 	if ($_POST['class'] === 'chat-whisper') {
 		$zmq['action'] = $_POST['action'];
 	}
-	$zmq['category'] = $_POST['category'];
 	require '../zmq.php';
 	$socket->send(json_encode($zmq));

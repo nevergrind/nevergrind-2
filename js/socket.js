@@ -57,7 +57,7 @@ var socket;
 		})();
 	}
 	function joinGameCallback(data) {
-		if (ng.ignore.indexOf(data[0].account) === -1){
+		if (!ng.ignore.includes(data[0].account)){
 			title.chatReceive(data[0]);
 		}
 	}

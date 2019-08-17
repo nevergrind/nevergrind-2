@@ -98,7 +98,7 @@ var login;
 		$.post(app.url + 'account/create-account.php', {
 			account: account
 		}).done(function(data) {
-			if (data.indexOf("Account Created") === -1){
+			if (!data.includes("Account Created")){
 				// something went wrong
 				localStorage.setItem('account', account);
 				login.msg(data);

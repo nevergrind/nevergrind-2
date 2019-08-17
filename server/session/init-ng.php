@@ -1,9 +1,5 @@
 <?php
 $_SESSION['row'] = 0;
 $_SESSION['name'] = '';
-$_SESSION['hp'] = 0;
-$_SESSION['mp'] = 0;
-$_SESSION['leader'] = '';
-$_SESSION['chatChannel'] = 'ng2town';
-$_SESSION['level'] = 0;
-$_SESSION['played'] = time();
+$_SESSION['level'] = 1;
+$_SESSION['job'] = 'WAR';

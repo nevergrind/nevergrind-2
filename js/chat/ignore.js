@@ -30,7 +30,7 @@ var ignore;
 		}
 	}
 	function remove(o) {
-		while (ng.ignore.indexOf(o) > -1) {
+		while (ng.ignore.includes(o)) {
 			var index = ng.ignore.indexOf(o);
 			ng.ignore.splice(index, 1);
 		}

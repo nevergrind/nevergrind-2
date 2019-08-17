@@ -98,8 +98,6 @@ var ng;
 				soundVolume: 50
 			}
 		},
-		geo: {},
-		playerCardClicks: 0,
 		TM,
 		TDC,
 		msg,
@@ -114,7 +112,6 @@ var ng;
 		dimRetSkill,
 		setScene,
 		initGame,
-		keepAlive,
 		toJobLong,
 		toJobShort,
 		disconnect,
@@ -207,14 +204,10 @@ var ng;
 	}
 	function keepAlive() {
 		clearTimeout(game.session.timer);
-		game.ajax.sendTime = Date.now();
-		$.get(app.url + 'session/keep-alive.php').done(function() {
-			game.ajax.receiveTime = Date.now();
-			if (ng.view !== 'title') {
-				bar.setAjaxPing();
+		$.get(app.url + 'session/keep-alive.php').always(function() {
+			if (ng.view === 'title') {
+				game.session.timer = setTimeout(keepAlive, 170000);
 			}
-		}).always(function() {
-			game.session.timer = setTimeout(keepAlive, game.ajax.interval);
 		});
 	}
 	function msg(msg, d) {
@@ -376,7 +369,7 @@ var ng;
 			}
 
 			r.resetLocalSession && sessionStorage.clear();
-			ng.keepAlive();
+			keepAlive();
 		});
 	}
 	function displayAllCharacters(r) {

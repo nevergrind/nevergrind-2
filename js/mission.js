@@ -182,7 +182,7 @@ var mission;
 			embarkClass = 'none',
 			helpClass = 'block';
 
-		if (party.isSoloOrLeading()) {
+		if (party.presence[0].isLeader) {
 			// is solo or a leader
 			headMsg = 'Select A Mission';
 			helpMsg = 'Select a quest from any zone and embark to venture forth!';
@@ -223,7 +223,7 @@ var mission;
 	}
 	function asideFooter() {
 		var s = '';
-		if (party.isSoloOrLeading()) {
+		if (party.party.presence[0].isLeader) {
 			s +=
 			'<div id="mission-footer" class="aside-frame text-shadow">' +
 				'<div id="mission-abandon" class="ng-btn ng-btn-alert">Abandon Mission</div>' +
@@ -313,7 +313,7 @@ var mission;
 	}
 	function clickQuest(that) {
 		var id = that.data('id') * 1;
-		if (id && party.isSoloOrLeading()) {
+		if (id && party.party.presence[0].isLeader) {
 			my.selectedQuest = id;
 			console.info("QUEST SELECTED: ", id);
 			mission.showEmbark();
@@ -324,7 +324,7 @@ var mission;
 		}
 	}
 	function embark() {
-		if (party.isSoloOrLeading()) {
+		if (party.party.presence[0].isLeader) {
 			ng.lock(1);
 			$.post(app.url + 'mission/embark-quest.php', {
 				quest: mission.quests[my.selectedQuest]
@@ -375,7 +375,7 @@ var mission;
 		if (!my.quest.level) {
 			chat.log("You have not started a mission!", "chat-warning");
 		}
-		else if (!party.isSoloOrLeading()) {
+		else if (!party.presence[0].isLeader) {
 			chat.log("Only party leaders can abandon missions, but you can /disband the party to quit.", "chat-warning");
 		}
 		else if (ng.view === 'battle') {

@@ -2,19 +2,23 @@ var bar;
 (function() {
 	bar = {
 		dom: {},
+		averagePing: 100,
 		initialized: 0,
 		init,
 		linkdead,
 		hideParty,
 		updatePlayerBar,
 		addPlayer,
-		setAjaxPing,
 		updatePing,
 	};
 	var index;
 	var player; // temp bar data
 	var pingTimer;
-	var ajaxTimer;
+	var pingColors = [
+		'',
+		'chat-warning',
+		'chat-alert'
+	];
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
@@ -31,8 +35,7 @@ var bar;
 			e.innerHTML = html;
 			e.style.display = 'block';
 
-			bar.dom.ping = getById('bar-ping');
-			bar.dom.socket = getById('bar-socket');
+			bar.dom.lag = getById('bar-lag');
 			// draw all bars
 			// bar events
 			$("#bar-wrap").on('click contextmenu', '.bar-col-icon', function (e) {
@@ -81,8 +84,8 @@ var bar;
 		var s = '';
 		s +=
 		'<div id="bar-lag">' +
-			'<span id="bar-ping"><i class="fa fa-exchange"></i></span>' +
-			'<span id="bar-socket"><i class="fa fa-exchange"></i></span>' +
+			'<i class="fa fa-exchange"></i>' +
+			'<i class="fa fa-exchange"></i>' +
 		'</div>' +
 		'<div id="bar-main-menu">' +
 			'<i id="bar-camp" class="fa fa-power-off bar-icons"></i>' +
@@ -165,8 +168,28 @@ var bar;
 		pingTimer = setTimeout(updatePingDone, 100, ping);
 	}
 	function updatePingDone(ping) {
-		bar.dom.socket.innerHTML =
-			'<span class="'+ game.getPingColor(ping) +'">' + (ping) + 'ms</span>';
+		game.pingHistory.push(ping);
+		if (game.pingHistory.length > 20) {
+			game.pingHistory.shift();
+		}
+		bar.averagePing = ~~_.meanBy(game.pingHistory, val => val);
+		// dom
+		bar.dom.lag.innerHTML =
+			'<span class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>' +
+			'<span class="'+ getPingColor(bar.averagePing) +'">' + (bar.averagePing) + 'ms</span>';
+	}
+	function getPingColor(ping) {
+		index;
+		if (ping < 150) {
+			index = 0;
+		}
+		else if (ping < 350) {
+			index = 1;
+		}
+		else {
+			index = 2;
+		}
+		return pingColors[index];
 	}
 	function setHp(index, delay) {
 		if (typeof party.presence[index] === 'undefined' ||
@@ -174,8 +197,8 @@ var bar;
 			console.warn("NOT DRAWING BAR");
 		}
 		else {
-			var percent = ~~((party.presence[index].hp / party.presence[index].maxHp) * 100) + '%',
-					delay = delay === undefined ? .3 : delay;
+			var percent = ~~((party.presence[index].hp / party.presence[index].maxHp) * 100) + '%';
+			var delay = delay === undefined ? .3 : delay;
 			TweenMax.to(bar.dom[index].hpFg, delay, {
 				width: percent
 			});
@@ -202,16 +225,6 @@ var bar;
 				bar.dom[index].mpWrap.style.display = 'none';
 			}
 		}
-	}
-	function setAjaxPing() {
-		clearTimeout(ajaxTimer);
-		ajaxTimer = setTimeout(setAjaxPingDone, 100);
-	}
-	function setAjaxPingDone() {
-		var ping = ~~((game.ajax.receiveTime - game.ajax.sendTime) / 2);
-		bar.dom.ping.innerHTML =
-			'<span class="'+ game.getPingColor(ping) +'">' + (ping) + 'ms</span>';
-
 	}
 	function hideParty() {
 		party.presence.forEach(function(v, i){
