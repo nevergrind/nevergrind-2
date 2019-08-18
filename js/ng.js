@@ -30,6 +30,8 @@ var ng;
 		locked: 0,
 		loadAttempts: 0,
 		isModalOpen: false,
+		maxLevel: 50,
+		levels: [],
 		races: [
 			'Barbarian',
 			'Dark Elf',
@@ -127,6 +129,9 @@ var ng;
 			timeout: 4000
 		});
 		TweenLite.defaultEase = Quad.easeOut;
+		for (var i=1; i<=ng.maxLevel; i++) {
+			ng.levels.push(i+'');
+		}
 	}
 	function getId() {
 		ng.id++;

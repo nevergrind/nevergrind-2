@@ -1,9 +1,14 @@
 var friend;
 (function() {
 	friend = {
+		listThrottled: false,
+		listThrottleExpire: 1000,
+		listId: 0,
 		parse,
 		init,
 		list,
+		listReceived,
+		presenceReceived,
 		add,
 		remove,
 		notify,
@@ -24,34 +29,54 @@ var friend;
 		});
 	}
 	function list() {
+		if (friend.listThrottled) return;
 		chat.log('<div class="chat-warning">Checking friends list...</div>');
 		if (ng.friends.length){
-			$.get(app.url + 'chat/friend-status.php').done(function(r){
-				ng.friends = _.map(r.friends, _.capitalize);
-				console.info(r);
-				var str = chat.divider + '<div>Friend List ('+ r.friends.length +')</div>';
+			friend.listThrottled = true;
+			friend.listId++;
+			setTimeout(() => {
+				friend.listThrottled = false;
+			}, friend.listThrottleExpire);
 
-				ng.friends.forEach(function(name, i){
-					var index = r.players.indexOf(name);
-					if (index > -1){
-						var s = r.stats[index];
-						// online
-						str +=
-							'<div class="chat-whisper">[' +
-							s.level +' '+ ng.jobLong[s.job] +'] '+ ng.friends[i] + ' ('+ s.race +
-							')' + guild.format(s) + '</div>';
-					} else {
-						// offline
-						str += '<div class="chat-emote">[Offline] ' + name +'</div>';
-					}
-				});
-				chat.log(str);
-			});
+			// request response from friends
+			ng.friends.forEach(function(name) {
+				socket.publish('name' + name, {
+					name: my.name,
+					action: 'friend->getPresence',
+				})
+			})
+
+			var str = chat.divider +
+				'<div>Friend List ('+ ng.friends.length +')</div>'
+
+			ng.friends.forEach((name) => {
+				str += '<div id="friend-list-' + friend.listId + '-' + name + '" class="chat-emote">[Offline] ' + name +'</div>';
+			})
+			chat.log(str)
 		}
 		else {
 			chat.log("<div>You don't have any friends!</div>");
 			chat.log("<div class='chat-emote'>Use /friend add [name] to add a new friend.</div>");
 		}
+	}
+	function listReceived(data) {
+		warn('listReceived', data);
+		socket.publish('name' + data.name, {
+			name: my.name,
+			level: my.level,
+			race: my.race,
+			job: my.job,
+			guild: my.guild.name,
+			action: 'friend->sendPresence',
+		})
+	}
+	function presenceReceived(data) {
+		warn('presenceReceived', data);
+		var el = getById('friend-list-' + friend.listId + '-' + data.name);
+		el.className = 'chat-whisper'
+		el.innerHTML = '[' +
+			data.level +' '+ ng.jobLong[data.job] +'] '+ data.name + ' ('+ data.race +
+			')' + guild.format(data.guild)
 	}
 	function add(name) {
 		info(name, my.name)

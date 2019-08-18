@@ -23,7 +23,7 @@ var router;
 				chat.log(data.msg, data.class);
 			}
 			else {
-				console.info("Message from " + data.name + " has been ignored.");
+				warn("Message from " + data.name + " has been ignored.");
 			}
 		}
 		else if (r === 'chat->add') {

@@ -1,27 +1,6 @@
 <?php
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-	// delete all from `players` to clean up the table
-	mysqli_query($db, 'delete from `players` where timestamp < date_sub(now(), interval 60 second)');
-
-	// are they already logged in?
-	if ($_SERVER["SERVER_NAME"] !== "localhost") {
-		// prevent double login
-		$query = 'SELECT count(row) count FROM `players` where account=? and timestamp > date_sub(now(), interval 15 second)';
-		$stmt = $db->prepare($query);
-		$stmt->bind_param('s', $_SESSION['account']);
-		$stmt->execute();
-		$stmt->bind_result($account);
-		$iAmOnline = 0;
-
-		while ($stmt->fetch()){
-			$iAmOnline = $account;
-		}
-
-		if ($iAmOnline) {
-			exit("One of your characters is already logged in or has not timed out yet.");
-		}
-	}
 
 	// get my character data
 	$query = 'select row, name, lastName, gender, level, race, job, hp, maxHp, mp, maxMp,

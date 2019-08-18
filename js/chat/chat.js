@@ -42,18 +42,10 @@ var chat;
 		emote,
 		camp,
 		reply,
-		whisperParse,
-		whisperPrefix,
-		whisperTo,
 		toPlaytime,
-		toCreateString,
 		played,
-		whoParse,
-		whoAll,
-		whoClass,
 		scrollBottom,
 		setHeader,
-		joinParse,
 		joinChannel,
 		joinDefault,
 		joinChangeCallback,
@@ -208,15 +200,15 @@ var chat;
 			chat.clearChatLog();
 		}
 	}
-	function log(msg, route) {
+	function log(msg, className) {
 		// report to chat-log
 		if (msg){
 			while (chat.dom.chatLog.childElementCount >= 500) {
 				chat.dom.chatLog.removeChild(chat.dom.chatLog.firstChild);
 			}
 			var z = createElement('div');
-			if (route){
-				z.className = route;
+			if (className){
+				z.className = className;
 			}
 			z.innerHTML = msg;
 			chat.dom.chatLog.appendChild(z);
@@ -265,8 +257,8 @@ var chat;
 				'<div '+ z +'>/ignore : Show your ignore list</div>',
 				'<div '+ z +'>/ignore add : Add someone to your ignore list</div>',
 				'<div '+ z +'>/ignore remove : Remove someone from your ignore list</div>',
-				'<div '+ z +'>/who : Show all players currently playing</div>',
-				'<div '+ z +'>/who class : Show current players by class : /who warrior</div>',
+				'<div '+ z +'>/who or / : Show all players currently playing</div>',
+				'<div '+ z +'>/who filters : Show current players by class, race, level range, name : /who 5 10 dwarf cleric</div>',
 				'<div '+ h +'>Miscellaneous Commands:</div>',
 				'<div '+ z +'>/join channel : Join a channel : /join bros</div>',
 				'<div '+ z +'>/clear: clear the chat log</div>',
@@ -338,11 +330,14 @@ var chat;
 		else if (msgLower === '/clear') {
 			chat.clearChatLog();
 		}
-		else if (msgLower === '/who') {
-			chat.whoAll();
+		else if (msgLower === '/who' || msgLower === '/') {
+			who.all();
 		}
-		else if (msgLower.startsWith('/who ') && msgLower.length > 5) {
-			chat.whoClass(chat.whoParse(msg));
+		else if (
+			msgLower.startsWith('/who ') && msgLower.length > 5 ||
+			msgLower.startsWith('/ ') && msgLower.length > 2
+		) {
+			who.byFilter(msgLower);
 		}
 		else if (msgLower === '/ignore') {
 			ignore.list();
@@ -456,7 +451,7 @@ var chat;
 			o.class = 'chat-guild';
 		}
 		else if (parse.first === '/broadcast'){
-			o.category = 'adminbroadcast';
+			o.category = 'allbroadcast';
 			o.msg = parse.command;
 			o.class = 'chat-broadcast';
 		}
@@ -517,17 +512,6 @@ var chat;
 			chat.dom.chatInput.focus();
 		}
 	}
-	function whisperParse(msg) {
-		// 2-part parse lower case
-		var a = msg.split("whispers: ");
-		return a[1];
-	}
-	function whisperPrefix() {
-		return '[' + my.level +':<span class="chat-'+ my.job +'">'+ my.name + '</span>]';
-	}
-	function whisperTo(data) {
-		return 'You whispered to ' + data.name + ': ';
-	}
 	function toPlaytime(minLeft) {
 		var d = 0,
 			h = 0;
@@ -583,81 +567,9 @@ var chat;
 		$.get(app.url + 'chat/played.php').done(function(r) {
 			var sessionLen = Date.now() - JSON.parse(sessionStorage.getItem('startTime')),
 				durationStr = chat.toPlaytime(~~(sessionLen / 100000));
-			log("Character created: " + chat.toCreateString(r.created), 'chat-warning');
+			log("Character created: " + toCreateString(r.created), 'chat-warning');
 			log("Current session duration: " + durationStr, 'chat-whisper');
 			log("Total character playtime: " + chat.toPlaytime(r.playtime), 'chat-whisper');
-		});
-	}
-	function whoParse(msg) {
-			// complex parse for class names
-		var a = msg.replace(/ +/g, " ").split(" "),
-			job = a[1],
-			longJob = _.capitalize(job[0].trim());
-
-		// long name?
-		if (ng.jobs.includes(longJob)) {
-			// convert to short
-			return ng.jobShort[longJob];
-		}
-		else {
-			var shortJobs = _.keys(ng.jobLong),
-				job = job.toUpperCase();
-			if (shortJobs.includes(job)) {
-				// is it on the short job list?
-				return job;
-			}
-			else {
-				return '';
-			}
-		}
-	}
-	function whoAll() {
-		$.get(app.url + 'chat/who-all.php').done(function(r){
-			console.info('who ', r);
-			if (r.len) {
-				log(chat.divider + "There " + (r.len > 1 ? "are" : "is") +" currently "+
-					r.len + " "+ (r.len > 1 ? "players" : "players") +" in Vandamor.", "chat-warning");
-				// online
-				var str = '';
-				r.players.forEach(function(v, i){
-					str +=
-						'<div class="chat-whisper">[' +
-						v.level +' '+ ng.jobLong[v.job] +'] '+ v.name + ' ('+ v.race +
-						')' + guild.format(v) +'</div>';
-				});
-				log(str, 'chat-whisper');
-			}
-			else {
-				log("Nobody is currently in Vandamor.", "chat-warning");
-			}
-		});
-	}
-	function whoClass(job) {
-		console.info('who.class ', job);
-		$.post(app.url + 'chat/who-class.php', {
-			job: job
-		}).done(function(r){
-			console.info('r ', r);
-			var jobLong = ng.toJobLong(job);
-			if (r.len) {
-				log(chat.divider + "There " + (r.len > 1 ? "are" : "is") +" currently "+
-					r.len + " "+ (r.len > 1 ? jobLong + 's' : jobLong) +" in Vandamor.", "chat-warning");
-				// online
-				var str = '';
-				r.players.forEach(function(v, i){
-					str +=
-						'<div class="chat-whisper">[' +
-						v.level +' '+ ng.jobLong[v.job] +'] '+ v.name + ' ('+ v.race +
-						')' + guild.format(v) +'</div>';
-				});
-				log(str, 'chat-whisper');
-			}
-			else if (!jobLong) {
-				log("No results found. Try searching by a class name /who cleric.", "chat-warning");
-			}
-			else {
-				log("Currently there are no " + jobLong + "s in Vandamor.", "chat-warning");
-			}
 		});
 	}
 	function scrollBottom() {
@@ -689,7 +601,6 @@ var chat;
 					}).done(function (data) {
 						clearLog();
 						log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>');
-						console.info('joinChannel', data);
 						joinChangeCallback(data);
 					});
 				}

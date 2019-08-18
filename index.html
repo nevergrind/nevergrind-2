@@ -514,65 +514,63 @@ Twe				<div>
 
 <script src="js/libs/autobahn-2.min.js"></script>
 
-<!-- bootstrap4 -->
-<!--script src="js/libs/popper.min.js"></script>
-<script src="js/libs/bootstrap4.min.js"></script-->
-
-
 <script>
-	(function(d){
-		var files = ['nevergrind-2'];
-		var ext = '.min';
-		var script;
-		if (!app.isApp){
-			ext = '';
-			files = [
-				'alias',
-				'login',
-				'create',
-				'ng',
-				'env',
-				'my',
-				'dom',
-				'audio',
-				'game',
-				'title',
-				'context',
-				'events',
-				'socket',
-				'chat/chat',
-				'chat/party',
-				'chat/guild',
-				'chat/friend',
-				'chat/whisper',
-				'chat/ignore',
-				'components/toast',
-				'components/modal',
-				'components/button',
-				'components/popover',
-				'components/tooltip',
-				'ui/bar',
-				'battle',
-				'mobs',
-				'mob',
-				'town',
-				'cache',
-				'router',
-				'mission',
-				'dungeon',
-				'skills',
-				'zone',
-				'test/test',
-				'init',
-			]
-		}
-		files.forEach((file) => {
-			script = d.createElement('script');
-			script.src = 'js/' + file + ext + '.js?v=' + app.version;
-			d.write(script.outerHTML);
-		});
+((d) => {
 
-	})(document);
+var files = ['nevergrind-2'];
+var ext = '.min';
+var script;
+if (!app.isApp){
+	ext = '';
+	files = [
+		'alias',
+		'login',
+		'create',
+		'ng',
+		'env',
+		'my',
+		'dom',
+		'audio',
+		'game',
+		'title',
+		'context',
+		'events',
+		'socket',
+		'chat/chat',
+		'chat/party',
+		'chat/guild',
+		'chat/friend',
+		'chat/whisper',
+		'chat/ignore',
+		'chat/broadcast',
+		'chat/who',
+		'components/toast',
+		'components/modal',
+		'components/button',
+		'components/popover',
+		'components/tooltip',
+		'ui/bar',
+		'battle',
+		'mobs',
+		'mob',
+		'town',
+		'cache',
+		'router',
+		'mission',
+		'dungeon',
+		'skills',
+		'zone',
+		'test/test',
+		'init',
+	]
+}
+files.forEach((file) => {
+	script = d.createElement('script');
+	script.src = 'js/' + file + ext + '.js?v=' + app.version;
+	d.write(script.outerHTML);
+});
+
+})(document);
 </script>
 
 </body>

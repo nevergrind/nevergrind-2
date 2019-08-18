@@ -111,6 +111,7 @@ var town;
 						// stuff to do after the socket wakes up
 						party.listen(party.getUniquePartyChannel());
 						chat.sendMsg('/join');
+						chat.history = [];
 						// town
 						TweenMax.to('#scene-town', .5, {
 							delay: .5,

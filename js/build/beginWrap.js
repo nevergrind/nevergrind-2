@@ -39,6 +39,8 @@
 	Number,
 	String,
 	Object,
+	NaN,
+	isNaN,
 	localStorage,
 	sessionStorage
 ){

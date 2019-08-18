@@ -61,6 +61,8 @@ function minifyJs() {
 		'chat/friend',
 		'chat/whisper',
 		'chat/ignore',
+		'chat/broadcast',
+		'chat/who',
 		'components/toast',
 		'components/modal',
 		'components/button',

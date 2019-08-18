@@ -5,6 +5,7 @@ var socket;
 		enabled: 0,
 		emptyArray: [],
 		noExcludeObj: { exclude_me: false },
+		excludeObj: { exclude_me: true },
 		initialConnection: 1,
 		subs: {}, // active channel subscriptions - required to unsub
 		subscribe,
@@ -22,10 +23,15 @@ var socket;
 			socket.session.subscribe(topic, callback).then(registerSubscription);
 		}
 	}
-	function publish(topic, obj) {
+	function publish(topic, obj, exclude) {
 		topic = _.toLower(topic);
 		//console.info('publishing: ', topic, obj);
-		socket.session.publish(topic, socket.emptyArray, obj, socket.noExcludeObj);
+		socket.session.publish(
+			topic,
+			socket.emptyArray,
+			obj,
+			exclude ? socket.excludeObj : socket.noExcludeObj
+		);
 	}
 	function registerSubscription(sub) {
 		//console.info('registerSubscription', sub);
@@ -82,7 +88,7 @@ var socket;
 			socket.initialConnection = 0;
 
 			// subscribe to admin broadcasts
-			socket.subscribe('adminbroadcast', routeToAdmin);
+			socket.subscribe('allbroadcast', broadcast.route);
 			test.socketSub();
 			//return;
 			(function retry(){
@@ -99,9 +105,5 @@ var socket;
 				route: 'on'
 			});
 		}
-	}
-	function routeToAdmin(data) {
-		console.info('rx ', data[0]);
-		router.toTown(data[0], data[0].route);
 	}
 })();

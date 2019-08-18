@@ -8,8 +8,8 @@
 		'level' => $_SESSION['level'],
 		'job' => $_SESSION['job'],
 		'class' => $_POST['class'],
-		'route' => 'chat->log',
-		'category' => $_POST['category']
+		'route' => isset($route) ? $route : 'chat->log',
+		'category' => isset($category) ? $category : $_POST['category']
 	];
 
 	if ($_POST['class'] === 'chat-whisper') {

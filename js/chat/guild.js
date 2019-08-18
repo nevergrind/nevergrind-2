@@ -60,8 +60,8 @@ var guild;
 			memberList: []
 		}
 	}
-	function format(s) {
-		return s.guild ? (' &lt;' + s.guild + '&gt;') : '';
+	function format(guild) {
+		return guild ? (' &lt;' + guild + '&gt;') : '';
 	}
 	function create() {
 		if (ng.locked) return;

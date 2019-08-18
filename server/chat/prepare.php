@@ -17,18 +17,21 @@
 		if ($_POST['class'] === 'chat-normal') {
 			$postMsg = getPrefix() . ' says: ' . $preMsg;
 		}
-		else if ($_POST['class'] === 'chat-emote') {
-			$postMsg = $_SESSION['name'] . ' ' . $preMsg;
+		else if ($_POST['class'] === 'chat-party') {
+			$postMsg = getPrefix() . ' tells the party: ' . $preMsg;
 		}
 		else if ($_POST['class'] === 'chat-guild') {
 			// needs a guild channel pubsub
 			$postMsg = getPrefix() .' tells the guild: '.  $preMsg;
 		}
-		else if ($_POST['class'] === 'chat-party') {
-			$postMsg = getPrefix() . ' tells the party: ' . $preMsg;
+		else if ($_POST['class'] === 'chat-emote') {
+			$postMsg = $_SESSION['name'] . ' ' . $preMsg;
 		}
-		else if ($_POST['class'] === 'chat-broadcast' &&
-			($_SESSION['account'] === 'maelfyn' || $_SESSION['account'] === 'tester') ) {
+		else if (
+			$_POST['class'] === 'chat-broadcast' &&
+			($_SESSION['account'] === 'maelfyn' || $_SERVER['SERVER_NAME'] === 'localhost') ){
 			$postMsg = "SYSTEM BROADCAST: " . $preMsg;
+			$category = 'allbroadcast';
+			$route = 'all->broadcast';
 		}
 	}

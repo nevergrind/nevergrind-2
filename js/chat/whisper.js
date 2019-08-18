@@ -23,7 +23,7 @@ var whisper;
 			// callback to sender
 			$.post(app.url + 'chat/send.php', {
 				action: 'receive',
-				msg: chat.whisperParse(data.msg),
+				msg: parse(data.msg),
 				class: 'chat-whisper',
 				category: 'name' + _.toLower(data.name)
 			});
@@ -35,7 +35,7 @@ var whisper;
 					name: data.name
 				}
 			}
-			data.msg = chat.whisperTo(data) + chat.whisperParse(data.msg);
+			data.msg = whisperTo(data) + parse(data.msg);
 			router.toTown(data, 'chat->log');
 		}
 		// guild invite
@@ -62,5 +62,25 @@ var whisper;
 		else if (action === 'friend>addedMe') {
 			chat.log(data.name + " has added you to "+ (my.gender === 'M' ? 'his' : 'her') +" friend list.", 'chat-warning');
 		}
+		else if (action === 'friend->getPresence') {
+			friend.listReceived(data);
+		}
+		else if (action === 'friend->sendPresence') {
+			friend.presenceReceived(data);
+		}
+		else if (data.action === 'all->received') {
+			who.presenceReceived(data);
+		}
+		else if (data.action === 'all->byFilterReceived') {
+			who.byFilterReceived(data);
+		}
+	}
+	function parse(msg) {
+		// 2-part parse lower case
+		var a = msg.split("whispers: ");
+		return a[1];
+	}
+	function whisperTo(data) {
+		return 'You whispered to ' + data.name + ': ';
 	}
 })();
