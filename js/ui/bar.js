@@ -88,11 +88,11 @@ var bar;
 			'<i class="fa fa-exchange"></i>' +
 		'</div>' +
 		'<div id="bar-main-menu">' +
-			'<i id="bar-camp" class="fa fa-power-off bar-icons"></i>' +
-			'<i id="bar-stats" class="fa fa-user-circle-o bar-icons"></i>' +
-			'<i id="bar-inventory" class="fa fa-suitcase bar-icons"></i>' +
-			'<i id="bar-options" class="fa fa-gear bar-icons"></i>' +
-			'<i id="bar-mission-abandon" class="fa fa-flag bar-icons"></i>' +
+			'<i id="bar-camp" class="ra ra-campfire bar-icons"></i>' +
+			'<i id="bar-stats" class="ra ra-knight-helmet bar-icons"></i>' +
+			'<i id="bar-inventory" class="ra ra-vest bar-icons"></i>' +
+			'<i id="bar-options" class="ra ra-gear-hammer bar-icons"></i>' +
+			'<i id="bar-mission-abandon" class="ra ra-player-shot bar-icons"></i>' +
 		'</div>';
 		return s;
 	}

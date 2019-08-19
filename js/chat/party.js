@@ -242,6 +242,10 @@ var party;
 			chat.log("You cannot boot party members during battle!", "chat-warning");
 		}
 		else {
+			if (party.presence.length === 1) {
+				chat.log('You are not in a party.')
+				return
+			}
 			if (my.name === name) {
 				chat.log('You cannot boot yourself! Try disbanding instead.');
 			}
@@ -274,7 +278,10 @@ var party;
 		}
 	}
 	function disband() {
-		if (ng.view === 'battle') {
+		if (party.presence.length === 1) {
+			chat.log('You are not in a party!', 'chat-warning');
+		}
+		else if (ng.view === 'battle') {
 			chat.log("You cannot disband the party during battle!", "chat-warning");
 		}
 		else {
@@ -324,8 +331,13 @@ var party;
 	}
 	function promote(name) {
 		console.info('/promote ', name);
+		if (party.presence.length === 1) {
+			chat.log('You are not in a party.')
+			return
+		}
 		// must be leader or bypass by auto-election when leader leaves
 		var id = _.findIndex(party.presence, { name: name });
+
 		if (party.presence[0].isLeader) {
 			if (id >= 1) {
 				my.isLeader = party.presence[0].isLeader = false;

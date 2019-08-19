@@ -2,16 +2,16 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-$query = 'select c.level, c.name, c.race, c.job 
+$query = 'select c.level, c.name, c.race, c.job, m.rank 
 from `characters` c
 left join `guild_members` m
 on c.row=m.c_id 
 where m.g_id=?
-order by c.level';
+order by m.rank asc, c.level desc';
 $stmt = $db->prepare($query);
 $stmt->bind_param('s', $_SESSION['guild']['id']);
 $stmt->execute();
-$stmt->bind_result($level, $name, $race, $job);
+$stmt->bind_result($level, $name, $race, $job, $rank);
 $r['memberList'] = [];
 $i = 0;
 while ($stmt->fetch()) {
@@ -19,7 +19,8 @@ while ($stmt->fetch()) {
 		'level' => $level,
 		'name' => $name,
 		'race' => $race,
-		'job' => $job
+		'job' => $job,
+		'rank' => $rank
 	];
 }
 

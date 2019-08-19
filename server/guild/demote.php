@@ -2,9 +2,11 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 
 require 'is-in-guild.php';
-if ($_SESSION['guild']['rank'] > 1) {
-	exit("Only the guild leader or officers can promote members.");
+
+if ($_SESSION['guild']['rank'] !== 0) {
+	exit("Only the guild leader can demote officers.");
 }
+
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // find player row by name
@@ -25,18 +27,15 @@ while ($stmt->fetch()) {
 	$c_id = $dbId;
 	$rank = $dbRank;
 }
-if ($rank === 0) {
-	exit('You cannot promote the guild leader.');
+if ($rank === 3) {
+	exit($_POST['name'] . ' is not a guild member.');
 }
-else if ($rank === 1) {
-	exit($_POST['name'] . ' is already an officer.');
-}
-else if ($rank === 3) {
-	exit($_POST['name'] . ' is not a guild member!');
+if ($rank !== 1) {
+	exit('You can only demote officers.');
 }
 
 // promote name
-$stmt = $db->prepare('update `guild_members` set rank=1 where c_id=?');
+$stmt = $db->prepare('update `guild_members` set rank=2 where c_id=?');
 $stmt->bind_param('s', $c_id);
 $stmt->execute();
 
@@ -45,6 +44,6 @@ require '../zmq.php';
 $socket->send(json_encode([
 	'category' => 'guild'. $_SESSION['guild']['id'],
 	'name' => $_POST['name'],
-	'msg' => $_POST['name'] . ' has been promoted to Officer by '. $_SESSION['name'] .'.',
-	'route' => 'guild->promote'
+	'msg' => $_POST['name'] . ' has been demoted to guild member by '. $_SESSION['name'] .'.',
+	'route' => 'guild->demoteReceived'
 ]));

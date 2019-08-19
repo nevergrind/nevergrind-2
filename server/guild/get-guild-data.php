@@ -1,4 +1,14 @@
 <?php
+// default value
+$r['guild'] = [
+	'id' => 0,
+	'rank' => 0,
+	'memberNumber' => 0,
+	'motd' => '',
+	'members' => 0,
+	'name' => ''
+];
+require '../session/init-guild.php';
 
 $stmt = $db->prepare('select m.rank, 
 	m.g_id, 
@@ -15,20 +25,8 @@ $stmt->bind_param('s', $_SESSION['row']);
 $stmt->execute();
 $stmt->bind_result($rank, $g_id, $member_number, $motd, $members, $name);
 
-// default value
-require '../session/init-guild.php';
-
-$r['guild'] = [
-	'id' => 0,
-	'rank' => 0,
-	'memberNumber' => 0,
-	'motd' => '',
-	'members' => 0,
-	'name' => ''
-];
 // assigned if exists
 while($stmt->fetch()) {
-	$found = 1;
 	$r['guild'] = [
 		'id' => $g_id,
 		'rank' => $rank,
@@ -38,6 +36,6 @@ while($stmt->fetch()) {
 		'name' => $name
 	];
 }
-foreach ($r['guild'] as $key => $val) {
-	$_SESSION['guild'][$key] = $val;
-}
+$_SESSION['guild']['id'] = $r['guild']['id'];
+$_SESSION['guild']['rank'] = $r['guild']['rank'];
+$_SESSION['guild']['name'] = $r['guild']['name'];

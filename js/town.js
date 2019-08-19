@@ -223,7 +223,7 @@ var town;
 				'<div id="guild-member-wrap" class="aside-frame">' +
 					'<div id="guild-member-flex">'+
 						'<div id="guild-member-label">Guild Members:</div>'+
-						'<div id="guild-member-refresh-icon"><i class="fa fa-refresh refresh"></i></div>'+
+						'<div id="guild-member-refresh-icon"><i class="fas fa-sync-alt refresh"></i></div>'+
 					'</div>'+
 					'<div id="aside-guild-members"></div>'+
 				'</div>';
@@ -399,8 +399,8 @@ var town;
 			}).on('blur', '#guild-input', function() {
 				guild.hasFocus = 0;
 			}).on('click', '#guild-member-refresh-icon', function() {
-				$("#aside-guild-members").html(ng.loadMsg);
-				guild.getMembers(1500);
+				guild.loadGuildMsg()
+				guild.getMembers(guild.throttleTime);
 			}).on('click', '.town-action', function(){
 				town.aside.init($(this).attr('id'));
 			});
@@ -421,9 +421,6 @@ var town;
 	function init() {
 		if (!town.initialized) {
 			town.initialized = 1;
-			if (!sessionStorage.getItem('startTime')) {
-				sessionStorage.setItem('startTime', JSON.stringify(Date.now()));
-			}
 			town.preload();
 		}
 	}

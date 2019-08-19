@@ -10,6 +10,7 @@ $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows) exit("You are already in a guild.");
+
 // increment guild member count
 $query = 'update `guilds` set members=members+1, member_number=member_number+1 where row=?';
 $stmt = $db->prepare($query);

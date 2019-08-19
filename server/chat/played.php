@@ -14,5 +14,4 @@ while ($stmt->fetch()) {
 	$r['created'] = $created;
 	$r['playtime'] = $playtime;
 }
-
 echo json_encode($r);

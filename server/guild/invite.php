@@ -36,7 +36,7 @@ if (is_null($r['c_id'])) {
 		// party has been created
 		if ($_SESSION['guild']['rank'] > 1) {
 			// must be leader to invite
-			exit ("Only the guild Leader and Officers can invite players to join the guild.");
+			exit ("Only the guild leader or officers can invite players to join the guild.");
 		}
 	}
 	// send guild invite

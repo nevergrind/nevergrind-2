@@ -255,51 +255,14 @@ var game;
 		heartbeat.receiveTime = Date.now();
 		heartbeatTimeout();
 	}
-	/*function partyStart() {
-		clearInterval(sanity.party.timer);
-		sanity.party.timer = setInterval(function(){
-			if (party.presence.length > 1) {
-				sanity.party.partySend();
-				sanity.party.partyCheck();
-			}
-		}, 5000);
-	}
-	function partySend() {
-		console.info("Sending party heartbeats....");
-		try {
-			socket.publish('party' + my.partyId, {
-				id: my.row,
-				route: 'party->hb'
-			});
-		} catch (err) {
-			console.info('sanity.party.partySend', err);
-		}
-	}
-	function partyCheck() {
-		var now = Date.now(),
-			linkdead = [];
-		for (var i=1; i<6; i++) {
-			console.info("Checking: ", party.presence[i].id, now - party.presence[i].heartbeat > heartbeat.interval * 2)
-			if (party.presence[i].id &&
-				!party.presence[i].linkdead &&
-				(now - party.presence[i].heartbeat > heartbeat.interval * 2)) {
-				linkdead.push(party.presence[i].name);
-				party.presence[i].linkdead = 1;
-			}
-		}
-		linkdead.forEach(function(name){
-			socket.publish('party' + my.partyId, {
-				name: name,
-				route: 'party->linkdead'
-			});
-		});
-	}*/
 	function playedStart() {
 		clearInterval(played.timer);
 		played.timer = setInterval(played.playedSend, 60000);
 	}
 	function playedSend() {
-		$.get(app.url + 'update-played.php');
+		$.post(app.url + 'update-played.php', {
+			row: my.row
+		});
 	}
 	function listenFriendAlerts() {
 		ng.friends.forEach(function(v){

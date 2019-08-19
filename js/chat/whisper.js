@@ -40,12 +40,34 @@ var whisper;
 		}
 		// guild invite
 		else if (action === 'guild-invite') {
-			console.info("guild invite received! ", data);
-			toast.add(data);
+			if (!my.guild.id) {
+				console.info("guild invite received! ", data);
+				toast.add(data);
+			}
+			else {
+				socket.publish('name' + data.name, {
+					action: 'guild-invite-reject',
+					name: my.name
+				})
+			}
+		}
+		else if (data.action === 'guild-invite-reject') {
+			chat.log(data.name + ' is already in a guild!', 'chat-warning');
 		}
 		// party invite
 		else if (action === 'party-invite') {
-			toast.add(data);
+			if (party.presence.length === 1) {
+				toast.add(data);
+			}
+			else {
+				socket.publish('name' + data.name, {
+					action: 'party-invite-reject',
+					name: my.name
+				})
+			}
+		}
+		else if (action === 'party-invite-reject') {
+			chat.log(data.name + ' is already in a party!', 'chat-warning');
 		}
 		else if (action === 'party-confirmed') {
 			party.joinConfirmed(data);

@@ -5,7 +5,7 @@ var ng;
 		id: 0,
 		resizeTimer: 0,
 		loadMsg:
-			"<div class='text-shadow text-center now-loading'>Loading... <i class='fa fa-cog fa-spin load-cog'></i></div>",
+			"<div id='load-msg' class='text-shadow text-center now-loading'>Loading</div>",
 		attrs: ['str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha'],
 		resists: ['bleed', 'poison', 'arcane', 'lightning', 'fire', 'cold'],
 		dungeon: ['traps', 'treasure', 'scout', 'pulling'],
@@ -372,8 +372,6 @@ var ng;
 					town.go();
 				}
 			}
-
-			r.resetLocalSession && sessionStorage.clear();
 			keepAlive();
 		});
 	}

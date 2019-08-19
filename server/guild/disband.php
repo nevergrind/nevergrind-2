@@ -1,9 +1,9 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require 'is-in-guild.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-if (!empty($_SESSION['guild']) &&
-	isset($_SESSION['guild']['id']) ) {
+if (isset($_SESSION['guild']['id']) ) {
 	// check length
 	$query = "select members from `guilds` where row=?";
 	$stmt = $db->prepare($query);
@@ -18,7 +18,7 @@ if (!empty($_SESSION['guild']) &&
 
 	if ($_SESSION['guild']['rank'] === 0) {
 		if ($totalMembers > 1) {
-			exit("You must promote another officer to Leader using /gleader first");
+			exit("You must promote another officer to leader using /gleader first");
 		}
 	}
 	// delete member from guild

@@ -13,12 +13,13 @@ if (!empty($_SESSION['guild']) && $_SESSION['guild']['rank'] < 2) {
 	require '../zmq.php';
 	$socket->send(json_encode([
 		'category' => 'guild'. $_SESSION['guild']['id'],
-		'msg' => $_SESSION['name'] . ' has set a new message of the day:<br>' . $_POST['msg'],
+		'prefix' => $_SESSION['name'] . ' has set a new message of the day: ',
+		'msg' => $_POST['msg'],
 		'route' => 'guild->motd'
 	]));
 
 	echo json_encode($r);
 }
 else {
-	exit("You must be a guild Leader or Officer to use this command.");
+	exit("You must be a guild leader or officer to use this command.");
 }

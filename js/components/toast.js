@@ -69,7 +69,7 @@ var toast;
 		console.info('deny ', data);
 		$("#"+ data.action +"-"+ data.row).remove();
 		socket.publish("name"+ data.name, {
-			route: data.action + '-deny',
+			action: data.action + '-deny',
 			name: my.name
 		});
 	}

@@ -76,7 +76,7 @@ var chat;
 				'<div id="chat-prompt" class="no-select">'+
 				'</div>' +
 				'<div id="chat-input-wrap">' +
-					'<div id="chat-input-mode" class="chat-white no-select">'+
+					'<div id="chat-input-mode" class="chat-pink no-select">'+
 						'<span id="chat-mode-msg" class="ellipsis">To town:</span>' +
 					'</div>' +
 					'<input id="chat-input" type="text" maxlength="240" autocomplete="off" spellcheck="false" />' +
@@ -133,7 +133,7 @@ var chat;
 	}
 	function modeSet(mode) {
 		if (mode === '/say') {
-			chat.dom.chatInputMode.className = 'chat-white';
+			chat.dom.chatInputMode.className = 'chat-pink';
 			chat.dom.chatModeMsg.textContent = 'To ' + my.channel + ':';
 		}
 		else if (mode === '/party') {
@@ -160,10 +160,10 @@ var chat;
 			chat.initialized = 1;
 			// show
 			// prevents auto scroll while scrolling
-			$("#chat-log").on('click', function(){
-				chat.isClicked = 1;
+			$("#chat-log").on('mousedown', function(){
+				chat.isClicked = true;
 			}).on('mouseup', function(){
-				chat.isClicked = 0;
+				chat.isClicked = false;
 			});
 			$("#chat-input").on('focus', function(){
 				chat.hasFocus = 1;
@@ -238,13 +238,12 @@ var chat;
 				'<div '+ z +'>@ : Send a private message by name : @bob hi</div>',
 				'<div '+ h +'>Guild Commands</div>',
 				'<div '+ z +'>/ginvite: Invite a player to your guild: /ginvite Bob</div>',
-				'<div '+ z +'>/gpromote: Promote a guild member to Officer: /gpromote Bob</div>',
-				'<div '+ z +'>/gleader: Promote a guild member to Leader: /gleader Bob</div>',
+				'<div '+ z +'>/gpromote: Promote a member to Officer: /gpromote Bob</div>',
+				'<div '+ z +'>/gdemote: Demote an officer to a member: /gdemote Bob</div>',
+				'<div '+ z +'>/gleader: Promote a guild member to leader: /gleader Bob</div>',
 				'<div '+ z +'>/gboot: Boot a member from the guild: /gboot Bob</div>',
-				'<div '+ z +'>/motd: Set a new message of the day for your guild: /motd message</div>',
-				'<div '+ z +'>/gquit: Leave your guild: /gquit</div>',
-				'<div '+ z +'>/ginvite: Invite a player to your guild: /ginvite Bob</div>',
-				'<div '+ z +'>/ginvite: Invite a player to your guild: /ginvite Bob</div>',
+				'<div '+ z +'>/motd: Set a new message of the day: /motd message</div>',
+				'<div '+ z +'>/gdisband: Leave your guild: /gdisband</div>',
 				'<div '+ h +'>Party Commands</div>',
 				'<div '+ z +'>/invite: Invite a player to your party : /invite Bob</div>',
 				'<div '+ z +'>/disband: Leave your party</div>',
@@ -297,11 +296,14 @@ var chat;
 		else if (msgLower.startsWith('/gpromote')) {
 			guild.promote(party.parse(msg));
 		}
+		else if (msgLower.startsWith('/gdemote')) {
+			guild.demote(party.parse(msg));
+		}
 		else if (msgLower.startsWith('/gboot')) {
 			guild.boot(party.parse(msg));
 		}
-		else if (msgLower === '/gquit') {
-			guild.quit();
+		else if (msgLower === '/gdisband') {
+			guild.disband();
 		}
 		else if (msgLower.startsWith('/ginvite')) {
 			guild.invite(party.parse(msg));
@@ -482,7 +484,9 @@ var chat;
 			chat.log('You cannot camp while in battle!')
 		}
 		else {
-			log('Camping...', 'chat-warning');
+			if (ng.view !== 'title') {
+				log('Camping...', 'chat-warning');
+			}
 			// from town
 			if (ng.view === 'town') {
 				chat.publishRemove()
@@ -565,10 +569,7 @@ var chat;
 	}
 	function played() {
 		$.get(app.url + 'chat/played.php').done(function(r) {
-			var sessionLen = Date.now() - JSON.parse(sessionStorage.getItem('startTime')),
-				durationStr = chat.toPlaytime(~~(sessionLen / 100000));
 			log("Character created: " + toCreateString(r.created), 'chat-warning');
-			log("Current session duration: " + durationStr, 'chat-whisper');
 			log("Total character playtime: " + chat.toPlaytime(r.playtime), 'chat-whisper');
 		});
 	}

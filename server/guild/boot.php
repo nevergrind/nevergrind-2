@@ -1,44 +1,42 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+
+require 'is-in-guild.php';
+if ($_SESSION['guild']['rank'] > 1) {
+	exit("Only the guild leader or officers can boot members.");
+}
+
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-// not leading a party yet
-if (!empty($_SESSION['guild']) && $_SESSION['guild']['rank'] < 2) {
-	// make sure they don't outrank me
+// find player row by name
+$stmt = $db->prepare('
+	select g.rank 
+	from `characters` c 
+	join `guild_members` g 
+	on c.row=g.c_id 
+	where c.name=?
+');
+$stmt->bind_param('s', $_POST['name']);
+$stmt->execute();
+$stmt->bind_result($dbRank);
 
-	// find player row by name
-	$stmt = $db->prepare('select row from `characters` where name=?');
-	$stmt->bind_param('s', $_POST['name']);
-	$stmt->execute();
-	$stmt->bind_result($dbRow);
-	$row = 0;
-	while ($stmt->fetch()) {
-		$row = $dbRow;
-	}
-	// check rank
-	$stmt = $db->prepare('select rank from `guild_members` where c_id=?');
-	$stmt->bind_param('i', $row);
-	$stmt->execute();
-	$stmt->bind_result($dbRank);
-	$rank = 2;
-	while ($stmt->fetch()) {
-		$rank = $dbRank;
-	}
-
-	if ($rank <= $_SESSION['guild']['rank']) {
-		exit('You may only boot members that you outrank.');
-	}
-
-	// notify party members
-	require '../zmq.php';
-	$socket->send(json_encode([
-		'category' => 'guild'. $_SESSION['guild']['id'],
-		'name' => $_POST['name'],
-		'msg' => $_POST['name'] . ' has been booted by  '. $_SESSION['name'] .'!',
-		'route' => 'guild->boot'
-	]));
-	echo json_encode($r);
+$rank = 3;
+while ($stmt->fetch()) {
+	$rank = $dbRank;
 }
-else {
-	exit("You are not in a guild.");
+if ($rank === 3) {
+	exit($_POST['name'] . ' is not a guild member.');
 }
+if ($rank <= $_SESSION['guild']['rank']) {
+	exit('You may only boot members that you outrank.');
+}
+
+// notify party members
+require '../zmq.php';
+$socket->send(json_encode([
+	'category' => 'guild'. $_SESSION['guild']['id'],
+	'name' => $_POST['name'],
+	'msg' => $_POST['name'] . ' has been booted by  '. $_SESSION['name'] .'!',
+	'route' => 'guild->boot'
+]));
+echo json_encode($r);

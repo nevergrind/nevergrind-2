@@ -77,13 +77,16 @@ var router;
 			guild.hasJoined(data);
 		}
 		else if (r === 'guild->quit') {
-			guild.hasQuit(data);
+			guild.hasDisbanded(data);
 		}
 		else if (r === 'guild->boot') {
 			guild.wasBooted(data);
 		}
 		else if (r === 'guild->promote') {
 			guild.wasPromoted(data);
+		}
+		else if (r === 'guild->demoteReceived') {
+			guild.demoteReceived(data);
 		}
 		else if (r === 'guild->leader') {
 			guild.wasLeader(data);
