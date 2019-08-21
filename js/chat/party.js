@@ -10,7 +10,7 @@ var party;
 		notifyMissionStatus,
 		listen,
 		invite,
-		inviteReceived,
+		inviteAccepted,
 		joinAck,
 		joinConfirmed,
 		notifyJoin,
@@ -168,9 +168,8 @@ var party;
 				socket.publish('name' + name, {
 					action: 'party-invite',
 					row: my.partyId,
-					msg: my.name + ' has invited you to join his party.',
-					name: my.name,
-					css: 'prompt-party-invite',
+					msg: my.name + ' has invited you to a party.',
+					name: my.name
 				});
 			}
 			else {
@@ -183,11 +182,11 @@ var party;
 	 * REQUESTER: player has requested or accepted invite to party
 	 * @param data
 	 */
-	function inviteReceived(data) {
+	function inviteAccepted(data) {
 		// clicked CONFIRM - request join ack
-		console.info('party.inviteReceived: ', data);
+		console.info('party.inviteAccepted: ', data);
 		socket.publish('party' + data.row, {
-			route: 'party->inviteReceived',
+			route: 'party->inviteAccepted',
 			name: my.name.toLowerCase(),
 		});
 	}

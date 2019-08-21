@@ -171,12 +171,6 @@ var chat;
 				chat.hasFocus = 0;
 			});
 
-			$("#chat-prompt").on('click', '.chat-prompt-yes', function(e){
-				toast.confirm($(this).data());
-			}).on('click', '.chat-prompt-no', function(e){
-				toast.deny($(this).data());
-			});
-
 			$("#chat-room").on('click contextmenu', '.chat-player', function() {
 				var id = $(this).parent().attr('id'),
 					text = $(this).text(),

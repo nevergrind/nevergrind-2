@@ -56,7 +56,7 @@ var router;
 		else if (r === 'party->notifyJoin') {
 			party.notifyJoin(data);
 		}
-		else if (r === 'party->inviteReceived') {
+		else if (r === 'party->inviteAccepted') {
 			party.joinAck(data);
 		}
 		else if (r === 'party->disband') {

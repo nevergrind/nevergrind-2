@@ -6,71 +6,74 @@
 	$(window)
 		.on('resize', resize)
 		.on('load', windowResized)
-		.focus(windowResized);
+		.on('focus', focus)
+		.focus(windowResized)
 
 	// document events
 	$(document)
 		.on('mousemove', mousemove)
 		.on('click', mousedown)
 		.on('keydown', keydown)
-		.ready(ready);
-
-	// should be delegating no drag start
-	$('body').on('dragstart', 'img', dragStart);
+		.ready(ready)
 
 	//////////////////////////////////////////////
 	function ready() {
 		// console.info("Initializing title screen...");
 		setTimeout(readyFire, 100);
+
+		// delegated events
+		$('body').on('dragstart', 'img', dragStart)
+			.on('click', '#toast-accept', toast.accept)
+			.on('click', '#toast-decline', toast.decline)
 	}
 	function readyFire() {
-		ng.initGame();
-		var x = 'click';
-		ng.events(x);
-		create.events(x);
-		audio.events();
-		window.onbeforeunload = chat.camp;
+		ng.initGame()
+		var x = 'click'
+		ng.events(x)
+		create.events(x)
+		audio.events()
+		window.onbeforeunload = chat.camp
 	}
-	function focus(e) {
+	function focus() {
 		windowResized();
 	}
 	function dragStart(e) {
-		console.info('dragstart');
-		e.preventDefault();
+		console.info('dragstart')
+		e.preventDefault()
 	}
 	function windowResized() {
 		// debounce resize
-		clearTimeout(ng.resizeTimer);
-		ng.resizeTimer = setTimeout(windowResizedTimeout, 50);
+		clearTimeout(ng.resizeTimer)
+		ng.resizeTimer = setTimeout(windowResizedTimeout, 50)
 		if (context.isOpen) {
-			context.hide();
+			context.hide()
 		}
 	}
 	function windowResizedTimeout() {
 			if (chat.initialized) {
-				chat.scrollBottom();
+				chat.scrollBottom()
 			}
 			if (ng.view === 'battle') {
 				for (i=0; i<mob.max; i++) {
-					mob.sizeMob(i);
+					mob.sizeMob(i)
 				}
 			}
 	}
 	function mousedown(e) {
 		if (context.isOpen) {
-			context.hideCheck();
-			e.preventDefault();
-			return false;
+			context.hideCheck()
+			e.preventDefault()
+			return false
 		}
 	}
 	function mousemove(e) {
-		my.mouse.x = e.clientX;
-		my.mouse.y = e.clientY;
+		my.mouse.x = e.clientX
+		my.mouse.y = e.clientY
 	}
 	function resize() {
-		context.hide();
-		clearTimeout(context.resizeTimer);
-		windowResized();
+		context.hide()
+		clearTimeout(context.resizeTimer)
+		windowResized()
 	}
 	function keydown(e) {
 		code = e.keyCode;

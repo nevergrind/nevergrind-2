@@ -102,7 +102,7 @@ var bar;
 		// job icon
 		s += '<div id="bar-col-icon-'+ index +'" class="bar-col-icon player-icon-'+ (player.job || "WAR") +'">' +
 			//'<div id="bar-level-'+ i +'" class="bar-level no-pointer">'+ player.level +'</div>' +
-			'<div id="bar-is-leader-'+ index +'" class="bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></div>' +
+			'<i id="bar-is-leader-'+ index +'" class="ra ra-crown bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></i>' +
 		'</div>' +
 		// bars
 		'<div class="'+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'">' +

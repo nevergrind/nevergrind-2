@@ -15,7 +15,7 @@ var guild;
 		format,
 		create,
 		invite,
-		join,
+		inviteAccepted,
 		hasJoined,
 		disband,
 		hasDisbanded,
@@ -108,32 +108,29 @@ var guild;
 				chat.log('Sent guild invite to '+ name +'.', 'chat-warning');
 				socket.publish('name' + name, {
 					row: my.guild.id,
-					msg: my.name + ' has invited you to join the guild: ' + my.guild.name,
+					msg: my.name + ' has invited you to join the guild: ' + my.guild.name.split(' ').join('&nbsp;'),
 					name: my.name,
 					guildName: my.guild.name,
 					action: 'guild-invite',
-					css: 'prompt-guild-invite',
-				});
+				})
 			}
 			else {
-				chat.log("Syntax: /invite [player_name]", "chat-warning");
+				chat.log("Syntax: /invite [player_name]", "chat-warning")
 			}
 		}
 	}
-	function join(z) {
-		if (my.guild.id) return;
-		console.info("JOINING GUILD!", z);
+	function inviteAccepted(z) {
+		if (my.guild.id) return
 		// clicked CONFIRM
-		$.post(app.url + 'guild/join.php', {
+		$.post(app.url + 'guild/invite-accepted.php', {
 			row: z.row,
 			guildName: z.guildName
 		}).done(function(data){
-			my.guild = data.guild;
-			chat.log('You have joined the guild: '+ data.guild.name, 'chat-warning');
-			setTimeout(guild.listen, 500);
+			my.guild = data.guild
+			chat.log('You have joined the guild: '+ data.guild.name, 'chat-warning')
+			setTimeout(guild.listen, 500)
 		}).fail(function(data){
-			console.info("Oh no", data);
-			chat.log(data.responseText, 'chat-warning');
+			chat.log(data.responseText, 'chat-warning')
 		});
 	}
 	function hasJoined(z) {
@@ -172,7 +169,7 @@ var guild;
 		console.info("Booting! ", data);
 		chat.log(data.msg, 'chat-warning');
 		if (data.name === my.name) {
-			$.post(app.url + 'guild/quit.php', {
+			$.post(app.url + 'guild/disband.php', {
 				action: 'boot'
 			}).done(function(){
 				socket.unsubscribe('guild'+ my.guild.id);
@@ -291,9 +288,7 @@ var guild;
 		}).fail(data => {
 			chat.log(data.responseText, 'chat-warning');
 		}).always(() => {
-			setTimeout(() => {
-				ng.unlock();
-			}, throttleTime);
+			setTimeout(ng.unlock, throttleTime);
 		});
 	}
 	function setGuildList(data) {
@@ -307,10 +302,10 @@ var guild;
 	function getGuildStar(data) {
 		guildStar = '';
 		if (data.rank === 0) {
-			guildStar = '<i class="fas fa-star guild-star"></i>';
+			guildStar = '<i class="ra ra-crown guild-leader"></i>';
 		}
 		if (data.rank === 1) {
-			guildStar = '<i class="far fa-star guild-star"></i>';
+			guildStar = '<i class="ra ra-castle-flag guild-leader"></i>';
 		}
 		return guildStar;
 	}
