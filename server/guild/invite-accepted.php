@@ -11,28 +11,11 @@ $stmt->store_result();
 
 if ($stmt->num_rows) exit("You are already in a guild.");
 
-// increment guild member count
-$query = 'update `guilds` set members=members+1, member_number=member_number+1 where row=?';
-$stmt = $db->prepare($query);
-$stmt->bind_param('s', $_POST['row']);
-$stmt->execute();
-
-// get guild number
-$query = 'SELECT member_number FROM `guilds` where row=?';
-$stmt = $db->prepare($query);
-$stmt->bind_param('s', $_POST['row']);
-$stmt->execute();
-$stmt->bind_result($dbCount);
-$memberNumber = 0;
-while ($stmt->fetch()){
-	$memberNumber = $dbCount * 1;
-}
-
 // insert into member table
 $stmt = $db->prepare('insert into `guild_members` (
-	rank, c_id, g_id, member_number
+	rank, c_id, g_id
 	) values (
-	2, ?, ?, '. $memberNumber .')');
+	2, ?, ?)');
 
 $stmt->bind_param('is', $_SESSION['row'], $_POST['row']);
 $stmt->execute();

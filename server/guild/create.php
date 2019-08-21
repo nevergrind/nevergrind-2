@@ -61,7 +61,7 @@ $stmt->execute();
 $g_id = mysqli_insert_id($db);
 
 // add to `guild_members`
-$stmt = $db->prepare("insert into `guild_members` (rank, c_id, g_id, member_number) values (0, ?, ?, 1)");
+$stmt = $db->prepare("insert into `guild_members` (rank, c_id, g_id) values (0, ?, ?)");
 $stmt->bind_param('si', $_SESSION['row'], $g_id);
 $stmt->execute();
 // get guild id

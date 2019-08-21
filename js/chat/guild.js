@@ -33,11 +33,13 @@ var guild;
 		loadGuildMsg,
 		getMembers,
 		setGuildList,
+		setGuildData,
 	}
 	var guildStar;
 	/////////////////////////////////////////////
 	function listen() {
 		// subscribe to test guild for now
+		console.info('my.guild', my.guild);
 		if (my.guild.id) {
 			my.guild.motd && chat.log('Guild Message of the day: ' + my.guild.motd, 'chat-guild');
 			socket.subscribe('guild' + my.guild.id, guild.route);
@@ -58,11 +60,8 @@ var guild;
 		return {
 			id: 0,
 			rank: 0,
-			memberNumber: 0,
 			motd: '',
-			members: 0,
-			name: '',
-			memberList: []
+			name: ''
 		}
 	}
 	function format(guild) {
@@ -78,7 +77,7 @@ var guild;
 			name: name.replace(/ +/g, " ").trim()
 		}).done(function(data) {
 			console.info('create', data.guild);
-			my.guild = data.guild;
+			guild.setGuildData(data);
 			chat.log('Valeska Windcrest says, "By the powers vested in me, I hereby declare you supreme sovereign leader of a new guild: ' + data.guild.name +'."');
 			chat.log('Type /help to view guild commands', 'chat-emote');
 			guild.listen();
@@ -126,7 +125,7 @@ var guild;
 			row: z.row,
 			guildName: z.guildName
 		}).done(function(data){
-			my.guild = data.guild
+			guild.setGuildData(data);
 			chat.log('You have joined the guild: '+ data.guild.name, 'chat-warning')
 			setTimeout(guild.listen, 500)
 		}).fail(function(data){
@@ -240,7 +239,7 @@ var guild;
 		if (data.name === my.name || bypass) {
 			$.get(app.url + 'guild/update-session.php').done(function (data) {
 				console.info('update-session: ', data);
-				my.guild = data.guild;
+				guild.setGuildData(data);
 				// nothing
 			}).fail(function (data) {
 				chat.log(data.responseText, 'chat-warning');
@@ -298,6 +297,7 @@ var guild;
 			s += '<div>' + v.level +' '+ getGuildStar(v) + v.name +' '+ v.race +' <span class="chat-'+ v.job +'">'+ ng.toJobLong(v.job) +'</span></div>';
 		});
 		$("#aside-guild-members").html(s);
+		getById('guild-member-count').textContent = guild.memberList.length;
 	}
 	function getGuildStar(data) {
 		guildStar = '';
@@ -308,5 +308,9 @@ var guild;
 			guildStar = '<i class="ra ra-castle-flag guild-leader"></i>';
 		}
 		return guildStar;
+	}
+	function setGuildData(data) {
+		my.guild = data.guild;
+		warn('setGuildData', data);
 	}
 })();

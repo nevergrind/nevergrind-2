@@ -25,21 +25,6 @@ if (isset($_SESSION['guild']['id']) ) {
 	$stmt = $db->prepare('delete from `guild_members` where c_id=?');
 	$stmt->bind_param('s', $_SESSION['row']);
 	$stmt->execute();
-	// if it has zero members delete the guild, too
-	$totalMembers = $totalMembers - 1;
-	if (!$totalMembers) {
-		// delete the guild
-		$stmt = $db->prepare('delete from `guilds` where row=?');
-		$stmt->bind_param('s', $_SESSION['guild']['id']);
-		$stmt->execute();
-	}
-	else {
-		// subtract from member count
-		$query = 'update `guilds` set members=members-1 where row=?';
-		$stmt = $db->prepare($query);
-		$stmt->bind_param('s', $_SESSION['guild']['id']);
-		$stmt->execute();
-	}
 
 	// notify guild members
 	require '../zmq.php';

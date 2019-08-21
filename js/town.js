@@ -89,10 +89,9 @@ var town;
 			}).done(function(data) {
 				console.info('load-character: ', data);
 				Object.assign(my, data.characterData);
-				my.guild = data.guild;
+				guild.setGuildData(data);
 
 				// init party member values
-				console.info('party.presence[0]: ', party.presence[0]);
 				ng.setScene('town');
 				chat.init();
 				socket.init();
@@ -217,8 +216,7 @@ var town;
 				'<div class="aside-frame">' +
 					'<div>Guild: '+ my.guild.name +'</div> ' +
 					'<div>Title: '+ guild.ranks[my.guild.rank] +'</div> ' +
-					'<div>Total Members: '+ my.guild.members +'</div> ' +
-					'<div>Member Number: '+ my.guild.memberNumber +'</div> ' +
+					'<div>Total Members: <span id="guild-member-count">'+ guild.memberList.length +'</span></div> ' +
 				'</div>' +
 				'<div id="guild-member-wrap" class="aside-frame">' +
 					'<div id="guild-member-flex">'+
