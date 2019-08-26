@@ -8,18 +8,9 @@
 		) VALUES '
 	*/
 	function getItemString($charRow, $slots, $type){
-		$s = '';
-		$i = 0;
-		$lastRow = count($slots) - 1;
+		$arr = [];
 		foreach ($slots as $key => $value){
-			$s .= '('. $charRow .',?,'. $type .','. $key .','. $value;
-			if ($i === $lastRow){
-				$s .= ')';
-			} 
-			else {
-				$s .= '),';
-			}
-			$i++;
+			$arr[] = '('. $charRow .',?,'. $type .','. $key .','. $value . ')';
 		}
-		return $s;
+		return join(',', $arr);
 	}

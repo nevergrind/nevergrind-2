@@ -18,13 +18,13 @@
 	}
 	// name is not taken
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-	$query = "select name from `characters` where name=?";
+	$query = 'select name from `characters` where name=?';
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $f['name']);
 	$stmt->execute();
 	$stmt->store_result();
 	$count = $stmt->num_rows;
-	if($count > 0){
+	if ($count > 0){
 		exit('This name is already taken!');
 	}
 	require '../enum/races.php';
@@ -37,9 +37,9 @@
 	}
 
 	// how many characters do they have?
-	$query = "select row from `characters` where account=? and deleted=0";
+	$query = 'select row, deleted from `characters` where row=? and deleted=0';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('s', $_SESSION['account']);
+	$stmt->bind_param('s', $_SESSION['id']);
 	$stmt->execute();
 	$stmt->store_result();
 	$count = $stmt->num_rows;
@@ -58,9 +58,7 @@
 		$f['gender'] = 'Male';
 	}
 	// validate race
-	require '../stat-map.php';
-	$raceKeys = array_keys($statMap);
-	if (!in_array($f['race'], $raceKeys, true)){
+	if (!in_array($f['race'], $races, true)){
 		$f['race'] = 'Human';
 	}
 	// validate class
@@ -72,103 +70,69 @@
 		exit('You have not spent all of your ability points!');
 	}
 	// validate that the race can play that class
+	require 'stat-map.php';
 	if (!in_array($f['job'], $statMap[$f['race']]['jobs'], true)){
 		exit('This class is not available to that race!');
 	}
 	// validate minimum attributes using race/class function that returns object with min values
-	$baseAttrs = $statMap[$f['race']]['attrs'];
-	$i = 0;
-	foreach ($statMap['jobs'][$f['job']] as $value) {
-		$baseAttrs[$i++] += $value;
-	}
 	require '../enum/attrs.php';
-	$clientTotal = 0;
-	$i = 0;
-	foreach ($attrs as $value){
-		if ($baseAttrs[$i++] > $f[$value]){
-			exit('Those race/class values are not possible!');
-		}
-		$clientTotal += $f[$value];
+	$bonusAttrTotal = 0;
+	foreach ($attrs as $value) {
+		$bonusAttrTotal += $f[$value];
 	}
-	// validate total values for each race/job combo
-	$serverTotal = 10;
-	$i = 0;
-	foreach ($baseAttrs as $value){
-		$serverTotal += $baseAttrs[$i++];
+	error_log($bonusAttrTotal);
+	if ($bonusAttrTotal !== 10) {
+		exit('Those race/class values are not possible!');
 	}
-	if ($clientTotal !== $serverTotal){
-		exit('That race/class combination has the wrong attribute totals! '. $clientTotal .' vs '. $serverTotal);
-	}
-	// check resists
-	require '../get-resist.php';
-	require '../enum/resists.php';
-	foreach ($resists as $type){
-		$f[$type] = getResist($type, $f);
-	}
-	
-	// check dungeon
-	require '../get-dungeon-skill.php';
-	require '../enum/dungeon-skills.php';
-	foreach ($dungeonSkills as $type){
-		$f[$type] = getDungeonSkill($type, $f);
-	}
-	// hp
-	$f['level'] = 1;
-	require '../get-base-max-hp.php';
-	$f['hp'] = $f['maxHp'] = getBaseMaxHp($f);
-	// mp
-	require '../get-base-max-mp.php';
-	$f['mp'] = $f['maxMp'] = getBaseMaxMp($f);
-	
 	// default skill values
 	require 'add-starting-skills.php';
 	addStartingSkills($f);
-	
-	// success
-	$query = 'insert into `characters` (
-		`account`, 
-		`name`, 
-		`gender`, 
-		`race`,
-		`job`,
-		`hp`,
-		`maxHp`,
-		`mp`,
-		`maxMp`,
-		`str`,
-		`sta`,
-		`agi`,
-		`dex`,
-		`wis`,
-		`intel`,
-		`cha`,
-		`dualWield`,
-		`oneHandSlash`,
-		`twoHandSlash`,
-		`oneHandBlunt`,
-		`twoHandBlunt`,
-		`piercing`,
-		`dodge`,
-		`alteration`,
-		`evocation`,
-		`conjuration`
-	) VALUES (
-		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+	// insert into character
+	$fields = [
+		'`account`',
+		'`name`',
+		'`gender`',
+		'`race`',
+		'`job`',
+		'`str`',
+		'`sta`',
+		'`agi`',
+		'`dex`',
+		'`wis`',
+		'`intel`',
+		'`cha`',
+		'`dualWield`',
+		'`oneHandSlash`',
+		'`twoHandSlash`',
+		'`twoHandBlunt`',
+		'`piercing`',
+		'`dodge`',
+		'`alteration`',
+		'`evocation`',
+		'`conjuration`'
+	];
+	$values = [];
+	foreach ($fields as $value) {
+		$values[] = '?';
+	}
+	$query = 'insert into `characters` (' .
+		join(',', $fields)
+	. ') VALUES (' .
+		join(',', $values)
+	.')';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('sssssiiiiiiiiiiiiiiiiiiiii', 
-		$_SESSION['account'], $f['name'], $f['gender'], $f['race'], $f['shortJob'],
-		$f['hp'], $f['maxHp'], $f['mp'], $f['maxMp'], $f['str'], 
-		$f['sta'], $f['agi'], $f['dex'], $f['wis'], $f['intel'], 
-		$f['cha'], $f['dualWield'], $f['oneHandSlash'], $f['twoHandSlash'], $f['oneHandBlunt'], 
-		$f['twoHandBlunt'], $f['piercing'], $f['dodge'], $f['alteration'], $f['evocation'], 
-		$f['conjuration']);
+	$stmt->bind_param('issssiiiiiiiiiiiiiiii',
+		$_SESSION['id'], $f['name'], $f['gender'], $f['race'], $f['shortJob'],
+		$f['str'], $f['sta'], $f['agi'], $f['dex'], $f['wis'],
+		$f['intel'], $f['cha'], $f['dualWield'], $f['oneHandSlash'], $f['twoHandSlash'],
+		$f['twoHandBlunt'], $f['piercing'], $f['dodge'], $f['alteration'], $f['evocation'],
+		$f['conjuration']
+	);
 	$stmt->execute();
-	
-	$r['row'] = mysqli_insert_id($db);
-	// add inventory data
 
 	// insert items
-	require '../item/get-item-string.php';
+	/*require '../item/get-item-string.php';
 	$loops = 32;
 	$slots = [];
 	for ($i = 0; $i < $loops; $i++){
@@ -183,7 +147,7 @@
 		slot,
 		lootRow
 	) VALUES '. $queryValues;
-	// must set inventory to 1
+
 	$uniqueId = [];
 	for ($i = 0; $i < $loops; $i++){
 		$uniqueId[$i] = $r['row'] . '-1' . $i;
@@ -223,13 +187,13 @@
 		$uniqueId[29],
 		$uniqueId[30],
 		$uniqueId[31]);
-	$stmt->execute();
+	$stmt->execute();*/
 
 	// add equipment data
-	$loops = 16;
-	$slots = [];
 	// starting equipment map
 	// sets the item id for each equipment slot
+	/*$loops = 16;
+	$slots = [];
 	$jobEquipment = [
 		'WAR' => [0,0,0,0,0,0,2,0,0,0,0,0,0,5,0,0],
 		'SHD' => [0,0,0,0,0,0,2,0,0,0,0,0,0,5,0,0],
@@ -249,7 +213,6 @@
 	for ($i = 0; $i < $loops; $i++){
 		$slots[$i] = $jobEquipment[$f['shortJob']][$i];
 	}
-	// type 0 is equipment
 	$queryValues = getItemString($r['row'], $slots, 0);
 	
 	$query = 'insert into `items` (
@@ -289,7 +252,7 @@
 	$query = 'insert into `missions` (c_id) VALUES (?)';
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $f['row']);
-	$stmt->execute();
+	$stmt->execute();*/
 	
 	// echo something for fun
 	$r['hero'] = $f;

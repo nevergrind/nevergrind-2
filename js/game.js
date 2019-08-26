@@ -21,6 +21,8 @@ var game;
 		getPresence,
 		emptyScenesExcept,
 		getPetName,
+		played,
+		getCachedMinutes,
 	};
 	/** private */
 	var pingStart = 0;
@@ -40,17 +42,17 @@ var game;
 	};
 	var played = {
 		timer: 0,
-		playedStart,
-		playedSend,
+		interval: 60000
 	};
+	if (localStorage.getItem('played') === null) {
+		localStorage.setItem('played', 0);
+	}
 	// pooled variables
 	var time;
 	var index;
 	var diff;
 	var obj;
 	var ping;
-	var i;
-	var len;
 	var el;
 	/////////////////////////////////////////////////////
 	/** public */
@@ -60,7 +62,7 @@ var game;
 			isSocketInit = true;
 			pingStart = Date.now();
 			heartbeat.activate();
-			played.playedStart();
+			playedStart();
 			whisper.listen();
 			listenFriendAlerts();
 			guild.listen();
@@ -255,19 +257,85 @@ var game;
 		heartbeat.receiveTime = Date.now();
 		heartbeatTimeout();
 	}
-	function playedStart() {
-		clearInterval(played.timer);
-		played.timer = setInterval(played.playedSend, 60000);
-	}
-	function playedSend() {
-		$.post(app.url + 'update-played.php', {
-			row: my.row
-		});
-	}
 	function listenFriendAlerts() {
 		ng.friends.forEach(function(v){
 			socket.unsubscribe('friend' + v);
 			socket.subscribe('friend' + v, friend.notify);
 		});
+	}
+	function playedStart() {
+		clearInterval(played.timer);
+		played.timer = setInterval(playedSend, played.interval);
+	}
+	function playedSend() {
+		updateCachedMinutes()
+		$.get(app.url + 'ping.php')
+	}
+	function played() {
+		$.post(app.url + 'chat/played.php', {
+			minutes: getCachedMinutes()
+		}).done(function(r) {
+			chat.log("Character created: " + toCreateString(r.created), 'chat-warning')
+			chat.log("Total character playtime: " + toPlaytime(r.playtime), 'chat-whisper')
+			localStorage.setItem('played', 0)
+		});
+	}
+	function updateCachedMinutes() {
+		localStorage.setItem('played', getCachedMinutes() + 1)
+	}
+	function getCachedMinutes() {
+		return +localStorage.getItem('played');
+
+	}
+	function toCreateString(d) {
+		d = new Date(d);
+		return d.toDateString() + ' ' + d.toLocaleTimeString();
+	}
+	function toPlaytime(minLeft) {
+		var d = 0,
+			h = 0;
+
+		if (minLeft >= 1440) {
+			d = floor(minLeft / 1440);
+			minLeft = (minLeft % 1440);
+		}
+		if (minLeft >= 60) {
+			h = floor(minLeft / 60);
+			minLeft = (minLeft % 60);
+		}
+		var m = minLeft,
+			dayStr = '',
+			hourStr = '',
+			minStr = '';
+		if (d) {
+			dayStr += d + (d > 1 ? ' days' : ' day');
+		}
+		if (h) {
+			hourStr += h + (h > 1 ? ' hours' : ' hour');
+		}
+		// minutes
+		minStr = m;
+		if (m !== 1) {
+			minStr += ' minutes';
+		}
+		else {
+			minStr += ' minute';
+		}
+
+		if (d && h && m) {
+			dayStr += ', ';
+		}
+		else if (d) {
+			dayStr += ' ';
+		}
+
+		if (h) {
+			hourStr += ', ';
+		}
+
+		if (d || h) {
+			minStr = 'and ' + minStr;
+		}
+		return dayStr + hourStr + minStr;
 	}
 })();

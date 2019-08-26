@@ -790,21 +790,23 @@ tbody {
 #chat-present-wrap {
 	display: flex;
 	flex-direction: column;
-	flex-basis: 30%;
+	width: 30%;
 }
 
 #chat-log-wrap {
 	display: flex;
 	flex-direction: column;
-	flex-basis: 70%;
-	min-width: 70%;
+	width: 70%;
 }
 
 #chat-header {
-	text-align: center;
+	display: flex;
+	justify-content: center;
 	color: #ffb700;
 	border: .1rem groove #048;
 	margin: 1px;
+	white-space: nowrap;
+	padding: 0 .3rem;
 	background: radial-gradient(farthest-side at 50% 0%, rgba(0, 48, 96, 1), rgba(0, 0, 0, 1));
 }
 
@@ -1489,63 +1491,49 @@ background-clip: content-box;
 	display: flex;
 	align-content: center;
 	color: #aaa;
-	cursor: url('cursor/pointer.cur'), pointer;
-}
-
-.fa-mission-stack {
-	top: .05rem;
-}
-
-.mission-zone > div {
-	height: 1.5rem;
 	line-height: 1.5rem;
+	cursor: url('cursor/pointer.cur'), pointer;
 }
 
 .mission-zone:hover {
 	background: #048;
 }
 
-.mission-grey {
+.con-grey {
 	color: #999;
 }
 
-.mission-green {
+.con-green {
 	color: #191;
 }
 
-.mission-low-blue {
+.con-low-blue {
 	color: #1cc;
 }
 
-.mission-high-blue {
+.con-high-blue {
 	color: #15f;
 }
 
-.mission-white {
+.con-white {
 	color: #fff;
 }
 
-.mission-yellow {
+.con-yellow {
 	color: #ff1;
 }
 
-.mission-red {
+.con-red {
 	color: #f11;
 }
 
-.mission-plus-bg {
-	color: #611;
+.mission-tree-btn {
+	font-size: 1rem;
+	color: #fdd700;
+	background: #611;
 	text-shadow: 1px 1px #777, -1px -1px #777, -1px 1px #777, 1px -1px #777, 2px 2px #000, -2px -2px #000, -2px 2px #000, 2px -2px #000;
-}
-
-.mission-plus {
-	font-size: .75rem;
-	color: #fdd700;
-}
-
-.mission-minus {
-	font-size: .75rem;
-	color: #fdd700;
+	align-self: center;
+	margin: 0 .5rem;
 }
 
 .mission-quest-list {
@@ -1553,7 +1541,7 @@ background-clip: content-box;
 }
 
 .mission-quest-item {
-	text-indent: 2rem;
+	text-indent: 2.5rem;
 	cursor: url('cursor/pointer.cur'), pointer;
 }
 
@@ -1701,10 +1689,17 @@ background-clip: content-box;
 .flex-16 { flex-basis: 16.666% }
 .flex-8 { flex-basis: 8.333% }
 .flex-1 { flex: 1 }
-/* pads and margins */
+/* utility classes */
 .pad-4 {
 	padding: .2rem;
 }
+.width-100 {
+	width: 100%;
+}
+.height-100 {
+	height: 100%;
+}
+
 
 #create-attr {
 	flex-grow: 1
@@ -1941,9 +1936,9 @@ background-clip: content-box;
 #create-details {
 	margin: .2rem 0;
 	padding: .2rem;
-	flex: 1;
 	border: 1px solid #125;
 	background: #147;
+	height: 6rem;
 }
 #create-character-name-wrap {
 	border: 1px solid #579;
@@ -1963,7 +1958,8 @@ background-clip: content-box;
 }
 .guild-leader {
 	color: #ff8;
-	margin-right: .1rem;
+	margin: 0 .2rem;
+	align-self: center;
 }
 /* toast */
 #toast-wrap {

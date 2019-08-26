@@ -42,8 +42,6 @@ var chat;
 		emote,
 		camp,
 		reply,
-		toPlaytime,
-		played,
 		scrollBottom,
 		setHeader,
 		joinChannel,
@@ -86,8 +84,8 @@ var chat;
 	}
 	function modeChange(h) {
 		// only trim leading spaces
-		var mode = h === undefined ? (chat.dom.chatInput.value + ng.lastKey) : h.mode,
-			mode = mode.replace(/^\s+/g, '');
+		var mode = h === undefined ? (chat.dom.chatInput.value + ng.lastKey) : h.mode;
+		var mode = mode.replace(/^\s+/g, '');
 
 		if (mode === '/say' && !my.channel) {
 			log("You cannot communicate in town while in a dungeon", "chat-warning");
@@ -97,9 +95,8 @@ var chat;
 			});
 			return false;
 		}
-
 		// known standard mode
-		if (chat.modeTypes.includes(mode)) {
+		else if (chat.modeTypes.includes(mode)) {
 			chat.modeCommand = mode;
 			chat.modeSet(mode);
 			if (!h) {
@@ -116,8 +113,8 @@ var chat;
 				name = h.name;
 			}
 			else {
-				var parse = chat.parseMsg(mode),
-					name = _.capitalize(parse.first.substr(1));
+				var parse = chat.parseMsg(mode);
+				var name = _.capitalize(parse.first.substr(1));
 			}
 			chat.modeCommand = '@';
 			chat.modeName = name;
@@ -164,11 +161,6 @@ var chat;
 				chat.isClicked = true;
 			}).on('mouseup', function(){
 				chat.isClicked = false;
-			});
-			$("#chat-input").on('focus', function(){
-				chat.hasFocus = 1;
-			}).on('blur', function(){
-				chat.hasFocus = 0;
 			});
 
 			$("#chat-room").on('click contextmenu', '.chat-player', function() {
@@ -318,7 +310,7 @@ var chat;
 			chat.camp();
 		}
 		else if (msgLower === '/played') {
-			played();
+			game.played();
 		}
 		else if (msgLower.startsWith('/join')) {
 			chat.joinChannel(joinParse(msg));
@@ -494,9 +486,18 @@ var chat;
 				name: my.name,
 				route: 'off'
 			});
-			setTimeout(function() {
+			var minutes = game.getCachedMinutes();
+			if (minutes) {
+				$.post(app.url + 'camp.php', {
+					minutes: game.getCachedMinutes()
+				}).done(() => {
+					localStorage.setItem('played', 0)
+					location.reload();
+				});
+			}
+			else {
 				location.reload();
-			}, 500);
+			}
 		}
 	}
 	function reply() {
@@ -510,63 +511,6 @@ var chat;
 			chat.dom.chatInput.focus();
 		}
 	}
-	function toPlaytime(minLeft) {
-		var d = 0,
-			h = 0;
-
-		if (minLeft >= 1440) {
-			d = floor(minLeft / 1440);
-			minLeft = (minLeft % 1440);
-		}
-		if (minLeft >= 60) {
-			h = floor(minLeft / 60);
-			minLeft = (minLeft % 60);
-		}
-		var m = minLeft,
-			dayStr = '',
-			hourStr = '',
-			minStr = '';
-		if (d) {
-			dayStr += d + (d > 1 ? ' days' : ' day');
-		}
-		if (h) {
-			hourStr += h + (h > 1 ? ' hours' : ' hour');
-		}
-		// minutes
-		minStr = m;
-		if (m !== 1) {
-			minStr += ' minutes';
-		}
-		else {
-			minStr += ' minute';
-		}
-
-		if (d && h && m) {
-			dayStr += ', ';
-		}
-		else if (d) {
-			dayStr += ' ';
-		}
-
-		if (h) {
-			hourStr += ', ';
-		}
-
-		if (d || h) {
-			minStr = 'and ' + minStr;
-		}
-		return dayStr + hourStr + minStr;
-	}
-	function toCreateString(d) {
-		d = new Date(d);
-		return d.toDateString() + ' ' + d.toLocaleTimeString();
-	}
-	function played() {
-		$.get(app.url + 'chat/played.php').done(function(r) {
-			log("Character created: " + toCreateString(r.created), 'chat-warning');
-			log("Total character playtime: " + chat.toPlaytime(r.playtime), 'chat-whisper');
-		});
-	}
 	function scrollBottom() {
 		if (!chat.isClicked && chat.initialized){
 			chat.dom.chatLog.scrollTop = chat.dom.chatLog.scrollHeight;
@@ -578,7 +522,7 @@ var chat;
 	function setHeader() {
 		// or chat.presence.length ?
 		chat.dom.chatHeader.innerHTML =
-			my.channel + '&thinsp;(' + chat.presence.length + ')';
+			'<span class="ellipsis">' + my.channel + '</span>' + '<span id="chat-header-count">&thinsp;(' + chat.presence.length + ')</span>';
 	}
 	function joinParse(msg) {
 		// 2 part parse lower case
@@ -616,23 +560,26 @@ var chat;
 		publishRemove();
 		console.info("You have changed channel to: ", data.channel);
 		// unsub prior channel
-		my.channel && socket.unsubscribe(chat.getChannel());
+		my.channel && socket.unsubscribe(chat.getChannel())
 		// set new channel data
-		my.channel = data.channel;
-		socket.subscribe('ng2' + data.channel, socket.routeMainChat); // main chat channel
+		my.channel = data.channel
+		if (chat.modeCommand === '/say') {
+			chat.modeSet('/say')
+		}
+		socket.subscribe('ng2' + data.channel, socket.routeMainChat) // main chat channel
 		// add to chat channel
 		chat.presence = [];
-		$('#chat-room').empty();
+		$('#chat-room').empty()
 		game.upsertRoom({
 			row: my.row,
 			level: my.level,
 			job: my.job,
 			name: my.name,
 			time: Date.now()
-		});
-		game.getPresence();
-		chat.setHeader();
-		game.heartbeatSend();
+		})
+		game.getPresence()
+		chat.setHeader()
+		game.heartbeatSend()
 	}
 	function publishRemove() {
 		socket.publish(chat.getChannel(), {

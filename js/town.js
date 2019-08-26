@@ -4,24 +4,8 @@ var town;
 		initialized: 0,
 		lastAside: {},
 		delegated: 0,
-		aside: {
-			selected: '',
-			html: {
-				close: '<i class="close-aside fa fa-times text-danger"></i>',
-				sleeve: '<div class="stag-blue sleeve"></div>',
-				townMerchant: htmlTownMerchant,
-				townTrainer: htmlTownTrainer,
-				townGuild: htmlTownGuild,
-				townMission: htmlTownMission,
-			},
-			menu: {
-				townMerchant: menuTownTrainer,
-				townTrainer: menuTownMerchant,
-				townGuild: menuTownGuild,
-				townMission: menuTownMission,
-			},
-			init: asideInit,
-		},
+		asideSelected: '',
+		asideCloseHtml: '<i class="close-aside fa fa-times text-danger"></i>',
 		data: {
 		'town-merchant': {
 			msg: merchantMsg,
@@ -75,6 +59,10 @@ var town;
 		events,
 		init,
 		preload,
+		getAsideMerchantMenu,
+		getAsideTrainerMenu,
+		getAsideGuildMenu,
+		getAsideMissionMenu,
 	}
 	////////////////////////////////////////////
 	function go() {
@@ -147,69 +135,69 @@ var town;
 
 		return s;
 	}
-	function htmlTownMerchant() {
+	function getAsideMerchantHtml() {
 		var s =
 		'<img class="aside-bg" src="images/town/halas.jpg">' +
 		'<img class="aside-npc" src="images/town/rendo-surefoot.png">' +
 		'<div class="aside-text">' +
 			'<div class="aside-title-wrap stag-blue">' +
 				'<div class="aside-title">Merchant</div>' +
-				town.aside.html.close +
+				town.asideCloseHtml +
 			'</div>' +
 		'</div>';
 		return s;
 	}
-	function htmlTownTrainer() {
+	function getAsideTrainerHtml() {
 		var s =
 		'<img class="aside-bg" src="images/town/surefall.jpg">' +
 		'<img class="aside-npc" src="images/town/arwen-reinhardt.png">' +
 		'<div class="aside-text">' +
 			'<div class="aside-title-wrap stag-blue">' +
 				'<div class="aside-title">Skill Trainer</div>' +
-				town.aside.html.close +
+				town.asideCloseHtml +
 			'</div>' +
 		'</div>';
 		return s;
 	}
-	function htmlTownGuild() {
+	function getAsideGuildHtml() {
 		var s =
 		'<img class="aside-bg" src="images/town/poh.jpg">' +
 		'<img class="aside-npc" src="images/town/valeska-windcrest.png">' +
 		'<div class="aside-text">' +
 			'<div class="aside-title-wrap stag-blue">' +
 				'<div class="aside-title">Guild Hall</div>' +
-				town.aside.html.close +
+				town.asideCloseHtml +
 			'</div>' +
 			'<div id="aside-menu">' +
-				town.aside.menu.townGuild() +
+				town.getAsideGuildMenu() +
 			'</div>' +
 		'</div>';
 		return s;
 	}
-	function htmlTownMission() {
+	function getAsideMissionHtml() {
 		var s =
 		'<img class="aside-bg" src="images/town/neriak.jpg">' +
 		'<img class="aside-npc" src="images/town/miranda-crossheart.png">' +
 		'<div class="aside-text">' +
 			'<div class="aside-title-wrap stag-blue">' +
 				'<div class="aside-title">Mission Counter</div>' +
-				town.aside.html.close +
+				town.asideCloseHtml +
 			'</div>' +
 			'<div id="aside-menu">' +
-				town.aside.menu.townMission() +
+				town.getAsideMissionMenu() +
 			'</div>' +
 		'</div>';
 		return s;
 	}
-	function menuTownTrainer() {
+	function getAsideMerchantMenu() {
 		var s = '';
 		return s;
 	}
-	function menuTownMerchant() {
+	function getAsideTrainerMenu() {
 		var s = '';
 		return s;
 	}
-	function menuTownGuild() {
+	function getAsideGuildMenu() {
 		var s = '';
 		if (my.guild.name) {
 			s +=
@@ -236,42 +224,30 @@ var town;
 		}
 		return s;
 	}
-	function menuTownMission() {
+	function getAsideMissionMenu() {
+		console.warn('menuTownMission')
+		mission.init();
 		var s = mission.asideHtmlHead();
-		if (mission.loaded) {
-			// subsequent loads
-			s +=
-			'<div id="mission-counter" class="aside-frame text-shadow">';
-				s += mission.asideHtml();
-			s += '</div>';
-			setTimeout(function() {
-				mission.openFirstTwoZones();
-			}, 100);
-		}
-		else {
-			// first load
-			s +=
-				'<div id="mission-counter" class="aside-frame">' +
-					ng.loadMsg +
-				'</div>';
-			mission.init();
-		}
+		// subsequent loads
+		s +=
+		'<div id="mission-counter" class="aside-frame text-shadow">';
+			s += mission.asideHtml();
+		s += '</div>';
+		setTimeout(mission.openFirstTwoZones, 100);
 		if (my.quest.level) {
 			s += mission.asideFooter();
 		}
 		return s;
 	}
-	function asideInit(id) {
-		if (id === town.aside.selected) return;
+	function asideRoute(id) {
+		if (id === town.asideSelected) return;
 		// remove old aside
 		var z = $(".town-aside");
 		TweenMax.to(z, .2, {
 			scale: 0,
 			x: town.lastAside.x + '%',
 			y: town.lastAside.y + '%',
-			onComplete: function(){
-				z.remove();
-			}
+			onComplete: z.remove
 		});
 		town.lastAside = town.data[id].aside;
 		// animate town BG
@@ -290,19 +266,20 @@ var town;
 		var type = _.camelCase(id);
 		var html;
 		if (type === 'townTrainer') {
-			html = town.aside.html.townTrainer(id);
+			html = getAsideTrainerHtml(id);
 		}
 		else if (type === 'townMerchant') {
-			html = town.aside.html.townMerchant(id);
+			html = getAsideMerchantHtml(id);
 		}
 		else if (type === 'townGuild') {
-			html = town.aside.html.townGuild(id);
+			html = getAsideGuildHtml(id);
 		}
 		else if (type === 'townMission') {
-			html = town.aside.html.townMission(id);
+			html = getAsideMissionHtml(id);
 		}
 		e.innerHTML = html;
 		getById('scene-town').appendChild(e);
+
 		// animate aside things
 		setTimeout(function() {
 			TweenMax.set('.now-loading', {
@@ -339,10 +316,10 @@ var town;
 			setTimeout(function() {
 				$(".town-aside:last-child").find("input").focus();
 				town.data[id].msg();
-			}, 100);
-		}, town.aside.selected ? 0 : 500);
+			}, 100)
+		}, town.asideSelected ? 0 : 500);
 		// set aside id
-		town.aside.selected = id;
+		town.asideSelected = id;
 		// AJAX calls if necessary
 		if (id === 'town-guild'){
 			if (guild.memberList.length) {
@@ -358,16 +335,16 @@ var town;
 		var type = _.camelCase(id);
 		var html;
 		if (type === 'townTrainer') {
-			html = town.aside.menu.townTrainer();
+			html = getAsideTrainerMenu();
 		}
 		else if (type === 'townMerchant') {
-			html = town.aside.menu.townMerchant();
+			html = getAsideMerchantMenu();
 		}
 		else if (type === 'townGuild') {
-			html = town.aside.menu.townGuild();
+			html = getAsideGuildMenu();
 		}
 		else if (type === 'townMission') {
-			html = town.aside.menu.townMission();
+			html = getAsideMissionMenu();
 		}
 		$("#aside-menu").html(html);
 	}
@@ -376,7 +353,7 @@ var town;
 			town.delegated = 1;
 			$("#scene-town").on('click', '.close-aside', function(){
 				// close town asides
-				town.aside.selected = '';
+				town.asideSelected = '';
 				var e = $(".town-aside");
 				TweenMax.to(e, .3, {
 					scale: 0,
@@ -400,7 +377,7 @@ var town;
 				guild.loadGuildMsg()
 				guild.getMembers(guild.throttleTime);
 			}).on('click', '.town-action', function(){
-				town.aside.init($(this).attr('id'));
+				asideRoute($(this).attr('id'));
 			});
 		}
 	}

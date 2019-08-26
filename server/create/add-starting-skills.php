@@ -3,32 +3,31 @@
 function addStartingSkills(&$hero){
 	$v = [
 		'keys' => [
-			'dualWield', 
-			'oneHandSlash', 
-			'twoHandSlash', 
-			'oneHandBlunt', 
-			'twoHandBlunt', 
-			'piercing', 
-			'dodge', 
-			'alteration', 
+			'oneHandSlash',
+			'twoHandSlash',
+			'twoHandBlunt',
+			'piercing',
+			'dodge',
+			'dualWield',
+			'alteration',
 			'conjuration',
 			'evocation'
 		],
 		'jobs' => [
-			'Bard' => 			[0,1,0,1,0,1,0,0,0,0],
-			'Cleric' => 		[0,0,0,1,1,0,0,1,1,1],
-			'Druid' => 			[0,1,0,1,1,0,0,1,1,1],
-			'Enchanter' => 		[0,0,0,1,1,1,0,1,1,1],
-			'Magician' => 		[0,0,0,1,1,1,0,1,1,1],
-			'Monk' => 			[1,0,0,1,1,0,1,0,0,0],
-			'Necromancer' => 	[0,0,0,1,1,1,0,1,1,1],
-			'Paladin' => 		[0,1,1,1,1,0,0,0,0,0],
-			'Ranger' => 		[0,1,1,1,1,1,0,0,0,0],
-			'Rogue' => 			[0,1,0,1,0,1,0,0,0,0],
-			'Shadowknight' => 	[0,1,1,1,1,0,0,0,0,0],
-			'Shaman' => 		[0,0,0,1,1,0,0,1,1,1],
-			'Warrior' => 		[0,1,1,1,1,1,0,0,0,0],
-			'Wizard' => 		[0,0,0,1,1,1,0,1,1,1]
+			'Warrior' => 		[1,1,1,1,0,0,0,0,0],
+			'Paladin' => 		[1,1,1,0,0,0,0,0,0],
+			'Shadowknight' => 	[1,1,1,0,0,0,0,0,0],
+			'Monk' => 			[0,0,1,0,1,0,0,0,0],
+			'Rogue' => 			[1,0,0,1,0,0,0,0,0],
+			'Ranger' => 		[1,1,1,1,0,0,0,0,0],
+			'Bard' => 			[1,0,0,1,0,0,0,0,0],
+			'Cleric' => 		[0,0,1,0,0,0,1,1,1],
+			'Druid' => 			[1,0,1,0,0,0,1,1,1],
+			'Shaman' => 		[0,0,1,1,0,0,1,1,1],
+			'Necromancer' => 	[0,0,1,1,0,0,1,1,1],
+			'Enchanter' => 		[0,0,1,1,0,0,1,1,1],
+			'Magician' => 		[0,0,1,1,0,0,1,1,1],
+			'Wizard' => 		[0,0,1,1,0,0,1,1,1]
 		]
 	];
 	$i = 0;

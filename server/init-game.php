@@ -2,8 +2,8 @@
 require 'header.php';
 require 'db.php';
 
-if (isset($_SESSION['account'])) {
-	$r['account'] = $_SESSION['account'];
+if (isset($_SESSION['id'])) {
+	$r['id'] = $_SESSION['id'];
 	require 'create/load-all-characters.php';
 }
 

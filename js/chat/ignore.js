@@ -19,7 +19,8 @@ var ignore;
 			chat.log(s);
 		}
 		else {
-			chat.log("Nobody is on your friends list yet.", 'chat-warning');
+			chat.log("Nobody is on your ignore list yet.", 'chat-warning');
+			chat.log("<div class='chat-emote'>Use /ignore add [name] to ignore a player.</div>", 'chat-warning');
 		}
 	}
 	function add(o) {

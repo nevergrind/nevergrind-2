@@ -294,7 +294,7 @@ var guild;
 		var s = '';
 		guild.memberList = data.memberList;
 		guild.memberList.forEach(function(v){
-			s += '<div>' + v.level +' '+ getGuildStar(v) + v.name +' '+ v.race +' <span class="chat-'+ v.job +'">'+ ng.toJobLong(v.job) +'</span></div>';
+			s += '<div class="flex">' + v.level +' '+ getGuildStar(v) + v.name +'&nbsp;'+ v.race +'&nbsp;<span class="chat-'+ v.job +'">'+ ng.toJobLong(v.job) +'</span></div>';
 		});
 		$("#aside-guild-members").html(s);
 		getById('guild-member-count').textContent = guild.memberList.length;
@@ -313,4 +313,5 @@ var guild;
 		my.guild = data.guild;
 		warn('setGuildData', data);
 	}
+
 })();

@@ -1,7 +1,9 @@
 <?php
-	$query = 'select row, name, level, race, job from `characters` where account=? and deleted=0';
+	$query = 'select row, name, level, race, job 
+		from `characters` 
+		where account=? and deleted=0';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('s', $_SESSION['account']);
+	$stmt->bind_param('i', $_SESSION['id']);
 	$stmt->execute();
 	$stmt->store_result();
 	$stmt->bind_result($row, $name, $level, $race, $job);

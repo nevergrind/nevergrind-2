@@ -83,134 +83,149 @@ var create;
 		setRandomClass,
 	};
 	// public //////////////////////////////////////
-	function events(x) {
-		$("#logout").on(x, function() {
+	function events() {
+		$("#logout").on('click', function() {
 			ng.logout();
 		});
-		$("#ch-card-base").on(x, '.ch-card', function(){
+		$("#ch-card-base").on('click', '.ch-card', function(){
 			$('.ch-card').removeClass('ch-card-active');
 			$(this).addClass('ch-card-active');
 		});
-		$('.ch-card:first').trigger(x);
+		$('.ch-card:first').trigger('click');
 		// create character
-		$("#go-create-character").on(x, ng.goCreateCharacter);
-		$("#delete-character").on(x, function(){
-			modal.show({
-				key: 'delete-character'
-			});
+		$("#go-create-character").on('click', ng.goCreateCharacter);
+		$("#delete-character").on('click', onClickDelete);
+		$(".select-race").on('click', selectRace);
+		$(".select-class").on('click', selectClass);
+		$(".select-gender").on('click', selectGender);
+		$("#create-character-name").on('change keydown keyup', onNameChange);
+		$(".attr-minus-1").on('click', subtractAttribute);
+		$(".attr-add-1").on('click', addAttribute);
+		$("#create-character-back").on('click', goCreateToTitle);
+		$("#create-character-btn").on('click', createCharacter);
+		$("#ch-card-list").on('click', '.select-player-card', selectCharacter);
+	}
+	function onClickDelete() {
+		modal.show({
+			key: 'delete-character'
 		});
-		$(".select-race").on(x, function(e){
-			var race = $(this).text();
-			$('.select-race').removeClass('active');
+	}
+	function selectRace() {
+		var race = $(this).text();
+		$('.select-race').removeClass('active');
+		$(this).addClass('active');
+		create.setRandomClass(race);
+		create.set('race', race);
+	}
+	function selectClass() {
+		if (!$(this).get(0).className.includes('disabled')){
+			var job = $(this).text();
+			$('.select-class').removeClass('active');
 			$(this).addClass('active');
-			create.setRandomClass(race);
-			create.set('race', race);
-		});
-		$(".select-class").on(x, function(e){
-			if (!$(this).get(0).className.includes('disabled')){
-				var job = $(this).text();
-				$('.select-class').removeClass('active');
-				$(this).addClass('active');
-				create.set('job', job);
-			}
-		});
-		$(".select-gender").on(x, function(){
-			var gender = $(this).attr('id');
-			$(".select-gender").removeClass('active');
-			$(this).addClass('active');
-			create.set('gender', gender);
-		});
-		$("#create-character-name").on('change keydown keyup', function(e){
-			if (_.includes(create.whitelist, e.key)) {
-				var val = $(this).val().trim();
-				create.form.name = val.replace(/[^A-z]/g, '');
-			}
-			else {
-				return false;
-			}
-		});
-		$(".attr-minus-1").on(x, function(){
-			var attr = $(this).data('id');
-			if (create.form.left < 10 &&
-				(create.form[attr] - create.base[attr] > 0) ){
-				getById('create-points-' + attr).innerHTML = --create.form[attr];
-				getById('create-points-remaining').innerHTML = ++create.form.left;
-			}
-		});
-		$(".attr-add-1").on(x, function(){
-			var attr = $(this).data('id');
-			if (create.form.left){
-				getById('create-points-' + attr).innerHTML = ++create.form[attr];
-				getById('create-points-remaining').innerHTML = --create.form.left;
-			}
-		});
-		$("#create-character-back").on(x, function(){
-			ng.lock(1);
-			ng.initGame();
-			var z = getById('scene-title-create-character');
-			TweenMax.to(z, .6, {
-				y: 20,
-				opacity: 0,
-				onComplete: function(){
-					TweenMax.set(z, {
-						display: 'none',
-						opacity: 1
-					});
-					TweenMax.to('#scene-title-select-character', .6, {
-						startAt: {
-							display: 'flex',
-							y: 20,
-							opacity: 0
-						},
-						y: 0,
-						opacity: 1,
-						onComplete: ng.unlock
-					});
-				}
-			});
-		});
-		$("#create-character-btn").on(x, function(){
-			//client-side validation
-			if (ng.locked) return;
-
-			ng.lock(1);
-			var f = create.form;
-			var err = '';
-			f.name = getCleanName(f.name);
-			if (!f.name){
-				err = 'Your character needs a name!';
-				$("#create-character-name").focus();
-			}
-			else if(f.name.length > 16){
-				err = "Your character name must be 16 characters or less!";
-			}
-			else if(f.left){
-				err = 'You must spend all of your ability points!';
-			}
-			if (err){
-				ng.msg(err);
-				ng.unlock();
-			}
-			else {
-				// final adds
-				f.shortJob = ng.toJobShort(f.job);
-				// send to server
-				$.post(app.url + 'create/create-character.php', {
-					form: f
-				}).done(function(r){
-					ng.msg(r.hero.name + ' has been created!');
-					$("#create-character-back").trigger(x);
-				}).fail(function(r){
-					ng.msg(r.responseText, 8);
-					ng.unlock();
+			create.set('job', job);
+		}
+	}
+	function selectGender() {
+		var gender = $(this).attr('id');
+		$(".select-gender").removeClass('active');
+		$(this).addClass('active');
+		create.set('gender', gender);
+	}
+	function onNameChange(e) {
+		if (_.includes(create.whitelist, e.key)) {
+			var val = $(this).val().trim();
+			create.form.name = val.replace(/[^A-z]/g, '');
+		}
+		else {
+			return false;
+		}
+	}
+	function subtractAttribute() {
+		var attr = $(this).data('id');
+		if (create.form.left < 10 &&
+			(create.form[attr] - create.base[attr] > 0) ){
+			getById('create-points-' + attr).innerHTML = --create.form[attr];
+			getById('create-points-remaining').innerHTML = ++create.form.left;
+		}
+	}
+	function addAttribute() {
+		var attr = $(this).data('id');
+		if (create.form.left){
+			getById('create-points-' + attr).innerHTML = ++create.form[attr];
+			getById('create-points-remaining').innerHTML = --create.form.left;
+		}
+	}
+	function goCreateToTitle() {
+		ng.lock(1);
+		ng.initGame();
+		var z = getById('scene-title-create-character');
+		TweenMax.to(z, .6, {
+			y: 20,
+			opacity: 0,
+			onComplete: function(){
+				TweenMax.set(z, {
+					display: 'none',
+					opacity: 1
+				});
+				TweenMax.to('#scene-title-select-character', .6, {
+					startAt: {
+						display: 'flex',
+						y: 20,
+						opacity: 0
+					},
+					y: 0,
+					opacity: 1,
+					onComplete: ng.unlock
 				});
 			}
 		});
-		$("#ch-card-list").on(x, '.select-player-card', function(){
-			var z = $(this);
-			create.selected = z.data('row');
-			create.name = z.data('name');
-		});
+	}
+	function selectCharacter() {
+		var z = $(this);
+		create.selected = z.data('row');
+		create.name = z.data('name');
+	}
+	function createCharacter() {
+		//client-side validation
+		if (ng.locked) return;
+
+		ng.lock(1);
+		var f = create.form;
+		var err = '';
+		f.name = getCleanName(f.name);
+		if (!f.name){
+			err = 'Your character needs a name!';
+			$("#create-character-name").focus();
+		}
+		else if(f.name.length > 16){
+			err = "Your character name must be 16 characters or less!";
+		}
+		else if(f.left){
+			err = 'You must spend all of your ability points!';
+		}
+		if (err){
+			ng.msg(err);
+			ng.unlock();
+		}
+		else {
+			// final adds
+			f.shortJob = ng.toJobShort(f.job);
+			var finalForm = _.cloneDeep(f);
+			// subtract base values so server can verify only 10 points were added
+			ng.attrs.forEach(key => {
+				finalForm[key] -= create.base[key];
+			});
+			// send to server
+			$.post(app.url + 'create/create-character.php', {
+				form: finalForm
+			}).done(function(r){
+				ng.msg(r.hero.name + ' has been created!');
+				$("#create-character-back").trigger('click');
+			}).fail(function(r){
+				ng.msg(r.responseText, 8);
+				ng.unlock();
+			});
+		}
 	}
 	function deleteCharacter() {
 		// send to server
@@ -248,17 +263,17 @@ var create;
 			getById('type-value').innerHTML = create.types[val];
 		}
 		// resists
-		ng.resists.forEach(function(v, i){
+		ng.resists.forEach(function(v){
 			getById(v + '-value').innerHTML = create.getResist(v);
 		});
 		// dungeon
-		ng.dungeon.forEach(function(v, i){
+		ng.dungeon.forEach(function(v){
 			getById(v + '-value').innerHTML = create.getDungeon(v);
 		});
 		// reset attr
 		if (key !== 'gender' && create.form.race){
-			var raceAttr = _.cloneDeep(create.getRaceAttrs(create.form.race)),
-				jobAttr = _.cloneDeep(create.getJobAttrs(create.form.job));
+			var raceAttr = _.cloneDeep(create.getRaceAttrs(create.form.race));
+			var jobAttr = _.cloneDeep(create.getJobAttrs(create.form.job));
 			jobAttr.forEach(function(v, i){
 				raceAttr[i] += v;
 			});

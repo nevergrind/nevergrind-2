@@ -25,12 +25,19 @@
 		$('body').on('dragstart', 'img', dragStart)
 			.on('click', '#toast-accept', toast.accept)
 			.on('click', '#toast-decline', toast.decline)
+			.on('focus', 'input', chatInputFocus)
+			.on('blur', 'input', chatInputBlur);
+	}
+	function chatInputFocus() {
+		chat.hasFocus = 1;
+	}
+	function chatInputBlur() {
+		chat.hasFocus = 0;
 	}
 	function readyFire() {
 		ng.initGame()
-		var x = 'click'
-		ng.events(x)
-		create.events(x)
+		ng.events()
+		create.events()
 		audio.events()
 		window.onbeforeunload = chat.camp
 	}
@@ -176,7 +183,7 @@
 					// town only actions
 					if (!chat.hasFocus) {
 						// no aside && no chat focus
-						!town.aside.selected && chat.dom.chatInput.focus();
+						!town.asideSelected && chat.dom.chatInput.focus();
 						if (guild.hasFocus) {
 							if (code === 13) {
 								guild.create();

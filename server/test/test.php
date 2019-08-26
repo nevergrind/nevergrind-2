@@ -49,11 +49,14 @@ echo '$_SERVER[\'DOCUMENT_ROOT\']' . $_SERVER['DOCUMENT_ROOT'] . '<br>';
 echo 'time ' . microtime(true) * 1000 . '<br>';
 
 require '../db.php';
-error_log('starting test.php');
+
 if ($result = mysqli_query($db, 'SELECT row FROM `accounts`')) {
 	$count = mysqli_num_rows($result);
 	echo 'Total accounts in the account table: ' . $count . '<br>';
 }
+$name = 'BradQuest';
+require '../guild/filter-name.php';
+echo '<pre>upper ' . ucfirst($name) . '</pre>';
 
 $loops = 100000;
 $val = 5;

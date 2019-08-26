@@ -100,14 +100,9 @@ var mission;
 		asideHtml,
 		asideFooter,
 		questHtml,
-		show,
-		updateTitle,
-		loadQuests,
-		toggleZone,
 		findIndexById,
-		clickQuest,
 		embark,
-		initQuest,
+		resetLocalQuestData,
 		setQuest,
 		abandon,
 		abort,
@@ -120,53 +115,39 @@ var mission;
 		});
 	}
 	function getDiffClass(minQuestLvl) {
-		var resp = 'mission-grey';
+		var resp = 'con-grey';
 		if (minQuestLvl >= my.level + 3) {
-			resp = 'mission-red';
+			resp = 'con-red';
 		}
 		else if (minQuestLvl > my.level) {
-			resp = 'mission-yellow';
+			resp = 'con-yellow';
 		}
 		else if (minQuestLvl === my.level) {
-			resp = 'mission-white';
+			resp = 'con-white';
 		}
 		else if (minQuestLvl >= ~~(my.level * .88) ) {
-			resp = 'mission-high-blue';
+			resp = 'con-high-blue';
 		}
 		else if (minQuestLvl >= ~~(my.level * .77) ) {
-			resp = 'mission-low-blue';
+			resp = 'con-low-blue';
 		}
 		else if (minQuestLvl >= ~~(my.level * .66) ) {
-			resp = 'mission-green';
+			resp = 'con-green';
 		}
 		return resp;
 	}
 	function init() {
-		ng.lock(1);
-		$.get(app.url + 'mission/load-mission-data.php').done(function(data) {
-			console.info('load-mission-data', data.mission);
-			mission.loaded = 1;
-			mission.data = data.mission;
-			mission.show();
-			mission.openFirstTwoZones();
-			ng.unlock();
-		}).fail(function(data){
-			chat.log(data.responseText, 'chat-alert');
-			ng.unlock();
-		});
+
 		// delegation
 		if (!mission.delegated) {
 			mission.delegated = 1;
 			$("#scene-town").on('click', '.mission-zone', function() {
-				console.info(".mission-zone CLICK");
-				mission.toggleZone($(this));
+				toggleZone($(this).data('id') * 1);
 			}).on('click', '.mission-quest-item', function() {
-				mission.clickQuest($(this));
-			}).on('click', '#mission-embark', function(){
-				mission.embark();
-			}).on('click', '#mission-abandon', function() {
-				mission.abandon();
-			});
+				clickQuest($(this).data('id') * 1);
+			})
+				.on('click', '#mission-embark', mission.embark)
+				.on('click', '#mission-abandon', mission.abandon);
 		}
 	}
 	function showEmbark() {
@@ -202,28 +183,24 @@ var mission;
 		return s;
 	}
 	function asideHtml() {
-		var s = '';
+		var s = ''
 		mission.zones.forEach(function(v) {
 			if (my.level >= v.level) {
 				s +=
-				'<div class="mission-zone" '+
-				'data-id="'+ v.id +'">'+
-					'<div class="fa-stack fa fa-mission-stack">'+
-						'<i class="fa fa-square fa-stack-1x mission-plus-bg text-shadow"></i>'+
-						'<i class="fa fa-plus fa-stack-1x mission-plus text-shadow"></i>'+
-					'</div>' +
+				'<div class="mission-zone" data-id="'+ v.id +'">'+
+					'<i class="mission-tree-btn far fa-plus-square mission-plus text-shadow"></i>'+
 					'<div>' + v.name + '</div>' +
 				'</div>' +
 				'<div id="mission-zone-'+ v.id +'" class="mission-quest-list">'+
 					ng.loadMsg +
 				'</div>'
 			}
-		});
-		return s;
+		})
+		return s
 	}
 	function asideFooter() {
 		var s = '';
-		if (party.party.presence[0].isLeader) {
+		if (party.presence[0].isLeader) {
 			s +=
 			'<div id="mission-footer" class="aside-frame text-shadow">' +
 				'<div id="mission-abandon" class="ng-btn ng-btn-alert">Abandon Mission</div>' +
@@ -232,7 +209,6 @@ var mission;
 		return s;
 	}
 	function questHtml(data) {
-		console.info('load-zone-missions', data);
 		var str = '';
 		data.quests !== undefined &&
 		data.quests.forEach(function(v){
@@ -277,29 +253,29 @@ var mission;
 			ng.unlock();
 		});
 	}
-	function toggleZone(that) {
-		 console.info("toggleZone: ", that.data('id'));
-		var index = mission.findIndexById(that.data('id') * 1),
-			id = mission.zones[index].id,
-			o = mission.zones[index];
+	function toggleZone(zoneId) {
+		var index = mission.findIndexById(zoneId);
+		var id = mission.zones[index].id;
+		var o = mission.zones[index];
+		var minusClasses = 'fa-minus-square mission-minus'
+		var plusClasses = 'fa-plus-square mission-plus'
 		console.info('JSON ', JSON.parse(JSON.stringify(o)));
 		console.info(index, "isOpen: ", o.isOpen);
+
 		if (o.isOpen) {
 			// close menu
 			var e = that.find('.mission-minus');
-			console.info('CLOSE MENU: ', e);
-			e.removeClass('fa-minus mission-minus').addClass('fa-plus mission-plus');
+			e.removeClass(minusClasses).addClass(plusClasses);
 			$("#mission-zone-" + id).css('display', 'none');
 			o.isOpen = 0;
 		}
 		else {
 			// open menu
 			var e = that.find('.mission-plus');
-			console.info('OPEN MENU: ', e);
-			e.removeClass('fa-plus mission-plus').addClass('fa-minus mission-minus');
+			e.removeClass(plusClasses).addClass(minusClasses);
 			$("#mission-zone-" + id).css('display', 'block');
 			o.isOpen = 1;
-			mission.loadQuests(id);
+			loadQuests(id);
 		}
 	}
 	function findIndexById(id) {
@@ -311,9 +287,8 @@ var mission;
 		});
 		return resp;
 	}
-	function clickQuest(that) {
-		var id = that.data('id') * 1;
-		if (id && party.party.presence[0].isLeader) {
+	function clickQuest(id) {
+		if (id && party.presence[0].isLeader) {
 			my.selectedQuest = id;
 			console.info("QUEST SELECTED: ", id);
 			mission.showEmbark();
@@ -324,7 +299,7 @@ var mission;
 		}
 	}
 	function embark() {
-		if (party.party.presence[0].isLeader) {
+		if (party.presence[0].isLeader) {
 			ng.lock(1);
 			$.post(app.url + 'mission/embark-quest.php', {
 				quest: mission.quests[my.selectedQuest]
@@ -360,7 +335,7 @@ var mission;
 		}
 		$(".close-aside").trigger('click');
 	}
-	function initQuest() {
+	function resetLocalQuestData() {
 		my.selectedQuest = '';
 		my.quest = {};
 		updateAll();
@@ -403,9 +378,9 @@ var mission;
 
 			// init client and transition back to town
 			//game.heartbeatEnabled = false;
-			mission.initQuest();
+			mission.resetLocalQuestData();
 			// rejoin main chat
-			chat.joinChannel('town', 1);
+			chat.joinChannel('town', 1)
 			TweenMax.to('#scene-dungeon', 2, {
 				delay: 1,
 				opacity: 0

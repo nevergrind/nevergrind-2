@@ -55,8 +55,8 @@ var friend;
 			chat.log(str)
 		}
 		else {
-			chat.log("<div>You don't have any friends!</div>");
-			chat.log("<div class='chat-emote'>Use /friend add [name] to add a new friend.</div>");
+			chat.log("<div>You don't have any friends!</div>", 'chat-warning');
+			chat.log("<div class='chat-emote'>Use /friend add [name] to add a new friend.</div>", 'chat-warning');
 		}
 	}
 	function listReceived(data) {

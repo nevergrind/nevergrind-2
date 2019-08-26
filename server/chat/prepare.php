@@ -28,8 +28,7 @@
 			$postMsg = $_SESSION['name'] . ' ' . $preMsg;
 		}
 		else if (
-			$_POST['class'] === 'chat-broadcast' &&
-			($_SESSION['account'] === 'maelfyn' || $_SERVER['SERVER_NAME'] === 'localhost') ){
+			$_POST['class'] === 'chat-broadcast' && $_SERVER['SERVER_NAME'] === 'localhost'){
 			$postMsg = "SYSTEM BROADCAST: " . $preMsg;
 			$category = 'allbroadcast';
 			$route = 'all->broadcast';

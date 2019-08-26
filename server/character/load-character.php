@@ -3,19 +3,19 @@
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 	// get my character data
-	$query = 'select row, name, lastName, gender, level, race, job, hp, maxHp, mp, maxMp,
+	$query = 'select row, name, gender, level, race, job, 
 		exp, gold,
 	 	str, sta, agi, dex, wis, intel, cha,
 	 	offense, defense, dualWield, doubleAttack, 
 	 	oneHandSlash, twoHandSlash, oneHandBlunt, twoHandBlunt, piercing, handToHand,
 	 	dodge, parry, riposte,
 	 	alteration, conjuration, evocation
-	 	from `characters` where account=? and row=? limit 1';
+	 	from `characters` where row=? limit 1';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('ss', $_SESSION['account'], $_POST['row']);
+	$stmt->bind_param('s', $_POST['row']);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($row, $name, $lastName, $gender, $level, $race, $job, $hp, $maxHp, $mp, $maxMp,
+	$stmt->bind_result($row, $name, $gender, $level, $race, $job,
 		$exp, $gold,
 		$str, $sta, $agi, $dex, $wis, $intel, $cha,
 		$offense, $defense, $dualWield, $doubleAttack,
@@ -30,15 +30,10 @@
 		$r['characterData'] = [
 			'row' => $row,
 			'name' => $name,
-			'lastName' => $lastName,
 			'gender' => $gender,
 			'level' => $level,
 			'race' => $race,
 			'job' => $job,
-			'hp' => $hp,
-			'maxHp' => $maxHp,
-			'mp' => $mp,
-			'maxMp' => $maxMp,
 			'exp' => $exp,
 			'gold' => $gold,
 			'str' => $str,
@@ -69,13 +64,7 @@
 	}
 
 	if ($i) {
-		if (isset($_SESSION) &&
-			isset($_SESSION['hp']) &&
-			$_SESSION['hp'] > 0) {
-			// pre-cache hp/mp values if they exist
-			$cacheHp = $_SESSION['hp'];
-			$cacheMp = $_SESSION['mp'];
-		}
+		// set hp
 		require '../session/init-ng.php';
 		// set session values for my character
 		$_SESSION['row'] = $r['characterData']['row'];

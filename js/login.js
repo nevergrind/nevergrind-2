@@ -163,7 +163,7 @@ var login;
 		}).done(function(data){
 			console.info('data', data.success, data.account);
 			if (data.success){
-				localStorage.setItem('account', account);
+				localStorage.setItem('account', account)
 				location.reload();
 			}
 			else {

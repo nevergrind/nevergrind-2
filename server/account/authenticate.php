@@ -1,19 +1,28 @@
 <?php
-$account = $_POST['account'];
 
 // Get account name to set it
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-$query = "select account from `accounts` where account=? limit 1";
+
+$account = $_POST['account'];
+$row = 0;
+$query = "select row, account 
+	from `accounts` 
+	where account=? limit 1";
 if ($stmt = $db->prepare($query)) {
 	$stmt->bind_param('s', $account);
 	$stmt->execute();
 	$stmt->store_result();
+	$stmt->bind_result($dbRow, $dbAccount);
 	$count = $stmt->num_rows;
 	if (!$count) {
 		// nothing found
 		header('HTTP/1.1 500 Login Failure');
 		exit;
+	}
+	while($stmt->fetch()){
+		$row = $dbRow;
+		$account = $dbAccount;
 	}
 }
 else {
@@ -21,7 +30,7 @@ else {
 	exit;
 }
 // login success
-$_SESSION['account'] = $account;
+$_SESSION['id'] = $row;
 $r['success'] = true;
-$r['account'] = $_SESSION['account'];
+$r['account'] = $account;
 echo json_encode($r);

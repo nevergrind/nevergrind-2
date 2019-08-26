@@ -350,33 +350,23 @@ var ng;
 	}
 	function initGame() {
 		$.get(app.url + 'init-game.php').done(function(r){
-			console.info('init-game', r);
-			app.initialized = 1;
-			if (r.account) {
-				app.account = my.account = r.account; // for global reference
-				getById('logout').textContent = 'Logout ' + r.account;
-				ng.displayAllCharacters(r.characterData);
-				ng.checkPlayerData();
-				$("#login-modal").remove();
+			console.info('init-game', r)
+			app.initialized = 1
+			if (r.id) {
+				my.id = r.id
+				getById('logout').textContent = 'Logout ' + localStorage.getItem('account')
+				ng.displayAllCharacters(r.characterData)
+				ng.checkPlayerData()
+				$("#login-modal").remove()
 			}
 			else {
-				login.notLoggedIn();
+				login.notLoggedIn()
 			}
-
-			var h = location.hash;
-			if (!app.isApp) {
-				// initial hashtag routing
-				if (h === '#town' ||
-					h === '#battle' ||
-					h === '#dungeon') {
-					town.go();
-				}
-			}
-			keepAlive();
+			keepAlive()
 		});
 	}
 	function displayAllCharacters(r) {
-		var s = '';
+		var s = ''
 		r.forEach(function(d){
 			// #ch-card-list
 			s +=

@@ -300,7 +300,7 @@ var party;
 				party.listen(party.getUniquePartyChannel(true));
 			}
 			mission.abort();
-			mission.initQuest();
+			mission.resetLocalQuestData();
 		}
 	}
 	function disbandReceived(data) {
@@ -384,7 +384,7 @@ var party;
 				quest: data.quest
 			}).done(function (data) {
 				console.info('missionUpdate ', data);
-				town.aside.selected === 'town-mission' && mission.showEmbark();
+				town.asideSelected === 'town-mission' && mission.showEmbark();
 				mission.updateTitle();
 				chat.log("Now departing for " + my.quest.zone +"...", "chat-warning");
 				TweenMax.to('#scene-town', 3, {

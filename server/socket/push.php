@@ -6,14 +6,15 @@ echo microtime(true) . ' Starting react/zmq loop...';
 
 $loop   = \React\EventLoop\Factory::create();
 $pusher = new \Thruway\Peer\Client('realm1', $loop);
+$entryData = [];
 
-$pusher->on('open', function ($session) use ($loop) {
+$pusher->on('open', function ($session) use ($loop, $entryData) {
 	echo 'Socket opened...';
     $context = new React\ZMQ\Context($loop);
     $pull    = $context->getSocket(ZMQ::SOCKET_PULL);
     $pull->bind('tcp://0.0.0.0:5555');
 
-    $pull->on('message', function ($entry) use ($session) {
+    $pull->on('message', function ($entry) use ($session, $entryData) {
         $entryData = json_decode($entry, true);
         if (isset($entryData['category'])) {
             $session->publish($entryData['category'], [$entryData]);
