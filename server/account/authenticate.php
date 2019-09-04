@@ -29,6 +29,10 @@ else {
 	header('HTTP/1.1 500 Login Failure');
 	exit;
 }
+// update login time
+$stmt = $db->prepare('update `accounts` set last_login=now() where row=?');
+$stmt->bind_param('i', $row);
+$stmt->execute();
 // login success
 $_SESSION['id'] = $row;
 $r['success'] = true;

@@ -47,8 +47,8 @@ var router;
 		else if (r === 'party->notifyMissionStatus') {
 			party.notifyMissionStatus(data);
 		}
-		else if (r === 'party->missionUpdate') {
-			party.missionUpdate(data);
+		else if (r === 'party->embarkReceived') {
+			mission.embarkReceived(data);
 		}
 		else if (r === 'party->linkdead') {
 			bar.heartbeatLinkdead(data);

@@ -1,7 +1,7 @@
 var tooltip;
 (function() {
 	tooltip = {
-		timer: 0,
+		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
 		hide,

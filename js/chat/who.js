@@ -27,9 +27,9 @@ var who;
 		who.listThrottled = true;
 		who.listId++;
 		who.results = 0;
-		setTimeout(() => {
+		delayedCall(who.listThrottleExpire, () => {
 			who.listThrottled = false;
-		}, who.listThrottleExpire);
+		});
 
 		// request response from friends
 		socket.publish('allbroadcast', {
@@ -132,9 +132,9 @@ var who;
 		who.listThrottled = true;
 		who.listId++;
 		who.results = 0;
-		setTimeout(() => {
+		delayedCall(who.listThrottleExpire, () => {
 			who.listThrottled = false;
-		}, who.listThrottleExpire);
+		});
 
 		socket.publish('allbroadcast', Object.assign({
 			name: my.name,

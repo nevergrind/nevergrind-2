@@ -11,3 +11,5 @@ var floor = Math.floor;
 var log = console.log;
 var info = console.info;
 var warn = console.warn;
+
+var delayedCall = TweenMax.delayedCall.bind(TweenMax);

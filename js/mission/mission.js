@@ -4,115 +4,29 @@ var mission;
 		data: {},
 		loaded: 0,
 		delegated: 0,
-		zones: [
-			{
-				name: 'Ashenflow Peak',
-				level: 35,
-				id: 14,
-				isOpen: 0
-			},
-			{
-				name: 'Galeblast Fortress',
-				level: 35,
-				id: 13,
-				isOpen: 0
-			},
-			{
-				name: 'Anuran Ruins',
-				level: 32,
-				id: 12,
-				isOpen: 0
-			},
-			{
-				name: 'Fahlnir Citadel',
-				level: 28,
-				id: 11,
-				isOpen: 0
-			},
-			{
-				name: 'Temple of Prenssor',
-				level: 24,
-				id: 10,
-				isOpen: 0
-			},
-			{
-				name: "Arcturin's Crypt",
-				level: 20,
-				id: 9,
-				isOpen: 0
-			},
-			{
-				name: 'Sylong Mausoleum',
-				level: 16,
-				id: 8,
-				isOpen: 0
-			},
-			{
-				name: 'Kordata Cove',
-				level: 12,
-				id: 7,
-				isOpen: 0
-			},
-			{
-				name: "Babel's Bastille",
-				level: 8,
-				id: 6,
-				isOpen: 0
-			},
-			{
-				name: 'Lanfeld Refuge',
-				level: 5,
-				id: 5,
-				isOpen: 0
-			},
-			{
-				name: 'Riven Grotto',
-				level: 5,
-				id: 4,
-				isOpen: 0
-			},
-			{
-				name: 'Greenthorn Cavern',
-				level: 5,
-				id: 3,
-				isOpen: 0
-			},
-			{
-				name: 'Tendolin Hollow',
-				level: 1,
-				id: 2,
-				isOpen: 0
-			},
-			{
-				name: 'Salubrin Den',
-				level: 1,
-				id: 1,
-				isOpen: 0
-			}
-		],
 		quests: [],
-		resetMissionLists,
-		getDiffClass,
+		setMissionMenusAllOpen,
 		init,
-		showEmbark,
-		updateTitle,
 		asideHtmlHead,
 		asideHtml,
 		asideFooter,
-		questHtml,
-		findIndexById,
 		embark,
 		resetLocalQuestData,
-		setQuest,
 		abandon,
 		abort,
-		openFirstTwoZones,
-	}
+		embarkReceived,
+	};
+	var minusClasses = 'fa-minus-square mission-minus'
+	var plusClasses = 'fa-plus-square mission-plus'
+	var reversedZones = []
 	///////////////////////////////////////////////
-	function resetMissionLists() {
-		mission.zones.forEach(function(v) {
+	function setMissionMenusAllOpen() {
+		zones.forEach(function(v) {
 			v.isOpen = 0;
 		});
+	}
+	function getOpenMenuClass(level) {
+		return (level <= my.level && level > ~~(my.level * .66)) ? 'mission-open-menu' : ''
 	}
 	function getDiffClass(minQuestLvl) {
 		var resp = 'con-grey';
@@ -141,10 +55,10 @@ var mission;
 		// delegation
 		if (!mission.delegated) {
 			mission.delegated = 1;
-			$("#scene-town").on('click', '.mission-zone', function() {
-				toggleZone($(this).data('id') * 1);
+			$("#scene-town").on('click', '.mission-zone-headers', function() {
+				toggleZone($(this));
 			}).on('click', '.mission-quest-item', function() {
-				clickQuest($(this).data('id') * 1);
+				clickQuest($(this));
 			})
 				.on('click', '#mission-embark', mission.embark)
 				.on('click', '#mission-abandon', mission.abandon);
@@ -155,7 +69,7 @@ var mission;
 		$("#mission-embark").css('display', 'block');
 	}
 	function updateTitle() {
-		$("#mission-title").html(mission.quests[my.selectedQuest].title);
+		$("#mission-title").html(my.selectedMissionTitle);
 	}
 	function asideHtmlHead() {
 		var headMsg = 'Mission Counter',
@@ -184,19 +98,40 @@ var mission;
 	}
 	function asideHtml() {
 		var s = ''
-		mission.zones.forEach(function(v) {
-			if (my.level >= v.level) {
+		if (!reversedZones.length) {
+			reversedZones = zones.reverse()
+		}
+		reversedZones.forEach(function(zone) {
+			if (my.level + 4 >= zone.level) {
 				s +=
-				'<div class="mission-zone" data-id="'+ v.id +'">'+
+				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ getDiffClass(zone.level) +'" data-id="'+ zone.id +'">'+
 					'<i class="mission-tree-btn far fa-plus-square mission-plus text-shadow"></i>'+
-					'<div>' + v.name + '</div>' +
+					'<div>' + zone.name + '</div>' +
 				'</div>' +
-				'<div id="mission-zone-'+ v.id +'" class="mission-quest-list">'+
-					ng.loadMsg +
-				'</div>'
+				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">';
+					s += getMissionRowHtml(zone);
+				s += '</div>';
+				console.info('zone', zone);
 			}
 		})
 		return s
+	}
+	function getMissionRowHtml(data) {
+		var html = '';
+		var zoneId = data.id;
+		data.missions.forEach(function(mission){
+			html +=
+				'<div class="mission-quest-item ellipsis ' + getDiffClass(mission.level) +'" '+
+					'data-id="'+ zoneId +'" ' +
+					'data-title="'+ mission.title +'">' +
+					mission.title +
+				'</div>';
+		});
+
+		if (!html) {
+			html = '<div class="mission-quest-item">No missions found.</div>';
+		}
+		return html;
 	}
 	function asideFooter() {
 		var s = '';
@@ -208,142 +143,52 @@ var mission;
 		}
 		return s;
 	}
-	function questHtml(data) {
-		var str = '';
-		data.quests !== undefined &&
-		data.quests.forEach(function(v){
-			str +=
-				'<div class="mission-quest-item ellipsis '+ mission.getDiffClass(v.level) +'" '+
-					'data-id="'+ v.row +'" ' +
-					'data-zone="'+ v.zone +'" ' +
-					'data-level="'+ v.level +'">' +
-					v.title +
-				'</div>';
-		});
-		if (!str) str = '<div class="mission-quest-item">No missions found.</div>';
-		$("#mission-zone-" + data.id).html(str);
-	}
-	function show() {
-		$('#mission-counter').html(mission.asideHtml());
-	}
-	function updateTitle() {
-		$("#mission-title").html(my.quest.title);
-	}
-	function updateAll() {
-		$("#aside-menu").html(town.aside.menu.townMission());
-	}
-	function loadQuests(id) {
-		// get quests from server side
-		// start with salubrin den
-		// store in session... return session if it's set for that zone
-		console.info("LOADING QUESTS: ", id);
-		ng.lock(1);
-		$.post(app.url + 'mission/load-zone-missions.php', {
-			id: id
-		}).done(function(data) {
-			data.id = id;
-			ng.unlock();
-			console.info('load-zone-missions', data);
-			data.quests.forEach(function(v){
-				mission.quests[v.row] = v;
-			});
-			mission.questHtml(data);
-		}).fail(function(data){
-			ng.msg(data.responseText);
-			ng.unlock();
-		});
-	}
-	function toggleZone(zoneId) {
-		var index = mission.findIndexById(zoneId);
-		var id = mission.zones[index].id;
-		var o = mission.zones[index];
-		var minusClasses = 'fa-minus-square mission-minus'
-		var plusClasses = 'fa-plus-square mission-plus'
-		console.info('JSON ', JSON.parse(JSON.stringify(o)));
-		console.info(index, "isOpen: ", o.isOpen);
-
-		if (o.isOpen) {
-			// close menu
-			var e = that.find('.mission-minus');
-			e.removeClass(minusClasses).addClass(plusClasses);
-			$("#mission-zone-" + id).css('display', 'none');
-			o.isOpen = 0;
-		}
-		else {
-			// open menu
-			var e = that.find('.mission-plus');
-			e.removeClass(plusClasses).addClass(minusClasses);
-			$("#mission-zone-" + id).css('display', 'block');
-			o.isOpen = 1;
-			loadQuests(id);
-		}
-	}
-	function findIndexById(id) {
-		var resp = 0;
-		mission.zones.forEach(function(v, i) {
-			if (id === v.id) {
-				resp = i;
-			}
-		});
-		return resp;
-	}
-	function clickQuest(id) {
+	function clickQuest(that) {
+		var id = that.data('id') * 1;
+		var title = that.data('title');
 		if (id && party.presence[0].isLeader) {
-			my.selectedQuest = id;
-			console.info("QUEST SELECTED: ", id);
-			mission.showEmbark();
-			mission.updateTitle();
+			console.info("QUEST SELECTED: ", id, title);
+			my.selectedZone = id;
+			my.selectedMissionTitle = title;
+			showEmbark();
+			updateTitle();
 		}
 		else {
 			// TODO: non-party member needs to see something... EMBARK?
 		}
 	}
-	function embark() {
-		if (party.presence[0].isLeader) {
-			ng.lock(1);
-			$.post(app.url + 'mission/embark-quest.php', {
-				quest: mission.quests[my.selectedQuest]
-			}).done(function(data) {
-				console.info('embark isLeader! ', data);
-				mission.setQuest(mission.quests[my.selectedQuest]);
-				my.zoneMobs = data.zoneMobs;
-				TweenMax.to('#scene-town', 3, {
-					startAt: { opacity: 1 },
-					opacity: 0,
-					ease: Power4.easeOut
-				});
-				setTimeout(function() {
-					dungeon.go();
-				}, game.questDelay);
-			}).fail(function(data){
-				ng.msg(data.responseText);
-			}).always(function() {
-				ng.unlock();
-			});
+	function updateAll() {
+		$("#aside-menu").html(town.aside.menu.townMission());
+	}
+
+	function toggleZone(that) {
+		var zoneId = that.data('id') * 1
+		var index = zones.findIndex(zone => zone.id === zoneId);
+		var zone = zones[index];
+
+		console.info('JSON ', _.cloneDeep(zone));
+		console.info(index, "isOpen: ", zone.isOpen, zone);
+
+		if (zone.isOpen) {
+			// close menu
+			var e = that.find('.mission-minus');
+			e.removeClass(minusClasses).addClass(plusClasses);
+			$("#mission-quest-list-wrap-" + zone.id).css('display', 'none');
+			zone.isOpen = 0;
 		}
 		else {
-			// joining
-			if (my.quest.level) {
-				dungeon.go();
-				/*$.get(app.url + 'mission/notify-party-embarked.php').done(function(data) {
-					console.info(data);
-				});*/
-			}
-			else {
-				chat.log("Quest data not found.", "chat-alert")
-			}
+			// open menu
+			var e = that.find('.mission-plus');
+			e.removeClass(plusClasses).addClass(minusClasses);
+			$("#mission-quest-list-wrap-" + zone.id).css('display', 'block');
+			zone.isOpen = 1;
 		}
-		$(".close-aside").trigger('click');
 	}
 	function resetLocalQuestData() {
-		my.selectedQuest = '';
+		my.selectedZone = 0;
+		my.selectedMissionTitle = '';
 		my.quest = {};
 		updateAll();
-	}
-	function setQuest(quest) {
-		console.info("SETTING QUEST", quest);
-		my.selectedQuest = quest.row;
-		my.quest = quest;
 	}
 	function abandon() {
 		// clicked flag
@@ -363,9 +208,9 @@ var mission;
 			}).fail(function (data) {
 				chat.log(data.responseText, 'chat-alert');
 			}).always(function () {
-				setTimeout(function() {
+				delcayedCall(game.questDelay, function() {
 					ng.unlock();
-				}, game.questDelay);
+				});
 			});
 		}
 	}
@@ -393,17 +238,56 @@ var mission;
 			});
 			// this must be in place to prevent heartbeat updates while going back to town
 			game.heartbeatEnabled = true;
-			setTimeout(function() {
-				ng.unlock();
-			}, 1000);
+			delayedCall(1, ng.unlock);
 		}
 	}
-	function openFirstTwoZones() {
-		for (var i=0; i<2; i++) {
-			var e = $(".mission-zone").eq(i).get(0);
-			if (e !== undefined) {
-				e.click();
+
+	function embark() {
+		if (party.presence[0].isLeader) {
+			var data = {
+				route: 'party->embarkReceived',
+				quest: getQuestData(my.selectedZone, my.selectedMissionTitle)
 			}
+			console.info('embark isLeader!', data)
+			socket.publish('party' + my.partyId, data)
+			$(".close-aside").trigger('click')
+		}
+	}
+
+	function embarkReceived(data) {
+		console.info("MISSION UPDATE! ", data)
+		setQuest(data.quest)
+		$(".close-aside").trigger('click')
+		chat.log('Now departing for ' + my.quest.zone + '...', 'chat-warning')
+		ng.lock(1)
+		TweenMax.to('#scene-town', 3, {
+			startAt: { opacity: 1 },
+			delay: 2,
+			opacity: 0,
+			ease: Power4.easeOut
+		});
+		ng.msg('Mission started: ' + my.quest.title)
+		delayedCall(game.questDelay, dungeon.go)
+	}
+
+	function setQuest(data) {
+		console.info("SETTING QUEST", data)
+		my.selectedZone = data.id
+		my.selectedMissionTitle = data.title
+		my.quest = data
+		my.zoneMobs = data.mobs
+	}
+
+	function getQuestData(id, title) {
+		var zone = _.find(zones, { id: id })
+		var mission = _.find(zone.missions, { title: title })
+		return {
+			id: zone.id,
+			title: mission.title,
+			zone: zone.name,
+			level: mission.level,
+			description: mission.description,
+			mobs: zone.mobs
 		}
 	}
 })();

@@ -66,9 +66,9 @@ var modal;
 		// confirm event actions
 		$('#modal-wrap').on('click', '#delete-character-confirm', create.deleteCharacter);
 		if (e.focus) {
-            setTimeout(function () {
+            delayedCall(.1, function () {
                 $("#modal-wrap input:first").focus();
-            }, 100);
+            });
         }
 	}
 	function hide() {

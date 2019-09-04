@@ -3,12 +3,12 @@ var game;
 (function() {
 	/** public */
 	game = {
-		heartbeatExpired: app.isApp ? 12000 : 12000,
+		heartbeatDifference: app.isApp ? 20000 : 20000,
 		session: {
-			timer: 0
+			timer: new delayedCall(0, '')
 		},
 		pingHistory: [],
-		questDelay: 3000,
+		questDelay: 3,
 		start: Date.now(),
 		heartbeatEnabled: true,
 		upsertRoom,
@@ -23,6 +23,7 @@ var game;
 		getPetName,
 		played,
 		getCachedMinutes,
+		initPlayedCache,
 	};
 	/** private */
 	var pingStart = 0;
@@ -33,20 +34,22 @@ var game;
 		'scene-battle'
 	];
 	var heartbeat = {
-		timer: 0,
+		timer: new delayedCall(0, ''),
 		sendTime: 0,
 		receiveTime: 0,
 		interval: 5000,
-		expired: 12000,
 		activate,
 	};
+	function initPlayedCache() {
+		game.storageId = 'played' + my.row;
+		if (localStorage.getItem(game.storageId) === null) {
+			localStorage.setItem(game.storageId, 0);
+		}
+	}
 	var played = {
-		timer: 0,
+		timer: new delayedCall(0, ''),
 		interval: 60000
 	};
-	if (localStorage.getItem('played') === null) {
-		localStorage.setItem('played', 0);
-	}
 	// pooled variables
 	var time;
 	var index;
@@ -74,7 +77,7 @@ var game;
 			time = Date.now();
 			// check disconnect
 			diff = time - heartbeat.receiveTime;
-			if (diff > game.heartbeatExpired) {
+			if (diff > game.heartbeatDifference) {
 				console.warn('something wrong with the socket... please investigate...');
 				ng.disconnect();
 			}
@@ -163,7 +166,7 @@ var game;
 	function auditRoom(time) {
 		chat.presence.forEach(function(player) {
 			diff = time - player.time;
-			if (diff > game.heartbeatExpired) {
+			if (diff > game.heartbeatDifference) {
 				removePlayer(player);
 			}
 		})
@@ -185,6 +188,7 @@ var game;
 				getById(v).innerHTML = '';
 			}
 		});
+		$('#town-bg').remove()
 	}
 	function getPetName() {
 		var s1 = [
@@ -248,11 +252,11 @@ var game;
 	}
 
 	function activate() {
-		setTimeout(function() {
+		delayedCall(heartbeat.interval, function() {
 			TweenMax.to('#bar-lag', .5, {
 				opacity: 1
 			});
-		}, heartbeat.interval);
+		});
 		heartbeat.sendTime = Date.now();
 		heartbeat.receiveTime = Date.now();
 		heartbeatTimeout();
@@ -277,14 +281,14 @@ var game;
 		}).done(function(r) {
 			chat.log("Character created: " + toCreateString(r.created), 'chat-warning')
 			chat.log("Total character playtime: " + toPlaytime(r.playtime), 'chat-whisper')
-			localStorage.setItem('played', 0)
+			localStorage.setItem(game.storageId, 0)
 		});
 	}
 	function updateCachedMinutes() {
-		localStorage.setItem('played', getCachedMinutes() + 1)
+		localStorage.setItem(game.storageId, getCachedMinutes() + 1)
 	}
 	function getCachedMinutes() {
-		return +localStorage.getItem('played');
+		return +localStorage.getItem(game.storageId);
 
 	}
 	function toCreateString(d) {

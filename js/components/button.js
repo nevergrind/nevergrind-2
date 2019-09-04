@@ -23,15 +23,14 @@ var button;
 				console.info('CLICKED SKILL: ', id, typeof id);
 				skills[my.job].route(id);
 			});
-			setTimeout(function() {
+			delayedCall(1, function() {
 				TweenMax.to(button.wrap, 1, {
 					startAt: {
 						display: 'flex'
 					},
 					bottom: 0
 				});
-
-			}, 1000);
+			});
 		}
 	}
 	function hide() {

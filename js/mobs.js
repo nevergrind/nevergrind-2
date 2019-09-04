@@ -1296,5 +1296,29 @@ mobs.images = {
 		clickDeadH: 100,
 		enableSecondary: true,
 		enableSpecial: true
-	}
+	},
+	/*'cyclops': {
+		imgW: 1000,
+		imgH: 1000,
+		imgCy: 135,
+		width: 600,
+		height: 600,
+		yFloor: 0, // back row is *2
+		yoyo: false,
+		cache: [],
+		speed: .045,
+		barAliveBottom: 450,
+		barDeathBottom: 270,
+		shadowBottom: 40,
+		shadowWidth: 400,
+		shadowHeight: 80,
+		clickAliveY: 50,
+		clickAliveW: 350,
+		clickAliveH: 350,
+		clickDeadY: 50,
+		clickDeadW: 350,
+		clickDeadH: 100,
+		enableSecondary: true,
+		enableSpecial: true
+	},*/
 };

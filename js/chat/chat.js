@@ -71,8 +71,6 @@ var chat;
 					'<div>You have entered Vandamor.</div>' +
 					'<div class="chat-warning">Type /help or /h for a list of chat commands.</div>' +
 				'</div>' +
-				'<div id="chat-prompt" class="no-select">'+
-				'</div>' +
 				'<div id="chat-input-wrap">' +
 					'<div id="chat-input-mode" class="chat-pink no-select">'+
 						'<span id="chat-mode-msg" class="ellipsis">To town:</span>' +
@@ -89,7 +87,7 @@ var chat;
 
 		if (mode === '/say' && !my.channel) {
 			log("You cannot communicate in town while in a dungeon", "chat-warning");
-			setTimeout(function() {
+			delayedCall(0, function() {
 				// wipe input after keyup to get rid of /say
 				$("#chat-input").val('');
 			});
@@ -179,7 +177,6 @@ var chat;
 			chat.dom.chatInput = getById('chat-input');
 			chat.dom.chatInputMode = getById('chat-input-mode');
 			chat.dom.chatModeMsg = getById('chat-mode-msg');
-			chat.dom.chatPrompt = getById('chat-prompt');
 		}
 		else {
 			// returned from dungeon
@@ -362,6 +359,9 @@ var chat;
 				});
 			}
 		}
+		else if (msgLower.startsWith('/')) {
+			chat.log('Command not found. Try /h or /help to check the list of valid commands.', 'chat-warning')
+		}
 		else {
 			if (msg) {
 				var o = chat.getMsgObject(msg);
@@ -491,7 +491,7 @@ var chat;
 				$.post(app.url + 'camp.php', {
 					minutes: game.getCachedMinutes()
 				}).done(() => {
-					localStorage.setItem('played', 0)
+					localStorage.setItem(game.storageId, 0)
 					location.reload();
 				});
 			}
@@ -592,10 +592,9 @@ var chat;
 			display: 'none'
 		});
 		TweenMax.set('#chat-wrap', {
-			bottom: '0',
-			top: 'auto',
-			height: '25vh',
-			width: '35vw'
+			bottom: '50px',
+			height: '24%',
+			width: '28%'
 		});
 		TweenMax.set('#chat-log-wrap', {
 			flexBasis: '100%'
@@ -606,10 +605,9 @@ var chat;
 				display: 'flex'
 			});
 			TweenMax.set('#chat-wrap', {
-				top: '0',
-				bottom: 'auto',
-				height: '50vh',
-				width: '50vw'
+				bottom: '50px',
+				height: '24%',
+				width: '35%'
 			});
 			TweenMax.set('#chat-log-wrap', {
 				flexBasis: '70%'

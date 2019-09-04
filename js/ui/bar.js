@@ -13,7 +13,7 @@ var bar;
 	};
 	var index;
 	var player; // temp bar data
-	var pingTimer;
+	var pingTimer = new delayedCall(0, '')
 	var pingColors = [
 		'',
 		'chat-warning',
@@ -84,8 +84,8 @@ var bar;
 		var s = '';
 		s +=
 		'<div id="bar-lag">' +
-			'<i class="fa fa-exchange"></i>' +
-			'<i class="fa fa-exchange"></i>' +
+			'<span>0ms</span>' +
+			'<span>0ms</span>' +
 		'</div>' +
 		'<div id="bar-main-menu">' +
 			'<i id="bar-camp" class="ra ra-campfire bar-icons"></i>' +
@@ -164,8 +164,8 @@ var bar;
 		}
 	}
 	function updatePing(ping) {
-		clearTimeout(pingTimer);
-		pingTimer = setTimeout(updatePingDone, 100, ping);
+		pingTimer.kill()
+		pingTimer = delayedCall(.1, updatePingDone, [ping])
 	}
 	function updatePingDone(ping) {
 		game.pingHistory.push(ping);

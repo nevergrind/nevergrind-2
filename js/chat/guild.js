@@ -2,7 +2,7 @@ var guild;
 (function() {
 	guild = {
 		hasFocus: 0,
-		throttleTime: 1000,
+		throttleTime: 1,
 		ranks: [
 			'Leader',
 			'Officer',
@@ -127,7 +127,7 @@ var guild;
 		}).done(function(data){
 			guild.setGuildData(data);
 			chat.log('You have joined the guild: '+ data.guild.name, 'chat-warning')
-			setTimeout(guild.listen, 500)
+			delayedCall(.5, guild.listen)
 		}).fail(function(data){
 			chat.log(data.responseText, 'chat-warning')
 		});
@@ -268,10 +268,10 @@ var guild;
 		var arr = ['Loading'];
 		for (var i=1; i<4; i++) {
 			(function(i) {
-				setTimeout(() => {
+				delayedCall(.25 * i, () => {
 					arr.push('.');
 					getById('load-msg').textContent = arr.join('');
-				}, 250 * i);
+				});
 			})(i);
 		}
 	}
@@ -280,22 +280,41 @@ var guild;
 		ng.lock(1);
 		$.get(app.url + 'guild/get-member-list.php').done(data => {
 			console.info(data);
-			setTimeout(() => {
+			delayedCall(throttleTime, () => {
 				guild.setGuildList(data);
-			}, throttleTime);
+			});
 			// nothing
 		}).fail(data => {
 			chat.log(data.responseText, 'chat-warning');
 		}).always(() => {
-			setTimeout(ng.unlock, throttleTime);
+			delayedCall(throttleTime, ng.unlock);
 		});
 	}
 	function setGuildList(data) {
 		var s = '';
 		guild.memberList = data.memberList;
+		s += '<tbody>';
+		/*
+		s +=
+		'<tr>' +
+			'<th></th>' +
+			'<th></th>' +
+			'<th>Name</th>' +
+			'<th>Race</th>' +
+			'<th>Class</th>' +
+		'</tr>';
+		*/
 		guild.memberList.forEach(function(v){
-			s += '<div class="flex">' + v.level +' '+ getGuildStar(v) + v.name +'&nbsp;'+ v.race +'&nbsp;<span class="chat-'+ v.job +'">'+ ng.toJobLong(v.job) +'</span></div>';
+			s +=
+			'<tr class="guild-member-row">' +
+				'<td>' + getGuildStar(v) + '</td>' +
+				'<td>' + v.level + '</td>' +
+				'<td style="width: 40%">' + v.name + '</td>' +
+				'<td style="width: 20%">' + v.race + '</td>' +
+				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
+			'</tr>';
 		});
+		s += '</tbody>';
 		$("#aside-guild-members").html(s);
 		getById('guild-member-count').textContent = guild.memberList.length;
 	}

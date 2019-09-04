@@ -3,8 +3,8 @@ var toast;
 	toast = {
 		data: {},
 		getHtml: getHtml,
-		timer: 0,
-		expired: 1500000000,
+		timer: new delayedCall(0, ''),
+		expired: 15,
 		add,
 		accept,
 		decline,
@@ -27,7 +27,7 @@ var toast;
 			el.innerHTML = getHtml(data)
 			dom.body.appendChild(el)
 			toast.data = data
-			toast.timer = setTimeout(removeToast, toast.expired)
+			toast.timer = delayedCall(toast.expired, removeToast)
 		}
 	}
 
@@ -44,7 +44,7 @@ var toast;
 			'</div>'
 	}
 	function removeToast() {
-		clearTimeout(toast.timer)
+		toast.timer.kill()
 		var el = getById('toast-wrap')
 		el !== null && dom.body.removeChild(el)
 		toast.data = {}

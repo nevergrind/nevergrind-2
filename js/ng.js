@@ -3,7 +3,7 @@ var ng;
 (function() {
 	ng = {
 		id: 0,
-		resizeTimer: 0,
+		resizeTimer: new delayedCall(0, ''),
 		loadMsg:
 			"<div id='load-msg' class='text-shadow text-center now-loading'>Loading</div>",
 		attrs: ['str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha'],
@@ -100,8 +100,6 @@ var ng;
 				soundVolume: 50
 			}
 		},
-		TM,
-		TDC,
 		msg,
 		init,
 		lock,
@@ -151,7 +149,7 @@ var ng;
 		var e = getById('scene-error');
 		e.style.display = 'block';
 		e.innerHTML = msg || 'You have been disconnected from the server';
-		setTimeout(location.reload, 12000);
+		delayedCall(12, location.reload);
 	}
 	function toJobShort(key) {
 		return ng.jobShort[key];
@@ -190,6 +188,7 @@ var ng;
 			}
 		});
 	}
+
 	function checkPlayerData() {
 		// ignore list
 		var ignore = localStorage.getItem('ignore');
@@ -200,21 +199,16 @@ var ng;
 			localStorage.setItem('ignore', JSON.stringify(foo));
 		}
 	}
-	function TDC() {
-		return new TweenMax.delayedCall(0, '');
-	}
-	function TM(o) {
-		o = o || {};
-		return new TimelineMax(o);
-	}
+
 	function keepAlive() {
-		clearTimeout(game.session.timer);
+		game.session.timer.kill()
 		$.get(app.url + 'session/keep-alive.php').always(function() {
 			if (ng.view === 'title') {
-				game.session.timer = setTimeout(keepAlive, 170000);
+				game.session.timer = delayedCall(170, keepAlive);
 			}
 		});
 	}
+
 	function msg(msg, d) {
 		dom.msg.innerHTML = msg;
 		if (d === undefined || d < 2){
@@ -224,20 +218,24 @@ var ng;
 			overwrite: 1,
 			startAt: {
 				visibility: 'visible',
-				alpha: 1
+				rotationX: 90,
 			},
 			onComplete: function(){
 				TweenMax.to(this.target, .2, {
-					alpha: 0,
+					rotationX: 90,
 					onComplete: function(){
 						TweenMax.set(this.target, {
 							visibility: 'hidden',
-						});
+						})
 					}
-				});
+				})
 			}
-		});
+		})
+		TweenMax.to(dom.msg, .5, {
+			rotationX: 0,
+		})
 	}
+
 	function split(id, msg, d) {
 		if (d === undefined){
 			d = .01;
@@ -353,7 +351,7 @@ var ng;
 			console.info('init-game', r)
 			app.initialized = 1
 			if (r.id) {
-				my.id = r.id
+				my.accountId = r.id
 				getById('logout').textContent = 'Logout ' + localStorage.getItem('account')
 				ng.displayAllCharacters(r.characterData)
 				ng.checkPlayerData()

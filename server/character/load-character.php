@@ -75,6 +75,11 @@
 		// get guild info
 		require '../guild/get-guild-data.php';
 
+		// update login time
+		$stmt = $db->prepare('update `characters` set last_login=now() where row=?');
+		$stmt->bind_param('i', $r['characterData']['row']);
+		$stmt->execute();
+
 		echo json_encode($r);
 	}
 	else {

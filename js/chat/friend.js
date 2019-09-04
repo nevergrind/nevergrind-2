@@ -34,9 +34,9 @@ var friend;
 		if (ng.friends.length){
 			friend.listThrottled = true;
 			friend.listId++;
-			setTimeout(() => {
+			delayedCall(friend.listThrottleExpire, () => {
 				friend.listThrottled = false;
-			}, friend.listThrottleExpire);
+			});
 
 			// request response from friends
 			ng.friends.forEach(function(name) {

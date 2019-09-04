@@ -32,6 +32,7 @@ var mob;
 		invert,
 		saturate,
 		sepia,
+		modifyMobStatsByClass,
 	};
 	var frame = {
 		idle: {
@@ -184,7 +185,7 @@ var mob;
 			onUpdateParams: [mobs[i].index],
 		});
 		if (skip) return;
-		mob.test && TweenMax.delayedCall(.25, mob.hit, [ mobs[i].index ]);
+		mob.test && delayedCall(.25, mob.hit, [ mobs[i].index ]);
 	}
 	function hit(i) {
 		if (mobs[i].animationActive) return;
@@ -208,7 +209,7 @@ var mob;
 	function hitComplete(m) {
 		mob.resetIdle(m.index);
 		if (mob.test){
-			TweenMax.delayedCall(.5, mob.attack, [ m.index, 'primary' ]);
+			delayedCall(.5, mob.attack, [ m.index, 'primary' ]);
 		}
 	}
 	function attack(i, force) {
@@ -237,13 +238,13 @@ var mob;
 		mob.resetIdle(m.index);
 		if (mob.test){
 			if (force === 'primary'){
-				TweenMax.delayedCall(.5, mob.attack, [ m.index, 'secondary' ]);
+				delayedCall(.5, mob.attack, [ m.index, 'secondary' ]);
 			}
 			else if (force === 'death'){
-				TweenMax.delayedCall(.5, mob.death, [ m.index ]);
+				delayedCall(.5, mob.death, [ m.index ]);
 			}
 			else {
-				TweenMax.delayedCall(.5, mob.special, [ m.index ]);
+				delayedCall(.5, mob.special, [ m.index ]);
 			}
 		}
 	}
@@ -274,7 +275,7 @@ var mob;
 	function specialComplete(m) {
 		mob.resetIdle(m.index);
 		if (mob.test) {
-			TweenMax.delayedCall(.5, mob.death, [ m.index ]);
+			delayedCall(.5, mob.death, [ m.index ]);
 		}
 	}
 	function death(i) {
@@ -328,7 +329,7 @@ var mob;
 			sizeMob(m.index);
 			mob.idle(m.index);
 		}
-		TweenMax.delayedCall(.1, deathCompleteFadeReset, [ m, e ]);
+		delayedCall(.1, deathCompleteFadeReset, [ m, e ]);
 	}
 	function deathCompleteFadeReset(m, e) {
 		m.deathState = 0;
@@ -439,6 +440,147 @@ var mob;
 			onUpdate: mob.filters.effect,
 			onUpdateParams: [e, filters, type]
 		});
+	}
+	function modifyMobStatsByClass(mob) {
+		if (mob.job === 'WAR') {
+			mob.hp = ~~(mob.hp * 1.2);
+			mob.mp = 0;
+			mob.atk = ~~(mob.atk * 1.1);
+			mob.skills = [
+				'Furious Slam',
+				'Pummel',
+			];
+		}
+		else if (mob.job === 'PAL') {
+			mob.hp = ~~(mob.hp * 1.1);
+			mob.mp = 20;
+			mob.atk = ~~(mob.atk * 1.1);
+			mob.skills = [
+				'Ardent Bash',
+				'Holy Light',
+				'Imbued Force',
+				'Divine Barrier',
+			];
+		}
+		else if (mob.job === 'SHD') {
+			mob.hp = ~~(mob.hp * 1.2);
+			mob.mp = 20;
+			mob.atk = ~~(mob.atk * 1.1);
+			mob.skills = [
+				'Bash',
+				'Engulfing Darkness',
+				'Fear',
+				'Venom Bolt',
+			];
+		}
+		else if (mob.job === 'MNK') {
+			mob.mp = 0;
+			mob.atk = ~~(mob.atk * 1.15);
+			mob.skills = [
+				'Shadow Kick',
+				'Dragon Punch',
+			];
+		}
+		else if (mob.job === 'ROG') {
+			mob.mp = 0;
+			mob.atk = ~~(mob.atk * 1.15);
+			mob.skills = [
+				'Backstab',
+				'Widow Strike'
+			];
+		}
+		else if (mob.job === 'RNG') {
+			mob.mp = 20;
+			mob.atk = ~~(mob.atk * 1.15);
+			mob.skills = [
+				'Light Healing',
+				'Faerie Flame',
+				'Ignite',
+				'Charged Bolts',
+			];
+		}
+		else if (mob.job === 'BRD') {
+			mob.mp = 0;
+			mob.atk = ~~(mob.atk * 1.05);
+			// cannot dispel bard songs
+			mob.skills = [
+				'Psalm of Flames', // damage shield, FR boost
+				'Psalm of Frost', // damage shield, CR boost
+				'Elemental Rhythms', // LR, FR, CR
+				'Guardian Rhythms', // BR, PR, AR
+				'Chant of Battle', // damage shield, FR boost
+				'Hymn of Shielding', // % physical damage reduction
+				'Hymn of Soothing', // regen hp, mp
+			];
+		}
+		else if (mob.job === 'DRU') {
+			mob.mp = 40;
+			mob.skills = [
+				'Regrowth',
+				'Lightning Blast',
+				'Starfire',
+				'Drifting Death',
+			];
+		}
+		else if (mob.job === 'CLR') {
+			mob.mp = 40;
+			mob.skills = [
+				'Holy Light',
+				'Smite',
+				'Imbued Force'
+			];
+		}
+		else if (mob.job === 'SHM') {
+			mob.mp = 40;
+			mob.atk = ~~(mob.atk * 1.05);
+			mob.skills = [
+				'Rekindle',
+				'Static Shock',
+				'Frost Shock',
+				'Envenom',
+				'Slumber',
+			];
+		}
+		else if (mob.job === 'NEC') {
+			mob.hp = ~~(mob.hp * .9);
+			mob.mp = 50;
+			mob.skills = [
+				'Blood Boil',
+				'Engulfing Darkness',
+				'Fear',
+				'Venom Bolt',
+			];
+		}
+		else if (mob.job === 'ENC') {
+			mob.hp = ~~(mob.hp * .9);
+			mob.mp = 50;
+			mob.skills = [
+				'Gravity Flux',
+				'Runic Shield',
+				'Alacrity',
+				'Fiery Enchant',
+				'Glacial Enchant',
+			];
+		}
+		else if (mob.job === 'MAG') {
+			mob.hp = ~~(mob.hp * .9);
+			mob.mp = 50;
+			mob.skills = [
+				'Lava Bolt',
+				'Frozen Orb',
+				'Psionic Storm',
+			];
+		}
+		else if (mob.job === 'WIZ') {
+			mob.hp = ~~(mob.hp * .9);
+			mob.mp = 50;
+			mob.skills = [
+				'Ice Bolt',
+				'Arcane Missiles',
+				'Lightning Strike',
+				'Glacial Spike',
+			];
+		}
 	}
 
 })();

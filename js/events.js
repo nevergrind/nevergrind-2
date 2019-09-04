@@ -19,7 +19,7 @@
 	//////////////////////////////////////////////
 	function ready() {
 		// console.info("Initializing title screen...");
-		setTimeout(readyFire, 100);
+		delayedCall(.1, readyFire);
 
 		// delegated events
 		$('body').on('dragstart', 'img', dragStart)
@@ -50,8 +50,8 @@
 	}
 	function windowResized() {
 		// debounce resize
-		clearTimeout(ng.resizeTimer)
-		ng.resizeTimer = setTimeout(windowResizedTimeout, 50)
+		ng.resizeTimer.kill()
+		ng.resizeTimer = delayedCall(.05, windowResizedTimeout)
 		if (context.isOpen) {
 			context.hide()
 		}
@@ -79,7 +79,7 @@
 	}
 	function resize() {
 		context.hide()
-		clearTimeout(context.resizeTimer)
+		context.timer.kill()
 		windowResized()
 	}
 	function keydown(e) {

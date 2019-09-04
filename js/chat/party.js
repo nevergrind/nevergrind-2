@@ -5,7 +5,6 @@ var party;
 		presence: [],
 		maxPlayers: 6,
 		getUniquePartyChannel,
-		missionUpdate,
 		upsertParty,
 		notifyMissionStatus,
 		listen,
@@ -106,7 +105,7 @@ var party;
 		// do not change to a for loop
 		party.presence.forEach(function(player) {
 			diff = time - player.time;
-			if (diff > game.heartbeatExpired) {
+			if (diff > game.heartbeatDifference) {
 				removePartyMember(player);
 			}
 		})
@@ -216,12 +215,12 @@ var party;
 		my.partyId = data.row;
 		party.listen(data.row);
 		chat.log("You have joined the party.", "chat-warning");
-		setTimeout(() => {
+		delayedCall(.1, () => {
 			socket.publish('party' + my.partyId, {
 				msg: my.name + ' has joined the party.',
 				route: 'party->notifyJoin',
 			});
-		}, 100)
+		})
 	}
 	/**
 	 * Notify party of new member and get bar state
@@ -374,30 +373,6 @@ var party;
 		var a = msg.replace(/ +/g, " ").split(" ");
 		return a[1] === undefined ?
 			'' : (_.capitalize(a[1].trim()));
-	}
-	function missionUpdate(data) {
-		console.info("MISSION UPDATE! ", data);
-		mission.setQuest(data.quest);
-		my.zoneMobs = data.zoneMobs;
-		if (party.presence.length > 1 && !party.presence[0].isLeader) {
-			$.post(app.url + 'mission/update-quest.php', {
-				quest: data.quest
-			}).done(function (data) {
-				console.info('missionUpdate ', data);
-				town.asideSelected === 'town-mission' && mission.showEmbark();
-				mission.updateTitle();
-				chat.log("Now departing for " + my.quest.zone +"...", "chat-warning");
-				TweenMax.to('#scene-town', 3, {
-					startAt: { opacity: 1 },
-					delay: 2,
-					opacity: 0,
-					ease: Power4.easeOut
-				});
-				setTimeout(function() {
-					mission.embark();
-				}, game.questDelay);
-			});
-		}
 	}
 	function notifyMissionStatus(data) {
 		ng.msg(data.msg, 6);

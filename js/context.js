@@ -6,7 +6,7 @@ var context;
 
 	context = {
 		id: '',
-		timer: 0,
+		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		player: '',
 		padding: 10,
@@ -41,12 +41,12 @@ var context;
 			context.isInside = 1;
 		}).on('mouseleave', function () {
 			context.isInside = 0;
-			clearTimeout(context.timer);
-			setTimeout(function () {
+			context.timer.kill()
+			delayedCall(1, function () {
 				if (!context.isInside) {
 				}
-			}, 1000);
-		});
+			})
+		})
 	}
 	function click(id) {
 		console.info("click!", id, context.player);

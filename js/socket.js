@@ -58,7 +58,7 @@ var socket;
 				socket.subscribe('game' + game.id, joinGameCallback);
 			}
 			else {
-				setTimeout(retry, 100);
+				delayedCall(.1, retry);
 			}
 		})();
 	}
@@ -96,7 +96,7 @@ var socket;
 					game.initSocket();
 				}
 				else {
-					setTimeout(retry, 200);
+					delayedCall(.2, retry);
 				}
 			})();
 			// notify friends I'm online

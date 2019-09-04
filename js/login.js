@@ -5,7 +5,7 @@ var login;
 	login = {
 		lock: 0,
 		account: localStorage.getItem('account'),
-		fadeTimer: new TweenMax.delayedCall(0, ''),
+		fadeTimer: new delayedCall(0, ''),
 		focusInput: false,
 		authenticationLock: false,
 		msg,
@@ -105,9 +105,7 @@ var login;
 			}
 			else {
 				login.msg("Account Created! Reloading!");
-				setTimeout(function(){
-					location.reload();
-				}, 100);
+				delayedCall(.1, location.reload);
 			}
 		}).fail(function() {
 			login.msg("There was a problem communicating with the server.");

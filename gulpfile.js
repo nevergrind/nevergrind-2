@@ -69,7 +69,7 @@ function minifyJs() {
 		'components/popover',
 		'components/tooltip',
 		'/mission/mission',
-		'/mission/mission-data',
+		'/mission/zones',
 		'ui/bar',
 		'battle',
 		'mobs',
