@@ -6,7 +6,6 @@ var party;
 		maxPlayers: 6,
 		getUniquePartyChannel,
 		upsertParty,
-		notifyMissionStatus,
 		listen,
 		invite,
 		inviteAccepted,
@@ -124,11 +123,15 @@ var party;
 			bar.dom[player.row] = undefined;
 			$('#bar-player-wrap-' + player.row).remove();
 			// elect new leader - only possible if timed out
+			console.info('checkLeader', checkLeader)
 			if (checkLeader) {
+				console.info('electLeader', player.isLeader, party.presence.length)
+				console.info('party', _.cloneDeep(party.presence))
 				if (player.isLeader && party.presence.length > 1) {
 					electLeader();
 				}
 				if (party.presence.length === 1) {
+					my.isLeader = party.presence[0].isLeader = true;
 					getById('bar-is-leader-' + my.row).classList.add('none');
 				}
 			}
@@ -149,16 +152,16 @@ var party;
 	 */
 	function invite(name) {
 		if (my.name === name) {
-			chat.log("You can't invite yourself to a party.", "chat-warning");
+			chat.log("You can't invite yourself to a party.", 'chat-warning');
 		}
 		else if (!party.presence[0].isLeader) {
-			chat.log("Only the party leader may send invites.", "chat-warning");
+			chat.log("Only the party leader may send invites.", 'chat-warning');
 		}
 		else if (my.quest.level) {
-			chat.log("You cannot invite adventurers to the party after starting the mission.", "chat-warning");
+			chat.log("You cannot invite adventurers to the party after starting the mission.", 'chat-warning');
 		}
 		else if (ng.view !== 'town') {
-			chat.log("You cannot invite adventurers from the depths of a dungeon.", "chat-warning");
+			chat.log("You cannot invite adventurers from the depths of a dungeon.", 'chat-warning');
 		}
 		else {
 			if (name) {
@@ -172,7 +175,7 @@ var party;
 				});
 			}
 			else {
-				chat.log("Syntax: /invite Bob", "chat-warning");
+				chat.log("Syntax: /invite Bob", 'chat-warning');
 			}
 		}
 	}
@@ -214,7 +217,7 @@ var party;
 		my.isLeader = party.presence[0].isLeader = false;
 		my.partyId = data.row;
 		party.listen(data.row);
-		chat.log("You have joined the party.", "chat-warning");
+		chat.log("You have joined the party.", 'chat-warning');
 		delayedCall(.1, () => {
 			socket.publish('party' + my.partyId, {
 				msg: my.name + ' has joined the party.',
@@ -237,13 +240,9 @@ var party;
 	function boot(name, bypass) {
 		console.info('/boot ', name, bypass);
 		if (ng.view === 'battle') {
-			chat.log("You cannot boot party members during battle!", "chat-warning");
+			chat.log("You cannot boot party members during battle!", 'chat-warning');
 		}
 		else {
-			if (party.presence.length === 1) {
-				chat.log('You are not in a party.')
-				return
-			}
 			if (my.name === name) {
 				chat.log('You cannot boot yourself! Try disbanding instead.');
 			}
@@ -277,10 +276,10 @@ var party;
 	}
 	function disband() {
 		if (party.presence.length === 1) {
-			chat.log('You are not in a party!', 'chat-warning');
+			chat.log('You are not in a party. Try to abandon the mission instead.', 'chat-warning');
 		}
 		else if (ng.view === 'battle') {
-			chat.log("You cannot disband the party during battle!", "chat-warning");
+			chat.log("You cannot disband the party during battle!", 'chat-warning');
 		}
 		else {
 			if (party.presence.length > 1) {
@@ -298,6 +297,7 @@ var party;
 				}
 				party.listen(party.getUniquePartyChannel(true));
 			}
+			chat.log('Mission abandoned!', 'chat-warning');
 			mission.abort();
 			mission.resetLocalQuestData();
 		}
@@ -329,10 +329,6 @@ var party;
 	}
 	function promote(name) {
 		console.info('/promote ', name);
-		if (party.presence.length === 1) {
-			chat.log('You are not in a party.')
-			return
-		}
 		// must be leader or bypass by auto-election when leader leaves
 		var id = _.findIndex(party.presence, { name: name });
 
@@ -373,11 +369,5 @@ var party;
 		var a = msg.replace(/ +/g, " ").split(" ");
 		return a[1] === undefined ?
 			'' : (_.capitalize(a[1].trim()));
-	}
-	function notifyMissionStatus(data) {
-		ng.msg(data.msg, 6);
-		if (data.action === 'abandon') {
-			mission.abort();
-		}
 	}
 })();

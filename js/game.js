@@ -3,7 +3,7 @@ var game;
 (function() {
 	/** public */
 	game = {
-		heartbeatDifference: app.isApp ? 20000 : 20000,
+		heartbeatDifference: app.isApp ? 18000 : 18000,
 		session: {
 			timer: new delayedCall(0, '')
 		},
@@ -17,7 +17,6 @@ var game;
 		heartbeatSend,
 		heartbeatReceived,
 		heartbeatReceivedParty,
-		heartbeatTimeout,
 		getPresence,
 		emptyScenesExcept,
 		getPetName,

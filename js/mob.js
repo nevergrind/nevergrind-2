@@ -1,7 +1,6 @@
 var mob;
 (function() {
 	mob = {
-		test: 0, // used to enable test mode to show all animations looping
 		imageKeysLen: 0,
 		index: 0,
 		cache: {},
@@ -19,12 +18,6 @@ var mob;
 		// size only
 		sizeMob,
 		setClickBox,
-		resetIdle,
-		idle,
-		hit,
-		attack,
-		special,
-		death,
 		blur,
 		brightness,
 		contrast,
@@ -105,13 +98,16 @@ var mob;
 	}
 	function setMob(i, mobKey) {
 		// m.size = m.size;
-		mobs[i].type = mobKey;
+		mobs[i].type = mobKey
 		// combine/assign image object props to mobs[index]
-		mobs[i] = Object.assign(mobs[i], mobs.images[mobKey]);
+		mobs[i] = Object.assign(mobs[i], mobs.images[mobKey])
 		// delete mobs[i].cache;
-		sizeMob(i);
-		mob.resetIdle(i);
-		mob.idle(i);
+		sizeMob(i)
+		TweenMax.set(mobs[i].dom.details, {
+			opacity: 1
+		})
+		resetIdle(i)
+		idle(i)
 	}
 	function sizeMob(index) {
 		var m = mobs[index];
@@ -132,6 +128,7 @@ var mob;
 		m.dom.img.src = 'mobs/' + m.type + '/1.png';
 		// details
 		TweenMax.set(m.dom.details, {
+			y: 0,
 			bottom: m.barAliveBottom * m.size
 		});
 		// shadow
@@ -161,16 +158,18 @@ var mob;
 		m.dom.dead.style.display = m.hp ? 'none' : 'block';
 	}
 	function setSrc(i) {
-		mobs[i].frame = ~~mobs[i].frame;
+		mobs[i].frame = ~~mobs[i].frame
 		if (mobs[i].frame !== mobs[i].lastFrame) {
-			mobs[i].dom.img.src = 'mobs/' + mobs[i].type + '/' + mobs[i].frame + '.png';
-			mobs[i].lastFrame = mobs[i].frame;
+			mobs[i].dom.img.src = 'mobs/' + mobs[i].type + '/' + mobs[i].frame + '.png'
+			mobs[i].lastFrame = mobs[i].frame
 		}
 	}
+
 	function resetIdle(i) {
-		mobs[i].animationActive = 0;
-		mob.idle(mobs[i].index, 1);
+		mobs[i].animationActive = 0
+		idle(mobs[i].index, 1)
 	}
+
 	function idle(i, skip) {
 		TweenMax.to(mobs[i], mobs[i].speed * frame.idle.diff * 2, {
 			startAt: {
@@ -183,15 +182,17 @@ var mob;
 			ease: Sine.easeOut,
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
-		});
-		if (skip) return;
-		mob.test && delayedCall(.25, mob.hit, [ mobs[i].index ]);
+		})
+		if (skip) return
+		ng.test && delayedCall(.25, hit, [ mobs[i].index ])
 	}
+
 	function hit(i) {
 		if (mobs[i].animationActive) return;
 		mobs[i].animationActive = 1;
+		var speed = mobs[i].speed * frame.hit.diff
 
-		TweenMax.to(mobs[i], mobs[i].speed * frame.hit.diff, {
+		TweenMax.to(mobs[i], speed, {
 			startAt: {
 				frame: frame.hit.start
 			},
@@ -206,22 +207,25 @@ var mob;
 			onCompleteParams: [mobs[i]]
 		});
 	}
+
 	function hitComplete(m) {
-		mob.resetIdle(m.index);
-		if (mob.test){
-			delayedCall(.5, mob.attack, [ m.index, 'primary' ]);
+		resetIdle(m.index);
+		if (ng.test){
+			delayedCall(.5, attack, [ m.index, 'primary' ]);
 		}
 	}
+
 	function attack(i, force) {
-		if (mobs[i].animationActive) return;
-		mobs[i].animationActive = 1;
+		if (mobs[i].animationActive) return
+		mobs[i].animationActive = 1
 		var attackType = force === 'primary' || force === 'secondary' ?
-			force : (Math.round(rand()) ? 'primary' : 'secondary');
+			force : (Math.round(rand()) ? 'primary' : 'secondary')
+		var speed = mobs[i].speed * frame[attackType].diff;
 		if (!mobs[i].enableSecondary) {
-			attackType = 'primary';
+			attackType = 'primary'
 		}
 
-		TweenMax.to(mobs[i], mobs[i].speed * frame[attackType].diff, {
+		TweenMax.to(mobs[i], speed, {
 			startAt: {
 				frame: frame[attackType].start
 			},
@@ -232,31 +236,34 @@ var mob;
 			onUpdateParams: [mobs[i].index],
 			onComplete: attackComplete,
 			onCompleteParams: [mobs[i], force]
-		});
+		})
 	}
+
 	function attackComplete(m, force) {
-		mob.resetIdle(m.index);
-		if (mob.test){
+		resetIdle(m.index)
+		if (ng.test){
 			if (force === 'primary'){
-				delayedCall(.5, mob.attack, [ m.index, 'secondary' ]);
+				delayedCall(.5, attack, [ m.index, 'secondary' ])
 			}
 			else if (force === 'death'){
-				delayedCall(.5, mob.death, [ m.index ]);
+				delayedCall(.5, death, [ m.index ])
 			}
 			else {
-				delayedCall(.5, mob.special, [ m.index ]);
+				delayedCall(.5, special, [ m.index ])
 			}
 		}
 	}
+
 	function special(i) {
-		if (mobs[i].animationActive) return;
+		if (mobs[i].animationActive) return
 		if (!mobs[i].enableSpecial) {
-			mob.attack(mobs[i].index, 'death');
+			attack(mobs[i].index, 'death')
 		}
 		else {
-			mobs[i].animationActive = 1;
+			mobs[i].animationActive = 1
+			var speed = mobs[i].speed * frame.special.diff
 
-			TweenMax.to(mobs[i], mobs[i].speed * frame.special.diff, {
+			TweenMax.to(mobs[i], speed, {
 				startAt: {
 					frame: frame.special.start
 				},
@@ -269,28 +276,28 @@ var mob;
 				onUpdateParams: [mobs[i].index],
 				onComplete: specialComplete,
 				onCompleteParams: [mobs[i]]
-			});
+			})
 		}
 	}
 	function specialComplete(m) {
-		mob.resetIdle(m.index);
-		if (mob.test) {
-			delayedCall(.5, mob.death, [ m.index ]);
+		resetIdle(m.index)
+		if (ng.test) {
+			delayedCall(.5, death, [ m.index ])
 		}
 	}
 	function death(i) {
-		if (mobs[i].deathState) return;
-		mobs[i].deathState = 1;
-		mobs[i].hp = 0;
-		mob.setClickBox(mobs[i]);
-		mobs[i].animationActive = 1;
-		var d = mobs[i].speed * frame.death.diff;
+		if (mobs[i].deathState) return
+		mobs[i].deathState = 1
+		mobs[i].hp = 0
+		mob.setClickBox(mobs[i])
+		mobs[i].animationActive = 1
+		var speed = mobs[i].speed * frame.death.diff
 
-		TweenMax.to(mobs[i].dom.details, d, {
-			bottom: mobs[i].barDeathBottom * mobs[i].size,
+		TweenMax.to(mobs[i].dom.details, speed, {
+			y: mobs[i].barDeathBottom * mobs[i].size,
 			ease: Quart.easeIn
 		});
-		TweenMax.to(mobs[i], d, {
+		TweenMax.to(mobs[i], speed, {
 			startAt: {
 				frame: frame.death.start
 			},
@@ -302,32 +309,38 @@ var mob;
 			onComplete: deathComplete,
 			onCompleteParams: [mobs[i]]
 		});
+		TweenMax.to(mobs[i].dom.details, speed / 2, {
+			opacity: 0
+		})
 	}
 	function deathComplete(m) {
 		var filters = {
-				opacity: 'opacity(100%)',
-				brightness: "brightness(100%)"
-			};
-		var e = m.dom.wrap;
+			opacity: 'opacity(100%)',
+			brightness: "brightness(100%)"
+		}
+		var e = m.dom.wrap
 
 		var tl = new TimelineMax({
 			onUpdate: function () {
 				test.filters.death(e, filters);
 			}
-		});
+		})
 		tl.to(filters, 2, {
 			opacity: 'opacity(0%)',
 			brightness: "brightness(0%)",
 			ease: Linear.easeIn,
 			onComplete: deathCompleteFade,
 			onCompleteParams: [m, e]
-		});
+		})
 	}
 	function deathCompleteFade(m, e) {
-		if (mob.test) {
+		if (ng.test) {
 			m.hp = 1;
+			TweenMax.set(mobs[m.index].dom.details, {
+				opacity: 1
+			})
 			sizeMob(m.index);
-			mob.idle(m.index);
+			idle(m.index);
 		}
 		delayedCall(.1, deathCompleteFadeReset, [ m, e ]);
 	}

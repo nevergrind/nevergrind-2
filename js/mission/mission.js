@@ -13,6 +13,7 @@ var mission;
 		embark,
 		resetLocalQuestData,
 		abandon,
+		abandonReceived,
 		abort,
 		embarkReceived,
 	};
@@ -157,9 +158,6 @@ var mission;
 			// TODO: non-party member needs to see something... EMBARK?
 		}
 	}
-	function updateAll() {
-		$("#aside-menu").html(town.aside.menu.townMission());
-	}
 
 	function toggleZone(that) {
 		var zoneId = that.data('id') * 1
@@ -188,57 +186,60 @@ var mission;
 		my.selectedZone = 0;
 		my.selectedMissionTitle = '';
 		my.quest = {};
-		updateAll();
 	}
 	function abandon() {
 		// clicked flag
 		if (!my.quest.level) {
-			chat.log("You have not started a mission!", "chat-warning");
+			chat.log("You have not started a mission!", 'chat-warning');
 		}
 		else if (!party.presence[0].isLeader) {
-			chat.log("Only party leaders can abandon missions, but you can /disband the party to quit.", "chat-warning");
+			chat.log("Only party leaders can abandon missions, but you can /disband the party to quit.", 'chat-warning');
 		}
-		else if (ng.view === 'battle') {
-			chat.log("You cannot abandon missions while in combat!", "chat-warning");
+		else if (ng.view !== 'dungeon') {
+			chat.log("You cannot abandon missions while in combat!", 'chat-warning');
 		}
 		else {
-			ng.lock(1);
-			$.get(app.url + 'mission/abandon-quest.php').done(function (data) {
-				console.info('abandon ', data);
-			}).fail(function (data) {
-				chat.log(data.responseText, 'chat-alert');
-			}).always(function () {
-				delcayedCall(game.questDelay, function() {
-					ng.unlock();
-				});
-			});
+			socket.publish('party' + my.partyId, {
+				route: 'party->abandon',
+				msg: my.name + ' has abandoned the mission.',
+				popupMsg: 'Mission abandoned: ' + my.quest.title,
+				quest: getQuestData(my.selectedZone, my.selectedMissionTitle)
+			})
 		}
 	}
+
+	function abandonReceived(data) {
+		info(arguments.callee.name, data)
+		chat.log(data.msg, 'chat-warning')
+		ng.msg(data.popupMsg, 4)
+		mission.abort()
+	}
 	function abort() {
-		button.hide();
-		chat.log('Mission abandoned!', 'chat-warning');
 		if (ng.view === 'dungeon') {
-			chat.log('Returning to town...', 'chat-warning');
-			ng.lock(1);
+			button.hide()
+			chat.log('Returning to town...', 'chat-warning')
+			ng.lock(1)
 
 			// init client and transition back to town
-			//game.heartbeatEnabled = false;
-			mission.resetLocalQuestData();
-			// rejoin main chat
-			chat.joinChannel('town', 1)
-			TweenMax.to('#scene-dungeon', 2, {
-				delay: 1,
-				opacity: 0
-			});
+			resetLocalQuestData();
 
-			town.go();
-			game.getPresence();
-			chat.modeChange({
-				mode: '/say'
+			TweenMax.to('#scene-dungeon', 2, {
+				delay: 2,
+				opacity: 0,
+				onComplete: function() {
+					// rejoin main chat
+					town.go()
+					chat.joinChannel('town', 1)
+					game.getPresence()
+					delayedCall(.5, function() {
+						game.heartbeatSend()
+						chat.modeChange({
+							mode: '/say'
+						})
+					})
+					ng.unlock()
+				}
 			});
-			// this must be in place to prevent heartbeat updates while going back to town
-			game.heartbeatEnabled = true;
-			delayedCall(1, ng.unlock);
 		}
 	}
 
@@ -262,7 +263,7 @@ var mission;
 		ng.lock(1)
 		TweenMax.to('#scene-town', 3, {
 			startAt: { opacity: 1 },
-			delay: 2,
+			delay: 1,
 			opacity: 0,
 			ease: Power4.easeOut
 		});

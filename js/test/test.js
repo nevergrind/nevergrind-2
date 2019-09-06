@@ -41,7 +41,6 @@ var test;
 	function battle() {
 		var singleMob = true;
 		var mobKey = '';
-		mob.test = 1;
 		for (var i=0; i<mob.max; i++){
 			if (singleMob && i === 2 || !singleMob) {
 				mobKey = mob.getRandomMobKey();

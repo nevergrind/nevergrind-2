@@ -37,8 +37,7 @@ var chat;
 		sendMsg,
 		parseMsg,
 		getMsgObject,
-		clear,
-		clearChatLog,
+		clearInput,
 		emote,
 		camp,
 		reply,
@@ -86,7 +85,7 @@ var chat;
 		var mode = mode.replace(/^\s+/g, '');
 
 		if (mode === '/say' && !my.channel) {
-			log("You cannot communicate in town while in a dungeon", "chat-warning");
+			log("You cannot communicate in town while in a dungeon", 'chat-warning');
 			delayedCall(0, function() {
 				// wipe input after keyup to get rid of /say
 				$("#chat-input").val('');
@@ -177,10 +176,6 @@ var chat;
 			chat.dom.chatInput = getById('chat-input');
 			chat.dom.chatInputMode = getById('chat-input-mode');
 			chat.dom.chatModeMsg = getById('chat-mode-msg');
-		}
-		else {
-			// returned from dungeon
-			chat.clearChatLog();
 		}
 	}
 	function log(msg, className) {
@@ -313,7 +308,7 @@ var chat;
 			chat.joinChannel(joinParse(msg));
 		}
 		else if (msgLower === '/clear') {
-			chat.clearChatLog();
+			clearChatLog();
 		}
 		else if (msgLower === '/who' || msgLower === '/') {
 			who.all();
@@ -367,15 +362,12 @@ var chat;
 				var o = chat.getMsgObject(msg);
 				if (o.msg[0] !== '/') {
 					console.info(o);
-					if (party.presence.length === 1 && o.category.startsWith('party')) {
-						log("You are not in a party.", 'chat-warning');
-					}
-					else if (!my.guild.id && o.category.startsWith('guild')) {
+					if (!my.guild.id && o.category.startsWith('guild')) {
 						log("You are not in a guild.", 'chat-warning');
 					}
 					else {
 						if (o.category === 'ng2') {
-							log("You cannot communicate in town while in a dungeon", "chat-warning");
+							log("You cannot communicate in town while in a dungeon", 'chat-warning');
 						}
 						else {
 							$.post(app.url + 'chat/send.php', {
@@ -389,7 +381,7 @@ var chat;
 			}
 		}
 		chat.updateHistory(msg);
-		chat.clear();
+		chat.clearInput();
 	}
 	function parseMsg(msg) {
 		var arr = msg.replace(/ +/g, " ").split(" ");
@@ -445,7 +437,7 @@ var chat;
 		}
 		return o;
 	}
-	function clear() {
+	function clearInput() {
 		chat.dom.chatInput.value = '';
 	}
 	function clearChatLog() {

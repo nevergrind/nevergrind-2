@@ -7,52 +7,52 @@ var town;
 		asideSelected: '',
 		asideCloseHtml: '<i class="close-aside fa fa-times text-danger"></i>',
 		data: {
-		'town-merchant': {
-			msg: merchantMsg,
-			bg: {
-				// don't exceed 25-75 range
-				x: '-75%',
-				y: '-60%',
+			'town-merchant': {
+				msg: merchantMsg,
+				bg: {
+					// don't exceed 25-75 range
+					x: '-75%',
+					y: '-60%',
+				},
+				aside: {
+					x: 112,
+					y: 30
+				}
 			},
-			aside: {
-				x: 112,
-				y: 30
+			'town-trainer': {
+				msg: trainerMsg,
+				bg: {
+					x: '-75%',
+					y: '-25%',
+				},
+				aside: {
+					x: 112,
+					y: -10
+				}
+			},
+			'town-guild': {
+				msg: guildMsg,
+				bg: {
+					x: '-25%',
+					y: '-25%',
+				},
+				aside: {
+					x: -30,
+					y: -30
+				}
+			},
+			'town-mission': {
+				msg: missionMsg,
+				bg: {
+					x: '-67%',
+					y: '-60%',
+				},
+				aside: {
+					x: 75,
+					y: 24
+				}
 			}
 		},
-		'town-trainer': {
-			msg: trainerMsg,
-			bg: {
-				x: '-75%',
-				y: '-25%',
-			},
-			aside: {
-				x: 112,
-				y: -10
-			}
-		},
-		'town-guild': {
-			msg: guildMsg,
-			bg: {
-				x: '-25%',
-				y: '-25%',
-			},
-			aside: {
-				x: -30,
-				y: -30
-			}
-		},
-		'town-mission': {
-			msg: missionMsg,
-			bg: {
-				x: '-67%',
-				y: '-60%',
-			},
-			aside: {
-				x: 75,
-				y: 24
-			}
-		}
-	},
 		go,
 		html,
 		update,
@@ -71,6 +71,11 @@ var town;
 			game.session.timer.kill()
 			game.emptyScenesExcept('scene-town');
 			ng.lock(1);
+			if (ng.view === 'dungeon') {
+				TweenMax.set('#body', {
+					opacity: 0
+				})
+			}
 			chat.sizeLarge();
 			$.post(app.url + 'character/load-character.php', {
 				row: create.selected
@@ -86,14 +91,14 @@ var town;
 				friend.init()
 				ignore.init()
 				game.initPlayedCache()
-				// things that only happen once
-				// init town ?
+
+				$('#town-bg').remove()
 				var el = createElement('img')
 				el.id = 'town-bg'
 				el.className = 'img-bg'
 				el.src = 'images/town2.jpg'
 				document.body.append(el);
-				// '<img id="town-bg" class="img-bg" src="images/town2.jpg">'+
+
 				getById('scene-town').innerHTML = town.html();
 				town.events();
 				$("#scene-title").remove();
@@ -107,7 +112,10 @@ var town;
 						chat.sendMsg('/join');
 						chat.history = [];
 						// town
-						TweenMax.to('#scene-town, #town-bg', .5, {
+						TweenMax.set('#scene-town', {
+							opacity: 1
+						})
+						TweenMax.to('#body, #town-bg', .5, {
 							delay: .5,
 							opacity: 1,
 							onComplete: ng.unlock
@@ -117,8 +125,6 @@ var town;
 						delayedCall(.1, repeat);
 					}
 				})();
-
-				ng.unlock();
 			}).fail(function(data){
 				ng.disconnect(data.responseText);
 			});

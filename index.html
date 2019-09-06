@@ -65,7 +65,6 @@ Twe				<div>
 <div id="scene-title" class="scene no-select">
 	<div id="ng2-logo-wrap" class="scene">
 		<img id="ng2-bg" src="images/ng2-bg2.jpg" class="img-bg">
-		<img id="neverworks-logo" src="images/neverworks.png">
 		<div id="version" class="text-shadow">
 			Version <script>document.write(app.version);</script>
 		</div>
@@ -80,27 +79,17 @@ Twe				<div>
 
 		<div id="title-screen-wrap" class="flex text-shadow">
 			<div class="title-menu-row flex flex-1">
-				<div class="flex flex-50 title-bg-color">
+				<div class="flex-col flex-50 title-bg-color flex-center">
 					<div class="title-ch-create-col text-center" style="justify-content: start">
-						<h1>
-							<div>Nevergrind 2</div>
-							<div>Cooperative Multiplayer</div>
-							<div>Role-Playing Game</div>
-							<div class="small">developed by</div>
-							<img class="neverworks" src="images/neverworks-txt.png" style="display: block; margin: 3px auto">
-							<hr class="fancy-hr-dark">
-						</h1>
+						<div>Nevergrind 2</div>
+						<div>Cooperative Multiplayer</div>
+						<div>Role-Playing Game</div>
+						<div class="small">developed by</div>
+						<img class="neverworks" src="images/neverworks-txt.png" style="display: block; margin: 3px auto">
+						<hr class="fancy-hr-dark">
 						<img id="ng2-logo"
 							 class="glow-green"
 							 src="images/nevergrind-2-logo-480.png">
-
-						<div>Social Media</div>
-						<div>
-							<a href="https://youtube.com/c/Maelfyn" title="Neverworks Games on YouTube">YouTube</a> |
-							<a href="https://discord.gg/eynNEwN" title="Nevergrind Discord Server">Discord</a> |
-							<a href="https://facebook.com/maelfyn" title="Neverworks Games on Facebook">Facebook</a> |
-							<a href="https://twitter.com/maelfyn" title="Joe Leonard on Twitter">Twitter</a>
-						</div>
 					</div>
 				</div>
 
@@ -550,12 +539,34 @@ if (!app.isApp){
 		'components/button',
 		'components/popover',
 		'components/tooltip',
-		'/mission/mission',
-		'/mission/zones',
+		'mission/mission',
+		'mission/zones',
 		'ui/bar',
 		'battle',
-		'mobs',
 		'mob',
+		'mobs',
+		'item',
+		'items/amulets',
+		'items/belts',
+		'items/boots',
+		'items/bows',
+		'items/bracers',
+		'items/charms',
+		'items/chests',
+		'items/cloaks',
+		'items/gloves',
+		'items/helms',
+		'items/legs',
+		'items/offhands',
+		'items/oneHandBlunts',
+		'items/oneHandSlashers',
+		'items/piercers',
+		'items/rings',
+		'items/shields',
+		'items/shoulders',
+		'items/staves',
+		'items/twoHandBlunts',
+		'items/twoHandSlashers',
 		'town',
 		'cache',
 		'router',

@@ -94,13 +94,13 @@ var guild;
 	}
 	function invite(name) {
 		if (my.name === name) {
-			chat.log("You can't invite yourself to a guild. Go to the Guild Hall to create a guild.", "chat-warning");
+			chat.log("You can't invite yourself to a guild. Go to the Guild Hall to create a guild.", 'chat-warning');
 		}
 		else if (!my.guild.id) {
-			chat.log("You're not in a guild.", "chat-warning");
+			chat.log("You're not in a guild.", 'chat-warning');
 		}
 		else if (my.guild.rank > 1) {
-			chat.log("Only the guild leader or officers may send guild invites.", "chat-warning");
+			chat.log("Only the guild leader or officers may send guild invites.", 'chat-warning');
 		}
 		else {
 			if (name) {
@@ -114,7 +114,7 @@ var guild;
 				})
 			}
 			else {
-				chat.log("Syntax: /invite [player_name]", "chat-warning")
+				chat.log("Syntax: /invite [player_name]", 'chat-warning')
 			}
 		}
 	}
@@ -142,7 +142,7 @@ var guild;
 		$.get(app.url + 'guild/disband.php').done(function(data){
 			my.guild = guild.Guild(); // nice!
 			console.info("guild.disband() response ", data);
-			chat.log("You have disbanded the guild: "+ o.name, "chat-warning");
+			chat.log("You have disbanded the guild: "+ o.name, 'chat-warning');
 			socket.unsubscribe('guild'+ o.id);
 		}).fail(function(data){
 			chat.log(data.responseText, 'chat-warning');

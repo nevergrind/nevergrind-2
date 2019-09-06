@@ -84,6 +84,10 @@
 	font-family: VCR;
 	src: url(../fonts/vcr.ttf)
 }
+@font-face {
+	font-family: Impacted;
+	src: url(../fonts/Impacted.ttf)
+}
 
 :focus {
 	outline: 0
@@ -147,7 +151,7 @@ html {
 }
 
 body {
-	display: flex;
+	display: none;
 	flex-direction: column;
 	margin: 0 auto;
 	position: fixed;
@@ -210,7 +214,7 @@ audio {
 tbody {
 	border: 0
 }
-
+.
 .ng-blue-input {
 	background: #025;
 	border: 1px solid #2e6da4;
@@ -229,6 +233,17 @@ tbody {
 	1px 1px #000,
 	1px 0 #000,
 	0 1px #000!important;
+}
+.text-shadow-outline {
+	text-shadow: 0 0 #000,
+	1px 0 #000,
+	1px 1px #000,
+	0 1px #000,
+	-1px 1px #000,
+	-1px 0 #000,
+	-1px -1px #000,
+	0 -1px #000,
+	1px -1px!important;
 }
 
 /* shadow with blur */
@@ -323,6 +338,13 @@ tbody {
 	bottom: 0;
 	left: 0;
 	width: 140px
+}
+.neverworks-logo-text {
+	background: #0a0a0a;
+	padding: 0;
+	line-height: 1;
+	font-family: Impacted;
+	font-size: 3rem;
 }
 #version {
 	position: absolute;
@@ -436,7 +458,7 @@ tbody {
 }
 
 #scene-town {
-	opacity: 0;
+	opacity: 1;
 	z-index: 1;
 }
 #town-bg {
@@ -1794,6 +1816,7 @@ background-clip: content-box;
 	justify-content: space-between;
 	background: #013;
 	border: .1rem ridge #444;
+	flex: 1;
 }
 #title-screen-wrap {
 	flex: 1;
@@ -2001,7 +2024,7 @@ background-clip: content-box;
 	margin: 0 .5rem;
 	padding: .1rem .5rem;
 	text-align: center;
-	color: #aef;
+	color: #fff;
 	outline: 1px solid #579;
 	outline-offset: .1rem;
 	font-weight: bold;

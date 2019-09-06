@@ -165,7 +165,7 @@
 						// chat focus history nav down
 						if (chat.history.length === chat.historyIndex + 1) {
 							chat.historyIndex++;
-							chat.clear();
+							chat.clearInput();
 						}
 						else if (chat.history[chat.historyIndex + 1] !== undefined) {
 							var o = chat.history[++chat.historyIndex];

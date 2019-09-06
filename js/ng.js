@@ -2,6 +2,7 @@
 var ng;
 (function() {
 	ng = {
+		test: true,
 		id: 0,
 		resizeTimer: new delayedCall(0, ''),
 		loadMsg:
@@ -361,6 +362,13 @@ var ng;
 				login.notLoggedIn()
 			}
 			keepAlive()
+			TweenMax.set('#body', {
+				opacity: 0,
+				display: 'flex'
+			})
+			TweenMax.to('#body', .2, {
+				opacity: 1
+			})
 		});
 	}
 	function displayAllCharacters(r) {
