@@ -9,24 +9,29 @@ var whisper;
 	function listen() {
 		socket.subscribe('name' + my.name, whisper.route);
 	}
+
 	function route(data, obj) {
-		data = router.normalizeInput(data, obj);
-		action = data.action;
+		data = router.normalizeInput(data, obj)
+		action = data.action
 		if (data.action === 'party') {
-			router.party(data, data.route);
+			router.party(data, data.route)
 		}
 		else if (action === 'send') {
-			console.info('Sent whisper: ', data);
+			console.info('Sent whisper: ', data)
 			// report message
-			router.toTown(data, data.route);
-			chat.lastWhisper.name = data.name;
+			router.toTown(data, data.route)
+			chat.lastWhisper.name = data.name
+			console.info('data send', data)
 			// callback to sender
-			$.post(app.url + 'chat/send.php', {
+			socket.publish('name' + _.toLower(data.name), {
+				job: my.job,
+				name: my.name,
+				level: my.level,
 				action: 'receive',
-				msg: parse(data.msg),
+				msg: data.msg,
 				class: 'chat-whisper',
-				category: 'name' + _.toLower(data.name)
-			});
+				route: 'chat->log',
+			})
 		}
 		// receive pong
 		else if (action === 'receive') {
@@ -35,8 +40,10 @@ var whisper;
 					name: data.name
 				}
 			}
-			data.msg = whisperTo(data) + parse(data.msg);
-			router.toTown(data, 'chat->log');
+			console.info('data receive', _.cloneDeep(data))
+			data.msg = 'To ' + chat.getPrefix(data) + ': ' + data.msg;
+			// router.toTown(data, 'chat->log');
+			chat.log(data.msg, data.class)
 		}
 		// guild invite
 		else if (action === 'guild-invite') {
@@ -99,13 +106,5 @@ var whisper;
 		else if (data.action === 'all->byFilterReceived') {
 			who.byFilterReceived(data);
 		}
-	}
-	function parse(msg) {
-		// 2-part parse lower case
-		var a = msg.split("whispers: ");
-		return a[1];
-	}
-	function whisperTo(data) {
-		return 'You whispered to ' + data.name + ': ';
 	}
 })();

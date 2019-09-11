@@ -13,28 +13,33 @@ var router;
 	}
 	function toTown(data, r) {
 		if (r === 'chat->hb') {
-			game.heartbeatReceived(data);
+			game.heartbeatReceived(data)
 		}
 		else if (r === 'chat->log') {
-			if (data.name === my.name) {
-				chat.log(data.msg, data.class);
+			console.info('chat->log', data)
+			if (data.class === 'chat-emote') {
+				chat.log(data.name + ' ' + data.msg, data.class)
+			}
+			else if (data.name === my.name) {
+				chat.log(chat.prepare(data), data.class)
 			}
 			else if (!ng.ignore.includes(data.name)) {
-				chat.log(data.msg, data.class);
+				console.warn('MADE IT', data)
+				chat.log(chat.prepare(data), data.class)
 			}
 			else {
-				warn("Message from " + data.name + " has been ignored.");
+				warn("Message from " + data.name + " has been ignored.")
 			}
 		}
 		else if (r === 'chat->add') {
 			// console.info('chat.presence', data.row, chat.presence);
-			game.upsertRoom(data);
+			game.upsertRoom(data)
 		}
 		else if (r === 'chat->remove') {
-			game.removePlayer(data);
+			game.removePlayer(data)
 		}
 		else if (r === 'chat->getPresence') {
-			game.heartbeatSend();
+			game.heartbeatSend()
 		}
 	}
 	function toParty(data, r) {

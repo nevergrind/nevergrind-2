@@ -47,8 +47,8 @@ var guild;
 	}
 	function route(data, obj) {
 		data = router.normalizeInput(data, obj);
-		console.info('rx ', data);
 		if (!my.guild.name) return;
+		console.info('rx ', data);
 		if (data.route === 'chat->log') {
 			router.toTown(data, data.route);
 		}

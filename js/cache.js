@@ -12,33 +12,51 @@ var cache;
 		preloadAudio,
 		preloadImages,
 	}
+	var mob
+	var image
+	var audio
+	var index
 	///////////////////////
 	function preloadMob(type) {
-		var a = [];
+		mob = [];
 		for (var i = 1; i <= 105; i++) {
-			a[i] = 'mobs/' + type + '/' + i + '.png';
+			mob[i] = 'mobs/' + type + '/' + i + '.png';
 		}
-		cache.preloadImages(a);
+		cache.preloadImages(mob);
 	}
 	function preloadImages(a) {
-		var e;
+		image;
 		a.forEach(function(v){
 			if (v && !cache.imageStrings.includes(v)) {
-				e = new Image();
-				e.src = v;
-				cache.images.push(e);
-				cache.imageStrings.push(v);
+				image = new Image()
+				image.src = v
+				cache.images.push(image)
+				cache.imageStrings.push(v)
+
+				image.onload = function() {
+					index = cache.images.indexOf(this)
+					if (index !== -1) {
+						cache.images.splice(index, 1)
+					}
+				}
 			}
-		});
+		})
 	}
 	function preloadAudio(a) {
-		var e;
+		audio;
 		a.forEach(function(v){
 			if (!cache.audioStrings.includes(v)) {
-				e = new Audio();
-				e.src = v;
-				cache.audio.push(e);
-				cache.audioStrings.push(v);
+				audio = new Audio()
+				audio.src = v
+				cache.audio.push(audio)
+				cache.audioStrings.push(v)
+
+				audio.onload = function() {
+					index = cache.audio.indexOf(this)
+					if (index !== -1) {
+						cache.images.splice(index, 1)
+					}
+				}
 			}
 		});
 	}

@@ -83,9 +83,11 @@ var town;
 				console.info('load-character: ', data);
 				Object.assign(my, data.characterData);
 				guild.setGuildData(data);
+				// set char data
+
 
 				// init party member values
-				ng.setScene('town');
+				ng.setScene('town')
 				chat.init()
 				socket.init()
 				friend.init()
@@ -99,10 +101,10 @@ var town;
 				el.src = 'images/town2.jpg'
 				document.body.append(el);
 
-				getById('scene-town').innerHTML = town.html();
-				town.events();
-				$("#scene-title").remove();
-				town.init();
+				getById('scene-town').innerHTML = town.html()
+				town.events()
+				$("#scene-title").remove()
+				town.init()
 				bar.init();
 				// await socket connect
 				(function repeat() {

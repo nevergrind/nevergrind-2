@@ -50,7 +50,11 @@ var chat;
 		clearLog,
 		sizeSmall,
 		sizeLarge,
+		prepare,
+		getPrefix,
 	}
+	var el;
+	var resp;
 	/** private */
 
 	/** public */
@@ -184,12 +188,13 @@ var chat;
 			while (chat.dom.chatLog.childElementCount >= 500) {
 				chat.dom.chatLog.removeChild(chat.dom.chatLog.firstChild);
 			}
-			var z = createElement('div');
+			var el = createElement('div');
 			if (className){
-				z.className = className;
+				el.className = className;
 			}
-			z.innerHTML = msg;
-			chat.dom.chatLog.appendChild(z);
+			console.info('msg', msg)
+			el.innerHTML = msg;
+			chat.dom.chatLog.appendChild(el);
 			chat.scrollBottom();
 		}
 	}
@@ -346,12 +351,16 @@ var chat;
 				if (ng.ignore.includes(chat.modeName)) {
 					log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', 'chat-warning');
 				}
-				$.post(app.url + 'chat/send.php', {
+				info('@ send', msg)
+				socket.publish('name' + _.toLower(chat.modeName), {
+					job: my.job,
+					name: my.name,
+					level: my.level,
 					action: 'send',
 					msg: msg,
-					class: 'chat-whisper',
-					category: 'name' + _.toLower(chat.modeName)
-				});
+					route: 'chat->log',
+					class: 'chat-whisper'
+				})
 			}
 		}
 		else if (msgLower.startsWith('/')) {
@@ -361,20 +370,23 @@ var chat;
 			if (msg) {
 				var o = chat.getMsgObject(msg);
 				if (o.msg[0] !== '/') {
-					console.info(o);
+					console.info(o)
 					if (!my.guild.id && o.category.startsWith('guild')) {
-						log("You are not in a guild.", 'chat-warning');
+						log("You are not in a guild.", 'chat-warning')
 					}
 					else {
 						if (o.category === 'ng2') {
-							log("You cannot communicate in town while in a dungeon", 'chat-warning');
+							log("You cannot communicate in town while in a dungeon", 'chat-warning')
 						}
 						else {
-							$.post(app.url + 'chat/send.php', {
+							socket.publish(_.toLower(o.category), {
+								job: my.job,
+								name: my.name,
+								level: my.level,
 								msg: o.msg,
 								class: o.class,
-								category: _.toLower(o.category)
-							});
+								route: 'chat->log',
+							})
 						}
 					}
 				}
@@ -444,15 +456,18 @@ var chat;
 		chat.dom.chatLog.innerHTML = '';
 	}
 	function emote(msg) {
-		var a = msg.split(" ");
+		var a = msg.split(' ');
 		a.shift();
-		msg = a.join(" ");
+		msg = a.join(' ');
 		if (msg[0] !== '/') {
-			$.post(app.url + 'chat/send.php', {
+			socket.publish(chat.getChannel(), {
+				job: my.job,
+				name: my.name,
+				level: my.level,
 				msg: msg,
+				route: 'chat->log',
 				class: 'chat-emote',
-				category: chat.getChannel()
-			});
+			})
 		}
 	}
 	function camp() {
@@ -593,16 +608,47 @@ var chat;
 		});
 	}
 	function sizeLarge() {
-			TweenMax.set('#chat-present-wrap', {
-				display: 'flex'
-			});
-			TweenMax.set('#chat-wrap', {
-				bottom: '50px',
-				height: '24%',
-				width: '35%'
-			});
-			TweenMax.set('#chat-log-wrap', {
-				flexBasis: '70%'
-			});
+		TweenMax.set('#chat-present-wrap', {
+			display: 'flex'
+		});
+		TweenMax.set('#chat-wrap', {
+			bottom: '50px',
+			height: '24%',
+			width: '35%'
+		});
+		TweenMax.set('#chat-log-wrap', {
+			flexBasis: '70%'
+		});
 	}
+
+	/**
+	 * takes in data object; returns msg string with formatted msg prefix
+	 * @param data
+	 * @returns {string}
+	 */
+	function prepare(data) {
+		if (data.class === 'chat-whisper') {
+			return getPrefix(data) + ' whispers: ' + stripTags(data.msg)
+		}
+		else {
+			if (data.class === 'chat-normal') {
+				return getPrefix(data) + ' says: ' + stripTags(data.msg)
+			}
+			else {
+				return getPrefix(data) + ': ' + stripTags(data.msg)
+			}
+		}
+	}
+
+	function getPrefix(data) {
+		return '[' + data.level + ':<span class="chat-' + data.job + '">' +
+				data.name + '</span>]'
+	}
+
+	function stripTags(html) {
+		el = createElement('div');
+		el.innerHTML = html;
+		return el.textContent || el.innerText || '';
+	}
+
 })();
