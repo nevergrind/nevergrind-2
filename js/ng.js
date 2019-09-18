@@ -150,7 +150,9 @@ var ng;
 		var e = getById('scene-error');
 		e.style.display = 'block';
 		e.innerHTML = msg || 'You have been disconnected from the server';
-		delayedCall(12, location.reload);
+		delayedCall(12, function() {
+			location.reload();
+		})
 	}
 	function toJobShort(key) {
 		return ng.jobShort[key];

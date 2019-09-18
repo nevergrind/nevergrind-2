@@ -52,11 +52,12 @@
 		exit('Eight is the maximum number of characters you can have!');
 	}
 
-	// validate gender
+	// validate and normalize gender
 	$genders = ['Male', 'Female'];
 	if (!in_array($f['gender'], $genders, true)){
 		$f['gender'] = 'Male';
 	}
+	$f['gender'] = $f['gender'] === 'Male' ? 0 : 1;
 	// validate race
 	if (!in_array($f['race'], $races, true)){
 		$f['race'] = 'Human';
@@ -122,7 +123,7 @@
 		join(',', $values)
 	.')';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('issssiiiiiiiiiiiiiiii',
+	$stmt->bind_param('isissiiiiiiiiiiiiiiii',
 		$_SESSION['id'], $f['name'], $f['gender'], $f['race'], $f['shortJob'],
 		$f['str'], $f['sta'], $f['agi'], $f['dex'], $f['wis'],
 		$f['intel'], $f['cha'], $f['dualWield'], $f['oneHandSlash'], $f['twoHandSlash'],
@@ -247,12 +248,7 @@
 		$uniqueId[14], 
 		$uniqueId[15]);
 	$stmt->execute();
-	
-	// add mission data
-	$query = 'insert into `missions` (c_id) VALUES (?)';
-	$stmt = $db->prepare($query);
-	$stmt->bind_param('s', $f['row']);
-	$stmt->execute();*/
+	*/
 	
 	// echo something for fun
 	$r['hero'] = $f;

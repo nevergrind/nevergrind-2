@@ -26,12 +26,14 @@ var socket;
 	function publish(topic, obj, exclude) {
 		topic = _.toLower(topic);
 		//console.info('publishing: ', topic, obj);
-		socket.session.publish(
-			topic,
-			socket.emptyArray,
-			obj,
-			exclude ? socket.excludeObj : socket.noExcludeObj
-		);
+		if (typeof socket.session === 'object') {
+			socket.session.publish(
+				topic,
+				socket.emptyArray,
+				obj,
+				exclude ? socket.excludeObj : socket.noExcludeObj
+			);
+		}
 	}
 	function registerSubscription(sub) {
 		//console.info('registerSubscription', sub);

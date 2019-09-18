@@ -10,7 +10,6 @@ var login;
 		authenticationLock: false,
 		msg,
 		init,
-		fadeOut,
 		notLoggedIn,
 		authenticate,
 		setLoginHtml,
@@ -105,7 +104,9 @@ var login;
 			}
 			else {
 				login.msg("Account Created! Reloading!");
-				delayedCall(.1, location.reload);
+				delayedCall(.5, function() {
+					location.reload()
+				})
 			}
 		}).fail(function() {
 			login.msg("There was a problem communicating with the server.");
@@ -123,27 +124,13 @@ var login;
 			onComplete: function(){
 				TweenMax.to('.error-msg', 1, {
 					delay: 8,
-					transformOrigin: '50% 0',
-					transformPerspective: 500,
-					rotationX: -90,
-					height: 0,
-					opacity: 0,
-					onComplete: function(){
-						$(".error-msg").html('');
-					}
+					opacity: 0
 				});
 			}
 		});
 	}
 	function msg(msg) {
-		var str = "<div>" + msg + "</div>";
-		$(".error-msg").html(str);
-		login.fadeOut();
-		TweenMax.set('.error-msg', {
-			transformOrigin: '50% 0',
-			transformPerspective: 500,
-			rotationX: 0
-		});
+		$(".error-msg").html('<div>' + msg + '</div>');
 	}
 	function authenticate() {
 		if (login.authenticationLock === true) {

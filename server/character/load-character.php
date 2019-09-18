@@ -3,7 +3,7 @@
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 	// get my character data
-	$query = 'select row, name, gender, level, race, job, 
+	$query = 'select row, name, face, gender, level, race, job, 
 		exp, gold,
 	 	str, sta, agi, dex, wis, intel, cha,
 	 	offense, defense, dualWield, doubleAttack, 
@@ -15,7 +15,7 @@
 	$stmt->bind_param('s', $_POST['row']);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($row, $name, $gender, $level, $race, $job,
+	$stmt->bind_result($row, $name, $face, $gender, $level, $race, $job,
 		$exp, $gold,
 		$str, $sta, $agi, $dex, $wis, $intel, $cha,
 		$offense, $defense, $dualWield, $doubleAttack,
@@ -30,6 +30,7 @@
 		$r['characterData'] = [
 			'row' => $row,
 			'name' => $name,
+			'face' => $face,
 			'gender' => $gender,
 			'level' => $level,
 			'race' => $race,

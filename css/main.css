@@ -88,6 +88,10 @@
 	font-family: Impacted;
 	src: url(../fonts/Impacted.ttf)
 }
+@font-face {
+	font-family: Mason;
+	src: url(../fonts/MasonSerif.ttf)
+}
 
 :focus {
 	outline: 0
@@ -1888,7 +1892,7 @@ background-clip: content-box;
 .select-class,
 .select-race {
 	font-family: Quatro, Roboto Slab, serif;
-	background: #bba;
+	background: #aa8;
 	border: .1rem outset #eed;
 	padding-top: .2rem;
 	line-height: 1.3;
@@ -1900,7 +1904,7 @@ background-clip: content-box;
 }
 .select-class.active,
 .select-race.active {
-	background: #776;
+	background: #553;
 	border: .1rem inset #776;
 	box-shadow: 0 0 5px #000 inset
 }
@@ -1909,7 +1913,7 @@ background-clip: content-box;
 	pointer-events: none;
 	background: #013;
 	border: .1rem inset #013;
-	box-shadow: 0 0 10px #579 inset;
+	box-shadow: 0 0 4px #579 inset;
 	color: #048
 }
 #gender-wrap {
@@ -1988,9 +1992,13 @@ background-clip: content-box;
 	border: .1rem inset #025;
 	border-radius: 0;
 	text-transform: capitalize;
+	background: #125;
+	color: #fff;
 }
+
 #create-character-name:focus {
-	box-shadow: none
+	background: #236;
+	transition: background .2s ease;
 }
 .guild-leader {
 	color: #ff8;
