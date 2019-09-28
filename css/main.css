@@ -809,19 +809,21 @@ tbody {
 	font-size: .8rem;
 	color: #fff;
 	border: 1px solid #013;
+	bottom: 50px;
+	height: 24%;
 	z-index: 2;
 }
 
 #chat-present-wrap {
 	display: flex;
 	flex-direction: column;
-	width: 30%;
+	width: 9rem;
 }
 
 #chat-log-wrap {
 	display: flex;
 	flex-direction: column;
-	width: 70%;
+	width: 21rem;
 	transition: background .2s linear;
 	background: rgba(0,0,0,.2);
 }

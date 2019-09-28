@@ -1,11 +1,11 @@
-var charms = {
+items.charms = {
 	base: {
 		slots: ['range']
 	},
-	normal: [
-		{
-
-		}
+	normal: [{
+			name: 'Charm',
+			itemLevel: 1,
+		},
 	],
 	unique: [
 

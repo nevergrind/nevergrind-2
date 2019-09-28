@@ -8,7 +8,7 @@ var ng;
 		loadMsg:
 			"<div id='load-msg' class='text-shadow text-center now-loading'>Loading</div>",
 		attrs: ['str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha'],
-		resists: ['bleed', 'poison', 'arcane', 'lightning', 'fire', 'cold'],
+		resists: ['bleed', 'poison', 'arcane', 'lightning', 'fire', 'ice'],
 		dungeon: ['traps', 'treasure', 'scout', 'pulling'],
 		gameDuration: 0,
 		delay: .5,

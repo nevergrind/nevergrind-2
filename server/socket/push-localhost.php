@@ -1,5 +1,5 @@
 <?php
-require 'D:\xampp-7-1\htdocs\thruway\vendor\autoload.php';
+require 'C:\xampp\htdocs\thruway\vendor\autoload.php';
 
 echo microtime(true) . ' Starting react/zmq loop...';
 

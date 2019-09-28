@@ -1,4 +1,5 @@
 var item;
+var items = {};
 (function() {
 	item = {
 		getEquipString,

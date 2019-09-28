@@ -1,4 +1,4 @@
-var twoHandSlashers = {
+items.twoHandSlashers = {
 	base: {
 		slots: ['primary'],
 		weaponType: 'Two-hand Slash',

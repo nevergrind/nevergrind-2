@@ -37,5 +37,5 @@ $stmt = $db->prepare($query);
 $stmt->bind_param('s', $account);
 $stmt->execute();
 
-$_SESSION['id'] = mysqli_insert_id($db);
+$_SESSION['account'] = mysqli_insert_id($db);
 echo 'Account Created!';

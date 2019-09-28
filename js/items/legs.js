@@ -1,4 +1,4 @@
-var legs = {
+items.legs = {
 	base: {
 		slots: ['legs'],
 		armorType: 'cloth',

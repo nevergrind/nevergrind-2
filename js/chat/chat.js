@@ -64,10 +64,6 @@ var chat;
 	function html() {
 	// receives channel prop from index.php
 		var s =
-			'<div id="chat-present-wrap" class="no-select">' +
-				'<div id="chat-header">&nbsp;</div>' +
-				'<div id="chat-room"></div>' +
-			'</div>' +
 			'<div id="chat-log-wrap">' +
 				'<div id="chat-log">' +
 					'<div>Welcome to Broken.net!</div>' +
@@ -80,6 +76,10 @@ var chat;
 					'</div>' +
 					'<input id="chat-input" type="text" maxlength="240" autocomplete="off" spellcheck="false" />' +
 				'</div>' +
+			'</div>' +
+			'<div id="chat-present-wrap" class="no-select">' +
+				'<div id="chat-header">&nbsp;</div>' +
+				'<div id="chat-room"></div>' +
 			'</div>';
 		return s;
 	}
@@ -598,26 +598,10 @@ var chat;
 		TweenMax.set('#chat-present-wrap', {
 			display: 'none'
 		});
-		TweenMax.set('#chat-wrap', {
-			bottom: '50px',
-			height: '24%',
-			width: '28%'
-		});
-		TweenMax.set('#chat-log-wrap', {
-			flexBasis: '100%'
-		});
 	}
 	function sizeLarge() {
 		TweenMax.set('#chat-present-wrap', {
 			display: 'flex'
-		});
-		TweenMax.set('#chat-wrap', {
-			bottom: '50px',
-			height: '24%',
-			width: '35%'
-		});
-		TweenMax.set('#chat-log-wrap', {
-			flexBasis: '70%'
 		});
 	}
 

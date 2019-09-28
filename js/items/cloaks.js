@@ -1,4 +1,4 @@
-var cloaks = {
+items.cloaks = {
 	base: {
 		slots: ['back']
 	},

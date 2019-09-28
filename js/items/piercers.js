@@ -1,4 +1,4 @@
-var piercers = {
+items.piercers = {
 	base: {
 		slots: ['primary', 'secondary'],
 		weaponSkill: 'Piercing',

@@ -1,4 +1,4 @@
-var chests = {
+items.chests = {
 	base: {
 		slots: ['chest'],
 		armorType: 'cloth',

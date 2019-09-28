@@ -1,4 +1,4 @@
-var shoulders = {
+items.shoulders = {
 	base: {
 		slots: ['shoulder'],
 		armorType: 'cloth',

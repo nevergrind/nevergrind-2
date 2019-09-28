@@ -3,7 +3,7 @@
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	$query = 'select friend from `friends` where account=?';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('i', $_SESSION['id']);
+	$stmt->bind_param('i', $_SESSION['account']);
 	$stmt->execute();
 	$stmt->bind_result($friend);
 

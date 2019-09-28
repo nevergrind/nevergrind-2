@@ -15,7 +15,6 @@ foreach ($arr as $key => &$value){
 		$arr[$key] = strtolower($value);
 	}
 	else {
-		error_log('2 ' . $value);
 		$arr[$key] = ucfirst($value);
 	}
 }

@@ -1,10 +1,10 @@
-var rings = {
+items.rings = {
 	base: {
 		slots: ['fingers']
 	},
-	normal: [
-		{
-
+	normal: [{
+			name: 'Ring',
+			itemLevel: 1,
 		}
 	],
 	unique: [

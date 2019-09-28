@@ -1,4 +1,4 @@
-var gloves = {
+items.gloves = {
 	base: {
 		slots: ['hands'],
 		armorType: 'cloth',

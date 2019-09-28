@@ -1,10 +1,10 @@
-var amulets = {
+items.amulets = {
 	base: {
 		slots: ['neck']
 	},
-	normal: [
-		{
-
+	normal: [{
+			name: 'Amulet',
+			itemLevel: 1,
 		}
 	],
 	unique: [

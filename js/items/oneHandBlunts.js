@@ -1,4 +1,4 @@
-var oneHandBlunts = {
+items.oneHandBlunts = {
 	base: {
 		slots: ['primary', 'secondary'],
 		weaponSkill: 'One-hand Blunt',
@@ -13,7 +13,7 @@ var oneHandBlunts = {
 			name: 'Club',
 			minDamage: 3,
 			maxDamage: 13,
-			speed: 3.5, // 4.57
+			speed: 3.5, // 4.57of
 			itemLevel: 5,
 		}, {
 			name: 'Morning Star',

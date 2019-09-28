@@ -6,7 +6,7 @@
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 	$query = "select row from `characters` where row=? and account=?";
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('si', $f['row'], $_SESSION['id']);
+	$stmt->bind_param('si', $f['row'], $_SESSION['account']);
 	$stmt->execute();
 	$stmt->bind_result($db_row);
 	$stmt->store_result();

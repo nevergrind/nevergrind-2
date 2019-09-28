@@ -1,4 +1,4 @@
-var helms = {
+items.helms = {
 	base: {
 		slots: ['wrist'],
 		armorType: 'cloth',

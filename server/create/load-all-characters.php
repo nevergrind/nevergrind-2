@@ -3,7 +3,7 @@
 		from `characters` 
 		where account=? and deleted=0';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('i', $_SESSION['id']);
+	$stmt->bind_param('i', $_SESSION['account']);
 	$stmt->execute();
 	$stmt->store_result();
 	$stmt->bind_result($row, $name, $level, $race, $job);

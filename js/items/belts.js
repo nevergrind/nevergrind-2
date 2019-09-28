@@ -1,4 +1,4 @@
-var belts = {
+items.belts = {
 	base: {
 		slots: ['waist'],
 		armorType: 'cloth',

@@ -39,7 +39,7 @@
 	// how many characters do they have?
 	$query = 'select row, deleted from `characters` where row=? and deleted=0';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('s', $_SESSION['id']);
+	$stmt->bind_param('s', $_SESSION['account']);
 	$stmt->execute();
 	$stmt->store_result();
 	$count = $stmt->num_rows;
@@ -81,7 +81,6 @@
 	foreach ($attrs as $value) {
 		$bonusAttrTotal += $f[$value];
 	}
-	error_log($bonusAttrTotal);
 	if ($bonusAttrTotal !== 10) {
 		exit('Those race/class values are not possible!');
 	}
@@ -124,132 +123,60 @@
 	.')';
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('isissiiiiiiiiiiiiiiii',
-		$_SESSION['id'], $f['name'], $f['gender'], $f['race'], $f['shortJob'],
+		$_SESSION['account'], $f['name'], $f['gender'], $f['race'], $f['shortJob'],
 		$f['str'], $f['sta'], $f['agi'], $f['dex'], $f['wis'],
 		$f['intel'], $f['cha'], $f['dualWield'], $f['oneHandSlash'], $f['twoHandSlash'],
 		$f['twoHandBlunt'], $f['piercing'], $f['dodge'], $f['alteration'], $f['evocation'],
 		$f['conjuration']
 	);
 	$stmt->execute();
-
-	// insert items
-	/*require '../item/get-item-string.php';
-	$loops = 32;
-	$slots = [];
-	for ($i = 0; $i < $loops; $i++){
-		$slots[$i] = 0;
-	}
-	$queryValues = getItemString($r['row'], $slots, 1);
-
-	$query = 'insert into `items` (
-		charRow, 
-		uniqueId, 
-		slotType, 
-		slot,
-		lootRow
-	) VALUES '. $queryValues;
-
-	$uniqueId = [];
-	for ($i = 0; $i < $loops; $i++){
-		$uniqueId[$i] = $r['row'] . '-1' . $i;
-	}
-
-	$stmt = $db->prepare($query);
-	$stmt->bind_param('ssssssssssssssssssssssssssssssss',
-		$uniqueId[0],
-		$uniqueId[1],
-		$uniqueId[2],
-		$uniqueId[3],
-		$uniqueId[4],
-		$uniqueId[5],
-		$uniqueId[6],
-		$uniqueId[7],
-		$uniqueId[8],
-		$uniqueId[9],
-		$uniqueId[10],
-		$uniqueId[11],
-		$uniqueId[12],
-		$uniqueId[13],
-		$uniqueId[14],
-		$uniqueId[15],
-		$uniqueId[16],
-		$uniqueId[17],
-		$uniqueId[18],
-		$uniqueId[19],
-		$uniqueId[20],
-		$uniqueId[21],
-		$uniqueId[22],
-		$uniqueId[23],
-		$uniqueId[24],
-		$uniqueId[25],
-		$uniqueId[26],
-		$uniqueId[27],
-		$uniqueId[28],
-		$uniqueId[29],
-		$uniqueId[30],
-		$uniqueId[31]);
-	$stmt->execute();*/
+	$character_id = mysqli_insert_id($db);
 
 	// add equipment data
-	// starting equipment map
-	// sets the item id for each equipment slot
-	/*$loops = 16;
-	$slots = [];
-	$jobEquipment = [
-		'WAR' => [0,0,0,0,0,0,2,0,0,0,0,0,0,5,0,0],
-		'SHD' => [0,0,0,0,0,0,2,0,0,0,0,0,0,5,0,0],
-		'PLD' => [0,0,0,0,0,0,2,0,0,0,0,0,0,6,0,0],
-		'MNK' => [0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0],
-		'ROG' => [0,0,0,0,0,0,2,0,0,0,0,0,0,7,0,0],
-		'RNG' => [0,0,0,0,0,0,2,0,0,0,0,0,0,5,0,8],
-		'DRU' => [0,0,0,0,0,0,2,0,0,0,0,0,0,6,0,0],
-		'CLR' => [0,0,0,0,0,0,2,0,0,0,0,0,0,6,0,0],
-		'SHM' => [0,0,0,0,0,0,2,0,0,0,0,0,0,6,0,0],
-		'BRD' => [0,0,0,0,0,0,2,0,0,0,0,0,0,5,0,0],
-		'NEC' => [0,0,0,0,0,0,2,0,0,0,0,0,0,7,0,0],
-		'ENC' => [0,0,0,0,0,0,2,0,0,0,0,0,0,7,0,0],
-		'MAG' => [0,0,0,0,0,0,2,0,0,0,0,0,0,7,0,0],
-		'WIZ' => [0,0,0,0,0,0,2,0,0,0,0,0,0,7,0,0]
-	];
-	for ($i = 0; $i < $loops; $i++){
-		$slots[$i] = $jobEquipment[$f['shortJob']][$i];
+	// chest
+	if ($f['job'] === 'Necromancer' ||
+		$f['job'] === 'Enchanter' ||
+		$f['job'] === 'Magician' ||
+		$f['job'] === 'Wizard') {
+		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, "chest", 2)';
 	}
-	$queryValues = getItemString($r['row'], $slots, 0);
-	
-	$query = 'insert into `items` (
-		charRow, 
-		uniqueId, 
-		slotType, 
-		slot,
-		lootRow
-	) VALUES '. $queryValues;
-	// must set equipment to 0
-	$uniqueId = [];
-	for ($i = 0; $i < $loops; $i++){
-		$uniqueId[$i] = $r['row'] . '-0' . $i;
+	else {
+		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, "chest", 1)';
 	}
-	
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('ssssssssssssssss', 
-		$uniqueId[0], 
-		$uniqueId[1], 
-		$uniqueId[2], 
-		$uniqueId[3], 
-		$uniqueId[4], 
-		$uniqueId[5], 
-		$uniqueId[6], 
-		$uniqueId[7], 
-		$uniqueId[8], 
-		$uniqueId[9], 
-		$uniqueId[10], 
-		$uniqueId[11], 
-		$uniqueId[12], 
-		$uniqueId[13], 
-		$uniqueId[14], 
-		$uniqueId[15]);
+	$stmt->bind_param('i', $character_id);
 	$stmt->execute();
-	*/
-	
+
+	// weapon
+	if ($f['job'] === 'Warrior' ||
+		$f['job'] === 'Shadowknight' ||
+		$f['job'] === 'Ranger' ||
+		$f['job'] === 'Bard') {
+		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, "primary", 3)';
+	}
+	else if (
+		$f['job'] === 'Paladin' ||
+		$f['job'] === 'Druid' ||
+		$f['job'] === 'Cleric' ||
+		$f['job'] === 'Shaman'
+	) {
+		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, "primary", 4)';
+	}
+	else if ($f['job'] !== 'Monk') {
+		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, "primary", 5)';
+	}
+	$stmt = $db->prepare($query);
+	$stmt->bind_param('i', $character_id);
+	$stmt->execute();
+
+	// bow
+	if ($f['job'] === 'Ranger') {
+		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, "range", 6)';
+		$stmt = $db->prepare($query);
+		$stmt->bind_param('i', $character_id);
+		$stmt->execute();
+	}
+
 	// echo something for fun
 	$r['hero'] = $f;
 	echo json_encode($r);
