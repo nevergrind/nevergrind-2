@@ -58,7 +58,7 @@ var ng;
 			'Paladin',
 			'Ranger',
 			'Rogue',
-			'Shadowknight',
+			'Shadow Knight',
 			'Shaman',
 			'Warrior',
 			'Wizard'
@@ -74,7 +74,7 @@ var ng;
 			Paladin: 'PLD',
 			Ranger: 'RNG',
 			Rogue: 'ROG',
-			Shadowknight: 'SHD',
+			'Shadow Knight': 'SHD',
 			Shaman: 'SHM',
 			Warrior: 'WAR',
 			Wizard: 'WIZ'
@@ -90,7 +90,7 @@ var ng;
 			PLD: 'Paladin',
 			RNG: 'Ranger',
 			ROG: 'Rogue',
-			SHD: 'Shadowknight',
+			SHD: 'Shadow Knight',
 			SHM: 'Shaman',
 			WAR: 'Warrior',
 			WIZ: 'Wizard'

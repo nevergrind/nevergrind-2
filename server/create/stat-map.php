@@ -12,7 +12,7 @@ $statMap = [
 		'Paladin' => [2,4,0,2,2,0,0],
 		'Ranger' => [2,2,2,2,2,0,0],
 		'Rogue' => [4,0,4,2,0,0,0],
-		'Shadowknight' => [4,2,0,2,0,2,0],
+		'Shadow Knight' => [4,2,0,2,0,2,0],
 		'Shaman' => [0,2,2,0,4,2,0],
 		'Warrior' => [4,4,0,2,0,0,0],
 		'Wizard' => [0,2,0,0,4,4,0]
@@ -34,7 +34,7 @@ $statMap = [
 			'Magician',
 			'Necromancer',
 			'Rogue',
-			'Shadowknight',
+			'Shadow Knight',
 			'Warrior',
 			'Wizard'
 		]
@@ -56,7 +56,7 @@ $statMap = [
 			'Magician',
 			'Necromancer',
 			'Paladin',
-			'Shadowknight',
+			'Shadow Knight',
 			'Wizard'
 		]
 	],
@@ -115,7 +115,7 @@ $statMap = [
 			'Paladin',
 			'Ranger',
 			'Rogue',
-			'Shadowknight',
+			'Shadow Knight',
 			'Warrior',
 			'Wizard'
 		]
@@ -123,7 +123,7 @@ $statMap = [
 	'Ogre' => [
 		'attrs' => [29,28,14,14,13,11,6],
 		'jobs' => [
-			'Shadowknight',
+			'Shadow Knight',
 			'Shaman',
 			'Warrior'
 		]
@@ -131,7 +131,7 @@ $statMap = [
 	'Troll' => [
 		'attrs' => [23,25,17,15,11,9,6],
 		'jobs' => [
-			'Shadowknight',
+			'Shadow Knight',
 			'Shaman',
 			'Warrior'
 		]

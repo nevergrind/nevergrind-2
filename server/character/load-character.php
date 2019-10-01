@@ -7,7 +7,7 @@
 		exp, gold,
 	 	str, sta, agi, dex, wis, intel, cha,
 	 	offense, defense, dualWield, doubleAttack, 
-	 	oneHandSlash, twoHandSlash, oneHandBlunt, twoHandBlunt, piercing, handToHand,
+	 	oneHandSlash, twoHandSlash, oneHandBlunt, twoHandBlunt, piercing, archery, handToHand,
 	 	dodge, parry, riposte,
 	 	alteration, conjuration, evocation
 	 	from `characters` where row=? limit 1';
@@ -19,7 +19,7 @@
 		$exp, $gold,
 		$str, $sta, $agi, $dex, $wis, $intel, $cha,
 		$offense, $defense, $dualWield, $doubleAttack,
-		$oneHandSlash, $twoHandSlash, $oneHandBlunt, $twoHandBlunt, $piercing, $handToHand,
+		$oneHandSlash, $twoHandSlash, $oneHandBlunt, $twoHandBlunt, $piercing, $archery, $handToHand,
 		$dodge, $parry, $riposte,
 		$alteration, $conjuration, $evocation);
 
@@ -53,6 +53,7 @@
 			'oneHandBlunt' => $oneHandBlunt,
 			'twoHandBlunt' => $twoHandBlunt,
 			'piercing' => $piercing,
+			'archery' => $archery,
 			'handToHand' => $handToHand,
 			'dodge' => $dodge,
 			'parry' => $parry,

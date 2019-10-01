@@ -10,7 +10,7 @@
 		'Paladin',
 		'Ranger',
 		'Rogue',
-		'Shadowknight',
+		'Shadow Knight',
 		'Shaman',
 		'Warrior',
 		'Wizard'

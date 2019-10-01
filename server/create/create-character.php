@@ -107,6 +107,7 @@
 		'`twoHandSlash`',
 		'`twoHandBlunt`',
 		'`piercing`',
+		'`archery`',
 		'`dodge`',
 		'`alteration`',
 		'`evocation`',
@@ -122,11 +123,11 @@
 		join(',', $values)
 	.')';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('isissiiiiiiiiiiiiiiii',
+	$stmt->bind_param('isissiiiiiiiiiiiiiiiii',
 		$_SESSION['account'], $f['name'], $f['gender'], $f['race'], $f['shortJob'],
 		$f['str'], $f['sta'], $f['agi'], $f['dex'], $f['wis'],
 		$f['intel'], $f['cha'], $f['dualWield'], $f['oneHandSlash'], $f['twoHandSlash'],
-		$f['twoHandBlunt'], $f['piercing'], $f['dodge'], $f['alteration'], $f['evocation'],
+		$f['twoHandBlunt'], $f['piercing'], $f['archery'], $f['dodge'], $f['alteration'], $f['evocation'],
 		$f['conjuration']
 	);
 	$stmt->execute();
@@ -149,7 +150,7 @@
 
 	// weapon
 	if ($f['job'] === 'Warrior' ||
-		$f['job'] === 'Shadowknight' ||
+		$f['job'] === 'Shadow Knight' ||
 		$f['job'] === 'Ranger' ||
 		$f['job'] === 'Bard') {
 		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, "primary", 3)';

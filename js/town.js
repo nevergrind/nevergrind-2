@@ -80,11 +80,10 @@ var town;
 			$.post(app.url + 'character/load-character.php', {
 				row: create.selected
 			}).done(function(data) {
-				console.info('load-character: ', data);
-				Object.assign(my, data.characterData);
+				console.info('load-character: ', data)
+				Object.assign(my, data.characterData)
+				my.jobLong = ng.toJobLong(my.job)
 				guild.setGuildData(data);
-				// set char data
-
 
 				// init party member values
 				ng.setScene('town')

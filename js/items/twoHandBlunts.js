@@ -1,7 +1,7 @@
 items.twoHandBlunts = {
 	base: {
 		slots: ['primary'],
-		weaponType: 'Two-hand Blunt',
+		weaponSkill: 'Two-hand Blunt',
 	},
 	normal: [{
 			name: 'Giant Mace',
@@ -10,7 +10,7 @@ items.twoHandBlunts = {
 			speed: 4.4, // 4.77
 			itemLevel: 1,
 		}, {
-			name: 'Auric Maul',
+			name: 'Maul',
 			minDamage: 7,
 			maxDamage: 23,
 			speed: 4.6, // 6.52
@@ -22,7 +22,7 @@ items.twoHandBlunts = {
 			speed: 4.7, // 9.15
 			itemLevel: 10,
 		}, {
-			name: 'Ogre Maul',
+			name: 'War Hammer',
 			minDamage: 16,
 			maxDamage: 46,
 			speed: 4.4, // 14.1
@@ -40,7 +40,7 @@ items.twoHandBlunts = {
 			speed: 4.1, // 26.34
 			itemLevel: 25,
 		}, {
-			name: 'Umbral Hammer',
+			name: 'Giant Hammer',
 			minDamage: 45,
 			maxDamage: 106,
 			speed: 4.4, // 34.32

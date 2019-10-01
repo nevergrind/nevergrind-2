@@ -36,6 +36,7 @@ var test;
 		},
 		socketSub,
 		socketPub,
+		getItem,
 	}
 	///////////////////////////////////
 	function battle() {
@@ -155,4 +156,12 @@ var test;
 	  saturate: 'saturate(2500%)'
 	}, 'saturate');
 	 */
+	function getItem(mLvl = 50) {
+		var drop = item.getItem(mLvl)
+		_.each(drop, function(val, key) {
+			console.info('prop', key, val)
+		})
+		tooltip.show(drop)
+		return drop
+	}
 })();

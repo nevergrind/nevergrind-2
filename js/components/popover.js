@@ -14,8 +14,14 @@ var popover;
 		openDate: 0,
 		hide,
 		show,
+		setPosition,
 		setMainMenuHtml
 	};
+	var el
+	var style
+	var padding
+	var width
+	var popoverHalfWidth
 	//////////////////////////////////////////////////
 
 	function setMainMenuHtml(id) {
@@ -25,20 +31,23 @@ var popover;
 	}
 	function show(html) {
 		if (!html) return;
-		var e = getById('popover-wrap');
-		e.innerHTML = html;
-		e.style.top = posY() + 'px';
-		e.style.left = posX() + 'px';
-		e.style.visibility = 'visible';
+		el = getById('popover-wrap');
+		el.innerHTML = html;
+		setPosition()
+		el.style.visibility = 'visible';
 		popover.isOpen = 1;
 		popover.openDate = Date.now();
-		TweenMax.to(e, .3, {
+		TweenMax.set(el, {
 			opacity: 1,
 		});
 	}
+	function setPosition() {
+		el.style.top = posY() + 'px';
+		el.style.left = posX() + 'px';
+	}
 	function hide() {
-		var el = getById('popover-wrap');
-		TweenMax.to(el, .2, {
+		el = getById('popover-wrap');
+		TweenMax.set(el, {
 			opacity: 0,
 			onComplete: function() {
 				el.style.visibility = 'hidden';
@@ -47,9 +56,11 @@ var popover;
 		});
 	}
 	function posX() {
-		var el = $('#popover-wrap');
-		var padding = parseInt(el.css('padding-left'), 10) * 2;
-		var popoverHalfWidth = padding * 2 + el.width() / 2;
+		el = getById('popover-wrap')
+		style = getComputedStyle(el)
+		padding = parseInt(style.paddingLeft, 10) * 2
+		width = parseInt(style.width, 10)
+		popoverHalfWidth = (padding * 2) + width / 2;
 		if (my.mouse.x < popoverHalfWidth) {
 			// too small
 			my.mouse.x += popoverHalfWidth / 2;
@@ -72,7 +83,8 @@ var popover;
 		// determine Y adjustment
 		var verticalOffset = 15;
 		var isMenuAbove = my.mouse.y < window.innerHeight / 2;
-		var yAdjust = isMenuAbove ? verticalOffset : (~~$("#context-wrap").height() + verticalOffset) * -1;
+		var yAdjust = isMenuAbove ?
+			verticalOffset : (~~$("#context-wrap").height() + verticalOffset) * -1;
 		return my.mouse.y + yAdjust;
 	}
 })();

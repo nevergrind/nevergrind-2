@@ -21,7 +21,7 @@ function getBaseMaxMp($hero){
 		'Necromancer' => 4.5, 
 		'Paladin' => 2, 
 		'Ranger' => 2, 
-		'Shadowknight' => 2, 
+		'Shadow Knight' => 2,
 		'Shaman' => 3.8, 
 		'Wizard' => 4.5
 	];
@@ -33,7 +33,7 @@ function getBaseMaxMp($hero){
 		'Necromancer' => 14, 
 		'Paladin' => 7, 
 		'Ranger' => 7, 
-		'Shadowknight' => 7, 
+		'Shadow Knight' => 7,
 		'Shaman' => 12, 
 		'Wizard' => 14
 	];

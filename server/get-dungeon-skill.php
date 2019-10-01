@@ -61,7 +61,7 @@ function getDungeonSkill($type, $hero){
 			'scout' => 25,
 			'pulling' => 10
 		],
-		'Shadowknight' => [
+		'Shadow Knight' => [
 			'traps' => 5,
 			'treasure' => 10,
 			'scout' => 5,

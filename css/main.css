@@ -1357,21 +1357,34 @@ background-clip: content-box;
 	transform: translate(-50%, 0%);
 	background: radial-gradient(farthest-corner at 0% 0%, rgba(16, 32, 80, 1), rgba(0, 0, 0, 1));
 }
-/* tooltip - items and skills? */
+/* tooltip - items & skills */
 #tooltip-wrap {
 	position: fixed;
 	visibility: hidden;
 	opacity: 0;
-	width: auto;
-	min-width: 20rem;
-	font: .9rem/1.5 Cinzel, Palatino Linotype, serif;
-	border: 2px ridge #ffb700;
+	width: 16rem;
+	bottom: 50%;
+	right: 1rem;
+	font: .9rem/1.5 Play;
+	border: 2px ridge #ffd700;
 	z-index: 2;
-	padding: .25rem .5rem;
-	border-radius: 4px;
-	transform: translate(-50%, 0%);
-	background: radial-gradient(farthest-corner at 0% 0%, rgba(16, 32, 80, 1), rgba(0, 0, 0, 1));
+	padding: .2rem .4rem;
+	line-height: 1.2;
+	border-radius: 5px;
+	transform: translate(0%, -50%);
 }
+#tooltip-name {
+	font-size: 1.2rem;
+}
+.capitalize { text-transform: capitalize }
+.item-normal { color: #fff; }
+.item-magic { color: #3498db; }
+.item-rare { color: #e5e500; }
+.item-set { color: #0c0; }
+.item-unique { color: #b5a170; }
+.item-runic { color: #ad68f8; }
+.item-legendary { color: #fa2; }
+.item-restricted { color: #f11; }
 /* town menu */
 #town-menu {
 	position: absolute;

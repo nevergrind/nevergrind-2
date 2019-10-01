@@ -5,24 +5,173 @@ var tooltip;
 		isOpen: 0,
 		openDate: 0,
 		hide,
-		show
+		show,
 	};
+	var el;
+	var wearsLeather = [
+		'BRD',
+		'CLR',
+		'DRU',
+		'MNK',
+		'PLD',
+		'RNG',
+		'ROG',
+		'SHD',
+		'SHM',
+		'WAR',
+	]
+	var wearsMail = [
+		'BRD',
+		'CLR',
+		'PLD',
+		'RNG',
+		'SHD',
+		'SHM',
+		'WAR',
+	]
+	var wearsPlate = [
+		'BRD',
+		'CLR',
+		'PLD',
+		'SHD',
+		'WAR',
+	]
 	//////////////////////////////////////////////////
-	function show(html) {
-		if (!html) return;
-		var e = getById('tooltip-wrap');
-		e.innerHTML = html;
-		e.style.top = posY() + 'px';
-		e.style.left = posX() + 'px';
-		e.style.visibility = 'visible';
-		tooltip.isOpen = 1;
-		tooltip.openDate = Date.now();
-		TweenMax.to(e, .3, {
+	function show(obj) {
+		if (!_.size(obj)) return
+		el = getById('tooltip-wrap')
+		el.innerHTML = getItemHtml(obj)
+		//e.style.top = posY() + 'px'
+		//e.style.left = posX() + 'px'
+		el.style.visibility = 'visible'
+		tooltip.isOpen = 1
+		tooltip.openDate = Date.now()
+		TweenMax.to(el, .3, {
 			opacity: 1,
-		});
+		})
+	}
+	function getItemHtml(obj) {
+		var html = ''
+		html += '<div id="tooltip-name" class="item-' + _.kebabCase(obj.rarity) + '">' + obj.name + '</div>' +
+			'<div class="flex space-between capitalize">'+
+				'<div>'+ getItemSlot(obj) +'</div>' +
+				getRequiredItemSkill(obj) +
+			'</div>' +
+			(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
+			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj) : '')
+		;
+
+		// '<div>'+  +'</div>' +
+		return html
+	}
+	function getRequiredLevelHtml(obj) {
+		var level = getRequiredLevel(obj.itemLevel)
+		if (level <= my.level) {
+			return '<div>Requires Level '+ level +'</div>'
+		}
+		else {
+			return '<div class="item-restricted">Requires Level '+ level +'</div>'
+		}
+	}
+	function getRequiredLevel(itemLevel) {
+		var level = ~~(itemLevel * .75);
+		if (level < 1) level = 1;
+		return level
+	}
+	function getItemSlot(obj) {
+		if (obj.slots[1] === 'secondary' && !my.dualWield) {
+			obj.slots[1] = '<span class="item-restricted">Secondary</span>'
+		}
+		console.info(obj.slots)
+		return obj.slots.join(' ')
+	}
+	function getRequiredItemSkill(obj) {
+		if (obj.armorType) {
+			if (canEquipArmor(obj.armorType)) {
+				return '<div>'+ _.startCase(obj.armorType) +'</div>'
+			}
+			else {
+				return '<div class="item-restricted">'+ _.startCase(obj.armorType) +'</div>'
+			}
+		}
+		else if (obj.weaponSkill) {
+			if (canEquipWeapon(obj.weaponSkill)) {
+				return '<div>'+ _.startCase(obj.weaponSkill) +'</div>'
+			}
+			else {
+				return '<div class="item-restricted">'+ _.startCase(obj.weaponSkill) +'</div>'
+			}
+		}
+		else {
+			return ''
+		}
+	}
+	function canEquipArmor(armorType) {
+		if (armorType === 'cloth') {
+			return true
+		}
+		else if (armorType === 'leather') {
+			return wearsLeather.includes(my.job)
+		}
+		else if (armorType === 'mail') {
+			return wearsMail.includes(my.job)
+		}
+		else if (armorType === 'plate') {
+			return wearsPlate.includes(my.job)
+		}
+	}
+	function canEquipWeapon(weaponSkill) {
+		if (weaponSkill === 'One-hand Slash') {
+			if (my.oneHandSlash) {
+				return true
+			}
+			else {
+				return false
+			}
+		}
+		else if (weaponSkill === 'One-hand Blunt') {
+			if (my.oneHandBlunt) {
+				return true
+			}
+			else {
+				return false
+			}
+		}
+		else if (weaponSkill === 'Piercing') {
+			if (my.piercing) {
+				return true
+			}
+			else {
+				return false
+			}
+		}
+		else if (weaponSkill === 'Two-hand Slash') {
+			if (my.twoHandSlash) {
+				return true
+			}
+			else {
+				return false
+			}
+		}
+		else if (weaponSkill === 'Two-hand Blunt') {
+			if (my.twoHandBlunt) {
+				return true
+			}
+			else {
+				return false
+			}
+		}
+		else if (weaponSkill === 'Archery') {
+			if (my.archery) {
+				return true
+			}
+			else {
+				return false
+			}
+		}
 	}
 	function hide() {
-		var el = getById('tooltip-wrap');
+		el = getById('tooltip-wrap');
 		TweenMax.to(el, .2, {
 			opacity: 0,
 			onComplete: function() {

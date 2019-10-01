@@ -11,7 +11,7 @@ function getBaseMaxHp($hero){
 		'Paladin' => 4.5, 
 		'Ranger' => 4, 
 		'Rogue' => 4, 
-		'Shadowknight' => 4.5, 
+		'Shadow Knight' => 4.5,
 		'Shaman' => 3.5, 
 		'Warrior' => 5, 
 		'Wizard' => 3
@@ -27,7 +27,7 @@ function getBaseMaxHp($hero){
 		'Paladin' => 13, 
 		'Ranger' => 11, 
 		'Rogue' => 11, 
-		'Shadowknight' => 13, 
+		'Shadow Knight' => 13,
 		'Shaman' => 11, 
 		'Warrior' => 13, 
 		'Wizard' => 7

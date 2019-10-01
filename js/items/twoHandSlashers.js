@@ -1,7 +1,7 @@
 items.twoHandSlashers = {
 	base: {
 		slots: ['primary'],
-		weaponType: 'Two-hand Slash',
+		weaponSkill: 'Two-hand Slash',
 	},
 	normal: [{
 			name: 'Giant Sword',

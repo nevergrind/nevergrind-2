@@ -56,7 +56,9 @@ var bar;
 				.on('mouseenter', '.bar-icons', function() {
 				var id = $(this).attr('id');
 				popover.setMainMenuHtml(id);
-			}).on('mouseleave', '.bar-icons', popover.hide);
+			}).on('mousemove', '.bar-icons', popover.setPosition)
+				.on('mouseleave', '.bar-icons', popover.hide);
+
 		}
 	}
 	function cachePlayerBars(index) {
