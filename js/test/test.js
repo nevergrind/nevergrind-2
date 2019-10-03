@@ -158,6 +158,8 @@ var test;
 	 */
 	function getItem(mLvl = 50) {
 		var drop = item.getItem(mLvl)
+		// test attrs
+		drop.str = _.random(1, 15)
 		_.each(drop, function(val, key) {
 			console.info('prop', key, val)
 		})

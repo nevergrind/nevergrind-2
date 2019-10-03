@@ -53,19 +53,42 @@ var tooltip;
 	function getItemHtml(obj) {
 		var html = ''
 		html += '<div id="tooltip-name" class="item-' + _.kebabCase(obj.rarity) + '">' + obj.name + '</div>' +
-			'<div class="flex space-between capitalize">'+
-				'<div>'+ getItemSlot(obj) +'</div>' +
+			'<div class="flex space-between capitalize">' +
+				'<div>'+ getItemSlot(obj.slots) +'</div>' +
 				getRequiredItemSkill(obj) +
 			'</div>' +
+			getWeaponDamageHtml(obj) +
 			(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
-			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj) : '')
-		;
+			getStrHtml(obj.str) +
+			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
+			getDurabilityHtml(obj.durability) +
+		'';
 
-		// '<div>'+  +'</div>' +
 		return html
 	}
-	function getRequiredLevelHtml(obj) {
-		var level = getRequiredLevel(obj.itemLevel)
+	function getStrHtml(str) {
+		return '<div>+' + str +' Strength</div>'
+	}
+	function getWeaponDamageHtml(obj) {
+		if (obj.weaponSkill) {
+			var dps = ((obj.minDamage + obj.maxDamage) / obj.speed).toFixed(1);
+			return '<div class="flex space-between">' +
+				'<div>'+ obj.minDamage + '&thinsp;–&thinsp;' + obj.maxDamage +' Damage</div>' +
+				'<div>Speed ' + obj.speed + '</div>' +
+			'</div>' +
+			'<div>(' + dps + ' damage per second)</div>'
+		}
+		else {
+			return ''
+		}
+	}
+	function getDurabilityHtml(durability) {
+		return durability ?
+			'<div>Durability ' + durability + '/100</div>' :
+			'<div class="item-restricted">Durability ' + durability + '/100</div>'
+	}
+	function getRequiredLevelHtml(itemLevel) {
+		var level = getRequiredLevel(itemLevel)
 		if (level <= my.level) {
 			return '<div>Requires Level '+ level +'</div>'
 		}
@@ -78,12 +101,11 @@ var tooltip;
 		if (level < 1) level = 1;
 		return level
 	}
-	function getItemSlot(obj) {
-		if (obj.slots[1] === 'secondary' && !my.dualWield) {
-			obj.slots[1] = '<span class="item-restricted">Secondary</span>'
+	function getItemSlot(slots) {
+		if (slots[1] === 'secondary' && !my.dualWield) {
+			slots[1] = '<span class="item-restricted">Secondary</span>'
 		}
-		console.info(obj.slots)
-		return obj.slots.join(' ')
+		return slots.join(' ')
 	}
 	function getRequiredItemSkill(obj) {
 		if (obj.armorType) {
