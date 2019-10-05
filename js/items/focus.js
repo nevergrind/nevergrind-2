@@ -1,9 +1,10 @@
-items.held = {
+items.focus = {
 	base: {
 		slots: ['primary'],
 		weaponSkill: 'One-hand Blunt',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Stein',
 			minDamage: 1,
 			maxDamage: 4,
@@ -53,6 +54,27 @@ items.held = {
 			itemLevel: 35,
 		},
 	],
+	prefix: {
+		enhancedDamage: 100,
+		castingSkills: 3,
+		allCastingSkills: 2,
+		allSkills: 2,
+		attack: 100,
+		resists: 30,
+		resistAll: 10,
+	},
+	suffix: {
+		attrs: 20,
+		allAttrs: 10,
+		points: 80,
+		crit: 20,
+		leech: 5,
+		wraith: 5,
+		haste: 40,
+	},
+	rare: {
+		allDamage: 20,
+	},
 	unique: [
 
 	]

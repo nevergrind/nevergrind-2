@@ -3,7 +3,8 @@ items.gloves = {
 		slots: ['hands'],
 		armorType: 'cloth',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Gloves',
 			minArmor: 1,
 			maxArmor: 4,
@@ -97,6 +98,22 @@ items.gloves = {
 			armorType: 'plate',
 		},
 	],
+	prefix: {
+		resists: 20,
+		enhancedArmor: 100
+	},
+	suffix: {
+		attrs: 20,
+		points: 25,
+		crit: 20,
+		leech: 5,
+		wraith: 5,
+	},
+	rare: {
+		attack: 10,
+		skills: 3,
+		addDamage: 10,
+	},
 	unique: [
 
 	]

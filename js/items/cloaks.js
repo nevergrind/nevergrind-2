@@ -85,6 +85,19 @@ items.cloaks = {
 			itemLevel: 34,
 		},
 	],
+	prefix: {
+		resists: 30,
+	},
+	suffix: {
+		attrs: 12,
+		allStats: 10,
+		points: 30,
+		crit: 20,
+	},
+	rare: {
+		skills: 2,
+		regen: 5
+	},
 	unique: [
 
 	]

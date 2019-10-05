@@ -86,7 +86,7 @@ function minifyJs() {
 		'items/gloves',
 		'items/helms',
 		'items/legs',
-		'items/held',
+		'items/focus',
 		'items/oneHandBlunts',
 		'items/oneHandSlashers',
 		'items/piercers',

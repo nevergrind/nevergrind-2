@@ -3,7 +3,8 @@ items.belts = {
 		slots: ['waist'],
 		armorType: 'cloth',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Sash',
 			minArmor: 1,
 			maxArmor: 2,
@@ -97,6 +98,22 @@ items.belts = {
 			armorType: 'plate',
 		},
 	],
+	prefix: {
+		resists: 20,
+		enhancedArmor: 100
+	},
+	suffix: {
+		attrs: 20,
+		points: 25,
+		crit: 20,
+		leech: 5,
+		wraith: 5,
+	},
+	rare: {
+		attack: 10,
+		skills: 2,
+		addDamage: 10,
+	},
 	unique: [
 
 	]

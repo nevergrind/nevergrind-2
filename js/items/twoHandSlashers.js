@@ -3,7 +3,8 @@ items.twoHandSlashers = {
 		slots: ['primary'],
 		weaponSkill: 'Two-hand Slash',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Giant Sword',
 			minDamage: 7,
 			maxDamage: 13,
@@ -53,6 +54,22 @@ items.twoHandSlashers = {
 			itemLevel: 35,
 		},
 	],
+	prefix: {
+		enhancedDamage: 100,
+		offensiveSkills: 6,
+		attack: 200,
+	},
+	suffix: {
+		attrs: 20,
+		points: 80,
+		crit: 40,
+		leech: 10,
+		wraith: 10,
+		haste: 40,
+	},
+	rare: {
+		allDamage: 20,
+	},
 	unique: [
 
 	]

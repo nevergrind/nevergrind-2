@@ -3,7 +3,8 @@ items.helms = {
 		slots: ['wrist'],
 		armorType: 'cloth',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Wraps',
 			minArmor: 1,
 			maxArmor: 2,
@@ -97,6 +98,17 @@ items.helms = {
 			armorType: 'plate',
 		},
 	],
+	prefix: {
+		resists: 20,
+		enhancedArmor: 100
+	},
+	suffix: {
+		attrs: 20,
+		points: 20,
+	},
+	rare: {
+		skills: 2,
+	},
 	unique: [
 
 	]

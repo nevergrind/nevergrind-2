@@ -3,7 +3,8 @@ items.staves = {
 		slots: ['primary'],
 		weaponSkill: 'Two-hand Blunt',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Staff',
 			minDamage: 5,
 			maxDamage: 11,
@@ -41,6 +42,27 @@ items.staves = {
 			itemLevel: 32,
 		},
 	],
+	prefix: {
+		enhancedDamage: 100,
+		castingSkills: 6,
+		allCastingSkills: 4,
+		allSkills: 4,
+		attack: 200,
+		resists: 40,
+		resistAll: 20,
+	},
+	suffix: {
+		attrs: 30,
+		allAttrs: 15,
+		points: 160,
+		crit: 40,
+		leech: 10,
+		wraith: 10,
+		haste: 40,
+	},
+	rare: {
+		allDamage: 40,
+	},
 	unique: [
 
 	]

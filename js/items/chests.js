@@ -3,7 +3,8 @@ items.chests = {
 		slots: ['chest'],
 		armorType: 'cloth',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Robe',
 			minArmor: 1,
 			maxArmor: 12,
@@ -97,6 +98,19 @@ items.chests = {
 			armorType: 'plate',
 		},
 	],
+	prefix: {
+		resists: 30,
+		enhancedArmor: 100
+	},
+	suffix: {
+		attrs: 30,
+		points: 50,
+		crit: 40,
+	},
+	rare: {
+		skills: 3,
+		allSkills: 2,
+	},
 	unique: [
 
 	]

@@ -3,7 +3,8 @@ items.legs = {
 		slots: ['legs'],
 		armorType: 'cloth',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Pants',
 			minArmor: 7,
 			maxArmor: 12,
@@ -97,6 +98,17 @@ items.legs = {
 			armorType: 'plate',
 		},
 	],
+	prefix: {
+		resists: 30,
+		enhancedArmor: 100
+	},
+	suffix: {
+		attrs: 30,
+		points: 40,
+	},
+	rare: {
+		skills: 3,
+	},
 	unique: [
 
 	]

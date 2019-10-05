@@ -3,7 +3,8 @@ items.oneHandBlunts = {
 		slots: ['primary', 'secondary'],
 		weaponSkill: 'One-hand Blunt',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Mace',
 			minDamage: 2,
 			maxDamage: 9,
@@ -53,6 +54,22 @@ items.oneHandBlunts = {
 			itemLevel: 35,
 		},
 	],
+	prefix: {
+		enhancedDamage: 100,
+		offensiveSkills: 3,
+		attack: 100,
+	},
+	suffix: {
+		attrs: 10,
+		points: 40,
+		crit: 20,
+		leech: 5,
+		wraith: 5,
+		haste: 40,
+	},
+	rare: {
+		allDamage: 10,
+	},
 	unique: [
 
 	]

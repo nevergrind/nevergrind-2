@@ -1,9 +1,10 @@
 items.bows = {
 	base: {
-		slots: ['range'],
+		slots: ['primary'],
 		weaponSkill: 'Archery',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Short Bow',
 			minDamage: 5,
 			maxDamage: 9,
@@ -53,6 +54,22 @@ items.bows = {
 			itemLevel: 35,
 		},
 	],
+	prefix: {
+		enhancedDamage: 100,
+		offensiveSkills: 6,
+		attack: 200,
+	},
+	suffix: {
+		attrs: 20,
+		points: 80,
+		crit: 40,
+		leech: 10,
+		wraith: 10,
+		haste: 40,
+	},
+	rare: {
+		allDamage: 20,
+	},
 	unique: [
 
 	]

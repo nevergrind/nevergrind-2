@@ -1378,12 +1378,12 @@ background-clip: content-box;
 }
 .capitalize { text-transform: capitalize }
 .item-normal { color: #fff; }
-.item-magic { color: #3498db; }
-.item-rare { color: #e5e500; }
-.item-set { color: #0c0; }
-.item-unique { color: #b5a170; }
+.item-magic { color: #4850b8; /* 3498db */}
+.item-rare { color: #ff0; }
+.item-set { color: #00c400; }
+.item-unique { color: #908858; /*b5a170*/}
 .item-runic { color: #ad68f8; }
-.item-legendary { color: #fa2; }
+.item-legendary { color: #ffa500; }
 .item-restricted { color: #f11; }
 /* town menu */
 #town-menu {

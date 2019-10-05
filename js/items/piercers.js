@@ -3,7 +3,8 @@ items.piercers = {
 		slots: ['primary', 'secondary'],
 		weaponSkill: 'Piercing',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Dagger',
 			minDamage: 2,
 			maxDamage: 4,
@@ -53,6 +54,22 @@ items.piercers = {
 			itemLevel: 35,
 		},
 	],
+	prefix: {
+		enhancedDamage: 100,
+		offensiveSkills: 3,
+		attack: 100,
+	},
+	suffix: {
+		attrs: 10,
+		points: 40,
+		crit: 20,
+		leech: 5,
+		wraith: 5,
+		haste: 40,
+	},
+	rare: {
+		allDamage: 10,
+	},
 	unique: [
 
 	]

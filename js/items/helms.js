@@ -95,7 +95,20 @@ items.helms = {
 			armorType: 'plate',
 		},
 	],
+	prefix: {
+		resists: 30,
+		enhancedArmor: 100,
+	},
+	suffix: {
+		attrs: 30,
+		points: 40,
+		crit: 40,
+	},
+	rare: {
+		skills: 3,
+		allSkills: 2
+	},
 	unique: [
 
-	]
+	],
 }

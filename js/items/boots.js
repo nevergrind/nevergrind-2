@@ -3,7 +3,8 @@ items.boots = {
 		slots: ['feet'],
 		armorType: 'cloth',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Boots',
 			minArmor: 1,
 			maxArmor: 4,
@@ -97,6 +98,17 @@ items.boots = {
 			armorType: 'plate',
 		},
 	],
+	prefix: {
+		resists: 30,
+		enhancedArmor: 100
+	},
+	suffix: {
+		attrs: 30,
+		points: 30,
+	},
+	rare: {
+		skills: 2,
+	},
 	unique: [
 
 	]

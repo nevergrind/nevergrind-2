@@ -98,6 +98,17 @@ items.shoulders = {
 			armorType: 'plate',
 		},
 	],
+	prefix: {
+		resists: 20,
+		enhancedArmor: 100
+	},
+	suffix: {
+		attrs: 20,
+		points: 25,
+	},
+	rare: {
+		skills: 2,
+	},
 	unique: [
 
 	]

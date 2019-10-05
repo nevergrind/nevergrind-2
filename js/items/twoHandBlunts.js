@@ -3,7 +3,8 @@ items.twoHandBlunts = {
 		slots: ['primary'],
 		weaponSkill: 'Two-hand Blunt',
 	},
-	normal: [{
+	normal: [
+		{
 			name: 'Giant Mace',
 			minDamage: 6,
 			maxDamage: 15,
@@ -53,6 +54,22 @@ items.twoHandBlunts = {
 			itemLevel: 35,
 		},
 	],
+	prefix: {
+		enhancedDamage: 100,
+		offensiveSkills: 6,
+		attack: 200,
+	},
+	suffix: {
+		attrs: 20,
+		points: 80,
+		crit: 40,
+		leech: 10,
+		wraith: 10,
+		haste: 40,
+	},
+	rare: {
+		allDamage: 20,
+	},
 	unique: [
 
 	]
