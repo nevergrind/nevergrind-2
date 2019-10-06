@@ -103,7 +103,7 @@ items.belts = {
 		enhancedArmor: 100
 	},
 	suffix: {
-		attrs: 20,
+		stats: 20,
 		points: 25,
 		crit: 20,
 		leech: 5,

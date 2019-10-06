@@ -59,15 +59,31 @@ var tooltip;
 			'</div>' +
 			getWeaponDamageHtml(obj) +
 			(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
-			getStrHtml(obj.str) +
+			// attrs
+			getGenericStatHtml(obj.str, 'Strength') +
+			getGenericStatHtml(obj.sta, 'Stamina') +
+			getGenericStatHtml(obj.agi, 'Agility') +
+			getGenericStatHtml(obj.dex, 'Dexterity') +
+			getGenericStatHtml(obj.wis, 'Wisdom') +
+			getGenericStatHtml(obj.intel, 'Intelligence') +
+			getGenericStatHtml(obj.cha, 'Charisma') +
+			getGenericStatHtml(obj.allStats, 'All Stats') +
+			// resists
+			getGenericStatHtml(obj.resistBlood, 'Resist Blood') +
+			getGenericStatHtml(obj.resistPoison, 'Resist Poison') +
+			getGenericStatHtml(obj.resistArcane, 'Resist Arcane') +
+			getGenericStatHtml(obj.resistLightning, 'Resist Lightning') +
+			getGenericStatHtml(obj.resistFire, 'Resist Fire') +
+			getGenericStatHtml(obj.resistIce, 'Resist Ice') +
+			getGenericStatHtml(obj.resistAll, 'Resist All') +
 			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
 			getDurabilityHtml(obj.durability) +
 		'';
 
 		return html
 	}
-	function getStrHtml(str) {
-		return '<div>+' + str +' Strength</div>'
+	function getGenericStatHtml(stat, label) {
+		return stat ? '<div>+' + stat + ' ' + label + '</div>' : ''
 	}
 	function getWeaponDamageHtml(obj) {
 		if (obj.weaponSkill) {

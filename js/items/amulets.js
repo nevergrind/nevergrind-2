@@ -9,16 +9,22 @@ items.amulets = {
 		}
 	],
 	prefix: {
-		resists: 20,
-		enhancedArmor: 100
+		resists: 40,
+		resistAll: 15,
 	},
 	suffix: {
-		attrs: 10,
-		points: 25,
-		crit: 40,
+		stats: 30,
+		allStats: 15,
+		points: 30,
+		crit: 20,
+		regen: 5,
+		leech: 8,
+		wraith: 8,
 	},
 	rare: {
-		skills: 2,
+		skills: 3,
+		allSkills: 2,
+		allDamage: 10,
 	},
 	unique: [
 

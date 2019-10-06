@@ -100,7 +100,7 @@ items.helms = {
 		enhancedArmor: 100,
 	},
 	suffix: {
-		attrs: 30,
+		stats: 30,
 		points: 40,
 		crit: 40,
 	},

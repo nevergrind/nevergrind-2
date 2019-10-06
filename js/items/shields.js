@@ -54,16 +54,20 @@ items.shields = {
 		},
 	],
 	prefix: {
-		resists: 20,
-		enhancedArmor: 100
+		resists: 40,
+		resistAll: 15,
+		enhancedArmor: 100,
 	},
 	suffix: {
-		attrs: 10,
-		points: 25,
-		crit: 40,
+		stats: 20,
+		allStats: 10,
+		points: 40,
+		increasedBlock: 20,
 	},
 	rare: {
-		skills: 2,
+		skills: 3,
+		allSkills: 2,
+		regen: 5,
 	},
 	unique: [
 

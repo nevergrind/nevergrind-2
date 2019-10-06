@@ -89,7 +89,7 @@ items.cloaks = {
 		resists: 30,
 	},
 	suffix: {
-		attrs: 12,
+		stats: 12,
 		allStats: 10,
 		points: 30,
 		crit: 20,

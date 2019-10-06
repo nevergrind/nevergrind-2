@@ -103,7 +103,7 @@ items.chests = {
 		enhancedArmor: 100
 	},
 	suffix: {
-		attrs: 30,
+		stats: 30,
 		points: 50,
 		crit: 40,
 	},

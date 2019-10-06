@@ -56,11 +56,11 @@ items.oneHandBlunts = {
 	],
 	prefix: {
 		enhancedDamage: 100,
-		offensiveSkills: 3,
+		skills: 3,
 		attack: 100,
 	},
 	suffix: {
-		attrs: 10,
+		stats: 10,
 		points: 40,
 		crit: 20,
 		leech: 5,

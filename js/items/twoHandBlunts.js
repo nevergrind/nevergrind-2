@@ -56,11 +56,11 @@ items.twoHandBlunts = {
 	],
 	prefix: {
 		enhancedDamage: 100,
-		offensiveSkills: 6,
+		skills: 6,
 		attack: 200,
 	},
 	suffix: {
-		attrs: 20,
+		stats: 20,
 		points: 80,
 		crit: 40,
 		leech: 10,

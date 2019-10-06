@@ -57,19 +57,19 @@ items.focus = {
 	prefix: {
 		enhancedDamage: 100,
 		castingSkills: 3,
-		allCastingSkills: 2,
 		allSkills: 2,
 		attack: 100,
 		resists: 30,
 		resistAll: 10,
 	},
 	suffix: {
-		attrs: 20,
-		allAttrs: 10,
+		stats: 20,
+		allStats: 10,
 		points: 80,
 		crit: 20,
 		leech: 5,
 		wraith: 5,
+		regen: 10,
 		haste: 40,
 	},
 	rare: {

@@ -9,16 +9,17 @@ items.charms = {
 		},
 	],
 	prefix: {
-		resists: 20,
-		enhancedArmor: 100
+		resists: 30,
+		resistAll: 10,
 	},
 	suffix: {
-		attrs: 10,
-		points: 25,
-		crit: 40,
+		stats: 20,
+		points: 20,
+		regen: 5,
 	},
 	rare: {
 		skills: 2,
+		allDamage: 20,
 	},
 	unique: [
 

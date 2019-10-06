@@ -103,7 +103,7 @@ items.shoulders = {
 		enhancedArmor: 100
 	},
 	suffix: {
-		attrs: 20,
+		stats: 20,
 		points: 25,
 	},
 	rare: {

@@ -14,7 +14,7 @@ var items = {};
 	function getEquipString() {
 		// cloth, leather, mail, plate, weapon types should show red if you can't use it
 	}
-	function getItem(mLvl = 1) {
+	function getItem(config) {
 		var rarityTypes = [
 			'normal',
 			'magic',
@@ -25,8 +25,8 @@ var items = {};
 			'legendary',
 		]
 		// set item type (normal, magic, etc)
-		var rarityIndex = 0
-		var itemType = rarityTypes[rarityIndex]
+		var rarityIndex = config.rarityIndex
+		var rarity = rarityTypes[rarityIndex]
 
 		var keys = _.keys(items)
 		var filteredKeys = _.filter(keys, filterKeys)
@@ -34,34 +34,53 @@ var items = {};
 		var itemSlot = filteredKeys[_.random(0, len - 1)]
 
 		var itemObj = items[itemSlot]
+		console.info('itemObj', rarity, itemObj)
 
-		var filteredItems = _.filter(itemObj[itemType], filterItems)
+		// get item-filtered base item
+		var filteredItems = _.filter(itemObj['normal'], filterItems)
 		var filteredItemsLen = filteredItems.length
+		// pick one of the items from the array
 		var filteredItemsIndex = _.random(0, filteredItemsLen - 1)
 		var drop = _.assign(
 			itemObj.base,
 			filteredItems[filteredItemsIndex]
 		)
+		console.info('drop', _.cloneDeep(drop))
 		// check defense range
 		if (drop.minArmor) {
 			drop.armor = _.random(drop.minArmor, drop.maxArmor)
 			delete drop.minArmor
 			delete drop.maxArmor
 		}
-		drop.rarity = rarityTypes[rarityIndex]
+		drop.rarity = rarity
 		drop.durability = 100
+		// magic
+		if (rarity === 'magic') {
+			console.info('this is magic yo')
+			processMagicDrop(drop)
+		}
 		return drop;
 		////////////////////////////////////////////////////
+		function processMagicDrop(drop) {
+			drop.str = _.random(1, 15)
+			drop.resistIce = _.random(1, 15)
+			drop.name = [
+				'Boreal',
+				drop.name,
+				'of the Titans'
+			].join(' ')
+			return drop
+		}
 		function filterKeys(key) {
 			if (rarityIndex === 0) {
 				return !slotRequiresMagic.includes(key)
 			}
 			else {
-				return false;
+				return true;
 			}
 		}
 		function filterItems(item) {
-			return item.itemLevel <= mLvl
+			return item.itemLevel <= config.mobLevel
 		}
 	}
 

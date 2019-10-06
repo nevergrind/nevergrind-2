@@ -1374,7 +1374,8 @@ background-clip: content-box;
 	transform: translate(0%, -50%);
 }
 #tooltip-name {
-	font-size: 1.2rem;
+	font-size: 1rem;
+	line-height: 1;
 }
 .capitalize { text-transform: capitalize }
 .item-normal { color: #fff; }

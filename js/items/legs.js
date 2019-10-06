@@ -103,7 +103,7 @@ items.legs = {
 		enhancedArmor: 100
 	},
 	suffix: {
-		attrs: 30,
+		stats: 30,
 		points: 40,
 	},
 	rare: {

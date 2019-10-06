@@ -9,16 +9,21 @@ items.rings = {
 		}
 	],
 	prefix: {
-		resists: 20,
-		enhancedArmor: 100
+		resists: 30,
+		resistAll: 10,
 	},
 	suffix: {
-		attrs: 10,
-		points: 25,
-		crit: 40,
+		stats: 20,
+		allStats: 10,
+		points: 20,
+		crit: 10,
+		regen: 5,
+		leech: 5,
+		wraith: 5,
 	},
 	rare: {
 		skills: 2,
+		allDamage: 5,
 	},
 	unique: [
 
