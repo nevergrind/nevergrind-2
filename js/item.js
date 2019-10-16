@@ -70,7 +70,7 @@ var items = {};
 			else if (val <= 65) { return 'Massive' }
 			else if (val <= 80) { return 'Savage' }
 			else { return 'Merciless' }
-		},/*
+		},
 		attack: function(val) {
 			if (val <= 20) { return 'Bronze' }
 			else if (val <= 40) { return 'Iron' }
@@ -79,14 +79,14 @@ var items = {};
 			else { return 'Gold' }
 		},
 		offense: function(val) {
-			if (val <= 1) { return 'Bishop\'s' }
+			if (val <= 1) { return 'Cavalier\'s' }
 			else if (val <= 2) { return 'Knight\'s' }
-			else { return 'Queen\'s' }
+			else { return 'Templar\'s' }
 		},
 		defense: function(val) {
-			if (val <= 1) { return 'Pawn\'s' }
-			else if (val <= 2) { return 'Rook\'s' }
-			else { return 'King\'s' }
+			if (val <= 1) { return 'Escort\'s' }
+			else if (val <= 2) { return 'Defender\'s' }
+			else { return 'Guardian\'s' }
 		},
 		oneHandSlash: function(val) {
 			if (val <= 1) { return 'Fencer\'s' }
@@ -94,72 +94,72 @@ var items = {};
 			else { return 'Gladiator\'s' }
 		},
 		oneHandBlunt: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Minister\'s' }
+			else if (val <= 2) { return 'Vicar\'s' }
+			else { return 'Reverend\'s' }
 		},
 		piercing: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Marauder\'s' }
+			else if (val <= 2) { return 'Raider\'s' }
+			else { return 'Brigand\'s' }
 		},
 		archery: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Fletcher\'s' }
+			else if (val <= 2) { return 'Bowyer\'s' }
+			else { return 'Archer\'s' }
 		},
 		handToHand: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Fighter\'s' }
+			else if (val <= 2) { return 'Pugilist\'s' }
+			else { return 'Brawler\'s' }
 		},
 		twoHandSlash: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Vanquisher\'s' }
+			else if (val <= 2) { return 'Vindicator\'s' }
+			else { return 'Conqueror\'s' }
 		},
 		twoHandBlunt: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Reprover\'s' }
+			else if (val <= 2) { return 'Rebuker\'s' }
+			else { return 'Castigator\'s' }
 		},
 		dodge: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Gymnast\'s' }
+			else if (val <= 2) { return 'Acrobat\'s' }
+			else { return 'Athlete\'s' }
 		},
 		parry: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Cadet\'s' }
+			else if (val <= 2) { return 'Veteran\'s' }
+			else { return 'Officer\'s' }
 		},
 		riposte: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Hireling\'s' }
+			else if (val <= 2) { return 'Mercenary\'s' }
+			else { return 'Legionnaire\'s' }
 		},
 		alteration: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Priest\'s' }
+			else if (val <= 2) { return 'Friar\'s' }
+			else { return 'Elder\'s' }
 		},
 		conjuration: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Conjurer\'s' }
+			else if (val <= 2) { return 'Seer\'s' }
+			else { return 'Warlock\'s' }
 		},
 		evocation: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
-			else { return 'Gladiator\'s' }
+			if (val <= 1) { return 'Evoker\'s' }
+			else if (val <= 2) { return 'Sorcerer\'s' }
+			else { return 'Magus\'s' }
 		},
 		allSkills: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else { return 'Gladiator\'s' }
-		},*/
+			if (val <= 1) { return 'Angel\'s' }
+			else { return 'Arch-Angel\'s' }
+		},
 	}
 	var suffixNames = {
-		strength: function(val) {
+		str: function(val) {
 			if (val <= 2) { return 'of Strength' }
 			else if (val <= 5) { return 'of Might' }
 			else if (val <= 9) { return 'of the Ox' }
@@ -167,7 +167,7 @@ var items = {};
 			else if (val <= 20) { return 'of the Titans' }
 			else { return 'of Atlas' }
 		},
-		stamina: function(val) {
+		sta: function(val) {
 			if (val <= 2) { return 'of Stamina' }
 			else if (val <= 5) { return 'of Vitality' }
 			else if (val <= 9) { return 'of Zest' }
@@ -175,7 +175,7 @@ var items = {};
 			else if (val <= 20) { return 'of Vigor' }
 			else { return 'of Life' }
 		},
-		agility: function(val) {
+		agi: function(val) {
 			if (val <= 2) { return 'of Agility' }
 			else if (val <= 5) { return 'of Quickness' }
 			else if (val <= 9) { return 'of Swiftness' }
@@ -183,7 +183,7 @@ var items = {};
 			else if (val <= 20) { return 'of Celerity' }
 			else { return 'of Speed' }
 		},
-		dexterity: function(val) {
+		dex: function(val) {
 			if (val <= 2) { return 'of Dexterity' }
 			else if (val <= 5) { return 'of Skill' }
 			else if (val <= 9) { return 'of Accuracy' }
@@ -191,7 +191,7 @@ var items = {};
 			else if (val <= 20) { return 'of Perfection' }
 			else { return 'of Nirvana' }
 		},
-		wisdom: function(val) {
+		wis: function(val) {
 			if (val <= 2) { return 'of Wisdom' }
 			else if (val <= 5) { return 'of Savvy' }
 			else if (val <= 9) { return 'of Foresight' }
@@ -199,7 +199,7 @@ var items = {};
 			else if (val <= 20) { return 'of Judgment' }
 			else { return 'of Acumen' }
 		},
-		intelligence: function(val) {
+		intel: function(val) {
 			if (val <= 2) { return 'of Intelligence' }
 			else if (val <= 5) { return 'of the Mind' }
 			else if (val <= 9) { return 'of Brilliance' }
@@ -207,7 +207,7 @@ var items = {};
 			else if (val <= 20) { return 'of Wizardry' }
 			else { return 'of Enlightenment' }
 		},
-		charisma: function(val) {
+		cha: function(val) {
 			if (val <= 2) { return 'of Charisma' }
 			else if (val <= 5) { return 'of Allure' }
 			else if (val <= 9) { return 'of Glamour' }
@@ -223,71 +223,79 @@ var items = {};
 			else { return 'of the Firmament' }
 		},
 		hp: function(val) {
-			if (val <= 10) { return 'Feldspar' }
-			else if (val <= 20) { return 'Bastnasite' }
-			else if (val <= 30) { return 'Carnelian' }
-			else { return 'Rhodonite' }
+			if (val <= 5) { return 'of the Jackal' }
+			else if (val <= 10) { return 'of the Fox' }
+			else if (val <= 20) { return 'of the Wolf' }
+			else if (val <= 30) { return 'of the Tiger' }
+			else { return 'of the Mammoth' }
 		},
 		mp: function(val) {
-			if (val <= 10) { return 'Feldspar' }
-			else if (val <= 20) { return 'Bastnasite' }
-			else if (val <= 30) { return 'Carnelian' }
-			else { return 'Rhodonite' }
+			if (val <= 5) { return 'of the Minnow' }
+			else if (val <= 10) { return 'of the Fish' }
+			else if (val <= 20) { return 'of the Squid' }
+			else if (val <= 30) { return 'of the Shark' }
+			else { return 'of the Whale' }
 		},
 		sp: function(val) {
-			if (val <= 10) { return 'Feldspar' }
-			else if (val <= 20) { return 'Bastnasite' }
-			else if (val <= 30) { return 'Carnelian' }
-			else { return 'Rhodonite' }
+			if (val <= 5) { return 'of the Crane' }
+			else if (val <= 10) { return 'of the Lark' }
+			else if (val <= 20) { return 'of the Condor' }
+			else if (val <= 30) { return 'of the Albatross' }
+			else { return 'of the Kingfisher' }
+		},
+		hpRegen: function(val) {
+			if (val <= 4) { return 'of Regeneration' }
+			else if (val <= 6) { return 'of Regrowth' }
+			else { return 'of Revivification' }
+		},
+		mpRegen: function(val) {
+			if (val <= 4) { return 'of Rumination' }
+			else if (val <= 6) { return 'of Meditation' }
+			else { return 'of Cogitation' }
+		},
+		spRegen: function(val) {
+			if (val <= 4) { return 'of Echoes' }
+			else if (val <= 6) { return 'of Reverberation' }
+			else { return 'of Resound' }
 		},
 		crit: function(val) {
-			if (val <= 10) { return 'Feldspar' }
-			else if (val <= 20) { return 'Bastnasite' }
-			else if (val <= 30) { return 'Carnelian' }
-			else { return 'Rhodonite' }
+			if (val <= 4) { return 'of the Guerrilla' }
+			else if (val <= 8) { return 'of the Cutthroat' }
+			else if (val <= 12) { return 'of the Assassin' }
+			else if (val <= 16) { return 'of the Rake' }
+			else { return 'of the Blackguard' }
 		},
 		leech: function(val) {
-			if (val <= 10) { return 'Feldspar' }
-			else if (val <= 20) { return 'Bastnasite' }
-			else if (val <= 30) { return 'Carnelian' }
-			else { return 'Rhodonite' }
+			if (val <= 4) { return 'of the Leech' }
+			else if (val <= 6) { return 'of the Locust' }
+			else { return 'of the Lamprey' }
 		},
 		wraith: function(val) {
-			if (val <= 10) { return 'Feldspar' }
-			else if (val <= 20) { return 'Bastnasite' }
-			else if (val <= 30) { return 'Carnelian' }
-			else { return 'Rhodonite' }
+			if (val <= 4) { return 'of the Bat' }
+			else if (val <= 6) { return 'of the Wraith' }
+			else { return 'of the Vampire' }
 		},
 		haste: function(val) {
-			if (val <= 10) { return 'Feldspar' }
-			else if (val <= 20) { return 'Bastnasite' }
-			else if (val <= 30) { return 'Carnelian' }
-			else { return 'Rhodonite' }
-		},/*
-		addBlood: function(val) {
-
+			if (val <= 10) { return 'of Readiness' }
+			else if (val <= 20) { return 'of Swiftness' }
+			else if (val <= 30) { return 'of Speed' }
+			else { return 'of Haste' }
 		},
-		addPoison: function(val) {
-
+		increasedBlock: function(val) {
+			if (val <= 4) { return 'of the Bastion' }
+			else if (val <= 8) { return 'of the Redoubt' }
+			else if (val <= 12) { return 'of the Fortress' }
+			else if (val <= 16) { return 'of the Rampart' }
+			else { return 'of the Bulwark' }
 		},
-		addArcane: function(val) {
-
-		},
-		addLightning: function(val) {
-
-		},
-		addFire: function(val) {
-
-		},
-		addIce: function(val) {
-
-		},*/
-		increaseBlock: function(val) {
-			if (val <= 10) { return 'Feldspar' }
-			else if (val <= 20) { return 'Bastnasite' }
-			else if (val <= 30) { return 'Carnelian' }
-			else { return 'Rhodonite' }
-		},
+		/*
+		addBlood: function(val) {},
+		addPoison: function(val) {},
+		addArcane: function(val) {},
+		addLightning: function(val) {},
+		addFire: function(val) {},
+		addIce: function(val) {},
+		*/
 	}
 	////////////////////////////////////////////
 	function getEquipString() {
@@ -346,7 +354,9 @@ var items = {};
 			console.info('drop type??', drop)
 			itemObj.prefix = convertProps(itemObj.prefix)
 			itemObj.suffix = convertProps(itemObj.suffix)
+			removeWeaponSpecificProps(drop.itemType)
 			var prefixKeys = _.keys(itemObj.prefix)
+			console.info('prefixKeys', prefixKeys)
 			var suffixKeys = _.keys(itemObj.suffix)
 			var prefixLen = prefixKeys.length
 			var suffixLen = suffixKeys.length
@@ -354,26 +364,97 @@ var items = {};
 			var prefix = prefixKeys[_.random(0, prefixLen - 1)]
 			var suffix = suffixKeys[_.random(0, suffixLen - 1)]
 			// get values
+			//TODO: Minimum prop values - not always 1
 			var prefixVal = _.random(1, itemObj.prefix[prefix])
 			var suffixVal = _.random(1, itemObj.suffix[suffix])
 			// get name prefix and suffix
-			var prefixName = prefixNames[prefix](val)
-			var suffixName = suffixNames[suffix](val)
-			getMagicSuffixName(prefix, prefixVal)
+			console.warn('prefixNames', prefixNames, prefix, prefixVal)
+			console.warn('suffixNames', suffixNames, suffix, suffixVal)
+			//TODO: Adjust 2H values to cap at same as 1H
+			var prefixName = prefixNames[prefix](prefixVal)
+			var suffixName = suffixNames[suffix](suffixVal)
 
 			console.warn(prefix, prefixVal)
 			console.warn(suffix, suffixVal)
 			console.warn('mobLevel', config)
 
-			// getPrefixBySlot(drop);
-			drop.str = _.random(1, 15)
-			drop.resistIce = _.random(1, 15)
+			// assign property values
+			drop[prefix] = prefixVal
+			drop[suffix] = suffixVal
+			// set collateral values as a result of prop updates
+			if (drop.haste) {
+				var newSpeed = (drop.speed - (drop.speed * (drop.haste / 100))).toFixed(1)
+				console.warn('new speed:', drop.speed, newSpeed)
+				drop.speed = newSpeed * 1
+			}
+			if (drop.enhancedArmor) {
+				var newArmor = (drop.armor + (drop.armor * (drop.enhancedArmor / 100))).toFixed(1)
+				drop.armor = Math.round(newArmor * 1)
+			}
+			if (drop.enhancedDamage) {
+				var newMinDamage = (drop.minDamage + (drop.minDamage * (drop.enhancedDamage / 100))).toFixed(1) * 1
+				var newMaxDamage = (drop.maxDamage + (drop.maxDamage * (drop.enhancedDamage / 100))).toFixed(1) * 1
+				drop.minDamage = Math.round(newMinDamage)
+				drop.maxDamage = Math.round(newMaxDamage)
+			}
 			drop.name = [
-				'Boreal',
+				prefixName,
 				drop.name,
-				'of the Titans'
+				suffixName
 			].join(' ')
 			return drop
+		}
+		///////////////////////////////////////////////
+		function removeWeaponSpecificProps(itemType) {
+			console.warn('removeWeaponSpecificProps', itemType, itemObj.prefix)
+			if (itemType === 'oneHandSlashers') {
+				delete itemObj.prefix.oneHandBlunt
+				delete itemObj.prefix.piercers
+				delete itemObj.prefix.archery
+				delete itemObj.prefix.handToHand
+				delete itemObj.prefix.twoHandSlash
+				delete itemObj.prefix.twoHandBlunt
+			}
+			else if (itemType === 'oneHandBlunts' || itemType === 'focus') {
+				delete itemObj.prefix.oneHandSlash
+				delete itemObj.prefix.piercers
+				delete itemObj.prefix.archery
+				delete itemObj.prefix.handToHand
+				delete itemObj.prefix.twoHandSlash
+				delete itemObj.prefix.twoHandBlunt
+			}
+			else if (itemType === 'piercers') {
+				delete itemObj.prefix.oneHandSlash
+				delete itemObj.prefix.oneHandBlunt
+				delete itemObj.prefix.archery
+				delete itemObj.prefix.handToHand
+				delete itemObj.prefix.twoHandSlash
+				delete itemObj.prefix.twoHandBlunt
+			}
+			else if (itemType === 'twoHandSlashers') {
+				delete itemObj.prefix.oneHandSlash
+				delete itemObj.prefix.oneHandBlunt
+				delete itemObj.prefix.piercers
+				delete itemObj.prefix.archery
+				delete itemObj.prefix.handToHand
+				delete itemObj.prefix.twoHandBlunt
+			}
+			else if (itemType === 'twoHandBlunts' || itemType === 'staves') {
+				delete itemObj.prefix.oneHandSlash
+				delete itemObj.prefix.oneHandBlunt
+				delete itemObj.prefix.piercers
+				delete itemObj.prefix.archery
+				delete itemObj.prefix.handToHand
+				delete itemObj.prefix.twoHandSlash
+			}
+			else if (itemType === 'bows') {
+				delete itemObj.prefix.oneHandSlash
+				delete itemObj.prefix.oneHandBlunt
+				delete itemObj.prefix.piercers
+				delete itemObj.prefix.handToHand
+				delete itemObj.prefix.twoHandSlash
+				delete itemObj.prefix.twoHandBlunt
+			}
 		}
 		function filterKeys(key) {
 			if (rarityIndex === 0) {
@@ -387,6 +468,15 @@ var items = {};
 			return item.itemLevel <= config.mobLevel
 		}
 	}
+	/*
+			delete prefixes.oneHandSlash
+			delete prefixes.oneHandBlunt
+			delete prefixes.piercers
+			delete prefixes.archery
+			delete prefixes.handToHand
+			delete prefixes.twoHandSlash
+			delete prefixes.twoHandBlunt
+	 */
 	function convertProps(props) {
 		var prop, val;
 		for (prop in props) {
@@ -414,6 +504,12 @@ var items = {};
 				props.dodge = val
 				props.parry = val
 				props.riposte = val
+				props.alteration = val
+				props.conjuration = val
+				props.evocation = val
+				delete props.skills;
+			}
+			else if (prop === 'castingSkills') {
 				props.alteration = val
 				props.conjuration = val
 				props.evocation = val

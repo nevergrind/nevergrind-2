@@ -8,7 +8,7 @@ items.oneHandBlunts = {
 			name: 'Mace',
 			minDamage: 2,
 			maxDamage: 9,
-			speed: 3.6, // 3.05
+			speed: 3.6, // 3.05 - 1.53
 			itemLevel: 1,
 		}, {
 			name: 'Club',

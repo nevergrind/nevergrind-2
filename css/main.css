@@ -612,6 +612,29 @@ tbody {
 		rgba(0, 3, 8, .8) 90%,
 		rgba(0, 3, 8, .8) 100%);
 }
+.stag-blue-top {
+	background: linear-gradient(to bottom,
+		rgba(0, 24, 60, .8) 0,
+		rgba(0, 24, 60, .8) 10%,
+		rgba(0, 22, 54, .8) 10%,
+		rgba(0, 22, 54, .8) 20%,
+		rgba(0, 20, 48, .8) 20%,
+		rgba(0, 20, 48, .8) 30%,
+		rgba(0, 18, 42, .8) 30%,
+		rgba(0, 18, 42, .8) 40%,
+		rgba(0, 16, 36, .8) 40%,
+		rgba(0, 16, 36, .8) 50%,
+		rgba(0, 14, 30, .8) 50%,
+		rgba(0, 14, 30, .8) 60%,
+		rgba(0, 12, 24, .8) 60%,
+		rgba(0, 12, 24, .8) 70%,
+		rgba(0, 9, 18, .8) 70%,
+		rgba(0, 9, 18, .8) 80%,
+		rgba(0, 6, 12, .8) 80%,
+		rgba(0, 6, 12, .8) 90%,
+		rgba(0, 3, 8, .8) 90%,
+		rgba(0, 3, 8, .8) 100%);
+}
 
 /* battle styles */
 .mob-wrap {
@@ -1135,7 +1158,6 @@ background-clip: content-box;
 	border: 2px groove #579;
 	transition: background .3s ease;
 }
-
 /* bootstrap tooltip custom styles */
 .tooltip.show {
 	opacity: 1
@@ -1377,9 +1399,20 @@ background-clip: content-box;
 	font-size: 1rem;
 	line-height: 1;
 }
+#tooltip-hr {
+	border: 0;
+	height: 1px;
+	margin: .2rem 0;/*
+	background-image: linear-gradient(to right,
+		rgba(55, 55, 5, 1),
+		rgba(55, 55, 55, 1)
+	);*/
+}
+
 .capitalize { text-transform: capitalize }
 .item-normal { color: #fff; }
-.item-magic { color: #4850b8; /* 3498db */}
+.item-magic { color: #487af8; }
+.item-magic-alt { color: #487af8 }
 .item-rare { color: #ff0; }
 .item-set { color: #00c400; }
 .item-unique { color: #908858; /*b5a170*/}

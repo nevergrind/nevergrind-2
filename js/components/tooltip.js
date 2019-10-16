@@ -53,12 +53,21 @@ var tooltip;
 	function getItemHtml(obj) {
 		var html = ''
 		html += '<div id="tooltip-name" class="item-' + _.kebabCase(obj.rarity) + '">' + obj.name + '</div>' +
+			'<hr id="tooltip-hr">' +
 			'<div class="flex space-between capitalize">' +
 				'<div>'+ getItemSlot(obj.slots) +'</div>' +
 				getRequiredItemSkill(obj) +
 			'</div>' +
 			getWeaponDamageHtml(obj) +
 			(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
+			// armor and damage
+			getGenericPercentStatHtml(obj.enhancedArmor, 'Enhanced Armor') +
+			getGenericPercentStatHtml(obj.increasedBlock, 'Increased Block Chance') +
+			getGenericPercentStatHtml(obj.enhancedDamage, 'Enhanced Damage') +
+			getGenericPercentStatHtml(obj.haste, 'Increased Attack Speed') +
+			// attack
+			getGenericStatHtml(obj.attack, 'Attack') +
+			getGenericStatHtml(obj.crit, 'Critical Hit') +
 			// attrs
 			getGenericStatHtml(obj.str, 'Strength') +
 			getGenericStatHtml(obj.sta, 'Stamina') +
@@ -68,6 +77,34 @@ var tooltip;
 			getGenericStatHtml(obj.intel, 'Intelligence') +
 			getGenericStatHtml(obj.cha, 'Charisma') +
 			getGenericStatHtml(obj.allStats, 'All Stats') +
+			// points
+			getGenericStatHtml(obj.hp, 'Health') +
+			getGenericStatHtml(obj.mp, 'Mana') +
+			getGenericStatHtml(obj.sp, 'Spirit') +
+			// regen
+			getGenericStatHtml(obj.hpRegen, 'Health Regen') +
+			getGenericStatHtml(obj.mpRegen, 'Mana Regen') +
+			getGenericStatHtml(obj.spRegen, 'Spirit Regen') +
+			// leech
+			getGenericStatHtml(obj.leech, 'Life Leech') +
+			getGenericStatHtml(obj.wraith, 'Mana Leech') +
+			// skills
+			getGenericStatHtml(obj.offense, 'Offense') +
+			getGenericStatHtml(obj.defense, 'Defense') +
+			getGenericStatHtml(obj.oneHandSlash, 'One-Hand Slash') +
+			getGenericStatHtml(obj.oneHandBlunt, 'One-Hand Blunt') +
+			getGenericStatHtml(obj.piercing, 'Piercing') +
+			getGenericStatHtml(obj.archery, 'Archery') +
+			getGenericStatHtml(obj.handToHand, 'Hand-to-Hand') +
+			getGenericStatHtml(obj.twoHandSlash, 'Two-Hand Slash') +
+			getGenericStatHtml(obj.twoHandBlunt, 'Two-Hand Blunt') +
+			getGenericStatHtml(obj.dodge, 'Dodge') +
+			getGenericStatHtml(obj.parry, 'Parry') +
+			getGenericStatHtml(obj.riposte, 'Riposte') +
+			getGenericStatHtml(obj.alteration, 'Alteration') +
+			getGenericStatHtml(obj.conjuration, 'Conjuration') +
+			getGenericStatHtml(obj.evocation, 'Evocation') +
+			getGenericStatHtml(obj.allSkills, 'All Skills') +
 			// resists
 			getGenericStatHtml(obj.resistBlood, 'Resist Blood') +
 			getGenericStatHtml(obj.resistPoison, 'Resist Poison') +
@@ -85,9 +122,12 @@ var tooltip;
 	function getGenericStatHtml(stat, label) {
 		return stat ? '<div>+' + stat + ' ' + label + '</div>' : ''
 	}
+	function getGenericPercentStatHtml(stat, label) {
+		return stat ? '<div class="item-magic-alt">+' + stat + '% ' + label + '</div>' : ''
+	}
 	function getWeaponDamageHtml(obj) {
 		if (obj.weaponSkill) {
-			var dps = ((obj.minDamage + obj.maxDamage) / obj.speed).toFixed(1);
+			var dps = (((obj.minDamage + obj.maxDamage) / 2) / obj.speed).toFixed(1);
 			return '<div class="flex space-between">' +
 				'<div>'+ obj.minDamage + '&thinsp;–&thinsp;' + obj.maxDamage +' Damage</div>' +
 				'<div>Speed ' + obj.speed + '</div>' +

@@ -8,7 +8,7 @@ items.oneHandSlashers = {
 			name: 'Sword',
 			minDamage: 2,
 			maxDamage: 6,
-			speed: 2.7, // 2.96
+			speed: 2.7, // 2.96 - 1.48
 			itemLevel: 1,
 		}, {
 			name: 'Scimitar',
