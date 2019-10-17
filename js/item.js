@@ -12,10 +12,10 @@ var items = {};
 	]
 	var prefixNames = {
 		resistBlood: function(val) {
-			if (val <= 10) { return 'Feldspar' }
-			else if (val <= 20) { return 'Bastnasite' }
-			else if (val <= 30) { return 'Carnelian' }
-			else { return 'Rhodonite' }
+			if (val <= 10) { return 'Ruddy' }
+			else if (val <= 20) { return 'Crimson' }
+			else if (val <= 30) { return 'Burgundy' }
+			else { return 'Scarlet' }
 		},
 		resistPoison: function(val) {
 			if (val <= 10) { return 'Beryl' }
@@ -193,7 +193,7 @@ var items = {};
 		},
 		wis: function(val) {
 			if (val <= 2) { return 'of Wisdom' }
-			else if (val <= 5) { return 'of Savvy' }
+			else if (val <= 5) { return 'of Discernment' }
 			else if (val <= 9) { return 'of Foresight' }
 			else if (val <= 15) { return 'of Intuition' }
 			else if (val <= 20) { return 'of Judgment' }
@@ -227,21 +227,24 @@ var items = {};
 			else if (val <= 10) { return 'of the Fox' }
 			else if (val <= 20) { return 'of the Wolf' }
 			else if (val <= 30) { return 'of the Tiger' }
-			else { return 'of the Mammoth' }
+			else if (val <= 40) { return 'of the Mammoth' }
+			else { return 'of the Colossus' }
 		},
 		mp: function(val) {
-			if (val <= 5) { return 'of the Minnow' }
-			else if (val <= 10) { return 'of the Fish' }
-			else if (val <= 20) { return 'of the Squid' }
-			else if (val <= 30) { return 'of the Shark' }
-			else { return 'of the Whale' }
+			if (val <= 5) { return 'of the Lizard' }
+			else if (val <= 10) { return 'of the Snake' }
+			else if (val <= 20) { return 'of the Serpent' }
+			else if (val <= 30) { return 'of the Drake' }
+			else if (val <= 40) { return 'of the Wyrm' }
+			else { return 'of the Dragon' }
 		},
 		sp: function(val) {
-			if (val <= 5) { return 'of the Crane' }
-			else if (val <= 10) { return 'of the Lark' }
-			else if (val <= 20) { return 'of the Condor' }
-			else if (val <= 30) { return 'of the Albatross' }
-			else { return 'of the Kingfisher' }
+			if (val <= 5) { return 'of the Sedated' }
+			else if (val <= 10) { return 'of the Placid' }
+			else if (val <= 20) { return 'of the Serene' }
+			else if (val <= 30) { return 'of the Staid' }
+			else if (val <= 40) { return 'of the Tranquil' }
+			else { return 'of the Halcyon' }
 		},
 		hpRegen: function(val) {
 			if (val <= 4) { return 'of Regeneration' }
@@ -296,6 +299,65 @@ var items = {};
 		addFire: function(val) {},
 		addIce: function(val) {},
 		*/
+	}
+	var minValue = {
+		resistBlood: 5,
+		resistPoison: 5,
+		resistArcane: 5,
+		resistLightning: 5,
+		resistFire: 5,
+		resistIce: 5,
+		resistAll: 3,
+		enhancedArmor: 10,
+		enhancedDamage: 10,
+		attack: 2,
+		offense: 1,
+		defense: 1,
+		oneHandSlash: 1,
+		oneHandBlunt: 1,
+		piercing: 1,
+		archery: 1,
+		handToHand: 1,
+		twoHandSlash: 1,
+		twoHandBlunt: 1,
+		dodge: 1,
+		parry: 1,
+		riposte: 1,
+		alteration: 1,
+		conjuration: 1,
+		evocation: 1,
+		allSkills: 1,
+		addSpellBlood: 2,
+		addSpellPoison: 2,
+		addSpellArcane: 2,
+		addSpellLightning: 2,
+		addSpellFire: 2,
+		addSpellIce: 2,
+		str: 1,
+		sta: 1,
+		agi: 1,
+		dex: 1,
+		wis: 1,
+		intel: 1,
+		cha: 1,
+		allStats: 1,
+		hp: 1,
+		hpRegen: 2,
+		mp: 1,
+		mpRegen: 2,
+		sp: 1,
+		spRegen: 2,
+		crit: 1,
+		leech: 2,
+		wraith: 2,
+		haste: 10,
+		addBlood: 2,
+		addPoison: 2,
+		addArcane: 2,
+		addLightning: 2,
+		addFire: 2,
+		addIce: 2,
+		increaseBlock: 3,
 	}
 	////////////////////////////////////////////
 	function getEquipString() {
@@ -363,24 +425,45 @@ var items = {};
 			// get prefix and suffix
 			var prefix = prefixKeys[_.random(0, prefixLen - 1)]
 			var suffix = suffixKeys[_.random(0, suffixLen - 1)]
-			// get values
-			//TODO: Minimum prop values - not always 1
-			var prefixVal = _.random(1, itemObj.prefix[prefix])
-			var suffixVal = _.random(1, itemObj.suffix[suffix])
-			// get name prefix and suffix
-			console.warn('prefixNames', prefixNames, prefix, prefixVal)
-			console.warn('suffixNames', suffixNames, suffix, suffixVal)
-			//TODO: Adjust 2H values to cap at same as 1H
-			var prefixName = prefixNames[prefix](prefixVal)
-			var suffixName = suffixNames[suffix](suffixVal)
+			// get values and names
+			var prefixVal = ''
+			var suffixVal = ''
+			var prefixName = ''
+			var suffixName = ''
 
-			console.warn(prefix, prefixVal)
-			console.warn(suffix, suffixVal)
-			console.warn('mobLevel', config)
+			//TODO: Add addSpellPoison etc to focus, staves
+			var getPrefixSuffixComboType = _.random(0, 100)
+			if (getPrefixSuffixComboType < 50) {
+				prefixVal = _.random(minValue[prefix], itemObj.prefix[prefix]);
+				prefixName = prefixNames[prefix](prefixVal)
+			}
+			else if (getPrefixSuffixComboType < 75) {
+				suffixVal = _.random(minValue[suffix], itemObj.suffix[suffix])
+				suffixName = suffixNames[suffix](suffixVal)
+			}
+			else {
+				// both
+				prefixVal = _.random(minValue[prefix], itemObj.prefix[prefix]);
+				prefixName = prefixNames[prefix](prefixVal)
+				suffixVal = _.random(minValue[suffix], itemObj.suffix[suffix])
+				suffixName = suffixNames[suffix](suffixVal)
+			}
+
+			if (ng.test) {
+				// for better testing on all combos
+				prefixVal = _.random(minValue[prefix], itemObj.prefix[prefix]);
+				prefixName = prefixNames[prefix](prefixVal)
+				suffixVal = _.random(minValue[suffix], itemObj.suffix[suffix])
+				suffixName = suffixNames[suffix](suffixVal)
+			}
 
 			// assign property values
-			drop[prefix] = prefixVal
-			drop[suffix] = suffixVal
+			if (prefixVal) {
+				drop[prefix] = prefixVal
+			}
+			if (suffixVal) {
+				drop[suffix] = suffixVal
+			}
 			// set collateral values as a result of prop updates
 			if (drop.haste) {
 				var newSpeed = (drop.speed - (drop.speed * (drop.haste / 100))).toFixed(1)
@@ -401,60 +484,76 @@ var items = {};
 				prefixName,
 				drop.name,
 				suffixName
-			].join(' ')
+			].join(' ').trim()
 			return drop
 		}
 		///////////////////////////////////////////////
 		function removeWeaponSpecificProps(itemType) {
 			console.warn('removeWeaponSpecificProps', itemType, itemObj.prefix)
+			var props = []
 			if (itemType === 'oneHandSlashers') {
-				delete itemObj.prefix.oneHandBlunt
-				delete itemObj.prefix.piercers
-				delete itemObj.prefix.archery
-				delete itemObj.prefix.handToHand
-				delete itemObj.prefix.twoHandSlash
-				delete itemObj.prefix.twoHandBlunt
+				props = [
+					'oneHandBlunt',
+					'piercers',
+					'archery',
+					'handToHand',
+					'twoHandSlash',
+					'twoHandBlunt',
+				]
 			}
 			else if (itemType === 'oneHandBlunts' || itemType === 'focus') {
-				delete itemObj.prefix.oneHandSlash
-				delete itemObj.prefix.piercers
-				delete itemObj.prefix.archery
-				delete itemObj.prefix.handToHand
-				delete itemObj.prefix.twoHandSlash
-				delete itemObj.prefix.twoHandBlunt
+				props = [
+					'oneHandSlash',
+					'piercers',
+					'archery',
+					'handToHand',
+					'twoHandSlash',
+					'twoHandBlunt',
+				]
 			}
 			else if (itemType === 'piercers') {
-				delete itemObj.prefix.oneHandSlash
-				delete itemObj.prefix.oneHandBlunt
-				delete itemObj.prefix.archery
-				delete itemObj.prefix.handToHand
-				delete itemObj.prefix.twoHandSlash
-				delete itemObj.prefix.twoHandBlunt
+				props = [
+					'oneHandSlash',
+					'oneHandBlunt',
+					'archery',
+					'handToHand',
+					'twoHandSlash',
+					'twoHandBlunt',
+				]
 			}
 			else if (itemType === 'twoHandSlashers') {
-				delete itemObj.prefix.oneHandSlash
-				delete itemObj.prefix.oneHandBlunt
-				delete itemObj.prefix.piercers
-				delete itemObj.prefix.archery
-				delete itemObj.prefix.handToHand
-				delete itemObj.prefix.twoHandBlunt
+				props = [
+					'oneHandSlash',
+					'oneHandBlunt',
+					'piercers',
+					'archery',
+					'handToHand',
+					'twoHandBlunt',
+				]
 			}
 			else if (itemType === 'twoHandBlunts' || itemType === 'staves') {
-				delete itemObj.prefix.oneHandSlash
-				delete itemObj.prefix.oneHandBlunt
-				delete itemObj.prefix.piercers
-				delete itemObj.prefix.archery
-				delete itemObj.prefix.handToHand
-				delete itemObj.prefix.twoHandSlash
+				props = [
+					'oneHandSlash',
+					'oneHandBlunt',
+					'piercers',
+					'archery',
+					'handToHand',
+					'twoHandSlash',
+				]
 			}
 			else if (itemType === 'bows') {
-				delete itemObj.prefix.oneHandSlash
-				delete itemObj.prefix.oneHandBlunt
-				delete itemObj.prefix.piercers
-				delete itemObj.prefix.handToHand
-				delete itemObj.prefix.twoHandSlash
-				delete itemObj.prefix.twoHandBlunt
+				props = [
+					'oneHandSlash',
+					'oneHandBlunt',
+					'piercers',
+					'handToHand',
+					'twoHandSlash',
+					'twoHandBlunt',
+				]
 			}
+			props.forEach(function(prop) {
+				delete itemObj.prefix[prop]
+			})
 		}
 		function filterKeys(key) {
 			if (rarityIndex === 0) {
@@ -468,15 +567,7 @@ var items = {};
 			return item.itemLevel <= config.mobLevel
 		}
 	}
-	/*
-			delete prefixes.oneHandSlash
-			delete prefixes.oneHandBlunt
-			delete prefixes.piercers
-			delete prefixes.archery
-			delete prefixes.handToHand
-			delete prefixes.twoHandSlash
-			delete prefixes.twoHandBlunt
-	 */
+
 	function convertProps(props) {
 		var prop, val;
 		for (prop in props) {
@@ -513,7 +604,7 @@ var items = {};
 				props.alteration = val
 				props.conjuration = val
 				props.evocation = val
-				delete props.skills;
+				delete props.castingSkills;
 			}
 			else if (prop === 'stats') {
 				props.str = val

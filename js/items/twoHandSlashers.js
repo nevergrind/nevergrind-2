@@ -56,12 +56,12 @@ items.twoHandSlashers = {
 	],
 	prefix: {
 		enhancedDamage: 100,
-		skills: 6,
-		attack: 200,
+		skills: 3,
+		attack: 100,
 	},
 	suffix: {
 		stats: 20,
-		points: 80,
+		points: 50,
 		crit: 40,
 		leech: 10,
 		wraith: 10,

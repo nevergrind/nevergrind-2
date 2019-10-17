@@ -62,11 +62,34 @@ var tooltip;
 			(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
 			// armor and damage
 			getGenericPercentStatHtml(obj.enhancedArmor, 'Enhanced Armor') +
-			getGenericPercentStatHtml(obj.increasedBlock, 'Increased Block Chance') +
 			getGenericPercentStatHtml(obj.enhancedDamage, 'Enhanced Damage') +
-			getGenericPercentStatHtml(obj.haste, 'Increased Attack Speed') +
+			// resists
+			getGenericStatHtml(obj.resistBlood, 'Resist Blood') +
+			getGenericStatHtml(obj.resistPoison, 'Resist Poison') +
+			getGenericStatHtml(obj.resistArcane, 'Resist Arcane') +
+			getGenericStatHtml(obj.resistLightning, 'Resist Lightning') +
+			getGenericStatHtml(obj.resistFire, 'Resist Fire') +
+			getGenericStatHtml(obj.resistIce, 'Resist Ice') +
+			getGenericStatHtml(obj.resistAll, 'Resist All') +
 			// attack
 			getGenericStatHtml(obj.attack, 'Attack') +
+			// skills
+			getGenericStatHtml(obj.offense, 'Offense') +
+			getGenericStatHtml(obj.defense, 'Defense') +
+			getGenericStatHtml(obj.oneHandSlash, 'One-Hand Slash') +
+			getGenericStatHtml(obj.oneHandBlunt, 'One-Hand Blunt') +
+			getGenericStatHtml(obj.piercing, 'Piercing') +
+			getGenericStatHtml(obj.archery, 'Archery') +
+			getGenericStatHtml(obj.handToHand, 'Hand-to-Hand') +
+			getGenericStatHtml(obj.twoHandSlash, 'Two-Hand Slash') +
+			getGenericStatHtml(obj.twoHandBlunt, 'Two-Hand Blunt') +
+			getGenericStatHtml(obj.dodge, 'Dodge') +
+			getGenericStatHtml(obj.parry, 'Parry') +
+			getGenericStatHtml(obj.riposte, 'Riposte') +
+			getGenericStatHtml(obj.alteration, 'Alteration') +
+			getGenericStatHtml(obj.conjuration, 'Conjuration') +
+			getGenericStatHtml(obj.evocation, 'Evocation') +
+			getGenericStatHtml(obj.allSkills, 'All Skills') +
 			getGenericStatHtml(obj.crit, 'Critical Hit') +
 			// attrs
 			getGenericStatHtml(obj.str, 'Strength') +
@@ -88,31 +111,9 @@ var tooltip;
 			// leech
 			getGenericStatHtml(obj.leech, 'Life Leech') +
 			getGenericStatHtml(obj.wraith, 'Mana Leech') +
-			// skills
-			getGenericStatHtml(obj.offense, 'Offense') +
-			getGenericStatHtml(obj.defense, 'Defense') +
-			getGenericStatHtml(obj.oneHandSlash, 'One-Hand Slash') +
-			getGenericStatHtml(obj.oneHandBlunt, 'One-Hand Blunt') +
-			getGenericStatHtml(obj.piercing, 'Piercing') +
-			getGenericStatHtml(obj.archery, 'Archery') +
-			getGenericStatHtml(obj.handToHand, 'Hand-to-Hand') +
-			getGenericStatHtml(obj.twoHandSlash, 'Two-Hand Slash') +
-			getGenericStatHtml(obj.twoHandBlunt, 'Two-Hand Blunt') +
-			getGenericStatHtml(obj.dodge, 'Dodge') +
-			getGenericStatHtml(obj.parry, 'Parry') +
-			getGenericStatHtml(obj.riposte, 'Riposte') +
-			getGenericStatHtml(obj.alteration, 'Alteration') +
-			getGenericStatHtml(obj.conjuration, 'Conjuration') +
-			getGenericStatHtml(obj.evocation, 'Evocation') +
-			getGenericStatHtml(obj.allSkills, 'All Skills') +
-			// resists
-			getGenericStatHtml(obj.resistBlood, 'Resist Blood') +
-			getGenericStatHtml(obj.resistPoison, 'Resist Poison') +
-			getGenericStatHtml(obj.resistArcane, 'Resist Arcane') +
-			getGenericStatHtml(obj.resistLightning, 'Resist Lightning') +
-			getGenericStatHtml(obj.resistFire, 'Resist Fire') +
-			getGenericStatHtml(obj.resistIce, 'Resist Ice') +
-			getGenericStatHtml(obj.resistAll, 'Resist All') +
+			// haste/block
+			getGenericPercentStatHtml(obj.increasedBlock, 'Increased Block Chance') +
+			getGenericPercentStatHtml(obj.haste, 'Increased Attack Speed') +
 			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
 			getDurabilityHtml(obj.durability) +
 		'';
@@ -120,10 +121,10 @@ var tooltip;
 		return html
 	}
 	function getGenericStatHtml(stat, label) {
-		return stat ? '<div>+' + stat + ' ' + label + '</div>' : ''
+		return stat ? '<div class="item-magic">+' + stat + ' ' + label + '</div>' : ''
 	}
 	function getGenericPercentStatHtml(stat, label) {
-		return stat ? '<div class="item-magic-alt">+' + stat + '% ' + label + '</div>' : ''
+		return stat ? '<div class="item-magic">+' + stat + '% ' + label + '</div>' : ''
 	}
 	function getWeaponDamageHtml(obj) {
 		if (obj.weaponSkill) {

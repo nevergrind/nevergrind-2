@@ -1384,11 +1384,11 @@ background-clip: content-box;
 	position: fixed;
 	visibility: hidden;
 	opacity: 0;
-	width: 16rem;
+	min-width: 16rem;
 	bottom: 50%;
 	right: 1rem;
 	font: .9rem/1.5 Play;
-	border: 2px ridge #ffd700;
+	border: 2px ridge #136;
 	z-index: 2;
 	padding: .2rem .4rem;
 	line-height: 1.2;
@@ -1411,7 +1411,7 @@ background-clip: content-box;
 
 .capitalize { text-transform: capitalize }
 .item-normal { color: #fff; }
-.item-magic { color: #487af8; }
+.item-magic { color: #2a9aff; }
 .item-magic-alt { color: #487af8 }
 .item-rare { color: #ff0; }
 .item-set { color: #00c400; }

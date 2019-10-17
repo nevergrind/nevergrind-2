@@ -45,10 +45,10 @@ items.staves = {
 	prefix: {
 		enhancedDamage: 100,
 		castingSkills: 6,
-		allSkills: 4,
-		attack: 200,
+		allSkills: 2,
+		attack: 100,
 		resists: 40,
-		resistAll: 20,
+		resistAll: 30,
 	},
 	suffix: {
 		stats: 30,

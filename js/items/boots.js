@@ -99,7 +99,7 @@ items.boots = {
 		},
 	],
 	prefix: {
-		resists: 30,
+		resists: 40,
 		enhancedArmor: 100
 	},
 	suffix: {
