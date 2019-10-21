@@ -60,7 +60,7 @@ items.oneHandSlashers = {
 		attack: 100,
 	},
 	suffix: {
-		stats: 10,
+		stats: 15,
 		points: 40,
 		crit: 20,
 		leech: 5,

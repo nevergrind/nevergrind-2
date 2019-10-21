@@ -36,6 +36,16 @@ var tooltip;
 		'SHD',
 		'WAR',
 	]
+	var weaponTypes = {
+		oneHandSlashers: 'Sword',
+		oneHandBlunts: 'Mace',
+		piercers: 'Dagger',
+		twoHandSlashers: 'Giant Sword',
+		twoHandBlunts: 'Giant Mace',
+		staves: 'Staff',
+		bows: 'Bow',
+		focus: 'Focus',
+	}
 	//////////////////////////////////////////////////
 	function show(obj) {
 		if (!_.size(obj)) return
@@ -60,9 +70,16 @@ var tooltip;
 			'</div>' +
 			getWeaponDamageHtml(obj) +
 			(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
+			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
+			getDurabilityHtml(obj.durability) +
+			// block
+			getBlockChance(obj.blockRate + (obj.increasedBlock ? obj.increasedBlock : 0)) +
+			getGenericPercentStatHtml(obj.increasedBlock, 'Increased Block Rate') +
 			// armor and damage
 			getGenericPercentStatHtml(obj.enhancedArmor, 'Enhanced Armor') +
 			getGenericPercentStatHtml(obj.enhancedDamage, 'Enhanced Damage') +
+			// ias
+			getGenericPercentStatHtml(obj.haste, 'Increased Attack Speed') +
 			// resists
 			getGenericStatHtml(obj.resistBlood, 'Resist Blood') +
 			getGenericStatHtml(obj.resistPoison, 'Resist Poison') +
@@ -71,6 +88,14 @@ var tooltip;
 			getGenericStatHtml(obj.resistFire, 'Resist Fire') +
 			getGenericStatHtml(obj.resistIce, 'Resist Ice') +
 			getGenericStatHtml(obj.resistAll, 'Resist All') +
+			// spell power
+			getGenericStatHtml(obj.addSpellBlood, 'Blood Spell Power') +
+			getGenericStatHtml(obj.addSpellPoison, 'Poison Spell Power') +
+			getGenericStatHtml(obj.addSpellArcane, 'Arcane Spell Power') +
+			getGenericStatHtml(obj.addSpellLightning, 'Lightning Spell Power') +
+			getGenericStatHtml(obj.addSpellFire, 'Fire Spell Power') +
+			getGenericStatHtml(obj.addSpellIce, 'Ice Spell Power') +
+			getGenericStatHtml(obj.addSpellAll, 'All Spell Power') +
 			// attack
 			getGenericStatHtml(obj.attack, 'Attack') +
 			// skills
@@ -111,17 +136,60 @@ var tooltip;
 			// leech
 			getGenericStatHtml(obj.leech, 'Life Leech') +
 			getGenericStatHtml(obj.wraith, 'Mana Leech') +
-			// haste/block
-			getGenericPercentStatHtml(obj.increasedBlock, 'Increased Block Chance') +
-			getGenericPercentStatHtml(obj.haste, 'Increased Attack Speed') +
-			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
-			getDurabilityHtml(obj.durability) +
+			// set/unique and beyond
+			getGenericStatHtml(obj.damageTakenToMana, 'Mana When Damaged') +
+			getGenericStatHtml(obj.damageTakenToSpirit, 'Spirit When Damaged') +
+			// damage vs mob types
+			getGenericStatHtml(obj.enhancedDamageToHumanoids, 'Enhanced Damage vs Humanoids') +
+			getGenericStatHtml(obj.enhancedDamageToBeasts, 'Enhanced Damage vs Beasts') +
+			getGenericStatHtml(obj.enhancedDamageToUndead, 'Enhanced Damage vs Undead') +
+			getGenericStatHtml(obj.enhancedDamageToDemons, 'Enhanced Damage vs Demons') +
+			getGenericStatHtml(obj.enhancedDamageToDragonkin, 'Enhanced Damage vs Dragonkin') +
+			getGenericStatHtml(obj.enhancedDamageToEldritch, 'Enhanced Damage vs Eldritch') +
+			// mitigation
+			getGenericReducedStatHtml(obj.phyMit, 'Physical Damage Reduced by') +
+			getGenericReducedStatHtml(obj.magMit, 'Magical Damage Reduced by') +
+			// all spell damage
+			getGenericPercentStatHtml(obj.enhanceBlood, 'All Blood Damage') +
+			getGenericPercentStatHtml(obj.enhancePoison, 'All Poison Damage') +
+			getGenericPercentStatHtml(obj.enhanceArcane, 'All Arcane Damage') +
+			getGenericPercentStatHtml(obj.enhanceLightning, 'All Lightning Damage') +
+			getGenericPercentStatHtml(obj.enhanceFire, 'All Fire Damage') +
+			getGenericPercentStatHtml(obj.enhanceIce, 'All Ice Damage') +
+			getGenericPercentStatHtml(obj.enhanceAll, 'All Spell Damage') +
+			// status resists
+			getPropHtml(obj.cannotBeFrozen, 'Cannot Be Frozen') +
+			getPropHtml(obj.cannotBeFeared, 'Cannot Be Feared') +
+			getPropHtml(obj.cannotBeStunned, 'Cannot Be Stunned') +
+			getPropHtml(obj.cannotBeSilence, 'Cannot Be Silenced') +
+			getPropHtml(obj.indestructible, 'Indestructible') +
+			// debuff
+			getPropHtml(obj.reducedHealing, obj.reducedHealing + '% Healing on Monsters') +
+			getPropHtml(obj.restInPeace, 'Slain Monsters Rest in Peace') +
+			getPropHtml(obj.slowsTarget, 'Slows Target ' + obj.slowsTarget + '%') +
+			getPropHtml(obj.reduceTargetArmor, 'Reduces Target Armor ' + obj.reduceTargetArmor + '%') +
+			getPropHtml(obj.ignoreTargetArmor, 'Ignores Target Armor') +
+			getPropHtml(obj.increaseHpPercent, '+' + obj.increaseHpPercent + '% Total Health') +
+			getPropHtml(obj.increaseMpPercent, '+' + obj.increaseMpPercent + '% Total Health') +
+			getPropHtml(obj.manaSink, '+' + obj.manaSink + ' Mana Sink') +
+			getPropHtml(obj.hpOnKill, '+' + obj.hpOnKill + ' Health on Kill') +
+			getPropHtml(obj.mpOnKill, '+' + obj.mpOnKill + ' Mana on Kill') +
+			getPropHtml(obj.spOnKill, '+' + obj.spOnKill + ' Spirit on Kill') +
 		'';
 
 		return html
 	}
+	function getPropHtml(stat, label) {
+		return stat ? '<div class="item-magic">' + label + '</div>' : ''
+	}
+	function getGenericReducedStatHtml(stat, label) {
+		return stat ? '<div class="item-magic">' + label + ' ' + stat + '</div>' : ''
+	}
 	function getGenericStatHtml(stat, label) {
 		return stat ? '<div class="item-magic">+' + stat + ' ' + label + '</div>' : ''
+	}
+	function getBlockChance(stat) {
+		return stat ? '<div>Chance to Block: <span class="item-magic">' + stat + '%</span></div>' : ''
 	}
 	function getGenericPercentStatHtml(stat, label) {
 		return stat ? '<div class="item-magic">+' + stat + '% ' + label + '</div>' : ''
@@ -142,7 +210,7 @@ var tooltip;
 	function getDurabilityHtml(durability) {
 		return durability ?
 			'<div>Durability ' + durability + '/100</div>' :
-			'<div class="item-restricted">Durability ' + durability + '/100</div>'
+			'<div class="item-restricted">Durability: ' + durability + '/100</div>'
 	}
 	function getRequiredLevelHtml(itemLevel) {
 		var level = getRequiredLevel(itemLevel)
@@ -159,10 +227,14 @@ var tooltip;
 		return level
 	}
 	function getItemSlot(slots) {
+		var str = slots[0];
 		if (slots[1] === 'secondary' && !my.dualWield) {
-			slots[1] = '<span class="item-restricted">Secondary</span>'
+			str += ' <span class="item-restricted">' + slots[1] + '</span>'
 		}
-		return slots.join(' ')
+		else {
+			str += slots[1] ? ' ' + slots[1] : ''
+		}
+		return str
 	}
 	function getRequiredItemSkill(obj) {
 		if (obj.armorType) {
@@ -170,16 +242,19 @@ var tooltip;
 				return '<div>'+ _.startCase(obj.armorType) +'</div>'
 			}
 			else {
-				return '<div class="item-restricted">'+ _.startCase(obj.armorType) +'</div>'
+				return '<div class="item-restricted">'+ _.startCase(obj.itemType) +'</div>'
 			}
 		}
 		else if (obj.weaponSkill) {
 			if (canEquipWeapon(obj.weaponSkill)) {
-				return '<div>'+ _.startCase(obj.weaponSkill) +'</div>'
+				return '<div>'+ weaponTypes[obj.itemType] +'</div>'
 			}
 			else {
-				return '<div class="item-restricted">'+ _.startCase(obj.weaponSkill) +'</div>'
+				return '<div class="item-restricted">'+ weaponTypes[obj.itemType] +'</div>'
 			}
+		}
+		else if (obj.itemType === 'shields') {
+			return '<div>Shield</div>'
 		}
 		else {
 			return ''

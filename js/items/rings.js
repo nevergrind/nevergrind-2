@@ -9,12 +9,13 @@ items.rings = {
 		}
 	],
 	prefix: {
-		resists: 30,
-		resistAll: 10,
+		resists: 40,
+		resistAll: 15,
+		spellPower: 20,
 	},
 	suffix: {
-		stats: 20,
-		allStats: 10,
+		stats: 30,
+		allStats: 15,
 		points: 20,
 		crit: 10,
 		regen: 5,

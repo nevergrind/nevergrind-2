@@ -1394,6 +1394,7 @@ background-clip: content-box;
 	line-height: 1.2;
 	border-radius: 5px;
 	transform: translate(0%, -50%);
+	backdrop-filter: blur(5px);
 }
 #tooltip-name {
 	font-size: 1rem;
@@ -1418,7 +1419,7 @@ background-clip: content-box;
 .item-unique { color: #908858; /*b5a170*/}
 .item-runic { color: #ad68f8; }
 .item-legendary { color: #ffa500; }
-.item-restricted { color: #f11; }
+.item-restricted { color: #f21; }
 /* town menu */
 #town-menu {
 	position: absolute;

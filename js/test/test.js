@@ -158,12 +158,13 @@ var test;
 	 */
 	function getItem(rarityIndex = 1) {
 		var drop = item.getItem({
-			mobLevel: 50,
+			mobLevel: _.random(1, 50),
+			//mobLevel: 10,
 			rarityIndex: rarityIndex
 		})
 
 		_.each(drop, function(val, key) {
-			console.info('prop', key, val)
+			//console.info('prop', key, val)
 		})
 		tooltip.show(drop)
 		return drop

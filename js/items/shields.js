@@ -55,12 +55,11 @@ items.shields = {
 	],
 	prefix: {
 		resists: 40,
-		resistAll: 30,
+		resistAll: 15,
 		enhancedArmor: 100,
 	},
 	suffix: {
-		stats: 20,
-		allStats: 10,
+		stats: 15,
 		points: 50,
 		increasedBlock: 20,
 	},

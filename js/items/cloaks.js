@@ -87,6 +87,7 @@ items.cloaks = {
 	],
 	prefix: {
 		resists: 40,
+		spellPower: 40,
 	},
 	suffix: {
 		stats: 12,

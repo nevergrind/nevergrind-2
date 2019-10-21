@@ -10,48 +10,98 @@ var items = {};
 		'amulets',
 		'charms',
 	]
+	var MAX_TREASURE_CLASS = 45
 	var prefixNames = {
-		resistBlood: function(val) {
-			if (val <= 10) { return 'Ruddy' }
-			else if (val <= 20) { return 'Crimson' }
-			else if (val <= 30) { return 'Burgundy' }
+		resistBlood: function(val, multi) {
+			if (val <= 10 * multi) { return 'Ruddy' }
+			else if (val <= 20 * multi) { return 'Crimson' }
+			else if (val <= 30 * multi) { return 'Burgundy' }
 			else { return 'Scarlet' }
 		},
-		resistPoison: function(val) {
-			if (val <= 10) { return 'Beryl' }
-			else if (val <= 20) { return 'Viridian' }
-			else if (val <= 30) { return 'Jade' }
+		resistPoison: function(val, multi) {
+			if (val <= 10 * multi) { return 'Beryl' }
+			else if (val <= 20 * multi) { return 'Viridian' }
+			else if (val <= 30 * multi) { return 'Jade' }
 			else { return 'Emerald' }
 		},
-		resistArcane: function(val) {
-			if (val <= 10) { return 'Quartz' }
-			else if (val <= 20) { return 'Opal' }
-			else if (val <= 30) { return 'Beryl' }
+		resistArcane: function(val, multi) {
+			if (val <= 10 * multi) { return 'Quartz' }
+			else if (val <= 20 * multi) { return 'Opal' }
+			else if (val <= 30 * multi) { return 'Beryl' }
 			else { return 'Sphene' }
 		},
-		resistLightning: function(val) {
-			if (val <= 10) { return 'Tangerine' }
-			else if (val <= 20) { return 'Ocher' }
-			else if (val <= 30) { return 'Coral' }
+		resistLightning: function(val, multi) {
+			if (val <= 10 * multi) { return 'Tangerine' }
+			else if (val <= 20 * multi) { return 'Ocher' }
+			else if (val <= 30 * multi) { return 'Coral' }
 			else { return 'Amber' }
 		},
-		resistFire: function(val) {
-			if (val <= 10) { return 'Crimson' }
-			else if (val <= 20) { return 'Russet' }
-			else if (val <= 30) { return 'Garnet' }
+		resistFire: function(val, multi) {
+			if (val <= 10 * multi) { return 'Crimson' }
+			else if (val <= 20 * multi) { return 'Russet' }
+			else if (val <= 30 * multi) { return 'Garnet' }
 			else { return 'Ruby' }
 		},
-		resistIce: function(val) {
-			if (val <= 10) { return 'Azure' }
-			else if (val <= 20) { return 'Lapis' }
-			else if (val <= 30) { return 'Cobalt' }
+		resistIce: function(val, multi) {
+			if (val <= 10 * multi) { return 'Azure' }
+			else if (val <= 20 * multi) { return 'Lapis' }
+			else if (val <= 30 * multi) { return 'Cobalt' }
 			else { return 'Sapphire' }
 		},
-		resistAll: function(val) {
-			if (val <= 7) { return 'Shimmering' }
-			else if (val <= 11) { return 'Rainbow' }
-			else if (val <= 15) { return 'Scintillating' }
-			else if (val <= 20) { return 'Prismatic' }
+		resistAll: function(val, multi) {
+			if (val <= 7 * multi) { return 'Shimmering' }
+			else if (val <= 11 * multi) { return 'Rainbow' }
+			else if (val <= 15 * multi) { return 'Scintillating' }
+			else if (val <= 20 * multi) { return 'Prismatic' }
+			else { return 'Chromatic' }
+		},
+		addSpellBlood: function(val, multi) {
+			if (val <= 7 * multi) { return 'Ailing' }
+			else if (val <= 11 * multi) { return 'Blighting' }
+			else if (val <= 15 * multi) { return 'Afflicting' }
+			else if (val <= 20 * multi) { return 'Tribulating' }
+			else { return 'Grieving' }
+		},
+		addSpellPoison: function(val, multi) {
+			if (val <= 7 * multi) { return 'Unsettling' }
+			else if (val <= 11 * multi) { return 'Agonizing' }
+			else if (val <= 15 * multi) { return 'Agitating' }
+			else if (val <= 20 * multi) { return 'Writhing' }
+			else { return 'Tormenting' }
+		},
+		addSpellArcane: function(val, multi) {
+			if (val <= 7 * multi) { return 'Astounding' }
+			else if (val <= 11 * multi) { return 'Confounding' }
+			else if (val <= 15 * multi) { return 'Mystifying' }
+			else if (val <= 20 * multi) { return 'Stupefying' }
+			else { return 'Bewildering' }
+		},
+		addSpellLightning: function(val, multi) {
+			if (val <= 7 * multi) { return 'Conductive' }
+			else if (val <= 11 * multi) { return 'Rippling' }
+			else if (val <= 15 * multi) { return 'Crackling' }
+			else if (val <= 20 * multi) { return 'Amplified' }
+			else { return 'Psionic' }
+		},
+		addSpellFire: function(val, multi) {
+			if (val <= 7 * multi) { return 'Simmering' }
+			else if (val <= 11 * multi) { return 'Sizzling' }
+			else if (val <= 15 * multi) { return 'Scorching' }
+			else if (val <= 20 * multi) { return 'Boiling' }
+			else { return 'Scalding' }
+		},
+		addSpellIce: function(val, multi) {
+			if (val <= 7 * multi) { return 'Icing' }
+			else if (val <= 11 * multi) { return 'Numbing' }
+			else if (val <= 15 * multi) { return 'Frosting' }
+			else if (val <= 20 * multi) { return 'Chilling' }
+			else { return 'Freezing' }
+		},
+		addSpellAll: function(val, multi) {
+			if (val <= 7 * multi) { return 'Stellar' }
+			else if (val <= 11 * multi) { return 'Celestial' }
+			else if (val <= 15 * multi) { return 'Astral' }
+			else if (val <= 20 * multi) { return 'Cosmic' }
 			else { return 'Chromatic' }
 		},
 		enhancedArmor: function(val) {
@@ -71,211 +121,211 @@ var items = {};
 			else if (val <= 80) { return 'Savage' }
 			else { return 'Merciless' }
 		},
-		attack: function(val) {
-			if (val <= 20) { return 'Bronze' }
-			else if (val <= 40) { return 'Iron' }
-			else if (val <= 60) { return 'Steel' }
-			else if (val <= 80) { return 'Silver' }
+		attack: function(val, multi) {
+			if (val <= 20 * multi) { return 'Bronze' }
+			else if (val <= 40 * multi) { return 'Iron' }
+			else if (val <= 60 * multi) { return 'Steel' }
+			else if (val <= 80 * multi) { return 'Silver' }
 			else { return 'Gold' }
 		},
-		offense: function(val) {
-			if (val <= 1) { return 'Cavalier\'s' }
-			else if (val <= 2) { return 'Knight\'s' }
+		offense: function(val, multi) {
+			if (val <= 1 * multi) { return 'Cavalier\'s' }
+			else if (val <= 2 * multi) { return 'Knight\'s' }
 			else { return 'Templar\'s' }
 		},
-		defense: function(val) {
-			if (val <= 1) { return 'Escort\'s' }
-			else if (val <= 2) { return 'Defender\'s' }
+		defense: function(val, multi) {
+			if (val <= 1 * multi) { return 'Escort\'s' }
+			else if (val <= 2 * multi) { return 'Defender\'s' }
 			else { return 'Guardian\'s' }
 		},
-		oneHandSlash: function(val) {
-			if (val <= 1) { return 'Fencer\'s' }
-			else if (val <= 2) { return 'Swordsman\'s' }
+		oneHandSlash: function(val, multi) {
+			if (val <= 1 * multi) { return 'Fencer\'s' }
+			else if (val <= 2 * multi) { return 'Swordsman\'s' }
 			else { return 'Gladiator\'s' }
 		},
-		oneHandBlunt: function(val) {
-			if (val <= 1) { return 'Minister\'s' }
-			else if (val <= 2) { return 'Vicar\'s' }
+		oneHandBlunt: function(val, multi) {
+			if (val <= 1 * multi) { return 'Minister\'s' }
+			else if (val <= 2 * multi) { return 'Vicar\'s' }
 			else { return 'Reverend\'s' }
 		},
-		piercing: function(val) {
-			if (val <= 1) { return 'Marauder\'s' }
-			else if (val <= 2) { return 'Raider\'s' }
+		piercing: function(val, multi) {
+			if (val <= 1 * multi) { return 'Marauder\'s' }
+			else if (val <= 2 * multi) { return 'Raider\'s' }
 			else { return 'Brigand\'s' }
 		},
-		archery: function(val) {
-			if (val <= 1) { return 'Fletcher\'s' }
-			else if (val <= 2) { return 'Bowyer\'s' }
+		archery: function(val, multi) {
+			if (val <= 1 * multi) { return 'Fletcher\'s' }
+			else if (val <= 2 * multi) { return 'Bowyer\'s' }
 			else { return 'Archer\'s' }
 		},
-		handToHand: function(val) {
-			if (val <= 1) { return 'Fighter\'s' }
-			else if (val <= 2) { return 'Pugilist\'s' }
+		handToHand: function(val, multi) {
+			if (val <= 1 * multi) { return 'Fighter\'s' }
+			else if (val <= 2 * multi) { return 'Pugilist\'s' }
 			else { return 'Brawler\'s' }
 		},
-		twoHandSlash: function(val) {
-			if (val <= 1) { return 'Vanquisher\'s' }
-			else if (val <= 2) { return 'Vindicator\'s' }
+		twoHandSlash: function(val, multi) {
+			if (val <= 1 * multi) { return 'Vanquisher\'s' }
+			else if (val <= 2 * multi) { return 'Vindicator\'s' }
 			else { return 'Conqueror\'s' }
 		},
-		twoHandBlunt: function(val) {
-			if (val <= 1) { return 'Reprover\'s' }
-			else if (val <= 2) { return 'Rebuker\'s' }
+		twoHandBlunt: function(val, multi) {
+			if (val <= 1 * multi) { return 'Reprover\'s' }
+			else if (val <= 2 * multi) { return 'Rebuker\'s' }
 			else { return 'Castigator\'s' }
 		},
-		dodge: function(val) {
-			if (val <= 1) { return 'Gymnast\'s' }
-			else if (val <= 2) { return 'Acrobat\'s' }
+		dodge: function(val, multi) {
+			if (val <= 1 * multi) { return 'Gymnast\'s' }
+			else if (val <= 2 * multi) { return 'Acrobat\'s' }
 			else { return 'Athlete\'s' }
 		},
-		parry: function(val) {
-			if (val <= 1) { return 'Cadet\'s' }
-			else if (val <= 2) { return 'Veteran\'s' }
+		parry: function(val, multi) {
+			if (val <= 1 * multi) { return 'Cadet\'s' }
+			else if (val <= 2 * multi) { return 'Veteran\'s' }
 			else { return 'Officer\'s' }
 		},
-		riposte: function(val) {
-			if (val <= 1) { return 'Hireling\'s' }
-			else if (val <= 2) { return 'Mercenary\'s' }
+		riposte: function(val, multi) {
+			if (val <= 1 * multi) { return 'Hireling\'s' }
+			else if (val <= 2 * multi) { return 'Mercenary\'s' }
 			else { return 'Legionnaire\'s' }
 		},
-		alteration: function(val) {
-			if (val <= 1) { return 'Priest\'s' }
-			else if (val <= 2) { return 'Friar\'s' }
+		alteration: function(val, multi) {
+			if (val <= 1 * multi) { return 'Priest\'s' }
+			else if (val <= 2 * multi) { return 'Friar\'s' }
 			else { return 'Elder\'s' }
 		},
-		conjuration: function(val) {
-			if (val <= 1) { return 'Conjurer\'s' }
-			else if (val <= 2) { return 'Seer\'s' }
+		conjuration: function(val, multi) {
+			if (val <= 1 * multi) { return 'Conjurer\'s' }
+			else if (val <= 2 * multi) { return 'Seer\'s' }
 			else { return 'Warlock\'s' }
 		},
-		evocation: function(val) {
-			if (val <= 1) { return 'Evoker\'s' }
-			else if (val <= 2) { return 'Sorcerer\'s' }
+		evocation: function(val, multi) {
+			if (val <= 1 * multi) { return 'Evoker\'s' }
+			else if (val <= 2 * multi) { return 'Sorcerer\'s' }
 			else { return 'Magus\'s' }
 		},
-		allSkills: function(val) {
-			if (val <= 1) { return 'Angel\'s' }
+		allSkills: function(val, multi) {
+			if (val <= 1 * multi) { return 'Angel\'s' }
 			else { return 'Arch-Angel\'s' }
 		},
 	}
 	var suffixNames = {
-		str: function(val) {
-			if (val <= 2) { return 'of Strength' }
-			else if (val <= 5) { return 'of Might' }
-			else if (val <= 9) { return 'of the Ox' }
-			else if (val <= 15) { return 'of the Giants' }
-			else if (val <= 20) { return 'of the Titans' }
+		str: function(val, multi) {
+			if (val <= 2 * multi) { return 'of Strength' }
+			else if (val <= 5 * multi) { return 'of Might' }
+			else if (val <= 9 * multi) { return 'of the Ox' }
+			else if (val <= 15 * multi) { return 'of the Giants' }
+			else if (val <= 20 * multi) { return 'of the Titans' }
 			else { return 'of Atlas' }
 		},
-		sta: function(val) {
-			if (val <= 2) { return 'of Stamina' }
-			else if (val <= 5) { return 'of Vitality' }
-			else if (val <= 9) { return 'of Zest' }
-			else if (val <= 15) { return 'of Vim' }
-			else if (val <= 20) { return 'of Vigor' }
+		sta: function(val, multi) {
+			if (val <= 2 * multi) { return 'of Stamina' }
+			else if (val <= 5 * multi) { return 'of Vitality' }
+			else if (val <= 9 * multi) { return 'of Zest' }
+			else if (val <= 15 * multi) { return 'of Vim' }
+			else if (val <= 20 * multi) { return 'of Vigor' }
 			else { return 'of Life' }
 		},
-		agi: function(val) {
-			if (val <= 2) { return 'of Agility' }
-			else if (val <= 5) { return 'of Quickness' }
-			else if (val <= 9) { return 'of Swiftness' }
-			else if (val <= 15) { return 'of Alacrity' }
-			else if (val <= 20) { return 'of Celerity' }
+		agi: function(val, multi) {
+			if (val <= 2 * multi) { return 'of Agility' }
+			else if (val <= 5 * multi) { return 'of Quickness' }
+			else if (val <= 9 * multi) { return 'of Swiftness' }
+			else if (val <= 15 * multi) { return 'of Alacrity' }
+			else if (val <= 20 * multi) { return 'of Celerity' }
 			else { return 'of Speed' }
 		},
-		dex: function(val) {
-			if (val <= 2) { return 'of Dexterity' }
-			else if (val <= 5) { return 'of Skill' }
-			else if (val <= 9) { return 'of Accuracy' }
-			else if (val <= 15) { return 'of Precision' }
-			else if (val <= 20) { return 'of Perfection' }
+		dex: function(val, multi) {
+			if (val <= 2 * multi) { return 'of Dexterity' }
+			else if (val <= 5 * multi) { return 'of Skill' }
+			else if (val <= 9 * multi) { return 'of Accuracy' }
+			else if (val <= 15 * multi) { return 'of Precision' }
+			else if (val <= 20 * multi) { return 'of Perfection' }
 			else { return 'of Nirvana' }
 		},
-		wis: function(val) {
-			if (val <= 2) { return 'of Wisdom' }
-			else if (val <= 5) { return 'of Discernment' }
-			else if (val <= 9) { return 'of Foresight' }
-			else if (val <= 15) { return 'of Intuition' }
-			else if (val <= 20) { return 'of Judgment' }
+		wis: function(val, multi) {
+			if (val <= 2 * multi) { return 'of Wisdom' }
+			else if (val <= 5 * multi) { return 'of Discernment' }
+			else if (val <= 9 * multi) { return 'of Foresight' }
+			else if (val <= 15 * multi) { return 'of Intuition' }
+			else if (val <= 20 * multi) { return 'of Judgment' }
 			else { return 'of Acumen' }
 		},
-		intel: function(val) {
-			if (val <= 2) { return 'of Intelligence' }
-			else if (val <= 5) { return 'of the Mind' }
-			else if (val <= 9) { return 'of Brilliance' }
-			else if (val <= 15) { return 'of Sorcery' }
-			else if (val <= 20) { return 'of Wizardry' }
+		intel: function(val, multi) {
+			if (val <= 2 * multi) { return 'of Intelligence' }
+			else if (val <= 5 * multi) { return 'of the Mind' }
+			else if (val <= 9 * multi) { return 'of Brilliance' }
+			else if (val <= 15 * multi) { return 'of Sorcery' }
+			else if (val <= 20 * multi) { return 'of Wizardry' }
 			else { return 'of Enlightenment' }
 		},
-		cha: function(val) {
-			if (val <= 2) { return 'of Charisma' }
-			else if (val <= 5) { return 'of Allure' }
-			else if (val <= 9) { return 'of Glamour' }
-			else if (val <= 15) { return 'of Magnetism' }
-			else if (val <= 20) { return 'of Temptation' }
+		cha: function(val, multi) {
+			if (val <= 2 * multi) { return 'of Charisma' }
+			else if (val <= 5 * multi) { return 'of Allure' }
+			else if (val <= 9 * multi) { return 'of Glamour' }
+			else if (val <= 15 * multi) { return 'of Magnetism' }
+			else if (val <= 20 * multi) { return 'of Temptation' }
 			else { return 'of Persuasion' }
 		},
-		allStats: function(val) {
-			if (val <= 3) { return 'of the Sky' }
-			else if (val <= 7) { return 'of the Moon' }
-			else if (val <= 11) { return 'of the Stars' }
-			else if (val <= 15) { return 'of the Heavens' }
+		allStats: function(val, multi) {
+			if (val <= 3 * multi) { return 'of the Sky' }
+			else if (val <= 7 * multi) { return 'of the Moon' }
+			else if (val <= 11 * multi) { return 'of the Stars' }
+			else if (val <= 15 * multi) { return 'of the Heavens' }
 			else { return 'of the Firmament' }
 		},
-		hp: function(val) {
-			if (val <= 5) { return 'of the Jackal' }
-			else if (val <= 10) { return 'of the Fox' }
-			else if (val <= 20) { return 'of the Wolf' }
-			else if (val <= 30) { return 'of the Tiger' }
-			else if (val <= 40) { return 'of the Mammoth' }
+		hp: function(val, multi) {
+			if (val <= 5 * multi) { return 'of the Jackal' }
+			else if (val <= 10 * multi) { return 'of the Fox' }
+			else if (val <= 20 * multi) { return 'of the Wolf' }
+			else if (val <= 30 * multi) { return 'of the Tiger' }
+			else if (val <= 40 * multi) { return 'of the Mammoth' }
 			else { return 'of the Colossus' }
 		},
-		mp: function(val) {
-			if (val <= 5) { return 'of the Lizard' }
-			else if (val <= 10) { return 'of the Snake' }
-			else if (val <= 20) { return 'of the Serpent' }
-			else if (val <= 30) { return 'of the Drake' }
-			else if (val <= 40) { return 'of the Wyrm' }
+		mp: function(val, multi) {
+			if (val <= 5 * multi) { return 'of the Lizard' }
+			else if (val <= 10 * multi) { return 'of the Snake' }
+			else if (val <= 20 * multi) { return 'of the Serpent' }
+			else if (val <= 30 * multi) { return 'of the Drake' }
+			else if (val <= 40 * multi) { return 'of the Wyrm' }
 			else { return 'of the Dragon' }
 		},
-		sp: function(val) {
-			if (val <= 5) { return 'of the Sedated' }
-			else if (val <= 10) { return 'of the Placid' }
-			else if (val <= 20) { return 'of the Serene' }
-			else if (val <= 30) { return 'of the Staid' }
-			else if (val <= 40) { return 'of the Tranquil' }
+		sp: function(val, multi) {
+			if (val <= 5 * multi) { return 'of the Sedated' }
+			else if (val <= 10 * multi) { return 'of the Placid' }
+			else if (val <= 20 * multi) { return 'of the Serene' }
+			else if (val <= 30 * multi) { return 'of the Staid' }
+			else if (val <= 40 * multi) { return 'of the Tranquil' }
 			else { return 'of the Halcyon' }
 		},
-		hpRegen: function(val) {
-			if (val <= 4) { return 'of Regeneration' }
-			else if (val <= 6) { return 'of Regrowth' }
+		hpRegen: function(val, multi) {
+			if (val <= 4 * multi) { return 'of Regeneration' }
+			else if (val <= 6 * multi) { return 'of Regrowth' }
 			else { return 'of Revivification' }
 		},
-		mpRegen: function(val) {
-			if (val <= 4) { return 'of Rumination' }
-			else if (val <= 6) { return 'of Meditation' }
+		mpRegen: function(val, multi) {
+			if (val <= 4 * multi) { return 'of Rumination' }
+			else if (val <= 6 * multi) { return 'of Meditation' }
 			else { return 'of Cogitation' }
 		},
-		spRegen: function(val) {
-			if (val <= 4) { return 'of Echoes' }
-			else if (val <= 6) { return 'of Reverberation' }
+		spRegen: function(val, multi) {
+			if (val <= 4 * multi) { return 'of Echoes' }
+			else if (val <= 6 * multi) { return 'of Reverberation' }
 			else { return 'of Resound' }
 		},
-		crit: function(val) {
-			if (val <= 4) { return 'of the Guerrilla' }
-			else if (val <= 8) { return 'of the Cutthroat' }
-			else if (val <= 12) { return 'of the Assassin' }
-			else if (val <= 16) { return 'of the Rake' }
+		crit: function(val, multi) {
+			if (val <= 4 * multi) { return 'of the Guerrilla' }
+			else if (val <= 8 * multi) { return 'of the Cutthroat' }
+			else if (val <= 12 * multi) { return 'of the Assassin' }
+			else if (val <= 16 * multi) { return 'of the Rake' }
 			else { return 'of the Blackguard' }
 		},
-		leech: function(val) {
-			if (val <= 4) { return 'of the Leech' }
-			else if (val <= 6) { return 'of the Locust' }
+		leech: function(val, multi) {
+			if (val <= 4 * multi) { return 'of the Leech' }
+			else if (val <= 6 * multi) { return 'of the Locust' }
 			else { return 'of the Lamprey' }
 		},
-		wraith: function(val) {
-			if (val <= 4) { return 'of the Bat' }
-			else if (val <= 6) { return 'of the Wraith' }
+		wraith: function(val, multi) {
+			if (val <= 4 * multi) { return 'of the Bat' }
+			else if (val <= 6 * multi) { return 'of the Wraith' }
 			else { return 'of the Vampire' }
 		},
 		haste: function(val) {
@@ -291,25 +341,24 @@ var items = {};
 			else if (val <= 16) { return 'of the Rampart' }
 			else { return 'of the Bulwark' }
 		},
-		/*
-		addBlood: function(val) {},
-		addPoison: function(val) {},
-		addArcane: function(val) {},
-		addLightning: function(val) {},
-		addFire: function(val) {},
-		addIce: function(val) {},
-		*/
 	}
 	var minValue = {
-		resistBlood: 5,
-		resistPoison: 5,
-		resistArcane: 5,
-		resistLightning: 5,
-		resistFire: 5,
-		resistIce: 5,
-		resistAll: 3,
-		enhancedArmor: 10,
-		enhancedDamage: 10,
+		resistBlood: 2,
+		resistPoison: 2,
+		resistArcane: 2,
+		resistLightning: 2,
+		resistFire: 2,
+		resistIce: 2,
+		resistAll: 1,
+		enhancedArmor: 5,
+		enhancedDamage: 5,
+		addSpellBlood: 2,
+		addSpellPoison: 2,
+		addSpellArcane: 2,
+		addSpellLightning: 2,
+		addSpellFire: 2,
+		addSpellIce: 2,
+		addSpellAll: 2,
 		attack: 2,
 		offense: 1,
 		defense: 1,
@@ -327,12 +376,6 @@ var items = {};
 		conjuration: 1,
 		evocation: 1,
 		allSkills: 1,
-		addSpellBlood: 2,
-		addSpellPoison: 2,
-		addSpellArcane: 2,
-		addSpellLightning: 2,
-		addSpellFire: 2,
-		addSpellIce: 2,
 		str: 1,
 		sta: 1,
 		agi: 1,
@@ -348,17 +391,23 @@ var items = {};
 		sp: 1,
 		spRegen: 2,
 		crit: 1,
-		leech: 2,
-		wraith: 2,
-		haste: 10,
+		leech: 1,
+		wraith: 1,
+		haste: 5,
 		addBlood: 2,
 		addPoison: 2,
 		addArcane: 2,
 		addLightning: 2,
 		addFire: 2,
 		addIce: 2,
-		increaseBlock: 3,
+		increaseBlock: 2,
 	}
+	var twoHandItemTypes = [
+		'twoHandSlashers',
+		'twoHandBlunts',
+		'staves',
+		'bows',
+	]
 	////////////////////////////////////////////
 	function getEquipString() {
 		// cloth, leather, mail, plate, weapon types should show red if you can't use it
@@ -383,7 +432,7 @@ var items = {};
 		var itemSlot = filteredKeys[_.random(0, len - 1)]
 
 		var itemObj = _.cloneDeep(items[itemSlot])
-		console.info('itemObj', rarity, itemObj)
+		//console.info('itemObj', rarity, itemObj)
 
 		// get item-filtered base item
 		var filteredItems = _.filter(itemObj['normal'], filterItems)
@@ -394,7 +443,7 @@ var items = {};
 			itemObj.base,
 			filteredItems[filteredItemsIndex]
 		)
-		console.info('drop', _.cloneDeep(drop))
+		//console.info('drop', _.cloneDeep(drop))
 		// check defense range
 		if (drop.minArmor) {
 			drop.armor = _.random(drop.minArmor, drop.maxArmor)
@@ -405,56 +454,81 @@ var items = {};
 		drop.durability = 100
 		drop.itemType = itemSlot
 		// magic
-		if (rarity === 'magic') {
-			console.info('this is magic yo')
-			console.info('itemObj', itemObj)
-			processMagicDrop(drop)
+		if (rarity === 'magic' || rarity === 'rare') {
+			// pre-process item props for magic and rare
+			itemObj.prefix = convertProps(itemObj.prefix)
+			itemObj.suffix = convertProps(itemObj.suffix)
+			itemObj.rare = convertProps(itemObj.rare)
+			removeWeaponSpecificProps(drop.itemType)
+			var prefixKeys = _.keys(itemObj.prefix)
+			var suffixKeys = _.keys(itemObj.suffix)
+			var rareKeys = _.uniq(_.concat(
+				prefixKeys,
+				suffixKeys,
+				_.keys(itemObj.rare)
+			))
+
+			console.info('prefixKeys', prefixKeys)
+			console.info('suffixKeys', suffixKeys)
+			console.info('rareKeys', rareKeys)
+			if (rarity === 'magic') {
+				processMagicDrop(drop)
+			}
+			if (rarity === 'rare') {
+				processRareDrop(drop)
+			}
 		}
 		return drop;
 		////////////////////////////////////////////////////
+		function processRareDrop(drop) {
+			console.info('rare drop', drop, config)
+		}
 		function processMagicDrop(drop) {
-			console.info('drop type??', drop)
-			itemObj.prefix = convertProps(itemObj.prefix)
-			itemObj.suffix = convertProps(itemObj.suffix)
-			removeWeaponSpecificProps(drop.itemType)
-			var prefixKeys = _.keys(itemObj.prefix)
-			console.info('prefixKeys', prefixKeys)
-			var suffixKeys = _.keys(itemObj.suffix)
-			var prefixLen = prefixKeys.length
-			var suffixLen = suffixKeys.length
+			console.info('magic drop', drop, config)
 			// get prefix and suffix
-			var prefix = prefixKeys[_.random(0, prefixLen - 1)]
-			var suffix = suffixKeys[_.random(0, suffixLen - 1)]
+			var prefix = prefixKeys[_.random(0, prefixKeys.length - 1)]
+			var suffix = suffixKeys[_.random(0, suffixKeys.length - 1)]
 			// get values and names
-			var prefixVal = ''
-			var suffixVal = ''
+			var prefixVal = 0
+			var suffixVal = 0
 			var prefixName = ''
 			var suffixName = ''
+			var itemTypeMultiplier = getMultiplierByTypeAndProp(drop.itemType)
+			//TODO: unlock props by treasure class? Need data object for it
+			//TODO: Add rare props - refactor for easy code reuse
+			//console.warn('config', config.mobLevel)
+			console.info('itemObj', itemObj)
+			var tc = getTreasureClass(config.mobLevel)
+			// set prefix and bound check
+			var prefixMax = setMaxPropValue(itemObj.prefix, prefix, tc)
+			// set suffix and bound check
+			var suffixMax = setMaxPropValue(itemObj.suffix, suffix, tc)
+			console.info('infos', config.mobLevel, tc, prefix, prefixMax, suffix, suffixMax)
+			console.warn('max ', prefixMax, suffixMax)
 
-			//TODO: Add addSpellPoison etc to focus, staves
 			var getPrefixSuffixComboType = _.random(0, 100)
 			if (getPrefixSuffixComboType < 50) {
-				prefixVal = _.random(minValue[prefix], itemObj.prefix[prefix]);
-				prefixName = prefixNames[prefix](prefixVal)
+				prefixVal = _.random(minValue[prefix], prefixMax);
+				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
 			}
 			else if (getPrefixSuffixComboType < 75) {
-				suffixVal = _.random(minValue[suffix], itemObj.suffix[suffix])
-				suffixName = suffixNames[suffix](suffixVal)
+				suffixVal = _.random(minValue[suffix], suffixMax)
+				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
 			}
 			else {
 				// both
-				prefixVal = _.random(minValue[prefix], itemObj.prefix[prefix]);
-				prefixName = prefixNames[prefix](prefixVal)
-				suffixVal = _.random(minValue[suffix], itemObj.suffix[suffix])
-				suffixName = suffixNames[suffix](suffixVal)
+				prefixVal = _.random(minValue[prefix], prefixMax);
+				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
+				suffixVal = _.random(minValue[suffix], suffixMax)
+				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
 			}
 
 			if (ng.test) {
 				// for better testing on all combos
-				prefixVal = _.random(minValue[prefix], itemObj.prefix[prefix]);
-				prefixName = prefixNames[prefix](prefixVal)
-				suffixVal = _.random(minValue[suffix], itemObj.suffix[suffix])
-				suffixName = suffixNames[suffix](suffixVal)
+				prefixVal = _.random(minValue[prefix], prefixMax);
+				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
+				suffixVal = _.random(minValue[suffix], suffixMax)
+				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
 			}
 
 			// assign property values
@@ -488,13 +562,20 @@ var items = {};
 			return drop
 		}
 		///////////////////////////////////////////////
+		function getMultiplierByTypeAndProp(itemType) {
+			return (itemType === 'twoHandSlashers' ||
+				itemType === 'twoHandBlunts' ||
+				itemType === 'staves' ||
+				itemType === 'bows') ? 2 : 1
+		}
+
 		function removeWeaponSpecificProps(itemType) {
-			console.warn('removeWeaponSpecificProps', itemType, itemObj.prefix)
+			//console.warn('removeWeaponSpecificProps', itemType, itemObj.prefix)
 			var props = []
 			if (itemType === 'oneHandSlashers') {
 				props = [
 					'oneHandBlunt',
-					'piercers',
+					'piercing',
 					'archery',
 					'handToHand',
 					'twoHandSlash',
@@ -504,7 +585,7 @@ var items = {};
 			else if (itemType === 'oneHandBlunts' || itemType === 'focus') {
 				props = [
 					'oneHandSlash',
-					'piercers',
+					'piercing',
 					'archery',
 					'handToHand',
 					'twoHandSlash',
@@ -525,7 +606,7 @@ var items = {};
 				props = [
 					'oneHandSlash',
 					'oneHandBlunt',
-					'piercers',
+					'piercing',
 					'archery',
 					'handToHand',
 					'twoHandBlunt',
@@ -535,7 +616,7 @@ var items = {};
 				props = [
 					'oneHandSlash',
 					'oneHandBlunt',
-					'piercers',
+					'piercing',
 					'archery',
 					'handToHand',
 					'twoHandSlash',
@@ -545,7 +626,7 @@ var items = {};
 				props = [
 					'oneHandSlash',
 					'oneHandBlunt',
-					'piercers',
+					'piercing',
 					'handToHand',
 					'twoHandSlash',
 					'twoHandBlunt',
@@ -555,6 +636,7 @@ var items = {};
 				delete itemObj.prefix[prop]
 			})
 		}
+
 		function filterKeys(key) {
 			if (rarityIndex === 0) {
 				return !slotRequiresMagic.includes(key)
@@ -568,74 +650,115 @@ var items = {};
 		}
 	}
 
+	function setMaxPropValue(obj, key, tc) {
+		console.info('setMaxPropValue', obj[key], key, tc)
+		var val = (obj[key] * (tc / MAX_TREASURE_CLASS)) - minValue[key]
+		if (val < minValue[key]) { val = minValue[key] }
+		return Math.round(val)
+	}
+
+	function getTreasureClass(tc) {
+		if (tc > 45) {
+			tc = 45
+		}
+		else if (tc < 3) {
+			tc = 3
+		}
+		return Math.round(tc)
+	}
+
 	function convertProps(props) {
-		var prop, val;
+		var prop, val, newProps = [];
 		for (prop in props) {
+			newProps = []
 			val = props[prop]
-			console.info('processProp', prop, val)
+			//console.info('processProp', prop, val)
 			if (prop === 'resists') {
-				props.resistBlood = val
-				props.resistPoison = val
-				props.resistArcane = val
-				props.resistLightning = val
-				props.resistFire = val
-				props.resistIce = val
-				delete props.resists
+				newProps = [
+					'resistBlood',
+					'resistPoison',
+					'resistArcane',
+					'resistLightning',
+					'resistFire',
+					'resistIce',
+				]
 			}
 			else if (prop === 'skills') {
-				props.offense = val
-				props.defense = val
-				props.oneHandSlash = val
-				props.oneHandBlunt = val
-				props.piercing = val
-				props.archery = val
-				props.handToHand = val
-				props.twoHandSlash = val
-				props.twoHandBlunt = val
-				props.dodge = val
-				props.parry = val
-				props.riposte = val
-				props.alteration = val
-				props.conjuration = val
-				props.evocation = val
-				delete props.skills;
+				newProps = [
+					'offense',
+					'defense',
+					'oneHandSlash',
+					'oneHandBlunt',
+					'piercing',
+					'archery',
+					'handToHand',
+					'twoHandSlash',
+					'twoHandBlunt',
+					'dodge',
+					'parry',
+					'riposte',
+					'alteration',
+					'conjuration',
+					'evocation',
+				]
+			}
+			else if (prop === 'spellPower') {
+				newProps = [
+					'addSpellBlood',
+					'addSpellPoison',
+					'addSpellArcane',
+					'addSpellLightning',
+					'addSpellFire',
+					'addSpellIce',
+				]
 			}
 			else if (prop === 'castingSkills') {
-				props.alteration = val
-				props.conjuration = val
-				props.evocation = val
-				delete props.castingSkills;
+				newProps = [
+					'alteration',
+					'conjuration',
+					'evocation',
+				]
 			}
 			else if (prop === 'stats') {
-				props.str = val
-				props.sta = val
-				props.agi = val
-				props.dex = val
-				props.wis = val
-				props.intel = val
-				props.cha = val
-				delete props.stats
+				newProps = [
+					'str',
+					'sta',
+					'agi',
+					'dex',
+					'wis',
+					'intel',
+					'cha',
+				]
 			}
 			else if (prop === 'points') {
-				props.hp = val
-				props.mp = val
-				props.sp = val
-				delete props.points
+				newProps = [
+					'hp',
+					'mp',
+					'sp',
+				]
 			}
 			else if (prop === 'regen') {
-				props.hpRegen = val
-				props.mpRegen = val
-				props.spRegen = val
-				delete props.regen
+				newProps = [
+					'hpRegen',
+					'mpRegen',
+					'spRegen',
+				]
 			}
 			else if (prop === 'addDamage') {
-				props.addBlood = val
-				props.addPoison = val
-				props.addArcane = val
-				props.addLightning = val
-				props.addFire = val
-				props.addIce = val
-				delete props.addDamage
+				newProps = [
+					'addBlood',
+					'addPoison',
+					'addArcane',
+					'addLightning',
+					'addFire',
+					'addIce',
+				]
+			}
+			if (newProps.length) {
+				newProps.forEach(function(prop) {
+					props[prop] = val
+				})
+				delete props[prop]
 			}
 		}
 		return props

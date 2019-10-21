@@ -1,6 +1,6 @@
 items.focus = {
 	base: {
-		slots: ['primary'],
+		slots: ['primary', 'secondary'],
 		weaponSkill: 'One-hand Blunt',
 	},
 	normal: [
@@ -59,12 +59,11 @@ items.focus = {
 		castingSkills: 3,
 		allSkills: 2,
 		attack: 100,
-		resists: 40,
-		resistAll: 30,
+		resists: 30,
+		spellPower: 40,
 	},
 	suffix: {
-		stats: 20,
-		allStats: 10,
+		stats: 15,
 		points: 50,
 		crit: 20,
 		leech: 5,

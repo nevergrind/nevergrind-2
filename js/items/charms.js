@@ -9,8 +9,9 @@ items.charms = {
 		},
 	],
 	prefix: {
-		resists: 30,
-		resistAll: 10,
+		resists: 40,
+		resistAll: 15,
+		spellPower: 30,
 	},
 	suffix: {
 		stats: 20,

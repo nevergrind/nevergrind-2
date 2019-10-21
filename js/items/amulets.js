@@ -11,6 +11,7 @@ items.amulets = {
 	prefix: {
 		resists: 40,
 		resistAll: 15,
+		spellPower: 40,
 	},
 	suffix: {
 		stats: 30,
