@@ -1393,7 +1393,7 @@ background-clip: content-box;
 	padding: .2rem .4rem;
 	line-height: 1.2;
 	border-radius: 5px;
-	transform: translate(0%, -50%);
+	transform: translate(0%, 50%);
 	backdrop-filter: blur(5px);
 }
 #tooltip-name {

@@ -156,11 +156,10 @@ var test;
 	  saturate: 'saturate(2500%)'
 	}, 'saturate');
 	 */
-	function getItem(rarityIndex = 1) {
+	function getItem(level = 50, rarity = 'normal') {
 		var drop = item.getItem({
-			mobLevel: _.random(1, 50),
-			//mobLevel: 10,
-			rarityIndex: rarityIndex
+			mobLevel: level,
+			rarity: rarity
 		})
 
 		_.each(drop, function(val, key) {
