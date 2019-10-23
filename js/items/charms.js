@@ -20,7 +20,7 @@ items.charms = {
 	},
 	rare: {
 		skills: 2,
-		allDamage: 20,
+		addDamage: 20,
 	},
 	unique: [
 

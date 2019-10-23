@@ -68,7 +68,7 @@ items.piercers = {
 		haste: 40,
 	},
 	rare: {
-		allDamage: 10,
+		addDamage: 10,
 	},
 	unique: [
 

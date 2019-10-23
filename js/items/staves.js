@@ -62,7 +62,7 @@ items.staves = {
 		haste: 40,
 	},
 	rare: {
-		allDamage: 40,
+		addDamage: 40,
 	},
 	unique: [
 

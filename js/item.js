@@ -497,61 +497,42 @@ var items = {};
 				suffixKeys,
 				_.keys(itemObj.rare)
 			))
-			/*console.info('rareKeys', rareKeys)*/
+			var numberOfProps = _.random(3, 6)
 			console.info('rare drop', drop, config)
 			// get prefix and suffix
-			var prefix = prefixKeys[_.random(0, prefixKeys.length - 1)]
-			var suffix = suffixKeys[_.random(0, suffixKeys.length - 1)]
-			// get values and names
-			var prefixVal = 0
-			var suffixVal = 0
-			var prefixName = ''
-			var suffixName = ''
-			var itemTypeMultiplier = getMultiplierByTypeAndProp(drop.itemType)
-			//TODO: unlock props by treasure class? Need data object for it
-			//TODO: Add rare props - refactor for easy code reuse
-			//console.warn('config', config.mobLevel)
-			console.info('itemObj', itemObj)
+			var props = []
 			var tc = getTreasureClass(config.mobLevel)
-			// set prefix and bound check
-			var prefixMax = setMaxPropValue(itemObj.prefix, prefix, tc)
-			// set suffix and bound check
-			var suffixMax = setMaxPropValue(itemObj.suffix, suffix, tc)
-			/*console.info('infos', config.mobLevel, tc, prefix, prefixMax, suffix, suffixMax)
-			console.warn('max ', prefixMax, suffixMax)*/
+			for (var i=0; i<numberOfProps; i++) {
+				props[i] = getRareProp()
+			}
+			console.warn('props', props)
 
-			var getPrefixSuffixComboType = _.random(0, 100)
-			if (getPrefixSuffixComboType < 50) {
-				prefixVal = _.random(minValue[prefix], prefixMax);
-				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
+			function getRareProp() {
+				var key = rareKeys[_.random(0, rareKeys.length - 1)]
+				var propType = getPropType(key)
+				var val = _.random(minValue[key], setMaxPropValue(itemObj[propType], key, tc))
+				stripRareKeys(rareKeys, key)
+				return {
+					key: key,
+					val: val
+				}
 			}
-			else if (getPrefixSuffixComboType < 75) {
-				suffixVal = _.random(minValue[suffix], suffixMax)
-				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
-			}
-			else {
-				// both
-				prefixVal = _.random(minValue[prefix], prefixMax);
-				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
-				suffixVal = _.random(minValue[suffix], suffixMax)
-				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
-			}
-
-			if (ng.test) {
-				// for better testing on all combos
-				prefixVal = _.random(minValue[prefix], prefixMax);
-				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
-				suffixVal = _.random(minValue[suffix], suffixMax)
-				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
+			function getPropType(prop) {
+				if (_.get(itemObj.prefix, prop)) {
+					return 'prefix'
+				}
+				else if (_.get(itemObj.suffix, prop)) {
+					return 'suffix'
+				}
+				else {
+					return 'rare'
+				}
 			}
 
 			// assign property values
-			if (prefixVal) {
-				drop[prefix] = prefixVal
-			}
-			if (suffixVal) {
-				drop[suffix] = suffixVal
-			}
+			props.forEach(function(prop) {
+				drop[prop.key] = prop.val
+			})
 			drop.name = getRareName(drop.itemType, drop.name)
 		}
 		function processMagicDrop(drop) {
@@ -730,6 +711,115 @@ var items = {};
 			return item.itemLevel <= config.mobLevel
 		}
 	}
+	function stripRareKeys(rareKeys, key) {
+		// resists
+		if (key === 'resistBlood') {
+			_.pull(rareKeys, 'resistPoison', 'resistAll')
+		}
+		if (key === 'resistPoison') {
+			_.pull(rareKeys, 'resistBlood', 'resistAll')
+		}
+		if (key === 'resistArcane') {
+			_.pull(rareKeys, 'resistLightning', 'resistAll')
+		}
+		if (key === 'resistLightning') {
+			_.pull(rareKeys, 'resistArcane', 'resistAll')
+		}
+		if (key === 'resistFire') {
+			_.pull(rareKeys, 'resistIce', 'resistAll')
+		}
+		if (key === 'resistIce') {
+			_.pull(rareKeys, 'resistFire', 'resistAll')
+		}
+		if (key === 'resistAll') {
+			_.pull(rareKeys, 'resistBlood', 'resistPoison', 'resistArcane', 'resistLightning', 'resistFire', 'resistIce')
+		}
+
+		// spell power
+		if (key === 'addSpellBlood') {
+			_.pull(rareKeys, 'addSpellPoison', 'addSpellAll')
+		}
+		if (key === 'addSpellPoison') {
+			_.pull(rareKeys, 'addSpellBlood', 'addSpellAll')
+		}
+		if (key === 'addSpellArcane') {
+			_.pull(rareKeys, 'addSpellLightning', 'addSpellAll')
+		}
+		if (key === 'addSpellLightning') {
+			_.pull(rareKeys, 'addSpellArcane', 'addSpellAll')
+		}
+		if (key === 'addSpellFire') {
+			_.pull(rareKeys, 'addSpellIce', 'addSpellAll')
+		}
+		if (key === 'addSpellIce') {
+			_.pull(rareKeys, 'addSpellFire', 'addSpellAll')
+		}
+		if (key === 'addSpellAll') {
+			_.pull(rareKeys, 'addSpellBlood', 'addSpellPoison', 'addSpellArcane', 'addSpellLightning', 'addSpellFire', 'addSpellIce')
+		}
+
+		// skills
+		if (key === 'attack' ||
+			key === 'offense' ||
+			key === 'defense' ||
+			key === 'oneHandSlash' ||
+			key === 'oneHandBlunt' ||
+			key === 'piercing' ||
+			key === 'archery' ||
+			key === 'handToHand' ||
+			key === 'twoHandSlash' ||
+			key === 'twoHandBlunt' ||
+			key === 'dodge' ||
+			key === 'parry' ||
+			key === 'riposte' ||
+			key === 'alteration' ||
+			key === 'conjuration' ||
+			key === 'evocation'
+		) {
+			_.pull(rareKeys, 'allSkills')
+		}
+		if (key === 'allSkills') {
+			_.pull(rareKeys, 'attack', 'offense', 'defense', 'oneHandSlash', 'oneHandBlunt', 'piercing', 'archery', 'handToHand', 'twoHandSlash', 'twoHandBlunt', 'dodge', 'parry', 'riposte', 'alteration', 'conjuration', 'evocation')
+		}
+
+		// attributes
+		if (key === 'str' ||
+			key === 'sta' ||
+			key === 'agi' ||
+			key === 'dex' ||
+			key === 'wis' ||
+			key === 'intel' ||
+			key === 'cha'
+		) {
+			_.pull(rareKeys, 'allStats')
+		}
+		if (key === 'allStats') {
+			_.pull(rareKeys, 'str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha')
+		}
+
+		// added magic melee damage
+		if (key === 'addIce') {
+			_.pull(rareKeys, 'addFire')
+		}
+		if (key === 'addFire') {
+			_.pull(rareKeys, 'addIce')
+		}
+		if (key === 'addBlood') {
+			_.pull(rareKeys, 'addPoison')
+		}
+		if (key === 'addPoison') {
+			_.pull(rareKeys, 'addBlood')
+		}
+		if (key === 'addArcane') {
+			_.pull(rareKeys, 'addLightning')
+		}
+		if (key === 'addLightning') {
+			_.pull(rareKeys, 'addArcane')
+		}
+
+		// always pull out prop key
+		_.pull(rareKeys, key)
+	}
 	function setMaxPropValue(obj, key, tc) {
 		//console.info('setMaxPropValue', obj[key], key, tc)
 		var val = (obj[key] * (tc / MAX_TREASURE_CLASS)) - minValue[key]
@@ -842,11 +932,8 @@ var items = {};
 		return props
 	}
 	function getRareName(itemType, baseName) {
-		console.info('getRareName', itemType, baseName)
 		var prefix = rarePrefixNames[_.random(0, rarePrefixNames.length - 1)]
 		var suffix = rareSuffixNames[itemType][_.random(0, rareSuffixNames[itemType].length - 1)]
-		console.info('prefix', prefix)
-		console.warn('suffix', suffix)
 		return [
 			prefix,
 			suffix,

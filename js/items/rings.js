@@ -24,7 +24,7 @@ items.rings = {
 	},
 	rare: {
 		skills: 2,
-		allDamage: 5,
+		addDamage: 5,
 	},
 	unique: [
 

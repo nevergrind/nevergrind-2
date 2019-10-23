@@ -25,7 +25,7 @@ items.amulets = {
 	rare: {
 		skills: 3,
 		allSkills: 2,
-		allDamage: 10,
+		addDamage: 10,
 	},
 	unique: [
 

@@ -68,7 +68,7 @@ items.oneHandSlashers = {
 		haste: 40,
 	},
 	rare: {
-		allDamage: 10,
+		addDamage: 10,
 	},
 	unique: [
 

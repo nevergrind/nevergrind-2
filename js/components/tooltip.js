@@ -80,6 +80,12 @@ var tooltip;
 			getGenericPercentStatHtml(obj.enhancedDamage, 'Enhanced Damage') +
 			// ias
 			getGenericPercentStatHtml(obj.haste, 'Increased Attack Speed') +
+			// plus all
+			getGenericStatHtml(obj.allSkills, 'All Skills') +
+			getGenericStatHtml(obj.allStats, 'All Stats') +
+			getGenericStatHtml(obj.resistAll, 'Resist All') +
+			getGenericStatHtml(obj.addSpellAll, 'All Spell Power') +
+			getGenericPercentStatHtml(obj.enhanceAll, 'All Spell Damage') +
 			// resists
 			getGenericStatHtml(obj.resistBlood, 'Resist Blood') +
 			getGenericStatHtml(obj.resistPoison, 'Resist Poison') +
@@ -87,7 +93,6 @@ var tooltip;
 			getGenericStatHtml(obj.resistLightning, 'Resist Lightning') +
 			getGenericStatHtml(obj.resistFire, 'Resist Fire') +
 			getGenericStatHtml(obj.resistIce, 'Resist Ice') +
-			getGenericStatHtml(obj.resistAll, 'Resist All') +
 			// spell power
 			getGenericStatHtml(obj.addSpellBlood, 'Blood Spell Power') +
 			getGenericStatHtml(obj.addSpellPoison, 'Poison Spell Power') +
@@ -95,7 +100,6 @@ var tooltip;
 			getGenericStatHtml(obj.addSpellLightning, 'Lightning Spell Power') +
 			getGenericStatHtml(obj.addSpellFire, 'Fire Spell Power') +
 			getGenericStatHtml(obj.addSpellIce, 'Ice Spell Power') +
-			getGenericStatHtml(obj.addSpellAll, 'All Spell Power') +
 			// attack
 			getGenericStatHtml(obj.attack, 'Attack') +
 			// skills
@@ -114,7 +118,6 @@ var tooltip;
 			getGenericStatHtml(obj.alteration, 'Alteration') +
 			getGenericStatHtml(obj.conjuration, 'Conjuration') +
 			getGenericStatHtml(obj.evocation, 'Evocation') +
-			getGenericStatHtml(obj.allSkills, 'All Skills') +
 			getGenericStatHtml(obj.crit, 'Critical Hit') +
 			// attrs
 			getGenericStatHtml(obj.str, 'Strength') +
@@ -124,7 +127,6 @@ var tooltip;
 			getGenericStatHtml(obj.wis, 'Wisdom') +
 			getGenericStatHtml(obj.intel, 'Intelligence') +
 			getGenericStatHtml(obj.cha, 'Charisma') +
-			getGenericStatHtml(obj.allStats, 'All Stats') +
 			// points
 			getGenericStatHtml(obj.hp, 'Health') +
 			getGenericStatHtml(obj.mp, 'Mana') +
@@ -136,6 +138,13 @@ var tooltip;
 			// leech
 			getGenericStatHtml(obj.leech, 'Life Leech') +
 			getGenericStatHtml(obj.wraith, 'Mana Leech') +
+			// added damage
+			getPropHtml(obj.addBlood, '+' + obj.addBlood + ' Blood Damage to Melee') +
+			getPropHtml(obj.addPoison, '+' + obj.addPoison + ' Poison Damage to Melee') +
+			getPropHtml(obj.addArcane, '+' + obj.addArcane + ' Arcane Damage to Melee') +
+			getPropHtml(obj.addLightning, '+' + obj.addLightning + ' Lightning Damage to Melee') +
+			getPropHtml(obj.addFire, '+' + obj.addFire + ' Fire Damage to Melee') +
+			getPropHtml(obj.addIce, '+' + obj.addIce + ' Ice Damage to Melee') +
 			// set/unique and beyond
 			getGenericStatHtml(obj.damageTakenToMana, 'Mana When Damaged') +
 			getGenericStatHtml(obj.damageTakenToSpirit, 'Spirit When Damaged') +
@@ -156,7 +165,6 @@ var tooltip;
 			getGenericPercentStatHtml(obj.enhanceLightning, 'All Lightning Damage') +
 			getGenericPercentStatHtml(obj.enhanceFire, 'All Fire Damage') +
 			getGenericPercentStatHtml(obj.enhanceIce, 'All Ice Damage') +
-			getGenericPercentStatHtml(obj.enhanceAll, 'All Spell Damage') +
 			// status resists
 			getPropHtml(obj.cannotBeFrozen, 'Cannot Be Frozen') +
 			getPropHtml(obj.cannotBeFeared, 'Cannot Be Feared') +
@@ -255,6 +263,15 @@ var tooltip;
 		}
 		else if (obj.itemType === 'shields') {
 			return '<div>Shield</div>'
+		}
+		else if (obj.itemType === 'rings') {
+			return '<div>Ring</div>'
+		}
+		else if (obj.itemType === 'amulets') {
+			return '<div>Amulet</div>'
+		}
+		else if (obj.itemType === 'charms') {
+			return '<div>Charm</div>'
 		}
 		else {
 			return ''
