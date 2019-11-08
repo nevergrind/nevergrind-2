@@ -40,12 +40,12 @@ var test;
 	}
 	///////////////////////////////////
 	function battle() {
-		var singleMob = true;
+		var singleMob = false;
 		var mobKey = '';
 		for (var i=0; i<mob.max; i++){
 			if (singleMob && i === 2 || !singleMob) {
 				mobKey = mob.getRandomMobKey();
-				//mobKey = 'ice-giant';
+				mobKey = 'rat';
 				cache.preloadMob(mobKey);
 				mob.setMob(i, mobKey);
 			}

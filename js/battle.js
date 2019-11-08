@@ -37,7 +37,11 @@ var battle;
 		test.battle();
 	}
 	function html() {
-		var s = '<img id="battle-bg" class="img-bg" src="images/bg/fw-zoom2.jpg">';
+		var s =
+			'<div id="battle-sky"></div>' +
+			'<div id="battle-clouds"></div>' +
+			'<img id="battle-bg" src="images/bg/prototype-bg.png">' +
+			'<img id="battle-fg" src="images/bg/prototype-fg.png">';
 		var test = '';
 
 		for (var i=0; i<mob.max; i++){
@@ -75,8 +79,21 @@ var battle;
 		else {
 			getById('scene-battle').innerHTML = battle.html();
 			battle.events();
+			setBackground()
 			battle.isInit = 1;
 		}
+	}
+	function setBackground() {
+		var skyColors = [ '#135', '#579' ]
+		getById('battle-sky').style.backgroundImage = 'linear-gradient(to top, #135, #579)';
+		var cloud = 2;
+		getById('battle-clouds').style.backgroundImage = 'url("images/env/cloud' + cloud + '.png")';
+		TweenMax.to('#battle-clouds', 16000, {
+			startAt: { 'background-position': 0 },
+			'background-position': 3840,
+			ease: Linear.easeIn,
+			repeat: -1
+		});
 	}
 	function setTarget(i) {
 		console.info("Setting target ", i, Date.now());
