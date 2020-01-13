@@ -156,10 +156,13 @@ var test;
 	  saturate: 'saturate(2500%)'
 	}, 'saturate');
 	 */
-	function getItem(level = 50, rarity = 'normal') {
+	function getItem(level = 50, rarity = 'normal', itemSlot = '', itemName = '') {
+		if (itemName) { level = 50 } // because it needs to select any item
 		var drop = item.getItem({
 			mobLevel: level,
-			rarity: rarity
+			rarity: rarity,
+			itemSlot: itemSlot,
+			itemName: itemName,
 		})
 
 		_.each(drop, function(val, key) {

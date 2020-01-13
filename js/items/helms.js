@@ -109,6 +109,56 @@ items.helms = {
 		allSkills: 2
 	},
 	unique: [
-
+		{
+			name: 'Hood',
+			newName: 'Glyphed Cowl zzzzzzzz',
+			odds: 80,
+			intel: 11,
+			wis: 13,
+			evocation: 4,
+			conjuration: 3,
+			allStats: 4,
+			mp: 30
+		}, {
+			name: 'Hood',
+			newName: 'Glyphed BOOBS',
+			odds: 20,
+			intel: 11,
+			wis: 13,
+			evocation: 4,
+			conjuration: 3,
+			allStats: 4,
+			mp: 30
+		}, {
+			name: 'Cap',
+		}, {
+			name: 'Bandana',
+		}, {
+			name: 'Crown',
+		}, {
+			name: 'Cowl',
+		}, {
+			name: 'Coronet',
+		}, {
+			name: 'Miter',
+		}, {
+			name: 'Shroud',
+		}, {
+			name: 'Helmet',
+		}, {
+			name: 'Shako',
+		}, {
+			name: 'Coif',
+		}, {
+			name: 'Sallet',
+		}, {
+			name: 'Burgonet',
+		}, {
+			name: 'Great Helm',
+		}, {
+			name: 'Barbute',
+		}, {
+			name: 'Royal Helm',
+		},
 	],
 }
