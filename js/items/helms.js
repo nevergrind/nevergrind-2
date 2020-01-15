@@ -111,54 +111,78 @@ items.helms = {
 	unique: [
 		{
 			name: 'Hood',
-			newName: 'Glyphed Cowl zzzzzzzz',
-			odds: 80,
-			intel: 11,
-			wis: 13,
-			evocation: 4,
-			conjuration: 3,
-			allStats: 4,
-			mp: 30
-		}, {
-			name: 'Hood',
-			newName: 'Glyphed BOOBS',
-			odds: 20,
-			intel: 11,
-			wis: 13,
-			evocation: 4,
-			conjuration: 3,
-			allStats: 4,
-			mp: 30
+			newName: 'Glyphed Cowl',
+			intel: 5,
+			wis: 5,
+			evocation: 1,
+			conjuration: 1,
+			allStats: [2, 3],
+			mp: [6, 10],
 		}, {
 			name: 'Cap',
+			newName: 'Rendo\'s Bonnet',
+			itemLevel: 1,
+			enhancedArmor: [10, 20],
+			defense: 1,
+			sp: [4, 8],
+			hp: [6, 10],
+			mp: [6, 10],
 		}, {
 			name: 'Bandana',
+			newName: 'Rendos Bonnet',
+			itemLevel: 5,
 		}, {
 			name: 'Crown',
+			newName: 'Rendos Bonnet',
+			itemLevel: 10,
 		}, {
 			name: 'Cowl',
+			newName: 'Rendos Bonnet',
+			itemLevel: 20,
 		}, {
 			name: 'Coronet',
+			newName: 'Rendos Bonnet',
+			itemLevel: 24,
 		}, {
 			name: 'Miter',
+			newName: 'Rendos Bonnet',
+			itemLevel: 26,
 		}, {
 			name: 'Shroud',
+			newName: 'Rendos Bonnet',
+			itemLevel: 30,
 		}, {
 			name: 'Helmet',
+			newName: 'Rendos Bonnet',
+			itemLevel: 12,
 		}, {
 			name: 'Shako',
+			newName: 'Rendos Bonnet',
+			itemLevel: 15,
 		}, {
 			name: 'Coif',
+			newName: 'Rendos Bonnet',
+			itemLevel: 22,
 		}, {
 			name: 'Sallet',
+			newName: 'Rendos Bonnet',
+			itemLevel: 30,
 		}, {
 			name: 'Burgonet',
+			newName: 'Rendos Bonnet',
+			itemLevel: 28,
 		}, {
 			name: 'Great Helm',
+			newName: 'Rendos Bonnet',
+			itemLevel: 30,
 		}, {
 			name: 'Barbute',
+			newName: 'Rendos Bonnet',
+			itemLevel: 32,
 		}, {
 			name: 'Royal Helm',
+			newName: 'Rendos Bonnet',
+			itemLevel: 34,
 		},
 	],
 }

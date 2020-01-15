@@ -450,7 +450,7 @@ var items = {};
 		var keys = _.keys(items)
 		// get possible slotTypes (helms, chests) based on rarity
 		var filteredKeys = _.filter(keys, filterKeys)
-		console.info('filteredKeys', filteredKeys)
+		//console.info('filteredKeys', filteredKeys)
 
 		if (config.itemSlot && filteredKeys.includes(config.itemSlot)) {
 			var itemSlot = config.itemSlot
@@ -469,7 +469,7 @@ var items = {};
 		// pick one of the items from the array
 		if (config.itemName) {
 			var filteredItemsIndex = _.findIndex(filteredItems, item => item.name === config.itemName)
-			console.warn('filteredItemsIndex', filteredItemsIndex)
+			//console.warn('filteredItemsIndex', filteredItemsIndex)
 		}
 		else {
 			var filteredItemsIndex = _.random(0, filteredItemsLen - 1)
@@ -528,37 +528,46 @@ var items = {};
 				return 0
 			}
 		}
+		function processUniqueProps(uniqueItem, drop) {
+			// remove old
+			uniqueItem.name = uniqueItem.newName
+			delete uniqueItem.newName
+			delete uniqueItem.odds
+			// add props
+			for (var key in uniqueItem) {
+				if (_.isArray(uniqueItem[key])) {
+					drop[key] = _.random(uniqueItem[key][0], uniqueItem[key][1])
+				}
+				else {
+					drop[key] = uniqueItem[key]
+				}
+			}
+		}
 		function processUniqueDrop(drop) {
 			// select one if more than one exists
 			var possibleItems = _.filter(items[drop.itemType].unique, item => item.name === drop.name)
 			var len = possibleItems.length
 
 			if (len > 1) {
-				var itemRoll = _.random(0, 100)
 				var itemIndexArray = []
 				possibleItems.forEach(function(item, index) {
+					item.odds = item.odds || 1 // default to always dropping if there are no odds
 					for (var i = 0; i < item.odds; i++) {
 						itemIndexArray.push(index)
 					}
 				})
 
+				var itemRoll = _.random(0, itemIndexArray.length - 1)
 				var itemIndex = itemIndexArray[itemRoll]
-				console.info('itemRoll', itemRoll, item.odds)
 				var uniqueItem = _.cloneDeep(possibleItems[itemIndex])
 			}
 			else {
 				var uniqueItem = _.cloneDeep(possibleItems[0])
 			}
-			// remove old
-			uniqueItem.name = uniqueItem.newName
-			delete uniqueItem.newName
-			delete uniqueItem.odds
-			// add props
-			_.each(uniqueItem, function(val, key) {
-				drop[key] = val
-			})
 
-			console.warn('uniqueItem drop', drop)
+			processUniqueProps(uniqueItem, drop)
+
+			//console.warn('uniqueItem drop', drop)
 		}
 		function processRareDrop(drop) {
 			var rareKeys = _.uniq(_.concat(
