@@ -83,7 +83,7 @@ var tooltip;
 			// plus all
 			getGenericStatHtml(obj.allSkills, 'All Skills') +
 			getGenericStatHtml(obj.allStats, 'All Stats') +
-			getGenericStatHtml(obj.resistAll, 'Resist All') +
+			getGenericStatHtml(obj.resistAll, 'All Resistances') +
 			getGenericStatHtml(obj.addSpellAll, 'All Spell Power') +
 			getGenericPercentStatHtml(obj.enhanceAll, 'All Spell Damage') +
 			// resists
@@ -149,12 +149,12 @@ var tooltip;
 			getGenericStatHtml(obj.damageTakenToMana, 'Mana When Damaged') +
 			getGenericStatHtml(obj.damageTakenToSpirit, 'Spirit When Damaged') +
 			// damage vs mob types
-			getGenericStatHtml(obj.enhancedDamageToHumanoids, 'Enhanced Damage vs Humanoids') +
-			getGenericStatHtml(obj.enhancedDamageToBeasts, 'Enhanced Damage vs Beasts') +
-			getGenericStatHtml(obj.enhancedDamageToUndead, 'Enhanced Damage vs Undead') +
-			getGenericStatHtml(obj.enhancedDamageToDemons, 'Enhanced Damage vs Demons') +
-			getGenericStatHtml(obj.enhancedDamageToDragonkin, 'Enhanced Damage vs Dragonkin') +
-			getGenericStatHtml(obj.enhancedDamageToEldritch, 'Enhanced Damage vs Eldritch') +
+			getGenericPercentStatHtml(obj.enhancedDamageToHumanoids, 'Enhanced Damage vs Humanoids') +
+			getGenericPercentStatHtml(obj.enhancedDamageToBeasts, 'Enhanced Damage vs Beasts') +
+			getGenericPercentStatHtml(obj.enhancedDamageToUndead, 'Enhanced Damage vs Undead') +
+			getGenericPercentStatHtml(obj.enhancedDamageToDemons, 'Enhanced Damage vs Demons') +
+			getGenericPercentStatHtml(obj.enhancedDamageToDragonkin, 'Enhanced Damage vs Dragonkin') +
+			getGenericPercentStatHtml(obj.enhancedDamageToEldritch, 'Enhanced Damage vs Eldritch') +
 			// mitigation
 			getGenericReducedStatHtml(obj.phyMit, 'Physical Damage Reduced by') +
 			getGenericReducedStatHtml(obj.magMit, 'Magical Damage Reduced by') +
@@ -179,10 +179,9 @@ var tooltip;
 			getPropHtml(obj.ignoreTargetArmor, 'Ignores Target Armor') +
 			getPropHtml(obj.increaseHpPercent, '+' + obj.increaseHpPercent + '% Total Health') +
 			getPropHtml(obj.increaseMpPercent, '+' + obj.increaseMpPercent + '% Total Health') +
-			getPropHtml(obj.manaSink, '+' + obj.manaSink + ' Mana Sink') +
-			getPropHtml(obj.hpOnKill, '+' + obj.hpOnKill + ' Health on Kill') +
-			getPropHtml(obj.mpOnKill, '+' + obj.mpOnKill + ' Mana on Kill') +
-			getPropHtml(obj.spOnKill, '+' + obj.spOnKill + ' Spirit on Kill') +
+			getPropHtml(obj.hpKill, '+' + obj.hpKill + ' Health on Kill') +
+			getPropHtml(obj.mpKill, '+' + obj.mpKill + ' Mana on Kill') +
+			getPropHtml(obj.spKill, '+' + obj.spKill + ' Spirit on Kill') +
 		'';
 
 		return html
@@ -216,9 +215,9 @@ var tooltip;
 		}
 	}
 	function getDurabilityHtml(durability) {
-		return durability ?
-			'<div>Durability ' + durability + '/100</div>' :
-			'<div class="item-restricted">Durability: ' + durability + '/100</div>'
+		return _.isUndefined(durability) ? '' : durability
+			? '<div>Durability ' + durability + '/100</div>'
+			: '<div class="item-restricted">Durability: ' + durability + '/100</div>'
 	}
 	function getRequiredLevelHtml(itemLevel) {
 		var level = getRequiredLevel(itemLevel)
@@ -230,6 +229,7 @@ var tooltip;
 		}
 	}
 	function getRequiredLevel(itemLevel) {
+		console.info('getRequiredLevel itemLevel: ', itemLevel)
 		var level = ~~(itemLevel * .75);
 		if (level < 1) level = 1;
 		return level

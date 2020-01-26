@@ -10,6 +10,25 @@ var items = {};
 		'amulets',
 		'charms',
 	]
+	var itemsWithDurability = [
+		'helms',
+		'shoulders',
+		'chests',
+		'bracers',
+		'gloves',
+		'belts',
+		'legs',
+		'boots',
+		'oneHandSlashers',
+		'twoHandSlashers',
+		'oneHandBlunts',
+		'twoHandBlunts',
+		'piercers',
+		'focus',
+		'staves',
+		'bows',
+		'shields'
+	]
 	var prefixNames = {
 		resistBlood: function(val, multi) {
 			if (val <= 10 * multi) { return 'Ruddy' }
@@ -487,7 +506,9 @@ var items = {};
 			delete drop.maxArmor
 		}
 		drop.rarity = config.rarity
-		drop.durability = 100
+		if (itemsWithDurability.includes(itemSlot)) {
+			drop.durability = 100
+		}
 		drop.itemType = itemSlot
 		// magic
 		if (rarity === 'unique') {
@@ -497,7 +518,7 @@ var items = {};
 			}
 			else {
 				// no base item found - downgrade to rare
-				rarity = 'rare'
+				drop.rarity = rarity = 'rare'
 			}
 		}
 
@@ -547,11 +568,13 @@ var items = {};
 			// select one if more than one exists
 			var possibleItems = _.filter(items[drop.itemType].unique, item => item.name === drop.name)
 			var len = possibleItems.length
-
+			// console.info('possibleItems', possibleItems)
 			if (len > 1) {
 				var itemIndexArray = []
 				possibleItems.forEach(function(item, index) {
-					item.odds = item.odds || 1 // default to always dropping if there are no odds
+					// default to equal chance dropping for all unique items in this item type
+					item.odds = item.odds || 100
+					// console.info('odds', item.odds)
 					for (var i = 0; i < item.odds; i++) {
 						itemIndexArray.push(index)
 					}

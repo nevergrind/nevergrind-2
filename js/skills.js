@@ -240,8 +240,8 @@ var skills;
 			bloodRitual: function() {
 				console.info("bloodRitual");
 			},
-			endureCold: function() {
-				console.info("endureCold");
+			endureIce: function() {
+				console.info("endureIce");
 			},
 			talismanOfTrogmaar: function() {
 				console.info("talismanOfTrogmaar");
