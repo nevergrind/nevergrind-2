@@ -312,10 +312,10 @@ items.helms = {
 		},*/ {
 			name: 'Barbute',
 			newName: 'Wurmskull Barbute',
-			enhancedArmor: [95, 110],
+			enhancedArmor: [96, 110],
 			twoHandSlash: 7,
 			twoHandBlunt: 7,
-			resistMagic: [31, 36],
+			resistArcane: [31, 36],
 			str: [21, 25],
 			hp: [28, 35],
 			sp: 33,
@@ -324,6 +324,7 @@ items.helms = {
 		}, {
 			name: 'Royal Helm',
 			newName: 'Vor\'s Adulation',
+			enhancedArmor: [91, 100],
 			defense: [4, 5],
 			resistAll: [9, 12],
 			allStats: [6, 8],

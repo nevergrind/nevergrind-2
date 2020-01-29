@@ -177,8 +177,8 @@ var tooltip;
 			getPropHtml(obj.slowsTarget, 'Slows Target ' + obj.slowsTarget + '%') +
 			getPropHtml(obj.reduceTargetArmor, 'Reduces Target Armor ' + obj.reduceTargetArmor + '%') +
 			getPropHtml(obj.ignoreTargetArmor, 'Ignores Target Armor') +
-			getPropHtml(obj.increaseHpPercent, '+' + obj.increaseHpPercent + '% Total Health') +
-			getPropHtml(obj.increaseMpPercent, '+' + obj.increaseMpPercent + '% Total Health') +
+			getPropHtml(obj.increaseHpPercent, '+' + obj.increaseHpPercent + '% Maximum Health') +
+			getPropHtml(obj.increaseMpPercent, '+' + obj.increaseMpPercent + '% Maximum Mana') +
 			getPropHtml(obj.hpKill, '+' + obj.hpKill + ' Health on Kill') +
 			getPropHtml(obj.mpKill, '+' + obj.mpKill + ' Mana on Kill') +
 			getPropHtml(obj.spKill, '+' + obj.spKill + ' Spirit on Kill') +

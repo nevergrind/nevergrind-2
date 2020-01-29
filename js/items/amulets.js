@@ -146,7 +146,7 @@ items.amulets = {
 		}, {
 			name: 'Amulet',
 			newName: 'Entariz\'s Talisman',
-			resistMagic: 35,
+			resistArcane: 35,
 			resistBlood: 20,
 			crit: 13,
 			intel: [30, 35],
