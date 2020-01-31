@@ -219,7 +219,7 @@ var mob;
 		if (mobs[i].animationActive) return
 		mobs[i].animationActive = 1
 		var attackType = force === 'primary' || force === 'secondary' ?
-			force : (Math.round(rand()) ? 'primary' : 'secondary')
+			force : (_.round(rand()) ? 'primary' : 'secondary')
 		var speed = mobs[i].speed * frame[attackType].diff;
 		if (!mobs[i].enableSecondary) {
 			attackType = 'primary'

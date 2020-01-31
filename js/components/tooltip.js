@@ -230,7 +230,7 @@ var tooltip;
 	}
 	function getRequiredLevel(itemLevel) {
 		console.info('getRequiredLevel itemLevel: ', itemLevel)
-		var level = ~~(itemLevel * .75);
+		var level = ~~(itemLevel * 1);
 		if (level < 1) level = 1;
 		return level
 	}

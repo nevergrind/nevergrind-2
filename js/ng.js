@@ -292,10 +292,10 @@ var ng;
 
 		while (val-- > 0) {
 			skillBonus += bonusPerPoint;
-			console.warn(++i, +bonusPerPoint.toFixed(2), 'total: ', Math.round(skillBonus));
+			console.warn(++i, +bonusPerPoint.toFixed(2), 'total: ', _.round(skillBonus));
 			bonusPerPoint = bonusPerPoint * multiplier;
 		}
-		return Math.round(skillBonus); // 92% damage bonus for 255 strength
+		return _.round(skillBonus); // 92% damage bonus for 255 strength
 	}
 	function goCreateCharacter() {
 		ng.lock(1);

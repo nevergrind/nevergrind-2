@@ -722,13 +722,13 @@ var items = {};
 			}
 			if (drop.enhancedArmor) {
 				var newArmor = (drop.armor + (drop.armor * (drop.enhancedArmor / 100))).toFixed(1)
-				drop.armor = Math.round(newArmor * 1)
+				drop.armor = _.round(newArmor * 1)
 			}
 			if (drop.enhancedDamage) {
 				var newMinDamage = (drop.minDamage + (drop.minDamage * (drop.enhancedDamage / 100))).toFixed(1) * 1
 				var newMaxDamage = (drop.maxDamage + (drop.maxDamage * (drop.enhancedDamage / 100))).toFixed(1) * 1
-				drop.minDamage = Math.round(newMinDamage)
-				drop.maxDamage = Math.round(newMaxDamage)
+				drop.minDamage = _.round(newMinDamage)
+				drop.maxDamage = _.round(newMaxDamage)
 			}
 		}
 
@@ -926,7 +926,7 @@ var items = {};
 		//console.info('setMaxPropValue', obj[key], key, tc)
 		var val = (obj[key] * (tc / MAX_TREASURE_CLASS)) - minValue[key]
 		if (val < minValue[key]) { val = minValue[key] }
-		return Math.round(val)
+		return _.round(val)
 	}
 	function getTreasureClass(tc) {
 		if (tc > 45) {
@@ -935,7 +935,7 @@ var items = {};
 		else if (tc < 3) {
 			tc = 3
 		}
-		return Math.round(tc)
+		return _.round(tc)
 	}
 	function convertProps(props) {
 		var prop, val, newProps = [];
