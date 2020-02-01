@@ -174,7 +174,7 @@ items.chests = {
 			sta: [11, 15],
 			handToHand: [2, 4],
 			piercing: 2,
-			immuneToStun: true,
+			cannotBeStunned: true,
 			resistBlood: [25, 30],
 			resistFire: [11, 15],
 			hp: [20, 25],
