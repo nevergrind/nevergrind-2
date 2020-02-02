@@ -163,7 +163,7 @@ items.chests = {
 			mp: 25,
 			mpRegen: 2,
 			resistAll: [5, 8],
-			enhanceMagic: 3,
+			enhanceArcane: 3,
 			cannotBeSilenced: true,
 			damageTakenToMana: [4, 6],
 		}, {
@@ -224,7 +224,7 @@ items.chests = {
 			mpKill: 5,
 			resistIce: 10,
 			resistFire: 10,
-			enhanceCold: 3,
+			enhanceIce: 3,
 			enhancedDamageToHumanoids: [4, 6],
 			increaseMpPercent: [3, 5],
 		}, {

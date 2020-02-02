@@ -144,7 +144,7 @@ items.gloves = {
 			evocation: [2, 4],
 			intel: 12,
 			mpKill: 3,
-			enhanceCold: [2, 4],
+			enhanceIce: [2, 4],
 			resistIce: [11, 15],
 			resistArcane: [6, 10],
 		}, {

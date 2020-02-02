@@ -188,7 +188,7 @@ items.cloaks = {
 			oneHandSlash: [3, 5],
 			resistFire: [16, 25],
 			resistLightning: [16, 25],
-			resistCold: [16, 25],
+			resistIce: [16, 25],
 		}, {
 			name: 'Sylvan Cloak',
 			newName: 'Cloak of Leaves',
