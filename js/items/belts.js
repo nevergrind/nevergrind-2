@@ -186,8 +186,8 @@ items.belts = {
 			intel: 12,
 			hp: 20,
 			mp: 10,
-			enhancedPoison: [4, 7],
-			enhancedArcane: [4, 7],
+			enhancePoison: [4, 7],
+			enhanceArcane: [4, 7],
 			addPoison: [2, 4],
 		}, {
 			name: 'Plated Belt',

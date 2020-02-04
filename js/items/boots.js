@@ -113,7 +113,7 @@ items.boots = {
 		{
 			name: 'Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [12, 20],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -125,7 +125,7 @@ items.boots = {
 		}, {
 			name: 'Slippers',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [27, 35],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -137,7 +137,7 @@ items.boots = {
 		}, {
 			name: 'Light Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [46, 58],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -149,7 +149,7 @@ items.boots = {
 		}, {
 			name: 'Khussa',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [70, 80],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -161,7 +161,7 @@ items.boots = {
 		}, {
 			name: 'Heavy Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [15, 21],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -173,7 +173,7 @@ items.boots = {
 		}, {
 			name: 'Leather Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [29, 40],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -185,7 +185,7 @@ items.boots = {
 		}, {
 			name: 'Sharkskin Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [53, 67],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -197,7 +197,7 @@ items.boots = {
 		}, {
 			name: 'Hunting Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [73, 84],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -209,7 +209,7 @@ items.boots = {
 		}, {
 			name: 'Chain Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [15, 24],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -221,7 +221,7 @@ items.boots = {
 		}, {
 			name: 'Scaled Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [35, 49],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -233,7 +233,7 @@ items.boots = {
 		}, {
 			name: 'Sovereign Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [64, 74],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -245,7 +245,7 @@ items.boots = {
 		}, {
 			name: 'Blackened Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [83, 92],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -257,7 +257,7 @@ items.boots = {
 		}, {
 			name: 'Steel Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [21, 25],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -269,7 +269,7 @@ items.boots = {
 		}, {
 			name: 'Plated Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [43, 52],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -281,7 +281,7 @@ items.boots = {
 		}, {
 			name: 'Sabatons',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [68, 77],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -293,7 +293,7 @@ items.boots = {
 		}, {
 			name: 'Cobalt Boots',
 			newName: 'XXXXXXXXXXXXXXXXXXXXXXX',
-			enhancedArmor: [10, 20],
+			enhancedArmor: [93, 107],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,

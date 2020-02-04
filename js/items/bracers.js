@@ -1,4 +1,4 @@
-items.helms = {
+items.bracers = {
 	base: {
 		slots: ['wrist'],
 		armorType: 'cloth',
