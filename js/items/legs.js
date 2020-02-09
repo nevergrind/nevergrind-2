@@ -175,7 +175,7 @@ items.legs = {
 			parry: [3, 5],
 			defense: [4, 6],
 			dodge: [3, 5],
-			cannotBeStunned: true,
+			resistStun: [5, 10],
 			resistIce: [25, 35],
 			enhancedDamageToEldritch: [5, 8],
 		}, {
@@ -261,7 +261,7 @@ items.legs = {
 			resistArcane: 40,
 			resistFire: 25,
 			resistPoison: 20,
-			cannotBeSilenced: true,
+			resistSilence: [5, 7],
 		}, {
 			name: 'Royal Legplates',
 			newName: 'Doomhaunch',

@@ -166,10 +166,10 @@ var tooltip;
 			getGenericPercentStatHtml(obj.enhanceFire, 'All Fire Damage') +
 			getGenericPercentStatHtml(obj.enhanceIce, 'All Ice Damage') +
 			// status resists
-			getPropHtml(obj.cannotBeFrozen, 'Cannot Be Frozen') +
-			getPropHtml(obj.cannotBeFeared, 'Cannot Be Feared') +
-			getPropHtml(obj.cannotBeStunned, 'Cannot Be Stunned') +
-			getPropHtml(obj.cannotBeSilence, 'Cannot Be Silenced') +
+			getGenericPercentStatHtml(obj.resistFrozen, 'Frozen Resist') +
+			getGenericPercentStatHtml(obj.resistFear, 'Fear Resist') +
+			getGenericPercentStatHtml(obj.resistStun, 'Stun Resist') +
+			getGenericPercentStatHtml(obj.resistSilence, 'Silence Resist') +
 			getPropHtml(obj.indestructible, 'Indestructible') +
 			// debuff
 			getPropHtml(obj.reducedHealing, obj.reducedHealing + '% Healing on Monsters') +

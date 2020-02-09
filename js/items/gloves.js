@@ -280,7 +280,7 @@ items.gloves = {
 			twoHandBlunt: [2, 4],
 			crit: [15, 20],
 			resistBlood: [15, 20],
-			cannotBeFeared: true,
+			resistFear: [6, 9],
 		},
 	]
 }

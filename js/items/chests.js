@@ -164,7 +164,7 @@ items.chests = {
 			mpRegen: 2,
 			resistAll: [5, 8],
 			enhanceArcane: 3,
-			cannotBeSilenced: true,
+			resistSilence: [4, 8],
 			damageTakenToMana: [4, 6],
 		}, {
 			name: 'Jerkin',
@@ -174,7 +174,7 @@ items.chests = {
 			sta: [11, 15],
 			handToHand: [2, 4],
 			piercing: 2,
-			cannotBeStunned: true,
+			resistStun: [5, 8],
 			resistBlood: [25, 30],
 			resistFire: [11, 15],
 			hp: [20, 25],

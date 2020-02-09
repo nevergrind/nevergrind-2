@@ -197,7 +197,7 @@ items.bracers = {
 			agi: 5,
 			oneHandBlunt: 2,
 			conjuration: [1, 2],
-			cannotBeStunned: true,
+			resistStun: [4, 6],
 		}, {
 			name: 'Laminar Bracers',
 			newName: 'Runed Adamantium Bracer',

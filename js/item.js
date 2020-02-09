@@ -368,8 +368,8 @@ var items = {};
 		resistFire: 2,
 		resistIce: 2,
 		resistAll: 1,
-		enhancedArmor: 5,
-		enhancedDamage: 5,
+		enhancedArmor: 25,
+		enhancedDamage: 50,
 		addSpellBlood: 2,
 		addSpellPoison: 2,
 		addSpellArcane: 2,
@@ -419,6 +419,10 @@ var items = {};
 		addFire: 2,
 		addIce: 2,
 		increaseBlock: 2,
+		resistFrozen: 2,
+		resistFear: 2,
+		resistStun: 2,
+		resistSilence: 2,
 	}
 	var twoHandItemTypes = [
 		'twoHandSlashers',
@@ -513,6 +517,7 @@ var items = {};
 		// magic
 		if (rarity === 'unique') {
 			var len = getUniqueItemCount(drop);
+			console.info('getUniqueItemCount', len);
 			if (len) {
 				processUniqueDrop(drop)
 			}

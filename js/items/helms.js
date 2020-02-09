@@ -133,7 +133,7 @@ items.helms = {
 			enhancedArmor: [40, 50],
 			handToHand: [3, 5],
 			offense: [4, 6],
-			addLightning: [6, 8],
+			addSpellLightning: [6, 8],
 			hp: [20, 25],
 			agi: [35, 40],
 			hpKill: 6,

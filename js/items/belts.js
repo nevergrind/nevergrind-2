@@ -153,7 +153,7 @@ items.belts = {
 			newName: 'Frenzied Sash of Kordata',
 			enhancedArmor: [28, 42],
 			attack: [9, 12],
-			addLightning: [4, 6],
+			addSpellLightning: [4, 6],
 			dex: 15,
 			agi: [25, 32],
 			resistPoison: [11, 15],
@@ -188,7 +188,7 @@ items.belts = {
 			mp: 10,
 			enhancePoison: [4, 7],
 			enhanceArcane: [4, 7],
-			addPoison: [2, 4],
+			addSpellPoison: [2, 4],
 		}, {
 			name: 'Plated Belt',
 			newName: 'Guardian\'s Girdle',
@@ -207,7 +207,7 @@ items.belts = {
 			leech: [4, 5],
 			magMit: [4, 7],
 			phyMit: [4, 7],
-			cannotBeFeared: true,
+			resistFear: [5, 7],
 		}, {
 			name: 'Arcane Sash',
 			newName: 'Wraith\'s Lust',
