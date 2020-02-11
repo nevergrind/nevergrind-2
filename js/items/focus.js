@@ -78,6 +78,8 @@ items.focus = {
 		{
 			name: 'Stein',
 			newName: 'XXXXXXXXXXXXXXXXXXX',
+			enhancedDamage: [120, 150],
+			attack: [20, 25],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -88,6 +90,8 @@ items.focus = {
 		}, {
 			name: 'Dark Orb',
 			newName: 'XXXXXXXXXXXXXXXXXXX',
+			enhancedDamage: [120, 150],
+			attack: [20, 25],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -98,6 +102,8 @@ items.focus = {
 		}, {
 			name: 'Ancient Tome',
 			newName: 'XXXXXXXXXXXXXXXXXXX',
+			enhancedDamage: [120, 150],
+			attack: [20, 25],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -108,6 +114,8 @@ items.focus = {
 		}, {
 			name: 'Totem',
 			newName: 'XXXXXXXXXXXXXXXXXXX',
+			enhancedDamage: [120, 150],
+			attack: [20, 25],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -118,6 +126,8 @@ items.focus = {
 		}, {
 			name: 'Crystal Ball',
 			newName: 'XXXXXXXXXXXXXXXXXXX',
+			enhancedDamage: [120, 150],
+			attack: [20, 25],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -128,6 +138,8 @@ items.focus = {
 		}, {
 			name: 'Skull',
 			newName: 'XXXXXXXXXXXXXXXXXXX',
+			enhancedDamage: [120, 150],
+			attack: [20, 25],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -138,6 +150,8 @@ items.focus = {
 		}, {
 			name: 'Emblazoned Orb',
 			newName: 'XXXXXXXXXXXXXXXXXXX',
+			enhancedDamage: [120, 150],
+			attack: [20, 25],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
@@ -148,6 +162,8 @@ items.focus = {
 		}, {
 			name: 'Idol',
 			newName: 'XXXXXXXXXXXXXXXXXXX',
+			enhancedDamage: [120, 150],
+			attack: [20, 25],
 			prop: 12341234,
 			prop: 12341234,
 			prop: 12341234,
