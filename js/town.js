@@ -11,8 +11,8 @@ var town;
 				msg: merchantMsg,
 				bg: {
 					// don't exceed 25-75 range
-					x: '-75%',
-					y: '-60%',
+					x: '-25%',
+					y: '-10%',
 				},
 				aside: {
 					x: 112,
@@ -22,8 +22,8 @@ var town;
 			'town-trainer': {
 				msg: trainerMsg,
 				bg: {
-					x: '-75%',
-					y: '-25%',
+					x: '-25%',
+					y: '25%',
 				},
 				aside: {
 					x: 112,
@@ -33,8 +33,8 @@ var town;
 			'town-guild': {
 				msg: guildMsg,
 				bg: {
-					x: '-25%',
-					y: '-25%',
+					x: '25%',
+					y: '25%',
 				},
 				aside: {
 					x: -30,
@@ -44,8 +44,8 @@ var town;
 			'town-mission': {
 				msg: missionMsg,
 				bg: {
-					x: '-67%',
-					y: '-60%',
+					x: '-17%',
+					y: '-10%',
 				},
 				aside: {
 					x: 75,
@@ -374,10 +374,10 @@ var town;
 						e.remove();
 					}
 				});
-				TweenMax.to('#town-bg, #town-bg', .5, {
+				TweenMax.to('#town-bg', .5, {
 					scale: 1,
-					x: '-50%',
-					y: '-50%'
+					x: '0%',
+					y: '0%'
 				});
 			}).on('click', '#guild-create', function(){
 				// create a guild

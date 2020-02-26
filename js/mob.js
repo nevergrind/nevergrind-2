@@ -211,7 +211,7 @@ var mob;
 	function hitComplete(m) {
 		resetIdle(m.index);
 		if (ng.test){
-			delayedCall(.5, attack, [ m.index, 'primary' ]);
+			delayedCall(_.random(.5, 1.5), attack, [ m.index, 'primary' ]);
 		}
 	}
 
@@ -243,13 +243,13 @@ var mob;
 		resetIdle(m.index)
 		if (ng.test){
 			if (force === 'primary'){
-				delayedCall(.5, attack, [ m.index, 'secondary' ])
+				delayedCall(_.random(.5, 1.5), attack, [ m.index, 'secondary' ])
 			}
 			else if (force === 'death'){
-				delayedCall(.5, death, [ m.index ])
+				delayedCall(_.random(.5, 1.5), death, [ m.index ])
 			}
 			else {
-				delayedCall(.5, special, [ m.index ])
+				delayedCall(_.random(.5, 1.5), special, [ m.index ])
 			}
 		}
 	}
@@ -282,7 +282,7 @@ var mob;
 	function specialComplete(m) {
 		resetIdle(m.index)
 		if (ng.test) {
-			delayedCall(.5, death, [ m.index ])
+			delayedCall(_.random(.5, 1.5), death, [ m.index ])
 		}
 	}
 	function death(i) {

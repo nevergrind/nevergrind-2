@@ -3,6 +3,7 @@ var items = {};
 !function() {
 	item = {
 		getEquipString,
+		getRarity,
 		getItem,
 	}
 	var slotRequiresMagic = [
@@ -458,6 +459,29 @@ var items = {};
 	function getEquipString() {
 		// cloth, leather, mail, plate, weapon types should show red if you can't use it
 	}
+	function getRarity(bonus = 0) {
+		/*'normal',
+			'magic',
+			'rare',
+			'set',
+			'unique',
+			'runic',
+			'legendary',*/
+		var resp = 'normal';
+		var rand = _.random(1, 100) + bonus;
+
+		console.info('getRarity', rand);
+		if (rand >= 97) {
+			resp = 'unique'
+		}
+		else if (rand >= 75) {
+			resp = 'rare'
+		}
+		else if (rand >= 20) {
+			resp = 'magic'
+		}
+		return resp;
+	}
 	function getItem(config) {
 		/*var rarityTypes = [
 			'normal',
@@ -470,6 +494,7 @@ var items = {};
 		]*/
 		// set item type (normal, magic, etc)
 		var rarity = config.rarity
+		console.info('getRarity', rarity)
 		var keys = _.keys(items)
 		// get possible slotTypes (helms, chests) based on rarity
 		var filteredKeys = _.filter(keys, filterKeys)
@@ -666,12 +691,12 @@ var items = {};
 			console.info('infos', config.mobLevel, tc, prefix, prefixMax, suffix, suffixMax)
 			console.warn('max ', prefixMax, suffixMax)
 
-			var getPrefixSuffixComboType = _.random(0, 100)
-			if (getPrefixSuffixComboType < 50) {
+			var getPrefixSuffixComboType = _.random(1, 100)
+			if (getPrefixSuffixComboType <= 50) {
 				prefixVal = _.random(minValue[prefix], prefixMax);
 				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
 			}
-			else if (getPrefixSuffixComboType < 75) {
+			else if (getPrefixSuffixComboType <= 75) {
 				suffixVal = _.random(minValue[suffix], suffixMax)
 				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
 			}
