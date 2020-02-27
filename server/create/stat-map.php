@@ -120,7 +120,7 @@ $statMap = [
 			'Wizard'
 		]
 	],
-	'Ogre' => [
+	'Orc' => [
 		'attrs' => [29,28,14,14,13,11,6],
 		'jobs' => [
 			'Shadow Knight',

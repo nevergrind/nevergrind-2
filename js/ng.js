@@ -43,7 +43,7 @@ var ng;
 			'Halfling',
 			'High Elf',
 			'Human',
-			'Ogre',
+			'Orc',
 			'Troll',
 			'Wood Elf'
 		],
@@ -333,6 +333,8 @@ var ng;
 				create.form = create.getEmptyForm();
 				create.setRandomGender();
 				create.setRandomRace();
+				console.info('form', create.form)
+				create.setFace();
 				TweenMax.to('#scene-title-create-character', .6, {
 					startAt: {
 						display: 'flex',

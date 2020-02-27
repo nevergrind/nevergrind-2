@@ -47,7 +47,7 @@ var create;
 				Halfling: 'Halflings dwell in Aspen Grove, a hamlet on the southern coast of Vandamor. They are a race of nimble pranksters with high agility and dexterity. They are adept treasure-finders with strong bonuses to disarming traps and pulling. Their unique ability to escape from combat is unmatched.',
 				'High Elf': 'High Elves live in Kaedorn, a walled kingdom ruled by a monarchy for thousands of years. Despite their resemblance to Wood Elves, their strengths are in spellcasting due to their diligent study of magic. They regenerate magic faster than any other race.',
 				Human: 'Humans are a swashbuckling, fearless race hailing from Edenberg, the trade capital of the world. Despite their average attributes, their fearless leadership is legendary throughout Vandamor. Humans are immune to fear, have a bonus to treasure, and the best pulling in the game.',
-				Ogre: 'Ogres hail from Gorgek, a city on an isolated peninsula of southern Vandamor. A brutish and violent race, Ogres have the highest strength and stamina among all races. Furthermore, they are immune to stuns which makes them powerful allies in any party.',
+				Orc: 'Orcs hail from Gorgek, a city on an isolated peninsula of southern Vandamor. A brutish and violent race, Orcs have the highest strength and stamina among all races. Furthermore, they are immune to stuns which makes them powerful allies in any party.',
 				Troll: 'Trolls are a savage race from the swaps of Slagnon. Their strength and stamina is second only to Ogres. They uniquely regenerate health faster than any other race, but they are weak to fire magic.',
 				'Wood Elf': 'Wood Elves are a race from the city of Artremia. Their knowledge of the great outdoors is unmatched, giving them strong ice resistance, fire resistance, and the best scouting skills among all races. They are also skilled at disarming traps.'
 			},
@@ -81,6 +81,7 @@ var create;
 		setRandomGender,
 		setRandomRace,
 		setRandomClass,
+		setFace,
 	};
 	// public //////////////////////////////////////
 	function events() {
@@ -104,6 +105,8 @@ var create;
 		$("#create-character-back").on('click', goCreateToTitle);
 		$("#create-character-btn").on('click', createCharacter);
 		$("#ch-card-list").on('click', '.select-player-card', selectCharacter);
+		$('#portrait-down').on('click', faceDown)
+		$('#portrait-up').on('click', faceUp)
 	}
 	function onClickDelete() {
 		modal.show({
@@ -116,6 +119,7 @@ var create;
 		$(this).addClass('active');
 		create.setRandomClass(race);
 		create.set('race', race);
+		setFace()
 	}
 	function selectClass() {
 		if (!$(this).get(0).className.includes('disabled')){
@@ -130,6 +134,7 @@ var create;
 		$(".select-gender").removeClass('active');
 		$(this).addClass('active');
 		create.set('gender', gender);
+		setFace()
 	}
 	function onNameChange(e) {
 		if (_.includes(create.whitelist, e.key)) {
@@ -558,6 +563,7 @@ var create;
 			job: '',
 			gender: '',
 			name: '',
+			face: _.random(0, 3),
 			str: 0,
 			sta: 0,
 			agi: 0,
@@ -568,6 +574,22 @@ var create;
 			left: 10,
 			maxLeft: 10
 		}
+	}
+	function faceUp() {
+		if (++create.form.face > 3) {
+			create.form.face = 0
+		}
+		setFace()
+	}
+	function faceDown() {
+		if (--create.form.face < 0) {
+			create.form.face = 3
+		}
+		setFace()
+	}
+	function setFace() {
+		getById('create-portrait').src = 'images/portraits/' + _.kebabCase(create.form.race)
+			+ '-' + _.kebabCase(create.form.gender) + '-' + create.form.face + '.png'
 	}
 	// private /////////////////////////////////////////////////
 	function getCleanName(name) {

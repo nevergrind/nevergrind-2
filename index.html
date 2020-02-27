@@ -70,7 +70,7 @@ Twe				<div>
 		</div>
 	</div>
 
-	<div id="scene-title-select-character" class="flex-col title-cc-wrap">
+	<div id="scene-title-select-character" class="flex-column title-cc-wrap">
 		<header id="title-header" class="text-primary">
 			<div class="title-column">
 				<a id="logout" class="ng-btn pointer">Loading...</a>
@@ -78,8 +78,8 @@ Twe				<div>
 		</header>
 
 		<div id="title-screen-wrap" class="flex text-shadow">
-			<div class="title-menu-row flex flex-1">
-				<div class="flex-col flex-50 title-bg-color flex-center">
+			<div class="title-menu-row flex flex-max">
+				<div class="flex-column flex-50 title-bg-color flex-center">
 					<div class="title-ch-create-col text-center" style="justify-content: start">
 						<div>Nevergrind 2</div>
 						<div>Cooperative Multiplayer</div>
@@ -93,8 +93,8 @@ Twe				<div>
 					</div>
 				</div>
 
-				<div class="flex-col flex-50 title-bg-trans">
-					<div id="title-select-character" class="title-ch-create-col flex-1">
+				<div class="flex-column flex-50 title-bg-trans">
+					<div id="title-select-character" class="title-ch-create-col flex-max">
 						<!-- well top -->
 						<div id="title-well-top" class="title-ch-well text-center">
 							<a id="delete-character"
@@ -120,7 +120,7 @@ Twe				<div>
 
 	</div> <!-- end scene-title-select-character -->
 
-	<div id="scene-title-create-character" class="flex-col title-cc-wrap none text-shadow">
+	<div id="scene-title-create-character" class="flex-column title-cc-wrap none text-shadow">
 		<div class="flex title-menu-row stag-blue pad-4">
 			<div class="flex-16 title-ch-create-col">
 				<div id="race-wrap">
@@ -152,7 +152,7 @@ Twe				<div>
 						<div class="select-race no-select">Human</div>
 					</div>
 					<div class="select-create-wrap">
-						<div class="select-race no-select">Ogre</div>
+						<div class="select-race no-select">Orc</div>
 					</div>
 					<div class="select-create-wrap">
 						<div class="select-race no-select">Troll</div>
@@ -180,9 +180,9 @@ Twe				<div>
 
 			<div id="ch-cr-detail-col" class="flex-33 title-ch-create-col">
 				<div id="create-info">
-					<div class="character-info-header">Overview</div>
-					<div id="create-overview" class="flex">
-						<div id="create-overview-stats" class="flex-col">
+					<div class="character-info-header">Avatar</div>
+					<div id="create-overview" class="flex-center">
+						<div class="flex-column flex-max" style="display: none">
 							<div class="flex space-between pad-4">
 								<div>Gender:</div><div id="gender-value"></div>
 							</div>
@@ -196,11 +196,17 @@ Twe				<div>
 								<div>Type:</div><div id="type-value"></div>
 							</div>
 						</div>
-						<img id="create-portrait" src="images/portraits/hie-female.png">
+						<div class="flex-column" style="margin: .2rem 0">
+							<div class="flex flex-center" style="margin: 0 .2rem">
+								<i id="portrait-down" class="fas fa-chevron-left pointer portrait-arrow"></i>
+								<img id="create-portrait" src="images/portraits/high-elf-female-0.png">
+								<i id="portrait-up" class="fas fa-chevron-right pointer portrait-arrow"></i>
+							</div>
+						</div>
 					</div>
 
-					<div class="character-info-header">Resistances</div>
-					<div class="flex">
+					<div class="character-info-header" style="display: none">Resistances</div>
+					<div class="flex" style="display: none">
 						<div class="flex-50 pad-4">
 							<div class="flex space-between pad-4">
 								<div>Bleed:</div><div id="bleed-value"></div>
@@ -225,8 +231,8 @@ Twe				<div>
 						</div>
 					</div>
 
-					<div class="character-info-header">Dungeon</div>
-					<div class="flex">
+					<div class="character-info-header" style="display: none">Dungeon</div>
+					<div class="flex" style="display: none">
 						<div class="flex-50 pad-4">
 							<div class="flex space-between pad-4">
 								<div>Traps:</div><div id="traps-value"></div>
@@ -305,7 +311,7 @@ Twe				<div>
 				</div>
 			</div>
 
-			<div class="flex-25 title-ch-create-col flex-col">
+			<div class="flex-25 title-ch-create-col flex-column">
 				<div id="create-attr">
 					<div id="create-attr-remaining" class="flex">
 						<div id="create-points-label">

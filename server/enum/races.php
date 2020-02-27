@@ -9,7 +9,7 @@
 		'Halfling',
 		'High Elf',
 		'Human',
-		'Ogre',
+		'Orc',
 		'Troll',
 		'Wood Elf'
 	];

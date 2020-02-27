@@ -306,6 +306,9 @@ tbody {
 .pointer {
 	cursor: url('cursor/pointer.cur'), pointer
 }
+.pointer:active {
+	cursor: url('cursor/pointer.cur'), pointer
+}
 .text {
 	cursor: text !important
 }
@@ -1776,7 +1779,7 @@ background-clip: content-box;
 	display: flex;
 	flex-direction: row;
 }
-.flex-col {
+.flex-column {
 	display: flex;
 	flex-direction: column;
 }
@@ -1797,7 +1800,8 @@ background-clip: content-box;
 .flex-25 { flex-basis: 25% }
 .flex-16 { flex-basis: 16.666% }
 .flex-8 { flex-basis: 8.333% }
-.flex-1 { flex: 1 }
+.flex-max { flex: 1 }
+.flex-min { flex: 0 }
 /* utility classes */
 .pad-4 {
 	padding: .2rem;
@@ -2034,21 +2038,26 @@ background-clip: content-box;
 #create-overview {
 	display: flex;
 	font-size: 1rem;
-}
-#create-overview-stats {
-	display: flex;
-	flex: 1;
+	background: radial-gradient(closest-corner at 50% 50%, rgba(128, 160, 255, 1), rgba(128, 160, 255, 0));
+	background: radial-gradient(closest-corner at 50% 50%, rgba(0, 64, 128, 1), rgba(0, 64, 128, 0));
 }
 #create-portrait {
-	margin: .2rem;
-	width: 9rem;
+	margin: .2rem .5rem;
+	width: 15rem;
+}
+.portrait-arrow {
+	font-size: 3rem;
+}
+.portrait-arrow:active {
+	color: #8bf;
+	transform: translate(0px, 1px);
 }
 #create-details {
 	margin: .2rem 0;
 	padding: .2rem;
 	border: 1px solid #125;
 	background: #147;
-	height: 6rem;
+	flex: 1;
 }
 #create-character-name-wrap {
 	border: 1px solid #579;

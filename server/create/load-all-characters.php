@@ -1,12 +1,12 @@
 <?php
-	$query = 'select row, name, level, race, job 
+	$query = 'select row, name, level, race, job, face 
 		from `characters` 
 		where account=? and deleted=0';
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('i', $_SESSION['account']);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($row, $name, $level, $race, $job);
+	$stmt->bind_result($row, $name, $level, $race, $job, $face);
 	$r['characterData'] = [];
 	$i = 0;
 	while($stmt->fetch()){
@@ -15,7 +15,8 @@
 			'name' => $name,
 			'level' => $level,
 			'race' => $race,
-			'job' => $job
+			'job' => $job,
+			'face' => $face
 		];
 	}
 	
