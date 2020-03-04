@@ -136,7 +136,7 @@ var who;
 			who.listThrottled = false;
 		});
 
-		socket.publish('allbroadcast', Object.assign({
+		socket.publish('allbroadcast', _.assign({
 			name: my.name,
 			route: 'all->byFilter'
 		}, parseObj))

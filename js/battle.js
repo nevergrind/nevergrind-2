@@ -40,8 +40,8 @@ var battle;
 		var s =
 			'<div id="battle-sky"></div>' +
 			'<div id="battle-clouds"></div>' +
-			'<img id="battle-bg" src="images/bg/prototype-bg.png">' +
-			'<img id="battle-fg" src="images/bg/prototype-fg.png">';
+			'<img id="battle-bg" src="images/bg/tendolin-hollow2.png">' +
+			'<img id="battle-fg" src="images/bg/prototype-fg.png" class="no-pointer">';
 		var test = '';
 
 		for (var i=0; i<mob.max; i++){

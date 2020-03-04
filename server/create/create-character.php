@@ -62,6 +62,10 @@
 	if (!in_array($f['race'], $races, true)){
 		$f['race'] = 'Human';
 	}
+	// validate face
+	if ($f['face'] < 0 || $f['face'] > 3){
+		$f['face'] = 0;
+	}
 	// validate class
 	if (!in_array($f['job'], $jobs, true)){
 		$f['job'] = 'Warrior';
@@ -93,6 +97,7 @@
 		'`account`',
 		'`name`',
 		'`gender`',
+		'`face`',
 		'`race`',
 		'`job`',
 		'`str`',
@@ -123,8 +128,8 @@
 		join(',', $values)
 	.')';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('isissiiiiiiiiiiiiiiiii',
-		$_SESSION['account'], $f['name'], $f['gender'], $f['race'], $f['shortJob'],
+	$stmt->bind_param('isiissiiiiiiiiiiiiiiiii',
+		$_SESSION['account'], $f['name'], $f['gender'], $f['face'], $f['race'], $f['shortJob'],
 		$f['str'], $f['sta'], $f['agi'], $f['dex'], $f['wis'],
 		$f['intel'], $f['cha'], $f['dualWield'], $f['oneHandSlash'], $f['twoHandSlash'],
 		$f['twoHandBlunt'], $f['piercing'], $f['archery'], $f['dodge'], $f['alteration'], $f['evocation'],

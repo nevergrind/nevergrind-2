@@ -45,7 +45,7 @@ var test;
 		for (var i=0; i<mob.max; i++){
 			if (singleMob && i === 2 || !singleMob) {
 				mobKey = mob.getRandomMobKey();
-				mobKey = 'rat';
+				mobKey = 'toadlok';
 				cache.preloadMob(mobKey);
 				mob.setMob(i, mobKey);
 			}
@@ -156,9 +156,9 @@ var test;
 	  saturate: 'saturate(2500%)'
 	}, 'saturate');
 	 */
-	function getItem(level = 50, rarity = 'normal', itemSlot = '', itemName = '') {
+	function getItem(level = 50, rarity = undefined, itemSlot = '', itemName = '') {
 		if (itemName) { level = 50 } // because it needs to select any item
-		rarity = item.getRarity();
+		rarity = rarity || item.getRarity();
 		var drop = item.getItem({
 			mobLevel: level,
 			rarity: rarity,

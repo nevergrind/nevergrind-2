@@ -81,8 +81,9 @@ var town;
 				row: create.selected
 			}).done(function(data) {
 				console.info('load-character: ', data)
-				Object.assign(my, data.characterData)
+				_.assign(my, data.characterData)
 				my.jobLong = ng.toJobLong(my.job)
+				my.avatar = my.getAvatarUrl()
 				guild.setGuildData(data);
 
 				// init party member values
@@ -98,7 +99,7 @@ var town;
 				el.id = 'town-bg'
 				el.className = 'img-bg'
 				el.src = 'images/town2.jpg'
-				document.body.append(el);
+				document.getElementById('body').insertBefore(el, document.getElementById('bar-wrap'));
 
 				getById('scene-town').innerHTML = town.html()
 				town.events()

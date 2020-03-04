@@ -54,7 +54,7 @@ var dungeon;
 		// delegate
 	}
 	function html() {
-		return '<img id="dungeon-bg" class="img-bg" src="images/dungeon/braxxen1.jpg">'
+		return '<img id="dungeon-bg" class="img-bg" src="images/bg/lanfeld.png">'
 	}
 	function enterCombat() {
 		console.info("ENTERING COMBAT")

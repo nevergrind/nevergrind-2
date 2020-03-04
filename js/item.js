@@ -467,11 +467,14 @@ var items = {};
 			'unique',
 			'runic',
 			'legendary',*/
-		var resp = 'normal';
-		var rand = _.random(1, 100) + bonus;
+		var resp = 'normal'
+		var randBase = _.random(1, 100)
+		var rand = randBase + bonus
+		// unique bonuses are halved
+		var uniqueRand = randBase + (bonus * .5)
 
-		console.info('getRarity', rand);
-		if (rand >= 97) {
+		//console.info('getRarity', rand);
+		if (uniqueRand >= 97) {
 			resp = 'unique'
 		}
 		else if (rand >= 75) {
@@ -483,18 +486,12 @@ var items = {};
 		return resp;
 	}
 	function getItem(config) {
-		/*var rarityTypes = [
-			'normal',
-			'magic',
-			'rare',
-			'set',
-			'unique',
-			'runic',
-			'legendary',
-		]*/
+		if (config.bonus === undefined) {
+			config.bonus = 0
+		}
+		var rarity = config.rarity || getRarity(config.bonus)
 		// set item type (normal, magic, etc)
-		var rarity = config.rarity
-		console.info('getRarity', rarity)
+		//console.info('getRarity', rarity)
 		var keys = _.keys(items)
 		// get possible slotTypes (helms, chests) based on rarity
 		var filteredKeys = _.filter(keys, filterKeys)
@@ -667,9 +664,9 @@ var items = {};
 			drop.name = getRareName(drop.itemType, drop.name)
 		}
 		function processMagicDrop(drop) {
-			console.info('magic drop', drop, config)
+			/*console.info('magic drop', drop, config)
 			console.info('prefixKeys', prefixKeys)
-			console.info('suffixKeys', suffixKeys)
+			console.info('suffixKeys', suffixKeys)*/
 			// get prefix and suffix
 			var prefix = prefixKeys[_.random(0, prefixKeys.length - 1)]
 			var suffix = suffixKeys[_.random(0, suffixKeys.length - 1)]
@@ -682,14 +679,14 @@ var items = {};
 			//TODO: unlock props by treasure class? Need data object for it
 			//TODO: Add rare props - refactor for easy code reuse
 			//console.warn('config', config.mobLevel)
-			console.info('itemObj', itemObj)
+			//console.info('itemObj', itemObj)
 			var tc = getTreasureClass(config.mobLevel)
 			// set prefix and bound check
 			var prefixMax = setMaxPropValue(itemObj.prefix, prefix, tc)
 			// set suffix and bound check
 			var suffixMax = setMaxPropValue(itemObj.suffix, suffix, tc)
-			console.info('infos', config.mobLevel, tc, prefix, prefixMax, suffix, suffixMax)
-			console.warn('max ', prefixMax, suffixMax)
+			/*console.info('infos', config.mobLevel, tc, prefix, prefixMax, suffix, suffixMax)
+			console.warn('max ', prefixMax, suffixMax)*/
 
 			var getPrefixSuffixComboType = _.random(1, 100)
 			if (getPrefixSuffixComboType <= 50) {

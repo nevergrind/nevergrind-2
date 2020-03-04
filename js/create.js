@@ -41,7 +41,7 @@ var create;
 				Barbarian: 'Barbarians are a hardy race that benefit from high strength and stamina. Living through harsh winters in Fenwoven has given them strong ice resistance and above-average scouting skills.',
 				'Dark Elf': 'Dark Elves are an evil race from Vedria that excel in a variety of roles. They boast strong blood and arcane resistance along with good trap and scouting skills.',
 				Dwarf: 'Dwarves hail from Dunhoven, a mountainous region of Vandamor. They are a stout, loyal race with strong resistances to arcane and poison magic. They are also known for unearthing hidden treasures where others would not.',
-				Erudite: 'Erudites are a learned race hailing from the remote island city of Wexxen. Generations of intense academic pursuit has made their bodies weak, but their minds strong. They also boast higher than normal pulling skills, which helps them avoid unnecessary conflicts in dungeons.',
+				Archon: 'Archons are a learned race hailing from the remote island city of Wexxen. Generations of intense academic pursuit has made their bodies weak, but their minds strong. They also boast higher than normal pulling skills, which helps them avoid unnecessary conflicts in dungeons.',
 				Gnome: 'Gnomes hail from Brindomir, a mountainous city on the eastern outskirts of Vandamor. Due to their extensive tinkering and scientific experimentation, they have high lightning resistance and are immune to silence. They also have a small bonus to treasure-finding.',
 				'Half Elf': 'Half Elves are a hybrid of Humans and Wood Elves that primarily dwell in Prentia, a city in western Vandamor. They share a blend of traits from both races and a love of the great outdoors. They have a minor boost to all resists and strong dungeon skills.',
 				Halfling: 'Halflings dwell in Aspen Grove, a hamlet on the southern coast of Vandamor. They are a race of nimble pranksters with high agility and dexterity. They are adept treasure-finders with strong bonuses to disarming traps and pulling. Their unique ability to escape from combat is unmatched.',
@@ -85,10 +85,12 @@ var create;
 	};
 	// public //////////////////////////////////////
 	function events() {
-		$("#logout").on('click', function() {
-			ng.logout();
-		});
-		$("#ch-card-base").on('click', '.ch-card', function(){
+		if (!app.isApp) {
+			$("#logout").on('click', function () {
+				ng.logout();
+			});
+		}
+		$("#ch-card-list").on('click', '.ch-card', function(){
 			$('.ch-card').removeClass('ch-card-active');
 			$(this).addClass('ch-card-active');
 		});
@@ -130,9 +132,10 @@ var create;
 		}
 	}
 	function selectGender() {
-		var gender = $(this).attr('id');
+		console.info(this);
+		var gender = $(this).data('gender');
 		$(".select-gender").removeClass('active');
-		$(this).addClass('active');
+		$('#' + gender).addClass('active');
 		create.set('gender', gender);
 		setFace()
 	}
@@ -220,6 +223,7 @@ var create;
 			ng.attrs.forEach(key => {
 				finalForm[key] -= create.base[key];
 			});
+			finalForm.face = 9;
 			// send to server
 			$.post(app.url + 'create/create-character.php', {
 				form: finalForm
@@ -325,7 +329,7 @@ var create;
 			if (f.gender === 'Male'){
 				v += 5;
 			}
-			if (f.race === 'Erudite'){
+			if (f.race === 'Archon'){
 				v += 25;
 			}
 			else if (f.race === 'Dark Elf' || f.race === 'Dwarf'){
@@ -495,7 +499,7 @@ var create;
 			else if (f.race === 'Half Elf'){
 				v += 7;
 			}
-			else if (f.race === 'Erudite'){
+			else if (f.race === 'Archon'){
 				v += 5;
 			}
 			// class
@@ -545,7 +549,7 @@ var create;
 			jobs = create.getPossibleJobs(race),
 			len = jobs.length;
 		jobs.forEach(function(v, i){
-			ids += '#create-' + v;
+			ids += '#create-' + v.split(' ').join('-');
 			if (i < len-1){
 				ids += ', ';
 			}

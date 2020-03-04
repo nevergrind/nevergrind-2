@@ -21,6 +21,7 @@ $statMap = [
 	'Barbarian' => [
 		'attrs' => [22,20,17,14,14,11,10],
 		'jobs' => [
+			'Monk',
 			'Rogue',
 			'Shaman',
 			'Warrior'
@@ -33,6 +34,7 @@ $statMap = [
 			'Enchanter',
 			'Magician',
 			'Necromancer',
+			'Ranger',
 			'Rogue',
 			'Shadow Knight',
 			'Warrior',
@@ -48,7 +50,7 @@ $statMap = [
 			'Warrior'
 		]
 	],
-	'Erudite' => [
+	'Archon' => [
 		'attrs' => [11,14,14,14,17,23,14],
 		'jobs' => [
 			'Cleric',
@@ -68,6 +70,7 @@ $statMap = [
 			'Magician',
 			'Necromancer',
 			'Rogue',
+			'Shadow Knight',
 			'Warrior',
 			'Wizard'
 		]
@@ -77,6 +80,7 @@ $statMap = [
 		'jobs' => [
 			'Bard',
 			'Druid',
+			'Monk',
 			'Paladin',
 			'Ranger',
 			'Rogue',
@@ -86,8 +90,10 @@ $statMap = [
 	'Halfling' => [
 		'attrs' => [14,15,20,19,16,9,9],
 		'jobs' => [
-			'Druid',
 			'Cleric',
+			'Druid',
+			'Monk',
+			'Ranger',
 			'Rogue',
 			'Warrior'
 		]
@@ -116,21 +122,24 @@ $statMap = [
 			'Ranger',
 			'Rogue',
 			'Shadow Knight',
+			'Shaman',
 			'Warrior',
 			'Wizard'
 		]
 	],
 	'Orc' => [
-		'attrs' => [29,28,14,14,13,11,6],
+		'attrs' => [27,22,13,14,13,11,8],
 		'jobs' => [
+			'Monk',
 			'Shadow Knight',
 			'Shaman',
 			'Warrior'
 		]
 	],
 	'Troll' => [
-		'attrs' => [23,25,17,15,11,9,6],
+		'attrs' => [22,24,18,15,11,9,6],
 		'jobs' => [
+			'Rogue',
 			'Shadow Knight',
 			'Shaman',
 			'Warrior'

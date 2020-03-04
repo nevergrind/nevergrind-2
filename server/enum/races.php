@@ -3,7 +3,7 @@
 		'Barbarian',
 		'Dark Elf',
 		'Dwarf',
-		'Erudite',
+		'Archon',
 		'Gnome',
 		'Half Elf',
 		'Halfling',

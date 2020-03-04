@@ -61,15 +61,25 @@ var tooltip;
 		})
 	}
 	function getItemHtml(obj) {
+		console.info('getItemHtml', obj)
+		//
 		var html = ''
-		html += '<div id="tooltip-name" class="item-' + _.kebabCase(obj.rarity) + '">' + obj.name + '</div>' +
-			'<hr id="tooltip-hr">' +
-			'<div class="flex space-between capitalize">' +
-				'<div>'+ getItemSlot(obj.slots) +'</div>' +
-				getRequiredItemSkill(obj) +
+		html +=
+			'<div class="flex" style="margin-bottom: .3rem">' +
+				'<div id="tooltip-item-img-bg">' +
+					'<img id="tooltip-item-img" src="images/items/'+ obj.itemType + (obj.imgIndex || 0) + '.png">' +
+				'</div>' +
+				'<div class="flex-column space-between" style="width: 100%">' +
+					'<div id="tooltip-name" class="item-' + _.kebabCase(obj.rarity) + '">' + obj.name + '</div>' +
+					'<hr id="tooltip-hr">' +
+					'<div class="flex space-between capitalize">' +
+						'<div>'+ getItemSlot(obj.slots) +'</div>' +
+						getRequiredItemSkill(obj) +
+					'</div>' +
+				'</div>' +
 			'</div>' +
 			getWeaponDamageHtml(obj) +
-			(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
+			(obj.armor ? '<div style="font-size: 1.25rem; line-height: 1">'+ obj.armor +' Armor</div>' : '') +
 			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
 			getDurabilityHtml(obj.durability) +
 			// block
@@ -204,11 +214,11 @@ var tooltip;
 	function getWeaponDamageHtml(obj) {
 		if (obj.weaponSkill) {
 			var dps = (((obj.minDamage + obj.maxDamage) / 2) / obj.speed).toFixed(1);
-			return '<div class="flex space-between">' +
-				'<div>'+ obj.minDamage + '&thinsp;–&thinsp;' + obj.maxDamage +' Damage</div>' +
+			return '<div class="flex space-between" style="align-items: flex-end">' +
+				'<div style="font-size: 1.25rem; line-height: 1">'+ obj.minDamage + '&thinsp;–&thinsp;' + obj.maxDamage +' Damage</div>' +
 				'<div>Speed ' + obj.speed + '</div>' +
 			'</div>' +
-			'<div>(' + dps + ' damage per second)</div>'
+			'<div style="margin-bottom: .3rem">(' + dps + ' damage per second)</div>'
 		}
 		else {
 			return ''
@@ -250,7 +260,7 @@ var tooltip;
 				return '<div>'+ _.startCase(obj.armorType) +'</div>'
 			}
 			else {
-				return '<div class="item-restricted">'+ _.startCase(obj.itemType) +'</div>'
+				return '<div class="item-restricted">'+ _.startCase(obj.armorType) +'</div>'
 			}
 		}
 		else if (obj.weaponSkill) {
@@ -263,6 +273,9 @@ var tooltip;
 		}
 		else if (obj.itemType === 'shields') {
 			return '<div>Shield</div>'
+		}
+		else if (obj.itemType === 'cloaks') {
+			return '<div>Cloak</div>'
 		}
 		else if (obj.itemType === 'rings') {
 			return '<div>Ring</div>'

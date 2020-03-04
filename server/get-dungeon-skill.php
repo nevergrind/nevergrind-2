@@ -137,7 +137,7 @@ function getDungeonSkill($type, $hero){
 		else if ($hero['race'] === 'Half Elf'){
 			$val += 7;
 		}
-		else if ($hero['race'] === 'Erudite'){
+		else if ($hero['race'] === 'Archon'){
 			$val += 5;
 		}
 	}

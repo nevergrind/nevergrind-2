@@ -37,7 +37,7 @@ var ng;
 			'Barbarian',
 			'Dark Elf',
 			'Dwarf',
-			'Erudite',
+			'Archon',
 			'Gnome',
 			'Half Elf',
 			'Halfling',
@@ -257,7 +257,7 @@ var ng;
 		}, .01);
 	}
 	function logout() {
-		if (ng.locked) return;
+		if (ng.locked || app.isApp) return;
 		ng.lock();
 		// socket.removePlayer(my.account);
 		$.get(app.url + 'account/logout.php').done(function() {
@@ -354,10 +354,11 @@ var ng;
 	function initGame() {
 		$.get(app.url + 'init-game.php').done(function(r){
 			console.info('init-game', r)
-			app.initialized = 1
 			if (r.id) {
 				my.accountId = r.id
-				getById('logout').textContent = 'Logout ' + localStorage.getItem('account')
+				if (!app.isApp) {
+					getById('logout').textContent = localStorage.getItem('account')
+				}
 				ng.displayAllCharacters(r.characterData)
 				ng.checkPlayerData()
 				$("#login-modal").remove()
@@ -365,26 +366,35 @@ var ng;
 			else {
 				login.notLoggedIn()
 			}
-			keepAlive()
-			TweenMax.set('#body', {
-				opacity: 0,
-				display: 'flex'
-			})
-			TweenMax.to('#body', .2, {
-				opacity: 1
-			})
+			if (!app.initialized) {
+				keepAlive()
+				TweenMax.set('#body', {
+					opacity: 0,
+					display: 'flex'
+				})
+				TweenMax.to('#body', .2, {
+					opacity: 1
+				})
+			}
+			app.initialized = 1
 		});
 	}
 	function displayAllCharacters(r) {
 		var s = ''
 		r.forEach(function(d){
+			var url = my.getAvatarUrl(d);
+			//console.info('url', url);
 			// #ch-card-list
 			s +=
 				'<div data-row="'+ d.row +'" '+
 				'data-name="'+ d.name +'" '+
 				'class="ch-card center select-player-card text-center">'+
-				'<div class="ch-card-name">'+ d.name +'</div>'+
-				'<div class="ch-card-details">'+ d.level +' '+ d.race +' '+ ng.toJobLong(d.job) +'</div>'+
+					'<img class="avatar-title" src="'+ url +'" style="padding:0 1rem">' +
+					'<div style="padding: .2rem .5rem; flex: 1">' +
+						'<div class="ch-card-name">'+ _.capitalize(d.name) +'</div>'+
+						'<div class="ch-card-level">Level '+ d.level +'</div>'+
+						'<div class="ch-card-details">'+ d.race +' '+ ng.toJobLong(d.job) +'</div>'+
+					'</div>'+
 				'</div>';
 		});
 		getById('ch-card-list').innerHTML = s;

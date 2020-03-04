@@ -70,13 +70,14 @@ var party;
 			player.mp = data.mp;
 			player.maxMp = data.maxMp;
 			player.job = data.job;
-			player.name = data.name;
+			player.name = _.capitalize(data.name);
 			player.row = data.row;
 			player.level = data.level;
+			player.avatar = data.avatar;
 			bar.updatePlayerBar(data);
 		}
 		else {
-			// add
+			// not found - add!
 			if (party.presence.length < party.maxPlayers) {
 				console.warn('adding party member', party.presence.length, data);
 				party.presence.push({
@@ -86,9 +87,10 @@ var party;
 					mp: data.mp,
 					maxMp: data.maxMp,
 					job: data.job,
-					name: data.name,
+					name: _.capitalize(data.name),
 					row: data.row,
 					level: data.level,
+					avatar: data.avatar,
 				});
 				var len = party.presence.length - 1;
 				bar.addPlayer(party.presence[len], data.row);

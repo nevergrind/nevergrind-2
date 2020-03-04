@@ -102,13 +102,14 @@ var bar;
 		player = player || {};
 		var s = '';
 		// job icon
-		s += '<div id="bar-col-icon-'+ index +'" class="bar-col-icon player-icon-'+ (player.job || "WAR") +'">' +
-			//'<div id="bar-level-'+ i +'" class="bar-level no-pointer">'+ player.level +'</div>' +
-			'<i id="bar-is-leader-'+ index +'" class="ra ra-crown bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></i>' +
-		'</div>' +
+		console.info('getPlayerBarHtml', player)
+		s +=
+		// avatar
+		'<img id="bar-col-icon-'+ index +'" class="bar-col-icon" src="'+ player.avatar +'">' +
 		// bars
 		'<div class="'+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'">' +
-			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis">'+ (player.name || '') +'</div>' +
+			'<i id="bar-is-leader-'+ index +'" class="ra ra-crown bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></i>' +
+			'<div id="bar-name-'+ index +'" class="bar-hp-name">'+ (player.name || '') +'</div>' +
 			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-hp-fg-'+ index +'" class="bar-hp-fg"></div>' +
 				//'<div id="bar-hp-bg-'+ i +'" class="bar-any-bg"></div>' +

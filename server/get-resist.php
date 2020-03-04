@@ -25,7 +25,7 @@ function getResist($type, $hero){
 			'fire' => 15,
 			'ice' => 15,
 		],
-		'Erudite' => [
+		'Archon' => [
 			'bleed' => 15,
 			'poison' => 15,
 			'arcane' => 40,

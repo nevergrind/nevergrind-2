@@ -66,56 +66,30 @@ Twe				<div>
 	<div id="ng2-logo-wrap" class="scene">
 		<img id="ng2-bg" src="images/ng2-bg2.jpg" class="img-bg">
 		<div id="version" class="text-shadow">
-			Version <script>document.write(app.version);</script>
+			Version <script>document.write(app.version)</script>
 		</div>
 	</div>
 
 	<div id="scene-title-select-character" class="flex-column title-cc-wrap">
-		<header id="title-header" class="text-primary">
-			<div class="title-column">
-				<a id="logout" class="ng-btn pointer">Loading...</a>
-			</div>
-		</header>
 
-		<div id="title-screen-wrap" class="flex text-shadow">
-			<div class="title-menu-row flex flex-max">
-				<div class="flex-column flex-50 title-bg-color flex-center">
-					<div class="title-ch-create-col text-center" style="justify-content: start">
-						<div>Nevergrind 2</div>
-						<div>Cooperative Multiplayer</div>
-						<div>Role-Playing Game</div>
-						<div class="small">developed by</div>
-						<img class="neverworks" src="images/neverworks-txt.png" style="display: block; margin: 3px auto">
-						<hr class="fancy-hr-dark">
-						<img id="ng2-logo"
-							 class="glow-green"
-							 src="images/nevergrind-2-logo-480.png">
-					</div>
-				</div>
-
-				<div class="flex-column flex-50 title-bg-trans">
-					<div id="title-select-character" class="title-ch-create-col flex-max">
-						<!-- well top -->
-						<div id="title-well-top" class="title-ch-well text-center">
-							<a id="delete-character"
-							   class="ng-btn title-btn-margin">Delete</a>
-							<a id="go-create-character"
-							   class="ng-btn title-btn-margin no-select">Create</a>
-						</div>
-						<!-- char cards -->
-						<div id="ch-card-base" class="stag-blue">
-							<div id="ch-card-list"></div>
-						</div>
-						<!-- well bottom -->
-						<div id="title-well-bottom" class="title-ch-well text-center">
-							<a id="enter-world"
-							   class="ng-btn title-btn-margin">
-								Enter World
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
+		<!-- well top -->
+		<div id="title-well-top" class="title-ch-well text-center">
+			<script>
+				if (!app.isApp) {
+					document.write('<a id="logout" class="ng-btn title-btn-margin pointer">Loading...</a>')
+				}
+			</script>
+			<a id="go-create-character" class="ng-btn title-btn-margin no-select">Create</a>
+			<a id="delete-character" class="ng-btn title-btn-margin">Delete</a>
+		</div>
+		<!-- char cards -->
+		<div id="ch-card-list" class="stag-blue text-shadow" style="overflow: auto"></div>
+		<!-- well bottom -->
+		<div id="title-well-bottom" class="title-ch-well text-center">
+			<a id="enter-world"
+			   class="ng-btn title-btn-margin">
+				Enter World
+			</a>
 		</div>
 
 	</div> <!-- end scene-title-select-character -->
@@ -123,7 +97,11 @@ Twe				<div>
 	<div id="scene-title-create-character" class="flex-column title-cc-wrap none text-shadow">
 		<div class="flex title-menu-row stag-blue pad-4">
 			<div class="flex-16 title-ch-create-col">
+				<div class="character-info-header">Race</div>
 				<div id="race-wrap">
+					<div class="select-create-wrap">
+						<div class="select-race no-select">Archon</div>
+					</div>
 					<div class="select-create-wrap">
 						<div class="select-race no-select">Barbarian</div>
 					</div>
@@ -132,9 +110,6 @@ Twe				<div>
 					</div>
 					<div class="select-create-wrap">
 						<div class="select-race no-select">Dwarf</div>
-					</div>
-					<div class="select-create-wrap">
-						<div class="select-race no-select">Erudite</div>
 					</div>
 					<div class="select-create-wrap">
 						<div class="select-race no-select">Gnome</div>
@@ -163,17 +138,18 @@ Twe				<div>
 				</div>
 
 				<div id="gender-wrap">
-					<div class="flex flex-align-center pad-4">
+					<div class="character-info-header">Gender</div>
+					<div class="flex flex-align-center pad-4" style="margin-left: .5rem; margin-top: .5rem">
 						<div class="select-gender-col">
-							<div id="Male" class="select-radial select-gender active"></div>
+							<div id="Male" class="select-radial select-gender active" data-gender="Male"></div>
 						</div>
-						<div>Male</div>
+						<div class="select-gender" data-gender="Male" style="padding-left: .5rem">Male</div>
 					</div>
-					<div class="flex flex-align-center pad-4">
+					<div class="flex flex-align-center pad-4" style="margin-left: .5rem">
 						<div class="select-gender-col">
-							<div id="Female" class="select-radial select-gender"></div>
+							<div id="Female" class="select-radial select-gender" data-gender="Female"></div>
 						</div>
-						<div>Female</div>
+						<div class="select-gender" data-gender="Female" style="padding-left: .5rem">Female</div>
 					</div>
 				</div>
 			</div>
@@ -196,11 +172,16 @@ Twe				<div>
 								<div>Type:</div><div id="type-value"></div>
 							</div>
 						</div>
-						<div class="flex-column" style="margin: .2rem 0">
-							<div class="flex flex-center" style="margin: 0 .2rem">
-								<i id="portrait-down" class="fas fa-chevron-left pointer portrait-arrow"></i>
-								<img id="create-portrait" src="images/portraits/high-elf-female-0.png">
-								<i id="portrait-up" class="fas fa-chevron-right pointer portrait-arrow"></i>
+						<div class="flex-column">
+							<div class="flex flex-center" style="position: relative">
+								<i id="portrait-down"
+								   style="left: 2px"
+								   class="fas fa-chevron-left pointer portrait-arrow text-shadow2"></i>
+								<img id="create-portrait"
+									 src="images/portraits/high-elf-female-0.png">
+								<i id="portrait-up"
+								   style="right: 2px"
+								   class="fas fa-chevron-right pointer portrait-arrow text-shadow2"></i>
 							</div>
 						</div>
 					</div>
@@ -255,7 +236,7 @@ Twe				<div>
 					<div id="create-details"></div>
 				</div>
 
-				<div id="create-character-name-wrap">
+				<div id="create-character-name-wrap" style="display: flex; border: 2px ridge #05b">
 					<input id="create-character-name"
 						   class="ng-blue-input text-shadow"
 						   type="text"
@@ -267,6 +248,7 @@ Twe				<div>
 			</div>
 
 			<div class="flex-25 title-ch-create-col">
+				<div class="character-info-header">Class</div>
 				<div class="select-create-wrap">
 					<div id="create-Bard" class="select-class disabled no-select">Bard</div>
 				</div>
@@ -312,6 +294,7 @@ Twe				<div>
 			</div>
 
 			<div class="flex-25 title-ch-create-col flex-column">
+				<div class="character-info-header">Attributes</div>
 				<div id="create-attr">
 					<div id="create-attr-remaining" class="flex">
 						<div id="create-points-label">
@@ -452,12 +435,12 @@ Twe				<div>
 						</div>
 					</div>
 				</div>
-				<div id="create-attr-btn-wrap" class="snug text-center">
-					<div class="flex-center pad-4">
+				<div id="create-attr-btn-wrap" class="text-center" style="margin-top: .4rem">
+					<div class="flex-center" style="border: .1rem outset #05b; background: #025;">
 						<button id="create-character-back"
-								class="col btn pointer text-shadow ng-btn title-btn-margin">Back</button>
+								class="col btn pointer text-shadow ng-btn title-btn-margin flex-max">Back</button>
 						<button id="create-character-btn"
-								class="col btn pointer text-shadow ng-btn title-btn-margin">Create</button>
+								class="col btn pointer text-shadow ng-btn title-btn-margin flex-max">Create</button>
 					</div>
 				</div>
 			</div>
@@ -491,7 +474,7 @@ Twe				<div>
 <script src="js/libs/jquery.min.js"></script>
 <script src="js/libs/lodash.min.js"></script>
 <script src="js/libs/easelJS.min.js"></script>
-<script src="js/libs/font-awesome.min.js"></script>
+<script src="js/libs/font-awesome-kit.js"></script>
 
 <script src="js/libs/gsap/TweenMax.min.js"></script>
 <script src="js/libs/gsap/ThrowPropsPlugin.min.js"></script>

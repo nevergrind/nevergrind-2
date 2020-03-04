@@ -95,9 +95,9 @@ var game;
 				// party traffic
 				obj.route = 'party->hb';
 				obj.isLeader = typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true;
-				socket.publish('party' + my.partyId, Object.assign(obj,
+				socket.publish('party' + my.partyId, _.assign(obj,
 					_.pick(my, [
-						'name', 'hp', 'maxHp', 'mp', 'maxMp', 'job', 'partyId'
+						'name', 'hp', 'maxHp', 'mp', 'maxMp', 'job', 'partyId', 'avatar'
 					])
 				));
 				console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
