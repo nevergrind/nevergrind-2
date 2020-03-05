@@ -3,13 +3,13 @@
 		'Barbarian',
 		'Dark Elf',
 		'Dwarf',
-		'Archon',
 		'Gnome',
 		'Half Elf',
 		'Halfling',
 		'High Elf',
 		'Human',
 		'Orc',
+		'Seraphim',
 		'Troll',
 		'Wood Elf'
 	];

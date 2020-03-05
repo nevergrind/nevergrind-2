@@ -524,6 +524,7 @@ var items = {};
 			itemObj.base,
 			filteredItems[filteredItemsIndex]
 		)
+		drop.baseName = drop.name
 
 		// check defense range
 		if (drop.minArmor) {

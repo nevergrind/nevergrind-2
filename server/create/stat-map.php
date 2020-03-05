@@ -50,7 +50,7 @@ $statMap = [
 			'Warrior'
 		]
 	],
-	'Archon' => [
+	'Seraphim' => [
 		'attrs' => [11,14,14,14,17,23,14],
 		'jobs' => [
 			'Cleric',

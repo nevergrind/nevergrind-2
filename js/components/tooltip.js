@@ -65,23 +65,28 @@ var tooltip;
 		//
 		var html = ''
 		html +=
-			'<div class="flex" style="margin-bottom: .3rem">' +
+			'<div style="margin: 2px; border: 2px ridge #048; padding: 2px; border-radius: 4px">' +
+			'<div class="flex" style="border: 2px ridge #013; margin-bottom: .3rem">' +
 				'<div id="tooltip-item-img-bg">' +
 					'<img id="tooltip-item-img" src="images/items/'+ obj.itemType + (obj.imgIndex || 0) + '.png">' +
 				'</div>' +
-				'<div class="flex-column space-between" style="width: 100%">' +
-					'<div id="tooltip-name" class="item-' + _.kebabCase(obj.rarity) + '">' + obj.name + '</div>' +
-					'<hr id="tooltip-hr">' +
-					'<div class="flex space-between capitalize">' +
-						'<div>'+ getItemSlot(obj.slots) +'</div>' +
-						getRequiredItemSkill(obj) +
-					'</div>' +
+				'<div id="tooltip-name-bg" class="flex-column flex-center align-center" style="width: 100%; border-left: 2px ridge #013; padding: .1rem .3rem">' +
+					'<div id="tooltip-name" class="text-center item-' + _.kebabCase(obj.rarity) + '">' + obj.name + '</div>' +
+					(
+						obj.rarity === 'unique'
+						? '<div class="item-' + _.kebabCase(obj.rarity) + '" style="font-size: .8rem">' + obj.baseName + '</div>'
+						: ''
+					) +
 				'</div>' +
 			'</div>' +
+			'<div class="text-center">' +
 			getWeaponDamageHtml(obj) +
-			(obj.armor ? '<div style="font-size: 1.25rem; line-height: 1">'+ obj.armor +' Armor</div>' : '') +
+			(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
+			getRequiredItemProficiency(obj) +
+			getItemSlot(obj.slots) +
 			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
 			getDurabilityHtml(obj.durability) +
+			'<hr id="tooltip-hr">' +
 			// block
 			getBlockChance(obj.blockRate + (obj.increasedBlock ? obj.increasedBlock : 0)) +
 			getGenericPercentStatHtml(obj.increasedBlock, 'Increased Block Rate') +
@@ -192,6 +197,8 @@ var tooltip;
 			getPropHtml(obj.hpKill, '+' + obj.hpKill + ' Health on Kill') +
 			getPropHtml(obj.mpKill, '+' + obj.mpKill + ' Mana on Kill') +
 			getPropHtml(obj.spKill, '+' + obj.spKill + ' Spirit on Kill') +
+			'</div>' +
+			'</div>' +
 		'';
 
 		return html
@@ -214,11 +221,9 @@ var tooltip;
 	function getWeaponDamageHtml(obj) {
 		if (obj.weaponSkill) {
 			var dps = (((obj.minDamage + obj.maxDamage) / 2) / obj.speed).toFixed(1);
-			return '<div class="flex space-between" style="align-items: flex-end">' +
-				'<div style="font-size: 1.25rem; line-height: 1">'+ obj.minDamage + '&thinsp;–&thinsp;' + obj.maxDamage +' Damage</div>' +
-				'<div>Speed ' + obj.speed + '</div>' +
-			'</div>' +
-			'<div style="margin-bottom: .3rem">(' + dps + ' damage per second)</div>'
+			return '<div>Damage: '+ obj.minDamage + '&thinsp;–&thinsp;' + obj.maxDamage +'</div>' +
+				'<div>Speed: ' + (obj.speed % 1 === 0 ? obj.speed + '.0' : obj.speed) +'</div>' +
+				'<div>Damage Per Second: ' + dps + '</div>'
 		}
 		else {
 			return ''
@@ -239,52 +244,40 @@ var tooltip;
 		}
 	}
 	function getRequiredLevel(itemLevel) {
-		console.info('getRequiredLevel itemLevel: ', itemLevel)
 		var level = ~~(itemLevel * 1);
 		if (level < 1) level = 1;
 		return level
 	}
 	function getItemSlot(slots) {
-		var str = slots[0];
-		if (slots[1] === 'secondary' && !my.dualWield) {
-			str += ' <span class="item-restricted">' + slots[1] + '</span>'
-		}
-		else {
-			str += slots[1] ? ' ' + slots[1] : ''
-		}
-		return str
-	}
-	function getRequiredItemSkill(obj) {
-		if (obj.armorType) {
-			if (canEquipArmor(obj.armorType)) {
-				return '<div>'+ _.startCase(obj.armorType) +'</div>'
+		var prefix = 'Slot: '
+		var str =  _.capitalize(slots[0]);
+		if (slots[1] === 'secondary') {
+			prefix = 'Slots: '
+			if (my.dualWield) {
+				str += _.capitalize(slots[1])
 			}
 			else {
-				return '<div class="item-restricted">'+ _.startCase(obj.armorType) +'</div>'
+				str += ' <span class="item-restricted">' + _.capitalize(slots[1]) + '</span>'
+			}
+		}
+		return '<div>' + prefix + str + '</div>'
+	}
+	function getRequiredItemProficiency(obj) {
+		if (obj.armorType) {
+			if (canEquipArmor(obj.armorType)) {
+				return '<span>Proficiency:&nbsp;'+ _.startCase(obj.armorType) +'</span>'
+			}
+			else {
+				return 'Proficiency:&nbsp;<span class="item-restricted">'+ _.startCase(obj.armorType) +'</span>'
 			}
 		}
 		else if (obj.weaponSkill) {
 			if (canEquipWeapon(obj.weaponSkill)) {
-				return '<div>'+ weaponTypes[obj.itemType] +'</div>'
+				return '<span>Proficiency:&nbsp;'+ obj.weaponSkill +'</span>'
 			}
 			else {
-				return '<div class="item-restricted">'+ weaponTypes[obj.itemType] +'</div>'
+				return 'Proficiency:&nbsp;<span class="item-restricted">'+ obj.weaponSkill +'</span>'
 			}
-		}
-		else if (obj.itemType === 'shields') {
-			return '<div>Shield</div>'
-		}
-		else if (obj.itemType === 'cloaks') {
-			return '<div>Cloak</div>'
-		}
-		else if (obj.itemType === 'rings') {
-			return '<div>Ring</div>'
-		}
-		else if (obj.itemType === 'amulets') {
-			return '<div>Amulet</div>'
-		}
-		else if (obj.itemType === 'charms') {
-			return '<div>Charm</div>'
 		}
 		else {
 			return ''
