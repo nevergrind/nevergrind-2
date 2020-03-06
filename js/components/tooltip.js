@@ -61,16 +61,15 @@ var tooltip;
 		})
 	}
 	function getItemHtml(obj) {
-		console.info('getItemHtml', obj)
-		//
 		var html = ''
 		html +=
 			'<div style="margin: 2px; border: 2px ridge #048; padding: 2px; border-radius: 4px">' +
-			'<div class="flex" style="border: 2px ridge #013; margin-bottom: .3rem">' +
+			'<div class="flex" style="border: 2px ridge #013; margin-bottom: 2px">' +
 				'<div id="tooltip-item-img-bg">' +
 					'<img id="tooltip-item-img" src="images/items/'+ obj.itemType + (obj.imgIndex || 0) + '.png">' +
 				'</div>' +
-				'<div id="tooltip-name-bg" class="flex-column flex-center align-center" style="width: 100%; border-left: 2px ridge #013; padding: .1rem .3rem">' +
+				'<div style="border: 1px ridge #013"></div>' +
+				'<div id="tooltip-name-bg" class="flex-column flex-center align-center">' +
 					'<div id="tooltip-name" class="text-center item-' + _.kebabCase(obj.rarity) + '">' + obj.name + '</div>' +
 					(
 						obj.rarity === 'unique'
@@ -79,124 +78,128 @@ var tooltip;
 					) +
 				'</div>' +
 			'</div>' +
-			'<div class="text-center">' +
-			getWeaponDamageHtml(obj) +
-			(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
-			getRequiredItemProficiency(obj) +
-			getItemSlot(obj.slots) +
-			(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
-			getDurabilityHtml(obj.durability) +
-			'<hr id="tooltip-hr">' +
-			// block
-			getBlockChance(obj.blockRate + (obj.increasedBlock ? obj.increasedBlock : 0)) +
-			getGenericPercentStatHtml(obj.increasedBlock, 'Increased Block Rate') +
-			// armor and damage
-			getGenericPercentStatHtml(obj.enhancedArmor, 'Enhanced Armor') +
-			getGenericPercentStatHtml(obj.enhancedDamage, 'Enhanced Damage') +
-			// ias
-			getGenericPercentStatHtml(obj.haste, 'Increased Attack Speed') +
-			// plus all
-			getGenericStatHtml(obj.allSkills, 'All Skills') +
-			getGenericStatHtml(obj.allStats, 'All Stats') +
-			getGenericStatHtml(obj.resistAll, 'All Resistances') +
-			getGenericStatHtml(obj.addSpellAll, 'All Spell Power') +
-			getGenericPercentStatHtml(obj.enhanceAll, 'All Spell Damage') +
-			// resists
-			getGenericStatHtml(obj.resistBlood, 'Resist Blood') +
-			getGenericStatHtml(obj.resistPoison, 'Resist Poison') +
-			getGenericStatHtml(obj.resistArcane, 'Resist Arcane') +
-			getGenericStatHtml(obj.resistLightning, 'Resist Lightning') +
-			getGenericStatHtml(obj.resistFire, 'Resist Fire') +
-			getGenericStatHtml(obj.resistIce, 'Resist Ice') +
-			// spell power
-			getGenericStatHtml(obj.addSpellBlood, 'Blood Spell Power') +
-			getGenericStatHtml(obj.addSpellPoison, 'Poison Spell Power') +
-			getGenericStatHtml(obj.addSpellArcane, 'Arcane Spell Power') +
-			getGenericStatHtml(obj.addSpellLightning, 'Lightning Spell Power') +
-			getGenericStatHtml(obj.addSpellFire, 'Fire Spell Power') +
-			getGenericStatHtml(obj.addSpellIce, 'Ice Spell Power') +
-			// attack
-			getGenericStatHtml(obj.attack, 'Attack') +
-			// skills
-			getGenericStatHtml(obj.offense, 'Offense') +
-			getGenericStatHtml(obj.defense, 'Defense') +
-			getGenericStatHtml(obj.oneHandSlash, 'One-Hand Slash') +
-			getGenericStatHtml(obj.oneHandBlunt, 'One-Hand Blunt') +
-			getGenericStatHtml(obj.piercing, 'Piercing') +
-			getGenericStatHtml(obj.archery, 'Archery') +
-			getGenericStatHtml(obj.handToHand, 'Hand-to-Hand') +
-			getGenericStatHtml(obj.twoHandSlash, 'Two-Hand Slash') +
-			getGenericStatHtml(obj.twoHandBlunt, 'Two-Hand Blunt') +
-			getGenericStatHtml(obj.dodge, 'Dodge') +
-			getGenericStatHtml(obj.parry, 'Parry') +
-			getGenericStatHtml(obj.riposte, 'Riposte') +
-			getGenericStatHtml(obj.alteration, 'Alteration') +
-			getGenericStatHtml(obj.conjuration, 'Conjuration') +
-			getGenericStatHtml(obj.evocation, 'Evocation') +
-			getGenericStatHtml(obj.crit, 'Critical Hit') +
-			// attrs
-			getGenericStatHtml(obj.str, 'Strength') +
-			getGenericStatHtml(obj.sta, 'Stamina') +
-			getGenericStatHtml(obj.agi, 'Agility') +
-			getGenericStatHtml(obj.dex, 'Dexterity') +
-			getGenericStatHtml(obj.wis, 'Wisdom') +
-			getGenericStatHtml(obj.intel, 'Intelligence') +
-			getGenericStatHtml(obj.cha, 'Charisma') +
-			// points
-			getGenericStatHtml(obj.hp, 'Health') +
-			getGenericStatHtml(obj.mp, 'Mana') +
-			getGenericStatHtml(obj.sp, 'Spirit') +
-			// regen
-			getGenericStatHtml(obj.hpRegen, 'Health Regen') +
-			getGenericStatHtml(obj.mpRegen, 'Mana Regen') +
-			getGenericStatHtml(obj.spRegen, 'Spirit Regen') +
-			// leech
-			getGenericStatHtml(obj.leech, 'Life Leech') +
-			getGenericStatHtml(obj.wraith, 'Mana Leech') +
-			// added damage
-			getPropHtml(obj.addBlood, '+' + obj.addBlood + ' Blood Damage to Melee') +
-			getPropHtml(obj.addPoison, '+' + obj.addPoison + ' Poison Damage to Melee') +
-			getPropHtml(obj.addArcane, '+' + obj.addArcane + ' Arcane Damage to Melee') +
-			getPropHtml(obj.addLightning, '+' + obj.addLightning + ' Lightning Damage to Melee') +
-			getPropHtml(obj.addFire, '+' + obj.addFire + ' Fire Damage to Melee') +
-			getPropHtml(obj.addIce, '+' + obj.addIce + ' Ice Damage to Melee') +
-			// set/unique and beyond
-			getGenericStatHtml(obj.damageTakenToMana, 'Mana When Damaged') +
-			getGenericStatHtml(obj.damageTakenToSpirit, 'Spirit When Damaged') +
-			// damage vs mob types
-			getGenericPercentStatHtml(obj.enhancedDamageToHumanoids, 'Enhanced Damage vs Humanoids') +
-			getGenericPercentStatHtml(obj.enhancedDamageToBeasts, 'Enhanced Damage vs Beasts') +
-			getGenericPercentStatHtml(obj.enhancedDamageToUndead, 'Enhanced Damage vs Undead') +
-			getGenericPercentStatHtml(obj.enhancedDamageToDemons, 'Enhanced Damage vs Demons') +
-			getGenericPercentStatHtml(obj.enhancedDamageToDragonkin, 'Enhanced Damage vs Dragonkin') +
-			getGenericPercentStatHtml(obj.enhancedDamageToEldritch, 'Enhanced Damage vs Eldritch') +
-			// mitigation
-			getGenericReducedStatHtml(obj.phyMit, 'Physical Damage Reduced by') +
-			getGenericReducedStatHtml(obj.magMit, 'Magical Damage Reduced by') +
-			// all spell damage
-			getGenericPercentStatHtml(obj.enhanceBlood, 'All Blood Damage') +
-			getGenericPercentStatHtml(obj.enhancePoison, 'All Poison Damage') +
-			getGenericPercentStatHtml(obj.enhanceArcane, 'All Arcane Damage') +
-			getGenericPercentStatHtml(obj.enhanceLightning, 'All Lightning Damage') +
-			getGenericPercentStatHtml(obj.enhanceFire, 'All Fire Damage') +
-			getGenericPercentStatHtml(obj.enhanceIce, 'All Ice Damage') +
-			// status resists
-			getGenericPercentStatHtml(obj.resistFrozen, 'Frozen Resist') +
-			getGenericPercentStatHtml(obj.resistFear, 'Fear Resist') +
-			getGenericPercentStatHtml(obj.resistStun, 'Stun Resist') +
-			getGenericPercentStatHtml(obj.resistSilence, 'Silence Resist') +
-			getPropHtml(obj.indestructible, 'Indestructible') +
-			// debuff
-			getPropHtml(obj.reducedHealing, obj.reducedHealing + '% Healing on Monsters') +
-			getPropHtml(obj.restInPeace, 'Slain Monsters Rest in Peace') +
-			getPropHtml(obj.slowsTarget, 'Slows Target ' + obj.slowsTarget + '%') +
-			getPropHtml(obj.reduceTargetArmor, 'Reduces Target Armor ' + obj.reduceTargetArmor + '%') +
-			getPropHtml(obj.ignoreTargetArmor, 'Ignores Target Armor') +
-			getPropHtml(obj.increaseHpPercent, '+' + obj.increaseHpPercent + '% Maximum Health') +
-			getPropHtml(obj.increaseMpPercent, '+' + obj.increaseMpPercent + '% Maximum Mana') +
-			getPropHtml(obj.hpKill, '+' + obj.hpKill + ' Health on Kill') +
-			getPropHtml(obj.mpKill, '+' + obj.mpKill + ' Mana on Kill') +
-			getPropHtml(obj.spKill, '+' + obj.spKill + ' Spirit on Kill') +
+			'<div id="tooltip-item-stat-wrap" class="text-center" style="border: 2px ridge #013">' +
+			'<div style="padding: .2rem">' +
+				getWeaponDamageHtml(obj) +
+				(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
+				getRequiredItemProficiency(obj) +
+				getItemSlot(obj.slots) +
+				(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
+				getDurabilityHtml(obj.durability) +
+			'</div>' +
+			'<hr class="fancy-hr" style="margin: .2rem 0">' +
+			'<div style="padding: .2rem">' +
+				// block
+				getBlockChance(obj.blockRate + (obj.increasedBlock ? obj.increasedBlock : 0)) +
+				getGenericPercentStatHtml(obj.increasedBlock, 'Increased Block Rate') +
+				// armor and damage
+				getGenericPercentStatHtml(obj.enhancedArmor, 'Enhanced Armor') +
+				getGenericPercentStatHtml(obj.enhancedDamage, 'Enhanced Damage') +
+				// ias
+				getGenericPercentStatHtml(obj.haste, 'Increased Attack Speed') +
+				// plus all
+				getGenericStatHtml(obj.allSkills, 'All Skills') +
+				getGenericStatHtml(obj.allStats, 'All Stats') +
+				getGenericStatHtml(obj.resistAll, 'All Resistances') +
+				getGenericStatHtml(obj.addSpellAll, 'All Spell Power') +
+				getGenericPercentStatHtml(obj.enhanceAll, 'All Spell Damage') +
+				// resists
+				getGenericStatHtml(obj.resistBlood, 'Resist Blood') +
+				getGenericStatHtml(obj.resistPoison, 'Resist Poison') +
+				getGenericStatHtml(obj.resistArcane, 'Resist Arcane') +
+				getGenericStatHtml(obj.resistLightning, 'Resist Lightning') +
+				getGenericStatHtml(obj.resistFire, 'Resist Fire') +
+				getGenericStatHtml(obj.resistIce, 'Resist Ice') +
+				// spell power
+				getGenericStatHtml(obj.addSpellBlood, 'Blood Spell Power') +
+				getGenericStatHtml(obj.addSpellPoison, 'Poison Spell Power') +
+				getGenericStatHtml(obj.addSpellArcane, 'Arcane Spell Power') +
+				getGenericStatHtml(obj.addSpellLightning, 'Lightning Spell Power') +
+				getGenericStatHtml(obj.addSpellFire, 'Fire Spell Power') +
+				getGenericStatHtml(obj.addSpellIce, 'Ice Spell Power') +
+				// attack
+				getGenericStatHtml(obj.attack, 'Attack') +
+				// skills
+				getGenericStatHtml(obj.offense, 'Offense') +
+				getGenericStatHtml(obj.defense, 'Defense') +
+				getGenericStatHtml(obj.oneHandSlash, 'One-Hand Slash') +
+				getGenericStatHtml(obj.oneHandBlunt, 'One-Hand Blunt') +
+				getGenericStatHtml(obj.piercing, 'Piercing') +
+				getGenericStatHtml(obj.archery, 'Archery') +
+				getGenericStatHtml(obj.handToHand, 'Hand-to-Hand') +
+				getGenericStatHtml(obj.twoHandSlash, 'Two-Hand Slash') +
+				getGenericStatHtml(obj.twoHandBlunt, 'Two-Hand Blunt') +
+				getGenericStatHtml(obj.dodge, 'Dodge') +
+				getGenericStatHtml(obj.parry, 'Parry') +
+				getGenericStatHtml(obj.riposte, 'Riposte') +
+				getGenericStatHtml(obj.alteration, 'Alteration') +
+				getGenericStatHtml(obj.conjuration, 'Conjuration') +
+				getGenericStatHtml(obj.evocation, 'Evocation') +
+				getGenericStatHtml(obj.crit, 'Critical Hit') +
+				// attrs
+				getGenericStatHtml(obj.str, 'Strength') +
+				getGenericStatHtml(obj.sta, 'Stamina') +
+				getGenericStatHtml(obj.agi, 'Agility') +
+				getGenericStatHtml(obj.dex, 'Dexterity') +
+				getGenericStatHtml(obj.wis, 'Wisdom') +
+				getGenericStatHtml(obj.intel, 'Intelligence') +
+				getGenericStatHtml(obj.cha, 'Charisma') +
+				// points
+				getGenericStatHtml(obj.hp, 'Health') +
+				getGenericStatHtml(obj.mp, 'Mana') +
+				getGenericStatHtml(obj.sp, 'Spirit') +
+				// regen
+				getGenericStatHtml(obj.hpRegen, 'Health Regen') +
+				getGenericStatHtml(obj.mpRegen, 'Mana Regen') +
+				getGenericStatHtml(obj.spRegen, 'Spirit Regen') +
+				// leech
+				getGenericStatHtml(obj.leech, 'Life Leech') +
+				getGenericStatHtml(obj.wraith, 'Mana Leech') +
+				// added damage
+				getPropHtml(obj.addBlood, '+' + obj.addBlood + ' Blood Damage to Melee') +
+				getPropHtml(obj.addPoison, '+' + obj.addPoison + ' Poison Damage to Melee') +
+				getPropHtml(obj.addArcane, '+' + obj.addArcane + ' Arcane Damage to Melee') +
+				getPropHtml(obj.addLightning, '+' + obj.addLightning + ' Lightning Damage to Melee') +
+				getPropHtml(obj.addFire, '+' + obj.addFire + ' Fire Damage to Melee') +
+				getPropHtml(obj.addIce, '+' + obj.addIce + ' Ice Damage to Melee') +
+				// set/unique and beyond
+				getGenericStatHtml(obj.damageTakenToMana, 'Mana When Damaged') +
+				getGenericStatHtml(obj.damageTakenToSpirit, 'Spirit When Damaged') +
+				// damage vs mob types
+				getGenericPercentStatHtml(obj.enhancedDamageToHumanoids, 'Enhanced Damage vs Humanoids') +
+				getGenericPercentStatHtml(obj.enhancedDamageToBeasts, 'Enhanced Damage vs Beasts') +
+				getGenericPercentStatHtml(obj.enhancedDamageToUndead, 'Enhanced Damage vs Undead') +
+				getGenericPercentStatHtml(obj.enhancedDamageToDemons, 'Enhanced Damage vs Demons') +
+				getGenericPercentStatHtml(obj.enhancedDamageToDragonkin, 'Enhanced Damage vs Dragonkin') +
+				getGenericPercentStatHtml(obj.enhancedDamageToEldritch, 'Enhanced Damage vs Eldritch') +
+				// mitigation
+				getGenericReducedStatHtml(obj.phyMit, 'Physical Damage Reduced by') +
+				getGenericReducedStatHtml(obj.magMit, 'Magical Damage Reduced by') +
+				// all spell damage
+				getGenericPercentStatHtml(obj.enhanceBlood, 'All Blood Damage') +
+				getGenericPercentStatHtml(obj.enhancePoison, 'All Poison Damage') +
+				getGenericPercentStatHtml(obj.enhanceArcane, 'All Arcane Damage') +
+				getGenericPercentStatHtml(obj.enhanceLightning, 'All Lightning Damage') +
+				getGenericPercentStatHtml(obj.enhanceFire, 'All Fire Damage') +
+				getGenericPercentStatHtml(obj.enhanceIce, 'All Ice Damage') +
+				// status resists
+				getGenericPercentStatHtml(obj.resistFrozen, 'Frozen Resist') +
+				getGenericPercentStatHtml(obj.resistFear, 'Fear Resist') +
+				getGenericPercentStatHtml(obj.resistStun, 'Stun Resist') +
+				getGenericPercentStatHtml(obj.resistSilence, 'Silence Resist') +
+				getPropHtml(obj.indestructible, 'Indestructible') +
+				// debuff
+				getPropHtml(obj.reducedHealing, obj.reducedHealing + '% Healing on Monsters') +
+				getPropHtml(obj.restInPeace, 'Slain Monsters Rest in Peace') +
+				getPropHtml(obj.slowsTarget, 'Slows Target ' + obj.slowsTarget + '%') +
+				getPropHtml(obj.reduceTargetArmor, 'Reduces Target Armor ' + obj.reduceTargetArmor + '%') +
+				getPropHtml(obj.ignoreTargetArmor, 'Ignores Target Armor') +
+				getPropHtml(obj.increaseHpPercent, '+' + obj.increaseHpPercent + '% Maximum Health') +
+				getPropHtml(obj.increaseMpPercent, '+' + obj.increaseMpPercent + '% Maximum Mana') +
+				getPropHtml(obj.hpKill, '+' + obj.hpKill + ' Health on Kill') +
+				getPropHtml(obj.mpKill, '+' + obj.mpKill + ' Mana on Kill') +
+				getPropHtml(obj.spKill, '+' + obj.spKill + ' Spirit on Kill') +
+			'</div>' +
 			'</div>' +
 			'</div>' +
 		'';

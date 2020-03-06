@@ -1394,10 +1394,19 @@ background-clip: content-box;
 	background: radial-gradient(closest-corner at 50% 50%, rgba(128, 160, 255, .3), rgba(0, 8, 24, 1));
 }
 #tooltip-name-bg {
+	width: 100%;
+	border: 1px solid #048;
+	padding: .1rem .3rem;
 	background-image: linear-gradient(to top,
 		rgba(128, 192, 255, .1),
 		rgba(0, 64, 128, 0),
 		rgba(128, 192, 255, .1));
+}
+#tooltip-item-stat-wrap {
+	background-image: linear-gradient(to right,
+		rgba(0, 0, 0, .1),
+		rgba(128, 192, 255, .1),
+		rgba(0, 0, 0, .1));
 }
 #tooltip-name {
 	font-size: 1rem;

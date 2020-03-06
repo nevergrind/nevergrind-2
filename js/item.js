@@ -501,9 +501,10 @@ var items = {};
 			var itemSlot = config.itemSlot
 		}
 		else {
-			// pick one of the possible slotTypes for this rarity
+			// pick one of the possible slotTypes
 			var itemSlot = filteredKeys[_.random(0, filteredKeys.length - 1)]
 		}
+		// clone item and then figure out what to grab
 		var itemObj = _.cloneDeep(items[itemSlot])
 		//console.info('itemObj', config.rarity, itemObj)
 
@@ -513,10 +514,12 @@ var items = {};
 
 		// pick one of the items from the array
 		if (config.itemName) {
+			// specific item
 			var filteredItemsIndex = _.findIndex(filteredItems, item => item.name === config.itemName)
 			//console.warn('filteredItemsIndex', filteredItemsIndex)
 		}
 		else {
+			// random item of type
 			var filteredItemsIndex = _.random(0, filteredItemsLen - 1)
 		}
 		// combine itemSlot base props with base item
@@ -524,6 +527,7 @@ var items = {};
 			itemObj.base,
 			filteredItems[filteredItemsIndex]
 		)
+		drop.imgIndex = getItemImageIcon(itemSlot, filteredItemsIndex, drop.imgIndex)
 		drop.baseName = drop.name
 
 		// check defense range
@@ -568,6 +572,15 @@ var items = {};
 		postProcessDrop(drop)
 		return drop;
 		////////////////////////////////////////////////////
+		function getItemImageIcon(itemType, index, imgIndex) {
+			if (itemType === 'amulets') index = _.random(0, 4)
+			else if (itemType === 'rings') index = _.random(0, 3)
+			else if (itemType === 'charms') index = _.random(0, 2)
+			else if (itemType === 'belts' || itemType === 'boots') index = ~~(index / 2)
+			else if (itemType === 'bows') index = imgIndex
+			console.info('index', itemType, index)
+			return index;
+		}
 		function getUniqueItemCount(drop) {
 			if (_.isArray(items[drop.itemType].unique)) {
 				var uniqueItems = _.filter(items[drop.itemType].unique, item => item.name === drop.name);
@@ -627,14 +640,14 @@ var items = {};
 				_.keys(itemObj.rare)
 			))
 			var numberOfProps = _.random(3, 6)
-			console.info('rare drop', drop, config)
+			// console.info('rare drop', drop, config)
 			// get prefix and suffix
 			var props = []
 			var tc = getTreasureClass(config.mobLevel)
 			for (var i=0; i<numberOfProps; i++) {
 				props[i] = getRareProp()
 			}
-			console.warn('props', props)
+			// console.warn('props', props)
 
 			function getRareProp() {
 				var key = rareKeys[_.random(0, rareKeys.length - 1)]
