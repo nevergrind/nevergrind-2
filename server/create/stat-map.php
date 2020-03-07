@@ -42,7 +42,7 @@ $statMap = [
 		]
 	],
 	'Dwarf' => [
-		'attrs' => [19,19,14,19,17,11,8],
+		'attrs' => [19,19,14,19,17,11,9],
 		'jobs' => [
 			'Cleric',
 			'Paladin',
@@ -50,7 +50,7 @@ $statMap = [
 			'Warrior'
 		]
 	],
-	'Seraphim' => [
+	'Seraph' => [
 		'attrs' => [11,14,14,14,17,23,14],
 		'jobs' => [
 			'Cleric',

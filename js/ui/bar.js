@@ -38,29 +38,48 @@ var bar;
 			bar.dom.lag = getById('bar-lag');
 			// draw all bars
 			// bar events
-			$("#bar-wrap").on('click contextmenu', '.bar-col-icon', function (e) {
-				var id = $(this).attr('id'),
-					arr = id.split("-"),
-					slot = _.findIndex(party.presence, { row: arr[3] * 1 });
-
-				context.getPartyMenu(party.presence[slot].name);
-				console.info(id, slot, party.presence[slot].name);
-			}).on('click', '#bar-camp', chat.camp)
-				.on('click', '#bar-stats', function () {
-				console.info($(this).attr('id'));
-			}).on('click', '#bar-inventory', function () {
-				console.info($(this).attr('id'));
-			}).on('click', '#bar-options', function () {
-				console.info($(this).attr('id'));
-			}).on('click', '#bar-mission-abandon', mission.abandon)
-				.on('mouseenter', '.bar-icons', function() {
-				var id = $(this).attr('id');
-				popover.setMainMenuHtml(id);
-			}).on('mousemove', '.bar-icons', popover.setPosition)
+			$("#bar-wrap")
+				.on('click contextmenu', '.bar-col-icon', handleClickPartyContextMenu)
+				.on('click', '#bar-camp', chat.camp)
+				.on('click', '#bar-stats', toggleCharacterStats)
+				.on('click', '#bar-inventory', toggleInventory)
+				.on('click', '#bar-options', toggleOptions)
+				.on('click', '#bar-mission-abandon', mission.abandon)
+				.on('mouseenter', '.bar-icons', showBarMenuPopover)
+				.on('mousemove', '.bar-icons', popover.setPosition)
 				.on('mouseleave', '.bar-icons', popover.hide);
 
 		}
 	}
+
+	function handleClickPartyContextMenu(event) {
+		var id = $(this).attr('id'),
+			arr = id.split("-"),
+			slot = _.findIndex(party.presence, { row: arr[3] * 1 });
+
+		context.getPartyMenu(party.presence[slot].name);
+		console.info(id, slot, party.presence[slot].name);
+	}
+
+	function toggleCharacterStats() {
+		console.info($(this).attr('id'));
+	}
+
+	function toggleInventory() {
+		// open all bags in the bottom-right corner
+		console.info($(this).attr('id'));
+		// ?
+	}
+
+	function toggleOptions() {
+		console.info($(this).attr('id'));
+	}
+
+	function showBarMenuPopover() {
+		var id = $(this).attr('id');
+		popover.setMainMenuHtml(id);
+	}
+
 	function cachePlayerBars(index) {
 		bar.dom[index] = {
 			playerWrap: getById('bar-player-wrap-' + index),

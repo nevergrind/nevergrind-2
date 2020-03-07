@@ -43,7 +43,7 @@ var ng;
 			'High Elf',
 			'Human',
 			'Orc',
-			'Seraphim',
+			'Seraph',
 			'Troll',
 			'Wood Elf'
 		],

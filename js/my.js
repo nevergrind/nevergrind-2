@@ -54,7 +54,7 @@ var my;
 	}
 	function getAvatarUrl(obj) {
 		obj = obj || my
-		return 'images/portraits/' + _.kebabCase(obj.race) + '-' + (obj.gender ? 'female-' : 'male-') + obj.face + '.png';
+		return 'images/avatars/' + _.kebabCase(obj.race) + '-' + (obj.gender ? 'female-' : 'male-') + obj.face + '.png';
 	}
 	function getNewLeaderName() {
 		var lowestId = party.presence[0].id,

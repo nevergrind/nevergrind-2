@@ -131,7 +131,7 @@ items.boots = {
 			resistIce: 32,
 		}, {
 			name: 'Light Boots',
-			newName: 'Golden Baelor Boot',
+			newName: 'Golden Baelor Boots',
 			enhancedArmor: [46, 58],
 			hp: [15, 20],
 			wis: 15,

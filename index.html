@@ -64,7 +64,7 @@ Twe				<div>
 
 <div id="scene-title" class="scene no-select">
 	<div id="ng2-logo-wrap" class="scene">
-		<img id="ng2-bg" src="images/ng2-bg2.jpg" class="img-bg">
+		<img id="ng2-bg" src="images/bg/salubrin-forest.png" class="img-bg">
 		<div id="version" class="text-shadow">
 			Version <script>document.write(app.version)</script>
 		</div>
@@ -127,7 +127,7 @@ Twe				<div>
 						<div class="select-race no-select">Orc</div>
 					</div>
 					<div class="select-create-wrap">
-						<div class="select-race no-select">Seraphim</div>
+						<div class="select-race no-select">Seraph</div>
 					</div>
 					<div class="select-create-wrap">
 						<div class="select-race no-select">Troll</div>
@@ -139,17 +139,19 @@ Twe				<div>
 
 				<div id="gender-wrap">
 					<div class="character-info-header">Gender</div>
-					<div class="flex flex-align-center pad-4" style="margin-left: .5rem; margin-top: .5rem">
-						<div class="select-gender-col">
-							<div id="Male" class="select-radial select-gender active" data-gender="Male"></div>
+					<div style="display: flex; flex-direction: column; justify-content: center; flex: 1">
+						<div class="flex flex-align-center pad-4" style="margin-left: .5rem">
+							<div class="select-gender-col">
+								<div id="Male" class="select-radial select-gender active" data-gender="Male"></div>
+							</div>
+							<div class="select-gender" data-gender="Male" style="padding-left: .5rem">Male</div>
 						</div>
-						<div class="select-gender" data-gender="Male" style="padding-left: .5rem">Male</div>
-					</div>
-					<div class="flex flex-align-center pad-4" style="margin-left: .5rem">
-						<div class="select-gender-col">
-							<div id="Female" class="select-radial select-gender" data-gender="Female"></div>
+						<div class="flex flex-align-center pad-4" style="margin-left: .5rem">
+							<div class="select-gender-col">
+								<div id="Female" class="select-radial select-gender" data-gender="Female"></div>
+							</div>
+							<div class="select-gender" data-gender="Female" style="padding-left: .5rem">Female</div>
 						</div>
-						<div class="select-gender" data-gender="Female" style="padding-left: .5rem">Female</div>
 					</div>
 				</div>
 			</div>
@@ -178,7 +180,7 @@ Twe				<div>
 								   style="left: 2px"
 								   class="fas fa-chevron-left pointer portrait-arrow text-shadow2"></i>
 								<img id="create-portrait"
-									 src="images/portraits/high-elf-female-0.png">
+									 src="images/avatars/high-elf-female-0.png">
 								<i id="portrait-up"
 								   style="right: 2px"
 								   class="fas fa-chevron-right pointer portrait-arrow text-shadow2"></i>
@@ -470,6 +472,10 @@ Twe				<div>
 <div id="flash-overlay" class="overlay"></div>
 <div id="lock-overlay" class="overlay"></div>
 <div id="msg" class="text-shadow no-pointer"></div>
+
+<div id="character-windows" class="text-shadow">
+
+</div>
 
 <script src="js/libs/jquery.min.js"></script>
 <script src="js/libs/lodash.min.js"></script>
