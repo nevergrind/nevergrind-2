@@ -1,4 +1,4 @@
-(function() {
+(function(_, $) {
 	var i;
 	var key;
 	var code;
@@ -88,10 +88,9 @@
 
 		ng.lastKey = key;
 
-		// console.info('keydown: ', key, code);
 		// local only
 		if (!app.isApp) {
-			if (!chat.hasFocus && ng.view !== "title") {
+			if (!chat.hasFocus && ng.view !== 'title') {
 				// key input view router
 				if (key === 'b') {
 					battle.go();
@@ -114,46 +113,56 @@
 		}
 
 		if (e.altKey) {
+			// ALT key functions
 			return false;
 		}
 		else if (e.ctrlKey){
-			if (code === 82){
+			// CTRL key functions
+			if (key === 'r'){
 				// ctrl+r refresh
 				chat.reply();
 				return false;
 			}
-			else if (!chat.hasFocus && !guild.hasFocus) {
+			else if (!chat.hasFocus) {
 				// no select all of webpage elements
-				if (code === 65 || code === 70) {
+				if (key === 'a' || key === 'f') {
 					e.preventDefault();
 				}
-				// ctrl A, F
 			}
 		}
 		else {
-			if (!chat.hasFocus && !guild.hasFocus) {
-				if (code === 191) {
-					var z = $("#chat-input"),
-						text = z.val();
-					!text && $("#chat-input").focus();
-					return;
-				}
+			// normal key functions
 
+
+			// literally in any view
+			if (key === 'Escape') {
+				console.warn('toggleOptions', key)
+				bar.toggleOptions()
 			}
+			else if (!chat.hasFocus && !guild.hasFocus && _.includes(chat.focusKeys, key)) {
+				var z = $("#chat-input");
+				var text = z.val();
+				!text && chat.dom.chatInput.focus();
+				console.warn('canceling', key)
+				return;
+			}
+
 			if (ng.view === 'title'){
+				// title specific
 				if (!ng.isModalOpen){
-					$("#create-character-name").focus();
+					// any key press focuses on input first
+					_.includes(create.whitelist, key) && getById('create-character-name').focus();
 				}
 			}
 			else {
-				// always works town, dungeon and combat
 				if (chat.hasFocus) {
+					// always works town, dungeon and combat (focused)
 					if (chat.modeChange()) {
 						// changing chat mode - matches possible mode change
 						return false;
 					}
 					// has chat focus
-					if (code === 38) {
+					if (key === 'ArrowUp') {
 						// chat focus history nav up
 						if (chat.history[chat.historyIndex - 1] !== undefined) {
 							var o = chat.history[--chat.historyIndex];
@@ -161,7 +170,7 @@
 							chat.modeChange(o);
 						}
 					}
-					else if (code === 40) {
+					else if (key === 'ArrowDown') {
 						// chat focus history nav down
 						if (chat.history.length === chat.historyIndex + 1) {
 							chat.historyIndex++;
@@ -173,30 +182,44 @@
 							chat.modeChange(o);
 						}
 					}
-					else if (code === 13) {
+					else if (key === 'Enter') {
 						// enter
 						my.name && chat.sendMsg();
 					}
 				}
+				else {
+					// always works town, dungeon and combat (non-focused)
+					console.info('we are in here', key, code)
+					if (key === 'c') {
+						console.info('open stats')
+						bar.toggleCharacterStats()
+					}
+					else if (key === 'i') {
+						console.info('open bags')
+						bar.toggleInventory()
+					}
+
+				}
 
 				if (ng.view === 'town') {
-					// town only actions
+					// town specific
 					if (!chat.hasFocus) {
-						// no aside && no chat focus
-						!town.asideSelected && chat.dom.chatInput.focus();
-						if (guild.hasFocus) {
-							if (code === 13) {
-								guild.create();
-							}
+						// if no aside, focus on chat input first
+						!town.asideSelected && _.includes(chat.focusKeys, key) && chat.dom.chatInput.focus();
+						console.info('here i am', key)
+
+						if (guild.hasFocus && key === 'Enter') {
+							guild.create();
 						}
 					}
 				}
 				else {
-					// dungeon & combat
-					if (!chat.hasFocus && code === 13 || code === 191) {
+					// dungeon & combat specific
+					if (!chat.hasFocus && _.includes(chat.focusKeys, key)) {
 						chat.dom.chatInput.focus();
 					}
-					if (code === 9) {
+
+					if (key === 'Tab') {
 						// tab
 						if (!e.shiftKey) {
 							my.nextTarget(false);
@@ -205,17 +228,17 @@
 						}
 						e.preventDefault();
 					}
-					else if (code === 86) {
+					else if (key === 'v') {
 						// v
 						if (ng.view === 'game' && !ng.chatOn) {
-							game.toggleGameWindows(1);
+							game.toggleGameWindows(1); // ???
 						}
 					}
 				}
 			}
 		}
 	}
-})();
+})(_, $);
 
 
 

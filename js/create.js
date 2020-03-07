@@ -1,7 +1,7 @@
 var create;
-(function() {
+(function(_) {
 	create = {
-		whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzBackspace',
+		whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzBackspaceEscape',
 		selected: 0,
 		base: {
 			str: 0,
@@ -599,4 +599,4 @@ var create;
 	function getCleanName(name) {
 		return _.capitalize(_.map(name, char => _.includes(create.whitelist, char) ? char : '').join(''));
 	}
-})();
+})(_);

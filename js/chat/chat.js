@@ -26,6 +26,7 @@ var chat;
 		],
 		modeCommand: '/say',
 		modeName: '',
+		focusKeys: 'Enter/',
 		log,
 		init,
 		html,

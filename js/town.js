@@ -380,13 +380,11 @@ var town;
 					x: '0%',
 					y: '0%'
 				});
-			}).on('click', '#guild-create', function(){
-				// create a guild
-				guild.create();
-			}).on('click' + ' focus', '#guild-input', function() {
-				guild.hasFocus = 1;
+			}).on('click', '#guild-create', guild.create)
+			.on('click' + ' focus', '#guild-input', function() {
+				guild.hasFocus = true;
 			}).on('blur', '#guild-input', function() {
-				guild.hasFocus = 0;
+				guild.hasFocus = false;
 			}).on('click', '#guild-member-refresh-icon', function() {
 				guild.loadGuildMsg()
 				guild.getMembers(guild.throttleTime);

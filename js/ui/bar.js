@@ -15,6 +15,9 @@ var bar;
 		updatePlayerBar,
 		addPlayer,
 		updatePing,
+		toggleCharacterStats,
+		toggleInventory,
+		toggleOptions,
 	};
 	var index;
 	var player; // temp bar data
@@ -43,7 +46,6 @@ var bar;
 			bar.dom.lag = getById('bar-lag')
 			bar.dom.character = getById('bar-window-character')
 			bar.dom.inventory = getById('inventory-wrap')
-			bar.dom.options = getById('options-wrap')
 			// draw all bars
 			// bar events
 			$("#bar-wrap")
@@ -107,13 +109,14 @@ var bar;
 	}
 
 	function setOptionsDOM() {
+		var el = getById('options-wrap')
 		if (bar.windowsOpen.options) {
-			bar.dom.options.innerHTML = 'OPTIONS'
-			bar.dom.options.style.display = 'flex'
+			el.innerHTML = 'OPTIONS'
+			el.style.display = 'flex'
 		}
 		else {
-			bar.dom.options.innerHTML = ''
-			bar.dom.options.style.display = 'none'
+			el.innerHTML = ''
+			el.style.display = 'none'
 		}
 	}
 
