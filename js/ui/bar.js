@@ -4,6 +4,11 @@ var bar;
 		dom: {},
 		averagePing: 100,
 		initialized: 0,
+		windowsOpen: {
+			character: false,
+			inventory: false,
+			options: false,
+		},
 		init,
 		linkdead,
 		hideParty,
@@ -22,20 +27,23 @@ var bar;
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
-			bar.initialized = 1;
-			var e = getById('bar-wrap');
+			bar.initialized = 1
+			var e = getById('bar-wrap')
 			// my bar
-			var html = getBarHeader();
+			var html = getBarHeader()
 			// party bars
-			html += '<div id="bar-all-player-wrap">';
+			html += '<div id="bar-all-player-wrap">'
 			/*for (var i=0; i<party.maxPlayers; i++) {
 				html += getPlayerBarHtml({}, i, true);
 			}*/
-			html += '</div>';
-			e.innerHTML = html;
-			e.style.display = 'block';
+			html += '</div>'
+			e.innerHTML = html
+			e.style.display = 'block'
 
-			bar.dom.lag = getById('bar-lag');
+			bar.dom.lag = getById('bar-lag')
+			bar.dom.character = getById('bar-window-character')
+			bar.dom.inventory = getById('inventory-wrap')
+			bar.dom.options = getById('options-wrap')
 			// draw all bars
 			// bar events
 			$("#bar-wrap")
@@ -45,14 +53,13 @@ var bar;
 				.on('click', '#bar-inventory', toggleInventory)
 				.on('click', '#bar-options', toggleOptions)
 				.on('click', '#bar-mission-abandon', mission.abandon)
-				.on('mouseenter', '.bar-icons', showBarMenuPopover)
-				.on('mousemove', '.bar-icons', popover.setPosition)
-				.on('mouseleave', '.bar-icons', popover.hide);
-
+				.on('mouseenter', '.popover-icons', showBarMenuPopover)
+				.on('mousemove', '.popover-icons', popover.setPosition)
+				.on('mouseleave', '.popover-icons', popover.hide);
 		}
 	}
 
-	function handleClickPartyContextMenu(event) {
+	function handleClickPartyContextMenu() {
 		var id = $(this).attr('id'),
 			arr = id.split("-"),
 			slot = _.findIndex(party.presence, { row: arr[3] * 1 });
@@ -62,17 +69,52 @@ var bar;
 	}
 
 	function toggleCharacterStats() {
-		console.info($(this).attr('id'));
+		bar.windowsOpen.character = !bar.windowsOpen.character;
+		setCharacterDOM()
+	}
+
+	function setCharacterDOM() {
+		if (bar.windowsOpen.character) {
+			bar.dom.character.innerHTML = 'CHARACTER STATS'
+			bar.dom.character.style.display = 'flex'
+		}
+		else {
+			bar.dom.character.innerHTML = ''
+			bar.dom.character.style.display = 'none'
+		}
 	}
 
 	function toggleInventory() {
 		// open all bags in the bottom-right corner
-		console.info($(this).attr('id'));
-		// ?
+		bar.windowsOpen.inventory = !bar.windowsOpen.inventory;
+		setInventoryDOM();
+	}
+
+	function setInventoryDOM() {
+		if (bar.windowsOpen.inventory) {
+			bar.dom.inventory.innerHTML = 'INVENTORY'
+			bar.dom.inventory.style.display = 'flex'
+		}
+		else {
+			bar.dom.inventory.innerHTML = ''
+			bar.dom.inventory.style.display = 'none'
+		}
 	}
 
 	function toggleOptions() {
-		console.info($(this).attr('id'));
+		bar.windowsOpen.options = !bar.windowsOpen.options;
+		setOptionsDOM();
+	}
+
+	function setOptionsDOM() {
+		if (bar.windowsOpen.options) {
+			bar.dom.options.innerHTML = 'OPTIONS'
+			bar.dom.options.style.display = 'flex'
+		}
+		else {
+			bar.dom.options.innerHTML = ''
+			bar.dom.options.style.display = 'none'
+		}
 	}
 
 	function showBarMenuPopover() {
@@ -105,15 +147,15 @@ var bar;
 		var s = '';
 		s +=
 		'<div id="bar-lag">' +
-			'<span>0ms</span>' +
-			'<span>0ms</span>' +
+			'<span class="popover-icons">0ms</span>' +
+			'<span class="popover-icons">0ms</span>' +
 		'</div>' +
 		'<div id="bar-main-menu">' +
-			'<i id="bar-camp" class="ra ra-campfire bar-icons"></i>' +
-			'<i id="bar-stats" class="ra ra-knight-helmet bar-icons"></i>' +
-			'<i id="bar-inventory" class="ra ra-vest bar-icons"></i>' +
-			'<i id="bar-options" class="ra ra-gear-hammer bar-icons"></i>' +
-			'<i id="bar-mission-abandon" class="ra ra-player-shot bar-icons"></i>' +
+			'<i id="bar-camp" class="ra ra-campfire popover-icons bar-icons"></i>' +
+			'<i id="bar-stats" class="ra ra-knight-helmet popover-icons bar-icons"></i>' +
+			'<i id="bar-inventory" class="ra ra-vest popover-icons bar-icons"></i>' +
+			'<i id="bar-options" class="ra ra-gear-hammer popover-icons bar-icons"></i>' +
+			'<i id="bar-mission-abandon" class="ra ra-player-shot popover-icons bar-icons"></i>' +
 		'</div>';
 		return s;
 	}
@@ -197,8 +239,8 @@ var bar;
 		bar.averagePing = ~~_.meanBy(game.pingHistory, val => val);
 		// dom
 		bar.dom.lag.innerHTML =
-			'<span class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>' +
-			'<span class="'+ getPingColor(bar.averagePing) +'">' + (bar.averagePing) + 'ms</span>';
+			'<span class="popover-icons" id="bar-last-ping" class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>' +
+			'<span class="popover-icons" id="bar-average-ping" class="'+ getPingColor(bar.averagePing) +'">' + (bar.averagePing) + 'ms</span>';
 	}
 	function getPingColor(ping) {
 		index;

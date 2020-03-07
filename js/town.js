@@ -98,7 +98,7 @@ var town;
 				var el = createElement('img')
 				el.id = 'town-bg'
 				el.className = 'img-bg'
-				el.src = 'images/town2.jpg'
+				el.src = 'images/bg/mausoleum1.png'
 				document.getElementById('body').insertBefore(el, document.getElementById('bar-wrap'));
 
 				getById('scene-town').innerHTML = town.html()

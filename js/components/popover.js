@@ -1,6 +1,8 @@
 var popover;
 (function() {
 	var mainMenuPopovers = {
+		'bar-last-ping': 'Last Ping',
+		'bar-average-ping': 'Average Ping',
 		'bar-camp': 'Camp and Exit',
 		'bar-stats': 'Character Sheet',
 		'bar-inventory': 'Inventory',
