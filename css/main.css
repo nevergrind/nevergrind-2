@@ -2160,16 +2160,15 @@ background-clip: content-box;
 	left: 1rem;
 	min-width: 0;
 	min-height: 0;
-	outline: 1px solid #0f0;
 	z-index: 2;
 }
 .bar-window {
+	flex-direction: column;
 	display: none;
 	height: 28rem;
 	width: 22rem;
-	outline: 1px solid #080;
+	border: 2px ridge #1a1a1a;
 	background: #013;
-	margin-right: 1rem;
 }
 #inventory-wrap {
 	display: none;
@@ -2181,7 +2180,6 @@ background-clip: content-box;
 	right: 1rem;
 	width: 12rem;
 	height: auto;
-	outline: 1px solid #0f0;
 	background: #025;
 	z-index: 2;
 
@@ -2197,13 +2195,34 @@ background-clip: content-box;
 	margin: 0 auto;
 	width: 25rem;
 	height: 40rem;
-	outline: 1px solid #0f0;
 	background: #1a1a1a;
 	z-index: 2;
 
 }
+.close-menu {
+	background: #611;
+	transition: color .3s ease;
+	color: #fdd700;
+	padding: .1rem .2rem;
+	border: 2px ridge #777;
+	outline: 1px solid #997;
+	margin: 1px;
+	font-size: 1.25rem;
+}
+
+.close-menu:hover {
+	cursor: url('cursor/pointer.cur'), pointer;
+	color: #ff0 !important;
+}
+.grad-blue-center {
+	background-image: linear-gradient(to top,
+		rgba(128, 192, 255, .3),
+		rgba(0, 64, 128, 0),
+		rgba(128, 192, 255, .3));
+}
 
 
-
-
-
+#inv-wrap {
+	display: flex;
+	flex-direction: column;
+}

@@ -26,7 +26,8 @@
 			.on('click', '#toast-accept', toast.accept)
 			.on('click', '#toast-decline', toast.decline)
 			.on('focus', 'input', chatInputFocus)
-			.on('blur', 'input', chatInputBlur);
+			.on('blur', 'input', chatInputBlur)
+			.on('click', '.close-menu', bar.handleCloseMenu);
 	}
 	function chatInputFocus() {
 		chat.hasFocus = 1;

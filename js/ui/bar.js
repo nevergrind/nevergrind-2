@@ -18,6 +18,7 @@ var bar;
 		toggleCharacterStats,
 		toggleInventory,
 		toggleOptions,
+		handleCloseMenu,
 		closeAllWindows,
 	};
 	var index;
@@ -78,7 +79,7 @@ var bar;
 
 	function setCharacterDOM() {
 		if (bar.windowsOpen.character) {
-			bar.dom.character.innerHTML = 'CHARACTER STATS'
+			bar.dom.character.innerHTML = getCharacterStatsHtml()
 			bar.dom.character.style.display = 'flex'
 		}
 		else {
@@ -86,6 +87,41 @@ var bar;
 			bar.dom.character.style.display = 'none'
 		}
 	}
+
+	function getCharacterStatsHtml() {
+		var css = {
+			header: 'padding: 1px; text-align: center',
+			nameWrap: 'border: 1px solid #048',
+			name: 'flex: 1; border: 2px ridge #357',
+		}
+		var html =
+			'<div class="flex" style="'+ css.header +'">' +
+				'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+					'<div class="stag-blue-top" style="' + css.name + '">' + my.name + '</div>' +
+				'</div>' +
+				'<i id="close-menu-character-stats" class="close-menu fa fa-times"></i>' +
+			'</div>' +
+			// race class level guild
+			'<div class="text-center" style="font-size: .8rem; color: #ffd700">' +
+				'<div>Level '+ my.level +' '+ my.race +' '+ my.jobLong +'</div>' +
+				getPlayerGuildDescription() +
+			'</div>' +
+			'<div id="inv-wrap">'+
+
+			'</div>'
+
+
+		;
+		return html
+	}
+	function getPlayerGuildDescription() {
+		var html = ''
+		if (my.guild.name) {
+			html = 'Guild ' + guild.ranks[my.guild.rank] + ' of ' + my.guild.name
+		}
+		return html
+	}
+
 
 	function toggleInventory() {
 		// open all bags in the bottom-right corner
@@ -119,6 +155,11 @@ var bar;
 			el.innerHTML = ''
 			el.style.display = 'none'
 		}
+	}
+
+	function handleCloseMenu(event) {
+		if (event.currentTarget.id === 'close-menu-character-stats') bar.toggleCharacterStats()
+
 	}
 
 	function closeAllWindows() {

@@ -5,7 +5,7 @@ var town;
 		lastAside: {},
 		delegated: 0,
 		asideSelected: '',
-		asideCloseHtml: '<i class="close-aside fa fa-times text-danger"></i>',
+		asideCloseHtml: '<i class="close-aside fa fa-times"></i>',
 		data: {
 			'town-merchant': {
 				msg: merchantMsg,
