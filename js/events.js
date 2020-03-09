@@ -190,14 +190,9 @@
 				else {
 					// always works town, dungeon and combat (non-focused)
 					console.info('we are in here', key, code)
-					if (key === 'c') {
-						console.info('open stats')
-						bar.toggleCharacterStats()
-					}
-					else if (key === 'i') {
-						console.info('open bags')
-						bar.toggleInventory()
-					}
+					if (key === 'c') bar.toggleCharacterStats()
+					else if (key === 'i') bar.toggleInventory()
+					else if (key === ' ') bar.closeAllWindows()
 
 				}
 

@@ -58,6 +58,13 @@ $name = 'BradQuest';
 require '../guild/filter-name.php';
 echo '<pre>upper ' . ucfirst($name) . '</pre>';
 
+$obj = [];
+$obj[5] = [
+	'name' => 'Bob',
+	'age' => 35
+];
+
+
 $loops = 100000;
 $val = 5;
 $obj = [
@@ -67,6 +74,7 @@ $obj = [
 	'isCool' => true,
 	'level' => 50
 ];
+echo '<pre>$bar ' . print_r($obj, true) . '</pre>';
 
 // session get/set test
 $apcStart = microtime(true);

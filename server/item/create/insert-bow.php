@@ -16,7 +16,7 @@ if ($_SERVER["SERVER_NAME"] === "localhost"){
 	$mp = 0;
 
 	$xPos = 11;
-	$equipSlots = 'range';
+	$equipSlots = 'primary';
 	$req = 0;
 
 	$query = "insert into `loot` (

@@ -23,7 +23,7 @@ if (isset($_SESSION['guild']['id']) ) {
 	}
 	// delete member from guild
 	$stmt = $db->prepare('delete from `guild_members` where c_id=?');
-	$stmt->bind_param('s', $_SESSION['row']);
+	$stmt->bind_param('i', $_SESSION['row']);
 	$stmt->execute();
 
 	// notify guild members

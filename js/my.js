@@ -32,6 +32,8 @@ var my;
 		getPartyNames,
 		getAvatarUrl,
 		getNewLeaderName,
+		processEquipment,
+		processInventory,
 		getPartySlotByRow,
 		isLowestPartyIdMine,
 	}
@@ -106,5 +108,25 @@ var my;
 	function clearHud() {
 		my.hudTimer.kill();
 		DOM.hud.style.visibility = 'hidden';
+	}
+
+	function processInventory(obj) {
+		for (var i=0; i<=item.MAX_INVENTORY; i++) {
+			inv[i] = {}
+		}
+		for (var key in obj) {
+			inv[key] = Object.assign(JSON.parse(obj[key].data))
+			inv[key].name = obj[key].name
+		}
+	}
+
+	function processEquipment(obj) {
+		for (var i=0; i<=item.MAX_EQUIPMENT; i++) {
+			eq[i] = {}
+		}
+		for (var key in obj) {
+			eq[key] = Object.assign(JSON.parse(obj[key].data))
+			eq[key].name = obj[key].name
+		}
 	}
 })();

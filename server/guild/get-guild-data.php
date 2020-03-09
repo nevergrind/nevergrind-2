@@ -10,7 +10,7 @@ $stmt = $db->prepare('select m.rank,
 	on m.g_id=n.row 
 	where m.c_id=? 
 	limit 1');
-$stmt->bind_param('s', $_SESSION['row']);
+$stmt->bind_param('i', $_SESSION['row']);
 $stmt->execute();
 $stmt->bind_result($rank, $g_id, $motd, $name);
 

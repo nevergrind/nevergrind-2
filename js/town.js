@@ -81,10 +81,14 @@ var town;
 				row: create.selected
 			}).done(function(data) {
 				console.info('load-character: ', data)
+				// my processing
 				_.assign(my, data.characterData)
 				my.jobLong = ng.toJobLong(my.job)
 				my.avatar = my.getAvatarUrl()
-				guild.setGuildData(data);
+				guild.setGuildData(data)
+
+				my.processInventory(data.inventory)
+				my.processEquipment(data.equipment)
 
 				// init party member values
 				ng.setScene('town')

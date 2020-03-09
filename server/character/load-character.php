@@ -24,6 +24,8 @@
 		$alteration, $conjuration, $evocation);
 
 	$r['characterData'] = [];
+	$r['equipment'] = [];
+	$r['inventory'] = [];
 	$i = 0;
 
 	while($stmt->fetch()){
@@ -68,11 +70,18 @@
 	if ($i) {
 		// set hp
 		require '../session/init-ng.php';
+
 		// set session values for my character
 		$_SESSION['row'] = $r['characterData']['row'];
 		$_SESSION['name'] = $r['characterData']['name'];
 		$_SESSION['level'] = $r['characterData']['level'];
 		$_SESSION['job'] = $r['characterData']['job'];
+
+		// get equipment
+		require '../item/get-equipment.php';
+
+		// get inventory
+		require '../item/get-inventory.php';
 
 		// get guild info
 		require '../guild/get-guild-data.php';

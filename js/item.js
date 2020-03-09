@@ -2,6 +2,8 @@ var item;
 var items = {};
 !function() {
 	item = {
+		MAX_EQUIPMENT: 14,
+		MAX_INVENTORY: 63,
 		getEquipString,
 		getRarity,
 		getItem,

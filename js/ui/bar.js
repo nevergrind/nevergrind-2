@@ -18,6 +18,7 @@ var bar;
 		toggleCharacterStats,
 		toggleInventory,
 		toggleOptions,
+		closeAllWindows,
 	};
 	var index;
 	var player; // temp bar data
@@ -118,6 +119,15 @@ var bar;
 			el.innerHTML = ''
 			el.style.display = 'none'
 		}
+	}
+
+	function closeAllWindows() {
+		_.each(bar.windowsOpen, function(val, key) {
+			bar.windowsOpen[key] = false
+		})
+		setCharacterDOM()
+		setInventoryDOM()
+		setOptionsDOM()
 	}
 
 	function showBarMenuPopover() {

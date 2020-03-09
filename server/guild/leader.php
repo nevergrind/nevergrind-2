@@ -40,7 +40,7 @@ $stmt->execute();
 
 // demote self
 $stmt = $db->prepare('update `guild_members` set rank=1 where c_id=?');
-$stmt->bind_param('s', $_SESSION['row']);
+$stmt->bind_param('i', $_SESSION['row']);
 $stmt->execute();
 
 $_SESSION['guild']['rank'] = 1;
