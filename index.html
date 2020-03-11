@@ -179,8 +179,7 @@ Twe				<div>
 								<i id="portrait-down"
 								   style="left: 2px"
 								   class="fas fa-chevron-left pointer portrait-arrow text-shadow2"></i>
-								<img id="create-portrait"
-									 src="images/avatars/high-elf-female-0.png">
+								<img id="create-portrait">
 								<i id="portrait-up"
 								   style="right: 2px"
 								   class="fas fa-chevron-right pointer portrait-arrow text-shadow2"></i>
@@ -192,24 +191,24 @@ Twe				<div>
 					<div class="flex" style="display: none">
 						<div class="flex-50 pad-4">
 							<div class="flex space-between pad-4">
-								<div>Bleed:</div><div id="bleed-value"></div>
+								<div>Bleed:</div><div id="resist-bleed-value"></div>
 							</div>
 							<div class="flex space-between pad-4">
-								<div>Poison:</div><div id="poison-value"></div>
+								<div>Poison:</div><div id="resist-poison-value"></div>
 							</div>
 							<div class="flex space-between pad-4">
-								<div>Arcane:</div><div id="arcane-value"></div>
+								<div>Arcane:</div><div id="resist-arcane-value"></div>
 							</div>
 						</div>
 						<div class="flex-50 pad-4">
 							<div class="flex space-between pad-4">
-								<div>Lightning:</div><div id="lightning-value"></div>
+								<div>Lightning:</div><div id="resist-lightning-value"></div>
 							</div>
 							<div class="flex space-between pad-4">
-								<div>Fire:</div><div id="fire-value"></div>
+								<div>Fire:</div><div id="resist-fire-value"></div>
 							</div>
 							<div class="flex space-between pad-4">
-								<div>Ice:</div><div id="ice-value"></div>
+								<div>Ice:</div><div id="resist-ice-value"></div>
 							</div>
 						</div>
 					</div>
@@ -570,6 +569,7 @@ if (!app.isApp){
 		'dungeon',
 		'skills',
 		'zone',
+		'stat',
 		'test/test',
 		'init',
 	]

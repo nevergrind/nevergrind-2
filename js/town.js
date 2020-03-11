@@ -85,6 +85,8 @@ var town;
 				_.assign(my, data.characterData)
 				my.jobLong = ng.toJobLong(my.job)
 				my.avatar = my.getAvatarUrl()
+				Object.assign(my, my.getResistObject())
+
 				guild.setGuildData(data)
 
 				my.processInventory(data.inventory)

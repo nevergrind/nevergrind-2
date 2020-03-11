@@ -1,7 +1,6 @@
 var my;
 (function() {
 	my = {
-		lastDifficulty: 'Very Easy',
 		mouse: {
 			x: 0,
 			y: 0
@@ -29,6 +28,7 @@ var my;
 		hud,
 		Party,
 		clearHud,
+		getResistObject,
 		getPartyNames,
 		getAvatarUrl,
 		getNewLeaderName,
@@ -38,6 +38,15 @@ var my;
 		isLowestPartyIdMine,
 	}
 	////////////////////////////////////
+
+	function getResistObject() {
+		var resp = {}
+		ng.resists.forEach(function(type) {
+			resp[type] = create.getResist(type, my)
+		})
+		return resp
+	}
+
 	function getPartyNames() {
 		var a = [];
 		party.presence.forEach(function(v){

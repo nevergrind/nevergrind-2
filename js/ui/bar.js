@@ -93,22 +93,92 @@ var bar;
 			header: 'padding: 1px; text-align: center',
 			nameWrap: 'border: 1px solid #048',
 			name: 'flex: 1; border: 2px ridge #357',
+			invStatColumn1: 'background: rgba(255,255,255,.08); border: 2px ridge #357; border-radius: 4px; margin: .2rem .1rem 0; padding: 0 .2rem',
 		}
 		var html =
-			'<div class="flex" style="'+ css.header +'">' +
-				'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-					'<div class="stag-blue-top" style="' + css.name + '">' + my.name + '</div>' +
+		'<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">' + my.name + '</div>' +
+			'</div>' +
+			'<i id="close-menu-character-stats" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		// race class level guild
+		'<div class="text-center" style="font-size: .8rem; color: #ffd700">' +
+			'<div>Level '+ my.level +' '+ my.race +' '+ my.jobLong +'</div>' +
+			getPlayerGuildDescription() +
+		'</div>' +
+		'<div id="inv-wrap">'+
+			'<div class="flex-column flex-max" style="align-items: center">'+
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
+			'</div>' +
+			'<div id="inv-column-avatar">'+
+				'<div id="inv-avatar-wrap">' +
+					'<div id="inv-resist-wrap" class="text-shadow">'+
+						'<div class="inv-resist-icon flex-center" style="background: #500">' + my.resistBlood + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #090">' + my.resistPoison + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #808">' + my.resistArcane + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #aa0">' + my.resistLightning + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #840">' + my.resistFire + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #28c">' + my.resistIce + '</div>' +
+					'</div>' +
+					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 				'</div>' +
-				'<i id="close-menu-character-stats" class="close-menu fa fa-times"></i>' +
+				'<div class="flex" style="font-size: .8rem">'+
+					'<div class="flex-column flex-max" style="'+ css.invStatColumn1 +'">'+
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Armor:</div><div>'+ my.armor +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Strength:</div><div>'+ stat.getAttr('str') +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Stamina:</div><div>'+ stat.getAttr('sta') +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Agility:</div><div>'+ stat.getAttr('agi') +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Dexterity:</div><div>'+ stat.getAttr('dex') +'</div>' +
+						'</div>' +
+					'</div>' +
+					'<div class="flex-column flex-max" style="'+ css.invStatColumn1 +'">' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Attack:</div><div>'+ my.attack +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Damage:</div><div>'+ my.damage +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Wisdom:</div><div>'+ stat.getAttr('wis') +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Intelligence:</div><div>'+ stat.getAttr('intel') +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Charisma:</div><div>'+ stat.getAttr('cha') +'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
 			'</div>' +
-			// race class level guild
-			'<div class="text-center" style="font-size: .8rem; color: #ffd700">' +
-				'<div>Level '+ my.level +' '+ my.race +' '+ my.jobLong +'</div>' +
-				getPlayerGuildDescription() +
+			'<div class="flex-column flex-max" style="align-items: center">'+
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
+				'<div class="item-slot-wrap"></div>' +
 			'</div>' +
-			'<div id="inv-wrap">'+
-
-			'</div>'
+		'</div>' +
+		'<div class="flex" style="transform: translateY(.3rem); justify-content: center">' +
+			'<div class="item-slot-wrap"></div>' +
+			'<div class="item-slot-wrap"></div>' +
+			'<div class="item-slot-wrap"></div>' +
+		'</div>'
 
 
 		;

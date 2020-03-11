@@ -102,6 +102,7 @@ function minifyJs() {
 		'dungeon',
 		'skills',
 		'zone',
+		'stat',
 		'test/test',
 		'init',
 		'build/endWrap',

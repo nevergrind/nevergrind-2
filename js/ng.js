@@ -2,13 +2,170 @@
 var ng;
 (function() {
 	ng = {
+		statMap: {
+			// job bonuses
+			'jobs': {
+				'Bard': [0,2,2,2,0,0,4],
+				'Cleric': [0,2,2,0,4,2,0],
+				'Druid': [0,2,2,0,4,2,0],
+				'Enchanter': [0,0,0,0,2,4,4],
+				'Magician': [0,2,0,0,4,4,0],
+				'Monk': [4,2,2,2,0,0,0],
+				'Necromancer': [0,2,0,0,4,4,0],
+				'Paladin': [2,4,0,2,2,0,0],
+				'Ranger': [2,2,2,2,2,0,0],
+				'Rogue': [4,0,4,2,0,0,0],
+				'Shadow Knight': [4,2,0,2,0,2,0],
+				'Shaman': [0,2,2,0,4,2,0],
+				'Warrior': [4,4,0,2,0,0,0],
+				'Wizard': [0,2,0,0,4,4,0]
+			},
+			// race base values and possible classes
+			'Barbarian': {
+				'attrs': [22,20,17,14,14,11,10],
+				'jobs': [
+					'Monk',
+					'Rogue',
+					'Shaman',
+					'Warrior'
+				]
+			},
+			'Dark Elf': {
+				'attrs': [11,13,19,15,17,21,11],
+				'jobs': [
+					'Cleric',
+					'Enchanter',
+					'Magician',
+					'Necromancer',
+					'Ranger',
+					'Rogue',
+					'Shadow Knight',
+					'Warrior',
+					'Wizard'
+				]
+			},
+			'Dwarf': {
+				'attrs': [19,19,14,19,17,11,9],
+				'jobs': [
+					'Cleric',
+					'Paladin',
+					'Rogue',
+					'Warrior'
+				]
+			},
+			'Seraph': {
+				'attrs': [11,14,14,14,17,23,14],
+				'jobs': [
+					'Cleric',
+					'Enchanter',
+					'Magician',
+					'Necromancer',
+					'Paladin',
+					'Shadow Knight',
+					'Wizard'
+				]
+			},
+			'Gnome': {
+				'attrs': [11,14,18,18,13,21,11],
+				'jobs': [
+					'Cleric',
+					'Enchanter',
+					'Magician',
+					'Necromancer',
+					'Rogue',
+					'Shadow Knight',
+					'Warrior',
+					'Wizard'
+				]
+			},
+			'Half Elf': {
+				'attrs': [14,14,19,18,11,15,15],
+				'jobs': [
+					'Bard',
+					'Druid',
+					'Monk',
+					'Paladin',
+					'Ranger',
+					'Rogue',
+					'Warrior'
+				]
+			},
+			'Halfling': {
+				'attrs': [14,15,20,19,16,9,9],
+				'jobs': [
+					'Cleric',
+					'Druid',
+					'Monk',
+					'Ranger',
+					'Rogue',
+					'Warrior'
+				]
+			},
+			'High Elf': {
+				'attrs': [10,13,18,14,20,19,16],
+				'jobs': [
+					'Cleric',
+					'Enchanter',
+					'Magician',
+					'Paladin',
+					'Wizard'
+				]
+			},
+			'Human': {
+				'attrs': [15,15,15,15,15,15,15],
+				'jobs': [
+					'Bard',
+					'Cleric',
+					'Druid',
+					'Enchanter',
+					'Magician',
+					'Monk',
+					'Necromancer',
+					'Paladin',
+					'Ranger',
+					'Rogue',
+					'Shadow Knight',
+					'Shaman',
+					'Warrior',
+					'Wizard'
+				]
+			},
+			'Orc': {
+				'attrs': [27,22,13,14,13,11,8],
+				'jobs': [
+					'Monk',
+					'Shadow Knight',
+					'Shaman',
+					'Warrior'
+				]
+			},
+			'Troll': {
+				'attrs': [22,24,18,15,11,9,6],
+				'jobs': [
+					'Rogue',
+					'Shadow Knight',
+					'Shaman',
+					'Warrior'
+				]
+			},
+			'Wood Elf': {
+				'attrs': [13,13,20,16,15,15,15],
+				'jobs': [
+					'Bard',
+					'Druid',
+					'Ranger',
+					'Rogue',
+					'Warrior'
+				]
+			}
+		},
 		test: true,
 		id: 0,
 		resizeTimer: new delayedCall(0, ''),
 		loadMsg:
 			"<div id='load-msg' class='text-shadow text-center now-loading'>Loading</div>",
 		attrs: ['str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha'],
-		resists: ['bleed', 'poison', 'arcane', 'lightning', 'fire', 'ice'],
+		resists: ['resistBlood', 'resistPoison', 'resistArcane', 'resistLightning', 'resistFire', 'resistIce'],
 		dungeon: ['traps', 'treasure', 'scout', 'pulling'],
 		gameDuration: 0,
 		delay: .5,
@@ -109,6 +266,7 @@ var ng;
 		events,
 		unlock,
 		logout,
+		processStatMap,
 		dimRetAttr,
 		dimRetSkill,
 		setScene,
@@ -131,6 +289,7 @@ var ng;
 		for (var i=1; i<=ng.maxLevel; i++) {
 			ng.levels.push(i+'');
 		}
+		ng.processStatMap(ng.statMap)
 	}
 	function getId() {
 		ng.id++;
@@ -297,6 +456,16 @@ var ng;
 		}
 		return _.round(skillBonus); // 92% damage bonus for 255 strength
 	}
+	function processStatMap(r) {
+		ng.races.forEach(function(v){
+			create.raceAttrs[v] = r[v].attrs;
+			create.possibleJobs[v] = r[v].jobs;
+		});
+		// job stats
+		ng.jobs.forEach(function(v){
+			create.jobAttrs[v] = r.jobs[v];
+		});
+	}
 	function goCreateCharacter() {
 		ng.lock(1);
 		var z = '#scene-title-select-character';
@@ -308,19 +477,8 @@ var ng;
 			onComplete: allDone
 		});
 
-		$.get(app.url + 'create/get-stat-map.php').done(function(r){
-			var r = r.statMap;
-			ng.races.forEach(function(v){
-				create.raceAttrs[v] = r[v].attrs;
-				create.possibleJobs[v] = r[v].jobs;
-			});
-			// job stats
-			ng.jobs.forEach(function(v){
-				create.jobAttrs[v] = r.jobs[v];
-			});
-            $("#create-character-name").val('');
-			allDone();
-		});
+		$("#create-character-name").val('')
+		allDone()
 		///////////////////////////////////////////////////
 		function allDone(){
 			if (++prom === 2){

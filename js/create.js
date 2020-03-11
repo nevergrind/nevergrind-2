@@ -273,7 +273,7 @@ var create;
 		}
 		// resists
 		ng.resists.forEach(function(v){
-			getById(v + '-value').innerHTML = create.getResist(v);
+			//getById(_.kebabCase(v) + '-value').innerHTML = create.getResist(v, create.form)
 		});
 		// dungeon
 		ng.dungeon.forEach(function(v){
@@ -299,76 +299,80 @@ var create;
 			// reset form bonuses
 		}
 	}
-	function getResist(type) {
+
+	function getResist(type, obj) {
 		// gender and race
-		var v = 15,
-			f = create.form;
-		if (type === 'bleed'){
-			if (f.gender === 'Female'){
+		var v = 15
+		var {gender: gender, race: race} = obj
+		if (typeof gender === 'number') gender = gender ? 'Female' : 'Male' // normalize to string
+
+		console.info('obj gender', gender, race)
+		if (type === 'resistBlood'){
+			if (gender === 'Female'){
 				v += 5;
 			}
-			if (f.race === 'Dark Elf'){
+			if (race === 'Dark Elf'){
 				v += 10;
 			}
-			else if (f.race === 'Half Elf'){
+			else if (race === 'Half Elf'){
 				v += 3;
 			}
 		}
-		else if (type === 'poison'){
-			if (f.gender === 'Female'){
+		else if (type === 'resistPoison'){
+			if (gender === 'Female'){
 				v += 5;
 			}
-			if (f.race === 'Dwarf'){
+			if (race === 'Dwarf'){
 				v += 10;
 			}
-			else if (f.race === 'Half Elf'){
+			else if (race === 'Half Elf'){
 				v += 3;
 			}
 		}
-		else if (type === 'arcane'){
-			if (f.gender === 'Male'){
+		else if (type === 'resistArcane'){
+			if (gender === 'Male'){
 				v += 5;
 			}
-			if (f.race === 'Seraph'){
+			if (race === 'Seraph'){
 				v += 25;
 			}
-			else if (f.race === 'Dark Elf' || f.race === 'Dwarf'){
+			else if (race === 'Dark Elf' || race === 'Dwarf'){
 				v += 10;
 			}
-			else if (f.race === 'Half Elf'){
+			else if (race === 'Half Elf'){
 				v += 3;
 			}
 		}
-		else if (type === 'lightning'){
-			if (f.race === 'Gnome'){
+		else if (type === 'resistLightning'){
+			if (race === 'Gnome'){
 				v += 20;
 			}
-			else if (f.race === 'Half Elf'){
+			else if (race === 'Half Elf'){
 				v += 3;
 			}
 		}
-		else if (type === 'fire'){
-			if (f.race === 'Half Elf'){
+		else if (type === 'resistFire'){
+			if (race === 'Half Elf'){
 				v += 3;
 			}
-			else if (f.race === 'Troll'){
+			else if (race === 'Troll'){
 				v -= 10;
 			}
-			else if (f.race === 'Wood Elf'){
+			else if (race === 'Wood Elf'){
 				v += 10;
 			}
 		}
-		else if (type === 'ice'){
-			if (f.gender === 'Male'){
+		else if (type === 'resistIce'){
+			if (gender === 'Male'){
 				v += 5;
 			}
-			if (f.race === 'Barbarian'){
+			if (race === 'Barbarian'){
 				v += 25;
 			}
-			else if (f.race === 'Half Elf'){
+			else if (race === 'Half Elf'){
 				v += 3;
 			}
-			else if (f.race === 'Wood Elf'){
+			else if (race === 'Wood Elf'){
 				v += 10;
 			}
 		}
@@ -592,8 +596,11 @@ var create;
 		setFace()
 	}
 	function setFace() {
-		getById('create-portrait').src = 'images/avatars/' + _.kebabCase(create.form.race)
-			+ '-' + _.kebabCase(create.form.gender) + '-' + create.form.face + '.png'
+		var obj = _.pick(create.form, [
+			'gender', 'race', 'face'
+		])
+		obj.gender = obj.gender === 'Male' ? 0 : 1
+		getById('create-portrait').src = my.getAvatarUrl(obj)
 	}
 	// private /////////////////////////////////////////////////
 	function getCleanName(name) {

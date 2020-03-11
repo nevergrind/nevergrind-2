@@ -4,9 +4,9 @@ var popover;
 		'bar-last-ping': 'Last Ping',
 		'bar-average-ping': 'Average Ping',
 		'bar-camp': 'Camp and Exit',
-		'bar-stats': 'Character Sheet',
-		'bar-inventory': 'Inventory',
-		'bar-options': 'Options',
+		'bar-stats': '[C] Character Sheet',
+		'bar-inventory': '[I] Inventory',
+		'bar-options': '[ESC] Options',
 		'bar-mission-abandon': 'Abandon Mission'
 	};
 
@@ -24,6 +24,10 @@ var popover;
 	var padding
 	var width
 	var popoverHalfWidth
+	var innerWidth
+	var verticalOffset
+	var isMenuAbove
+	var yAdjust
 	//////////////////////////////////////////////////
 
 	function setMainMenuHtml(id) {
@@ -73,19 +77,20 @@ var popover;
 		else if (my.mouse.x > window.innerWidth - popoverHalfWidth) {
 			// too big
 			my.mouse.x -= popoverHalfWidth / 2;
-			var z = window.innerWidth - 80;
-			if (my.mouse.x > z) {
-				my.mouse.x = z;
+			innerWidth = window.innerWidth - 80;
+			if (my.mouse.x > innerWidth) {
+				my.mouse.x = innerWidth
 			}
 
 		}
 		return my.mouse.x;
 	}
+
 	function posY() {
 		// determine Y adjustment
-		var verticalOffset = 15;
-		var isMenuAbove = my.mouse.y < window.innerHeight / 2;
-		var yAdjust = isMenuAbove ?
+		verticalOffset = 15;
+		isMenuAbove = my.mouse.y < window.innerHeight / 2;
+		yAdjust = isMenuAbove ?
 			verticalOffset : (~~$("#context-wrap").height() + verticalOffset) * -1;
 		return my.mouse.y + yAdjust;
 	}
