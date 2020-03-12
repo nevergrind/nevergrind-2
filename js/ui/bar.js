@@ -1,6 +1,23 @@
 var bar;
 (function() {
 	bar = {
+		defaultImage: [
+			'helms1',
+			'amulets0',
+			'rings0',
+			'rings0',
+			'shoulders0',
+			'cloaks0',
+			'chests0',
+			'bracers0',
+			'gloves0',
+			'belts0',
+			'legs0',
+			'boots0',
+			'oneHandBlunts0',
+			'shields0',
+			'charms0',
+		],
 		dom: {},
 		averagePing: 100,
 		initialized: 0,
@@ -20,6 +37,7 @@ var bar;
 		toggleOptions,
 		handleCloseMenu,
 		closeAllWindows,
+		setDefaultInvWeaponImage,
 	};
 	var index;
 	var player; // temp bar data
@@ -29,6 +47,13 @@ var bar;
 		'chat-warning',
 		'chat-alert'
 	];
+	var css = {
+		header: 'padding: 1px; text-align: center',
+		nameWrap: 'border: 1px solid #048',
+		name: 'flex: 1; border: 2px ridge #357',
+		invStatColumn1: 'background: rgba(0,0,0,.5); border: 2px ridge #357; border-radius: 4px; margin: .2rem .1rem 0; padding: 0 .2rem',
+		statFooter: 'position: absolute; z-index: 1; bottom: 0rem; right: 0; left: 0; margin: 0 auto; transform: translate(0%,-.2rem); justify-content: center',
+	}
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
@@ -89,12 +114,6 @@ var bar;
 	}
 
 	function getCharacterStatsHtml() {
-		var css = {
-			header: 'padding: 1px; text-align: center',
-			nameWrap: 'border: 1px solid #048',
-			name: 'flex: 1; border: 2px ridge #357',
-			invStatColumn1: 'background: rgba(255,255,255,.08); border: 2px ridge #357; border-radius: 4px; margin: .2rem .1rem 0; padding: 0 .2rem',
-		}
 		var html =
 		'<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
@@ -103,21 +122,20 @@ var bar;
 			'<i id="close-menu-character-stats" class="close-menu fa fa-times"></i>' +
 		'</div>' +
 		// race class level guild
-		'<div class="text-center" style="font-size: .8rem; color: #ffd700">' +
+		'<div class="text-center" style="font-size: .8rem; line-height: 1.2; color: #ffd700">' +
 			'<div>Level '+ my.level +' '+ my.race +' '+ my.jobLong +'</div>' +
 			getPlayerGuildDescription() +
 		'</div>' +
 		'<div id="inv-wrap">'+
-			'<div class="flex-column flex-max" style="align-items: center">'+
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-			'</div>' +
-			'<div id="inv-column-avatar">'+
-				'<div id="inv-avatar-wrap">' +
+			'<div class="inv-column-items flex-column flex-max">';
+			for (var i=0; i<=5; i++) {
+				html += '<div class="item-slot-wrap '+ getInvItemBorderClass(i) +'">' +
+					'<img src="images/items/'+ getInvItemImage(i) +'.png" class="inv-item">' +
+				'</div>';
+			}
+			html += '</div>' +
+			'<div id="inv-column-avatar" class="bg-dark-' + my.job + '">'+
+				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
 					'<div id="inv-resist-wrap" class="text-shadow">'+
 						'<div class="inv-resist-icon flex-center" style="background: #500">' + my.resistBlood + '</div>' +
 						'<div class="inv-resist-icon flex-center" style="background: #090">' + my.resistPoison + '</div>' +
@@ -131,65 +149,98 @@ var bar;
 				'<div class="flex" style="font-size: .8rem">'+
 					'<div class="flex-column flex-max" style="'+ css.invStatColumn1 +'">'+
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Armor:</div><div>'+ my.armor +'</div>' +
+							'<div style="color: gold">Armor:</div><div>'+ stat.armor() +'</div>' +
 						'</div>' +
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Strength:</div><div>'+ stat.getAttr('str') +'</div>' +
+							'<div style="color: gold">Strength:</div><div>'+ stat.str() +'</div>' +
 						'</div>' +
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Stamina:</div><div>'+ stat.getAttr('sta') +'</div>' +
+							'<div style="color: gold">Stamina:</div><div>'+ stat.sta() +'</div>' +
 						'</div>' +
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Agility:</div><div>'+ stat.getAttr('agi') +'</div>' +
+							'<div style="color: gold">Agility:</div><div>'+ stat.agi() +'</div>' +
 						'</div>' +
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Dexterity:</div><div>'+ stat.getAttr('dex') +'</div>' +
+							'<div style="color: gold">Dexterity:</div><div>'+ stat.dex() +'</div>' +
 						'</div>' +
 					'</div>' +
 					'<div class="flex-column flex-max" style="'+ css.invStatColumn1 +'">' +
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Attack:</div><div>'+ my.attack +'</div>' +
+							'<div style="color: gold">Attack:</div><div>'+ stat.attack() +'</div>' +
 						'</div>' +
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Damage:</div><div>'+ my.damage +'</div>' +
+							'<div style="color: gold">Damage:</div><div>'+ stat.damageString(stat.damage()) +'</div>' +
 						'</div>' +
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Wisdom:</div><div>'+ stat.getAttr('wis') +'</div>' +
+							'<div style="color: gold">Wisdom:</div><div>'+ stat.wis() +'</div>' +
 						'</div>' +
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Intelligence:</div><div>'+ stat.getAttr('intel') +'</div>' +
+							'<div style="color: gold">Intelligence:</div><div>'+ stat.intel() +'</div>' +
 						'</div>' +
 						'<div class="flex space-between">' +
-							'<div style="color: gold">Charisma:</div><div>'+ stat.getAttr('cha') +'</div>' +
+							'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
 			'</div>' +
-			'<div class="flex-column flex-max" style="align-items: center">'+
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-				'<div class="item-slot-wrap"></div>' +
-			'</div>' +
+			'<div class="inv-column-items flex-column flex-max">';
+			for (var i=6; i<=11; i++) {
+				html += '<div class="item-slot-wrap '+ getInvItemBorderClass(i) +'">' +
+					'<img src="images/items/'+ getInvItemImage(i) +'.png" class="inv-item">' +
+				'</div>';
+			}
+			html += '</div>' +
 		'</div>' +
-		'<div class="flex" style="transform: translateY(.3rem); justify-content: center">' +
-			'<div class="item-slot-wrap"></div>' +
-			'<div class="item-slot-wrap"></div>' +
-			'<div class="item-slot-wrap"></div>' +
-		'</div>'
-
-
-		;
-		return html
+		'<div class="inv-row-items flex" style="'+ css.statFooter +'">';
+		for (var i=12; i<=14; i++) {
+			html += '<div class="item-slot-wrap '+ getInvItemBorderClass(i) +'">' +
+				'<img src="images/items/'+ getInvItemImage(i) +'.png" class="inv-item">' +
+			'</div>';
+		}
+		html += '</div>'
+		;return html
 	}
+
 	function getPlayerGuildDescription() {
-		var html = ''
+		var html = '<div>&nbsp;</div>'
 		if (my.guild.name) {
 			html = 'Guild ' + guild.ranks[my.guild.rank] + ' of ' + my.guild.name
 		}
 		return html
+	}
+
+	function setDefaultInvWeaponImage() {
+		if (my.jobLong === 'Ranger') {
+			bar.defaultImage[12] = 'bows0'
+		}
+		else if (my.jobLong === 'Warrior' ||
+			my.jobLong === 'Paladin' ||
+			my.jobLong === 'Shadow Knight') {
+			bar.defaultImage[12] = 'oneHandSlashers0'
+		}
+		else if (my.jobLong === 'Rogue' ||
+			my.jobLong === 'Necromancer' ||
+			my.jobLong === 'Enchanter' ||
+			my.jobLong === 'Magician' ||
+			my.jobLong === 'Wizard') {
+			bar.defaultImage[12] = 'piercers0'
+		}
+	}
+
+	function getInvItemImage(slot) {
+		var resp = bar.defaultImage[slot]
+		if (eq[slot].name && eq[slot].itemType) {
+			resp = eq[slot].itemType + eq[slot].imgIndex
+		}
+		return resp
+	}
+
+	function getInvItemBorderClass(slot) {
+		var resp = 'inv-item-type-none'
+		if (eq[slot].name && eq[slot].rarity) {
+			resp = 'inv-item-type-' + eq[slot].rarity
+		}
+		return resp
 	}
 
 
@@ -294,7 +345,7 @@ var bar;
 		// bars
 		'<div class="'+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'">' +
 			'<i id="bar-is-leader-'+ index +'" class="ra ra-crown bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></i>' +
-			'<div id="bar-name-'+ index +'" class="bar-hp-name">'+ (player.name || '') +'</div>' +
+			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis">'+ (player.name || '') +'</div>' +
 			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-hp-fg-'+ index +'" class="bar-hp-fg"></div>' +
 				//'<div id="bar-hp-bg-'+ i +'" class="bar-any-bg"></div>' +

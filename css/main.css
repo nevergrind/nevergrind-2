@@ -1041,7 +1041,7 @@ tbody {
 }
 
 .chat-join {
-	cursor: url('cursor/pointer.cur'), pointer
+	cursor: url('cursor/pointer.cur'), pointer;
 }
 
 .chat-hidden {
@@ -1057,61 +1057,50 @@ tbody {
 
 /* chat class colors */
 
-.chat-WAR {
-	color: #a73;
-}
+.chat-WAR { color: #a73; }
+.chat-ROG { color: #888; }
+.chat-MNK { color: #f85; }
+.chat-PLD { color: #c5e; }
+.chat-SHD { color: #f0f; }
+.chat-RNG { color: #090; }
+.chat-BRD { color: #7ff; }
+.chat-DRU { color: #8f0; }
+.chat-CLR { color: #ff5; }
+.chat-SHM { color: #08f; }
+.chat-NEC { color: #84f; }
+.chat-ENC { color: #0df; }
+.chat-MAG { color: #f90; }
+.chat-WIZ { color: #f22; }
 
-.chat-ROG {
-	color: #888;
-}
+.bg-WAR { background: #a736; }
+.bg-ROG { background: #8886; }
+.bg-MNK { background: #f856; }
+.bg-PLD { background: #c5e6; }
+.bg-SHD { background: #f0f6; }
+.bg-RNG { background: #0906; }
+.bg-BRD { background: #7ff6; }
+.bg-DRU { background: #8f06; }
+.bg-CLR { background: #ff56; }
+.bg-SHM { background: #08f6; }
+.bg-NEC { background: #84f6; }
+.bg-ENC { background: #0df6; }
+.bg-MAG { background: #f906; }
+.bg-WIZ { background: #f226; }
 
-.chat-MNK {
-	color: #f85;
-}
-
-.chat-PLD {
-	color: #c5e;
-}
-
-.chat-SHD {
-	color: #f0f;
-}
-
-.chat-RNG {
-	color: #090;
-}
-
-.chat-BRD {
-	color: #7ff;
-}
-
-.chat-DRU {
-	color: #8f0;
-}
-
-.chat-CLR {
-	color: #ff5;
-}
-
-.chat-SHM {
-	color: #08f;
-}
-
-.chat-NEC {
-	color: #84f;
-}
-
-.chat-ENC {
-	color: #0df;
-}
-
-.chat-MAG {
-	color: #f90;
-}
-
-.chat-WIZ {
-	color: #f22;
-}
+.bg-dark-WAR { background: #a732; }
+.bg-dark-ROG { background: #8882; }
+.bg-dark-MNK { background: #f852; }
+.bg-dark-PLD { background: #c5e2; }
+.bg-dark-SHD { background: #f0f2; }
+.bg-dark-RNG { background: #0902; }
+.bg-dark-BRD { background: #7ff2; }
+.bg-dark-DRU { background: #8f02; }
+.bg-dark-CLR { background: #ff52; }
+.bg-dark-SHM { background: #08f2; }
+.bg-dark-NEC { background: #84f2; }
+.bg-dark-ENC { background: #0df2; }
+.bg-dark-MAG { background: #f902; }
+.bg-dark-WIZ { background: #f222; }
 
 /* webkit scrollbar */
 /*
@@ -2190,7 +2179,7 @@ background-clip: content-box;
 }
 .close-menu {
 	background: #611;
-	transition: color .3s ease;
+	transition: color .12s ease-out, background .12s ease-out;
 	color: #fdd700;
 	padding: .1rem .2rem;
 	border: 2px ridge #777;
@@ -2201,6 +2190,7 @@ background-clip: content-box;
 
 .close-menu:hover {
 	cursor: url('cursor/pointer.cur'), pointer;
+	background: #811;
 	color: #ff0 !important;
 }
 .grad-blue-center {
@@ -2213,6 +2203,16 @@ background-clip: content-box;
 #inv-wrap {
 	display: flex;
 	flex-wrap: nowrap;
+	flex: 1;
+}
+.inv-column-items {
+	align-items: center;
+}
+.inv-column-items .item-slot-wrap ~ .item-slot-wrap {
+	margin-top: .2rem;
+}
+.inv-row-items .item-slot-wrap ~ .item-slot-wrap {
+	margin-left: .2rem;
 }
 #inv-column-avatar {
 	position: relative;
@@ -2220,12 +2220,14 @@ background-clip: content-box;
 	border-radius: 4px;
 	box-shadow: 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
 	padding: 0 .1rem;
+	margin-bottom: 1.6rem;
 }
 .item-slot-wrap {
 	width: 3.2rem;
 	height: 3.2rem;
 	border: 2px ridge #136;
 	border-radius: 4px;
+	background: #0a0a0a;
 }
 .item-slot {
 	box-shadow: 0 1px #048 inset, -1px 0 #048 inset, 1px 0 #048 inset, 0 -1px #048 inset;
@@ -2255,4 +2257,13 @@ background-clip: content-box;
 	border: 2px ridge #136;
 	box-shadow: 0 1px #048 inset, -1px 0 #048 inset, 1px 0 #048 inset, 0 -1px #048 inset;
 	border-radius: 4px;
+}
+.inv-item  {
+	width: 3.2rem;
+	height: 3.2rem;
+	cursor: url('cursor/pointer.cur'), pointer;
+}
+.inv-item-type-none {
+	pointer-events: none;
+	filter: brightness(33%) grayscale(1);
 }

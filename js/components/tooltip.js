@@ -62,6 +62,8 @@ var tooltip;
 	}
 	function getItemHtml(obj) {
 		var html = ''
+		var divider = '<hr class="fancy-hr" style="margin: .2rem 0">'
+		var statHtml = ''
 		html +=
 			'<div style="margin: 2px; border: 2px ridge #048; padding: 2px; border-radius: 4px">' +
 			'<div class="flex" style="border: 2px ridge #013; margin-bottom: 2px">' +
@@ -86,9 +88,9 @@ var tooltip;
 				getItemSlot(obj.slots) +
 				(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
 				getDurabilityHtml(obj.durability) +
-			'</div>' +
-			'<hr class="fancy-hr" style="margin: .2rem 0">' +
-			'<div style="padding: .2rem">' +
+			'</div>';
+
+			statHtml += '<div style="padding: .2rem">' +
 				// block
 				getBlockChance(obj.blockRate + (obj.increasedBlock ? obj.increasedBlock : 0)) +
 				getGenericPercentStatHtml(obj.increasedBlock, 'Increased Block Rate') +
@@ -199,8 +201,13 @@ var tooltip;
 				getPropHtml(obj.hpKill, '+' + obj.hpKill + ' Health on Kill') +
 				getPropHtml(obj.mpKill, '+' + obj.mpKill + ' Mana on Kill') +
 				getPropHtml(obj.spKill, '+' + obj.spKill + ' Spirit on Kill') +
-			'</div>' +
-			'</div>' +
+			'</div>';
+			if (statHtml.includes('item-magic')) {
+				// found at least one stat added to html str
+				html += divider;
+			}
+			html += statHtml +
+				'</div>' +
 			'</div>' +
 		'';
 

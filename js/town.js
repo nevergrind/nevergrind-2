@@ -86,6 +86,7 @@ var town;
 				my.jobLong = ng.toJobLong(my.job)
 				my.avatar = my.getAvatarUrl()
 				Object.assign(my, my.getResistObject())
+				bar.setDefaultInvWeaponImage()
 
 				guild.setGuildData(data)
 

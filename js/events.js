@@ -190,7 +190,6 @@
 				}
 				else {
 					// always works town, dungeon and combat (non-focused)
-					console.info('we are in here', key, code)
 					if (key === 'c') bar.toggleCharacterStats()
 					else if (key === 'i') bar.toggleInventory()
 					else if (key === ' ') bar.closeAllWindows()
@@ -202,7 +201,6 @@
 					if (!chat.hasFocus) {
 						// if no aside, focus on chat input first
 						!town.asideSelected && _.includes(chat.focusKeys, key) && chat.dom.chatInput.focus();
-						console.info('here i am', key)
 
 						if (guild.hasFocus && key === 'Enter') {
 							guild.create();
