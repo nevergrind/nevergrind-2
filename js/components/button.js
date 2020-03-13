@@ -14,7 +14,9 @@ var button;
 			s +=
 			'<div id="class-btn-'+ i +'" '+
 				'class="class-btn" '+
-				'style="background-image: url(images/skills/'+ my.job +'.png)"></div>';
+				'style="background-image: url(images/skills/'+ my.job +'.png)">' +
+				'<div id="class-btn-timer-'+ i +'" class="no-pointer class-btn-timer"></div>'+
+			'</div>';
 		}
 		button.wrap.innerHTML = s;
 		if (!button.initialized) {

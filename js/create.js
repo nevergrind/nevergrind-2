@@ -303,7 +303,7 @@ var create;
 	function getResist(type, obj) {
 		// gender and race
 		var v = 15
-		var {gender: gender, race: race} = obj
+		var {gender, race} = obj
 		if (typeof gender === 'number') gender = gender ? 'Female' : 'Male' // normalize to string
 
 		console.info('obj gender', gender, race)

@@ -129,13 +129,12 @@ var bar;
 		'<div id="inv-wrap">'+
 			'<div class="inv-column-items flex-column flex-max">';
 			for (var i=0; i<=5; i++) {
-				html += '<div class="item-slot-wrap '+ getInvItemBorderClass(i) +'">' +
-					'<img src="images/items/'+ getInvItemImage(i) +'.png" class="inv-item">' +
-				'</div>';
+				html += getItemSlotHtml('eq', i)
 			}
 			html += '</div>' +
 			'<div id="inv-column-avatar" class="bg-dark-' + my.job + '">'+
 				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
+					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 					'<div id="inv-resist-wrap" class="text-shadow">'+
 						'<div class="inv-resist-icon flex-center" style="background: #500">' + my.resistBlood + '</div>' +
 						'<div class="inv-resist-icon flex-center" style="background: #090">' + my.resistPoison + '</div>' +
@@ -144,7 +143,6 @@ var bar;
 						'<div class="inv-resist-icon flex-center" style="background: #840">' + my.resistFire + '</div>' +
 						'<div class="inv-resist-icon flex-center" style="background: #28c">' + my.resistIce + '</div>' +
 					'</div>' +
-					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 				'</div>' +
 				'<div class="flex" style="font-size: .8rem">'+
 					'<div class="flex-column flex-max" style="'+ css.invStatColumn1 +'">'+
@@ -185,17 +183,13 @@ var bar;
 			'</div>' +
 			'<div class="inv-column-items flex-column flex-max">';
 			for (var i=6; i<=11; i++) {
-				html += '<div class="item-slot-wrap '+ getInvItemBorderClass(i) +'">' +
-					'<img src="images/items/'+ getInvItemImage(i) +'.png" class="inv-item">' +
-				'</div>';
+				html += getItemSlotHtml('eq', i)
 			}
 			html += '</div>' +
 		'</div>' +
 		'<div class="inv-row-items flex" style="'+ css.statFooter +'">';
 		for (var i=12; i<=14; i++) {
-			html += '<div class="item-slot-wrap '+ getInvItemBorderClass(i) +'">' +
-				'<img src="images/items/'+ getInvItemImage(i) +'.png" class="inv-item">' +
-			'</div>';
+			html += getItemSlotHtml('eq', i)
 		}
 		html += '</div>'
 		;return html
@@ -225,6 +219,13 @@ var bar;
 			my.jobLong === 'Wizard') {
 			bar.defaultImage[12] = 'piercers0'
 		}
+	}
+
+	function getItemSlotHtml(type, i) {
+		return '<div class="item-slot-wrap '+ getInvItemBorderClass(i) +'">' +
+					'<img data-index="'+ i +'" data-type="'+ type +'" src="images/items/'+ getInvItemImage(i) +'.png" class="inv-item">' +
+				'</div>';
+
 	}
 
 	function getInvItemImage(slot) {

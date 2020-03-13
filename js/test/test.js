@@ -1,5 +1,5 @@
 var test;
-(function() {
+(function(Linear, TweenMax, undefined) {
 	var c;
 	var i;
 	var e;
@@ -37,6 +37,7 @@ var test;
 		socketSub,
 		socketPub,
 		getItem,
+		animateBtn,
 	}
 	///////////////////////////////////
 	function battle() {
@@ -45,7 +46,7 @@ var test;
 		for (var i=0; i<mob.max; i++){
 			if (singleMob && i === 2 || !singleMob) {
 				mobKey = mob.getRandomMobKey();
-				mobKey = 'toadlok';
+				mobKey = 'angler';
 				cache.preloadMob(mobKey);
 				mob.setMob(i, mobKey);
 			}
@@ -165,11 +166,30 @@ var test;
 			itemSlot: itemSlot,
 			itemName: itemName,
 		})
-
-		_.each(drop, function(val, key) {
-			//console.info('prop', key, val)
-		})
 		tooltip.show(drop)
 		return drop
 	}
-})();
+	function animateBtn() {
+		for (var i=0; i<=9; i++) {
+			startSpin(i);
+		}
+		////////////////
+		function startSpin(i) {
+			var o = {
+				el: document.getElementById('class-btn-timer-' + i),
+				turn: 0
+			};
+			TweenMax.to(o, 5, {
+				turn: 1,
+				onUpdate: colorize,
+				onUpdateParams: [ o ],
+				ease: Linear.easeNone
+			});
+		}
+		function colorize(o) {
+			TweenMax.set(o.el, {
+				background: 'conic-gradient(#0000 ' + o.turn + 'turn, #000e ' + o.turn + 'turn)'
+			});
+		}
+	}
+})(Linear, TweenMax);

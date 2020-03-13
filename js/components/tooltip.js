@@ -1,11 +1,13 @@
 var tooltip;
-(function() {
+(function($, parseInt, TweenMax) {
 	tooltip = {
 		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
 		hide,
 		show,
+		handleItemEnter,
+		handleItemLeave,
 	};
 	var el;
 	var wearsLeather = [
@@ -36,23 +38,16 @@ var tooltip;
 		'SHD',
 		'WAR',
 	]
-	var weaponTypes = {
-		oneHandSlashers: 'Sword',
-		oneHandBlunts: 'Mace',
-		piercers: 'Dagger',
-		twoHandSlashers: 'Giant Sword',
-		twoHandBlunts: 'Giant Mace',
-		staves: 'Staff',
-		bows: 'Bow',
-		focus: 'Focus',
-	}
+	$('body').on('mouseenter', '.inv-item', handleItemEnter)
+		.on('mouseleave', '.inv-item', handleItemLeave)
 	//////////////////////////////////////////////////
+
 	function show(obj) {
 		if (!_.size(obj)) return
 		el = getById('tooltip-wrap')
 		el.innerHTML = getItemHtml(obj)
-		//e.style.top = posY() + 'px'
-		//e.style.left = posX() + 'px'
+		//el.style.top = posY() + 'px'
+		//el.style.left = posX() + 'px'
 		el.style.visibility = 'visible'
 		tooltip.isOpen = 1
 		tooltip.openDate = Date.now()
@@ -396,4 +391,27 @@ var tooltip;
 		var yAdjust = isMenuAbove ? verticalOffset : (~~$("#context-wrap").height() + verticalOffset) * -1;
 		return my.mouse.y + yAdjust;
 	}
-})();
+	function handleItemEnter(event) {
+		var index = event.currentTarget.dataset.index * 1;
+		var type = event.currentTarget.dataset.type;
+		if (type === 'eq') {
+			if (eq[index].name) {
+				tooltip.show(eq[index])
+			}
+		}
+		else if (type === 'item') {
+			if (item[index].name) {
+				tooltip.show(item[index])
+			}
+		}
+		else if (type === 'bank') {
+			if (bank[index].name) {
+				tooltip.show(bank[index])
+			}
+		}
+	}
+	function handleItemLeave(event) {
+		console.info('event', event);
+		tooltip.hide()
+	}
+})($, parseInt, TweenMax);

@@ -1087,20 +1087,22 @@ tbody {
 .bg-MAG { background: #f906; }
 .bg-WIZ { background: #f226; }
 
-.bg-dark-WAR { background: #a732; }
-.bg-dark-ROG { background: #8882; }
-.bg-dark-MNK { background: #f852; }
-.bg-dark-PLD { background: #c5e2; }
-.bg-dark-SHD { background: #f0f2; }
-.bg-dark-RNG { background: #0902; }
-.bg-dark-BRD { background: #7ff2; }
-.bg-dark-DRU { background: #8f02; }
-.bg-dark-CLR { background: #ff52; }
-.bg-dark-SHM { background: #08f2; }
-.bg-dark-NEC { background: #84f2; }
-.bg-dark-ENC { background: #0df2; }
-.bg-dark-MAG { background: #f902; }
-.bg-dark-WIZ { background: #f222; }
+
+.bg-dark-WAR { background: #a733; }
+.bg-dark-ROG { background: #8883; }
+.bg-dark-MNK { background: #f853; }
+.bg-dark-PLD { background: #c5e3; }
+.bg-dark-SHD { background: #f0f3; }
+.bg-dark-RNG { background: #0903; }
+.bg-dark-BRD { background: #7ff3; }
+.bg-dark-DRU { background: #8f03; }
+.bg-dark-CLR { background: #ff53; }
+.bg-dark-SHM { background: #08f3; }
+.bg-dark-NEC { background: #84f3; }
+.bg-dark-ENC { background: #0df3; }
+.bg-dark-MAG { background: #f903; }
+.bg-dark-WIZ { background: #f223; }
+
 
 /* webkit scrollbar */
 /*
@@ -1722,12 +1724,24 @@ background-clip: content-box;
 }
 
 .class-btn {
+	position: relative;
 	border: .1rem outset #013;
 	background-size: 61.2rem 13.6rem; /* convert via 3.4 * number of buttons?? */
 	flex: 1;
 	cursor: url('cursor/pointer.cur'), pointer;
-	transition: border .1s linear;
 }
+.class-btn-timer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+/*
+background: conic-gradient(#0000 .25turn, #000c .25turn);
+background: conic-gradient(#0000 .25turn, #000f .25turn .5turn, #0000 0.5turn .75turn, #000f .75turn) top left / 20% 20% repeat;
+background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
+*/
 
 .class-btn:hover {
 	border: .1rem groove #048;
@@ -2147,6 +2161,7 @@ background-clip: content-box;
 	width: 23rem;
 	border: 2px ridge #1a1a1a;
 	background: #013;
+	overflow: hidden;
 }
 #inventory-wrap {
 	display: none;
@@ -2234,12 +2249,14 @@ background-clip: content-box;
 	border-radius: 4px;
 }
 #inv-avatar-wrap {
+	position: relative;
 	display: flex;
 	justify-content: center;
 }
 #inv-avatar-img {
 	width: 15rem;
 	border-radius: 4px;
+	z-index: 1;
 }
 #inv-resist-wrap {
 	position: absolute;
@@ -2248,6 +2265,7 @@ background-clip: content-box;
 	display: flex;
 	flex-direction: column;
 	border-radius: 4px;
+	z-index: 1;
 }
 .inv-resist-icon {
 	display: flex;
