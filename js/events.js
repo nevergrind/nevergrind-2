@@ -27,7 +27,9 @@
 			.on('click', '#toast-decline', toast.decline)
 			.on('focus', 'input', chatInputFocus)
 			.on('blur', 'input', chatInputBlur)
-			.on('click', '.close-menu', bar.handleCloseMenu);
+			.on('click', '.close-menu', bar.handleCloseMenu)
+			.on('mouseenter', '.item-slot', tooltip.handleItemEnter)
+			.on('mouseleave', '.item-slot', tooltip.hide)
 	}
 	function chatInputFocus() {
 		chat.hasFocus = 1;
@@ -88,20 +90,14 @@
 		key = e.key;
 
 		ng.lastKey = key;
-
+		console.info('key: ', key)
 		// local only
 		if (!app.isApp) {
 			if (!chat.hasFocus && ng.view !== 'title') {
 				// key input view router
-				if (key === 'b') {
-					battle.go();
-				}
-				else if (key === 't') {
-					town.go();
-				}
-				else if (key === 'd') {
-					dungeon.go();
-				}
+				if (key === 'PageDown') battle.go()
+				else if (key === 'Home') town.go()
+				else if (key === 'PageUp') dungeon.go()
 			}
 		}
 		else {
@@ -191,7 +187,7 @@
 				else {
 					// always works town, dungeon and combat (non-focused)
 					if (key === 'c') bar.toggleCharacterStats()
-					else if (key === 'i') bar.toggleInventory()
+					else if (key === 'b') bar.toggleInventory()
 					else if (key === ' ') bar.closeAllWindows()
 
 				}

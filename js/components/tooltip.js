@@ -7,7 +7,6 @@ var tooltip;
 		hide,
 		show,
 		handleItemEnter,
-		handleItemLeave,
 	};
 	var el;
 	var wearsLeather = [
@@ -38,8 +37,6 @@ var tooltip;
 		'SHD',
 		'WAR',
 	]
-	$('body').on('mouseenter', '.inv-item', handleItemEnter)
-		.on('mouseleave', '.inv-item', handleItemLeave)
 	//////////////////////////////////////////////////
 
 	function show(obj) {
@@ -51,9 +48,19 @@ var tooltip;
 		el.style.visibility = 'visible'
 		tooltip.isOpen = 1
 		tooltip.openDate = Date.now()
-		TweenMax.to(el, .3, {
+		TweenMax.to(el, .2, {
 			opacity: 1,
 		})
+	}
+	function hide() {
+		el = getById('tooltip-wrap');
+		TweenMax.to(el, .1, {
+			opacity: 0,
+			onComplete: function() {
+				el.style.visibility = 'hidden';
+				tooltip.isOpen = 0;
+			}
+		});
 	}
 	function getItemHtml(obj) {
 		var html = ''
@@ -352,16 +359,6 @@ var tooltip;
 			}
 		}
 	}
-	function hide() {
-		el = getById('tooltip-wrap');
-		TweenMax.to(el, .2, {
-			opacity: 0,
-			onComplete: function() {
-				el.style.visibility = 'hidden';
-				tooltip.isOpen = 0;
-			}
-		});
-	}
 	function posX() {
 		var el = $('#tooltip-wrap');
 		var padding = parseInt(el.css('padding-left'), 10) * 2;
@@ -392,16 +389,17 @@ var tooltip;
 		return my.mouse.y + yAdjust;
 	}
 	function handleItemEnter(event) {
-		var index = event.currentTarget.dataset.index * 1;
-		var type = event.currentTarget.dataset.type;
+		var {index, type} = _.pick(event.currentTarget.dataset, [
+			'index', 'type'
+		])
 		if (type === 'eq') {
 			if (eq[index].name) {
 				tooltip.show(eq[index])
 			}
 		}
-		else if (type === 'item') {
-			if (item[index].name) {
-				tooltip.show(item[index])
+		else if (type === 'inv') {
+			if (inv[index].name) {
+				tooltip.show(inv[index])
 			}
 		}
 		else if (type === 'bank') {
@@ -409,9 +407,5 @@ var tooltip;
 				tooltip.show(bank[index])
 			}
 		}
-	}
-	function handleItemLeave(event) {
-		console.info('event', event);
-		tooltip.hide()
 	}
 })($, parseInt, TweenMax);

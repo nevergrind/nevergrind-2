@@ -47,13 +47,6 @@ var bar;
 		'chat-warning',
 		'chat-alert'
 	];
-	var css = {
-		header: 'padding: 1px; text-align: center',
-		nameWrap: 'border: 1px solid #048',
-		name: 'flex: 1; border: 2px ridge #357',
-		invStatColumn1: 'background: rgba(0,0,0,.5); border: 2px ridge #357; border-radius: 4px; margin: .2rem .1rem 0; padding: 0 .2rem',
-		statFooter: 'position: absolute; z-index: 1; bottom: 0rem; right: 0; left: 0; margin: 0 auto; transform: translate(0%,-.2rem); justify-content: center',
-	}
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
@@ -72,7 +65,8 @@ var bar;
 
 			bar.dom.lag = getById('bar-lag')
 			bar.dom.character = getById('bar-window-character')
-			bar.dom.inventory = getById('inventory-wrap')
+			bar.dom.inventory = getById('inventory')
+			bar.dom.inventoryWrap = getById('inventory-wrap')
 			// draw all bars
 			// bar events
 			$("#bar-wrap")
@@ -119,7 +113,7 @@ var bar;
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">' + my.name + '</div>' +
 			'</div>' +
-			'<i id="close-menu-character-stats" class="close-menu fa fa-times"></i>' +
+			'<i data-id="character-stats" class="close-menu fa fa-times"></i>' +
 		'</div>' +
 		// race class level guild
 		'<div class="text-center" style="font-size: .8rem; line-height: 1.2; color: #ffd700">' +
@@ -145,7 +139,7 @@ var bar;
 					'</div>' +
 				'</div>' +
 				'<div class="flex" style="font-size: .8rem">'+
-					'<div class="flex-column flex-max" style="'+ css.invStatColumn1 +'">'+
+					'<div class="flex-column flex-max" style="'+ css.invStatColumn +'">'+
 						'<div class="flex space-between">' +
 							'<div style="color: gold">Armor:</div><div>'+ stat.armor() +'</div>' +
 						'</div>' +
@@ -162,7 +156,7 @@ var bar;
 							'<div style="color: gold">Dexterity:</div><div>'+ stat.dex() +'</div>' +
 						'</div>' +
 					'</div>' +
-					'<div class="flex-column flex-max" style="'+ css.invStatColumn1 +'">' +
+					'<div class="flex-column flex-max" style="'+ css.invStatColumn +'">' +
 						'<div class="flex space-between">' +
 							'<div style="color: gold">Attack:</div><div>'+ stat.attack() +'</div>' +
 						'</div>' +
@@ -222,24 +216,50 @@ var bar;
 	}
 
 	function getItemSlotHtml(type, i) {
-		return '<div class="item-slot-wrap '+ getInvItemBorderClass(i) +'">' +
-					'<img data-index="'+ i +'" data-type="'+ type +'" src="images/items/'+ getInvItemImage(i) +'.png" class="inv-item">' +
+		return '<div class="item-slot-wrap '+ getInvItemBorderClass(type, i) +'">' +
+					'<img data-index="'+ i +'" data-type="'+ type +'" src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot">' +
 				'</div>';
-
 	}
 
-	function getInvItemImage(slot) {
-		var resp = bar.defaultImage[slot]
-		if (eq[slot].name && eq[slot].itemType) {
-			resp = eq[slot].itemType + eq[slot].imgIndex
+	function getItemSlotImage(type, slot) {
+		var resp
+		if (type === 'eq') {
+			resp = bar.defaultImage[slot]
+			if (eq[slot].name && eq[slot].itemType) {
+				resp = eq[slot].itemType + eq[slot].imgIndex
+			}
+		}
+		else {
+			resp = 'item-bg-1'
+			if (type === 'inv') {
+				console.info(slot, inv[slot].name, inv[slot].itemType)
+				if (inv[slot].name && inv[slot].itemType) {
+					resp = inv[slot].itemType + inv[slot].imgIndex
+				}
+			}
+			else if (type === 'bank') {
+
+			}
 		}
 		return resp
 	}
 
-	function getInvItemBorderClass(slot) {
-		var resp = 'inv-item-type-none'
-		if (eq[slot].name && eq[slot].rarity) {
-			resp = 'inv-item-type-' + eq[slot].rarity
+	function getInvItemBorderClass(type, slot) {
+		var resp = 'item-slot-type-none'
+		if (type === 'eq') {
+			if (eq[slot].name && eq[slot].rarity) {
+				resp = 'item-slot-type-' + eq[slot].rarity
+			}
+		}
+		else if (type === 'inv') {
+			if (inv[slot].name && inv[slot].rarity) {
+				resp = 'item-slot-type-' + inv[slot].rarity
+			}
+		}
+		else if (type === 'bank') {
+			if (bank[slot].name && bank[slot].rarity) {
+				resp = 'item-slot-type-' + bank[slot].rarity
+			}
 		}
 		return resp
 	}
@@ -251,9 +271,41 @@ var bar;
 		setInventoryDOM();
 	}
 
+	function getInventoryHtml() {
+		var i = 0
+		var html =
+		'<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">Inventory</div>' +
+			'</div>' +
+			'<i data-id="inventory" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		'<div id="inventory-slot-wrap">' +
+		'<div class="inventory-slot-row">';
+		for (; i<=2; i++) {
+			html += getItemSlotHtml('inv', i)
+		}
+		html += '</div><div class="inventory-slot-row">';
+		for (i=3; i<=5; i++) {
+			html += getItemSlotHtml('inv', i)
+		}
+		html += '</div><div class="inventory-slot-row">';
+		for (i=6; i<=8; i++) {
+			html += getItemSlotHtml('inv', i)
+		}
+		html += '</div><div class="inventory-slot-row">';
+		for (i=9; i<=11; i++) {
+			html += getItemSlotHtml('inv', i)
+		}
+		html += '</div>' +
+		'</div>';
+
+		return html
+	}
+
 	function setInventoryDOM() {
 		if (bar.windowsOpen.inventory) {
-			bar.dom.inventory.innerHTML = 'INVENTORY'
+			bar.dom.inventory.innerHTML = getInventoryHtml()
 			bar.dom.inventory.style.display = 'flex'
 		}
 		else {
@@ -280,7 +332,8 @@ var bar;
 	}
 
 	function handleCloseMenu(event) {
-		if (event.currentTarget.id === 'close-menu-character-stats') bar.toggleCharacterStats()
+		if (event.currentTarget.dataset.id === 'character-stats') bar.toggleCharacterStats()
+		else if (event.currentTarget.dataset.id === 'inventory') bar.toggleInventory()
 
 	}
 

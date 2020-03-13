@@ -103,6 +103,7 @@ function minifyJs() {
 		'skills',
 		'zone',
 		'stat',
+		'css',
 		'test/test',
 		'init',
 		'build/endWrap',

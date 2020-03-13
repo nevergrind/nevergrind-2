@@ -1390,58 +1390,6 @@ background-clip: content-box;
 	transform: translate(-50%, 0%);
 	background: radial-gradient(farthest-corner at 0% 0%, rgba(16, 32, 80, 1), rgba(0, 0, 0, 1));
 }
-/* tooltip - items & skills */
-#tooltip-wrap {
-	position: fixed;
-	visibility: hidden;
-	opacity: 0;
-	min-width: 16rem;
-	max-width: 18rem;
-	bottom: 50%;
-	right: 1rem;
-	font: .9rem/1.5 Play;
-	border: 2px ridge #136;
-	z-index: 2;
-	line-height: 1.2;
-	border-radius: 5px;
-	transform: translate(0%, 50%);
-	backdrop-filter: blur(5px);
-}
-#tooltip-item-img-bg {
-	border: 1px solid #048;
-	width: 3.2rem;
-	height: 3.2rem;
-	background: radial-gradient(closest-corner at 50% 50%, rgba(128, 160, 255, .3), rgba(0, 8, 24, 1));
-}
-#tooltip-name-bg {
-	width: 100%;
-	border: 1px solid #048;
-	padding: .1rem .3rem;
-	background-image: linear-gradient(to top,
-		rgba(128, 192, 255, .1),
-		rgba(0, 64, 128, 0),
-		rgba(128, 192, 255, .1));
-}
-#tooltip-item-stat-wrap {
-	background-image: linear-gradient(to right,
-		rgba(0, 0, 0, .1),
-		rgba(128, 192, 255, .1),
-		rgba(0, 0, 0, .1));
-}
-#tooltip-name {
-	font-size: 1rem;
-	line-height: 1.25;
-}
-#tooltip-hr {
-	width: 100%;
-	border: 0;
-	height: 2px;
-	margin: .2rem 0;
-	background-image: linear-gradient(to bottom,
-		rgba(0, 64, 128, 1),
-		rgba(128, 192, 255, 1)
-	);
-}
 
 .capitalize { text-transform: capitalize }
 .item-normal { color: #fff; }
@@ -2159,23 +2107,79 @@ background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
 	display: none;
 	height: 28rem;
 	width: 23rem;
-	border: 2px ridge #1a1a1a;
+	border: 2px ridge #136;
 	background: #013;
 	overflow: hidden;
 }
 #inventory-wrap {
-	display: none;
 	position: fixed;
-	flex-direction: column;
+	display: flex;
 	justify-content: flex-end;
 	align-items: flex-end;
-	bottom: 12rem;
-	right: 1rem;
-	width: 12rem;
+	bottom: 6rem;
+	right: .5rem;
 	height: auto;
-	background: #025;
 	z-index: 2;
-
+}
+#tooltip-wrap {
+	visibility: hidden;
+	opacity: 0;
+	min-width: 16rem;
+	max-width: 18rem;
+	font: .9rem/1.5 Play;
+	border: 2px ridge #136;
+	line-height: 1.2;
+	border-radius: 5px;
+	backdrop-filter: blur(5px);
+}
+#inventory {
+	display: none;
+	justify-content: flex-start;
+	background: #025;
+	margin-left: .5rem;
+	border: 2px ridge #136;
+}
+#inventory-slot-wrap {
+	border: 2px ridge #048;
+	margin: 2px;
+}
+.inventory-slot-row {
+	display: flex;
+}
+#tooltip-item-img-bg {
+	border: 1px solid #048;
+	width: 3.2rem;
+	height: 3.2rem;
+	background: radial-gradient(closest-corner at 50% 50%, rgba(128, 160, 255, .3), rgba(0, 8, 24, 1));
+}
+#tooltip-name-bg {
+	width: 100%;
+	border: 1px solid #048;
+	padding: .1rem .3rem;
+	background-image: linear-gradient(to top,
+		rgba(128, 192, 255, .1),
+		rgba(0, 64, 128, 0),
+		rgba(128, 192, 255, .1));
+}
+#tooltip-item-stat-wrap {
+	background-image: linear-gradient(to right,
+		rgba(0, 0, 0, .1),
+		rgba(128, 192, 255, .1),
+		rgba(0, 0, 0, .1));
+}
+#tooltip-name {
+	font-size: 1rem;
+	line-height: 1.25;
+}
+#tooltip-hr {
+	width: 100%;
+	border: 0;
+	height: 2px;
+	margin: .2rem 0;
+	background-image: linear-gradient(to bottom,
+		rgba(0, 64, 128, 1),
+		rgba(128, 192, 255, 1)
+	);
 }
 #options-wrap {
 	display: none;
@@ -2194,19 +2198,22 @@ background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
 }
 .close-menu {
 	background: #611;
-	transition: color .12s ease-out, background .12s ease-out;
 	color: #fdd700;
 	padding: .1rem .2rem;
 	border: 2px ridge #777;
 	outline: 1px solid #997;
 	margin: 1px;
 	font-size: 1.25rem;
+	transition: color .12s ease-out, background .12s ease-out;
 }
-
 .close-menu:hover {
 	cursor: url('cursor/pointer.cur'), pointer;
 	background: #811;
 	color: #ff0 !important;
+}
+.close-menu:active {
+	background: #a11;
+	transition: none;
 }
 .grad-blue-center {
 	background-image: linear-gradient(to top,
@@ -2228,6 +2235,9 @@ background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
 }
 .inv-row-items .item-slot-wrap ~ .item-slot-wrap {
 	margin-left: .2rem;
+}
+.inventory-slot-row .item-slot-wrap {
+	margin: 1px;
 }
 #inv-column-avatar {
 	position: relative;
@@ -2276,12 +2286,12 @@ background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
 	box-shadow: 0 1px #048 inset, -1px 0 #048 inset, 1px 0 #048 inset, 0 -1px #048 inset;
 	border-radius: 4px;
 }
-.inv-item  {
+.item-slot {
 	width: 3.2rem;
 	height: 3.2rem;
 	cursor: url('cursor/pointer.cur'), pointer;
 }
-.inv-item-type-none {
+.item-slot-type-none {
 	pointer-events: none;
 	filter: brightness(33%) grayscale(1);
 }
