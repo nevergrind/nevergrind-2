@@ -60,6 +60,9 @@ var bar;
 		handToHand: 'Hand-to-hand boosts the attack power of your fists in combat. Who needs fancy weapons when you have honed your very fists into martial weapons of death? Jab, hook, and uppercut your way to victory! Monks are renowned for their mastery of hand-to-hand combat.',
 		twoHandSlash: 'Two-hand slash boosts the attack power of all two-hand slash weapons like giant axes and bastard swords. Jump into the fray and cleave a path in front of you! Leave a trail of death in your wake!',
 		twoHandBlunt: 'Two-hand blunt boosts the attack power of all two-hand blunt weapons like staves, mauls, and sledgehammers. Whether you are wielding a wizard\'s staff or a warrior\'s mighty mallet, two-hand blunt helps give you the edge on the battlefield. As with all blunt weapons, two-hand blunt weapons are stronger against the undead.',
+		alteration: 'Alteration enhances the power of all alteration-based magic. Bend reality to your will by healing allies, summoning magical barriers, or fortifying your defenses.',
+		evocation: 'Evocation enhances the power of all evocation-based magic. Summon a fireball, lightning bolts, or even an impressive ice comet to destroy all who dare to oppose you!',
+		conjuration: 'Conjuration enhances the power of all conjuration-based magic. Why get your hands dirty when you can summon an ally to do the dirty work for you?! Summon a fire-breathing hydra to melt your enemies! Or summon an army of angry bees to seek and destroy! The only limit is your imagination!',
 
 	}
 	//////////////////////////////////////////////
@@ -109,7 +112,19 @@ var bar;
 	function toggleCharacterStats() {
 		bar.windowsOpen.character = !bar.windowsOpen.character
 		if (bar.windowsOpen.character) bar.activeTab = 'character'
+		if (tooltip.isHoveringEq) {
+			tooltip.hide()
+			tooltip.isHoveringEq = false
+		}
 		setCharacterDOM()
+	}
+
+	function setCharActiveTab(event) {
+		var id = event.currentTarget.dataset.id
+		if (bar.activeTab !== id) {
+			bar.activeTab = id
+			setCharacterDOM()
+		}
 	}
 
 	function setCharacterDOM() {
@@ -175,14 +190,6 @@ var bar;
 		}
 	}
 
-	function setCharActiveTab(event) {
-		var id = event.currentTarget.dataset.id
-		if (bar.activeTab !== id) {
-			bar.activeTab = id
-			setCharacterDOM()
-		}
-	}
-
 	function getItemSlotHtml(type, i) {
 		return '<div class="item-slot-wrap '+ getInvItemBorderClass(type, i) +'">' +
 					'<img data-index="'+ i +'" data-type="'+ type +'" src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot">' +
@@ -233,7 +240,11 @@ var bar;
 
 	function toggleInventory() {
 		// open all bags in the bottom-right corner
-		bar.windowsOpen.inventory = !bar.windowsOpen.inventory;
+		bar.windowsOpen.inventory = !bar.windowsOpen.inventory
+		if (tooltip.isHoveringInv) {
+			tooltip.hide()
+			tooltip.isHoveringInv = false
+		}
 		setInventoryDOM();
 	}
 
@@ -509,7 +520,6 @@ var bar;
 	}
 
 	function getPropSkillHtml(prop) {
-		console.info('prop', prop)
 		if (!my[prop]) return ''
 		var html =
 			'<div data-id="'+ prop +'" class="inv-skill-row">' +
@@ -532,7 +542,7 @@ var bar;
 			'<div id="inv-skill-description-head" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">Description</div>' +
 			'</div>' +
-			'<div id="inv-skill-description" class="flex-max"></div>' +
+			'<div id="inv-skill-description" class="flex-max stag-blue"></div>' +
 		'</div>'
 		return html
 	}

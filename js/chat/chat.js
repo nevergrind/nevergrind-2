@@ -227,7 +227,7 @@ var chat;
 				'<div '+ z +'>/gleader: Promote a guild member to leader: /gleader Bob</div>',
 				'<div '+ z +'>/gboot: Boot a member from the guild: /gboot Bob</div>',
 				'<div '+ z +'>/motd: Set a new message of the day: /motd message</div>',
-				'<div '+ z +'>/gdisband: Leave your guild: /gdisband</div>',
+				'<div '+ z +'>/gquit: Leave your guild: /gquit</div>',
 				'<div '+ h +'>Party Commands</div>',
 				'<div '+ z +'>/invite: Invite a player to your party : /invite Bob</div>',
 				'<div '+ z +'>/disband: Leave your party</div>',
@@ -286,7 +286,7 @@ var chat;
 		else if (msgLower.startsWith('/gboot')) {
 			guild.boot(party.parse(msg));
 		}
-		else if (msgLower === '/gdisband') {
+		else if (msgLower === '/gquit') {
 			guild.disband();
 		}
 		else if (msgLower.startsWith('/ginvite')) {

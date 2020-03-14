@@ -1,12 +1,16 @@
 var tooltip;
-(function($, parseInt, TweenMax) {
+(function($, parseInt, TweenMax, _, undefined) {
 	tooltip = {
 		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
+		isHoveringEq: false,
+		isHoveringInv: false,
+		isHoveringBank: false,
 		hide,
 		show,
 		handleItemEnter,
+		handleItemLeave,
 	};
 	var el;
 	var wearsLeather = [
@@ -393,11 +397,13 @@ var tooltip;
 			'index', 'type'
 		])
 		if (type === 'eq') {
+			tooltip.isHoveringEq = true;
 			if (eq[index].name) {
 				tooltip.show(eq[index])
 			}
 		}
 		else if (type === 'inv') {
+			tooltip.isHoveringInv = true;
 			if (inv[index].name) {
 				tooltip.show(inv[index])
 			}
@@ -408,4 +414,19 @@ var tooltip;
 			}
 		}
 	}
-})($, parseInt, TweenMax);
+	function handleItemLeave(event) {
+		var {index, type} = _.pick(event.currentTarget.dataset, [
+			'index', 'type'
+		])
+		if (type === 'eq') {
+			tooltip.isHoveringEq = false
+		}
+		else if (type === 'inv') {
+			tooltip.isHoveringInv = false
+		}
+		else if (type === 'eq') {
+			tooltip.isHoveringBank = false
+		}
+		tooltip.hide()
+	}
+})($, parseInt, TweenMax, _);

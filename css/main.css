@@ -1693,6 +1693,22 @@ background-clip: content-box;
 background: conic-gradient(#0000 .25turn, #000c .25turn);
 background: conic-gradient(#0000 .25turn, #000f .25turn .5turn, #0000 0.5turn .75turn, #000f .75turn) top left / 20% 20% repeat;
 background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
+
+// beveled corners
+background:
+		linear-gradient(135deg, transparent 10px, rgba(255, 255, 255, .3) 0) top left,
+		linear-gradient(225deg, transparent 10px, rgba(255, 255, 255, .3) 0) top right,
+		linear-gradient(315deg, transparent 10px, rgba(255, 255, 255, .3) 0) bottom right,
+		linear-gradient(45deg,  transparent 10px, rgba(255, 255, 255, .3) 0) bottom left;
+	background-size: 50% 50%;
+	background-repeat: no-repeat;
+
+// rounded corner (weird but ok)
+background-image:
+		radial-gradient(circle at 0 0, rgba(204,0,0,0) 14px, #c00 15px),
+		radial-gradient(circle at 100% 0, rgba(204,0,0,0) 14px, #c00 15px),
+		radial-gradient(circle at 100% 100%, rgba(204,0,0,0) 14px, #c00 15px),
+		radial-gradient(circle at 0 100%, rgba(204,0,0,0) 14px, #c00 15px);
 */
 
 .class-btn:hover {
@@ -2352,7 +2368,7 @@ background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
 	border: 2px ridge #136;
 	flex: 1;
 	overflow-y: auto;
-	font-size: 1rem;
+	font-size: .9rem;
 	line-height: 1.5;
 }
 .inv-skill-row {
@@ -2365,7 +2381,7 @@ background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
 	cursor: url('cursor/pointer.cur'), pointer;
 }
 .inv-skill-row:hover { border: 2px ridge #048 }
-.inv-skill-row:active { border: 2px ridge #05b }
+.inv-skill-row:active { border: 2px ridge #05b; transform: scale(.99); }
 .inv-skill-label-wrap {
 	position: relative;
 	display: flex;
@@ -2387,7 +2403,6 @@ background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
 #inv-skill-description-wrap {
 	display: flex;
 	flex-direction: column;
-	border: 2px ridge #136;
 	height: 9rem;
 }
 #inv-skill-description-head {
@@ -2397,5 +2412,6 @@ background: repeating-linear-gradient(135deg, #0006 10%, #0000 30%, #0006 40%);
 #inv-skill-description {
 	padding: .2rem .4rem;
 	font-size: .8rem;
-	border: 2px ridge #111;
+	border: 2px ridge #136;
+	margin: .2rem;
  }

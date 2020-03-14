@@ -122,8 +122,8 @@ var guild;
 		if (my.guild.id) return
 		// clicked CONFIRM
 		$.post(app.url + 'guild/invite-accepted.php', {
-			row: z.row,
-			guildName: z.guildName
+			guildName: z.guildName,
+			guildId: z.row
 		}).done(function(data){
 			guild.setGuildData(data);
 			chat.log('You have joined the guild: '+ data.guild.name, 'chat-warning')

@@ -29,7 +29,7 @@
 			.on('blur', 'input', chatInputBlur)
 			.on('click', '.close-menu', bar.handleCloseMenu)
 			.on('mouseenter', '.item-slot', tooltip.handleItemEnter)
-			.on('mouseleave', '.item-slot', tooltip.hide)
+			.on('mouseleave', '.item-slot', tooltip.handleItemLeave)
 			.on('click', '.inv-tabs', bar.setCharActiveTab)
 			.on('click', '.inv-skill-row', bar.getSkillDescription)
 	}
