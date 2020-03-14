@@ -2,8 +2,32 @@ var item;
 var items = {};
 !function() {
 	item = {
-		MAX_EQUIPMENT: 14,
-		MAX_INVENTORY: 63,
+		MAX_EQUIPMENT: 14, // 15
+		MAX_INVENTORY: 15, // 16
+		allProps: [
+			'offense',
+			'defense',
+			'oneHandSlash',
+			'oneHandBlunt',
+			'piercing',
+			'archery',
+			'handToHand',
+			'twoHandSlash',
+			'twoHandBlunt',
+			'dodge',
+			'parry',
+			'riposte',
+			'alteration',
+			'conjuration',
+			'evocation',
+		],
+		specialPropLabels: {
+			oneHandSlash: 'One-hand Slash',
+			oneHandBlunt: 'One-hand Blunt',
+			handToHand: 'Hand-to-hand',
+			twoHandSlash: 'Two-hand Slash',
+			twoHandBlunt: 'Two-hand Blunt',
+		},
 		getEquipString,
 		getRarity,
 		getItem,
@@ -997,23 +1021,7 @@ var items = {};
 				]
 			}
 			else if (prop === 'skills') {
-				newProps = [
-					'offense',
-					'defense',
-					'oneHandSlash',
-					'oneHandBlunt',
-					'piercing',
-					'archery',
-					'handToHand',
-					'twoHandSlash',
-					'twoHandBlunt',
-					'dodge',
-					'parry',
-					'riposte',
-					'alteration',
-					'conjuration',
-					'evocation',
-				]
+				newProps = item.allProps
 			}
 			else if (prop === 'spellPower') {
 				newProps = [

@@ -57,7 +57,7 @@ var stat;
 			create.jobAttrs[my.jobLong][6]
 	}
 	function armor() {
-		var val = ~~(agi() * 1.25)
+		var val = ~~((agi() * .66) +(defense() * 3.3))
 		for (var i = 0; i<= 14; i++) {
 			if (eq[i].armor) val += eq[i].armor
 		}
@@ -85,6 +85,13 @@ var stat;
 		var val = my.offense
 		for (var i = 0; i<= 14; i++) {
 			if (eq[i].offense) val += eq[i].offense
+		}
+		return val
+	}
+	function defense() {
+		var val = my.defense
+		for (var i = 0; i<= 14; i++) {
+			if (eq[i].defense) val += eq[i].defense
 		}
 		return val
 	}

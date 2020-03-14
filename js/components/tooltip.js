@@ -126,13 +126,13 @@ var tooltip;
 				// skills
 				getGenericStatHtml(obj.offense, 'Offense') +
 				getGenericStatHtml(obj.defense, 'Defense') +
-				getGenericStatHtml(obj.oneHandSlash, 'One-Hand Slash') +
-				getGenericStatHtml(obj.oneHandBlunt, 'One-Hand Blunt') +
+				getGenericStatHtml(obj.oneHandSlash, 'One-hand Slash') +
+				getGenericStatHtml(obj.oneHandBlunt, 'One-hand Blunt') +
 				getGenericStatHtml(obj.piercing, 'Piercing') +
 				getGenericStatHtml(obj.archery, 'Archery') +
-				getGenericStatHtml(obj.handToHand, 'Hand-to-Hand') +
-				getGenericStatHtml(obj.twoHandSlash, 'Two-Hand Slash') +
-				getGenericStatHtml(obj.twoHandBlunt, 'Two-Hand Blunt') +
+				getGenericStatHtml(obj.handToHand, 'Hand-to-hand') +
+				getGenericStatHtml(obj.twoHandSlash, 'Two-hand Slash') +
+				getGenericStatHtml(obj.twoHandBlunt, 'Two-hand Blunt') +
 				getGenericStatHtml(obj.dodge, 'Dodge') +
 				getGenericStatHtml(obj.parry, 'Parry') +
 				getGenericStatHtml(obj.riposte, 'Riposte') +

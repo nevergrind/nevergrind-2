@@ -87,7 +87,7 @@ items.twoHandSlashers = {
 			enhanceFire: [3, 5],
 		}, {
 			name: 'Giant Axe',
-			newName: 'Silvery Two-Handed Axe',
+			newName: 'Silvery Two-handed Axe',
 			enhancedDamage: [85, 120],
 			attack: [17, 24],
 			mp: [30, 40],
@@ -142,7 +142,7 @@ items.twoHandSlashers = {
 			enhancedDamageToUndead: [12, 16],
 		}, {
 			name: 'Katana',
-			newName: 'Mithril Two-Handed Sword',
+			newName: 'Mithril Two-handed Sword',
 			enhancedDamage: [113, 131],
 			attack: [26, 33],
 			addFire: [8, 12],

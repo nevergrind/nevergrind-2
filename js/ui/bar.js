@@ -26,6 +26,7 @@ var bar;
 			inventory: false,
 			options: false,
 		},
+		activeTab: 'character',
 		init,
 		linkdead,
 		hideParty,
@@ -38,6 +39,8 @@ var bar;
 		handleCloseMenu,
 		closeAllWindows,
 		setDefaultInvWeaponImage,
+		setCharActiveTab,
+		getSkillDescription,
 	};
 	var index;
 	var player; // temp bar data
@@ -47,6 +50,18 @@ var bar;
 		'chat-warning',
 		'chat-alert'
 	];
+	var skillDescriptions = {
+		offense: 'Offense boosts attack power with all melee weapons. A strong offense helps assure that your weapons strike with precision and power regardless weapon type.',
+		defense: 'Defense boosts your natural armor which helps you survive melee attacks. Strong defensive skills can also make your foes completely miss their mark. ',
+		oneHandSlash: 'One-hand slash boosts your attack power with one-hand slashing weapons such as swords and axes. A pair of deft hands with a firm grip on powerful blades can create problems for any adversary.',
+		oneHandBlunt: 'One-hand blunt boosts your attack power with one-hand blunt weapons such as maces and clubs. Due to their ease of use, blunt weapons may be equipped by any class. Heroes have long favored them due to their utility and power against undead foes.',
+		piercing: 'Piercing boosts your attack power with all piercing weapons such as daggers and dirks. A perfectly placed dagger can bring even the most deadly foes to their knees. Rogues are feared and hated for their prowess with piercing weapons.',
+		archery: 'Archery boosts your attack power with all bow weapons from simple hunting bows to powerful siege bows. Archery is a powerful, but specialized, skill typically relegated to rangers, though other adventurers have taken a bemusing casual interest in them as well.',
+		handToHand: 'Hand-to-hand boosts the attack power of your fists in combat. Who needs fancy weapons when you have honed your very fists into martial weapons of death? Jab, hook, and uppercut your way to victory! Monks are renowned for their mastery of hand-to-hand combat.',
+		twoHandSlash: 'Two-hand slash boosts the attack power of all two-hand slash weapons like giant axes and bastard swords. Jump into the fray and cleave a path in front of you! Leave a trail of death in your wake!',
+		twoHandBlunt: 'Two-hand blunt boosts the attack power of all two-hand blunt weapons like staves, mauls, and sledgehammers. Whether you are wielding a wizard\'s staff or a warrior\'s mighty mallet, two-hand blunt helps give you the edge on the battlefield. As with all blunt weapons, two-hand blunt weapons are stronger against the undead.',
+
+	}
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
@@ -83,16 +98,17 @@ var bar;
 	}
 
 	function handleClickPartyContextMenu() {
-		var id = $(this).attr('id'),
-			arr = id.split("-"),
-			slot = _.findIndex(party.presence, { row: arr[3] * 1 });
+		var id = $(this).attr('id')
+		var arr = id.split("-")
+		var slot = _.findIndex(party.presence, { row: arr[3] * 1 })
 
-		context.getPartyMenu(party.presence[slot].name);
-		console.info(id, slot, party.presence[slot].name);
+		context.getPartyMenu(party.presence[slot].name)
+		console.info(id, slot, party.presence[slot].name)
 	}
 
 	function toggleCharacterStats() {
-		bar.windowsOpen.character = !bar.windowsOpen.character;
+		bar.windowsOpen.character = !bar.windowsOpen.character
+		if (bar.windowsOpen.character) bar.activeTab = 'character'
 		setCharacterDOM()
 	}
 
@@ -100,6 +116,7 @@ var bar;
 		if (bar.windowsOpen.character) {
 			bar.dom.character.innerHTML = getCharacterStatsHtml()
 			bar.dom.character.style.display = 'flex'
+			if (bar.activeTab === 'skills') ng.split('inv-skill-description', skillDescriptions['offense']);
 		}
 		else {
 			bar.dom.character.innerHTML = ''
@@ -115,78 +132,21 @@ var bar;
 			'</div>' +
 			'<i data-id="character-stats" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		// race class level guild
-		'<div class="text-center" style="font-size: .8rem; line-height: 1.2; color: #ffd700">' +
+		'<div class="text-center" style="'+ css.raceJobRow +'">' +
 			'<div>Level '+ my.level +' '+ my.race +' '+ my.jobLong +'</div>' +
 			getPlayerGuildDescription() +
-		'</div>' +
-		'<div id="inv-wrap">'+
-			'<div class="inv-column-items flex-column flex-max">';
-			for (var i=0; i<=5; i++) {
-				html += getItemSlotHtml('eq', i)
-			}
-			html += '</div>' +
-			'<div id="inv-column-avatar" class="bg-dark-' + my.job + '">'+
-				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
-					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
-					'<div id="inv-resist-wrap" class="text-shadow">'+
-						'<div class="inv-resist-icon flex-center" style="background: #500">' + my.resistBlood + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #090">' + my.resistPoison + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #808">' + my.resistArcane + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #aa0">' + my.resistLightning + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #840">' + my.resistFire + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #28c">' + my.resistIce + '</div>' +
-					'</div>' +
-				'</div>' +
-				'<div class="flex" style="font-size: .8rem">'+
-					'<div class="flex-column flex-max" style="'+ css.invStatColumn +'">'+
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Armor:</div><div>'+ stat.armor() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Strength:</div><div>'+ stat.str() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Stamina:</div><div>'+ stat.sta() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Agility:</div><div>'+ stat.agi() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Dexterity:</div><div>'+ stat.dex() +'</div>' +
-						'</div>' +
-					'</div>' +
-					'<div class="flex-column flex-max" style="'+ css.invStatColumn +'">' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Attack:</div><div>'+ stat.attack() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Damage:</div><div>'+ stat.damageString(stat.damage()) +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Wisdom:</div><div>'+ stat.wis() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Intelligence:</div><div>'+ stat.intel() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-			'<div class="inv-column-items flex-column flex-max">';
-			for (var i=6; i<=11; i++) {
-				html += getItemSlotHtml('eq', i)
-			}
-			html += '</div>' +
-		'</div>' +
-		'<div class="inv-row-items flex" style="'+ css.statFooter +'">';
-		for (var i=12; i<=14; i++) {
-			html += getItemSlotHtml('eq', i)
-		}
-		html += '</div>'
-		;return html
+		'</div>';
+		if (bar.activeTab === 'character') html += getCharacterHtml()
+		else if (bar.activeTab === 'skills') html += getSkillsHtml()
+		html += '<div id="inv-tab-wrap">' +
+			'<div data-id="character" class="inv-tabs'+ getActiveTabStatus('character') +'">Character</div>' +
+			'<div data-id="skills" class="inv-tabs'+ getActiveTabStatus('skills') +'">Skills</div>' +
+		'</div>';
+		return html
+	}
+
+	function getActiveTabStatus(id) {
+		return id === bar.activeTab ? ' active' : ''
 	}
 
 	function getPlayerGuildDescription() {
@@ -215,6 +175,14 @@ var bar;
 		}
 	}
 
+	function setCharActiveTab(event) {
+		var id = event.currentTarget.dataset.id
+		if (bar.activeTab !== id) {
+			bar.activeTab = id
+			setCharacterDOM()
+		}
+	}
+
 	function getItemSlotHtml(type, i) {
 		return '<div class="item-slot-wrap '+ getInvItemBorderClass(type, i) +'">' +
 					'<img data-index="'+ i +'" data-type="'+ type +'" src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot">' +
@@ -232,7 +200,6 @@ var bar;
 		else {
 			resp = 'item-bg-1'
 			if (type === 'inv') {
-				console.info(slot, inv[slot].name, inv[slot].itemType)
 				if (inv[slot].name && inv[slot].itemType) {
 					resp = inv[slot].itemType + inv[slot].imgIndex
 				}
@@ -264,7 +231,6 @@ var bar;
 		return resp
 	}
 
-
 	function toggleInventory() {
 		// open all bags in the bottom-right corner
 		bar.windowsOpen.inventory = !bar.windowsOpen.inventory;
@@ -282,22 +248,28 @@ var bar;
 		'</div>' +
 		'<div id="inventory-slot-wrap">' +
 		'<div class="inventory-slot-row">';
-		for (; i<=2; i++) {
+		for (; i<=3; i++) {
 			html += getItemSlotHtml('inv', i)
 		}
 		html += '</div><div class="inventory-slot-row">';
-		for (i=3; i<=5; i++) {
+		for (i=4; i<=7; i++) {
 			html += getItemSlotHtml('inv', i)
 		}
 		html += '</div><div class="inventory-slot-row">';
-		for (i=6; i<=8; i++) {
+		for (i=8; i<=11; i++) {
 			html += getItemSlotHtml('inv', i)
 		}
 		html += '</div><div class="inventory-slot-row">';
-		for (i=9; i<=11; i++) {
+		for (i=12; i<=15; i++) {
 			html += getItemSlotHtml('inv', i)
 		}
 		html += '</div>' +
+		'<div id="inv-footer" class="flex-center flex-max stag-blue-top">' +
+			'<div id="inv-footer-gold-wrap">'+
+				'<div id="inv-gold" style="margin: 0 .2rem; ">'+ my.gold +'</div>' +
+				'<i style="margin: 0 .2rem; color: gold" class="ra ra-gold-bar"></i>' +
+			'</div>' +
+		'</div>' +
 		'</div>';
 
 		return html
@@ -362,6 +334,7 @@ var bar;
 			isLeader: getById('bar-is-leader-' + index),
 		}
 	}
+
 	function addPlayer(player, index) {
 		if (typeof bar.dom[index] === 'undefined') {
 			var el = createElement('div');
@@ -527,6 +500,112 @@ var bar;
 		});
 	}
 	function linkdead(data) {
-			chat.log(data.name + ' has gone linkdead.', 'chat-warning');
+		chat.log(data.name + ' has gone linkdead.', 'chat-warning');
+	}
+
+	function getSkillDescription(event) {
+		var id = event.currentTarget.dataset.id
+		ng.split('inv-skill-description', skillDescriptions[id]);
+	}
+
+	function getPropSkillHtml(prop) {
+		console.info('prop', prop)
+		if (!my[prop]) return ''
+		var html =
+			'<div data-id="'+ prop +'" class="inv-skill-row">' +
+				'<div class="inv-skill-bar" style="width: '+ (my[prop] / 5 * 100) +'%"></div>' +
+				'<div class="inv-skill-label-wrap">' +
+					'<div class="inv-skill-label">'+ (item.specialPropLabels[prop] || _.capitalize(prop)) + '</div>' +
+					'<div>'+ my[prop] +'/5</div>' +
+				'</div>' +
+			'</div>';
+		return html
+	}
+
+	function getSkillsHtml() {
+		var html = '<div id="inv-skills-wrap">';
+		item.allProps.forEach(function(prop) {
+			html += getPropSkillHtml(prop)
+		})
+		html += '</div>' +
+		'<div id="inv-skill-description-wrap">' +
+			'<div id="inv-skill-description-head" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">Description</div>' +
+			'</div>' +
+			'<div id="inv-skill-description" class="flex-max"></div>' +
+		'</div>'
+		return html
+	}
+
+	function getCharacterHtml() {
+		// race class level guild
+		var html =
+		'<div id="inv-wrap">'+
+			'<div class="inv-column-items flex-column flex-max">';
+			for (var i=0; i<=5; i++) {
+				html += getItemSlotHtml('eq', i)
+			}
+			html += '</div>' +
+			'<div id="inv-column-avatar" class="bg-dark-' + my.job + '">'+
+				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
+					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
+					'<div id="inv-resist-wrap" class="text-shadow">'+
+						'<div class="inv-resist-icon flex-center" style="background: #500">' + my.resistBlood + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #090">' + my.resistPoison + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #808">' + my.resistArcane + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #aa0">' + my.resistLightning + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #840">' + my.resistFire + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #28c">' + my.resistIce + '</div>' +
+					'</div>' +
+				'</div>' +
+				'<div class="flex" style="font-size: .8rem">'+
+					'<div class="flex-column flex-max" style="'+ css.invStatColumn +'">'+
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Armor:</div><div>'+ stat.armor() +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Strength:</div><div>'+ stat.str() +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Stamina:</div><div>'+ stat.sta() +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Agility:</div><div>'+ stat.agi() +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Dexterity:</div><div>'+ stat.dex() +'</div>' +
+						'</div>' +
+					'</div>' +
+					'<div class="flex-column flex-max" style="'+ css.invStatColumn +'">' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Attack:</div><div>'+ stat.attack() +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Damage:</div><div>'+ stat.damageString(stat.damage()) +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Wisdom:</div><div>'+ stat.wis() +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Intelligence:</div><div>'+ stat.intel() +'</div>' +
+						'</div>' +
+						'<div class="flex space-between">' +
+							'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</div>' +
+			'<div class="inv-column-items flex-column flex-max">';
+			for (var i=6; i<=11; i++) {
+				html += getItemSlotHtml('eq', i)
+			}
+			html += '</div>' +
+		'</div>' +
+		'<div class="inv-row-items flex" style="'+ css.statFooter +'">';
+		for (var i=12; i<=14; i++) {
+			html += getItemSlotHtml('eq', i)
+		}
+		html += '</div>'
+		return html
 	}
 })();

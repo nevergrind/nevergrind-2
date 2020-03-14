@@ -269,7 +269,7 @@ var create;
 		// details
 		ng.split('create-details', create.msg(key, val));
 		if (key === 'job'){
-			getById('type-value').innerHTML = create.types[val];
+			//getById('type-value').innerHTML = create.types[val];
 		}
 		// resists
 		ng.resists.forEach(function(v){
@@ -277,7 +277,7 @@ var create;
 		});
 		// dungeon
 		ng.dungeon.forEach(function(v){
-			getById(v + '-value').innerHTML = create.getDungeon(v);
+			//getById(v + '-value').innerHTML = create.getDungeon(v);
 		});
 		// reset attr
 		if (key !== 'gender' && create.form.race){

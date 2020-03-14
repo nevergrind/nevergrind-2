@@ -30,6 +30,8 @@
 			.on('click', '.close-menu', bar.handleCloseMenu)
 			.on('mouseenter', '.item-slot', tooltip.handleItemEnter)
 			.on('mouseleave', '.item-slot', tooltip.hide)
+			.on('click', '.inv-tabs', bar.setCharActiveTab)
+			.on('click', '.inv-skill-row', bar.getSkillDescription)
 	}
 	function chatInputFocus() {
 		chat.hasFocus = 1;
