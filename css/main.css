@@ -2025,7 +2025,6 @@ background-image:
 #create-overview {
 	display: flex;
 	font-size: 1rem;
-	background: radial-gradient(closest-corner at 50% 50%, rgba(128, 160, 255, 1), rgba(128, 160, 255, 0));
 	background: radial-gradient(closest-corner at 50% 50%, rgba(0, 64, 128, 1), rgba(0, 64, 128, 0));
 }
 #create-portrait {
@@ -2296,17 +2295,45 @@ background-image:
 	padding: 0 .1rem;
 	margin-bottom: 1.6rem;
 }
+/* outer */
 .item-slot-wrap {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	width: 3.2rem;
 	height: 3.2rem;
-	border: 2px ridge #136;
+	border: 2px ridge #1a1a1a;
 	border-radius: 4px;
 	background: #0a0a0a;
 }
+.item-slot-wrap:hover { box-shadow: 0 0 .6rem #aef8 inset, 0 0 .6rem #aef8 inset }
+.item-slot-wrap:active { box-shadow: 0 0 .6rem #aeff inset, 0 0 .6rem #aeff inset }
+
+.item-slot-type-none { border: 2px ridge #1a1a1a; }
+.item-slot-type-normal { border: 2px ridge #777; }
+.item-slot-type-magic { border: 2px ridge #2a9aff; }
+.item-slot-type-rare { border: 2px ridge #ff0; box-shadow: 0 0 4px #ff0; }
+.item-slot-type-set { border: 2px ridge #00c400; box-shadow: 0 0 4px #00c400, 0 0 6px #908858 inset; }
+.item-slot-type-unique { border: 2px ridge #908858; box-shadow: 0 0 4px #908858, 0 0 6px #908858 inset; }
+.item-slot-type-runic { border: 2px ridge #ad68f8; box-shadow: 0 0 4px #ad68f8, 0 0 6px #ad68f8 inset; }
+.item-slot-type-legendary { border: 2px ridge #ffa500; box-shadow: 0 0 4px #ffa500, 0 0 6px #ffa500 inset; }
+/* inner */
 .item-slot {
-	box-shadow: 0 1px #048 inset, -1px 0 #048 inset, 1px 0 #048 inset, 0 -1px #048 inset;
+	width: 3.2rem;
+	height: 3.2rem;
+	cursor: url('cursor/pointer.cur'), pointer;
 	border-radius: 4px;
+	border: 1px solid #777;
 }
+.item-slot-type-none .item-slot { filter: brightness(60%) grayscale(1); }
+.item-slot-type-normal .item-slot { border: 1px solid #777; }
+.item-slot-type-magic .item-slot { border: 1px solid #2a9aff; }
+.item-slot-type-rare .item-slot { border: 1px solid #ff0; }
+.item-slot-type-set .item-slot { border: 1px solid #00c400; }
+.item-slot-type-unique .item-slot { border: 1px solid #908858; }
+.item-slot-type-runic .item-slot { border: 1px solid #ad68f8; }
+.item-slot-type-legendary .item-slot { border: 1px solid #ffa500; }
+
 #inv-avatar-wrap {
 	position: relative;
 	display: flex;
@@ -2334,15 +2361,6 @@ background-image:
 	border: 2px ridge #136;
 	box-shadow: 0 1px #048 inset, -1px 0 #048 inset, 1px 0 #048 inset, 0 -1px #048 inset;
 	border-radius: 4px;
-}
-.item-slot {
-	width: 3.2rem;
-	height: 3.2rem;
-	cursor: url('cursor/pointer.cur'), pointer;
-}
-.item-slot-type-none {
-	pointer-events: none;
-	filter: brightness(33%) grayscale(1);
 }
 #inv-footer {
 	display: flex;

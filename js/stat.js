@@ -19,6 +19,12 @@ var stat;
 		archery,
 		damage,
 		damageString,
+		resistBlood,
+		resistPoison,
+		resistArcane,
+		resistLightning,
+		resistFire,
+		resistIce,
 	}
 
 	function str() {
@@ -171,5 +177,23 @@ var stat;
 	}
 	function damageString(damage) {
 		return damage[0] + '–' + damage[1]
+	}
+	function resistBlood() {
+		return my.resistBlood
+	}
+	function resistPoison() {
+		return my.resistPoison
+	}
+	function resistArcane() {
+		return my.resistArcane
+	}
+	function resistLightning() {
+		return my.resistLightning
+	}
+	function resistFire() {
+		return my.resistFire
+	}
+	function resistIce() {
+		return my.resistIce
 	}
 }()

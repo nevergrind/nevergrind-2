@@ -191,7 +191,7 @@ var bar;
 	}
 
 	function getItemSlotHtml(type, i) {
-		return '<div class="item-slot-wrap '+ getInvItemBorderClass(type, i) +'">' +
+		return '<div class="item-slot-wrap '+ getInvItemClass(type, i) +'">' +
 					'<img data-index="'+ i +'" data-type="'+ type +'" src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot">' +
 				'</div>';
 	}
@@ -212,13 +212,15 @@ var bar;
 				}
 			}
 			else if (type === 'bank') {
-
+				if (bank[slot].name && bank[slot].itemType) {
+					resp = bank[slot].itemType + bank[slot].imgIndex
+				}
 			}
 		}
 		return resp
 	}
 
-	function getInvItemBorderClass(type, slot) {
+	function getInvItemClass(type, slot) {
 		var resp = 'item-slot-type-none'
 		if (type === 'eq') {
 			if (eq[slot].name && eq[slot].rarity) {
@@ -560,12 +562,12 @@ var bar;
 				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
 					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 					'<div id="inv-resist-wrap" class="text-shadow">'+
-						'<div class="inv-resist-icon flex-center" style="background: #500">' + my.resistBlood + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #090">' + my.resistPoison + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #808">' + my.resistArcane + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #aa0">' + my.resistLightning + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #840">' + my.resistFire + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #28c">' + my.resistIce + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #500">' + stat.resistBlood() + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #090">' + stat.resistPoison() + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #808">' + stat.resistArcane() + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #aa0">' + stat.resistLightning() + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #840">' + stat.resistFire() + '</div>' +
+						'<div class="inv-resist-icon flex-center" style="background: #28c">' + stat.resistIce() + '</div>' +
 					'</div>' +
 				'</div>' +
 				'<div class="flex" style="font-size: .8rem">'+
