@@ -25,7 +25,17 @@ var stat;
 		resistLightning,
 		resistFire,
 		resistIce,
+		getPropMax,
 	}
+	// jobs grouped by things for include checks
+	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
+	var defensiveJobs = ['WAR', 'PAL', 'SHD']
+	var intCasterJobs = ['NEC', 'ENC', 'MAG', 'WIZ']
+	var averagePunchJobs = ['WAR', 'PAL', 'SHD', 'ROG', 'RNG', 'BRD']
+	var dualWieldJobs = ['MNK', 'ROG', 'RNG']
+	var doubleAttackJobs = ['MNK', 'ROG', 'RNG', 'SHD', 'PAL']
+	var averageDodgeJobs = ['WAR', 'PAL', 'SHD', 'MNK', 'RNG']
+	var allCasterJobs = ['CLR', 'DRU', 'SHM', 'BRD', 'NEC', 'ENC', 'MAG', 'WIZ']
 
 	function str() {
 		return my.str +
@@ -195,5 +205,134 @@ var stat;
 	}
 	function resistIce() {
 		return my.resistIce
+	}
+	/*
+	allProps: [
+		'offense',
+		'defense',
+		'oneHandSlash',
+		'oneHandBlunt',
+		'piercing',
+		'archery',
+		'handToHand',
+		'twoHandSlash',
+		'twoHandBlunt',
+		'dualWield',
+		'doubleAttack',
+		'dodge',
+		'parry',
+		'riposte',
+		'alteration',
+		'conjuration',
+		'evocation',
+	],
+	 */
+	function getPropMax(prop) {
+		var resp = 2
+		if (prop === 'offense') resp = offenseMax()
+		else if (prop === 'defense') resp = defenseMax()
+		else if (prop === 'oneHandSlash') resp = oneHandSlashMax()
+		else if (prop === 'oneHandBlunt') resp = oneHandBluntMax()
+		else if (prop === 'piercing') resp = piercingMax()
+		else if (prop === 'archery') resp = archeryMax()
+		else if (prop === 'handToHand') resp = handToHandMax()
+		else if (prop === 'twoHandSlash') resp = twoHandSlashMax()
+		else if (prop === 'twoHandBlunt') resp = twoHandBluntMax()
+		else if (prop === 'dualWield') resp = dualWieldMax()
+		else if (prop === 'doubleAttack') resp = doubleAttackMax()
+		else if (prop === 'dodge') resp = dodgeMax()
+		else if (prop === 'parry') resp = parryMax()
+		else if (prop === 'riposte') resp = riposteMax()
+		else if (prop === 'alteration') resp = alterationMax()
+		else if (prop === 'conjuration') resp = conjurationMax()
+		else if (prop === 'evocation') resp = evocationMax()
+		return resp
+	}
+	function offenseMax() {
+		if (offensiveJobs.includes(my.job)) {
+			return my.level * 5
+		}
+		else if (intCasterJobs.includes(my.job)) {
+			return my.level * 3
+		}
+		else return my.level * 4
+	}
+	function defenseMax() {
+		if (defensiveJobs.includes(my.job)) {
+			return my.level * 5
+		}
+		else if (intCasterJobs.includes(my.job)) {
+			return my.level * 3
+		}
+		else return my.level * 4
+	}
+	function oneHandSlashMax() {
+		if (my.job === 'RNG') return my.level * 5
+		else if (my.job === 'ROG') return _.min([my.level * 5, 240])
+		else return my.level * 4
+	}
+	function oneHandBluntMax() {
+		if (my.job === 'MNK') return my.level * 5
+		else if (my.job === 'RNG') return _.min([my.level * 5, 240])
+		else if (my.job === 'ROG') return _.min([my.level * 5, 225])
+		else return my.level * 4
+	}
+	function piercingMax() {
+		if (my.job === 'ROG') return my.level * 5
+		else if (my.job === 'RNG') return _.min([my.level * 5, 240])
+		else return my.level * 4
+	}
+	function archeryMax() {
+		if (my.job === 'RNG') return my.level * 5
+		else return my.level * 2
+	}
+	function handToHandMax() {
+		if (my.job === 'MNK') return my.level * 5
+		else if (averagePunchJobs.includes(my.job)) return my.level * 2
+		else return my.level
+	}
+	function twoHandSlashMax() {
+		if (my.job === 'RNG') return _.min([my.level * 5, 225])
+		else return my.level * 4
+	}
+	function twoHandBluntMax() {
+		if (my.job === 'MNK') return my.level * 5
+		else if (my.job === 'RNG') return _.min([my.level * 5, 225])
+		else return my.level * 4
+	}
+	function dualWieldMax() {
+		if (dualWieldJobs.includes(my.job)) return my.level * 5
+		else return my.level * 4
+	}
+	function doubleAttackMax() {
+		if (doubleAttackJobs.includes(my.job)) return my.level * 5
+		else return my.level * 4
+	}
+	function dodgeMax() {
+		if (my.job === 'ROG' || my.job === 'BRD') return my.level * 4
+		else if (averageDodgeJobs.includes(my.job)) return my.level * 3
+		else return my.level * 2
+	}
+	function parryMax() {
+		if (my.job === 'WAR' || my.job === 'PAL') return my.level * 5
+		else if (my.job === 'SHD' || my.job === 'RNG') return my.level * 4
+		else return my.level * 3
+	}
+	function riposteMax() {
+		if (my.job === 'WAR' || my.job === 'SHD') return my.level * 5
+		else if (my.job === 'PAL' || my.job === 'MNK') return my.level * 4
+		else return my.level * 3
+	}
+	function alterationMax() {
+		if (allCasterJobs.includes(my.job)) return my.level * 5
+		else return my.level * 4
+	}
+	function conjurationMax() {
+		if (allCasterJobs.includes(my.job)) return my.level * 5
+		else return my.level * 4
+	}
+	function evocationMax() {
+		if (allCasterJobs.includes(my.job)) return my.level * 5
+		else return my.level * 4
 	}
 }()

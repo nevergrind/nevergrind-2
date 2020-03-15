@@ -58,8 +58,10 @@ var bar;
 		piercing: 'Piercing boosts your attack power with all piercing weapons such as daggers and dirks. A perfectly placed dagger can bring even the most deadly foes to their knees. Rogues are feared and hated for their prowess with piercing weapons.',
 		archery: 'Archery boosts your attack power with all bow weapons from simple hunting bows to powerful siege bows. Archery is a powerful, but specialized, skill typically relegated to rangers, though other adventurers have taken a bemusing casual interest in them as well.',
 		handToHand: 'Hand-to-hand boosts the attack power of your fists in combat. Who needs fancy weapons when you have honed your very fists into martial weapons of death? Jab, hook, and uppercut your way to victory! Monks are renowned for their mastery of hand-to-hand combat.',
-		twoHandSlash: 'Two-hand slash boosts the attack power of all two-hand slash weapons like giant axes and bastard swords. Jump into the fray and cleave a path in front of you! Leave a trail of death in your wake!',
-		twoHandBlunt: 'Two-hand blunt boosts the attack power of all two-hand blunt weapons like staves, mauls, and sledgehammers. Whether you are wielding a wizard\'s staff or a warrior\'s mighty mallet, two-hand blunt helps give you the edge on the battlefield. As with all blunt weapons, two-hand blunt weapons are stronger against the undead.',
+		twoHandSlash: 'Two-hand slash boosts the attack power of all two-hand slash weapons like giant axes and bastard swords. Critical hits with two-hand weapons do more damage than one-hand weapons. Jump into the fray and cleave a path in front of you! Leave a trail of death in your wake!',
+		twoHandBlunt: 'Two-hand blunt boosts the attack power of all two-hand blunt weapons like staves, mauls, and sledgehammers. Critical hits with two-hand weapons do more damage than one-hand weapons. And as with all blunt weapons, two-hand blunt weapons are stronger against the undead.',
+		dualWield: 'Dual wield boosts your chance to attack with an off-hand weapon. The only thing more deadly than one weapon is two! Mastery of this skill allows you to hold your own against even the most powerful two-hand weapons.',
+		doubleAttack: 'Double attack boosts your chance to double attack with your standard attack. Though double attack only applies to your standard attacks, this technique remains a fundamental skill to master for all melee classes.',
 		alteration: 'Alteration enhances the power of all alteration-based magic. Bend reality to your will by healing allies, summoning magical barriers, or fortifying your defenses.',
 		evocation: 'Evocation enhances the power of all evocation-based magic. Summon a fireball, lightning bolts, or even an impressive ice comet to destroy all who dare to oppose you!',
 		conjuration: 'Conjuration enhances the power of all conjuration-based magic. Why get your hands dirty when you can summon an ally to do the dirty work for you?! Summon a fire-breathing hydra to melt your enemies! Or summon an army of angry bees to seek and destroy! The only limit is your imagination!',
@@ -523,12 +525,12 @@ var bar;
 
 	function getPropSkillHtml(prop) {
 		if (!my[prop]) return ''
-		var html =
-			'<div data-id="'+ prop +'" class="inv-skill-row">' +
-				'<div class="inv-skill-bar" style="width: '+ (my[prop] / 5 * 100) +'%"></div>' +
+		var max = stat.getPropMax(prop)
+		var html = '<div data-id="'+ prop +'" class="inv-skill-row">' +
+				'<div class="inv-skill-bar" style="width: '+ (my[prop] / max * 100) +'%"></div>' +
 				'<div class="inv-skill-label-wrap">' +
 					'<div class="inv-skill-label">'+ (item.specialPropLabels[prop] || _.capitalize(prop)) + '</div>' +
-					'<div>'+ my[prop] +'/5</div>' +
+					'<div>'+ my[prop] +'/' + max +'</div>' +
 				'</div>' +
 			'</div>';
 		return html
