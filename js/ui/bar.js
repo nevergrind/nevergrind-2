@@ -496,8 +496,8 @@ var bar;
 		}
 		else {
 			if (party.presence[index].maxMp) {
-				var percent = ~~((party.presence[index].mp / party.presence[index].maxMp) * 100) + '%',
-					delay = delay === undefined ? .3 : delay;
+				var percent = ~~((party.presence[index].mp / party.presence[index].maxMp) * 100) + '%';
+				var delay = delay === undefined ? .3 : delay;
 				TweenMax.to(bar.dom[index].mpFg, delay, {
 					width: percent
 				});

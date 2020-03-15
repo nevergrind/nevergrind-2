@@ -2306,8 +2306,8 @@ background-image:
 	border-radius: 4px;
 	background: #0a0a0a;
 }
-.item-slot-wrap:hover { box-shadow: 0 0 .6rem #aef8 inset, 0 0 .6rem #aef8 inset }
-.item-slot-wrap:active { box-shadow: 0 0 .6rem #aeff inset, 0 0 .6rem #aeff inset }
+.item-slot-wrap:hover { box-shadow: 0 0 .6rem #aef8 inset; }
+.item-slot-wrap:active { box-shadow: 0 0 .6rem #aeff inset, 0 0 .6rem #aeff inset; }
 
 .item-slot-type-none { border: .1rem ridge #1a1a1a; }
 .item-slot-type-normal { border: .1rem ridge #777; }
