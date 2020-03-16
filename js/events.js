@@ -1,4 +1,4 @@
-(function(_, $) {
+(function(_, $, parseInt, getComputedStyle, undefined) {
 	var i;
 	var key;
 	var code;
@@ -30,6 +30,7 @@
 			.on('click', '.close-menu', bar.handleCloseMenu)
 			.on('mouseenter', '.item-slot', tooltip.handleItemEnter)
 			.on('mouseleave', '.item-slot', tooltip.handleItemLeave)
+			.on('click', '.item-slot', item.toggleDrag)
 			.on('click', '.inv-tabs', bar.setCharActiveTab)
 			.on('click', '.inv-skill-row', bar.getSkillDescription)
 	}
@@ -62,14 +63,15 @@
 		}
 	}
 	function windowResizedTimeout() {
-			if (chat.initialized) {
-				chat.scrollBottom()
+		if (chat.initialized) {
+			chat.scrollBottom()
+		}
+		if (ng.view === 'battle') {
+			for (i=0; i<mob.max; i++) {
+				mob.sizeMob(i)
 			}
-			if (ng.view === 'battle') {
-				for (i=0; i<mob.max; i++) {
-					mob.sizeMob(i)
-				}
-			}
+		}
+		ng.responsiveRatio = parseInt(getComputedStyle(getById('body')).fontSize, 10) / 20
 	}
 	function mousedown(e) {
 		if (context.isOpen) {
@@ -79,6 +81,7 @@
 		}
 	}
 	function mousemove(e) {
+		//console.info('mousemove', e.clientX, e.clientY)
 		my.mouse.x = e.clientX
 		my.mouse.y = e.clientY
 	}
@@ -230,7 +233,7 @@
 			}
 		}
 	}
-})(_, $);
+})(_, $, parseInt, getComputedStyle);
 
 
 

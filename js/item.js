@@ -32,9 +32,15 @@ var items = {};
 			dualWield: 'Dual Wield',
 			doubleAttack: 'Double Attack',
 		},
+		isDragging: false,
+		dragData: {},
+		dropData: {},
+		dragType: '',
+		dragSlot: 0,
 		getEquipString,
 		getRarity,
 		getItem,
+		toggleDrag,
 	}
 	var slotRequiresMagic = [
 		'rings',
@@ -1096,5 +1102,130 @@ var items = {};
 			suffix,
 			baseName
 		].join(' ')
+	}
+
+	function toggleDrag(event) {
+		var type = event.currentTarget.dataset.type
+		var index = event.currentTarget.dataset.index
+		console.info('toggleDrag', type, index)
+		if (item.isDragging) {
+			// check for same item
+			if (item.dragSlot === index && item.dragType === type) {
+				console.warn('drop cancelled - same slot')
+				item.dragData = {}
+				item.isDragging = false
+				return
+			}
+
+			if (type === 'inv') {
+				item.dropData = inv[index]
+				item.dropSlot = index
+				item.dropType = type
+			}
+			else if (type === 'eq') {
+				item.dropData = eq[index]
+				item.dropSlot = index
+				item.dropType = type
+			}
+			else if (type === 'bank') {
+				item.dropData = bank[index]
+				item.dropSlot = index
+				item.dropType = type
+			}
+
+			console.warn('dragData to ', item.dropType, ' slot', item.dropSlot, item.dragData.name)
+			console.warn('dropData to ', item.dragType, ' slot', item.dragSlot, item.dropData.name)
+
+			// TODO: server doesn't need all props... refactor
+			ng.lock()
+			if (item.dropData.name) {
+				// swap
+				$.post(app.url + 'item/swap-items.php', {
+					dragRow: item.dragData.row,
+					dragItemId: item.dragData.itemId,
+					dragSlot: item.dropSlot,
+					dragType: item.dropType,
+					dropRow: item.dropData.row,
+					dropItemId: item.dropData.itemId,
+					dropSlot: item.dragSlot,
+					dropType: item.dragType,
+				}).done(handleItemSwapSuccess)
+					.fail(function(r){
+					ng.msg(r.responseText, 8);
+				}).always(ng.unlock);
+			}
+			else {
+				// update
+				$.post(app.url + 'item/update-item.php', {
+					dragRow: item.dragData.row,
+					dragItemId: item.dragData.itemId,
+					dragSlot: item.dropSlot,
+					dragType: item.dropType,
+				}).done(handleItemSwapSuccess)
+					.fail(function(r){
+					ng.msg(r.responseText, 8);
+				}).always(ng.unlock);
+			}
+		}
+		else {
+			// drag
+			item.dropData = {}
+			if (type === 'inv') {
+				if (!inv[index].name) return
+				item.dragData = inv[index]
+				item.dragSlot = index
+				item.dragType = type
+			}
+			else if (type === 'eq') {
+				if (!eq[index].name) return
+				item.dragData = eq[index]
+				item.dragSlot = index
+				item.dragType = type
+			}
+			else if (type === 'bank') {
+				if (!bank[index].name) return
+				item.dragData = bank[index]
+				item.dragSlot = index
+				item.dragType = type
+			}
+			if (item.dragData.name) item.isDragging = true
+			console.warn('dragging: ', item.dragData)
+		}
+	}
+	function handleItemSwapSuccess(r) {
+		console.info('items swapped!', r);
+		var updateInv = false
+		var updateEq = false
+		var updateBank = false
+		if (item.dropType === 'inv') {
+			inv[item.dropSlot] = item.dragData
+			updateInv = true
+		}
+		else if (item.dropType === 'eq') {
+			eq[item.dropSlot] = item.dragData
+			updateEq = true
+		}
+		else if (item.dropType === 'bank') {
+			bank[item.dropSlot] = item.dragData
+			updateBank = true
+		}
+
+		if (item.dragType === 'inv') {
+			inv[item.dragSlot] = item.dropData
+			updateInv = true
+		}
+		else if (item.dragType === 'eq') {
+			eq[item.dragSlot] = item.dropData
+			updateEq = true
+		}
+		else if (item.dragType === 'bank') {
+			bank[item.dragSlot] = item.dropData
+			updateBank = true
+		}
+		if (updateInv) bar.updateInventoryDOM()
+		if (updateEq) bar.updateCharacterDOM()
+		if (updateBank) void 0
+		// after callback completes...
+		item.isDragging = false
 	}
 }()

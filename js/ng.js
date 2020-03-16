@@ -2,6 +2,7 @@
 var ng;
 (function() {
 	ng = {
+		responsiveRatio: 1,
 		statMap: {
 			// job bonuses
 			'jobs': {

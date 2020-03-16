@@ -125,6 +125,8 @@ var my;
 		}
 		for (var key in obj) {
 			inv[key] = Object.assign(JSON.parse(obj[key].data))
+			inv[key].row = obj[key].row
+			inv[key].itemId = obj[key].itemId
 			inv[key].name = obj[key].name
 		}
 	}
@@ -134,7 +136,10 @@ var my;
 			eq[i] = {}
 		}
 		for (var key in obj) {
+			console.info()
 			eq[key] = Object.assign(JSON.parse(obj[key].data))
+			eq[key].row = obj[key].row
+			eq[key].itemId = obj[key].itemId
 			eq[key].name = obj[key].name
 		}
 	}

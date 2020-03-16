@@ -41,6 +41,8 @@ var bar;
 		setDefaultInvWeaponImage,
 		setCharActiveTab,
 		getSkillDescription,
+		updateCharacterDOM,
+		updateInventoryDOM,
 	};
 	var index;
 	var player; // temp bar data
@@ -118,18 +120,18 @@ var bar;
 			tooltip.hide()
 			tooltip.isHoveringEq = false
 		}
-		setCharacterDOM()
+		updateCharacterDOM()
 	}
 
 	function setCharActiveTab(event) {
 		var id = event.currentTarget.dataset.id
 		if (bar.activeTab !== id) {
 			bar.activeTab = id
-			setCharacterDOM()
+			updateCharacterDOM()
 		}
 	}
 
-	function setCharacterDOM() {
+	function updateCharacterDOM() {
 		if (bar.windowsOpen.character) {
 			bar.dom.character.innerHTML = getCharacterStatsHtml()
 			bar.dom.character.style.display = 'flex'
@@ -249,7 +251,7 @@ var bar;
 			tooltip.hide()
 			tooltip.isHoveringInv = false
 		}
-		setInventoryDOM();
+		updateInventoryDOM();
 	}
 
 	function getInventoryHtml() {
@@ -290,7 +292,7 @@ var bar;
 		return html
 	}
 
-	function setInventoryDOM() {
+	function updateInventoryDOM() {
 		if (bar.windowsOpen.inventory) {
 			bar.dom.inventory.innerHTML = getInventoryHtml()
 			bar.dom.inventory.style.display = 'flex'
@@ -328,8 +330,8 @@ var bar;
 		_.each(bar.windowsOpen, function(val, key) {
 			bar.windowsOpen[key] = false
 		})
-		setCharacterDOM()
-		setInventoryDOM()
+		updateCharacterDOM()
+		updateInventoryDOM()
 		setOptionsDOM()
 	}
 

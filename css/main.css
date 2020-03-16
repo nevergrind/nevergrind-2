@@ -2141,6 +2141,9 @@ background-image:
 	z-index: 2;
 }
 #tooltip-wrap {
+	position: absolute;
+	top: 0;
+	left: 0;
 	visibility: hidden;
 	opacity: 0;
 	min-width: 16rem;
@@ -2150,6 +2153,8 @@ background-image:
 	line-height: 1.2;
 	border-radius: 5px;
 	backdrop-filter: blur(5px);
+	z-index: 2;
+	pointer-events: none;
 }
 #inventory {
 	display: none;
@@ -2206,6 +2211,7 @@ background-image:
 		rgba(0, 64, 128, 0),
 		rgba(128, 192, 255, .1));
 }
+#tooltip-item-img { width: 3.2rem; height: 3.2rem; }
 #tooltip-item-stat-wrap {
 	background-image: linear-gradient(to right,
 		rgba(0, 0, 0, .1),

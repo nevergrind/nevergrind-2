@@ -1,5 +1,5 @@
 var tooltip;
-(function($, parseInt, TweenMax, _, undefined) {
+(function($, parseInt, TweenMax, _, getComputedStyle, undefined) {
 	tooltip = {
 		timer: new delayedCall(0, ''),
 		isOpen: 0,
@@ -12,7 +12,7 @@ var tooltip;
 		handleItemEnter,
 		handleItemLeave,
 	};
-	var el;
+	var tooltipEl = getById('tooltip-wrap')
 	var wearsLeather = [
 		'BRD',
 		'CLR',
@@ -43,26 +43,43 @@ var tooltip;
 	]
 	//////////////////////////////////////////////////
 
-	function show(obj) {
+	function show(obj, slotElement, type) {
 		if (!_.size(obj)) return
-		el = getById('tooltip-wrap')
-		el.innerHTML = getItemHtml(obj)
-		//el.style.top = posY() + 'px'
-		//el.style.left = posX() + 'px'
-		el.style.visibility = 'visible'
+		tooltipEl.innerHTML = getItemHtml(obj)
+		if (slotElement) {
+			// x position
+			var y = slotElement.y - (4 * ng.responsiveRatio)
+			var height = parseInt(getComputedStyle(tooltipEl).height, 10)
+			var diff = window.innerHeight - (y + height)
+			if (diff < 50) {
+				// keep from going off the bottom of the screen
+				y -= (50 - diff)
+			}
+			tooltipEl.style.top = y + 'px'
+			// x position
+			if (type === 'eq' || type === 'bank') {
+				tooltipEl.style.left = slotElement.x + (68 * ng.responsiveRatio) + 'px'
+				tooltipEl.style.transform = 'translate(0%, 0%)'
+			}
+			else if (type === 'inv') {
+				tooltipEl.style.left = slotElement.x + 'px'
+				tooltipEl.style.transform = 'translate(-100%, 0%)'
+			}
+		}
+		tooltipEl.style.visibility = 'visible'
 		tooltip.isOpen = 1
 		tooltip.openDate = Date.now()
-		TweenMax.to(el, .2, {
+		TweenMax.to(tooltipEl, .2, {
 			opacity: 1,
 		})
 	}
 	function hide() {
-		el = getById('tooltip-wrap');
-		TweenMax.to(el, .1, {
+		TweenMax.to(tooltipEl, .1, {
 			opacity: 0,
 			onComplete: function() {
-				el.style.visibility = 'hidden';
-				tooltip.isOpen = 0;
+				tooltipEl.style.visibility = 'hidden'
+				tooltip.isOpen = 0
+				tooltipEl.innerHTML = ''
 			}
 		});
 	}
@@ -363,54 +380,26 @@ var tooltip;
 			}
 		}
 	}
-	function posX() {
-		var el = $('#tooltip-wrap');
-		var padding = parseInt(el.css('padding-left'), 10) * 2;
-		var tooltipHalfWidth = padding * 2 + el.width() / 2;
-		if (my.mouse.x < tooltipHalfWidth) {
-			// too small
-			my.mouse.x += tooltipHalfWidth / 2;
-			if (my.mouse.x < 80) {
-				my.mouse.x = 80;
-			}
-		}
-		else if (my.mouse.x > window.innerWidth - tooltipHalfWidth) {
-			// too big
-			my.mouse.x -= tooltipHalfWidth / 2;
-			var z = window.innerWidth - 80;
-			if (my.mouse.x > z) {
-				my.mouse.x = z;
-			}
-
-		}
-		return my.mouse.x;
-	}
-	function posY() {
-		// determine Y adjustment
-		var verticalOffset = 15;
-		var isMenuAbove = my.mouse.y < window.innerHeight / 2;
-		var yAdjust = isMenuAbove ? verticalOffset : (~~$("#context-wrap").height() + verticalOffset) * -1;
-		return my.mouse.y + yAdjust;
-	}
 	function handleItemEnter(event) {
 		var {index, type} = _.pick(event.currentTarget.dataset, [
 			'index', 'type'
 		])
+
 		if (type === 'eq') {
 			tooltip.isHoveringEq = true;
 			if (eq[index].name) {
-				tooltip.show(eq[index])
+				tooltip.show(eq[index], this, type)
 			}
 		}
 		else if (type === 'inv') {
 			tooltip.isHoveringInv = true;
 			if (inv[index].name) {
-				tooltip.show(inv[index])
+				tooltip.show(inv[index], this, type)
 			}
 		}
 		else if (type === 'bank') {
 			if (bank[index].name) {
-				tooltip.show(bank[index])
+				tooltip.show(bank[index], this, type)
 			}
 		}
 	}
@@ -429,4 +418,4 @@ var tooltip;
 		}
 		tooltip.hide()
 	}
-})($, parseInt, TweenMax, _);
+})($, parseInt, TweenMax, _, getComputedStyle);
