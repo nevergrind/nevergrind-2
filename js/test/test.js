@@ -1,5 +1,5 @@
 var test;
-(function(Linear, TweenMax, undefined) {
+(function(Linear, TweenMax, TimelineMax, undefined) {
 	var c;
 	var i;
 	var e;
@@ -192,4 +192,4 @@ var test;
 			});
 		}
 	}
-})(Linear, TweenMax);
+})(Linear, TweenMax, TimelineMax);

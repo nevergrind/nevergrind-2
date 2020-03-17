@@ -144,10 +144,10 @@
 		$f['job'] === 'Enchanter' ||
 		$f['job'] === 'Magician' ||
 		$f['job'] === 'Wizard') {
-		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, 6, 2)';
+		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 6, 2)';
 	}
 	else {
-		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, 6, 1)';
+		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 6, 1)';
 	}
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('i', $character_id);
@@ -157,7 +157,7 @@
 	if ($f['job'] === 'Warrior' ||
 		$f['job'] === 'Shadow Knight' ||
 		$f['job'] === 'Bard') {
-		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, 12, 3)';
+		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 12, 3)';
 	}
 	else if (
 		$f['job'] === 'Paladin' ||
@@ -165,10 +165,10 @@
 		$f['job'] === 'Cleric' ||
 		$f['job'] === 'Shaman'
 	) {
-		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, 12, 4)';
+		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 12, 4)';
 	}
 	else if ($f['job'] !== 'Monk') {
-		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, 12, 5)';
+		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 12, 5)';
 	}
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('i', $character_id);
@@ -176,7 +176,7 @@
 
 	// bow
 	if ($f['job'] === 'Ranger') {
-		$query = 'insert into `items_equipment` (c_id, slot, i_id) VALUES (?, 12, 6)';
+		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 12, 6)';
 		$stmt = $db->prepare($query);
 		$stmt->bind_param('i', $character_id);
 		$stmt->execute();

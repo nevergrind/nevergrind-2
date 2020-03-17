@@ -33,6 +33,7 @@ var items = {};
 			doubleAttack: 'Double Attack',
 		},
 		isDragging: false,
+		awaitingDrop: false,
 		dragData: {},
 		dropData: {},
 		dragType: '',
@@ -1105,6 +1106,7 @@ var items = {};
 	}
 
 	function toggleDrag(event) {
+		if (item.awaitingDrop) return
 		var type = event.currentTarget.dataset.type
 		var index = event.currentTarget.dataset.index
 		console.info('toggleDrag', type, index)
@@ -1133,12 +1135,14 @@ var items = {};
 				item.dropType = type
 			}
 
+			var moveTable = item.dropType !== item.dragType
+
 			console.warn('dragData to ', item.dropType, ' slot', item.dropSlot, item.dragData.name)
 			console.warn('dropData to ', item.dragType, ' slot', item.dragSlot, item.dropData.name)
 
 			// TODO: server doesn't need all props... refactor
-			ng.lock()
-			if (item.dropData.name) {
+			handleDragStart()
+			if (item.dropData.itemId) {
 				// swap
 				$.post(app.url + 'item/swap-items.php', {
 					dragRow: item.dragData.row,
@@ -1150,21 +1154,19 @@ var items = {};
 					dropSlot: item.dragSlot,
 					dropType: item.dragType,
 				}).done(handleItemSwapSuccess)
-					.fail(function(r){
-					ng.msg(r.responseText, 8);
-				}).always(ng.unlock);
+					.fail(handleDropFail)
+					.always(handleDropAlways)
 			}
 			else {
 				// update
 				$.post(app.url + 'item/update-item.php', {
 					dragRow: item.dragData.row,
-					dragItemId: item.dragData.itemId,
 					dragSlot: item.dropSlot,
 					dragType: item.dropType,
+					dropType: item.dragType,
 				}).done(handleItemSwapSuccess)
-					.fail(function(r){
-					ng.msg(r.responseText, 8);
-				}).always(ng.unlock);
+					.fail(handleDropFail)
+					.always(handleDropAlways)
 			}
 		}
 		else {
@@ -1191,6 +1193,19 @@ var items = {};
 			if (item.dragData.name) item.isDragging = true
 			console.warn('dragging: ', item.dragData)
 		}
+	}
+	function dropReset() {
+		item.isDragging = false
+		item.awaitingDrop = false
+		item.dragData = {}
+		item.dropData = {}
+		item.dragType = ''
+		item.dragSlot = 0
+		//TODO: Reset the drag image
+	}
+	function handleDropFail(r) {
+		ng.msg(r.responseText, 8);
+		dropReset()
 	}
 	function handleItemSwapSuccess(r) {
 		console.info('items swapped!', r);
@@ -1227,5 +1242,17 @@ var items = {};
 		if (updateBank) void 0
 		// after callback completes...
 		item.isDragging = false
+	}
+	function handleDragStart() {
+		item.awaitingDrop = true
+		var link = createElement('style')
+		link.type = 'text/css';
+		link.id = 'temp-dnd-link'
+		document.head.appendChild(link)
+		link.sheet.addRule('.item-slot', 'cursor: url("css/cursor/normal.cur"), auto !important')
+	}
+	function handleDropAlways() {
+		item.awaitingDrop = false
+		$('#temp-dnd-link').remove()
 	}
 }()

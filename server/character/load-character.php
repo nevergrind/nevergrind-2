@@ -78,10 +78,7 @@
 		$_SESSION['job'] = $r['characterData']['job'];
 
 		// get equipment
-		require '../item/get-equipment.php';
-
-		// get inventory
-		require '../item/get-inventory.php';
+		require '../item/get-player-items.php';
 
 		// get guild info
 		require '../guild/get-guild-data.php';
