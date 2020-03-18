@@ -135,11 +135,19 @@ var bar;
 		if (bar.windowsOpen.character) {
 			bar.dom.character.innerHTML = getCharacterStatsHtml()
 			bar.dom.character.style.display = 'flex'
-			if (bar.activeTab === 'skills') ng.split('inv-skill-description', skillDescriptions['offense']);
+			if (bar.activeTab === 'skills') {
+				ng.split('inv-skill-description', skillDescriptions['offense']);
+			}
+			document.querySelectorAll('.bar-text').forEach((el) => {
+				el.style.display = 'flex'
+			})
 		}
 		else {
 			bar.dom.character.innerHTML = ''
 			bar.dom.character.style.display = 'none'
+			document.querySelectorAll('.bar-text').forEach((el) => {
+				el.style.display = 'none'
+			})
 		}
 	}
 
@@ -348,6 +356,8 @@ var bar;
 			// hpBg: getById('bar-hp-bg-' + index),
 			mpWrap: getById('bar-mp-wrap-' + index),
 			mpFg: getById('bar-mp-fg-' + index),
+			spWrap: getById('bar-sp-wrap-' + index),
+			spFg: getById('bar-sp-fg-' + index),
 			isLeader: getById('bar-is-leader-' + index),
 		}
 	}
@@ -387,15 +397,21 @@ var bar;
 		// avatar
 		'<img id="bar-col-icon-'+ index +'" class="bar-col-icon" src="'+ player.avatar +'">' +
 		// bars
-		'<div class="'+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'">' +
+		'<div class="flex-column '+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'" style="justify-content: space-around">' +
 			'<i id="bar-is-leader-'+ index +'" class="ra ra-crown bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></i>' +
 			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis">'+ (player.name || '') +'</div>' +
 			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-hp-fg-'+ index +'" class="bar-hp-fg"></div>' +
+				'<div id="bar-hp-text-'+ index +'" class="flex-center bar-text text-shadow-thicc">1250/1250</div>' +
 				//'<div id="bar-hp-bg-'+ i +'" class="bar-any-bg"></div>' +
 			'</div>' +
 			'<div id="bar-mp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-mp-fg-'+ index +'" class="bar-mp-fg"></div>' +
+				'<div id="bar-hp-text-'+ index +'" class="flex-center bar-text text-shadow-thicc">730/730</div>' +
+			'</div>' +
+			'<div id="bar-sp-wrap-'+ index +'" class="bar-any-wrap">' +
+				'<div id="bar-sp-fg-'+ index +'" class="bar-sp-fg"></div>' +
+				'<div id="bar-sp-text-'+ index +'" class="flex-center bar-text text-shadow-thicc">363/363</div>' +
 			'</div>' +
 		'</div>';
 		return s;

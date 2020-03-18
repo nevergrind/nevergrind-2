@@ -1106,10 +1106,11 @@ var items = {};
 	}
 
 	function toggleDrag(event) {
+		console.info('toggleDrag awaitingDrop', item.awaitingDrop)
 		if (item.awaitingDrop) return
 		var type = event.currentTarget.dataset.type
 		var index = event.currentTarget.dataset.index
-		console.info('toggleDrag', type, index)
+		// console.info('toggleDrag', type, index)
 		if (item.isDragging) {
 			// check for same item
 			if (item.dragSlot === index && item.dragType === type) {
@@ -1135,25 +1136,17 @@ var items = {};
 				item.dropType = type
 			}
 
-			var moveTable = item.dropType !== item.dragType
-
-			console.warn('dragData to ', item.dropType, ' slot', item.dropSlot, item.dragData.name)
-			console.warn('dropData to ', item.dragType, ' slot', item.dragSlot, item.dropData.name)
-
-			// TODO: server doesn't need all props... refactor
 			handleDragStart()
 			if (item.dropData.itemId) {
 				// swap
 				$.post(app.url + 'item/swap-items.php', {
 					dragRow: item.dragData.row,
-					dragItemId: item.dragData.itemId,
 					dragSlot: item.dropSlot,
 					dragType: item.dropType,
 					dropRow: item.dropData.row,
-					dropItemId: item.dropData.itemId,
 					dropSlot: item.dragSlot,
 					dropType: item.dragType,
-				}).done(handleItemSwapSuccess)
+				}).done(handleDropSuccess)
 					.fail(handleDropFail)
 					.always(handleDropAlways)
 			}
@@ -1164,7 +1157,7 @@ var items = {};
 					dragSlot: item.dropSlot,
 					dragType: item.dropType,
 					dropType: item.dragType,
-				}).done(handleItemSwapSuccess)
+				}).done(handleDropSuccess)
 					.fail(handleDropFail)
 					.always(handleDropAlways)
 			}
@@ -1191,7 +1184,6 @@ var items = {};
 				item.dragType = type
 			}
 			if (item.dragData.name) item.isDragging = true
-			console.warn('dragging: ', item.dragData)
 		}
 	}
 	function dropReset() {
@@ -1207,8 +1199,7 @@ var items = {};
 		ng.msg(r.responseText, 8);
 		dropReset()
 	}
-	function handleItemSwapSuccess(r) {
-		console.info('items swapped!', r);
+	function handleDropSuccess(r) {
 		var updateInv = false
 		var updateEq = false
 		var updateBank = false

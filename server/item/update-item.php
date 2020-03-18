@@ -1,24 +1,16 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/session/start.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-
-error_log('///////// update-item /////////');
-error_log('dragRow ' . $_POST['dragRow']);
-error_log('dragItemId ' . $_POST['dragItemId']);
-error_log('dragSlot ' . $_POST['dragSlot']);
-error_log('dragType ' . $_POST['dragType']);
-
-error_log('dropType ' . $_POST['dropType']);
-
-$types = [
-	'eq' => 0,
-	'inv' => 1,
-	'bank' => 2
-];
 
 if ($_POST['dragType'] !== $_POST['dropType']) {
 	// dragged item to empty slot to a new table
 	// e.g. inv to bank; inv to eq; eq to inv
+	$types = [
+		'eq' => 0,
+		'inv' => 1,
+		'bank' => 2
+	];
+
 	$owner = $_POST['dragType'] === 'bank' ? $_SESSION['account'] : $_SESSION['row'];
 	$type = $types[$_POST['dragType']];
 
