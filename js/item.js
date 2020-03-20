@@ -37,11 +37,34 @@ var items = {};
 		dragData: {},
 		dropData: {},
 		dragType: '',
+		dropType: '',
 		dragSlot: 0,
+		dropSlot: 0,
+		dragEqType: '',
+		dropEqType: '',
+		eqSlots: [
+			'helms',
+			'amulets',
+			'rings',
+			'rings',
+			'shoulders',
+			'cloaks',
+			'chests',
+			'bracers',
+			'gloves',
+			'belts',
+			'legs',
+			'boots',
+			'primary',
+			'secondary',
+			'charms',
+		],
 		getEquipString,
 		getRarity,
 		getItem,
+		dropReset,
 		toggleDrag,
+		updateCursorImgPosition,
 	}
 	var slotRequiresMagic = [
 		'rings',
@@ -1112,11 +1135,11 @@ var items = {};
 		var index = event.currentTarget.dataset.index
 		// console.info('toggleDrag', type, index)
 		if (item.isDragging) {
+			item.dropEqType = event.currentTarget.dataset.eqType
 			// check for same item
 			if (item.dragSlot === index && item.dragType === type) {
 				console.warn('drop cancelled - same slot')
-				item.dragData = {}
-				item.isDragging = false
+				dropReset()
 				return
 			}
 
@@ -1134,6 +1157,11 @@ var items = {};
 				item.dropData = bank[index]
 				item.dropSlot = index
 				item.dropType = type
+			}
+			// validate drop is valid
+			if (dropInvalid(item.dragData, item.dropData)) {
+				console.warn('drop invalid -')
+				return
 			}
 
 			handleDragStart()
@@ -1163,8 +1191,12 @@ var items = {};
 			}
 		}
 		else {
+			item.dragEqType = event.currentTarget.dataset.eqType
 			// drag
 			item.dropData = {}
+			updateCursorImgPosition()
+			dom.itemTooltipCursorImg.style.visibility = 'visible'
+			dom.itemTooltipCursorImg.src = 'images/items/' + bar.getItemSlotImage(type, index) + '.png'
 			if (type === 'inv') {
 				if (!inv[index].name) return
 				item.dragData = inv[index]
@@ -1186,20 +1218,50 @@ var items = {};
 			if (item.dragData.name) item.isDragging = true
 		}
 	}
+
+	function updateCursorImgPosition() {
+		dom.itemTooltipCursorImg.style.transform =
+			'translate('+ (my.mouse.x - (32 * ng.responsiveRatio)) +'px, '+ (my.mouse.y - (28 * ng.responsiveRatio)) +'px)'
+	}
+	function dropInvalid(drag, drop) {
+		var resp = false;
+		console.info('dragEqType', item.dragEqType)
+		console.info('dropEqType', item.dropEqType)
+		console.info('drag', item.dragData)
+		console.info('drop', item.dropData)
+		if (item.dragType !== 'eq' && item.dropType !== 'eq') {
+			console.info('no equipment items - all good!')
+		}
+		else {
+			if (drag.itemType === item.dragEqType) {
+				
+			}
+			console.info('one is equipment... advanced checks inc')
+
+		}
+
+		return false;
+	}
+
 	function dropReset() {
 		item.isDragging = false
 		item.awaitingDrop = false
 		item.dragData = {}
 		item.dropData = {}
 		item.dragType = ''
+		item.dropType = ''
 		item.dragSlot = 0
+		item.dropSlot = 0
+		item.eqType = ''
+		item.eqType = ''
+		dom.itemTooltipCursorImg.style.visibility = 'hidden'
 		//TODO: Reset the drag image
 	}
 	function handleDropFail(r) {
 		ng.msg(r.responseText, 8);
 		dropReset()
 	}
-	function handleDropSuccess(r) {
+	function handleDropSuccess() {
 		var updateInv = false
 		var updateEq = false
 		var updateBank = false
@@ -1232,7 +1294,7 @@ var items = {};
 		if (updateEq) bar.updateCharacterDOM()
 		if (updateBank) void 0
 		// after callback completes...
-		item.isDragging = false
+		dropReset()
 	}
 	function handleDragStart() {
 		item.awaitingDrop = true

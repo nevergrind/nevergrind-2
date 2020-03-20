@@ -1,11 +1,12 @@
 // dom.js
 var dom;
-(function(d){
+(function(){
 	dom = {
-		body: d.getElementById('body'),
-		bgmusic: d.getElementById('bgmusic'),
-		msg: d.getElementById('msg'),
-		chatInput: d.getElementById('chat-input'),
-		chatLog: d.getElementById('chat-log')
+		body: getById('body'),
+		bgmusic: getById('bgmusic'),
+		msg: getById('msg'),
+		chatInput: getById('chat-input'),
+		chatLog: getById('chat-log'),
+		itemTooltipCursorImg: getById('item-tooltip-cursor-img')
 	}
-})(document);
+})();

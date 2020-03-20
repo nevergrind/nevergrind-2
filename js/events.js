@@ -3,23 +3,25 @@
 	var key;
 	var code;
 	// window
-	$(window)
-		.on('resize', resize)
-		.on('load', windowResized)
-		.on('focus', focus)
-		.focus(windowResized)
 
 	// document events
-	$(document)
-		.on('mousemove', mousemove)
-		.on('click', mousedown)
-		.on('keydown', keydown)
-		.ready(ready)
+	$(document).ready(ready)
 
 	//////////////////////////////////////////////
 	function ready() {
 		// console.info("Initializing title screen...");
 		delayedCall(.1, readyFire);
+
+		$(window)
+			.on('resize', resize)
+			.on('load', windowResized)
+			.on('focus', focus)
+			.focus(windowResized)
+
+		$(document)
+			.on('mousemove', mousemove)
+			.on('click', mousedown)
+			.on('keydown', keydown)
 
 		// delegated events
 		$('body').on('dragstart', 'img', dragStart)
@@ -84,6 +86,7 @@
 		//console.info('mousemove', e.clientX, e.clientY)
 		my.mouse.x = e.clientX
 		my.mouse.y = e.clientY
+		if (item.isDragging) item.updateCursorImgPosition()
 	}
 	function resize() {
 		context.hide()

@@ -43,6 +43,7 @@ var bar;
 		getSkillDescription,
 		updateCharacterDOM,
 		updateInventoryDOM,
+		getItemSlotImage,
 	};
 	var index;
 	var player; // temp bar data
@@ -67,7 +68,6 @@ var bar;
 		alteration: 'Alteration enhances the power of all alteration-based magic. Bend reality to your will by healing allies, summoning magical barriers, or fortifying your defenses.',
 		evocation: 'Evocation enhances the power of all evocation-based magic. Summon a fireball, lightning bolts, or even an impressive ice comet to destroy all who dare to oppose you!',
 		conjuration: 'Conjuration enhances the power of all conjuration-based magic. Why get your hands dirty when you can summon an ally to do the dirty work for you?! Summon a fire-breathing hydra to melt your enemies! Or summon an army of angry bees to seek and destroy! The only limit is your imagination!',
-
 	}
 	//////////////////////////////////////////////
 	function init() {
@@ -139,14 +139,14 @@ var bar;
 				ng.split('inv-skill-description', skillDescriptions['offense']);
 			}
 			document.querySelectorAll('.bar-text').forEach((el) => {
-				el.style.display = 'flex'
+				el.style.visibility = 'visible'
 			})
 		}
 		else {
 			bar.dom.character.innerHTML = ''
 			bar.dom.character.style.display = 'none'
 			document.querySelectorAll('.bar-text').forEach((el) => {
-				el.style.display = 'none'
+				el.style.visibility = 'hidden'
 			})
 		}
 	}
@@ -204,7 +204,10 @@ var bar;
 
 	function getItemSlotHtml(type, i) {
 		return '<div class="item-slot-wrap '+ getInvItemClass(type, i) +'">' +
-					'<img data-index="'+ i +'" data-type="'+ type +'" src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot">' +
+					'<img data-index="'+ i +
+					'" data-type="'+ type +
+					'" '+ (type === 'eq' ? ' data-eq-type="' + item.eqSlots[i] +'"' : '')+
+					' src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot">' +
 				'</div>';
 	}
 
@@ -341,6 +344,7 @@ var bar;
 		updateCharacterDOM()
 		updateInventoryDOM()
 		setOptionsDOM()
+		item.dropReset()
 	}
 
 	function showBarMenuPopover() {
@@ -400,6 +404,7 @@ var bar;
 		'<div class="flex-column '+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'" style="justify-content: space-around">' +
 			'<i id="bar-is-leader-'+ index +'" class="ra ra-crown bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></i>' +
 			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis">'+ (player.name || '') +'</div>' +
+			'<div>' +
 			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-hp-fg-'+ index +'" class="bar-hp-fg"></div>' +
 				'<div id="bar-hp-text-'+ index +'" class="flex-center bar-text text-shadow-thicc">1250/1250</div>' +
@@ -412,6 +417,7 @@ var bar;
 			'<div id="bar-sp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-sp-fg-'+ index +'" class="bar-sp-fg"></div>' +
 				'<div id="bar-sp-text-'+ index +'" class="flex-center bar-text text-shadow-thicc">363/363</div>' +
+			'</div>' +
 			'</div>' +
 		'</div>';
 		return s;
