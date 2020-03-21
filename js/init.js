@@ -1,10 +1,11 @@
 // reserved objects
-var eq = [];
-var inv = [];
+var eq = []
+var inv = []
+var bank = []
 // where app code is invoked upon initial load
-login.init();
-ng.init();
-audio.init();
+login.init()
+ng.init()
+audio.init()
 //audio.gameMusicInit();
-context.init();
-$('script').remove();
+context.init()
+$('script').remove()

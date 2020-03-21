@@ -206,7 +206,7 @@ var bar;
 		return '<div class="item-slot-wrap '+ getInvItemClass(type, i) +'">' +
 					'<img data-index="'+ i +
 					'" data-type="'+ type +
-					'" '+ (type === 'eq' ? ' data-eq-type="' + item.eqSlots[i] +'"' : '')+
+					'" '+ (type === 'eq' ? ' data-eq-type="' + item.eqSlotKeys[i] +'"' : '')+
 					' src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot">' +
 				'</div>';
 	}

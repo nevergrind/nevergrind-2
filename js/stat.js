@@ -17,6 +17,11 @@ var stat;
 		twoHandBlunt,
 		handToHand,
 		archery,
+		dualWield,
+		doubleAttack,
+		dodge,
+		parry,
+		riposte,
 		damage,
 		damageString,
 		resistBlood,
@@ -26,6 +31,7 @@ var stat;
 		resistFire,
 		resistIce,
 		getPropMax,
+		dualWieldMax,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
@@ -163,6 +169,21 @@ var stat;
 			if (eq[i].archery) val += eq[i].archery
 		}
 		return val
+	}
+	function dualWield() {
+		return my.dualWield
+	}
+	function doubleAttack() {
+		return my.doubleAttack
+	}
+	function dodge() {
+		return my.dodge
+	}
+	function parry() {
+		return my.parry
+	}
+	function riposte() {
+		return my.riposte
 	}
 	function damage() {
 		var min = 1

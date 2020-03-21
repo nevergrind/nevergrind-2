@@ -23,8 +23,10 @@
 			.on('click', mousedown)
 			.on('keydown', keydown)
 
-		// delegated events
-		$('body').on('dragstart', 'img', dragStart)
+		$('body')
+			.on('click', '#scene-town, #scene-dungeon', item.dropReset)
+			// delegated events
+			.on('dragstart', 'img', dragStart)
 			.on('click', '#toast-accept', toast.accept)
 			.on('click', '#toast-decline', toast.decline)
 			.on('focus', 'input', chatInputFocus)

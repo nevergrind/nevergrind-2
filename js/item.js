@@ -42,23 +42,26 @@ var items = {};
 		dropSlot: 0,
 		dragEqType: '',
 		dropEqType: '',
-		eqSlots: [
-			'helms',
-			'amulets',
-			'rings',
-			'rings',
-			'shoulders',
-			'cloaks',
-			'chests',
-			'bracers',
-			'gloves',
-			'belts',
-			'legs',
-			'boots',
-			'primary',
-			'secondary',
-			'charms',
-		],
+		eqSlots: {
+			helms: ['helms', void 0],
+			amulets: ['amulets', void 0],
+			ring1: ['rings', void 0],
+			ring2: ['rings', void 0],
+			shoulders: ['shoulders', void 0],
+			cloaks: ['cloaks', void 0],
+			chests: ['chests', void 0],
+			bracers: ['bracers', void 0],
+			gloves: ['gloves', void 0],
+			belts: ['belts', void 0],
+			legs: ['legs', void 0],
+			boots: ['boots', void 0],
+			primary: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'twoHandBlunts', 'twoHandSlashers', 'staves', 'bows', void 0],
+			secondary: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'shields', void 0],
+			charms: ['charms', void 0],
+		},
+		allWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
+		offhandWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus'],
+		twoHandWeaponTypes: ['twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
 		getEquipString,
 		getRarity,
 		getItem,
@@ -90,6 +93,7 @@ var items = {};
 		'bows',
 		'shields'
 	]
+	item.eqSlotKeys = Object.keys(item.eqSlots)
 	var prefixNames = {
 		resistBlood: function(val, multi) {
 			if (val <= 10 * multi) { return 'Ruddy' }
@@ -1159,8 +1163,9 @@ var items = {};
 				item.dropType = type
 			}
 			// validate drop is valid
-			if (dropInvalid(item.dragData, item.dropData)) {
-				console.warn('drop invalid -')
+			if (!itemSwapValid(item.dragData, item.dropData)) {
+				console.warn('drop invalid')
+				//dropReset();
 				return
 			}
 
@@ -1194,53 +1199,113 @@ var items = {};
 			item.dragEqType = event.currentTarget.dataset.eqType
 			// drag
 			item.dropData = {}
-			updateCursorImgPosition()
-			dom.itemTooltipCursorImg.style.visibility = 'visible'
-			dom.itemTooltipCursorImg.src = 'images/items/' + bar.getItemSlotImage(type, index) + '.png'
 			if (type === 'inv') {
-				if (!inv[index].name) return
-				item.dragData = inv[index]
-				item.dragSlot = index
-				item.dragType = type
+				if (inv[index].name) {
+					item.dragData = inv[index]
+					item.dragSlot = index
+					item.dragType = type
+					showCursorImg(type, index)
+				}
 			}
 			else if (type === 'eq') {
-				if (!eq[index].name) return
-				item.dragData = eq[index]
-				item.dragSlot = index
-				item.dragType = type
+				if (eq[index].name) {
+					item.dragData = eq[index]
+					item.dragSlot = index
+					item.dragType = type
+					showCursorImg(type, index)
+				}
 			}
 			else if (type === 'bank') {
-				if (!bank[index].name) return
-				item.dragData = bank[index]
-				item.dragSlot = index
-				item.dragType = type
+				if (bank[index].name) {
+					item.dragData = bank[index]
+					item.dragSlot = index
+					item.dragType = type
+					showCursorImg(type, index)
+				}
 			}
 			if (item.dragData.name) item.isDragging = true
 		}
+	}
+
+	function showCursorImg(type, index) {
+		updateCursorImgPosition()
+		dom.itemTooltipCursorImg.style.visibility = 'visible'
+		dom.itemTooltipCursorImg.src = 'images/items/' + bar.getItemSlotImage(type, index) + '.png'
 	}
 
 	function updateCursorImgPosition() {
 		dom.itemTooltipCursorImg.style.transform =
 			'translate('+ (my.mouse.x - (32 * ng.responsiveRatio)) +'px, '+ (my.mouse.y - (28 * ng.responsiveRatio)) +'px)'
 	}
-	function dropInvalid(drag, drop) {
+	function itemSwapValid(drag, drop) {
 		var resp = false;
 		console.info('dragEqType', item.dragEqType)
 		console.info('dropEqType', item.dropEqType)
 		console.info('drag', item.dragData)
 		console.info('drop', item.dropData)
+		console.warn('///////////////////////////////////////////////')
+
 		if (item.dragType !== 'eq' && item.dropType !== 'eq') {
+			resp = true
 			console.info('no equipment items - all good!')
 		}
 		else {
-			if (drag.itemType === item.dragEqType) {
-				
+			console.warn('drag 1 itemType', drag.itemType, 'to slot', item.dropEqType)
+			console.warn('drag 2 itemType', drop.itemType, 'to slot', item.dragEqType)
+
+			if (eqDropValid(drag.itemType, item.dropEqType, drag.itemLevel) &&
+				eqDropValid(drop.itemType, item.dragEqType, drop.itemLevel)) {
+				resp = true
 			}
-			console.info('one is equipment... advanced checks inc')
+		}
+
+		return resp;
+	}
+
+	function eqDropValid(itemType, eqType, itemLevel) {
+		if (my.level < itemLevel) {
+			console.warn('level not high enough to equip this item')
+			return false
+		}
+		// weapon checks
+		if (eqType === 'primary' || eqType === 'secondary' &&
+			item.allWeaponTypes.includes(itemType)) {
+			// check character can equip a weapon
+			if (itemType === 'oneHandSlashers' && !stat.oneHandSlash() ||
+				itemType === 'oneHandBlunts' && !stat.oneHandBlunt() ||
+				itemType === 'twoHandSlashers' && !stat.twoHandSlash() ||
+				itemType === 'twoHandBlunts' && !stat.twoHandBlunt() ||
+				itemType === 'piercing' && !stat.piercing() ||
+				itemType === 'bows' && !stat.archery()) {
+				console.warn('cannot equip this type of weapon', itemType)
+				return false
+			}
 
 		}
 
-		return false;
+		if (eqType === 'secondary' &&
+			item.offhandWeaponTypes.includes(itemType)) {
+			// off-hand weapon check
+			if (!stat.dualWield()) {
+				console.warn('cannot dual wield', itemType)
+				return false
+			}
+		}
+
+		if (eqType === 'primary' &&
+			item.twoHandWeaponTypes.includes(itemType)) {
+			// two-hand constraint checks (no off-hand)
+			if (eq[13].name) {
+				console.warn('Cannot equip a two-hand weapon whilst you have an off-hand item equipped')
+				return false
+			}
+		}
+
+		console.info('eqDropValid', eqType, itemType)
+		// dropping to non-eq slot
+		return item.eqSlots[eqType] === void 0 ||
+			// dropping to eq slot
+			item.eqSlots[eqType].includes(itemType)
 	}
 
 	function dropReset() {
