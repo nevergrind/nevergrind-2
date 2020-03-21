@@ -32,7 +32,8 @@ var my;
 		getPartyNames,
 		getAvatarUrl,
 		getNewLeaderName,
-		processItems,
+		processInv,
+		processEq,
 		getPartySlotByRow,
 		isLowestPartyIdMine,
 	}
@@ -118,26 +119,27 @@ var my;
 		DOM.hud.style.visibility = 'hidden';
 	}
 
-	function processItems(obj) {
+	function processInv(obj) {
 		for (var i=0; i<=item.MAX_INVENTORY; i++) {
 			inv[i] = {}
 		}
-		for (i=0; i<=item.MAX_EQUIPMENT; i++) {
+		for (var key in obj) {
+			inv[key] = JSON.parse(obj[key].data)
+			inv[key].row = obj[key].row
+			inv[key].itemId = obj[key].itemId
+			inv[key].name = obj[key].name
+		}
+	}
+
+	function processEq(obj) {
+		for (var i=0; i<=item.MAX_EQUIPMENT; i++) {
 			eq[i] = {}
 		}
 		for (var key in obj) {
-			if (!obj[key].slotType) {
-				eq[key] = JSON.parse(obj[key].data)
-				eq[key].row = obj[key].row
-				eq[key].itemId = obj[key].itemId
-				eq[key].name = obj[key].name
-			}
-			else {
-				inv[key] = JSON.parse(obj[key].data)
-				inv[key].row = obj[key].row
-				inv[key].itemId = obj[key].itemId
-				inv[key].name = obj[key].name
-			}
+			eq[key] = JSON.parse(obj[key].data)
+			eq[key].row = obj[key].row
+			eq[key].itemId = obj[key].itemId
+			eq[key].name = obj[key].name
 		}
 	}
 })();

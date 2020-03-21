@@ -31,7 +31,6 @@ var stat;
 		resistFire,
 		resistIce,
 		getPropMax,
-		dualWieldMax,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
@@ -46,48 +45,46 @@ var stat;
 	var averageArcherJobs = ['WAR', 'PAL', 'SHD', 'ROG', 'BRD']
 	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'MAG', 'WIZ']
 	var averageOneHandSlashJobs = ['WAR', 'PAL', 'SHD', 'BRD', 'DRU']
+	var val
+	var i
 
 	function str() {
 		return my.str +
 			create.raceAttrs[my.race][0] +
-			create.jobAttrs[my.jobLong][0]
+			create.jobAttrs[my.jobLong][0] + getEqOnlyTotal('str')
 	}
 	function sta() {
 		return my.sta +
 			create.raceAttrs[my.race][1] +
-			create.jobAttrs[my.jobLong][1]
+			create.jobAttrs[my.jobLong][1] + getEqOnlyTotal('sta')
 	}
 	function agi() {
 		return my.agi +
 			create.raceAttrs[my.race][2] +
-			create.jobAttrs[my.jobLong][2]
+			create.jobAttrs[my.jobLong][2] + getEqOnlyTotal('agi')
 	}
 	function dex() {
 		return my.dex +
 			create.raceAttrs[my.race][3] +
-			create.jobAttrs[my.jobLong][3]
+			create.jobAttrs[my.jobLong][3] + getEqOnlyTotal('dex')
 	}
 	function wis() {
 		return my.wis +
 			create.raceAttrs[my.race][4] +
-			create.jobAttrs[my.jobLong][4]
+			create.jobAttrs[my.jobLong][4] + getEqOnlyTotal('wis')
 	}
 	function intel() {
 		return my.intel +
 			create.raceAttrs[my.race][5] +
-			create.jobAttrs[my.jobLong][5]
+			create.jobAttrs[my.jobLong][5] + getEqOnlyTotal('intel')
 	}
 	function cha() {
 		return my.cha +
 			create.raceAttrs[my.race][6] +
-			create.jobAttrs[my.jobLong][6]
+			create.jobAttrs[my.jobLong][6] + getEqOnlyTotal('cha')
 	}
 	function armor() {
-		var val = ~~((agi() * .66) +(defense() * 3.3))
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].armor) val += eq[i].armor
-		}
-		return val
+		return ~~((agi() * .66) +(defense() * 3.3)) + getEqOnlyTotal('armor')
 	}
 	function attack() {
 		var val = 0
@@ -108,82 +105,46 @@ var stat;
 		return ~~val
 	}
 	function offense() {
-		var val = my.offense
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].offense) val += eq[i].offense
-		}
-		return val
+		return getEqTotal('offense')
 	}
 	function defense() {
-		var val = my.defense
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].defense) val += eq[i].defense
-		}
-		return val
+		return getEqTotal('defense')
 	}
 	function oneHandSlash() {
-		var val = my.oneHandSlash
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].oneHandSlash) val += eq[i].oneHandSlash
-		}
-		return val
+		return getEqTotal('oneHandSlash')
 	}
 	function oneHandBlunt() {
-		var val = my.oneHandBlunt
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].oneHandBlunt) val += eq[i].oneHandBlunt
-		}
-		return val
+		return getEqTotal('oneHandBlunt')
 	}
 	function piercing() {
-		var val = my.piercing
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].piercing) val += eq[i].piercing
-		}
-		return val
+		return getEqTotal('piercing')
 	}
 	function twoHandSlash() {
-		var val = my.twoHandSlash
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].twoHandSlash) val += eq[i].twoHandSlash
-		}
-		return val
+		return getEqTotal('twoHandSlash')
 	}
 	function twoHandBlunt() {
-		var val = my.twoHandBlunt
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].twoHandBlunt) val += eq[i].twoHandBlunt
-		}
-		return val
+		return getEqTotal('twoHandBlunt')
 	}
 	function handToHand() {
-		var val = my.handToHand
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].handToHand) val += eq[i].handToHand
-		}
-		return val
+		return getEqTotal('handToHand')
 	}
 	function archery() {
-		var val = my.archery
-		for (var i = 0; i<= 14; i++) {
-			if (eq[i].archery) val += eq[i].archery
-		}
-		return val
+		return getEqTotal('archery')
 	}
 	function dualWield() {
-		return my.dualWield
+		return getEqTotal('dualWield')
 	}
 	function doubleAttack() {
-		return my.doubleAttack
+		return getEqTotal('doubleAttack')
 	}
 	function dodge() {
-		return my.dodge
+		return getEqTotal('dodge')
 	}
 	function parry() {
-		return my.parry
+		return getEqTotal('parry')
 	}
 	function riposte() {
-		return my.riposte
+		return getEqTotal('riposte')
 	}
 	function damage() {
 		var min = 1
@@ -214,22 +175,38 @@ var stat;
 		return damage[0] + '–' + damage[1]
 	}
 	function resistBlood() {
-		return my.resistBlood
+		return getEqTotal('resistBlood')
 	}
 	function resistPoison() {
-		return my.resistPoison
+		return getEqTotal('resistPoison')
 	}
 	function resistArcane() {
-		return my.resistArcane
+		return getEqTotal('resistArcane')
 	}
 	function resistLightning() {
-		return my.resistLightning
+		return getEqTotal('resistLightning')
 	}
 	function resistFire() {
-		return my.resistFire
+		return getEqTotal('resistFire')
 	}
 	function resistIce() {
-		return my.resistIce
+		return getEqTotal('resistIce')
+	}
+	function getEqTotal(attr) {
+		val = my[attr] || 0
+		i = 0
+		for (; i<15; i++) {
+			if (eq[i][attr]) val += eq[i][attr]
+		}
+		return val
+	}
+	function getEqOnlyTotal(attr) {
+		val = 0
+		i = 0
+		for (; i<15; i++) {
+			if (eq[i][attr]) val += eq[i][attr]
+		}
+		return val
 	}
 	function getPropMax(prop) {
 		var resp = 0

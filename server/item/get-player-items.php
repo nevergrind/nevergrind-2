@@ -12,11 +12,22 @@ $stmt->bind_result($row, $i_id, $slot_type, $slot, $name, $data);
 
 // assigned if exists
 while($stmt->fetch()) {
-	$r['items'][$slot] = [
-		'row' => $row,
-		'itemId' => $i_id,
-		'slotType' => $slot_type,
-		'name' => $name,
-		'data' => $data
-	];
+	if (!$slot_type) {
+		$r['eq'][$slot] = [
+			'row' => $row,
+			'itemId' => $i_id,
+			'slotType' => $slot_type,
+			'name' => $name,
+			'data' => $data
+		];
+	}
+	else {
+		$r['inv'][$slot] = [
+			'row' => $row,
+			'itemId' => $i_id,
+			'slotType' => $slot_type,
+			'name' => $name,
+			'data' => $data
+		];
+	}
 }

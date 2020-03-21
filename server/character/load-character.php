@@ -24,8 +24,8 @@
 		$alteration, $conjuration, $evocation);
 
 	$r['characterData'] = [];
-	$r['equipment'] = [];
-	$r['inventory'] = [];
+	$r['eq'] = [];
+	$r['inv'] = [];
 	$i = 0;
 
 	while($stmt->fetch()){

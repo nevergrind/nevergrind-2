@@ -90,7 +90,8 @@ var town;
 
 				guild.setGuildData(data)
 
-				my.processItems(data.items)
+				my.processInv(data.inv)
+				my.processEq(data.eq)
 
 				// init party member values
 				ng.setScene('town')
