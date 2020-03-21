@@ -65,6 +65,7 @@ var items = {};
 		getEquipString,
 		getRarity,
 		getItem,
+		getLoot,
 		dropReset,
 		toggleDrag,
 		updateCursorImgPosition,
@@ -549,7 +550,34 @@ var items = {};
 		}
 		return resp;
 	}
+	function getItemNameString(drop) {
+		return '<span class="item-'+ drop.rarity +'">[' + drop.name + ']</span>'
+	}
+	function getFirstAvailableInvSlot() {
+		return inv.findIndex(slot => !slot.name)
+	}
+	function getLoot(config, mobSlot) {
+		var slot = getFirstAvailableInvSlot()
+		if (slot === -1) {
+			console.warn('You have no room in your inventory!')
+			return
+		}
+		handleDragStart()
+		var drop = item.getItem(config)
+		console.info('getLoot', drop)
+		$.post(app.url + 'item/loot-item.php', {
+			slot: slot,
+			name: drop.name,
+			data: JSON.stringify(drop),
+		}).done(data => {
+			inv[slot] = drop
+			var mobName = _.get(mob[mobSlot], 'name', 'a monster')
+			chat.log(mobName + ' dropped ' + getItemNameString(drop))
+			bar.updateInventoryDOM()
+		}).always(handleDropAlways)
+	}
 	function getItem(config) {
+		if (!config) config = { mobLevel: 10 }
 		if (config.bonus === undefined) {
 			config.bonus = 0
 		}
@@ -570,7 +598,7 @@ var items = {};
 		}
 		// clone item and then figure out what to grab
 		var itemObj = _.cloneDeep(items[itemSlot])
-		//console.info('itemObj', config.rarity, itemObj)
+		//console.info('itemObj', rarity, itemObj)
 
 		// get base items filtered by mob level
 		var filteredItems = _.filter(itemObj['normal'], filterItems)
@@ -600,7 +628,7 @@ var items = {};
 			delete drop.minArmor
 			delete drop.maxArmor
 		}
-		drop.rarity = config.rarity
+		drop.rarity = rarity
 		if (itemsWithDurability.includes(itemSlot)) {
 			drop.durability = 100
 		}

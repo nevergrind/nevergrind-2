@@ -159,12 +159,16 @@ var test;
 	 */
 	function getItem(level = 50, rarity = undefined, itemSlot = '', itemName = '') {
 		if (itemName) { level = 50 } // because it needs to select any item
+		if (itemSlot === 'rings' || itemSlot === 'amulets' && rarity === 'normal') {
+			rarity = 'magic'
+		}
 		rarity = rarity || item.getRarity();
 		var drop = item.getItem({
 			mobLevel: level,
 			rarity: rarity,
 			itemSlot: itemSlot,
 			itemName: itemName,
+			addToInv: true
 		})
 		tooltip.show(drop)
 		return drop
