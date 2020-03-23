@@ -1,4 +1,4 @@
-items.piercers = {
+loot.piercers = {
 	base: {
 		slots: ['primary', 'secondary'],
 		weaponSkill: 'Piercing',

@@ -1,4 +1,4 @@
-items.staves = {
+loot.staves = {
 	base: {
 		slots: ['primary'],
 		weaponSkill: 'Two-hand Blunt',

@@ -140,7 +140,7 @@ var create;
 		setFace()
 	}
 	function onNameChange(e) {
-		if (_.includes(create.whitelist, e.key)) {
+		if (create.whitelist.includes(e.key)) {
 			var val = $(this).val().trim();
 			create.form.name = val.replace(/[^A-z]/g, '');
 		}
@@ -223,7 +223,6 @@ var create;
 			ng.attrs.forEach(key => {
 				finalForm[key] -= create.base[key];
 			});
-			finalForm.face = 9;
 			// send to server
 			$.post(app.url + 'create/create-character.php', {
 				form: finalForm
@@ -604,6 +603,6 @@ var create;
 	}
 	// private /////////////////////////////////////////////////
 	function getCleanName(name) {
-		return _.capitalize(_.map(name, char => _.includes(create.whitelist, char) ? char : '').join(''));
+		return _.capitalize(_.map(name, char => create.whitelist.includes(char) ? char : '').join(''));
 	}
 })(_);

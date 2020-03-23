@@ -384,23 +384,11 @@ var tooltip;
 		var {index, type} = _.pick(event.currentTarget.dataset, [
 			'index', 'type'
 		])
-
-		if (type === 'eq') {
-			tooltip.isHoveringEq = true;
-			if (eq[index].name) {
-				tooltip.show(eq[index], this, type)
-			}
-		}
-		else if (type === 'inv') {
-			tooltip.isHoveringInv = true;
-			if (inv[index].name) {
-				tooltip.show(inv[index], this, type)
-			}
-		}
-		else if (type === 'bank') {
-			if (bank[index].name) {
-				tooltip.show(bank[index], this, type)
-			}
+		if (type === 'eq') tooltip.isHoveringEq = true
+		else if (type === 'inv') tooltip.isHoveringInv = true
+		else tooltip.isHoveringBank = true
+		if (items[type][index].name) {
+			tooltip.show(items[type][index], this, type)
 		}
 	}
 	function handleItemLeave(event) {

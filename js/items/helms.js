@@ -1,4 +1,4 @@
-items.helms = {
+loot.helms = {
 	base: {
 		slots: ['head'],
 		armorType: 'cloth',

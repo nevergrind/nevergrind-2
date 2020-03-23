@@ -88,9 +88,9 @@ var stat;
 	}
 	function attack() {
 		var val = 0
-		var type = eq[12].itemType
+		var type = items.eq[12].itemType
 		for (var i = 0; i<= 14; i++) {
-			if (eq[i].attack) val += eq[i].attack
+			if (items.eq[i].attack) val += items.eq[i].attack
 		}
 		// offense
 		val += (offense() * 1.66)
@@ -150,9 +150,9 @@ var stat;
 		var min = 1
 		var max = 1
 		var atk = attack()
-		if (eq[12].minDamage) {
-			min = eq[12].minDamage
-			max = eq[12].maxDamage
+		if (items.eq[12].minDamage) {
+			min = items.eq[12].minDamage
+			max = items.eq[12].maxDamage
 		}
 		else {
 			// TODO: Calculate punching damage
@@ -196,7 +196,7 @@ var stat;
 		val = my[attr] || 0
 		i = 0
 		for (; i<15; i++) {
-			if (eq[i][attr]) val += eq[i][attr]
+			if (items.eq[i][attr]) val += items.eq[i][attr]
 		}
 		return val
 	}
@@ -204,7 +204,7 @@ var stat;
 		val = 0
 		i = 0
 		for (; i<15; i++) {
-			if (eq[i][attr]) val += eq[i][attr]
+			if (items.eq[i][attr]) val += items.eq[i][attr]
 		}
 		return val
 	}

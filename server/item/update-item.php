@@ -4,24 +4,20 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 if ($_POST['dragType'] !== $_POST['dropType']) {
 	// dragged item to empty slot to a new table
-	// e.g. inv to bank; inv to eq; eq to inv
 	$types = [
 		'eq' => 0,
 		'inv' => 1,
 		'bank' => 2
 	];
-
 	$owner = $_POST['dragType'] === 'bank' ? $_SESSION['account'] : $_SESSION['row'];
 	$type = $types[$_POST['dragType']];
-
-	$stmt = $db->prepare('update `item_rels` set owner_id=?, slot=?, slot_type=? where row=?');
-	$stmt->bind_param('iiii', $owner, $_POST['dragSlot'], $type, $_POST['dragRow']);
+	$stmt = $db->prepare('update `items` set owner_id=?, slot=?, slot_type='. $type .' where row=?');
+	$stmt->bind_param('iii', $owner, $_POST['dragSlot'], $_POST['dragRow']);
 	$stmt->execute();
 }
 else {
 	// dragged item to same table to an empty slot
-	// e.g. inv to empty inv; eq to empty eq; primary to secondary; ring to ring; bank to bank
-	$stmt = $db->prepare('update `item_rels` set slot=? where row=?');
+	$stmt = $db->prepare('update `items` set slot=? where row=?');
 	$stmt->bind_param('ii', $_POST['dragSlot'], $_POST['dragRow']);
 	$stmt->execute();
 }

@@ -121,25 +121,23 @@ var my;
 
 	function processInv(obj) {
 		for (var i=0; i<=item.MAX_INVENTORY; i++) {
-			inv[i] = {}
+			items.inv[i] = {}
 		}
 		for (var key in obj) {
-			inv[key] = JSON.parse(obj[key].data)
-			inv[key].row = obj[key].row
-			inv[key].itemId = obj[key].itemId
-			inv[key].name = obj[key].name
+			items.inv[key] = JSON.parse(obj[key].data)
+			items.inv[key].row = obj[key].row
+			items.inv[key].name = obj[key].name
 		}
 	}
 
 	function processEq(obj) {
 		for (var i=0; i<=item.MAX_EQUIPMENT; i++) {
-			eq[i] = {}
+			items.eq[i] = {}
 		}
 		for (var key in obj) {
-			eq[key] = JSON.parse(obj[key].data)
-			eq[key].row = obj[key].row
-			eq[key].itemId = obj[key].itemId
-			eq[key].name = obj[key].name
+			items.eq[key] = JSON.parse(obj[key].data)
+			items.eq[key].row = obj[key].row
+			items.eq[key].name = obj[key].name
 		}
 	}
 })();

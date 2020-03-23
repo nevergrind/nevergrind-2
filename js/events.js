@@ -23,9 +23,8 @@
 			.on('click', mousedown)
 			.on('keydown', keydown)
 
+		// delegated events
 		$('body')
-			.on('click', '#scene-town, #scene-dungeon', item.dropReset)
-			// delegated events
 			.on('dragstart', 'img', dragStart)
 			.on('click', '#toast-accept', toast.accept)
 			.on('click', '#toast-decline', toast.decline)
@@ -37,6 +36,8 @@
 			.on('click', '.item-slot', item.toggleDrag)
 			.on('click', '.inv-tabs', bar.setCharActiveTab)
 			.on('click', '.inv-skill-row', bar.getSkillDescription)
+			.on('click', '#scene-town, #scene-dungeon', item.dropItem)
+
 	}
 	function chatInputFocus() {
 		chat.hasFocus = 1;
@@ -146,7 +147,7 @@
 				console.warn('toggleOptions', key)
 				bar.toggleOptions()
 			}
-			else if (!chat.hasFocus && !guild.hasFocus && _.includes(chat.focusKeys, key)) {
+			else if (!chat.hasFocus && !guild.hasFocus && chat.focusKeys.includes(key)) {
 				var z = $("#chat-input");
 				var text = z.val();
 				!text && chat.dom.chatInput.focus();
@@ -158,7 +159,7 @@
 				// title specific
 				if (!ng.isModalOpen){
 					// any key press focuses on input first
-					_.includes(create.whitelist, key) && getById('create-character-name').focus();
+					create.whitelist.includes(key) && getById('create-character-name').focus();
 				}
 			}
 			else {
@@ -206,7 +207,7 @@
 					// town specific
 					if (!chat.hasFocus) {
 						// if no aside, focus on chat input first
-						!town.asideSelected && _.includes(chat.focusKeys, key) && chat.dom.chatInput.focus();
+						!town.asideSelected && chat.focusKeys.includes(key) && chat.dom.chatInput.focus();
 
 						if (guild.hasFocus && key === 'Enter') {
 							guild.create();
@@ -215,7 +216,7 @@
 				}
 				else {
 					// dungeon & combat specific
-					if (!chat.hasFocus && _.includes(chat.focusKeys, key)) {
+					if (!chat.hasFocus && chat.focusKeys.includes(key)) {
 						chat.dom.chatInput.focus();
 					}
 

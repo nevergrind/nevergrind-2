@@ -43,6 +43,8 @@ var bar;
 		getSkillDescription,
 		updateCharacterDOM,
 		updateInventoryDOM,
+		updateBankDOM,
+		updateDOM,
 		getItemSlotImage,
 	};
 	var index;
@@ -130,25 +132,15 @@ var bar;
 			updateCharacterDOM()
 		}
 	}
-
-	function updateCharacterDOM() {
-		if (bar.windowsOpen.character) {
-			bar.dom.character.innerHTML = getCharacterStatsHtml()
-			bar.dom.character.style.display = 'flex'
-			if (bar.activeTab === 'skills') {
-				ng.split('inv-skill-description', skillDescriptions['offense']);
-			}
-			document.querySelectorAll('.bar-text').forEach((el) => {
-				el.style.visibility = 'visible'
-			})
-		}
-		else {
-			bar.dom.character.innerHTML = ''
-			bar.dom.character.style.display = 'none'
-			document.querySelectorAll('.bar-text').forEach((el) => {
-				el.style.visibility = 'hidden'
-			})
-		}
+	function showBarText() {
+		querySelectorAll('.bar-text').forEach(el => {
+			el.style.visibility = 'visible'
+		})
+	}
+	function hideBarText() {
+		querySelectorAll('.bar-text').forEach(el => {
+			el.style.visibility = 'hidden'
+		})
 	}
 
 	function getCharacterStatsHtml() {
@@ -212,45 +204,17 @@ var bar;
 	}
 
 	function getItemSlotImage(type, slot) {
-		var resp
-		if (type === 'eq') {
-			resp = bar.defaultImage[slot]
-			if (eq[slot].name && eq[slot].itemType) {
-				resp = eq[slot].itemType + eq[slot].imgIndex
-			}
-		}
-		else {
-			resp = 'item-bg-1'
-			if (type === 'inv') {
-				if (inv[slot].name && inv[slot].itemType) {
-					resp = inv[slot].itemType + inv[slot].imgIndex
-				}
-			}
-			else if (type === 'bank') {
-				if (bank[slot].name && bank[slot].itemType) {
-					resp = bank[slot].itemType + bank[slot].imgIndex
-				}
-			}
+		var resp = type === 'eq' ? bar.defaultImage[slot] : 'item-bg-1'
+		if (items[type][slot].name && items[type][slot].itemType) {
+			resp = items[type][slot].itemType + items[type][slot].imgIndex
 		}
 		return resp
 	}
 
 	function getInvItemClass(type, slot) {
 		var resp = 'item-slot-type-none'
-		if (type === 'eq') {
-			if (eq[slot].name && eq[slot].rarity) {
-				resp = 'item-slot-type-' + eq[slot].rarity
-			}
-		}
-		else if (type === 'inv') {
-			if (inv[slot].name && inv[slot].rarity) {
-				resp = 'item-slot-type-' + inv[slot].rarity
-			}
-		}
-		else if (type === 'bank') {
-			if (bank[slot].name && bank[slot].rarity) {
-				resp = 'item-slot-type-' + bank[slot].rarity
-			}
+		if (items[type][slot].name && items[type][slot].rarity) {
+			resp = 'item-slot-type-' + items[type][slot].rarity
 		}
 		return resp
 	}
@@ -303,6 +267,26 @@ var bar;
 		return html
 	}
 
+	function updateCharacterDOM() {
+		var start = performance.now()
+		var t = Date.now()
+		if (bar.windowsOpen.character) {
+			bar.dom.character.innerHTML = getCharacterStatsHtml()
+			bar.dom.character.style.display = 'flex'
+			if (bar.activeTab === 'skills') {
+				ng.split('inv-skill-description', skillDescriptions['offense']);
+			}
+			showBarText()
+		}
+		else {
+			bar.dom.character.innerHTML = ''
+			bar.dom.character.style.display = 'none'
+			hideBarText()
+		}
+		console.info('updateCharacterDOM', performance.now() - start)
+		console.info('updateCharacterDOM', Date.now() - t)
+	}
+
 	function updateInventoryDOM() {
 		if (bar.windowsOpen.inventory) {
 			bar.dom.inventory.innerHTML = getInventoryHtml()
@@ -312,6 +296,17 @@ var bar;
 			bar.dom.inventory.innerHTML = ''
 			bar.dom.inventory.style.display = 'none'
 		}
+	}
+
+	function updateBankDOM() {
+		console.warn('updateBankDOM')
+	}
+
+	function updateDOM() {
+		var types = _.uniq([item.dragType, item.dropType])
+		types.includes('eq') && updateCharacterDOM()
+		types.includes('inv') && updateInventoryDOM()
+		types.includes('bank') && updateBankDOM()
 	}
 
 	function toggleOptions() {

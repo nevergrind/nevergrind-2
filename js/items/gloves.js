@@ -1,4 +1,4 @@
-items.gloves = {
+loot.gloves = {
 	base: {
 		slots: ['hands'],
 		armorType: 'cloth',

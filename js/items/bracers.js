@@ -1,4 +1,4 @@
-items.bracers = {
+loot.bracers = {
 	base: {
 		slots: ['wrist'],
 		armorType: 'cloth',

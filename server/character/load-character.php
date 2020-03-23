@@ -3,25 +3,12 @@
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 	// get my character data
-	$query = 'select row, name, face, gender, level, race, job, 
-		exp, gold,
-	 	str, sta, agi, dex, wis, intel, cha,
-	 	offense, defense, dualWield, doubleAttack, 
-	 	oneHandSlash, twoHandSlash, oneHandBlunt, twoHandBlunt, piercing, archery, handToHand,
-	 	dodge, parry, riposte,
-	 	alteration, conjuration, evocation
-	 	from `characters` where row=? limit 1';
+	$query = 'select row, name, face, gender, level, race, job, exp, gold, data from `characters` where row=? limit 1';
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $_POST['row']);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($row, $name, $face, $gender, $level, $race, $job,
-		$exp, $gold,
-		$str, $sta, $agi, $dex, $wis, $intel, $cha,
-		$offense, $defense, $dualWield, $doubleAttack,
-		$oneHandSlash, $twoHandSlash, $oneHandBlunt, $twoHandBlunt, $piercing, $archery, $handToHand,
-		$dodge, $parry, $riposte,
-		$alteration, $conjuration, $evocation);
+	$stmt->bind_result($row, $name, $face, $gender, $level, $race, $job, $exp, $gold, $data);
 
 	$r['characterData'] = [];
 	$r['eq'] = [];
@@ -39,30 +26,7 @@
 			'job' => $job,
 			'exp' => $exp,
 			'gold' => $gold,
-			'str' => $str,
-			'sta' => $sta,
-			'agi' => $agi,
-			'dex' => $dex,
-			'wis' => $wis,
-			'intel' => $intel,
-			'cha' => $cha,
-			'offense' => $offense,
-			'defense' => $defense,
-			'dualWield' => $dualWield,
-			'doubleAttack' => $doubleAttack,
-			'oneHandSlash' => $oneHandSlash,
-			'twoHandSlash' => $twoHandSlash,
-			'oneHandBlunt' => $oneHandBlunt,
-			'twoHandBlunt' => $twoHandBlunt,
-			'piercing' => $piercing,
-			'archery' => $archery,
-			'handToHand' => $handToHand,
-			'dodge' => $dodge,
-			'parry' => $parry,
-			'riposte' => $riposte,
-			'alteration' => $alteration,
-			'conjuration' => $conjuration,
-			'evocation' => $evocation
+			'data' => $data
 		];
 		$i++;
 	}

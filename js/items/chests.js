@@ -1,4 +1,4 @@
-items.chests = {
+loot.chests = {
 	base: {
 		slots: ['chest'],
 		armorType: 'cloth',

@@ -1,5 +1,10 @@
 var item;
-var items = {};
+var items = {
+	inv: [],
+	eq: [],
+	bank: []
+}
+var loot = {};
 !function() {
 	item = {
 		MAX_EQUIPMENT: 14, // 15
@@ -69,6 +74,8 @@ var items = {};
 		dropReset,
 		toggleDrag,
 		updateCursorImgPosition,
+		dropItem,
+		destroy,
 	}
 	var slotRequiresMagic = [
 		'rings',
@@ -554,12 +561,12 @@ var items = {};
 		return '<span class="item-'+ drop.rarity +'">[' + drop.name + ']</span>'
 	}
 	function getFirstAvailableInvSlot() {
-		return inv.findIndex(slot => !slot.name)
+		return items.inv.findIndex(slot => !slot.name)
 	}
 	function getLoot(config, mobSlot) {
 		var slot = getFirstAvailableInvSlot()
 		if (slot === -1) {
-			console.warn('You have no room in your inventory!')
+			chat.log('You have no room in your inventory!')
 			return
 		}
 		handleDragStart()
@@ -570,7 +577,7 @@ var items = {};
 			name: drop.name,
 			data: JSON.stringify(drop),
 		}).done(data => {
-			inv[slot] = drop
+			items.inv[slot] = drop
 			var mobName = _.get(mob[mobSlot], 'name', 'a monster')
 			chat.log(mobName + ' dropped ' + getItemNameString(drop))
 			bar.updateInventoryDOM()
@@ -584,7 +591,7 @@ var items = {};
 		var rarity = config.rarity || getRarity(config.bonus)
 		// set item type (normal, magic, etc)
 		//console.info('getRarity', rarity)
-		var keys = _.keys(items)
+		var keys = _.keys(loot)
 		// get possible slotTypes (helms, chests) based on rarity
 		var filteredKeys = _.filter(keys, filterKeys)
 		//console.info('filteredKeys', filteredKeys)
@@ -597,7 +604,7 @@ var items = {};
 			var itemSlot = filteredKeys[_.random(0, filteredKeys.length - 1)]
 		}
 		// clone item and then figure out what to grab
-		var itemObj = _.cloneDeep(items[itemSlot])
+		var itemObj = _.cloneDeep(loot[itemSlot])
 		//console.info('itemObj', rarity, itemObj)
 
 		// get base items filtered by mob level
@@ -674,8 +681,8 @@ var items = {};
 			return index;
 		}
 		function getUniqueItemCount(drop) {
-			if (_.isArray(items[drop.itemType].unique)) {
-				var uniqueItems = _.filter(items[drop.itemType].unique, item => item.name === drop.name);
+			if (_.isArray(loot[drop.itemType].unique)) {
+				var uniqueItems = _.filter(loot[drop.itemType].unique, item => item.name === drop.name);
 				return uniqueItems.length
 			}
 			else {
@@ -699,7 +706,7 @@ var items = {};
 		}
 		function processUniqueDrop(drop) {
 			// select one if more than one exists
-			var possibleItems = _.filter(items[drop.itemType].unique, item => item.name === drop.name)
+			var possibleItems = _.filter(loot[drop.itemType].unique, item => item.name === drop.name)
 			var len = possibleItems.length
 			// console.info('possibleItems', possibleItems)
 			if (len > 1) {
@@ -1056,7 +1063,8 @@ var items = {};
 	}
 	function setMaxPropValue(obj, key, tc) {
 		var MAX_TREASURE_CLASS = 45
-		//console.info('setMaxPropValue', obj[key], key, tc)
+		console.info('set max', obj)
+		console.info('setMaxPropValue', obj[key], key, tc)
 		var val = (obj[key] * (tc / MAX_TREASURE_CLASS)) - minValue[key]
 		if (val < minValue[key]) { val = minValue[key] }
 		return _.round(val)
@@ -1175,21 +1183,9 @@ var items = {};
 				return
 			}
 
-			if (type === 'inv') {
-				item.dropData = inv[index]
-				item.dropSlot = index
-				item.dropType = type
-			}
-			else if (type === 'eq') {
-				item.dropData = eq[index]
-				item.dropSlot = index
-				item.dropType = type
-			}
-			else if (type === 'bank') {
-				item.dropData = bank[index]
-				item.dropSlot = index
-				item.dropType = type
-			}
+			item.dropData = items[type][index]
+			item.dropSlot = index
+			item.dropType = type
 			// validate drop is valid
 			if (!itemSwapValid(item.dragData, item.dropData)) {
 				console.warn('drop invalid')
@@ -1198,7 +1194,7 @@ var items = {};
 			}
 
 			handleDragStart()
-			if (item.dropData.itemId) {
+			if (item.dropData.row) {
 				// swap
 				$.post(app.url + 'item/swap-items.php', {
 					dragRow: item.dragData.row,
@@ -1227,31 +1223,14 @@ var items = {};
 			item.dragEqType = event.currentTarget.dataset.eqType
 			// drag
 			item.dropData = {}
-			if (type === 'inv') {
-				if (inv[index].name) {
-					item.dragData = inv[index]
-					item.dragSlot = index
-					item.dragType = type
-					showCursorImg(type, index)
-				}
-			}
-			else if (type === 'eq') {
-				if (eq[index].name) {
-					item.dragData = eq[index]
-					item.dragSlot = index
-					item.dragType = type
-					showCursorImg(type, index)
-				}
-			}
-			else if (type === 'bank') {
-				if (bank[index].name) {
-					item.dragData = bank[index]
-					item.dragSlot = index
-					item.dragType = type
-					showCursorImg(type, index)
-				}
+			if (items[type][index].name) {
+				item.dragData = items[type][index]
+				item.dragSlot = index
+				item.dragType = type
+				showCursorImg(type, index)
 			}
 			if (item.dragData.name) item.isDragging = true
+			else dropReset()
 		}
 	}
 
@@ -1292,7 +1271,7 @@ var items = {};
 
 	function eqDropValid(itemType, eqType, itemLevel) {
 		if (my.level < itemLevel) {
-			console.warn('level not high enough to equip this item')
+			chat.log('Your level is not high enough to equip this item!', 'chat-warning')
 			return false
 		}
 		// weapon checks
@@ -1305,17 +1284,16 @@ var items = {};
 				itemType === 'twoHandBlunts' && !stat.twoHandBlunt() ||
 				itemType === 'piercing' && !stat.piercing() ||
 				itemType === 'bows' && !stat.archery()) {
-				console.warn('cannot equip this type of weapon', itemType)
+				chat.log('You cannot equip this type of weapon!', 'chat-warning')
 				return false
 			}
-
 		}
 
 		if (eqType === 'secondary' &&
 			item.offhandWeaponTypes.includes(itemType)) {
 			// off-hand weapon check
 			if (!stat.dualWield()) {
-				console.warn('cannot dual wield', itemType)
+				chat.log('You cannot dual wield!', 'chat-warning')
 				return false
 			}
 		}
@@ -1323,8 +1301,8 @@ var items = {};
 		if (eqType === 'primary' &&
 			item.twoHandWeaponTypes.includes(itemType)) {
 			// two-hand constraint checks (no off-hand)
-			if (eq[13].name) {
-				console.warn('Cannot equip a two-hand weapon whilst you have an off-hand item equipped')
+			if (items.eq[13].name) {
+				chat.log('You cannot equip a two-hand weapon while dual wielding!', 'chat-warning')
 				return false
 			}
 		}
@@ -1355,41 +1333,14 @@ var items = {};
 		dropReset()
 	}
 	function handleDropSuccess() {
-		var updateInv = false
-		var updateEq = false
-		var updateBank = false
-		if (item.dropType === 'inv') {
-			inv[item.dropSlot] = item.dragData
-			updateInv = true
-		}
-		else if (item.dropType === 'eq') {
-			eq[item.dropSlot] = item.dragData
-			updateEq = true
-		}
-		else if (item.dropType === 'bank') {
-			bank[item.dropSlot] = item.dragData
-			updateBank = true
-		}
-
-		if (item.dragType === 'inv') {
-			inv[item.dragSlot] = item.dropData
-			updateInv = true
-		}
-		else if (item.dragType === 'eq') {
-			eq[item.dragSlot] = item.dropData
-			updateEq = true
-		}
-		else if (item.dragType === 'bank') {
-			bank[item.dragSlot] = item.dropData
-			updateBank = true
-		}
-		if (updateInv) bar.updateInventoryDOM()
-		if (updateEq) bar.updateCharacterDOM()
-		if (updateBank) void 0
-		// after callback completes...
+		items[item.dropType][item.dropSlot] = item.dragData
+		items[item.dragType][item.dragSlot] = item.dropData
+		bar.updateDOM()
 		dropReset()
 	}
+
 	function handleDragStart() {
+		// ajax start
 		item.awaitingDrop = true
 		var link = createElement('style')
 		link.type = 'text/css';
@@ -1398,7 +1349,38 @@ var items = {};
 		link.sheet.addRule('.item-slot', 'cursor: url("css/cursor/normal.cur"), auto !important')
 	}
 	function handleDropAlways() {
+		// ajax end
 		item.awaitingDrop = false
 		$('#temp-dnd-link').remove()
+	}
+
+	function getDragItemName() {
+		return items[item.dragType][item.dragSlot].name
+	}
+
+	function dropItem() {
+		if (item.dragType && item.dragSlot) {
+			console.warn('dropItem')
+			toast.add({
+				action: 'destroy-item',
+				msg: 'Are you sure you want to destroy ' + getDragItemName()
+			});
+		}
+	}
+	function destroy() {
+		console.info('destroy')
+		handleDragStart()
+		$.post(app.url + 'item/destroy-item.php', {
+			row: item.dragData.row,
+			dragType: item.dragType
+		}).done(handleDestroySuccess)
+			.fail(handleDropFail)
+			.always(handleDropAlways)
+	}
+
+	function handleDestroySuccess() {
+		items[item.dragType][item.dragSlot] = {}
+		bar.updateDOM()
+		dropReset()
 	}
 }()

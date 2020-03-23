@@ -91,50 +91,35 @@
 	// default skill values
 	require 'add-starting-skills.php';
 	addStartingSkills($f);
+	// build data field
+	$data = json_encode([
+		'str' => $f['str'] * 1,
+		'sta' => $f['sta'] * 1,
+		'agi' => $f['agi'] * 1,
+		'dex' => $f['dex'] * 1,
+		'wis' => $f['wis'] * 1,
+		'intel' => $f['intel'] * 1,
+		'cha' => $f['cha'] * 1,
+		'offense' => $f['offense'],
+		'defense' => $f['defense'],
+		'oneHandSlash' => $f['oneHandSlash'],
+		'twoHandSlash' => $f['twoHandSlash'],
+		'twoHandBlunt' => $f['twoHandBlunt'],
+		'piercing' => $f['piercing'],
+		'archery' => $f['archery'],
+		'dodge' => $f['dodge'],
+		'parry' => $f['parry'],
+		'riposte' => $f['riposte'],
+		'dualWield' => $f['dualWield'],
+		'doubleAttack' => $f['doubleAttack'],
+		'alteration' => $f['alteration'],
+		'conjuration' => $f['conjuration'],
+		'evocation' => $f['evocation']
+	]);
 
-	// insert into character
-	$fields = [
-		'`account`',
-		'`name`',
-		'`gender`',
-		'`face`',
-		'`race`',
-		'`job`',
-		'`str`',
-		'`sta`',
-		'`agi`',
-		'`dex`',
-		'`wis`',
-		'`intel`',
-		'`cha`',
-		'`dualWield`',
-		'`oneHandSlash`',
-		'`twoHandSlash`',
-		'`twoHandBlunt`',
-		'`piercing`',
-		'`archery`',
-		'`dodge`',
-		'`alteration`',
-		'`evocation`',
-		'`conjuration`'
-	];
-	$values = [];
-	foreach ($fields as $value) {
-		$values[] = '?';
-	}
-	$query = 'insert into `characters` (' .
-		join(',', $fields)
-	. ') VALUES (' .
-		join(',', $values)
-	.')';
+	$query = 'insert into `characters` (`account`, `name`, `gender`, `face`, `race`, `job`, `data`) VALUES (?, ?, ?, ?, ?, ?, \'' . $data .'\')';
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('isiissiiiiiiiiiiiiiiiii',
-		$_SESSION['account'], $f['name'], $f['gender'], $f['face'], $f['race'], $f['shortJob'],
-		$f['str'], $f['sta'], $f['agi'], $f['dex'], $f['wis'],
-		$f['intel'], $f['cha'], $f['dualWield'], $f['oneHandSlash'], $f['twoHandSlash'],
-		$f['twoHandBlunt'], $f['piercing'], $f['archery'], $f['dodge'], $f['alteration'], $f['evocation'],
-		$f['conjuration']
-	);
+	$stmt->bind_param('isiiss', $_SESSION['account'], $f['name'], $f['gender'], $f['face'], $f['race'], $f['shortJob']);
 	$stmt->execute();
 	$character_id = mysqli_insert_id($db);
 
@@ -144,10 +129,12 @@
 		$f['job'] === 'Enchanter' ||
 		$f['job'] === 'Magician' ||
 		$f['job'] === 'Wizard') {
-		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 6, 2)';
+		$data = json_encode('{"slots":["chest"],"armorType":"cloth","armor":1,"rarity":"normal","itemLevel":1,"imgIndex":4,"itemType":"chests"}');
+		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 6, "Training Robe", '. $data .')';
 	}
 	else {
-		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 6, 1)';
+		$data = json_encode('{"slots":["chest"],"armorType":"cloth","armor":1,"rarity":"normal","itemLevel":1,"imgIndex":1,"itemType":"chests"}');
+		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 6, "Training Tunic", '. $data .')';
 	}
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('i', $character_id);
@@ -157,7 +144,8 @@
 	if ($f['job'] === 'Warrior' ||
 		$f['job'] === 'Shadow Knight' ||
 		$f['job'] === 'Bard') {
-		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 12, 3)';
+		$data = json_encode('{"slots":["primary","secondary"],"weaponSkill":"One-hand Slash","minDamage":1,"maxDamage":4,"speed":2.8,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"oneHandSlashers"}');
+		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Sword", '. $data .')';
 	}
 	else if (
 		$f['job'] === 'Paladin' ||
@@ -165,22 +153,25 @@
 		$f['job'] === 'Cleric' ||
 		$f['job'] === 'Shaman'
 	) {
-		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 12, 4)';
+		$data = json_encode('{"slots":["primary","secondary"],"weaponSkill":"One-hand Blunt","minDamage":1,"maxDamage":5,"speed":3.2,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"oneHandBlunts"}');
+		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Club", '. $data .')';
 	}
-	else if ($f['job'] !== 'Monk') {
-		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 12, 5)';
+	else if (
+		$f['job'] === 'Necromancer' ||
+		$f['job'] === 'Enchanter' ||
+		$f['job'] === 'Magician' ||
+		$f['job'] === 'Wizard'
+	) {
+		$data = json_encode('{"slots":["primary","secondary"],"weaponSkill":"Piercing","minDamage":1,"maxDamage":3,"speed":2.2,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"piercers"}');
+		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Dagger", '. $data .')';
+	}
+	else if ($f['job'] === 'Ranger') {
+		$data = json_encode('{"slots":["primary"],"weaponSkill":"Archery","minDamage":3,"maxDamage":6,"speed":3,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"bows"}');
+		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Bow", '. $data .')';
 	}
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('i', $character_id);
 	$stmt->execute();
-
-	// bow
-	if ($f['job'] === 'Ranger') {
-		$query = 'insert into `item_rels` (owner_id, slot, i_id) VALUES (?, 12, 6)';
-		$stmt = $db->prepare($query);
-		$stmt->bind_param('i', $character_id);
-		$stmt->execute();
-	}
 
 	// echo something for fun
 	$r['hero'] = $f;

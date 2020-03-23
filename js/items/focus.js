@@ -1,4 +1,4 @@
-items.focus = {
+loot.focus = {
 	base: {
 		slots: ['primary', 'secondary'],
 		weaponSkill: 'One-hand Blunt',

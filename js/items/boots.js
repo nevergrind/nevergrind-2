@@ -1,4 +1,4 @@
-items.boots = {
+loot.boots = {
 	base: {
 		slots: ['feet'],
 		armorType: 'cloth',

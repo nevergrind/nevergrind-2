@@ -1,4 +1,4 @@
-items.cloaks = {
+loot.cloaks = {
 	base: {
 		slots: ['back']
 	},

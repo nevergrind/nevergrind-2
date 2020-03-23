@@ -1,4 +1,4 @@
-items.oneHandSlashers = {
+loot.oneHandSlashers = {
 	base: {
 		slots: ['primary', 'secondary'],
 		weaponSkill: 'One-hand Slash',

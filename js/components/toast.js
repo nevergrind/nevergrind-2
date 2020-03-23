@@ -45,20 +45,17 @@ var toast;
 	}
 	function removeToast() {
 		toast.timer.kill()
+		toast.data = {}
 		var el = getById('toast-wrap')
 		el !== null && dom.body.removeChild(el)
-		toast.data = {}
 	}
 	function accept() {
 		// join party by player id?
 		data = toast.data
 		console.info('accept: ', data)
-		if (data.action === 'party-invite') {
-			party.inviteAccepted(data)
-		}
-		else if (toast.data.action === 'guild-invite') {
-			guild.inviteAccepted(data)
-		}
+		if (data.action === 'party-invite') party.inviteAccepted(data)
+		else if (toast.data.action === 'guild-invite') guild.inviteAccepted(data)
+		else if (toast.data.action === 'destroy-item') item.destroy()
 		removeToast()
 	}
 	function decline() {

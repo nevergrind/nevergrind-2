@@ -1,4 +1,4 @@
-items.rings = {
+loot.rings = {
 	base: {
 		slots: ['fingers']
 	},

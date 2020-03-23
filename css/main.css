@@ -475,7 +475,7 @@ tbody {
 .ng-btn {
 	color: #fff;
 	padding: .2rem 1rem;
-	font: 1.1rem/1 Cinzel;
+	font: 1.1rem/1 Play, Cinzel;
 	font-weight: 700;
 	outline: 1px solid #579;
 	outline-offset: .1rem;
@@ -1270,7 +1270,7 @@ background-clip: content-box;
 .bar-any-wrap {
 	position: relative;
 	border: 1px solid #000;
-	background: #777;
+	background: #444;
 	margin: 0 .1rem;
 	height: .7rem;
 	border-radius: 4px;
@@ -1972,11 +1972,11 @@ background-image:
 }
 .select-class,
 .select-race {
-	font-family: Quatro, Roboto Slab, serif;
+	font-family: Play, Quatro, Roboto Slab, serif;
 	background: #aa8;
 	border: .1rem outset #eed;
-	padding-top: .2rem;
-	line-height: 1.3;
+	padding: .1rem;
+	line-height: 1.5;
 	text-align: center;
 	cursor: url('cursor/pointer.cur'), pointer;
 	white-space: nowrap;

@@ -1,4 +1,4 @@
-items.twoHandBlunts = {
+loot.twoHandBlunts = {
 	base: {
 		slots: ['primary'],
 		weaponSkill: 'Two-hand Blunt',

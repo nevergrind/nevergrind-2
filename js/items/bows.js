@@ -1,4 +1,4 @@
-items.bows = {
+loot.bows = {
 	base: {
 		slots: ['primary'],
 		weaponSkill: 'Archery',

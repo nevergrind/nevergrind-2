@@ -1,4 +1,6 @@
 // aliases
+var querySelector = document.querySelector.bind(document);
+var querySelectorAll = document.querySelectorAll.bind(document);
 var getById = document.getElementById.bind(document);
 var getByTag = document.getElementsByTagName.bind(document);
 var getByClass = document.getElementsByClassName.bind(document);

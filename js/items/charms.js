@@ -1,4 +1,4 @@
-items.charms = {
+loot.charms = {
 	base: {
 		slots: ['range']
 	},

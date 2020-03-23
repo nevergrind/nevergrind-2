@@ -1,4 +1,4 @@
-items.shoulders = {
+loot.shoulders = {
 	base: {
 		slots: ['shoulder'],
 		armorType: 'cloth',

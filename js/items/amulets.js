@@ -1,4 +1,4 @@
-items.amulets = {
+loot.amulets = {
 	base: {
 		slots: ['neck']
 	},

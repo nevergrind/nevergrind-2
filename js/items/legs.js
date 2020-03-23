@@ -1,4 +1,4 @@
-items.legs = {
+loot.legs = {
 	base: {
 		slots: ['legs'],
 		armorType: 'cloth',
