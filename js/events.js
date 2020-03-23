@@ -16,6 +16,7 @@
 			.on('resize', resize)
 			.on('load', windowResized)
 			.on('focus', focus)
+			.on('contextmenu', handleContextMenu)
 			.focus(windowResized)
 
 		$(document)
@@ -33,11 +34,16 @@
 			.on('click', '.close-menu', bar.handleCloseMenu)
 			.on('mouseenter', '.item-slot', tooltip.handleItemEnter)
 			.on('mouseleave', '.item-slot', tooltip.handleItemLeave)
+			.on('contextmenu', '.item-slot-inv', item.handleItemSlotContextClick)
 			.on('click', '.item-slot', item.toggleDrag)
 			.on('click', '.inv-tabs', bar.setCharActiveTab)
 			.on('click', '.inv-skill-row', bar.getSkillDescription)
 			.on('click', '#scene-town, #scene-dungeon', item.dropItem)
 
+	}
+
+	function handleContextMenu(event) {
+		if (app.isApp) return false // disable context menus
 	}
 	function chatInputFocus() {
 		chat.hasFocus = 1;

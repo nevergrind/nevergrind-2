@@ -47,6 +47,7 @@ var loot = {};
 		dropSlot: 0,
 		dragEqType: '',
 		dropEqType: '',
+		isContextClick: false,
 		eqSlots: {
 			helms: ['helms', void 0],
 			amulets: ['amulets', void 0],
@@ -76,6 +77,7 @@ var loot = {};
 		updateCursorImgPosition,
 		dropItem,
 		destroy,
+		handleItemSlotContextClick,
 	}
 	var slotRequiresMagic = [
 		'rings',
@@ -101,6 +103,29 @@ var loot = {};
 		'bows',
 		'shields'
 	]
+	const equipmentSlotIndex = {
+		'amulets': 1,
+		'belts': 9,
+		'boots': 11,
+		'bows': 12,
+		'bracers': 7,
+		'charms': 14,
+		'chests': 6,
+		'cloaks': 5,
+		'focus': 12,
+		'gloves': 8,
+		'helms': 0,
+		'legs': 10,
+		'oneHandBlunts': 12,
+		'oneHandSlashers': 12,
+		'piercers': 12,
+		'rings': 2,
+		'shields': 13,
+		'shoulders': 4,
+		'staves': 12,
+		'twoHandBlunts': 12,
+		'twoHandSlashers': 12,
+	}
 	item.eqSlotKeys = Object.keys(item.eqSlots)
 	var prefixNames = {
 		resistBlood: function(val, multi) {
@@ -263,6 +288,16 @@ var loot = {};
 			if (val <= 1 * multi) { return 'Reprover\'s' }
 			else if (val <= 2 * multi) { return 'Rebuker\'s' }
 			else { return 'Castigator\'s' }
+		},
+		dualWield: function(val, multi) {
+			if (val <= 1 * multi) { return 'Adept\'s' }
+			else if (val <= 2 * multi) { return 'Expert\'s' }
+			else { return 'Savant\'s' }
+		},
+		doubleAttack: function(val, multi) {
+			if (val <= 1 * multi) { return 'Dueler\'s' }
+			else if (val <= 2 * multi) { return 'Zealot\'s' }
+			else { return 'Maniac\'s' }
 		},
 		dodge: function(val, multi) {
 			if (val <= 1 * multi) { return 'Gymnast\'s' }
@@ -660,6 +695,7 @@ var loot = {};
 			var prefixKeys = _.keys(itemObj.prefix)
 			var suffixKeys = _.keys(itemObj.suffix)
 
+			console.info('rarity', rarity)
 			if (rarity === 'magic') {
 				processMagicDrop(drop)
 			}
@@ -802,6 +838,7 @@ var loot = {};
 			console.warn('max ', prefixMax, suffixMax)*/
 
 			var getPrefixSuffixComboType = _.random(1, 100)
+			console.info('prefix', prefix)
 			if (getPrefixSuffixComboType <= 50) {
 				prefixVal = _.random(minValue[prefix], prefixMax);
 				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
@@ -1169,10 +1206,10 @@ var loot = {};
 	}
 
 	function toggleDrag(event) {
-		console.info('toggleDrag awaitingDrop', item.awaitingDrop)
 		if (item.awaitingDrop) return
-		var type = event.currentTarget.dataset.type
-		var index = event.currentTarget.dataset.index
+		var {index, type} = _.pick(event.currentTarget.dataset, [
+			'index', 'type'
+		])
 		// console.info('toggleDrag', type, index)
 		if (item.isDragging) {
 			item.dropEqType = event.currentTarget.dataset.eqType
@@ -1188,13 +1225,14 @@ var loot = {};
 			item.dropType = type
 			// validate drop is valid
 			if (!itemSwapValid(item.dragData, item.dropData)) {
-				console.warn('drop invalid')
-				//dropReset();
+				//TODO: audio
+				item.isContextClick = false;
+				dropReset()
 				return
 			}
 
 			handleDragStart()
-			if (item.dropData.row) {
+			if (item.dropData.name) {
 				// swap
 				$.post(app.url + 'item/swap-items.php', {
 					dragRow: item.dragData.row,
@@ -1229,6 +1267,7 @@ var loot = {};
 				item.dragType = type
 				showCursorImg(type, index)
 			}
+			console.warn("ROW: ", type, index, item.dragData.row)
 			if (item.dragData.name) item.isDragging = true
 			else dropReset()
 		}
@@ -1323,10 +1362,9 @@ var loot = {};
 		item.dropType = ''
 		item.dragSlot = 0
 		item.dropSlot = 0
-		item.eqType = ''
-		item.eqType = ''
+		item.dragEqType = ''
+		item.dropEqType = ''
 		dom.itemTooltipCursorImg.style.visibility = 'hidden'
-		//TODO: Reset the drag image
 	}
 	function handleDropFail(r) {
 		ng.msg(r.responseText, 8);
@@ -1346,21 +1384,23 @@ var loot = {};
 		link.type = 'text/css';
 		link.id = 'temp-dnd-link'
 		document.head.appendChild(link)
-		link.sheet.addRule('.item-slot', 'cursor: url("css/cursor/normal.cur"), auto !important')
+		link.sheet.addRule('.item-slot', 'pointer-events: none; cursor: url("css/cursor/normal.cur"), auto !important')
 	}
 	function handleDropAlways() {
 		// ajax end
 		item.awaitingDrop = false
 		$('#temp-dnd-link').remove()
+		item.isContextClick = false;
 	}
 
 	function getDragItemName() {
 		return items[item.dragType][item.dragSlot].name
 	}
 
-	function dropItem() {
-		if (item.dragType && item.dragSlot) {
-			console.warn('dropItem')
+	function dropItem(event) {
+		//console.info('dropItem', event)
+		if (event.ctrlKey) destroy()
+		else if (item.dragType && item.dragSlot) {
 			toast.add({
 				action: 'destroy-item',
 				msg: 'Are you sure you want to destroy ' + getDragItemName()
@@ -1368,7 +1408,7 @@ var loot = {};
 		}
 	}
 	function destroy() {
-		console.info('destroy')
+		console.warn('destroy', item.dragData.row, item.dragType)
 		handleDragStart()
 		$.post(app.url + 'item/destroy-item.php', {
 			row: item.dragData.row,
@@ -1382,5 +1422,38 @@ var loot = {};
 		items[item.dragType][item.dragSlot] = {}
 		bar.updateDOM()
 		dropReset()
+	}
+	function handleItemSlotContextClick(event) {
+		if (item.awaitingDrop || item.isDragging) return
+		var {index, type} = _.pick(event.currentTarget.dataset, [
+			'index', 'type'
+		])
+		console.info(index, type)
+		item.isContextClick = true
+		dropReset()
+		toggleDrag(event)
+		if (item.dragData.name) {
+			console.info(item.dragData, item.dragType, item.dragSlot)
+			toggleDrag({
+				currentTarget: {
+					dataset: {
+						index: getEqSlotByType(item.dragData),
+						type: 'eq'
+					}
+				}
+			})
+		}
+
+		return false // context disabled
+	}
+	function getEqSlotByType(drag) {
+		console.info('getEqSlotByType', drag.itemType)
+		var eqIndex = equipmentSlotIndex[drag.itemType]
+		if (eqIndex === 2 &&
+			items.eq[2].name &&
+			!items.eq[3].name) {
+			eqIndex = 3
+		}
+		return eqIndex
 	}
 }()

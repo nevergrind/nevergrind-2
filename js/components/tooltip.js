@@ -66,16 +66,20 @@ var tooltip;
 				tooltipEl.style.transform = 'translate(-100%, 0%)'
 			}
 		}
-		tooltipEl.style.visibility = 'visible'
 		tooltip.isOpen = 1
+		tooltipEl.style.visibility = 'visible'
 		tooltip.openDate = Date.now()
 		TweenMax.to(tooltipEl, .2, {
+			overwrite: 1,
 			opacity: 1,
 		})
+	}
+	function handleShowDelay() {
 	}
 	function hide() {
 		TweenMax.to(tooltipEl, .1, {
 			opacity: 0,
+			overwrite: 1,
 			onComplete: function() {
 				tooltipEl.style.visibility = 'hidden'
 				tooltip.isOpen = 0

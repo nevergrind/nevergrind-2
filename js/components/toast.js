@@ -19,7 +19,6 @@ var toast;
 			})
 		}
 		else {
-			console.clear()
 			console.info('prompt.add', data)
 			var el = createElement('div')
 			el.id = 'toast-wrap'

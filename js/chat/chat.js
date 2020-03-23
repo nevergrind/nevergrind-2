@@ -193,7 +193,6 @@ var chat;
 			if (className){
 				el.className = className;
 			}
-			console.info('msg', msg)
 			el.innerHTML = msg;
 			chat.dom.chatLog.appendChild(el);
 			chat.scrollBottom();

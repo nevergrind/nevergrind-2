@@ -199,7 +199,7 @@ var bar;
 					'<img data-index="'+ i +
 					'" data-type="'+ type +
 					'" '+ (type === 'eq' ? ' data-eq-type="' + item.eqSlotKeys[i] +'"' : '')+
-					' src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot">' +
+					' src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot item-slot-'+ type +'">' +
 				'</div>';
 	}
 
@@ -268,8 +268,6 @@ var bar;
 	}
 
 	function updateCharacterDOM() {
-		var start = performance.now()
-		var t = Date.now()
 		if (bar.windowsOpen.character) {
 			bar.dom.character.innerHTML = getCharacterStatsHtml()
 			bar.dom.character.style.display = 'flex'
@@ -283,8 +281,6 @@ var bar;
 			bar.dom.character.style.display = 'none'
 			hideBarText()
 		}
-		console.info('updateCharacterDOM', performance.now() - start)
-		console.info('updateCharacterDOM', Date.now() - t)
 	}
 
 	function updateInventoryDOM() {

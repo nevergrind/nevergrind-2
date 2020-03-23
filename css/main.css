@@ -2345,6 +2345,7 @@ background-image:
 	cursor: url('cursor/pointer.cur'), pointer;
 	border-radius: 4px;
 	border: 1px solid #777;
+	flex-shrink: 0;
 }
 .item-slot-type-none .item-slot { filter: brightness(60%) grayscale(1); }
 .item-slot-type-normal .item-slot { border: 1px solid #777; }
