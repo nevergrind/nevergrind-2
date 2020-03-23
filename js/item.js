@@ -596,7 +596,9 @@ var loot = {};
 		return '<span class="item-'+ drop.rarity +'">[' + drop.name + ']</span>'
 	}
 	function getFirstAvailableInvSlot() {
-		return items.inv.findIndex(slot => !slot.name)
+		var index = items.inv.findIndex(slot => !slot.name)
+		if (index > -1) items.inv[index].name = 'Loading'
+		return index
 	}
 	function getLoot(config, mobSlot) {
 		var slot = getFirstAvailableInvSlot()
@@ -613,9 +615,13 @@ var loot = {};
 			data: JSON.stringify(drop),
 		}).done(data => {
 			items.inv[slot] = drop
+			items.inv[slot].row = data * 1
 			var mobName = _.get(mob[mobSlot], 'name', 'a monster')
 			chat.log(mobName + ' dropped ' + getItemNameString(drop))
+			console.warn('item dropped:', data)
 			bar.updateInventoryDOM()
+		}).fail(function() {
+			items.inv[slot] = {}
 		}).always(handleDropAlways)
 	}
 	function getItem(config) {
@@ -1226,7 +1232,7 @@ var loot = {};
 			// validate drop is valid
 			if (!itemSwapValid(item.dragData, item.dropData)) {
 				//TODO: audio
-				item.isContextClick = false;
+				item.isContextClick = false
 				dropReset()
 				return
 			}
@@ -1267,7 +1273,7 @@ var loot = {};
 				item.dragType = type
 				showCursorImg(type, index)
 			}
-			console.warn("ROW: ", type, index, item.dragData.row)
+			console.warn("drag row data: ", type, index, item.dragData.row)
 			if (item.dragData.name) item.isDragging = true
 			else dropReset()
 		}
@@ -1360,11 +1366,13 @@ var loot = {};
 		item.dropData = {}
 		item.dragType = ''
 		item.dropType = ''
-		item.dragSlot = 0
-		item.dropSlot = 0
+		item.dragSlot = -1
+		item.dropSlot = -1
 		item.dragEqType = ''
 		item.dropEqType = ''
 		dom.itemTooltipCursorImg.style.visibility = 'hidden'
+		console.warn('/////////////////////////////////////')
+		console.warn('dropReset!')
 	}
 	function handleDropFail(r) {
 		ng.msg(r.responseText, 8);
@@ -1391,6 +1399,7 @@ var loot = {};
 		item.awaitingDrop = false
 		$('#temp-dnd-link').remove()
 		item.isContextClick = false;
+		console.info('handleDropAlways')
 	}
 
 	function getDragItemName() {
@@ -1408,7 +1417,11 @@ var loot = {};
 		}
 	}
 	function destroy() {
-		console.warn('destroy', item.dragData.row, item.dragType)
+		if (!item.dragData.row) {
+			dropReset()
+			return
+		}
+		console.warn('destroy start', item.dragData.row, item.dragType)
 		handleDragStart()
 		$.post(app.url + 'item/destroy-item.php', {
 			row: item.dragData.row,
@@ -1424,7 +1437,7 @@ var loot = {};
 		dropReset()
 	}
 	function handleItemSlotContextClick(event) {
-		if (item.awaitingDrop || item.isDragging) return
+		if (item.awaitingDrop || item.isDragging) return false
 		var {index, type} = _.pick(event.currentTarget.dataset, [
 			'index', 'type'
 		])

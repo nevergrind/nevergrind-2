@@ -107,7 +107,7 @@
 		key = e.key;
 
 		ng.lastKey = key;
-		console.info('key: ', key)
+		//console.info('key: ', key)
 		// local only
 		if (!app.isApp) {
 			if (!chat.hasFocus && ng.view !== 'title') {

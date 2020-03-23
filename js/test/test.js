@@ -38,6 +38,7 @@ var test;
 		socketPub,
 		getItem,
 		animateBtn,
+		loot16,
 	}
 	///////////////////////////////////
 	function battle() {
@@ -195,5 +196,8 @@ var test;
 				background: 'conic-gradient(#0000 ' + o.turn + 'turn, #000e ' + o.turn + 'turn)'
 			});
 		}
+	}
+	function loot16() {
+		for (var i=0; i<16; i++) item.getLoot()
 	}
 })(Linear, TweenMax, TimelineMax);
