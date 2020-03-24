@@ -127,7 +127,7 @@ var guild;
 		}).done(function(data){
 			guild.setGuildData(data);
 			chat.log('You have joined the guild: '+ data.guild.name, 'chat-warning')
-			delayedCall(.5, guild.listen)
+			TweenMax.delayedCall(.5, guild.listen)
 		}).fail(function(data){
 			chat.log(data.responseText, 'chat-warning')
 		});
@@ -268,7 +268,7 @@ var guild;
 		var arr = ['Loading'];
 		for (var i=1; i<4; i++) {
 			(function(i) {
-				delayedCall(.25 * i, () => {
+				TweenMax.delayedCall(.25 * i, () => {
 					arr.push('.');
 					getById('load-msg').textContent = arr.join('');
 				});
@@ -280,14 +280,14 @@ var guild;
 		ng.lock(1);
 		$.get(app.url + 'guild/get-member-list.php').done(data => {
 			console.info(data);
-			delayedCall(throttleTime, () => {
+			TweenMax.delayedCall(throttleTime, () => {
 				guild.setGuildList(data);
 			});
 			// nothing
 		}).fail(data => {
 			chat.log(data.responseText, 'chat-warning');
 		}).always(() => {
-			delayedCall(throttleTime, ng.unlock);
+			TweenMax.delayedCall(throttleTime, ng.unlock);
 		});
 	}
 	function setGuildList(data) {

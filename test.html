@@ -505,87 +505,9 @@ Twe				<div>
 
 
 <script>
-((d) => {
 
-var files = ['nevergrind-2'];
-var ext = '.min';
-var script;
-if (!app.isApp){
-	ext = '';
-	files = [
-		'alias',
-		'login',
-		'create',
-		'ng',
-		'env',
-		'my',
-		'dom',
-		'audio',
-		'game',
-		'title',
-		'context',
-		'events',
-		'socket',
-		'chat/chat',
-		'chat/party',
-		'chat/guild',
-		'chat/friend',
-		'chat/whisper',
-		'chat/ignore',
-		'chat/broadcast',
-		'chat/who',
-		'components/toast',
-		'components/modal',
-		'components/button',
-		'components/popover',
-		'components/tooltip',
-		'mission/mission',
-		'mission/zones',
-		'ui/bar',
-		'battle',
-		'mob',
-		'mobs',
-		'item',
-		'items/amulets',
-		'items/belts',
-		'items/boots',
-		'items/bows',
-		'items/bracers',
-		'items/charms',
-		'items/chests',
-		'items/cloaks',
-		'items/gloves',
-		'items/helms',
-		'items/legs',
-		'items/focus',
-		'items/oneHandBlunts',
-		'items/oneHandSlashers',
-		'items/piercers',
-		'items/rings',
-		'items/shields',
-		'items/shoulders',
-		'items/staves',
-		'items/twoHandBlunts',
-		'items/twoHandSlashers',
-		'town',
-		'cache',
-		'router',
-		'dungeon',
-		'skills',
-		'zone',
-		'stat',
-		'css',
-		'test/test',
-		'init',
-	]
-}
-files.forEach((file) => {
-	script = d.createElement('script');
-	script.src = 'js/' + file + ext + '.js?v=' + app.version;
-	d.write(script.outerHTML);
-});
 
-})(document);
+
 </script>
 
 </body>

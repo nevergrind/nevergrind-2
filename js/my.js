@@ -21,7 +21,7 @@ var my;
 		slot: 1,
 		tgt: 1,
 		attackOn: false,
-		hudTimer: new delayedCall(0, ''),
+		hudTimer: new TweenMax.delayedCall(0, ''),
 		selectedZone: 0,
 		selectedMissionTitle: '',
 		quest: {},

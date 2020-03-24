@@ -10,7 +10,7 @@
 	//////////////////////////////////////////////
 	function ready() {
 		// console.info("Initializing title screen...");
-		delayedCall(.1, readyFire);
+		TweenMax.delayedCall(.1, readyFire);
 
 		$(window)
 			.on('resize', resize)
@@ -68,7 +68,7 @@
 	function windowResized() {
 		// debounce resize
 		ng.resizeTimer.kill()
-		ng.resizeTimer = delayedCall(.05, windowResizedTimeout)
+		ng.resizeTimer = TweenMax.delayedCall(.05, windowResizedTimeout)
 		if (context.isOpen) {
 			context.hide()
 		}
@@ -204,7 +204,7 @@
 				else {
 					// always works town, dungeon and combat (non-focused)
 					if (key === 'c') bar.toggleCharacterStats()
-					else if (key === 'b') bar.toggleInventory()
+					else if (key === 'i') bar.toggleInventory()
 					else if (key === ' ') bar.closeAllWindows()
 
 				}

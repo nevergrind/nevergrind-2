@@ -60,7 +60,7 @@ var socket;
 				socket.subscribe('game' + game.id, joinGameCallback);
 			}
 			else {
-				delayedCall(.1, retry);
+				TweenMax.delayedCall(.1, retry);
 			}
 		})();
 	}
@@ -98,7 +98,7 @@ var socket;
 					game.initSocket();
 				}
 				else {
-					delayedCall(.2, retry);
+					TweenMax.delayedCall(.2, retry);
 				}
 			})();
 			// notify friends I'm online

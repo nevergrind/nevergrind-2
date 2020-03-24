@@ -27,7 +27,7 @@ var who;
 		who.listThrottled = true;
 		who.listId++;
 		who.results = 0;
-		delayedCall(who.listThrottleExpire, () => {
+		TweenMax.delayedCall(who.listThrottleExpire, () => {
 			who.listThrottled = false;
 		});
 
@@ -132,7 +132,7 @@ var who;
 		who.listThrottled = true;
 		who.listId++;
 		who.results = 0;
-		delayedCall(who.listThrottleExpire, () => {
+		TweenMax.delayedCall(who.listThrottleExpire, () => {
 			who.listThrottled = false;
 		});
 

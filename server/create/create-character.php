@@ -103,6 +103,7 @@
 		'offense' => $f['offense'],
 		'defense' => $f['defense'],
 		'oneHandSlash' => $f['oneHandSlash'],
+		'oneHandBlunt' => $f['oneHandBlunt'],
 		'twoHandSlash' => $f['twoHandSlash'],
 		'twoHandBlunt' => $f['twoHandBlunt'],
 		'piercing' => $f['piercing'],

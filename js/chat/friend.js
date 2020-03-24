@@ -34,7 +34,7 @@ var friend;
 		if (ng.friends.length){
 			friend.listThrottled = true;
 			friend.listId++;
-			delayedCall(friend.listThrottleExpire, () => {
+			TweenMax.delayedCall(friend.listThrottleExpire, () => {
 				friend.listThrottled = false;
 			});
 

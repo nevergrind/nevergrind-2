@@ -5,7 +5,7 @@ var game;
 	game = {
 		heartbeatDifference: app.isApp ? 18000 : 18000,
 		session: {
-			timer: new delayedCall(0, '')
+			timer: new TweenMax.delayedCall(0, '')
 		},
 		pingHistory: [],
 		questDelay: 3,
@@ -33,7 +33,7 @@ var game;
 		'scene-battle'
 	];
 	var heartbeat = {
-		timer: new delayedCall(0, ''),
+		timer: new TweenMax.delayedCall(0, ''),
 		sendTime: 0,
 		receiveTime: 0,
 		interval: 5000,
@@ -46,7 +46,7 @@ var game;
 		}
 	}
 	var played = {
-		timer: new delayedCall(0, ''),
+		timer: new TweenMax.delayedCall(0, ''),
 		interval: 60000
 	};
 	// pooled variables
@@ -251,7 +251,7 @@ var game;
 	}
 
 	function activate() {
-		delayedCall(heartbeat.interval, function() {
+		TweenMax.delayedCall(heartbeat.interval, function() {
 			TweenMax.to('#bar-lag', .5, {
 				opacity: 1
 			});

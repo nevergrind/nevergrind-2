@@ -25,8 +25,6 @@ var party;
 	var time;
 	var index;
 	var player;
-	var i;
-	var len;
 	var diff;
 	//////////////////////////////////////
 	/**
@@ -220,7 +218,7 @@ var party;
 		my.partyId = data.row;
 		party.listen(data.row);
 		chat.log("You have joined the party.", 'chat-warning');
-		delayedCall(.1, () => {
+		TweenMax.delayedCall(.1, () => {
 			socket.publish('party' + my.partyId, {
 				msg: my.name + ' has joined the party.',
 				route: 'party->notifyJoin',

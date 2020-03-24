@@ -91,7 +91,7 @@ var chat;
 
 		if (mode === '/say' && !my.channel) {
 			log("You cannot communicate in town while in a dungeon", 'chat-warning');
-			delayedCall(0, function() {
+			TweenMax.delayedCall(0, function() {
 				// wipe input after keyup to get rid of /say
 				$("#chat-input").val('');
 			});

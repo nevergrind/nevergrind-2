@@ -126,6 +126,29 @@ var loot = {};
 		'twoHandBlunts': 12,
 		'twoHandSlashers': 12,
 	}
+	const equipmentEqTypeIndex = {
+		'amulets': 'amulets',
+		'belts': 'belts',
+		'boots': 'boots',
+		'bows': 'primary',
+		'bracers': 'bracers',
+		'charms': 'charms',
+		'chests': 'chests',
+		'cloaks': 'cloaks',
+		'focus': 'primary',
+		'gloves': 'gloves',
+		'helms': 'helms',
+		'legs': 'legs',
+		'oneHandBlunts': 'primary',
+		'oneHandSlashers': 'primary',
+		'piercers': 'primary',
+		'rings': 'ring1',
+		'shields': 'secondary',
+		'shoulders': 'shoulders',
+		'staves': 'primary',
+		'twoHandBlunts': 'primary',
+		'twoHandSlashers': 'primary',
+	}
 	item.eqSlotKeys = Object.keys(item.eqSlots)
 	var prefixNames = {
 		resistBlood: function(val, multi) {
@@ -616,16 +639,16 @@ var loot = {};
 		}).done(data => {
 			items.inv[slot] = drop
 			items.inv[slot].row = data * 1
-			var mobName = _.get(mob[mobSlot], 'name', 'a monster')
-			chat.log(mobName + ' dropped ' + getItemNameString(drop))
+			var mobName = _.get(mob[mobSlot], 'name', 'You discovered an item: ')
+			chat.log(mobName + getItemNameString(drop))
 			console.warn('item dropped:', data)
-			bar.updateInventoryDOM()
+			bar.updateInventorySlotDOM('inv', slot)
 		}).fail(function() {
 			items.inv[slot] = {}
 		}).always(handleDropAlways)
 	}
 	function getItem(config) {
-		if (!config) config = { mobLevel: 10 }
+		if (!config) config = { mobLevel: 1 }
 		if (config.bonus === undefined) {
 			config.bonus = 0
 		}
@@ -1213,12 +1236,12 @@ var loot = {};
 
 	function toggleDrag(event) {
 		if (item.awaitingDrop) return
-		var {index, type} = _.pick(event.currentTarget.dataset, [
-			'index', 'type'
-		])
+		var index = event.currentTarget.dataset.index * 1
+		var type = event.currentTarget.dataset.type
 		// console.info('toggleDrag', type, index)
 		if (item.isDragging) {
 			item.dropEqType = event.currentTarget.dataset.eqType
+			console.info('//// dragEQ dropEqType', event.currentTarget.dataset)
 			// check for same item
 			if (item.dragSlot === index && item.dragType === type) {
 				console.warn('drop cancelled - same slot')
@@ -1265,6 +1288,7 @@ var loot = {};
 		}
 		else {
 			item.dragEqType = event.currentTarget.dataset.eqType
+			console.info('//// dragEQ dragEqType', event.currentTarget.dataset)
 			// drag
 			item.dropData = {}
 			if (items[type][index].name) {
@@ -1282,7 +1306,7 @@ var loot = {};
 	function showCursorImg(type, index) {
 		updateCursorImgPosition()
 		dom.itemTooltipCursorImg.style.visibility = 'visible'
-		dom.itemTooltipCursorImg.src = 'images/items/' + bar.getItemSlotImage(type, index) + '.png'
+		dom.itemTooltipCursorImg.src = bar.getItemSlotImage(type, index)
 	}
 
 	function updateCursorImgPosition() {
@@ -1353,6 +1377,12 @@ var loot = {};
 		}
 
 		console.info('eqDropValid', eqType, itemType)
+		if (eqType === 'secondary' &&
+			item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
+			chat.log('You cannot equip a shield while wielding a two-hand weapon!', 'chat-warning')
+			return false
+		}
+
 		// dropping to non-eq slot
 		return item.eqSlots[eqType] === void 0 ||
 			// dropping to eq slot
@@ -1450,8 +1480,9 @@ var loot = {};
 			toggleDrag({
 				currentTarget: {
 					dataset: {
-						index: getEqSlotByType(item.dragData),
-						type: 'eq'
+						index: getEqIndexByType(item.dragData),
+						type: 'eq',
+						eqType: equipmentEqTypeIndex[item.dragData.itemType]
 					}
 				}
 			})
@@ -1459,8 +1490,8 @@ var loot = {};
 
 		return false // context disabled
 	}
-	function getEqSlotByType(drag) {
-		console.info('getEqSlotByType', drag.itemType)
+	function getEqIndexByType(drag) {
+		console.info('getEqIndexByType', drag.itemType)
 		var eqIndex = equipmentSlotIndex[drag.itemType]
 		if (eqIndex === 2 &&
 			items.eq[2].name &&

@@ -43,13 +43,13 @@ var bar;
 		getSkillDescription,
 		updateCharacterDOM,
 		updateInventoryDOM,
-		updateBankDOM,
+		updateInventorySlotDOM,
 		updateDOM,
 		getItemSlotImage,
 	};
 	var index;
 	var player; // temp bar data
-	var pingTimer = new delayedCall(0, '')
+	var pingTimer = new TweenMax.delayedCall(0, '')
 	var pingColors = [
 		'',
 		'chat-warning',
@@ -195,11 +195,11 @@ var bar;
 	}
 
 	function getItemSlotHtml(type, i) {
-		return '<div class="item-slot-wrap '+ getInvItemClass(type, i) +'">' +
-					'<img data-index="'+ i +
+		return '<div id="' + type + '-slot-'+ i +'" class="'+ getInvItemClass(type, i) +'">' +
+					'<img id="' + type + '-slot-img-'+ i +'" data-index="'+ i +
 					'" data-type="'+ type +
 					'" '+ (type === 'eq' ? ' data-eq-type="' + item.eqSlotKeys[i] +'"' : '')+
-					' src="images/items/'+ getItemSlotImage(type, i) +'.png" class="item-slot item-slot-'+ type +'">' +
+					' src="'+ getItemSlotImage(type, i) +'" class="item-slot item-slot-'+ type +'">' +
 				'</div>';
 	}
 
@@ -208,13 +208,13 @@ var bar;
 		if (items[type][slot].name && items[type][slot].itemType) {
 			resp = items[type][slot].itemType + items[type][slot].imgIndex
 		}
-		return resp
+		return 'images/items/' + resp + '.png'
 	}
 
 	function getInvItemClass(type, slot) {
-		var resp = 'item-slot-type-none'
+		var resp = 'item-slot-wrap item-slot-type-none'
 		if (items[type][slot].name && items[type][slot].rarity) {
-			resp = 'item-slot-type-' + items[type][slot].rarity
+			resp = 'item-slot-wrap item-slot-type-' + items[type][slot].rarity
 		}
 		return resp
 	}
@@ -294,15 +294,29 @@ var bar;
 		}
 	}
 
-	function updateBankDOM() {
-		console.warn('updateBankDOM')
+	function updateInventorySlotDOM(type, slot) {
+		querySelector('#'+ type +'-slot-' + slot).className = getInvItemClass(type, slot)
+		querySelector('#'+ type +'-slot-img-' + slot).src = getItemSlotImage(type, slot)
 	}
 
 	function updateDOM() {
-		var types = _.uniq([item.dragType, item.dropType])
-		types.includes('eq') && updateCharacterDOM()
-		types.includes('inv') && updateInventoryDOM()
-		types.includes('bank') && updateBankDOM()
+		item.dragType && bar.updateInventorySlotDOM(item.dragType, item.dragSlot)
+		item.dropType && bar.updateInventorySlotDOM(item.dropType, item.dropSlot)
+		if ([item.dropType, item.dropSlot].includes('eq')) {
+			console.info('update char stats')
+			updateCharStatPanels()
+		}
+	}
+
+	function updateCharStatPanels() {
+		querySelector('#inv-resist-blood').innerHTML = stat.resistBlood()
+		querySelector('#inv-resist-poison').innerHTML = stat.resistPoison()
+		querySelector('#inv-resist-arcane').innerHTML = stat.resistArcane()
+		querySelector('#inv-resist-lightning').innerHTML = stat.resistLightning()
+		querySelector('#inv-resist-fire').innerHTML = stat.resistFire()
+		querySelector('#inv-resist-ice').innerHTML = stat.resistIce()
+		querySelector('#char-stat-col-1').innerHTML = charStatColOneHtml()
+		querySelector('#char-stat-col-2').innerHTML = charStatColTwoHtml()
 	}
 
 	function toggleOptions() {
@@ -461,7 +475,7 @@ var bar;
 	}
 	function updatePing(ping) {
 		pingTimer.kill()
-		pingTimer = delayedCall(.1, updatePingDone, [ping])
+		pingTimer = TweenMax.delayedCall(.1, updatePingDone, [ping])
 	}
 	function updatePingDone(ping) {
 		game.pingHistory.push(ping);
@@ -579,48 +593,20 @@ var bar;
 				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
 					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 					'<div id="inv-resist-wrap" class="text-shadow">'+
-						'<div class="inv-resist-icon flex-center" style="background: #500">' + stat.resistBlood() + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #090">' + stat.resistPoison() + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #808">' + stat.resistArcane() + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #aa0">' + stat.resistLightning() + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #840">' + stat.resistFire() + '</div>' +
-						'<div class="inv-resist-icon flex-center" style="background: #28c">' + stat.resistIce() + '</div>' +
+						'<div id="inv-resist-blood" class="inv-resist-icon flex-center" style="background: #500">' + stat.resistBlood() + '</div>' +
+						'<div id="inv-resist-poison" class="inv-resist-icon flex-center" style="background: #090">' + stat.resistPoison() + '</div>' +
+						'<div id="inv-resist-arcane" class="inv-resist-icon flex-center" style="background: #808">' + stat.resistArcane() + '</div>' +
+						'<div id="inv-resist-lightning" class="inv-resist-icon flex-center" style="background: #aa0">' + stat.resistLightning() + '</div>' +
+						'<div id="inv-resist-fire" class="inv-resist-icon flex-center" style="background: #840">' + stat.resistFire() + '</div>' +
+						'<div id="inv-resist-ice" class="inv-resist-icon flex-center" style="background: #28c">' + stat.resistIce() + '</div>' +
 					'</div>' +
 				'</div>' +
 				'<div class="flex" style="font-size: .8rem">'+
-					'<div class="flex-column flex-max" style="'+ css.invStatColumn +'">'+
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Armor:</div><div>'+ stat.armor() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Strength:</div><div>'+ stat.str() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Stamina:</div><div>'+ stat.sta() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Agility:</div><div>'+ stat.agi() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Dexterity:</div><div>'+ stat.dex() +'</div>' +
-						'</div>' +
+					'<div id="char-stat-col-1" class="flex-column flex-max" style="'+ css.invStatColumn +'">'+
+						charStatColOneHtml() +
 					'</div>' +
-					'<div class="flex-column flex-max" style="'+ css.invStatColumn +'">' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Attack:</div><div>'+ stat.attack() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Damage:</div><div>'+ stat.damageString(stat.damage()) +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Wisdom:</div><div>'+ stat.wis() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Intelligence:</div><div>'+ stat.intel() +'</div>' +
-						'</div>' +
-						'<div class="flex space-between">' +
-							'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
-						'</div>' +
+					'<div id="char-stat-col-2" class="flex-column flex-max" style="'+ css.invStatColumn +'">' +
+						charStatColTwoHtml() +
 					'</div>' +
 				'</div>' +
 			'</div>' +
@@ -636,5 +622,39 @@ var bar;
 		}
 		html += '</div>'
 		return html
+	}
+	function charStatColOneHtml() {
+		return '<div class="flex space-between">' +
+			'<div style="color: gold">Armor:</div><div>'+ stat.armor() +'</div>' +
+		'</div>' +
+		'<div class="flex space-between">' +
+			'<div style="color: gold">Strength:</div><div>'+ stat.str() +'</div>' +
+		'</div>' +
+		'<div class="flex space-between">' +
+			'<div style="color: gold">Stamina:</div><div>'+ stat.sta() +'</div>' +
+		'</div>' +
+		'<div class="flex space-between">' +
+			'<div style="color: gold">Agility:</div><div>'+ stat.agi() +'</div>' +
+		'</div>' +
+		'<div class="flex space-between">' +
+			'<div style="color: gold">Dexterity:</div><div>'+ stat.dex() +'</div>' +
+		'</div>'
+	}
+	function charStatColTwoHtml() {
+		return '<div class="flex space-between">' +
+			'<div style="color: gold">Attack:</div><div>'+ stat.attack() +'</div>' +
+		'</div>' +
+		'<div class="flex space-between">' +
+			'<div style="color: gold">Damage:</div><div>'+ stat.damageString(stat.damage()) +'</div>' +
+		'</div>' +
+		'<div class="flex space-between">' +
+			'<div style="color: gold">Wisdom:</div><div>'+ stat.wis() +'</div>' +
+		'</div>' +
+		'<div class="flex space-between">' +
+			'<div style="color: gold">Intelligence:</div><div>'+ stat.intel() +'</div>' +
+		'</div>' +
+		'<div class="flex space-between">' +
+			'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
+		'</div>'
 	}
 })();

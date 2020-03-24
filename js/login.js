@@ -1,11 +1,9 @@
-'use strict';
-
 var login;
 (function() {
 	login = {
 		lock: 0,
 		account: localStorage.getItem('account'),
-		fadeTimer: new delayedCall(0, ''),
+		fadeTimer: new TweenMax.delayedCall(0, ''),
 		focusInput: false,
 		authenticationLock: false,
 		msg,
@@ -104,7 +102,7 @@ var login;
 			}
 			else {
 				login.msg("Account Created! Reloading!");
-				delayedCall(.5, function() {
+				TweenMax.delayedCall(.5, function() {
 					location.reload()
 				})
 			}

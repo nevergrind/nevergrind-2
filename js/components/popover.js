@@ -11,7 +11,7 @@ var popover;
 	};
 
 	popover = {
-		timer: new delayedCall(0, ''),
+		timer: new TweenMax.delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
 		hide,

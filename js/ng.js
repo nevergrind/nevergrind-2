@@ -162,7 +162,7 @@ var ng;
 		},
 		test: true,
 		id: 0,
-		resizeTimer: new delayedCall(0, ''),
+		resizeTimer: new TweenMax.delayedCall(0, ''),
 		loadMsg:
 			"<div id='load-msg' class='text-shadow text-center now-loading'>Loading</div>",
 		attrs: ['str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha'],
@@ -310,7 +310,7 @@ var ng;
 		var e = getById('scene-error');
 		e.style.display = 'block';
 		e.innerHTML = msg || 'You have been disconnected from the server';
-		delayedCall(12, function() {
+		TweenMax.delayedCall(12, function() {
 			location.reload();
 		})
 	}
@@ -367,7 +367,7 @@ var ng;
 		game.session.timer.kill()
 		$.get(app.url + 'session/keep-alive.php').always(function() {
 			if (ng.view === 'title') {
-				game.session.timer = delayedCall(170, keepAlive);
+				game.session.timer = TweenMax.delayedCall(170, keepAlive);
 			}
 		});
 	}

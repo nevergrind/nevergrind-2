@@ -66,7 +66,7 @@ var modal;
 		// confirm event actions
 		$('#modal-wrap').on('click', '#delete-character-confirm', create.deleteCharacter);
 		if (e.focus) {
-            delayedCall(.1, function () {
+            TweenMax.delayedCall(.1, function () {
                 $("#modal-wrap input:first").focus();
             });
         }

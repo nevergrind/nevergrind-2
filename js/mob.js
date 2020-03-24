@@ -184,7 +184,7 @@ var mob;
 			onUpdateParams: [mobs[i].index],
 		})
 		if (skip) return
-		ng.test && delayedCall(.25, hit, [ mobs[i].index ])
+		ng.test && TweenMax.delayedCall(.25, hit, [ mobs[i].index ])
 	}
 
 	function hit(i) {
@@ -211,7 +211,7 @@ var mob;
 	function hitComplete(m) {
 		resetIdle(m.index);
 		if (ng.test){
-			delayedCall(_.random(.5, 1.5), attack, [ m.index, 'primary' ]);
+			TweenMax.delayedCall(1, attack, [ m.index, 'primary' ]);
 		}
 	}
 
@@ -243,13 +243,13 @@ var mob;
 		resetIdle(m.index)
 		if (ng.test){
 			if (force === 'primary'){
-				delayedCall(_.random(.5, 1.5), attack, [ m.index, 'secondary' ])
+				TweenMax.delayedCall(1, attack, [ m.index, 'secondary' ])
 			}
 			else if (force === 'death'){
-				delayedCall(_.random(.5, 1.5), death, [ m.index ])
+				TweenMax.delayedCall(1, death, [ m.index ])
 			}
 			else {
-				delayedCall(_.random(.5, 1.5), special, [ m.index ])
+				TweenMax.delayedCall(1, special, [ m.index ])
 			}
 		}
 	}
@@ -282,7 +282,7 @@ var mob;
 	function specialComplete(m) {
 		resetIdle(m.index)
 		if (ng.test) {
-			delayedCall(_.random(.5, 1.5), death, [ m.index ])
+			TweenMax.delayedCall(1, death, [ m.index ])
 		}
 	}
 	function death(i) {
@@ -342,7 +342,7 @@ var mob;
 			sizeMob(m.index);
 			idle(m.index);
 		}
-		delayedCall(.1, deathCompleteFadeReset, [ m, e ]);
+		TweenMax.delayedCall(.1, deathCompleteFadeReset, [ m, e ]);
 	}
 	function deathCompleteFadeReset(m, e) {
 		m.deathState = 0;

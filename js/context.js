@@ -6,7 +6,7 @@ var context;
 
 	context = {
 		id: '',
-		timer: new delayedCall(0, ''),
+		timer: new TweenMax.delayedCall(0, ''),
 		isOpen: 0,
 		player: '',
 		padding: 10,
@@ -42,7 +42,7 @@ var context;
 		}).on('mouseleave', function () {
 			context.isInside = 0;
 			context.timer.kill()
-			delayedCall(1, function () {
+			TweenMax.delayedCall(1, function () {
 				if (!context.isInside) {
 				}
 			})

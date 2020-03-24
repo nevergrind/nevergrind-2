@@ -138,7 +138,7 @@ var town;
 						});
 					}
 					else {
-						delayedCall(.1, repeat);
+						TweenMax.delayedCall(.1, repeat);
 					}
 				})();
 			}).fail(function(data){
@@ -308,7 +308,7 @@ var town;
 		getById('scene-town').appendChild(e);
 
 		// animate aside things
-		delayedCall(town.asideSelected ? 0 : .5, function() {
+		TweenMax.delayedCall(town.asideSelected ? 0 : .5, function() {
 			TweenMax.set('.now-loading', {
 				alpha: 0
 			});
@@ -329,7 +329,7 @@ var town;
 					});
 				}
 			});
-			delayedCall(.1, function () {
+			TweenMax.delayedCall(.1, function () {
 				TweenMax.to('.aside-bg', 1, {
 					startAt: {
 						left: '60%'
@@ -340,7 +340,7 @@ var town;
 			TweenMax.to('.aside-npc', 1, {
 				left: '-5%'
 			});
-			delayedCall(.1, function() {
+			TweenMax.delayedCall(.1, function() {
 				$(".town-aside:last-child").find("input").focus();
 				town.data[id].msg();
 			})

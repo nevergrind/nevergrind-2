@@ -3,7 +3,7 @@ var toast;
 	toast = {
 		data: {},
 		getHtml: getHtml,
-		timer: new delayedCall(0, ''),
+		timer: new TweenMax.delayedCall(0, ''),
 		expired: 15,
 		add,
 		accept,
@@ -26,7 +26,7 @@ var toast;
 			el.innerHTML = getHtml(data)
 			dom.body.appendChild(el)
 			toast.data = data
-			toast.timer = delayedCall(toast.expired, removeToast)
+			toast.timer = TweenMax.delayedCall(toast.expired, removeToast)
 		}
 	}
 
