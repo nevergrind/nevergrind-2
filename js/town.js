@@ -88,7 +88,6 @@ var town;
 					console.info('key', key, data.characterData.data[key])
 					my[key] = data.characterData.data[key]
 				}
-
 				my.jobLong = ng.toJobLong(my.job)
 				my.avatar = my.getAvatarUrl()
 				Object.assign(my, my.getResistObject())
@@ -99,6 +98,11 @@ var town;
 
 				my.processInv(data.inv)
 				my.processEq(data.eq)
+
+				stat.setResources()
+				my.hp = my.maxHp
+				my.mp = my.maxMp
+				my.sp = my.maxSp
 
 				// init party member values
 				ng.setScene('town')

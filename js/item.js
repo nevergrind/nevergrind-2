@@ -1440,8 +1440,9 @@ var loot = {};
 		//console.info('dropItem', event)
 		if (event.ctrlKey) destroy()
 		else if (item.dragType && item.dragSlot) {
-			toast.add({
-				action: 'destroy-item',
+			toast.destroyItem({
+				accept: 'destroy-item',
+				dismiss: '',
 				msg: 'Are you sure you want to destroy ' + getDragItemName()
 			});
 		}

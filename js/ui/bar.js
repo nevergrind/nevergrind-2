@@ -71,6 +71,7 @@ var bar;
 		evocation: 'Evocation enhances the power of all evocation-based magic. Summon a fireball, lightning bolts, or even an impressive ice comet to destroy all who dare to oppose you!',
 		conjuration: 'Conjuration enhances the power of all conjuration-based magic. Why get your hands dirty when you can summon an ally to do the dirty work for you?! Summon a fire-breathing hydra to melt your enemies! Or summon an army of angry bees to seek and destroy! The only limit is your imagination!',
 	}
+	var barRatio
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
@@ -133,6 +134,7 @@ var bar;
 		}
 	}
 	function showBarText() {
+		updateAllBars()
 		querySelectorAll('.bar-text').forEach(el => {
 			el.style.visibility = 'visible'
 		})
@@ -317,6 +319,21 @@ var bar;
 		querySelector('#inv-resist-ice').innerHTML = stat.resistIce()
 		querySelector('#char-stat-col-1').innerHTML = charStatColOneHtml()
 		querySelector('#char-stat-col-2').innerHTML = charStatColTwoHtml()
+		stat.setResources()
+		updateAllBars()
+	}
+	function updateAllBars() {
+		updateBar('hp', my.row)
+		updateBar('mp', my.row)
+		updateBar('sp', my.row)
+	}
+	function updateBar(type, slot) {
+		barRatio = ((1 - my.hp / my.maxHp) * 100)
+		querySelector('#bar-' + type + '-fg-' + slot).style.transform = 'translateX(-' + barRatio + '%)'
+		querySelector('#bar-' + type + '-text-' + slot).textContent = my[type] + '/' + getMaxType(type)
+	}
+	function getMaxType(type) {
+		return (type === 'hp' ? my.maxHp : type === 'mp' ? my.maxMp : my.maxSp)
 	}
 
 	function toggleOptions() {
@@ -412,16 +429,16 @@ var bar;
 			'<div>' +
 			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-hp-fg-'+ index +'" class="bar-hp-fg"></div>' +
-				'<div id="bar-hp-text-'+ index +'" class="flex-center bar-text text-shadow-thicc">1250/1250</div>' +
+				'<div id="bar-hp-text-'+ index +'" class="flex-center bar-text text-shadow3">0/0</div>' +
 				//'<div id="bar-hp-bg-'+ i +'" class="bar-any-bg"></div>' +
 			'</div>' +
 			'<div id="bar-mp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-mp-fg-'+ index +'" class="bar-mp-fg"></div>' +
-				'<div id="bar-hp-text-'+ index +'" class="flex-center bar-text text-shadow-thicc">730/730</div>' +
+				'<div id="bar-mp-text-'+ index +'" class="flex-center bar-text text-shadow3">0/0</div>' +
 			'</div>' +
 			'<div id="bar-sp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-sp-fg-'+ index +'" class="bar-sp-fg"></div>' +
-				'<div id="bar-sp-text-'+ index +'" class="flex-center bar-text text-shadow-thicc">363/363</div>' +
+				'<div id="bar-sp-text-'+ index +'" class="flex-center bar-text text-shadow3">0/0</div>' +
 			'</div>' +
 			'</div>' +
 		'</div>';

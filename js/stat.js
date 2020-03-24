@@ -31,6 +31,10 @@ var stat;
 		resistFire,
 		resistIce,
 		getPropMax,
+		setResources,
+		maxHp,
+		maxMp,
+		maxSp,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
@@ -47,6 +51,7 @@ var stat;
 	var averageOneHandSlashJobs = ['WAR', 'PAL', 'SHD', 'BRD', 'DRU']
 	var val
 	var i
+	var len
 
 	function str() {
 		return my.str +
@@ -362,5 +367,96 @@ var stat;
 		if (allCasterJobs.includes(my.job)) return my.level * 5
 		else if (hybridJobs.includes(my.job) && my.level >= 9) return my.level * 4
 		else return 0
+	}
+
+	const hpTier = {
+		'WAR': 5,
+		'PAL': 4.5,
+		'SHD': 4.5,
+		'MNK': 4,
+		'ROG': 4,
+		'RNG': 4,
+		'BRD': 4,
+		'DRU': 3.5,
+		'CLR': 3.5,
+		'SHM': 3.5,
+		'NEC': 3,
+		'ENC': 3,
+		'MAG': 3,
+		'WIZ': 3,
+	}
+	const mpTier = {
+		'WAR': 1,
+		'PAL': 3,
+		'SHD': 3,
+		'MNK': 2,
+		'ROG': 2,
+		'RNG': 3,
+		'BRD': 3,
+		'DRU': 4,
+		'CLR': 4,
+		'SHM': 4,
+		'NEC': 5,
+		'ENC': 5,
+		'MAG': 5,
+		'WIZ': 5,
+	}
+	const spTier = {
+		'WAR': 1,
+		'PAL': 3,
+		'SHD': 3,
+		'MNK': 2,
+		'ROG': 2,
+		'RNG': 3,
+		'BRD': 5,
+		'DRU': 4.5,
+		'CLR': 5,
+		'SHM': 4.5,
+		'NEC': 2.5,
+		'ENC': 5,
+		'MAG': 2.5,
+		'WIZ': 2.5,
+	}
+	function setResources() {
+		my.maxHp = maxHp()
+		my.maxMp = maxMp()
+		my.maxSp = maxSp()
+	}
+	function maxHp() {
+		return ~~(
+			((stat.sta() * hpTier[my.job]) * (my.level / 50) +
+				(my.level * (hpTier[my.job] * 2.5) + 20)) * hpPercentBonus()
+			+ getEqOnlyTotal('hp') + getBuffTotal('hp')
+		)
+	}
+	function maxMp() {
+		return ~~(
+			((stat.intel() * mpTier[my.job]) * (my.level / 50) +
+				(my.level * (mpTier[my.job] * 2.5) + 12)) * mpPercentBonus()
+			+ getEqOnlyTotal('mp') + getBuffTotal('mp')
+		)
+	}
+
+	function maxSp() {
+		return ~~(
+			((stat.cha() * spTier[my.job]) * (my.level / 50) +
+				(my.level * (spTier[my.job] * 2.5) + 8)) +
+			getEqOnlyTotal('sp') + getBuffTotal('sp')
+		)
+	}
+	function hpPercentBonus() {
+		return 1 + (getEqTotal('increaseHpPercent') / 100);
+	}
+	function mpPercentBonus() {
+		return 1 + (getEqTotal('increaseMpPercent') / 100);
+	}
+	function getBuffTotal(attr) {
+		val = 0
+		i = 0
+		len = buff.length
+		for (; i<len; i++) {
+			if (buff[i][attr]) val += buff[i][attr]
+		}
+		return val
 	}
 }()

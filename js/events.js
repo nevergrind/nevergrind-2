@@ -29,6 +29,8 @@
 			.on('dragstart', 'img', dragStart)
 			.on('click', '#toast-accept', toast.accept)
 			.on('click', '#toast-decline', toast.decline)
+			.on('click', '#toast-accept-destroy', toast.acceptDestroy)
+			.on('click', '#toast-decline-destroy', toast.declineDestroy)
 			.on('focus', 'input', chatInputFocus)
 			.on('blur', 'input', chatInputBlur)
 			.on('click', '.close-menu', bar.handleCloseMenu)
