@@ -304,7 +304,8 @@ var bar;
 	function updateDOM() {
 		item.dragType && bar.updateInventorySlotDOM(item.dragType, item.dragSlot)
 		item.dropType && bar.updateInventorySlotDOM(item.dropType, item.dropSlot)
-		if ([item.dropType, item.dropSlot].includes('eq')) {
+		console.info('//////////// updateDOM', item.dropType, item.dragType)
+		if ([item.dropType, item.dragType].includes('eq')) {
 			console.info('update char stats')
 			updateCharStatPanels()
 		}

@@ -1401,8 +1401,6 @@ var loot = {};
 		item.dragEqType = ''
 		item.dropEqType = ''
 		dom.itemTooltipCursorImg.style.visibility = 'hidden'
-		console.warn('/////////////////////////////////////')
-		console.warn('dropReset!')
 	}
 	function handleDropFail(r) {
 		ng.msg(r.responseText, 8);
@@ -1439,7 +1437,7 @@ var loot = {};
 	function dropItem(event) {
 		//console.info('dropItem', event)
 		if (event.ctrlKey) destroy()
-		else if (item.dragType && item.dragSlot) {
+		else if (item.dragType && item.dragSlot >= 0) {
 			toast.destroyItem({
 				accept: 'destroy-item',
 				dismiss: '',
