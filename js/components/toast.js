@@ -11,6 +11,7 @@ var toast;
 		acceptDestroy,
 		declineDestroy,
 		destroyItem,
+		hideDestroyToast,
 	}
 	var destroyData = {}
 	////////////////////////////////////////////////
@@ -73,9 +74,7 @@ var toast;
 		}
 	}
 	function declineDestroy() {
-		if (destroyData.accept === 'destroy-item') {
-			hideDestroyToast()
-		}
+		if (destroyData.accept === 'destroy-item') hideDestroyToast()
 	}
 	function destroyItem(data) {
 		destroyData = data
@@ -83,6 +82,8 @@ var toast;
 		querySelector('#toast-destroy-wrap').style.visibility = 'visible'
 	}
 	function hideDestroyToast() {
+		console.info('hideDestroyToast')
+		destroyData = {}
 		querySelector('#toast-destroy-wrap').innerHTML = ''
 		querySelector('#toast-destroy-wrap').style.visibility = 'hidden'
 	}

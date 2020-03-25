@@ -1967,7 +1967,7 @@ background-image:
 	width: 16rem;
 	max-height: 30rem;
 	overflow: hidden;
-	z-index: 2;
+	z-index: 3;
 	margin: 0 auto;
 	left: 0;
 	right: 0;
@@ -2020,13 +2020,16 @@ background-image:
 	z-index: 2;
 }
 .bar-window {
+	position: relative;
 	flex-direction: column;
 	display: none;
 	height: 28rem;
 	width: 23rem;
 	border: .1rem ridge #136;
 	background: #013;
-	overflow: hidden;
+}
+.bar-window ~ .bar-window {
+	margin-left: .5rem;
 }
 #inventory-wrap {
 	position: fixed;
@@ -2068,13 +2071,44 @@ background-image:
 .inventory-slot-row {
 	display: flex;
 }
+#bank-slot-wrap {
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	padding: .3rem;
+	border: .1rem ridge #048;
+	height: 16rem;
+	overflow: auto;
+	align-content: flex-start;
+}
+#bank-slot-wrap .item-slot-wrap {
+	margin: .1rem 0;
+}
+#bank-footer {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	border: .1rem ridge #357;
+	line-height: 1.3;
+}
+/*#bank-footer-gold-wrap {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	border: .1rem groove #aa8;
+	background: #0a0a0a;
+	border-radius: 8px;
+	margin: .1rem;
+	padding: 0 .2rem 0 1rem;
+}*/
+
 #inv-tab-wrap {
 	position: absolute;
-	bottom: 0;
+	bottom: -.1rem;
 	left: 0;
 	display: flex;
 	transform: translate(0%, 100%);
-	font-size: .9rem;
+	font-size: 1rem;
 	line-height: 1.5;
 }
 .inv-tabs {
@@ -2332,11 +2366,12 @@ background-image:
 	text-align: center;
 	line-height: 1.5;
 }
-#inv-skill-description {
+#inv-skill-description, #bank-description {
 	padding: .2rem .4rem;
 	font-size: .8rem;
 	border: .1rem ridge #136;
 	margin: .2rem;
+	align-self: normal;
 }
 #item-tooltip-cursor-img {
 	position: absolute;

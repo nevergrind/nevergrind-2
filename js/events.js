@@ -37,6 +37,7 @@
 			.on('mouseenter', '.item-slot', tooltip.handleItemEnter)
 			.on('mouseleave', '.item-slot', tooltip.handleItemLeave)
 			.on('contextmenu', '.item-slot-inv', item.handleItemSlotContextClick)
+			.on('contextmenu', '.item-slot-bank', item.handleItemSlotContextClick)
 			.on('click', '.item-slot', item.toggleDrag)
 			.on('click', '.inv-tabs', bar.setCharActiveTab)
 			.on('click', '.inv-skill-row', bar.getSkillDescription)
@@ -207,6 +208,7 @@
 					// always works town, dungeon and combat (non-focused)
 					if (key === 'c') bar.toggleCharacterStats()
 					else if (key === 'i') bar.toggleInventory()
+					else if (key === 'k') town.toggleBank()
 					else if (key === ' ') bar.closeAllWindows()
 
 				}

@@ -1,5 +1,5 @@
 var bar;
-(function() {
+(function(_, undefined) {
 	bar = {
 		defaultImage: [
 			'helms1',
@@ -41,11 +41,10 @@ var bar;
 		setDefaultInvWeaponImage,
 		setCharActiveTab,
 		getSkillDescription,
-		updateCharacterDOM,
-		updateInventoryDOM,
 		updateInventorySlotDOM,
 		updateDOM,
 		getItemSlotImage,
+		getItemSlotHtml,
 	};
 	var index;
 	var player; // temp bar data
@@ -89,7 +88,6 @@ var bar;
 			e.style.display = 'block'
 
 			bar.dom.lag = getById('bar-lag')
-			bar.dom.character = getById('bar-window-character')
 			bar.dom.inventory = getById('inventory')
 			bar.dom.inventoryWrap = getById('inventory-wrap')
 			// draw all bars
@@ -198,16 +196,16 @@ var bar;
 
 	function getItemSlotHtml(type, i) {
 		return '<div id="' + type + '-slot-'+ i +'" class="'+ getInvItemClass(type, i) +'">' +
-					'<img id="' + type + '-slot-img-'+ i +'" data-index="'+ i +
-					'" data-type="'+ type +
-					'" '+ (type === 'eq' ? ' data-eq-type="' + item.eqSlotKeys[i] +'"' : '')+
-					' src="'+ getItemSlotImage(type, i) +'" class="item-slot item-slot-'+ type +'">' +
-				'</div>';
+			'<img id="' + type + '-slot-img-'+ i +'" data-index="'+ i +
+			'" data-type="'+ type +
+			'" '+ (type === 'eq' ? ' data-eq-type="' + item.eqSlotKeys[i] +'"' : '') +
+			' src="'+ getItemSlotImage(type, i) +'" class="item-slot item-slot-'+ type +'">' +
+		'</div>';
 	}
 
 	function getItemSlotImage(type, slot) {
 		var resp = type === 'eq' ? bar.defaultImage[slot] : 'item-bg-1'
-		if (items[type][slot].name && items[type][slot].itemType) {
+		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'itemType')) {
 			resp = items[type][slot].itemType + items[type][slot].imgIndex
 		}
 		return 'images/items/' + resp + '.png'
@@ -215,7 +213,7 @@ var bar;
 
 	function getInvItemClass(type, slot) {
 		var resp = 'item-slot-wrap item-slot-type-none'
-		if (items[type][slot].name && items[type][slot].rarity) {
+		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'rarity')) {
 			resp = 'item-slot-wrap item-slot-type-' + items[type][slot].rarity
 		}
 		return resp
@@ -228,7 +226,18 @@ var bar;
 			tooltip.hide()
 			tooltip.isHoveringInv = false
 		}
-		updateInventoryDOM();
+		updateInventoryDOM()
+	}
+
+	function updateInventoryDOM() {
+		if (bar.windowsOpen.inventory) {
+			bar.dom.inventory.innerHTML = getInventoryHtml()
+			bar.dom.inventory.style.display = 'flex'
+		}
+		else {
+			bar.dom.inventory.innerHTML = ''
+			bar.dom.inventory.style.display = 'none'
+		}
 	}
 
 	function getInventoryHtml() {
@@ -269,36 +278,25 @@ var bar;
 		return html
 	}
 
+	function updateInventorySlotDOM(type, slot) {
+		querySelector('#'+ type +'-slot-' + slot).className = getInvItemClass(type, slot)
+		querySelector('#'+ type +'-slot-img-' + slot).src = getItemSlotImage(type, slot)
+	}
+
 	function updateCharacterDOM() {
 		if (bar.windowsOpen.character) {
-			bar.dom.character.innerHTML = getCharacterStatsHtml()
-			bar.dom.character.style.display = 'flex'
+			querySelector('#bar-character-stats').innerHTML = getCharacterStatsHtml()
+			querySelector('#bar-character-stats').style.display = 'flex'
 			if (bar.activeTab === 'skills') {
 				ng.split('inv-skill-description', skillDescriptions['offense']);
 			}
 			showBarText()
 		}
 		else {
-			bar.dom.character.innerHTML = ''
-			bar.dom.character.style.display = 'none'
+			querySelector('#bar-character-stats').innerHTML = ''
+			querySelector('#bar-character-stats').style.display = 'none'
 			hideBarText()
 		}
-	}
-
-	function updateInventoryDOM() {
-		if (bar.windowsOpen.inventory) {
-			bar.dom.inventory.innerHTML = getInventoryHtml()
-			bar.dom.inventory.style.display = 'flex'
-		}
-		else {
-			bar.dom.inventory.innerHTML = ''
-			bar.dom.inventory.style.display = 'none'
-		}
-	}
-
-	function updateInventorySlotDOM(type, slot) {
-		querySelector('#'+ type +'-slot-' + slot).className = getInvItemClass(type, slot)
-		querySelector('#'+ type +'-slot-img-' + slot).src = getItemSlotImage(type, slot)
 	}
 
 	function updateDOM() {
@@ -321,6 +319,11 @@ var bar;
 		querySelector('#char-stat-col-1').innerHTML = charStatColOneHtml()
 		querySelector('#char-stat-col-2').innerHTML = charStatColTwoHtml()
 		stat.setResources()
+		if (ng.view === 'town') {
+			my.hp = my.maxHp
+			my.mp = my.maxMp
+			my.sp = my.maxSp
+		}
 		updateAllBars()
 	}
 	function updateAllBars() {
@@ -357,7 +360,7 @@ var bar;
 	function handleCloseMenu(event) {
 		if (event.currentTarget.dataset.id === 'character-stats') bar.toggleCharacterStats()
 		else if (event.currentTarget.dataset.id === 'inventory') bar.toggleInventory()
-
+		else if (event.currentTarget.dataset.id === 'bank') bar.toggleBank()
 	}
 
 	function closeAllWindows() {
@@ -590,7 +593,7 @@ var bar;
 		})
 		html += '</div>' +
 		'<div id="inv-skill-description-wrap">' +
-			'<div id="inv-skill-description-head" style="'+ css.nameWrap +'">' +
+			'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">Description</div>' +
 			'</div>' +
 			'<div id="inv-skill-description" class="flex-max stag-blue"></div>' +
@@ -675,4 +678,4 @@ var bar;
 			'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
 		'</div>'
 	}
-})();
+})(_);

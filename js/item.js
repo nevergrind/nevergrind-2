@@ -1261,6 +1261,7 @@ var loot = {};
 			}
 
 			handleDragStart()
+			toast.hideDestroyToast()
 			if (item.dropData.name) {
 				// swap
 				$.post(app.url + 'item/swap-items.php', {

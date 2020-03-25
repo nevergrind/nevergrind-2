@@ -1,5 +1,5 @@
 <?php
-$stmt = $db->prepare('select row, slot_type, slot, name, data FROM `items` where owner_id=?');
+$stmt = $db->prepare('select row, slot_type, slot, name, data FROM `items` where owner_id=? and slot_type<2');
 
 $stmt->bind_param('i', $_SESSION['row']);
 $stmt->execute();

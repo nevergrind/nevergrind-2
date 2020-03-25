@@ -1,9 +1,19 @@
 var town;
-(function() {
+(function($, _, undefined) {
 	town = {
 		initialized: 0,
 		lastAside: {},
 		delegated: 0,
+		windowsOpen: {
+			guild: false,
+			academy: false,
+			bank: false,
+			tavern: false,
+			apothecary: false,
+			blacksmith: false,
+			merchant: false,
+		},
+		isBankInitialized: false,
 		asideSelected: '',
 		asideCloseHtml: '<i class="close-aside fa fa-times"></i>',
 		data: {
@@ -63,7 +73,9 @@ var town;
 		getAsideTrainerMenu, // add later
 		getAsideGuildMenu,
 		getAsideMissionMenu,
+		toggleBank,
 	}
+	const DEFAULT_BANK_SLOT_MAX = 12
 	////////////////////////////////////////////
 	function go() {
 		if (ng.view === 'town') return;
@@ -444,4 +456,72 @@ var town;
 			'images/skills/' + my.job + '.png'
 		])
 	}
-})();
+
+	function loadBank() {
+		for (var i=0; i<DEFAULT_BANK_SLOT_MAX; i++) {
+			items.bank[i] = {}
+		}
+		$.get(app.url + 'town/load-bank.php')
+			.done(processBank)
+	}
+
+	function processBank(data) {
+		for (var i=0; i<data.bank.length; i++) {
+			items.bank[i] = {}
+		}
+		for (var key in data.bank) {
+			items.bank[key] = JSON.parse(data.bank[key].data)
+			items.bank[key].row = data.bank[key].row
+			items.bank[key].name = data.bank[key].name
+		}
+		updateBankDOM()
+	}
+
+	function toggleBank() {
+		// open all bags in the bottom-right corner
+		town.windowsOpen.bank = !town.windowsOpen.bank
+		if (tooltip.isHoveringBank) {
+			tooltip.hide()
+			tooltip.isHoveringBank = false
+		}
+		if (!town.isBankInitialized) loadBank()
+		updateBankDOM()
+	}
+
+	function updateBankDOM() {
+		if (town.windowsOpen.bank) {
+			// window may be closed by now
+			$('#town-bank').html(getBankHtml())
+			$('#town-bank').css('display', 'flex')
+			ng.split('bank-description', 'Banked items may be shared with all characters on the same account. ');
+		}
+		else {
+			querySelector('#town-bank').innerHTML = ''
+			querySelector('#town-bank').style.display = 'none'
+		}
+	}
+
+	function getBankHtml() {
+		var html = '<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">Bank</div>' +
+			'</div>' +
+			'<i data-id="bank" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		'<div id="bank-slot-wrap">';
+
+		'<div class="flex">';
+		for (var i=0, len=items.bank.length; i<len; i++) {
+			html += bar.getItemSlotHtml('bank', i)
+		}
+		html += '</div>' +
+			'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">Bank Details</div>' +
+			'</div>' +
+			'<div id="bank-footer" class="flex-center flex-max stag-blue-top">' +
+				'<div id="bank-description"></div>'
+			'</div>' +
+		'</div>';
+		return html
+	}
+})($, _);
