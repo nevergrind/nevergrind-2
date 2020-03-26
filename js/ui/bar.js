@@ -342,10 +342,10 @@ var bar;
 
 	function toggleOptions() {
 		bar.windowsOpen.options = !bar.windowsOpen.options;
-		setOptionsDOM();
+		updateOptionsDOM();
 	}
 
-	function setOptionsDOM() {
+	function updateOptionsDOM() {
 		var el = getById('options-wrap')
 		if (bar.windowsOpen.options) {
 			el.innerHTML = 'OPTIONS'
@@ -360,17 +360,28 @@ var bar;
 	function handleCloseMenu(event) {
 		if (event.currentTarget.dataset.id === 'character-stats') bar.toggleCharacterStats()
 		else if (event.currentTarget.dataset.id === 'inventory') bar.toggleInventory()
-		else if (event.currentTarget.dataset.id === 'bank') bar.toggleBank()
+		else if (event.currentTarget.dataset.id === 'bank') town.toggleBank()
+		else if (event.currentTarget.dataset.id === 'various') town.closeVarious()
 	}
 
 	function closeAllWindows() {
-		_.each(bar.windowsOpen, function(val, key) {
+		_.each(bar.windowsOpen, (val, key) => {
 			bar.windowsOpen[key] = false
 		})
 		updateCharacterDOM()
 		updateInventoryDOM()
-		setOptionsDOM()
+		updateOptionsDOM()
+
+		_.each(town.windowsOpen, (val, key) => {
+			town.windowsOpen[key] = false
+		})
+		town.updateBankDOM()
+
 		item.dropReset()
+	}
+
+	function closeTownWindows() {
+
 	}
 
 	function showBarMenuPopover() {

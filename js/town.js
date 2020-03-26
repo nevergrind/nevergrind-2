@@ -1,70 +1,18 @@
 var town;
-(function($, _, undefined) {
+(function($, _, TweenMax, undefined) {
 	town = {
 		initialized: 0,
 		lastAside: {},
 		delegated: 0,
 		windowsOpen: {
-			guild: false,
-			academy: false,
+			various: '',
 			bank: false,
-			tavern: false,
-			apothecary: false,
-			blacksmith: false,
-			merchant: false,
 		},
 		isBankInitialized: false,
 		asideSelected: '',
 		asideCloseHtml: '<i class="close-aside fa fa-times"></i>',
-		data: {
-			'town-merchant': {
-				msg: merchantMsg,
-				bg: {
-					// don't exceed 25-75 range
-					x: '-25%',
-					y: '-10%',
-				},
-				aside: {
-					x: 112,
-					y: 30
-				}
-			},
-			'town-trainer': {
-				msg: trainerMsg,
-				bg: {
-					x: '-25%',
-					y: '25%',
-				},
-				aside: {
-					x: 112,
-					y: -10
-				}
-			},
-			'town-guild': {
-				msg: guildMsg,
-				bg: {
-					x: '25%',
-					y: '25%',
-				},
-				aside: {
-					x: -30,
-					y: -30
-				}
-			},
-			'town-mission': {
-				msg: missionMsg,
-				bg: {
-					x: '-17%',
-					y: '-10%',
-				},
-				aside: {
-					x: 75,
-					y: 24
-				}
-			}
-		},
 		go,
-		html,
+		getHtml,
 		update,
 		events,
 		init,
@@ -74,8 +22,15 @@ var town;
 		getAsideGuildMenu,
 		getAsideMissionMenu,
 		toggleBank,
+		updateBankDOM,
+		openVarious,
+		closeVarious,
 	}
-	const DEFAULT_BANK_SLOT_MAX = 12
+	const DEFAULT_BANK_SLOT_MAX = app.isApp ? 12 : 96
+	var i
+	var id
+	var len
+	var html
 	////////////////////////////////////////////
 	function go() {
 		if (ng.view === 'town') return;
@@ -131,7 +86,7 @@ var town;
 				el.src = 'images/bg/mausoleum1.png'
 				document.getElementById('body').insertBefore(el, document.getElementById('bar-wrap'));
 
-				getById('scene-town').innerHTML = town.html()
+				getById('scene-town').innerHTML = town.getHtml()
 				town.events()
 				$("#scene-title").remove()
 				town.init()
@@ -162,17 +117,21 @@ var town;
 			});
 		}
 	}
-	function html() {
+	function getHtml() {
 		var s =
 			'<div id="town-menu" class="text-shadow">'+
-				'<div id="town-merchant" class="ng-btn town-action">Merchant</div>' +
-				'<div id="town-trainer" class="ng-btn town-action">Skill Trainer</div>' +
-				'<div id="town-guild" class="ng-btn town-action">Guild Hall</div>' +
+				'<div data-id="Academy" id="town-academy" class="ng-btn town-building">Academy</div>' +
+				'<div data-id="Apothecary" id="town-apothecary" class="ng-btn town-building">Apothecary</div>' +
+				'<div data-id="Blacksmith" id="town-blacksmith" class="ng-btn town-building">Blacksmith</div>' +
+				'<div data-id="Guild Hall" id="town-guild" class="ng-btn town-building">Guild Hall</div>' +
+				'<div data-id="Merchant" id="town-merchant" class="ng-btn town-building">Merchant</div>' +
+				'<div data-id="Tavern" id="town-tavern" class="ng-btn town-building">Tavern</div>' +
+				'<div data-id="Bank" id="town-bank" class="ng-btn town-building">Bank</div>' +
 			'</div>' +
 			'<div id="town-footer" class="text-shadow2">' +
 				'<hr id="town-footer-hr1" class="footer-hr">' +
 				'<div id="town-footer-flex">' +
-					'<span id="town-mission" class="ng-btn town-action center">Mission Counter</span>' +
+					'<span id="town-mission" class="ng-btn town-building center">Mission Counter</span>' +
 				'</div>' +
 				'<hr id="town-footer-hr2"  class="footer-hr">' +
 			'</div>';
@@ -195,7 +154,7 @@ var town;
 		var s =
 		'<div class="aside-text">' +
 			'<div class="aside-title-wrap stag-blue">' +
-				'<div class="aside-title">Skill Trainer</div>' +
+				'<div class="aside-title">Academy</div>' +
 				town.asideCloseHtml +
 			'</div>' +
 		'</div>' +
@@ -282,6 +241,7 @@ var town;
 		return s;
 	}
 	function asideOpen(id) {
+		/*
 		if (id === town.asideSelected) return;
 		// remove old aside
 		var oldAside = $(".town-aside");
@@ -300,26 +260,17 @@ var town;
 			x: town.data[id].bg.x,
 			y: town.data[id].bg.y
 		});
-		if (id === 'town-mission') {
-			mission.setMissionMenusAllOpen();
-		}
+		if (id === 'town-mission') mission.setMissionMenusAllOpen();
+		// set aside HTML
+		var html;
+		if (id === 'town-academy') html = getAsideTrainerHtml(id);
+		else if (id === 'town-merchant') html = getAsideMerchantHtml(id);
+		else if (id === 'town-guild') html = getAsideGuildHtml(id);
+		else if (id === 'town-mission') html = getAsideMissionHtml(id);
+
 		// create aside
 		var e = createElement('div');
 		e.className = 'town-aside text-shadow';
-		// set aside HTML
-		var html;
-		if (id === 'town-trainer') {
-			html = getAsideTrainerHtml(id);
-		}
-		else if (id === 'town-merchant') {
-			html = getAsideMerchantHtml(id);
-		}
-		else if (id === 'town-guild') {
-			html = getAsideGuildHtml(id);
-		}
-		else if (id === 'town-mission') {
-			html = getAsideMissionHtml(id);
-		}
 		e.innerHTML = html;
 		getById('scene-town').appendChild(e);
 
@@ -373,55 +324,37 @@ var town;
 				$("#aside-guild-members").html('Loading...');
 				guild.getMembers(0);
 			}
-		}
+		}*/
 	}
 	function update(id) {
 		var type = _.camelCase(id);
 		var html;
-		if (type === 'townTrainer') {
-			html = getAsideTrainerMenu();
-		}
-		else if (type === 'townMerchant') {
-			html = getAsideMerchantMenu();
-		}
-		else if (type === 'townGuild') {
-			html = getAsideGuildMenu();
-		}
-		else if (type === 'townMission') {
-			html = getAsideMissionMenu();
-		}
+		if (type === 'townTrainer') html = getAsideTrainerMenu();
+		else if (type === 'townMerchant') html = getAsideMerchantMenu();
+		else if (type === 'townGuild') html = getAsideGuildMenu();
+		else if (type === 'townMission') html = getAsideMissionMenu();
 		$("#aside-menu").html(html);
 	}
 	function events() {
-		if (!town.delegated) {
-			town.delegated = 1;
-			$("#scene-town").on('click', '.close-aside', function(){
-				// close town asides
-				town.asideSelected = '';
-				var e = $(".town-aside");
-				TweenMax.to(e, .3, {
-					scale: 0,
-					onComplete: function(){
-						e.remove();
-					}
-				});
-				TweenMax.to('#town-bg', .5, {
-					scale: 1,
-					x: '0%',
-					y: '0%'
-				});
-			}).on('click', '#guild-create', guild.create)
-			.on('click' + ' focus', '#guild-input', function() {
-				guild.hasFocus = true;
-			}).on('blur', '#guild-input', function() {
-				guild.hasFocus = false;
-			}).on('click', '#guild-member-refresh-icon', function() {
-				guild.loadGuildMsg()
-				guild.getMembers(guild.throttleTime);
-			}).on('click', '.town-action', function(){
-				asideOpen($(this).attr('id'));
-			});
-		}
+		$("#scene-town")
+			.on('click', '#guild-create', guild.create)
+			.on('click focus', '#guild-input', handleGuildInputFocus)
+			.on('blur', '#guild-input', handleGuildInputBlur)
+			.on('click', '#guild-member-refresh-icon', refreshGuildMembers)
+			.on('click', '.town-building', handleBuildingClick);
+	}
+	function handleGuildInputBlur() {
+		guild.hasFocus = true;
+	}
+	function handleGuildInputFocus() {
+		guild.hasFocus = false;
+	}
+	function handleBuildingClick(event) {
+		openVarious(event);
+	}
+	function refreshGuildMembers() {
+		guild.loadGuildMsg()
+		guild.getMembers(guild.throttleTime);
 	}
 	function merchantMsg() {
 		chat.log('Rendo Surefoot says, "Hello, '+ my.name +'. I have got a once-in-a-lifetime smokin\' deal for you, my friend! Today, we just received a limited edition Lanfeld champion sword from our supply chain!"')
@@ -491,27 +424,29 @@ var town;
 	function updateBankDOM() {
 		if (town.windowsOpen.bank) {
 			// window may be closed by now
-			$('#town-bank').html(getBankHtml())
-			$('#town-bank').css('display', 'flex')
-			ng.split('bank-description', 'Banked items may be shared with all characters on the same account. ');
+			$('#root-bank').html(getBankHtml())
+			$('#root-bank').css('display', 'flex')
+			ng.split('bank-description', 'Banked items may be shared with all characters on the same account.');
 		}
 		else {
-			querySelector('#town-bank').innerHTML = ''
-			querySelector('#town-bank').style.display = 'none'
+			querySelector('#root-bank').innerHTML = ''
+			querySelector('#root-bank').style.display = 'none'
 		}
 	}
 
 	function getBankHtml() {
-		var html = '<div class="flex" style="'+ css.header +'">' +
+		html = '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">Bank</div>' +
 			'</div>' +
-			'<i data-id="bank" class="close-menu fa fa-times"></i>' +
+			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
 		'<div id="bank-slot-wrap">';
 
 		'<div class="flex">';
-		for (var i=0, len=items.bank.length; i<len; i++) {
+		i=0
+		len=items.bank.length
+		for (; i<len; i++) {
 			html += bar.getItemSlotHtml('bank', i)
 		}
 		html += '</div>' +
@@ -524,4 +459,122 @@ var town;
 		'</div>';
 		return html
 	}
-})($, _);
+
+	function openVarious(event) {
+		if (event.currentTarget.dataset.id === 'Bank') {
+			toggleBank()
+		}
+		else {
+			town.windowsOpen.various = event.currentTarget.dataset.id
+			updateVariousDOM()
+		}
+	}
+	function closeVarious() {
+		town.windowsOpen.various = ''
+		querySelector('#root-various').innerHTML = ''
+		querySelector('#root-various').style.display = 'none'
+	}
+	function updateVariousDOM() {
+		querySelector('#root-various').innerHTML = getVariousHtml()
+		querySelector('#root-various').style.display = 'flex'
+		ng.split('various-description', 'Lorem ipsum or something');
+	}
+	function getVariousHtml() {
+		html = ''
+		if (town.windowsOpen.various === 'town-academy') html = academyHtml()
+		else if (town.windowsOpen.various === 'town-apothecary') html = apothecaryHtml()
+		else if (town.windowsOpen.various === 'town-blacksmith') html = blacksmithHtml()
+		else if (town.windowsOpen.various === 'town-guild') html = guildHtml()
+		else if (town.windowsOpen.various === 'town-merchant') html = merchantHtml()
+		else if (town.windowsOpen.various === 'town-tavern') html = tavernHtml()
+		else html = merchantHtml()
+		return html
+	}
+	function academyHtml() {
+		html = '<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+			'</div>' +
+			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		'<div id="various-slot-wrap">';
+			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+				'<div id="various-description"></div>'
+			'</div>' +
+		'</div>';
+		return html
+	}
+	function apothecaryHtml() {
+		html = '<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+			'</div>' +
+			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		'<div id="various-slot-wrap">';
+			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+				'<div id="various-description"></div>'
+			'</div>' +
+		'</div>';
+		return html
+	}
+	function blacksmithHtml() {
+		html = '<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+			'</div>' +
+			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		'<div id="various-slot-wrap">';
+			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+				'<div id="various-description"></div>'
+			'</div>' +
+		'</div>';
+		return html
+	}
+	function guildHtml() {
+		html = '<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+			'</div>' +
+			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		'<div id="various-slot-wrap">';
+			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+				'<div id="various-description"></div>'
+			'</div>' +
+		'</div>';
+		return html
+	}
+	function merchantHtml() {
+		html = '<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+			'</div>' +
+			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		'<div id="various-body" class="flex-max">' +
+			'Do not touch my body!' +
+		'</div>' +
+		'<div id="various-slot-wrap">' +
+			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+				'<div id="various-description"></div>'
+			'</div>' +
+		'</div>';
+		return html
+	}
+	function tavernHtml() {
+		html = '<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+			'</div>' +
+			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		'<div id="various-slot-wrap">';
+			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+				'<div id="various-description"></div>'
+			'</div>' +
+		'</div>';
+		return html
+	}
+})($, _, TweenMax);
