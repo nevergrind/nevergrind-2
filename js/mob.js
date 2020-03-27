@@ -575,7 +575,7 @@ var mob;
 				'Glacial Enchant',
 			];
 		}
-		else if (mob.job === 'MAG') {
+		else if (mob.job === 'SUM') {
 			mob.hp = ~~(mob.hp * .9);
 			mob.mp = 50;
 			mob.skills = [

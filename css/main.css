@@ -1008,7 +1008,7 @@ tbody {
 .chat-SHM { color: #08f; }
 .chat-NEC { color: #84f; }
 .chat-ENC { color: #0df; }
-.chat-MAG { color: #f90; }
+.chat-SUM { color: #f90; }
 .chat-WIZ { color: #f22; }
 
 .bg-WAR { background: #a736; }
@@ -1023,7 +1023,7 @@ tbody {
 .bg-SHM { background: #08f6; }
 .bg-NEC { background: #84f6; }
 .bg-ENC { background: #0df6; }
-.bg-MAG { background: #f906; }
+.bg-SUM { background: #f906; }
 .bg-WIZ { background: #f226; }
 
 
@@ -1039,7 +1039,7 @@ tbody {
 .bg-dark-SHM { background: #08f3; }
 .bg-dark-NEC { background: #84f3; }
 .bg-dark-ENC { background: #0df3; }
-.bg-dark-MAG { background: #f903; }
+.bg-dark-SUM { background: #f903; }
 .bg-dark-WIZ { background: #f223; }
 
 
@@ -1973,7 +1973,6 @@ background-image:
 	right: 0;
 }
 #toast-destroy-wrap {
-	visibility: hidden;
 	border: .2rem groove #259;
 	padding: .5rem 1rem;
 }
@@ -2014,7 +2013,7 @@ background-image:
 	justify-content: flex-start;
 	align-items: flex-end;
 	bottom: 17.5rem;
-	left: 1rem;
+	left: .5rem;
 	min-width: 0;
 	min-height: 0;
 	z-index: 2;
@@ -2164,7 +2163,7 @@ background-image:
 		rgba(128, 192, 255, 1)
 	);
 }
-#options-wrap {
+#root-options {
 	display: none;
 	position: fixed;
 	flex-direction: column;
@@ -2173,18 +2172,26 @@ background-image:
 	left: 0;
 	right: 0;
 	margin: 0 auto;
-	width: 25rem;
+	width: 30rem;
 	height: 40rem;
-	background: #1a1a1a;
+	background: #000c;
+	border: 4px ridge #888;
+	backdrop-filter: sepia(100%) blur(5px);
 	z-index: 2;
-
+}
+.option-category.active {
+	background: #ff05;
+	color: #ffd;
+	backdrop-filter: saturate(250%);
+}
+.option-category-wrap.active .option-category {
 }
 .close-menu {
 	position: absolute;
 	top: 0;
 	right: 0;
 	background: #611;
-	color: #fdd700;
+	color: gold;
 	padding: .1rem .2rem;
 	border: .1rem ridge #777;
 	outline: 1px solid #997;
@@ -2381,7 +2388,7 @@ background-image:
 	left: 0;
 	width: 2rem;
 	height: 2rem;
-	z-index: 2;
+	z-index: 3;
 	background: radial-gradient(farthest-corner at 50% 50%, #048, #0000);
 	background: #0a0a0a;
 	box-shadow: 0 0 .6rem #aeff inset, 0 0 .6rem #aeff inset;

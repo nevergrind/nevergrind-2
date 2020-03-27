@@ -42,6 +42,7 @@
 			.on('click', '.inv-tabs', bar.setCharActiveTab)
 			.on('click', '.inv-skill-row', bar.getSkillDescription)
 			.on('click', '#scene-town, #scene-dungeon', item.dropItem)
+			.on('click', '.option-category', bar.selectOptionCategory)
 
 	}
 

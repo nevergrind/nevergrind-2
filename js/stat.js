@@ -41,127 +41,181 @@ var stat;
 	var defensiveJobs = ['WAR', 'PAL', 'SHD']
 	var averagePunchJobs = ['WAR', 'PAL', 'SHD', 'ROG', 'RNG', 'BRD']
 	var wisCasterJobs = ['DRU', 'CLR', 'SHM']
-	var intCasterJobs = ['NEC', 'ENC', 'MAG', 'WIZ']
-	var allCasterJobs = ['CLR', 'DRU', 'SHM', 'BRD', 'NEC', 'ENC', 'MAG', 'WIZ']
+	var intCasterJobs = ['NEC', 'ENC', 'SUM', 'WIZ']
+	var allCasterJobs = ['CLR', 'DRU', 'SHM', 'BRD', 'NEC', 'ENC', 'SUM', 'WIZ']
 	var hybridJobs = ['PAL', 'SHD', 'RNG']
-	var twoHandBluntAverageJobs = ['WAR', 'PAL', 'SHD', 'CLR', 'DRU', 'SHM', 'NEC', 'ENC', 'MAG', 'WIZ']
+	var twoHandBluntAverageJobs = ['WAR', 'PAL', 'SHD', 'CLR', 'DRU', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
 	var tankJobs = ['WAR', 'PAL', 'SHD']
 	var averageArcherJobs = ['WAR', 'PAL', 'SHD', 'ROG', 'BRD']
-	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'MAG', 'WIZ']
+	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
 	var averageOneHandSlashJobs = ['WAR', 'PAL', 'SHD', 'BRD', 'DRU']
+
+	const hpTier = {
+		'WAR': 5,
+		'PAL': 4.5,
+		'SHD': 4.5,
+		'MNK': 4,
+		'ROG': 4,
+		'RNG': 4,
+		'BRD': 4,
+		'DRU': 3.5,
+		'CLR': 3.5,
+		'SHM': 3.5,
+		'NEC': 3,
+		'ENC': 3,
+		'SUM': 3,
+		'WIZ': 3,
+	}
+	const mpTier = {
+		'WAR': 1,
+		'PAL': 3,
+		'SHD': 3,
+		'MNK': 2,
+		'ROG': 2,
+		'RNG': 3,
+		'BRD': 3,
+		'DRU': 4,
+		'CLR': 4,
+		'SHM': 4,
+		'NEC': 5,
+		'ENC': 5,
+		'SUM': 5,
+		'WIZ': 5,
+	}
+	const spTier = {
+		'WAR': 1,
+		'PAL': 3,
+		'SHD': 3,
+		'MNK': 2,
+		'ROG': 2,
+		'RNG': 3,
+		'BRD': 5,
+		'DRU': 4.5,
+		'CLR': 5,
+		'SHM': 4.5,
+		'NEC': 2.5,
+		'ENC': 5,
+		'SUM': 2.5,
+		'WIZ': 2.5,
+	}
 	var val
 	var i
 	var len
+	var type
+	var min
+	var max
+	var atk
+	var h2h
 
 	function str() {
 		return my.str +
 			create.raceAttrs[my.race][0] +
-			create.jobAttrs[my.jobLong][0] + getEqOnlyTotal('str')
+			create.jobAttrs[my.jobLong][0] + getEqTotal('str')
 	}
 	function sta() {
 		return my.sta +
 			create.raceAttrs[my.race][1] +
-			create.jobAttrs[my.jobLong][1] + getEqOnlyTotal('sta')
+			create.jobAttrs[my.jobLong][1] + getEqTotal('sta')
 	}
 	function agi() {
 		return my.agi +
 			create.raceAttrs[my.race][2] +
-			create.jobAttrs[my.jobLong][2] + getEqOnlyTotal('agi')
+			create.jobAttrs[my.jobLong][2] + getEqTotal('agi')
 	}
 	function dex() {
 		return my.dex +
 			create.raceAttrs[my.race][3] +
-			create.jobAttrs[my.jobLong][3] + getEqOnlyTotal('dex')
+			create.jobAttrs[my.jobLong][3] + getEqTotal('dex')
 	}
 	function wis() {
 		return my.wis +
 			create.raceAttrs[my.race][4] +
-			create.jobAttrs[my.jobLong][4] + getEqOnlyTotal('wis')
+			create.jobAttrs[my.jobLong][4] + getEqTotal('wis')
 	}
 	function intel() {
 		return my.intel +
 			create.raceAttrs[my.race][5] +
-			create.jobAttrs[my.jobLong][5] + getEqOnlyTotal('intel')
+			create.jobAttrs[my.jobLong][5] + getEqTotal('intel')
 	}
 	function cha() {
 		return my.cha +
 			create.raceAttrs[my.race][6] +
-			create.jobAttrs[my.jobLong][6] + getEqOnlyTotal('cha')
+			create.jobAttrs[my.jobLong][6] + getEqTotal('cha')
 	}
 	function armor() {
-		return ~~((agi() * .66) +(defense() * 3.3)) + getEqOnlyTotal('armor')
+		return ~~((agi() * .66) +(defense() * 3.3)) + getEqTotal('armor')
 	}
 	function attack() {
-		var val = 0
-		var type = items.eq[12].itemType
-		for (var i = 0; i<= 14; i++) {
+		val = 0
+		type = items.eq[12].itemType
+		for (i = 0; i<= 14; i++) {
 			if (items.eq[i].attack) val += items.eq[i].attack
 		}
 		// offense
 		val += (offense() * 1.66)
 		// primary weapon
 		if (type === 'oneHandSlashers') val += (oneHandSlash() * 2.66)
-		else if (type === 'oneHandBlunts') val += (oneHandBlunt() * 2.66)
+		else if (type === 'oneHandBlunts' || type === 'focus') val += (oneHandBlunt() * 2.66)
 		else if (type === 'piercers') val += (piercing() * 2.66)
 		else if (type === 'twoHandSlashers') val += (twoHandSlash() * 2.66)
-		else if (type === 'twoHandBlunts') val += (twoHandBlunt() * 2.66)
-		else if (type === 'bows') val += (archery() * 2.66)
+		else if (type === 'twoHandBlunts' || type === 'staves') val += (twoHandBlunt() * 2.66)
+		else if (type === 'archery') val += (archery() * 2.66)
 		else val += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
 		return ~~val
 	}
 	function offense() {
-		return getEqTotal('offense')
+		return getStatTotal('offense')
 	}
 	function defense() {
-		return getEqTotal('defense')
+		return getStatTotal('defense')
 	}
 	function oneHandSlash() {
-		return getEqTotal('oneHandSlash')
+		return getStatTotal('oneHandSlash')
 	}
 	function oneHandBlunt() {
-		return getEqTotal('oneHandBlunt')
+		return getStatTotal('oneHandBlunt')
 	}
 	function piercing() {
-		return getEqTotal('piercing')
+		return getStatTotal('piercing')
 	}
 	function twoHandSlash() {
-		return getEqTotal('twoHandSlash')
+		return getStatTotal('twoHandSlash')
 	}
 	function twoHandBlunt() {
-		return getEqTotal('twoHandBlunt')
+		return getStatTotal('twoHandBlunt')
 	}
 	function handToHand() {
-		return getEqTotal('handToHand')
+		return getStatTotal('handToHand')
 	}
 	function archery() {
-		return getEqTotal('archery')
+		return getStatTotal('archery')
 	}
 	function dualWield() {
-		return getEqTotal('dualWield')
+		return getStatTotal('dualWield')
 	}
 	function doubleAttack() {
-		return getEqTotal('doubleAttack')
+		return getStatTotal('doubleAttack')
 	}
 	function dodge() {
-		return getEqTotal('dodge')
+		return getStatTotal('dodge')
 	}
 	function parry() {
-		return getEqTotal('parry')
+		return getStatTotal('parry')
 	}
 	function riposte() {
-		return getEqTotal('riposte')
+		return getStatTotal('riposte')
 	}
 	function damage() {
-		var min = 1
-		var max = 1
-		var atk = attack()
+		min = 1
+		max = 1
+		atk = attack()
 		if (items.eq[12].minDamage) {
 			min = items.eq[12].minDamage
 			max = items.eq[12].maxDamage
 		}
 		else {
 			// TODO: Calculate punching damage
-			var h2h = handToHand()
+			h2h = handToHand()
 			if (my.job === 'MNK') {
 				min = 1 + (h2h / 12)
 				max = 4 + (h2h / 4.5)
@@ -180,24 +234,24 @@ var stat;
 		return damage[0] + '–' + damage[1]
 	}
 	function resistBlood() {
-		return getEqTotal('resistBlood')
+		return getStatTotal('resistBlood')
 	}
 	function resistPoison() {
-		return getEqTotal('resistPoison')
+		return getStatTotal('resistPoison')
 	}
 	function resistArcane() {
-		return getEqTotal('resistArcane')
+		return getStatTotal('resistArcane')
 	}
 	function resistLightning() {
-		return getEqTotal('resistLightning')
+		return getStatTotal('resistLightning')
 	}
 	function resistFire() {
-		return getEqTotal('resistFire')
+		return getStatTotal('resistFire')
 	}
 	function resistIce() {
-		return getEqTotal('resistIce')
+		return getStatTotal('resistIce')
 	}
-	function getEqTotal(attr) {
+	function getStatTotal(attr) {
 		val = my[attr] || 0
 		i = 0
 		for (; i<15; i++) {
@@ -205,7 +259,7 @@ var stat;
 		}
 		return val
 	}
-	function getEqOnlyTotal(attr) {
+	function getEqTotal(attr) {
 		val = 0
 		i = 0
 		for (; i<15; i++) {
@@ -368,55 +422,6 @@ var stat;
 		else if (hybridJobs.includes(my.job) && my.level >= 9) return my.level * 4
 		else return 0
 	}
-
-	const hpTier = {
-		'WAR': 5,
-		'PAL': 4.5,
-		'SHD': 4.5,
-		'MNK': 4,
-		'ROG': 4,
-		'RNG': 4,
-		'BRD': 4,
-		'DRU': 3.5,
-		'CLR': 3.5,
-		'SHM': 3.5,
-		'NEC': 3,
-		'ENC': 3,
-		'MAG': 3,
-		'WIZ': 3,
-	}
-	const mpTier = {
-		'WAR': 1,
-		'PAL': 3,
-		'SHD': 3,
-		'MNK': 2,
-		'ROG': 2,
-		'RNG': 3,
-		'BRD': 3,
-		'DRU': 4,
-		'CLR': 4,
-		'SHM': 4,
-		'NEC': 5,
-		'ENC': 5,
-		'MAG': 5,
-		'WIZ': 5,
-	}
-	const spTier = {
-		'WAR': 1,
-		'PAL': 3,
-		'SHD': 3,
-		'MNK': 2,
-		'ROG': 2,
-		'RNG': 3,
-		'BRD': 5,
-		'DRU': 4.5,
-		'CLR': 5,
-		'SHM': 4.5,
-		'NEC': 2.5,
-		'ENC': 5,
-		'MAG': 2.5,
-		'WIZ': 2.5,
-	}
 	function setResources() {
 		my.maxHp = maxHp()
 		my.maxMp = maxMp()
@@ -426,14 +431,14 @@ var stat;
 		return ~~(
 			((stat.sta() * hpTier[my.job]) * (my.level / 50) +
 				(my.level * (hpTier[my.job] * 2.5) + 20)) * hpPercentBonus()
-			+ getEqOnlyTotal('hp') + getBuffTotal('hp')
+			+ getEqTotal('hp') + getBuffTotal('hp')
 		)
 	}
 	function maxMp() {
 		return ~~(
 			((stat.intel() * mpTier[my.job]) * (my.level / 50) +
 				(my.level * (mpTier[my.job] * 2.5) + 12)) * mpPercentBonus()
-			+ getEqOnlyTotal('mp') + getBuffTotal('mp')
+			+ getEqTotal('mp') + getBuffTotal('mp')
 		)
 	}
 
@@ -441,14 +446,14 @@ var stat;
 		return ~~(
 			((stat.cha() * spTier[my.job]) * (my.level / 50) +
 				(my.level * (spTier[my.job] * 2.5) + 8)) +
-			getEqOnlyTotal('sp') + getBuffTotal('sp')
+			getEqTotal('sp') + getBuffTotal('sp')
 		)
 	}
 	function hpPercentBonus() {
-		return 1 + (getEqTotal('increaseHpPercent') / 100);
+		return 1 + (getStatTotal('increaseHpPercent') / 100);
 	}
 	function mpPercentBonus() {
-		return 1 + (getEqTotal('increaseMpPercent') / 100);
+		return 1 + (getStatTotal('increaseMpPercent') / 100);
 	}
 	function getBuffTotal(attr) {
 		val = 0

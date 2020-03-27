@@ -21,7 +21,7 @@ var create;
 			Cleric: 'Healer',
 			Druid: 'Healer',
 			Enchanter: 'Utility',
-			Magician: 'Magical DPS',
+			Summoner: 'Magical DPS',
 			Monk: 'Physical DPS',
 			Necromancer: 'Magical DPS',
 			Paladin: 'Tank',
@@ -56,7 +56,7 @@ var create;
 				Cleric: "Clerics are a healing class that can wear plate armor. They specialize in directly healing their allies in combat. They boast powerful support spells that buff their party's health and armor. They also have strong magic-based stuns and they can do modest magic damage in a pinch.",
 				Druid: 'Druids are a healing class that can wear leather armor. They have strong direct healing skills and HoT spells. Druids also have powerful elemental spells that make them highly adaptive. Their strong support spells and exception dungeon skills make them an asset to any party.',
 				Enchanter: 'Enchanters are a utility class that can only wear cloth armor. Among the cloth-wearing casters, their magic does the least amount of damage, but they have the strongest support spells in the game. Their ability to crowd control is unmatched, and they have the ability to charm mobs when you really need to turn the tables.',
-				Magician: 'Magicians are a magical DPS class that can only wear cloth armor. They boast the strongest pets in the game due to their ability to summon four types of pets. They also wield powerful elemental magic and some of the most useful support spells in the game.',
+				Summoner: 'Summoners are a magical DPS class that can only wear cloth armor. They boast the strongest pets in the game due to their ability to summon four types of pets. They also wield powerful elemental magic and some of the most useful support spells in the game.',
 				Monk: "Monks are a physical DPS class that can wear leather armor. Monks practice martial arts to deliver powerful punches and kicks. Monks deliver top-tier physical DPS with hand-to-hand or blunt weapons. They have solid dungeon skills and the best pulling ability among all classes.",
 				Necromancer: 'Necromancers are a magical DPS class that can only wear cloth armor. They have powerful skeleton pets that make quick work of their enemies. Powerful DoT spells, fear, and life tap make them a formidable addition to any party.',
 				Paladin: 'Paladins are a tank class that can wear plate armor. Paladins have the unique ability to lay hands, healing themselves when they need it most. Paladins also have strong stuns and healing spells which make them very difficult to kill.',
@@ -432,7 +432,7 @@ var create;
 				v += 7;
 			}
 			// class
-			if (f.job === 'Magician' ||
+			if (f.job === 'Summoner' ||
 				f.job === 'Necromancer' ||
 				f.job === 'Paladin' ||
 				f.job === 'Shaman'){
@@ -506,7 +506,7 @@ var create;
 				v += 5;
 			}
 			// class
-			if (f.job === 'Magician' ||
+			if (f.job === 'Summoner' ||
 				f.job === 'Necromancer' ||
 				f.job === 'Shaman'){
 				v += 5;

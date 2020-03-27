@@ -52,7 +52,6 @@ var town;
 				Object.assign(my, _.omit(data.characterData, ['data']))
 				data.characterData.data = JSON.parse(data.characterData.data)
 				for (var key in data.characterData.data) {
-					console.info('key', key, data.characterData.data[key])
 					my[key] = data.characterData.data[key]
 				}
 				my.jobLong = ng.toJobLong(my.job)

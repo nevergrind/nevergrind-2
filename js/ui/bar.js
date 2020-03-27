@@ -1,5 +1,5 @@
 var bar;
-(function(_, undefined) {
+(function(_, $, undefined) {
 	bar = {
 		defaultImage: [
 			'helms1',
@@ -26,6 +26,7 @@ var bar;
 			inventory: false,
 			options: false,
 		},
+		optionSelected: 'General',
 		activeTab: 'character',
 		init,
 		linkdead,
@@ -45,10 +46,8 @@ var bar;
 		updateDOM,
 		getItemSlotImage,
 		getItemSlotHtml,
+		selectOptionCategory,
 	};
-	var index;
-	var player; // temp bar data
-	var pingTimer = new TweenMax.delayedCall(0, '')
 	var pingColors = [
 		'',
 		'chat-warning',
@@ -70,22 +69,36 @@ var bar;
 		evocation: 'Evocation enhances the power of all evocation-based magic. Summon a fireball, lightning bolts, or even an impressive ice comet to destroy all who dare to oppose you!',
 		conjuration: 'Conjuration enhances the power of all conjuration-based magic. Why get your hands dirty when you can summon an ally to do the dirty work for you?! Summon a fire-breathing hydra to melt your enemies! Or summon an army of angry bees to seek and destroy! The only limit is your imagination!',
 	}
+	var index;
+	var player; // temp bar data
+	var pingTimer = new TweenMax.delayedCall(0, '')
 	var barRatio
+	var html
+	var str
+	var el
+	var id
+	var arr
+	var slot
+	var resp
+	var i
+	var percent
+	var delay
+	var max
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
 			bar.initialized = 1
-			var e = getById('bar-wrap')
+			el = getById('bar-wrap')
 			// my bar
-			var html = getBarHeader()
+			html = getBarHeader()
 			// party bars
 			html += '<div id="bar-all-player-wrap">'
 			/*for (var i=0; i<party.maxPlayers; i++) {
 				html += getPlayerBarHtml({}, i, true);
 			}*/
 			html += '</div>'
-			e.innerHTML = html
-			e.style.display = 'block'
+			el.innerHTML = html
+			el.style.display = 'block'
 
 			bar.dom.lag = getById('bar-lag')
 			bar.dom.inventory = getById('inventory')
@@ -106,9 +119,9 @@ var bar;
 	}
 
 	function handleClickPartyContextMenu() {
-		var id = $(this).attr('id')
-		var arr = id.split("-")
-		var slot = _.findIndex(party.presence, { row: arr[3] * 1 })
+		id = $(this).attr('id')
+		arr = id.split("-")
+		slot = _.findIndex(party.presence, { row: arr[3] * 1 })
 
 		context.getPartyMenu(party.presence[slot].name)
 		console.info(id, slot, party.presence[slot].name)
@@ -125,7 +138,7 @@ var bar;
 	}
 
 	function setCharActiveTab(event) {
-		var id = event.currentTarget.dataset.id
+		id = event.currentTarget.dataset.id
 		if (bar.activeTab !== id) {
 			bar.activeTab = id
 			updateCharacterDOM()
@@ -144,7 +157,7 @@ var bar;
 	}
 
 	function getCharacterStatsHtml() {
-		var html =
+		html =
 		'<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">' + my.name + '</div>' +
@@ -169,10 +182,8 @@ var bar;
 	}
 
 	function getPlayerGuildDescription() {
-		var html = '<div>&nbsp;</div>'
-		if (my.guild.name) {
-			html = 'Guild ' + guild.ranks[my.guild.rank] + ' of ' + my.guild.name
-		}
+		html = '<div>&nbsp;</div>'
+		if (my.guild.name) html = 'Guild ' + guild.ranks[my.guild.rank] + ' of ' + my.guild.name
 		return html
 	}
 
@@ -188,7 +199,7 @@ var bar;
 		else if (my.jobLong === 'Rogue' ||
 			my.jobLong === 'Necromancer' ||
 			my.jobLong === 'Enchanter' ||
-			my.jobLong === 'Magician' ||
+			my.jobLong === 'Summoner' ||
 			my.jobLong === 'Wizard') {
 			bar.defaultImage[12] = 'piercers0'
 		}
@@ -204,7 +215,7 @@ var bar;
 	}
 
 	function getItemSlotImage(type, slot) {
-		var resp = type === 'eq' ? bar.defaultImage[slot] : 'item-bg-1'
+		resp = type === 'eq' ? bar.defaultImage[slot] : 'item-bg-1'
 		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'itemType')) {
 			resp = items[type][slot].itemType + items[type][slot].imgIndex
 		}
@@ -212,7 +223,7 @@ var bar;
 	}
 
 	function getInvItemClass(type, slot) {
-		var resp = 'item-slot-wrap item-slot-type-none'
+		resp = 'item-slot-wrap item-slot-type-none'
 		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'rarity')) {
 			resp = 'item-slot-wrap item-slot-type-' + items[type][slot].rarity
 		}
@@ -241,8 +252,8 @@ var bar;
 	}
 
 	function getInventoryHtml() {
-		var i = 0
-		var html =
+		i = 0
+		html =
 		'<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">Inventory</div>' +
@@ -346,15 +357,73 @@ var bar;
 	}
 
 	function updateOptionsDOM() {
-		var el = getById('options-wrap')
+		el = getById('root-options')
 		if (bar.windowsOpen.options) {
-			el.innerHTML = 'OPTIONS'
+			el.innerHTML = getOptionsHtml()
 			el.style.display = 'flex'
 		}
 		else {
 			el.innerHTML = ''
 			el.style.display = 'none'
 		}
+	}
+
+	function selectOptionCategory(event) {
+		if (event.currentTarget.id === 'option-general') {
+			querySelector('#options-content').innerHTML = getOptionsGeneralHtml()
+		}
+		else if (event.currentTarget.id === 'option-hotkeys') {
+			querySelector('#options-content').innerHTML = getOptionsHotkeysHtml()
+		}
+		querySelectorAll('.option-category').forEach(el => {
+			el.className = 'option-category'
+		})
+		this.className = 'option-category active'
+	}
+
+	function getOptionsHtml() {
+		html = '<div class="flex">' +
+			'<div class="flex-column flex-max">' +
+				'<div style="'+ css.optionsHeader +'">'+
+					'<div style="'+ css.optionsSubHead +'">Options</div>' +
+				'</div>' +
+			'</div>' +
+		'</div>' +
+		'<div class="flex flex-max" style="'+ css.bodyWrap +'">' +
+			'<div style="font-size: .9rem; line-height: 1.5; flex-basis: 30%; '+ css.optionColumns +'">'+
+				'<div id="option-general" class="option-category active" style="'+ css.optionCategory +'">General</div>' +
+				'<div id="option-hotkeys" class="option-category" style="'+ css.optionCategory +'">Hotkeys</div>' +
+			'</div>' +
+			'<div style="padding: .2rem .5rem; flex: 1; '+ css.optionColumns +'">'+
+				'<div id="options-content" style="font-size: .9rem">' + getOptionsGeneralHtml() + '</div>' +
+			'</div>' +
+		'</div>' +
+		'<div class="flex space-between" style="'+ css.optionFooter +'">'+
+			'<div style="'+ css.optionBtn +'">'+
+				'<div style="'+ css.optionBtnLabel +'">Default Settings</div>'+
+			'</div>' +
+			'<div class="flex">' +
+				'<div style="'+ css.optionBtn +'">'+
+					'<div style="'+ css.optionBtnLabel +'">Okay</div>'+
+				'</div>' +
+				'<div style="'+ css.optionBtn +'">'+
+					'<div style="'+ css.optionBtnLabel +'">Cancel</div>'+
+				'</div>' +
+			'</div>' +
+		'</div>';
+		return html
+	}
+
+	function getOptionsGeneralHtml() {
+		str = 'General HTML'
+
+		return str
+	}
+
+	function getOptionsHotkeysHtml() {
+		str = 'Hotkeys HTML'
+
+		return str
 	}
 
 	function handleCloseMenu(event) {
@@ -385,7 +454,7 @@ var bar;
 	}
 
 	function showBarMenuPopover() {
-		var id = $(this).attr('id');
+		id = $(this).attr('id');
 		popover.setMainMenuHtml(id);
 	}
 
@@ -414,8 +483,8 @@ var bar;
 		}
 	}
 	function getBarHeader() {
-		var s = '';
-		s +=
+		html = '';
+		html +=
 		'<div id="bar-lag">' +
 			'<span class="popover-icons">0ms</span>' +
 			'<span class="popover-icons">0ms</span>' +
@@ -427,14 +496,14 @@ var bar;
 			'<i id="bar-options" class="ra ra-gear-hammer popover-icons bar-icons"></i>' +
 			'<i id="bar-mission-abandon" class="ra ra-player-shot popover-icons bar-icons"></i>' +
 		'</div>';
-		return s;
+		return html;
 	}
 	function getPlayerBarHtml(player, index) {
 		player = player || {};
-		var s = '';
+		html = '';
 		// job icon
 		console.info('getPlayerBarHtml', player)
-		s +=
+		html +=
 		// avatar
 		'<img id="bar-col-icon-'+ index +'" class="bar-col-icon" src="'+ player.avatar +'">' +
 		// bars
@@ -457,7 +526,7 @@ var bar;
 			'</div>' +
 			'</div>' +
 		'</div>';
-		return s;
+		return html;
 	}
 
 	/**
@@ -521,16 +590,9 @@ var bar;
 			'<span class="popover-icons" id="bar-average-ping" class="'+ getPingColor(bar.averagePing) +'">' + (bar.averagePing) + 'ms</span>';
 	}
 	function getPingColor(ping) {
-		index;
-		if (ping < 150) {
-			index = 0;
-		}
-		else if (ping < 350) {
-			index = 1;
-		}
-		else {
-			index = 2;
-		}
+		if (ping < 150) index = 0;
+		else if (ping < 350) index = 1;
+		else index = 2;
 		return pingColors[index];
 	}
 	function setHp(index, delay) {
@@ -539,8 +601,8 @@ var bar;
 			console.warn("NOT DRAWING BAR");
 		}
 		else {
-			var percent = ~~((party.presence[index].hp / party.presence[index].maxHp) * 100) + '%';
-			var delay = delay === undefined ? .3 : delay;
+			percent = ~~((party.presence[index].hp / party.presence[index].maxHp) * 100) + '%';
+			delay = delay === undefined ? .3 : delay;
 			TweenMax.to(bar.dom[index].hpFg, delay, {
 				width: percent
 			});
@@ -557,8 +619,8 @@ var bar;
 		}
 		else {
 			if (party.presence[index].maxMp) {
-				var percent = ~~((party.presence[index].mp / party.presence[index].maxMp) * 100) + '%';
-				var delay = delay === undefined ? .3 : delay;
+				percent = ~~((party.presence[index].mp / party.presence[index].maxMp) * 100) + '%';
+				delay = delay === undefined ? .3 : delay;
 				TweenMax.to(bar.dom[index].mpFg, delay, {
 					width: percent
 				});
@@ -570,9 +632,7 @@ var bar;
 	}
 	function hideParty() {
 		party.presence.forEach(function(v, i){
-			if (i) {
-				getById('bar-player-wrap-' + i).style.display = 'none';
-			}
+			if (i) getById('bar-player-wrap-' + i).style.display = 'none'
 		});
 	}
 	function linkdead(data) {
@@ -580,14 +640,14 @@ var bar;
 	}
 
 	function getSkillDescription(event) {
-		var id = event.currentTarget.dataset.id
+		id = event.currentTarget.dataset.id
 		ng.split('inv-skill-description', skillDescriptions[id]);
 	}
 
 	function getPropSkillHtml(prop) {
 		if (!my[prop]) return ''
-		var max = stat.getPropMax(prop)
-		var html = '<div data-id="'+ prop +'" class="inv-skill-row">' +
+		max = stat.getPropMax(prop)
+		html = '<div data-id="'+ prop +'" class="inv-skill-row">' +
 				'<div class="inv-skill-bar" style="width: '+ (my[prop] / max * 100) +'%"></div>' +
 				'<div class="inv-skill-label-wrap">' +
 					'<div class="inv-skill-label">'+ (item.specialPropLabels[prop] || _.capitalize(prop)) + '</div>' +
@@ -598,7 +658,7 @@ var bar;
 	}
 
 	function getSkillsHtml() {
-		var html = '<div id="inv-skills-wrap">';
+		html = '<div id="inv-skills-wrap">';
 		item.allProps.forEach(function(prop) {
 			html += getPropSkillHtml(prop)
 		})
@@ -614,7 +674,7 @@ var bar;
 
 	function getCharacterHtml() {
 		// race class level guild
-		var html =
+		html =
 		'<div id="inv-wrap">'+
 			'<div class="inv-column-items flex-column flex-max">';
 			for (var i=0; i<=5; i++) {
@@ -689,4 +749,4 @@ var bar;
 			'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
 		'</div>'
 	}
-})(_);
+})(_, $);

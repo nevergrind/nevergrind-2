@@ -14,6 +14,7 @@ var toast;
 		hideDestroyToast,
 	}
 	var destroyData = {}
+	var el
 	////////////////////////////////////////////////
 	function add(data) {
 		if (toast.data.action) {
@@ -39,7 +40,6 @@ var toast;
 	 * @param data
 	 */
 	function getToastHtml(data) {
-		console.info('data', data);
 		return '<div id="toast-msg">' + data.msg + '</div>' +
 			'<div id="toast-btn-row">' +
 				'<div id="'+ (data.accept === 'destroy-item' ? 'toast-accept-destroy' : 'toast-accept') +'" class="toast-btn">Accept</div>' +
@@ -77,14 +77,21 @@ var toast;
 		if (destroyData.accept === 'destroy-item') hideDestroyToast()
 	}
 	function destroyItem(data) {
+		console.info('destroyItem', destroyData)
+		if (!destroyData.msg) {
+			el = createElement('div')
+			el.id = 'toast-destroy-wrap'
+			el.className = 'stag-blue text-shadow no-select'
+			el.innerHTML = getToastHtml(data)
+			querySelector('#toast-window').appendChild(el)
+		}
 		destroyData = data
-		querySelector('#toast-destroy-wrap').innerHTML = getToastHtml(data)
-		querySelector('#toast-destroy-wrap').style.visibility = 'visible'
 	}
 	function hideDestroyToast() {
-		console.info('hideDestroyToast')
+		if (destroyData.msg) {
+			el = querySelector('#toast-destroy-wrap')
+			el.parentNode.removeChild(el)
+		}
 		destroyData = {}
-		querySelector('#toast-destroy-wrap').innerHTML = ''
-		querySelector('#toast-destroy-wrap').style.visibility = 'hidden'
 	}
 })(TweenMax);

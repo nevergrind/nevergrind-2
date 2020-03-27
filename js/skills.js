@@ -325,7 +325,7 @@ var skills;
 				console.info("mysticRune");
 			},
 		},
-		MAG: {
+		SUM: {
 			lavaBolt: function() {
 				console.info("lavaBolt");
 			},
