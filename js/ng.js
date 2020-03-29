@@ -1,6 +1,6 @@
 // ng.js
 var ng;
-(function() {
+(function($, TweenMax, undefined) {
 	ng = {
 		responsiveRatio: 1,
 		statMap: {
@@ -267,6 +267,7 @@ var ng;
 		getId,
 		events,
 		unlock,
+		reloadGame,
 		logout,
 		processStatMap,
 		dimRetAttr,
@@ -276,7 +277,6 @@ var ng;
 		toJobLong,
 		toJobShort,
 		disconnect,
-		unlockFade,
 		checkPlayerData,
 		goCreateCharacter,
 		displayAllCharacters,
@@ -318,9 +318,10 @@ var ng;
 		var e = getById('scene-error');
 		e.style.display = 'block';
 		e.innerHTML = msg || 'You have been disconnected from the server';
-		TweenMax.delayedCall(12, function() {
-			location.reload();
-		})
+		TweenMax.delayedCall(12, reloadGame)
+	}
+	function reloadGame() {
+		location.reload()
 	}
 	function toJobShort(key) {
 		return ng.jobShort[key];
@@ -336,28 +337,13 @@ var ng;
 		ng.view = scene;
 	}
 	function lock(hide) {
-		ng.lockOverlay.style.display = "block";
-		ng.lockOverlay.style.opacity = hide ? 0 : 1;
+		ng.lockOverlay.style.display = 'block';
+		ng.lockOverlay.style.opacity = hide ? 0 : 1
 		ng.locked = 1;
 	}
 	function unlock() {
 		ng.lockOverlay.style.display = "none";
 		ng.locked = 0;
-	}
-	function unlockFade(d) {
-		if (!d){
-			d = 1;
-		}
-		TweenMax.to(ng.lockOverlay, d, {
-			startAt: {
-				opacity: 1,
-			},
-			ease: Power3.easeIn,
-			opacity: 0,
-			onComplete: function(){
-				ng.lockOverlay.style.display = 'none';
-			}
-		});
 	}
 
 	function checkPlayerData() {
@@ -365,7 +351,8 @@ var ng;
 		var ignore = localStorage.getItem('ignore');
 		if (ignore !== null){
 			ng.ignore = JSON.parse(ignore);
-		} else {
+		}
+		else {
 			var foo = [];
 			localStorage.setItem('ignore', JSON.stringify(foo));
 		}
@@ -373,23 +360,22 @@ var ng;
 
 	function keepAlive() {
 		game.session.timer.kill()
-		$.get(app.url + 'session/keep-alive.php').always(function() {
-			if (ng.view === 'title') {
-				game.session.timer = TweenMax.delayedCall(170, keepAlive);
-			}
-		});
+		$.get(app.url + 'session/keep-alive.php').always(handleKeepAliveAlways);
+	}
+	function handleKeepAliveAlways() {
+		if (ng.view === 'title') {
+			game.session.timer = TweenMax.delayedCall(170, keepAlive);
+		}
 	}
 
 	function msg(msg, d) {
 		dom.msg.innerHTML = msg;
-		if (d === undefined || d < 2){
-			d = 2;
-		}
+		if (d === 0) return
+		if (d === undefined || d < 1 ){ d = 1 }
 		TweenMax.to(dom.msg, d, {
 			overwrite: 1,
 			startAt: {
 				visibility: 'visible',
-				rotationX: 90,
 			},
 			onComplete: function(){
 				TweenMax.to(this.target, .2, {
@@ -432,7 +418,7 @@ var ng;
 			ng.msg("Logout successful");
 			localStorage.removeItem('email');
 			localStorage.removeItem('token');
-			location.reload();
+			setTimeout(reloadGame, 250);
 		}).fail(function() {
 			ng.msg("Logout failed.");
 		});
@@ -453,10 +439,10 @@ var ng;
 		return Math.floor(damBonus); // 92% damage bonus for 255 strength
 	}
 	function dimRetSkill(val) {
-		var skillBonus = 0;
-		var bonusPerPoint = basePoint = 7;
-		var multiplier = .9;
-		var i = 0;
+		var skillBonus = 0
+		var bonusPerPoint = 7
+		var multiplier = .9
+		var i = 0
 
 		while (val-- > 0) {
 			skillBonus += bonusPerPoint;
@@ -519,32 +505,86 @@ var ng;
 		}
 	}
 	function initGame() {
-		$.get(app.url + 'init-game.php').done(function(r){
-			console.info('init-game', r)
-			if (r.id) {
-				my.accountId = r.id
-				if (!app.isApp) {
-					getById('logout').textContent = localStorage.getItem('account')
-				}
-				ng.displayAllCharacters(r.characterData)
-				ng.checkPlayerData()
-				$("#login-modal").remove()
+		if (app.isApp) {
+			ng.lock();
+			ng.msg('Communicating with Steam...', 1)
+			// app login, check for steam ticket
+			var greenworks = require('./greenworks');
+			var steam = {
+				screenName: '',
+				steamId: '',
+				handle: 0
+			}
+
+			if (greenworks.initAPI()) {
+				greenworks.init()
+				var details = greenworks.getSteamId()
+				ng.msg('Verifying Steam Credentials...')
+
+				steam.screenName = details.screenName
+				steam.steamId = details.steamId
+				greenworks.getAuthSessionTicket(function (data) {
+					steam.handle = data.handle;
+					$.ajax({
+						type: 'POST',
+						url: app.url + 'php/init-game.php',
+						data: {
+							version: app.version,
+							screenName: steam.screenName,
+							steamId: steam.steamId,
+							channel: my.channel,
+							ticket: data.ticket.toString('hex')
+						}
+					}).done(function(data) {
+						greenworks.cancelAuthTicket(steam.handle)
+						handleInitGame(data)
+						ng.unlock()
+					}).fail(function(data) {
+						data.responseText && ng.msg(data.responseText, 0)
+					});
+				});
 			}
 			else {
-				login.notLoggedIn()
+				ng.msg('Unable to initialize the Steam API! Contact us @maelfyn on Twitter or on the Neverworks Discord.', 50)
 			}
-			if (!app.initialized) {
-				keepAlive()
-				TweenMax.set('#body', {
-					opacity: 0,
-					display: 'flex'
-				})
-				TweenMax.to('#body', .2, {
-					opacity: 1
-				})
+
+
+		}
+		else {
+			$.post(app.url + 'init-game.php', {
+				version: app.version
+			}).done(handleInitGame)
+				.fail(function(err) {
+					ng.msg(err.responseText, 0)
+				});
+		}
+	}
+	function handleInitGame(r) {
+		console.info('init-game', r)
+		if (r.id) {
+			my.accountId = r.id
+			if (!app.isApp) {
+				getById('logout').textContent = localStorage.getItem('account')
 			}
-			app.initialized = 1
-		});
+			ng.displayAllCharacters(r.characterData)
+			ng.checkPlayerData()
+			$("#login-modal").remove()
+		}
+		else {
+			login.notLoggedIn()
+		}
+		if (!app.initialized) {
+			keepAlive()
+			TweenMax.set('#scene-title', {
+				opacity: 0,
+				visibility: 'visible',
+				display: 'flex'
+			})
+			TweenMax.to('#scene-title', .2, {
+				opacity: 1
+			})
+		}
+		app.initialized = 1
 	}
 	function displayAllCharacters(r) {
 		var s = ''
@@ -568,4 +608,4 @@ var ng;
 		$(".select-player-card:first").trigger('click');
 	}
 	// private ///////////////////////////////////////////////////////
-})();
+})($, TweenMax);

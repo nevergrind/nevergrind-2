@@ -499,11 +499,11 @@ var chat;
 					minutes: game.getCachedMinutes()
 				}).done(() => {
 					localStorage.setItem(game.storageId, 0)
-					location.reload();
+					ng.reloadGame()
 				});
 			}
 			else {
-				location.reload();
+				ng.reloadGame()
 			}
 		}
 	}

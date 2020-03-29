@@ -37,13 +37,9 @@ var audio;
 	function init(){
 		var config = localStorage.getItem('config');
 
-		if (config === null){
-			// initialize to ng.config
-			audio.save();
-		}
-		else {
-			ng.config = JSON.parse(config);
-		}
+		if (config === null) audio.save()
+		else ng.config = Object.assign(ng.getDefaultOptions(), JSON.parse(config));
+
 		console.info("Initializing audio...", ng.config);
 		audio.playMusic("WaitingBetweenWorlds")
 	}
@@ -66,6 +62,7 @@ var audio;
 	}
 	function playMusic(track) {
 		dom.bgmusic.src = ''
+		console.info('ng.config.musicVolume', ng.config)
 		dom.bgmusic.volume = ng.config.musicVolume / 100
 		dom.bgmusic.src = "music/" + track + ".mp3"
 
@@ -74,9 +71,7 @@ var audio;
 
 		//var promise = dom.bgmusic.play()
 		if (promise !== undefined) {
-			promise.then(_ => {
-				console.info("WE HERE YET")
-			})
+			promise.then(_ => {})
 		}
 	}
 	function playSound(sfx) {

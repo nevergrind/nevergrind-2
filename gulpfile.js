@@ -114,7 +114,7 @@ function minifyJs() {
 	return gulp.src(js)
 		.pipe(concat('nevergrind-2.js'))
 		.pipe(gulp.dest('./js'))
-		.pipe(stripDebug()) // watch out for this for nwjs - can't see console statements
+		//.pipe(stripDebug()) // watch out for this for nwjs - can't see console statements
 		//.pipe(uglify()) // needs update?
 		.pipe(rename('nevergrind-2.min.js'))
 		.pipe(gulp.dest('./js'));

@@ -102,9 +102,7 @@ var login;
 			}
 			else {
 				login.msg("Account Created! Reloading!");
-				TweenMax.delayedCall(.5, function() {
-					location.reload()
-				})
+				TweenMax.delayedCall(.5, ng.reloadGame)
 			}
 		}).fail(function() {
 			login.msg("There was a problem communicating with the server.");
