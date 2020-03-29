@@ -55,7 +55,7 @@
     "linux",
     "mac"
   ],
-  "chromium-args": "--allow-file-access-from-files --enable-experimental-web-platform-features --disable-raf-throttling --disable-extensions-http-throttling --num-raster-threads=4",
+  "chromium-args": "--allow-file-access-from-files --enable-experimental-web-platform-features --disable-raf-throttling --disable-extensions-http-throttling --num-raster-threads=4 --autoplay-policy=no-user-gesture-required --disable-accelerated-video",
   "requires": true,
   "lockfileVersion": 1,
   "dependencies": {

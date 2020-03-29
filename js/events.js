@@ -43,6 +43,9 @@
 			.on('click', '.inv-skill-row', bar.getSkillDescription)
 			.on('click', '#scene-town, #scene-dungeon', item.dropItem)
 			.on('click', '.option-category', bar.selectOptionCategory)
+			.on('click', '.ng-dropdown-btn', dropdown.toggle)
+			.on('click', '.ng-dropdown-select', dropdown.hideMenu)
+			.on('click', '.window-select', bar.setWindowSize)
 
 	}
 
@@ -156,6 +159,16 @@
 			if (key === 'Escape') {
 				console.warn('toggleOptions', key)
 				bar.toggleOptions()
+				/*
+				nw.App.registerGlobalHotKey(new nw.Shortcut({
+				  key: 'Escape',
+				  active: function () {
+					// decide whether to leave fullscreen mode
+					// then ...
+					nw.Window.get().leaveFullscreen();
+				  }
+				}));
+				 */
 			}
 			else if (!chat.hasFocus && !guild.hasFocus && chat.focusKeys.includes(key)) {
 				var z = $("#chat-input");

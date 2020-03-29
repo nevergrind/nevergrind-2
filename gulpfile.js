@@ -68,6 +68,7 @@ function minifyJs() {
 		'components/button',
 		'components/popover',
 		'components/tooltip',
+		'components/dropdown',
 		'mission/mission',
 		'mission/zones',
 		'ui/bar',

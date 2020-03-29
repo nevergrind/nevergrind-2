@@ -254,10 +254,9 @@ var ng;
 			WIZ: 'Wizard'
 		},
 		config: {
-			audio: {
-				musicVolume: 10,
-				soundVolume: 50
-			}
+			display: 'Full Screen',
+			musicVolume: 10,
+			soundVolume: 50
 		},
 		msg,
 		init,

@@ -1,5 +1,5 @@
 var bar;
-(function(_, $, undefined) {
+(function(_, $, Draggable, undefined) {
 	bar = {
 		defaultImage: [
 			'helms1',
@@ -47,6 +47,7 @@ var bar;
 		getItemSlotImage,
 		getItemSlotHtml,
 		selectOptionCategory,
+		setWindowSize,
 	};
 	var pingColors = [
 		'',
@@ -81,9 +82,14 @@ var bar;
 	var slot
 	var resp
 	var i
+	var val
 	var percent
 	var delay
 	var max
+	const volumeSettings = []
+	for (i=0; i<21; i++) {
+		volumeSettings[i] = i*54
+	}
 	//////////////////////////////////////////////
 	function init() {
 		if (!bar.initialized) {
@@ -105,6 +111,15 @@ var bar;
 			bar.dom.inventoryWrap = getById('inventory-wrap')
 			// draw all bars
 			// bar events
+			$('#root-options')
+				.on('click', '#app-exit', appExit)
+				.on('click', '#window-size-select', function(event, a) {
+					console.info(event, a)
+				})
+				.on('click', '.window-select', function(event, a) {
+					console.info(event, a)
+				})
+
 			$("#bar-wrap")
 				.on('click contextmenu', '.bar-col-icon', handleClickPartyContextMenu)
 				.on('click', '#bar-camp', chat.camp)
@@ -116,6 +131,10 @@ var bar;
 				.on('mousemove', '.popover-icons', popover.setPosition)
 				.on('mouseleave', '.popover-icons', popover.hide);
 		}
+	}
+	function appExit() {
+		// exists on app load?
+		app.isApp && nw.App.closeAllWindows();
 	}
 
 	function handleClickPartyContextMenu() {
@@ -361,16 +380,88 @@ var bar;
 		if (bar.windowsOpen.options) {
 			el.innerHTML = getOptionsHtml()
 			el.style.display = 'flex'
+			initDraggableAudioDials()
 		}
 		else {
 			el.innerHTML = ''
 			el.style.display = 'none'
 		}
 	}
+	function initDraggableAudioDials() {
+		Draggable.create('#options-knob-sfx', {
+			type: 'rotation',
+			throwProps: true,
+			snap: volumeSettings,
+			onDrag: handleDragSfx,
+			onDragEnd: handleDragSfxEnd,
+			onThrowUpdate: handleDragSfx,
+			onThrowComplete: handleDragSfx,
+			bounds: {
+				minRotation: 0,
+				maxRotation: 1080
+			}
+		})
+		el = Draggable.get('#options-knob-sfx')
+		TweenMax.set('#options-knob-sfx', {
+			rotation: (~~(ng.config.soundVolume / 5) * 54)
+		})
+		el.update()
+		Draggable.create('#options-knob-music', {
+			type: 'rotation',
+			throwProps: true,
+			snap: volumeSettings,
+			onDrag: handleDragMusic,
+			onThrowUpdate: handleDragMusic,
+			onThrowComplete: handleDragMusic,
+			bounds: {
+				minRotation: 0,
+				maxRotation: 1080
+			}
+		})
+		el = Draggable.get('#options-knob-music')
+		TweenMax.set('#options-knob-music', {
+			rotation: (~~(ng.config.musicVolume / 5) * 54)
+		})
+		el.update()
+	}
+	function handleDragSfxEnd() {
+		audio.playSound('frog_att')
+		//audio.playSound('flshhit2')
+	}
+	function handleDragMusicEnd() {
+		dom.bgmusic.volume = ng.config.musicVolume / 100;
+	}
+
+	function handleDragSfx() {
+		val = this.x
+		if (val > 1080) val = 1080
+		if (val < 0) val = 0
+		val = ~~(val / 54 * 5)
+		ng.config.soundVolume = val
+		audio.save()
+		querySelector('#options-sfx-value').textContent = val
+		_.debounce(handleDragSfxEnd, 100)
+	}
+
+	function handleDragMusic() {
+		val = this.x
+		if (val > 1080) val = 1080
+		if (val < 0) val = 0
+		val = ~~(val / 54 * 5)
+		ng.config.musicVolume = val
+		audio.save()
+		querySelector('#options-music-value').textContent = val
+		handleDragMusicEnd()
+	}
 
 	function selectOptionCategory(event) {
+		html = ''
 		if (event.currentTarget.id === 'option-general') {
 			querySelector('#options-content').innerHTML = getOptionsGeneralHtml()
+			initDraggableAudioDials()
+		}
+		else if (event.currentTarget.id === 'option-ui') {
+			querySelector('#options-content').innerHTML = getOptionsUiHtml()
 		}
 		else if (event.currentTarget.id === 'option-hotkeys') {
 			querySelector('#options-content').innerHTML = getOptionsHotkeysHtml()
@@ -392,36 +483,115 @@ var bar;
 		'<div class="flex flex-max" style="'+ css.bodyWrap +'">' +
 			'<div style="font-size: .9rem; line-height: 1.5; flex-basis: 30%; '+ css.optionColumns +'">'+
 				'<div id="option-general" class="option-category active" style="'+ css.optionCategory +'">General</div>' +
+				'<div id="option-ui" class="option-category" style="'+ css.optionCategory +'">User Interface</div>' +
 				'<div id="option-hotkeys" class="option-category" style="'+ css.optionCategory +'">Hotkeys</div>' +
 			'</div>' +
-			'<div style="padding: .2rem .5rem; flex: 1; '+ css.optionColumns +'">'+
-				'<div id="options-content" style="font-size: .9rem">' + getOptionsGeneralHtml() + '</div>' +
+			'<div style="font-size:.9rem; padding: .2rem .5rem; flex: 1; '+ css.optionColumns +'">' +
+				'<div id="options-content" class="flex-column">' +
+				// TODO: content goes here!!
+					getOptionsGeneralHtml() +
+				'</div>' +
 			'</div>' +
 		'</div>' +
 		'<div class="flex space-between" style="'+ css.optionFooter +'">'+
-			'<div style="'+ css.optionBtn +'">'+
+			'<div class="option-button">'+
 				'<div style="'+ css.optionBtnLabel +'">Default Settings</div>'+
 			'</div>' +
 			'<div class="flex">' +
-				'<div style="'+ css.optionBtn +'">'+
+				'<div class="option-button">'+
 					'<div style="'+ css.optionBtnLabel +'">Okay</div>'+
 				'</div>' +
-				'<div style="'+ css.optionBtn +'">'+
+				'<div class="option-button">'+
 					'<div style="'+ css.optionBtnLabel +'">Cancel</div>'+
 				'</div>' +
 			'</div>' +
-		'</div>';
+		'</div>'
 		return html
 	}
 
+	function setWindowSize(event) {
+		id = event.currentTarget.dataset.id
+		console.info('setWindowSize', id)
+		if (app.isApp) {
+			var gui = require('nw.gui');
+			var win = gui.Window.get();
+			// ??????? reasons
+			setTimeout(() => {
+				if (id === 'Full Screen') {
+					!win.isFullscreen && win.enterFullscreen();
+				}
+				else if (id === '1920x1080') {
+					win.isFullscreen && win.leaveFullscreen();
+					win.resizeTo(1920, 1080);
+					win.maximize();
+				}
+				else if (id === '1600x900') {
+					win.isFullscreen && win.leaveFullscreen();
+					win.resizeTo(1600, 900);
+				}
+				else if (id === '1360x768') {
+					win.isFullscreen && win.leaveFullscreen();
+					win.resizeTo(1360, 768);
+				}
+				else if (id === '1280x720') {
+					win.isFullscreen && win.leaveFullscreen();
+					win.resizeTo(1280, 720);
+				}
+				else {
+					// just in case do this
+					id = 'Full Screen';
+					!win.isFullscreen && win.enterFullScreen();
+				}
+				// always do this
+			}, 100);
+		}
+		$('#window-size-value').text(id);
+		ng.config.display = id
+		audio.save()
+	}
+
 	function getOptionsGeneralHtml() {
-		str = 'General HTML'
+		str = '<div class="flex align-center space-between">' +
+			'<div style="flex: 1">Sound Volume:</div>' +
+			'<div id="options-knob-sfx"></div>' +
+			'<div id="options-sfx-value" style="'+ css.volumeColumns +'">'+ ng.config.soundVolume +'</div>' +
+		'</div>' +
+		'<div class="flex align-center space-between" style="margin-top: .5rem">' +
+			'<div style="flex: 1">Music Volume:</div>' +
+			'<div id="options-knob-music"></div>' +
+			'<div id="options-music-value" style="'+ css.volumeColumns +'">'+ ng.config.musicVolume +'</div>' +
+		'</div>' +
+		'<div class="flex-center" style="margin-top: 1rem">' +
+			'<div style="flex-basis: 50%">Window Size</div>' +
+			'<div class="flex-max ng-drop-wrap">' +
+				'<div id="window-size-btn" class="ng-dropdown-btn flex-center">' +
+					'<div id="window-size-value" class="ng-dropdown-value">'+ ng.config.display + '</div>' +
+					'<i class="fas fa-caret-down ng-dropdown-caret"></i>' +
+				'</div>' +
+				'<div id="window-size-select" class="ng-dropdown">'+
+					'<div data-id="Full Screen" class="ng-dropdown-select window-select">Full Screen</div>' +
+					'<div data-id="1920x1080" class="ng-dropdown-select window-select">1920x1080</div>' +
+					'<div data-id="1600x900" class="ng-dropdown-select window-select">1600x900</div>' +
+					'<div data-id="1360x768" class="ng-dropdown-select window-select">1360x768</div>' +
+					'<div data-id="1280x720" class="ng-dropdown-select window-select">1280x720</div>' +
+				'</div>' +
+			'</div>' +
+		'</div>' +
+		'<div class="flex-center">' +
+			'<div id="app-exit">Exit Game</div>' +
+		'</div>'
 
 		return str
 	}
 
 	function getOptionsHotkeysHtml() {
 		str = 'Hotkeys HTML'
+
+		return str
+	}
+
+	function getOptionsUiHtml() {
+		str = 'User Interface'
 
 		return str
 	}
@@ -447,10 +617,6 @@ var bar;
 		town.updateBankDOM()
 
 		item.dropReset()
-	}
-
-	function closeTownWindows() {
-
 	}
 
 	function showBarMenuPopover() {
@@ -749,4 +915,4 @@ var bar;
 			'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
 		'</div>'
 	}
-})(_, $);
+})(_, $, Draggable);

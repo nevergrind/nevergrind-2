@@ -11,7 +11,7 @@
 			visibility: hidden;
 		}
 	</style>
-	<link rel="shortcut icon" href="favicon.png"> <!-- stupid error -->
+	<link rel="shortcut icon" href="images/favicon.png">
 	<link rel="stylesheet" href="css/libs/rpg-awesome.min.css">
 </head>
 
@@ -140,13 +140,13 @@ Twe				<div>
 				<div id="gender-wrap">
 					<div class="character-info-header">Gender</div>
 					<div style="display: flex; flex-direction: column; justify-content: center; flex: 1">
-						<div class="flex flex-align-center pad-4" style="margin-left: .5rem">
+						<div class="flex align-center pad-4" style="margin-left: .5rem">
 							<div class="select-gender-col">
 								<div id="Male" class="select-radial select-gender active" data-gender="Male"></div>
 							</div>
 							<div class="select-gender" data-gender="Male" style="padding-left: .5rem">Male</div>
 						</div>
-						<div class="flex flex-align-center pad-4" style="margin-left: .5rem">
+						<div class="flex align-center pad-4" style="margin-left: .5rem">
 							<div class="select-gender-col">
 								<div id="Female" class="select-radial select-gender" data-gender="Female"></div>
 							</div>
@@ -463,7 +463,7 @@ Twe				<div>
 <div id="scene-battle" class="scene none no-select"></div>
 <div id="scene-error" class="scene none no-select text-shadow"></div>
 
-<audio id="bgmusic" autoplay loop preload="auto"></audio>
+<audio id="bgmusic" loop preload="none"></audio>
 
 <div id="modal-overlay" class="overlay"></div>
 <div id="modal-wrap" class="text-shadow"></div>
@@ -490,8 +490,10 @@ Twe				<div>
 
 <script src="js/libs/pixi.min.js"></script>
 <script src="js/libs/gsap/TweenMax2.min.js"></script>
-<script src="js/libs/gsap/pixi-plugin.min.js"></script>
 <script src="js/libs/gsap/SplitText.min.js"></script>
+<script src="js/libs/gsap/Draggable.min.js"></script>
+<script src="js/libs/gsap/ThrowPropsPlugin.min.js"></script>
+<script src="js/libs/gsap/pixi-plugin.min.js"></script>
 <script src="js/libs/autobahn-2.min.js"></script>
 <!--<script src="js/libs/gsap/ThrowPropsPlugin.min.js"></script>-->
 <!--<script src="js/libs/gsap/DrawSVGPlugin.min.js"></script>-->
@@ -542,6 +544,7 @@ if (!app.isApp){
 		'components/button',
 		'components/popover',
 		'components/tooltip',
+		'components/dropdown',
 		'mission/mission',
 		'mission/zones',
 		'ui/bar',
