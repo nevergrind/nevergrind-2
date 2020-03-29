@@ -23,7 +23,7 @@ var test;
 			hue-rotate(360deg)
 			brightness(100%)
 			contrast(100%)
-			shadow(100%) (chrome not supported?)
+			shadow(100%)
 			grayscale(100%)
 			invert(100%)
 			opacity(100%)

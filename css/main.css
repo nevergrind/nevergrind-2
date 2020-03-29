@@ -2173,7 +2173,7 @@ background-image:
 	right: 0;
 	margin: 0 auto;
 	width: 30rem;
-	height: 40rem;
+	height: 25rem;
 	background: #000c;
 	border: 4px ridge #888;
 	backdrop-filter: sepia(100%) blur(5px);
@@ -2185,11 +2185,18 @@ background-image:
 	backdrop-filter: saturate(250%);
 }
 #options-knob-sfx, #options-knob-music {
-	width: 3rem;
-	height: 3rem;
+	position: relative;
+	width: 5rem;
+	height: 5rem;
 	border-radius: 50%;
-	border: 4px solid #8df;
-	box-shadow: 0 0 0 2px #000 inset;
+	border: 2px solid #159;
+	box-shadow:
+			0 0 0 .1rem #000 inset,
+			0 0 0 .2rem #999,
+			0 0 0 .25rem #666,
+			0 0 0 .3rem #444,
+			0 0 0 .35rem #222,
+			0 0 0 .4rem #000;
 	background: conic-gradient(
 		#888 0turn,
 		#fff .125turn,
@@ -2199,30 +2206,62 @@ background-image:
 		#fff .625turn,
 		#888 .75turn,
 		#fff .875turn,
-		#888 1turn
-	);
+		#888 1turn);
 	cursor: url("cursor/pointer.cur"), pointer;
 }
-#options-content td {
-	vertical-align: middle;
+.options-volume {
+	position: absolute;
+	top: .15rem;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	height: 1rem;
+	width: .2rem;
+	border: 1px solid #000;
+	background: radial-gradient(farthest-corner at 50% 50%, #555, #000);
+}
+#options-content {
+	font-size:.9rem;
+	padding: .2rem .5rem;
+}
+.ng-boolean {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: .1rem ridge #555;
+	padding: 0 .2rem;
+	border-radius: 3px;
+	box-shadow: 0 0 2px #aefc inset;
+	margin: .1rem;
+	min-width: 2.5rem;
+	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
+}
+.ng-boolean:hover {
+	color: #ffd;
+	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
+	filter: saturate(200%);
+	cursor: url('cursor/pointer.cur'), pointer;
+}
+.ng-boolean:active {
+	filter: saturate(300%);
 }
 .option-button {
 	display: flex;
 	align-items: center;
 	border-radius: 3px;
 	color: gold;
-	background: radial-gradient(farthest-corner at 50% 50%, #025f, #0254);
+	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
 	margin: .2rem;
 	border: .1rem ridge #555;
 	cursor: url('cursor/pointer.cur'), pointer;
-	transition: color .2s linear;
 }
 .option-button:hover {
-	color: gold;
-	background: radial-gradient(farthest-corner at 50% 50%, #036f, #0364);
+	color: #ffd;
+	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
+	filter: saturate(200%);
 }
 .option-button:active {
-	filter: saturate(250%);
+	filter: saturate(300%);
 }
 .ng-drop-wrap {
 	position: relative;
@@ -2244,12 +2283,13 @@ background-image:
 	filter: saturate(150%);
 }
 .ng-dropdown-value {
-	padding: .3rem .6rem;
+	padding-left: .6rem;
 }
 .ng-dropdown-caret {
-	padding-right: .3rem;
+	font-size: 1.5rem;
 	color: #048;
-	text-shadow: 0px 0px 1px #000, 0px 0px 2px #000;
+	padding-right: .1rem;
+	text-shadow: 0 0 1px #000, 0 0 2px #000;
 }
 .ng-dropdown {
 	display: none;
@@ -2277,9 +2317,7 @@ background-image:
 .ng-dropdown-select:active {
 	filter: saturate(250%);
 }
-
 #app-exit {
-	margin-top: 1rem;
 	padding: .4rem .8rem;
 	transition: box-shadow .3s ease-out, color .3s ease-out;
 }
@@ -2288,6 +2326,7 @@ background-image:
 	box-shadow: 0 0 0 1rem #ff08 inset;
 	cursor: url('cursor/pointer.cur'), pointer;
 }
+#app-exit:active { box-shadow: 0 0 0 1rem #ff0c inset; }
 .close-menu {
 	position: absolute;
 	top: 0;

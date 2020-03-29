@@ -14,5 +14,5 @@ var css = {
 	optionCategory: 'padding: 0 .5rem; ',
 	optionFooter: 'font-size: .9rem; margin: .5rem; align-self: stretch; align-items: center',
 	optionBtnLabel: 'padding: .2rem .5rem; border: 1px solid #000; box-shadow: 0 0 2px #aefc inset',
-	volumeColumns: 'width: 4rem; text-align: center'
+	volumeColumns: 'width: 4rem; text-align: center; font-size: 1.5rem'
 }

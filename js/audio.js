@@ -38,7 +38,7 @@ var audio;
 		var config = localStorage.getItem('config');
 
 		if (config === null){
-			// initialize
+			// initialize to ng.config
 			audio.save();
 		}
 		else {

@@ -42,10 +42,13 @@
 			.on('click', '.inv-tabs', bar.setCharActiveTab)
 			.on('click', '.inv-skill-row', bar.getSkillDescription)
 			.on('click', '#scene-town, #scene-dungeon', item.dropItem)
+			// options
 			.on('click', '.option-category', bar.selectOptionCategory)
 			.on('click', '.ng-dropdown-btn', dropdown.toggle)
 			.on('click', '.ng-dropdown-select', dropdown.hideMenu)
 			.on('click', '.window-select', bar.setWindowSize)
+			.on('click', '#options-okay', bar.toggleOptions)
+			.on('click', '#options-default', bar.setDefaultOptions)
 
 	}
 
@@ -95,6 +98,10 @@
 		if (context.isOpen) {
 			context.hideCheck()
 			e.preventDefault()
+			return false
+		}
+		if (dropdown.isOpen) {
+			dropdown.hide()
 			return false
 		}
 	}

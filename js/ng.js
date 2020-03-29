@@ -255,9 +255,11 @@ var ng;
 		},
 		config: {
 			display: 'Full Screen',
-			musicVolume: 10,
-			soundVolume: 50
+			musicVolume: 100,
+			soundVolume: 100,
+			fastDestroy: false,
 		},
+		getDefaultOptions,
 		msg,
 		init,
 		lock,
@@ -290,6 +292,13 @@ var ng;
 			ng.levels.push(i+'');
 		}
 		ng.processStatMap(ng.statMap)
+	}
+	function getDefaultOptions() {
+		return {
+			display: 'Full Screen',
+			musicVolume: 100,
+			soundVolume: 100
+		}
 	}
 	function getId() {
 		ng.id++;

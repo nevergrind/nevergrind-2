@@ -48,6 +48,7 @@ var bar;
 		getItemSlotHtml,
 		selectOptionCategory,
 		setWindowSize,
+		setDefaultOptions,
 	};
 	var pingColors = [
 		'',
@@ -486,27 +487,34 @@ var bar;
 				'<div id="option-ui" class="option-category" style="'+ css.optionCategory +'">User Interface</div>' +
 				'<div id="option-hotkeys" class="option-category" style="'+ css.optionCategory +'">Hotkeys</div>' +
 			'</div>' +
-			'<div style="font-size:.9rem; padding: .2rem .5rem; flex: 1; '+ css.optionColumns +'">' +
-				'<div id="options-content" class="flex-column">' +
+			'<div id="options-content" class="flex-column flex-max" style="'+ css.optionColumns +'">' +
 				// TODO: content goes here!!
-					getOptionsGeneralHtml() +
-				'</div>' +
+				getOptionsGeneralHtml() +
 			'</div>' +
 		'</div>' +
 		'<div class="flex space-between" style="'+ css.optionFooter +'">'+
-			'<div class="option-button">'+
+			'<div id="options-default" class="option-button">'+
 				'<div style="'+ css.optionBtnLabel +'">Default Settings</div>'+
 			'</div>' +
 			'<div class="flex">' +
-				'<div class="option-button">'+
+				'<div id="options-okay" class="option-button">'+
 					'<div style="'+ css.optionBtnLabel +'">Okay</div>'+
-				'</div>' +
-				'<div class="option-button">'+
-					'<div style="'+ css.optionBtnLabel +'">Cancel</div>'+
 				'</div>' +
 			'</div>' +
 		'</div>'
 		return html
+	}
+
+	function setDefaultOptions() {
+		ng.config = ng.getDefaultOptions()
+		updateOptionsDOM()
+		audio.save()
+		dom.bgmusic.volume = ng.config.musicVolume / 100
+		setWindowSize({
+			currentTarget: {
+				dataset: { id: ng.config.display }
+			}
+		})
 	}
 
 	function setWindowSize(event) {
@@ -551,22 +559,27 @@ var bar;
 	}
 
 	function getOptionsGeneralHtml() {
-		str = '<div class="flex align-center space-between">' +
+		str = '<div class="flex-column flex-max" style="justify-content: space-around;">' +
+		'<div class="flex align-center space-between">' +
 			'<div style="flex: 1">Sound Volume:</div>' +
-			'<div id="options-knob-sfx"></div>' +
+			'<div id="options-knob-sfx">'+
+				'<div class="options-volume"></div>' +
+			'</div>' +
 			'<div id="options-sfx-value" style="'+ css.volumeColumns +'">'+ ng.config.soundVolume +'</div>' +
 		'</div>' +
-		'<div class="flex align-center space-between" style="margin-top: .5rem">' +
+		'<div class="flex align-center space-between">' +
 			'<div style="flex: 1">Music Volume:</div>' +
-			'<div id="options-knob-music"></div>' +
+			'<div id="options-knob-music">'+
+				'<div class="options-volume"></div>' +
+			'</div>' +
 			'<div id="options-music-value" style="'+ css.volumeColumns +'">'+ ng.config.musicVolume +'</div>' +
 		'</div>' +
-		'<div class="flex-center" style="margin-top: 1rem">' +
+		'<div class="flex-center">' +
 			'<div style="flex-basis: 50%">Window Size</div>' +
 			'<div class="flex-max ng-drop-wrap">' +
 				'<div id="window-size-btn" class="ng-dropdown-btn flex-center">' +
 					'<div id="window-size-value" class="ng-dropdown-value">'+ ng.config.display + '</div>' +
-					'<i class="fas fa-caret-down ng-dropdown-caret"></i>' +
+					'<i class="far fa-caret-square-down ng-dropdown-caret"></i>' +
 				'</div>' +
 				'<div id="window-size-select" class="ng-dropdown">'+
 					'<div data-id="Full Screen" class="ng-dropdown-select window-select">Full Screen</div>' +
@@ -579,19 +592,42 @@ var bar;
 		'</div>' +
 		'<div class="flex-center">' +
 			'<div id="app-exit">Exit Game</div>' +
+		'</div>' +
 		'</div>'
 
 		return str
 	}
 
 	function getOptionsHotkeysHtml() {
-		str = 'Hotkeys HTML'
+		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 66%;">Hotkey 1</div>' +
+			'<div id="options-fast-destroy" class="ng-boolean">A</div>'+
+		'</div>' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 66%;">Hotkey 2</div>' +
+			'<div id="options-fast-destroy" class="ng-boolean">S</div>'+
+		'</div>' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 66%;">Hotkey 3</div>' +
+			'<div id="options-fast-destroy" class="ng-boolean">D</div>'+
+		'</div>' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 66%;">Hotkey 4</div>' +
+			'<div id="options-fast-destroy" class="ng-boolean">F</div>'+
+		'</div>' +
+		'</div>'
 
 		return str
 	}
 
 	function getOptionsUiHtml() {
-		str = 'User Interface'
+		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 66%;">Fast Destroy</div>' +
+			'<div id="options-fast-destroy" class="ng-boolean">Off</div>' +
+		'</div>' +
+		'</div>'
 
 		return str
 	}
