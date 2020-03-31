@@ -1,6 +1,9 @@
 var tooltip;
 (function($, parseInt, TweenMax, _, getComputedStyle, undefined) {
 	tooltip = {
+		eq: { isHovering: false },
+		inv: { isHovering: false },
+		bank: { isHovering: false },
 		timer: new TweenMax.delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
@@ -42,51 +45,6 @@ var tooltip;
 		'WAR',
 	]
 	//////////////////////////////////////////////////
-
-	function show(obj, slotElement, type) {
-		if (!_.size(obj)) return
-		tooltipEl.innerHTML = getItemHtml(obj)
-		if (slotElement) {
-			// x position
-			var y = slotElement.y - (4 * ng.responsiveRatio)
-			var height = parseInt(getComputedStyle(tooltipEl).height, 10)
-			var diff = window.innerHeight - (y + height)
-			if (diff < 50) {
-				// keep from going off the bottom of the screen
-				y -= (50 - diff)
-			}
-			tooltipEl.style.top = y + 'px'
-			// x position
-			if (type === 'eq' || type === 'bank') {
-				tooltipEl.style.left = slotElement.x + (68 * ng.responsiveRatio) + 'px'
-				tooltipEl.style.transform = 'translate(0%, 0%)'
-			}
-			else if (type === 'inv') {
-				tooltipEl.style.left = slotElement.x + 'px'
-				tooltipEl.style.transform = 'translate(-100%, 0%)'
-			}
-		}
-		tooltip.isOpen = 1
-		tooltipEl.style.visibility = 'visible'
-		tooltip.openDate = Date.now()
-		TweenMax.to(tooltipEl, .2, {
-			overwrite: 1,
-			opacity: 1,
-		})
-	}
-	function handleShowDelay() {
-	}
-	function hide() {
-		TweenMax.to(tooltipEl, .1, {
-			opacity: 0,
-			overwrite: 1,
-			onComplete: function() {
-				tooltipEl.style.visibility = 'hidden'
-				tooltip.isOpen = 0
-				tooltipEl.innerHTML = ''
-			}
-		});
-	}
 	function getItemHtml(obj) {
 		var html = ''
 		var divider = '<hr class="fancy-hr" style="margin: .2rem 0">'
@@ -321,93 +279,94 @@ var tooltip;
 		}
 	}
 	function canEquipArmor(armorType) {
-		if (armorType === 'cloth') {
-			return true
-		}
-		else if (armorType === 'leather') {
-			return wearsLeather.includes(my.job)
-		}
-		else if (armorType === 'mail') {
-			return wearsMail.includes(my.job)
-		}
-		else if (armorType === 'plate') {
-			return wearsPlate.includes(my.job)
-		}
+		if (armorType === 'cloth') return true
+		else if (armorType === 'leather') return wearsLeather.includes(my.job)
+		else if (armorType === 'mail') return wearsMail.includes(my.job)
+		else if (armorType === 'plate') return wearsPlate.includes(my.job)
 	}
 	function canEquipWeapon(weaponSkill) {
 		if (weaponSkill === 'One-hand Slash') {
-			if (my.oneHandSlash) {
-				return true
-			}
-			else {
-				return false
-			}
+			if (my.oneHandSlash) return true
+			else return false
 		}
 		else if (weaponSkill === 'One-hand Blunt') {
-			if (my.oneHandBlunt) {
-				return true
-			}
-			else {
-				return false
-			}
+			if (my.oneHandBlunt) return true
+			else return false
 		}
 		else if (weaponSkill === 'Piercing') {
-			if (my.piercing) {
-				return true
-			}
-			else {
-				return false
-			}
+			if (my.piercing) return true
+			else return false
 		}
 		else if (weaponSkill === 'Two-hand Slash') {
-			if (my.twoHandSlash) {
-				return true
-			}
-			else {
-				return false
-			}
+			if (my.twoHandSlash) return true
+			else return false
 		}
 		else if (weaponSkill === 'Two-hand Blunt') {
-			if (my.twoHandBlunt) {
-				return true
-			}
-			else {
-				return false
-			}
+			if (my.twoHandBlunt) return true
+			else return false
 		}
 		else if (weaponSkill === 'Archery') {
-			if (my.archery) {
-				return true
+			if (my.archery) return true
+			else return false
+		}
+	}
+
+	function show(obj, slotElement, type) {
+		if (!_.size(obj)) return
+		tooltipEl.innerHTML = getItemHtml(obj)
+		if (slotElement) {
+			// x position
+			var y = slotElement.y - (4 * ng.responsiveRatio)
+			var height = parseInt(getComputedStyle(tooltipEl).height, 10)
+			var diff = window.innerHeight - (y + height)
+			if (diff < 50) {
+				// keep from going off the bottom of the screen
+				y -= (50 - diff)
 			}
-			else {
-				return false
+			tooltipEl.style.top = y + 'px'
+			// x position
+			if (type === 'eq' || type === 'bank') {
+				tooltipEl.style.left = slotElement.x + (68 * ng.responsiveRatio) + 'px'
+				tooltipEl.style.transform = 'translate(0%, 0%)'
+			}
+			else if (type === 'inv') {
+				tooltipEl.style.left = slotElement.x + 'px'
+				tooltipEl.style.transform = 'translate(-100%, 0%)'
 			}
 		}
+		tooltip.isOpen = 1
+		tooltipEl.style.visibility = 'visible'
+		tooltip.openDate = Date.now()
+		TweenMax.to(tooltipEl, .2, {
+			overwrite: 1,
+			opacity: 1,
+		})
+	}
+	function hide() {
+		TweenMax.to(tooltipEl, .1, {
+			opacity: 0,
+			overwrite: 1,
+			onComplete: function() {
+				tooltipEl.style.visibility = 'hidden'
+				tooltip.isOpen = 0
+				tooltipEl.innerHTML = ''
+			}
+		});
 	}
 	function handleItemEnter(event) {
 		var {index, type} = _.pick(event.currentTarget.dataset, [
 			'index', 'type'
 		])
-		if (type === 'eq') tooltip.isHoveringEq = true
-		else if (type === 'inv') tooltip.isHoveringInv = true
-		else tooltip.isHoveringBank = true
+		tooltip[type].isHovering = true
 		if (items[type][index].name) {
-			tooltip.show(items[type][index], this, type)
+			tooltip.show(items[type][index], querySelector('#' + type + '-slot-img-' + index), type)
 		}
 	}
 	function handleItemLeave(event) {
 		var {index, type} = _.pick(event.currentTarget.dataset, [
 			'index', 'type'
 		])
-		if (type === 'eq') {
-			tooltip.isHoveringEq = false
-		}
-		else if (type === 'inv') {
-			tooltip.isHoveringInv = false
-		}
-		else if (type === 'eq') {
-			tooltip.isHoveringBank = false
-		}
+		tooltip[type].isHovering = false
 		tooltip.hide()
 	}
 })($, parseInt, TweenMax, _, getComputedStyle);

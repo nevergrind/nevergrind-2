@@ -655,7 +655,7 @@ var loot = {};
 		var rarity = config.rarity || getRarity(config.bonus)
 		// set item type (normal, magic, etc)
 		//console.info('getRarity', rarity)
-		var keys = _.keys(loot)
+		var keys = Object.keys(loot)
 		// get possible slotTypes (helms, chests) based on rarity
 		var filteredKeys = _.filter(keys, filterKeys)
 		//console.info('filteredKeys', filteredKeys)
@@ -721,8 +721,8 @@ var loot = {};
 			preProcessDrop(drop)
 			deleteWeaponSpecificProps(drop.itemType)
 			// determine keys
-			var prefixKeys = _.keys(itemObj.prefix)
-			var suffixKeys = _.keys(itemObj.suffix)
+			var prefixKeys = Object.keys(itemObj.prefix)
+			var suffixKeys = Object.keys(itemObj.suffix)
 
 			console.info('rarity', rarity)
 			if (rarity === 'magic') {
@@ -801,7 +801,7 @@ var loot = {};
 			var rareKeys = _.uniq(_.concat(
 				prefixKeys,
 				suffixKeys,
-				_.keys(itemObj.rare)
+				Object.keys(itemObj.rare)
 			))
 			var numberOfProps = _.random(3, 6)
 			// console.info('rare drop', drop, config)
@@ -1241,11 +1241,11 @@ var loot = {};
 		// console.info('toggleDrag', type, index)
 		if (item.isDragging) {
 			item.dropEqType = event.currentTarget.dataset.eqType
-			console.info('//// dragEQ dropEqType', event.currentTarget.dataset)
 			// check for same item
 			if (item.dragSlot === index && item.dragType === type) {
 				console.warn('drop cancelled - same slot')
 				dropReset()
+				tooltip.handleItemEnter(event)
 				return
 			}
 
@@ -1262,6 +1262,12 @@ var loot = {};
 
 			handleDragStart()
 			toast.hideDestroyToast()
+			if (!item.dropData.name) {
+				var index = item.lastEvent.currentTarget.dataset.index
+				console.info('lastEvent', index)
+				item.lastEvent = event
+				//item.lastEvent.currentTarget.dataset.index = index
+			}
 			if (item.dropData.name) {
 				// swap
 				$.post(app.url + 'item/swap-items.php', {
@@ -1288,6 +1294,8 @@ var loot = {};
 			}
 		}
 		else {
+			item.lastEvent = event
+			tooltip.handleItemLeave(event)
 			item.dragEqType = event.currentTarget.dataset.eqType
 			console.info('//// dragEQ dragEqType', event.currentTarget.dataset)
 			// drag
@@ -1412,6 +1420,7 @@ var loot = {};
 		items[item.dragType][item.dragSlot] = item.dropData
 		bar.updateDOM()
 		dropReset()
+		tooltip.handleItemEnter(item.lastEvent)
 	}
 
 	function handleDragStart() {
@@ -1437,7 +1446,7 @@ var loot = {};
 
 	function dropItem(event) {
 		//console.info('dropItem', event)
-		if (event.ctrlKey) destroy()
+		if (event.ctrlKey || ng.config.fastDestroy) destroy()
 		else if (item.dragType && item.dragSlot >= 0) {
 			toast.destroyItem({
 				accept: 'destroy-item',

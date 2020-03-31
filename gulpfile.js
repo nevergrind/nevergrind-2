@@ -176,7 +176,11 @@ function buildNg2(isSdk) {
 		(isSdk ? './nwjs-sdk/**/*' : './nwjs/**/*')
 	]).pipe(gulp.dest('./build-ng2'))
 		.on('end', renameExe);
+
+	// greenworks & steam libs
+	gulp.src(['./lib/*']).pipe(gulp.dest('./build-ng2/lib'));
 	// js
+	console.info("Copying javascript...");
 	gulp.src([
 		'./js/libs/**/*'
 	]).pipe(gulp.dest('./build-ng2/js/libs'));
@@ -185,6 +189,7 @@ function buildNg2(isSdk) {
 	]).pipe(gulp.dest('./build-ng2/js'));
 
 	// css
+	console.info("Copying css...");
 	gulp.src([
 		'./css/cursor/*',
 	]).pipe(gulp.dest('./build-ng2/css/cursor'));
@@ -204,6 +209,7 @@ function buildNg2(isSdk) {
 	]).pipe(gulp.dest('./build-ng2/fonts'));
 
 	// sound & music
+	console.info("Copying sound and music...");
 	gulp.src([
 		'./sound/*'
 	]).pipe(gulp.dest('./build-ng2/sound'));
@@ -211,11 +217,13 @@ function buildNg2(isSdk) {
 		'./music/*'
 	]).pipe(gulp.dest('./build-ng2/music'));
 
+	console.info("Copying images...");
 	// images
 	gulp.src([
 		'./images/**/*'
 	]).pipe(gulp.dest('./build-ng2/images'));
 
+	console.info("Copying mobs...");
 	// mobs
 	gulp.src([
 		'./mobs/**/*'

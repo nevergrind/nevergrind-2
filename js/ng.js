@@ -2,6 +2,13 @@
 var ng;
 (function($, TweenMax, undefined) {
 	ng = {
+		config: {
+			display: 'Full Screen',
+			musicVolume: 100,
+			soundVolume: 100,
+			fastDestroy: false,
+			showNetwork: true,
+		},
 		responsiveRatio: 1,
 		statMap: {
 			// job bonuses
@@ -253,12 +260,7 @@ var ng;
 			WAR: 'Warrior',
 			WIZ: 'Wizard'
 		},
-		config: {
-			display: 'Full Screen',
-			musicVolume: 100,
-			soundVolume: 100,
-			fastDestroy: false,
-		},
+		getExitTime,
 		getDefaultOptions,
 		msg,
 		init,
@@ -293,11 +295,17 @@ var ng;
 		}
 		ng.processStatMap(ng.statMap)
 	}
+	function getExitTime() {
+		if (ng.view === 'battle') return 5
+		else return 1
+	}
 	function getDefaultOptions() {
 		return {
 			display: 'Full Screen',
 			musicVolume: 100,
-			soundVolume: 100
+			soundVolume: 100,
+			fastDestroy: false,
+			showNetwork: true,
 		}
 	}
 	function getId() {
@@ -370,6 +378,9 @@ var ng;
 
 	function msg(msg, d) {
 		dom.msg.innerHTML = msg;
+		TweenMax.to(dom.msg, .5, {
+			rotationX: 0,
+		})
 		if (d === 0) return
 		if (d === undefined || d < 1 ){ d = 1 }
 		TweenMax.to(dom.msg, d, {
@@ -387,9 +398,6 @@ var ng;
 					}
 				})
 			}
-		})
-		TweenMax.to(dom.msg, .5, {
-			rotationX: 0,
 		})
 	}
 
@@ -527,7 +535,7 @@ var ng;
 					steam.handle = data.handle;
 					$.ajax({
 						type: 'POST',
-						url: app.url + 'php/init-game.php',
+						url: app.url + 'init-game.php',
 						data: {
 							version: app.version,
 							screenName: steam.screenName,
@@ -540,6 +548,7 @@ var ng;
 						handleInitGame(data)
 						ng.unlock()
 					}).fail(function(data) {
+						console.warn(data.responseText)
 						data.responseText && ng.msg(data.responseText, 0)
 					});
 				});
@@ -561,6 +570,7 @@ var ng;
 	}
 	function handleInitGame(r) {
 		console.info('init-game', r)
+		bar.updateDynamicStyles()
 		if (r.id) {
 			my.accountId = r.id
 			if (!app.isApp) {

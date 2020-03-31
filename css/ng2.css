@@ -146,56 +146,22 @@ html {
 	background: #000;
 }
 
-@media only screen and (min-width: 0) and (max-width: 479px) {
-	html {
-		font-size: 10px
-	}
-}
-
-@media only screen and (min-width: 480px) {
-	html {
-		font-size: 11px
-	}
-}
-
-@media only screen and (min-width: 600px) {
-	html {
-		font-size: 12px
-	}
-}
-
-@media only screen and (min-width: 680px) {
-	html {
-		font-size: 13px
-	}
-}
-
-@media only screen and (min-width: 768px) {
-	html {
-		font-size: 14px
-	}
-}
-
-@media only screen and (min-width: 900px) {
-	html {
-		font-size: 16px
-	}
-}
-
-@media only screen and (min-width: 1024px) {
-	html {
-		font-size: 18px
-	}
-}
-
-@media only screen and (min-width: 1280px) {
-	html {
-		font-size: 20px
-	}
-}
+@media only screen and (min-width: 0) and (max-width: 479px) { html { font-size: 10px }}
+@media only screen and (min-width: 480px) { html { font-size: 11px }}
+@media only screen and (min-width: 600px) { html { font-size: 12px }}
+@media only screen and (min-width: 680px) { html { font-size: 13px }}
+@media only screen and (min-width: 768px) { html { font-size: 14px }}
+@media only screen and (min-width: 900px) { html { font-size: 16px }}
+@media only screen and (min-width: 1024px) { html { font-size: 18px }}
+@media only screen and (min-width: 1280px) { html { font-size: 20px }}
+@media only screen and (min-width: 2000px) { html { font-size: 22px }}
+@media only screen and (min-width: 2500px) { html { font-size: 24px }}
+@media only screen and (min-width: 3000px) { html { font-size: 26px }}
+@media only screen and (min-width: 3400px) { html { font-size: 28px }}
+@media only screen and (min-width: 3800px) { html { font-size: 30px }}
 
 body {
-	display: none;
+	display: flex;
 	flex-direction: column;
 	position: fixed;
 	top: 0;
@@ -205,33 +171,25 @@ body {
 	font-family: Play, Roboto, Arial, sans-serif;
 	background: #000;
 	color: #fff;
-	min-width: 360px;
-	max-width: 1920px;
-	min-height: 900px;
-	max-height: 1080px;
+	min-width: 1280px;
+	max-width: 3840px;
+	min-height: 720px;
+	max-height: 2160px;
 	margin: 0;
 	overflow: hidden;
-	visibility: visible;
 	cursor: url('cursor/normal.cur'), auto;
 }
-
 label {
 	font-weight: normal;
 	display: block;
 	margin: .1em 0
 }
-
-input {
-	cursor: url('cursor/pointer.cur'), pointer;
-}
-
+input { cursor: url('cursor/pointer.cur'), pointer; }
 a {
 	color: #aef;
 	cursor: url('cursor/pointer.cur'), pointer
 }
-
-h1,
-h2 {
+h1, h2 {
 	color: #fff;
 	margin: 0;
 	padding: 0
@@ -248,26 +206,16 @@ h1 div {
 	font-size: 1rem
 }
 
-h1 div.small {
-	font-size: .8rem
-}
+h1 div.small { font-size: .8rem }
+audio { display: none }
+tbody { border: 0 }
 
-audio {
-	display: none
-}
-
-tbody {
-	border: 0
-}
-.
 .ng-blue-input {
 	background: #025;
 	border: 1px solid #2e6da4;
 	color: #fff !important
 }
-.overflow {
-	overflow-y: auto
-}
+.overflow { overflow-y: auto }
 .ellipsis {
 	white-space: nowrap;
 	overflow: hidden;
@@ -279,7 +227,6 @@ tbody {
 	1px 0 #000,
 	0 1px #000!important;
 }
-
 /* shadow with blur */
 .text-shadow2 {
 	text-shadow: .6px .6px #000,
@@ -297,19 +244,10 @@ tbody {
 /*.text-shadow3 {
 	-webkit-text-stroke: 1px #000;
 }*/
-.no-select {
-	user-select: none;
-}
-.no-pointer {
-	pointer-events: none;
-}
-
-.none {
-	display: none
-}
-.block {
-	display: block
-}
+.no-select { user-select: none; }
+.no-pointer { pointer-events: none; }
+.none { display: none }
+.block { display: block }
 .center {
 	position: relative;
 	display: block;
@@ -317,24 +255,18 @@ tbody {
 	left: 0;
 	right: 0;
 }
-.text-center {
-	text-align: center;
-}
-
+.text-center { text-align: center; }
 .snug {
 	padding: 0 !important;
 	margin: 0 !important
 }
-.pointer {
-	cursor: url('cursor/pointer.cur'), pointer
+.pointer { cursor: url('cursor/pointer.cur'), pointer }
+.pointer:active { cursor: url('cursor/pointer.cur'), pointer }
+.text { cursor: text !important }
+.img-bg {
+	width: 100%;
+	height: 100%;
 }
-.pointer:active {
-	cursor: url('cursor/pointer.cur'), pointer
-}
-.text {
-	cursor: text !important
-}
-
 #ng2-logo-wrap {
 	background: #000;
 	overflow: hidden
@@ -408,7 +340,8 @@ tbody {
 	border-top: none
 }
 #scene-title {
-	display: flex;
+	display: none;
+	opacity: 0;
 	justify-content: flex-end;
 	align-items: flex-start;
 }
@@ -604,8 +537,9 @@ tbody {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	text-align: center;
 	overflow: hidden;
-	top: 80px;
+	top: 4rem;
 	left: 0;
 	right: 0;
 	margin: 0 auto;
@@ -1775,9 +1709,6 @@ background-image:
 	border: .1rem ridge #444;
 	flex: 1;
 }
-#title-screen-wrap {
-	flex: 1;
-}
 #ch-cr-detail-col {
 	display: flex;
 	flex-direction: column;
@@ -1785,6 +1716,7 @@ background-image:
 }
 .title-ch-well {
 	display: flex;
+	padding: .2rem 0;
 	justify-content: center;
 	background: #025
 }

@@ -499,11 +499,13 @@ var chat;
 					minutes: game.getCachedMinutes()
 				}).done(() => {
 					localStorage.setItem(game.storageId, 0)
-					ng.reloadGame()
+					ng.lock()
+					TweenMax.delayedCall(.5, ng.reloadGame)
 				});
 			}
 			else {
-				ng.reloadGame()
+				ng.lock()
+				TweenMax.delayedCall(.5, ng.reloadGame)
 			}
 		}
 	}

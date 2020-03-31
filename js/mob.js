@@ -65,7 +65,7 @@ var mob;
 		return mob.imageKeys[i];
 	}
 	function init() {
-		mob.imageKeys = _.keys(mobs.images);
+		mob.imageKeys = Object.keys(mobs.images);
 		mob.imageKeysLen = mob.imageKeys.length;
 		battle.show();
 		// init mob/dom connections

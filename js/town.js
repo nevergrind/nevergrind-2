@@ -26,7 +26,6 @@ var town;
 		openVarious,
 		closeVarious,
 	}
-	const DEFAULT_BANK_SLOT_MAX = app.isApp ? 12 : 96
 	var i
 	var id
 	var len
@@ -390,15 +389,14 @@ var town;
 	}
 
 	function loadBank() {
-		for (var i=0; i<DEFAULT_BANK_SLOT_MAX; i++) {
-			items.bank[i] = {}
-		}
 		$.get(app.url + 'town/load-bank.php')
 			.done(processBank)
 	}
 
 	function processBank(data) {
-		for (var i=0; i<data.bank.length; i++) {
+		console.info('bank data', data)
+		ng.bankSlots = data.bankSlots
+		for (var i=0; i<ng.bankSlots; i++) {
 			items.bank[i] = {}
 		}
 		for (var key in data.bank) {
@@ -406,15 +404,16 @@ var town;
 			items.bank[key].row = data.bank[key].row
 			items.bank[key].name = data.bank[key].name
 		}
+		town.isBankInitialized = true
 		updateBankDOM()
 	}
 
 	function toggleBank() {
 		// open all bags in the bottom-right corner
 		town.windowsOpen.bank = !town.windowsOpen.bank
-		if (tooltip.isHoveringBank) {
+		if (tooltip.bank.isHovering) {
 			tooltip.hide()
-			tooltip.isHoveringBank = false
+			tooltip.bank.isHovering = false
 		}
 		if (!town.isBankInitialized) loadBank()
 		updateBankDOM()
@@ -438,13 +437,13 @@ var town;
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">Bank</div>' +
 			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+			'<i data-id="bank" class="close-menu fa fa-times"></i>' +
 		'</div>' +
 		'<div id="bank-slot-wrap">';
 
 		'<div class="flex">';
 		i=0
-		len=items.bank.length
+		len = ng.bankSlots
 		for (; i<len; i++) {
 			html += bar.getItemSlotHtml('bank', i)
 		}

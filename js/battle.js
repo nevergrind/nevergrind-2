@@ -28,7 +28,7 @@ var battle;
 		if (!mob.initialized) {
 			// initialization things only
 			mob.initialized = 1;
-			mob.imageKeys = _.keys(mobs.images);
+			mob.imageKeys = Object.keys(mobs.images);
 			mob.index = mob.imageKeys.length - 1;
 		}
 		button.init();

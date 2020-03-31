@@ -8,6 +8,7 @@
 		  content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<link rel="shortcut icon" href="images/favicon.png">
 	<link rel="stylesheet" href="css/libs/rpg-awesome.min.css">
+	<style id="dynamic-styles"></style>
 </head>
 
 <body id="body">
@@ -40,11 +41,9 @@
 <div id="login-modal">
 	<div id="login-backdrop"></div>
 	<div id="login-container">
-		<div id="loginWrap"
-			  accept-charset="UTF-8"
-			  method="post">
+		<div id="loginWrap">
 			<p>
-Twe				<div>
+				<div>
 					<a id="createAccount" class="login-actions">Create Account</a>
 				</div>
 				<div>or</div>
@@ -58,7 +57,7 @@ Twe				<div>
 </div> <!-- end login -->
 
 <div id="scene-title" class="scene no-select">
-	<div id="ng2-logo-wrap" class="scene">
+	<div id="ng2-logo-wrap">
 		<img id="ng2-bg" src="images/bg/salubrin-forest.png" class="img-bg">
 		<div id="version" class="text-shadow">
 			Version <script>document.write(app.version)</script>
@@ -445,6 +444,12 @@ Twe				<div>
 
 </div> <!-- end scene-title -->
 
+<!-- layer 1 -->
+<div id="scene-town" class="scene none no-select"></div>
+<div id="scene-dungeon" class="scene none no-select"></div>
+<div id="scene-battle" class="scene none no-select"></div>
+
+<!-- layer 2 -->
 <div id="bar-wrap" class="no-select text-shadow"></div>
 <div id="chat-wrap" class="text-shadow"></div>
 <div id="button-wrap" class="no-select text-shadow"></div>
@@ -452,20 +457,6 @@ Twe				<div>
 <!-- tooltips, popovers, context menus things -->
 <div id="context-wrap" class="no-select stag-blue text-shadow"></div>
 <div id="popover-wrap" class="no-select stag-blue text-shadow"></div>
-
-<div id="scene-town" class="scene none no-select"></div>
-<div id="scene-dungeon" class="scene none no-select"></div>
-<div id="scene-battle" class="scene none no-select"></div>
-<div id="scene-error" class="scene none no-select text-shadow"></div>
-
-<audio id="bgmusic" loop preload="none"></audio>
-
-<div id="modal-overlay" class="overlay"></div>
-<div id="modal-wrap" class="text-shadow"></div>
-<div id="flash-overlay" class="overlay"></div>
-<div id="lock-overlay" class="overlay"></div>
-<div id="msg" class="text-shadow no-pointer"></div>
-<div id="toast-window" class="text-shadow"></div>
 
 <div id="character-windows" class="text-shadow">
 	<div id="bar-character-stats" class="bar-window no-select"></div>
@@ -476,8 +467,20 @@ Twe				<div>
 	<div id="inventory" class="no-select flex-column"></div>
 </div>
 <div id="tooltip-wrap" class="no-select stag-blue-top text-shadow"></div>
-<div id="root-options" class="no-select text-shadow"></div>
 <img id="item-tooltip-cursor-img" src="" />
+<div id="scene-error" class="scene none no-select text-shadow"></div>
+
+<!-- 100 layer -->
+<div id="modal-overlay" class="overlay"></div>
+<div id="modal-wrap" class="text-shadow"></div>
+<div id="toast-window" class="text-shadow"></div>
+<div id="flash-overlay" class="overlay"></div>
+<div id="lock-overlay" class="overlay"></div>
+<div id="root-options" class="no-select text-shadow"></div>
+<div id="msg" class="text-shadow no-pointer"></div>
+
+<!-- hidden layer -->
+<audio id="bgmusic" loop preload="none"></audio>
 
 <script src="js/libs/jquery.min.js"></script>
 <script src="js/libs/lodash.min.js"></script>

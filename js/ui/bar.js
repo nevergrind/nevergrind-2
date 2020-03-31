@@ -1,5 +1,5 @@
 var bar;
-(function(_, $, Draggable, undefined) {
+(function(_, $, Draggable, TweenMax, undefined) {
 	bar = {
 		defaultImage: [
 			'helms1',
@@ -49,6 +49,11 @@ var bar;
 		selectOptionCategory,
 		setWindowSize,
 		setDefaultOptions,
+		toggleFastDestroy,
+		toggleShowNetwork,
+		updateDynamicStyles,
+		appExit,
+		appReset,
 	};
 	var pingColors = [
 		'',
@@ -112,15 +117,6 @@ var bar;
 			bar.dom.inventoryWrap = getById('inventory-wrap')
 			// draw all bars
 			// bar events
-			$('#root-options')
-				.on('click', '#app-exit', appExit)
-				.on('click', '#window-size-select', function(event, a) {
-					console.info(event, a)
-				})
-				.on('click', '.window-select', function(event, a) {
-					console.info(event, a)
-				})
-
 			$("#bar-wrap")
 				.on('click contextmenu', '.bar-col-icon', handleClickPartyContextMenu)
 				.on('click', '#bar-camp', chat.camp)
@@ -130,12 +126,23 @@ var bar;
 				.on('click', '#bar-mission-abandon', mission.abandon)
 				.on('mouseenter', '.popover-icons', showBarMenuPopover)
 				.on('mousemove', '.popover-icons', popover.setPosition)
-				.on('mouseleave', '.popover-icons', popover.hide);
+				.on('mouseleave', '.popover-icons', popover.hide)
 		}
 	}
 	function appExit() {
-		// exists on app load?
-		app.isApp && nw.App.closeAllWindows();
+		ng.lock()
+		ng.msg('Saving game data...')
+		if (app.isApp) {
+			TweenMax.delayedCall(ng.getExitTime(), () => {
+				nw.App.closeAllWindows();
+			})
+		}
+		else appReset()
+	}
+	function appReset() {
+		ng.lock()
+		ng.msg('Saving game data...')
+		TweenMax.delayedCall(ng.getExitTime(), ng.reloadGame)
 	}
 
 	function handleClickPartyContextMenu() {
@@ -150,9 +157,9 @@ var bar;
 	function toggleCharacterStats() {
 		bar.windowsOpen.character = !bar.windowsOpen.character
 		if (bar.windowsOpen.character) bar.activeTab = 'character'
-		if (tooltip.isHoveringEq) {
+		if (tooltip.eq.isHovering) {
 			tooltip.hide()
-			tooltip.isHoveringEq = false
+			tooltip.eq.isHovering = false
 		}
 		updateCharacterDOM()
 	}
@@ -253,9 +260,9 @@ var bar;
 	function toggleInventory() {
 		// open all bags in the bottom-right corner
 		bar.windowsOpen.inventory = !bar.windowsOpen.inventory
-		if (tooltip.isHoveringInv) {
+		if (tooltip.inv.isHovering) {
 			tooltip.hide()
-			tooltip.isHoveringInv = false
+			tooltip.inv.isHovering = false
 		}
 		updateInventoryDOM()
 	}
@@ -310,6 +317,7 @@ var bar;
 	}
 
 	function updateInventorySlotDOM(type, slot) {
+		console.warn('updateInventorySlotDOM', type, slot)
 		querySelector('#'+ type +'-slot-' + slot).className = getInvItemClass(type, slot)
 		querySelector('#'+ type +'-slot-img-' + slot).src = getItemSlotImage(type, slot)
 	}
@@ -560,20 +568,6 @@ var bar;
 
 	function getOptionsGeneralHtml() {
 		str = '<div class="flex-column flex-max" style="justify-content: space-around;">' +
-		'<div class="flex align-center space-between">' +
-			'<div style="flex: 1">Sound Volume:</div>' +
-			'<div id="options-knob-sfx">'+
-				'<div class="options-volume"></div>' +
-			'</div>' +
-			'<div id="options-sfx-value" style="'+ css.volumeColumns +'">'+ ng.config.soundVolume +'</div>' +
-		'</div>' +
-		'<div class="flex align-center space-between">' +
-			'<div style="flex: 1">Music Volume:</div>' +
-			'<div id="options-knob-music">'+
-				'<div class="options-volume"></div>' +
-			'</div>' +
-			'<div id="options-music-value" style="'+ css.volumeColumns +'">'+ ng.config.musicVolume +'</div>' +
-		'</div>' +
 		'<div class="flex-center">' +
 			'<div style="flex-basis: 50%">Window Size</div>' +
 			'<div class="flex-max ng-drop-wrap">' +
@@ -590,6 +584,23 @@ var bar;
 				'</div>' +
 			'</div>' +
 		'</div>' +
+		'<div class="flex align-center space-between">' +
+			'<div style="flex: 1">Sound Volume:</div>' +
+			'<div id="options-knob-sfx">'+
+				'<div class="options-volume"></div>' +
+			'</div>' +
+			'<div id="options-sfx-value" style="'+ css.volumeColumns +'">'+ ng.config.soundVolume +'</div>' +
+		'</div>' +
+		'<div class="flex align-center space-between">' +
+			'<div style="flex: 1">Music Volume:</div>' +
+			'<div id="options-knob-music">'+
+				'<div class="options-volume"></div>' +
+			'</div>' +
+			'<div id="options-music-value" style="'+ css.volumeColumns +'">'+ ng.config.musicVolume +'</div>' +
+		'</div>' +
+		'<div class="flex-center">' +
+			'<div id="app-reset">Reset Game</div>' +
+		'</div>' +
 		'<div class="flex-center">' +
 			'<div id="app-exit">Exit Game</div>' +
 		'</div>' +
@@ -602,19 +613,19 @@ var bar;
 		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
 		'<div class="flex align-center">' +
 			'<div style="flex-basis: 66%;">Hotkey 1</div>' +
-			'<div id="options-fast-destroy" class="ng-boolean">A</div>'+
+			'<div id="options-hotkey-a" class="ng-boolean">A</div>'+
 		'</div>' +
 		'<div class="flex align-center">' +
 			'<div style="flex-basis: 66%;">Hotkey 2</div>' +
-			'<div id="options-fast-destroy" class="ng-boolean">S</div>'+
+			'<div id="options-hotkey-s" class="ng-boolean">S</div>'+
 		'</div>' +
 		'<div class="flex align-center">' +
 			'<div style="flex-basis: 66%;">Hotkey 3</div>' +
-			'<div id="options-fast-destroy" class="ng-boolean">D</div>'+
+			'<div id="options-hotkey-d" class="ng-boolean">D</div>'+
 		'</div>' +
 		'<div class="flex align-center">' +
 			'<div style="flex-basis: 66%;">Hotkey 4</div>' +
-			'<div id="options-fast-destroy" class="ng-boolean">F</div>'+
+			'<div id="options-hotkey-f" class="ng-boolean">F</div>'+
 		'</div>' +
 		'</div>'
 
@@ -625,11 +636,33 @@ var bar;
 		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
 		'<div class="flex align-center">' +
 			'<div style="flex-basis: 66%;">Fast Destroy</div>' +
-			'<div id="options-fast-destroy" class="ng-boolean">Off</div>' +
+			'<div id="options-fast-destroy" class="ng-boolean">'+ (ng.config.fastDestroy ? 'On' : 'Off') +'</div>' +
+		'</div>' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 66%;">Show Network Speed</div>' +
+			'<div id="options-show-network" class="ng-boolean">'+ (ng.config.showNetwork ? 'On' : 'Off') +'</div>' +
 		'</div>' +
 		'</div>'
-
 		return str
+	}
+
+	function toggleFastDestroy() {
+		ng.config.fastDestroy = !ng.config.fastDestroy
+		this.textContent = ng.config.fastDestroy ? 'On' : 'Off'
+		audio.save()
+	}
+
+	function toggleShowNetwork() {
+		console.warn('toggleShowNetwork')
+		ng.config.showNetwork = !ng.config.showNetwork
+		this.textContent = ng.config.showNetwork ? 'On' : 'Off'
+		updateDynamicStyles()
+		audio.save()
+	}
+
+	function updateDynamicStyles() {
+		html = '#bar-lag { visibility: '+ (ng.config.showNetwork ? 'visible' : 'hidden') + '; }'
+		querySelector('#dynamic-styles').innerHTML = html
 	}
 
 	function handleCloseMenu(event) {
@@ -951,4 +984,4 @@ var bar;
 			'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
 		'</div>'
 	}
-})(_, $, Draggable);
+})(_, $, Draggable, TweenMax);
