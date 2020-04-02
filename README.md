@@ -1,2 +1,2 @@
-# nevergrind-2
+# nevergrind 2
 A multiplayer cooperative RPG
