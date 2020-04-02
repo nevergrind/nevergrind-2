@@ -404,12 +404,34 @@ var bar;
 			el.style.display = 'none'
 		}
 	}
+	function handleDragSfxEnd() {
+		audio.playSound('frog_att')
+		//audio.playSound('flshhit2')
+	}
+	function handleDragMusicEnd() {
+		dom.bgmusic.volume = ng.config.musicVolume / 100;
+	}
+
+	function handleDragSfx() {
+		val = this.x
+		if (val > 1080) val = 1080
+		if (val < 0) val = 0
+		val = ~~(val / 54 * 5)
+		ng.config.soundVolume = val
+		audio.save()
+		elSfx = querySelector('#options-sfx-value')
+		if (elSfx !== null) {
+			elSfx.textContent = val
+		}
+		_.debounce(handleDragSfxEnd, 1000)
+	}
 	function initDraggableAudioDials() {
 		Draggable.create('#options-knob-sfx', {
 			type: 'rotation',
 			throwProps: true,
 			throwResistance: 500,
 			overshootTolerance: 0,
+			maxDuration: 1,
 			snap: volumeSettings,
 			onDrag: handleDragSfx,
 			onDragEnd: handleDragSfxEnd,
@@ -430,6 +452,7 @@ var bar;
 			throwProps: true,
 			throwResistance: 500,
 			overshootTolerance: 0,
+			maxDuration: 1,
 			snap: volumeSettings,
 			onDrag: handleDragMusic,
 			onThrowUpdate: handleDragMusic,
@@ -444,27 +467,6 @@ var bar;
 			rotation: (~~(ng.config.musicVolume / 5) * 54)
 		})
 		el.update()
-	}
-	function handleDragSfxEnd() {
-		audio.playSound('frog_att')
-		//audio.playSound('flshhit2')
-	}
-	function handleDragMusicEnd() {
-		dom.bgmusic.volume = ng.config.musicVolume / 100;
-	}
-
-	function handleDragSfx() {
-		val = this.x
-		if (val > 1080) val = 1080
-		if (val < 0) val = 0
-		val = ~~(val / 54 * 5)
-		ng.config.soundVolume = val
-		audio.save()
-		elSfx = querySelector('#options-sfx-value')
-		if (elSfx !== null) {
-			elSfx.textContent = val
-		}
-		_.debounce(handleDragSfxEnd, 100)
 	}
 
 	function handleDragMusic() {
