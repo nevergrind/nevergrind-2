@@ -17,6 +17,7 @@ var battle;
 	//////////////////////////////////////
 	function go() {
 		if (ng.view === 'battle') return;
+		town.windowsOpen.bank && town.toggleBank()
 		chat.sizeSmall();
 		mob.init();
 		game.emptyScenesExcept('scene-battle');

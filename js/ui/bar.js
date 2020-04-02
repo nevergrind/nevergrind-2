@@ -26,6 +26,9 @@ var bar;
 			inventory: false,
 			options: false,
 		},
+		hotkeyId: '',
+		hotkeyElement: {},
+		hotkeyWhitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`~1234567890!@#$%^&*()-_=+[{]}\\|;:\'",<.>/?InsertDeleteHomeEndPageUpPageDownF1F2F3F4F5F6F7F8F9F10F11F12ArrowUpArrowDownArrowLeftArrowRightTab',
 		optionSelected: 'General',
 		activeTab: 'character',
 		init,
@@ -54,6 +57,9 @@ var bar;
 		updateDynamicStyles,
 		appExit,
 		appReset,
+		setHotkey,
+		listenForHotkey,
+		stopListeningForHotkey,
 	};
 	var pingColors = [
 		'',
@@ -83,6 +89,8 @@ var bar;
 	var html
 	var str
 	var el
+	var elSfx
+	var elMusic
 	var id
 	var arr
 	var slot
@@ -400,6 +408,8 @@ var bar;
 		Draggable.create('#options-knob-sfx', {
 			type: 'rotation',
 			throwProps: true,
+			throwResistance: 500,
+			overshootTolerance: 0,
 			snap: volumeSettings,
 			onDrag: handleDragSfx,
 			onDragEnd: handleDragSfxEnd,
@@ -418,6 +428,8 @@ var bar;
 		Draggable.create('#options-knob-music', {
 			type: 'rotation',
 			throwProps: true,
+			throwResistance: 500,
+			overshootTolerance: 0,
 			snap: volumeSettings,
 			onDrag: handleDragMusic,
 			onThrowUpdate: handleDragMusic,
@@ -448,7 +460,10 @@ var bar;
 		val = ~~(val / 54 * 5)
 		ng.config.soundVolume = val
 		audio.save()
-		querySelector('#options-sfx-value').textContent = val
+		elSfx = querySelector('#options-sfx-value')
+		if (elSfx !== null) {
+			elSfx.textContent = val
+		}
 		_.debounce(handleDragSfxEnd, 100)
 	}
 
@@ -459,7 +474,10 @@ var bar;
 		val = ~~(val / 54 * 5)
 		ng.config.musicVolume = val
 		audio.save()
-		querySelector('#options-music-value').textContent = val
+		elMusic = querySelector('#options-music-value')
+		if (elMusic !== null) {
+			elMusic.textContent = val
+		}
 		handleDragMusicEnd()
 	}
 
@@ -473,6 +491,7 @@ var bar;
 			querySelector('#options-content').innerHTML = getOptionsUiHtml()
 		}
 		else if (event.currentTarget.id === 'option-hotkeys') {
+			bar.hotkeyId = ''
 			querySelector('#options-content').innerHTML = getOptionsHotkeysHtml()
 		}
 		querySelectorAll('.option-category').forEach(el => {
@@ -609,23 +628,47 @@ var bar;
 		return str
 	}
 
+	function setHotkey(key, e) {
+		console.info('setHotkey', e)
+		if (_.values(ng.config.hotkey).includes(key)) {
+			var camelKey = _.findKey(ng.config.hotkey, hotkey => hotkey === key)
+			console.info('keys: ', bar.hotkeyId, camelKey)
+			if (_.camelCase(bar.hotkeyId) === camelKey) stopListeningForHotkey()
+			else ng.msg('This key is already assigned: ' + _.startCase(camelKey))
+		}
+		else {
+			ng.config.hotkey[_.camelCase(bar.hotkeyId)] = key
+			bar.hotkeyElement.textContent = key
+			stopListeningForHotkey()
+			audio.save()
+		}
+	}
+	function listenForHotkey() {
+		bar.hotkeyId = this.dataset.id
+		bar.hotkeyElement = this;
+		querySelectorAll('.options-hotkey').forEach(el => {
+			el.classList.remove('active')
+		})
+		this.classList.add('active')
+	}
+	function stopListeningForHotkey() {
+		bar.hotkeyId = ''
+		bar.hotkeyElement.classList.remove('active')
+	}
+
 	function getOptionsHotkeysHtml() {
 		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
 		'<div class="flex align-center">' +
-			'<div style="flex-basis: 66%;">Hotkey 1</div>' +
-			'<div id="options-hotkey-a" class="ng-boolean">A</div>'+
+			'<div style="flex-basis: 50%;">Character Stats</div>' +
+			'<div data-id="character-stats" class="options-hotkey flex-max">'+ ng.config.hotkey.characterStats +'</div>'+
 		'</div>' +
 		'<div class="flex align-center">' +
-			'<div style="flex-basis: 66%;">Hotkey 2</div>' +
-			'<div id="options-hotkey-s" class="ng-boolean">S</div>'+
+			'<div style="flex-basis: 50%;">Inventory</div>' +
+			'<div data-id="inventory" class="options-hotkey flex-max">'+ ng.config.hotkey.inventory +'</div>'+
 		'</div>' +
 		'<div class="flex align-center">' +
-			'<div style="flex-basis: 66%;">Hotkey 3</div>' +
-			'<div id="options-hotkey-d" class="ng-boolean">D</div>'+
-		'</div>' +
-		'<div class="flex align-center">' +
-			'<div style="flex-basis: 66%;">Hotkey 4</div>' +
-			'<div id="options-hotkey-f" class="ng-boolean">F</div>'+
+			'<div style="flex-basis: 50%">Bank</div>' +
+			'<div data-id="bank" class="options-hotkey flex-max">'+ ng.config.hotkey.bank +'</div>'+
 		'</div>' +
 		'</div>'
 

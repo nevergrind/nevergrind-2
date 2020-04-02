@@ -13,6 +13,7 @@ $r['setAccountName'] = 0;
 
 // account session not initialized and is Steam app
 if (empty($_SESSION['account']) &&
+	isset($_POST['screenName']) &&
 	strlen($_POST['screenName']) > 0 &&
 	strlen($_POST['steamId']) > 0 &&
 	strlen($_POST['ticket']) > 0) {

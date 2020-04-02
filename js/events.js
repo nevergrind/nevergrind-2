@@ -1,7 +1,6 @@
 (function(_, $, parseInt, getComputedStyle, undefined) {
 	var i;
 	var key;
-	var code;
 	// window
 
 	// document events
@@ -32,6 +31,7 @@
 			.on('click', '#options-default', bar.setDefaultOptions)
 			.on('click', '#options-fast-destroy', bar.toggleFastDestroy)
 			.on('click', '#options-show-network', bar.toggleShowNetwork)
+			.on('click', '.options-hotkey', bar.listenForHotkey)
 
 		// delegated events
 		$('body')
@@ -78,7 +78,6 @@
 		windowResized();
 	}
 	function dragStart(e) {
-		console.info('dragstart')
 		e.preventDefault()
 	}
 	function windowResized() {
@@ -123,11 +122,20 @@
 		windowResized()
 	}
 	function keydown(e) {
-		code = e.keyCode;
 		key = e.key;
 
 		ng.lastKey = key;
-		//console.info('key: ', key)
+		console.info('key: ', key)
+		if (bar.hotkeyId) {
+			if (bar.hotkeyWhitelist.includes(key)) {
+				bar.setHotkey(key, e)
+			}
+			else {
+				if (key === 'Shift' || key === 'Control' || key === 'Alt') {}
+				else ng.msg('You cannot bind to that hotkey!', 1)
+			}
+			return
+		}
 		// local only
 		if (!app.isApp) {
 			if (!chat.hasFocus && ng.view !== 'title') {
@@ -135,14 +143,6 @@
 				if (key === 'PageDown') battle.go()
 				else if (key === 'Home') town.go()
 				else if (key === 'PageUp') dungeon.go()
-			}
-		}
-		else {
-			// not local
-			if (code >= 112 && code <= 121) {
-				// disable all F keys except F11
-				// TODO: Put party targeting in here later
-				return false;
 			}
 		}
 
@@ -172,23 +172,6 @@
 			if (key === 'Escape') {
 				console.warn('toggleOptions', key)
 				bar.toggleOptions()
-				/*
-				nw.App.registerGlobalHotKey(new nw.Shortcut({
-				  key: 'Escape',
-				  active: function () {
-					// decide whether to leave fullscreen mode
-					// then ...
-					nw.Window.get().leaveFullscreen();
-				  }
-				}));
-				 */
-			}
-			else if (!chat.hasFocus && !guild.hasFocus && chat.focusKeys.includes(key)) {
-				var z = $("#chat-input");
-				var text = z.val();
-				!text && chat.dom.chatInput.focus();
-				console.warn('canceling', key)
-				return;
 			}
 
 			if (ng.view === 'title'){
@@ -199,6 +182,16 @@
 				}
 			}
 			else {
+				/*if (ng.view !== 'title' && chat.typingKeys.includes(key)) {
+					if (!chat.hasFocus && !guild.hasFocus && chat.focusKeys.includes(key)) {
+						var z = $("#chat-input");
+						var text = z.val();
+						!text && chat.dom.chatInput.focus();
+						console.warn('canceling', key)
+						return;
+					}
+				}*/
+
 				if (chat.hasFocus) {
 					// always works town, dungeon and combat (focused)
 					if (chat.modeChange()) {
@@ -233,9 +226,9 @@
 				}
 				else {
 					// always works town, dungeon and combat (non-focused)
-					if (key === 'c') bar.toggleCharacterStats()
-					else if (key === 'i') bar.toggleInventory()
-					else if (key === 'k') town.toggleBank()
+					if (key === ng.config.hotkey.characterStats) bar.toggleCharacterStats()
+					else if (key === ng.config.hotkey.inventory) bar.toggleInventory()
+					else if (key === ng.config.hotkey.bank) town.toggleBank()
 					else if (key === ' ') bar.closeAllWindows()
 
 				}

@@ -86,7 +86,6 @@ var audio;
 	}
 	function save() {
 		// save to storage
-		console.info('saving config... ', ng.config)
 		localStorage.setItem('config', JSON.stringify(ng.config))
 	}
 	function setMusicVolume(val) {

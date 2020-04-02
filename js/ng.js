@@ -2,12 +2,18 @@
 var ng;
 (function($, TweenMax, undefined) {
 	ng = {
+		// defaults are defined in getDefaultOptions
 		config: {
 			display: 'Full Screen',
 			musicVolume: 100,
 			soundVolume: 100,
 			fastDestroy: false,
 			showNetwork: true,
+			hotkey: {
+				characterStats: 'c',
+				inventory: 'i',
+				bank: 'b',
+			}
 		},
 		responsiveRatio: 1,
 		statMap: {
@@ -306,6 +312,11 @@ var ng;
 			soundVolume: 100,
 			fastDestroy: false,
 			showNetwork: true,
+			hotkey: {
+				characterStats: 'c',
+				inventory: 'i',
+				bank: 'b',
+			}
 		}
 	}
 	function getId() {
@@ -378,26 +389,16 @@ var ng;
 
 	function msg(msg, d) {
 		dom.msg.innerHTML = msg;
-		TweenMax.to(dom.msg, .5, {
-			rotationX: 0,
+		TweenMax.set(dom.msg, {
+			scale: 1,
 		})
 		if (d === 0) return
 		if (d === undefined || d < 1 ){ d = 1 }
-		TweenMax.to(dom.msg, d, {
-			overwrite: 1,
-			startAt: {
-				visibility: 'visible',
-			},
-			onComplete: function(){
-				TweenMax.to(this.target, .2, {
-					rotationX: 90,
-					onComplete: function(){
-						TweenMax.set(this.target, {
-							visibility: 'hidden',
-						})
-					}
-				})
-			}
+		TweenMax.delayedCall(d, function() {
+			TweenMax.to(dom.msg, .2, {
+				scale: 0,
+				ease: Power2.easeOut
+			})
 		})
 	}
 

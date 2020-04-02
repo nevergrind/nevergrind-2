@@ -2198,7 +2198,7 @@ background-image:
 	font-size:.9rem;
 	padding: .2rem .5rem;
 }
-.ng-boolean {
+.ng-boolean, .options-hotkey {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -2208,17 +2208,24 @@ background-image:
 	box-shadow: 0 0 2px #aefc inset;
 	margin: .1rem;
 	min-width: 2.5rem;
+	text-transform: capitalize;
+	transition: transform .1s ease-out;
 	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
 }
-.ng-boolean:hover {
+.ng-boolean:hover, .options-hotkey:hover {
 	color: #ffd;
 	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
 	filter: saturate(200%);
 	cursor: url('cursor/pointer.cur'), pointer;
 }
-.ng-boolean:active {
+.ng-boolean:active, .options-hotkey:active {
 	filter: saturate(300%);
 	transform: scale(.99);
+}
+.options-hotkey.active {
+	color: #ffd;
+	transform: scale(1.05);
+	filter: brightness(150%) hue-rotate(120deg);
 }
 .option-button {
 	display: flex;

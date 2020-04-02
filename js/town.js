@@ -409,14 +409,16 @@ var town;
 	}
 
 	function toggleBank() {
-		// open all bags in the bottom-right corner
-		town.windowsOpen.bank = !town.windowsOpen.bank
-		if (tooltip.bank.isHovering) {
-			tooltip.hide()
-			tooltip.bank.isHovering = false
+		if (ng.view === 'town') {
+			// open all bags in the bottom-right corner
+			town.windowsOpen.bank = !town.windowsOpen.bank
+			if (tooltip.bank.isHovering) {
+				tooltip.hide()
+				tooltip.bank.isHovering = false
+			}
+			if (!town.isBankInitialized) loadBank()
+			updateBankDOM()
 		}
-		if (!town.isBankInitialized) loadBank()
-		updateBankDOM()
 	}
 
 	function updateBankDOM() {
