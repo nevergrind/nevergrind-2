@@ -5,7 +5,7 @@ var game;
 	game = {
 		heartbeatDifference: app.isApp ? 18000 : 18000,
 		session: {
-			timer: new TweenMax.delayedCall(0, '')
+			timer: new delayedCall(0, '')
 		},
 		pingHistory: [],
 		questDelay: 3,
@@ -33,7 +33,7 @@ var game;
 		'scene-battle'
 	];
 	var heartbeat = {
-		timer: new TweenMax.delayedCall(0, ''),
+		timer: new delayedCall(0, ''),
 		sendTime: 0,
 		receiveTime: 0,
 		interval: 5000,
@@ -46,7 +46,7 @@ var game;
 		}
 	}
 	var played = {
-		timer: new TweenMax.delayedCall(0, ''),
+		timer: new delayedCall(0, ''),
 		interval: 60000
 	};
 	// pooled variables
@@ -174,17 +174,17 @@ var game;
 		console.info('removing player: ', player.row);
 		index = _.findIndex(chat.presence, { row: player.row });
 		_.pullAt(chat.presence, [ index ]);
-		el = getById('chat-player-' + player.row);
+		el = getElementById('chat-player-' + player.row);
 		el !== null && el.parentNode.removeChild(el);
 		chat.setHeader();
 	}
 	function emptyScenesExcept(scene) {
 		scenes.forEach(function(v) {
 			if (v === scene) {
-				getById(v).style.opacity = 0;
+				getElementById(v).style.opacity = 0;
 			}
 			else {
-				getById(v).innerHTML = '';
+				getElementById(v).innerHTML = '';
 			}
 		});
 		$('#town-bg').remove()
@@ -251,7 +251,7 @@ var game;
 	}
 
 	function activate() {
-		TweenMax.delayedCall(heartbeat.interval, function() {
+		delayedCall(heartbeat.interval, function() {
 			TweenMax.to('#bar-lag', .5, {
 				opacity: 1
 			});

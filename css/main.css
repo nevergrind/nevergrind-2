@@ -401,21 +401,23 @@ tbody { border: 0 }
 	border-radius: 0;
 	cursor: url('cursor/pointer.cur'), pointer;
 	letter-spacing: .1rem;
-	background: #aa9;
+	background: #997;
 	text-shadow: 1px 1px #000,
 	-1px 0 #000,
 	1px 0 #000,
 	-1px 1px #000,
 	1px -1px #000,
 	-1px -1px #000;
+	transition: background .2s ease-out, transform .1s ease-out;
 }
 .ng-btn:hover {
-	background: #bba
+	background: #bb9;
 }
 .ng-btn:active {
 	outline: 1px solid #579 !important;
 	border: .1rem inset #eed;
-	background: #998
+	background: #dd9;
+	transform: scale(.98);
 }
 .ng-btn-alert {
 	outline: 1px solid #511;
@@ -1306,55 +1308,20 @@ background-clip: content-box;
 	margin-bottom: .2rem;
 }
 
-.aside-npc {
-	position: absolute;
-	bottom: -15%;
-	left: -30%;
-}
-
-#aside-menu {
-	display: flex;
-	flex-direction: column;
-	flex: 1;
-	font-size: 1rem;
-	width: 70%;
-	height: 0;
-	align-self: flex-end;
-}
 
 /* guild aside */
 #guild-member-wrap {
 	display: flex;
 	flex-direction: column;
 	overflow-x: hidden;
-	overflow-y: auto;
+	overflow-y: scroll;
 	flex: 1;
 }
 .guild-member-row {
 	line-height: 1.5;
+	vertical-align: middle;
 }
 
-#guild-input {
-	background: rgba(0, 64, 128, .5);
-	color: #fff;
-	cursor: url('cursor/pointer.cur'), pointer;
-	padding: .2rem .4rem;
-	border: 1px groove #013;
-	margin: 1rem 0;
-	transition: border .2s ease-out;
-}
-
-.aside-frame {
-	background: rgba(0, 0, 0, .5);
-	border: .2rem groove #444;
-	padding: .2rem .4rem;
-	margin-top: 1rem;
-}
-
-#aside-guild-members {
-	display: table;
-	flex: 1;
-}
 
 #guild-member-flex {
 	display: flex;
@@ -1365,9 +1332,22 @@ background-clip: content-box;
 	flex: 1;
 }
 
-#guild-member-refresh-icon {
-	flex: 0;
+#guild-member-refresh-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 .5rem;
+	outline: none;
+	font-size: .9rem;
+	border: 1px solid #05b;
+	color: #fff;
+	outline-offset: 0;
 	cursor: url('cursor/pointer.cur'), pointer;
+	transition: background .2s ease-out;
+}
+#guild-member-refresh-btn:active {
+	outline: none;
+	border: 1px solid #aef;
 }
 
 .refresh {
@@ -1865,10 +1845,17 @@ background-image:
 	width: 1rem;
 	height: 1rem;
 	background: #bba;
-	box-shadow: 1px 1px #579 inset, -1px -1px #579 inset, 1px -1px 2px #000 inset, -3px 3px 6px 2px #fff inset;
+	box-shadow: 1px 1px #579 inset, -1px -1px #579 inset, 1px -1px 2px #000 inset, -3px 3px 6px 2px #fff8 inset;
 	border: .1rem groove #579;
-	cursor: url('cursor/pointer.cur'), pointer
+	cursor: url('cursor/pointer.cur'), pointer;
+	transition: background .1s ease-out;
 }
+.attr-add-1:hover { background: #8f8; }
+.attr-add-1:active { background: #1f1; }
+.attr-minus-1:hover { background: #f88; }
+.attr-minus-1:active { background: #f11; }
+
+
 .select-radial.active {
 	background: #776;
 	box-shadow: 1px 1px #000 inset, -1px -1px #000 inset, 0 0 5px #000 inset
@@ -1915,10 +1902,10 @@ background-image:
 #create-character-name {
 	font-size: 1.25rem;
 	padding: .2rem .5rem;
-	margin: .2rem;
 	border: .1rem inset #025;
-	border-radius: 0;
 	text-transform: capitalize;
+	margin: .2rem;
+	border-radius: 0;
 	background: #025;
 	color: #fff;
 	flex: 1;
@@ -1930,7 +1917,6 @@ background-image:
 }
 .guild-leader {
 	color: #ff8;
-	align-self: center;
 	vertical-align: middle;
 }
 
@@ -2057,7 +2043,7 @@ background-image:
 #bank-slot-wrap .item-slot-wrap {
 	margin: .1rem 0;
 }
-#bank-footer {
+#bank-footer, #various-footer {
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
@@ -2496,7 +2482,7 @@ background-image:
 	text-align: center;
 	line-height: 1.5;
 }
-#inv-skill-description, #bank-description {
+#inv-skill-description, #bank-description, #various-description {
 	padding: .2rem .4rem;
 	font-size: .8rem;
 	border: .1rem ridge #136;
@@ -2515,4 +2501,58 @@ background-image:
 	background: radial-gradient(farthest-corner at 50% 50%, #048, #0000);
 	background: #0a0a0a;
 	box-shadow: 0 0 .6rem #aeff inset, 0 0 .6rem #aeff inset;
+}
+#various-body {
+	display: flex;
+	position: relative;
+	overflow: hidden;
+}
+.town-various-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	filter: saturate(250%) contrast(120%) sepia(100%);
+	z-index: 1;
+}
+#various-wrap {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	font-size: .9rem;
+	z-index: 1;
+}
+.town-avatar-wrap {
+	border: .1rem ridge #136;
+	margin: .2rem;
+	height: 5rem;
+	background: repeating-linear-gradient(to bottom, #1258 0 3%, #1368 3% 6%)
+}
+.town-avatars {
+	width: 5rem;
+	height: 5rem;
+}
+#guild-input {
+	background: rgba(0, 64, 128, .5);
+	color: #fff;
+	font-size: 1.25rem;
+	padding: .2rem .5rem;
+	border: .1rem inset #025;
+	outline: 1px solid #579;
+	text-transform: capitalize;
+	cursor: url('cursor/pointer.cur'), pointer;
+	margin: 1rem 0;
+	transition: border .2s ease-out;
+}
+.aside-frame {
+	background: rgba(0, 0, 0, .5);
+	border: .1rem ridge #025;
+	padding: .2rem .4rem;
+	margin: .1rem;
+}
+#aside-guild-members {
+	display: table;
+	flex: 1;
 }

@@ -1,17 +1,9 @@
 var popover;
 (function() {
-	var mainMenuPopovers = {
-		'bar-last-ping': 'Last Ping',
-		'bar-average-ping': 'Average Ping',
-		'bar-camp': 'Camp and Exit',
-		'bar-stats': '[C] Character Sheet',
-		'bar-inventory': '[I] Inventory',
-		'bar-options': '[ESC] Options',
-		'bar-mission-abandon': 'Abandon Mission'
-	};
+	var mainMenuPopovers = {}
 
 	popover = {
-		timer: new TweenMax.delayedCall(0, ''),
+		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
 		hide,
@@ -32,12 +24,22 @@ var popover;
 
 	function setMainMenuHtml(id) {
 		if (!id) return;
+		mainMenuPopovers = {
+			'bar-last-ping': 'Last Ping',
+			'bar-average-ping': 'Average Ping',
+			'bar-camp': 'Camp and Exit',
+			'bar-stats': '['+ _.capitalize(ng.config.hotkey.characterStats) +'] Character Sheet',
+			'bar-inventory': '['+ _.capitalize(ng.config.hotkey.inventory) +'] Inventory',
+			'bar-options': '[ESC] Options',
+			'bar-mission-abandon': 'Abandon Mission'
+		};
+		console.info('setMainMenuHtml', mainMenuPopovers['bar-inventory'])
 		var html = mainMenuPopovers[id];
 		html && popover.show(html);
 	}
 	function show(html) {
 		if (!html) return;
-		el = getById('popover-wrap');
+		el = getElementById('popover-wrap');
 		el.innerHTML = html;
 		setPosition()
 		el.style.visibility = 'visible';
@@ -52,7 +54,7 @@ var popover;
 		el.style.left = posX() + 'px';
 	}
 	function hide() {
-		el = getById('popover-wrap');
+		el = getElementById('popover-wrap');
 		TweenMax.set(el, {
 			opacity: 0,
 			onComplete: function() {
@@ -62,7 +64,7 @@ var popover;
 		});
 	}
 	function posX() {
-		el = getById('popover-wrap')
+		el = getElementById('popover-wrap')
 		style = getComputedStyle(el)
 		padding = parseInt(style.paddingLeft, 10) * 2
 		width = parseInt(style.width, 10)

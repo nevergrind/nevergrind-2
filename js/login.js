@@ -3,7 +3,7 @@ var login;
 	login = {
 		lock: 0,
 		account: localStorage.getItem('account'),
-		fadeTimer: new TweenMax.delayedCall(0, ''),
+		fadeTimer: new delayedCall(0, ''),
 		focusInput: false,
 		authenticationLock: false,
 		msg,
@@ -51,7 +51,7 @@ var login;
 				'spellcheck="false"/>' +
 			'<input id="login-btn" type="submit" value="Login" class="ng-btn" />' +
 			'<div class="error-msg"></div>';
-		getById('login-form-contents').innerHTML = html;
+		getElementById('login-form-contents').innerHTML = html;
 		if (login.account !== null) {
 			$('#account').val(login.account);
 		}
@@ -69,7 +69,7 @@ var login;
 				'spellcheck="false"/>' +
 			'<input id="create-account" type="submit" value="Create" class="ng-btn" style="margin: 1rem 0 .2rem" />' +
 			'<div class="error-msg"></div>';
-		getById('login-form-contents').innerHTML = html;
+		getElementById('login-form-contents').innerHTML = html;
 	}
 	function createAccount() {
 		if (login.lock) {
@@ -102,7 +102,7 @@ var login;
 			}
 			else {
 				login.msg("Account Created! Reloading!");
-				TweenMax.delayedCall(.5, ng.reloadGame)
+				delayedCall(.5, ng.reloadGame)
 			}
 		}).fail(function() {
 			login.msg("There was a problem communicating with the server.");

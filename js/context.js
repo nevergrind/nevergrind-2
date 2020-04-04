@@ -6,7 +6,7 @@ var context;
 
 	context = {
 		id: '',
-		timer: new TweenMax.delayedCall(0, ''),
+		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		player: '',
 		padding: 10,
@@ -42,7 +42,7 @@ var context;
 		}).on('mouseleave', function () {
 			context.isInside = 0;
 			context.timer.kill()
-			TweenMax.delayedCall(1, function () {
+			delayedCall(1, function () {
 				if (!context.isInside) {
 				}
 			})
@@ -178,7 +178,7 @@ var context;
 	}
 	function show(s) {
 		if (!s) return;
-		var e = getById('context-wrap');
+		var e = getElementById('context-wrap');
 		e.innerHTML = s;
 		e.style.top = posY() + 'px';
 		e.style.left = posX() + 'px';
@@ -187,7 +187,7 @@ var context;
 		context.openDate = Date.now();
 	}
 	function hide() {
-		getById('context-wrap').style.visibility = 'hidden';
+		getElementById('context-wrap').style.visibility = 'hidden';
 		context.isOpen = 0;
 	}
 	function hideCheck() {

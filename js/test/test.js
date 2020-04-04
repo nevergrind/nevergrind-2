@@ -104,7 +104,7 @@ var test;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
-		var e2 = getById('ng2-logo-wrap');
+		var e2 = getElementById('ng2-logo-wrap');
 		for (i=0; i<max; i++){
 			e = createElement('img');
 			e.id = 'mob' + i;
@@ -129,7 +129,7 @@ var test;
 		}
 	}
 	function animateOrc(i) {
-		z = getById("mob" + i);
+		z = getElementById("mob" + i);
 
 		filters = {
 			hue: "hue-rotate(0deg)"

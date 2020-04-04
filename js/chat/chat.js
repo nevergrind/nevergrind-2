@@ -91,7 +91,7 @@ var chat;
 
 		if (mode === '/say' && !my.channel) {
 			log("You cannot communicate in town while in a dungeon", 'chat-warning');
-			TweenMax.delayedCall(0, function() {
+			delayedCall(0, function() {
 				// wipe input after keyup to get rid of /say
 				$("#chat-input").val('');
 			});
@@ -151,7 +151,7 @@ var chat;
 	function init() {
 		// default initialization of chat
 		if (!chat.initialized) {
-			var e = getById('chat-wrap');
+			var e = getElementById('chat-wrap');
 			e.innerHTML = '';
 			e.style.display = 'flex';
 			e.innerHTML = chat.html();
@@ -175,12 +175,12 @@ var chat;
 				context.getChatMenu(name);
 			});
 			// dom cache
-			chat.dom.chatRoom = getById('chat-room');
-			chat.dom.chatHeader = getById('chat-header');
-			chat.dom.chatLog = getById('chat-log');
-			chat.dom.chatInput = getById('chat-input');
-			chat.dom.chatInputMode = getById('chat-input-mode');
-			chat.dom.chatModeMsg = getById('chat-mode-msg');
+			chat.dom.chatRoom = getElementById('chat-room');
+			chat.dom.chatHeader = getElementById('chat-header');
+			chat.dom.chatLog = getElementById('chat-log');
+			chat.dom.chatInput = getElementById('chat-input');
+			chat.dom.chatInputMode = getElementById('chat-input-mode');
+			chat.dom.chatModeMsg = getElementById('chat-mode-msg');
 		}
 	}
 	function log(msg, className) {
@@ -500,12 +500,12 @@ var chat;
 				}).done(() => {
 					localStorage.setItem(game.storageId, 0)
 					ng.lock()
-					TweenMax.delayedCall(.5, ng.reloadGame)
+					delayedCall(.5, ng.reloadGame)
 				});
 			}
 			else {
 				ng.lock()
-				TweenMax.delayedCall(.5, ng.reloadGame)
+				delayedCall(.5, ng.reloadGame)
 			}
 		}
 	}

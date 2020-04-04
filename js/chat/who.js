@@ -27,7 +27,7 @@ var who;
 		who.listThrottled = true;
 		who.listId++;
 		who.results = 0;
-		TweenMax.delayedCall(who.listThrottleExpire, () => {
+		delayedCall(who.listThrottleExpire, () => {
 			who.listThrottled = false;
 		});
 
@@ -64,7 +64,7 @@ var who;
 					guild.format(data.guild) +
 				'</div>'
 			)
-			getById('who-all-' + who.listId).textContent = who.results;
+			getElementById('who-all-' + who.listId).textContent = who.results;
 		}
 	}
 	function parse(msg) {
@@ -132,7 +132,7 @@ var who;
 		who.listThrottled = true;
 		who.listId++;
 		who.results = 0;
-		TweenMax.delayedCall(who.listThrottleExpire, () => {
+		delayedCall(who.listThrottleExpire, () => {
 			who.listThrottled = false;
 		});
 
@@ -171,7 +171,7 @@ var who;
 					guild.format(data.guild) +
 				'</div>'
 			)
-			getById('who-all-' + who.listId).textContent = who.results;
+			getElementById('who-all-' + who.listId).textContent = who.results;
 		}
 	}
 	function matchesFilters(data) {

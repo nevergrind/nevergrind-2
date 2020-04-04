@@ -44,10 +44,10 @@ var dungeon;
 			});
 		}
 		if (dungeon.initialized) {
-			getById('scene-dungeon').style.display = 'block'
+			getElementById('scene-dungeon').style.display = 'block'
 		}
 		else {
-			getById('scene-dungeon').innerHTML = dungeon.html()
+			getElementById('scene-dungeon').innerHTML = dungeon.html()
 			battle.events()
 			button.init()
 		}

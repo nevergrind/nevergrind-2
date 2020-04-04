@@ -2,8 +2,8 @@ var modal;
 (function() {
 	modal = {
 		isOpen: 0,
-		overlay: getById('modal-overlay'),
-		wrap: getById('modal-wrap'),
+		overlay: getElementById('modal-overlay'),
+		wrap: getElementById('modal-wrap'),
 		playerIdleBoot: {
 			header: function() {
 				return '<div id="modal-header">Disconnected</div>';
@@ -66,7 +66,7 @@ var modal;
 		// confirm event actions
 		$('#modal-wrap').on('click', '#delete-character-confirm', create.deleteCharacter);
 		if (e.focus) {
-            TweenMax.delayedCall(.1, function () {
+            delayedCall(.1, function () {
                 $("#modal-wrap input:first").focus();
             });
         }

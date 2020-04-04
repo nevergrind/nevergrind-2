@@ -2,11 +2,11 @@
 var dom;
 (function(){
 	dom = {
-		body: getById('body'),
-		bgmusic: getById('bgmusic'),
-		msg: getById('msg'),
-		chatInput: getById('chat-input'),
-		chatLog: getById('chat-log'),
-		itemTooltipCursorImg: getById('item-tooltip-cursor-img')
+		body: getElementById('body'),
+		bgmusic: getElementById('bgmusic'),
+		msg: getElementById('msg'),
+		chatInput: getElementById('chat-input'),
+		chatLog: getElementById('chat-log'),
+		itemTooltipCursorImg: getElementById('item-tooltip-cursor-img')
 	}
 })();

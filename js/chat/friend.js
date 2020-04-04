@@ -34,7 +34,7 @@ var friend;
 		if (ng.friends.length){
 			friend.listThrottled = true;
 			friend.listId++;
-			TweenMax.delayedCall(friend.listThrottleExpire, () => {
+			delayedCall(friend.listThrottleExpire, () => {
 				friend.listThrottled = false;
 			});
 
@@ -72,7 +72,7 @@ var friend;
 	}
 	function presenceReceived(data) {
 		warn('presenceReceived', data);
-		var el = getById('friend-list-' + friend.listId + '-' + data.name);
+		var el = getElementById('friend-list-' + friend.listId + '-' + data.name);
 		el.className = 'chat-whisper'
 		el.innerHTML = '[' +
 			data.level +' '+ ng.jobLong[data.job] +'] '+ data.name + ' ('+ data.race +

@@ -3,7 +3,7 @@ var toast;
 	toast = {
 		data: {},
 		getToastHtml: getToastHtml,
-		timer: new TweenMax.delayedCall(0, ''),
+		timer: new delayedCall(0, ''),
 		expired: 15,
 		add,
 		accept,
@@ -31,7 +31,7 @@ var toast;
 			el.innerHTML = getToastHtml(data)
 			querySelector('#toast-window').appendChild(el)
 			toast.data = data
-			toast.timer = TweenMax.delayedCall(toast.expired, removeToast)
+			toast.timer = delayedCall(toast.expired, removeToast)
 		}
 	}
 
@@ -49,7 +49,7 @@ var toast;
 	function removeToast() {
 		toast.timer.kill()
 		toast.data = {}
-		var el = getById('toast-wrap')
+		var el = getElementById('toast-wrap')
 		el !== null && querySelector('#toast-window').removeChild(el)
 	}
 	function accept() {

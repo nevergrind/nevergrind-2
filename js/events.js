@@ -9,7 +9,7 @@
 	//////////////////////////////////////////////
 	function ready() {
 		// console.info("Initializing title screen...");
-		TweenMax.delayedCall(.1, readyFire);
+		delayedCall(.1, readyFire);
 
 		$(window)
 			.on('resize', resize)
@@ -55,6 +55,12 @@
 			.on('click', '.option-category', bar.selectOptionCategory)
 			.on('click', '.ng-dropdown-btn', dropdown.toggle)
 			.on('click', '.ng-dropdown-select', dropdown.hideMenu)
+			// town
+			.on('click', '#guild-create', guild.create)
+			.on('click focus', '#guild-input', town.handleGuildInputFocus)
+			.on('blur', '#guild-input', town.handleGuildInputBlur)
+			.on('click', '#guild-member-refresh-btn', town.refreshGuildMembers)
+			.on('click', '.town-building', town.handleBuildingClick);
 
 	}
 
@@ -83,7 +89,7 @@
 	function windowResized() {
 		// debounce resize
 		ng.resizeTimer.kill()
-		ng.resizeTimer = TweenMax.delayedCall(.05, windowResizedTimeout)
+		ng.resizeTimer = delayedCall(.05, windowResizedTimeout)
 		if (context.isOpen) {
 			context.hide()
 		}
@@ -97,7 +103,7 @@
 				mob.sizeMob(i)
 			}
 		}
-		ng.responsiveRatio = parseInt(getComputedStyle(getById('body')).fontSize, 10) / 20
+		ng.responsiveRatio = parseInt(getComputedStyle(getElementById('body')).fontSize, 10) / 20
 	}
 	function mousedown(e) {
 		if (context.isOpen) {
@@ -178,7 +184,7 @@
 				// title specific
 				if (!ng.isModalOpen){
 					// any key press focuses on input first
-					create.whitelist.includes(key) && getById('create-character-name').focus();
+					create.whitelist.includes(key) && getElementById('create-character-name').focus();
 				}
 			}
 			else {

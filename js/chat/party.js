@@ -132,7 +132,7 @@ var party;
 				}
 				if (party.presence.length === 1) {
 					my.isLeader = party.presence[0].isLeader = true;
-					getById('bar-is-leader-' + my.row).classList.add('none');
+					getElementById('bar-is-leader-' + my.row).classList.add('none');
 				}
 			}
 		}
@@ -205,7 +205,7 @@ var party;
 				row: my.partyId
 			});
 			console.warn('length: ', party.presence.length)
-			party.presence.length === 1 && getById('bar-is-leader-' + my.row).classList.remove('none');
+			party.presence.length === 1 && getElementById('bar-is-leader-' + my.row).classList.remove('none');
 		}
 	}
 	/**
@@ -218,7 +218,7 @@ var party;
 		my.partyId = data.row;
 		party.listen(data.row);
 		chat.log("You have joined the party.", 'chat-warning');
-		TweenMax.delayedCall(.1, () => {
+		delayedCall(.1, () => {
 			socket.publish('party' + my.partyId, {
 				msg: my.name + ' has joined the party.',
 				route: 'party->notifyJoin',
@@ -325,7 +325,7 @@ var party;
 			party.presence[index].isLeader = true;
 		}
 		console.warn("LEADER INDEX: ", index, player.row);
-		getById('bar-is-leader-' + player.row).classList.remove('none');
+		getElementById('bar-is-leader-' + player.row).classList.remove('none');
 	}
 	function promote(name) {
 		console.info('/promote ', name);
@@ -361,8 +361,8 @@ var party;
 			}
 			var oldLeader = _.findIndex(party.presence, { row: data.leaderRow });
 			console.warn('oldLeader', oldLeader);
-			getById('bar-is-leader-' + party.presence[index].row).classList.remove('none');
-			getById('bar-is-leader-' + party.presence[oldLeader].row).classList.add('none');
+			getElementById('bar-is-leader-' + party.presence[index].row).classList.remove('none');
+			getElementById('bar-is-leader-' + party.presence[oldLeader].row).classList.add('none');
 		}
 	}
 	function parse(msg) { // 2-part upper case

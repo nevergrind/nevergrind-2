@@ -92,7 +92,7 @@ var mob;
 			'name',
 			'shadow',
 			'bar'].forEach(function(e){
-				mobs[i].dom[e] = getById('mob-'+ e +'-' + i);
+				mobs[i].dom[e] = getElementById('mob-'+ e +'-' + i);
 			});
 		}
 	}
@@ -184,7 +184,7 @@ var mob;
 			onUpdateParams: [mobs[i].index],
 		})
 		if (skip) return
-		ng.test && TweenMax.delayedCall(.25, hit, [ mobs[i].index ])
+		ng.test && delayedCall(.25, hit, [ mobs[i].index ])
 	}
 
 	function hit(i) {
@@ -211,7 +211,7 @@ var mob;
 	function hitComplete(m) {
 		resetIdle(m.index);
 		if (ng.test){
-			TweenMax.delayedCall(1, attack, [ m.index, 'primary' ]);
+			delayedCall(1, attack, [ m.index, 'primary' ]);
 		}
 	}
 
@@ -243,13 +243,13 @@ var mob;
 		resetIdle(m.index)
 		if (ng.test){
 			if (force === 'primary'){
-				TweenMax.delayedCall(1, attack, [ m.index, 'secondary' ])
+				delayedCall(1, attack, [ m.index, 'secondary' ])
 			}
 			else if (force === 'death'){
-				TweenMax.delayedCall(1, death, [ m.index ])
+				delayedCall(1, death, [ m.index ])
 			}
 			else {
-				TweenMax.delayedCall(1, special, [ m.index ])
+				delayedCall(1, special, [ m.index ])
 			}
 		}
 	}
@@ -282,7 +282,7 @@ var mob;
 	function specialComplete(m) {
 		resetIdle(m.index)
 		if (ng.test) {
-			TweenMax.delayedCall(1, death, [ m.index ])
+			delayedCall(1, death, [ m.index ])
 		}
 	}
 	function death(i) {
@@ -342,7 +342,7 @@ var mob;
 			sizeMob(m.index);
 			idle(m.index);
 		}
-		TweenMax.delayedCall(.1, deathCompleteFadeReset, [ m, e ]);
+		delayedCall(.1, deathCompleteFadeReset, [ m, e ]);
 	}
 	function deathCompleteFadeReset(m, e) {
 		m.deathState = 0;
@@ -350,7 +350,7 @@ var mob;
 		e.style.filter = 'opacity(100%) brightness(100%)';
 	}
 	function blur() {
-		var e = getById('sprite'),
+		var e = getElementById('sprite'),
 			type = 'blur',
 			filters = {
 				blur: type + '(0px)'
@@ -365,7 +365,7 @@ var mob;
 		});
 	}
 	function brightness() {
-		var e = getById('sprite'),
+		var e = getElementById('sprite'),
 			type = 'brightness',
 			filters = {
 				brightness: type + '(0%)'
@@ -380,7 +380,7 @@ var mob;
 		});
 	}
 	function contrast() {
-		var e = getById('sprite'),
+		var e = getElementById('sprite'),
 			type = 'contrast',
 			filters = {
 				contrast: type + '(0%)'
@@ -395,7 +395,7 @@ var mob;
 		});
 	}
 	function grayscale() {
-		var e = getById('sprite'),
+		var e = getElementById('sprite'),
 			type = 'grayscale',
 			filters = {
 				grayscale: type + '(0%)'
@@ -410,7 +410,7 @@ var mob;
 		});
 	}
 	function invert() {
-		var e = getById('sprite'),
+		var e = getElementById('sprite'),
 			type = 'invert',
 			filters = {
 				invert: type + '(0%)'
@@ -425,7 +425,7 @@ var mob;
 		});
 	}
 	function saturate() {
-		var e = getById('sprite'),
+		var e = getElementById('sprite'),
 			type = 'saturate',
 			filters = {
 				saturate: type + '(0%)'
@@ -440,7 +440,7 @@ var mob;
 		});
 	}
 	function sepia() {
-		var e = getById('sprite'),
+		var e = getElementById('sprite'),
 			type = 'sepia',
 			filters = {
 				sepia: type + '(0%)'

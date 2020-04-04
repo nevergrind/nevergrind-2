@@ -14,7 +14,6 @@ var town;
 		go,
 		getHtml,
 		update,
-		events,
 		init,
 		preload,
 		getAsideMerchantMenu, // add later
@@ -25,11 +24,16 @@ var town;
 		updateBankDOM,
 		openVarious,
 		closeVarious,
+		handleGuildInputFocus,
+		handleGuildInputBlur,
+		refreshGuildMembers,
+		handleBuildingClick,
 	}
 	var i
 	var id
 	var len
 	var html
+	var msg
 	////////////////////////////////////////////
 	function go() {
 		if (ng.view === 'town') return;
@@ -84,8 +88,7 @@ var town;
 				el.src = 'images/bg/mausoleum1.png'
 				document.getElementById('body').insertBefore(el, document.getElementById('bar-wrap'));
 
-				getById('scene-town').innerHTML = town.getHtml()
-				town.events()
+				getElementById('scene-town').innerHTML = town.getHtml()
 				$("#scene-title").remove()
 				town.init()
 				bar.init();
@@ -107,7 +110,7 @@ var town;
 						});
 					}
 					else {
-						TweenMax.delayedCall(.1, repeat);
+						delayedCall(.1, repeat);
 					}
 				})();
 			}).fail(function(data){
@@ -161,19 +164,6 @@ var town;
 		return s;
 	}
 	function getAsideGuildHtml() {
-		var s =
-		'<div class="aside-text">' +
-			'<div class="aside-title-wrap stag-blue">' +
-				'<div class="aside-title">Guild Hall</div>' +
-				town.asideCloseHtml +
-			'</div>' +
-			'<div id="aside-menu">' +
-				town.getAsideGuildMenu() +
-			'</div>' +
-		'</div>' +
-		'<img class="aside-bg" src="images/town/poh.jpg">' +
-		'<img class="aside-npc" src="images/town/valeska-windcrest.png">';
-		return s;
 	}
 	function getAsideMissionHtml() {
 		var s =
@@ -182,7 +172,7 @@ var town;
 				'<div class="aside-title">Mission Counter</div>' +
 				town.asideCloseHtml +
 			'</div>' +
-			'<div id="aside-menu">' +
+			'<div id="various-wrap">' +
 				town.getAsideMissionMenu() +
 			'</div>' +
 		'</div>' +
@@ -210,7 +200,7 @@ var town;
 				'<div id="guild-member-wrap" class="aside-frame">' +
 					'<div id="guild-member-flex">'+
 						'<div id="guild-member-label">Guild Members:</div>'+
-						'<div id="guild-member-refresh-icon"><i class="fas fa-sync-alt refresh"></i></div>'+
+						'<div id="guild-member-refresh-btn"><i class="fas fa-sync-alt refresh"></i></div>'+
 					'</div>'+
 					'<table id="aside-guild-members"></table>'+
 				'</div>';
@@ -270,10 +260,10 @@ var town;
 		var e = createElement('div');
 		e.className = 'town-aside text-shadow';
 		e.innerHTML = html;
-		getById('scene-town').appendChild(e);
+		getElementById('scene-town').appendChild(e);
 
 		// animate aside things
-		TweenMax.delayedCall(town.asideSelected ? 0 : .5, function() {
+		delayedCall(town.asideSelected ? 0 : .5, function() {
 			TweenMax.set('.now-loading', {
 				alpha: 0
 			});
@@ -294,7 +284,7 @@ var town;
 					});
 				}
 			});
-			TweenMax.delayedCall(.1, function () {
+			delayedCall(.1, function () {
 				TweenMax.to('.aside-bg', 1, {
 					startAt: {
 						left: '60%'
@@ -305,7 +295,7 @@ var town;
 			TweenMax.to('.aside-npc', 1, {
 				left: '-5%'
 			});
-			TweenMax.delayedCall(.1, function() {
+			delayedCall(.1, function() {
 				$(".town-aside:last-child").find("input").focus();
 				town.data[id].msg();
 			})
@@ -331,15 +321,7 @@ var town;
 		else if (type === 'townMerchant') html = getAsideMerchantMenu();
 		else if (type === 'townGuild') html = getAsideGuildMenu();
 		else if (type === 'townMission') html = getAsideMissionMenu();
-		$("#aside-menu").html(html);
-	}
-	function events() {
-		$("#scene-town")
-			.on('click', '#guild-create', guild.create)
-			.on('click focus', '#guild-input', handleGuildInputFocus)
-			.on('blur', '#guild-input', handleGuildInputBlur)
-			.on('click', '#guild-member-refresh-icon', refreshGuildMembers)
-			.on('click', '.town-building', handleBuildingClick);
+		$("#various-wrap").html(html);
 	}
 	function handleGuildInputBlur() {
 		guild.hasFocus = true;
@@ -461,12 +443,12 @@ var town;
 	}
 
 	function openVarious(event) {
-		if (event.currentTarget.dataset.id === 'Bank') {
-			toggleBank()
-		}
+		if (event.currentTarget.dataset.id === 'Bank') toggleBank()
 		else {
-			town.windowsOpen.various = event.currentTarget.dataset.id
-			updateVariousDOM()
+			if (town.windowsOpen.various !== event.currentTarget.dataset.id) {
+				town.windowsOpen.various = event.currentTarget.dataset.id
+				updateVariousDOM()
+			}
 		}
 	}
 	function closeVarious() {
@@ -477,104 +459,168 @@ var town;
 	function updateVariousDOM() {
 		querySelector('#root-various').innerHTML = getVariousHtml()
 		querySelector('#root-various').style.display = 'flex'
-		ng.split('various-description', 'Lorem ipsum or something');
 	}
 	function getVariousHtml() {
 		html = ''
-		if (town.windowsOpen.various === 'town-academy') html = academyHtml()
-		else if (town.windowsOpen.various === 'town-apothecary') html = apothecaryHtml()
-		else if (town.windowsOpen.various === 'town-blacksmith') html = blacksmithHtml()
-		else if (town.windowsOpen.various === 'town-guild') html = guildHtml()
-		else if (town.windowsOpen.various === 'town-merchant') html = merchantHtml()
-		else if (town.windowsOpen.various === 'town-tavern') html = tavernHtml()
-		else html = merchantHtml()
+		msg = ''
+		if (town.windowsOpen.various === 'Academy') html = academyHtml()
+		else if (town.windowsOpen.various === 'Apothecary') {
+			html = apothecaryHtml()
+			msg = 'Lorem ipsum or something'
+		}
+		else if (town.windowsOpen.various === 'Blacksmith') {
+			html = blacksmithHtml()
+			msg = 'Lorem ipsum or something'
+		}
+		else if (town.windowsOpen.various === 'Guild Hall') {
+			html = guildHtml()
+			if (guild.memberList.length) {
+				guild.setGuildList(guild)
+				msg = 'Lorem ipsum or something'
+			}
+			else {
+				delayedCall(.1, () => {
+					$('#guild-input').focus()
+				})
+				guild.getMembers()
+				msg = 'Creating a guild is a great way to keep your friends organized. The hordes of darkness fight in organized armies. It would be wise for you to do likewise.'
+			}
+		}
+		else if (town.windowsOpen.various === 'Merchant') {
+			html = merchantHtml()
+			msg = 'Lorem ipsum or something'
+		}
+		else if (town.windowsOpen.various === 'Tavern') {
+			html = tavernHtml()
+			msg = 'Lorem ipsum or something'
+		}
+		else {
+			html = merchantHtml()
+			msg = 'Lorem ipsum or something'
+		}
+		delayedCall(.1, () => {
+			ng.split('various-description', msg)
+		})
 		return html
 	}
 	function academyHtml() {
 		html = '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-slot-wrap">';
-			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-				'<div id="various-description"></div>'
-			'</div>' +
-		'</div>';
+		'<div id="various-body" class="flex-max">' +
+			'Academy body!' +
+		'</div>' +
+		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+			'<div id="various-description" class="flex-max"></div>' +
+		'</div>'
 		return html
 	}
 	function apothecaryHtml() {
 		html = '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-slot-wrap">';
-			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-				'<div id="various-description"></div>'
-			'</div>' +
-		'</div>';
+		'<div id="various-body" class="flex-max">' +
+			'Apothecary body!' +
+		'</div>' +
+		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+			'<div id="various-description" class="flex-max"></div>' +
+		'</div>'
 		return html
 	}
 	function blacksmithHtml() {
 		html = '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-slot-wrap">';
-			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-				'<div id="various-description"></div>'
-			'</div>' +
-		'</div>';
+		'<div id="various-body" class="flex-max">' +
+			'Blacksmith body!' +
+		'</div>' +
+		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+			'<div id="various-description" class="flex-max"></div>' +
+		'</div>'
 		return html
 	}
 	function guildHtml() {
 		html = '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-slot-wrap">';
-			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-				'<div id="various-description"></div>'
+		'<div id="various-body" class="flex-max">' +
+			// new stuff
+			'<img class="town-various-bg" src="images/town/poh.jpg">' +
+			'<div id="various-wrap">';
+			if (my.guild.name) {
+				html += '<div class="aside-frame">' +
+					'<div>Guild: '+ my.guild.name +'</div> ' +
+					'<div>Title: '+ guild.ranks[my.guild.rank] +'</div> ' +
+					'<div>Total Members: <span id="guild-member-count">'+ guild.memberList.length +'</span></div> ' +
+				'</div>' +
+				'<div class="flex" style="'+ css.header +'">' +
+					'<div class="flex-column flex-max" style="'+ css.nameWrapFull +'">' +
+						'<div class="stag-blue-top" style="' + css.name + '">Guild Members</div>' +
+					'</div>' +
+					'<div id="guild-member-refresh-btn" class="ng-btn">Update</div>'+
+				'</div>' +
+				'<div id="guild-member-wrap" class="aside-frame">' +
+					'<table id="aside-guild-members"></table>'+
+				'</div>' +
+				'</div>'
+			}
+			else {
+				html += '<input id="guild-input" class="text-shadow" type="text" maxlength="30" autocomplete="off" spellcheck="false">' +
+				'<div id="guild-create" class="ng-btn">Create Guild</div> ' +
+				'<div class="aside-frame">Only letters A through Z and apostrophes are accepted in guild names. Standarized capitalization will be automatically applied. The guild name must be between 4 and 30 characters. All guild names are subject to the royal statutes regarding common decency in Vandamor.</div>'
+			}
+			html += '</div>' +
+			//'<img class="aside-npc" src="images/town/valeska-windcrest.png">' +
+			// end new stuff
+		'</div>' +
+		'<div id="various-footer" class="flex-center stag-blue-top">' +
+			'<div class="town-avatar-wrap">' +
+				'<img class="town-avatars" src="images/avatars/seraph-female-1.png">' +
 			'</div>' +
-		'</div>';
+			'<div id="various-description" class="flex-max"></div>' +
+		'</div>'
 		return html
 	}
 	function merchantHtml() {
 		html = '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
 		'<div id="various-body" class="flex-max">' +
-			'Do not touch my body!' +
+			'Merchant body!' +
 		'</div>' +
-		'<div id="various-slot-wrap">' +
-			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-				'<div id="various-description"></div>'
-			'</div>' +
-		'</div>';
+		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+			'<div id="various-description" class="flex-max"></div>' +
+		'</div>'
 		return html
 	}
 	function tavernHtml() {
 		html = '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ _.capitalize(town.windowsOpen.various) +'</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-slot-wrap">';
-			'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-				'<div id="various-description"></div>'
-			'</div>' +
-		'</div>';
+		'<div id="various-body" class="flex-max">' +
+			'Tavern body!' +
+		'</div>' +
+		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
+			'<div id="various-description" class="flex-max"></div>' +
+		'</div>'
 		return html
 	}
 })($, _, TweenMax);

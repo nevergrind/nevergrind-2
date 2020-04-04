@@ -2,7 +2,7 @@ var button;
 (function() {
 	button = {
 		initialized: 0,
-		wrap: getById('button-wrap'),
+		wrap: getElementById('button-wrap'),
 		init,
 		hide,
 	}
@@ -25,7 +25,7 @@ var button;
 				console.info('CLICKED SKILL: ', id, typeof id);
 				skills[my.job].route(id);
 			});
-			TweenMax.delayedCall(1, function() {
+			delayedCall(1, function() {
 				TweenMax.to(button.wrap, 1, {
 					startAt: {
 						display: 'flex'

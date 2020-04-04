@@ -75,10 +75,10 @@ var battle;
 	function show() {
 		ng.setScene('battle');
 		if (battle.initialized) {
-			getById('scene-battle').style.display = 'block';
+			getElementById('scene-battle').style.display = 'block';
 		}
 		else {
-			getById('scene-battle').innerHTML = battle.html();
+			getElementById('scene-battle').innerHTML = battle.html();
 			battle.events();
 			setBackground()
 			battle.isInit = 1;
@@ -86,9 +86,9 @@ var battle;
 	}
 	function setBackground() {
 		var skyColors = [ '#135', '#579' ]
-		getById('battle-sky').style.backgroundImage = 'linear-gradient(to top, #135, #579)';
+		getElementById('battle-sky').style.backgroundImage = 'linear-gradient(to top, #135, #579)';
 		var cloud = 2;
-		getById('battle-clouds').style.backgroundImage = 'url("images/env/cloud' + cloud + '.png")';
+		getElementById('battle-clouds').style.backgroundImage = 'url("images/env/cloud' + cloud + '.png")';
 		TweenMax.to('#battle-clouds', 16000, {
 			startAt: { 'background-position': 0 },
 			'background-position': 3840,

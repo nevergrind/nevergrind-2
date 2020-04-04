@@ -1,15 +1,16 @@
 // aliases
-var querySelector = document.querySelector.bind(document);
-var querySelectorAll = document.querySelectorAll.bind(document);
-var getById = document.getElementById.bind(document);
-var getByTag = document.getElementsByTagName.bind(document);
-var getByClass = document.getElementsByClassName.bind(document);
-var createElement = document.createElement.bind(document);
+const querySelector = document.querySelector.bind(document)
+const querySelectorAll = document.querySelectorAll.bind(document)
+const getElementById = document.getElementById.bind(document)
+const getElementsByClassName = document.getElementsByClassName.bind(document)
+const createElement = document.createElement.bind(document)
 
-var rand = Math.random;
-var ceil = Math.ceil;
-var floor = Math.floor;
+const delayedCall = TweenMax.delayedCall.bind(TweenMax)
 
-var log = console.log;
-var info = console.info;
-var warn = console.warn;
+const rand = Math.random
+const ceil = Math.ceil
+const floor = Math.floor
+
+const log = console.log
+const info = console.info
+const warn = console.warn

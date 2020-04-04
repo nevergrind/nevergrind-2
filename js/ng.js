@@ -175,7 +175,7 @@ var ng;
 		},
 		test: true,
 		id: 0,
-		resizeTimer: new TweenMax.delayedCall(0, ''),
+		resizeTimer: new delayedCall(0, ''),
 		loadMsg:
 			"<div id='load-msg' class='text-shadow text-center now-loading'>Loading</div>",
 		attrs: ['str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha'],
@@ -197,7 +197,7 @@ var ng;
 		resizeY: 1,
 		chatOn: false,
 		lastKey: 0,
-		lockOverlay: getById("lock-overlay"),
+		lockOverlay: getElementById("lock-overlay"),
 		startTime: Date.now(),
 		locked: 0,
 		loadAttempts: 0,
@@ -334,10 +334,10 @@ var ng;
 		// turn off all events
 		$(document).add('*').off();
 		$("main > *").css('display', 'none');
-		var e = getById('scene-error');
+		var e = getElementById('scene-error');
 		e.style.display = 'block';
 		e.innerHTML = msg || 'You have been disconnected from the server';
-		TweenMax.delayedCall(12, reloadGame)
+		delayedCall(12, reloadGame)
 	}
 	function reloadGame() {
 		location.reload()
@@ -352,7 +352,7 @@ var ng;
 		// remove defaults and set via js
 		$(".scene").removeClass('none')
 			.css('display', 'none');
-		getById('scene-' + scene).style.display = 'block';
+		getElementById('scene-' + scene).style.display = 'block';
 		ng.view = scene;
 	}
 	function lock(hide) {
@@ -383,7 +383,7 @@ var ng;
 	}
 	function handleKeepAliveAlways() {
 		if (ng.view === 'title') {
-			game.session.timer = TweenMax.delayedCall(170, keepAlive);
+			game.session.timer = delayedCall(170, keepAlive);
 		}
 	}
 
@@ -394,7 +394,7 @@ var ng;
 		})
 		if (d === 0) return
 		if (d === undefined || d < 1 ){ d = 1 }
-		TweenMax.delayedCall(d, function() {
+		delayedCall(d, function() {
 			TweenMax.to(dom.msg, .2, {
 				scale: 0,
 				ease: Power2.easeOut
@@ -406,7 +406,7 @@ var ng;
 		if (d === undefined){
 			d = .01;
 		}
-		var e = getById(id);
+		var e = getElementById(id);
 		e.innerHTML = msg;
 		var split = new SplitText(e, {
 				type: "words,chars"
@@ -575,7 +575,7 @@ var ng;
 		if (r.id) {
 			my.accountId = r.id
 			if (!app.isApp) {
-				getById('logout').textContent = localStorage.getItem('account')
+				getElementById('logout').textContent = localStorage.getItem('account')
 			}
 			ng.displayAllCharacters(r.characterData)
 			ng.checkPlayerData()
@@ -615,7 +615,7 @@ var ng;
 					'</div>'+
 				'</div>';
 		});
-		getById('ch-card-list').innerHTML = s;
+		getElementById('ch-card-list').innerHTML = s;
 		$(".select-player-card:first").trigger('click');
 	}
 	// private ///////////////////////////////////////////////////////

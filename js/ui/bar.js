@@ -84,7 +84,7 @@ var bar;
 	}
 	var index;
 	var player; // temp bar data
-	var pingTimer = new TweenMax.delayedCall(0, '')
+	var pingTimer = new delayedCall(0, '')
 	var barRatio
 	var html
 	var str
@@ -108,7 +108,7 @@ var bar;
 	function init() {
 		if (!bar.initialized) {
 			bar.initialized = 1
-			el = getById('bar-wrap')
+			el = getElementById('bar-wrap')
 			// my bar
 			html = getBarHeader()
 			// party bars
@@ -120,9 +120,9 @@ var bar;
 			el.innerHTML = html
 			el.style.display = 'block'
 
-			bar.dom.lag = getById('bar-lag')
-			bar.dom.inventory = getById('inventory')
-			bar.dom.inventoryWrap = getById('inventory-wrap')
+			bar.dom.lag = getElementById('bar-lag')
+			bar.dom.inventory = getElementById('inventory')
+			bar.dom.inventoryWrap = getElementById('inventory-wrap')
 			// draw all bars
 			// bar events
 			$("#bar-wrap")
@@ -141,7 +141,7 @@ var bar;
 		ng.lock()
 		ng.msg('Saving game data...')
 		if (app.isApp) {
-			TweenMax.delayedCall(ng.getExitTime(), () => {
+			delayedCall(ng.getExitTime(), () => {
 				nw.App.closeAllWindows();
 			})
 		}
@@ -150,7 +150,7 @@ var bar;
 	function appReset() {
 		ng.lock()
 		ng.msg('Saving game data...')
-		TweenMax.delayedCall(ng.getExitTime(), ng.reloadGame)
+		delayedCall(ng.getExitTime(), ng.reloadGame)
 	}
 
 	function handleClickPartyContextMenu() {
@@ -393,7 +393,7 @@ var bar;
 	}
 
 	function updateOptionsDOM() {
-		el = getById('root-options')
+		el = getElementById('root-options')
 		if (bar.windowsOpen.options) {
 			el.innerHTML = getOptionsHtml()
 			el.style.display = 'flex'
@@ -740,15 +740,15 @@ var bar;
 
 	function cachePlayerBars(index) {
 		bar.dom[index] = {
-			playerWrap: getById('bar-player-wrap-' + index),
-			name: getById('bar-name-' + index),
-			hpFg: getById('bar-hp-fg-' + index),
-			// hpBg: getById('bar-hp-bg-' + index),
-			mpWrap: getById('bar-mp-wrap-' + index),
-			mpFg: getById('bar-mp-fg-' + index),
-			spWrap: getById('bar-sp-wrap-' + index),
-			spFg: getById('bar-sp-fg-' + index),
-			isLeader: getById('bar-is-leader-' + index),
+			playerWrap: getElementById('bar-player-wrap-' + index),
+			name: getElementById('bar-name-' + index),
+			hpFg: getElementById('bar-hp-fg-' + index),
+			// hpBg: getElementById('bar-hp-bg-' + index),
+			mpWrap: getElementById('bar-mp-wrap-' + index),
+			mpFg: getElementById('bar-mp-fg-' + index),
+			spWrap: getElementById('bar-sp-wrap-' + index),
+			spFg: getElementById('bar-sp-fg-' + index),
+			isLeader: getElementById('bar-is-leader-' + index),
 		}
 	}
 
@@ -758,7 +758,7 @@ var bar;
 			el.id = 'bar-player-wrap-' + index;
 			el.className = 'bar-player-wrap';
 			el.innerHTML = getPlayerBarHtml(player, index);
-			getById('bar-all-player-wrap').appendChild(el);
+			getElementById('bar-all-player-wrap').appendChild(el);
 			cachePlayerBars(index);
 		}
 	}
@@ -831,10 +831,10 @@ var bar;
 			player.isLeader = data.isLeader;
 			// set UI helmet
 			if (player.isLeader && party.presence.length >= 2) {
-				getById('bar-is-leader-' + data.row).classList.remove('none');
+				getElementById('bar-is-leader-' + data.row).classList.remove('none');
 			}
 			else {
-				getById('bar-is-leader-' + data.row).classList.add('none');
+				getElementById('bar-is-leader-' + data.row).classList.add('none');
 			}
 			console.warn('isLeader', data.row, index, player.isLeader);
 		}
@@ -856,7 +856,7 @@ var bar;
 	}
 	function updatePing(ping) {
 		pingTimer.kill()
-		pingTimer = TweenMax.delayedCall(.1, updatePingDone, [ping])
+		pingTimer = delayedCall(.1, updatePingDone, [ping])
 	}
 	function updatePingDone(ping) {
 		game.pingHistory.push(ping);
@@ -912,7 +912,7 @@ var bar;
 	}
 	function hideParty() {
 		party.presence.forEach(function(v, i){
-			if (i) getById('bar-player-wrap-' + i).style.display = 'none'
+			if (i) getElementById('bar-player-wrap-' + i).style.display = 'none'
 		});
 	}
 	function linkdead(data) {

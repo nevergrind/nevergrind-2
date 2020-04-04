@@ -50,17 +50,17 @@ var audio;
 	}
 	function events() {
 		/*$("#bgmusic").on('ended', function() {
-			var x = getById('bgmusic');
+			var x = getElementById('bgmusic');
 			x.currentTime = 0;
 			x.play();
 		});
 		$("#bgamb1").on('ended', function() {
-			var x = getById('bgamb1');
+			var x = getElementById('bgamb1');
 			x.currentTime = 0;
 			x.play();
 		});
 		$("#bgamb2").on('ended', function() {
-			var x = getById('bgamb2');
+			var x = getElementById('bgamb2');
 			x.currentTime = 0;
 			x.play();
 		});*/

@@ -4,7 +4,7 @@ var tooltip;
 		eq: { isHovering: false },
 		inv: { isHovering: false },
 		bank: { isHovering: false },
-		timer: new TweenMax.delayedCall(0, ''),
+		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
 		isHoveringEq: false,
@@ -15,7 +15,7 @@ var tooltip;
 		handleItemEnter,
 		handleItemLeave,
 	};
-	var tooltipEl = getById('tooltip-wrap')
+	var tooltipEl = getElementById('tooltip-wrap')
 	var wearsLeather = [
 		'BRD',
 		'CLR',

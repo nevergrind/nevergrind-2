@@ -231,7 +231,7 @@ var mission;
 					town.go()
 					chat.joinChannel('town', 1)
 					game.getPresence()
-					TweenMax.delayedCall(.5, function() {
+					delayedCall(.5, function() {
 						game.heartbeatSend()
 						chat.modeChange({
 							mode: '/say'
@@ -268,7 +268,7 @@ var mission;
 			ease: Power4.easeOut
 		});
 		ng.msg('Mission started: ' + my.quest.title)
-		TweenMax.delayedCall(game.questDelay, dungeon.go)
+		delayedCall(game.questDelay, dungeon.go)
 	}
 
 	function setQuest(data) {
