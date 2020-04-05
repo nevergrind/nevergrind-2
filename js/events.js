@@ -60,7 +60,12 @@
 			.on('click focus', '#guild-input', town.handleGuildInputFocus)
 			.on('blur', '#guild-input', town.handleGuildInputBlur)
 			.on('click', '#guild-member-refresh-btn', town.refreshGuildMembers)
-			.on('click', '.town-building', town.handleBuildingClick);
+			.on('click', '.town-building', town.openVarious)
+			// missions
+			.on('click', '.mission-zone-headers', mission.toggleZone)
+			.on('click', '.mission-quest-item', mission.clickQuest)
+			.on('click', '#mission-embark', mission.embark)
+			.on('click', '#mission-abandon', mission.abandon)
 
 	}
 
@@ -243,7 +248,7 @@
 					// town specific
 					if (!chat.hasFocus) {
 						// if no aside, focus on chat input first
-						!town.asideSelected && chat.focusKeys.includes(key) && chat.dom.chatInput.focus();
+						chat.focusKeys.includes(key) && chat.dom.chatInput.focus();
 
 						if (guild.hasFocus && key === 'Enter') {
 							guild.create();

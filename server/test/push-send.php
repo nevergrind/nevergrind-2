@@ -1,7 +1,7 @@
 <?php
 $start = microtime(true);
 require '../zmq.php';
-$loops = 1e3;
+$loops = 1e1;
 
 for ($i=0; $i < $loops; $i++) {
 	$socket->send(json_encode([

@@ -1,5 +1,5 @@
 var guild;
-(function() {
+(function($) {
 	guild = {
 		hasFocus: 0,
 		throttleTime: 1,
@@ -35,6 +35,7 @@ var guild;
 		setGuildList,
 		setGuildData,
 	}
+	var html
 	/////////////////////////////////////////////
 	function listen() {
 		// subscribe to test guild for now
@@ -78,11 +79,12 @@ var guild;
 		}).done(function(data) {
 			console.info('create', data.guild);
 			guild.setGuildData(data);
-			chat.log('Valeska Windcrest says, "By the powers vested in me, I hereby declare you supreme sovereign leader of a new guild: ' + data.guild.name +'."');
-			chat.log('Type /help to view guild commands', 'chat-emote');
+			chat.log('Valeska says, "By the powers vested in me, I hereby declare you supreme sovereign leader of a new guild: ' + data.guild.name +'."');
+			ng.msg('You created a new guild: ' + data.guild.name, 5)
+			chat.log('Type /help to view guild commands', 'chat-warning');
 			guild.listen();
 			// redraw the #various-wrap with new option
-			town.update('town-guild');
+			town.updateVariousDOM();
 			guild.getMembers();
 		}).fail(function(data){
 			console.info(data);
@@ -282,7 +284,7 @@ var guild;
 		$.get(app.url + 'guild/get-member-list.php').done(data => {
 			console.info(data);
 			delayedCall(throttleTime, () => {
-				guild.setGuildList(data)
+				setGuildList(data)
 			});
 			// nothing
 		}).fail(data => {
@@ -292,168 +294,22 @@ var guild;
 		});
 	}
 	function setGuildList(data) {
-		var s = '';
+		html = ''
 		guild.memberList = data.memberList;
-		s += '<tbody>';
-		guild.memberList.forEach(function(v){
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-			s += '<tr class="guild-member-row">' +
-				'<td>' + getGuildStar(v.rank) + '</td>' +
-				'<td>' + v.level + '</td>' +
-				'<td style="width: 40%">' + v.name + '</td>' +
-				'<td style="width: 20%">' + v.race + '</td>' +
-				'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
-			'</tr>';
-		});
-		s += '</tbody>';
-		$("#aside-guild-members").html(s);
-		getElementById('guild-member-count').textContent = guild.memberList.length;
+		html += '<tbody>';
+		guild.memberList.forEach(getGuildRow);
+		html += '</tbody>'
+		$("#aside-guild-members").html(html)
+		getElementById('guild-member-count').textContent = guild.memberList.length
+	}
+	function getGuildRow(v) {
+		html += '<tr class="guild-member-row">' +
+			'<td>' + getGuildStar(v.rank) + '</td>' +
+			'<td>' + v.level + '</td>' +
+			'<td style="width: 40%">' + v.name + '</td>' +
+			'<td style="width: 20%">' + v.race + '</td>' +
+			'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
+		'</tr>'
 	}
 	function getGuildStar(rank) {
 		return rank === 0 ?
@@ -465,4 +321,4 @@ var guild;
 		warn('setGuildData', data);
 	}
 
-})();
+})($);

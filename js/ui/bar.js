@@ -724,11 +724,8 @@ var bar;
 		updateCharacterDOM()
 		updateInventoryDOM()
 		updateOptionsDOM()
-
-		_.each(town.windowsOpen, (val, key) => {
-			town.windowsOpen[key] = false
-		})
-		town.updateBankDOM()
+		town.closeVarious()
+		town.closeBank()
 
 		item.dropReset()
 	}
@@ -743,7 +740,6 @@ var bar;
 			playerWrap: getElementById('bar-player-wrap-' + index),
 			name: getElementById('bar-name-' + index),
 			hpFg: getElementById('bar-hp-fg-' + index),
-			// hpBg: getElementById('bar-hp-bg-' + index),
 			mpWrap: getElementById('bar-mp-wrap-' + index),
 			mpFg: getElementById('bar-mp-fg-' + index),
 			spWrap: getElementById('bar-sp-wrap-' + index),

@@ -394,9 +394,7 @@ tbody { border: 0 }
 	padding: .2rem 1rem;
 	font: 1.1rem/1 Play, Cinzel;
 	font-weight: 700;
-	outline: 1px solid #579;
-	outline-offset: .1rem;
-	border: .1rem outset #eed;
+	border: .1rem outset #cb8;
 	text-align: center;
 	border-radius: 0;
 	cursor: url('cursor/pointer.cur'), pointer;
@@ -730,33 +728,26 @@ tbody { border: 0 }
 	top: auto;
 	bottom: 0;
 	width: 100%;
-	background: radial-gradient(farthest-corner at 50% 50%, #013, #000);
+	background: repeating-linear-gradient(90deg, #013 0%, #025 2%, #013 4%);
+	background-size: 50% 100%;
+	animation: town-repeat-bg 90s linear infinite;
 }
 
 #town-footer-flex {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin: .1rem;
+	background: radial-gradient(farthest-corner at 50% 50%, #013, #000);
+}
+@keyframes town-repeat-bg {
+	from { background-position: 0%; }
+	to { background-position: 200%; }
 }
 
 #town-mission {
 	font-size: 1.25rem;
 	cursor: url('cursor/pointer.cur'), pointer;
-}
-
-.footer-hr {
-	border: 0;
-	height: .1rem;
-	margin: 0;
-	background-image: linear-gradient(to left, rgba(32, 32, 32, .4), rgba(128, 128, 128, 1), rgba(32, 32, 32, .4))
-}
-
-#town-footer-hr1 {
-	margin-bottom: .2rem;
-}
-
-#town-footer-hr2 {
-	margin-top: .2rem;
 }
 
 /* chat styles */
@@ -793,7 +784,7 @@ tbody { border: 0 }
 #chat-header {
 	display: flex;
 	justify-content: center;
-	color: #ffb700;
+	color: gold;
 	border: .1rem groove #048;
 	margin: 1px;
 	white-space: nowrap;
@@ -899,7 +890,7 @@ tbody { border: 0 }
 }
 
 .chat-quest {
-	color: #ffb700;
+	color: gold;
 }
 
 .chat-help-header {
@@ -917,7 +908,7 @@ tbody { border: 0 }
 }
 
 .chat-exp {
-	color: #ffb700;
+	color: gold;
 }
 
 .chat-join {
@@ -1026,7 +1017,7 @@ background-clip: content-box;
 
 #scene-error {
 	padding: 30vh 10vw 0;
-	color: #ffb700;
+	color: gold;
 	text-align: center;
 	font: 3rem Cinzel;
 	text-shadow: .6px .6px #000,
@@ -1110,7 +1101,7 @@ background-clip: content-box;
 .bar-level {
 	font-size: .9rem;
 	line-height: .8;
-	color: #ffb700;
+	color: gold;
 }
 
 .bar-is-leader {
@@ -1190,7 +1181,7 @@ background-clip: content-box;
 	visibility: hidden;
 	width: 8rem;
 	font: .9rem/1.5 Play, Cinzel, Palatino Linotype, serif;
-	border: 2px ridge #ffb700;
+	border: 2px ridge gold;
 	z-index: 2;
 	transform: translate(-50%, 0%);
 	background: radial-gradient(farthest-corner at 0% 0%, rgba(16, 32, 80, 1), rgba(0, 0, 0, 1));
@@ -1218,7 +1209,7 @@ background-clip: content-box;
 	opacity: 0;
 	width: auto;
 	font: .9rem/1.5 Play, Cinzel, Palatino Linotype, serif;
-	border: 2px ridge #ffb700;
+	border: 2px ridge gold;
 	z-index: 2;
 	padding: .25rem .5rem;
 	border-radius: 4px;
@@ -1366,8 +1357,9 @@ background-clip: content-box;
 /* missions */
 #mission-counter {
 	word-break: break-all;
-	max-height: 700px;
 	overflow-y: auto;
+	line-height: 1.4;
+	flex: 1;
 }
 
 .mission-zone-headers {
@@ -1437,28 +1429,25 @@ background-clip: content-box;
 }
 
 #mission-wrap {
+	letter-spacing: .05rem;
 	padding-top: .5rem;
 	padding-bottom: .5rem;
 }
 
 #mission-title {
 	font-family: Cinzel, Palatino Linotype, serif;
-	color: #ffb700;
-	font-size: 1.125rem;
-	font-weight: bold;
-	margin-bottom: .5rem;
+	color: gold;
+	font-size: 1.25rem;
 }
 
 #mission-embark {
+	margin-top: .5rem;
 	font-size: 1.75rem;
 }
-
-#mission-help {
-	font-size: 1rem;
-	line-height: 1;
-	border: .1rem groove #29d;
-	padding: .2rem .4rem;
-	background: rgba(0, 64, 128, .3);
+.disabled {
+	cursor: default;
+	pointer-events: none;
+	filter: brightness(20%);
 }
 
 #mission-abandon {
@@ -1523,7 +1512,7 @@ background-image:
 }
 
 .class-btn:active {
-	border: .1rem ridge #ffb700;
+	border: .1rem ridge gold;
 }
 
 #class-btn-0 {
@@ -2049,6 +2038,7 @@ background-image:
 	align-items: center;
 	border: .1rem ridge #357;
 	line-height: 1.3;
+	z-index: 1;
 }
 /*#bank-footer-gold-wrap {
 	display: flex;
@@ -2528,7 +2518,7 @@ background-image:
 	border: .1rem ridge #136;
 	margin: .2rem;
 	height: 5rem;
-	background: repeating-linear-gradient(to bottom, #1258 0 3%, #1368 3% 6%)
+	background: repeating-linear-gradient(45deg, #1258 0 3%, #1368 3% 6%);
 }
 .town-avatars {
 	width: 5rem;

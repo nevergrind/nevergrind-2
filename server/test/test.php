@@ -120,14 +120,13 @@ use Steam\Runner\GuzzleRunner;
 use Steam\Runner\DecodeJsonStringRunner;
 use Steam\Steam;
 use Steam\Utility\GuzzleUrlBuilder;*/
-
+/*
 $steam = new Steam(new Configuration([
 	Configuration::STEAM_KEY => 'cd221eb1bc1da0df4dbb9260c9865fe649117f70dcd636c1e92059e1286fe2e0'
 ]));
 $steam->addRunner(new GuzzleRunner(new Client(), new GuzzleUrlBuilder()));
 $steam->addRunner(new DecodeJsonStringRunner());
 
-/** @var array $result */
 $result = $steam->run(new \Steam\Command\Apps\GetAppList());
 
-var_dump($result);
+var_dump($result);*/

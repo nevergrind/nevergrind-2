@@ -6,7 +6,6 @@ var mission;
 		delegated: 0,
 		quests: [],
 		setMissionMenusAllOpen,
-		init,
 		asideHtmlHead,
 		asideHtml,
 		asideFooter,
@@ -16,10 +15,14 @@ var mission;
 		abandonReceived,
 		abort,
 		embarkReceived,
+		toggleZone,
+		clickQuest,
 	};
 	var minusClasses = 'fa-minus-square mission-minus'
 	var plusClasses = 'fa-plus-square mission-plus'
 	var reversedZones = []
+	var html = ''
+	var that = {}
 	///////////////////////////////////////////////
 	function setMissionMenusAllOpen() {
 		zones.forEach(function(v) {
@@ -31,91 +34,55 @@ var mission;
 	}
 	function getDiffClass(minQuestLvl) {
 		var resp = 'con-grey';
-		if (minQuestLvl >= my.level + 3) {
-			resp = 'con-red';
-		}
-		else if (minQuestLvl > my.level) {
-			resp = 'con-yellow';
-		}
-		else if (minQuestLvl === my.level) {
-			resp = 'con-white';
-		}
-		else if (minQuestLvl >= ~~(my.level * .88) ) {
-			resp = 'con-high-blue';
-		}
-		else if (minQuestLvl >= ~~(my.level * .77) ) {
-			resp = 'con-low-blue';
-		}
-		else if (minQuestLvl >= ~~(my.level * .66) ) {
-			resp = 'con-green';
-		}
+		if (minQuestLvl >= my.level + 3) resp = 'con-red';
+		else if (minQuestLvl > my.level) resp = 'con-yellow';
+		else if (minQuestLvl === my.level) resp = 'con-white';
+		else if (minQuestLvl >= ~~(my.level * .88) ) resp = 'con-high-blue';
+		else if (minQuestLvl >= ~~(my.level * .77) ) resp = 'con-low-blue';
+		else if (minQuestLvl >= ~~(my.level * .66) ) resp = 'con-green';
 		return resp;
 	}
-	function init() {
-
-		// delegation
-		if (!mission.delegated) {
-			mission.delegated = 1;
-			$("#scene-town").on('click', '.mission-zone-headers', function() {
-				toggleZone($(this));
-			}).on('click', '.mission-quest-item', function() {
-				clickQuest($(this));
-			})
-				.on('click', '#mission-embark', mission.embark)
-				.on('click', '#mission-abandon', mission.abandon);
-		}
-	}
 	function showEmbark() {
-		$("#mission-help").css('display', 'none');
-		$("#mission-embark").css('display', 'block');
+		$("#mission-embark").removeClass('disabled');
 	}
 	function updateTitle() {
 		$("#mission-title").html(my.selectedMissionTitle);
 	}
 	function asideHtmlHead() {
-		var headMsg = 'Mission Counter',
-			helpMsg = 'The party leader must select a zone and embark to begin!',
-			embarkClass = 'none',
-			helpClass = 'block';
+		var headMsg = 'Mission Counter'
 
 		if (party.presence[0].isLeader) {
 			// is solo or a leader
 			headMsg = 'Select A Mission';
-			helpMsg = 'Select a quest from any zone and embark to venture forth!';
 		}
 		if (my.quest.level) {
 			headMsg = my.quest.title;
-			embarkClass = 'block';
-			helpClass = 'none';
 		}
 
-		var s =
-		'<div id="mission-wrap" class="aside-frame text-center">' +
+		return '<div id="mission-wrap" class="aside-frame text-center">' +
 			'<div id="mission-title">'+ headMsg +'</div>' +
-			'<div id="mission-embark" class="ng-btn '+ embarkClass +'">Embark!</div>' +
-			'<div id="mission-help" class=" '+ helpClass +'">'+ helpMsg +'</div>' +
-		'</div>';
-		return s;
+			'<div id="mission-embark" class="ng-btn disabled">Embark!</div>' +
+		'</div>'
 	}
 	function asideHtml() {
-		var s = ''
+		html = ''
 		if (!reversedZones.length) {
 			reversedZones = zones.reverse()
 		}
 		reversedZones.forEach(function(zone) {
 			if (my.level + 4 >= zone.level) {
-				s +=
+				html +=
 				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ getDiffClass(zone.level) +'" data-id="'+ zone.id +'">'+
 					'<i class="mission-tree-btn far fa-plus-square mission-plus text-shadow"></i>'+
 					'<div>' + zone.name + '</div>' +
 				'</div>' +
 				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">';
-					s += getMissionRowHtml(zone);
-				s += '</div>';
+					html += getMissionRowHtml(zone);
+				html += '</div>';
 				console.info('zone', zone);
 			}
 		})
-		return s
+		return html
 	}
 	function getMissionRowHtml(data) {
 		var html = '';
@@ -145,8 +112,9 @@ var mission;
 		return s;
 	}
 	function clickQuest(that) {
-		var id = that.data('id') * 1;
-		var title = that.data('title');
+		that = $(this)
+		var id = this.dataset.id * 1
+		var title = that.data('title')
 		if (id && party.presence[0].isLeader) {
 			console.info("QUEST SELECTED: ", id, title);
 			my.selectedZone = id;
@@ -159,8 +127,10 @@ var mission;
 		}
 	}
 
-	function toggleZone(that) {
-		var zoneId = that.data('id') * 1
+	function toggleZone() {
+		that = $(this)
+		console.info('toggleZone', this.dataset.id)
+		var zoneId = this.dataset.id * 1
 		var index = zones.findIndex(zone => zone.id === zoneId);
 		var zone = zones[index];
 
@@ -258,8 +228,10 @@ var mission;
 	function embarkReceived(data) {
 		console.info("MISSION UPDATE! ", data)
 		setQuest(data.quest)
-		$(".close-aside").trigger('click')
-		chat.log('Now departing for ' + my.quest.zone + '...', 'chat-warning')
+		town.closeVarious()
+		town.closeBank()
+
+		chat.log('Now departing for ' + my.quest.zone + '!', 'chat-warning')
 		ng.lock(1)
 		TweenMax.to('#scene-town', 3, {
 			startAt: { opacity: 1 },

@@ -9,25 +9,18 @@ var town;
 			bank: false,
 		},
 		isBankInitialized: false,
-		asideSelected: '',
-		asideCloseHtml: '<i class="close-aside fa fa-times"></i>',
 		go,
-		getHtml,
-		update,
 		init,
 		preload,
-		getAsideMerchantMenu, // add later
-		getAsideTrainerMenu, // add later
-		getAsideGuildMenu,
-		getAsideMissionMenu,
 		toggleBank,
+		closeBank,
 		updateBankDOM,
 		openVarious,
 		closeVarious,
 		handleGuildInputFocus,
 		handleGuildInputBlur,
 		refreshGuildMembers,
-		handleBuildingClick,
+		updateVariousDOM,
 	}
 	var i
 	var id
@@ -88,7 +81,7 @@ var town;
 				el.src = 'images/bg/mausoleum1.png'
 				document.getElementById('body').insertBefore(el, document.getElementById('bar-wrap'));
 
-				getElementById('scene-town').innerHTML = town.getHtml()
+				getElementById('scene-town').innerHTML = getHtml()
 				$("#scene-title").remove()
 				town.init()
 				bar.init();
@@ -119,209 +112,22 @@ var town;
 		}
 	}
 	function getHtml() {
-		var s =
-			'<div id="town-menu" class="text-shadow">'+
-				'<div data-id="Academy" id="town-academy" class="ng-btn town-building">Academy</div>' +
-				'<div data-id="Apothecary" id="town-apothecary" class="ng-btn town-building">Apothecary</div>' +
-				'<div data-id="Blacksmith" id="town-blacksmith" class="ng-btn town-building">Blacksmith</div>' +
-				'<div data-id="Guild Hall" id="town-guild" class="ng-btn town-building">Guild Hall</div>' +
-				'<div data-id="Merchant" id="town-merchant" class="ng-btn town-building">Merchant</div>' +
-				'<div data-id="Tavern" id="town-tavern" class="ng-btn town-building">Tavern</div>' +
-				'<div data-id="Bank" id="town-bank" class="ng-btn town-building">Bank</div>' +
-			'</div>' +
-			'<div id="town-footer" class="text-shadow2">' +
-				'<hr id="town-footer-hr1" class="footer-hr">' +
-				'<div id="town-footer-flex">' +
-					'<span id="town-mission" class="ng-btn town-building center">Mission Counter</span>' +
-				'</div>' +
-				'<hr id="town-footer-hr2"  class="footer-hr">' +
-			'</div>';
-
-		return s;
-	}
-	function getAsideMerchantHtml() {
-		var s =
-		'<div class="aside-text">' +
-			'<div class="aside-title-wrap stag-blue">' +
-				'<div class="aside-title">Merchant</div>' +
-				town.asideCloseHtml +
-			'</div>' +
+		html = '<div id="town-menu" class="text-shadow">'+
+			'<div data-id="Academy" id="town-academy" class="ng-btn town-building">Academy</div>' +
+			'<div data-id="Apothecary" id="town-apothecary" class="ng-btn town-building">Apothecary</div>' +
+			'<div data-id="Blacksmith" id="town-blacksmith" class="ng-btn town-building">Blacksmith</div>' +
+			'<div data-id="Guild Hall" id="town-guild" class="ng-btn town-building">Guild Hall</div>' +
+			'<div data-id="Merchant" id="town-merchant" class="ng-btn town-building">Merchant</div>' +
+			'<div data-id="Tavern" id="town-tavern" class="ng-btn town-building">Tavern</div>' +
+			'<div data-id="Bank" id="town-bank" class="ng-btn town-building">Bank</div>' +
 		'</div>' +
-		'<img class="aside-bg" src="images/town/halas.jpg">' +
-		'<img class="aside-npc" src="images/town/rendo-surefoot.png">';
-		return s;
-	}
-	function getAsideTrainerHtml() {
-		var s =
-		'<div class="aside-text">' +
-			'<div class="aside-title-wrap stag-blue">' +
-				'<div class="aside-title">Academy</div>' +
-				town.asideCloseHtml +
+		'<div id="town-footer" class="text-shadow2">' +
+			'<div id="town-footer-flex">' +
+				'<div data-id="Mission Counter" id="town-mission" class="ng-btn town-building">Mission Counter</div>' +
 			'</div>' +
-		'</div>' +
-		'<img class="aside-bg" src="images/town/surefall.jpg">' +
-		'<img class="aside-npc" src="images/town/arwen-reinhardt.png">';
-		return s;
-	}
-	function getAsideGuildHtml() {
-	}
-	function getAsideMissionHtml() {
-		var s =
-		'<div class="aside-text">' +
-			'<div class="aside-title-wrap stag-blue">' +
-				'<div class="aside-title">Mission Counter</div>' +
-				town.asideCloseHtml +
-			'</div>' +
-			'<div id="various-wrap">' +
-				town.getAsideMissionMenu() +
-			'</div>' +
-		'</div>' +
-		'<img class="aside-bg" src="images/town/neriak.jpg">' +
-		'<img class="aside-npc" src="images/town/miranda-crossheart.png">';
-		return s;
-	}
-	function getAsideMerchantMenu() {
-		var s = '';
-		return s;
-	}
-	function getAsideTrainerMenu() {
-		var s = '';
-		return s;
-	}
-	function getAsideGuildMenu() {
-		var s = '';
-		if (my.guild.name) {
-			s +=
-				'<div class="aside-frame">' +
-					'<div>Guild: '+ my.guild.name +'</div> ' +
-					'<div>Title: '+ guild.ranks[my.guild.rank] +'</div> ' +
-					'<div>Total Members: <span id="guild-member-count">'+ guild.memberList.length +'</span></div> ' +
-				'</div>' +
-				'<div id="guild-member-wrap" class="aside-frame">' +
-					'<div id="guild-member-flex">'+
-						'<div id="guild-member-label">Guild Members:</div>'+
-						'<div id="guild-member-refresh-btn"><i class="fas fa-sync-alt refresh"></i></div>'+
-					'</div>'+
-					'<table id="aside-guild-members"></table>'+
-				'</div>';
+		'</div>'
 
-				s += '</div>';
-		}
-		else {
-			s +=
-			'<input id="guild-input" class="text-shadow" type="text" maxlength="30" autocomplete="off" spellcheck="false">' +
-			'<div id="guild-create" class="ng-btn">Create Guild</div> ' +
-			'<div class="aside-frame">Only letters A through Z and apostrophes are accepted in guild names. Standarized capitalization will be automatically applied. The guild name must be between 4 and 30 characters. All guild names are subject to the royal statutes regarding common decency in Vandamor.</div>';
-		}
-		return s;
-	}
-	function getAsideMissionMenu() {
-		mission.init();
-		var s = mission.asideHtmlHead();
-		// subsequent loads
-		s +=
-		'<div id="mission-counter" class="aside-frame text-shadow">';
-			s += mission.asideHtml();
-		s += '</div>';
-		if (my.quest.level) {
-			s += mission.asideFooter();
-		}
-		return s;
-	}
-	function asideOpen(id) {
-		/*
-		if (id === town.asideSelected) return;
-		// remove old aside
-		var oldAside = $(".town-aside");
-		TweenMax.to(oldAside, .2, {
-			scale: 0,
-			x: town.lastAside.x + '%',
-			y: town.lastAside.y + '%',
-			onComplete: function() {
-				oldAside.remove()
-			}
-		});
-		town.lastAside = town.data[id].aside;
-		// animate town BG
-		TweenMax.to('#town-bg', 1.25, {
-			scale: 1.5,
-			x: town.data[id].bg.x,
-			y: town.data[id].bg.y
-		});
-		if (id === 'town-mission') mission.setMissionMenusAllOpen();
-		// set aside HTML
-		var html;
-		if (id === 'town-academy') html = getAsideTrainerHtml(id);
-		else if (id === 'town-merchant') html = getAsideMerchantHtml(id);
-		else if (id === 'town-guild') html = getAsideGuildHtml(id);
-		else if (id === 'town-mission') html = getAsideMissionHtml(id);
-
-		// create aside
-		var e = createElement('div');
-		e.className = 'town-aside text-shadow';
-		e.innerHTML = html;
-		getElementById('scene-town').appendChild(e);
-
-		// animate aside things
-		delayedCall(town.asideSelected ? 0 : .5, function() {
-			TweenMax.set('.now-loading', {
-				alpha: 0
-			});
-			TweenMax.to(e, .5, {
-				startAt: {
-					display: 'block',
-					alpha: 1,
-					scale: 0,
-					x: town.data[id].aside.x + '%',
-					y: town.data[id].aside.y + '%'
-				},
-				x: '2%',
-				y: '2%',
-				scale: 1,
-				onComplete: function() {
-					TweenMax.to('.now-loading', .3, {
-						alpha: 1
-					});
-				}
-			});
-			delayedCall(.1, function () {
-				TweenMax.to('.aside-bg', 1, {
-					startAt: {
-						left: '60%'
-					},
-					left: '50%'
-				});
-			});
-			TweenMax.to('.aside-npc', 1, {
-				left: '-5%'
-			});
-			delayedCall(.1, function() {
-				$(".town-aside:last-child").find("input").focus();
-				town.data[id].msg();
-			})
-		});
-		// set aside id
-		town.asideSelected = id;
-		$('.mission-open-menu').trigger('click')
-		// AJAX calls if necessary
-		if (id === 'town-guild'){
-			if (guild.memberList.length) {
-				guild.setGuildList(guild);
-			}
-			else {
-				$("#aside-guild-members").html('Loading...');
-				guild.getMembers(0);
-			}
-		}*/
-	}
-	function update(id) {
-		var type = _.camelCase(id);
-		var html;
-		if (type === 'townTrainer') html = getAsideTrainerMenu();
-		else if (type === 'townMerchant') html = getAsideMerchantMenu();
-		else if (type === 'townGuild') html = getAsideGuildMenu();
-		else if (type === 'townMission') html = getAsideMissionMenu();
-		$("#various-wrap").html(html);
+		return html
 	}
 	function handleGuildInputBlur() {
 		guild.hasFocus = true;
@@ -329,24 +135,21 @@ var town;
 	function handleGuildInputFocus() {
 		guild.hasFocus = false;
 	}
-	function handleBuildingClick(event) {
-		openVarious(event);
-	}
 	function refreshGuildMembers() {
 		guild.loadGuildMsg()
 		guild.getMembers(guild.throttleTime);
 	}
 	function merchantMsg() {
-		chat.log('Rendo Surefoot says, "Hello, '+ my.name +'. I have got a once-in-a-lifetime smokin\' deal for you, my friend! Today, we just received a limited edition Lanfeld champion sword from our supply chain!"')
+		chat.log('Rendo says, "Hello, '+ my.name +'. I have got a once-in-a-lifetime smokin\' deal for you, my friend! Today, we just received a limited edition Lanfeld champion sword from our supply chain!"')
 	}
 	function trainerMsg() {
-		chat.log('Arwen Reinhardt says, "Hail to thee, '+ my.name +'. You had better sharpen up your skills, kiddo, or you\'ll be dead meat out there. Take it from me—a battle-hardened warrior that has seen more than his fair share of death and despair."')
+		chat.log('Arwen says, "Hail to thee, '+ my.name +'. You had better sharpen up your skills, kiddo, or you\'ll be dead meat out there. Take it from me—a battle-hardened warrior that has seen more than his fair share of death and despair."')
 	}
 	function guildMsg() {
-		chat.log('Valeska Windcrest says, "Good day, '+ my.name +'. What would you ask of me?"')
+		chat.log('Valeska says, "Good day, '+ my.name +'. What would you ask of me?"')
 	}
 	function missionMsg() {
-		chat.log('Miranda Crossheart says, "Hey, sunshine! Are you itching for a bit of action?! There\'s no shortage of miscreants to dispatch around these parts!"')
+		chat.log('Miranda says, "Hey, sunshine! Are you itching for a bit of action?! There\'s no shortage of miscreants to dispatch around these parts!"')
 	}
 	function init() {
 		if (!town.initialized) {
@@ -402,17 +205,21 @@ var town;
 			updateBankDOM()
 		}
 	}
+	function closeBank() {
+		_.each(town.windowsOpen, (val, key) => {
+			town.windowsOpen[key] = false
+		})
+		town.updateBankDOM()
+	}
 
 	function updateBankDOM() {
 		if (town.windowsOpen.bank) {
 			// window may be closed by now
-			$('#root-bank').html(getBankHtml())
-			$('#root-bank').css('display', 'flex')
-			ng.split('bank-description', 'Banked items may be shared with all characters on the same account.');
+			$('#root-bank').html(getBankHtml()).css('display', 'flex')
+			ng.split('bank-description', 'Banked items may be shared with all characters on the same account.')
 		}
 		else {
-			querySelector('#root-bank').innerHTML = ''
-			querySelector('#root-bank').style.display = 'none'
+			$('#root-bank').html('').css('display', 'none')
 		}
 	}
 
@@ -423,7 +230,7 @@ var town;
 			'</div>' +
 			'<i data-id="bank" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="bank-slot-wrap">';
+		'<div id="bank-slot-wrap">'
 
 		'<div class="flex">';
 		i=0
@@ -459,48 +266,52 @@ var town;
 	function updateVariousDOM() {
 		querySelector('#root-various').innerHTML = getVariousHtml()
 		querySelector('#root-various').style.display = 'flex'
-	}
-	function getVariousHtml() {
-		html = ''
+
 		msg = ''
-		if (town.windowsOpen.various === 'Academy') html = academyHtml()
+		if (town.windowsOpen.various === 'Academy') {
+			msg = 'Lorem ipsum or something'
+		}
 		else if (town.windowsOpen.various === 'Apothecary') {
-			html = apothecaryHtml()
 			msg = 'Lorem ipsum or something'
 		}
 		else if (town.windowsOpen.various === 'Blacksmith') {
-			html = blacksmithHtml()
 			msg = 'Lorem ipsum or something'
 		}
 		else if (town.windowsOpen.various === 'Guild Hall') {
-			html = guildHtml()
 			if (guild.memberList.length) {
 				guild.setGuildList(guild)
 				msg = 'Lorem ipsum or something'
 			}
 			else {
-				delayedCall(.1, () => {
-					$('#guild-input').focus()
-				})
+				$('#guild-input').focus()
 				guild.getMembers()
 				msg = 'Creating a guild is a great way to keep your friends organized. The hordes of darkness fight in organized armies. It would be wise for you to do likewise.'
 			}
 		}
 		else if (town.windowsOpen.various === 'Merchant') {
-			html = merchantHtml()
 			msg = 'Lorem ipsum or something'
 		}
+		else if (town.windowsOpen.various === 'Mission Counter') {
+			msg = 'Edenburg needs brave adventurers like you to restore peace to our blessed Kingdom! Some missions are more dangerous than others—choose your mission carefully!'
+		}
 		else if (town.windowsOpen.various === 'Tavern') {
-			html = tavernHtml()
 			msg = 'Lorem ipsum or something'
 		}
 		else {
-			html = merchantHtml()
 			msg = 'Lorem ipsum or something'
 		}
-		delayedCall(.1, () => {
-			ng.split('various-description', msg)
-		})
+		ng.split('various-description', msg)
+	}
+	function getVariousHtml() {
+		html = ''
+		if (town.windowsOpen.various === 'Academy') html = academyHtml()
+		else if (town.windowsOpen.various === 'Apothecary') html = apothecaryHtml()
+		else if (town.windowsOpen.various === 'Blacksmith') html = blacksmithHtml()
+		else if (town.windowsOpen.various === 'Guild Hall') html = guildHtml()
+		else if (town.windowsOpen.various === 'Merchant') html = merchantHtml()
+		else if (town.windowsOpen.various === 'Mission Counter') html = missionCounterHtml()
+		else if (town.windowsOpen.various === 'Tavern') html = tavernHtml()
+		else html = merchantHtml()
 		return html
 	}
 	function academyHtml() {
@@ -510,7 +321,7 @@ var town;
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-body" class="flex-max">' +
+		'<div id="various-body" class="flex-column flex-max">' +
 			'Academy body!' +
 		'</div>' +
 		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
@@ -525,7 +336,7 @@ var town;
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-body" class="flex-max">' +
+		'<div id="various-body" class="flex-column flex-max">' +
 			'Apothecary body!' +
 		'</div>' +
 		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
@@ -540,12 +351,29 @@ var town;
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-body" class="flex-max">' +
+		'<div id="various-body" class="flex-column flex-max">' +
 			'Blacksmith body!' +
 		'</div>' +
 		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
 			'<div id="various-description" class="flex-max"></div>' +
 		'</div>'
+		return html
+	}
+	function missionCounterHtml() {
+		html = '<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
+			'</div>' +
+			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+		'</div>' +
+		'<div id="various-body" class="flex-column flex-max">' +
+			mission.asideHtmlHead() +
+			'<div id="mission-counter" class="aside-frame text-shadow">' +
+				mission.asideHtml() +
+			'</div>' +
+			(my.quest.level ? mission.asideFooter() : '') +
+		'</div>' +
+		variousFooterHtml('human-female-0')
 		return html
 	}
 	function guildHtml() {
@@ -555,7 +383,7 @@ var town;
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-body" class="flex-max">' +
+		'<div id="various-body" class="flex-column flex-max" style="display: flex; flex-direction: column;">' +
 			// new stuff
 			'<img class="town-various-bg" src="images/town/poh.jpg">' +
 			'<div id="various-wrap">';
@@ -577,21 +405,24 @@ var town;
 				'</div>'
 			}
 			else {
-				html += '<input id="guild-input" class="text-shadow" type="text" maxlength="30" autocomplete="off" spellcheck="false">' +
-				'<div id="guild-create" class="ng-btn">Create Guild</div> ' +
-				'<div class="aside-frame">Only letters A through Z and apostrophes are accepted in guild names. Standarized capitalization will be automatically applied. The guild name must be between 4 and 30 characters. All guild names are subject to the royal statutes regarding common decency in Vandamor.</div>'
+				html += '<div class="flex-column" style="margin: .5rem">' +
+					'<input id="guild-input" class="text-shadow" type="text" maxlength="30" autocomplete="off" spellcheck="false">' +
+					'<div id="guild-create" class="ng-btn">Create Guild</div> ' +
+					'<div class="aside-frame" style="margin-top: 1rem">Only letters A through Z and apostrophes are accepted in guild names. Standarized capitalization will be automatically applied. The guild name must be between 4 and 30 characters. All guild names are subject to the royal statutes regarding common decency in Vandamor.</div>'
+				'</div>'
 			}
 			html += '</div>' +
-			//'<img class="aside-npc" src="images/town/valeska-windcrest.png">' +
-			// end new stuff
 		'</div>' +
-		'<div id="various-footer" class="flex-center stag-blue-top">' +
+		variousFooterHtml('seraph-female-1')
+		return html
+	}
+	function variousFooterHtml(avatar) {
+		return '<div id="various-footer" class="flex-center stag-blue-top">' +
 			'<div class="town-avatar-wrap">' +
-				'<img class="town-avatars" src="images/avatars/seraph-female-1.png">' +
+				'<img class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
 			'</div>' +
 			'<div id="various-description" class="flex-max"></div>' +
 		'</div>'
-		return html
 	}
 	function merchantHtml() {
 		html = '<div class="flex" style="'+ css.header +'">' +
@@ -600,7 +431,7 @@ var town;
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-body" class="flex-max">' +
+		'<div id="various-body" class="flex-column flex-max">' +
 			'Merchant body!' +
 		'</div>' +
 		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
@@ -615,7 +446,7 @@ var town;
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
-		'<div id="various-body" class="flex-max">' +
+		'<div id="various-body" class="flex-column flex-max">' +
 			'Tavern body!' +
 		'</div>' +
 		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
