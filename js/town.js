@@ -54,6 +54,7 @@ var town;
 				my.avatar = my.getAvatarUrl()
 				Object.assign(my, my.getResistObject())
 				// other things
+
 				bar.setDefaultInvWeaponImage()
 
 				guild.setGuildData(data)
@@ -123,7 +124,13 @@ var town;
 		'</div>' +
 		'<div id="town-footer" class="text-shadow2">' +
 			'<div id="town-footer-flex">' +
-				'<div data-id="Mission Counter" id="town-mission" class="ng-btn town-building">Mission Counter</div>' +
+				'<div class="flex-center flex-max">'+
+					'<div data-id="Mission Counter" id="town-mission" class="ng-btn town-building">Mission Counter</div>' +
+				'</div>' +
+				'<div id="town-footer-gold-wrap">'+
+					'<div id="town-gold" style="margin: 0 .2rem; ">'+ my.gold +'</div>' +
+					'<i style="margin: 0 .2rem; color: gold" class="ra ra-gold-bar"></i>' +
+				'</div>' +
 			'</div>' +
 		'</div>'
 
@@ -385,7 +392,7 @@ var town;
 		'</div>' +
 		'<div id="various-body" class="flex-column flex-max" style="display: flex; flex-direction: column;">' +
 			// new stuff
-			'<img class="town-various-bg" src="images/town/poh.jpg">' +
+			'<img class="town-various-bg" src="images/bg/bastille-2.png">' +
 			'<div id="various-wrap">';
 			if (my.guild.name) {
 				html += '<div class="aside-frame">' +
@@ -416,14 +423,6 @@ var town;
 		variousFooterHtml('seraph-female-1')
 		return html
 	}
-	function variousFooterHtml(avatar) {
-		return '<div id="various-footer" class="flex-center stag-blue-top">' +
-			'<div class="town-avatar-wrap">' +
-				'<img class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
-			'</div>' +
-			'<div id="various-description" class="flex-max"></div>' +
-		'</div>'
-	}
 	function merchantHtml() {
 		html = '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
@@ -453,5 +452,13 @@ var town;
 			'<div id="various-description" class="flex-max"></div>' +
 		'</div>'
 		return html
+	}
+	function variousFooterHtml(avatar) {
+		return '<div id="various-footer" class="flex-center stag-blue-top">' +
+			'<div class="town-avatar-wrap">' +
+				'<img class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
+			'</div>' +
+			'<div id="various-description" class="flex-max"></div>' +
+		'</div>'
 	}
 })($, _, TweenMax);

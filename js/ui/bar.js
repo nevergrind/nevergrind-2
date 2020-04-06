@@ -313,12 +313,8 @@ var bar;
 			html += getItemSlotHtml('inv', i)
 		}
 		html += '</div>' +
-		'<div id="inv-footer" class="flex-center flex-max stag-blue-top">' +
-			'<div id="inv-footer-gold-wrap">'+
-				'<div id="inv-gold" style="margin: 0 .2rem; ">'+ my.gold +'</div>' +
-				'<i style="margin: 0 .2rem; color: gold" class="ra ra-gold-bar"></i>' +
-			'</div>' +
-		'</div>' +
+		/*'<div id="inv-footer" class="flex-center flex-max stag-blue-top">' +
+		'</div>' +*/
 		'</div>';
 
 		return html

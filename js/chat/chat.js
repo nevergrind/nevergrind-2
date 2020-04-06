@@ -26,7 +26,7 @@ var chat;
 		],
 		modeCommand: '/say',
 		modeName: '',
-		focusKeys: 'Enter/',
+		focusKeys: 'Enter/@',
 		log,
 		init,
 		html,
@@ -261,90 +261,33 @@ var chat;
 			chat.updateHistory(msg);
 			chat.help();
 		}
-		/*
-		/random
-		/surname
-		allow to form guilds
-			invite
-			disband
-			leader
-			boot
-		 */
-		else if (msgLower.startsWith('/motd')) {
-			guild.motd(guild.motdParse(msg));
-		}
-		else if (msgLower.startsWith('/gleader')) {
-			guild.leader(party.parse(msg));
-		}
-		else if (msgLower.startsWith('/gpromote')) {
-			guild.promote(party.parse(msg));
-		}
-		else if (msgLower.startsWith('/gdemote')) {
-			guild.demote(party.parse(msg));
-		}
-		else if (msgLower.startsWith('/gboot')) {
-			guild.boot(party.parse(msg));
-		}
-		else if (msgLower === '/gquit') {
-			guild.disband();
-		}
-		else if (msgLower.startsWith('/ginvite')) {
-			guild.invite(party.parse(msg));
-		}
-		else if (msgLower.startsWith('/promote')) {
-			party.promote(party.parse(msg));
-		}
-		else if (msgLower.startsWith('/boot')) {
-			party.boot(party.parse(msg));
-		}
-		else if (msgLower === '/disband') {
-			party.disband();
-		}
-		else if (msgLower.startsWith('/invite')) {
-			party.invite(party.parse(msg));
-		}
-		else if (msgLower === '/camp') {
-			chat.camp();
-		}
-		else if (msgLower === '/played') {
-			game.played();
-		}
-		else if (msgLower.startsWith('/join')) {
-			chat.joinChannel(joinParse(msg));
-		}
-		else if (msgLower === '/clear') {
-			clearChatLog();
-		}
-		else if (msgLower === '/who' || msgLower === '/') {
-			who.all();
-		}
-		else if (
-			msgLower.startsWith('/who ') && msgLower.length > 5 ||
-			msgLower.startsWith('/ ') && msgLower.length > 2
-		) {
+		else if (msgLower.startsWith('/motd')) guild.motd(guild.motdParse(msg))
+		else if (msgLower.startsWith('/gleader')) guild.leader(party.parse(msg))
+		else if (msgLower.startsWith('/gpromote')) guild.promote(party.parse(msg))
+		else if (msgLower.startsWith('/gdemote')) guild.demote(party.parse(msg))
+		else if (msgLower.startsWith('/gboot')) guild.boot(party.parse(msg))
+		else if (msgLower === '/gquit') guild.disband()
+		else if (msgLower.startsWith('/ginvite')) guild.invite(party.parse(msg))
+		else if (msgLower.startsWith('/promote')) party.promote(party.parse(msg))
+		else if (msgLower.startsWith('/boot')) party.boot(party.parse(msg))
+		else if (msgLower === '/disband') party.disband()
+		else if (msgLower.startsWith('/invite')) party.invite(party.parse(msg))
+		else if (msgLower === '/camp') chat.camp()
+		else if (msgLower === '/played') game.played()
+		else if (msgLower.startsWith('/join')) chat.joinChannel(joinParse(msg))
+		else if (msgLower === '/clear') clearChatLog()
+		else if (msgLower === '/who' || msgLower === '/') who.all()
+		else if (msgLower.startsWith('/who ') && msgLower.length > 5 ||
+			msgLower.startsWith('/ ') && msgLower.length > 2) {
 			who.byFilter(msgLower);
 		}
-		else if (msgLower === '/ignore') {
-			ignore.list();
-		}
-		else if (msgLower.startsWith('/ignore remove')) {
-			ignore.remove(friend.parse(msg));
-		}
-		else if (msgLower.startsWith('/ignore add')) {
-			ignore.add(friend.parse(msg));
-		}
-		else if (msgLower === '/friends' || msgLower === '/flist' || msgLower === '/friend') {
-			friend.list();
-		}
-		else if (msgLower.startsWith('/friend remove')) {
-			friend.remove(friend.parse(msg));
-		}
-		else if (msgLower.startsWith('/friend add')) {
-			friend.add(friend.parse(msg));
-		}
-		else if (msgLower.startsWith('/me') || msgLower.startsWith('/em')) {
-			chat.emote(msg);
-		}
+		else if (msgLower === '/ignore') ignore.list()
+		else if (msgLower.startsWith('/ignore remove')) ignore.remove(friend.parse(msg))
+		else if (msgLower.startsWith('/ignore add')) ignore.add(friend.parse(msg))
+		else if (msgLower === '/friends' || msgLower === '/flist' || msgLower === '/friend') friend.list()
+		else if (msgLower.startsWith('/friend remove')) friend.remove(friend.parse(msg))
+		else if (msgLower.startsWith('/friend add')) friend.add(friend.parse(msg))
+		else if (msgLower.startsWith('/me') || msgLower.startsWith('/em')) chat.emote(msg)
 		else if (chat.modeCommand === '@'){
 			// whisper
 			if (my.name !== chat.modeName) {
@@ -361,6 +304,9 @@ var chat;
 					route: 'chat->log',
 					class: 'chat-whisper'
 				})
+			}
+			else {
+				chat.log('Your grip of sanity weakens as you begin to whisper to yourself...', 'chat-warning')
 			}
 		}
 		else if (msgLower.startsWith('/')) {

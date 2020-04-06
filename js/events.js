@@ -69,7 +69,7 @@
 
 	}
 
-	function handleContextMenu(event) {
+	function handleContextMenu() {
 		if (app.isApp) return false // disable context menus
 	}
 	function chatInputFocus() {
@@ -137,6 +137,7 @@
 
 		ng.lastKey = key;
 		console.info('key: ', key)
+		// trying to bind a new hotkey
 		if (bar.hotkeyId) {
 			if (bar.hotkeyWhitelist.includes(key)) {
 				bar.setHotkey(key, e)
@@ -169,7 +170,7 @@
 				return false;
 			}
 			else if (!chat.hasFocus) {
-				// no select all of webpage elements
+				// no "select all" of webpage elements
 				if (key === 'a' || key === 'f') {
 					e.preventDefault();
 				}
