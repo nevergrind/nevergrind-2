@@ -289,6 +289,7 @@ var ng;
 		goCreateCharacter,
 		displayAllCharacters,
 	}
+	var msgTimer = delayedCall(0, '')
 	///////////////////////////////
 	function init() {
 		$.ajaxSetup({
@@ -389,16 +390,20 @@ var ng;
 
 	function msg(msg, d) {
 		dom.msg.innerHTML = msg;
+		TweenMax.killTweensOf()
 		TweenMax.set(dom.msg, {
+			overwrite: 1,
 			scale: 1,
 		})
 		if (d === 0) return
 		if (d === undefined || d < 1 ){ d = 1 }
-		delayedCall(d, function() {
-			TweenMax.to(dom.msg, .2, {
-				scale: 0,
-				ease: Power2.easeOut
-			})
+		msgTimer.kill()
+		msgTimer = delayedCall(d, msgComplete)
+	}
+	function msgComplete() {
+		TweenMax.to(dom.msg, .2, {
+			scale: 0,
+			ease: Power2.easeOut
 		})
 	}
 

@@ -268,7 +268,7 @@ var town;
 				'<div class="stag-blue-top" style="' + css.name + '">Bank Details</div>' +
 			'</div>' +
 			'<div id="bank-footer" class="flex-center flex-max stag-blue-top">' +
-				'<div id="bank-description"></div>'
+				'<div id="bank-description"></div>' +
 			'</div>' +
 		'</div>'
 		return html

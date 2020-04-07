@@ -313,7 +313,7 @@ var bar;
 			html += getItemSlotHtml('inv', i)
 		}
 		html += '</div>' +
-		'</div>';
+		'</div>'
 
 		return html
 	}

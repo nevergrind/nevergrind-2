@@ -1195,6 +1195,7 @@ var loot = {};
 		if (item.isDragging) {
 			if (!myItemTypes.includes(item.dragType)) {
 				console.warn('isDragging a ', item.dragType)
+				ng.msg('You must purchase that item before putting it in your inventory!', 4)
 				dropReset()
 				return
 			}
@@ -1408,7 +1409,9 @@ var loot = {};
 	}
 
 	function dropItem(event) {
+		if (!item.dragType) return
 		if (!myItemTypes.includes(item.dragType)) {
+			ng.msg('You can\'t destroy items that don\'t belong to you!', 4)
 			dropReset()
 			return
 		}
