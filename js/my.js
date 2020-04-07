@@ -120,7 +120,7 @@ var my;
 	}
 
 	function processInv(obj) {
-		for (var i=0; i<=item.MAX_INVENTORY; i++) {
+		for (var i=0; i<item.MAX_INVENTORY; i++) {
 			items.inv[i] = {}
 		}
 		for (var key in obj) {
@@ -131,7 +131,7 @@ var my;
 	}
 
 	function processEq(obj) {
-		for (var i=0; i<=item.MAX_EQUIPMENT; i++) {
+		for (var i=0; i<item.MAX_EQUIPMENT; i++) {
 			items.eq[i] = {}
 		}
 		for (var key in obj) {

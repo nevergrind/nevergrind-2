@@ -1,14 +1,13 @@
 var item;
-var items = {
-	inv: [],
-	eq: [],
-	bank: []
-}
 var loot = {};
 !function() {
 	item = {
-		MAX_EQUIPMENT: 14, // 15
-		MAX_INVENTORY: 15, // 16
+		MAX_EQUIPMENT: 15,
+		MAX_INVENTORY: 16,
+		MAX_MERCHANT: 18,
+		MAX_BLACKSMITH: 18,
+		MAX_APOTHECARY: 18,
+		MAX_TAVERN: 30,
 		allProps: [
 			'offense',
 			'defense',
@@ -79,12 +78,12 @@ var loot = {};
 		destroy,
 		handleItemSlotContextClick,
 	}
-	var slotRequiresMagic = [
+	const slotRequiresMagic = [
 		'rings',
 		'amulets',
 		'charms',
 	]
-	var itemsWithDurability = [
+	const itemsWithDurability = [
 		'helms',
 		'shoulders',
 		'chests',
@@ -103,6 +102,7 @@ var loot = {};
 		'bows',
 		'shields'
 	]
+	const myItemTypes = ['eq', 'inv', 'bank']
 	const equipmentSlotIndex = {
 		'amulets': 1,
 		'belts': 9,
@@ -648,6 +648,13 @@ var loot = {};
 		}).always(handleDropAlways)
 	}
 	function getItem(config) {
+		/**
+		 * mobLevel: int = 1-max sets max possible item level
+		 * bonus: int = provides a boost to finding great items 10 is high
+		 * rarity: string = forces a rarity type
+		 * itemSlot: forces a particular item slot
+		 * itemName: forces specific sub item based on base name
+		 */
 		if (!config) config = { mobLevel: 1 }
 		if (config.bonus === undefined) {
 			config.bonus = 0
@@ -742,7 +749,7 @@ var loot = {};
 			else if (itemType === 'charms') index = _.random(0, 2)
 			else if (itemType === 'belts' || itemType === 'boots') index = ~~(index / 2)
 			else if (itemType === 'bows') index = imgIndex
-			console.info('index', itemType, index)
+			//console.info('index', itemType, index)
 			return index;
 		}
 		function getUniqueItemCount(drop) {
@@ -750,9 +757,7 @@ var loot = {};
 				var uniqueItems = _.filter(loot[drop.itemType].unique, item => item.name === drop.name);
 				return uniqueItems.length
 			}
-			else {
-				return 0
-			}
+			else return 0
 		}
 		function processUniqueProps(uniqueItem, drop) {
 			// remove old
@@ -764,9 +769,7 @@ var loot = {};
 				if (_.isArray(uniqueItem[key])) {
 					drop[key] = _.random(uniqueItem[key][0], uniqueItem[key][1])
 				}
-				else {
-					drop[key] = uniqueItem[key]
-				}
+				else drop[key] = uniqueItem[key]
 			}
 		}
 		function processUniqueDrop(drop) {
@@ -824,15 +827,9 @@ var loot = {};
 				}
 			}
 			function getPropType(prop) {
-				if (_.get(itemObj.prefix, prop)) {
-					return 'prefix'
-				}
-				else if (_.get(itemObj.suffix, prop)) {
-					return 'suffix'
-				}
-				else {
-					return 'rare'
-				}
+				if (_.get(itemObj.prefix, prop)) return 'prefix'
+				else if (_.get(itemObj.suffix, prop)) return 'suffix'
+				else return 'rare'
 			}
 
 			// assign property values
@@ -913,7 +910,7 @@ var loot = {};
 				itemType === 'staves' ||
 				itemType === 'bows') ? 2 : 1
 		}
-		function preProcessDrop(drop) {
+		function preProcessDrop() {
 			// set possible prefixes, suffixes, rare arrays and remove weapon specific props
 			itemObj.prefix = convertProps(itemObj.prefix)
 			itemObj.suffix = convertProps(itemObj.suffix)
@@ -1020,50 +1017,22 @@ var loot = {};
 	}
 	function stripRareKeys(rareKeys, key) {
 		// resists
-		if (key === 'resistBlood') {
-			_.pull(rareKeys, 'resistPoison', 'resistAll')
-		}
-		if (key === 'resistPoison') {
-			_.pull(rareKeys, 'resistBlood', 'resistAll')
-		}
-		if (key === 'resistArcane') {
-			_.pull(rareKeys, 'resistLightning', 'resistAll')
-		}
-		if (key === 'resistLightning') {
-			_.pull(rareKeys, 'resistArcane', 'resistAll')
-		}
-		if (key === 'resistFire') {
-			_.pull(rareKeys, 'resistIce', 'resistAll')
-		}
-		if (key === 'resistIce') {
-			_.pull(rareKeys, 'resistFire', 'resistAll')
-		}
-		if (key === 'resistAll') {
-			_.pull(rareKeys, 'resistBlood', 'resistPoison', 'resistArcane', 'resistLightning', 'resistFire', 'resistIce')
-		}
+		if (key === 'resistBlood') _.pull(rareKeys, 'resistPoison', 'resistAll')
+		if (key === 'resistPoison') _.pull(rareKeys, 'resistBlood', 'resistAll')
+		if (key === 'resistArcane') _.pull(rareKeys, 'resistLightning', 'resistAll')
+		if (key === 'resistLightning') _.pull(rareKeys, 'resistArcane', 'resistAll')
+		if (key === 'resistFire') _.pull(rareKeys, 'resistIce', 'resistAll')
+		if (key === 'resistIce') _.pull(rareKeys, 'resistFire', 'resistAll')
+		if (key === 'resistAll') _.pull(rareKeys, 'resistBlood', 'resistPoison', 'resistArcane', 'resistLightning', 'resistFire', 'resistIce')
 
 		// spell power
-		if (key === 'addSpellBlood') {
-			_.pull(rareKeys, 'addSpellPoison', 'addSpellAll')
-		}
-		if (key === 'addSpellPoison') {
-			_.pull(rareKeys, 'addSpellBlood', 'addSpellAll')
-		}
-		if (key === 'addSpellArcane') {
-			_.pull(rareKeys, 'addSpellLightning', 'addSpellAll')
-		}
-		if (key === 'addSpellLightning') {
-			_.pull(rareKeys, 'addSpellArcane', 'addSpellAll')
-		}
-		if (key === 'addSpellFire') {
-			_.pull(rareKeys, 'addSpellIce', 'addSpellAll')
-		}
-		if (key === 'addSpellIce') {
-			_.pull(rareKeys, 'addSpellFire', 'addSpellAll')
-		}
-		if (key === 'addSpellAll') {
-			_.pull(rareKeys, 'addSpellBlood', 'addSpellPoison', 'addSpellArcane', 'addSpellLightning', 'addSpellFire', 'addSpellIce')
-		}
+		if (key === 'addSpellBlood') _.pull(rareKeys, 'addSpellPoison', 'addSpellAll')
+		if (key === 'addSpellPoison') _.pull(rareKeys, 'addSpellBlood', 'addSpellAll')
+		if (key === 'addSpellArcane') _.pull(rareKeys, 'addSpellLightning', 'addSpellAll')
+		if (key === 'addSpellLightning') _.pull(rareKeys, 'addSpellArcane', 'addSpellAll')
+		if (key === 'addSpellFire') _.pull(rareKeys, 'addSpellIce', 'addSpellAll')
+		if (key === 'addSpellIce') _.pull(rareKeys, 'addSpellFire', 'addSpellAll')
+		if (key === 'addSpellAll') _.pull(rareKeys, 'addSpellBlood', 'addSpellPoison', 'addSpellArcane', 'addSpellLightning', 'addSpellFire', 'addSpellIce')
 
 		// skills
 		if (key === 'attack' ||
@@ -1085,9 +1054,7 @@ var loot = {};
 		) {
 			_.pull(rareKeys, 'allSkills')
 		}
-		if (key === 'allSkills') {
-			_.pull(rareKeys, 'attack', 'offense', 'defense', 'oneHandSlash', 'oneHandBlunt', 'piercing', 'archery', 'handToHand', 'twoHandSlash', 'twoHandBlunt', 'dodge', 'parry', 'riposte', 'alteration', 'conjuration', 'evocation')
-		}
+		if (key === 'allSkills') _.pull(rareKeys, 'attack', 'offense', 'defense', 'oneHandSlash', 'oneHandBlunt', 'piercing', 'archery', 'handToHand', 'twoHandSlash', 'twoHandBlunt', 'dodge', 'parry', 'riposte', 'alteration', 'conjuration', 'evocation')
 
 		// attributes
 		if (key === 'str' ||
@@ -1096,33 +1063,18 @@ var loot = {};
 			key === 'dex' ||
 			key === 'wis' ||
 			key === 'intel' ||
-			key === 'cha'
-		) {
+			key === 'cha') {
 			_.pull(rareKeys, 'allStats')
 		}
-		if (key === 'allStats') {
-			_.pull(rareKeys, 'str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha')
-		}
+		if (key === 'allStats') _.pull(rareKeys, 'str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha')
 
 		// added magic melee damage
-		if (key === 'addIce') {
-			_.pull(rareKeys, 'addFire')
-		}
-		if (key === 'addFire') {
-			_.pull(rareKeys, 'addIce')
-		}
-		if (key === 'addBlood') {
-			_.pull(rareKeys, 'addPoison')
-		}
-		if (key === 'addPoison') {
-			_.pull(rareKeys, 'addBlood')
-		}
-		if (key === 'addArcane') {
-			_.pull(rareKeys, 'addLightning')
-		}
-		if (key === 'addLightning') {
-			_.pull(rareKeys, 'addArcane')
-		}
+		if (key === 'addIce') _.pull(rareKeys, 'addFire')
+		if (key === 'addFire') _.pull(rareKeys, 'addIce')
+		if (key === 'addBlood') _.pull(rareKeys, 'addPoison')
+		if (key === 'addPoison') _.pull(rareKeys, 'addBlood')
+		if (key === 'addArcane') _.pull(rareKeys, 'addLightning')
+		if (key === 'addLightning') _.pull(rareKeys, 'addArcane')
 
 		// always pull out prop key
 		_.pull(rareKeys, key)
@@ -1238,12 +1190,18 @@ var loot = {};
 		if (item.awaitingDrop) return
 		var index = event.currentTarget.dataset.index * 1
 		var type = event.currentTarget.dataset.type
-		// console.info('toggleDrag', type, index)
+
+		console.info('toggleDrag', type, index)
 		if (item.isDragging) {
+			if (!myItemTypes.includes(item.dragType)) {
+				console.warn('isDragging a ', item.dragType)
+				dropReset()
+				return
+			}
+
 			item.dropEqType = event.currentTarget.dataset.eqType
 			// check for same item
 			if (item.dragSlot === index && item.dragType === type) {
-				console.warn('drop cancelled - same slot')
 				dropReset()
 				tooltip.handleItemEnter(event)
 				return
@@ -1283,14 +1241,19 @@ var loot = {};
 			}
 			else {
 				// update
-				$.post(app.url + 'item/update-item.php', {
-					dragRow: item.dragData.row,
-					dragSlot: item.dropSlot,
-					dragType: item.dropType,
-					dropType: item.dragType,
-				}).done(handleDropSuccess)
-					.fail(handleDropFail)
-					.always(handleDropAlways)
+				if (myItemTypes.includes(item.dropType)) {
+					$.post(app.url + 'item/update-item.php', {
+						dragRow: item.dragData.row,
+						dragSlot: item.dropSlot,
+						dragType: item.dropType,
+						dropType: item.dragType,
+					}).done(handleDropSuccess)
+						.fail(handleDropFail)
+						.always(handleDropAlways)
+				}
+				else {
+					console.warn('Item type ', item.dropType, ' is client side only. Skipping update-item.php')
+				}
 			}
 		}
 		else {
@@ -1445,6 +1408,10 @@ var loot = {};
 	}
 
 	function dropItem(event) {
+		if (!myItemTypes.includes(item.dragType)) {
+			dropReset()
+			return
+		}
 		//console.info('dropItem', event)
 		if (event.ctrlKey || ng.config.fastDestroy) destroy()
 		else if (item.dragType && item.dragSlot >= 0) {

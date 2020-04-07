@@ -9,6 +9,9 @@ var town;
 			bank: false,
 		},
 		isBankInitialized: false,
+		isMerchantInitialized: false,
+		isBlacksmithInitialized: false,
+		isApothecaryInitialized: false,
 		go,
 		init,
 		preload,
@@ -22,11 +25,37 @@ var town;
 		refreshGuildMembers,
 		updateVariousDOM,
 	}
-	var i
-	var id
-	var len
-	var html
-	var msg
+	var i, len, html, str, msg, startX, startY, endX, endY, itemIndex, rarity
+	const merchantSlots = [
+		'amulets',
+		'rings',
+		'cloaks',
+		'charms',
+		'bows',
+		'oneHandBlunts',
+		'twoHandBlunts',
+	]
+	const blacksmithSlots = [
+		'helms',
+		'shoulders',
+		'chests',
+		'bracers',
+		'gloves',
+		'belts',
+		'legs',
+		'boots',
+		'oneHandSlashers',
+		'twoHandSlashers',
+	]
+	const apothecarySlots = [
+		'amulets',
+		'rings',
+		'charms',
+		'piercers',
+		'focus',
+		'staves',
+		'shields',
+	]
 	////////////////////////////////////////////
 	function go() {
 		if (ng.view === 'town') return;
@@ -39,6 +68,9 @@ var town;
 					opacity: 0
 				})
 			}
+			town.isMerchantInitialized = false
+			town.isBlacksmithInitialized = false
+			town.isApothecaryInitialized = false
 			chat.sizeLarge();
 			$.post(app.url + 'character/load-character.php', {
 				row: create.selected
@@ -146,18 +178,6 @@ var town;
 		guild.loadGuildMsg()
 		guild.getMembers(guild.throttleTime);
 	}
-	function merchantMsg() {
-		chat.log('Rendo says, "Hello, '+ my.name +'. I have got a once-in-a-lifetime smokin\' deal for you, my friend! Today, we just received a limited edition Lanfeld champion sword from our supply chain!"')
-	}
-	function trainerMsg() {
-		chat.log('Arwen says, "Hail to thee, '+ my.name +'. You had better sharpen up your skills, kiddo, or you\'ll be dead meat out there. Take it from me—a battle-hardened warrior that has seen more than his fair share of death and despair."')
-	}
-	function guildMsg() {
-		chat.log('Valeska says, "Good day, '+ my.name +'. What would you ask of me?"')
-	}
-	function missionMsg() {
-		chat.log('Miranda says, "Hey, sunshine! Are you itching for a bit of action?! There\'s no shortage of miscreants to dispatch around these parts!"')
-	}
 	function init() {
 		if (!town.initialized) {
 			town.initialized = 1;
@@ -225,9 +245,7 @@ var town;
 			$('#root-bank').html(getBankHtml()).css('display', 'flex')
 			ng.split('bank-description', 'Banked items may be shared with all characters on the same account.')
 		}
-		else {
-			$('#root-bank').html('').css('display', 'none')
-		}
+		else $('#root-bank').html('').css('display', 'none')
 	}
 
 	function getBankHtml() {
@@ -252,8 +270,24 @@ var town;
 			'<div id="bank-footer" class="flex-center flex-max stag-blue-top">' +
 				'<div id="bank-description"></div>'
 			'</div>' +
-		'</div>';
+		'</div>'
 		return html
+	}
+
+	function processMerchant() {
+		len = merchantSlots.length - 1
+		for (var i=0; i<item.MAX_MERCHANT; i++) {
+			rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
+			itemIndex = _.random(0, len)
+			items.merchant[i] = item.getItem({
+				mobLevel: my.level,
+				bonus: 0,
+				rarity: rarity,
+				itemSlot: merchantSlots[itemIndex]
+			})
+		}
+		town.isMerchantInitialized = true
+		$('#various-item-wrap').html(getMerchantSlotHtml())
 	}
 
 	function openVarious(event) {
@@ -273,6 +307,10 @@ var town;
 	function updateVariousDOM() {
 		querySelector('#root-various').innerHTML = getVariousHtml()
 		querySelector('#root-various').style.display = 'flex'
+		startX = 0
+		startY = 0
+		endX = '-40%'
+		endY = '-5%'
 
 		msg = ''
 		if (town.windowsOpen.various === 'Academy') {
@@ -294,9 +332,18 @@ var town;
 				guild.getMembers()
 				msg = 'Creating a guild is a great way to keep your friends organized. The hordes of darkness fight in organized armies. It would be wise for you to do likewise.'
 			}
+			startX = '10%'
+			startY = '-45%'
+			endX = '-40%'
+			endY = '-5%'
 		}
 		else if (town.windowsOpen.various === 'Merchant') {
-			msg = 'Lorem ipsum or something'
+			!town.isMerchantInitialized && processMerchant()
+			startX = '-75%'
+			startY = '-25%'
+			endX = '-35%'
+			endY = '0%'
+			msg = 'Good day, ' + my.name + ', what are you looking for? We carry the finest jewelry in all of Vandamor! Be sure to check out the latest shipment of cloaks that we just received! I have a special price just for you, my friend!'
 		}
 		else if (town.windowsOpen.various === 'Mission Counter') {
 			msg = 'Edenburg needs brave adventurers like you to restore peace to our blessed Kingdom! Some missions are more dangerous than others—choose your mission carefully!'
@@ -308,6 +355,14 @@ var town;
 			msg = 'Lorem ipsum or something'
 		}
 		ng.split('various-description', msg)
+		TweenMax.to('#town-various-bg', 1, {
+			startAt: {
+				x: startX,
+				y: startY
+			},
+			x: endX,
+			y: endY
+		})
 	}
 	function getVariousHtml() {
 		html = ''
@@ -392,7 +447,7 @@ var town;
 		'</div>' +
 		'<div id="various-body" class="flex-column flex-max" style="display: flex; flex-direction: column;">' +
 			// new stuff
-			'<img class="town-various-bg" src="images/bg/bastille-2.png">' +
+			'<img id="town-various-bg" src="images/bg/bastille-2.png">' +
 			'<div id="various-wrap">';
 			if (my.guild.name) {
 				html += '<div class="aside-frame">' +
@@ -431,12 +486,18 @@ var town;
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>' +
 		'<div id="various-body" class="flex-column flex-max">' +
-			'Merchant body!' +
+		'<img id="town-various-bg" src="images/bg/bastille-1.png">' +
+		'<div id="various-item-wrap">'+ getMerchantSlotHtml() +'</div>' +
 		'</div>' +
-		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-			'<div id="various-description" class="flex-max"></div>' +
-		'</div>'
+		variousFooterHtml('gnome-male-0')
 		return html
+	}
+	function getMerchantSlotHtml() {
+		str = ''
+		for (i=0; i<item.MAX_MERCHANT; i++) {
+			str += bar.getItemSlotHtml('merchant', i)
+		}
+		return str
 	}
 	function tavernHtml() {
 		html = '<div class="flex" style="'+ css.header +'">' +

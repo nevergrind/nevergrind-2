@@ -2497,13 +2497,12 @@ background-image:
 	position: relative;
 	overflow: hidden;
 }
-.town-various-bg {
+#town-various-bg {
 	position: absolute;
 	top: 0;
-	left: 50%;
+	left: 0;
 	filter: sepia(100%) brightness(40%);
 	z-index: 1;
-	transform: translate(-51%, -5%);
 }
 #various-wrap {
 	position: relative;
@@ -2545,3 +2544,16 @@ background-image:
 	display: table;
 	flex: 1;
 }
+#various-item-wrap {
+	position: relative;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-around;
+	align-items: center;
+	align-content: flex-start;
+	padding: 0 .6rem;
+	flex: 1;
+	/*background: repeating-linear-gradient(315deg, #010 .1rem, #242 .2rem, #010 .3rem);*/
+	z-index: 1;
+}
+#various-item-wrap .item-slot-wrap { margin-top: .2rem; }

@@ -313,8 +313,6 @@ var bar;
 			html += getItemSlotHtml('inv', i)
 		}
 		html += '</div>' +
-		/*'<div id="inv-footer" class="flex-center flex-max stag-blue-top">' +
-		'</div>' +*/
 		'</div>';
 
 		return html
@@ -322,8 +320,11 @@ var bar;
 
 	function updateInventorySlotDOM(type, slot) {
 		console.warn('updateInventorySlotDOM', type, slot)
-		querySelector('#'+ type +'-slot-' + slot).className = getInvItemClass(type, slot)
-		querySelector('#'+ type +'-slot-img-' + slot).src = getItemSlotImage(type, slot)
+		el = querySelector('#'+ type +'-slot-' + slot)
+		if (el !== null) {
+			el.className = getInvItemClass(type, slot)
+			querySelector('#'+ type +'-slot-img-' + slot).src = getItemSlotImage(type, slot)
+		}
 	}
 
 	function updateCharacterDOM() {
@@ -353,14 +354,16 @@ var bar;
 	}
 
 	function updateCharStatPanels() {
-		querySelector('#inv-resist-blood').innerHTML = stat.resistBlood()
-		querySelector('#inv-resist-poison').innerHTML = stat.resistPoison()
-		querySelector('#inv-resist-arcane').innerHTML = stat.resistArcane()
-		querySelector('#inv-resist-lightning').innerHTML = stat.resistLightning()
-		querySelector('#inv-resist-fire').innerHTML = stat.resistFire()
-		querySelector('#inv-resist-ice').innerHTML = stat.resistIce()
-		querySelector('#char-stat-col-1').innerHTML = charStatColOneHtml()
-		querySelector('#char-stat-col-2').innerHTML = charStatColTwoHtml()
+		if (bar.windowsOpen.character) {
+			querySelector('#inv-resist-blood').innerHTML = stat.resistBlood()
+			querySelector('#inv-resist-poison').innerHTML = stat.resistPoison()
+			querySelector('#inv-resist-arcane').innerHTML = stat.resistArcane()
+			querySelector('#inv-resist-lightning').innerHTML = stat.resistLightning()
+			querySelector('#inv-resist-fire').innerHTML = stat.resistFire()
+			querySelector('#inv-resist-ice').innerHTML = stat.resistIce()
+			querySelector('#char-stat-col-1').innerHTML = charStatColOneHtml()
+			querySelector('#char-stat-col-2').innerHTML = charStatColTwoHtml()
+		}
 		stat.setResources()
 		if (ng.view === 'town') {
 			my.hp = my.maxHp

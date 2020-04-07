@@ -1,4 +1,5 @@
 <?php
+
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/session/start.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 

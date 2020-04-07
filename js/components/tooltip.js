@@ -4,12 +4,12 @@ var tooltip;
 		eq: { isHovering: false },
 		inv: { isHovering: false },
 		bank: { isHovering: false },
+		merchant: { isHovering: false },
+		apothecary: { isHovering: false },
+		tavern: { isHovering: false },
 		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
-		isHoveringEq: false,
-		isHoveringInv: false,
-		isHoveringBank: false,
 		hide,
 		show,
 		handleItemEnter,
@@ -314,6 +314,7 @@ var tooltip;
 	function show(obj, slotElement, type) {
 		if (!_.size(obj)) return
 		tooltipEl.innerHTML = getItemHtml(obj)
+			console.info('type', type)
 		if (slotElement) {
 			// x position
 			var y = slotElement.y - (4 * ng.responsiveRatio)
@@ -325,13 +326,13 @@ var tooltip;
 			}
 			tooltipEl.style.top = y + 'px'
 			// x position
-			if (type === 'eq' || type === 'bank') {
-				tooltipEl.style.left = slotElement.x + (68 * ng.responsiveRatio) + 'px'
-				tooltipEl.style.transform = 'translate(0%, 0%)'
-			}
-			else if (type === 'inv') {
+			if (type === 'inv') {
 				tooltipEl.style.left = slotElement.x + 'px'
 				tooltipEl.style.transform = 'translate(-100%, 0%)'
+			}
+			else {
+				tooltipEl.style.left = slotElement.x + (68 * ng.responsiveRatio) + 'px'
+				tooltipEl.style.transform = 'translate(0%, 0%)'
 			}
 		}
 		tooltip.isOpen = 1
@@ -346,12 +347,13 @@ var tooltip;
 		TweenMax.to(tooltipEl, .1, {
 			opacity: 0,
 			overwrite: 1,
-			onComplete: function() {
-				tooltipEl.style.visibility = 'hidden'
-				tooltip.isOpen = 0
-				tooltipEl.innerHTML = ''
-			}
+			onComplete: hideComplete
 		});
+	}
+	function hideComplete() {
+		tooltipEl.style.visibility = 'hidden'
+		tooltip.isOpen = 0
+		tooltipEl.innerHTML = ''
 	}
 	function handleItemEnter(event) {
 		var {index, type} = _.pick(event.currentTarget.dataset, [
