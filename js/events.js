@@ -240,7 +240,6 @@
 					// always works town, dungeon and combat (non-focused)
 					if (key === ng.config.hotkey.characterStats) bar.toggleCharacterStats()
 					else if (key === ng.config.hotkey.inventory) bar.toggleInventory()
-					else if (key === ng.config.hotkey.bank) town.toggleBank()
 					else if (key === ' ') bar.closeAllWindows()
 
 				}

@@ -10,7 +10,7 @@ var dungeon;
 	///////////////////////////////////////
 	function go() {
 		if (ng.view === 'dungeon') return
-		town.windowsOpen.bank && town.toggleBank()
+		town.closeVarious()
 		game.emptyScenesExcept('scene-dungeon')
 		// remove from town chat
 		if (ng.view === 'town') {

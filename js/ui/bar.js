@@ -165,10 +165,7 @@ var bar;
 	function toggleCharacterStats() {
 		bar.windowsOpen.character = !bar.windowsOpen.character
 		if (bar.windowsOpen.character) bar.activeTab = 'character'
-		if (tooltip.eq.isHovering) {
-			tooltip.hide()
-			tooltip.eq.isHovering = false
-		}
+		tooltip.conditionalHide('eq')
 		updateCharacterDOM()
 	}
 
@@ -268,10 +265,7 @@ var bar;
 	function toggleInventory() {
 		// open all bags in the bottom-right corner
 		bar.windowsOpen.inventory = !bar.windowsOpen.inventory
-		if (tooltip.inv.isHovering) {
-			tooltip.hide()
-			tooltip.inv.isHovering = false
-		}
+		tooltip.conditionalHide('inv')
 		updateInventoryDOM()
 	}
 
@@ -657,25 +651,6 @@ var bar;
 		bar.hotkeyElement.classList.remove('active')
 	}
 
-	function getOptionsHotkeysHtml() {
-		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
-		'<div class="flex align-center">' +
-			'<div style="flex-basis: 50%;">Character Stats</div>' +
-			'<div data-id="character-stats" class="options-hotkey flex-max">'+ ng.config.hotkey.characterStats +'</div>'+
-		'</div>' +
-		'<div class="flex align-center">' +
-			'<div style="flex-basis: 50%;">Inventory</div>' +
-			'<div data-id="inventory" class="options-hotkey flex-max">'+ ng.config.hotkey.inventory +'</div>'+
-		'</div>' +
-		'<div class="flex align-center">' +
-			'<div style="flex-basis: 50%">Bank</div>' +
-			'<div data-id="bank" class="options-hotkey flex-max">'+ ng.config.hotkey.bank +'</div>'+
-		'</div>' +
-		'</div>'
-
-		return str
-	}
-
 	function getOptionsUiHtml() {
 		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
 		'<div class="flex align-center">' +
@@ -687,6 +662,21 @@ var bar;
 			'<div id="options-show-network" class="ng-boolean">'+ (ng.config.showNetwork ? 'On' : 'Off') +'</div>' +
 		'</div>' +
 		'</div>'
+		return str
+	}
+
+	function getOptionsHotkeysHtml() {
+		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 50%;">Character Stats</div>' +
+			'<div data-id="character-stats" class="options-hotkey flex-max">'+ ng.config.hotkey.characterStats +'</div>'+
+		'</div>' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 50%;">Inventory</div>' +
+			'<div data-id="inventory" class="options-hotkey flex-max">'+ ng.config.hotkey.inventory +'</div>'+
+		'</div>' +
+		'</div>'
+
 		return str
 	}
 
@@ -712,7 +702,6 @@ var bar;
 	function handleCloseMenu(event) {
 		if (event.currentTarget.dataset.id === 'character-stats') bar.toggleCharacterStats()
 		else if (event.currentTarget.dataset.id === 'inventory') bar.toggleInventory()
-		else if (event.currentTarget.dataset.id === 'bank') town.toggleBank()
 		else if (event.currentTarget.dataset.id === 'various') town.closeVarious()
 	}
 
@@ -724,7 +713,6 @@ var bar;
 		updateInventoryDOM()
 		updateOptionsDOM()
 		town.closeVarious()
-		town.closeBank()
 
 		item.dropReset()
 	}

@@ -229,7 +229,6 @@ var mission;
 		console.info("MISSION UPDATE! ", data)
 		setQuest(data.quest)
 		town.closeVarious()
-		town.closeBank()
 
 		chat.log('Now departing for ' + my.quest.zone + '!', 'chat-warning')
 		ng.lock(1)

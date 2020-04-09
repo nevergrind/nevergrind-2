@@ -518,7 +518,7 @@ var chat;
 		my.channel && socket.unsubscribe(chat.getChannel())
 		// set new channel data
 		my.channel = data.channel
-		if (chat.modeCommand === '/say') {
+		if (chat.modeCommand !== '/say') {
 			chat.modeSet('/say')
 		}
 		socket.subscribe('ng2' + data.channel, socket.routeMainChat) // main chat channel

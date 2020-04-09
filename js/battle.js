@@ -17,7 +17,7 @@ var battle;
 	//////////////////////////////////////
 	function go() {
 		if (ng.view === 'battle') return;
-		town.windowsOpen.bank && town.toggleBank()
+		town.closeVarious()
 		chat.sizeSmall();
 		mob.init();
 		game.emptyScenesExcept('scene-battle');
@@ -26,6 +26,7 @@ var battle;
 			delay: .5,
 			opacity: 1
 		});
+		my.channel = ''
 		if (!mob.initialized) {
 			// initialization things only
 			mob.initialized = 1;
@@ -41,7 +42,7 @@ var battle;
 		var s =
 			'<div id="battle-sky"></div>' +
 			'<div id="battle-clouds"></div>' +
-			'<img id="battle-bg" src="images/bg/tendolin-hollow2.png">' +
+			'<img id="battle-bg" src="images/bg/tendolin-hollow-2.png">' +
 			'<img id="battle-fg" src="images/bg/prototype-fg.png" class="no-pointer">';
 		var test = '';
 

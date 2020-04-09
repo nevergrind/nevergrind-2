@@ -16,6 +16,10 @@ var test;
 		},
 		send: send,
 		orcs,
+		opacity,
+		opacityDOM,
+		boxShadow,
+		dropShadow,
 		battle,
 		filters: {
 			/*
@@ -42,6 +46,10 @@ var test;
 	}
 	///////////////////////////////////
 	function battle() {
+		/**
+		 * must be called in game
+		 * @type {boolean}
+		 */
 		var singleMob = false;
 		var mobKey = '';
 		for (var i=0; i<mob.max; i++){
@@ -145,7 +153,7 @@ var test;
 		});
 	}
 	function hueRotate(z, filters) {
-		z.style.filter = 'grayscale(100%) sepia(100%) saturate(1000%) ' + filters.hue;
+		z.style.filter = filters.hue;
 	}
 	function death(z, filters) {
 		z.style.filter = filters.opacity + ' ' + filters.brightness;
@@ -199,5 +207,93 @@ var test;
 	}
 	function loot16() {
 		for (var i=0; i<16; i++) item.getLoot()
+	}
+	function opacity(count) {
+		var max = count || 600;
+		$("#title-container-wrap").css('display', 'none');
+		$('#scene-title-select-character, .test-orcs').remove();
+
+		var e2 = getElementById('ng2-logo-wrap');
+		for (i=0; i<max; i++){
+			e = createElement('img');
+			e.id = 'mob' + i;
+			e.className = 'test-orcs test-opacity-filter';
+			e.style.position = 'absolute';
+			e.style.top = ~~(rand() * 100) +'%';
+			e.style.left = ~~(rand() * 100) +'%';
+			e.style.transform = 'translate(-50%, -50%)';
+			e.src = 'images/an orc.png';
+			e2.appendChild(e);
+		}
+	}
+	function opacityDOM(count) {
+		var max = count || 600;
+		$("#title-container-wrap").css('display', 'none');
+		$('#scene-title-select-character, .test-orcs').remove();
+
+		var e2 = getElementById('ng2-logo-wrap');
+		for (i=0; i<max; i++){
+			e = createElement('img');
+			e.id = 'mob' + i;
+			e.className = 'test-orcs test-opacity-dom';
+			e.style.position = 'absolute';
+			e.style.top = ~~(rand() * 100) +'%';
+			e.style.left = ~~(rand() * 100) +'%';
+			e.style.transform = 'translate(-50%, -50%)';
+			e.src = 'images/an orc.png';
+			e2.appendChild(e);
+		}
+	}
+	function boxShadow(count) {
+		var max = count || 600;
+		$("#title-container-wrap").css('display', 'none');
+		$('#scene-title-select-character, .test-orcs').remove();
+
+		var e2 = getElementById('ng2-logo-wrap');
+		for (i=0; i<max; i++){
+			e = createElement('img');
+			e.id = 'mob' + i;
+			e.className = 'test-orcs';
+			e.style.position = 'absolute';
+			e.style.top = ~~(rand() * 100) +'%';
+			e.style.left = ~~(rand() * 100) +'%';
+			e.style.transform = 'translate(-50%, -50%)';
+			e.src = 'images/an orc.png';
+			e2.appendChild(e);
+			TweenMax.to(e, 1, {
+				startAt: { boxShadow: '0 0 0 #000' },
+				x: '+=50',
+				boxShadow: '0 0 20px #000',
+				repeat: -1,
+				ease: Linear.easeIn,
+				yoyo: true
+			})
+		}
+	}
+	function dropShadow(count) {
+		var max = count || 10;
+		$("#title-container-wrap").css('display', 'none');
+		$('#scene-title-select-character, .test-orcs').remove();
+
+		var e2 = getElementById('ng2-logo-wrap');
+		for (i=0; i<max; i++){
+			e = createElement('img');
+			e.id = 'mob' + i;
+			e.className = 'test-orcs';
+			e.style.position = 'absolute';
+			e.style.top = ~~(rand() * 100) +'%';
+			e.style.left = ~~(rand() * 100) +'%';
+			e.style.transform = 'translate(-50%, -50%)';
+			e.src = 'images/an orc.png';
+			e2.appendChild(e);
+			TweenMax.to(e, 1, {
+				startAt: { filter: 'drop-shadow(0px 0px 0px #0f0)' },
+				x: '+=50',
+				filter: 'drop-shadow(0px 0px 20px #0f0)',
+				repeat: -1,
+				ease: Linear.easeIn,
+				yoyo: true
+			})
+		}
 	}
 })(Linear, TweenMax, TimelineMax);

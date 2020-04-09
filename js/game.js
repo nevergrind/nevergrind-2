@@ -187,7 +187,6 @@ var game;
 				getElementById(v).innerHTML = '';
 			}
 		});
-		$('#town-bg').remove()
 	}
 	function getPetName() {
 		var s1 = [

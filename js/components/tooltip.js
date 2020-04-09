@@ -5,6 +5,7 @@ var tooltip;
 		inv: { isHovering: false },
 		bank: { isHovering: false },
 		merchant: { isHovering: false },
+		blacksmith: { isHovering: false },
 		apothecary: { isHovering: false },
 		tavern: { isHovering: false },
 		timer: new delayedCall(0, ''),
@@ -14,6 +15,7 @@ var tooltip;
 		show,
 		handleItemEnter,
 		handleItemLeave,
+		conditionalHide,
 	};
 	var tooltipEl = getElementById('tooltip-wrap')
 	var wearsLeather = [
@@ -370,5 +372,12 @@ var tooltip;
 		])
 		tooltip[type].isHovering = false
 		tooltip.hide()
+	}
+	function conditionalHide(windowType) {
+		if (typeof tooltip[windowType] === 'object' &&
+			tooltip[windowType].isHovering) {
+			tooltip.hide()
+			tooltip[windowType].isHovering = false
+		}
 	}
 })($, parseInt, TweenMax, _, getComputedStyle);
