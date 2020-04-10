@@ -20,8 +20,10 @@ var town;
 		handleGuildInputBlur,
 		refreshGuildMembers,
 		updateVariousDOM,
+		showLabel,
+		hideLabel,
 	}
-	var i, len, html, str, foo, msg, startX, startY, endX, endY, itemIndex, rarity, townConfig
+	var i, id, len, html, str, foo, msg, startX, startY, endX, endY, itemIndex, rarity, townConfig, labelConfig, label
 	const merchantSlots = [
 		'amulets',
 		'rings',
@@ -144,15 +146,15 @@ var town;
 				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/town-academy.png">' +
 				'<img id="town-background" class="town-bg" src="images/town/town-bg.png">' +
 				'<img data-id="Apothecary" id="town-apothecary" class="town-building" src="images/town/town-apothecary.png">' +
-				'<img data-id="Merchant" id="town-bank" class="town-building" src="images/town/town-merchant.png">' +
-				'<img data-id="Bank" id="town-merchant" class="town-building" src="images/town/town-bank.png">' +
+				'<img data-id="Merchant" id="town-merchant" class="town-building" src="images/town/town-merchant.png">' +
+				'<img data-id="Bank" id="town-bank" class="town-building" src="images/town/town-bank.png">' +
 				'<img data-id="Tavern" id="town-tavern" class="town-building" src="images/town/town-tavern.png">' +
 				'<img data-id="Guild Hall" id="town-guild" class="town-building" src="images/town/town-guild.png">' +
 				'<img data-id="Blacksmith" id="town-blacksmith" class="town-building" src="images/town/town-blacksmith.png">' +
 			'</div>' +
 			'<div id="town-building-label-wrap" class="text-shadow2">'+
-				'<div id="town-building-label-header">Bank</div>' +
-				'<div id="town-build-label-description">Share items with your other heroes</div>' +
+				'<div id="town-building-label-header"></div>' +
+				'<div id="town-build-label-description"></div>' +
 			'</div>' +
 		'</div>' +
 		'<div id="town-footer" class="text-shadow2">' +
@@ -186,19 +188,7 @@ var town;
 		}
 	}
 	function preload() {
-		var p = 'images/town/';
-		cache.preloadImages([
-			p + 'arwen-reinhardt.png',
-			p + 'halas.jpg',
-			p + 'miranda-crossheart.png',
-			p + 'neriak.jpg',
-			p + 'poh.jpg',
-			p + 'rendo-surefoot.png',
-			p + 'surefall.jpg',
-			p + 'valeska-windcrest.png',
-			'images/dungeon/braxxen1.jpg',
-			'images/skills/' + my.job + '.png'
-		])
+		//cache.preloadImages([])
 	}
 
 	function loadBank() {
@@ -263,6 +253,82 @@ var town;
 			y: o.y
 		});
 	}
+	function showLabel() {
+		id = this.dataset.id
+		label = id
+		msg = ''
+		labelConfig = {
+			left: 0,
+			top: 0
+		}
+
+		if (id === 'Academy') {
+			msg = 'Train your skills and spells to achieve mastery'
+			labelConfig = {
+				left: ng.toPercentWidth(488),
+				top: ng.toPercentHeight(232)
+			}
+		}
+		else if (id === 'Apothecary') {
+			msg = 'Buy potions and arcane items to prolong survival'
+			labelConfig = {
+				left: ng.toPercentWidth(1178),
+				top: ng.toPercentHeight(434)
+			}
+		}
+		else if (id === 'Bank') {
+			msg = 'Banked items may be shared with all characters on the same account'
+			labelConfig = {
+				left: ng.toPercentWidth(950),
+				top: ng.toPercentHeight(386)
+			}
+		}
+		else if (id === 'Blacksmith') {
+			msg = 'Buy, sell and repair your weapons and armor'
+			labelConfig = {
+				left: ng.toPercentWidth(1495),
+				top: ng.toPercentHeight(555)
+			}
+		}
+		else if (id === 'Guild Hall') {
+			msg = 'Start a guild, invite friends, and build your roster for ultimate readiness'
+			labelConfig = {
+				left: ng.toPercentWidth(1519),
+				top: ng.toPercentHeight(192)
+			}
+		}
+		else if (id === 'Merchant') {
+			msg = 'Buy and sell from the largest selector of items in Edenburg'
+			labelConfig = {
+				left: ng.toPercentWidth(719),
+				top: ng.toPercentHeight(429)
+			}
+		}
+		else if (id === 'Tavern') {
+			msg = 'View the leaderboard, seek advice from the bartender, and swap information with other heroes'
+			labelConfig = {
+				left: ng.toPercentWidth(302),
+				top: ng.toPercentHeight(467)
+			}
+		}
+		if (!town.windowsOpen.various) {
+			ng.splitText('town-building-label-header', id, .1)
+			ng.splitText('town-build-label-description', msg)
+			TweenMax.to('#town-building-label-wrap', .3, {
+				startAt: {
+					left: labelConfig.left + '%',
+					top: labelConfig.top + '%'
+				},
+				opacity: 1
+			})
+		}
+	}
+	function hideLabel() {
+		TweenMax.to('#town-building-label-wrap', .5, {
+			opacity: 0
+		})
+
+	}
 	function updateVariousDOM() {
 		querySelector('#root-various').innerHTML = getVariousHtml()
 		querySelector('#root-various').style.display = 'flex'
@@ -270,7 +336,6 @@ var town;
 		startY = 0
 		endX = '-40%'
 		endY = '-5%'
-		townConfig = {}
 
 		msg = ''
 		if (town.windowsOpen.various === 'Academy') {
@@ -294,8 +359,8 @@ var town;
 		}
 		else if (town.windowsOpen.various === 'Bank') {
 			tooltip.conditionalHide('bank')
+			msg = 'If you have any special items that you would like to share with other heroes, you have come to the right place. I take an interest to collecting rare treasures as well!'
 			if (!town.isBankInitialized) loadBank()
-			msg = 'Banked items may be shared with all characters on the same account.'
 			townConfig = {
 				duration: 1,
 				scale: 1.4,
@@ -362,16 +427,8 @@ var town;
 				y: -100
 			}
 		}
-		else {
-			msg = 'Lorem ipsum or something'
-			townConfig = {
-				duration: 1,
-				scale: 1,
-				x: 0,
-				y: 0
-			}
-		}
-		ng.split('various-description', msg)
+		ng.splitText('various-description', msg)
+		hideLabel()
 		animateBuilding(townConfig)
 		TweenMax.set('#town-various-bg', {
 			startAt: {
@@ -405,9 +462,7 @@ var town;
 		'<div id="various-body" class="flex-column flex-max">' +
 			'Academy body!' +
 		'</div>' +
-		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-			'<div id="various-description" class="flex-max"></div>' +
-		'</div>'
+		variousFooterHtml('human-female-0')
 		return html
 	}
 	function apothecaryHtml() {
@@ -420,9 +475,7 @@ var town;
 		'<div id="various-body" class="flex-column flex-max">' +
 			'Apothecary body!' +
 		'</div>' +
-		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-			'<div id="various-description" class="flex-max"></div>' +
-		'</div>'
+		variousFooterHtml('seraph-male-2')
 		return html
 	}
 	function blacksmithHtml() {
@@ -435,9 +488,7 @@ var town;
 		'<div id="various-body" class="flex-column flex-max">' +
 			'Blacksmith body!' +
 		'</div>' +
-		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-			'<div id="various-description" class="flex-max"></div>' +
-		'</div>'
+		variousFooterHtml('barbarian-male-2')
 		return html
 	}
 	function bankSlotHtml() {
@@ -552,9 +603,7 @@ var town;
 		'<div id="various-body" class="flex-column flex-max">' +
 			'Tavern body!' +
 		'</div>' +
-		'<div id="various-footer" class="flex-center flex-max stag-blue-top">' +
-			'<div id="various-description" class="flex-max"></div>' +
-		'</div>'
+		variousFooterHtml('dark-elf-female-0')
 		return html
 	}
 	function variousFooterHtml(avatar) {

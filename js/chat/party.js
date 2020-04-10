@@ -367,7 +367,7 @@ var party;
 	}
 	function parse(msg) { // 2-part upper case
 		var a = msg.replace(/ +/g, " ").split(" ");
-		return a[1] === undefined ?
+		return a[1] === void 0 ?
 			'' : (_.capitalize(a[1].trim()));
 	}
 })();

@@ -656,7 +656,7 @@ var loot = {};
 		 * itemName: forces specific sub item based on base name
 		 */
 		if (!config) config = { mobLevel: 1 }
-		if (config.bonus === undefined) {
+		if (config.bonus === void 0) {
 			config.bonus = 0
 		}
 		var rarity = config.rarity || getRarity(config.bonus)

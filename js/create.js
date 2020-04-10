@@ -266,7 +266,7 @@ var create;
 	function set(key, val) {
 		getElementById(key + '-value').innerHTML = create.form[key] = val;
 		// details
-		ng.split('create-details', create.msg(key, val));
+		ng.splitText('create-details', create.msg(key, val));
 		if (key === 'job'){
 			//getElementById('type-value').innerHTML = create.types[val];
 		}

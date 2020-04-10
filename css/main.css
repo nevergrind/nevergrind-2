@@ -147,8 +147,9 @@ html {
 }
 
 @media only screen and (width: 1280px) and (height: 720px) { html { font-size: 14px }}
+@media only screen and (width: 1366px) and (height: 768px) { html { font-size: 14px }}
 @media only screen and (width: 1600px) and (height: 900px) { html { font-size: 17px }}
-@media only screen and (width: 1360px) and (height: 768px) { html { font-size: 14px }}
+@media only screen and (width: 1440px) and (height: 900px) { html { font-size: 17px }}
 @media only screen and (width: 1920px) and (height: 1080px) { html { font-size: 20px }}
 @media only screen and (min-width: 1380px) { html { font-size: 20px }}
 @media only screen and (min-width: 2000px) { html { font-size: 22px }}
@@ -752,9 +753,9 @@ tbody { border: 0 }
 }
 #town-bank {
 	bottom: 30.37vh;
-	left: 29.16vw;
-	width: 16.83vw;
-	height: 35vh;
+	left: 42.71vw;
+	width: 13.49vw;
+	height: 43.06vh;
 }
 #town-tavern {
 	bottom: 0;
@@ -764,9 +765,9 @@ tbody { border: 0 }
 }
 #town-merchant {
 	bottom: 30.37vh;
-	left: 42.71vw;
-	width: 13.49vw;
-	height: 43.06vh;
+	left: 29.16vw;
+	width: 16.83vw;
+	height: 35vh;
 }
 #town-guild {
 	bottom: 29.63vh;
@@ -834,12 +835,15 @@ animation: town-repeat-bg 90s linear infinite;*/
 }
 #town-building-label-wrap {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	top: 0;
+	left: 0;
+	transform: translate(-50%, -50%);
 	font-size: 1rem;
 	line-height: 1;
-	background: linear-gradient(45deg, #000c 20%, transparent);
+	background: linear-gradient(45deg, #000c 25%, #0000);
+	border-left: .2rem ridge #000;
 	padding: .2rem;
+	max-width: 13rem;
 	pointer-events: none;
 }
 #town-building-label-header {
@@ -1940,9 +1944,8 @@ background-image:
 	background: radial-gradient(closest-corner at 50% 50%, rgba(0, 64, 128, 1), rgba(0, 64, 128, 0));
 }
 #create-portrait {
-	width: 15rem;
-	padding: 2.5rem;
-	transform: scale(1.33);
+	width: 20rem;
+	height: 20rem;
 	pointer-events: none;
 }
 .portrait-arrow {

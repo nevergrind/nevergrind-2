@@ -61,6 +61,8 @@
 			.on('blur', '#guild-input', town.handleGuildInputBlur)
 			.on('click', '#guild-member-refresh-btn', town.refreshGuildMembers)
 			.on('click', '.town-building', town.openVarious)
+			.on('mouseenter', '.town-building', town.showLabel)
+			.on('mouseleave', '.town-building', town.hideLabel)
 			// missions
 			.on('click', '.mission-zone-headers', mission.toggleZone)
 			.on('click', '.mission-quest-item', mission.clickQuest)
@@ -122,7 +124,7 @@
 		}
 	}
 	function mousemove(e) {
-		//console.info('mousemove', e.clientX, e.clientY)
+		// console.info('mousemove', e.clientX, e.clientY)
 		my.mouse.x = e.clientX
 		my.mouse.y = e.clientY
 		if (item.isDragging) item.updateCursorImgPosition()

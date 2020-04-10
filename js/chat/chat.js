@@ -86,7 +86,7 @@ var chat;
 	}
 	function modeChange(h) {
 		// only trim leading spaces
-		var mode = h === undefined ? (chat.dom.chatInput.value + ng.lastKey) : h.mode;
+		var mode = h === void 0 ? (chat.dom.chatInput.value + ng.lastKey) : h.mode;
 		var mode = mode.replace(/^\s+/g, '');
 
 		if (mode === '/say' && !my.channel) {
@@ -482,7 +482,7 @@ var chat;
 	function joinParse(msg) {
 		// 2 part parse lower case
 		var c = msg.replace(/ +/g, " ").split(" ");
-		return c[1] === undefined ?
+		return c[1] === void 0 ?
 			'' : c[1].toLowerCase().trim();
 	}
 	function joinChannel(channel, bypass) {

@@ -326,7 +326,7 @@ var bar;
 			querySelector('#bar-character-stats').innerHTML = getCharacterStatsHtml()
 			querySelector('#bar-character-stats').style.display = 'flex'
 			if (bar.activeTab === 'skills') {
-				ng.split('inv-skill-description', skillDescriptions['offense']);
+				ng.splitText('inv-skill-description', skillDescriptions['offense']);
 			}
 			showBarText()
 		}
@@ -559,9 +559,13 @@ var bar;
 					win.isFullscreen && win.leaveFullscreen();
 					win.resizeTo(1600, 900);
 				}
-				else if (id === '1360x768') {
+				else if (id === '1366x768') {
 					win.isFullscreen && win.leaveFullscreen();
-					win.resizeTo(1360, 768);
+					win.resizeTo(1366, 768);
+				}
+				else if (id === '1440x900') {
+					win.isFullscreen && win.leaveFullscreen();
+					win.resizeTo(1440, 900);
 				}
 				else if (id === '1280x720') {
 					win.isFullscreen && win.leaveFullscreen();
@@ -593,7 +597,8 @@ var bar;
 					'<div data-id="Full Screen" class="ng-dropdown-select window-select">Full Screen</div>' +
 					'<div data-id="1920x1080" class="ng-dropdown-select window-select">1920x1080</div>' +
 					'<div data-id="1600x900" class="ng-dropdown-select window-select">1600x900</div>' +
-					'<div data-id="1360x768" class="ng-dropdown-select window-select">1360x768</div>' +
+					'<div data-id="1440x900" class="ng-dropdown-select window-select">1440x900</div>' +
+					'<div data-id="1366x768" class="ng-dropdown-select window-select">1366x768</div>' +
 					'<div data-id="1280x720" class="ng-dropdown-select window-select">1280x720</div>' +
 				'</div>' +
 			'</div>' +
@@ -865,7 +870,7 @@ var bar;
 		}
 		else {
 			percent = ~~((party.presence[index].hp / party.presence[index].maxHp) * 100) + '%';
-			delay = delay === undefined ? .3 : delay;
+			delay = delay === void 0 ? .3 : delay;
 			TweenMax.to(bar.dom[index].hpFg, delay, {
 				width: percent
 			});
@@ -883,7 +888,7 @@ var bar;
 		else {
 			if (party.presence[index].maxMp) {
 				percent = ~~((party.presence[index].mp / party.presence[index].maxMp) * 100) + '%';
-				delay = delay === undefined ? .3 : delay;
+				delay = delay === void 0 ? .3 : delay;
 				TweenMax.to(bar.dom[index].mpFg, delay, {
 					width: percent
 				});
@@ -904,7 +909,7 @@ var bar;
 
 	function getSkillDescription(event) {
 		id = event.currentTarget.dataset.id
-		ng.split('inv-skill-description', skillDescriptions[id]);
+		ng.splitText('inv-skill-description', skillDescriptions[id]);
 	}
 
 	function getPropSkillHtml(prop) {

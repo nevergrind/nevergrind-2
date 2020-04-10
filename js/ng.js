@@ -1,6 +1,6 @@
 // ng.js
 var ng;
-(function($, TweenMax, undefined) {
+(function($, TweenMax, SplitText, undefined) {
 	ng = {
 		// defaults are defined in getDefaultOptions
 		config: {
@@ -271,7 +271,7 @@ var ng;
 		msg,
 		init,
 		lock,
-		split,
+		splitText,
 		getId,
 		events,
 		unlock,
@@ -288,6 +288,8 @@ var ng;
 		checkPlayerData,
 		goCreateCharacter,
 		displayAllCharacters,
+		toPercentWidth,
+		toPercentHeight,
 	}
 	var msgTimer = delayedCall(0, '')
 	///////////////////////////////
@@ -396,7 +398,7 @@ var ng;
 			scale: 1,
 		})
 		if (d === 0) return
-		if (d === undefined || d < 1 ){ d = 1 }
+		if (d === void 0 || d < 1 ){ d = 1 }
 		msgTimer.kill()
 		msgTimer = delayedCall(d, msgComplete)
 	}
@@ -407,12 +409,12 @@ var ng;
 		})
 	}
 
-	function split(id, msg, d) {
-		if (d === undefined){
+	function splitText(id, msg, d) {
+		if (d === void 0){
 			d = .01;
 		}
-		var e = getElementById(id);
-		e.innerHTML = msg;
+		var e = querySelector('#'+ id);
+		e.textContent = msg;
 		var split = new SplitText(e, {
 				type: "words,chars"
 			});
@@ -623,5 +625,11 @@ var ng;
 		getElementById('ch-card-list').innerHTML = s;
 		$(".select-player-card:first").trigger('click');
 	}
+	function toPercentWidth(pixels) {
+		return pixels / 1920 * 100
+	}
+	function toPercentHeight(pixels) {
+		return pixels / 1080 * 100
+	}
 	// private ///////////////////////////////////////////////////////
-})($, TweenMax);
+})($, TweenMax, SplitText);
