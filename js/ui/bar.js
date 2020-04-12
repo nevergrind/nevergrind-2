@@ -165,7 +165,7 @@ var bar;
 	function toggleCharacterStats() {
 		bar.windowsOpen.character = !bar.windowsOpen.character
 		if (bar.windowsOpen.character) bar.activeTab = 'character'
-		tooltip.conditionalHide('eq')
+		tooltip.conditionalHide()
 		updateCharacterDOM()
 	}
 
@@ -265,7 +265,7 @@ var bar;
 	function toggleInventory() {
 		// open all bags in the bottom-right corner
 		bar.windowsOpen.inventory = !bar.windowsOpen.inventory
-		tooltip.conditionalHide('inv')
+		tooltip.conditionalHide()
 		updateInventoryDOM()
 	}
 

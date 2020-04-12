@@ -296,7 +296,7 @@ loot.chests = {
 			resistArcane: [25, 35],
 			resistFire: [33, 49],
 			allSkills: 1,
-			repairsDurability: true,
+			enhancedDamageToBeasts: [4, 7],
 			restInPeace: true,
 		},
 	]

@@ -2,6 +2,17 @@ var item;
 var loot = {};
 !function() {
 	item = {
+		getEquipString,
+		getRarity,
+		getItem,
+		getLoot,
+		dropReset,
+		toggleDrag,
+		updateCursorImgPosition,
+		dropItem,
+		destroy,
+		handleItemSlotContextClick,
+		getItemValueHtml,
 		MAX_EQUIPMENT: 15,
 		MAX_INVENTORY: 16,
 		MAX_MERCHANT: 18,
@@ -67,40 +78,108 @@ var loot = {};
 		allWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
 		offhandWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus'],
 		twoHandWeaponTypes: ['twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
-		getEquipString,
-		getRarity,
-		getItem,
-		getLoot,
-		dropReset,
-		toggleDrag,
-		updateCursorImgPosition,
-		dropItem,
-		destroy,
-		handleItemSlotContextClick,
+	}
+	var html, key, value
+	const saleValues = {
+		resistBlood: .5,
+		resistPoison: .5,
+		resistArcane: .5,
+		resistLightning: .5,
+		resistFire: .5,
+		resistIce: .5,
+		resistAll: 3,
+		enhancedArmor: .1,
+		enhancedDamage: .2,
+		addSpellBlood: .5,
+		addSpellPoison: .5,
+		addSpellArcane: .5,
+		addSpellLightning: .5,
+		addSpellFire: .5,
+		addSpellIce: .5,
+		addSpellAll: 3,
+		attack: .25,
+		offense: 3,
+		defense: 3,
+		oneHandSlash: 3,
+		oneHandBlunt: 3,
+		piercing: 3,
+		archery: 3,
+		handToHand: 3,
+		twoHandSlash: 3,
+		twoHandBlunt: 3,
+		dodge: 3,
+		parry: 3,
+		riposte: 3,
+		alteration: 3,
+		conjuration: 3,
+		evocation: 3,
+		allSkills: 45,
+		str: .5,
+		sta: .5,
+		agi: .5,
+		dex: .5,
+		wis: .5,
+		intel: .5,
+		cha: .5,
+		allStats: 3.5,
+		hp: .4,
+		hpRegen: 3,
+		mp: .4,
+		mpRegen: 3,
+		sp: .4,
+		spRegen: 3,
+		crit: 1.5,
+		leech: 2,
+		wraith: 2,
+		haste: .8,
+		addBlood: .3,
+		addPoison: .3,
+		addArcane: .3,
+		addLightning: .3,
+		addFire: .3,
+		addIce: .3,
+		increasedBlock: .3,
+		damageTakenToMana: .5,
+		damageTakenToSpirit: .5,
+		enhancedDamageToHumanoids: 2,
+		enhancedDamageToBeasts: 2,
+		enhancedDamageToUndead: 2,
+		enhancedDamageToDemons: 2,
+		enhancedDamageToDragonkin: 2,
+		enhancedDamageToEldritch: 2,
+		phyMit: 3,
+		magMit: 3,
+		resistPhysical: 6,
+		enhanceBlood: 2.5,
+		enhancePoison: 2.5,
+		enhanceArcane: 2.5,
+		enhanceLightning: 2.5,
+		enhanceFire: 2.5,
+		enhanceIce: 2.5,
+		enhanceAll: 15,
+		resistFrozen: 2,
+		resistFear: 2,
+		resistStun: 2,
+		resistSilence: 2,
+		reduceHealing: 4,
+		restInPeace: 70,
+		slowsTarget: 7,
+		reduceTargetArmor: 2.5,
+		ignoreTargetArmor: 50,
+		increaseHpPercent: 3,
+		increaseMpPercent: 3,
+		hpKill: 2.5,
+		mpKill: 2.5,
+		spKill: 2.5,
+		minDamage: .25,
+		maxDamage: .25,
+		armor: .3,
+		blockRate: .3,
 	}
 	const slotRequiresMagic = [
 		'rings',
 		'amulets',
 		'charms',
-	]
-	const itemsWithDurability = [
-		'helms',
-		'shoulders',
-		'chests',
-		'bracers',
-		'gloves',
-		'belts',
-		'legs',
-		'boots',
-		'oneHandSlashers',
-		'twoHandSlashers',
-		'oneHandBlunts',
-		'twoHandBlunts',
-		'piercers',
-		'focus',
-		'staves',
-		'bows',
-		'shields'
 	]
 	const myItemTypes = ['eq', 'inv', 'bank']
 	const equipmentSlotIndex = {
@@ -549,7 +628,7 @@ var loot = {};
 		addLightning: 2,
 		addFire: 2,
 		addIce: 2,
-		increaseBlock: 2,
+		increasedBlock: 2,
 		resistFrozen: 2,
 		resistFear: 2,
 		resistStun: 2,
@@ -707,9 +786,6 @@ var loot = {};
 			delete drop.maxArmor
 		}
 		drop.rarity = rarity
-		if (itemsWithDurability.includes(itemSlot)) {
-			drop.durability = 100
-		}
 		drop.itemType = itemSlot
 		// magic
 		if (rarity === 'unique') {
@@ -1478,5 +1554,40 @@ var loot = {};
 			eqIndex = 3
 		}
 		return eqIndex
+	}
+	function getItemValueHtml(item, isSelling) {
+		return '<div style="color: gold; margin: .2rem">'+ (isSelling ? 'Sell' : 'Buy') +' Value: ' + getItemValue(item, isSelling) + '</div>'
+	}
+	function getItemValue(item, selling) {
+		value = 1
+		for (key in item) {
+			if (typeof item[key] === 'number' &&
+				typeof saleValues[key] === 'number') {
+				var val = item[key] * (saleValues[key] * (selling ? 1 : 13.33))
+				value += val
+			}
+		}
+		if (!selling) {
+			if (item.itemType === 'rings' ||
+				item.itemType === 'amulets' ||
+				item.itemType === 'focus' ||
+				item.itemType === 'shields' ||
+				item.itemType === 'charms') {
+				value *= 1.5
+			}
+			else if (item.itemType === 'staves' ||
+				item.itemType === 'piercers' ||
+				item.itemType === 'bows' ||
+				item.itemType === 'oneHandSlash' ||
+				item.itemType === 'twoHandSlash' ||
+				item.itemType === 'oneHandBlunt' ||
+				item.itemType === 'twoHandBlunt') {
+				value *= 2.3
+			}
+			else {
+				value *= 1.2
+			}
+		}
+		return ~~value
 	}
 }()

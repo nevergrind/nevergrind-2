@@ -10,6 +10,7 @@ const delayedCall = TweenMax.delayedCall.bind(TweenMax)
 const rand = Math.random
 const ceil = Math.ceil
 const floor = Math.floor
+const PI = Math.PI
 
 const log = console.log
 const info = console.info

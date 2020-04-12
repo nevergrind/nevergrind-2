@@ -1,9 +1,5 @@
 var context;
-(function () {
-	var z;
-	var isMenuAbove;
-	var yAdjust;
-
+(function ($) {
 	context = {
 		id: '',
 		timer: new delayedCall(0, ''),
@@ -32,6 +28,7 @@ var context;
 		setChatMenuHtml,
 		setPartyMenuHtml,
 	}
+	var el, z, isMenuAbove, yAdjust
 	////////////////////////////////////
 	function init() {
 		$("#context-wrap").on('click', '.context-items', function (e) {
@@ -177,18 +174,19 @@ var context;
 		return my.mouse.y + yAdjust;
 	}
 	function show(s) {
-		if (!s) return;
-		var e = getElementById('context-wrap');
-		e.innerHTML = s;
-		e.style.top = posY() + 'px';
-		e.style.left = posX() + 'px';
-		e.style.visibility = 'visible';
-		context.isOpen = 1;
-		context.openDate = Date.now();
+		if (!s) return
+		context.isOpen = 1
+		context.openDate = Date.now()
+		el = getElementById('context-wrap')
+		el.innerHTML = s
+		el.style.top = posY() + 'px'
+		el.style.left = posX() + 'px'
+		el.style.visibility = 'visible'
 	}
 	function hide() {
-		getElementById('context-wrap').style.visibility = 'hidden';
 		context.isOpen = 0;
+		el = getElementById('context-wrap')
+		if (el !== null) el.style.visibility = 'hidden'
 	}
 	function hideCheck() {
 		if (context.isOpen) {
@@ -205,4 +203,4 @@ var context;
 		context.player = name;
 		context.setPartyMenuHtml();
 	}
-})();
+})($);

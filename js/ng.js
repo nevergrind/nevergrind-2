@@ -298,7 +298,7 @@ var ng;
 			type: 'POST',
 			timeout: 4000
 		});
-		TweenLite.defaultEase = Quad.easeOut;
+		TweenLite.defaultEase = Power2.easeOut;
 		for (var i=1; i<=ng.maxLevel; i++) {
 			ng.levels.push(i+'');
 		}
@@ -409,22 +409,19 @@ var ng;
 		})
 	}
 
-	function splitText(id, msg, d) {
-		if (d === void 0){
-			d = .01;
-		}
+	function splitText(id, msg, fadeDuration = .01, staggerDuration = .01) {
 		var e = querySelector('#'+ id);
 		e.textContent = msg;
 		var split = new SplitText(e, {
 				type: "words,chars"
 			});
-		TweenMax.staggerFromTo(split.chars, d, {
+		TweenMax.staggerFromTo(split.chars, fadeDuration, {
 			immediateRender: true,
 			alpha: 0
 		}, {
 			delay: .1,
 			alpha: 1
-		}, .01);
+		}, staggerDuration);
 	}
 	function logout() {
 		if (ng.locked || app.isApp) return;

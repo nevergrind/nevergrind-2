@@ -109,7 +109,7 @@ loot.twoHandBlunts = {
 			defense: [2, 4],
 			addIce: [7, 11],
 			resistSilence: 10,
-			indestructible: true,
+			enhancedDamageToUndead: [5, 8],
 			ignoreTargetArmor: true,
 		}, {
 			name: 'War Hammer',

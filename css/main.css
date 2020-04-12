@@ -158,20 +158,19 @@ html {
 @media only screen and (min-width: 3400px) { html { font-size: 28px }}
 @media only screen and (min-width: 3800px) { html { font-size: 30px }}
 
-body {
+#body {
 	display: flex;
 	flex-direction: column;
 	position: fixed;
 	top: 0;
-	right: 0;
-	bottom: 0;
 	left: 0;
+	width: 100%;
 	font-family: Play, Roboto, Arial, sans-serif;
 	background: #000;
 	color: #fff;
 	min-width: 1280px;
-	max-width: 3840px;
 	min-height: 720px;
+	max-width: 3840px;
 	max-height: 2160px;
 	margin: 0;
 	overflow: hidden;
@@ -718,7 +717,7 @@ tbody { border: 0 }
 	bottom: 2.5rem;
 	top: -2.5rem;
 	left: 0;
-	right: 0;
+	width: 100%;
 	opacity: 0;
 }
 #town-merged {
@@ -735,9 +734,6 @@ tbody { border: 0 }
 	bottom: 0;
 	width: 100%;
 	border: .1rem ridge #048;
-}
-#town-sky {
-	background: linear-gradient(to top, #5bf 50%, #05b 100%);
 }
 #town-academy {
 	bottom: 38.88vh;
@@ -792,6 +788,37 @@ tbody { border: 0 }
 	bottom: 0;
 	pointer-events: none;
 }
+.town-clouds {
+	position: absolute;
+	top: 0%;
+	left: 200%;
+	pointer-events: none;
+}
+.celestial {
+	position: absolute;
+	top: 0;
+	pointer-events: none;
+}
+#town-sky {
+	top: 0%;
+	width: 100%;
+	height: 100%;
+	background-image: radial-gradient(farthest-corner at 50% 50%, #5bf, #05b)
+}
+#sun {
+	left: 40vw;
+	width: 52vw;
+	height: 52vw;
+	transform: translateY(-50%) scale(1.2);
+	filter: saturate(200%) brightness(200%);
+}
+#cloud-1 {
+	left: 0%;
+}
+#cloud-2 {
+	left: 100%;
+}
+
 .town-building {
 	position: absolute;
 	bottom: 0;
@@ -2103,6 +2130,7 @@ background-image:
 	height: 16rem;
 	overflow: auto;
 	align-content: flex-start;
+	flex: 1;
 }
 #bank-slot-wrap .item-slot-wrap {
 	margin: .1rem 0;
@@ -2634,8 +2662,7 @@ background-image:
 #various-item-wrap .item-slot-wrap { margin-top: .2rem; }
 
 
-
-.test-opacity-dom { animation: town-opacity-dom 1s linear infinite; }
+/*.test-opacity-dom { animation: town-opacity-dom 1s linear infinite; }
 .test-opacity-filter { animation: town-opacity-filter 1s linear infinite; }
 @keyframes town-opacity-dom {
 	from { opacity: 0; }
@@ -2644,4 +2671,4 @@ background-image:
 @keyframes town-opacity-filter {
 	from { opacity: 0; }
 	to { opacity: 1; }
-}
+}*/

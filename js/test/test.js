@@ -1,13 +1,5 @@
 var test;
-(function(Linear, TweenMax, TimelineMax, undefined) {
-	var c;
-	var i;
-	var e;
-	var z;
-	var start;
-	var end;
-	var filters;
-
+(function(Linear, TweenMax, TimelineMax, PIXI, undefined) {
 	test = {
 		chat: {
 			id: 999999999,
@@ -43,7 +35,21 @@ var test;
 		getItem,
 		animateBtn,
 		loot16,
+		pixi,
+		pixiRenderer,
 	}
+
+	var c;
+	var i;
+	var e;
+	var z;
+	var start;
+	var end;
+	var filters;
+	var pixApp
+	var width
+	var height
+	const ratio = 1920 / 1080
 	///////////////////////////////////
 	function battle() {
 		/**
@@ -121,7 +127,7 @@ var test;
 			e.style.top = ~~(rand() * 100) +'%';
 			e.style.left = ~~(rand() * 100) +'%';
 			e.style.transform = 'translate(-50%, -50%)';
-			e.src = 'images/an orc.png';
+			e.src = 'images/test/an orc.png';
 			e2.appendChild(e);
 			/*TweenMax.to(e, 2, {
 				startAt: { rotation: 0 },
@@ -209,7 +215,7 @@ var test;
 		for (var i=0; i<16; i++) item.getLoot()
 	}
 	function opacity(count) {
-		var max = count || 600;
+		var max = count || 2000;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
@@ -222,12 +228,12 @@ var test;
 			e.style.top = ~~(rand() * 100) +'%';
 			e.style.left = ~~(rand() * 100) +'%';
 			e.style.transform = 'translate(-50%, -50%)';
-			e.src = 'images/an orc.png';
+			e.src = 'images/test/an orc.png';
 			e2.appendChild(e);
 		}
 	}
 	function opacityDOM(count) {
-		var max = count || 600;
+		var max = count || 2000;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
@@ -240,12 +246,12 @@ var test;
 			e.style.top = ~~(rand() * 100) +'%';
 			e.style.left = ~~(rand() * 100) +'%';
 			e.style.transform = 'translate(-50%, -50%)';
-			e.src = 'images/an orc.png';
+			e.src = 'images/test/an orc.png';
 			e2.appendChild(e);
 		}
 	}
 	function boxShadow(count) {
-		var max = count || 600;
+		var max = count || 500;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
@@ -258,7 +264,7 @@ var test;
 			e.style.top = ~~(rand() * 100) +'%';
 			e.style.left = ~~(rand() * 100) +'%';
 			e.style.transform = 'translate(-50%, -50%)';
-			e.src = 'images/an orc.png';
+			e.src = 'images/test/an orc.png';
 			e2.appendChild(e);
 			TweenMax.to(e, 1, {
 				startAt: { boxShadow: '0 0 0 #000' },
@@ -271,7 +277,7 @@ var test;
 		}
 	}
 	function dropShadow(count) {
-		var max = count || 10;
+		var max = count || 500;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
@@ -284,16 +290,93 @@ var test;
 			e.style.top = ~~(rand() * 100) +'%';
 			e.style.left = ~~(rand() * 100) +'%';
 			e.style.transform = 'translate(-50%, -50%)';
-			e.src = 'images/an orc.png';
+			e.src = 'images/test/an orc.png';
 			e2.appendChild(e);
 			TweenMax.to(e, 1, {
 				startAt: { filter: 'drop-shadow(0px 0px 0px #0f0)' },
 				x: '+=50',
-				filter: 'drop-shadow(0px 0px 20px #0f0)',
+				filter: 'drop-shadow(0px 0px 10px #0f0)',
 				repeat: -1,
 				ease: Linear.easeIn,
 				yoyo: true
 			})
 		}
 	}
-})(Linear, TweenMax, TimelineMax);
+	function pixi() {
+		pixApp = new PIXI.Application({
+			width: 1920,
+			height: 1080,
+			backgroundColor: '#0000'
+		});
+		console.info('textPix', pixApp)
+		console.info('view', pixApp.view)
+		pixApp.view.style.position = 'absolute'
+		pixApp.view.style.zIndex = 3
+		//var renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
+		document.body.appendChild(pixApp.view);
+
+		// create a new Sprite from an image path
+		const orc = PIXI.Sprite.from('images/test/an orc.png');
+
+		// center the sprite's anchor point
+		orc.anchor.set(0.5);
+
+		// move the sprite to the center of the screen
+		orc.x = pixApp.screen.width / 2;
+		orc.y = pixApp.screen.height / 2;
+
+		pixApp.stage.addChild(orc);
+
+		TweenMax.to(orc, 1, {
+			rotation: 2 * PI,
+			repeat: -1,
+			ease: Linear.easeNone
+		})
+		window.onresize = pixiResize
+		pixiResize()
+	}
+	function pixiRenderer() {
+		pixApp = new PIXI.Application({
+			width: 1920,
+			height: 1080,
+			transparent: true
+		});
+		console.info('textPix', pixApp)
+		console.info('view', pixApp.view)
+		console.info('screen', pixApp.screen)
+		pixApp.view.style.position = 'absolute'
+		pixApp.view.style.zIndex = 3
+		document.body.appendChild(pixApp.view)
+
+		// create a new Sprite from an image path
+		const orc = PIXI.Sprite.from('images/test/an orc.png');
+		// center the sprite's anchor point
+		orc.anchor.set(0.5);
+		orc.x = pixApp.screen.width / 2;
+		orc.y = pixApp.screen.height / 2;
+		pixApp.stage.addChild(orc);
+
+		TweenMax.to(orc, 1, {
+			rotation: 2 * PI,
+			repeat: -1,
+			ease: Linear.easeNone
+		})
+		window.onresize = pixiResize
+		pixiResize()
+	}
+	function pixiResize() {
+		if (window.innerWidth / window.innerHeight >= ratio) {
+			// wider than default ratio
+			width = window.innerHeight * ratio;
+			height = window.innerHeight;
+		}
+		else {
+			// more narrow than default ratio
+			width = window.innerWidth;
+			height = window.innerWidth / ratio;
+		}
+		console.info('pixiResize', width, height)
+		pixApp.view.style.width = width + 'px';
+		pixApp.view.style.height = height + 'px';
+	}
+})(Linear, TweenMax, TimelineMax, PIXI);

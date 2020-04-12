@@ -1,7 +1,6 @@
 var town;
-(function($, _, TweenMax, undefined) {
+(function($, _, TweenMax, Linear, RoughEase, Power0, Power1, undefined) {
 	town = {
-		initialized: 0,
 		lastAside: {},
 		delegated: 0,
 		windowsOpen: {
@@ -22,16 +21,13 @@ var town;
 		updateVariousDOM,
 		showLabel,
 		hideLabel,
+		isMerchantMode,
 	}
-	var i, id, len, html, str, foo, msg, startX, startY, endX, endY, itemIndex, rarity, townConfig, labelConfig, label
-	const merchantSlots = [
-		'amulets',
-		'rings',
-		'cloaks',
-		'charms',
-		'bows',
-		'oneHandBlunts',
-		'twoHandBlunts',
+	var i, id, len, html, str, foo, msg, bgConfig, itemIndex, rarity, townConfig, labelConfig, label
+	const merchants = [
+		'Merchant',
+		'Apothecary',
+		'Blacksmith',
 	]
 	const blacksmithSlots = [
 		'helms',
@@ -42,6 +38,8 @@ var town;
 		'belts',
 		'legs',
 		'boots',
+		'oneHandBlunts',
+		'twoHandBlunts',
 		'oneHandSlashers',
 		'twoHandSlashers',
 	]
@@ -49,10 +47,16 @@ var town;
 		'amulets',
 		'rings',
 		'charms',
+		'cloaks',
+		'bows',
 		'piercers',
 		'focus',
 		'staves',
 		'shields',
+	]
+	const merchantSlots = [
+		...blacksmithSlots,
+		...apothecarySlots
 	]
 	////////////////////////////////////////////
 	function go() {
@@ -109,6 +113,8 @@ var town;
 				game.initPlayedCache()
 
 				getElementById('scene-town').innerHTML = getTownHtml()
+				animateClouds()
+				animateSky()
 				$("#scene-title").remove()
 				town.init()
 				bar.init();
@@ -138,13 +144,101 @@ var town;
 			});
 		}
 	}
+	function animateSky() {
+		var duration = 900
+		TweenMax.to('#sun', duration, {
+			startAt: { top: '50vw', y: '0%' },
+			top: '-80vw',
+			force3D: true,
+			ease: Power2.easeOut
+		})
+		TweenMax.to('#sun', 1/60, {
+			rotation: 360,
+			repeat: -1,
+			force3D: true,
+			ease: Linear.easeOut
+		})
+		var skyProps = {
+			top: 50,
+			left: 66,
+			innerR: 92,
+			innerG: 32,
+			innerB: 160,
+			outerR: 16,
+			outerG: 0,
+			outerB: 48,
+		}
+		var el = querySelector('#town-sky')
+		TweenMax.to(skyProps, duration, {
+			top: -80,
+			innerR: 80,
+			innerG: 192,
+			innerB: 255,
+			outerR: 0,
+			outerG: 80,
+			outerB: 192,
+			onUpdate: setSky,
+			onUpdateParams: [el, skyProps],
+			ease: Power2.easeOut
+		})
+
+		TweenMax.to('#town-building-wrap', duration / 2, {
+			startAt: {
+				filter: 'saturate(.5) brightness(.5)'
+			},
+			filter: 'saturate(1) brightness(1)',
+			ease: Power2.easeOut
+		})
+
+		TweenMax.to('.town-clouds', duration / 2, {
+			startAt: {
+				filter: 'saturate(.1) brightness(.1) opacity(.6)'
+			},
+			filter: 'saturate(1) brightness(1) opacity(.85)',
+			ease: Power2.easeOut
+		})
+	}
+	function setSky(el, obj) {
+		TweenMax.set(el, {
+			background: 'radial-gradient('+
+				'farthest-side at '+ obj.left +'vw '+ obj.top +'vw,'+
+				'rgb('+ obj.innerR +', ' + obj.innerG + ', ' + obj.innerB + '),'+
+				'rgb('+ obj.outerR +', ' + obj.outerG + ', ' + obj.outerB + ')' +
+			')'
+		})
+	}
+	function animateClouds() {
+		var duration = 667
+		TweenMax.to('#cloud-1', duration / 2, {
+			left: '-100%',
+			force3D: true,
+			ease: Linear.easeNone,
+			onComplete: function() {
+				TweenMax.to('#cloud-1', duration, {
+					startAt: { left: '100%' },
+					left: '-100%',
+					force3D: true,
+					ease: Linear.easeNone,
+					repeat: -1
+				})
+			}
+		})
+		TweenMax.to('#cloud-2', duration, {
+			left: '-100%',
+			force3D: true,
+			ease: Linear.easeNone,
+			repeat: -1
+		})
+	}
 	function getTownHtml() {
 		html = '<div id="town-wrap">' +
 			'<div id="town-sky" class="img-bg town-bg"></div>' +
-			'<img class="img-bg town-bg" src="images/town/town-clouds.png">' +
+			'<img id="sun" class="celestial" src="images/env/sun-4.png">' +
+			'<img id="cloud-1" class="town-clouds" src="images/town/town-clouds-1.png">' +
+			'<img id="cloud-2" class="town-clouds" src="images/town/town-clouds-1.png">' +
 			'<div id="town-building-wrap" class="img-bg">' +
 				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/town-academy.png">' +
-				'<img id="town-background" class="town-bg" src="images/town/town-bg.png">' +
+				'<img id="town-background" class="town-bg" src="images/town/town-bg-2.png">' +
 				'<img data-id="Apothecary" id="town-apothecary" class="town-building" src="images/town/town-apothecary.png">' +
 				'<img data-id="Merchant" id="town-merchant" class="town-building" src="images/town/town-merchant.png">' +
 				'<img data-id="Bank" id="town-bank" class="town-building" src="images/town/town-bank.png">' +
@@ -182,13 +276,13 @@ var town;
 		guild.getMembers(guild.throttleTime);
 	}
 	function init() {
-		if (!town.initialized) {
-			town.initialized = 1;
-			town.preload();
-		}
+		town.preload();
 	}
 	function preload() {
-		//cache.preloadImages([])
+		cache.preloadImages([
+			'images/bg/bastille-1.png',
+			'images/bg/bastille-2.png'
+		])
 	}
 
 	function loadBank() {
@@ -217,7 +311,7 @@ var town;
 			rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
 			itemIndex = _.random(0, len)
 			items.merchant[i] = item.getItem({
-				mobLevel: my.level,
+				mobLevel: 50,
 				bonus: 0,
 				rarity: rarity,
 				itemSlot: merchantSlots[itemIndex]
@@ -245,13 +339,6 @@ var town;
 			x: 0,
 			y: 0
 		})
-	}
-	function animateBuilding(o) {
-		TweenMax.to('#town-wrap', o.duration, {
-			scale: o.scale,
-			x: o.x,
-			y: o.y
-		});
 	}
 	function showLabel() {
 		id = this.dataset.id
@@ -305,15 +392,15 @@ var town;
 			}
 		}
 		else if (id === 'Tavern') {
-			msg = 'View the leaderboard, seek advice from the bartender, and swap information with other heroes'
+			msg = 'View the leaderboard, seek advice from the innkeeper, and swap information with other heroes'
 			labelConfig = {
 				left: ng.toPercentWidth(302),
 				top: ng.toPercentHeight(467)
 			}
 		}
 		if (!town.windowsOpen.various) {
-			ng.splitText('town-building-label-header', id, .1)
-			ng.splitText('town-build-label-description', msg)
+			ng.splitText('town-building-label-header', id, .5, .05)
+			ng.splitText('town-build-label-description', msg, .2, .015)
 			TweenMax.to('#town-building-label-wrap', .3, {
 				startAt: {
 					left: labelConfig.left + '%',
@@ -332,14 +419,16 @@ var town;
 	function updateVariousDOM() {
 		querySelector('#root-various').innerHTML = getVariousHtml()
 		querySelector('#root-various').style.display = 'flex'
-		startX = 0
-		startY = 0
-		endX = '-40%'
-		endY = '-5%'
+		bgConfig = {
+			startX: '0%',
+			startY: '0%',
+			endX: '-40%',
+			endY: '-5%'
+		}
 
 		msg = ''
 		if (town.windowsOpen.various === 'Academy') {
-			msg = 'Lorem ipsum or something'
+			msg = 'Your skills and spells may be trained here. You will never reach your full potential without diligence! Each skill or spell must be trained individually.'
 			townConfig = {
 				duration: 1,
 				scale: 1.5,
@@ -348,8 +437,7 @@ var town;
 			}
 		}
 		else if (town.windowsOpen.various === 'Apothecary') {
-			tooltip.conditionalHide('apothecary')
-			msg = 'Lorem ipsum or something'
+			msg = 'Make sure you stock up on our potions to survive to the end of your mission. We also offer items from the practical to the arcane.'
 			townConfig = {
 				duration: 1,
 				scale: 1.4,
@@ -358,7 +446,6 @@ var town;
 			}
 		}
 		else if (town.windowsOpen.various === 'Bank') {
-			tooltip.conditionalHide('bank')
 			msg = 'If you have any special items that you would like to share with other heroes, you have come to the right place. I take an interest to collecting rare treasures as well!'
 			if (!town.isBankInitialized) loadBank()
 			townConfig = {
@@ -369,8 +456,7 @@ var town;
 			}
 		}
 		else if (town.windowsOpen.various === 'Blacksmith') {
-			tooltip.conditionalHide('blacksmith')
-			msg = 'Lorem ipsum or something'
+			msg = 'Need armor or a weapon? You have come to the right place, lad. We offer the best iron and steel in all of Edenburg.'
 			townConfig = {
 				duration: 1,
 				scale: 1.2,
@@ -394,32 +480,34 @@ var town;
 				x: -180,
 				y: 120
 			}
-			startX = '10%'
-			startY = '-45%'
-			endX = '-40%'
-			endY = '-5%'
 		}
 		else if (town.windowsOpen.various === 'Merchant') {
-			tooltip.conditionalHide('merchant')
 			!town.isMerchantInitialized && processMerchant()
-			startX = '-75%'
-			startY = '-25%'
-			endX = '-35%'
-			endY = '0%'
 			msg = 'Good day, ' + my.name + ', what are you looking for? We carry the finest jewelry in all of Vandamor! Be sure to check out the latest shipment of cloaks that we just received! I have a special price just for you, my friend!'
+			bgConfig = {
+				startX: '-20%',
+				startY: '-40%',
+				endX: '-43%',
+				endY: '-2%'
+			}
 			townConfig = {
 				duration: 1,
 				scale: 1.4,
-				x: 300,
-				y: 50
+				x: 250,
+				y: -30
 			}
 		}
 		else if (town.windowsOpen.various === 'Mission Counter') {
 			msg = 'Edenburg needs brave adventurers like you to restore peace to our blessed Kingdom! Some missions are more dangerous than others—choose your mission carefully!'
+			townConfig = {
+				duration: .5,
+				scale: 1,
+				x: 0,
+				y: 0
+			}
 		}
 		else if (town.windowsOpen.various === 'Tavern') {
-			tooltip.conditionalHide('tavern')
-			msg = 'Lorem ipsum or something'
+			msg = 'Tell me your story, adventurer. What brings you to Edenburg? Many adventurers come to this city seeking fame and fortune. I am happy to share the wisdom and knowledge I have acquired.'
 			townConfig = {
 				duration: 1,
 				scale: 1.2,
@@ -430,14 +518,22 @@ var town;
 		ng.splitText('various-description', msg)
 		hideLabel()
 		animateBuilding(townConfig)
-		TweenMax.set('#town-various-bg', {
+		TweenMax.to('#town-various-bg', 1, {
 			startAt: {
-				x: startX,
-				y: startY
+				x: bgConfig.startX,
+				y: bgConfig.startY
 			},
-			x: endX,
-			y: endY
+			x: bgConfig.endX,
+			y: bgConfig.endY
 		})
+		tooltip.conditionalHide()
+	}
+	function animateBuilding(o) {
+		TweenMax.to('#town-wrap', o.duration, {
+			scale: o.scale,
+			x: o.x,
+			y: o.y
+		});
 	}
 	function getVariousHtml() {
 		html = ''
@@ -453,12 +549,7 @@ var town;
 		return html
 	}
 	function academyHtml() {
-		html = '<div class="flex" style="'+ css.header +'">' +
-			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
-			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
-		'</div>' +
+		html = variousHeaderHtml() +
 		'<div id="various-body" class="flex-column flex-max">' +
 			'Academy body!' +
 		'</div>' +
@@ -466,12 +557,7 @@ var town;
 		return html
 	}
 	function apothecaryHtml() {
-		html = '<div class="flex" style="'+ css.header +'">' +
-			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
-			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
-		'</div>' +
+		html = variousHeaderHtml() +
 		'<div id="various-body" class="flex-column flex-max">' +
 			'Apothecary body!' +
 		'</div>' +
@@ -479,12 +565,7 @@ var town;
 		return html
 	}
 	function blacksmithHtml() {
-		html = '<div class="flex" style="'+ css.header +'">' +
-			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
-			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
-		'</div>' +
+		html = variousHeaderHtml() +
 		'<div id="various-body" class="flex-column flex-max">' +
 			'Blacksmith body!' +
 		'</div>' +
@@ -502,12 +583,7 @@ var town;
 		return foo
 	}
 	function bankHtml() {
-		html = '<div class="flex" style="'+ css.header +'">' +
-			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">Bank</div>' +
-			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
-		'</div>' +
+		html = variousHeaderHtml() +
 		bankSlotHtml() +
 		'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
 			'<div class="stag-blue-top" style="' + css.name + '">Bank Details</div>' +
@@ -516,12 +592,7 @@ var town;
 		return html
 	}
 	function missionCounterHtml() {
-		html = '<div class="flex" style="'+ css.header +'">' +
-			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
-			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
-		'</div>' +
+		html = variousHeaderHtml() +
 		'<div id="various-body" class="flex-column flex-max">' +
 			mission.asideHtmlHead() +
 			'<div id="mission-counter" class="aside-frame text-shadow">' +
@@ -533,12 +604,7 @@ var town;
 		return html
 	}
 	function guildHtml() {
-		html = '<div class="flex" style="'+ css.header +'">' +
-			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
-			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
-		'</div>' +
+		html = variousHeaderHtml() +
 		'<div id="various-body" class="flex-column flex-max" style="display: flex; flex-direction: column;">' +
 			// new stuff
 			'<img id="town-various-bg" src="images/bg/bastille-2.png">' +
@@ -573,15 +639,10 @@ var town;
 		return html
 	}
 	function merchantHtml() {
-		html = '<div class="flex" style="'+ css.header +'">' +
-			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
-			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
-		'</div>' +
+		html = variousHeaderHtml() +
 		'<div id="various-body" class="flex-column flex-max">' +
-		'<img id="town-various-bg" src="images/bg/bastille-1.png">' +
-		'<div id="various-item-wrap">'+ getMerchantSlotHtml() +'</div>' +
+			'<img id="town-various-bg" src="images/bg/bastille-1.png">' +
+			'<div id="various-item-wrap">'+ getMerchantSlotHtml() +'</div>' +
 		'</div>' +
 		variousFooterHtml('gnome-male-0')
 		return html
@@ -594,17 +655,21 @@ var town;
 		return str
 	}
 	function tavernHtml() {
-		html = '<div class="flex" style="'+ css.header +'">' +
-			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
-			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
-		'</div>' +
+		html = variousHeaderHtml() +
 		'<div id="various-body" class="flex-column flex-max">' +
 			'Tavern body!' +
 		'</div>' +
 		variousFooterHtml('dark-elf-female-0')
 		return html
+	}
+	function variousHeaderHtml() {
+		return '<div class="flex" style="'+ css.header +'">' +
+			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
+			'</div>' +
+			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+		'</div>'
+
 	}
 	function variousFooterHtml(avatar) {
 		return '<div id="various-footer" class="flex-center stag-blue-top">' +
@@ -614,4 +679,7 @@ var town;
 			'<div id="various-description" class="flex-max"></div>' +
 		'</div>'
 	}
-})($, _, TweenMax);
+	function isMerchantMode() {
+		return merchants.includes(town.windowsOpen.various)
+	}
+})($, _, TweenMax, Linear, RoughEase, Power0, Power1);

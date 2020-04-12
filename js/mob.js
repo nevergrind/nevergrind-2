@@ -295,7 +295,7 @@ var mob;
 
 		TweenMax.to(mobs[i].dom.details, speed, {
 			y: mobs[i].barDeathBottom * mobs[i].size,
-			ease: Quart.easeIn
+			ease: Power4.easeIn
 		});
 		TweenMax.to(mobs[i], speed, {
 			startAt: {

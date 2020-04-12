@@ -1,5 +1,5 @@
 var cache;
-(function() {
+(function(Image, Audio, undefined) {
 	cache = {
 		images: [], // actual image in memory
 		imageStrings: [], // string values
@@ -12,10 +12,7 @@ var cache;
 		preloadAudio,
 		preloadImages,
 	}
-	var mob
-	var image
-	var audio
-	var index
+	var mob, image, audio, index, len
 	///////////////////////
 	function preloadMob(type) {
 		mob = [];
@@ -25,40 +22,40 @@ var cache;
 		cache.preloadImages(mob);
 	}
 	function preloadImages(a) {
-		image;
-		a.forEach(function(v){
-			if (v && !cache.imageStrings.includes(v)) {
-				image = new Image()
-				image.src = v
-				cache.images.push(image)
-				cache.imageStrings.push(v)
+		a.forEach(loadImage)
+	}
+	function loadImage(v) {
+		if (v && !cache.imageStrings.includes(v)) {
+			image = new Image()
+			image.src = v
+			cache.images.push(image)
+			cache.imageStrings.push(v)
 
-				image.onload = function() {
-					index = cache.images.indexOf(this)
-					if (index !== -1) {
-						cache.images.splice(index, 1)
-					}
+			image.onload = function() {
+				index = cache.images.indexOf(this)
+				if (index !== -1) {
+					cache.images.splice(index, 1)
 				}
 			}
-		})
+		}
 	}
 	function preloadAudio(a) {
-		audio;
-		a.forEach(function(v){
-			if (!cache.audioStrings.includes(v)) {
-				audio = new Audio()
-				audio.src = v
-				cache.audio.push(audio)
-				cache.audioStrings.push(v)
+		a.forEach(loadAudio);
+	}
+	function loadAudio(v) {
+		if (!cache.audioStrings.includes(v)) {
+			audio = new Audio()
+			audio.src = v
+			cache.audio.push(audio)
+			cache.audioStrings.push(v)
 
-				audio.onload = function() {
-					index = cache.audio.indexOf(this)
-					if (index !== -1) {
-						cache.images.splice(index, 1)
-					}
+			audio.onload = function() {
+				index = cache.audio.indexOf(this)
+				if (index !== -1) {
+					cache.images.splice(index, 1)
 				}
 			}
-		});
+		}
 	}
 	function clearAll() {
 		cache.clearImages();
@@ -72,4 +69,4 @@ var cache;
 		cache.audio = [];
 		cache.audioStrings = [];
 	}
-})();
+})(Image, Audio);

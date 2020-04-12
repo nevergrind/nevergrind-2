@@ -1,6 +1,7 @@
 var tooltip;
 (function($, parseInt, TweenMax, _, getComputedStyle, undefined) {
 	tooltip = {
+		lastHoveredType: '',
 		eq: { isHovering: false },
 		inv: { isHovering: false },
 		bank: { isHovering: false },
@@ -16,6 +17,7 @@ var tooltip;
 		handleItemEnter,
 		handleItemLeave,
 		conditionalHide,
+		getDps,
 	};
 	var tooltipEl = getElementById('tooltip-wrap')
 	var wearsLeather = [
@@ -47,7 +49,7 @@ var tooltip;
 		'WAR',
 	]
 	//////////////////////////////////////////////////
-	function getItemHtml(obj) {
+	function getItemHtml(obj, type) {
 		var html = ''
 		var divider = '<hr class="fancy-hr" style="margin: .2rem 0">'
 		var statHtml = ''
@@ -74,7 +76,6 @@ var tooltip;
 				getRequiredItemProficiency(obj) +
 				getItemSlot(obj.slots) +
 				(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
-				getDurabilityHtml(obj.durability) +
 			'</div>';
 
 			statHtml += '<div style="padding: .2rem">' +
@@ -176,7 +177,6 @@ var tooltip;
 				getGenericPercentStatHtml(obj.resistFear, 'Fear Resist') +
 				getGenericPercentStatHtml(obj.resistStun, 'Stun Resist') +
 				getGenericPercentStatHtml(obj.resistSilence, 'Silence Resist') +
-				getPropHtml(obj.indestructible, 'Indestructible') +
 				// debuff
 				getPropHtml(obj.reducedHealing, obj.reducedHealing + '% Healing on Monsters') +
 				getPropHtml(obj.restInPeace, 'Slain Monsters Rest in Peace') +
@@ -193,8 +193,11 @@ var tooltip;
 				// found at least one stat added to html str
 				html += divider;
 			}
-			html += statHtml +
-				'</div>' +
+			html += statHtml;
+			if (town.isMerchantMode()) {
+				html += item.getItemValueHtml(obj, type === 'inv' || type === 'eq')
+			}
+			html += '</div>' +
 			'</div>' +
 		'';
 
@@ -217,7 +220,7 @@ var tooltip;
 	}
 	function getWeaponDamageHtml(obj) {
 		if (obj.weaponSkill) {
-			var dps = (((obj.minDamage + obj.maxDamage) / 2) / obj.speed).toFixed(1);
+			var dps = getDps(obj).toFixed(1);
 			return '<div>Damage: '+ obj.minDamage + '&thinsp;–&thinsp;' + obj.maxDamage +'</div>' +
 				'<div>Speed: ' + (obj.speed % 1 === 0 ? obj.speed + '.0' : obj.speed) +'</div>' +
 				'<div>Damage Per Second: ' + dps + '</div>'
@@ -226,10 +229,8 @@ var tooltip;
 			return ''
 		}
 	}
-	function getDurabilityHtml(durability) {
-		return _.isUndefined(durability) ? '' : durability
-			? '<div>Durability ' + durability + '/100</div>'
-			: '<div class="item-restricted">Durability: ' + durability + '/100</div>'
+	function getDps(obj) {
+		return (((obj.minDamage + obj.maxDamage) / 2) / obj.speed)
 	}
 	function getRequiredLevelHtml(itemLevel) {
 		var level = getRequiredLevel(itemLevel)
@@ -315,8 +316,8 @@ var tooltip;
 
 	function show(obj, slotElement, type) {
 		if (!_.size(obj)) return
-		tooltipEl.innerHTML = getItemHtml(obj)
-			console.info('type', type)
+		tooltipEl.innerHTML = getItemHtml(obj, type)
+		// console.info('type', type)
 		if (slotElement) {
 			// x position
 			var y = slotElement.y - (4 * ng.responsiveRatio)
@@ -361,6 +362,7 @@ var tooltip;
 		var {index, type} = _.pick(event.currentTarget.dataset, [
 			'index', 'type'
 		])
+		tooltip.lastHoveredType = type
 		tooltip[type].isHovering = true
 		if (items[type][index].name) {
 			tooltip.show(items[type][index], querySelector('#' + type + '-slot-img-' + index), type)
@@ -373,11 +375,11 @@ var tooltip;
 		tooltip[type].isHovering = false
 		tooltip.hide()
 	}
-	function conditionalHide(windowType) {
-		if (typeof tooltip[windowType] === 'object' &&
-			tooltip[windowType].isHovering) {
+	function conditionalHide() {
+		if (typeof tooltip[tooltip.lastHoveredType] === 'object' &&
+			tooltip[tooltip.lastHoveredType].isHovering) {
 			tooltip.hide()
-			tooltip[windowType].isHovering = false
+			tooltip[tooltip.lastHoveredType].isHovering = false
 		}
 	}
 })($, parseInt, TweenMax, _, getComputedStyle);

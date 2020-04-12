@@ -90,7 +90,7 @@ loot.bows = {
 			sp: [11, 15],
 			addArcane: [3, 5],
 			dex: [15, 20],
-			repairsDurability: true,
+			enhancedDamageToEldritch: [3, 6],
 			resistBlood: [15, 20],
 			resistLightning: [15, 20],
 		}, {

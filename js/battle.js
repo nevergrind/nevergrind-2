@@ -90,12 +90,12 @@ var battle;
 		getElementById('battle-sky').style.backgroundImage = 'linear-gradient(to top, #135, #579)';
 		var cloud = 2;
 		getElementById('battle-clouds').style.backgroundImage = 'url("images/env/cloud' + cloud + '.png")';
-		TweenMax.to('#battle-clouds', 16000, {
+		/*TweenMax.to('#battle-clouds', 16000, {
 			startAt: { 'background-position': 0 },
 			'background-position': 3840,
 			ease: Linear.easeIn,
 			repeat: -1
-		});
+		});*/
 	}
 	function setTarget(i) {
 		console.info("Setting target ", i, Date.now());
