@@ -718,7 +718,8 @@ var bar;
 		updateInventoryDOM()
 		updateOptionsDOM()
 		town.closeVarious()
-
+		toast.hideDestroyToast()
+		toast.removeToast()
 		item.dropReset()
 	}
 

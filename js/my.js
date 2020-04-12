@@ -18,6 +18,7 @@ var my;
 			name: ''
 		},
 		team: 0,
+		gold: 0,
 		slot: 1,
 		tgt: 1,
 		attackOn: false,

@@ -22,8 +22,11 @@ var town;
 		showLabel,
 		hideLabel,
 		isMerchantMode,
+		buyItem,
+		sellItem,
+		showMerchantMsg,
 	}
-	var i, id, len, html, str, foo, msg, bgConfig, itemIndex, rarity, townConfig, labelConfig, label
+	var i, id, len, html, str, foo, msg, bgConfig, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj
 	const merchants = [
 		'Merchant',
 		'Apothecary',
@@ -145,7 +148,7 @@ var town;
 		}
 	}
 	function animateSky() {
-		var duration = 900
+		var duration = 1200
 		TweenMax.to('#sun', duration, {
 			startAt: { top: '50vw', y: '0%' },
 			top: '-80vw',
@@ -208,7 +211,12 @@ var town;
 		})
 	}
 	function animateClouds() {
-		var duration = 667
+		var duration = 777
+		/*TweenMax.set('#cloud-1', {
+			transformOrigin: '50% 0%',
+			transformPerspective: 200,
+			rotationX: -25,
+		})*/
 		TweenMax.to('#cloud-1', duration / 2, {
 			left: '-100%',
 			force3D: true,
@@ -311,7 +319,7 @@ var town;
 			rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
 			itemIndex = _.random(0, len)
 			items.merchant[i] = item.getItem({
-				mobLevel: 50,
+				mobLevel: my.level,
 				bonus: 0,
 				rarity: rarity,
 				itemSlot: merchantSlots[itemIndex]
@@ -401,14 +409,35 @@ var town;
 		if (!town.windowsOpen.various) {
 			ng.splitText('town-building-label-header', id, .5, .05)
 			ng.splitText('town-build-label-description', msg, .2, .015)
-			TweenMax.to('#town-building-label-wrap', .3, {
+			TweenMax.killTweensOf(labelObj)
+			TweenMax.to('#town-building-label-wrap', .2, {
 				startAt: {
 					left: labelConfig.left + '%',
 					top: labelConfig.top + '%'
 				},
 				opacity: 1
 			})
+			labelObj = {
+				brightness: 1.5
+			}
+			TweenMax.set('#town-building-label-wrap', {
+				backdropFilter: 'sepia(1) hue-rotate(180deg) saturate(4) brightness(1.5)',
+			})
+			TweenMax.to(labelObj, .4, {
+				delay: .3,
+				brightness: 10,
+				onUpdate: setLabelBg,
+				onUpdateParams: [labelObj],
+				yoyo: true,
+				repeat: 1,
+				ease: Power1.easeInOut
+			})
 		}
+	}
+	function setLabelBg(obj) {
+		TweenMax.set('#town-building-label-wrap', {
+			backdropFilter: 'sepia(1) hue-rotate(180deg) saturate(6) brightness('+ obj.brightness +')'
+		})
 	}
 	function hideLabel() {
 		TweenMax.to('#town-building-label-wrap', .5, {
@@ -545,7 +574,6 @@ var town;
 		else if (town.windowsOpen.various === 'Merchant') html = merchantHtml()
 		else if (town.windowsOpen.various === 'Mission Counter') html = missionCounterHtml()
 		else if (town.windowsOpen.various === 'Tavern') html = tavernHtml()
-		else html = merchantHtml()
 		return html
 	}
 	function academyHtml() {
@@ -607,7 +635,7 @@ var town;
 		html = variousHeaderHtml() +
 		'<div id="various-body" class="flex-column flex-max" style="display: flex; flex-direction: column;">' +
 			// new stuff
-			'<img id="town-various-bg" src="images/bg/bastille-2.png">' +
+			'<img id="town-various-bg" src="images/bg/bastille-2.png" style="display: none">' +
 			'<div id="various-wrap">';
 			if (my.guild.name) {
 				html += '<div class="aside-frame">' +
@@ -638,11 +666,104 @@ var town;
 		variousFooterHtml('seraph-female-1')
 		return html
 	}
+	const buyTypes = [
+		'merchant',
+		'apothecary',
+		'blacksmith',
+	]
+	function buyItem() {
+		console.warn('buyItem', item.dragType, item.dragSlot, item.dragData.name)
+		if (!item.dragData.name) {
+			ng.splitText('various-description', 'Select an item to buy first!')
+		}
+		else if (!buyTypes.includes(item.dragType)) {
+			ng.splitText('various-description', 'What?! Why are you trying to buy items you already own?! Did you mean to sell it?')
+		}
+		else {
+			// TODO: ensure we have inventory space, gold validation
+			var slot = item.getFirstAvailableInvSlot()
+			if (slot === -1) {
+				ng.splitText('various-description', 'You have no room in your inventory! Come back when you have room.')
+				return
+			}
+			if (item.goldValue > my.gold) {
+				ng.splitText('various-description', 'Sorry, friend! We don\'t offer financing! You\'re gonna need more gold than that!')
+				return
+			}
+			ng.splitText('various-description', 'Thank you for buying ' + item.dragData.name + ' for ' + item.goldValue + ' gold!')
+			// insert item to inventory
+
+
+			// sets target price to zero
+			tooltip.goldValue = 0
+			setStoreGold()
+			item.dropReset()
+		}
+	}
+	function sellItem() {
+		console.warn('sellItem', item.dragType, item.dragSlot, item.dragData.name)
+		if (!item.dragData.name) {
+			ng.splitText('various-description', 'Select an item to sell first!')
+		}
+		else if (buyTypes.includes(item.dragType)) {
+			ng.splitText('various-description', 'You want to sell MY items? That\'s not how this works, buddy.')
+		}
+		else {
+			ng.splitText('various-description', 'Thank you for selling ' + item.dragData.name + ' for ' + item.goldValue + ' gold!')
+			tooltip.goldValue = 0
+			setStoreGold()
+			item.dropReset()
+		}
+	}
+	function showMerchantMsg() {
+		if (buyTypes.includes(town.windowsOpen.various.toLowerCase())) {
+			// is viewing a store
+			if (buyTypes.includes(item.dragType)) {
+				// clicked a store item
+				ng.splitText('various-description', 'Do you want to buy ' + item.dragData.name + ' for ' + tooltip.goldValue + ' gold?')
+			}
+			else {
+				// clicked my item
+				ng.splitText('various-description', 'Do you want to sell ' + item.dragData.name + ' for ' + tooltip.goldValue + ' gold?')
+			}
+			setStoreGold()
+			TweenMax.to('#town-value-wrap', .5, {
+				startAt: { filter: 'saturate(3) brightness(3)' },
+				filter: 'saturate(1) brightness(1)'
+			})
+		}
+	}
+	function setStoreGold() {
+		obj = {
+			value: _.clone(item.goldValue)
+		}
+		TweenMax.to(obj, .5, {
+			value: _.clone(tooltip.goldValue),
+			onUpdate: updateStoreGold,
+			onUpdateParams: [obj]
+		})
+		item.goldValue = tooltip.goldValue
+	}
+	function updateStoreGold(obj) {
+		goldEl = querySelector('#town-value')
+		if (goldEl !== null) goldEl.textContent = ~~obj.value
+
+	}
 	function merchantHtml() {
 		html = variousHeaderHtml() +
 		'<div id="various-body" class="flex-column flex-max">' +
-			'<img id="town-various-bg" src="images/bg/bastille-1.png">' +
+			'<img id="town-various-bg" src="images/bg/bastille-1.png" style="display: none">' +
 			'<div id="various-item-wrap">'+ getMerchantSlotHtml() +'</div>' +
+			'<div id="buy-sell-row" class="flex-row align-center">' +
+				'<div id="town-value-wrap" class="flex-row">'+
+					'<i style="margin-top: .2rem" class="ra ra-gold-bar"></i>' +
+					'<div id="town-value">0</div>' +
+				'</div>' +
+				'<div class="flex-row" style="height: 100%">' +
+					'<div id="town-buy" class="ng-btn merchant-btn">Buy</div>' +
+					'<div id="town-sell" class="ng-btn merchant-btn">Sell</div>' +
+				'</div>' +
+			'</div>' +
 		'</div>' +
 		variousFooterHtml('gnome-male-0')
 		return html

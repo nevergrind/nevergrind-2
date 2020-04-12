@@ -12,6 +12,7 @@ var tooltip;
 		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
+		goldValue: 1,
 		hide,
 		show,
 		handleItemEnter,

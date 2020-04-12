@@ -13,6 +13,8 @@ var loot = {};
 		destroy,
 		handleItemSlotContextClick,
 		getItemValueHtml,
+		getFirstAvailableInvSlot,
+		goldValue: 0,
 		MAX_EQUIPMENT: 15,
 		MAX_INVENTORY: 16,
 		MAX_MERCHANT: 18,
@@ -1270,8 +1272,12 @@ var loot = {};
 		console.info('toggleDrag', type, index)
 		if (item.isDragging) {
 			if (!myItemTypes.includes(item.dragType)) {
-				console.warn('isDragging a ', item.dragType)
-				ng.msg('You must purchase that item before putting it in your inventory!', 4)
+				// I don't own this item
+				console.warn('isDragging a ', item.dragType, type)
+				if (myItemTypes.includes(type)) {
+					// dropped to store slot
+					ng.msg('You must purchase that item before putting it in your inventory!', 4)
+				}
 				dropReset()
 				return
 			}
@@ -1345,6 +1351,7 @@ var loot = {};
 				item.dragSlot = index
 				item.dragType = type
 				showCursorImg(type, index)
+				town.showMerchantMsg()
 			}
 			console.warn("drag row data: ", type, index, item.dragData.row)
 			if (item.dragData.name) item.isDragging = true
@@ -1556,7 +1563,8 @@ var loot = {};
 		return eqIndex
 	}
 	function getItemValueHtml(item, isSelling) {
-		return '<div style="color: gold; margin: .2rem">'+ (isSelling ? 'Sell' : 'Buy') +' Value: ' + getItemValue(item, isSelling) + '</div>'
+		tooltip.goldValue = getItemValue(item, isSelling)
+		return '<div style="color: gold; margin: .2rem">'+ (isSelling ? 'Sell' : 'Buy') +' Value: ' + tooltip.goldValue + '</div>'
 	}
 	function getItemValue(item, selling) {
 		value = 1

@@ -63,6 +63,8 @@
 			.on('click', '.town-building', town.openVarious)
 			.on('mouseenter', '.town-building', town.showLabel)
 			.on('mouseleave', '.town-building', town.hideLabel)
+			.on('click', '#town-buy', town.buyItem)
+			.on('click', '#town-sell', town.sellItem)
 			// missions
 			.on('click', '.mission-zone-headers', mission.toggleZone)
 			.on('click', '.mission-quest-item', mission.clickQuest)

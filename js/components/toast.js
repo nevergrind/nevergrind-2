@@ -11,6 +11,7 @@ var toast;
 		acceptDestroy,
 		declineDestroy,
 		destroyItem,
+		removeToast,
 		hideDestroyToast,
 	}
 	var destroyData = {}

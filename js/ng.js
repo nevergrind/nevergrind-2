@@ -392,7 +392,7 @@ var ng;
 
 	function msg(msg, d) {
 		dom.msg.innerHTML = msg;
-		TweenMax.killTweensOf()
+		TweenMax.killTweensOf(dom.msg)
 		TweenMax.set(dom.msg, {
 			overwrite: 1,
 			scale: 1,
