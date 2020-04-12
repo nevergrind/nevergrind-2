@@ -365,7 +365,7 @@ var town;
 			}
 		}
 		else if (id === 'Apothecary') {
-			msg = 'Buy potions and arcane items to prolong survival'
+			msg = 'Buy potions, jewelry, and various arcane items to help assure your survival'
 			labelConfig = {
 				left: ng.toPercentWidth(1178),
 				top: ng.toPercentHeight(434)
@@ -379,7 +379,7 @@ var town;
 			}
 		}
 		else if (id === 'Blacksmith') {
-			msg = 'Buy, sell and repair your weapons and armor'
+			msg = 'Choose from the finest selection of weapons and armor in all of Edenburg'
 			labelConfig = {
 				left: ng.toPercentWidth(1495),
 				top: ng.toPercentHeight(555)
@@ -393,7 +393,7 @@ var town;
 			}
 		}
 		else if (id === 'Merchant') {
-			msg = 'Buy and sell from the largest selector of items in Edenburg'
+			msg = 'Buy weapons, armor, and jewelry from the largest variety of items in all of Edenburg'
 			labelConfig = {
 				left: ng.toPercentWidth(719),
 				top: ng.toPercentHeight(429)
@@ -423,8 +423,8 @@ var town;
 			TweenMax.set('#town-building-label-wrap', {
 				backdropFilter: 'sepia(1) hue-rotate(180deg) saturate(4) brightness(1.5)',
 			})
-			TweenMax.to(labelObj, .4, {
-				delay: .3,
+			TweenMax.to(labelObj, .3, {
+				delay: .2,
 				brightness: 10,
 				onUpdate: setLabelBg,
 				onUpdateParams: [labelObj],
@@ -603,16 +603,19 @@ var town;
 	function bankSlotHtml() {
 		i=0
 		len = ng.bankSlots
-		foo = '<div id="bank-slot-wrap">'
+		foo = ''
 		for (; i<len; i++) {
 			foo += bar.getItemSlotHtml('bank', i)
 		}
-		foo += '</div>'
 		return foo
 	}
 	function bankHtml() {
 		html = variousHeaderHtml() +
-		bankSlotHtml() +
+		'<div id="various-body" class="flex-column flex-max">' +
+			'<div id="bank-slot-wrap">' +
+				bankSlotHtml() +
+			'</div>' +
+		'</div>' +
 		'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
 			'<div class="stag-blue-top" style="' + css.name + '">Bank Details</div>' +
 		'</div>' +
