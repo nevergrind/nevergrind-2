@@ -2,7 +2,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 
 require 'is-in-guild.php';
-if ($_SESSION['guild']['rank'] > 1) {
+if ($_SESSION['guildRank'] > 1) {
 	exit("Only the guild leader or officers can promote members.");
 }
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
@@ -43,7 +43,7 @@ $stmt->execute();
 // notify guild members
 require '../zmq.php';
 $socket->send(json_encode([
-	'category' => 'guild'. $_SESSION['guild']['id'],
+	'category' => 'guild'. $_SESSION['guildId'],
 	'name' => $_POST['name'],
 	'msg' => $_POST['name'] . ' has been promoted to Officer by '. $_SESSION['name'] .'.',
 	'route' => 'guild->promote'

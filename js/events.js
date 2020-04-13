@@ -186,8 +186,8 @@
 
 			// literally in any view
 			if (key === 'Escape') {
-				console.warn('toggleOptions', key)
-				bar.toggleOptions()
+				if (item.dragType) item.resetDrop()
+				else bar.toggleOptions()
 			}
 
 			if (ng.view === 'title'){

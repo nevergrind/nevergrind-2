@@ -45,8 +45,8 @@ var bar;
 		setDefaultInvWeaponImage,
 		setCharActiveTab,
 		getSkillDescription,
-		updateInventorySlotDOM,
-		updateDOM,
+		updateItemSlotDOM,
+		updateItemSwapDOM,
 		getItemSlotImage,
 		getItemSlotHtml,
 		selectOptionCategory,
@@ -122,7 +122,6 @@ var bar;
 
 			bar.dom.lag = getElementById('bar-lag')
 			bar.dom.inventory = getElementById('inventory')
-			bar.dom.inventoryWrap = getElementById('inventory-wrap')
 			// draw all bars
 			// bar events
 			$("#bar-wrap")
@@ -312,8 +311,8 @@ var bar;
 		return html
 	}
 
-	function updateInventorySlotDOM(type, slot) {
-		console.warn('updateInventorySlotDOM', type, slot)
+	function updateItemSlotDOM(type, slot) {
+		console.warn('updateItemSlotDOM', type, slot)
 		el = querySelector('#'+ type +'-slot-' + slot)
 		if (el !== null) {
 			el.className = getInvItemClass(type, slot)
@@ -337,10 +336,10 @@ var bar;
 		}
 	}
 
-	function updateDOM() {
-		item.dragType && bar.updateInventorySlotDOM(item.dragType, item.dragSlot)
-		item.dropType && bar.updateInventorySlotDOM(item.dropType, item.dropSlot)
-		console.info('//////////// updateDOM', item.dropType, item.dragType)
+	function updateItemSwapDOM() {
+		item.dragType && bar.updateItemSlotDOM(item.dragType, item.dragSlot)
+		item.dropType && bar.updateItemSlotDOM(item.dropType, item.dropSlot)
+		console.info('//////////// updateItemSwapDOM', item.dropType, item.dragType)
 		if ([item.dropType, item.dragType].includes('eq')) {
 			console.info('update char stats')
 			updateCharStatPanels()
@@ -720,7 +719,7 @@ var bar;
 		town.closeVarious()
 		toast.hideDestroyToast()
 		toast.removeToast()
-		item.dropReset()
+		item.resetDrop()
 	}
 
 	function showBarMenuPopover() {

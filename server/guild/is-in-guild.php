@@ -1,4 +1,4 @@
 <?php
-if (!($_SESSION['guild']['name'])) {
+if (!($_SESSION['guildName'])) {
 	exit('You are not in a guild.');
 }

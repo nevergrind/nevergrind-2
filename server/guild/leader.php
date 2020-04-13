@@ -2,7 +2,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 
 require 'is-in-guild.php';
-if ($_SESSION['guild']['rank'] !== 0) {
+if ($_SESSION['guildRank'] !== 0) {
 	exit("Only the guild leader can assign a new guild leader.");
 }
 
@@ -43,12 +43,12 @@ $stmt = $db->prepare('update `guild_members` set rank=1 where c_id=?');
 $stmt->bind_param('i', $_SESSION['row']);
 $stmt->execute();
 
-$_SESSION['guild']['rank'] = 1;
+$_SESSION['guildRank'] = 1;
 
 // notify guild members
 require '../zmq.php';
 $socket->send(json_encode([
-	'category' => 'guild'. $_SESSION['guild']['id'],
+	'category' => 'guild'. $_SESSION['guildId'],
 	'name' => $_POST['name'],
 	'msg' => $_POST['name'] . ' has been promoted to guild leader by '. $_SESSION['name'] .'.',
 	'route' => 'guild->leader'

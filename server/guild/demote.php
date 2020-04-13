@@ -3,7 +3,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 
 require 'is-in-guild.php';
 
-if ($_SESSION['guild']['rank'] !== 0) {
+if ($_SESSION['guildRank'] !== 0) {
 	exit("Only the guild leader can demote officers.");
 }
 
@@ -42,7 +42,7 @@ $stmt->execute();
 // notify guild members
 require '../zmq.php';
 $socket->send(json_encode([
-	'category' => 'guild'. $_SESSION['guild']['id'],
+	'category' => 'guild'. $_SESSION['guildId'],
 	'name' => $_POST['name'],
 	'msg' => $_POST['name'] . ' has been demoted to guild member by '. $_SESSION['name'] .'.',
 	'route' => 'guild->demoteReceived'

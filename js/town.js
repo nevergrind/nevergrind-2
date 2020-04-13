@@ -1,15 +1,6 @@
 var town;
 (function($, _, TweenMax, Linear, RoughEase, Power0, Power1, undefined) {
 	town = {
-		lastAside: {},
-		delegated: 0,
-		windowsOpen: {
-			various: ''
-		},
-		isBankInitialized: false,
-		isMerchantInitialized: false,
-		isBlacksmithInitialized: false,
-		isApothecaryInitialized: false,
 		go,
 		init,
 		preload,
@@ -25,8 +16,22 @@ var town;
 		buyItem,
 		sellItem,
 		showMerchantMsg,
+		setStoreGold,
+		setMyGold,
+		lastAside: {},
+		delegated: 0,
+		openVariousWindow: '',
+		isBankInitialized: false,
+		isMerchantInitialized: false,
+		isBlacksmithInitialized: false,
+		isApothecaryInitialized: false,
 	}
-	var i, id, len, html, str, foo, msg, bgConfig, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj
+	var i, id, len, html, str, foo, msg, bgConfig, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl
+	const buyTypes = [
+		'merchant',
+		'apothecary',
+		'blacksmith',
+	]
 	const merchants = [
 		'Merchant',
 		'Apothecary',
@@ -246,7 +251,7 @@ var town;
 			'<img id="cloud-2" class="town-clouds" src="images/town/town-clouds-1.png">' +
 			'<div id="town-building-wrap" class="img-bg">' +
 				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/town-academy.png">' +
-				'<img id="town-background" class="town-bg" src="images/town/town-bg-2.png">' +
+				'<img id="town-background" class="town-bg" src="images/town/town-bg-3.png">' +
 				'<img data-id="Apothecary" id="town-apothecary" class="town-building" src="images/town/town-apothecary.png">' +
 				'<img data-id="Merchant" id="town-merchant" class="town-building" src="images/town/town-merchant.png">' +
 				'<img data-id="Bank" id="town-bank" class="town-building" src="images/town/town-bank.png">' +
@@ -259,16 +264,14 @@ var town;
 				'<div id="town-build-label-description"></div>' +
 			'</div>' +
 		'</div>' +
-		'<div id="town-footer" class="text-shadow2">' +
-			'<div id="town-footer-flex">' +
-				'<div class="flex-center flex-max">'+
-					'<div data-id="Mission Counter" id="town-mission" class="ng-btn town-building">Mission Counter</div>' +
-				'</div>' +
-				'<div id="town-footer-gold-wrap">'+
-					'<div id="town-gold" style="margin: 0 .2rem; ">'+ my.gold +'</div>' +
-					'<i style="margin: 0 .2rem; color: gold" class="ra ra-gold-bar"></i>' +
-				'</div>' +
+		'<div id="town-mission-wrap" class="flex-center flex-max">'+
+			'<div data-id="Mission Counter" id="town-mission" class="ng-btn town-building">'+
+				'<i class="fas fa-exclamation mission-icon text-shadow2"></i><span>Mission Counter</span>'+
 			'</div>' +
+		'</div>' +
+		'<div id="town-footer-gold-wrap">'+
+			'<div id="town-gold" style="margin: 0 .2rem; ">'+ my.gold +'</div>' +
+			'<i style="margin: 0 .2rem; color: gold" class="ra ra-gold-bar"></i>' +
 		'</div>'
 
 		return html
@@ -330,15 +333,16 @@ var town;
 	}
 
 	function openVarious(event) {
-		if (event.currentTarget.dataset.id === town.windowsOpen.various) closeVarious()
+		item.resetDrop()
+		if (event.currentTarget.dataset.id === town.openVariousWindow) closeVarious()
 		else {
-			town.windowsOpen.various = event.currentTarget.dataset.id
+			town.openVariousWindow = event.currentTarget.dataset.id
 			updateVariousDOM()
 		}
 	}
 	function closeVarious() {
-		town.windowsOpen.various && tooltip.conditionalHide(town.windowsOpen.various.toLowerCase())
-		town.windowsOpen.various = ''
+		town.openVariousWindow && tooltip.conditionalHide(town.openVariousWindow.toLowerCase())
+		town.openVariousWindow = ''
 		querySelector('#root-various').innerHTML = ''
 		querySelector('#root-various').style.display = 'none'
 		animateBuilding({
@@ -353,8 +357,8 @@ var town;
 		label = id
 		msg = ''
 		labelConfig = {
-			left: 0,
-			top: 0
+			left: -1000,
+			top: -1000
 		}
 
 		if (id === 'Academy') {
@@ -406,7 +410,7 @@ var town;
 				top: ng.toPercentHeight(467)
 			}
 		}
-		if (!town.windowsOpen.various) {
+		if (!town.openVariousWindow) {
 			ng.splitText('town-building-label-header', id, .5, .05)
 			ng.splitText('town-build-label-description', msg, .2, .015)
 			TweenMax.killTweensOf(labelObj)
@@ -421,11 +425,11 @@ var town;
 				brightness: 1.5
 			}
 			TweenMax.set('#town-building-label-wrap', {
-				backdropFilter: 'sepia(1) hue-rotate(180deg) saturate(4) brightness(1.5)',
+				backdropFilter: 'sepia(1) hue-rotate(210deg) saturate(2) brightness('+ labelObj.brightness +')',
 			})
 			TweenMax.to(labelObj, .3, {
 				delay: .2,
-				brightness: 10,
+				brightness: 5,
 				onUpdate: setLabelBg,
 				onUpdateParams: [labelObj],
 				yoyo: true,
@@ -436,7 +440,7 @@ var town;
 	}
 	function setLabelBg(obj) {
 		TweenMax.set('#town-building-label-wrap', {
-			backdropFilter: 'sepia(1) hue-rotate(180deg) saturate(6) brightness('+ obj.brightness +')'
+			backdropFilter: 'sepia(1) hue-rotate(210deg) saturate(4) brightness('+ obj.brightness +')'
 		})
 	}
 	function hideLabel() {
@@ -456,8 +460,8 @@ var town;
 		}
 
 		msg = ''
-		if (town.windowsOpen.various === 'Academy') {
-			msg = 'Your skills and spells may be trained here. You will never reach your full potential without diligence! Each skill or spell must be trained individually.'
+		if (town.openVariousWindow === 'Academy') {
+			msg = 'All of your skills may be trained here. You will never reach your full potential without diligence! Each skill must be trained individually.'
 			townConfig = {
 				duration: 1,
 				scale: 1.5,
@@ -465,8 +469,8 @@ var town;
 				y: 250
 			}
 		}
-		else if (town.windowsOpen.various === 'Apothecary') {
-			msg = 'Make sure you stock up on our potions to survive to the end of your mission. We also offer items from the practical to the arcane.'
+		else if (town.openVariousWindow === 'Apothecary') {
+			msg = 'Fill your bag full of potions if you want to survive! I have a selection of items ranging from the deadly to the arcane!.'
 			townConfig = {
 				duration: 1,
 				scale: 1.4,
@@ -474,17 +478,17 @@ var town;
 				y: -50
 			}
 		}
-		else if (town.windowsOpen.various === 'Bank') {
+		else if (town.openVariousWindow === 'Bank') {
 			msg = 'If you have any special items that you would like to share with other heroes, you have come to the right place. I take an interest to collecting rare treasures as well!'
 			if (!town.isBankInitialized) loadBank()
 			townConfig = {
 				duration: 1,
 				scale: 1.4,
-				x: 200,
+				x: 100,
 				y: 20
 			}
 		}
-		else if (town.windowsOpen.various === 'Blacksmith') {
+		else if (town.openVariousWindow === 'Blacksmith') {
 			msg = 'Need armor or a weapon? You have come to the right place, lad. We offer the best iron and steel in all of Edenburg.'
 			townConfig = {
 				duration: 1,
@@ -493,7 +497,7 @@ var town;
 				y: -100
 			}
 		}
-		else if (town.windowsOpen.various === 'Guild Hall') {
+		else if (town.openVariousWindow === 'Guild Hall') {
 			if (guild.memberList.length) {
 				guild.setGuildList(guild)
 				msg = 'You\'ll find a motley cross-section of adventurers out there! Don\'t be hesitant to make friends out there! After all—it\'s not so much what you know—it\'s who you know!'
@@ -510,7 +514,7 @@ var town;
 				y: 120
 			}
 		}
-		else if (town.windowsOpen.various === 'Merchant') {
+		else if (town.openVariousWindow === 'Merchant') {
 			!town.isMerchantInitialized && processMerchant()
 			msg = 'Good day, ' + my.name + ', what are you looking for? We carry the finest jewelry in all of Vandamor! Be sure to check out the latest shipment of cloaks that we just received! I have a special price just for you, my friend!'
 			bgConfig = {
@@ -526,7 +530,7 @@ var town;
 				y: -30
 			}
 		}
-		else if (town.windowsOpen.various === 'Mission Counter') {
+		else if (town.openVariousWindow === 'Mission Counter') {
 			msg = 'Edenburg needs brave adventurers like you to restore peace to our blessed Kingdom! Some missions are more dangerous than others—choose your mission carefully!'
 			townConfig = {
 				duration: .5,
@@ -535,7 +539,7 @@ var town;
 				y: 0
 			}
 		}
-		else if (town.windowsOpen.various === 'Tavern') {
+		else if (town.openVariousWindow === 'Tavern') {
 			msg = 'Tell me your story, adventurer. What brings you to Edenburg? Many adventurers come to this city seeking fame and fortune. I am happy to share the wisdom and knowledge I have acquired.'
 			townConfig = {
 				duration: 1,
@@ -566,14 +570,14 @@ var town;
 	}
 	function getVariousHtml() {
 		html = ''
-		if (town.windowsOpen.various === 'Academy') html = academyHtml()
-		else if (town.windowsOpen.various === 'Apothecary') html = apothecaryHtml()
-		else if (town.windowsOpen.various === 'Bank') html = bankHtml()
-		else if (town.windowsOpen.various === 'Blacksmith') html = blacksmithHtml()
-		else if (town.windowsOpen.various === 'Guild Hall') html = guildHtml()
-		else if (town.windowsOpen.various === 'Merchant') html = merchantHtml()
-		else if (town.windowsOpen.various === 'Mission Counter') html = missionCounterHtml()
-		else if (town.windowsOpen.various === 'Tavern') html = tavernHtml()
+		if (town.openVariousWindow === 'Academy') html = academyHtml()
+		else if (town.openVariousWindow === 'Apothecary') html = apothecaryHtml()
+		else if (town.openVariousWindow === 'Bank') html = bankHtml()
+		else if (town.openVariousWindow === 'Blacksmith') html = blacksmithHtml()
+		else if (town.openVariousWindow === 'Guild Hall') html = guildHtml()
+		else if (town.openVariousWindow === 'Merchant') html = merchantHtml()
+		else if (town.openVariousWindow === 'Mission Counter') html = missionCounterHtml()
+		else if (town.openVariousWindow === 'Tavern') html = tavernHtml()
 		return html
 	}
 	function academyHtml() {
@@ -669,11 +673,6 @@ var town;
 		variousFooterHtml('seraph-female-1')
 		return html
 	}
-	const buyTypes = [
-		'merchant',
-		'apothecary',
-		'blacksmith',
-	]
 	function buyItem() {
 		console.warn('buyItem', item.dragType, item.dragSlot, item.dragData.name)
 		if (!item.dragData.name) {
@@ -682,26 +681,7 @@ var town;
 		else if (!buyTypes.includes(item.dragType)) {
 			ng.splitText('various-description', 'What?! Why are you trying to buy items you already own?! Did you mean to sell it?')
 		}
-		else {
-			// TODO: ensure we have inventory space, gold validation
-			var slot = item.getFirstAvailableInvSlot()
-			if (slot === -1) {
-				ng.splitText('various-description', 'You have no room in your inventory! Come back when you have room.')
-				return
-			}
-			if (item.goldValue > my.gold) {
-				ng.splitText('various-description', 'Sorry, friend! We don\'t offer financing! You\'re gonna need more gold than that!')
-				return
-			}
-			ng.splitText('various-description', 'Thank you for buying ' + item.dragData.name + ' for ' + item.goldValue + ' gold!')
-			// insert item to inventory
-
-
-			// sets target price to zero
-			tooltip.goldValue = 0
-			setStoreGold()
-			item.dropReset()
-		}
+		else item.buy()
 	}
 	function sellItem() {
 		console.warn('sellItem', item.dragType, item.dragSlot, item.dragData.name)
@@ -711,46 +691,58 @@ var town;
 		else if (buyTypes.includes(item.dragType)) {
 			ng.splitText('various-description', 'You want to sell MY items? That\'s not how this works, buddy.')
 		}
-		else {
-			ng.splitText('various-description', 'Thank you for selling ' + item.dragData.name + ' for ' + item.goldValue + ' gold!')
-			tooltip.goldValue = 0
-			setStoreGold()
-			item.dropReset()
-		}
+		else item.sell()
 	}
-	function showMerchantMsg() {
-		if (buyTypes.includes(town.windowsOpen.various.toLowerCase())) {
-			// is viewing a store
-			if (buyTypes.includes(item.dragType)) {
-				// clicked a store item
-				ng.splitText('various-description', 'Do you want to buy ' + item.dragData.name + ' for ' + tooltip.goldValue + ' gold?')
-			}
-			else {
-				// clicked my item
-				ng.splitText('various-description', 'Do you want to sell ' + item.dragData.name + ' for ' + tooltip.goldValue + ' gold?')
-			}
-			setStoreGold()
-			TweenMax.to('#town-value-wrap', .5, {
-				startAt: { filter: 'saturate(3) brightness(3)' },
-				filter: 'saturate(1) brightness(1)'
-			})
+	function setMyGold(newGold) {
+		goldConfig = {
+			value: _.clone(my.gold)
 		}
+		TweenMax.to(goldConfig, .3, {
+			value: newGold,
+			onUpdate: updateMyGold,
+			onUpdateParams: [goldConfig]
+		})
+		my.gold = newGold
 	}
 	function setStoreGold() {
-		obj = {
-			value: _.clone(item.goldValue)
+		if (!item.lastEvent.ctrlKey) {
+			obj = {
+				value: _.clone(item.goldValue)
+			}
+			TweenMax.to(obj, .3, {
+				value: _.clone(tooltip.goldValue),
+				onUpdate: updateStoreGold,
+				onUpdateParams: [obj]
+			})
 		}
-		TweenMax.to(obj, .5, {
-			value: _.clone(tooltip.goldValue),
-			onUpdate: updateStoreGold,
-			onUpdateParams: [obj]
-		})
 		item.goldValue = tooltip.goldValue
+	}
+	function updateMyGold(obj) {
+		myGoldEl = querySelector('#town-gold')
+		if (myGoldEl!== null) myGoldEl.textContent = ~~obj.value
 	}
 	function updateStoreGold(obj) {
 		goldEl = querySelector('#town-value')
 		if (goldEl !== null) goldEl.textContent = ~~obj.value
 
+	}
+	function showMerchantMsg() {
+		if (buyTypes.includes(town.openVariousWindow.toLowerCase())) {
+			// is viewing a store
+			if (buyTypes.includes(item.dragType)) {
+				// clicked a store item
+				querySelector('#various-description').innerHTML = 'Do you want to buy ' + item.getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold?'
+			}
+			else {
+				// clicked my item
+				querySelector('#various-description').innerHTML = 'Do you want to sell ' + item.getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold?'
+			}
+			setStoreGold()
+			TweenMax.to('#town-value-wrap', .3, {
+				startAt: { filter: 'saturate(3) brightness(4)' },
+				filter: 'saturate(1) brightness(1)'
+			})
+		}
 	}
 	function merchantHtml() {
 		html = variousHeaderHtml() +
@@ -789,7 +781,7 @@ var town;
 	function variousHeaderHtml() {
 		return '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ town.windowsOpen.various +'</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+ town.openVariousWindow +'</div>' +
 			'</div>' +
 			'<i data-id="various" class="close-menu fa fa-times"></i>' +
 		'</div>'
@@ -804,6 +796,6 @@ var town;
 		'</div>'
 	}
 	function isMerchantMode() {
-		return merchants.includes(town.windowsOpen.various)
+		return merchants.includes(town.openVariousWindow)
 	}
 })($, _, TweenMax, Linear, RoughEase, Power0, Power1);

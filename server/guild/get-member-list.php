@@ -9,7 +9,7 @@ $query = 'select c.level, c.name, c.race, c.job, m.rank
 	where m.g_id=?
 	order by m.rank asc, m.row, c.level desc';
 $stmt = $db->prepare($query);
-$stmt->bind_param('s', $_SESSION['guild']['id']);
+$stmt->bind_param('s', $_SESSION['guildId']);
 $stmt->execute();
 $stmt->bind_result($level, $name, $race, $job, $rank);
 $r['memberList'] = [];

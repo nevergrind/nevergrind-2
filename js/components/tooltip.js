@@ -318,7 +318,6 @@ var tooltip;
 	function show(obj, slotElement, type) {
 		if (!_.size(obj)) return
 		tooltipEl.innerHTML = getItemHtml(obj, type)
-		// console.info('type', type)
 		if (slotElement) {
 			// x position
 			var y = slotElement.y - (4 * ng.responsiveRatio)
@@ -330,14 +329,12 @@ var tooltip;
 			}
 			tooltipEl.style.top = y + 'px'
 			// x position
-			if (type === 'inv') {
-				tooltipEl.style.left = slotElement.x + 'px'
-				tooltipEl.style.transform = 'translate(-100%, 0%)'
-			}
-			else {
-				tooltipEl.style.left = slotElement.x + (68 * ng.responsiveRatio) + 'px'
-				tooltipEl.style.transform = 'translate(0%, 0%)'
-			}
+			tooltipEl.style.left = slotElement.x + (68 * ng.responsiveRatio) + 'px'
+			tooltipEl.style.transform = 'translate(0%, 0%)'
+			/* code for left side
+			tooltipEl.style.left = slotElement.x + 'px'
+			tooltipEl.style.transform = 'translate(-100%, 0%)'
+			 */
 		}
 		tooltip.isOpen = 1
 		tooltipEl.style.visibility = 'visible'

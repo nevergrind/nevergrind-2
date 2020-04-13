@@ -14,7 +14,11 @@ $stmt->bind_param('i', $_SESSION['row']);
 $stmt->execute();
 $stmt->bind_result($rank, $g_id, $motd, $name);
 
-$r['guild'] = $_SESSION['guild'];
+$r['guild'] = [
+	'id' => $_SESSION['guildId'],
+	'rank' => $_SESSION['guildRank'],
+	'name' => $_SESSION['guildName']
+];
 // assigned if exists
 while($stmt->fetch()) {
 	$r['guild'] = [
@@ -24,6 +28,6 @@ while($stmt->fetch()) {
 		'name' => $name
 	];
 }
-$_SESSION['guild']['id'] = $r['guild']['id'];
-$_SESSION['guild']['rank'] = $r['guild']['rank'];
-$_SESSION['guild']['name'] = $r['guild']['name'];
+$_SESSION['guildId'] = $r['guild']['id'];
+$_SESSION['guildRank'] = $r['guild']['rank'];
+$_SESSION['guildName'] = $r['guild']['name'];

@@ -1,7 +1,7 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 
-if ($_SESSION['guild']['name']) {
+if ($_SESSION['guildName']) {
 	exit('You are already in a guild!');
 }
 // standardize the name

@@ -3,11 +3,11 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require 'is-in-guild.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
-if (isset($_SESSION['guild']['id']) ) {
+if (isset($_SESSION['guildId']) ) {
 	// check length
 	$query = "select members from `guilds` where row=?";
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('s', $_SESSION['guild']['id']);
+	$stmt->bind_param('s', $_SESSION['guildId']);
 	$stmt->execute();
 	$stmt->bind_result($dbcount);
 	$stmt->store_result();
@@ -16,7 +16,7 @@ if (isset($_SESSION['guild']['id']) ) {
         $totalMembers = $dbcount;
     }
 
-	if ($_SESSION['guild']['rank'] === 0) {
+	if ($_SESSION['guildRank'] === 0) {
 		if ($totalMembers > 1) {
 			exit("You must promote another officer to leader using /gleader first");
 		}
@@ -30,10 +30,10 @@ if (isset($_SESSION['guild']['id']) ) {
 	require '../zmq.php';
 	$zmq = [];
 	if (!isset($_POST['action'])) {
-		$zmq['msg'] = $_SESSION['name'] . ' has left '. $_SESSION['guild']['name'] .'.';
+		$zmq['msg'] = $_SESSION['name'] . ' has left '. $_SESSION['guildName'] .'.';
 	}
 	$zmq['route'] = 'guild->quit';
-	$zmq['category'] = 'guild'. $_SESSION['guild']['id'];
+	$zmq['category'] = 'guild'. $_SESSION['guildId'];
 	$socket->send(json_encode($zmq));
 
 	// set guild session values

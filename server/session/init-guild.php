@@ -1,6 +1,4 @@
 <?php
-$_SESSION['guild'] = [
-	'id' => 0,
-	'rank' => 0,
-	'name' => ''
-];
+$_SESSION['guildId'] = 0;
+$_SESSION['guildRank'] = 2;
+$_SESSION['guildName'] = 0;

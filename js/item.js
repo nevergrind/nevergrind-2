@@ -2,14 +2,17 @@ var item;
 var loot = {};
 !function() {
 	item = {
+		getItemNameString,
 		getEquipString,
 		getRarity,
 		getItem,
 		getLoot,
-		dropReset,
+		resetDrop,
 		toggleDrag,
 		updateCursorImgPosition,
 		dropItem,
+		buy,
+		sell,
 		destroy,
 		handleItemSlotContextClick,
 		getItemValueHtml,
@@ -17,9 +20,9 @@ var loot = {};
 		goldValue: 0,
 		MAX_EQUIPMENT: 15,
 		MAX_INVENTORY: 16,
-		MAX_MERCHANT: 18,
-		MAX_BLACKSMITH: 18,
-		MAX_APOTHECARY: 18,
+		MAX_MERCHANT: 24,
+		MAX_BLACKSMITH: 24,
+		MAX_APOTHECARY: 24,
 		MAX_TAVERN: 30,
 		allProps: [
 			'offense',
@@ -81,7 +84,7 @@ var loot = {};
 		offhandWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus'],
 		twoHandWeaponTypes: ['twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
 	}
-	var html, key, value
+	var html, key, value, mobName, buyItemSlot
 	const saleValues = {
 		resistBlood: .5,
 		resistPoison: .5,
@@ -718,12 +721,13 @@ var loot = {};
 			name: drop.name,
 			data: JSON.stringify(drop),
 		}).done(data => {
-			items.inv[slot] = drop
-			items.inv[slot].row = data * 1
-			var mobName = _.get(mob[mobSlot], 'name', 'You discovered an item: ')
+			processNewItemToInv({
+				slot: slot,
+				itemData: drop,
+				row: data,
+			})
+			mobName = _.get(mob[mobSlot], 'name', 'You discovered an item: ')
 			chat.log(mobName + getItemNameString(drop))
-			console.warn('item dropped:', data)
-			bar.updateInventorySlotDOM('inv', slot)
 		}).fail(function() {
 			items.inv[slot] = {}
 		}).always(handleDropAlways)
@@ -1278,14 +1282,14 @@ var loot = {};
 					// dropped to store slot
 					ng.msg('You must purchase that item before putting it in your inventory!', 4)
 				}
-				dropReset()
+				resetDrop()
 				return
 			}
 
 			item.dropEqType = event.currentTarget.dataset.eqType
 			// check for same item
 			if (item.dragSlot === index && item.dragType === type) {
-				dropReset()
+				resetDrop()
 				tooltip.handleItemEnter(event)
 				return
 			}
@@ -1297,7 +1301,7 @@ var loot = {};
 			if (!itemSwapValid(item.dragData, item.dropData)) {
 				//TODO: audio
 				item.isContextClick = false
-				dropReset()
+				resetDrop()
 				return
 			}
 
@@ -1350,12 +1354,21 @@ var loot = {};
 				item.dragData = items[type][index]
 				item.dragSlot = index
 				item.dragType = type
-				showCursorImg(type, index)
 				town.showMerchantMsg()
+				if (town.isMerchantMode() &&
+					item.lastEvent.ctrlKey) {
+					if (item.dragType === 'inv' || item.dragType === 'eq') {
+						item.sell()
+					}
+					else item.buy()
+					return
+				}
+
+				showCursorImg(type, index)
 			}
 			console.warn("drag row data: ", type, index, item.dragData.row)
 			if (item.dragData.name) item.isDragging = true
-			else dropReset()
+			else resetDrop()
 		}
 	}
 
@@ -1363,6 +1376,12 @@ var loot = {};
 		updateCursorImgPosition()
 		dom.itemTooltipCursorImg.style.visibility = 'visible'
 		dom.itemTooltipCursorImg.src = bar.getItemSlotImage(type, index)
+		TweenMax.to(dom.itemTooltipCursorImg, .5, {
+			startAt: {
+				filter: 'saturate(3) brightness(3)',
+			},
+			filter: 'saturate(1) brightness(1)',
+		})
 	}
 
 	function updateCursorImgPosition() {
@@ -1445,7 +1464,7 @@ var loot = {};
 			item.eqSlots[eqType].includes(itemType)
 	}
 
-	function dropReset() {
+	function resetDrop() {
 		item.isDragging = false
 		item.awaitingDrop = false
 		item.dragData = {}
@@ -1460,13 +1479,13 @@ var loot = {};
 	}
 	function handleDropFail(r) {
 		ng.msg(r.responseText, 8);
-		dropReset()
+		resetDrop()
 	}
 	function handleDropSuccess() {
 		items[item.dropType][item.dropSlot] = item.dragData
 		items[item.dragType][item.dragSlot] = item.dropData
-		bar.updateDOM()
-		dropReset()
+		bar.updateItemSwapDOM()
+		resetDrop()
 		tooltip.handleItemEnter(item.lastEvent)
 	}
 
@@ -1495,7 +1514,7 @@ var loot = {};
 		if (!item.dragType) return
 		if (!myItemTypes.includes(item.dragType)) {
 			ng.msg('You can\'t destroy items that don\'t belong to you!', 4)
-			dropReset()
+			resetDrop()
 			return
 		}
 		//console.info('dropItem', event)
@@ -1508,9 +1527,67 @@ var loot = {};
 			});
 		}
 	}
+	function processNewItemToInv(obj) {
+		console.info('processNewItemToInv', obj)
+		items.inv[obj.slot] = {
+			...obj.itemData,
+			row: obj.row * 1
+		}
+		bar.updateItemSlotDOM('inv', obj.slot)
+	}
+	function buy() {
+		if (item.goldValue > my.gold) {
+			ng.splitText('various-description', 'Sorry, friend! We don\'t offer financing! You\'re gonna need more gold than that!')
+			return
+		}
+		buyItemSlot = item.getFirstAvailableInvSlot()
+		if (buyItemSlot === -1) {
+			ng.splitText('various-description', 'You have no room in your inventory! Come back when you have room.')
+			return
+		}
+		handleDragStart()
+		console.info('item.buy', item.dragData)
+		$.post(app.url + 'item/buy-item.php', {
+			gold: my.gold - item.goldValue,
+			slot: buyItemSlot,
+			name: item.dragData.name,
+			data: JSON.stringify(item.dragData),
+		}).done(data => {
+			querySelector('#various-description').innerHTML = 'Thank you for buying ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!'
+			processNewItemToInv({
+				slot: buyItemSlot,
+				itemData: _.cloneDeep(item.dragData),
+				row: data,
+			})
+			items[item.dragType][item.dragSlot] = {}
+			bar.updateItemSlotDOM('merchant', item.dragSlot)
+			resetDrop()
+			tooltip.goldValue = 0
+			town.setMyGold(my.gold - item.goldValue)
+			town.setStoreGold()
+		}).fail(function() {
+			items.inv[buyItemSlot] = {}
+		}).always(handleDropAlways)
+	}
+	function sell() {
+		if (!item.dragData.row || !item.goldValue) {
+			resetDrop()
+			return
+		}
+		console.warn('sell start', item.dragData.row, item.dragType)
+		console.info('item.dragType', item.dragType, item.dragSlot)
+		handleDragStart()
+		$.post(app.url + 'item/sell-item.php', {
+			row: item.dragData.row,
+			dragType: item.dragType,
+			gold: my.gold + item.goldValue
+		}).done(handleSellSuccess)
+			.fail(handleDropFail)
+			.always(handleDropAlways)
+	}
 	function destroy() {
 		if (!item.dragData.row) {
-			dropReset()
+			resetDrop()
 			return
 		}
 		console.warn('destroy start', item.dragData.row, item.dragType)
@@ -1523,10 +1600,18 @@ var loot = {};
 			.always(handleDropAlways)
 	}
 
+
+	function handleSellSuccess() {
+		querySelector('#various-description').innerHTML = 'Thank you for selling ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!'
+		handleDestroySuccess()
+		tooltip.goldValue = 0
+		town.setMyGold(my.gold + item.goldValue)
+		town.setStoreGold()
+	}
 	function handleDestroySuccess() {
 		items[item.dragType][item.dragSlot] = {}
-		bar.updateDOM()
-		dropReset()
+		bar.updateItemSwapDOM()
+		resetDrop()
 	}
 	function handleItemSlotContextClick(event) {
 		if (item.awaitingDrop || item.isDragging) return false
@@ -1535,7 +1620,7 @@ var loot = {};
 		])
 		console.info(index, type)
 		item.isContextClick = true
-		dropReset()
+		resetDrop()
 		toggleDrag(event)
 		if (item.dragData.name) {
 			console.info(item.dragData, item.dragType, item.dragSlot)

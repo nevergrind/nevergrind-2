@@ -356,7 +356,7 @@ var test;
 		orc.y = pixApp.screen.height / 2;
 		pixApp.stage.addChild(orc);
 
-		TweenMax.to(orc, 1, {
+		TweenMax.to(orc, .21, {
 			rotation: 2 * PI,
 			repeat: -1,
 			ease: Linear.easeNone

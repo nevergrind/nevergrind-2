@@ -2,7 +2,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 
 require 'is-in-guild.php';
-if ($_SESSION['guild']['rank'] > 1) {
+if ($_SESSION['guildRank'] > 1) {
 	exit("Only the guild leader or officers can boot members.");
 }
 
@@ -27,14 +27,14 @@ while ($stmt->fetch()) {
 if ($rank === 3) {
 	exit($_POST['name'] . ' is not a guild member.');
 }
-if ($rank <= $_SESSION['guild']['rank']) {
+if ($rank <= $_SESSION['guildRank']) {
 	exit('You may only boot members that you outrank.');
 }
 
 // notify party members
 require '../zmq.php';
 $socket->send(json_encode([
-	'category' => 'guild'. $_SESSION['guild']['id'],
+	'category' => 'guild'. $_SESSION['guildId'],
 	'name' => $_POST['name'],
 	'msg' => $_POST['name'] . ' has been booted by  '. $_SESSION['name'] .'!',
 	'route' => 'guild->boot'

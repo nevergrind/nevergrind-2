@@ -32,21 +32,18 @@ if (is_null($r['id']) ) {
 if (is_null($r['c_id'])) {
 
 	// not leading a party yet
-	if (!empty($_SESSION['guild']) ) {
-		// party has been created
-		if ($_SESSION['guild']['rank'] > 1) {
-			// must be leader to invite
-			exit ("Only the guild leader or officers can invite players to join the guild.");
-		}
+	if ($_SESSION['guildRank'] > 1) {
+		// must be leader to invite
+		exit ("Only the guild leader or officers can invite players to join the guild.");
 	}
 	// send guild invite
 	require '../zmq.php';
 	$socket->send(json_encode([
 		'category' => 'name'. $_POST['player'],
-		'row' => $_SESSION['guild']['id'],
-		'msg' => $_SESSION['name'] . ' has invited you to join the guild: '. $_SESSION['guild']['name'],
+		'row' => $_SESSION['guildId'],
+		'msg' => $_SESSION['name'] . ' has invited you to join the guild: '. $_SESSION['guildName'],
 		'name' => $_SESSION['name'],
-		'guildName' => $_SESSION['guild']['name'],
+		'guildName' => $_SESSION['guildName'],
 		'action' => 'guild-invite',
 		'css' => 'prompt-guild-invite'
 	]));
