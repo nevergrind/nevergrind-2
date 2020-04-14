@@ -1,6 +1,7 @@
 loot.cloaks = {
 	base: {
-		slots: ['back']
+		slots: ['back'],
+		armorType: 'cloth',
 	},
 	normal: [
 		{
@@ -8,81 +9,97 @@ loot.cloaks = {
 			minArmor: 1,
 			maxArmor: 4,
 			itemLevel: 1,
+			armorType: 'cloth',
 		}, {
 			name: 'Cloak',
 			minArmor: 2,
 			maxArmor: 5,
 			itemLevel: 4,
+			armorType: 'cloth',
 		}, {
 			name: 'Woven Cloak',
 			minArmor: 3,
 			maxArmor: 6,
 			itemLevel: 6,
+			armorType: 'cloth',
 		}, {
 			name: 'Fur-Lined Cloak',
 			minArmor: 4,
 			maxArmor: 8,
 			itemLevel: 8,
+			armorType: 'cloth',
 		}, {
 			name: 'Drake-Hide Cloak',
 			minArmor: 6,
 			maxArmor: 10,
 			itemLevel: 10,
+			armorType: 'cloth',
 		}, {
 			name: 'Brigand Shroud',
 			minArmor: 7,
 			maxArmor: 12,
 			itemLevel: 12,
+			armorType: 'cloth',
 		}, {
 			name: 'Regal Shroud',
 			minArmor: 6,
 			maxArmor: 15,
 			itemLevel: 15,
+			armorType: 'cloth',
 		}, {
 			name: 'Viceroy Cloak',
 			minArmor: 8,
 			maxArmor: 16,
 			itemLevel: 18,
+			armorType: 'cloth',
 		}, {
 			name: 'Elven Shroud',
 			minArmor: 8,
 			maxArmor: 20,
 			itemLevel: 20,
+			armorType: 'cloth',
 		}, {
 			name: 'Sylvan Cloak',
 			minArmor: 10,
 			maxArmor: 20,
 			itemLevel: 22,
+			armorType: 'cloth',
 		}, {
 			name: 'Chlamys',
 			minArmor: 12,
 			maxArmor: 24,
 			itemLevel: 24,
+			armorType: 'cloth',
 		}, {
 			name: 'Silk Cloak',
 			minArmor: 16,
 			maxArmor: 24,
 			itemLevel: 26,
+			armorType: 'cloth',
 		}, {
 			name: 'Noble Cape',
 			minArmor: 18,
 			maxArmor: 25,
 			itemLevel: 28,
+			armorType: 'cloth',
 		}, {
 			name: 'Ridged Shroud',
 			minArmor: 20,
 			maxArmor: 25,
 			itemLevel: 30,
+			armorType: 'cloth',
 		}, {
 			name: 'Archon Cloak',
 			minArmor: 22,
 			maxArmor: 28,
 			itemLevel: 32,
+			armorType: 'cloth',
 		}, {
 			name: 'Pall',
 			minArmor: 24,
 			maxArmor: 30,
 			itemLevel: 34,
+			armorType: 'cloth',
 		},
 	],
 	prefix: {

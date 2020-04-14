@@ -9,21 +9,25 @@ loot.legs = {
 			minArmor: 7,
 			maxArmor: 12,
 			itemLevel: 1,
+			armorType: 'cloth',
 		}, {
 			name: 'Cotton Pants',
 			minArmor: 13,
 			maxArmor: 16,
 			itemLevel: 5,
+			armorType: 'cloth',
 		}, {
 			name: 'Linen Pants',
 			minArmor: 18,
 			maxArmor: 21,
 			itemLevel: 12,
+			armorType: 'cloth',
 		}, {
 			name: 'Silk Leggings',
 			minArmor: 22,
 			maxArmor: 25,
 			itemLevel: 20,
+			armorType: 'cloth',
 		}, {
 			name: 'Fur Pants',
 			minArmor: 14,

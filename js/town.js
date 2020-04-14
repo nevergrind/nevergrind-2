@@ -18,15 +18,17 @@ var town;
 		showMerchantMsg,
 		setStoreGold,
 		setMyGold,
+		isInitialized: {
+			'apothecary': false,
+			'blacksmith': false,
+			'merchant': false,
+		},
 		lastAside: {},
 		delegated: 0,
 		openVariousWindow: '',
 		isBankInitialized: false,
-		isMerchantInitialized: false,
-		isBlacksmithInitialized: false,
-		isApothecaryInitialized: false,
 	}
-	var i, id, len, html, str, foo, msg, bgConfig, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl
+	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type
 	const buyTypes = [
 		'merchant',
 		'apothecary',
@@ -37,34 +39,36 @@ var town;
 		'Apothecary',
 		'Blacksmith',
 	]
-	const blacksmithSlots = [
-		'helms',
-		'shoulders',
-		'chests',
-		'bracers',
-		'gloves',
-		'belts',
-		'legs',
-		'boots',
-		'oneHandBlunts',
-		'twoHandBlunts',
-		'oneHandSlashers',
-		'twoHandSlashers',
-	]
-	const apothecarySlots = [
-		'amulets',
-		'rings',
-		'charms',
-		'cloaks',
-		'bows',
-		'piercers',
-		'focus',
-		'staves',
-		'shields',
-	]
-	const merchantSlots = [
-		...blacksmithSlots,
-		...apothecarySlots
+	const itemTypesForSale = {
+		blacksmith: [
+			'helms',
+			'shoulders',
+			'chests',
+			'bracers',
+			'gloves',
+			'belts',
+			'legs',
+			'boots',
+			'oneHandBlunts',
+			'twoHandBlunts',
+			'oneHandSlashers',
+			'twoHandSlashers',
+		],
+		apothecary: [
+			'amulets',
+			'rings',
+			'charms',
+			'cloaks',
+			'bows',
+			'piercers',
+			'focus',
+			'staves',
+			'shields',
+		]
+	}
+	itemTypesForSale.merchant = [
+		...itemTypesForSale.blacksmith,
+		...itemTypesForSale.apothecary
 	]
 	////////////////////////////////////////////
 	function go() {
@@ -78,9 +82,9 @@ var town;
 					opacity: 0
 				})
 			}
-			town.isMerchantInitialized = false
-			town.isBlacksmithInitialized = false
-			town.isApothecaryInitialized = false
+			for (var key in town.isInitialized) {
+				town.isInitialized[key] = false
+			}
 			chat.sizeLarge();
 			TweenMax.set(button.wrap, {
 				bottom: '-5rem'
@@ -104,8 +108,8 @@ var town;
 
 				guild.setGuildData(data)
 
-				my.processInv(data.inv)
-				my.processEq(data.eq)
+				initItemData(data.inv, 'inv')
+				initItemData(data.eq, 'eq')
 
 				stat.setResources()
 				my.hp = my.maxHp
@@ -152,6 +156,42 @@ var town;
 			});
 		}
 	}
+
+	function initItemData(obj, type) {
+		for (i=0; i<item.MAX_SLOTS[type]; i++) {
+			items[type][i] = {}
+		}
+		for (key in obj) {
+			items[type][key] = JSON.parse(obj[key].data)
+			items[type][key].row = obj[key].row
+			items[type][key].name = obj[key].name
+		}
+	}
+	const armorTypesByStore = {
+		apothecary: ['cloth'],
+		merchant: ['cloth', 'leather'],
+		blacksmith: ['mail', 'plate'],
+	}
+	function initStoreData() {
+		type = town.openVariousWindow.toLowerCase()
+		if (!town.isInitialized[type]) {
+			console.info('itemTypesForSale', itemTypesForSale[type])
+			for (var i=0; i<item.MAX_SLOTS[type]; i++) {
+				rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
+				itemIndex = _.random(0, itemTypesForSale[type].length - 1)
+				items[type][i] = item.getItem({
+					mobLevel: my.level + 30,
+					bonus: 0,
+					rarity: rarity,
+					itemSlot: itemTypesForSale[type][itemIndex],
+					armorTypes: armorTypesByStore[type]
+				})
+			}
+			town.isInitialized[type] = true
+		}
+		$('#various-item-wrap').html(getStoreItemHtml())
+	}
+
 	function animateSky() {
 		var duration = 1200
 		TweenMax.to('#sun', duration, {
@@ -316,22 +356,6 @@ var town;
 		querySelector('#bank-slot-wrap').innerHTML = bankSlotHtml()
 	}
 
-	function processMerchant() {
-		len = merchantSlots.length - 1
-		for (var i=0; i<item.MAX_MERCHANT; i++) {
-			rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
-			itemIndex = _.random(0, len)
-			items.merchant[i] = item.getItem({
-				mobLevel: my.level,
-				bonus: 0,
-				rarity: rarity,
-				itemSlot: merchantSlots[itemIndex]
-			})
-		}
-		town.isMerchantInitialized = true
-		$('#various-item-wrap').html(getMerchantSlotHtml())
-	}
-
 	function openVarious(event) {
 		item.resetDrop()
 		if (event.currentTarget.dataset.id === town.openVariousWindow) closeVarious()
@@ -422,10 +446,10 @@ var town;
 				opacity: 1
 			})
 			labelObj = {
-				brightness: 1.5
+				brightness: 1
 			}
 			TweenMax.set('#town-building-label-wrap', {
-				backdropFilter: 'sepia(1) hue-rotate(210deg) saturate(2) brightness('+ labelObj.brightness +')',
+				backdropFilter: 'grayscale(1) saturate(2) brightness('+ labelObj.brightness +')',
 			})
 			TweenMax.to(labelObj, .3, {
 				delay: .2,
@@ -440,7 +464,7 @@ var town;
 	}
 	function setLabelBg(obj) {
 		TweenMax.set('#town-building-label-wrap', {
-			backdropFilter: 'sepia(1) hue-rotate(210deg) saturate(4) brightness('+ obj.brightness +')'
+			backdropFilter: 'grayscale(1) saturate(2) brightness('+ obj.brightness +')'
 		})
 	}
 	function hideLabel() {
@@ -452,12 +476,6 @@ var town;
 	function updateVariousDOM() {
 		querySelector('#root-various').innerHTML = getVariousHtml()
 		querySelector('#root-various').style.display = 'flex'
-		bgConfig = {
-			startX: '0%',
-			startY: '0%',
-			endX: '-40%',
-			endY: '-5%'
-		}
 
 		msg = ''
 		if (town.openVariousWindow === 'Academy') {
@@ -470,6 +488,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Apothecary') {
+			initStoreData()
 			msg = 'Fill your bag full of potions if you want to survive! I have a selection of items ranging from the deadly to the arcane!.'
 			townConfig = {
 				duration: 1,
@@ -489,6 +508,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Blacksmith') {
+			initStoreData()
 			msg = 'Need armor or a weapon? You have come to the right place, lad. We offer the best iron and steel in all of Edenburg.'
 			townConfig = {
 				duration: 1,
@@ -515,14 +535,8 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Merchant') {
-			!town.isMerchantInitialized && processMerchant()
+			initStoreData()
 			msg = 'Good day, ' + my.name + ', what are you looking for? We carry the finest jewelry in all of Vandamor! Be sure to check out the latest shipment of cloaks that we just received! I have a special price just for you, my friend!'
-			bgConfig = {
-				startX: '-20%',
-				startY: '-40%',
-				endX: '-43%',
-				endY: '-2%'
-			}
 			townConfig = {
 				duration: 1,
 				scale: 1.4,
@@ -551,14 +565,6 @@ var town;
 		ng.splitText('various-description', msg)
 		hideLabel()
 		animateBuilding(townConfig)
-		TweenMax.to('#town-various-bg', 1, {
-			startAt: {
-				x: bgConfig.startX,
-				y: bgConfig.startY
-			},
-			x: bgConfig.endX,
-			y: bgConfig.endY
-		})
 		tooltip.conditionalHide()
 	}
 	function animateBuilding(o) {
@@ -567,111 +573,6 @@ var town;
 			x: o.x,
 			y: o.y
 		});
-	}
-	function getVariousHtml() {
-		html = ''
-		if (town.openVariousWindow === 'Academy') html = academyHtml()
-		else if (town.openVariousWindow === 'Apothecary') html = apothecaryHtml()
-		else if (town.openVariousWindow === 'Bank') html = bankHtml()
-		else if (town.openVariousWindow === 'Blacksmith') html = blacksmithHtml()
-		else if (town.openVariousWindow === 'Guild Hall') html = guildHtml()
-		else if (town.openVariousWindow === 'Merchant') html = merchantHtml()
-		else if (town.openVariousWindow === 'Mission Counter') html = missionCounterHtml()
-		else if (town.openVariousWindow === 'Tavern') html = tavernHtml()
-		return html
-	}
-	function academyHtml() {
-		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			'Academy body!' +
-		'</div>' +
-		variousFooterHtml('human-female-0')
-		return html
-	}
-	function apothecaryHtml() {
-		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			'Apothecary body!' +
-		'</div>' +
-		variousFooterHtml('seraph-male-2')
-		return html
-	}
-	function blacksmithHtml() {
-		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			'Blacksmith body!' +
-		'</div>' +
-		variousFooterHtml('barbarian-male-2')
-		return html
-	}
-	function bankSlotHtml() {
-		i=0
-		len = ng.bankSlots
-		foo = ''
-		for (; i<len; i++) {
-			foo += bar.getItemSlotHtml('bank', i)
-		}
-		return foo
-	}
-	function bankHtml() {
-		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			'<div id="bank-slot-wrap">' +
-				bankSlotHtml() +
-			'</div>' +
-		'</div>' +
-		'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
-			'<div class="stag-blue-top" style="' + css.name + '">Bank Details</div>' +
-		'</div>' +
-		variousFooterHtml('dwarf-male-0')
-		return html
-	}
-	function missionCounterHtml() {
-		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			mission.asideHtmlHead() +
-			'<div id="mission-counter" class="aside-frame text-shadow">' +
-				mission.asideHtml() +
-			'</div>' +
-			(my.quest.level ? mission.asideFooter() : '') +
-		'</div>' +
-		variousFooterHtml('human-female-0')
-		return html
-	}
-	function guildHtml() {
-		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max" style="display: flex; flex-direction: column;">' +
-			// new stuff
-			'<img id="town-various-bg" src="images/bg/bastille-2.png" style="display: none">' +
-			'<div id="various-wrap">';
-			if (my.guild.name) {
-				html += '<div class="aside-frame">' +
-					'<div>Guild: '+ my.guild.name +'</div> ' +
-					'<div>Title: '+ guild.ranks[my.guild.rank] +'</div> ' +
-					'<div>Total Members: <span id="guild-member-count">'+ guild.memberList.length +'</span></div> ' +
-				'</div>' +
-				'<div class="flex" style="'+ css.header +'">' +
-					'<div class="flex-column flex-max" style="'+ css.nameWrapFull +'">' +
-						'<div class="stag-blue-top" style="' + css.name + '">Guild Members</div>' +
-					'</div>' +
-					'<div id="guild-member-refresh-btn" class="ng-btn">Update</div>'+
-				'</div>' +
-				'<div id="guild-member-wrap" class="aside-frame">' +
-					'<table id="aside-guild-members"></table>'+
-				'</div>' +
-				'</div>'
-			}
-			else {
-				html += '<div class="flex-column" style="margin: .5rem">' +
-					'<input id="guild-input" class="text-shadow" type="text" maxlength="30" autocomplete="off" spellcheck="false">' +
-					'<div id="guild-create" class="ng-btn">Create Guild</div> ' +
-					'<div class="aside-frame" style="margin-top: 1rem">Only letters A through Z and apostrophes are accepted in guild names. Standarized capitalization will be automatically applied. The guild name must be between 4 and 30 characters. All guild names are subject to the royal statutes regarding common decency in Vandamor.</div>'
-				'</div>'
-			}
-			html += '</div>' +
-		'</div>' +
-		variousFooterHtml('seraph-female-1')
-		return html
 	}
 	function buyItem() {
 		console.warn('buyItem', item.dragType, item.dragSlot, item.dragData.name)
@@ -731,11 +632,11 @@ var town;
 			// is viewing a store
 			if (buyTypes.includes(item.dragType)) {
 				// clicked a store item
-				querySelector('#various-description').innerHTML = 'Do you want to buy ' + item.getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold?'
+				querySelector('#various-description').innerHTML = 'Would you like to buy ' + item.getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold?'
 			}
 			else {
 				// clicked my item
-				querySelector('#various-description').innerHTML = 'Do you want to sell ' + item.getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold?'
+				querySelector('#various-description').innerHTML = 'Would you like to sell ' + item.getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold?'
 			}
 			setStoreGold()
 			TweenMax.to('#town-value-wrap', .3, {
@@ -744,11 +645,30 @@ var town;
 			})
 		}
 	}
-	function merchantHtml() {
-		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			'<img id="town-various-bg" src="images/bg/bastille-1.png" style="display: none">' +
-			'<div id="various-item-wrap">'+ getMerchantSlotHtml() +'</div>' +
+	function bankSlotHtml() {
+		i=0
+		len = ng.bankSlots
+		foo = ''
+		for (; i<len; i++) {
+			foo += bar.getItemSlotHtml('bank', i)
+		}
+		return foo
+	}
+	function getVariousHtml() {
+		html = ''
+		if (town.openVariousWindow === 'Academy') html = academyHtml()
+		else if (town.openVariousWindow === 'Apothecary') html = apothecaryHtml()
+		else if (town.openVariousWindow === 'Bank') html = bankHtml()
+		else if (town.openVariousWindow === 'Blacksmith') html = blacksmithHtml()
+		else if (town.openVariousWindow === 'Guild Hall') html = guildHtml()
+		else if (town.openVariousWindow === 'Merchant') html = merchantHtml()
+		else if (town.openVariousWindow === 'Mission Counter') html = missionCounterHtml()
+		else if (town.openVariousWindow === 'Tavern') html = tavernHtml()
+		return html
+	}
+	function getStoreBodyHtml() {
+		return '<div id="various-body" class="flex-column flex-max">' +
+			'<div id="various-item-wrap">'+ getStoreItemHtml() +'</div>' +
 			'<div id="buy-sell-row" class="flex-row align-center">' +
 				'<div id="town-value-wrap" class="flex-row">'+
 					'<i style="margin-top: .2rem" class="ra ra-gold-bar"></i>' +
@@ -759,14 +679,98 @@ var town;
 					'<div id="town-sell" class="ng-btn merchant-btn">Sell</div>' +
 				'</div>' +
 			'</div>' +
+		'</div>'
+	}
+	function academyHtml() {
+		html = variousHeaderHtml() +
+		'<div id="various-body" class="flex-column flex-max">' +
+			'Academy body!' +
 		'</div>' +
+		variousFooterHtml('human-female-0')
+		return html
+	}
+	function apothecaryHtml() {
+		html = variousHeaderHtml() +
+		getStoreBodyHtml() +
+		variousFooterHtml('seraph-male-2')
+		return html
+	}
+	function blacksmithHtml() {
+		html = variousHeaderHtml() +
+		getStoreBodyHtml() +
+		variousFooterHtml('barbarian-male-2')
+		return html
+	}
+	function bankHtml() {
+		html = variousHeaderHtml() +
+		'<div id="various-body" class="flex-column flex-max">' +
+			'<div id="bank-slot-wrap">' +
+				bankSlotHtml() +
+			'</div>' +
+		'</div>' +
+		'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
+			'<div class="stag-blue-top" style="' + css.name + '">Bank Details</div>' +
+		'</div>' +
+		variousFooterHtml('dwarf-male-0')
+		return html
+	}
+	function missionCounterHtml() {
+		html = variousHeaderHtml() +
+		'<div id="various-body" class="flex-column flex-max">' +
+			mission.asideHtmlHead() +
+			'<div id="mission-counter" class="aside-frame text-shadow">' +
+				mission.asideHtml() +
+			'</div>' +
+			(my.quest.level ? mission.asideFooter() : '') +
+		'</div>' +
+		variousFooterHtml('human-female-0')
+		return html
+	}
+	function guildHtml() {
+		html = variousHeaderHtml() +
+		'<div id="various-body" class="flex-column flex-max" style="display: flex; flex-direction: column;">' +
+			// new stuff
+			'<div id="various-wrap">';
+			if (my.guild.name) {
+				html += '<div class="aside-frame">' +
+					'<div>Guild: '+ my.guild.name +'</div> ' +
+					'<div>Title: '+ guild.ranks[my.guild.rank] +'</div> ' +
+					'<div>Total Members: <span id="guild-member-count">'+ guild.memberList.length +'</span></div> ' +
+				'</div>' +
+				'<div class="flex" style="'+ css.header +'">' +
+					'<div class="flex-column flex-max" style="'+ css.nameWrapFull +'">' +
+						'<div class="stag-blue-top" style="' + css.name + '">Guild Members</div>' +
+					'</div>' +
+					'<div id="guild-member-refresh-btn" class="ng-btn">Update</div>'+
+				'</div>' +
+				'<div id="guild-member-wrap" class="aside-frame">' +
+					'<table id="aside-guild-members"></table>'+
+				'</div>' +
+				'</div>'
+			}
+			else {
+				html += '<div class="flex-column" style="margin: .5rem">' +
+					'<input id="guild-input" class="text-shadow" type="text" maxlength="30" autocomplete="off" spellcheck="false">' +
+					'<div id="guild-create" class="ng-btn">Create Guild</div> ' +
+					'<div class="aside-frame" style="margin-top: 1rem">Only letters A through Z and apostrophes are accepted in guild names. Standarized capitalization will be automatically applied. The guild name must be between 4 and 30 characters. All guild names are subject to the royal statutes regarding common decency in Vandamor.</div>'
+				'</div>'
+			}
+			html += '</div>' +
+		'</div>' +
+		variousFooterHtml('seraph-female-1')
+		return html
+	}
+	function merchantHtml() {
+		html = variousHeaderHtml() +
+		getStoreBodyHtml() +
 		variousFooterHtml('gnome-male-0')
 		return html
 	}
-	function getMerchantSlotHtml() {
+	function getStoreItemHtml() {
 		str = ''
-		for (i=0; i<item.MAX_MERCHANT; i++) {
-			str += bar.getItemSlotHtml('merchant', i)
+		type = town.openVariousWindow.toLowerCase()
+		for (i=0; i<item.MAX_SLOTS[type]; i++) {
+			str += bar.getItemSlotHtml(type, i)
 		}
 		return str
 	}

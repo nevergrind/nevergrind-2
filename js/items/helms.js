@@ -9,6 +9,7 @@ loot.helms = {
 			minArmor: 1,
 			maxArmor: 4,
 			itemLevel: 1,
+			armorType: 'cloth',
 		}, {
 			name: 'Cap',
 			minArmor: 1,
@@ -20,26 +21,31 @@ loot.helms = {
 			minArmor: 2,
 			maxArmor: 8,
 			itemLevel: 5,
+			armorType: 'cloth',
 		}, {
 			name: 'Crown',
 			minArmor: 4,
 			maxArmor: 12,
 			itemLevel: 10,
+			armorType: 'cloth',
 		}, {
 			name: 'Cowl',
 			minArmor: 6,
 			maxArmor: 12,
 			itemLevel: 20,
+			armorType: 'cloth',
 		}, {
 			name: 'Coronet',
 			minArmor: 10,
 			maxArmor: 20,
 			itemLevel: 24,
+			armorType: 'cloth',
 		}, {
 			name: 'Miter',
 			minArmor: 12,
 			maxArmor: 18,
 			itemLevel: 26,
+			armorType: 'cloth',
 		}, {
 			name: 'Shroud',
 			minArmor: 16,

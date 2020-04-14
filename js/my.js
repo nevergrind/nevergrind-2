@@ -33,8 +33,6 @@ var my;
 		getPartyNames,
 		getAvatarUrl,
 		getNewLeaderName,
-		processInv,
-		processEq,
 		getPartySlotByRow,
 		isLowestPartyIdMine,
 	}
@@ -118,27 +116,5 @@ var my;
 	function clearHud() {
 		my.hudTimer.kill();
 		DOM.hud.style.visibility = 'hidden';
-	}
-
-	function processInv(obj) {
-		for (var i=0; i<item.MAX_INVENTORY; i++) {
-			items.inv[i] = {}
-		}
-		for (var key in obj) {
-			items.inv[key] = JSON.parse(obj[key].data)
-			items.inv[key].row = obj[key].row
-			items.inv[key].name = obj[key].name
-		}
-	}
-
-	function processEq(obj) {
-		for (var i=0; i<item.MAX_EQUIPMENT; i++) {
-			items.eq[i] = {}
-		}
-		for (var key in obj) {
-			items.eq[key] = JSON.parse(obj[key].data)
-			items.eq[key].row = obj[key].row
-			items.eq[key].name = obj[key].name
-		}
 	}
 })();

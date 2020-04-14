@@ -9,21 +9,25 @@ loot.bracers = {
 			minArmor: 1,
 			maxArmor: 2,
 			itemLevel: 1,
+			armorType: 'cloth',
 		}, {
 			name: 'Cuffs',
 			minArmor: 3,
 			maxArmor: 5,
 			itemLevel: 5,
+			armorType: 'cloth',
 		}, {
 			name: 'Bindings',
 			minArmor: 4,
 			maxArmor: 6,
 			itemLevel: 12,
+			armorType: 'cloth',
 		}, {
 			name: 'Wristguards',
 			minArmor: 6,
 			maxArmor: 8,
 			itemLevel: 20,
+			armorType: 'cloth',
 		}, {
 			name: 'Leather Bracers',
 			minArmor: 4,

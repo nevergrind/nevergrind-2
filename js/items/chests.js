@@ -9,6 +9,7 @@ loot.chests = {
 			minArmor: 1,
 			maxArmor: 12,
 			itemLevel: 1,
+			armorType: 'cloth',
 		}, {
 			name: 'Tunic',
 			minArmor: 10,
@@ -32,6 +33,7 @@ loot.chests = {
 			minArmor: 10,
 			maxArmor: 25,
 			itemLevel: 10,
+			armorType: 'cloth',
 		}, {
 			name: 'Jerkin',
 			minArmor: 24,
@@ -55,11 +57,13 @@ loot.chests = {
 			minArmor: 28,
 			maxArmor: 39,
 			itemLevel: 15,
+			armorType: 'cloth',
 		}, {
 			name: 'Drape',
 			minArmor: 36,
 			maxArmor: 50,
 			itemLevel: 20,
+			armorType: 'cloth',
 		}, {
 			name: 'Leather Armor',
 			minArmor: 56,

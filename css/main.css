@@ -881,7 +881,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 	padding: .2rem;
 	max-width: 13rem;
 	pointer-events: none;
-	backdrop-filter: sepia(1) hue-rotate(180deg) saturate(2) brightness(1.5);
+	backdrop-filter: grayscale(1) saturate(2) brightness(1);
 }
 #town-building-label-header {
 	color: gold;
@@ -2602,13 +2602,6 @@ background-image:
 			radial-gradient(farthest-side at 100% 100%, #159f 0%, #0000, #0000 100%);
 
 }
-#town-various-bg {
-	position: absolute;
-	top: 0;
-	left: 0;
-	filter: sepia(100%) brightness(40%);
-	z-index: 1;
-}
 #various-wrap {
 	position: relative;
 	display: flex;
@@ -2711,10 +2704,11 @@ background-image:
 	background: #0008;
 	border: .1rem ridge gold;
 	flex: 1;
-	background: conic-gradient(
+	/*background: conic-gradient(
 			#000f .25turn,
 			#090909 .25turn .5turn,
 			#000f 0.5turn .75turn,
 			#090909 .75turn
-	) top left / 5px 5px repeat;
+	) top left / 5px 5px repeat;*/
+	background: repeating-linear-gradient(135deg, #111f 0px 1px, #000f 2px 3px);
 }

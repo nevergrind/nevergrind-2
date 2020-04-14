@@ -9,21 +9,25 @@ loot.boots = {
 			minArmor: 1,
 			maxArmor: 4,
 			itemLevel: 1,
+			armorType: 'cloth',
 		}, {
 			name: 'Slippers',
 			minArmor: 4,
 			maxArmor: 7,
 			itemLevel: 6,
+			armorType: 'cloth',
 		}, {
 			name: 'Light Boots',
 			minArmor: 6,
 			maxArmor: 8,
 			itemLevel: 14,
+			armorType: 'cloth',
 		}, {
 			name: 'Khussa',
 			minArmor: 9,
 			maxArmor: 12,
 			itemLevel: 20,
+			armorType: 'cloth',
 		}, {
 			name: 'Heavy Boots',
 			minArmor: 7,

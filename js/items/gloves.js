@@ -9,21 +9,25 @@ loot.gloves = {
 			minArmor: 1,
 			maxArmor: 4,
 			itemLevel: 1,
+			armorType: 'cloth',
 		}, {
 			name: 'Cloth Gloves',
 			minArmor: 5,
 			maxArmor: 8,
 			itemLevel: 5,
+			armorType: 'cloth',
 		}, {
 			name: 'Woven Gloves',
 			minArmor: 9,
 			maxArmor: 11,
 			itemLevel: 12,
+			armorType: 'cloth',
 		}, {
 			name: 'Mesh Gloves',
 			minArmor: 12,
 			maxArmor: 15,
 			itemLevel: 22,
+			armorType: 'cloth',
 		}, {
 			name: 'Patchwork Gloves',
 			minArmor: 6,

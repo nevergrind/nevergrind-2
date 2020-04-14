@@ -9,11 +9,13 @@ loot.belts = {
 			minArmor: 1,
 			maxArmor: 2,
 			itemLevel: 1,
+			armorType: 'cloth',
 		}, {
 			name: 'Linen Sash',
 			minArmor: 5,
 			maxArmor: 6,
 			itemLevel: 15,
+			armorType: 'cloth',
 		}, {
 			name: 'Belt',
 			minArmor: 4,
@@ -55,11 +57,13 @@ loot.belts = {
 			minArmor: 2,
 			maxArmor: 4,
 			itemLevel: 3,
+			armorType: 'cloth',
 		}, {
 			name: 'Arcane Sash',
 			minArmor: 6,
 			maxArmor: 8,
 			itemLevel: 20,
+			armorType: 'cloth',
 		}, {
 			name: 'Leather Belt',
 			minArmor: 8,

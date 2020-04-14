@@ -18,12 +18,14 @@ var loot = {};
 		getItemValueHtml,
 		getFirstAvailableInvSlot,
 		goldValue: 0,
-		MAX_EQUIPMENT: 15,
-		MAX_INVENTORY: 16,
-		MAX_MERCHANT: 24,
-		MAX_BLACKSMITH: 24,
-		MAX_APOTHECARY: 24,
-		MAX_TAVERN: 30,
+		MAX_SLOTS: {
+			eq: 15,
+			inv: 16,
+			merchant: 24,
+			blacksmith: 24,
+			apothecary: 24,
+			tavern: 24,
+		},
 		allProps: [
 			'offense',
 			'defense',
@@ -739,6 +741,7 @@ var loot = {};
 		 * rarity: string = forces a rarity type
 		 * itemSlot: forces a particular item slot
 		 * itemName: forces specific sub item based on base name
+		 * armorTypes: filter by armorType for armor slots
 		 */
 		if (!config) config = { mobLevel: 1 }
 		if (config.bonus === void 0) {
@@ -764,7 +767,13 @@ var loot = {};
 		//console.info('itemObj', rarity, itemObj)
 
 		// get base items filtered by mob level
-		var filteredItems = _.filter(itemObj['normal'], filterItems)
+		var filteredItems = _.filter(itemObj.normal, filterItems)
+		// console.warn('filteredItems', _.cloneDeep(filteredItems))
+		// filter by armor type if passed in config
+		if (config.armorTypes) {
+			filteredItems = _.filter(filteredItems, filterByArmorType)
+		 	console.warn('filteredItems after', _.cloneDeep(filteredItems))
+		}
 		var filteredItemsLen = filteredItems.length
 
 		// pick one of the items from the array
@@ -813,7 +822,7 @@ var loot = {};
 			var prefixKeys = Object.keys(itemObj.prefix)
 			var suffixKeys = Object.keys(itemObj.suffix)
 
-			console.info('rarity', rarity)
+			//console.info('rarity', rarity)
 			if (rarity === 'magic') {
 				processMagicDrop(drop)
 			}
@@ -827,7 +836,7 @@ var loot = {};
 		////////////////////////////////////////////////////
 		function getItemImageIcon(itemType, index, imgIndex) {
 			if (itemType === 'amulets') index = _.random(0, 4)
-			else if (itemType === 'rings') index = _.random(0, 3)
+			else if (itemType === 'rings') index = _.random(0, 5)
 			else if (itemType === 'charms') index = _.random(0, 2)
 			else if (itemType === 'belts' || itemType === 'boots') index = ~~(index / 2)
 			else if (itemType === 'bows') index = imgIndex
@@ -946,7 +955,7 @@ var loot = {};
 			console.warn('max ', prefixMax, suffixMax)*/
 
 			var getPrefixSuffixComboType = _.random(1, 100)
-			console.info('prefix', prefix)
+			//console.info('prefix', prefix)
 			if (getPrefixSuffixComboType <= 50) {
 				prefixVal = _.random(minValue[prefix], prefixMax);
 				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
@@ -1096,6 +1105,13 @@ var loot = {};
 		function filterItems(item) {
 			return item.itemLevel <= config.mobLevel
 		}
+		function filterByArmorType(item) {
+			if (item.armorType && item.minArmor) {
+				console.info('filterByArmorType', config.armorTypes.includes(item.armorType), item)
+				return config.armorTypes.includes(item.armorType)
+			}
+			else return item
+		}
 	}
 	function stripRareKeys(rareKeys, key) {
 		// resists
@@ -1163,8 +1179,8 @@ var loot = {};
 	}
 	function setMaxPropValue(obj, key, tc) {
 		var MAX_TREASURE_CLASS = 45
-		console.info('set max', obj)
-		console.info('setMaxPropValue', obj[key], key, tc)
+		//console.info('set max', obj)
+		//console.info('setMaxPropValue', obj[key], key, tc)
 		var val = (obj[key] * (tc / MAX_TREASURE_CLASS)) - minValue[key]
 		if (val < minValue[key]) { val = minValue[key] }
 		return _.round(val)

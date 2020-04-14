@@ -9,6 +9,7 @@ loot.shoulders = {
 			minArmor: 1,
 			maxArmor: 4,
 			itemLevel: 1,
+			armorType: 'cloth',
 		}, {
 			name: 'Leather Shoulders',
 			minArmor: 4,
@@ -32,6 +33,7 @@ loot.shoulders = {
 			minArmor: 2,
 			maxArmor: 8,
 			itemLevel: 12,
+			armorType: 'cloth',
 		}, {
 			name: 'Studded Shoulders',
 			minArmor: 6,
@@ -55,6 +57,7 @@ loot.shoulders = {
 			minArmor: 4,
 			maxArmor: 12,
 			itemLevel: 18,
+			armorType: 'cloth',
 		}, {
 			name: 'Spiked Shoulders',
 			minArmor: 12,
@@ -78,6 +81,7 @@ loot.shoulders = {
 			minArmor: 8,
 			maxArmor: 15,
 			itemLevel: 24,
+			armorType: 'cloth',
 		}, {
 			name: 'Brigand Shoulders',
 			minArmor: 18,
