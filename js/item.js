@@ -835,9 +835,9 @@ var loot = {};
 		return drop;
 		////////////////////////////////////////////////////
 		function getItemImageIcon(itemType, index, imgIndex) {
-			if (itemType === 'amulets') index = _.random(0, 4)
+			if (itemType === 'amulets') index = _.random(0, 7)
 			else if (itemType === 'rings') index = _.random(0, 5)
-			else if (itemType === 'charms') index = _.random(0, 2)
+			else if (itemType === 'charms') index = _.random(0, 7)
 			else if (itemType === 'belts' || itemType === 'boots') index = ~~(index / 2)
 			else if (itemType === 'bows') index = imgIndex
 			//console.info('index', itemType, index)
