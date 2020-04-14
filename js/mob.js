@@ -100,7 +100,10 @@ var mob;
 		// m.size = m.size;
 		mobs[i].type = mobKey
 		// combine/assign image object props to mobs[index]
-		mobs[i] = _.assign(mobs[i], mobs.images[mobKey])
+		mobs[i] = {
+			...mobs[i],
+			...mobs.images[mobKey]
+		}
 		// delete mobs[i].cache;
 		sizeMob(i)
 		TweenMax.set(mobs[i].dom.details, {

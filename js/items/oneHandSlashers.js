@@ -10,48 +10,56 @@ loot.oneHandSlashers = {
 			maxDamage: 6,
 			speed: 2.7, // 2.96 - 1.48
 			itemLevel: 1,
+			imgIndex: 0,
 		}, {
 			name: 'Scimitar',
 			minDamage: 3,
 			maxDamage: 8,
 			speed: 2.5, // 4.4
 			itemLevel: 5,
+			imgIndex: 1,
 		}, {
 			name: 'Axe',
 			minDamage: 5,
 			maxDamage: 12,
 			speed: 2.9, // 5.86
 			itemLevel: 10,
+			imgIndex: 2,
 		}, {
 			name: 'Claws',
 			minDamage: 7,
 			maxDamage: 14,
 			speed: 2.4, // 8.75
 			itemLevel: 15,
+			imgIndex: 3,
 		}, {
 			name: 'Long Sword',
 			minDamage: 9,
 			maxDamage: 26,
 			speed: 2.8, // 12.5
 			itemLevel: 20,
+			imgIndex: 4,
 		}, {
 			name: 'Chokuto',
 			minDamage: 11,
 			maxDamage: 34,
 			speed: 2.6, // 17.3
 			itemLevel: 25,
+			imgIndex: 5,
 		}, {
 			name: 'War Axe',
 			minDamage: 18,
 			maxDamage: 54,
 			speed: 3.2, // 22.5
 			itemLevel: 30,
+			imgIndex: 6,
 		}, {
 			name: 'Kusanagi',
 			minDamage: 20,
 			maxDamage: 58,
 			speed: 2.7, // 28.88
 			itemLevel: 35,
+			imgIndex: 7,
 		},
 	],
 	prefix: {

@@ -10,48 +10,56 @@ loot.focus = {
 			maxDamage: 4,
 			speed: 3.6, // 1.4
 			itemLevel: 1,
+			imgIndex: 0,
 		}, {
 			name: 'Dark Orb',
 			minDamage: 2,
 			maxDamage: 6,
 			speed: 3.5, // 2.2
 			itemLevel: 5,
+			imgIndex: 1,
 		}, {
 			name: 'Ancient Tome',
 			minDamage: 5,
 			maxDamage: 13,
 			speed: 3.4, // 5.3
 			itemLevel: 10,
+			imgIndex: 2,
 		}, {
 			name: 'Totem',
 			minDamage: 6,
 			maxDamage: 20,
 			speed: 3.8, // 6.8
 			itemLevel: 15,
+			imgIndex: 3,
 		}, {
 			name: 'Crystal Ball',
 			minDamage: 7,
 			maxDamage: 24,
 			speed: 3.7, // 8.4
 			itemLevel: 20,
+			imgIndex: 4,
 		}, {
 			name: 'Skull',
 			minDamage: 9,
 			maxDamage: 31,
 			speed: 3.4, // 11.8
 			itemLevel: 25,
+			imgIndex: 5,
 		}, {
 			name: 'Emblazoned Orb',
 			minDamage: 11,
 			maxDamage: 36,
 			speed: 3.6, // 13.1
 			itemLevel: 30,
+			imgIndex: 6,
 		}, {
 			name: 'Idol',
 			minDamage: 13,
 			maxDamage: 43,
 			speed: 3.3, // 17
 			itemLevel: 35,
+			imgIndex: 7,
 		},
 	],
 	prefix: {

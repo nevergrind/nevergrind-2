@@ -1,6 +1,6 @@
 var item;
 var loot = {};
-!function() {
+!function(_, Object, JSON, $, undefined) {
 	item = {
 		getItemNameString,
 		getEquipString,
@@ -17,6 +17,7 @@ var loot = {};
 		handleItemSlotContextClick,
 		getItemValueHtml,
 		getFirstAvailableInvSlot,
+		config: {},
 		goldValue: 0,
 		MAX_SLOTS: {
 			eq: 15,
@@ -86,7 +87,9 @@ var loot = {};
 		offhandWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus'],
 		twoHandWeaponTypes: ['twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
 	}
-	var html, key, value, mobName, buyItemSlot
+
+	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val
+
 	const saleValues = {
 		resistBlood: .5,
 		resistPoison: .5,
@@ -178,9 +181,9 @@ var loot = {};
 		hpKill: 2.5,
 		mpKill: 2.5,
 		spKill: 2.5,
-		minDamage: .25,
-		maxDamage: .25,
-		armor: .3,
+		minDamage: .5,
+		maxDamage: .5,
+		armor: 2,
 		blockRate: .3,
 	}
 	const slotRequiresMagic = [
@@ -747,51 +750,57 @@ var loot = {};
 		if (config.bonus === void 0) {
 			config.bonus = 0
 		}
-		var rarity = config.rarity || getRarity(config.bonus)
+		item.config = config
+		rarity = item.config.rarity || getRarity(item.config.bonus)
 		// set item type (normal, magic, etc)
 		//console.info('getRarity', rarity)
-		var keys = Object.keys(loot)
+		keys = Object.keys(loot)
 		// get possible slotTypes (helms, chests) based on rarity
-		var filteredKeys = _.filter(keys, filterKeys)
+		filteredKeys = _.filter(keys, filterKeys)
 		//console.info('filteredKeys', filteredKeys)
 
-		if (config.itemSlot && filteredKeys.includes(config.itemSlot)) {
-			var itemSlot = config.itemSlot
+		if (item.config.itemSlot && filteredKeys.includes(item.config.itemSlot)) {
+			itemSlot = item.config.itemSlot
 		}
 		else {
 			// pick one of the possible slotTypes
-			var itemSlot = filteredKeys[_.random(0, filteredKeys.length - 1)]
+			itemSlot = filteredKeys[_.random(0, filteredKeys.length - 1)]
 		}
 		// clone item and then figure out what to grab
-		var itemObj = _.cloneDeep(loot[itemSlot])
+		itemObj = _.cloneDeep(loot[itemSlot])
 		//console.info('itemObj', rarity, itemObj)
+		if (!itemObj.normal[0].imgIndex) {
+			// enrich with imgIndex data with natural index - a default for latter imgIndex function
+			filteredItems = _.each(itemObj.normal, enrichImgIndex)
+		}
 
 		// get base items filtered by mob level
-		var filteredItems = _.filter(itemObj.normal, filterItems)
+		filteredItems = _.filter(itemObj.normal, filterItems)
 		// console.warn('filteredItems', _.cloneDeep(filteredItems))
 		// filter by armor type if passed in config
-		if (config.armorTypes) {
+		if (item.config.armorTypes) {
 			filteredItems = _.filter(filteredItems, filterByArmorType)
-		 	console.warn('filteredItems after', _.cloneDeep(filteredItems))
+		 	//console.warn('filteredItems after', _.cloneDeep(filteredItems))
 		}
 		var filteredItemsLen = filteredItems.length
 
 		// pick one of the items from the array
-		if (config.itemName) {
+		if (item.config.itemName) {
 			// specific item
-			var filteredItemsIndex = _.findIndex(filteredItems, item => item.name === config.itemName)
+			filteredItemsIndex = _.findIndex(filteredItems, item => item.name === item.config.itemName)
 			//console.warn('filteredItemsIndex', filteredItemsIndex)
 		}
 		else {
 			// random item of type
-			var filteredItemsIndex = _.random(0, filteredItemsLen - 1)
+			filteredItemsIndex = _.random(0, filteredItemsLen - 1)
 		}
+		//console.info('picked item: ', filteredItems[filteredItemsIndex])
 		// combine itemSlot base props with base item
-		var drop = _.assign(
-			itemObj.base,
-			filteredItems[filteredItemsIndex]
-		)
-		drop.imgIndex = getItemImageIcon(itemSlot, filteredItemsIndex, drop.imgIndex)
+		drop = {
+			...itemObj.base,
+			...filteredItems[filteredItemsIndex]
+		}
+		setItemImageIcon()
 		drop.baseName = drop.name
 
 		// check defense range
@@ -804,7 +813,7 @@ var loot = {};
 		drop.itemType = itemSlot
 		// magic
 		if (rarity === 'unique') {
-			var len = getUniqueItemCount(drop);
+			len = getUniqueItemCount(drop);
 			console.info('getUniqueItemCount', len);
 			if (len) {
 				processUniqueDrop(drop)
@@ -819,8 +828,8 @@ var loot = {};
 			preProcessDrop(drop)
 			deleteWeaponSpecificProps(drop.itemType)
 			// determine keys
-			var prefixKeys = Object.keys(itemObj.prefix)
-			var suffixKeys = Object.keys(itemObj.suffix)
+			prefixKeys = Object.keys(itemObj.prefix)
+			suffixKeys = Object.keys(itemObj.suffix)
 
 			//console.info('rarity', rarity)
 			if (rarity === 'magic') {
@@ -834,285 +843,282 @@ var loot = {};
 		postProcessDrop(drop)
 		return drop;
 		////////////////////////////////////////////////////
-		function getItemImageIcon(itemType, index, imgIndex) {
-			if (itemType === 'amulets') index = _.random(0, 7)
-			else if (itemType === 'rings') index = _.random(0, 5)
-			else if (itemType === 'charms') index = _.random(0, 7)
-			else if (itemType === 'belts' || itemType === 'boots') index = ~~(index / 2)
-			else if (itemType === 'bows') index = imgIndex
-			//console.info('index', itemType, index)
-			return index;
+	}
+	function processRareDrop(drop) {
+		rareKeys = _.uniq(_.concat(
+			prefixKeys,
+			suffixKeys,
+			Object.keys(itemObj.rare)
+		))
+		numberOfProps = _.random(3, 6)
+		// console.info('rare drop', drop, config)
+		// get prefix and suffix
+		props = []
+		tc = getTreasureClass(item.config.mobLevel)
+		for (i=0; i<numberOfProps; i++) {
+			props[i] = getRareProp()
 		}
-		function getUniqueItemCount(drop) {
-			if (_.isArray(loot[drop.itemType].unique)) {
-				var uniqueItems = _.filter(loot[drop.itemType].unique, item => item.name === drop.name);
-				return uniqueItems.length
-			}
-			else return 0
-		}
-		function processUniqueProps(uniqueItem, drop) {
-			// remove old
-			uniqueItem.name = uniqueItem.newName
-			delete uniqueItem.newName
-			delete uniqueItem.odds
-			// add props
-			for (var key in uniqueItem) {
-				if (_.isArray(uniqueItem[key])) {
-					drop[key] = _.random(uniqueItem[key][0], uniqueItem[key][1])
-				}
-				else drop[key] = uniqueItem[key]
-			}
-		}
-		function processUniqueDrop(drop) {
-			// select one if more than one exists
-			var possibleItems = _.filter(loot[drop.itemType].unique, item => item.name === drop.name)
-			var len = possibleItems.length
-			// console.info('possibleItems', possibleItems)
-			if (len > 1) {
-				var itemIndexArray = []
-				possibleItems.forEach(function(item, index) {
-					// default to equal chance dropping for all unique items in this item type
-					item.odds = item.odds || 100
-					// console.info('odds', item.odds)
-					for (var i = 0; i < item.odds; i++) {
-						itemIndexArray.push(index)
-					}
-				})
+		// console.warn('props', props)
 
-				var itemRoll = _.random(0, itemIndexArray.length - 1)
-				var itemIndex = itemIndexArray[itemRoll]
-				var uniqueItem = _.cloneDeep(possibleItems[itemIndex])
-			}
-			else {
-				var uniqueItem = _.cloneDeep(possibleItems[0])
-			}
+		// assign property values
+		props.forEach(function(prop) {
+			drop[prop.key] = prop.val
+		})
+		drop.name = getRareName(drop.itemType, drop.name)
+	}
 
-			processUniqueProps(uniqueItem, drop)
-
-			//console.warn('uniqueItem drop', drop)
-		}
-		function processRareDrop(drop) {
-			var rareKeys = _.uniq(_.concat(
-				prefixKeys,
-				suffixKeys,
-				Object.keys(itemObj.rare)
-			))
-			var numberOfProps = _.random(3, 6)
-			// console.info('rare drop', drop, config)
-			// get prefix and suffix
-			var props = []
-			var tc = getTreasureClass(config.mobLevel)
-			for (var i=0; i<numberOfProps; i++) {
-				props[i] = getRareProp()
-			}
-			// console.warn('props', props)
-
-			function getRareProp() {
-				var key = rareKeys[_.random(0, rareKeys.length - 1)]
-				var propType = getPropType(key)
-				var val = _.random(minValue[key], setMaxPropValue(itemObj[propType], key, tc))
-				stripRareKeys(rareKeys, key)
-				return {
-					key: key,
-					val: val
-				}
-			}
-			function getPropType(prop) {
-				if (_.get(itemObj.prefix, prop)) return 'prefix'
-				else if (_.get(itemObj.suffix, prop)) return 'suffix'
-				else return 'rare'
-			}
-
-			// assign property values
-			props.forEach(function(prop) {
-				drop[prop.key] = prop.val
-			})
-			drop.name = getRareName(drop.itemType, drop.name)
-		}
-		function processMagicDrop(drop) {
-			/*console.info('magic drop', drop, config)
-			console.info('prefixKeys', prefixKeys)
-			console.info('suffixKeys', suffixKeys)*/
-			// get prefix and suffix
-			var prefix = prefixKeys[_.random(0, prefixKeys.length - 1)]
-			var suffix = suffixKeys[_.random(0, suffixKeys.length - 1)]
-			// get values and names
-			var prefixVal = 0
-			var suffixVal = 0
-			var prefixName = ''
-			var suffixName = ''
-			var itemTypeMultiplier = getMultiplierByTypeAndProp(drop.itemType)
-			//TODO: unlock props by treasure class? Need data object for it
-			//TODO: Add rare props - refactor for easy code reuse
-			//console.warn('config', config.mobLevel)
-			//console.info('itemObj', itemObj)
-			var tc = getTreasureClass(config.mobLevel)
-			// set prefix and bound check
-			var prefixMax = setMaxPropValue(itemObj.prefix, prefix, tc)
-			// set suffix and bound check
-			var suffixMax = setMaxPropValue(itemObj.suffix, suffix, tc)
-			/*console.info('infos', config.mobLevel, tc, prefix, prefixMax, suffix, suffixMax)
-			console.warn('max ', prefixMax, suffixMax)*/
-
-			var getPrefixSuffixComboType = _.random(1, 100)
-			//console.info('prefix', prefix)
-			if (getPrefixSuffixComboType <= 50) {
-				prefixVal = _.random(minValue[prefix], prefixMax);
-				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
-			}
-			else if (getPrefixSuffixComboType <= 75) {
-				suffixVal = _.random(minValue[suffix], suffixMax)
-				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
-			}
-			else {
-				// both
-				prefixVal = _.random(minValue[prefix], prefixMax);
-				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
-				suffixVal = _.random(minValue[suffix], suffixMax)
-				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
-			}
-
-			if (ng.test) {
-				// for better testing on all combos
-				prefixVal = _.random(minValue[prefix], prefixMax);
-				prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
-				suffixVal = _.random(minValue[suffix], suffixMax)
-				suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
-			}
-
-			// assign property values
-			if (prefixVal) {
-				drop[prefix] = prefixVal
-			}
-			if (suffixVal) {
-				drop[suffix] = suffixVal
-			}
-			drop.name = [
-				prefixName,
-				drop.name,
-				suffixName
-			].join(' ').trim()
-			return drop
-		}
-		///////////////////////////////////////////////
-		function getMultiplierByTypeAndProp(itemType) {
-			return (itemType === 'twoHandSlashers' ||
-				itemType === 'twoHandBlunts' ||
-				itemType === 'staves' ||
-				itemType === 'bows') ? 2 : 1
-		}
-		function preProcessDrop() {
-			// set possible prefixes, suffixes, rare arrays and remove weapon specific props
-			itemObj.prefix = convertProps(itemObj.prefix)
-			itemObj.suffix = convertProps(itemObj.suffix)
-			itemObj.rare = convertProps(itemObj.rare)
-		}
-		function postProcessDrop(drop) {
-			// some props require further processing
-			if (drop.haste) {
-				var newSpeed = (drop.speed - (drop.speed * (drop.haste / 100))).toFixed(1)
-				console.warn('new speed:', drop.speed, newSpeed)
-				drop.speed = newSpeed * 1
-			}
-			if (drop.enhancedArmor) {
-				var newArmor = (drop.armor + (drop.armor * (drop.enhancedArmor / 100))).toFixed(1)
-				drop.armor = _.round(newArmor * 1)
-			}
-			if (drop.enhancedDamage) {
-				var newMinDamage = (drop.minDamage + (drop.minDamage * (drop.enhancedDamage / 100))).toFixed(1) * 1
-				var newMaxDamage = (drop.maxDamage + (drop.maxDamage * (drop.enhancedDamage / 100))).toFixed(1) * 1
-				drop.minDamage = _.round(newMinDamage)
-				drop.maxDamage = _.round(newMaxDamage)
-			}
-		}
-
-		function deleteWeaponSpecificProps(itemType) {
-			//console.warn('deleteWeaponSpecificProps', itemType, itemObj.prefix)
-			var props = []
-			if (itemType === 'oneHandSlashers') {
-				props = [
-					'oneHandBlunt',
-					'piercing',
-					'archery',
-					'handToHand',
-					'twoHandSlash',
-					'twoHandBlunt',
-				]
-			}
-			else if (itemType === 'oneHandBlunts' || itemType === 'focus') {
-				props = [
-					'oneHandSlash',
-					'piercing',
-					'archery',
-					'handToHand',
-					'twoHandSlash',
-					'twoHandBlunt',
-				]
-			}
-			else if (itemType === 'piercers') {
-				props = [
-					'oneHandSlash',
-					'oneHandBlunt',
-					'archery',
-					'handToHand',
-					'twoHandSlash',
-					'twoHandBlunt',
-				]
-			}
-			else if (itemType === 'twoHandSlashers') {
-				props = [
-					'oneHandSlash',
-					'oneHandBlunt',
-					'piercing',
-					'archery',
-					'handToHand',
-					'twoHandBlunt',
-				]
-			}
-			else if (itemType === 'twoHandBlunts' || itemType === 'staves') {
-				props = [
-					'oneHandSlash',
-					'oneHandBlunt',
-					'piercing',
-					'archery',
-					'handToHand',
-					'twoHandSlash',
-				]
-			}
-			else if (itemType === 'bows') {
-				props = [
-					'oneHandSlash',
-					'oneHandBlunt',
-					'piercing',
-					'handToHand',
-					'twoHandSlash',
-					'twoHandBlunt',
-				]
-			}
-			props.forEach(function(prop) {
-				delete itemObj.prefix[prop]
-			})
-		}
-
-		function filterKeys(key) {
-			if (rarity === 'normal') {
-				return !slotRequiresMagic.includes(key)
-			}
-			else {
-				return true;
-			}
-		}
-		function filterItems(item) {
-			return item.itemLevel <= config.mobLevel
-		}
-		function filterByArmorType(item) {
-			if (item.armorType && item.minArmor) {
-				console.info('filterByArmorType', config.armorTypes.includes(item.armorType), item)
-				return config.armorTypes.includes(item.armorType)
-			}
-			else return item
+	function getRareProp() {
+		key = rareKeys[_.random(0, rareKeys.length - 1)]
+		propType = getPropType(key)
+		val = _.random(minValue[key], setMaxPropValue(itemObj[propType], key, tc))
+		stripRareKeys(rareKeys, key)
+		return {
+			key: key,
+			val: val
 		}
 	}
+	function getPropType(prop) {
+		if (_.get(itemObj.prefix, prop)) return 'prefix'
+		else if (_.get(itemObj.suffix, prop)) return 'suffix'
+		else return 'rare'
+	}
+	function processMagicDrop(drop) {
+		/*console.info('magic drop', drop, config)
+		console.info('prefixKeys', prefixKeys)
+		console.info('suffixKeys', suffixKeys)*/
+		// get prefix and suffix
+		prefix = prefixKeys[_.random(0, prefixKeys.length - 1)]
+		suffix = suffixKeys[_.random(0, suffixKeys.length - 1)]
+		// get values and names
+		prefixVal = 0
+		suffixVal = 0
+		prefixName = ''
+		suffixName = ''
+		itemTypeMultiplier = getMultiplierByTypeAndProp(drop.itemType)
+		//TODO: unlock props by treasure class? Need data object for it
+		//TODO: Add rare props - refactor for easy code reuse
+		//console.warn('config', item.config.mobLevel)
+		//console.info('itemObj', itemObj)
+		tc = getTreasureClass(item.config.mobLevel)
+		// set prefix and bound check
+		prefixMax = setMaxPropValue(itemObj.prefix, prefix, tc)
+		// set suffix and bound check
+		suffixMax = setMaxPropValue(itemObj.suffix, suffix, tc)
+		/*console.info('infos', item.config.mobLevel, tc, prefix, prefixMax, suffix, suffixMax)
+		console.warn('max ', prefixMax, suffixMax)*/
+
+		getPrefixSuffixComboType = _.random(1, 100)
+		//console.info('prefix', prefix)
+		if (getPrefixSuffixComboType <= 50) {
+			prefixVal = _.random(minValue[prefix], prefixMax);
+			prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
+		}
+		else if (getPrefixSuffixComboType <= 75) {
+			suffixVal = _.random(minValue[suffix], suffixMax)
+			suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
+		}
+		else {
+			// both
+			prefixVal = _.random(minValue[prefix], prefixMax);
+			prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
+			suffixVal = _.random(minValue[suffix], suffixMax)
+			suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
+		}
+
+		if (ng.test) {
+			// for better testing on all combos
+			prefixVal = _.random(minValue[prefix], prefixMax);
+			prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
+			suffixVal = _.random(minValue[suffix], suffixMax)
+			suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
+		}
+
+		// assign property values
+		if (prefixVal) {
+			drop[prefix] = prefixVal
+		}
+		if (suffixVal) {
+			drop[suffix] = suffixVal
+		}
+		drop.name = [
+			prefixName,
+			drop.name,
+			suffixName
+		].join(' ').trim()
+		return drop
+	}
+	function preProcessDrop() {
+		// set possible prefixes, suffixes, rare arrays and remove weapon specific props
+		itemObj.prefix = convertProps(itemObj.prefix)
+		itemObj.suffix = convertProps(itemObj.suffix)
+		itemObj.rare = convertProps(itemObj.rare)
+	}
+	function postProcessDrop(drop) {
+		// some props require further processing
+		if (drop.haste) {
+			newSpeed = (drop.speed - (drop.speed * (drop.haste / 100))).toFixed(1)
+			// console.warn('new speed:', drop.speed, newSpeed)
+			drop.speed = newSpeed * 1
+		}
+		if (drop.enhancedArmor) {
+			newArmor = (drop.armor + (drop.armor * (drop.enhancedArmor / 100))).toFixed(1)
+			drop.armor = _.round(newArmor * 1)
+		}
+		if (drop.enhancedDamage) {
+			newMinDamage = (drop.minDamage + (drop.minDamage * (drop.enhancedDamage / 100))).toFixed(1) * 1
+			newMaxDamage = (drop.maxDamage + (drop.maxDamage * (drop.enhancedDamage / 100))).toFixed(1) * 1
+			drop.minDamage = _.round(newMinDamage)
+			drop.maxDamage = _.round(newMaxDamage)
+		}
+	}
+
+	function filterKeys(key) {
+		if (rarity === 'normal') {
+			return !slotRequiresMagic.includes(key)
+		}
+		else {
+			return true;
+		}
+	}
+
+	function deleteWeaponSpecificProps(itemType) {
+		//console.warn('deleteWeaponSpecificProps', itemType, itemObj.prefix)
+		deletedProps = []
+		if (itemType === 'oneHandSlashers') {
+			deletedProps = [
+				'oneHandBlunt',
+				'piercing',
+				'archery',
+				'handToHand',
+				'twoHandSlash',
+				'twoHandBlunt',
+			]
+		}
+		else if (itemType === 'oneHandBlunts' || itemType === 'focus') {
+			deletedProps = [
+				'oneHandSlash',
+				'piercing',
+				'archery',
+				'handToHand',
+				'twoHandSlash',
+				'twoHandBlunt',
+			]
+		}
+		else if (itemType === 'piercers') {
+			deletedProps = [
+				'oneHandSlash',
+				'oneHandBlunt',
+				'archery',
+				'handToHand',
+				'twoHandSlash',
+				'twoHandBlunt',
+			]
+		}
+		else if (itemType === 'twoHandSlashers') {
+			deletedProps = [
+				'oneHandSlash',
+				'oneHandBlunt',
+				'piercing',
+				'archery',
+				'handToHand',
+				'twoHandBlunt',
+			]
+		}
+		else if (itemType === 'twoHandBlunts' || itemType === 'staves') {
+			deletedProps = [
+				'oneHandSlash',
+				'oneHandBlunt',
+				'piercing',
+				'archery',
+				'handToHand',
+				'twoHandSlash',
+			]
+		}
+		else if (itemType === 'bows') {
+			deletedProps = [
+				'oneHandSlash',
+				'oneHandBlunt',
+				'piercing',
+				'handToHand',
+				'twoHandSlash',
+				'twoHandBlunt',
+			]
+		}
+		deletedProps.forEach(deleteItemProp)
+	}
+	function deleteItemProp(prop) {
+		delete itemObj.prefix[prop]
+	}
+	function getMultiplierByTypeAndProp(itemType) {
+		return (itemType === 'twoHandSlashers' ||
+			itemType === 'twoHandBlunts' ||
+			itemType === 'staves' ||
+			itemType === 'bows') ? 2 : 1
+	}
+	function processUniqueDrop(drop) {
+		// select one if more than one exists
+		possibleItems = _.filter(loot[drop.itemType].unique, item => item.name === drop.name)
+		len = possibleItems.length
+		// console.info('possibleItems', possibleItems)
+		if (len > 1) {
+			itemIndexArray = []
+			possibleItems.forEach(processOdds)
+
+			itemIndex = itemIndexArray[_.random(0, itemIndexArray.length - 1)]
+			uniqueItem = _.cloneDeep(possibleItems[itemIndex])
+		}
+		else {
+			uniqueItem = _.cloneDeep(possibleItems[0])
+		}
+		processUniqueProps(uniqueItem, drop)
+		//console.warn('uniqueItem drop', drop)
+	}
+	function processOdds(item, index) {
+		// default to equal chance dropping for all unique items in this item type
+		item.odds = item.odds || 100
+		// console.info('odds', item.odds)
+		for (i = 0; i < item.odds; i++) {
+			itemIndexArray.push(index)
+		}
+	}
+	function processUniqueProps(uniqueItem, drop) {
+		// remove old
+		uniqueItem.name = uniqueItem.newName
+		delete uniqueItem.newName
+		delete uniqueItem.odds
+		// add props
+		for (key in uniqueItem) {
+			if (_.isArray(uniqueItem[key])) {
+				drop[key] = _.random(uniqueItem[key][0], uniqueItem[key][1])
+			}
+			else drop[key] = uniqueItem[key]
+		}
+	}
+	function getUniqueItemCount(newDrop) {
+		if (_.isArray(loot[newDrop.itemType].unique)) {
+			return _.filter(loot[newDrop.itemType].unique, it => it.name === newDrop.name).length
+		}
+		else return 0
+	}
+	function setItemImageIcon() {
+		if (itemSlot === 'amulets') drop.imgIndex = _.random(0, 7)
+		else if (itemSlot === 'rings') drop.imgIndex = _.random(0, 7)
+		else if (itemSlot === 'charms') drop.imgIndex = _.random(0, 7)
+		else drop.imgIndex = drop.imgIndex
+	}
+	function filterByArmorType(drop) {
+		if (drop.armorType && drop.minArmor) {
+			return item.config.armorTypes.includes(drop.armorType)
+		}
+		else return drop
+	}
+	function filterItems(drop) {
+		return drop.itemLevel <= item.config.mobLevel
+	}
+	function enrichImgIndex(drop, index) {
+		drop.imgIndex = index
+	}
+
 	function stripRareKeys(rareKeys, key) {
 		// resists
 		if (key === 'resistBlood') _.pull(rareKeys, 'resistPoison', 'resistAll')
@@ -1699,4 +1705,4 @@ var loot = {};
 		}
 		return ~~value
 	}
-}()
+}(_, Object, JSON, $)

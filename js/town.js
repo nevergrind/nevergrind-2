@@ -28,7 +28,7 @@ var town;
 		openVariousWindow: '',
 		isBankInitialized: false,
 	}
-	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type
+	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, storeItems
 	const buyTypes = [
 		'merchant',
 		'apothecary',
@@ -174,18 +174,24 @@ var town;
 	}
 	function initStoreData() {
 		type = town.openVariousWindow.toLowerCase()
+		storeItems = []
 		if (!town.isInitialized[type]) {
-			console.info('itemTypesForSale', itemTypesForSale[type])
-			for (var i=0; i<item.MAX_SLOTS[type]; i++) {
+			//console.info('itemTypesForSale', itemTypesForSale[type])
+			for (i=0; i<item.MAX_SLOTS[type]; i++) {
 				rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
 				itemIndex = _.random(0, itemTypesForSale[type].length - 1)
-				items[type][i] = item.getItem({
-					mobLevel: my.level + 30,
+				storeItems[i] = item.getItem({
+					mobLevel: my.level + 5,
 					bonus: 0,
 					rarity: rarity,
 					itemSlot: itemTypesForSale[type][itemIndex],
 					armorTypes: armorTypesByStore[type]
 				})
+			}
+			storeItems = _.sortBy(storeItems, ['itemType'])
+			// sorted
+			for (i=0; i<storeItems.length; i++) {
+				items[type][i] = storeItems[i]
 			}
 			town.isInitialized[type] = true
 		}

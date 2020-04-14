@@ -31,35 +31,35 @@ loot.bows = {
 			maxDamage: 23,
 			speed: 2.9, // 13.1
 			itemLevel: 15,
-			imgIndex: 2,
+			imgIndex: 3,
 		}, {
 			name: 'Recurve Bow',
 			minDamage: 24,
 			maxDamage: 40,
 			speed: 3.3, // 19.4
 			itemLevel: 20,
-			imgIndex: 3,
+			imgIndex: 4,
 		}, {
 			name: 'Gothic Bow',
 			minDamage: 27,
 			maxDamage: 63,
 			speed: 3.5, // 25.4
 			itemLevel: 25,
-			imgIndex: 3,
+			imgIndex: 5,
 		}, {
 			name: 'Ward Bow',
 			minDamage: 33,
 			maxDamage: 60,
 			speed: 2.7, // 34.4
 			itemLevel: 30,
-			imgIndex: 4,
+			imgIndex: 6,
 		}, {
 			name: 'Hydra Bow',
 			minDamage: 46,
 			maxDamage: 105,
 			speed: 3.5, // 43.1
 			itemLevel: 35,
-			imgIndex: 4,
+			imgIndex: 7,
 		},
 	],
 	prefix: {

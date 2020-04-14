@@ -10,48 +10,56 @@ loot.twoHandSlashers = {
 			maxDamage: 13,
 			speed: 4.2, // 4.76
 			itemLevel: 1,
+			imgIndex: 0,
 		}, {
 			name: 'Giant Axe',
 			minDamage: 10,
 			maxDamage: 19,
 			speed: 4.4, // 6.59
 			itemLevel: 5,
+			imgIndex: 1,
 		}, {
 			name: 'Champion Sword',
 			minDamage: 14,
 			maxDamage: 26,
 			speed: 4.5, // 8.88
 			itemLevel: 10,
+			imgIndex: 2,
 		}, {
 			name: 'Bastard Sword',
 			minDamage: 18,
 			maxDamage: 39,
 			speed: 4.2, // 13.2
 			itemLevel: 15,
+			imgIndex: 3,
 		}, {
 			name: 'Gothic Axe',
 			minDamage: 27,
 			maxDamage: 53,
 			speed: 4.2, // 18.97
 			itemLevel: 20,
+			imgIndex: 4,
 		}, {
 			name: 'Katana',
 			minDamage: 34,
 			maxDamage: 67,
 			speed: 3.9, // 25.89
 			itemLevel: 25,
+			imgIndex: 5,
 		}, {
 			name: 'Colossus Sword',
 			minDamage: 49,
 			maxDamage: 92,
 			speed: 4.2, // 33.57
 			itemLevel: 30,
+			imgIndex: 6,
 		}, {
 			name: 'Mythical Sword',
 			minDamage: 67,
 			maxDamage: 118,
 			speed: 4.4, // 42.04
 			itemLevel: 35,
+			imgIndex: 7,
 		},
 	],
 	prefix: {

@@ -10,48 +10,56 @@ loot.oneHandBlunts = {
 			maxDamage: 9,
 			speed: 3.6, // 3.05 - 1.53
 			itemLevel: 1,
+			imgIndex: 0,
 		}, {
 			name: 'Club',
 			minDamage: 3,
 			maxDamage: 13,
 			speed: 3.5, // 4.57of
 			itemLevel: 5,
+			imgIndex: 1,
 		}, {
 			name: 'Morning Star',
 			minDamage: 5,
 			maxDamage: 16,
 			speed: 3.4, // 6.17
 			itemLevel: 10,
+			imgIndex: 2,
 		}, {
 			name: 'Spiked Club',
 			minDamage: 7,
 			maxDamage: 27,
 			speed: 3.8, // 8.94
 			itemLevel: 15,
+			imgIndex: 3,
 		}, {
 			name: 'Jagged Star',
 			minDamage: 9,
 			maxDamage: 38,
 			speed: 3.7, // 12.7
 			itemLevel: 20,
+			imgIndex: 4,
 		}, {
 			name: 'Scepter',
 			minDamage: 11,
 			maxDamage: 48,
 			speed: 3.4, // 17.35
 			itemLevel: 25,
+			imgIndex: 5,
 		}, {
 			name: 'Cudgel',
 			minDamage: 16,
 			maxDamage: 68,
 			speed: 3.6, // 23.3
 			itemLevel: 30,
+			imgIndex: 6,
 		}, {
 			name: 'Caduceus',
 			minDamage: 19,
 			maxDamage: 78,
 			speed: 3.3, // 29.39
 			itemLevel: 35,
+			imgIndex: 7,
 		},
 	],
 	prefix: {
