@@ -23,6 +23,7 @@ var town;
 			'blacksmith': false,
 			'merchant': false,
 		},
+		sunDuration: 1200,
 		lastAside: {},
 		delegated: 0,
 		openVariousWindow: '',
@@ -39,8 +40,7 @@ var town;
 		'Apothecary',
 		'Blacksmith',
 	]
-	const itemTypesForSale = {
-		blacksmith: [
+	const hasArmorType = [
 			'helms',
 			'shoulders',
 			'chests',
@@ -48,27 +48,35 @@ var town;
 			'gloves',
 			'belts',
 			'legs',
-			'boots',
+			'boots'
+	]
+	const itemTypesForSale = {
+		// plate & mail
+		blacksmith: [
+			...hasArmorType,
+			'shields',
 			'oneHandBlunts',
 			'twoHandBlunts',
 			'oneHandSlashers',
 			'twoHandSlashers',
+			'bows',
+			'piercers',
 		],
+		// cloth
 		apothecary: [
+			...hasArmorType,
 			'amulets',
 			'rings',
 			'charms',
-			'cloaks',
-			'bows',
-			'piercers',
 			'focus',
 			'staves',
-			'shields',
+			'cloaks',
 		]
 	}
+	// leather
 	itemTypesForSale.merchant = [
 		...itemTypesForSale.blacksmith,
-		...itemTypesForSale.apothecary
+		...itemTypesForSale.apothecary,
 	]
 	////////////////////////////////////////////
 	function go() {
@@ -125,7 +133,7 @@ var town;
 				game.initPlayedCache()
 
 				getElementById('scene-town').innerHTML = getTownHtml()
-				animateClouds()
+				pix.animateTownSky()
 				animateSky()
 				$("#scene-title").remove()
 				town.init()
@@ -199,19 +207,6 @@ var town;
 	}
 
 	function animateSky() {
-		var duration = 1200
-		TweenMax.to('#sun', duration, {
-			startAt: { top: '50vw', y: '0%' },
-			top: '-80vw',
-			force3D: true,
-			ease: Power2.easeOut
-		})
-		TweenMax.to('#sun', 1/60, {
-			rotation: 360,
-			repeat: -1,
-			force3D: true,
-			ease: Linear.easeOut
-		})
 		var skyProps = {
 			top: 50,
 			left: 66,
@@ -223,7 +218,7 @@ var town;
 			outerB: 48,
 		}
 		var el = querySelector('#town-sky')
-		TweenMax.to(skyProps, duration, {
+		TweenMax.to(skyProps, town.sunDuration, {
 			top: -80,
 			innerR: 80,
 			innerG: 192,
@@ -236,19 +231,11 @@ var town;
 			ease: Power2.easeOut
 		})
 
-		TweenMax.to('#town-building-wrap', duration / 2, {
+		TweenMax.to('#town-building-wrap', town.sunDuration / 2, {
 			startAt: {
 				filter: 'saturate(.5) brightness(.5)'
 			},
 			filter: 'saturate(1) brightness(1)',
-			ease: Power2.easeOut
-		})
-
-		TweenMax.to('.town-clouds', duration / 2, {
-			startAt: {
-				filter: 'saturate(.1) brightness(.1) opacity(.6)'
-			},
-			filter: 'saturate(1) brightness(1) opacity(.85)',
 			ease: Power2.easeOut
 		})
 	}
@@ -261,40 +248,10 @@ var town;
 			')'
 		})
 	}
-	function animateClouds() {
-		var duration = 777
-		/*TweenMax.set('#cloud-1', {
-			transformOrigin: '50% 0%',
-			transformPerspective: 200,
-			rotationX: -25,
-		})*/
-		TweenMax.to('#cloud-1', duration / 2, {
-			left: '-100%',
-			force3D: true,
-			ease: Linear.easeNone,
-			onComplete: function() {
-				TweenMax.to('#cloud-1', duration, {
-					startAt: { left: '100%' },
-					left: '-100%',
-					force3D: true,
-					ease: Linear.easeNone,
-					repeat: -1
-				})
-			}
-		})
-		TweenMax.to('#cloud-2', duration, {
-			left: '-100%',
-			force3D: true,
-			ease: Linear.easeNone,
-			repeat: -1
-		})
-	}
 	function getTownHtml() {
 		html = '<div id="town-wrap">' +
 			'<div id="town-sky" class="img-bg town-bg"></div>' +
-			'<img id="sun" class="celestial" src="images/env/sun-4.png">' +
-			'<img id="cloud-1" class="town-clouds" src="images/town/town-clouds-1.png">' +
-			'<img id="cloud-2" class="town-clouds" src="images/town/town-clouds-1.png">' +
+			// pix.sky here
 			'<div id="town-building-wrap" class="img-bg">' +
 				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/town-academy.png">' +
 				'<img id="town-background" class="town-bg" src="images/town/town-bg-3.png">' +
@@ -452,7 +409,7 @@ var town;
 				opacity: 1
 			})
 			labelObj = {
-				brightness: 1
+				brightness: .5
 			}
 			TweenMax.set('#town-building-label-wrap', {
 				backdropFilter: 'grayscale(1) saturate(2) brightness('+ labelObj.brightness +')',
@@ -519,7 +476,7 @@ var town;
 			townConfig = {
 				duration: 1,
 				scale: 1.2,
-				x: -180,
+				x: -130,
 				y: -100
 			}
 		}

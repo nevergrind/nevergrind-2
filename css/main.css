@@ -780,37 +780,12 @@ tbody { border: 0 }
 	bottom: 0;
 	pointer-events: none;
 }
-.town-clouds {
-	position: absolute;
-	top: 0%;
-	left: 200%;
-	pointer-events: none;
-}
-.celestial {
-	position: absolute;
-	top: 0;
-	pointer-events: none;
-}
 #town-sky {
 	top: 0%;
 	width: 100%;
 	height: 100%;
 	background-image: radial-gradient(farthest-corner at 50% 50%, #5bf, #05b)
 }
-#sun {
-	left: 40vw;
-	width: 52vw;
-	height: 52vw;
-	transform: translateY(-50%) scale(1.2);
-	filter: saturate(200%) brightness(200%);
-}
-#cloud-1 {
-	left: 0%;
-}
-#cloud-2 {
-	left: 100%;
-}
-
 .town-building {
 	position: absolute;
 	bottom: 0;
@@ -881,7 +856,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 	padding: .2rem;
 	max-width: 13rem;
 	pointer-events: none;
-	backdrop-filter: grayscale(1) saturate(2) brightness(1);
+	backdrop-filter: grayscale(1) saturate(2) brightness(.5);
 }
 #town-building-label-header {
 	color: gold;
@@ -2122,7 +2097,7 @@ background-image:
 	border: 2px ridge #136;
 	line-height: 1.2;
 	border-radius: 5px;
-	backdrop-filter: blur(5px);
+	backdrop-filter: brightness(.5) blur(5px);
 	z-index: 2;
 	pointer-events: none;
 }

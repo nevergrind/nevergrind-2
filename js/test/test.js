@@ -1,6 +1,7 @@
 var test;
 (function(Linear, TweenMax, TimelineMax, PIXI, undefined) {
 	test = {
+		pix: {},
 		chat: {
 			id: 999999999,
 			room: chatRoom,
@@ -20,6 +21,7 @@ var test;
 			brightness(100%)
 			contrast(100%)
 			shadow(100%)
+			drop-shadow(0 0 5px #0f0)
 			grayscale(100%)
 			invert(100%)
 			opacity(100%)
@@ -37,6 +39,7 @@ var test;
 		loot16,
 		pixi,
 		pixiRenderer,
+		pixiClouds,
 	}
 
 	var c;
@@ -49,7 +52,9 @@ var test;
 	var pixApp
 	var width
 	var height
-	const ratio = 1920 / 1080
+	const innerWidthMax = 1920
+	const innerHeightMax = 1080
+	const ratio = innerWidthMax / innerHeightMax
 	///////////////////////////////////
 	function battle() {
 		/**
@@ -356,7 +361,7 @@ var test;
 		orc.y = pixApp.screen.height / 2;
 		pixApp.stage.addChild(orc);
 
-		TweenMax.to(orc, .21, {
+		TweenMax.to(orc, 1, {
 			rotation: 2 * PI,
 			repeat: -1,
 			ease: Linear.easeNone
@@ -364,17 +369,59 @@ var test;
 		window.onresize = pixiResize
 		pixiResize()
 	}
+	function pixiClouds() {
+		var dur = 555;
+		test.pix = new PIXI.Application({
+			width: 1920,
+			height: 517,
+			transparent: true
+		});
+		console.info('textPix', test.pix)
+		console.info('view', test.pix.view)
+		console.info('screen', test.pix.screen)
+		// style
+		test.pix.view.id = 'test-pixi'
+		test.pix.view.style.position = 'absolute'
+		test.pix.view.style.zIndex = 3
+
+		document.body.appendChild(test.pix.view)
+
+		// create a new Sprite from an image path
+		const cloud = PIXI.Sprite.from('images/town/town-clouds-1.png');
+		// center the sprite's anchor point
+		cloud.anchor.set(0);
+		cloud.x = 0;
+		test.pix.stage.addChild(cloud);
+
+		TweenMax.to(cloud, dur / 2, {
+			x: -1920,
+			ease: Linear.easeNone,
+			onComplete: function() {
+				TweenMax.to(cloud, dur, {
+					startAt: { x: 1920 },
+					x: -1920,
+					ease: Linear.easeNone,
+					repeat: -1
+				})
+			}
+		})
+
+		window.onresize = pixiResizeSky
+		pixiResizeSky()
+	}
+	function pixiResizeSky() {
+		// wider than default ratio
+		width = window.innerHeight * ratio;
+		height = window.innerHeight;
+		console.info('pixiResize', width, height)
+		test.pix.view.style.width = window.innerWidth + 'px';
+		test.pix.view.style.height = ~~(517 / innerHeightMax * window.innerHeight) + 'px';
+	}
 	function pixiResize() {
-		if (window.innerWidth / window.innerHeight >= ratio) {
-			// wider than default ratio
-			width = window.innerHeight * ratio;
-			height = window.innerHeight;
-		}
-		else {
-			// more narrow than default ratio
-			width = window.innerWidth;
-			height = window.innerWidth / ratio;
-		}
+		// wider than default ratio
+		width = window.innerHeight * ratio;
+		height = window.innerHeight;
+
 		console.info('pixiResize', width, height)
 		pixApp.view.style.width = width + 'px';
 		pixApp.view.style.height = height + 'px';

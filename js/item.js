@@ -91,13 +91,13 @@ var loot = {};
 	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val
 
 	const saleValues = {
-		resistBlood: .5,
-		resistPoison: .5,
-		resistArcane: .5,
-		resistLightning: .5,
-		resistFire: .5,
-		resistIce: .5,
-		resistAll: 3,
+		resistBlood: 2,
+		resistPoison: 2,
+		resistArcane: 2,
+		resistLightning: 2,
+		resistFire: 2,
+		resistIce: 2,
+		resistAll: 18,
 		enhancedArmor: .1,
 		enhancedDamage: .2,
 		addSpellBlood: .5,
@@ -108,30 +108,30 @@ var loot = {};
 		addSpellIce: .5,
 		addSpellAll: 3,
 		attack: .25,
-		offense: 3,
-		defense: 3,
-		oneHandSlash: 3,
-		oneHandBlunt: 3,
-		piercing: 3,
-		archery: 3,
-		handToHand: 3,
-		twoHandSlash: 3,
-		twoHandBlunt: 3,
-		dodge: 3,
-		parry: 3,
-		riposte: 3,
-		alteration: 3,
-		conjuration: 3,
-		evocation: 3,
-		allSkills: 45,
-		str: .5,
-		sta: .5,
-		agi: .5,
-		dex: .5,
-		wis: .5,
-		intel: .5,
-		cha: .5,
-		allStats: 3.5,
+		offense: 7,
+		defense: 7,
+		oneHandSlash: 7,
+		oneHandBlunt: 7,
+		piercing: 7,
+		archery: 7,
+		handToHand: 7,
+		twoHandSlash: 7,
+		twoHandBlunt: 7,
+		dodge: 7,
+		parry: 7,
+		riposte: 7,
+		alteration: 7,
+		conjuration: 7,
+		evocation: 7,
+		allSkills: 350,
+		str: 1.5,
+		sta: 1.5,
+		agi: 1.5,
+		dex: 1.5,
+		wis: 1.5,
+		intel: 1.5,
+		cha: 1.5,
+		allStats: 24,
 		hp: .4,
 		hpRegen: 3,
 		mp: .4,
@@ -141,7 +141,7 @@ var loot = {};
 		crit: 1.5,
 		leech: 2,
 		wraith: 2,
-		haste: .8,
+		haste: 24,
 		addBlood: .3,
 		addPoison: .3,
 		addArcane: .3,
@@ -1120,6 +1120,7 @@ var loot = {};
 	}
 
 	function stripRareKeys(rareKeys, key) {
+		// if this prop exists, these other props cannot exist
 		// resists
 		if (key === 'resistBlood') _.pull(rareKeys, 'resistPoison', 'resistAll')
 		if (key === 'resistPoison') _.pull(rareKeys, 'resistBlood', 'resistAll')
@@ -1582,7 +1583,7 @@ var loot = {};
 				row: data,
 			})
 			items[item.dragType][item.dragSlot] = {}
-			bar.updateItemSlotDOM('merchant', item.dragSlot)
+			bar.updateItemSlotDOM(town.openVariousWindow.toLowerCase(), item.dragSlot)
 			resetDrop()
 			tooltip.goldValue = 0
 			town.setMyGold(my.gold - item.goldValue)

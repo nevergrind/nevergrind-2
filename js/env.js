@@ -1,5 +1,7 @@
-// env.js
-var env;
-(function() {
-	env = {};
-})();
+var env
+!function() {
+	env = {
+
+	}
+	//////////////////////////////
+}();

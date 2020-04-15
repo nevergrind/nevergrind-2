@@ -47,6 +47,7 @@ function minifyJs() {
 		'create',
 		'ng',
 		'env',
+		'pix',
 		'my',
 		'dom',
 		'audio',
