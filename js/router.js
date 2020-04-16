@@ -43,61 +43,23 @@ var router;
 		}
 	}
 	function toParty(data, r) {
-		if (r === 'party->hb') {
-			game.heartbeatReceivedParty(data);
-		}
-		else if (r === 'party->updatePlayerBar') {
-			bar.updatePlayerBar(data);
-		}
-		else if (r === 'party->abandon') {
-			mission.abandonReceived(data);
-		}
-		else if (r === 'party->embarkReceived') {
-			mission.embarkReceived(data);
-		}
-		else if (r === 'party->linkdead') {
-			bar.heartbeatLinkdead(data);
-		}
-		else if (r === 'party->notifyJoin') {
-			party.notifyJoin(data);
-		}
-		else if (r === 'party->inviteAccepted') {
-			party.joinAck(data);
-		}
-		else if (r === 'party->disband') {
-			party.disbandReceived(data);
-		}
-		else if (r === 'party->promote') {
-			party.promoteReceived(data);
-		}
-		else if (r === 'party->boot') {
-			party.bootReceived(data);
-		}
-		else if (r === 'party->getPresence') {
-			game.heartbeatSend();
-		}
+		if (r === 'party->hb') game.heartbeatReceivedParty(data)
+		else if (r === 'party->abandon') mission.abandonReceived(data)
+		else if (r === 'party->embarkReceived') mission.embarkReceived(data)
+		else if (r === 'party->notifyJoin') party.notifyJoin(data)
+		else if (r === 'party->inviteAccepted') party.joinAck(data)
+		else if (r === 'party->disband') party.disbandReceived(data)
+		else if (r === 'party->promote') party.promoteReceived(data)
+		else if (r === 'party->boot') party.bootReceived(data)
+		else if (r === 'party->getPresence') game.heartbeatSend()
 	}
 	function toGuild(data, r) {
-		if (r === 'guild->hasJoined') {
-			guild.hasJoined(data);
-		}
-		else if (r === 'guild->quit') {
-			guild.hasDisbanded(data);
-		}
-		else if (r === 'guild->boot') {
-			guild.wasBooted(data);
-		}
-		else if (r === 'guild->promote') {
-			guild.wasPromoted(data);
-		}
-		else if (r === 'guild->demoteReceived') {
-			guild.demoteReceived(data);
-		}
-		else if (r === 'guild->leader') {
-			guild.wasLeader(data);
-		}
-		else if (r === 'guild->motd') {
-			guild.zmqMotd(data);
-		}
+		if (r === 'guild->hasJoined') guild.hasJoined(data)
+		else if (r === 'guild->quit') guild.hasDisbanded(data)
+		else if (r === 'guild->boot') guild.wasBooted(data)
+		else if (r === 'guild->promote') guild.wasPromoted(data)
+		else if (r === 'guild->demoteReceived') guild.demoteReceived(data)
+		else if (r === 'guild->leader') guild.wasLeader(data)
+		else if (r === 'guild->motd') guild.zmqMotd(data)
 	}
 })();

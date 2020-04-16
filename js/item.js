@@ -1,6 +1,6 @@
 var item;
 var loot = {};
-!function(_, Object, JSON, $, undefined) {
+(function(_, Object, JSON, $, undefined) {
 	item = {
 		getItemNameString,
 		getEquipString,
@@ -17,6 +17,7 @@ var loot = {};
 		handleItemSlotContextClick,
 		getItemValueHtml,
 		getFirstAvailableInvSlot,
+		getPotion,
 		config: {},
 		goldValue: 0,
 		MAX_SLOTS: {
@@ -88,9 +89,114 @@ var loot = {};
 		twoHandWeaponTypes: ['twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
 	}
 
-	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val
+	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val, potion
 
+	const potions = {
+		health: [{
+				name: 'Minor Health Potion',
+				use: '',
+				cooldownType: 'health',
+				cost: 10
+			}, {
+				name: 'Light Health Potion',
+				use: '',
+				cooldownType: 'health',
+				cost: 20
+			}, {
+				name: 'Health Potion',
+				use: '',
+				cooldownType: 'health',
+				cost: 40
+			}, {
+				name: 'Major Health Potion',
+				use: '',
+				cooldownType: 'health',
+				cost: 80
+			}, {
+				name: 'Greater Health Potion',
+				use: '',
+				cooldownType: 'health',
+				cost: 120
+			}, {
+				name: 'Super Health Potion',
+				use: '',
+				cooldownType: 'health',
+				cost: 250
+			}
+		],
+		mana: [{
+				name: 'Minor Mana Potion',
+				use: '',
+				cooldownType: 'mana',
+				cost: 10
+			}, {
+				name: 'Light Mana Potion',
+				use: '',
+				cooldownType: 'mana',
+				cost: 20
+			}, {
+				name: 'Mana Potion',
+				use: '',
+				cooldownType: 'mana',
+				cost: 40
+			}, {
+				name: 'Major Mana Potion',
+				use: '',
+				cooldownType: 'mana',
+				cost: 80
+			}, {
+				name: 'Greater Mana Potion',
+				use: '',
+				cooldownType: 'mana',
+				cost: 120
+			}, {
+				name: 'Super Mana Potion',
+				use: '',
+				cost: 250
+			}
+		],
+		spirit: [{
+				name: 'Minor Spirit Potion',
+				use: '',
+				cooldownType: 'spirit',
+				cost: 10
+			}, {
+				name: 'Light Spirit Potion',
+				use: '',
+				description: '',
+				cooldownType: 'spirit',
+				cost: 20
+			}, {
+				name: 'Spirit Potion',
+				use: '',
+				cooldownType: 'spirit',
+				cost: 40
+			}, {
+				name: 'Major Spirit Potion',
+				use: '',
+				cooldownType: 'spirit',
+				cost: 80
+			}, {
+				name: 'Greater Spirit Potion',
+				use: '',
+				cooldownType: 'spirit',
+				cost: 120
+			}, {
+				name: 'Super Spirit Potion',
+				use: '',
+				cooldownType: 'spirit',
+				cost: 250
+			}
+		],
+	}
+	/*
+	name: potions[type][index].name,
+	use: potions[type][index].use,
+	description: potions[type][index].description,
+	cost: potions[type][index].cost,
+	 */
 	const saleValues = {
+		cost: 1,
 		resistBlood: 2,
 		resistPoison: 2,
 		resistArcane: 2,
@@ -724,7 +830,7 @@ var loot = {};
 		$.post(app.url + 'item/loot-item.php', {
 			slot: slot,
 			name: drop.name,
-			data: JSON.stringify(drop),
+			data: JSON.stringify(_.omit(drop, ['name'])),
 		}).done(data => {
 			processNewItemToInv({
 				slot: slot,
@@ -1445,12 +1551,12 @@ var loot = {};
 		if (eqType === 'primary' || eqType === 'secondary' &&
 			item.allWeaponTypes.includes(itemType)) {
 			// check character can equip a weapon
-			if (itemType === 'oneHandSlashers' && !stat.oneHandSlash() ||
-				itemType === 'oneHandBlunts' && !stat.oneHandBlunt() ||
-				itemType === 'twoHandSlashers' && !stat.twoHandSlash() ||
-				itemType === 'twoHandBlunts' && !stat.twoHandBlunt() ||
-				itemType === 'piercing' && !stat.piercing() ||
-				itemType === 'bows' && !stat.archery()) {
+			if (itemType === 'oneHandSlashers' && !stats.oneHandSlash() ||
+				itemType === 'oneHandBlunts' && !stats.oneHandBlunt() ||
+				itemType === 'twoHandSlashers' && !stats.twoHandSlash() ||
+				itemType === 'twoHandBlunts' && !stats.twoHandBlunt() ||
+				itemType === 'piercing' && !stats.piercing() ||
+				itemType === 'bows' && !stats.archery()) {
 				chat.log('You cannot equip this type of weapon!', 'chat-warning')
 				return false
 			}
@@ -1459,7 +1565,7 @@ var loot = {};
 		if (eqType === 'secondary' &&
 			item.offhandWeaponTypes.includes(itemType)) {
 			// off-hand weapon check
-			if (!stat.dualWield()) {
+			if (!stats.dualWield()) {
 				chat.log('You cannot dual wield!', 'chat-warning')
 				return false
 			}
@@ -1574,7 +1680,7 @@ var loot = {};
 			gold: my.gold - item.goldValue,
 			slot: buyItemSlot,
 			name: item.dragData.name,
-			data: JSON.stringify(item.dragData),
+			data: JSON.stringify(_.omit(item.dragData, ['name'])),
 		}).done(data => {
 			querySelector('#various-description').innerHTML = 'Thank you for buying ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!'
 			processNewItemToInv({
@@ -1706,4 +1812,12 @@ var loot = {};
 		}
 		return ~~value
 	}
-}(_, Object, JSON, $)
+	function getPotion(index, type) {
+		return {
+			name: potions[type][index].name,
+			use: potions[type][index].use,
+			description: potions[type][index].description,
+			cost: potions[type][index].cost,
+		}
+	}
+})(_, Object, JSON, $);

@@ -97,7 +97,16 @@ var game;
 				obj.isLeader = typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true;
 				socket.publish('party' + my.partyId, _.assign(obj,
 					_.pick(my, [
-						'name', 'hp', 'maxHp', 'mp', 'maxMp', 'job', 'partyId', 'avatar'
+						'name',
+						'hp',
+						'maxHp',
+						'mp',
+						'maxMp',
+						'sp',
+						'maxSp',
+						'job',
+						'partyId',
+						'avatar'
 					])
 				));
 				console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');

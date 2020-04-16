@@ -120,7 +120,6 @@ var pix
 		// wider than default ratio
 		w = window.innerHeight * ratio;
 		h = window.innerHeight;
-		console.info('pixiResize', w, h)
 		pix.sky.view.style.width = window.innerWidth + 'px';
 		pix.sky.view.style.height = ~~(pix.sky.screen.height / maxH * window.innerHeight) + 'px';
 	}

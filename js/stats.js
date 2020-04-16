@@ -1,6 +1,6 @@
-var stat;
-!function() {
-	stat = {
+var stats = {};
+(function() {
+	stats = {
 		str,
 		sta,
 		agi,
@@ -429,14 +429,14 @@ var stat;
 	}
 	function maxHp() {
 		return ~~(
-			((stat.sta() * hpTier[my.job]) * (my.level / 50) +
+			((stats.sta() * hpTier[my.job]) * (my.level / 50) +
 				(my.level * (hpTier[my.job] * 2.5) + 20)) * hpPercentBonus()
 			+ getEqTotal('hp') + getBuffTotal('hp')
 		)
 	}
 	function maxMp() {
 		return ~~(
-			((stat.intel() * mpTier[my.job]) * (my.level / 50) +
+			((stats.intel() * mpTier[my.job]) * (my.level / 50) +
 				(my.level * (mpTier[my.job] * 2.5) + 12)) * mpPercentBonus()
 			+ getEqTotal('mp') + getBuffTotal('mp')
 		)
@@ -444,7 +444,7 @@ var stat;
 
 	function maxSp() {
 		return ~~(
-			((stat.cha() * spTier[my.job]) * (my.level / 50) +
+			((stats.cha() * spTier[my.job]) * (my.level / 50) +
 				(my.level * (spTier[my.job] * 2.5) + 8)) +
 			getEqTotal('sp') + getBuffTotal('sp')
 		)
@@ -464,4 +464,4 @@ var stat;
 		}
 		return val
 	}
-}()
+})();

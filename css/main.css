@@ -856,7 +856,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 	padding: .2rem;
 	max-width: 13rem;
 	pointer-events: none;
-	backdrop-filter: grayscale(1) saturate(2) brightness(.5);
+	/*backdrop-filter: grayscale(1) saturate(2) brightness(.5);*/
 }
 #town-building-label-header {
 	color: gold;
@@ -1255,7 +1255,6 @@ background-clip: content-box;
 }
 .bar-text {
 	position: absolute;
-	visibility: hidden;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -2453,7 +2452,12 @@ background-image:
 	border-radius: 4px;
 	border: 1px solid #777;
 	flex-shrink: 0;
+	transition: transform .1s ease-out;
 }
+.item-slot:active {
+	transform: scale(.9);
+}
+
 .item-slot-type-none .item-slot { filter: brightness(60%) grayscale(1); }
 .item-slot-type-normal .item-slot { border: 1px solid #777; }
 .item-slot-type-magic .item-slot { border: 1px solid #2a9aff; }

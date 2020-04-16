@@ -1,6 +1,35 @@
 var bar;
 (function(_, $, Draggable, TweenMax, undefined) {
 	bar = {
+		init,
+		linkdead,
+		hideParty,
+		updatePlayerBar,
+		addPlayer,
+		updatePing,
+		toggleCharacterStats,
+		toggleInventory,
+		toggleOptions,
+		handleCloseMenu,
+		closeAllWindows,
+		setDefaultInvWeaponImage,
+		setCharActiveTab,
+		getSkillDescription,
+		updateItemSlotDOM,
+		updateItemSwapDOM,
+		getItemSlotImage,
+		getItemSlotHtml,
+		selectOptionCategory,
+		setWindowSize,
+		setDefaultOptions,
+		toggleFastDestroy,
+		toggleShowNetwork,
+		updateDynamicStyles,
+		appExit,
+		appReset,
+		setHotkey,
+		listenForHotkey,
+		updateBar,
 		defaultImage: [
 			'helms1',
 			'amulets0',
@@ -31,35 +60,6 @@ var bar;
 		hotkeyWhitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`~1234567890!@#$%^&*()-_=+[{]}\\|;:\'",<.>/?InsertDeleteHomeEndPageUpPageDownF1F2F3F4F5F6F7F8F9F10F11F12ArrowUpArrowDownArrowLeftArrowRightTab',
 		optionSelected: 'General',
 		activeTab: 'character',
-		init,
-		linkdead,
-		hideParty,
-		updatePlayerBar,
-		addPlayer,
-		updatePing,
-		toggleCharacterStats,
-		toggleInventory,
-		toggleOptions,
-		handleCloseMenu,
-		closeAllWindows,
-		setDefaultInvWeaponImage,
-		setCharActiveTab,
-		getSkillDescription,
-		updateItemSlotDOM,
-		updateItemSwapDOM,
-		getItemSlotImage,
-		getItemSlotHtml,
-		selectOptionCategory,
-		setWindowSize,
-		setDefaultOptions,
-		toggleFastDestroy,
-		toggleShowNetwork,
-		updateDynamicStyles,
-		appExit,
-		appReset,
-		setHotkey,
-		listenForHotkey,
-		stopListeningForHotkey,
 	};
 	var pingColors = [
 		'',
@@ -176,15 +176,15 @@ var bar;
 		}
 	}
 	function showBarText() {
-		updateAllBars()
-		querySelectorAll('.bar-text').forEach(el => {
+		updateAllMyBars()
+		/*querySelectorAll('.bar-text').forEach(el => {
 			el.style.visibility = 'visible'
-		})
+		})*/
 	}
 	function hideBarText() {
-		querySelectorAll('.bar-text').forEach(el => {
+		/*querySelectorAll('.bar-text').forEach(el => {
 			el.style.visibility = 'hidden'
-		})
+		})*/
 	}
 
 	function getCharacterStatsHtml() {
@@ -343,40 +343,46 @@ var bar;
 		if ([item.dropType, item.dragType].includes('eq')) {
 			console.info('update char stats')
 			updateCharStatPanels()
+			game.heartbeatSend()
 		}
 	}
 
 	function updateCharStatPanels() {
 		if (bar.windowsOpen.character) {
-			querySelector('#inv-resist-blood').innerHTML = stat.resistBlood()
-			querySelector('#inv-resist-poison').innerHTML = stat.resistPoison()
-			querySelector('#inv-resist-arcane').innerHTML = stat.resistArcane()
-			querySelector('#inv-resist-lightning').innerHTML = stat.resistLightning()
-			querySelector('#inv-resist-fire').innerHTML = stat.resistFire()
-			querySelector('#inv-resist-ice').innerHTML = stat.resistIce()
+			querySelector('#inv-resist-blood').innerHTML = stats.resistBlood()
+			querySelector('#inv-resist-poison').innerHTML = stats.resistPoison()
+			querySelector('#inv-resist-arcane').innerHTML = stats.resistArcane()
+			querySelector('#inv-resist-lightning').innerHTML = stats.resistLightning()
+			querySelector('#inv-resist-fire').innerHTML = stats.resistFire()
+			querySelector('#inv-resist-ice').innerHTML = stats.resistIce()
 			querySelector('#char-stat-col-1').innerHTML = charStatColOneHtml()
 			querySelector('#char-stat-col-2').innerHTML = charStatColTwoHtml()
 		}
-		stat.setResources()
+		stats.setResources()
 		if (ng.view === 'town') {
+			// max out health automatically
 			my.hp = my.maxHp
 			my.mp = my.maxMp
 			my.sp = my.maxSp
 		}
-		updateAllBars()
+		updateAllMyBars()
 	}
-	function updateAllBars() {
-		updateBar('hp', my.row)
-		updateBar('mp', my.row)
-		updateBar('sp', my.row)
+	function updateAllMyBars() {
+		updateBar('hp', my)
+		updateBar('mp', my)
+		updateBar('sp', my)
 	}
-	function updateBar(type, slot) {
-		barRatio = ((1 - my.hp / my.maxHp) * 100)
-		querySelector('#bar-' + type + '-fg-' + slot).style.transform = 'translateX(-' + barRatio + '%)'
-		querySelector('#bar-' + type + '-text-' + slot).textContent = my[type] + '/' + getMaxType(type)
+	function updateBar(type, data) {
+		console.warn('updateBar', type, data.row)
+		if (type === 'hp') barRatio = ((1 - data[type] / data.maxHp) * 100)
+		else if (type === 'mp') barRatio = ((1 - data[type] / data.maxMp) * 100)
+		else barRatio = ((1 - data[type] / data.maxSp) * 100)
+
+		querySelector('#bar-' + type + '-fg-' + data.row).style.transform = 'translateX(-' + barRatio + '%)'
+		querySelector('#bar-' + type + '-text-' + data.row).textContent = data[type] + '/' + getMaxType(type, data)
 	}
-	function getMaxType(type) {
-		return (type === 'hp' ? my.maxHp : type === 'mp' ? my.maxMp : my.maxSp)
+	function getMaxType(type, data) {
+		return (type === 'hp' ? data.maxHp : type === 'mp' ? data.maxMp : data.maxSp)
 	}
 
 	function toggleOptions() {
@@ -803,18 +809,21 @@ var bar;
 	 */
 	function updatePlayerBar(data) {
 		index = _.findIndex(party.presence, { row: data.row });
-		if (index === -1) return;
+		if (index === -1) return
 		player = party.presence[index];
-		if (data.hp !== player.hp || data.maxHp !== player.maxHp) {
-			player.hp = data.hp;
-			player.maxHp = data.maxHp;
-			setHp(index);
-		}
-		if (data.mp !== player.mp || data.maxMp !== player.maxMp) {
-			player.mp = data.mp;
-			player.maxMp = data.maxMp;
-			setMp(index);
-		}
+
+		player.hp = data.hp;
+		player.maxHp = data.maxHp;
+		updateBar('hp', data)
+
+		player.mp = data.mp;
+		player.maxMp = data.maxMp;
+		updateBar('mp', data)
+
+		player.sp = data.sp;
+		player.maxSp = data.maxSp;
+		updateBar('sp', data)
+
 		if (data.isLeader !== player.isLeader) {
 			player.isLeader = data.isLeader;
 			// set UI helmet
@@ -863,41 +872,7 @@ var bar;
 		else index = 2;
 		return pingColors[index];
 	}
-	function setHp(index, delay) {
-		if (typeof party.presence[index] === 'undefined' ||
-			!party.presence[index].name) {
-			console.warn("NOT DRAWING BAR");
-		}
-		else {
-			percent = ~~((party.presence[index].hp / party.presence[index].maxHp) * 100) + '%';
-			delay = delay === void 0 ? .3 : delay;
-			TweenMax.to(bar.dom[index].hpFg, delay, {
-				width: percent
-			});
-			/*TweenMax.to(bar.dom[index].hpBg, .5, {
-				width: percent
-			});*/
 
-		}
-	}
-	function setMp(index, delay) {
-		if (typeof party.presence[index] === 'undefined' ||
-			!party.presence[index].name) {
-			console.warn("NOT DRAWING BAR");
-		}
-		else {
-			if (party.presence[index].maxMp) {
-				percent = ~~((party.presence[index].mp / party.presence[index].maxMp) * 100) + '%';
-				delay = delay === void 0 ? .3 : delay;
-				TweenMax.to(bar.dom[index].mpFg, delay, {
-					width: percent
-				});
-			}
-			else {
-				bar.dom[index].mpWrap.style.display = 'none';
-			}
-		}
-	}
 	function hideParty() {
 		party.presence.forEach(function(v, i){
 			if (i) getElementById('bar-player-wrap-' + i).style.display = 'none'
@@ -914,7 +889,7 @@ var bar;
 
 	function getPropSkillHtml(prop) {
 		if (!my[prop]) return ''
-		max = stat.getPropMax(prop)
+		max = stats.getPropMax(prop)
 		html = '<div data-id="'+ prop +'" class="inv-skill-row">' +
 				'<div class="inv-skill-bar" style="width: '+ (my[prop] / max * 100) +'%"></div>' +
 				'<div class="inv-skill-label-wrap">' +
@@ -953,12 +928,12 @@ var bar;
 				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
 					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 					'<div id="inv-resist-wrap" class="text-shadow">'+
-						'<div id="inv-resist-blood" class="inv-resist-icon flex-center" style="background: #500">' + stat.resistBlood() + '</div>' +
-						'<div id="inv-resist-poison" class="inv-resist-icon flex-center" style="background: #090">' + stat.resistPoison() + '</div>' +
-						'<div id="inv-resist-arcane" class="inv-resist-icon flex-center" style="background: #808">' + stat.resistArcane() + '</div>' +
-						'<div id="inv-resist-lightning" class="inv-resist-icon flex-center" style="background: #aa0">' + stat.resistLightning() + '</div>' +
-						'<div id="inv-resist-fire" class="inv-resist-icon flex-center" style="background: #840">' + stat.resistFire() + '</div>' +
-						'<div id="inv-resist-ice" class="inv-resist-icon flex-center" style="background: #28c">' + stat.resistIce() + '</div>' +
+						'<div id="inv-resist-blood" class="inv-resist-icon flex-center" style="background: #500">' + stats.resistBlood() + '</div>' +
+						'<div id="inv-resist-poison" class="inv-resist-icon flex-center" style="background: #090">' + stats.resistPoison() + '</div>' +
+						'<div id="inv-resist-arcane" class="inv-resist-icon flex-center" style="background: #808">' + stats.resistArcane() + '</div>' +
+						'<div id="inv-resist-lightning" class="inv-resist-icon flex-center" style="background: #aa0">' + stats.resistLightning() + '</div>' +
+						'<div id="inv-resist-fire" class="inv-resist-icon flex-center" style="background: #840">' + stats.resistFire() + '</div>' +
+						'<div id="inv-resist-ice" class="inv-resist-icon flex-center" style="background: #28c">' + stats.resistIce() + '</div>' +
 					'</div>' +
 				'</div>' +
 				'<div class="flex" style="font-size: .8rem">'+
@@ -985,36 +960,36 @@ var bar;
 	}
 	function charStatColOneHtml() {
 		return '<div class="flex space-between">' +
-			'<div style="color: gold">Armor:</div><div>'+ stat.armor() +'</div>' +
+			'<div style="color: gold">Armor:</div><div>'+ stats.armor() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Strength:</div><div>'+ stat.str() +'</div>' +
+			'<div style="color: gold">Strength:</div><div>'+ stats.str() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Stamina:</div><div>'+ stat.sta() +'</div>' +
+			'<div style="color: gold">Stamina:</div><div>'+ stats.sta() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Agility:</div><div>'+ stat.agi() +'</div>' +
+			'<div style="color: gold">Agility:</div><div>'+ stats.agi() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Dexterity:</div><div>'+ stat.dex() +'</div>' +
+			'<div style="color: gold">Dexterity:</div><div>'+ stats.dex() +'</div>' +
 		'</div>'
 	}
 	function charStatColTwoHtml() {
 		return '<div class="flex space-between">' +
-			'<div style="color: gold">Attack:</div><div>'+ stat.attack() +'</div>' +
+			'<div style="color: gold">Attack:</div><div>'+ stats.attack() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Damage:</div><div>'+ stat.damageString(stat.damage()) +'</div>' +
+			'<div style="color: gold">Damage:</div><div>'+ stats.damageString(stats.damage()) +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Wisdom:</div><div>'+ stat.wis() +'</div>' +
+			'<div style="color: gold">Wisdom:</div><div>'+ stats.wis() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Intelligence:</div><div>'+ stat.intel() +'</div>' +
+			'<div style="color: gold">Intelligence:</div><div>'+ stats.intel() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Charisma:</div><div>'+ stat.cha() +'</div>' +
+			'<div style="color: gold">Charisma:</div><div>'+ stats.cha() +'</div>' +
 		'</div>'
 	}
 })(_, $, Draggable, TweenMax);

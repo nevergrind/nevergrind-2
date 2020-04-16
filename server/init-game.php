@@ -3,7 +3,7 @@ require 'header.php';
 require 'db.php';
 
 // steam data if applicable
-$version = '2020.1.1';
+$version = '2020.1.2';
 if ($_POST['version'] !== $version) {
 	exit("Firmament Wars is currently being upgraded. We'll be right back!");
 }

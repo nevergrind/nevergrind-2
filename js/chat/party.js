@@ -1,5 +1,5 @@
 var party;
-(function() {
+(function(Date, _, $) {
 	party = {
 		prefix: (sessionStorage.getItem('reloads') ? +sessionStorage.getItem('reloads') : 1),
 		presence: [],
@@ -48,11 +48,27 @@ var party;
 	}
 	function route(data, obj) {
 		data = router.normalizeInput(data, obj);
-		if (data.route === 'chat->log') {
-			router.toTown(data, data.route);
+		if (data.route === 'chat->log') router.toTown(data, data.route)
+		else router.toParty(data, data.route)
+	}
+	function checkUpdateBars(data, player) {
+		if (data.hp !== player.hp ||
+			data.maxHp !== player.maxHp) {
+			player.hp = data.hp;
+			player.maxHp = data.maxHp;
+			bar.updateBar('hp', data)
 		}
-		else {
-			router.toParty(data, data.route);
+		if (data.mp !== player.mp ||
+			data.maxMp !== player.maxMp) {
+			player.mp = data.mp;
+			player.maxMp = data.maxMp;
+			bar.updateBar('mp', data)
+		}
+		if (data.sp !== player.sp ||
+			data.maxSp !== player.maxSp) {
+			player.sp = data.sp;
+			player.maxSp = data.maxSp;
+			bar.updateBar('sp', data)
 		}
 	}
 	function upsertParty(data) {
@@ -61,12 +77,9 @@ var party;
 		index = _.findIndex(party.presence, { row: data.row });
 		player = party.presence[index];
 		if (index >= 0) {
+			checkUpdateBars(data, player)
 			// update
 			player.time = time;
-			player.hp = data.hp;
-			player.maxHp = data.maxHp;
-			player.mp = data.mp;
-			player.maxMp = data.maxMp;
 			player.job = data.job;
 			player.name = _.capitalize(data.name);
 			player.row = data.row;
@@ -84,6 +97,8 @@ var party;
 					maxHp: data.maxHp,
 					mp: data.mp,
 					maxMp: data.maxMp,
+					sp: data.sp,
+					maxSp: data.maxSp,
 					job: data.job,
 					name: _.capitalize(data.name),
 					row: data.row,
@@ -92,6 +107,7 @@ var party;
 				});
 				var len = party.presence.length - 1;
 				bar.addPlayer(party.presence[len], data.row);
+				checkUpdateBars(data, party.presence[len])
 				bar.updatePlayerBar(data);
 			}
 			else {
@@ -370,4 +386,4 @@ var party;
 		return a[1] === void 0 ?
 			'' : (_.capitalize(a[1].trim()));
 	}
-})();
+})(Date, _, $);

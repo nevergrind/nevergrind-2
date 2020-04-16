@@ -1,5 +1,5 @@
 var town;
-(function($, _, TweenMax, Linear, RoughEase, Power0, Power1, undefined) {
+(function($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo, undefined) {
 	town = {
 		go,
 		init,
@@ -23,13 +23,24 @@ var town;
 			'blacksmith': false,
 			'merchant': false,
 		},
-		sunDuration: 1200,
+		sunDuration: 1800,
 		lastAside: {},
 		delegated: 0,
 		openVariousWindow: '',
 		isBankInitialized: false,
 	}
 	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, storeItems
+
+	const skyProps = {
+		top: 50,
+		left: 66,
+		innerR: 92,
+		innerG: 32,
+		innerB: 160,
+		outerR: 16,
+		outerG: 0,
+		outerB: 48,
+	}
 	const buyTypes = [
 		'merchant',
 		'apothecary',
@@ -119,7 +130,7 @@ var town;
 				initItemData(data.inv, 'inv')
 				initItemData(data.eq, 'eq')
 
-				stat.setResources()
+				stats.setResources()
 				my.hp = my.maxHp
 				my.mp = my.maxMp
 				my.sp = my.maxSp
@@ -184,8 +195,17 @@ var town;
 		type = town.openVariousWindow.toLowerCase()
 		storeItems = []
 		if (!town.isInitialized[type]) {
+			i = 0
 			//console.info('itemTypesForSale', itemTypesForSale[type])
-			for (i=0; i<item.MAX_SLOTS[type]; i++) {
+			if (type === 'Apothecary') {
+				warn('is apothecary!')
+				/* name, description, type?, ???
+				for (; i<6; i++) {
+					storeItems[i] = item.getPotion(i, 'healing')
+				}
+				*/
+			}
+			for (; i<item.MAX_SLOTS[type]; i++) {
 				rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
 				itemIndex = _.random(0, itemTypesForSale[type].length - 1)
 				storeItems[i] = item.getItem({
@@ -195,6 +215,7 @@ var town;
 					itemSlot: itemTypesForSale[type][itemIndex],
 					armorTypes: armorTypesByStore[type]
 				})
+				//console.info('item', storeItems[i])
 			}
 			storeItems = _.sortBy(storeItems, ['itemType'])
 			// sorted
@@ -206,29 +227,28 @@ var town;
 		$('#various-item-wrap').html(getStoreItemHtml())
 	}
 
+	function setSky(obj) {
+		TweenMax.set('#town-sky', {
+			background: 'radial-gradient('+
+				'farthest-corner at '+ obj.left +'vw '+ obj.top +'vw,'+
+				'rgb('+ obj.innerR +', ' + obj.innerG + ', ' + obj.innerB + '),'+
+				'rgb('+ obj.outerR +', ' + obj.outerG + ', ' + obj.outerB + ')' +
+			')'
+		})
+	}
+
 	function animateSky() {
-		var skyProps = {
-			top: 50,
-			left: 66,
-			innerR: 92,
-			innerG: 32,
-			innerB: 160,
-			outerR: 16,
-			outerG: 0,
-			outerB: 48,
-		}
-		var el = querySelector('#town-sky')
 		TweenMax.to(skyProps, town.sunDuration, {
 			top: -80,
-			innerR: 80,
-			innerG: 192,
+			innerR: 180, // aef
+			innerG: 240,
 			innerB: 255,
-			outerR: 0,
+			outerR: 0, // 05b
 			outerG: 80,
 			outerB: 192,
 			onUpdate: setSky,
-			onUpdateParams: [el, skyProps],
-			ease: Power2.easeOut
+			onUpdateParams: [skyProps],
+			ease: Expo.easeOut
 		})
 
 		TweenMax.to('#town-building-wrap', town.sunDuration / 2, {
@@ -237,15 +257,6 @@ var town;
 			},
 			filter: 'saturate(1) brightness(1)',
 			ease: Power2.easeOut
-		})
-	}
-	function setSky(el, obj) {
-		TweenMax.set(el, {
-			background: 'radial-gradient('+
-				'farthest-side at '+ obj.left +'vw '+ obj.top +'vw,'+
-				'rgb('+ obj.innerR +', ' + obj.innerG + ', ' + obj.innerB + '),'+
-				'rgb('+ obj.outerR +', ' + obj.outerG + ', ' + obj.outerB + ')' +
-			')'
 		})
 	}
 	function getTownHtml() {
@@ -408,6 +419,7 @@ var town;
 				},
 				opacity: 1
 			})
+			/*
 			labelObj = {
 				brightness: .5
 			}
@@ -423,13 +435,16 @@ var town;
 				repeat: 1,
 				ease: Power1.easeInOut
 			})
+			*/
 		}
 	}
+	/*
 	function setLabelBg(obj) {
 		TweenMax.set('#town-building-label-wrap', {
 			backdropFilter: 'grayscale(1) saturate(2) brightness('+ obj.brightness +')'
 		})
 	}
+	*/
 	function hideLabel() {
 		TweenMax.to('#town-building-label-wrap', .5, {
 			opacity: 0
@@ -765,4 +780,4 @@ var town;
 	function isMerchantMode() {
 		return merchants.includes(town.openVariousWindow)
 	}
-})($, _, TweenMax, Linear, RoughEase, Power0, Power1);
+})($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo);
