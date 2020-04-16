@@ -337,9 +337,9 @@ var ng;
 		// turn off all events
 		$(document).add('*').off();
 		$("main > *").css('display', 'none');
-		var e = getElementById('scene-error');
-		e.style.display = 'block';
-		e.innerHTML = msg || 'You have been disconnected from the server';
+		var e = getElementById('scene-error')
+		e.style.display = 'block'
+		e.innerHTML = msg || 'You have been disconnected<br>from the server'
 		delayedCall(12, reloadGame)
 	}
 	function reloadGame() {

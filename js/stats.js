@@ -31,10 +31,13 @@ var stats = {};
 		resistFire,
 		resistIce,
 		getPropMax,
-		setResources,
-		maxHp,
-		maxMp,
-		maxSp,
+		setAllResources,
+		hpMax,
+		mpMax,
+		spMax,
+		hpRegen,
+		mpRegen,
+		spRegen,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
@@ -98,14 +101,7 @@ var stats = {};
 		'SUM': 2.5,
 		'WIZ': 2.5,
 	}
-	var val
-	var i
-	var len
-	var type
-	var min
-	var max
-	var atk
-	var h2h
+	var val, base, i, len, type, min, max, atk, h2h
 
 	function str() {
 		return my.str +
@@ -283,88 +279,116 @@ var stats = {};
 		else if (prop === 'dodge') resp = dodgeMax()
 		else if (prop === 'parry') resp = parryMax()
 		else if (prop === 'riposte') resp = riposteMax()
-		else if (prop === 'alteration' || prop === 'conjuration' || prop === 'evocation') resp = spellMax()
+		else if (prop === 'alteration') resp = alterationMax()
+		else if (prop === 'evocation') resp = evocationMax()
+		else if (prop === 'conjuration') resp = conjurationMax()
 		return resp
 	}
 	function offenseMax() {
-		if (offensiveJobs.includes(my.job)) return my.level * 5
-		else if (intCasterJobs.includes(my.job)) return my.level * 3
-		else return my.level * 4
+		if (my.race === 'Halfling') base = 10
+		else if (my.race === 'Half Elf') base = 5
+		else base = 0
+		if (offensiveJobs.includes(my.job)) return base + my.level * 5
+		else if (intCasterJobs.includes(my.job)) return base + my.level * 3
+		else return base + my.level * 4
 	}
 	function defenseMax() {
-		if (defensiveJobs.includes(my.job)) return my.level * 5
-		else if (intCasterJobs.includes(my.job)) return my.level * 3
-		else return my.level * 4
+		base = my.race === 'Dwarf' ? 5 : 0
+		if (defensiveJobs.includes(my.job)) return base + my.level * 5
+		else if (intCasterJobs.includes(my.job)) return base + my.level * 3
+		else return base + my.level * 4
 	}
 	function oneHandSlashMax() {
-		if (my.job === 'RNG') return my.level * 5
-		else if (my.job === 'ROG') return _.min([my.level * 5, 240])
-		else if (averageOneHandSlashJobs.includes(my.job)) return my.level * 4
+		if (my.race === 'Human') base = 10
+		else if (my.race === 'Half Elf') base = 5
+		else base = 0
+		if (my.job === 'RNG') return base + my.level * 5
+		else if (my.job === 'ROG') return base + _.min([my.level * 5, 240])
+		else if (averageOneHandSlashJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
 	function oneHandBluntMax() {
-		if (my.job === 'MNK') return my.level * 5
-		else if (my.job === 'RNG') return _.min([my.level * 5, 240])
-		else if (my.job === 'ROG') return _.min([my.level * 5, 225])
-		else return my.level * 4
+		if (my.race === 'Barbarian') base = 10
+		else if (my.race === 'Half Elf') base = 5
+		else base = 0
+		if (my.job === 'MNK') return base + my.level * 5
+		else if (my.job === 'RNG') return base + _.min([my.level * 5, 240])
+		else if (my.job === 'ROG') return base + _.min([my.level * 5, 225])
+		else return base + my.level * 4
 	}
 	function piercingMax() {
-		if (my.job === 'ROG') return my.level * 5
-		else if (my.job === 'RNG') return _.min([my.level * 5, 240])
-		else if (averagePiercingJobs.includes(my.job)) return my.level * 4
+		if (my.race === 'Halfling') base = 10
+		else if (my.race === 'Half Elf') base = 5
+		else base = 0
+		if (my.job === 'ROG') return base + my.level * 5
+		else if (my.job === 'RNG') return base + _.min([my.level * 5, 240])
+		else if (averagePiercingJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
 	function archeryMax() {
-		if (my.job === 'RNG') return my.level * 5
-		else if (averageArcherJobs.includes(my.job)) return my.level * 2
+		base = my.race === 'Half Elf' ? 5 : 0
+		if (my.job === 'RNG') return base + my.level * 5
+		else if (averageArcherJobs.includes(my.job)) return base + my.level * 2
 		else return 0
 	}
 	function handToHandMax() {
-		if (my.job === 'MNK') return my.level * 5
-		else if (averagePunchJobs.includes(my.job)) return my.level * 2
+		base = my.race === 'Half Elf' ? 5 : 0
+		if (my.job === 'MNK') return base + my.level * 5
+		else if (averagePunchJobs.includes(my.job)) return base + my.level * 2
 		else return my.level
 	}
 	function twoHandSlashMax() {
-		if (my.job === 'RNG') return _.min([my.level * 5, 225])
-		else if (tankJobs.includes(my.job)) return my.level * 4
+		if (my.race === 'Human' || my.race === 'Orc') base = 10
+		else if (my.race === 'Half Elf') base = 5
+		else base = 0
+		if (my.job === 'RNG') return base + _.min([my.level * 5, 225])
+		else if (tankJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
 	function twoHandBluntMax() {
-		if (my.job === 'MNK') return my.level * 5
-		else if (my.job === 'RNG') return _.min([my.level * 5, 225])
-		else if (twoHandBluntAverageJobs.includes(my.job)) return my.level * 4
+		if (my.race === 'Barbarian' || my.race === 'Orc') base = 10
+		else if (my.race === 'Half Elf') base = 5
+		else base = 0
+		if (my.job === 'MNK') return base + my.level * 5
+		else if (my.job === 'RNG') return base + _.min([my.level * 5, 225])
+		else if (twoHandBluntAverageJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
 	function dualWieldMax() {
+		base = my.race === 'Half Elf' ? 5 : 0
 		if (my.job === 'MNK' ||
 			my.level === 'ROG' && my.level >= 13 ||
 			my.level === 'RNG' && my.level >= 17) {
-			return my.level * 5
+			return base + my.level * 5
 		}
 		else if (
 			my.job === 'WAR' && my.level >= 13 ||
 			my.job === 'BRD' && my.level >= 17) {
-			return my.level * 4
+			return base + my.level * 4
 		}
 		else return 0
 	}
 	function doubleAttackMax() {
+		base = my.race === 'Half Elf' ? 5 : 0
 		if (
 			my.job === 'PAL' && my.level >= 20 ||
 			my.job === 'SHD' && my.level >= 20 ||
 			my.job === 'MNK' && my.level >= 15 ||
 			my.job === 'ROG' && my.level >= 16 ||
 			my.job === 'RNG' && my.level >= 20) {
-			return my.level * 5
+			return base + my.level * 5
 		}
-		else if (my.job === 'WAR' && my.level >= 15) return my.level * 4
+		else if (my.job === 'WAR' && my.level >= 15) return base + my.level * 4
 		else return 0
 	}
 	function dodgeMax() {
+		if (my.race === 'Halfling') base = 10
+		else if (my.race === 'Half Elf') base = 5
+		else base = 0
 		if (
 			(my.job === 'ROG' && my.level >= 4) ||
 			(my.job === 'BRD' && my.level >= 10)) {
-			return my.level * 4
+			return base + my.level * 4
 		}
 		else if (
 			(my.job === 'WAR' && my.level >= 6) ||
@@ -372,69 +396,88 @@ var stats = {};
 			(my.job === 'SHD' && my.level >= 10) ||
 			(my.job === 'MNK') ||
 			(my.job === 'RNG' && my.level >= 8)) {
-			return my.level * 3
+			return base + my.level * 3
 		}
 		else if (
 			wisCasterJobs.includes(my.job) && my.level >= 15 ||
 			intCasterJobs.includes(my.job) && my.level >= 22) {
-			return my.level * 2
+			return base + my.level * 2
 		}
 		else return 0
 	}
 	function parryMax() {
+		base = my.race === 'Half Elf' ? 5 : 0
 		if (
 			(my.job === 'WAR' && my.level >= 10) ||
 			(my.job === 'PAL' && my.level >= 17)) {
-			return my.level * 5
+			return base + my.level * 5
 		}
 		else if (
 			(my.job === 'SHD' && my.level >= 17) ||
 			(my.job === 'RNG' && my.level >= 18)) {
-			return my.level * 4
+			return base + my.level * 4
 		}
 		else if (
 			(my.job === 'MNK' && my.level >= 12) ||
 			(my.job === 'ROG' && my.level >= 12)) {
-			return my.level * 3
+			return base + my.level * 3
 		}
 		else return 0
 	}
 	function riposteMax() {
+		base = my.race === 'Half Elf' ? 5 : 0
 		if (
 			(my.job === 'WAR' && my.level >= 25) ||
 			(my.job === 'SHD' && my.level >= 30)) {
-			return my.level * 5
+			return base + my.level * 5
 		}
 		else if (
 			(my.job === 'PAL' && my.level >= 30) ||
 			(my.job === 'MNK' && my.level >= 35)) {
-			return my.level * 4
+			return base + my.level * 4
 		}
 		else if (
 			(my.job === 'ROG' && my.level >= 30) ||
 			(my.job === 'RNG' && my.level >= 35)) {
-			return my.level * 3
+			return base + my.level * 3
 		}
 		else return 0
 	}
-	function spellMax() {
-		if (allCasterJobs.includes(my.job)) return my.level * 5
-		else if (hybridJobs.includes(my.job) && my.level >= 9) return my.level * 4
+	function alterationMax() {
+		base = my.race === 'Dwarf' || my.race === 'Seraph' ? 5 : 0
+		if (allCasterJobs.includes(my.job)) return base + my.level * 5
+		else if (hybridJobs.includes(my.job) && my.level >= 9) return base + my.level * 4
 		else return 0
 	}
-	function setResources() {
-		my.maxHp = maxHp()
-		my.maxMp = maxMp()
-		my.maxSp = maxSp()
+	function evocationMax() {
+		if (my.race === 'High Elf') base = 10
+		else if (my.race === 'Seraph') base = 5
+		else base = 0
+		if (allCasterJobs.includes(my.job)) return base + my.level * 5
+		else if (hybridJobs.includes(my.job) && my.level >= 9) return base + my.level * 4
+		else return 0
 	}
-	function maxHp() {
+	function conjurationMax() {
+		if (my.race === 'Troll') base = 10
+		else if (my.race === 'Seraph') base = 5
+		else base = 0
+		if (allCasterJobs.includes(my.job)) return base + my.level * 5
+		else if (hybridJobs.includes(my.job) && my.level >= 9) return base + my.level * 4
+		else return 0
+	}
+	function setAllResources() {
+		my.hpMax = hpMax()
+		my.mpMax = mpMax()
+		my.spMax = spMax()
+	}
+	function hpMax() {
 		return ~~(
 			((stats.sta() * hpTier[my.job]) * (my.level / 50) +
 				(my.level * (hpTier[my.job] * 2.5) + 20)) * hpPercentBonus()
 			+ getEqTotal('hp') + getBuffTotal('hp')
 		)
 	}
-	function maxMp() {
+	function mpMax() {
 		return ~~(
 			((stats.intel() * mpTier[my.job]) * (my.level / 50) +
 				(my.level * (mpTier[my.job] * 2.5) + 12)) * mpPercentBonus()
@@ -442,13 +485,35 @@ var stats = {};
 		)
 	}
 
-	function maxSp() {
+	function spMax() {
 		return ~~(
 			((stats.cha() * spTier[my.job]) * (my.level / 50) +
 				(my.level * (spTier[my.job] * 2.5) + 8)) +
 			getEqTotal('sp') + getBuffTotal('sp')
 		)
 	}
+	// troll 9, normal 5
+	function baseHpRegen() {
+		return (my.race === 'Troll' ? 3 : 1) + (my.level * (my.race === 'Troll' ? .12 : .08))
+	}
+	// normal 8.5, HEF 14.5
+	function baseMpRegen() {
+		return (my.race === 'High Elf' ? 4 : 2) + (my.level * (my.race === 'High Elf' ? .21 : .13))
+	}
+	//
+	function baseSpRegen() {
+		return (my.race === 'Human' ? 4 : 2) + (my.level * (my.race === 'Human' ? .21 : .13))
+	}
+	function hpRegen() {
+		return ~~(baseHpRegen() + getEqTotal('hpRegen') + getBuffTotal('hpRegen'))
+	}
+	function mpRegen() {
+		return ~~(baseMpRegen() + getEqTotal('mpRegen') + getBuffTotal('mpRegen'))
+	}
+	function spRegen() {
+		return ~~(baseSpRegen() + getEqTotal('spRegen') + getBuffTotal('spRegen'))
+	}
+
 	function hpPercentBonus() {
 		return 1 + (getStatTotal('increaseHpPercent') / 100);
 	}

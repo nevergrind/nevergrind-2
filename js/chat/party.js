@@ -53,21 +53,21 @@ var party;
 	}
 	function checkUpdateBars(data, player) {
 		if (data.hp !== player.hp ||
-			data.maxHp !== player.maxHp) {
+			data.hpMax !== player.hpMax) {
 			player.hp = data.hp;
-			player.maxHp = data.maxHp;
+			player.hpMax = data.hpMax;
 			bar.updateBar('hp', data)
 		}
 		if (data.mp !== player.mp ||
-			data.maxMp !== player.maxMp) {
+			data.mpMax !== player.mpMax) {
 			player.mp = data.mp;
-			player.maxMp = data.maxMp;
+			player.mpMax = data.mpMax;
 			bar.updateBar('mp', data)
 		}
 		if (data.sp !== player.sp ||
-			data.maxSp !== player.maxSp) {
+			data.spMax !== player.spMax) {
 			player.sp = data.sp;
-			player.maxSp = data.maxSp;
+			player.spMax = data.spMax;
 			bar.updateBar('sp', data)
 		}
 	}
@@ -94,11 +94,11 @@ var party;
 				party.presence.push({
 					time: time,
 					hp: data.hp,
-					maxHp: data.maxHp,
+					hpMax: data.hpMax,
 					mp: data.mp,
-					maxMp: data.maxMp,
+					mpMax: data.mpMax,
 					sp: data.sp,
-					maxSp: data.maxSp,
+					spMax: data.spMax,
 					job: data.job,
 					name: _.capitalize(data.name),
 					row: data.row,

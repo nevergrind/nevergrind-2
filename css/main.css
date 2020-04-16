@@ -466,7 +466,7 @@ tbody { border: 0 }
 	visibility: hidden;
 	top: 50px;
 	left: 0;
-	right: 0;
+	width: 100%;
 	margin: 0 auto;
 	max-width: 480px;
 	border: .1rem ridge #048;
@@ -521,7 +521,7 @@ tbody { border: 0 }
 }
 .overlay,
 .scene {
-	position: fixed;
+	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -1129,7 +1129,7 @@ background-clip: content-box;
 }
 
 #scene-error {
-	padding: 30vh 10vw 0;
+	padding-top: 30vh;
 	color: gold;
 	text-align: center;
 	font: 3rem Cinzel;
@@ -1144,7 +1144,7 @@ background-clip: content-box;
 	1px 1px 2px #fff,
 	0 0 2px #fd0,
 	0 0 5px #fd0;
-	background: radial-gradient(farthest-corner at 50% 50%, rgba(16, 16, 16, 1), rgba(0, 0, 0, 1));
+	background: radial-gradient(farthest-corner at 50% 30%, rgba(20, 16, 12, 1), rgba(0, 0, 0, 1));
 	z-index: 2;
 }
 
@@ -1201,14 +1201,21 @@ background-clip: content-box;
 }
 
 .bar-player-wrap:first-of-type {
-	border: 2px ridge #048;
 	transform: scale(1);
 	background: rgba(0,0,0,.7)
 }
 
-.bar-col-icon {
+.bar-avatar {
 	width: 4rem;
 	height: 4rem;
+	transition: filter .2s ease-out, transform .1s ease-out;
+}
+.bar-avatar:hover {
+	filter: drop-shadow(0 0 2px #ffd700);
+}
+.bar-avatar:active {
+	transition: none;
+	filter: drop-shadow(0 0 3px #ffffdd);
 }
 
 .bar-level {

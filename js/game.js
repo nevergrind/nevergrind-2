@@ -1,6 +1,6 @@
 // game specific data
 var game;
-(function() {
+(function(TweenMax, clearTimeout, setTimeout, _, $, localStorage, undefined) {
 	/** public */
 	game = {
 		heartbeatDifference: app.isApp ? 18000 : 18000,
@@ -10,7 +10,6 @@ var game;
 		pingHistory: [],
 		questDelay: 3,
 		start: Date.now(),
-		heartbeatEnabled: true,
 		upsertRoom,
 		removePlayer,
 		initSocket,
@@ -36,14 +35,8 @@ var game;
 		timer: new delayedCall(0, ''),
 		sendTime: 0,
 		receiveTime: 0,
-		interval: 5000,
+		interval: 5,
 		activate,
-	};
-	function initPlayedCache() {
-		game.storageId = 'played' + my.row;
-		if (localStorage.getItem(game.storageId) === null) {
-			localStorage.setItem(game.storageId, 0);
-		}
 	}
 	var played = {
 		timer: new delayedCall(0, ''),
@@ -71,50 +64,61 @@ var game;
 			game.getPresence();
 		}
 	}
+	function heartbeatTick() {
+		heartbeatSend()
+		heartbeatTimeout()
+	}
 	function heartbeatSend() {
-		if (game.heartbeatEnabled) {
-			time = Date.now();
-			// check disconnect
-			diff = time - heartbeat.receiveTime;
-			if (diff > game.heartbeatDifference) {
-				console.warn('something wrong with the socket... please investigate...');
-				ng.disconnect();
-			}
-			else {
-				obj = {
-					row: my.row,
-					level: my.level,
-					job: my.job,
-					name: my.name
-				};
-				if (ng.view === 'town') {
-					// town chat traffic
-					obj.route = 'chat->hb';
-					socket.publish(chat.getChannel(), obj);
-				}
-				// party traffic
-				obj.route = 'party->hb';
-				obj.isLeader = typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true;
-				socket.publish('party' + my.partyId, _.assign(obj,
-					_.pick(my, [
-						'name',
-						'hp',
-						'maxHp',
-						'mp',
-						'maxMp',
-						'sp',
-						'maxSp',
-						'job',
-						'partyId',
-						'avatar'
-					])
-				));
-				console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
-
-				heartbeat.sendTime = time;
-			}
+		time = Date.now();
+		// check disconnect
+		diff = time - heartbeat.receiveTime;
+		warn('diff', diff)
+		if (diff > game.heartbeatDifference) {
+			console.warn('something wrong with the socket... please investigate...');
+			ng.disconnect();
 		}
-		heartbeatTimeout();
+		else {
+			// insert regen tick logic here
+			my.resourceTick('hp')
+			my.resourceTick('mp')
+			my.resourceTick('sp')
+
+			obj = {
+				row: my.row,
+				level: my.level,
+				job: my.job,
+				name: my.name
+			};
+			if (ng.view === 'town') {
+				// town chat traffic
+				obj.route = 'chat->hb';
+				socket.publish(chat.getChannel(), obj);
+			}
+			// party traffic
+			obj.route = 'party->hb';
+			obj.isLeader = typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true;
+			socket.publish('party' + my.partyId, _.assign(obj,
+				_.pick(my, [
+					'name',
+					'hp',
+					'hpMax',
+					'mp',
+					'mpMax',
+					'sp',
+					'spMax',
+					'job',
+					'partyId',
+					'avatar'
+				])
+			));
+			console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
+
+			heartbeat.sendTime = time;
+		}
+	}
+	function heartbeatTimeout() {
+		clearTimeout(heartbeat.timer)
+		heartbeat.timer = setTimeout(heartbeatTick, heartbeat.interval * 1000)
 	}
 	function heartbeatReceived(data) {
 		if (data.name === my.name) {
@@ -133,10 +137,6 @@ var game;
 			bar.updatePing(ping);
 		}
 		party.upsertParty(data);
-	}
-	function heartbeatTimeout() {
-		clearTimeout(heartbeat.timer);
-		heartbeat.timer = setTimeout(heartbeatSend, heartbeat.interval);
 	}
 	function getPresence() {
 		socket.publish(chat.getChannel(), {
@@ -349,4 +349,10 @@ var game;
 		}
 		return dayStr + hourStr + minStr;
 	}
-})();
+	function initPlayedCache() {
+		game.storageId = 'played' + my.row;
+		if (localStorage.getItem(game.storageId) === null) {
+			localStorage.setItem(game.storageId, 0);
+		}
+	}
+})(TweenMax, clearTimeout, setTimeout, _, $, localStorage);

@@ -18,6 +18,7 @@ var town;
 		showMerchantMsg,
 		setStoreGold,
 		setMyGold,
+		socketReady,
 		isInitialized: {
 			'apothecary': false,
 			'blacksmith': false,
@@ -101,7 +102,7 @@ var town;
 					opacity: 0
 				})
 			}
-			for (var key in town.isInitialized) {
+			for (key in town.isInitialized) {
 				town.isInitialized[key] = false
 			}
 			chat.sizeLarge();
@@ -115,7 +116,7 @@ var town;
 				// my processing
 				Object.assign(my, _.omit(data.characterData, ['data']))
 				data.characterData.data = JSON.parse(data.characterData.data)
-				for (var key in data.characterData.data) {
+				for (key in data.characterData.data) {
 					my[key] = data.characterData.data[key]
 				}
 				my.jobLong = ng.toJobLong(my.job)
@@ -130,10 +131,17 @@ var town;
 				initItemData(data.inv, 'inv')
 				initItemData(data.eq, 'eq')
 
-				stats.setResources()
-				my.hp = my.maxHp
-				my.mp = my.maxMp
-				my.sp = my.maxSp
+				stats.setAllResources()
+				if (ng.test) {
+					my.hp = 1
+					my.mp = 1
+					my.sp = 1
+				}
+				else {
+					my.hp = my.hpMax
+					my.mp = my.mpMax
+					my.sp = my.spMax
+				}
 
 				// init party member values
 				ng.setScene('town')
@@ -149,31 +157,25 @@ var town;
 				$("#scene-title").remove()
 				town.init()
 				bar.init();
-				// await socket connect
-				(function repeat() {
-					if (socket.enabled) {
-						// stuff to do after the socket wakes up
-						party.listen(party.getUniquePartyChannel())
-						chat.sendMsg('/join')
-						chat.history = [];
-						// town
-						TweenMax.to('#scene-town', .2, {
-							opacity: 1
-						})
-						TweenMax.to('#body, #town-wrap', .5, {
-							delay: .5,
-							opacity: 1,
-							onComplete: ng.unlock
-						})
-					}
-					else {
-						delayedCall(.1, repeat);
-					}
-				})();
 			}).fail(function(data){
 				ng.disconnect(data.responseText);
 			});
 		}
+	}
+	function socketReady() {
+		// stuff to do after the socket wakes up
+		party.listen(party.getUniquePartyChannel())
+		chat.sendMsg('/join')
+		chat.history = [];
+		// town
+		TweenMax.to('#scene-town', .2, {
+			opacity: 1
+		})
+		TweenMax.to('#body, #town-wrap', .5, {
+			delay: .5,
+			opacity: 1,
+			onComplete: ng.unlock
+		})
 	}
 
 	function initItemData(obj, type) {

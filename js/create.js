@@ -1,6 +1,20 @@
 var create;
 (function(_) {
 	create = {
+		events,
+		deleteCharacter,
+		msg,
+		getPossibleJobs,
+		getRaceAttrs,
+		getJobAttrs,
+		set,
+		getResist,
+		getDungeon,
+		getEmptyForm,
+		setRandomGender,
+		setRandomRace,
+		setRandomClass,
+		setFace,
 		whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzBackspaceEscape',
 		selected: 0,
 		base: {
@@ -38,18 +52,18 @@ var create;
 				Female: "Females receive a boost to bleed and poison resistance."
 			},
 			race: {
-				Barbarian: 'Barbarians are a hardy race that benefit from high strength and stamina. Living through harsh winters in Fenwoven has given them strong ice resistance and above-average scouting skills.',
-				'Dark Elf': 'Dark Elves are an evil race from Vedria that excel in a variety of roles. They boast strong blood and arcane resistance along with good trap and scouting skills.',
-				Dwarf: 'Dwarves hail from Dunhoven, a mountainous region of Vandamor. They are a stout, loyal race with strong resistances to arcane and poison magic. They are also known for unearthing hidden treasures where others would not.',
-				Seraph: 'Hailing from the remote island city of Wexxen, the Seraphim live to serve and glorify Yentus, the God of Light. Generations of intense academic pursuit has made their bodies weak, but their minds strong. They also boast higher than normal pulling skills, which helps them avoid unnecessary conflicts in dungeons.',
-				Gnome: 'Gnomes hail from Brindomir, a mountainous city on the eastern outskirts of Vandamor. Due to their extensive tinkering and scientific experimentation, they have high lightning resistance and are immune to silence. They also have a small bonus to treasure-finding.',
-				'Half Elf': 'Half Elves are a hybrid of Humans and Wood Elves that primarily dwell in Prentia, a city in western Vandamor. They share a blend of traits from both races and a love of the great outdoors. They have a minor boost to all resists and strong dungeon skills.',
-				Halfling: 'Halflings dwell in Aspen Grove, a hamlet on the southern coast of Vandamor. They are a race of nimble pranksters with high agility and dexterity. They are adept treasure-finders with strong bonuses to disarming traps and pulling. Their unique ability to escape from combat is unmatched.',
-				'High Elf': 'High Elves live in Kaedorn, a walled kingdom ruled by a monarchy for thousands of years. Despite their resemblance to Wood Elves, their strengths are in spellcasting due to their diligent study of magic. They regenerate magic faster than any other race.',
-				Human: 'Humans are a swashbuckling, fearless race hailing from Edenberg, the trade capital of the world. Despite their average attributes, their fearless leadership is legendary throughout Vandamor. Humans are immune to fear, have a bonus to treasure, and the best pulling in the game.',
-				Orc: 'Orcs hail from Gorgek, a city on an isolated peninsula of southern Vandamor. A brutish and violent race, Orcs have the highest strength and stamina among all races. Furthermore, they are immune to stuns which makes them powerful allies in any party.',
-				Troll: 'Trolls are a savage race from the swaps of Slagnon. Their strength and stamina is second only to Ogres. They uniquely regenerate health faster than any other race, but they are weak to fire magic.',
-				'Wood Elf': 'Wood Elves are a race from the city of Artremia. Their knowledge of the great outdoors is unmatched, giving them strong ice resistance, fire resistance, and the best scouting skills among all races. They are also skilled at disarming traps.'
+				Barbarian: 'Barbarians are a hardy race that benefit from high strength and stamina. Living through harsh winters in Fenwoven has given them very strong ice resistance. Furthermore, their shaman enjoy a bonus to their ice spells. Barbarians are highly resistant to all freeze effects and have a strong bonus to blunt weapon skills.',
+				'Dark Elf': 'Dark Elves are an evil race from Vedria that excel in a variety of roles. They boast strong blood and arcane resistance. Their leech health from all melee attacks and have a bonus to blood spell damage.',
+				Dwarf: 'Dwarves hail from Dunhoven, a mountainous region of Vandamor. They are a stout, loyal race with strong resistances to arcane and poison magic. Dwarves also have a bonus to defense and alteration.',
+				Seraph: 'Hailing from the remote island city of Wexxen, the Seraphim live to serve and glorify Yentus, the God of Light. Generations of intense academic pursuit has made their bodies weak, but their minds strong. As a result, they have very strong resistance against arcane magic. Naturally gifted at spellcasting, Seraphs have a modest bonus to all passive casting skills.',
+				Gnome: 'Gnomes hail from Brindomir, a mountainous city on the eastern outskirts of Vandamor. Due to their extensive tinkering and scientific experimentation, they have high lightning resistance and are highly resistant to silence.',
+				'Half Elf': 'Half Elves possess an admixture of Humans and Wood Elf blood. They primarily dwell in Prentia, a city in western Vandamor. Half Elves share a strong resemblence to their both of their ancestors, though their distinct qualities are clear on the battlefield. Half Elves enjoy a modest boost to all passive non-casting skills, making them a capable, balanced race ready for most situations.',
+				Halfling: 'Halflings dwell in Aspen Grove, a hamlet on the southern coast of Vandamor. They are a race of nimble pranksters with high agility and dexterity. Deft and nimble, Halflings enjoy a passive bonus to offense, dodge, and piercing weapons.',
+				'High Elf': 'High Elves live in Kaedorn, a walled kingdom ruled by a monarchy for thousands of years. Despite their resemblance to Wood Elves, their strengths are in spellcasting due to their diligent study of magic. They regenerate magic faster than any other race and have a strong bonus to evocation spells.',
+				Human: 'Humans are an fearless, intrepid race hailing from Edenberg, the imperial capital of Vandamor. Despite their balanced attributes, their fearless leadership is legendary throughout Vandamor. Humans are highly resistant to fear, strong spirit regeneration, and a bonus to slashing weapons.',
+				Orc: 'Orcs hail from Gorgek, a city on an isolated peninsula of southern Vandamor. A brutish and fierce race, orcs have the highest strength and stamina among all races. They are highly resistant to stuns which makes them powerful allies in any party. Orcs also enjoy a healthy bonus to using two-handed weapons.',
+				Troll: 'Trolls are a savage race from the swaps of Slagnon. Their strength and stamina is second only to Ogres. They uniquely regenerate health faster than any other race, but they are weak to fire magic. Trolls also have a strong bonus to conjuration spells.',
+				'Wood Elf': 'Wood Elves are a race from the city of Artremia. Their knowledge of the great outdoors is unmatched, giving them strong archery, ice resistance, fire resistance, and lightning resistance. They also have a bonus to all fire, ice, and lightning magic spells.'
 			},
 			job: {
 				Bard: 'Bards are a utility class that can wear plate armor. They can fill in almost any role in a pinch, but their true strength lies in making everyone in their party better. Their charm and crowd control skills make them a boon to any party. They also have very strong all-around dungeon skills.',
@@ -68,20 +82,6 @@ var create;
 				Wizard: 'Wizards are a magical DPS class that can only wear cloth armor. Instead of opting for trickery or pets, they focus on raw magical power. Wizards have a powerful and diverse arsenal of spells at their disposal that make quick work of their prey.'
 			}
 		},
-		events,
-		deleteCharacter,
-		msg,
-		getPossibleJobs,
-		getRaceAttrs,
-		getJobAttrs,
-		set,
-		getResist,
-		getDungeon,
-		getEmptyForm,
-		setRandomGender,
-		setRandomRace,
-		setRandomClass,
-		setFace,
 	};
 	// public //////////////////////////////////////
 	function events() {
@@ -117,6 +117,7 @@ var create;
 	}
 	function selectRace() {
 		var race = $(this).text();
+		if (race === create.form.race) return
 		$('.select-race').removeClass('active');
 		$(this).addClass('active');
 		create.setRandomClass(race);
@@ -126,6 +127,7 @@ var create;
 	function selectClass() {
 		if (!$(this).get(0).className.includes('disabled')){
 			var job = $(this).text();
+			if (job === create.form.job) return
 			$('.select-class').removeClass('active');
 			$(this).addClass('active');
 			create.set('job', job);
@@ -313,9 +315,6 @@ var create;
 			if (race === 'Dark Elf'){
 				v += 10;
 			}
-			else if (race === 'Half Elf'){
-				v += 3;
-			}
 		}
 		else if (type === 'resistPoison'){
 			if (gender === 'Female'){
@@ -323,9 +322,6 @@ var create;
 			}
 			if (race === 'Dwarf'){
 				v += 10;
-			}
-			else if (race === 'Half Elf'){
-				v += 3;
 			}
 		}
 		else if (type === 'resistArcane'){
@@ -338,23 +334,17 @@ var create;
 			else if (race === 'Dark Elf' || race === 'Dwarf'){
 				v += 10;
 			}
-			else if (race === 'Half Elf'){
-				v += 3;
-			}
 		}
 		else if (type === 'resistLightning'){
 			if (race === 'Gnome'){
 				v += 20;
 			}
-			else if (race === 'Half Elf'){
-				v += 3;
+			else if (race === 'Wood Elf'){
+				v += 10;
 			}
 		}
 		else if (type === 'resistFire'){
-			if (race === 'Half Elf'){
-				v += 3;
-			}
-			else if (race === 'Troll'){
+			if (race === 'Troll'){
 				v -= 10;
 			}
 			else if (race === 'Wood Elf'){
@@ -367,9 +357,6 @@ var create;
 			}
 			if (race === 'Barbarian'){
 				v += 25;
-			}
-			else if (race === 'Half Elf'){
-				v += 3;
 			}
 			else if (race === 'Wood Elf'){
 				v += 10;

@@ -84,6 +84,7 @@ var socket;
 	function connectionSuccess(session) {
 		console.warn("Connection successful!", session);
 		socket.session = session;
+		if (!socket.enabled) town.socketReady()
 		socket.enabled = 1;
 		// chat updates
 		if (socket.initialConnection) {

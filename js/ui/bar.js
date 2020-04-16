@@ -125,7 +125,7 @@ var bar;
 			// draw all bars
 			// bar events
 			$("#bar-wrap")
-				.on('click contextmenu', '.bar-col-icon', handleClickPartyContextMenu)
+				.on('click contextmenu', '.bar-avatar', handleClickPartyContextMenu)
 				.on('click', '#bar-camp', chat.camp)
 				.on('click', '#bar-stats', toggleCharacterStats)
 				.on('click', '#bar-inventory', toggleInventory)
@@ -358,13 +358,19 @@ var bar;
 			querySelector('#char-stat-col-1').innerHTML = charStatColOneHtml()
 			querySelector('#char-stat-col-2').innerHTML = charStatColTwoHtml()
 		}
-		stats.setResources()
-		if (ng.view === 'town') {
+		stats.setAllResources()
+
+
+		if (my.hp > my.hpMax) my.hp = my.hpMax
+		if (my.mp > my.mpMax) my.mp = my.mpMax
+		if (my.sp > my.spMax) my.sp = my.spMax
+
+		/*if (ng.view === 'town') {
 			// max out health automatically
-			my.hp = my.maxHp
-			my.mp = my.maxMp
-			my.sp = my.maxSp
-		}
+			my.hp = my.hpMax
+			my.mp = my.mpMax
+			my.sp = my.spMax
+		}*/
 		updateAllMyBars()
 	}
 	function updateAllMyBars() {
@@ -373,16 +379,15 @@ var bar;
 		updateBar('sp', my)
 	}
 	function updateBar(type, data) {
-		console.warn('updateBar', type, data.row)
-		if (type === 'hp') barRatio = ((1 - data[type] / data.maxHp) * 100)
-		else if (type === 'mp') barRatio = ((1 - data[type] / data.maxMp) * 100)
-		else barRatio = ((1 - data[type] / data.maxSp) * 100)
-
-		querySelector('#bar-' + type + '-fg-' + data.row).style.transform = 'translateX(-' + barRatio + '%)'
+		// console.warn('updateBar', type, data.row)
+		barRatio = ((1 - data[type] / data[type + 'Max']) * 100)
+		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
+			x: -barRatio
+		})
 		querySelector('#bar-' + type + '-text-' + data.row).textContent = data[type] + '/' + getMaxType(type, data)
 	}
 	function getMaxType(type, data) {
-		return (type === 'hp' ? data.maxHp : type === 'mp' ? data.maxMp : data.maxSp)
+		return (type === 'hp' ? data.hpMax : type === 'mp' ? data.mpMax : data.spMax)
 	}
 
 	function toggleOptions() {
@@ -779,7 +784,7 @@ var bar;
 		console.info('getPlayerBarHtml', player)
 		html +=
 		// avatar
-		'<img id="bar-col-icon-'+ index +'" class="bar-col-icon" src="'+ player.avatar +'">' +
+		'<img id="bar-avatar-'+ index +'" class="bar-avatar" src="'+ player.avatar +'">' +
 		// bars
 		'<div class="flex-column '+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'" style="justify-content: space-around">' +
 			'<i id="bar-is-leader-'+ index +'" class="ra ra-crown bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></i>' +
@@ -813,15 +818,15 @@ var bar;
 		player = party.presence[index];
 
 		player.hp = data.hp;
-		player.maxHp = data.maxHp;
+		player.hpMax = data.hpMax;
 		updateBar('hp', data)
 
 		player.mp = data.mp;
-		player.maxMp = data.maxMp;
+		player.mpMax = data.mpMax;
 		updateBar('mp', data)
 
 		player.sp = data.sp;
-		player.maxSp = data.maxSp;
+		player.spMax = data.spMax;
 		updateBar('sp', data)
 
 		if (data.isLeader !== player.isLeader) {

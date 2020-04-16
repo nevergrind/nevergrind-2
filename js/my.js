@@ -1,6 +1,16 @@
 var my;
 (function() {
 	my = {
+		hud,
+		Party,
+		clearHud,
+		getResistObject,
+		getPartyNames,
+		getAvatarUrl,
+		getNewLeaderName,
+		getPartySlotByRow,
+		isLowestPartyIdMine,
+		resourceTick,
 		mouse: {
 			x: 0,
 			y: 0
@@ -26,15 +36,6 @@ var my;
 		selectedZone: 0,
 		selectedMissionTitle: '',
 		quest: {},
-		hud,
-		Party,
-		clearHud,
-		getResistObject,
-		getPartyNames,
-		getAvatarUrl,
-		getNewLeaderName,
-		getPartySlotByRow,
-		isLowestPartyIdMine,
 	}
 	////////////////////////////////////
 
@@ -94,9 +95,9 @@ var my;
 			job: '',
 			level: 0,
 			hp: 0,
-			maxHp: 0,
+			hpMax: 0,
 			mp: 0,
-			maxMp: 0,
+			mpMax: 0,
 			isHidden: true,
 			heartbeat: Date.now()
 		};
@@ -116,5 +117,9 @@ var my;
 	function clearHud() {
 		my.hudTimer.kill();
 		DOM.hud.style.visibility = 'hidden';
+	}
+	function resourceTick(type) {
+		my[type] += stats[type + 'Regen']()
+		if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
 	}
 })();
