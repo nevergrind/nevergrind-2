@@ -30,7 +30,9 @@ var town;
 		openVariousWindow: '',
 		isBankInitialized: false,
 	}
-	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, storeItems
+	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, potionItems, potLevel
+
+	var storeItems = []
 
 	const skyProps = {
 		top: 50,
@@ -132,7 +134,7 @@ var town;
 				initItemData(data.eq, 'eq')
 
 				stats.setAllResources()
-				if (ng.test) {
+				if (!app.isApp) {
 					my.hp = 1
 					my.mp = 1
 					my.sp = 1
@@ -195,19 +197,26 @@ var town;
 	}
 	function initStoreData() {
 		type = town.openVariousWindow.toLowerCase()
-		storeItems = []
 		if (!town.isInitialized[type]) {
-			i = 0
+			potionItems = []
+			storeItems = []
 			//console.info('itemTypesForSale', itemTypesForSale[type])
-			if (type === 'Apothecary') {
-				warn('is apothecary!')
-				/* name, description, type?, ???
-				for (; i<6; i++) {
-					storeItems[i] = item.getPotion(i, 'healing')
+			warn('is apothecary!', type)
+			if (type === 'apothecary' || type === 'merchant') {
+				potLevel = ~~(my.level / 8)
+				if (potLevel > 4) potLevel = 4
+				for (i = 0; i<2; i++) {
+					potionItems.push(item.getPotion(potLevel + i, 'health'))
 				}
-				*/
+				for (i = 0; i<2; i++) {
+					potionItems.push(item.getPotion(potLevel + i, 'mana'))
+				}
+				for (i = 0; i<2; i++) {
+					potionItems.push(item.getPotion(potLevel + i, 'spirit'))
+				}
 			}
-			for (; i<item.MAX_SLOTS[type]; i++) {
+			console.info('apo', potionItems)
+			for (i = 0; i<item.MAX_SLOTS[type]; i++) {
 				rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
 				itemIndex = _.random(0, itemTypesForSale[type].length - 1)
 				storeItems[i] = item.getItem({
@@ -220,6 +229,9 @@ var town;
 				//console.info('item', storeItems[i])
 			}
 			storeItems = _.sortBy(storeItems, ['itemType'])
+			info('store', _.cloneDeep(storeItems))
+			storeItems = potionItems.concat(storeItems)
+			console.info('storeItems', storeItems)
 			// sorted
 			for (i=0; i<storeItems.length; i++) {
 				items[type][i] = storeItems[i]
@@ -749,7 +761,9 @@ var town;
 	function getStoreItemHtml() {
 		str = ''
 		type = town.openVariousWindow.toLowerCase()
-		for (i=0; i<item.MAX_SLOTS[type]; i++) {
+		len = storeItems.length || item.MAX_SLOTS[type]
+		console.info('len', len, storeItems.length, item.MAX_SLOTS[type])
+		for (i=0; i<len; i++) {
 			str += bar.getItemSlotHtml(type, i)
 		}
 		return str

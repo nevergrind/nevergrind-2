@@ -173,7 +173,6 @@ var ng;
 				]
 			}
 		},
-		test: true,
 		id: 0,
 		resizeTimer: new delayedCall(0, ''),
 		loadMsg:

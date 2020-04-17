@@ -119,7 +119,9 @@ var my;
 		DOM.hud.style.visibility = 'hidden';
 	}
 	function resourceTick(type) {
-		my[type] += stats[type + 'Regen']()
-		if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
+		if (my.view === 'battle' || !app.isApp) {
+			my[type] += stats[type + 'Regen']()
+			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
+		}
 	}
 })();

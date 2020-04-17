@@ -23,9 +23,9 @@ var loot = {};
 		MAX_SLOTS: {
 			eq: 15,
 			inv: 16,
-			merchant: 24,
+			merchant: 18,
 			blacksmith: 24,
-			apothecary: 24,
+			apothecary: 18,
 			tavern: 24,
 		},
 		allProps: [
@@ -94,107 +94,120 @@ var loot = {};
 	const potions = {
 		health: [{
 				name: 'Minor Health Potion',
-				use: '',
-				cooldownType: 'health',
+				use: 'Recover 30 health over 6 seconds',
+				itemType: 'potionHealth',
+				imgIndex: 0,
 				cost: 10
 			}, {
 				name: 'Light Health Potion',
-				use: '',
-				cooldownType: 'health',
+				use: 'Recover 60 health over 6 seconds',
+				itemType: 'potionHealth',
+				imgIndex: 1,
 				cost: 20
 			}, {
 				name: 'Health Potion',
-				use: '',
-				cooldownType: 'health',
+				use: 'Recover 120 health over 6 seconds',
+				itemType: 'potionHealth',
+				imgIndex: 2,
 				cost: 40
 			}, {
 				name: 'Major Health Potion',
-				use: '',
-				cooldownType: 'health',
+				use: 'Recover 240 health over 6 seconds',
+				itemType: 'potionHealth',
+				imgIndex: 3,
 				cost: 80
 			}, {
 				name: 'Greater Health Potion',
-				use: '',
-				cooldownType: 'health',
-				cost: 120
+				use: 'Recover 480 health over 6 seconds',
+				itemType: 'potionHealth',
+				imgIndex: 4,
+				cost: 160
 			}, {
 				name: 'Super Health Potion',
-				use: '',
-				cooldownType: 'health',
-				cost: 250
+				use: 'Recover 960 health over 6 seconds',
+				itemType: 'potionHealth',
+				imgIndex: 5,
+				cost: 320
 			}
 		],
 		mana: [{
 				name: 'Minor Mana Potion',
-				use: '',
-				cooldownType: 'mana',
+				use: 'Recover 30 mana over 6 seconds',
+				itemType: 'potionMana',
+				imgIndex: 0,
 				cost: 10
 			}, {
 				name: 'Light Mana Potion',
-				use: '',
-				cooldownType: 'mana',
+				use: 'Recover 60 mana over 6 seconds',
+				itemType: 'potionMana',
+				imgIndex: 1,
 				cost: 20
 			}, {
 				name: 'Mana Potion',
-				use: '',
-				cooldownType: 'mana',
+				use: 'Recover 120 mana over 6 seconds',
+				itemType: 'potionMana',
+				imgIndex: 2,
 				cost: 40
 			}, {
 				name: 'Major Mana Potion',
-				use: '',
-				cooldownType: 'mana',
+				use: 'Recover 240 mana over 6 seconds',
+				itemType: 'potionMana',
+				imgIndex: 3,
 				cost: 80
 			}, {
 				name: 'Greater Mana Potion',
-				use: '',
-				cooldownType: 'mana',
-				cost: 120
+				use: 'Recover 480 mana over 6 seconds',
+				itemType: 'potionMana',
+				imgIndex: 4,
+				cost: 160
 			}, {
 				name: 'Super Mana Potion',
-				use: '',
-				cost: 250
+				use: 'Recover 960 mana over 6 seconds',
+				itemType: 'potionMana',
+				imgIndex: 5,
+				cost: 320
 			}
 		],
 		spirit: [{
 				name: 'Minor Spirit Potion',
-				use: '',
-				cooldownType: 'spirit',
+				use: 'Recover 30 spirit over 6 seconds',
+				itemType: 'potionSpirit',
+				imgIndex: 0,
 				cost: 10
 			}, {
 				name: 'Light Spirit Potion',
-				use: '',
+				use: 'Recover 60 spirit over 6 seconds',
 				description: '',
-				cooldownType: 'spirit',
+				itemType: 'potionSpirit',
+				imgIndex: 1,
 				cost: 20
 			}, {
 				name: 'Spirit Potion',
-				use: '',
-				cooldownType: 'spirit',
+				use: 'Recover 120 spirit over 6 seconds',
+				itemType: 'potionSpirit',
+				imgIndex: 2,
 				cost: 40
 			}, {
 				name: 'Major Spirit Potion',
-				use: '',
-				cooldownType: 'spirit',
+				use: 'Recover 240 spirit over 6 seconds',
+				itemType: 'potionSpirit',
+				imgIndex: 3,
 				cost: 80
 			}, {
 				name: 'Greater Spirit Potion',
-				use: '',
-				cooldownType: 'spirit',
-				cost: 120
+				use: 'Recover 480 spirit over 6 seconds',
+				itemType: 'potionSpirit',
+				imgIndex: 4,
+				cost: 160
 			}, {
 				name: 'Super Spirit Potion',
-				use: '',
-				cooldownType: 'spirit',
-				cost: 250
+				use: 'Recover 960 spirit over 6 seconds',
+				itemType: 'potionSpirit',
+				imgIndex: 5,
+				cost: 320
 			}
 		],
 	}
-	/*
-	name: potions[type][index].name,
-	use: potions[type][index].use,
-	description: potions[type][index].description,
-	cost: potions[type][index].cost,
-	 */
 	const saleValues = {
 		cost: 1,
 		resistBlood: 2,
@@ -1031,7 +1044,7 @@ var loot = {};
 			suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
 		}
 
-		if (ng.test) {
+		if (app.isApp) {
 			// for better testing on all combos
 			prefixVal = _.random(minValue[prefix], prefixMax);
 			prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
@@ -1778,9 +1791,10 @@ var loot = {};
 	}
 	function getItemValueHtml(item, isSelling) {
 		tooltip.goldValue = getItemValue(item, isSelling)
-		return '<div style="color: gold; margin: .2rem">'+ (isSelling ? 'Sell' : 'Buy') +' Value: ' + tooltip.goldValue + '</div>'
+		return '<div style="color: gold; margin: .2rem">'+ (isSelling ? 'Sell Value: ' : 'Cost: ') + tooltip.goldValue + '</div>'
 	}
 	function getItemValue(item, selling) {
+		if (item.cost) return item.cost
 		value = 1
 		for (key in item) {
 			if (typeof item[key] === 'number' &&
@@ -1813,11 +1827,6 @@ var loot = {};
 		return ~~value
 	}
 	function getPotion(index, type) {
-		return {
-			name: potions[type][index].name,
-			use: potions[type][index].use,
-			description: potions[type][index].description,
-			cost: potions[type][index].cost,
-		}
+		return potions[type][index]
 	}
 })(_, Object, JSON, $);

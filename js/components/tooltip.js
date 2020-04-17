@@ -55,8 +55,8 @@ var tooltip;
 		var divider = '<hr class="fancy-hr" style="margin: .2rem 0">'
 		var statHtml = ''
 		html +=
-			'<div style="margin: 2px; border: 2px ridge #048; padding: 2px; border-radius: 4px">' +
-			'<div class="flex" style="border: 2px ridge #013; margin-bottom: 2px">' +
+			'<div style="margin: .1rem; border: 2px ridge #048; padding: .1rem; border-radius: 4px">' +
+			'<div class="flex" style="border: 2px ridge #013; margin-bottom: .1rem">' +
 				'<div id="tooltip-item-img-bg">' +
 					'<img id="tooltip-item-img" src="images/items/'+ obj.itemType + (obj.imgIndex || 0) + '.png">' +
 				'</div>' +
@@ -70,8 +70,9 @@ var tooltip;
 					) +
 				'</div>' +
 			'</div>' +
-			'<div id="tooltip-item-stat-wrap" class="text-center" style="border: 2px ridge #013">' +
+			'<div id="tooltip-item-stat-wrap" class="text-center" style="border: .1rem ridge #013">' +
 			'<div style="padding: .2rem">' +
+				getItemUse(obj) +
 				getWeaponDamageHtml(obj) +
 				(obj.armor ? '<div>'+ obj.armor +' Armor</div>' : '') +
 				getRequiredItemProficiency(obj) +
@@ -219,6 +220,10 @@ var tooltip;
 	function getGenericPercentStatHtml(stat, label) {
 		return stat ? '<div class="item-magic">+' + stat + '% ' + label + '</div>' : ''
 	}
+	function getItemUse(obj) {
+		return obj.use ? '<div class="item-use" style="padding: .5rem .5rem 0 .5rem">Use: '+ obj.use +'</div>' : ''
+
+	}
 	function getWeaponDamageHtml(obj) {
 		if (obj.weaponSkill) {
 			var dps = getDps(obj).toFixed(1);
@@ -248,6 +253,7 @@ var tooltip;
 		return level
 	}
 	function getItemSlot(slots) {
+		if (!slots) return ''
 		var prefix = 'Slot: '
 		var str =  _.capitalize(slots[0]);
 		if (slots[1] === 'secondary') {

@@ -255,8 +255,14 @@ var bar;
 
 	function getInvItemClass(type, slot) {
 		resp = 'item-slot-wrap item-slot-type-none'
-		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'rarity')) {
-			resp = 'item-slot-wrap item-slot-type-' + items[type][slot].rarity
+		if (_.get(items[type][slot], 'name')) {
+			if (_.get(items[type][slot], 'cost')) {
+				resp = 'item-slot-wrap item-slot-type-normal'
+			}
+			else if (_.get(items[type][slot], 'rarity')) {
+				resp = 'item-slot-wrap item-slot-type-' + items[type][slot].rarity
+			}
+
 		}
 		return resp
 	}

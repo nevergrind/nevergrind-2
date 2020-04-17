@@ -496,13 +496,13 @@ var stats = {};
 	function baseHpRegen() {
 		return (my.race === 'Troll' ? 3 : 1) + (my.level * (my.race === 'Troll' ? .12 : .08))
 	}
-	// normal 8.5, HEF 14.5
+	// high elf 16, normal 10
 	function baseMpRegen() {
-		return (my.race === 'High Elf' ? 4 : 2) + (my.level * (my.race === 'High Elf' ? .21 : .13))
+		return (my.race === 'High Elf' ? 4 : 2) + (my.level * (my.race === 'High Elf' ? .24 : .16))
 	}
-	//
+	// human 16, normal 10
 	function baseSpRegen() {
-		return (my.race === 'Human' ? 4 : 2) + (my.level * (my.race === 'Human' ? .21 : .13))
+		return (my.race === 'Human' ? 4 : 2) + (my.level * (my.race === 'Human' ? .24 : .16))
 	}
 	function hpRegen() {
 		return ~~(baseHpRegen() + getEqTotal('hpRegen') + getBuffTotal('hpRegen'))

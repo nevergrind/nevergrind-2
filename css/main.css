@@ -1347,6 +1347,8 @@ background-clip: content-box;
 .item-legendary { color: #ffa500; }
 .item-restricted { color: #f21; }
 
+.item-use { color: #2f2;}
+
 .town-aside {
 	position: fixed;
 	display: none;
@@ -2639,6 +2641,8 @@ background-image:
 	align-content: flex-start;
 	padding: .2rem;
 	flex: 1;
+	overflow-x: hidden;
+	overflow-y: auto;
 	background: conic-gradient(
 			#0016 .25turn,
 			#025a .25turn .5turn,

@@ -187,7 +187,7 @@ var mob;
 			onUpdateParams: [mobs[i].index],
 		})
 		if (skip) return
-		ng.test && delayedCall(.25, hit, [ mobs[i].index ])
+		!app.isApp && delayedCall(.25, hit, [ mobs[i].index ])
 	}
 
 	function hit(i) {
@@ -213,7 +213,7 @@ var mob;
 
 	function hitComplete(m) {
 		resetIdle(m.index);
-		if (ng.test){
+		if (!app.isApp){
 			delayedCall(1, attack, [ m.index, 'primary' ]);
 		}
 	}
@@ -244,7 +244,7 @@ var mob;
 
 	function attackComplete(m, force) {
 		resetIdle(m.index)
-		if (ng.test){
+		if (!app.isApp){
 			if (force === 'primary'){
 				delayedCall(1, attack, [ m.index, 'secondary' ])
 			}
@@ -284,7 +284,7 @@ var mob;
 	}
 	function specialComplete(m) {
 		resetIdle(m.index)
-		if (ng.test) {
+		if (!app.isApp) {
 			delayedCall(1, death, [ m.index ])
 		}
 	}
@@ -337,7 +337,7 @@ var mob;
 		})
 	}
 	function deathCompleteFade(m, e) {
-		if (ng.test) {
+		if (!app.isApp) {
 			m.hp = 1;
 			TweenMax.set(mobs[m.index].dom.details, {
 				opacity: 1
