@@ -2,7 +2,7 @@ var socket;
 (function() {
 	socket = {
 		connection: void 0,
-		enabled: 0,
+		enabled: false,
 		emptyArray: [],
 		noExcludeObj: { exclude_me: false },
 		excludeObj: { exclude_me: true },
@@ -85,7 +85,7 @@ var socket;
 		console.warn("Connection successful!", session);
 		socket.session = session;
 		if (!socket.enabled) town.socketReady()
-		socket.enabled = 1;
+		socket.enabled = true;
 		// chat updates
 		if (socket.initialConnection) {
 			socket.initialConnection = 0;

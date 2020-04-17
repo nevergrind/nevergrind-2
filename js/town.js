@@ -148,15 +148,22 @@ var town;
 				// init party member values
 				ng.setScene('town')
 				chat.init()
-				socket.init()
-				friend.init()
-				ignore.init()
-				game.initPlayedCache()
 
 				getElementById('scene-town').innerHTML = getTownHtml()
+
+				if (socket.enabled) {
+					warn('ENABLED!')
+					town.socketReady()
+				}
+				else {
+					// calls socket.init -> connectionSuccess
+					socket.init()
+					friend.init()
+					ignore.init()
+					game.initPlayedCache()
+				}
 				pix.animateTownSky()
 				animateSky()
-				$("#scene-title").remove()
 				town.init()
 				bar.init();
 			}).fail(function(data){
@@ -174,10 +181,12 @@ var town;
 			opacity: 1
 		})
 		TweenMax.to('#body, #town-wrap', .5, {
+			overwrite: 1,
 			delay: .5,
 			opacity: 1,
 			onComplete: ng.unlock
 		})
+		warn('town.socketReady!')
 	}
 
 	function initItemData(obj, type) {
@@ -318,10 +327,7 @@ var town;
 		town.preload();
 	}
 	function preload() {
-		cache.preloadImages([
-			'images/bg/bastille-1.png',
-			'images/bg/bastille-2.png'
-		])
+		cache.preloadImages([])
 	}
 
 	function loadBank() {

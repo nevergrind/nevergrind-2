@@ -351,6 +351,7 @@ var ng;
 		return ng.jobLong[key];
 	}
 	function setScene(scene) {
+		$("#scene-title").remove()
 		// remove defaults and set via js
 		$(".scene").removeClass('none')
 			.css('display', 'none');
