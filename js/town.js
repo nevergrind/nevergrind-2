@@ -303,7 +303,8 @@ var town;
 		'</div>' +
 		'<div id="town-mission-wrap" class="flex-center flex-max">'+
 			'<div data-id="Mission Counter" id="town-mission" class="ng-btn town-building">'+
-				'<i class="fas fa-exclamation mission-icon text-shadow2"></i><span>Mission Counter</span>'+
+				'<img class="mission-icon" src="images/ui/exclamation.png">' +
+				'<span>Mission Counter</span>'+
 			'</div>' +
 		'</div>' +
 		'<div id="town-footer-gold-wrap">'+
@@ -481,8 +482,8 @@ var town;
 			townConfig = {
 				duration: 1,
 				scale: 1.5,
-				x: 400,
-				y: 250
+				x: 350,
+				y: 230
 			}
 		}
 		else if (town.openVariousWindow === 'Apothecary') {
@@ -787,7 +788,7 @@ var town;
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">'+ town.openVariousWindow +'</div>' +
 			'</div>' +
-			'<i data-id="various" class="close-menu fa fa-times"></i>' +
+			'<img data-id="various" class="close-menu" src="images/ui/close.png">' +
 		'</div>'
 
 	}

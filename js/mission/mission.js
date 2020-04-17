@@ -1,5 +1,5 @@
 var mission;
-(function() {
+(function($, _, undefined) {
 	mission = {
 		data: {},
 		loaded: 0,
@@ -18,11 +18,12 @@ var mission;
 		toggleZone,
 		clickQuest,
 	};
-	var minusClasses = 'fa-minus-square mission-minus'
-	var plusClasses = 'fa-plus-square mission-plus'
 	var reversedZones = []
 	var html = ''
 	var that = {}
+	const minusClasses = 'mission-tree-btn mission-minus'
+	const plusClasses = 'mission-tree-btn mission-plus'
+
 	///////////////////////////////////////////////
 	function setMissionMenusAllOpen() {
 		zones.forEach(function(v) {
@@ -73,7 +74,7 @@ var mission;
 			if (my.level + 4 >= zone.level) {
 				html +=
 				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ getDiffClass(zone.level) +'" data-id="'+ zone.id +'">'+
-					'<i class="mission-tree-btn far fa-plus-square mission-plus text-shadow"></i>'+
+					'<img class="mission-tree-btn mission-plus" src="images/ui/plus.png">'+
 					'<div>' + zone.name + '</div>' +
 				'</div>' +
 				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">';
@@ -140,14 +141,16 @@ var mission;
 		if (zone.isOpen) {
 			// close menu
 			var e = that.find('.mission-minus');
-			e.removeClass(minusClasses).addClass(plusClasses);
+			e.attr('src', 'images/ui/plus.png');
+			e.removeClass().addClass(plusClasses)
 			$("#mission-quest-list-wrap-" + zone.id).css('display', 'none');
 			zone.isOpen = 0;
 		}
 		else {
 			// open menu
 			var e = that.find('.mission-plus');
-			e.removeClass(plusClasses).addClass(minusClasses);
+			e.attr('src', 'images/ui/minus.png');
+			e.removeClass().addClass(minusClasses)
 			$("#mission-quest-list-wrap-" + zone.id).css('display', 'block');
 			zone.isOpen = 1;
 		}
@@ -262,4 +265,4 @@ var mission;
 			mobs: zone.mobs
 		}
 	}
-})();
+})($, _);

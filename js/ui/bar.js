@@ -11,6 +11,7 @@ var bar;
 		toggleInventory,
 		toggleOptions,
 		handleCloseMenu,
+		optionsClose,
 		closeAllWindows,
 		setDefaultInvWeaponImage,
 		setCharActiveTab,
@@ -193,7 +194,7 @@ var bar;
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">' + my.name + '</div>' +
 			'</div>' +
-			'<i data-id="character-stats" class="close-menu fa fa-times"></i>' +
+			'<img data-id="character-stats" class="close-menu" src="images/ui/close.png">' +
 		'</div>' +
 		'<div class="text-center" style="'+ css.raceJobRow +'">' +
 			'<div>Level '+ my.level +' '+ my.race +' '+ my.jobLong +'</div>' +
@@ -292,7 +293,7 @@ var bar;
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">Inventory</div>' +
 			'</div>' +
-			'<i data-id="inventory" class="close-menu fa fa-times"></i>' +
+			'<img data-id="intentory" class="close-menu" src="images/ui/close.png">' +
 		'</div>' +
 		'<div id="inventory-slot-wrap">' +
 		'<div class="inventory-slot-row">';
@@ -402,16 +403,17 @@ var bar;
 	}
 
 	function updateOptionsDOM() {
-		el = getElementById('root-options')
-		if (bar.windowsOpen.options) {
-			el.innerHTML = getOptionsHtml()
-			el.style.display = 'flex'
-			initDraggableAudioDials()
-		}
-		else {
-			el.innerHTML = ''
-			el.style.display = 'none'
-		}
+		if (bar.windowsOpen.options) optionsOpen()
+		else optionsClose()
+	}
+	function optionsOpen() {
+		querySelector('#root-options').innerHTML = getOptionsHtml()
+		querySelector('#root-options').style.display = 'flex'
+		initDraggableAudioDials()
+	}
+	function optionsClose() {
+		querySelector('#root-options').innerHTML = ''
+		querySelector('#root-options').style.display = 'none'
 	}
 	function handleDragSfxEnd() {
 		audio.playSound('frog_att')
@@ -520,12 +522,12 @@ var bar;
 			'</div>' +
 		'</div>' +
 		'<div class="flex flex-max" style="'+ css.bodyWrap +'">' +
-			'<div style="font-size: .9rem; line-height: 1.5; flex-basis: 30%; '+ css.optionColumns +'">'+
+			'<div id="options-tab-column" class="options-column">'+
 				'<div id="option-general" class="option-category active" style="'+ css.optionCategory +'">General</div>' +
 				'<div id="option-ui" class="option-category" style="'+ css.optionCategory +'">User Interface</div>' +
 				'<div id="option-hotkeys" class="option-category" style="'+ css.optionCategory +'">Hotkeys</div>' +
 			'</div>' +
-			'<div id="options-content" class="flex-column flex-max" style="'+ css.optionColumns +'">' +
+			'<div id="options-content" class="flex-column flex-max options-column">' +
 				// TODO: content goes here!!
 				getOptionsGeneralHtml() +
 			'</div>' +
@@ -607,7 +609,7 @@ var bar;
 			'<div class="flex-max ng-drop-wrap">' +
 				'<div id="window-size-btn" class="ng-dropdown-btn flex-center">' +
 					'<div id="window-size-value" class="ng-dropdown-value">'+ ng.config.display + '</div>' +
-					'<i class="far fa-caret-square-down ng-dropdown-caret"></i>' +
+					'<span class="ng-dropdown-caret">▼</span>' +
 				'</div>' +
 				'<div id="window-size-select" class="ng-dropdown">'+
 					'<div data-id="Full Screen" class="ng-dropdown-select window-select">Full Screen</div>' +

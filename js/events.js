@@ -182,13 +182,12 @@
 		}
 		else {
 			// normal key functions
-
-
 			// literally in any view
 			if (key === 'Escape') {
 				if (item.dragType) item.resetDrop()
 				else bar.toggleOptions()
 			}
+			else if (key === ' ') bar.optionsClose()
 
 			if (ng.view === 'title'){
 				// title specific
