@@ -1,14 +1,14 @@
 <?php
 require 'C:\xampp\htdocs\thruway\vendor\autoload.php';
 
-echo microtime(true) . ' Starting react/zmq loop...';
+echo 'Starting react/zmq loop... ';
 
 $loop   = \React\EventLoop\Factory::create();
 $pusher = new \Thruway\Peer\Client('realm1', $loop);
 $entryData = [];
 
 $pusher->on('open', function ($session) use ($loop, $entryData) {
-	echo 'Socket opened...';
+	echo 'Socket opened... ';
     $context = new React\ZMQ\Context($loop);
     $pull    = $context->getSocket(ZMQ::SOCKET_PULL);
     $pull->bind('tcp://127.0.0.1:5555');

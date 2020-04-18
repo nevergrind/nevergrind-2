@@ -11,6 +11,7 @@ var my;
 		getPartySlotByRow,
 		isLowestPartyIdMine,
 		resourceTick,
+		checkForDeath,
 		mouse: {
 			x: 0,
 			y: 0
@@ -36,6 +37,8 @@ var my;
 		selectedZone: 0,
 		selectedMissionTitle: '',
 		quest: {},
+		// buffs, potions, etc that need to be cancelled on death or whatever. looping through and killing them makes this easier
+		timers: [],
 	}
 	////////////////////////////////////
 
@@ -123,5 +126,8 @@ var my;
 			my[type] += stats[type + 'Regen']()
 			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
 		}
+	}
+	function checkForDeath() {
+
 	}
 })();

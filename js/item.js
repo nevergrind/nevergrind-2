@@ -1,6 +1,6 @@
 var item;
 var loot = {};
-(function(_, Object, JSON, $, undefined) {
+(function(_, Object, JSON, $, SteppedEase, undefined) {
 	item = {
 		getItemNameString,
 		getEquipString,
@@ -18,6 +18,7 @@ var loot = {};
 		getItemValueHtml,
 		getFirstAvailableInvSlot,
 		getPotion,
+		getPotionUseMessage,
 		config: {},
 		goldValue: 0,
 		MAX_SLOTS: {
@@ -89,120 +90,181 @@ var loot = {};
 		twoHandWeaponTypes: ['twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
 	}
 
-	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val, potion
+	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val, potionValue
 
+	const potionRecovers = [20,40,80,160,320,640]
+	const potionMap = {
+		WAR: { hp: 2, mp: 1, sp: 1 },
+		SHD: { hp: 2, mp: 1.5, sp: 1 },
+		PAL: { hp: 2, mp: 1.5, sp: 1.5 },
+		MNK: { hp: 1.5, mp: 1.5, sp: 1.5 },
+		ROG: { hp: 1.5, mp: 1.5, sp: 1.5 },
+		RNG: { hp: 1.5, mp: 1.5, sp: 1.5 },
+		BRD: { hp: 1.5, mp: 1.5, sp: 1.5 },
+		DRU: { hp: 1.5, mp: 1.5, sp: 2 },
+		CLR: { hp: 1.5, mp: 1.5, sp: 2 },
+		SHM: { hp: 1.5, mp: 1.5, sp: 2 },
+		NEC: { hp: 1, mp: 2, sp: 1.5 },
+		ENC: { hp: 1, mp: 2, sp: 1.5 },
+		SUM: { hp: 1, mp: 2, sp: 1.5 },
+		WIZ: { hp: 1, mp: 2, sp: 1.5 },
+	}
+
+	function getPotionUseMessage(obj) {
+		return 'Recover '+ potionRecoveryByJob(obj.itemSubType, obj.imgIndex) +' '+ obj.potionResource +' over 6 seconds'
+	}
+
+	function potionRecoveryByJob(type, index) {
+		return potionRecovers[index] * potionMap[my.job][type]
+	}
 	const potions = {
-		health: [{
+		hp: [{
 				name: 'Minor Health Potion',
-				use: 'Recover 30 health over 6 seconds',
-				itemType: 'potionHealth',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'hp',
+				potionResource: 'health',
 				imgIndex: 0,
 				cost: 10
 			}, {
 				name: 'Light Health Potion',
-				use: 'Recover 60 health over 6 seconds',
-				itemType: 'potionHealth',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'hp',
+				potionResource: 'health',
 				imgIndex: 1,
 				cost: 20
 			}, {
 				name: 'Health Potion',
-				use: 'Recover 120 health over 6 seconds',
-				itemType: 'potionHealth',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'hp',
+				potionResource: 'health',
 				imgIndex: 2,
 				cost: 40
 			}, {
 				name: 'Major Health Potion',
-				use: 'Recover 240 health over 6 seconds',
-				itemType: 'potionHealth',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'hp',
+				potionResource: 'health',
 				imgIndex: 3,
 				cost: 80
 			}, {
 				name: 'Greater Health Potion',
-				use: 'Recover 480 health over 6 seconds',
-				itemType: 'potionHealth',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'hp',
+				potionResource: 'health',
 				imgIndex: 4,
 				cost: 160
 			}, {
 				name: 'Super Health Potion',
-				use: 'Recover 960 health over 6 seconds',
-				itemType: 'potionHealth',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'hp',
+				potionResource: 'health',
 				imgIndex: 5,
 				cost: 320
 			}
 		],
-		mana: [{
+		mp: [{
 				name: 'Minor Mana Potion',
-				use: 'Recover 30 mana over 6 seconds',
-				itemType: 'potionMana',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'mp',
+				potionResource: 'mana',
 				imgIndex: 0,
 				cost: 10
 			}, {
 				name: 'Light Mana Potion',
-				use: 'Recover 60 mana over 6 seconds',
-				itemType: 'potionMana',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'mp',
+				potionResource: 'mana',
 				imgIndex: 1,
 				cost: 20
 			}, {
 				name: 'Mana Potion',
-				use: 'Recover 120 mana over 6 seconds',
-				itemType: 'potionMana',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'mp',
+				potionResource: 'mana',
 				imgIndex: 2,
 				cost: 40
 			}, {
 				name: 'Major Mana Potion',
-				use: 'Recover 240 mana over 6 seconds',
-				itemType: 'potionMana',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'mp',
+				potionResource: 'mana',
 				imgIndex: 3,
 				cost: 80
 			}, {
 				name: 'Greater Mana Potion',
-				use: 'Recover 480 mana over 6 seconds',
-				itemType: 'potionMana',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'mp',
+				potionResource: 'mana',
 				imgIndex: 4,
 				cost: 160
 			}, {
 				name: 'Super Mana Potion',
-				use: 'Recover 960 mana over 6 seconds',
-				itemType: 'potionMana',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'mp',
+				potionResource: 'mana',
 				imgIndex: 5,
 				cost: 320
 			}
 		],
-		spirit: [{
+		sp: [{
 				name: 'Minor Spirit Potion',
-				use: 'Recover 30 spirit over 6 seconds',
-				itemType: 'potionSpirit',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'sp',
+				potionResource: 'spirit',
 				imgIndex: 0,
 				cost: 10
 			}, {
 				name: 'Light Spirit Potion',
-				use: 'Recover 60 spirit over 6 seconds',
+				use: true,
 				description: '',
-				itemType: 'potionSpirit',
+				itemType: 'potion',
+				itemSubType: 'sp',
+				potionResource: 'spirit',
 				imgIndex: 1,
 				cost: 20
 			}, {
 				name: 'Spirit Potion',
-				use: 'Recover 120 spirit over 6 seconds',
-				itemType: 'potionSpirit',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'sp',
+				potionResource: 'spirit',
 				imgIndex: 2,
 				cost: 40
 			}, {
 				name: 'Major Spirit Potion',
-				use: 'Recover 240 spirit over 6 seconds',
-				itemType: 'potionSpirit',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'sp',
+				potionResource: 'spirit',
 				imgIndex: 3,
 				cost: 80
 			}, {
 				name: 'Greater Spirit Potion',
-				use: 'Recover 480 spirit over 6 seconds',
-				itemType: 'potionSpirit',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'sp',
+				potionResource: 'spirit',
 				imgIndex: 4,
 				cost: 160
 			}, {
 				name: 'Super Spirit Potion',
-				use: 'Recover 960 spirit over 6 seconds',
-				itemType: 'potionSpirit',
+				use: true,
+				itemType: 'potion',
+				itemSubType: 'sp',
+				potionResource: 'spirit',
 				imgIndex: 5,
 				cost: 320
 			}
@@ -1701,10 +1763,16 @@ var loot = {};
 				itemData: _.cloneDeep(item.dragData),
 				row: data,
 			})
-			items[item.dragType][item.dragSlot] = {}
-			bar.updateItemSlotDOM(town.openVariousWindow.toLowerCase(), item.dragSlot)
-			resetDrop()
-			tooltip.goldValue = 0
+			if (item.dragData.cost) {
+				bar.updateItemSlotDOM(town.openVariousWindow.toLowerCase(), item.dragSlot)
+				resetDrop()
+			}
+			else {
+				items[item.dragType][item.dragSlot] = {}
+				bar.updateItemSlotDOM(town.openVariousWindow.toLowerCase(), item.dragSlot)
+				resetDrop()
+				tooltip.goldValue = 0
+			}
 			town.setMyGold(my.gold - item.goldValue)
 			town.setStoreGold()
 		}).fail(function() {
@@ -1754,30 +1822,82 @@ var loot = {};
 		items[item.dragType][item.dragSlot] = {}
 		bar.updateItemSwapDOM()
 		resetDrop()
+		tooltip.conditionalHide()
 	}
 	function handleItemSlotContextClick(event) {
 		if (item.awaitingDrop || item.isDragging) return false
 		var {index, type} = _.pick(event.currentTarget.dataset, [
 			'index', 'type'
 		])
-		console.info(index, type)
-		item.isContextClick = true
-		resetDrop()
-		toggleDrag(event)
-		if (item.dragData.name) {
-			console.info(item.dragData, item.dragType, item.dragSlot)
-			toggleDrag({
-				currentTarget: {
-					dataset: {
-						index: getEqIndexByType(item.dragData),
-						type: 'eq',
-						eqType: equipmentEqTypeIndex[item.dragData.itemType]
-					}
-				}
-			})
+		if (items[type][index].use) {
+			useItem(type, index)
 		}
-
+		else {
+			resetDrop()
+			item.isContextClick = true
+			toggleDrag(event)
+			if (item.dragData.name) {
+				console.info(item.dragData, item.dragType, item.dragSlot)
+				toggleDrag({
+					currentTarget: {
+						dataset: {
+							index: getEqIndexByType(item.dragData),
+							type: 'eq',
+							eqType: equipmentEqTypeIndex[item.dragData.itemType]
+						}
+					}
+				})
+			}
+		}
 		return false // context disabled
+	}
+	function useItem(type, index) {
+		warn('useItem', index, type, items[type][index])
+		item.dropData = {}
+		if (items[type][index].name) {
+			item.dragData = items[type][index]
+			item.dragSlot = index
+			item.dragType = type
+			console.info('dragData', item.dragData)
+			handleDragStart()
+			$.post(app.url + 'item/destroy-item.php', {
+				row: items[type][index].row,
+				dragType: type
+			}).done(handleUseSuccess)
+				.fail(handleDropFail)
+				.always(handleDropAlways)
+		}
+	}
+	function handleUseSuccess() {
+		console.info('handleUseSuccess', item.dragData.itemType)
+		if (item.dragData.itemType === 'potion') {
+			expendPotion(item.dragData.itemSubType, item.dragData.imgIndex)
+		}
+		handleDestroySuccess()
+	}
+	function expendPotion(type, index) {
+		// type and potion size
+		var obj = { value: 0 }
+		var lastValue = 0
+		var diff = 0
+		TweenMax.to(obj, 6, {
+			value: potionRecoveryByJob(type, index),
+			ease: SteppedEase.config(60),
+			onUpdate: parseDifference,
+		})
+		/////////////////////
+		function parseDifference() {
+			diff = obj.value - lastValue
+			lastValue = obj.value
+			addResource(type, diff)
+		}
+	}
+	function addResource(type, amount) {
+		if (my.hp > 0 && amount > 0) {
+			my[type] += amount
+			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
+			bar.updateBar(type)
+		}
 	}
 	function getEqIndexByType(drag) {
 		console.info('getEqIndexByType', drag.itemType)
@@ -1794,16 +1914,26 @@ var loot = {};
 		return '<div style="color: gold; margin: .2rem">'+ (isSelling ? 'Sell Value: ' : 'Cost: ') + tooltip.goldValue + '</div>'
 	}
 	function getItemValue(item, selling) {
-		if (item.cost) return item.cost
 		value = 1
-		for (key in item) {
-			if (typeof item[key] === 'number' &&
-				typeof saleValues[key] === 'number') {
-				var val = item[key] * (saleValues[key] * (selling ? 1 : 13.33))
-				value += val
+		if (!item.cost) {
+			for (key in item) {
+				if (typeof item[key] === 'number' &&
+					typeof saleValues[key] === 'number') {
+					var val = item[key] * (saleValues[key] * (selling ? 1 : 16))
+					value += val
+				}
+			}
+		}
+		else {
+			if (selling) {
+				value = item.cost * .2
+			}
+			else {
+				value = item.cost
 			}
 		}
 		if (!selling) {
+			// conditional purchase increases by itemType
 			if (item.itemType === 'rings' ||
 				item.itemType === 'amulets' ||
 				item.itemType === 'focus' ||
@@ -1820,13 +1950,10 @@ var loot = {};
 				item.itemType === 'twoHandBlunt') {
 				value *= 2.3
 			}
-			else {
-				value *= 1.2
-			}
 		}
 		return ~~value
 	}
 	function getPotion(index, type) {
 		return potions[type][index]
 	}
-})(_, Object, JSON, $);
+})(_, Object, JSON, $, SteppedEase);

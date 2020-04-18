@@ -2557,11 +2557,13 @@ background-image:
 .inv-skill-label-wrap {
 	position: relative;
 	display: flex;
+	justify-content: space-between;
+	flex: 1;
+	padding: 0 .5rem;
 	z-index: 1;
 }
 .inv-skill-label {
 	color: #ffd700;
-	margin: 0 1.2rem 0 .6rem;
 }
 .inv-skill-bar {
 	position: absolute;
@@ -2569,7 +2571,7 @@ background-image:
 	left: 0;
 	bottom: 0;
 	height: 100%;
-	background: #03a;
+	background: #05b;
 	box-shadow: 0 5px 5px #fff2 inset, 0 -5px 5px #000a inset;
 }
 #inv-skill-description-wrap {

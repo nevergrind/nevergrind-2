@@ -2,7 +2,7 @@
 // require $_SERVER['DOCUMENT_ROOT'] . '/thruway/vendor/autoload.php';
 require '/jet/app/www/default/thruway/vendor/autoload.php';
 
-echo microtime(true) . ' Starting react/zmq loop...';
+echo 'Starting react/zmq loop... ';
 
 $loop   = \React\EventLoop\Factory::create();
 $pusher = new \Thruway\Peer\Client('realm1', $loop);

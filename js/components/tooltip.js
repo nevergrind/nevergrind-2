@@ -58,7 +58,7 @@ var tooltip;
 			'<div style="margin: .1rem; border: 2px ridge #048; padding: .1rem; border-radius: 4px">' +
 			'<div class="flex" style="border: 2px ridge #013; margin-bottom: .1rem">' +
 				'<div id="tooltip-item-img-bg">' +
-					'<img id="tooltip-item-img" src="images/items/'+ obj.itemType + (obj.imgIndex || 0) + '.png">' +
+					'<img id="tooltip-item-img" src="images/items/'+ bar.getItemIconFileNameByObj(obj) + '.png">' +
 				'</div>' +
 				'<div style="border: 1px ridge #013"></div>' +
 				'<div id="tooltip-name-bg" class="flex-column flex-center align-center">' +
@@ -221,7 +221,12 @@ var tooltip;
 		return stat ? '<div class="item-magic">+' + stat + '% ' + label + '</div>' : ''
 	}
 	function getItemUse(obj) {
-		return obj.use ? '<div class="item-use" style="padding: .5rem .5rem 0 .5rem">Use: '+ obj.use +'</div>' : ''
+		if (obj.use) {
+			return '<div class="item-use" style="padding: .5rem .5rem 0 .5rem">Use: '+
+				item.getPotionUseMessage(obj) +
+			'</div>'
+		}
+		else return ''
 
 	}
 	function getWeaponDamageHtml(obj) {

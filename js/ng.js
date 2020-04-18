@@ -342,7 +342,10 @@ var ng;
 		delayedCall(12, reloadGame)
 	}
 	function reloadGame() {
-		location.reload()
+		querySelector('#body').innerHTML = ''
+		setTimeout(function() {
+			location.reload()
+		})
 	}
 	function toJobShort(key) {
 		return ng.jobShort[key];

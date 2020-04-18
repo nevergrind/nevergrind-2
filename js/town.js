@@ -210,18 +210,17 @@ var town;
 			potionItems = []
 			storeItems = []
 			//console.info('itemTypesForSale', itemTypesForSale[type])
-			warn('is apothecary!', type)
 			if (type === 'apothecary' || type === 'merchant') {
 				potLevel = ~~(my.level / 8)
 				if (potLevel > 4) potLevel = 4
 				for (i = 0; i<2; i++) {
-					potionItems.push(item.getPotion(potLevel + i, 'health'))
+					potionItems.push(item.getPotion(potLevel + i, 'hp'))
 				}
 				for (i = 0; i<2; i++) {
-					potionItems.push(item.getPotion(potLevel + i, 'mana'))
+					potionItems.push(item.getPotion(potLevel + i, 'mp'))
 				}
 				for (i = 0; i<2; i++) {
-					potionItems.push(item.getPotion(potLevel + i, 'spirit'))
+					potionItems.push(item.getPotion(potLevel + i, 'sp'))
 				}
 			}
 			console.info('apo', potionItems)
@@ -238,9 +237,8 @@ var town;
 				//console.info('item', storeItems[i])
 			}
 			storeItems = _.sortBy(storeItems, ['itemType'])
-			info('store', _.cloneDeep(storeItems))
 			storeItems = potionItems.concat(storeItems)
-			console.info('storeItems', storeItems)
+			//console.info('storeItems', storeItems)
 			// sorted
 			for (i=0; i<storeItems.length; i++) {
 				items[type][i] = storeItems[i]

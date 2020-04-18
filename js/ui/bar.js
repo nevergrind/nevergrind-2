@@ -19,6 +19,7 @@ var bar;
 		updateItemSlotDOM,
 		updateItemSwapDOM,
 		getItemSlotImage,
+		getItemIconFileNameByObj,
 		getItemSlotHtml,
 		selectOptionCategory,
 		setWindowSize,
@@ -83,25 +84,12 @@ var bar;
 		evocation: 'Evocation enhances the power of all evocation-based magic. Summon a fireball, lightning bolts, or even an impressive ice comet to destroy all who dare to oppose you!',
 		conjuration: 'Conjuration enhances the power of all conjuration-based magic. Why get your hands dirty when you can summon an ally to do the dirty work for you?! Summon a fire-breathing hydra to melt your enemies! Or summon an army of angry bees to seek and destroy! The only limit is your imagination!',
 	}
-	var index;
-	var player; // temp bar data
+
+	var fileName, index, player, barRatio, html, str, el, elSfx, elMusic, id, arr, slot, resp, i, val, max
+
 	var pingTimer = new delayedCall(0, '')
-	var barRatio
-	var html
-	var str
-	var el
-	var elSfx
-	var elMusic
-	var id
-	var arr
-	var slot
-	var resp
-	var i
-	var val
-	var percent
-	var delay
-	var max
 	const volumeSettings = []
+
 	for (i=0; i<21; i++) {
 		volumeSettings[i] = i*54
 	}
@@ -201,10 +189,10 @@ var bar;
 			getPlayerGuildDescription() +
 		'</div>';
 		if (bar.activeTab === 'character') html += getCharacterHtml()
-		else if (bar.activeTab === 'skills') html += getSkillsHtml()
+		else if (bar.activeTab === 'passiveSkills') html += getSkillsHtml()
 		html += '<div id="inv-tab-wrap">' +
 			'<div data-id="character" class="inv-tabs'+ getActiveTabStatus('character') +'">Character</div>' +
-			'<div data-id="skills" class="inv-tabs'+ getActiveTabStatus('skills') +'">Skills</div>' +
+			'<div data-id="passiveSkills" class="inv-tabs'+ getActiveTabStatus('passiveSkills') +'">Passive Skills</div>' +
 		'</div>';
 		return html
 	}
@@ -246,12 +234,19 @@ var bar;
 		'</div>';
 	}
 
-	function getItemSlotImage(type, slot) {
+	function getItemSlotImage(type, slot, data) {
 		resp = type === 'eq' ? bar.defaultImage[slot] : 'item-bg-1'
 		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'itemType')) {
-			resp = items[type][slot].itemType + items[type][slot].imgIndex
+			resp = getItemIconFileNameByObj(items[type][slot])
 		}
 		return 'images/items/' + resp + '.png'
+	}
+	function getItemIconFileNameByObj(data) {
+		if (data.itemSubType) {
+			fileName = data.itemType + _.startCase(data.itemSubType) + data.imgIndex
+		}
+		else fileName = data.itemType + data.imgIndex
+		return fileName
 	}
 
 	function getInvItemClass(type, slot) {
@@ -293,7 +288,7 @@ var bar;
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">Inventory</div>' +
 			'</div>' +
-			'<img data-id="intentory" class="close-menu" src="images/ui/close.png">' +
+			'<img data-id="inventory" class="close-menu" src="images/ui/close.png">' +
 		'</div>' +
 		'<div id="inventory-slot-wrap">' +
 		'<div class="inventory-slot-row">';
@@ -331,7 +326,7 @@ var bar;
 		if (bar.windowsOpen.character) {
 			querySelector('#bar-character-stats').innerHTML = getCharacterStatsHtml()
 			querySelector('#bar-character-stats').style.display = 'flex'
-			if (bar.activeTab === 'skills') {
+			if (bar.activeTab === 'passiveSkills') {
 				ng.splitText('inv-skill-description', skillDescriptions['offense']);
 			}
 			showBarText()
@@ -381,17 +376,18 @@ var bar;
 		updateAllMyBars()
 	}
 	function updateAllMyBars() {
-		updateBar('hp', my)
-		updateBar('mp', my)
-		updateBar('sp', my)
+		updateBar('hp')
+		updateBar('mp')
+		updateBar('sp')
 	}
 	function updateBar(type, data) {
+		data = data || my
 		// console.warn('updateBar', type, data.row)
 		barRatio = ((1 - data[type] / data[type + 'Max']) * 100)
 		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
-			x: -barRatio
+			x: '-' + barRatio + '%'
 		})
-		querySelector('#bar-' + type + '-text-' + data.row).textContent = data[type] + '/' + getMaxType(type, data)
+		querySelector('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
 	}
 	function getMaxType(type, data) {
 		return (type === 'hp' ? data.hpMax : type === 'mp' ? data.mpMax : data.spMax)
