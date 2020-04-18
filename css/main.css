@@ -787,6 +787,12 @@ tbody { border: 0 }
 	height: 100%;
 	background-image: radial-gradient(farthest-corner at 50% 50%, #5bf, #05b)
 }
+#town-stars {
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+}
 .town-building {
 	position: absolute;
 	bottom: 0;
@@ -1834,6 +1840,12 @@ background-image:
 	background-repeat: no-repeat;
 
  */
+#title-gwen {
+	position: absolute;
+	height: 80vh;
+	bottom: 1vh;
+	left: 1vw;
+}
 #title-well-bottom {
 	box-shadow: 0 -.1rem #103860;
 	border-top: 1px solid #05b;

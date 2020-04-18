@@ -33,17 +33,6 @@ var town;
 	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, potionItems, potLevel
 
 	var storeItems = []
-
-	const skyProps = {
-		top: 50,
-		left: 66,
-		innerR: 92,
-		innerG: 32,
-		innerB: 160,
-		outerR: 16,
-		outerG: 0,
-		outerB: 48,
-	}
 	const buyTypes = [
 		'merchant',
 		'apothecary',
@@ -248,17 +237,26 @@ var town;
 		$('#various-item-wrap').html(getStoreItemHtml())
 	}
 
-	function setSky(obj) {
-		TweenMax.set('#town-sky', {
-			background: 'radial-gradient('+
-				'farthest-corner at '+ obj.left +'vw '+ obj.top +'vw,'+
-				'rgb('+ obj.innerR +', ' + obj.innerG + ', ' + obj.innerB + '),'+
-				'rgb('+ obj.outerR +', ' + obj.outerG + ', ' + obj.outerB + ')' +
-			')'
-		})
-	}
-
 	function animateSky() {
+
+		const skyProps = {
+			top: 50,
+			left: 66,
+			innerR: 92,
+			innerG: 32,
+			innerB: 160,
+			outerR: 16,
+			outerG: 0,
+			outerB: 48,
+		}
+
+		TweenMax.to('#town-stars', town.sunDuration, {
+			startAt: {
+				filter: 'brightness(1.5) opacity(1)',
+			},
+			filter: 'brightness(1) opacity(0)',
+			ease: Expo.easeOut
+		})
 		TweenMax.to(skyProps, town.sunDuration, {
 			top: -80,
 			innerR: 180, // aef
@@ -280,9 +278,21 @@ var town;
 			ease: Power2.easeOut
 		})
 	}
+
+	function setSky(obj) {
+		TweenMax.set('#town-sky', {
+			background: 'radial-gradient('+
+				'farthest-corner at '+ obj.left +'vw '+ obj.top +'vw,'+
+				'rgb('+ obj.innerR +', ' + obj.innerG + ', ' + obj.innerB + '),'+
+				'rgb('+ obj.outerR +', ' + obj.outerG + ', ' + obj.outerB + ')' +
+			')'
+		})
+	}
+
 	function getTownHtml() {
 		html = '<div id="town-wrap">' +
 			'<div id="town-sky" class="img-bg town-bg"></div>' +
+			'<img id="town-stars" class="img-bg town-bg" src="images/env/stars-2.png">' +
 			// pix.sky here
 			'<div id="town-building-wrap" class="img-bg">' +
 				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/town-academy.png">' +
