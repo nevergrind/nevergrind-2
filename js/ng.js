@@ -557,7 +557,7 @@ var ng;
 						ng.unlock()
 					}).fail(function(data) {
 						console.warn(data.responseText)
-						data.responseText && ng.msg(data.responseText, 0)
+						data.responseText && ng.msg(data.responseText, 12)
 					});
 				});
 			}

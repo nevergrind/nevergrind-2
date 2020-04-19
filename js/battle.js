@@ -21,6 +21,7 @@ var battle;
 		chat.sizeSmall();
 		mob.init();
 		game.emptyScenesExcept('scene-battle');
+		querySelector('#town-footer-wrap').style.display = 'none'
 		ng.setScene('battle');
 		TweenMax.to('#scene-battle', .5, {
 			startAt: { filter: 'brightness(0)' },
@@ -46,10 +47,8 @@ var battle;
 	}
 	function html() {
 		var s =
-			'<div id="battle-sky"></div>' +
-			'<div id="battle-clouds"></div>' +
 			'<img id="battle-bg" src="images/battle/tendolin-hollow-2.png">' +
-			'<img id="battle-fg" src="images/battle/tendolin-hollow-2-bg.png" class="no-pointer">';
+			'<img id="battle-fg" src="images/battle/tendolin-hollow-2-fg.png" class="no-pointer">';
 		var test = '';
 
 		for (var i=0; i<mob.max; i++){
@@ -87,21 +86,8 @@ var battle;
 		else {
 			getElementById('scene-battle').innerHTML = battle.html();
 			battle.events();
-			setBackground()
 			battle.isInit = 1;
 		}
-	}
-	function setBackground() {
-		var skyColors = [ '#135', '#579' ]
-		getElementById('battle-sky').style.backgroundImage = 'linear-gradient(to top, #135, #579)';
-		var cloud = 2;
-		getElementById('battle-clouds').style.backgroundImage = 'url("images/env/cloud' + cloud + '.png")';
-		/*TweenMax.to('#battle-clouds', 16000, {
-			startAt: { 'background-position': 0 },
-			'background-position': 3840,
-			ease: Linear.easeIn,
-			repeat: -1
-		});*/
 	}
 	function setTarget(i) {
 		console.info("Setting target ", i, Date.now());

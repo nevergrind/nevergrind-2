@@ -4,6 +4,7 @@ var env;
 		startSkyPhase,
 		phase: 'morning',
 		sky: {},
+		elements: {},
 		stars: {},
 		sun: {},
 		moon: {},
@@ -54,6 +55,39 @@ var env;
 		if (!env.initialized) {
 			env.initialized = true
 			cloudSpeed = _.random(450, 1000)
+			//TODO: experimental rain, snow
+			/*pix.elements = new PIXI.Application({
+				width: 1920,
+				height: 1920,
+				transparent: true
+			});
+			// style
+			pix.elements.view.id = 'pix-elements'
+			pix.elements.view.style.position = 'absolute'
+			querySelector('#sky-elements').appendChild(pix.elements.view)*/
+			/*
+			TweenMax.to('#sky-rain1', .45, {
+				startAt: { y: '-100%' },
+				y: '0%',
+				repeat: -1,
+				ease: Linear.easeNone
+			})
+			TweenMax.to('#sky-rain2', .45, {
+				delay: .15,
+				startAt: { x: '-1%', y: '-100%' },
+				y: '0%',
+				repeat: -1,
+				ease: Linear.easeNone
+			})
+			TweenMax.to('#sky-rain3', .45, {
+				delay: .3,
+				startAt: { x: '1%', y: '-100%' },
+				y: '0%',
+				repeat: -1,
+				ease: Linear.easeNone
+			})
+			*/
+
 			pix.sky = new PIXI.Application({
 				width: 1920,
 				height: 517,

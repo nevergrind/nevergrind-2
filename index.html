@@ -56,6 +56,13 @@
 	</div>
 </div> <!-- end login -->
 
+
+<!-- layer 1 -->
+<div id="sky-wrap" class="wh-100 no-select">
+	<div id="town-sky" class="wh-100 town-bg"></div>
+	<!--<img class="town-clouds" src="images/env/cloud-storm.png">-->
+	<!-- sky canvas goes here -->
+</div>
 <div id="scene-title" class="scene no-select">
 	<div id="ng2-logo-wrap">
 		<img id="ng2-bg" src="images/battle/salubrin-den-1.png" class="wh-100">
@@ -444,19 +451,28 @@
 	</div>
 
 </div> <!-- end scene-title -->
-
-<!-- layer 1 -->
-<div id="sky-wrap" class="wh-100 no-select">
-	<div id="town-sky" class="wh-100 town-bg"></div>
-	<!--<img class="town-clouds" src="images/env/cloud-storm.png">-->
-	<!-- sky canvas goes here -->
-</div>
 <div id="scene-town" class="scene none no-select"></div>
 <div id="scene-dungeon" class="scene none no-select"></div>
 <div id="scene-battle" class="scene none no-select"></div>
+<div id="sky-elements" class="wh-100 no-select">
+	<!-- rain and snow -->
+	<img id="sky-rain1" class="env-rain" src="images/env/rain.png">
+	<img id="sky-rain2" class="env-rain" src="images/env/rain.png">
+	<img id="sky-rain3" class="env-rain" src="images/env/rain.png">
+</div>
 
 <!-- layer 2 -->
 <div id="bar-wrap" class="no-select text-shadow"></div>
+<div id="town-footer-wrap" class="flex-max none no-select">
+	<div data-id="Mission Counter" id="town-mission" class="ng-btn town-building">
+		<img class="mission-icon" src="images/ui/exclamation.png">
+		<span>Mission Counter</span>
+	</div>
+	<div id="town-footer-gold-wrap">
+		<div id="town-gold" style="margin: 0 .2rem; "></div>
+		<i style="margin: 0 .2rem; color: gold" class="ra ra-gold-bar"></i>
+	</div>
+</div>
 <div id="chat-wrap" class="text-shadow"></div>
 <div id="button-wrap" class="no-select text-shadow"></div>
 

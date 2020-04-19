@@ -11,6 +11,7 @@ var dungeon;
 	function go() {
 		if (ng.view === 'dungeon') return
 		town.closeVarious()
+		querySelector('#town-footer-wrap').style.display = 'none'
 		game.emptyScenesExcept('scene-dungeon')
 		// remove from town chat
 		if (ng.view === 'town') {
@@ -46,7 +47,7 @@ var dungeon;
 	function init() {
 		if (my.zoneMobs.length) {
 			my.zoneMobs.forEach(function(v){
-				cache.preloadMob(v)
+				cache.preloadMob(_.kebabCase(v))
 			});
 		}
 		if (dungeon.initialized) {
@@ -61,7 +62,7 @@ var dungeon;
 		// delegate
 	}
 	function html() {
-		return '<img id="dungeon-bg" class="wh-100" src="images/battle/lanfeld.png">'
+		return '<img id="dungeon-bg" class="wh-100" src="images/battle/lanfeld-refuge-1.png">'
 	}
 	function enterCombat() {
 		console.info("ENTERING COMBAT")

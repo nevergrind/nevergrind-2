@@ -140,6 +140,9 @@ var town;
 				chat.init()
 
 				getElementById('scene-town').innerHTML = getTownHtml()
+				querySelector('#town-footer-wrap').style.display = 'flex'
+				querySelector('#town-gold').textContent = my.gold
+
 
 				if (socket.enabled) {
 					warn('ENABLED!')
@@ -257,16 +260,6 @@ var town;
 				'<div id="town-building-label-header"></div>' +
 				'<div id="town-build-label-description"></div>' +
 			'</div>' +
-		'</div>' +
-		'<div id="town-mission-wrap" class="flex-center flex-max">'+
-			'<div data-id="Mission Counter" id="town-mission" class="ng-btn town-building">'+
-				'<img class="mission-icon" src="images/ui/exclamation.png">' +
-				'<span>Mission Counter</span>'+
-			'</div>' +
-		'</div>' +
-		'<div id="town-footer-gold-wrap">'+
-			'<div id="town-gold" style="margin: 0 .2rem; ">'+ my.gold +'</div>' +
-			'<i style="margin: 0 .2rem; color: gold" class="ra ra-gold-bar"></i>' +
 		'</div>'
 
 		return html
@@ -726,7 +719,6 @@ var town;
 		str = ''
 		type = town.openVariousWindow.toLowerCase()
 		len = storeItems.length || item.MAX_SLOTS[type]
-		console.info('len', len, storeItems.length, item.MAX_SLOTS[type])
 		for (i=0; i<len; i++) {
 			str += bar.getItemSlotHtml(type, i)
 		}
