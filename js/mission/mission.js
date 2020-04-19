@@ -198,7 +198,7 @@ var mission;
 
 			TweenMax.to('#scene-dungeon', 2, {
 				delay: 2,
-				opacity: 0,
+				filter: 'brightness(0)',
 				onComplete: function() {
 					// rejoin main chat
 					town.go()
@@ -235,10 +235,15 @@ var mission;
 
 		chat.log('Now departing for ' + my.quest.zone + '!', 'chat-warning')
 		ng.lock(1)
+		TweenMax.to('#sky-wrap', 3, {
+			delay: 1,
+			filter: 'brightness(0)',
+			ease: Power4.easeOut
+		})
 		TweenMax.to('#scene-town', 3, {
 			startAt: { opacity: 1 },
 			delay: 1,
-			opacity: 0,
+			filter: 'brightness(0)',
 			ease: Power4.easeOut
 		});
 		ng.msg('Mission started: ' + my.quest.title)

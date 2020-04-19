@@ -24,7 +24,6 @@ var town;
 			'blacksmith': false,
 			'merchant': false,
 		},
-		sunDuration: 1800,
 		lastAside: {},
 		delegated: 0,
 		openVariousWindow: '',
@@ -76,6 +75,11 @@ var town;
 			'cloaks',
 		]
 	}
+	const armorTypesByStore = {
+		apothecary: ['cloth'],
+		merchant: ['cloth', 'leather'],
+		blacksmith: ['mail', 'plate'],
+	}
 	// leather
 	itemTypesForSale.merchant = [
 		...itemTypesForSale.blacksmith,
@@ -114,11 +118,8 @@ var town;
 				my.avatar = my.getAvatarUrl()
 				Object.assign(my, my.getResistObject())
 				// other things
-
 				bar.setDefaultInvWeaponImage()
-
 				guild.setGuildData(data)
-
 				initItemData(data.inv, 'inv')
 				initItemData(data.eq, 'eq')
 
@@ -151,8 +152,7 @@ var town;
 					ignore.init()
 					game.initPlayedCache()
 				}
-				pix.animateTownSky()
-				animateSky()
+				!env.initialized && env.startSkyPhase()
 				town.init()
 				bar.init();
 			}).fail(function(data){
@@ -166,13 +166,21 @@ var town;
 		chat.sendMsg('/join')
 		chat.history = [];
 		// town
-		TweenMax.to('#scene-town', .2, {
-			opacity: 1
+		TweenMax.set('#scene-town', {
+			opacity: 1,
+			filter: 'brightness(1)',
 		})
-		TweenMax.to('#body, #town-wrap', .5, {
+		TweenMax.to('#body', .5, {
 			overwrite: 1,
 			delay: .5,
 			opacity: 1,
+			onComplete: ng.unlock
+		})
+		TweenMax.to('#town-wrap, #sky-wrap', .5, {
+			startAt: { filter: 'brightness(0)' },
+			overwrite: 1,
+			delay: .5,
+			filter: 'brightness(1)',
 			onComplete: ng.unlock
 		})
 		warn('town.socketReady!')
@@ -188,11 +196,7 @@ var town;
 			items[type][key].name = obj[key].name
 		}
 	}
-	const armorTypesByStore = {
-		apothecary: ['cloth'],
-		merchant: ['cloth', 'leather'],
-		blacksmith: ['mail', 'plate'],
-	}
+
 	function initStoreData() {
 		type = town.openVariousWindow.toLowerCase()
 		if (!town.isInitialized[type]) {
@@ -237,64 +241,9 @@ var town;
 		$('#various-item-wrap').html(getStoreItemHtml())
 	}
 
-	function animateSky() {
-
-		const skyProps = {
-			top: 50,
-			left: 66,
-			innerR: 92,
-			innerG: 32,
-			innerB: 160,
-			outerR: 16,
-			outerG: 0,
-			outerB: 48,
-		}
-
-		TweenMax.to('#town-stars', town.sunDuration, {
-			startAt: {
-				filter: 'brightness(1.5) opacity(1)',
-			},
-			filter: 'brightness(1) opacity(0)',
-			ease: Expo.easeOut
-		})
-		TweenMax.to(skyProps, town.sunDuration, {
-			top: -80,
-			innerR: 180, // aef
-			innerG: 240,
-			innerB: 255,
-			outerR: 0, // 05b
-			outerG: 80,
-			outerB: 192,
-			onUpdate: setSky,
-			onUpdateParams: [skyProps],
-			ease: Expo.easeOut
-		})
-
-		TweenMax.to('#town-building-wrap', town.sunDuration / 2, {
-			startAt: {
-				filter: 'saturate(.5) brightness(.5)'
-			},
-			filter: 'saturate(1) brightness(1)',
-			ease: Power2.easeOut
-		})
-	}
-
-	function setSky(obj) {
-		TweenMax.set('#town-sky', {
-			background: 'radial-gradient('+
-				'farthest-corner at '+ obj.left +'vw '+ obj.top +'vw,'+
-				'rgb('+ obj.innerR +', ' + obj.innerG + ', ' + obj.innerB + '),'+
-				'rgb('+ obj.outerR +', ' + obj.outerG + ', ' + obj.outerB + ')' +
-			')'
-		})
-	}
-
 	function getTownHtml() {
 		html = '<div id="town-wrap">' +
-			'<div id="town-sky" class="img-bg town-bg"></div>' +
-			'<img id="town-stars" class="img-bg town-bg" src="images/env/stars-2.png">' +
-			// pix.sky here
-			'<div id="town-building-wrap" class="img-bg">' +
+			'<div id="town-building-wrap" class="wh-100">' +
 				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/town-academy.png">' +
 				'<img id="town-background" class="town-bg" src="images/town/town-bg-3.png">' +
 				'<img data-id="Apothecary" id="town-apothecary" class="town-building" src="images/town/town-apothecary.png">' +
@@ -575,7 +524,7 @@ var town;
 		tooltip.conditionalHide()
 	}
 	function animateBuilding(o) {
-		TweenMax.to('#town-wrap', o.duration, {
+		TweenMax.to('#town-wrap, #sky-wrap', o.duration, {
 			scale: o.scale,
 			x: o.x,
 			y: o.y

@@ -345,7 +345,7 @@ var ng;
 		querySelector('#body').innerHTML = ''
 		setTimeout(function() {
 			location.reload()
-		})
+		}, 100)
 	}
 	function toJobShort(key) {
 		return ng.jobShort[key];
@@ -593,13 +593,14 @@ var ng;
 		}
 		if (!app.initialized) {
 			keepAlive()
-			TweenMax.set('#scene-title', {
-				opacity: 0,
-				visibility: 'visible',
-				display: 'flex'
-			})
-			TweenMax.to('#scene-title', .2, {
-				opacity: 1
+			TweenMax.to('#scene-title', .5, {
+				startAt: {
+					filter: 'brightness(0)',
+					visibility: 'visible',
+					display: 'flex'
+				},
+				filter: 'brightness(1)',
+				ease: Back.easeOut
 			})
 		}
 		app.initialized = 1

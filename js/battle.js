@@ -23,9 +23,15 @@ var battle;
 		game.emptyScenesExcept('scene-battle');
 		ng.setScene('battle');
 		TweenMax.to('#scene-battle', .5, {
+			startAt: { filter: 'brightness(0)' },
 			delay: .5,
-			opacity: 1
+			filter: 'brightness(1)'
 		});
+		TweenMax.to('#sky-wrap', .5, {
+			startAt: { filter: 'brightness(0)' },
+			delay: .5,
+			filter: 'brightness(1)'
+		})
 		my.channel = ''
 		if (!mob.initialized) {
 			// initialization things only
@@ -42,8 +48,8 @@ var battle;
 		var s =
 			'<div id="battle-sky"></div>' +
 			'<div id="battle-clouds"></div>' +
-			'<img id="battle-bg" src="images/bg/tendolin-hollow-2.png">' +
-			'<img id="battle-fg" src="images/bg/prototype-fg.png" class="no-pointer">';
+			'<img id="battle-bg" src="images/battle/tendolin-hollow-2.png">' +
+			'<img id="battle-fg" src="images/battle/tendolin-hollow-2-bg.png" class="no-pointer">';
 		var test = '';
 
 		for (var i=0; i<mob.max; i++){

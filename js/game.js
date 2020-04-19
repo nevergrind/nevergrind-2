@@ -26,11 +26,6 @@ var game;
 	/** private */
 	var pingStart = 0;
 	var isSocketInit = false;
-	var scenes = [
-		'scene-town',
-		'scene-dungeon',
-		'scene-battle'
-	];
 	var heartbeat = {
 		timer: new delayedCall(0, ''),
 		sendTime: 0,
@@ -38,6 +33,11 @@ var game;
 		interval: 5,
 		activate,
 	}
+	const scenes = [
+		'#scene-town',
+		'#scene-dungeon',
+		'#scene-battle'
+	]
 	var played = {
 		timer: new delayedCall(0, ''),
 		interval: 60000
@@ -188,13 +188,12 @@ var game;
 		chat.setHeader();
 	}
 	function emptyScenesExcept(scene) {
+		TweenMax.set('#sky-wrap', {
+			filter: 'brightness(0)'
+		})
 		scenes.forEach(function(v) {
-			if (v === scene) {
-				getElementById(v).style.opacity = 0;
-			}
-			else {
-				getElementById(v).innerHTML = '';
-			}
+			if (v === '#' + scene) querySelector(v).style.filter = 'brightness(0)'
+			else querySelector(v).innerHTML = ''
 		});
 	}
 	function getPetName() {

@@ -387,7 +387,7 @@ var test;
 		document.body.appendChild(test.pix.view)
 
 		// create a new Sprite from an image path
-		const cloud = PIXI.Sprite.from('images/town/town-clouds-1.png');
+		const cloud = PIXI.Sprite.from('images/env/clouds-1.png');
 		// center the sprite's anchor point
 		cloud.anchor.set(0);
 		cloud.x = 0;

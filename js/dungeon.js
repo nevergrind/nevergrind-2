@@ -32,8 +32,14 @@ var dungeon;
 		dungeon.init()
 		console.info("DUNGEON GO")
 		TweenMax.to('#scene-dungeon', .5, {
-			delay: 1,
-			opacity: 1
+			startAt: { filter: 'brightness(0)' },
+			delay: .5,
+			filter: 'brightness(1)'
+		})
+		TweenMax.to('#sky-wrap', .5, {
+			startAt: { filter: 'brightness(0)' },
+			delay: .5,
+			filter: 'brightness(1)'
 		})
 		ng.unlock()
 	}
@@ -55,7 +61,7 @@ var dungeon;
 		// delegate
 	}
 	function html() {
-		return '<img id="dungeon-bg" class="img-bg" src="images/bg/lanfeld.png">'
+		return '<img id="dungeon-bg" class="wh-100" src="images/battle/lanfeld.png">'
 	}
 	function enterCombat() {
 		console.info("ENTERING COMBAT")
