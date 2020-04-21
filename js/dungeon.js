@@ -10,16 +10,14 @@ var dungeon;
 	///////////////////////////////////////
 	function go() {
 		if (ng.view === 'dungeon') return
+		// cleanup sort of activities when going into dungeon
 		town.closeVarious()
 		querySelector('#town-footer-wrap').style.display = 'none'
+		tavern.leaders = ''
 		game.emptyScenesExcept('scene-dungeon')
-		// remove from town chat
-		if (ng.view === 'town') {
-			chat.publishRemove()
-		}
-		if (my.channel) {
-			socket.unsubscribe(chat.getChannel())
-		}
+		if (ng.view === 'town') chat.publishRemove()
+		if (my.channel) socket.unsubscribe(chat.getChannel())
+
 		// set new channel data
 		my.channel = ''
 		// force change to party chat if in town chat

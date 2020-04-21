@@ -528,7 +528,7 @@ var bar;
 				getOptionsGeneralHtml() +
 			'</div>' +
 		'</div>' +
-		'<div class="flex space-between" style="'+ css.optionFooter +'">'+
+		'<div id="options-footer" class="flex space-between" style="'+ css.optionFooter +'">'+
 			'<div id="options-default" class="option-button">'+
 				'<div style="'+ css.optionBtnLabel +'">Default Settings</div>'+
 			'</div>' +

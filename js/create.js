@@ -207,8 +207,8 @@ var create;
 			err = 'Your character needs a name!';
 			$("#create-character-name").focus();
 		}
-		else if(f.name.length > 16){
-			err = "Your character name must be 16 characters or less!";
+		else if(f.name.length > 12){
+			err = "Your character name must be 12 characters or less!";
 		}
 		else if(f.left){
 			err = 'You must spend all of your ability points!';

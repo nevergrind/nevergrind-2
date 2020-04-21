@@ -746,20 +746,19 @@ tbody { border: 0 }
 }
 #town-guild {
 	bottom: 29.63vh;
-	right: 0;
+	left: 69.51vw;
 	width: 30.49vw;
 	height: 64.81vh;
 }
 #town-blacksmith {
 	bottom: 0;
-	right: 0;
+	left: 66.2vw;
 	width: 33.8vw;
 	height: 55.55vh;
 }
 #town-background {
 	bottom: 0;
 	width: 100vw;
-	height: 46.4rem;
 	height: 85.93vh;
 }
 .town-bg {
@@ -1065,7 +1064,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-WAR { color: #a73; }
 .chat-ROG { color: #888; }
 .chat-MNK { color: #f85; }
-.chat-PLD { color: #c5e; }
+.chat-PAL { color: #c5e; }
 .chat-SHD { color: #f0f; }
 .chat-RNG { color: #090; }
 .chat-BRD { color: #7ff; }
@@ -1080,7 +1079,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 .bg-WAR { background: #a736; }
 .bg-ROG { background: #8886; }
 .bg-MNK { background: #f856; }
-.bg-PLD { background: #c5e6; }
+.bg-PAL { background: #c5e6; }
 .bg-SHD { background: #f0f6; }
 .bg-RNG { background: #0906; }
 .bg-BRD { background: #7ff6; }
@@ -1096,7 +1095,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 .bg-dark-WAR { background: #a733; }
 .bg-dark-ROG { background: #8883; }
 .bg-dark-MNK { background: #f853; }
-.bg-dark-PLD { background: #c5e3; }
+.bg-dark-PAL { background: #c5e3; }
 .bg-dark-SHD { background: #f0f3; }
 .bg-dark-RNG { background: #0903; }
 .bg-dark-BRD { background: #7ff3; }
@@ -1232,7 +1231,7 @@ background-clip: content-box;
 	transition: filter .2s ease-out, transform .1s ease-out;
 }
 .bar-avatar:hover {
-	filter: drop-shadow(0 0 2px #ffd700);
+	filter: drop-shadow(0 0 2px gold);
 }
 .bar-avatar:active {
 	transition: none;
@@ -2176,7 +2175,7 @@ background-image:
 	line-height: 1.5;
 }
 .inv-tabs {
-	color: #ffd700;
+	color: gold;
 	border: 1px solid #136;
 	margin-left: .5rem;
 	background: #001;
@@ -2184,6 +2183,14 @@ background-image:
 	border-radius: 0 0 8px 8px;
 	cursor: url('cursor/pointer.cur'), pointer;
 	margin-top: -2px;
+	transition: filter .15s ease-out;
+}
+.inv-tabs:hover {
+	filter: saturate(1.2) brightness(1.2);
+}
+.inv-tabs:active {
+	transition: none;
+	filter: saturate(.8) brightness(.8);
 }
 .inv-tabs.active {
 	border-top: 1px solid transparent;
@@ -2292,12 +2299,24 @@ background-image:
 #options-content {
 	font-size:.9rem;
 	padding: .2rem .5rem;
+	margin-left: 0;
+}
+#options-footer {
+	border-radius: 4px;
+	border: 1px solid #4a4a3a;
+	background: conic-gradient(
+			#111a .25turn,
+			#000a .25turn .5turn,
+			#111a 0.5turn .75turn,
+			#000a .75turn
+	) top left / 5px 5px repeat;
+	padding: .2rem;
 }
 .options-column {
 	color: gold;
 	border-radius: 4px;
-	border: .1rem ridge #aaa;
-	margin: 0 .6rem;
+	border: 1px solid #4a4a3a;
+	margin: 0 .5rem;
 	background: conic-gradient(
 			#111a .25turn,
 			#000a .25turn .5turn,
@@ -2585,7 +2604,7 @@ background-image:
 	z-index: 1;
 }
 .inv-skill-label {
-	color: #ffd700;
+	color: gold;
 }
 .inv-skill-bar {
 	position: absolute;
@@ -2748,4 +2767,89 @@ background-image:
 			#090909 .75turn
 	) top left / 5px 5px repeat;*/
 	background: repeating-linear-gradient(0deg, #111f 0px 1px, #000f 2px 3px);
+}
+
+.tavern-tabs {
+	color: gold;
+	border: 1px solid #013;
+	border-bottom: none;
+	background: #001;
+	padding: 0 .5rem;
+	border-radius: 8px 8px 0 0;
+	cursor: url('cursor/pointer.cur'), pointer;
+	transition: filter .15s ease-out;
+}
+.tavern-tabs:hover {
+	filter: saturate(1.2) brightness(1.2);
+}
+.tavern-tabs:active {
+	transition: none;
+	filter: saturate(.8) brightness(.8);
+}
+.tavern-tabs.active {
+	color: white;
+	border: 1px solid #05b;
+	border-bottom: none;
+	background: #136;
+	padding: 0 .5rem;
+	cursor: url('cursor/pointer.cur'), pointer;
+}
+#tavern-body {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	border: 1px solid #001;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background: conic-gradient(
+			#0016 .25turn,
+			#025a .25turn .5turn,
+			#0016 0.5turn .75turn,
+			#025a .75turn
+	) top left / 5px 5px repeat;
+}
+#tavern-leaderboard-wrap {
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+.tavern-jobs {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: .7rem;
+	padding: .2rem 0;
+	flex: 1;
+	color: gold;
+	border: 1px solid #013;
+	cursor: url('cursor/pointer.cur'), pointer;
+	transition: filter .15s ease-out;
+}
+.tavern-jobs:hover {
+	filter: saturate(1.3) brightness(1.3);
+}
+.tavern-jobs:active {
+	transition: none;
+	filter: saturate(.8) brightness(.8);
+}
+#OVERALL {
+	background: #001;
+	padding: 0 .2rem
+}
+.tavern-jobs.active {
+	border: 1px solid #ff5;
+	animation: repeat-active-leaderboard 1s ease-out infinite;
+}
+@keyframes repeat-active-leaderboard {
+	0% { border-color: #ff5; }
+	50% { border-color: #650; }
+	100% { border-color: #ff5; }
+}
+.job-icon {
+	width: 1rem;
+	height: 1rem;
+	transition: transform .1s ease-out;
+}
+.job-icon:active {
+	transition: none;
+	transform: scale(.8);
 }

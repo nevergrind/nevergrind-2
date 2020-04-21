@@ -1,9 +1,8 @@
-// audio.js
 var template;
-!function() {
+!function($, _, TweenMax) {
 	template = {
 
 	}
 	///////////////////////////////////////////
 
-}();
+}($, _, TweenMax);

@@ -72,7 +72,6 @@ var game;
 		time = Date.now();
 		// check disconnect
 		diff = time - heartbeat.receiveTime;
-		warn('diff', diff)
 		if (diff > game.heartbeatDifference) {
 			console.warn('something wrong with the socket... please investigate...');
 			ng.disconnect();

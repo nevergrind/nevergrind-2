@@ -99,6 +99,7 @@ function minifyJs() {
 		'items/twoHandBlunts',
 		'items/twoHandSlashers',
 		'town',
+		'tavern',
 		'cache',
 		'router',
 		'dungeon',

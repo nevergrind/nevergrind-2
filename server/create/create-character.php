@@ -5,7 +5,7 @@
 	
 	// validate name
 	// length is not too long
-	$f['name'] = substr($f['name'], 0, 16);
+	$f['name'] = substr($f['name'], 0, 12);
 	if (strlen($f['name']) < 2){
 		exit('This name is too short!');
 	}

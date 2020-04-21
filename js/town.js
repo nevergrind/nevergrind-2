@@ -432,7 +432,7 @@ var town;
 			townConfig = {
 				duration: 1,
 				scale: 1.5,
-				x: 350,
+				x: 280,
 				y: 230
 			}
 		}
@@ -507,7 +507,7 @@ var town;
 			townConfig = {
 				duration: 1,
 				scale: 1.2,
-				x: 150,
+				x: 100,
 				y: -100
 			}
 		}
@@ -726,9 +726,7 @@ var town;
 	}
 	function tavernHtml() {
 		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			'Tavern body!' +
-		'</div>' +
+		tavern.getBodyHtml() +
 		variousFooterHtml('dark-elf-female-0')
 		return html
 	}

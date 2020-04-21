@@ -30,8 +30,8 @@ var env;
 	}
 
 	function startSkyPhase() {
-		console.warn('//////////////////////////////////////////////////////')
-		console.warn('startSkyPhase', env.phase)
+		/*console.warn('//////////////////////////////////////////////////////')
+		console.warn('startSkyPhase', env.phase)*/
 		initPixiElements()
 		animateSky()
 		animateBuildings()
