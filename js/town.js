@@ -390,32 +390,8 @@ var town;
 				},
 				opacity: 1
 			})
-			/*
-			labelObj = {
-				brightness: .5
-			}
-			TweenMax.set('#town-building-label-wrap', {
-				backdropFilter: 'grayscale(1) saturate(2) brightness('+ labelObj.brightness +')',
-			})
-			TweenMax.to(labelObj, .3, {
-				delay: .2,
-				brightness: 5,
-				onUpdate: setLabelBg,
-				onUpdateParams: [labelObj],
-				yoyo: true,
-				repeat: 1,
-				ease: Power1.easeInOut
-			})
-			*/
 		}
 	}
-	/*
-	function setLabelBg(obj) {
-		TweenMax.set('#town-building-label-wrap', {
-			backdropFilter: 'grayscale(1) saturate(2) brightness('+ obj.brightness +')'
-		})
-	}
-	*/
 	function hideLabel() {
 		TweenMax.to('#town-building-label-wrap', .5, {
 			opacity: 0
@@ -503,7 +479,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Tavern') {
-			msg = 'Tell me your story, adventurer. What brings you to Edenburg? Many adventurers come to this city seeking fame and fortune. I am happy to share the wisdom and knowledge I have acquired.'
+			msg = 'How may I help you, '+ my.name +'? Many adventurers come to this city seeking fame and fortune. Perhaps I could help you?'
 			townConfig = {
 				duration: 1,
 				scale: 1.2,
@@ -727,7 +703,7 @@ var town;
 	function tavernHtml() {
 		html = variousHeaderHtml() +
 		tavern.getBodyHtml() +
-		variousFooterHtml('dark-elf-female-0')
+		variousFooterHtml('dark-elf-female-0', true)
 		return html
 	}
 	function variousHeaderHtml() {
@@ -737,14 +713,15 @@ var town;
 			'</div>' +
 			'<img data-id="various" class="close-menu" src="images/ui/close.png">' +
 		'</div>'
-
 	}
-	function variousFooterHtml(avatar) {
-		return '<div id="various-footer" class="flex-center stag-blue-top">' +
-			'<div class="town-avatar-wrap">' +
-				'<img class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
+	function variousFooterHtml(avatar, isTallMode) {
+		return '<div id="various-footer" class="flex-center">' +
+			'<div id="town-avatar-col">' +
+				'<div id="town-avatar-wrap">' +
+					'<img class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
+				'</div>' +
 			'</div>' +
-			'<div id="various-description" class="flex-max"></div>' +
+			'<div id="various-description" class="flex-max '+ (isTallMode ? 'tall-description' : '') +'"></div>' +
 		'</div>'
 	}
 	function isMerchantMode() {

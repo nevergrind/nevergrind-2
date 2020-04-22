@@ -198,6 +198,7 @@ var ng;
 		lastKey: 0,
 		lockOverlay: getElementById("lock-overlay"),
 		startTime: Date.now(),
+		clearConsoleTime: Date.now(),
 		locked: 0,
 		loadAttempts: 0,
 		isModalOpen: false,
@@ -416,8 +417,8 @@ var ng;
 		var e = querySelector('#'+ id);
 		e.textContent = msg;
 		var split = new SplitText(e, {
-				type: "words,chars"
-			});
+			type: "words,chars"
+		});
 		TweenMax.staggerFromTo(split.chars, fadeDuration, {
 			immediateRender: true,
 			alpha: 0
@@ -579,6 +580,35 @@ var ng;
 	function handleInitGame(r) {
 		console.info('init-game', r)
 		bar.updateDynamicStyles()
+		TweenMax.to('#title-gwen', .3, {
+			x: '0vw',
+			onComplete: function() {
+				TweenMax.to(this.target, .3, {
+					startAt: {
+						filter: 'brightness(0)'
+					},
+					filter: 'brightness(1.8)',
+					ease: Power2.easeOut,
+					onComplete: function() {
+						TweenMax.to(this.target, .3, {
+							filter: 'brightness(1)',
+							ease: Linear.easeIn,
+						})
+					}
+				})
+			}
+		})
+		TweenMax.to('#scene-title-select-character', .3, {
+			delay: 1,
+			filter: 'opacity(1)'
+		})
+
+		TweenMax.staggerTo(new SplitText(querySelector('#version')).chars, .5, {
+			delay: 3,
+			rotationY: 90,
+			alpha: 0
+		}, .05);
+
 		if (r.id) {
 			my.accountId = r.id
 			if (!app.isApp) {
@@ -615,12 +645,13 @@ var ng;
 				'<div data-row="'+ d.row +'" '+
 				'data-name="'+ d.name +'" '+
 				'class="ch-card center select-player-card text-center">'+
-					'<img class="avatar-title" src="'+ url +'" style="padding:0 1rem">' +
-					'<div style="padding: .2rem .5rem; flex: 1">' +
+					'<img class="avatar-title" src="'+ url +'" style="padding:0 .5rem">' +
+					'<div class="flex-column flex-max" style="padding: .2rem .5rem; justify-content: space-around">' +
 						'<div class="ch-card-name">'+ _.capitalize(d.name) +'</div>'+
 						'<div class="ch-card-level">Level '+ d.level +'</div>'+
 						'<div class="ch-card-details">'+ d.race +' '+ ng.toJobLong(d.job) +'</div>'+
 					'</div>'+
+					'<img class="title-icon" src="images/ui/job-'+ d.job +'.png" style="">' +
 				'</div>';
 		});
 		getElementById('ch-card-list').innerHTML = s;

@@ -18,7 +18,7 @@
 	}
 	// name is not taken
 	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
-	$query = 'select name from `characters` where name=?';
+	$query = 'select name from `characters` where name=? and deleted=0';
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $f['name']);
 	$stmt->execute();
@@ -37,15 +37,15 @@
 	}
 
 	// how many characters do they have?
-	$query = 'select row, deleted from `characters` where row=? and deleted=0';
+	$query = 'select count(row) from `characters` where account=? and deleted=0';
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('s', $_SESSION['account']);
 	$stmt->execute();
-	$stmt->store_result();
-	$count = $stmt->num_rows;
+	$stmt->bind_result($charCount);
 	$totalCharacters = 0;
-	if($count > 0){
-		$totalCharacters = $count;
+
+	while ($stmt->fetch()) {
+		$totalCharacters = $charCount;
 	}
 	// max is 8
 	if ($totalCharacters >= 8){

@@ -65,11 +65,11 @@
 </div>
 <div id="scene-title" class="scene no-select">
 	<div id="ng2-logo-wrap">
-		<img id="ng2-bg" src="images/battle/salubrin-den-1.png" class="wh-100">
+		<img id="ng2-bg" src="images/title/title-merged.png" class="wh-100">
 		<img id="title-gwen" src="images/title/gwendolyn.png">
-		<div id="version" class="text-shadow">
-			Version <script>document.write(app.version)</script>
-		</div>
+		<script>
+			document.write('<div id="version" class="text-shadow">Version ' + app.version + '</div>')
+		</script>
 	</div>
 
 	<div id="scene-title-select-character" class="flex-column title-cc-wrap">
@@ -243,7 +243,7 @@
 					<input id="create-character-name"
 						   class="ng-blue-input text-shadow"
 						   type="text"
-						   maxlength="16"
+						   maxlength="12"
 						   spellcheck="false"
 						   autocomplete="off"
 						   placeholder="Character Name">
@@ -265,9 +265,6 @@
 					<div id="create-Enchanter" class="select-class disabled no-select">Enchanter</div>
 				</div>
 				<div class="select-create-wrap">
-					<div id="create-Summoner" class="select-class disabled no-select">Summoner</div>
-				</div>
-				<div class="select-create-wrap">
 					<div id="create-Monk" class="select-class disabled no-select">Monk</div>
 				</div>
 				<div class="select-create-wrap">
@@ -287,6 +284,9 @@
 				</div>
 				<div class="select-create-wrap">
 					<div id="create-Shaman" class="select-class disabled no-select">Shaman</div>
+				</div>
+				<div class="select-create-wrap">
+					<div id="create-Summoner" class="select-class disabled no-select">Summoner</div>
 				</div>
 				<div class="select-create-wrap">
 					<div id="create-Warrior" class="select-class disabled no-select">Warrior</div>

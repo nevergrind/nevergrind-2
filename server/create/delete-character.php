@@ -14,7 +14,7 @@
 		while($stmt->fetch()){
 			$row = $db_row;
 		}
-		$query = 'update `characters` set deleted=1, name=NULL where row=?';
+		$query = 'update `characters` set deleted=1 where row=?';
 		$stmt = $db->prepare($query);
 		$stmt->bind_param('i', $row);
 		$stmt->execute();

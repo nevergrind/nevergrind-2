@@ -70,6 +70,10 @@ var game;
 	}
 	function heartbeatSend() {
 		time = Date.now();
+		if (time - ng.clearConsoleTime > 1800000) {
+			ng.clearConsoleTime = time
+			console.clear()
+		}
 		// check disconnect
 		diff = time - heartbeat.receiveTime;
 		if (diff > game.heartbeatDifference) {
