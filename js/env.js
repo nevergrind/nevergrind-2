@@ -105,11 +105,11 @@ var env;
 			pix.sun.anchor.set(.5)
 			pix.sky.stage.addChild(pix.sun)
 
-			TweenMax.to(pix.sun, 1/60, {
+			/*TweenMax.to(pix.sun, 1/60, {
 				rotation: 360,
 				repeat: -1,
 				ease: Linear.easeOut
-			})
+			})*/
 
 			pix.moon = PIXI.Sprite.from('images/env/moon.png')
 			pix.moon.anchor.set(.5)

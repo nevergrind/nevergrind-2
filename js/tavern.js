@@ -97,11 +97,11 @@ var tavern;
 	function getBodyHtml() {
 		str =
 		'<div id="various-body" class="flex-row flex-max">' +
-			'<div id="tavern-wrap" class="flex-column flex-max" style="margin: .1rem .2rem">' +
+			'<div class="flex-column flex-max" style="margin: .1rem .2rem">' +
 				'<div id="tavern-tab-wrap" class="flex-row" style="border-bottom: 1px solid #025;">'+
 					'<div id="tavern-tips" class="tavern-tabs active">Tips</div>' +
 					'<div id="tavern-leaderboard" class="tavern-tabs">Leaderboard</div>' +
-					'<div id="tavern-heroes" class="tavern-tabs">Heroes</div>' +
+					//'<div id="tavern-heroes" class="tavern-tabs">Heroes</div>' +
 				'</div>' +
 				'<div id="tavern-body">'+
 					tipHtml() +
@@ -121,32 +121,29 @@ var tavern;
 		if (tavern.activeTab === 'tavern-tips') {
 			ng.splitText('various-description', 'My knowledge is limited, but I am happy to offer my advice on a variety of topics. What topic interests you?')
 			html = tipHtml()
-			height = '9.2rem'
 		}
 		else if (tavern.activeTab === 'tavern-leaderboard') {
 			ng.splitText('various-description', 'Edenburg\'s royal scribes do their best to maintain an updated list of the most accomplished adventurers in the Kingdom. We maintain an overall list and a separate list by class.')
 			html = leaderboardHtml()
-			height = '4.6rem'
 			if (!tavern.leaders[selectedLeaderboard]) {
 				getLeaders()
 			}
 		}
-		else if (tavern.activeTab === 'tavern-heroes') {
+		/*else if (tavern.activeTab === 'tavern-heroes') {
 			ng.splitText('various-description', 'The King has ordered that we carefully track all weapons and armor in the Kingdom. These records are public knowledge and may be reviewed for legal or educational purposes.')
 			html = heroesHtml()
-			height = '4.6rem'
-		}
-		setDescriptionHeight(height)
+		}*/
+		setDescriptionStyle()
 		querySelector('#tavern-body').innerHTML = html
 	}
 
 	function handleClickTips(event) {
 		key = _.camelCase(_.pick(event.currentTarget.dataset, ['id']).id)
-		setDescriptionHeight('9.2rem')
+		setDescriptionStyle()
 		typeof tips[key] === 'string' && ng.splitText('various-description', tips[key])
 	}
-	function setDescriptionHeight(height) {
-		querySelector('#various-description').style.height = height
+	function setDescriptionStyle() {
+		querySelector('#various-description').scrollTop = 0
 	}
 
 	function tipHtml() {

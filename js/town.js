@@ -502,13 +502,18 @@ var town;
 	}
 	function buyItem() {
 		console.warn('buyItem', item.dragType, item.dragSlot, item.dragData.name)
-		if (!item.dragData.name) {
-			ng.splitText('various-description', 'Select an item to buy first!')
+		if (town.openVariousWindow === 'Academy') {
+			academy.trainSkill()
 		}
-		else if (!buyTypes.includes(item.dragType)) {
-			ng.splitText('various-description', 'What?! Why are you trying to buy items you already own?! Did you mean to sell it?')
+		else {
+			if (!item.dragData.name) {
+				ng.splitText('various-description', 'Select an item to buy first!')
+			}
+			else if (!buyTypes.includes(item.dragType)) {
+				ng.splitText('various-description', 'What?! Why are you trying to buy items you already own?! Did you mean to sell it?')
+			}
+			else item.buy()
 		}
-		else item.buy()
 	}
 	function sellItem() {
 		console.warn('sellItem', item.dragType, item.dragSlot, item.dragData.name)
@@ -609,9 +614,7 @@ var town;
 	}
 	function academyHtml() {
 		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			'Academy body!' +
-		'</div>' +
+		academy.getBodyHtml() +
 		variousFooterHtml('human-female-0')
 		return html
 	}
@@ -704,7 +707,7 @@ var town;
 	function tavernHtml() {
 		html = variousHeaderHtml() +
 		tavern.getBodyHtml() +
-		variousFooterHtml('dark-elf-female-0', true)
+		variousFooterHtml('dark-elf-female-0')
 		return html
 	}
 	function variousHeaderHtml() {

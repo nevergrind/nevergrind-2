@@ -1,5 +1,5 @@
 var template;
-!function($, _, TweenMax) {
+!function($, _, TweenMax, undefined) {
 	template = {
 
 	}

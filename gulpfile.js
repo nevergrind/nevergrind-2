@@ -100,6 +100,7 @@ function minifyJs() {
 		'items/twoHandSlashers',
 		'town',
 		'tavern',
+		'academy',
 		'cache',
 		'router',
 		'dungeon',

@@ -379,8 +379,6 @@ var skills;
 		},
 	};
 
-	// what is the point of this?
-	var shortClassKeys = Object.keys(ng.jobLong);
 	for (var key in skills) {
 		if (key !== 'ALL') {
 			// this is a player class
