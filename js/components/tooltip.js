@@ -175,7 +175,7 @@ var tooltip;
 				getGenericPercentStatHtml(obj.enhanceFire, 'All Fire Damage') +
 				getGenericPercentStatHtml(obj.enhanceIce, 'All Ice Damage') +
 				// status resists
-				getGenericPercentStatHtml(obj.resistFrozen, 'Frozen Resist') +
+				getGenericPercentStatHtml(obj.resistParalyze, 'Paralyze Resist') +
 				getGenericPercentStatHtml(obj.resistFear, 'Fear Resist') +
 				getGenericPercentStatHtml(obj.resistStun, 'Stun Resist') +
 				getGenericPercentStatHtml(obj.resistSilence, 'Silence Resist') +

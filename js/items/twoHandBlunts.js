@@ -144,7 +144,7 @@ loot.twoHandBlunts = {
 			resistIce: 25,
 			allSkills: 2,
 			reduceTargetArmor: [5, 8],
-			resistFrozen: 12,
+			resistParalyze: 12,
 		}, {
 			name: 'Sledgehammer',
 			newName: 'Blighthammer',

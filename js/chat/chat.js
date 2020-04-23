@@ -16,7 +16,7 @@ var chat;
 		dom: {},
 		historyIndex: 0,
 		history: [],
-		divider: '<div class="chat-emote">======================================</div>',
+		divider: '<div class="chat-help">======================================</div>',
 		whispers: {},
 		presence: [],
 		modeTypes: [
@@ -54,9 +54,44 @@ var chat;
 		prepare,
 		getPrefix,
 	}
-	var el;
+	var el, helpHtml;
 	var resp;
 	/** private */
+	const helpArr = [
+		'<div class="chat-help-header">General Chat Channels:</div>',
+		'<div data-id="general chat" class="chat-help">/say : Say a message in your current chat channel : /say hail</div>',
+		'<div data-id="general chat private whisper send receive" class="chat-help">@ : Send a private message by name : @bob hi</div>',
+		'<div class="chat-help-header">Guild Commands</div>',
+		'<div data-id="organize clan" class="chat-help">/guild : Message your guild : /guild hail</div>',
+		'<div data-id="guild" class="chat-help">/ginvite: Invite a player to your guild: /ginvite Bob</div>',
+		'<div data-id="guild boot" class="chat-help">/gpromote: Promote a member to Officer: /gpromote Bob</div>',
+		'<div data-id="guild fire" class="chat-help">/gdemote: Demote an officer to a member: /gdemote Bob</div>',
+		'<div data-id="guild dictator" class="chat-help">/gleader: Promote a guild member to leader: /gleader Bob</div>',
+		'<div data-id="guild kick" class="chat-help">/gboot: Boot a member from the guild: /gboot Bob</div>',
+		'<div data-id="guild" class="chat-help">/motd: Set a new message of the day: /motd message</div>',
+		'<div data-id="guild" class="chat-help">/gquit: Leave your guild: /gquit</div>',
+		'<div class="chat-help-header">Party Commands</div>',
+		'<div data-id="group" class="chat-help">/party : Message your party : /party hail</div>',
+		'<div data-id="party group" class="chat-help">/invite: Invite a player to your party : /invite Bob</div>',
+		'<div data-id="party group" class="chat-help">/disband: Leave your party</div>',
+		'<div data-id="party group" class="chat-help">/promote: Promote a player in your party to leader : /promote Bob</div>',
+		'<div data-id="party group" class="chat-help">/boot: Boot a player from the party: /boot Bob</div>',
+		'<div class="chat-help-header">Social Commands:</div>',
+		'<div data-id="social friend fren buddy" class="chat-help">/flist or /friends : Show your friends\' online status</div>',
+		'<div data-id="social friend fren buddy" class="chat-help">/friend add : Add a friend : /friend add Bob</div>',
+		'<div data-id="social friend fren buddy" class="chat-help">/friend remove : Remove a friend : /friend remove Bob</div>',
+		'<div data-id="social ignore" class="chat-help">/ignore : Show your ignore list</div>',
+		'<div data-id="social ignore" class="chat-help">/ignore add : Add someone to your ignore list</div>',
+		'<div data-id="social ignore" class="chat-help">/ignore remove : Remove someone from your ignore list</div>',
+		'<div data-id="" class="chat-help">/who or / : Show all players currently playing</div>',
+		'<div data-id="social" class="chat-help">/who filters : Show current players by class, race, level range, name : /who 5 10 dwarf cleric</div>',
+		'<div class="chat-help-header">Miscellaneous Commands:</div>',
+		'<div data-id="misc private" class="chat-help">/join channel : Join a channel : /join bros</div>',
+		'<div data-id="misc" class="chat-help">/clear: clear the chat log</div>',
+		'<div data-id="misc" class="chat-help">/played: Show character creation, session duration, and total playtime</div>',
+		'<div data-id="misc" class="chat-help">/me : Send an emote to your current chat channel : /me waves</div>',
+		'<div data-id="misc" class="chat-help">/camp: Exit the game.</div>',
+	]
 
 	/** public */
 	function getChannel() {
@@ -187,15 +222,15 @@ var chat;
 		// report to chat-log
 		if (msg){
 			while (chat.dom.chatLog.childElementCount >= 500) {
-				chat.dom.chatLog.removeChild(chat.dom.chatLog.firstChild);
+				chat.dom.chatLog.removeChild(chat.dom.chatLog.firstChild)
 			}
-			var el = createElement('div');
+			var el = createElement('div')
 			if (className){
-				el.className = className;
+				el.className = className
 			}
-			el.innerHTML = msg;
-			chat.dom.chatLog.appendChild(el);
-			chat.scrollBottom();
+			el.innerHTML = msg
+			chat.dom.chatLog.appendChild(el)
+			setTimeout(chat.scrollBottom)
 		}
 	}
 	function updateHistory(msg) {
@@ -209,57 +244,33 @@ var chat;
 		chat.history.push(o);
 		chat.historyIndex = chat.history.length;
 	}
-	function help() {
-		var z = 'class="chat-emote"',
-			h = 'class="chat-help-header"',
-			s = [
-				chat.divider,
-				'<div '+ h +'>Main Chat Channels:</div>',
-				'<div '+ z +'>/say : Say a message in your current chat channel : /say hail</div>',
-				'<div '+ z +'>/party : Message your party : /party hail</div>',
-				'<div '+ z +'>/guild : Message your guild : /guild hail</div>',
-				'<div '+ z +'>@ : Send a private message by name : @bob hi</div>',
-				'<div '+ h +'>Guild Commands</div>',
-				'<div '+ z +'>/ginvite: Invite a player to your guild: /ginvite Bob</div>',
-				'<div '+ z +'>/gpromote: Promote a member to Officer: /gpromote Bob</div>',
-				'<div '+ z +'>/gdemote: Demote an officer to a member: /gdemote Bob</div>',
-				'<div '+ z +'>/gleader: Promote a guild member to leader: /gleader Bob</div>',
-				'<div '+ z +'>/gboot: Boot a member from the guild: /gboot Bob</div>',
-				'<div '+ z +'>/motd: Set a new message of the day: /motd message</div>',
-				'<div '+ z +'>/gquit: Leave your guild: /gquit</div>',
-				'<div '+ h +'>Party Commands</div>',
-				'<div '+ z +'>/invite: Invite a player to your party : /invite Bob</div>',
-				'<div '+ z +'>/disband: Leave your party</div>',
-				'<div '+ z +'>/promote: Promote a player in your party to leader : /promote Bob</div>',
-				'<div '+ z +'>/boot: Boot a player from the party: /boot Bob</div>',
-				'<div '+ h +'>Social Commands:</div>',
-				'<div '+ z +'>/flist or /friends : Show your friends\' online status</div>',
-				'<div '+ z +'>/friend add : Add a friend : /friend add Bob</div>',
-				'<div '+ z +'>/friend remove : Remove a friend : /friend remove Bob</div>',
-				'<div '+ z +'>/ignore : Show your ignore list</div>',
-				'<div '+ z +'>/ignore add : Add someone to your ignore list</div>',
-				'<div '+ z +'>/ignore remove : Remove someone from your ignore list</div>',
-				'<div '+ z +'>/who or / : Show all players currently playing</div>',
-				'<div '+ z +'>/who filters : Show current players by class, race, level range, name : /who 5 10 dwarf cleric</div>',
-				'<div '+ h +'>Miscellaneous Commands:</div>',
-				'<div '+ z +'>/join channel : Join a channel : /join bros</div>',
-				'<div '+ z +'>/clear: clear the chat log</div>',
-				'<div '+ z +'>/played: Show character creation, session duration, and total playtime</div>',
-				'<div '+ z +'>/me : Send an emote to your current chat channel : /me waves</div>',
-				'<div '+ z +'>/camp: Exit the game.</div>',
-			];
-		for (var i=0, len=s.length; i<len; i++) {
-			log(s[i]);
+	function help(filter) {
+		if (filter) log('<div class="chat-warning">Showing help results for <b>/help '+ filter +'</b>:</div>')
+		log(chat.divider)
+		helpHtml = ''
+		for (var i=0, len=helpArr.length; i<len; i++) {
+			if (filter) {
+				if (helpArr[i].toLowerCase().includes(filter)) {
+					helpHtml += helpArr[i]
+				}
+			}
+			else {
+				helpHtml += helpArr[i]
+			}
 		}
+		if (!helpHtml) log('<div class="chat-warning">No help found for ' + filter + '.</div>')
+		else log(helpHtml)
 	}
 	function sendMsg(input) {
 		var msg = input || chat.dom.chatInput.value.trim(),
 			msgLower = msg.toLowerCase();
 
 		// bypass via ENTER or chat has focus
-		if (msg === '?' || msg === '/h' || msg === '/help') {
+		if (msg === '/h' || msg.startsWith('/help')) {
 			chat.updateHistory(msg);
-			chat.help();
+			var filter = msg.split(' ')
+			if (filter[1] && filter[1].length) chat.help(filter[1].toLowerCase())
+			else chat.help()
 		}
 		else if (msgLower.startsWith('/motd')) guild.motd(guild.motdParse(msg))
 		else if (msgLower.startsWith('/gleader')) guild.leader(party.parse(msg))

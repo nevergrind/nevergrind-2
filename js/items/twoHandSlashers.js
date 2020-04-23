@@ -175,7 +175,7 @@ loot.twoHandSlashers = {
 			enhancePoison: [4, 6],
 			enhancedDamageToHumanoids: [3, 5],
 			enhancedDamageToEldritch: [6, 8],
-			resistFrozen: [15, 20],
+			resistParalyze: [15, 20],
 		}, {
 			name: 'Mythical Sword',
 			newName: 'Razing Sword of Carthenage',

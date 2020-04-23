@@ -5,7 +5,7 @@ require 'db.php';
 // steam data if applicable
 $version = '2020.1.2';
 if ($_POST['version'] !== $version) {
-	exit("Nevergrind 2 is currently being upgraded. We'll be right back!");
+	exit("Nevergrind Online is currently being upgraded. We'll be right back!");
 }
 $r['checkedSteam'] = 0;
 $r['isNewAccount'] = 0;

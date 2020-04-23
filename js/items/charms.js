@@ -41,7 +41,7 @@ loot.charms = {
 			hpKill: [4, 7],
 			spKill: [4, 7],
 			mp: [12, 16],
-			resistFrozen: [7, 9],
+			resistParalyze: [7, 9],
 			defense: [1, 2],
 			addSpellIce: [6, 10],
 		},

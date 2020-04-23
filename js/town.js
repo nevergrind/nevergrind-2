@@ -157,7 +157,8 @@ var town;
 				}
 				!env.initialized && env.startSkyPhase()
 				town.init()
-				bar.init();
+				bar.init()
+				tavern.init()
 			}).fail(function(data){
 				ng.disconnect(data.responseText);
 			});
@@ -206,7 +207,7 @@ var town;
 			potionItems = []
 			storeItems = []
 			//console.info('itemTypesForSale', itemTypesForSale[type])
-			if (type === 'apothecary' || type === 'merchant') {
+			if (type === 'apothecary') {
 				potLevel = ~~(my.level / 8)
 				if (potLevel > 4) potLevel = 4
 				for (i = 0; i<2; i++) {
@@ -219,12 +220,12 @@ var town;
 					potionItems.push(item.getPotion(potLevel + i, 'sp'))
 				}
 			}
-			console.info('apo', potionItems)
+
 			for (i = 0; i<item.MAX_SLOTS[type]; i++) {
 				rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
 				itemIndex = _.random(0, itemTypesForSale[type].length - 1)
 				storeItems[i] = item.getItem({
-					mobLevel: my.level + 5,
+					mobLevel: (Math.random() > .9 ? (my.level + 5) : my.level + 20),
 					bonus: 0,
 					rarity: rarity,
 					itemSlot: itemTypesForSale[type][itemIndex],
@@ -714,14 +715,14 @@ var town;
 			'<img data-id="various" class="close-menu" src="images/ui/close.png">' +
 		'</div>'
 	}
-	function variousFooterHtml(avatar, isTallMode) {
+	function variousFooterHtml(avatar) {
 		return '<div id="various-footer" class="flex-center">' +
 			'<div id="town-avatar-col">' +
 				'<div id="town-avatar-wrap">' +
 					'<img class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
 				'</div>' +
 			'</div>' +
-			'<div id="various-description" class="flex-max '+ (isTallMode ? 'tall-description' : '') +'"></div>' +
+			'<div id="various-description" class="flex-max""></div>' +
 		'</div>'
 	}
 	function isMerchantMode() {

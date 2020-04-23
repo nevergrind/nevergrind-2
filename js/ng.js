@@ -3,6 +3,7 @@ var ng;
 (function($, TweenMax, SplitText, undefined) {
 	ng = {
 		// defaults are defined in getDefaultOptions
+		initialized: false,
 		config: {
 			display: 'Full Screen',
 			musicVolume: 100,
@@ -187,7 +188,7 @@ var ng;
 		ignore: [],
 		joinedGame: false,
 		searchingGame: false,
-		defaultTitle: 'Nevergrind 2',
+		defaultTitle: 'Nevergrind Online',
 		titleFlashing: false,
 		name: "",
 		password: "",
@@ -542,16 +543,12 @@ var ng;
 				steam.steamId = details.steamId
 				greenworks.getAuthSessionTicket(function (data) {
 					steam.handle = data.handle;
-					$.ajax({
-						type: 'POST',
-						url: app.url + 'init-game.php',
-						data: {
-							version: app.version,
-							screenName: steam.screenName,
-							steamId: steam.steamId,
-							channel: my.channel,
-							ticket: data.ticket.toString('hex')
-						}
+					$.post(app.url + 'init-game.php', {
+						version: app.version,
+						screenName: steam.screenName,
+						steamId: steam.steamId,
+						channel: my.channel,
+						ticket: data.ticket.toString('hex')
 					}).done(function(data) {
 						greenworks.cancelAuthTicket(steam.handle)
 						handleInitGame(data)
@@ -563,10 +560,8 @@ var ng;
 				});
 			}
 			else {
-				ng.msg('Unable to initialize the Steam API! Contact us @maelfyn on Twitter or on the Neverworks Discord.', 50)
+				ng.msg('Unable to initialize the Steam API! Contact support@nevergrind.com for assistance!', 50)
 			}
-
-
 		}
 		else {
 			$.post(app.url + 'init-game.php', {
@@ -578,36 +573,48 @@ var ng;
 		}
 	}
 	function handleInitGame(r) {
+		/*
+		$.get('https://nevergrind.com/php/nwjs.php').done((data) => {
+			console.info('nwjs.php data', JSON.parse(data))
+		})
+		*/
 		console.info('init-game', r)
 		bar.updateDynamicStyles()
-		TweenMax.to('#title-gwen', .3, {
-			x: '0vw',
-			onComplete: function() {
-				TweenMax.to(this.target, .3, {
-					startAt: {
-						filter: 'brightness(0)'
-					},
-					filter: 'brightness(1.8)',
-					ease: Power2.easeOut,
-					onComplete: function() {
-						TweenMax.to(this.target, .3, {
-							filter: 'brightness(1)',
-							ease: Linear.easeIn,
-						})
-					}
-				})
-			}
-		})
-		TweenMax.to('#scene-title-select-character', .3, {
-			delay: 1,
-			filter: 'opacity(1)'
-		})
+		if (!ng.initialized) {
+			ng.initialized = true
+			TweenMax.to('#title-gwen', .2, {
+				delay: .5,
+				x: 0,
+				opacity: 1,
+				ease: Power1.easeOut,
+				onComplete: function() {
+					TweenMax.to(this.target, .5, {
+						delay: .2,
+						startAt: {
+							filter: 'brightness(0)'
+						},
+						filter: 'brightness(1.8)',
+						ease: Power1.easeOut,
+						onComplete: function() {
+							TweenMax.to(this.target, .6, {
+								filter: 'brightness(1)',
+								ease: Power1.easeIn,
+							})
+						}
+					})
+				}
+			})
+			TweenMax.to('#scene-title-select-character', .5, {
+				delay: .5,
+				filter: 'opacity(1)'
+			})
+			TweenMax.staggerTo(new SplitText(querySelector('#version')).chars, .5, {
+				delay: .2,
+				rotationY: 90,
+				alpha: 0
+			}, .05);
+		}
 
-		TweenMax.staggerTo(new SplitText(querySelector('#version')).chars, .5, {
-			delay: 3,
-			rotationY: 90,
-			alpha: 0
-		}, .05);
 
 		if (r.id) {
 			my.accountId = r.id

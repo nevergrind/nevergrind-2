@@ -3,7 +3,7 @@
   "main": "index.html",
   "version": "0.0.49",
   "description": "multiplayer-cooperative-rpg",
-  "product_string": "Nevergrind 2",
+  "product_string": "Nevergrind Online",
   "nodejs": true,
   "domain": "ec2-34-220-110-228.us-west-2.compute.amazonaws.com",
   "repository": {
@@ -19,10 +19,10 @@
     "multiplayer",
     "cooperative",
     "realtime",
-    "roguelike"
+    "action"
   ],
   "window": {
-    "title": "Nevergrind 2",
+    "title": "Nevergrind Online",
     "icon": "img2/nevergrind.png",
     "toolbar": true,
     "frame": true,

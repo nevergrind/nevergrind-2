@@ -995,37 +995,15 @@ animation: town-repeat-bg 90s linear infinite;*/
 	background: rgba(0,0,0,.5);
 }
 
-.chat-pink {
-	color: #fdd;
-}
-
-.chat-emote {
-	color: #ccc;
-}
-
-.chat-whisper {
-	color: #c8f;
-}
-
-.chat-party {
-	color: #8ef;
-}
-
-.chat-ooc {
-	color: #090;
-}
-
-.chat-guild {
-	color: #0f0;
-}
-
-.chat-warning {
-	color: #ffff1a;
-}
-
-.chat-quest {
-	color: gold;
-}
+.chat-pink { color: #fdd; }
+.chat-emote,
+.chat-help { color: #ccc; }
+.chat-whisper { color: #c8f; }
+.chat-party { color: #8ef; }
+.chat-ooc { color: #090; }
+.chat-guild { color: #0f0; }
+.chat-warning { color: #ffff1a; }
+.chat-quest { color: gold; }
 
 .chat-help-header {
 	color: #ffff1a;
@@ -1033,28 +1011,15 @@ animation: town-repeat-bg 90s linear infinite;*/
 }
 
 .chat-alert,
-.chat-danger {
-	color: #f22;
-}
-
-.chat-broadcast {
-	color: #f80;
-}
-
-.chat-exp {
-	color: gold;
-}
-
-.chat-join {
-	cursor: url('cursor/pointer.cur'), pointer;
-}
-
+.chat-danger { color: #f22; }
+.chat-broadcast { color: #f80; }
+.chat-exp { color: gold; }
+.chat-join { cursor: url('cursor/pointer.cur'), pointer; }
 .chat-hidden {
 	color: #000;
 	background: #000;
 	pointer-events: auto
 }
-
 .chat-hidden:hover {
 	color: #fff;
 	pointer-events: auto
@@ -1852,9 +1817,10 @@ background-image:
 #title-gwen {
 	position: absolute;
 	height: 100vh;
-	bottom: -15vh;
-	left: 1vw;
-	transform: translate(-40%, 0%);
+	bottom: -13vh;
+	left: -3vw;
+	opacity: 0;
+	transform: translate(-5%, 0%);
 	filter: brightness(0);
 }
 #title-well-bottom {
@@ -2643,8 +2609,8 @@ background-image:
 	height: 4.6rem;
 	overflow-y: auto;
 }
-.tall-description {
-	height: 9.2rem!important;
+#various-description {
+	transition: height .15s ease-out;
 }
 #item-tooltip-cursor-img {
 	position: absolute;
@@ -2664,10 +2630,10 @@ background-image:
 	position: relative;
 	overflow: hidden;
 	background:
-			radial-gradient(farthest-side at 0% 0%, #159f 0%, #0000, #0000 100%),
-			radial-gradient(farthest-side at 100% 0%, #159f 0%, #0000, #0000 100%),
-			radial-gradient(farthest-side at 0% 100%, #159f 0%, #0000, #0000 100%),
-			radial-gradient(farthest-side at 100% 100%, #159f 0%, #0000, #0000 100%);
+		radial-gradient(farthest-side at 0% 0%, #159f 0%, #0000, #0000 100%),
+		radial-gradient(farthest-side at 100% 0%, #159f 0%, #0000, #0000 100%),
+		radial-gradient(farthest-side at 0% 100%, #159f 0%, #0000, #0000 100%),
+		radial-gradient(farthest-side at 100% 100%, #159f 0%, #0000, #0000 100%);
 
 }
 #various-wrap {
@@ -2682,6 +2648,13 @@ background-image:
 	display: flex;
 	outline: .1rem ridge #136;
 	margin: .3rem 0 .3rem .2rem;
+	background: #001;
+	background: conic-gradient(
+			#000016 .25turn,
+			#060606 .25turn .5turn,
+			#000016 0.5turn .75turn,
+			#060606 .75turn
+	) top left / 5px 5px repeat;
 }
 #town-avatar-wrap {
 	display: flex;
@@ -2689,7 +2662,7 @@ background-image:
 	align-items: flex-end;
 	outline: .1rem ridge #136;
 	height: 5rem;
-	background: repeating-linear-gradient(45deg, #1258 0 3%, #1368 3% 6%);
+	background: radial-gradient(farthest-corner at 50% 50%, #05b 0, #001 100%);
 }
 .town-avatars {
 	width: 5rem;
@@ -2897,11 +2870,11 @@ background-image:
 .tavern-tips:hover {
 	color: #ff0;
 	text-indent: .2rem;
-	background: #048;
+	background: #05b;
 }
 .tavern-tips:active {
 	filter: saturate(1.2) brightness(1.2);
-	color: #777;
-	background: #05b;
+	color: #885;
+	background: #048;
 	transition: none;
 }
