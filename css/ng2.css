@@ -824,7 +824,6 @@ animation: town-repeat-bg 90s linear infinite;*/
 }*/
 #town-footer-wrap {
 	position: absolute;
-	justify-content: center;
 	align-items: center;
 	bottom: .2rem;
 	left: 0;
@@ -845,25 +844,12 @@ animation: town-repeat-bg 90s linear infinite;*/
 	align-items: center;
 	bottom: .2rem;
 	left: .5rem;
-	font-size: 1.5rem;
+	font-size: 1.25rem;
 	border: .1rem groove #aa8;
 	background: #0a0a0a;
 	border-radius: 8px;
 	padding: 0 .2rem 0 1rem;
 	min-width: 8rem;
-}
-#town-mission {
-	display: flex;
-	align-items: center;
-	font-size: 1.25rem;
-	cursor: url('cursor/pointer.cur'), pointer;
-	bottom: 0;
-}
-#town-mission:hover {
-	filter: none;
-}
-#town-mission:active {
-	filter: none;
 }
 #town-building-label-wrap {
 	position: absolute;
@@ -877,7 +863,6 @@ animation: town-repeat-bg 90s linear infinite;*/
 	padding: .2rem;
 	max-width: 13rem;
 	pointer-events: none;
-	/*backdrop-filter: grayscale(1) saturate(2) brightness(.5);*/
 }
 #town-building-label-header {
 	color: gold;
@@ -889,11 +874,14 @@ animation: town-repeat-bg 90s linear infinite;*/
 	display: none;
 	flex-direction: row;
 	font-family: Play, Roboto Condensed, Roboto, sans-serif;
-	position: fixed;
+	position: absolute;
 	font-size: .8rem;
 	color: #fff;
+	background: #0008;
 	border: 1px solid #013;
-	bottom: 2.5rem;
+	bottom: 0;
+	left: 50%;
+	transform: translate(-50%);
 	height: 13rem;
 	z-index: 2;
 }
@@ -947,6 +935,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 	margin: .1rem;
 	border: .1rem groove #025;
 }
+#chat-log *::selection { background: #38d; }
 .chat-player {
 	cursor: url('cursor/pointer.cur'), pointer;
 	transition: background .2s linear;
@@ -995,37 +984,15 @@ animation: town-repeat-bg 90s linear infinite;*/
 	background: rgba(0,0,0,.5);
 }
 
-.chat-pink {
-	color: #fdd;
-}
-
-.chat-emote {
-	color: #ccc;
-}
-
-.chat-whisper {
-	color: #c8f;
-}
-
-.chat-party {
-	color: #8ef;
-}
-
-.chat-ooc {
-	color: #090;
-}
-
-.chat-guild {
-	color: #0f0;
-}
-
-.chat-warning {
-	color: #ffff1a;
-}
-
-.chat-quest {
-	color: gold;
-}
+.chat-pink { color: #fdd; }
+.chat-emote,
+.chat-help { color: #ccc; }
+.chat-whisper { color: #c8f; }
+.chat-party { color: #8ef; }
+.chat-ooc { color: #090; }
+.chat-guild { color: #0f0; }
+.chat-warning { color: #ffff1a; }
+.chat-quest { color: gold; }
 
 .chat-help-header {
 	color: #ffff1a;
@@ -1033,28 +1000,15 @@ animation: town-repeat-bg 90s linear infinite;*/
 }
 
 .chat-alert,
-.chat-danger {
-	color: #f22;
-}
-
-.chat-broadcast {
-	color: #f80;
-}
-
-.chat-exp {
-	color: gold;
-}
-
-.chat-join {
-	cursor: url('cursor/pointer.cur'), pointer;
-}
-
+.chat-danger { color: #f22; }
+.chat-broadcast { color: #f80; }
+.chat-exp { color: gold; }
+.chat-join { cursor: url('cursor/pointer.cur'), pointer; }
 .chat-hidden {
 	color: #000;
 	background: #000;
 	pointer-events: auto
 }
-
 .chat-hidden:hover {
 	color: #fff;
 	pointer-events: auto
@@ -1115,10 +1069,6 @@ track & thumb:
 border-left: 6px solid transparent;
 background-clip: content-box;
  */
-::-webkit-scrollbar {
-	/* addresses the background of the bar itself. It is usually covered by the other elements */
-	width: .5rem;
-}
 
 /*
 ::-webkit-scrollbar-button {
@@ -1126,11 +1076,16 @@ background-clip: content-box;
 }
 */
 
+/* addresses the background of the bar itself. It is usually covered by the other elements */
+::-webkit-scrollbar { width: .6rem; }
+/* background */
 ::-webkit-scrollbar-track {
-	/* background */
-	background-image: linear-gradient(to left, #013 0%, #103860 100%);
-	box-shadow: inset 0 0 0 1px #444;
+	background-image: linear-gradient(to left, #013 0%, #136, #013);
+	border: 1px solid #38d;
 }
+/* draggable thing */
+::-webkit-scrollbar-thumb { background: linear-gradient(to right, #246, #08f, #08f, #246); }
+::selection { background: transparent; }
 
 /*
 ::-webkit-scrollbar-track-piece {
@@ -1139,15 +1094,6 @@ background-clip: content-box;
 }
 */
 
-/* draggable thing */
-::-webkit-scrollbar-thumb {
-	background-color: #58a;
-	/*background-image: linear-gradient(to top, #579 0%, #bdf 50%, #579 100%);*/
-}
-
-::selection {
-	background: #999;
-}
 
 #scene-error {
 	padding-top: 30vh;
@@ -1483,12 +1429,13 @@ background-clip: content-box;
 	word-break: break-all;
 	overflow-y: auto;
 	line-height: 1.4;
-	background: conic-gradient(
+	/*background: conic-gradient(
 			#0016 .25turn,
 			#025a .25turn .5turn,
 			#0016 0.5turn .75turn,
 			#025a .75turn
-	) top left / 3px 3px repeat;
+	) top left / 3px 3px repeat;*/
+	background: repeating-linear-gradient(135deg, #001a 0px 2px, #0016 3px 4px);
 	flex: 1;
 }
 
@@ -1553,17 +1500,16 @@ background-clip: content-box;
 	letter-spacing: .05rem;
 	padding-top: .5rem;
 	padding-bottom: .5rem;
+	font-size: 1rem;
 }
 
 #mission-title {
 	font-family: Cinzel, Palatino Linotype, serif;
 	color: gold;
-	font-size: 1.25rem;
 }
 
 #mission-embark {
 	margin-top: .5rem;
-	font-size: 1.75rem;
 }
 .disabled {
 	cursor: default;
@@ -2644,6 +2590,9 @@ background-image:
 	height: 4.6rem;
 	overflow-y: auto;
 }
+#various-description {
+	transition: height .15s ease-out;
+}
 #item-tooltip-cursor-img {
 	position: absolute;
 	visibility: hidden;
@@ -2662,10 +2611,10 @@ background-image:
 	position: relative;
 	overflow: hidden;
 	background:
-			radial-gradient(farthest-side at 0% 0%, #159f 0%, #0000, #0000 100%),
-			radial-gradient(farthest-side at 100% 0%, #159f 0%, #0000, #0000 100%),
-			radial-gradient(farthest-side at 0% 100%, #159f 0%, #0000, #0000 100%),
-			radial-gradient(farthest-side at 100% 100%, #159f 0%, #0000, #0000 100%);
+		radial-gradient(farthest-side at 0% 0%, #159f 0%, #0000, #0000 100%),
+		radial-gradient(farthest-side at 100% 0%, #159f 0%, #0000, #0000 100%),
+		radial-gradient(farthest-side at 0% 100%, #159f 0%, #0000, #0000 100%),
+		radial-gradient(farthest-side at 100% 100%, #159f 0%, #0000, #0000 100%);
 
 }
 #various-wrap {
@@ -2681,6 +2630,12 @@ background-image:
 	outline: .1rem ridge #136;
 	margin: .3rem 0 .3rem .2rem;
 	background: #001;
+	background: conic-gradient(
+			#000016 .25turn,
+			#060606 .25turn .5turn,
+			#000016 0.5turn .75turn,
+			#060606 .75turn
+	) top left / 5px 5px repeat;
 }
 #town-avatar-wrap {
 	display: flex;
@@ -2688,7 +2643,7 @@ background-image:
 	align-items: flex-end;
 	outline: .1rem ridge #136;
 	height: 5rem;
-	background: repeating-linear-gradient(45deg, #1258 0 3%, #1368 3% 6%);
+	background: radial-gradient(farthest-corner at 50% 50%, #05b 0, #001 100%);
 }
 .town-avatars {
 	width: 5rem;
@@ -2734,6 +2689,7 @@ background-image:
 			#0016 0.5turn .75turn,
 			#025a .75turn
 	) top left / 5px 5px repeat;
+	background: repeating-linear-gradient(135deg, #001a 0px 2px, #0016 3px 4px);
 	margin: .5rem .2rem;
 	border: .1rem ridge #000;
 	z-index: 1;
@@ -2876,16 +2832,17 @@ background-image:
 	transform: scale(.8);
 }
 #tavern-tip-wrap {
-	font-size: 1.2rem;
-	line-height: 1.25;
+	font-size: 1rem;
+	line-height: 1.3;
 }
 .tavern-tip-header {
 	padding: 0 .5rem;
 	font-family: Cinzel, serif;
 	color: gold;
 	letter-spacing: .1rem;
-	font-size: 1.5rem;
-	background: #000;
+	font-size: 1.25rem;
+	border: .1rem outset #136;
+	background: linear-gradient(to top, #013, #025, #048, #025, #013);
 }
 .tavern-tips {
 	padding: 0 1rem;
@@ -2896,11 +2853,24 @@ background-image:
 .tavern-tips:hover {
 	color: #ff0;
 	text-indent: .2rem;
-	background: #048;
+	background: #05b;
 }
 .tavern-tips:active {
 	filter: saturate(1.2) brightness(1.2);
-	color: #777;
-	background: #05b;
+	color: #885;
+	background: #048;
 	transition: none;
+}
+
+#academy-body {
+	border: 1px solid #001;
+	padding: .2rem .4rem;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background: conic-gradient(
+			#0016 .25turn,
+			#025a .25turn .5turn,
+			#0016 0.5turn .75turn,
+			#025a .75turn
+	) top left / 5px 5px repeat;
 }

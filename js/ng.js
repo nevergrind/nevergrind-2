@@ -609,7 +609,7 @@ var ng;
 				filter: 'opacity(1)'
 			})
 			TweenMax.staggerTo(new SplitText(querySelector('#version')).chars, .5, {
-				delay: .2,
+				delay: 2,
 				rotationY: 90,
 				alpha: 0
 			}, .05);

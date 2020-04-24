@@ -105,6 +105,7 @@ var env;
 			pix.sun.anchor.set(.5)
 			pix.sky.stage.addChild(pix.sun)
 
+			TweenMax.set(pix.sun, { pixi: { brightness: 1.2 }})
 			/*TweenMax.to(pix.sun, 1/60, {
 				rotation: 360,
 				repeat: -1,
@@ -114,6 +115,7 @@ var env;
 			pix.moon = PIXI.Sprite.from('images/env/moon.png')
 			pix.moon.anchor.set(.5)
 			pix.sky.stage.addChild(pix.moon)
+			TweenMax.set(pix.moon, { pixi: { brightness: 1.2 }})
 
 			pix.cloud1 = PIXI.Sprite.from('images/env/clouds-1.png')
 			pix.cloud1.anchor.set(0)
@@ -314,12 +316,6 @@ var env;
 				y: maxW * -.8,
 				ease: Power2.easeOut,
 				onComplete: triggerNextPhase
-			})
-
-			TweenMax.to(pix.sun, 1/60, {
-				rotation: 360,
-				repeat: -1,
-				ease: Linear.easeOut
 			})
 		}
 		else if (env.phase === 'evening') {

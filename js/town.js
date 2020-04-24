@@ -122,6 +122,8 @@ var town;
 				guild.setGuildData(data)
 				initItemData(data.inv, 'inv')
 				initItemData(data.eq, 'eq')
+				// skills
+				my.initSkills()
 
 				stats.setAllResources()
 				if (!app.isApp) {
@@ -480,7 +482,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Tavern') {
-			msg = 'How may I help you, '+ my.name +'? Many adventurers come to this city seeking fame and fortune. Perhaps I could help you?'
+			msg = 'Welcome to the Edenburg Tavern, '+ my.name +'. The King has requested the services of brave adventurers like yourself to complete missions in defense of our interests. How do you choose to serve?'
 			townConfig = {
 				duration: 1,
 				scale: 1.2,
@@ -593,7 +595,6 @@ var town;
 		else if (town.openVariousWindow === 'Blacksmith') html = blacksmithHtml()
 		else if (town.openVariousWindow === 'Guild Hall') html = guildHtml()
 		else if (town.openVariousWindow === 'Merchant') html = merchantHtml()
-		else if (town.openVariousWindow === 'Mission Counter') html = missionCounterHtml()
 		else if (town.openVariousWindow === 'Tavern') html = tavernHtml()
 		return html
 	}
@@ -621,7 +622,7 @@ var town;
 	function apothecaryHtml() {
 		html = variousHeaderHtml() +
 		getStoreBodyHtml() +
-		variousFooterHtml('seraph-male-2')
+		variousFooterHtml('orc-female-1')
 		return html
 	}
 	function blacksmithHtml() {
@@ -641,18 +642,6 @@ var town;
 			'<div class="stag-blue-top" style="' + css.name + '">Bank Details</div>' +
 		'</div>' +
 		variousFooterHtml('dwarf-male-0')
-		return html
-	}
-	function missionCounterHtml() {
-		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			mission.asideHtmlHead() +
-			'<div id="mission-counter" class="aside-frame text-shadow">' +
-				mission.asideHtml() +
-			'</div>' +
-			(my.quest.level ? mission.asideFooter() : '') +
-		'</div>' +
-		variousFooterHtml('human-female-0')
 		return html
 	}
 	function guildHtml() {
@@ -707,7 +696,7 @@ var town;
 	function tavernHtml() {
 		html = variousHeaderHtml() +
 		tavern.getBodyHtml() +
-		variousFooterHtml('dark-elf-female-0')
+		variousFooterHtml('seraph-male-3')
 		return html
 	}
 	function variousHeaderHtml() {
@@ -722,7 +711,7 @@ var town;
 		return '<div id="various-footer" class="flex-center">' +
 			'<div id="town-avatar-col">' +
 				'<div id="town-avatar-wrap">' +
-					'<img class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
+					'<img id="town-avatar" class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
 				'</div>' +
 			'</div>' +
 			'<div id="various-description" class="flex-max""></div>' +

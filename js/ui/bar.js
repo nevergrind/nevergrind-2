@@ -119,7 +119,7 @@ var bar;
 				.on('click', '#bar-stats', toggleCharacterStats)
 				.on('click', '#bar-inventory', toggleInventory)
 				.on('click', '#bar-options', toggleOptions)
-				.on('click', '#bar-mission-abandon', mission.abandon)
+				//.on('click', '#bar-mission-abandon', mission.abandon)
 				.on('mouseenter', '.popover-icons', showBarMenuPopover)
 				.on('mousemove', '.popover-icons', popover.setPosition)
 				.on('mouseleave', '.popover-icons', popover.hide)

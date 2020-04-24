@@ -6,9 +6,8 @@ var mission;
 		delegated: 0,
 		quests: [],
 		setMissionMenusAllOpen,
-		asideHtmlHead,
+		getMissionBodyHtml,
 		asideHtml,
-		asideFooter,
 		embark,
 		resetLocalQuestData,
 		abandon,
@@ -18,6 +17,7 @@ var mission;
 		toggleZone,
 		clickQuest,
 	};
+	var questHtml
 	var reversedZones = []
 	var html = ''
 	var that = {}
@@ -49,7 +49,8 @@ var mission;
 	function updateTitle() {
 		$("#mission-title").html(my.selectedMissionTitle);
 	}
-	function asideHtmlHead() {
+	function getMissionBodyHtml() {
+		questHtml = '<div id="various-body" class="flex-column flex-max">'
 		var headMsg = 'Mission Counter'
 
 		if (party.presence[0].isLeader) {
@@ -60,30 +61,33 @@ var mission;
 			headMsg = my.quest.title;
 		}
 
-		return '<div id="mission-wrap" class="aside-frame text-center">' +
+		questHtml = '<div id="mission-wrap" class="aside-frame text-center">' +
 			'<div id="mission-title">'+ headMsg +'</div>' +
 			'<div id="mission-embark" class="ng-btn disabled">Embark!</div>' +
 		'</div>'
-	}
-	function asideHtml() {
-		html = ''
+
 		if (!reversedZones.length) {
 			reversedZones = zones.reverse()
 		}
+		questHtml += '<div id="mission-counter" class="aside-frame text-shadow">'
 		reversedZones.forEach(function(zone) {
 			if (my.level + 4 >= zone.level) {
-				html +=
+				questHtml +=
 				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ getDiffClass(zone.level) +'" data-id="'+ zone.id +'">'+
 					'<img class="mission-tree-btn mission-plus" src="images/ui/plus.png">'+
 					'<div>' + zone.name + '</div>' +
 				'</div>' +
 				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">';
-					html += getMissionRowHtml(zone);
-				html += '</div>';
+					questHtml += getMissionRowHtml(zone);
+				questHtml += '</div>';
 				console.info('zone', zone);
 			}
 		})
-		return html
+		questHtml += '</div></div>'
+		return questHtml
+
+	}
+	function asideHtml() {
 	}
 	function getMissionRowHtml(data) {
 		var html = '';
@@ -101,16 +105,6 @@ var mission;
 			html = '<div class="mission-quest-item">No missions found.</div>';
 		}
 		return html;
-	}
-	function asideFooter() {
-		var s = '';
-		if (party.presence[0].isLeader) {
-			s +=
-			'<div id="mission-footer" class="aside-frame text-shadow">' +
-				'<div id="mission-abandon" class="ng-btn ng-btn-alert">Abandon Mission</div>' +
-			'</div>';
-		}
-		return s;
 	}
 	function clickQuest(that) {
 		that = $(this)

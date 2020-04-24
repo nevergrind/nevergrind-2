@@ -1,5 +1,5 @@
 var my;
-(function() {
+!function($, _, TweenMax, undefined) {
 	my = {
 		hud,
 		Party,
@@ -12,6 +12,9 @@ var my;
 		isLowestPartyIdMine,
 		resourceTick,
 		checkForDeath,
+		initSkills,
+		saveCharacterData,
+		skills: void 0,
 		mouse: {
 			x: 0,
 			y: 0
@@ -40,6 +43,33 @@ var my;
 		// buffs, potions, etc that need to be cancelled on death or whatever. looping through and killing them makes this easier
 		timers: [],
 	}
+
+	const dataProps = [
+		'str',
+		'sta',
+		'agi',
+		'dex',
+		'wis',
+		'intel',
+		'cha',
+		'offense',
+		'defense',
+		'oneHandSlash',
+		'twoHandSlash',
+		'oneHandBlunt',
+		'twoHandBlunt',
+		'piercing',
+		'archery',
+		'dodge',
+		'parry',
+		'riposte',
+		'dualWield',
+		'doubleAttack',
+		'alteration',
+		'conjuration',
+		'evocation',
+		'skills',
+	]
 	////////////////////////////////////
 
 	function getResistObject() {
@@ -130,4 +160,17 @@ var my;
 	function checkForDeath() {
 
 	}
-})();
+	function initSkills() {
+		warn('initSkills', my.skills)
+		if (my.skills === void 0) {
+			my.skills = [1,0,0,0,0,0,0,0,0,0,0,0]
+			saveCharacterData()
+		}
+	}
+
+	function saveCharacterData() {
+		$.post(app.url + 'character/save-data.php', {
+			data: JSON.stringify(_.pick(my, dataProps))
+		})
+	}
+}($, _, TweenMax);

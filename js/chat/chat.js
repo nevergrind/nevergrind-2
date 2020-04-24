@@ -1,5 +1,5 @@
 var chat;
-(function() {
+(function(TweenMax, _, $, undefined) {
 	/** public */
 	chat = {
 		prefix: 'ng2',
@@ -554,14 +554,22 @@ var chat;
 		});
 	}
 	function sizeSmall() {
+		TweenMax.set('#chat-wrap', {
+			x: '0%',
+			left: 0
+		})
 		TweenMax.set('#chat-present-wrap', {
 			display: 'none'
-		});
+		})
 	}
 	function sizeLarge() {
 		TweenMax.set('#chat-present-wrap', {
 			display: 'flex'
-		});
+		})
+		TweenMax.set('#chat-wrap', {
+			x: '-50%',
+			left: '50%'
+		})
 	}
 
 	/**
@@ -594,4 +602,4 @@ var chat;
 		return el.textContent || el.innerText || '';
 	}
 
-})();
+})(TweenMax, _, $);

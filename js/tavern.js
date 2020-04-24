@@ -2,7 +2,7 @@
 var tavern;
 !function($, _) {
 	tavern = {
-		activeTab: 'tavern-tips',
+		activeTab: 'tavern-missions',
 		html: '',
 		leaders: {
 			'ALL': void 0,
@@ -24,7 +24,7 @@ var tavern;
 		getBodyHtml,
 		init,
 	}
-	var key, str, html, el, row, index, height
+	var key, str, html, el, row, index, avatar
 
 	let selectedLeaderboard = 'ALL'
 	let tips = {}
@@ -99,12 +99,12 @@ var tavern;
 		'<div id="various-body" class="flex-row flex-max">' +
 			'<div class="flex-column flex-max" style="margin: .1rem .2rem">' +
 				'<div id="tavern-tab-wrap" class="flex-row" style="border-bottom: 1px solid #025;">'+
-					'<div id="tavern-tips" class="tavern-tabs active">Tips</div>' +
+					'<div id="tavern-missions" class="tavern-tabs active">Missions</div>' +
+					'<div id="tavern-tips" class="tavern-tabs">Tips</div>' +
 					'<div id="tavern-leaderboard" class="tavern-tabs">Leaderboard</div>' +
-					//'<div id="tavern-heroes" class="tavern-tabs">Heroes</div>' +
 				'</div>' +
 				'<div id="tavern-body">'+
-					tipHtml() +
+					mission.getMissionBodyHtml() +
 				'</div>' +
 			'</div>' +
 		'</div>'
@@ -117,23 +117,29 @@ var tavern;
 		}
 		this.classList.add('active')
 		tavern.activeTab = this.id
+		avatar = ''
 
-		if (tavern.activeTab === 'tavern-tips') {
+		if (tavern.activeTab === 'tavern-missions') {
+			html = mission.getMissionBodyHtml()
+			avatar = 'seraph-male-3'
+			ng.splitText('various-description', 'The King has requested the services of brave adventurers like yourself to complete missions in defense of our interests. The chaos grows stronger with each passing day. Make haste and vanquish those who seek to destroy our way of life!')
+		}
+		else if (tavern.activeTab === 'tavern-tips') {
 			ng.splitText('various-description', 'My knowledge is limited, but I am happy to offer my advice on a variety of topics. What topic interests you?')
 			html = tipHtml()
+			avatar = 'dark-elf-female-0'
 		}
 		else if (tavern.activeTab === 'tavern-leaderboard') {
 			ng.splitText('various-description', 'Edenburg\'s royal scribes do their best to maintain an updated list of the most accomplished adventurers in the Kingdom. We maintain an overall list and a separate list by class.')
 			html = leaderboardHtml()
+			avatar = 'human-female-3'
 			if (!tavern.leaders[selectedLeaderboard]) {
 				getLeaders()
 			}
 		}
-		/*else if (tavern.activeTab === 'tavern-heroes') {
-			ng.splitText('various-description', 'The King has ordered that we carefully track all weapons and armor in the Kingdom. These records are public knowledge and may be reviewed for legal or educational purposes.')
-			html = heroesHtml()
-		}*/
+		/*ng.splitText('various-description', 'The King has ordered that we carefully track all weapons and armor in the Kingdom. These records are public knowledge and may be reviewed for legal or educational purposes.')*/
 		setDescriptionStyle()
+		querySelector('#town-avatar').src = 'images/avatars/' + avatar + '.png'
 		querySelector('#tavern-body').innerHTML = html
 	}
 
@@ -148,7 +154,7 @@ var tavern;
 
 	function tipHtml() {
 		html = '<div id="tavern-tip-wrap" class="flex-column flex-max">' +
-			'<div class="tavern-tip-header">General</div>' +
+			'<div class="tavern-tip-header text-shadow2">General</div>' +
 			'<div data-id="Races" class="tavern-tips">Races</div>' +
 			'<div data-id="Classes" class="tavern-tips">Classes</div>' +
 			'<div data-id="Potions" class="tavern-tips">Potions</div>' +
@@ -157,7 +163,7 @@ var tavern;
 			'<div data-id="Friends" class="tavern-tips">Friends</div>' +
 			'<div data-id="Ignore" class="tavern-tips">Ignore</div>' +
 			'<div data-id="Inventory" class="tavern-tips">Inventory</div>' +
-			'<div class="tavern-tip-header">Town</div>' +
+			'<div class="tavern-tip-header text-shadow2">Town</div>' +
 			'<div data-id="Missions" class="tavern-tips">Missions</div>' +
 			'<div data-id="Academy" class="tavern-tips">Academy</div>' +
 			'<div data-id="Merchant" class="tavern-tips">Merchant</div>' +
@@ -165,7 +171,7 @@ var tavern;
 			'<div data-id="Blacksmith" class="tavern-tips">Blacksmith</div>' +
 			'<div data-id="Bank" class="tavern-tips">Bank</div>' +
 			'<div data-id="Guild" class="tavern-tips">Guild</div>' +
-			'<div class="tavern-tip-header">Combat</div>' +
+			'<div class="tavern-tip-header text-shadow2">Combat</div>' +
 			'<div data-id="Health" class="tavern-tips">Health</div>' +
 			'<div data-id="Mana" class="tavern-tips">Mana</div>' +
 			'<div data-id="Spirit" class="tavern-tips">Spirit</div>' +
@@ -182,7 +188,7 @@ var tavern;
 			'<div data-id="Dragonkin" class="tavern-tips">Dragonkin</div>' +
 			'<div data-id="Demons" class="tavern-tips">Demons</div>' +
 			'<div data-id="Cooldowns" class="tavern-tips">Cooldowns</div>' +
-			'<div class="tavern-tip-header">Item Properties</div>' +
+			'<div class="tavern-tip-header text-shadow2">Item Properties</div>' +
 			'<div data-id="Resistances" class="tavern-tips">Resistances</div>' +
 			'<div data-id="Spell Damage" class="tavern-tips">Add Spell Damage</div>' +
 			'<div data-id="Attack" class="tavern-tips">Attack</div>' +
