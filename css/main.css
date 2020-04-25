@@ -399,6 +399,7 @@ tbody { border: 0 }
 	background: #bb9;
 }
 .ng-btn:active {
+	transition: none;
 	outline: 1px solid #579 !important;
 	border: .1rem inset #eed;
 	background: #dd9;
@@ -2722,7 +2723,7 @@ background-image:
 }
 .merchant-btn {
 	margin: 0 .2rem;
-	padding: .5rem 1.5rem;
+	padding: .25rem 1.5rem;
 	border: .1rem ridge gold;
 	filter: hue-rotate(349deg) saturate(3);
 }
@@ -2730,7 +2731,7 @@ background-image:
 	justify-content: space-between;
 	margin-left: .15rem;
 	padding: 0 .3rem;
-	font-size: 2rem;
+	font-size: 1.5rem;
 	color: gold;
 	margin-right: .15rem;
 	background: #0008;
@@ -2937,6 +2938,7 @@ background-image:
 	flex: 1;
 }
 .academy-gold-img {
+	margin-right: .1rem;
 	width: .8rem;
 	height: .8rem;
 }
@@ -2988,4 +2990,25 @@ background-image:
 	padding: .1rem;
 	width: 2rem;
 	height: 2rem;
+}
+.academy-train {
+	cursor: url('cursor/pointer.cur'), pointer;
+	transition: transform .15s ease-out, filter .15s ease-out;
+}
+.academy-train:hover {
+	filter: saturate(1.5) brightness(1.5);
+}
+.academy-train:active {
+	transition: none;
+	filter: saturate(.8) brightness(.8);
+	transform: scale(.95);
+}
+.academy-train.active {
+	outline: .1rem solid #aef;
+	animation: repeat-active-training .3s ease-out infinite;
+}
+@keyframes repeat-active-training {
+	0% { outline-color: #aef; }
+	50% { outline-color: #05b; }
+	100% { outline-color: #aef; }
 }

@@ -161,6 +161,7 @@ var town;
 				town.init()
 				bar.init()
 				tavern.init()
+				skills.init()
 			}).fail(function(data){
 				ng.disconnect(data.responseText);
 			});
@@ -558,7 +559,6 @@ var town;
 	function updateStoreGold(obj) {
 		goldEl = querySelector('#town-value')
 		if (goldEl !== null) goldEl.textContent = ~~obj.value
-
 	}
 	function showMerchantMsg() {
 		if (buyTypes.includes(town.openVariousWindow.toLowerCase())) {

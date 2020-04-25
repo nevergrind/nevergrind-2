@@ -14,6 +14,32 @@ var my;
 		checkForDeath,
 		initSkills,
 		saveCharacterData,
+		dataProps: [
+			'str',
+			'sta',
+			'agi',
+			'dex',
+			'wis',
+			'intel',
+			'cha',
+			'offense',
+			'defense',
+			'oneHandSlash',
+			'twoHandSlash',
+			'oneHandBlunt',
+			'twoHandBlunt',
+			'piercing',
+			'archery',
+			'dodge',
+			'parry',
+			'riposte',
+			'dualWield',
+			'doubleAttack',
+			'alteration',
+			'conjuration',
+			'evocation',
+			'skills',
+		],
 		skills: void 0,
 		mouse: {
 			x: 0,
@@ -44,32 +70,6 @@ var my;
 		timers: [],
 	}
 
-	const dataProps = [
-		'str',
-		'sta',
-		'agi',
-		'dex',
-		'wis',
-		'intel',
-		'cha',
-		'offense',
-		'defense',
-		'oneHandSlash',
-		'twoHandSlash',
-		'oneHandBlunt',
-		'twoHandBlunt',
-		'piercing',
-		'archery',
-		'dodge',
-		'parry',
-		'riposte',
-		'dualWield',
-		'doubleAttack',
-		'alteration',
-		'conjuration',
-		'evocation',
-		'skills',
-	]
 	////////////////////////////////////
 
 	function getResistObject() {
@@ -170,7 +170,7 @@ var my;
 
 	function saveCharacterData() {
 		$.post(app.url + 'character/save-data.php', {
-			data: JSON.stringify(_.pick(my, dataProps))
+			data: JSON.stringify(_.pick(my, my.dataProps))
 		})
 	}
 }($, _, TweenMax);

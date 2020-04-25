@@ -1,6 +1,11 @@
 var skills;
 (function() {
 	skills = {
+		init,
+		getClassKeys,
+		roman: [
+			'I', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'
+		],
 		ALL: {
 			route: function(id) {
 				var key = skills[my.job].skillKeys[id];
@@ -38,6 +43,18 @@ var skills;
 			warStomp: function() {
 				console.info("warStomp");
 			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
+			},
 		},
 		PAL: {
 			layHands: function() {
@@ -63,7 +80,19 @@ var skills;
 			},
 			holyMight: function() {
 				console.info("holyMight");
-			}
+			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
+			},
 		},
 		SHD: {
 			harmTouch: function() {
@@ -89,7 +118,19 @@ var skills;
 			},
 			waveOfHorror: function() {
 				console.info("waveOfHorror");
-			}
+			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
+			},
 		},
 		RNG: {
 			trueshotStrike: function() {
@@ -115,6 +156,18 @@ var skills;
 			},
 			feetLikeCat: function() {
 				console.info("feetLikeCat");
+			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
 			},
 		},
 		MNK: {
@@ -142,6 +195,18 @@ var skills;
 			nirvana: function() {
 				console.info("nirvana");
 			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
+			},
 		},
 		ROG: {
 			backstab: function() {
@@ -167,6 +232,18 @@ var skills;
 			},
 			awestruck: function() {
 				console.info("awestruck");
+			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
 			},
 		},
 		DRU: {
@@ -194,6 +271,18 @@ var skills;
 			chloroplast: function() {
 				console.info("chloroplast");
 			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
+			},
 		},
 		CLR: {
 			holyMight: function() {
@@ -219,6 +308,18 @@ var skills;
 			},
 			armorOfFaith: function() {
 				console.info("armorOfFaith");
+			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
 			},
 		},
 		SHM: {
@@ -246,6 +347,18 @@ var skills;
 			talismanOfTrogmaar: function() {
 				console.info("talismanOfTrogmaar");
 			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
+			},
 		},
 		BRD: {
 			chantOfBattle: function() {
@@ -271,6 +384,18 @@ var skills;
 			},
 			sirensSong: function() {
 				console.info("sirensSong");
+			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
 			},
 		},
 		NEC: {
@@ -298,6 +423,18 @@ var skills;
 			dyingBreath: function() {
 				console.info("dyingBreath");
 			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
+			},
 		},
 		ENC: {
 			discordantMind: function() {
@@ -323,6 +460,18 @@ var skills;
 			},
 			mysticRune: function() {
 				console.info("mysticRune");
+			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
 			},
 		},
 		SUM: {
@@ -350,6 +499,18 @@ var skills;
 			stasisField: function() {
 				console.info("stasisField");
 			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
+			},
 		},
 		WIZ: {
 			iceBolt: function() {
@@ -376,19 +537,28 @@ var skills;
 			mirrorImages: function() {
 				console.info("mirrorImages");
 			},
+			skillEight: function() {
+				console.info("skillEight");
+			},
+			skillNine: function() {
+				console.info("skillNine");
+			},
+			skillTen: function() {
+				console.info("skillTen");
+			},
+			skillEleven: function() {
+				console.info("skillEleven");
+			},
 		},
-	};
+	}
 
-	for (var key in skills) {
-		if (key !== 'ALL') {
-			// this is a player class
-			skills[key].skillKeys = Object.keys(skills[key]);
-			skills[key].skillKeys.unshift('toggleAutoAttack');
-			skills[key].skillKeys.unshift('pull');
-			for (var k2 in skills.ALL) {
-				// assign ALL functions to each class
-				skills[key][k2] = skills.ALL[k2];
-			}
-		}
+	///////////////////////////////////////////
+	function init() {
+		skills.skillNames = getClassKeys()
+	}
+	function getClassKeys() {
+		return Object.keys(skills[my.job]).map((v) => {
+			return _.startCase(v)
+		});
 	}
 })();
