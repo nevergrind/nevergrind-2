@@ -6,14 +6,8 @@ var academy;
 		TOTAL_SKILLS: 12,
 		selected: '',
 	}
-	/**
-	 * skills need:
-	 * img job-index
-	 * name
-	 * rank
-	 */
-	var i, el, str, row, html, obj, rank, goldEl
-	
+	var i, el, str, row, html, obj, rank, goldEl, skillData, reqImg, reqClass, reqText
+
 	let selected = {
 		index: -1,
 		rank: '',
@@ -21,34 +15,50 @@ var academy;
 	}
 	let lastCost = 0
 	const trainCosts = [0, 100, 250, 625, 1500, 3750, 9000, 22500]
+	const reqLevel = [0, 1, 6, 12, 18, 24, 30, 39, 49]
 
 	$('#root-various')
-		.on('click', '.academy-train', handleAcademyTrain)
-		.on('click', '#train-buy', handleTrainSkill)
+		.on('click', '.academy-train', handleRankClick)
+		.on('click', '#train-buy', handleTrainBuy)
 	///////////////////////////////////////////
-	function handleTrainSkill() {
-		info('handleTrainSkill', selected)
-		selected.cost = 99999999999999999999999999
+	function handleTrainBuy() {
+		info('handleTrainBuy', selected)
+		if (!hasLevelRequired(selected.rank)) {
+			ng.splitText('various-description', 'Ummm... '+ my.name +'? Do you have a hearing problem? I said you cannot begin training until you reach level '+ reqLevel[selected.rank] +'. I would suggest not spending so much time "experimenting" with illicit substances at the apothecary.')
+			return
+		}
 		if (my.gold < selected.cost) {
 			ng.splitText('various-description', 'Sorry, '+ my.name +'. It seems that the cost of this training is rather prohibitive for someone of your station in life. Come back when you\'ve scrounged together enough of your meager wages.')
 			return
 		}
-		// saves character data AND subtracts gold
-		//saveCharacterData()
-		/*
+		// TODO: level check later
 
-		$.post(app.url + 'character/save-data.php', {
-			cost: selected.cost,
-			data: JSON.stringify(_.pick(my, my.dataProps))
-		})
-		 */
+		skillData = _.cloneDeep(my.getMyData())
+		skillData.skills[selected.index] = selected.rank
+
+		ng.lock(true)
+		$.post(app.url + 'character/train-skill.php', {
+			gold: my.gold - selected.cost,
+			data: JSON.stringify(skillData)
+		}).done(trainSkillSuccess)
+			.always(ng.unlock)
 	}
-	function handleAcademyTrain(e) {
+	function trainSkillSuccess() {
+		my.skills[selected.index] = selected.rank
+		town.setMyGold(my.gold - selected.cost)
+		selected.cost = 0
+		if (town.openVariousWindow === 'Academy') {
+			querySelector('#academy-skill-' + selected.index).innerHTML = getSkillRowHtml(selected.index)
+			setAcademyGold()
+			ng.splitText('various-description', 'Congratulations, '+ my.name +'. You have completed your training for ' + skills.skillNames[selected.index] + ', Rank '+ selected.rank +'!')
+		}
+	}
+	function handleRankClick(e) {
 		selected = {
 			index: _.pick(e.currentTarget.dataset, 'index').index,
-			rank: _.pick(e.currentTarget.dataset, 'rank').rank,
+			rank: _.pick(e.currentTarget.dataset, 'rank').rank * 1,
 		}
-		selected.cost = trainCosts[selected.rank * 1]
+		selected.cost = trainCosts[selected.rank]
 
 		console.info('selected', selected)
 
@@ -56,10 +66,15 @@ var academy;
 			el.classList.remove('active')
 		}
 		this.classList.add('active')
-		ng.splitText('various-description', 'Training '+ skills.skillNames[selected.index] +' to Rank '+ selected.rank +' will cost '+ selected.cost +' gold!')
-		setStoreGold()
+		if (hasLevelRequired(selected.rank)) {
+			ng.splitText('various-description', 'Training '+ skills.skillNames[selected.index] +' to Rank '+ selected.rank +' will cost '+ selected.cost +' gold. Would you like to complete this training?')
+		}
+		else {
+			ng.splitText('various-description', 'You do not meet the level requirements for '+ skills.skillNames[selected.index] +', Rank '+ selected.rank +'. We can begin training once you reach level '+ reqLevel[selected.rank] +'.')
+		}
+		setAcademyGold()
 	}
-	function setStoreGold() {
+	function setAcademyGold() {
 		obj = {
 			value: lastCost
 		}
@@ -75,14 +90,16 @@ var academy;
 		if (goldEl !== null) goldEl.textContent = ~~obj.value
 	}
 	function getBodyHtml() {
-		selected.index = ''
-		selected.rank = ''
-		selected.cost = 0
-		my.skills = my.skills.map(() => _.random(0, 7))
+		selected = {
+			index: -1,
+			rank: 0,
+			cost: 0
+		}
+		// my.skills = my.skills.map(() => _.random(0, 7))
 
 		str = '<div id="various-body" class="flex-column flex-max">' +
 			'<div id="academy-skill-wrap" class="flex-column flex-max" >' +
-				'<div id="academy-body" class="flex-column flex-max" style="margin: .1rem .2rem">' +
+				'<div id="academy-body" class="flex-column flex-max">' +
 				getAllSkillRowHtml() +
 				'</div>' +
 			'</div>' +
@@ -94,27 +111,27 @@ var academy;
 		html = ''
 		for (i=0; i<academy.TOTAL_SKILLS; i++) {
 			//warn('row', i)
-			html += '<div id="academy-skill-'+ i +'" class="academy-row flex-row flex-max">' +
-				getSkillRowHtml(i, rank) +
+			html += '<div id="academy-skill-'+ i +'" class="academy-row flex-row flex-max" style="margin-bottom: 1rem">' +
+				getSkillRowHtml(i) +
 			'</div>'
 		}
 		return html
 	}
-	function getSkillRowHtml(i, rank) {
+	function getSkillRowHtml(i) {
 		row = ''
 		for (rank=1; rank<=7; rank++) {
 			if (rank === 1) {
 				if (my.skills[i] >= rank) {
 					//info('rank ZERO unlocked!', my.skills[i], rank)
 					// skill unlocked
-					row += '<div class="academy-skill-rank0">' +
+					row += '<div class="academy-skill-rank0 academy-rank0-unlocked">' +
 						'<img class="academy-skill-img" src="images/skills/' + my.job +'-'+ i +'.png">'+
 					'</div>'
 				}
 				else {
 					// skill locked
 					//warn('rank ZERO LOCKED!', my.skills[i], rank)
-					row += '<div data-index="'+ i +'" data-rank="'+ rank +'" class="academy-skill-rank0 academy-train">' +
+					row += '<div data-index="'+ i +'" data-rank="'+ rank +'" class="academy-skill-rank0 academy-rank0-locked academy-train">' +
 						'<img class="academy-skill-lock no-pointer" src="images/ui/lock.png">' +
 						'<img class="academy-skill-img academy-locked-skill" src="images/skills/' + my.job +'-'+ i +'.png">' +
 						'<div class="academy-gold-row">' +
@@ -123,36 +140,47 @@ var academy;
 						'</div>' +
 					'</div>'
 				}
-				if (my.skills[i] > rank) row += '<div class="academy-skill-divider" style="flex: 1.5"></div>'
-				else row += '<div class="academy-skill-divider" style="flex: 1.5; visibility: hidden"></div>'
+				if (my.skills[i] >= rank) row += '<div class="academy-skill-divider" style="flex: 2"></div>'
+				else row += '<div class="academy-skill-divider" style="flex: 2; visibility: hidden"></div>'
 			}
 			else {
 				if (my.skills[i] >= rank) {
 					//info('rank > 1 GREATER!', my.skills[i], rank)
 					// unlocked
-					row += '<div class="academy-skill-rank-wrap">' +
+					row += '<div class="flex-center" style="position: relative">' +
 						'<div class="academy-skill-unlocked">' +
 							'<img class="academy-shield" src="images/ui/shield.png">'+
 						'</div>' +
 					'</div>'
 				}
 				else if (my.skills[i] === rank - 1) {
-					//info('rank > 1 EQUAL!', my.skills[i], rank)
+					info('rank EQUAL!', my.skills[i], rank)
+					warn('rank EQUAL!', reqLevel[rank], my.level)
+					if (hasLevelRequired(rank)) {
+						reqImg = 'cross'
+						reqClass = ''
+						reqText = ''
+					}
+					else {
+						reqImg = 'cross-red'
+						reqClass = 'academy-buy-restricted'
+						reqText = 'color: #ff1611;'
+					}
 					// prompt buy
-					row += '<div class="academy-skill-rank-wrap">' +
-						'<div data-index="'+ i +'" data-rank="'+ rank +'" class="academy-skill-buy academy-train">' +
-							'<img class="academy-cross" src="images/ui/cross.png">'+
+					row += '<div class="flex-center" style="position: relative">' +
+						'<div data-index="'+ i +'" data-rank="'+ rank +'" class="academy-skill-buy academy-train '+reqClass +'">' +
+							'<img class="academy-cross" src="images/ui/'+ reqImg +'.png">'+
 						'</div>' +
 						'<div class="academy-gold-row">' +
 							'<img class="academy-gold-img" src="images/ui/gold.png">' +
-							'<div class="academy-train-cost">'+ trainCosts[rank] +'</div>' +
+							'<div class="academy-train-cost" style="'+ reqText +'">'+ trainCosts[rank] +'</div>' +
 						'</div>' +
 					'</div>'
 				}
 				else {
 					//warn('rank > 1 LESS!', my.skills[i], rank)
 					// locked
-					row += '<div class="academy-skill-rank-wrap">' +
+					row += '<div class="flex-center" style="position: relative">' +
 						'<div class="academy-skill-locked">' +
 							'<img class="academy-lock" src="images/ui/lock.png">'+
 						'</div>' +
@@ -167,6 +195,9 @@ var academy;
 
 		return row
 
+	}
+	function hasLevelRequired(rank) {
+		return my.level >= reqLevel[rank]
 	}
 	function getTrainRow() {
 		return `<div id="buy-sell-row" class="flex-row align-center" style="margin-bottom: 0">

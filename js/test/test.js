@@ -1,5 +1,5 @@
 var test;
-(function(Linear, TweenMax, TimelineMax, PIXI, undefined) {
+(function(Linear, TweenMax, TimelineMax, PIXI, $, undefined) {
 	test = {
 		pix: {},
 		chat: {
@@ -217,12 +217,12 @@ var test;
 		}
 	}
 	function loot16() {
-		for (var i=0; i<16; i++) item.getLoot()
+		for (var i=0; i<16; i++) item.getLoot({ mobLevel: 50, rarity: 'unique' })
 	}
 	function opacity(count) {
-		var max = count || 2000;
-		$("#title-container-wrap").css('display', 'none');
-		$('#scene-title-select-character, .test-orcs').remove();
+		var max = count || 2000
+		$("#title-container-wrap").css('display', 'none')
+		$('#scene-title-select-character, .test-orcs').remove()
 
 		var e2 = getElementById('ng2-logo-wrap');
 		for (i=0; i<max; i++){
@@ -426,4 +426,4 @@ var test;
 		pixApp.view.style.width = width + 'px';
 		pixApp.view.style.height = height + 'px';
 	}
-})(Linear, TweenMax, TimelineMax, PIXI);
+})(Linear, TweenMax, TimelineMax, PIXI, $);

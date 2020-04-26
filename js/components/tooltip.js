@@ -20,6 +20,9 @@ var tooltip;
 		conditionalHide,
 		getDps,
 	};
+	const css = {
+		usePadding: 'padding: .5rem .5rem 0 .5rem'
+	}
 	var tooltipEl = getElementById('tooltip-wrap')
 	var wearsLeather = [
 		'BRD',
@@ -49,25 +52,27 @@ var tooltip;
 		'SHD',
 		'WAR',
 	]
+	var useHtml = ''
 	//////////////////////////////////////////////////
 	function getItemHtml(obj, type) {
 		var html = ''
 		var divider = '<hr class="fancy-hr" style="margin: .2rem 0">'
 		var statHtml = ''
 		html +=
-			'<div style="margin: .1rem; border: 2px ridge #048; padding: .1rem; border-radius: 4px">' +
-			'<div class="flex" style="border: 2px ridge #013; margin-bottom: .1rem">' +
+			'<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">' +
+			'<div class="flex" style="border: .1rem ridge #013; margin-bottom: .1rem">' +
 				'<div id="tooltip-item-img-bg">' +
 					'<img id="tooltip-item-img" src="images/items/'+ bar.getItemIconFileNameByObj(obj) + '.png">' +
 				'</div>' +
 				'<div style="border: 1px ridge #013"></div>' +
 				'<div id="tooltip-name-bg" class="flex-column flex-center align-center">' +
-					'<div id="tooltip-name" class="text-center item-' + _.kebabCase(obj.rarity) + '">' + obj.name + '</div>' +
+					'<div id="tooltip-name" class="text-center item-' + _.kebabCase(obj.rarity) + '">' + (obj.unidentified ? obj.baseName : obj.name) + '</div>' +
+					(obj.unidentified ? '' :
 					(
 						obj.rarity === 'unique'
 						? '<div class="item-' + _.kebabCase(obj.rarity) + '" style="font-size: .8rem">' + obj.baseName + '</div>'
 						: ''
-					) +
+					)) +
 				'</div>' +
 			'</div>' +
 			'<div id="tooltip-item-stat-wrap" class="text-center" style="border: .1rem ridge #013">' +
@@ -79,6 +84,7 @@ var tooltip;
 				getItemSlot(obj.slots) +
 				(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
 			'</div>';
+
 
 			statHtml += '<div style="padding: .2rem">' +
 				// block
@@ -195,7 +201,12 @@ var tooltip;
 				// found at least one stat added to html str
 				html += divider;
 			}
-			html += statHtml;
+			if (obj.unidentified) {
+				html += '<div class="item-restricted" style="padding: .2rem">Unidentified</div>'
+			}
+			else {
+				html += statHtml
+			}
 			if (town.isMerchantMode()) {
 				html += item.getItemValueHtml(obj, type === 'inv' || type === 'eq')
 			}
@@ -221,13 +232,20 @@ var tooltip;
 		return stat ? '<div class="item-magic">+' + stat + '% ' + label + '</div>' : ''
 	}
 	function getItemUse(obj) {
+		useHtml = ''
 		if (obj.use) {
-			return '<div class="item-use" style="padding: .5rem .5rem 0 .5rem">Use: '+
-				item.getPotionUseMessage(obj) +
-			'</div>'
+			if (obj.itemType === 'potion') {
+				useHtml = '<div class="item-use" style="'+ css.usePadding +'">Use: '+
+					item.getPotionUseMessage(obj) +
+				'</div>'
+			}
+			else if (obj.itemType === 'scroll') {
+				useHtml = '<div class="item-use" style="'+ css.usePadding +'">Use: '+
+					'Reveal hidden properities of mysterious items.' +
+				'</div>'
+			}
 		}
-		else return ''
-
+		return useHtml
 	}
 	function getWeaponDamageHtml(obj) {
 		if (obj.weaponSkill) {

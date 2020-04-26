@@ -11,6 +11,8 @@ const rand = Math.random
 const ceil = Math.ceil
 const floor = Math.floor
 const PI = Math.PI
+const parse = JSON.parse
+const stringify = JSON.stringify
 
 const log = console.log
 const info = console.info

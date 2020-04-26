@@ -1,6 +1,6 @@
 var item;
 var loot = {};
-(function(_, Object, JSON, $, SteppedEase, undefined) {
+(function(_, Object, JSON, $, SteppedEase, TweenMax, undefined) {
 	item = {
 		getItemNameString,
 		getEquipString,
@@ -19,6 +19,7 @@ var loot = {};
 		getFirstAvailableInvSlot,
 		getPotion,
 		getPotionUseMessage,
+		getIdentifyScroll,
 		config: {},
 		goldValue: 0,
 		MAX_SLOTS: {
@@ -26,7 +27,7 @@ var loot = {};
 			inv: 16,
 			merchant: 24,
 			blacksmith: 24,
-			apothecary: 18,
+			apothecary: 17,
 			tavern: 24,
 		},
 		allProps: [
@@ -116,6 +117,14 @@ var loot = {};
 
 	function potionRecoveryByJob(type, index) {
 		return potionRecovers[index] * potionMap[my.job][type]
+	}
+	const identifyScroll = {
+		name: 'Identification Scroll',
+		use: true,
+		itemType: 'scroll',
+		itemSubType: 'identify',
+		imgIndex: 0,
+		cost: 10
 	}
 	const potions = {
 		hp: [{
@@ -928,9 +937,8 @@ var loot = {};
 		 * armorTypes: filter by armorType for armor slots
 		 */
 		if (!config) config = { mobLevel: 1 }
-		if (config.bonus === void 0) {
-			config.bonus = 0
-		}
+		if (config.bonus === void 0) config.bonus = 0
+		if (config.mobLevel === void 0) config.mobLevel = 1
 		item.config = config
 		rarity = item.config.rarity || getRarity(item.config.bonus)
 		// set item type (normal, magic, etc)
@@ -1020,6 +1028,9 @@ var loot = {};
 				processRareDrop(drop)
 			}
 			// post-process item
+		}
+		if (rarity !== 'normal') {
+			drop.unidentified = true
 		}
 		postProcessDrop(drop)
 		return drop;
@@ -1608,8 +1619,8 @@ var loot = {};
 			console.warn('drag 1 itemType', drag.itemType, 'to slot', item.dropEqType)
 			console.warn('drag 2 itemType', drop.itemType, 'to slot', item.dragEqType)
 
-			if (eqDropValid(drag.itemType, item.dropEqType, drag.itemLevel) &&
-				eqDropValid(drop.itemType, item.dragEqType, drop.itemLevel)) {
+			if (eqDropValid(drag.itemType, item.dropEqType, drag.itemLevel, drag.unidentified) &&
+				eqDropValid(drop.itemType, item.dragEqType, drop.itemLevel, drop.unidentified)) {
 				resp = true
 			}
 		}
@@ -1617,7 +1628,12 @@ var loot = {};
 		return resp;
 	}
 
-	function eqDropValid(itemType, eqType, itemLevel) {
+	function eqDropValid(itemType, eqType, itemLevel, unidentified) {
+		if (unidentified) {
+			chat.log('You cannot equip unidentified items! Try buying an Identify Scroll from the merchant.', 'chat-warning')
+			return false
+		}
+
 		if (my.level < itemLevel) {
 			chat.log('Your level is not high enough to equip this item!', 'chat-warning')
 			return false
@@ -1858,14 +1874,24 @@ var loot = {};
 			item.dragData = items[type][index]
 			item.dragSlot = index
 			item.dragType = type
+
 			console.info('dragData', item.dragData)
-			handleDragStart()
-			$.post(app.url + 'item/destroy-item.php', {
-				row: items[type][index].row,
-				dragType: type
-			}).done(handleUseSuccess)
-				.fail(handleDropFail)
-				.always(handleDropAlways)
+			if (item.dragData.itemType === 'potion') {
+				handleDragStart()
+				$.post(app.url + 'item/destroy-item.php', {
+					row: items[type][index].row,
+					dragType: type
+				}).done(handleUseSuccess)
+					.fail(handleDropFail)
+					.always(handleDropAlways)
+			}
+			else if (item.dragData.itemType === 'scroll') {
+				if (item.dragData.name === 'Identification Scroll') {
+					// handle item to identify
+					// click mode
+					// then left-click flips flag to false... updates data and redoes tooltip
+				}
+			}
 		}
 	}
 	function handleUseSuccess() {
@@ -1956,4 +1982,7 @@ var loot = {};
 	function getPotion(index, type) {
 		return potions[type][index]
 	}
-})(_, Object, JSON, $, SteppedEase);
+	function getIdentifyScroll() {
+		return _.clone(identifyScroll)
+	}
+})(_, Object, JSON, $, SteppedEase, TweenMax);

@@ -29,7 +29,7 @@ var town;
 		openVariousWindow: '',
 		isBankInitialized: false,
 	}
-	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, potionItems, potLevel
+	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, potionItems, potLevel, scrollItems
 
 	var storeItems = []
 	const buyTypes = [
@@ -209,6 +209,7 @@ var town;
 		if (!town.isInitialized[type]) {
 			potionItems = []
 			storeItems = []
+			scrollItems = []
 			//console.info('itemTypesForSale', itemTypesForSale[type])
 			if (type === 'apothecary') {
 				potLevel = ~~(my.level / 8)
@@ -222,6 +223,7 @@ var town;
 				for (i = 0; i<2; i++) {
 					potionItems.push(item.getPotion(potLevel + i, 'sp'))
 				}
+				scrollItems.push(item.getIdentifyScroll())
 			}
 
 			for (i = 0; i<item.MAX_SLOTS[type]; i++) {
@@ -237,8 +239,16 @@ var town;
 				//console.info('item', storeItems[i])
 			}
 			storeItems = _.sortBy(storeItems, ['itemType'])
-			storeItems = potionItems.concat(storeItems)
-			//console.info('storeItems', storeItems)
+			storeItems = [
+				...potionItems,
+				...scrollItems,
+				...storeItems
+			]
+			/*potionItems = potionItems.concat(scrollItems)
+			storeItems = potionItems.concat(potionItems)*/
+
+			console.info('storeItems', storeItems)
+
 			// sorted
 			for (i=0; i<storeItems.length; i++) {
 				items[type][i] = storeItems[i]
@@ -377,7 +387,7 @@ var town;
 			}
 		}
 		else if (id === 'Tavern') {
-			msg = 'View the leaderboard, seek advice from the innkeeper, and swap information with other heroes'
+			msg = 'Select missions, seek wisdom from the innkeeper, and view the leaderboard'
 			labelConfig = {
 				left: ng.toPercentWidth(302),
 				top: ng.toPercentHeight(467)
@@ -473,16 +483,11 @@ var town;
 				y: -30
 			}
 		}
-		else if (town.openVariousWindow === 'Mission Counter') {
-			msg = 'Edenburg needs brave adventurers like you to restore peace to our blessed Kingdom! Some missions are more dangerous than others—choose your mission carefully!'
-			townConfig = {
-				duration: .5,
-				scale: 1,
-				x: 0,
-				y: 0
-			}
-		}
 		else if (town.openVariousWindow === 'Tavern') {
+			zones = zones.map(zone => {
+				zone.isOpen = 0
+				return zone;
+			})
 			msg = 'Welcome to the Edenburg Tavern, '+ my.name +'. The King has requested the services of brave adventurers like yourself to complete missions in defense of our interests. How do you choose to serve?'
 			townConfig = {
 				duration: 1,
@@ -552,13 +557,14 @@ var town;
 		}
 		item.goldValue = tooltip.goldValue
 	}
+
 	function updateMyGold(obj) {
 		myGoldEl = querySelector('#town-gold')
-		if (myGoldEl!== null) myGoldEl.textContent = ~~obj.value
+		if (myGoldEl!== null) myGoldEl.textContent = floor(obj.value)
 	}
 	function updateStoreGold(obj) {
 		goldEl = querySelector('#town-value')
-		if (goldEl !== null) goldEl.textContent = ~~obj.value
+		if (goldEl !== null) goldEl.textContent = floor(obj.value)
 	}
 	function showMerchantMsg() {
 		if (buyTypes.includes(town.openVariousWindow.toLowerCase())) {

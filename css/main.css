@@ -1247,17 +1247,17 @@ background-clip: content-box;
 
 .bar-hp-fg {
 	background: #f22;
-	background: linear-gradient(to bottom, #f77 1px, #f22 10%, #f44 50%, #f22 99%, #000 100%);
+	background: linear-gradient(to bottom, #b00, #d11 25%, #e22 50%, #b00 75%, #800 100%);
 	height: 100%;
 	width: 100%;
 }
 .bar-mp-fg {
-	background: linear-gradient(to bottom, #0ad 1px, #05b 10%, #07d 50%, #05b 99%, #000 100%);
+	background: linear-gradient(to bottom, #14c, #05b 25%, #27d 50%, #039 75%, #028 100%);
 	height: 100%;
 	width: 100%;
 }
 .bar-sp-fg {
-	background: linear-gradient(to bottom, #fff 1px, #ee0 10%, #ff6 50%, #ee0 99%, #000 100%);
+	background: linear-gradient(to bottom, #151, #191 25%, #2c2 50%, #070 75%, #040 100%);
 	height: 100%;
 	width: 100%;
 }
@@ -1313,7 +1313,7 @@ background-clip: content-box;
 .item-unique { color: #908858; /*b5a170*/}
 .item-runic { color: #ad68f8; }
 .item-legendary { color: #ffa500; }
-.item-restricted { color: #f21; }
+.item-restricted { color: #f55; }
 
 .item-use { color: #2f2;}
 
@@ -2882,7 +2882,7 @@ background-image:
 }
 .academy-skill-rank0 {
 	position: relative;
-	outline: 1px solid #222;
+	outline: 1px solid #000;
 	outline-offset: 1px;
 	padding: .1rem;
 	background: #ff0;
@@ -2891,15 +2891,6 @@ background-image:
 }
 .academy-locked-skill {
 	filter: brightness(.8) grayscale(1);
-}
-.academy-row ~ .academy-row {
-	margin-top: 1rem;
-}
-.academy-skill-rank-wrap {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-self: center;
 }
 .academy-skill-lock {
 	position: absolute;
@@ -2925,11 +2916,11 @@ background-image:
 	transform: translate(0, 100%);
 	font-size: .8rem;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-end;
 	width: 100%;
 }
 .academy-skill-divider {
-	width: .5rem;
+	width: 1rem;
 	border-top: 1px solid #111;
 	border-bottom: 1px solid #111;
 	background: linear-gradient(to right, #025, #38b, #38b, #025);
@@ -2958,25 +2949,32 @@ background-image:
 .academy-cross {
 	width: 1.8rem;
 	height: 1.8rem;
-	filter: saturate(.8) brightness(.8) hue-rotate(180deg);
-	background: #000;
+	background: #001;
 	padding: .1rem;
 }
-
+.academy-rank0-locked {
+	background: linear-gradient(to bottom, #aef, #145);
+}
+.academy-rank0-unlocked {
+	background: linear-gradient(to bottom, #ff0, #660);
+}
 .academy-skill-buy {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: linear-gradient(to bottom, #bcd, #567);
+	background: linear-gradient(to bottom, #aef, #145);
 	padding: .1rem;
 	width: 2rem;
 	height: 2rem;
+}
+.academy-buy-restricted {
+	background: linear-gradient(to bottom, #f22, #811);
 }
 .academy-skill-unlocked {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: linear-gradient(to bottom, #cc0, #770);
+	background: linear-gradient(to bottom, #ff0, #660);
 	padding: .1rem;
 	width: 2rem;
 	height: 2rem;
@@ -2985,8 +2983,7 @@ background-image:
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: linear-gradient(to bottom, #555, #222);
-	border: .1rem ridge #333;
+	background: linear-gradient(to bottom, #aef, #145);
 	padding: .1rem;
 	width: 2rem;
 	height: 2rem;
@@ -2996,19 +2993,22 @@ background-image:
 	transition: transform .15s ease-out, filter .15s ease-out;
 }
 .academy-train:hover {
-	filter: saturate(1.5) brightness(1.5);
+	filter: saturate(1.2) brightness(1.2);
 }
 .academy-train:active {
 	transition: none;
 	filter: saturate(.8) brightness(.8);
-	transform: scale(.95);
+	transform: scale(.96);
 }
 .academy-train.active {
-	outline: .1rem solid #aef;
+	outline: .1rem solid #fff;
 	animation: repeat-active-training .3s ease-out infinite;
 }
 @keyframes repeat-active-training {
-	0% { outline-color: #aef; }
+	0% { outline-color: #fff; }
 	50% { outline-color: #05b; }
-	100% { outline-color: #aef; }
+	100% { outline-color: #fff; }
+}
+.academy-skill-restricted {
+	filter:
 }

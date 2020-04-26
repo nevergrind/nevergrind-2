@@ -258,7 +258,7 @@ var tavern;
 		else querySelector('#tavern-leaderboard-body').innerHTML = leaderboardBodyHtml(tavern.leaders[selectedLeaderboard])
 	}
 	function getLeaders(job) {
-		ng.lock(true);
+		ng.lock(true)
 		if (selectedLeaderboard === 'ALL') {
 			$.get(app.url + 'town/leaderboard.php')
 				.done(setLeaderboardData)

@@ -14,6 +14,7 @@ var my;
 		checkForDeath,
 		initSkills,
 		saveCharacterData,
+		getMyData,
 		dataProps: [
 			'str',
 			'sta',
@@ -170,7 +171,10 @@ var my;
 
 	function saveCharacterData() {
 		$.post(app.url + 'character/save-data.php', {
-			data: JSON.stringify(_.pick(my, my.dataProps))
+			data: JSON.stringify(getMyData())
 		})
+	}
+	function getMyData() {
+		return _.pick(my, my.dataProps)
 	}
 }($, _, TweenMax);
