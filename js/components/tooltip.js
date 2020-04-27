@@ -241,7 +241,7 @@ var tooltip;
 			}
 			else if (obj.itemType === 'scroll') {
 				useHtml = '<div class="item-use" style="'+ css.usePadding +'">Use: '+
-					'Reveal hidden properities of mysterious items.' +
+					'Reveal hidden properties of unidentified items in your inventory.' +
 				'</div>'
 			}
 		}

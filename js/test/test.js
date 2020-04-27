@@ -36,7 +36,7 @@ var test;
 		socketPub,
 		getItem,
 		animateBtn,
-		loot16,
+		lootItems,
 		pixi,
 		pixiRenderer,
 		pixiClouds,
@@ -216,8 +216,9 @@ var test;
 			});
 		}
 	}
-	function loot16() {
-		for (var i=0; i<16; i++) item.getLoot({ mobLevel: 50, rarity: 'unique' })
+	function lootItems(count, rarity) {
+		count = count || 16
+		for (var i=0; i<count; i++) item.getLoot({ mobLevel: 50, rarity: (rarity ? rarity : 'unique') })
 	}
 	function opacity(count) {
 		var max = count || 2000

@@ -95,6 +95,7 @@ var bar;
 	}
 	//////////////////////////////////////////////
 	function init() {
+
 		if (!bar.initialized) {
 			bar.initialized = 1
 			el = getElementById('bar-wrap')
@@ -308,6 +309,10 @@ var bar;
 			html += getItemSlotHtml('inv', i)
 		}
 		html += '</div>' +
+		'<div id="inventory-footer" class="flex-row flex-max">'+
+			//'<div id="inventory-identify" class="ng-btn text-shadow inv-btn">Identify</div>' +
+			'<div id="inventory-destroy" class="ng-btn text-shadow inv-btn">Destroy</div>' +
+		'</div>'
 		'</div>'
 
 		return html
@@ -735,6 +740,7 @@ var bar;
 		toast.hideDestroyToast()
 		toast.removeToast()
 		item.resetDrop()
+		tooltip.hide()
 	}
 
 	function showBarMenuPopover() {

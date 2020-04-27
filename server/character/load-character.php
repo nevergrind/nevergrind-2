@@ -38,8 +38,6 @@ if ($i) {
 	// set session values for my character
 	$_SESSION['row'] = $r['characterData']['row'];
 	$_SESSION['name'] = $r['characterData']['name'];
-	$_SESSION['level'] = $r['characterData']['level'];
-	$_SESSION['job'] = $r['characterData']['job'];
 
 	// get equipment
 	require '../item/get-player-items.php';

@@ -49,7 +49,6 @@
 			.on('click', '.item-slot', item.toggleDrag)
 			.on('click', '.inv-tabs', bar.setCharActiveTab)
 			.on('click', '.inv-skill-row', bar.getSkillDescription)
-			.on('click', '#scene-town, #scene-dungeon, #scene-battle', item.dropItem)
 			// options
 			.on('click', '.option-category', bar.selectOptionCategory)
 			.on('click', '.ng-dropdown-btn', dropdown.toggle)

@@ -20,6 +20,11 @@ var loot = {};
 		getPotion,
 		getPotionUseMessage,
 		getIdentifyScroll,
+		lastDragEvent: {},
+		lastDropEvent: {},
+		isIdentifyMode: false,
+		identifyScrollIndex: -1,
+		identifyScrollType: '',
 		config: {},
 		goldValue: 0,
 		MAX_SLOTS: {
@@ -110,14 +115,11 @@ var loot = {};
 		SUM: { hp: 1, mp: 2, sp: 1.5 },
 		WIZ: { hp: 1, mp: 2, sp: 1.5 },
 	}
+	// events
+	$('#inventory')
+		//.on('click', '#inventory-identify', preIdentifyItem)
+		.on('click', '#inventory-destroy', dropItem)
 
-	function getPotionUseMessage(obj) {
-		return 'Recover '+ potionRecoveryByJob(obj.itemSubType, obj.imgIndex) +' '+ obj.potionResource +' over 6 seconds'
-	}
-
-	function potionRecoveryByJob(type, index) {
-		return potionRecovers[index] * potionMap[my.job][type]
-	}
 	const identifyScroll = {
 		name: 'Identification Scroll',
 		use: true,
@@ -864,7 +866,16 @@ var loot = {};
 		shields: ['Badge', 'Emblem', 'Guard', 'Mark', 'Rock', 'Tower', 'Ward', 'Wing', 'Bulwark', 'Bastion', 'Redoubt', 'Citadel'],
 		charms: ['Breaker', 'Chant', 'Cry', 'Song', 'Star', 'Talisman', 'Torc', 'Memento'],
 	}
-	////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+
+	function getPotionUseMessage(obj) {
+		return 'Recover '+ potionRecoveryByJob(obj.itemSubType, obj.imgIndex) +' '+ obj.potionResource +' over 6 seconds'
+	}
+
+	function potionRecoveryByJob(type, index) {
+		return potionRecovers[index] * potionMap[my.job][type]
+	}
+
 	function getEquipString() {
 		// cloth, leather, mail, plate, weapon types should show red if you can't use it
 	}
@@ -894,13 +905,16 @@ var loot = {};
 		}
 		return resp;
 	}
-	function getItemNameString(drop) {
-		return '<span class="item-'+ drop.rarity +'">[' + drop.name + ']</span>'
+	function getItemNameString(drop, baseName) {
+		return '<span class="item-'+ drop.rarity +'">[' + (baseName ? baseName : drop.name) + ']</span>'
 	}
 	function getFirstAvailableInvSlot() {
 		var index = items.inv.findIndex(slot => !slot.name)
 		if (index > -1) items.inv[index].name = 'Loading'
 		return index
+	}
+	function getFirstUnidentifiedItemSlot() {
+		return items.inv.findIndex(slot => slot.unidentified)
 	}
 	function getLoot(config, mobSlot) {
 		var slot = getFirstAvailableInvSlot()
@@ -922,7 +936,7 @@ var loot = {};
 				row: data,
 			})
 			mobName = _.get(mob[mobSlot], 'name', 'You discovered an item: ')
-			chat.log(mobName + getItemNameString(drop))
+			chat.log(mobName + getItemNameString(drop, drop.baseName))
 		}).fail(function() {
 			items.inv[slot] = {}
 		}).always(handleDropAlways)
@@ -1034,7 +1048,6 @@ var loot = {};
 		}
 		postProcessDrop(drop)
 		return drop;
-		////////////////////////////////////////////////////
 	}
 	function processRareDrop(drop) {
 		rareKeys = _.uniq(_.concat(
@@ -1487,6 +1500,18 @@ var loot = {};
 		if (item.awaitingDrop) return
 		var index = event.currentTarget.dataset.index * 1
 		var type = event.currentTarget.dataset.type
+		if (item.isIdentifyMode) {
+			if (type === 'inv' || type === 'bank' &&
+				items[type][index].unidentified) {
+				warn(item.identifyScrollIndex, item.identifyScrollType, index, type)
+				identifyItem(item.identifyScrollIndex, item.identifyScrollType, index, type)
+			}
+			else {
+				chat.log('That item does not need to be identified.', 'chat-warning')
+				toggleIdentifyMode()
+			}
+			return
+		}
 
 		console.info('toggleDrag', type, index)
 		if (item.isDragging) {
@@ -1502,9 +1527,11 @@ var loot = {};
 			}
 
 			item.dropEqType = event.currentTarget.dataset.eqType
-			// check for same item
-			if (item.dragSlot === index && item.dragType === type) {
+			if (item.dragSlot === index &&
+				item.dragType === type) {
+				// check for same item
 				resetDrop()
+				toast.hideDestroyToast()
 				tooltip.handleItemEnter(event)
 				return
 			}
@@ -1522,12 +1549,7 @@ var loot = {};
 
 			handleDragStart()
 			toast.hideDestroyToast()
-			if (!item.dropData.name) {
-				var index = item.lastEvent.currentTarget.dataset.index
-				console.info('lastEvent', index)
-				item.lastEvent = event
-				//item.lastEvent.currentTarget.dataset.index = index
-			}
+			item.lastDropEvent = event
 			if (item.dropData.name) {
 				// swap
 				$.post(app.url + 'item/swap-items.php', {
@@ -1559,10 +1581,10 @@ var loot = {};
 			}
 		}
 		else {
-			item.lastEvent = event
+			item.lastDragEvent = event
 			tooltip.handleItemLeave(event)
 			item.dragEqType = event.currentTarget.dataset.eqType
-			console.info('//// dragEQ dragEqType', event.currentTarget.dataset)
+			console.info('dragEQ dragEqType', event.currentTarget.dataset)
 			// drag
 			item.dropData = {}
 			if (items[type][index].name) {
@@ -1571,7 +1593,7 @@ var loot = {};
 				item.dragType = type
 				town.showMerchantMsg()
 				if (town.isMerchantMode() &&
-					item.lastEvent.ctrlKey) {
+					item.lastDragEvent.ctrlKey) {
 					if (item.dragType === 'inv' || item.dragType === 'eq') {
 						item.sell()
 					}
@@ -1609,7 +1631,6 @@ var loot = {};
 		console.info('dropEqType', item.dropEqType)
 		console.info('drag', item.dragData)
 		console.info('drop', item.dropData)
-		console.warn('///////////////////////////////////////////////')
 
 		if (item.dragType !== 'eq' && item.dropType !== 'eq') {
 			resp = true
@@ -1696,6 +1717,7 @@ var loot = {};
 		item.dragEqType = ''
 		item.dropEqType = ''
 		dom.itemTooltipCursorImg.style.visibility = 'hidden'
+		item.isIdentifyMode && toggleIdentifyMode()
 	}
 	function handleDropFail(r) {
 		ng.msg(r.responseText, 8);
@@ -1706,11 +1728,13 @@ var loot = {};
 		items[item.dragType][item.dragSlot] = item.dropData
 		bar.updateItemSwapDOM()
 		resetDrop()
-		tooltip.handleItemEnter(item.lastEvent)
+		warn('lastDragEvent', item.lastDragEvent)
+		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
+		else tooltip.handleItemEnter(item.lastDropEvent)
 	}
 
 	function handleDragStart() {
-		// ajax start
+		// prevents drag and drop while waiting for the server to move items
 		item.awaitingDrop = true
 		var link = createElement('style')
 		link.type = 'text/css';
@@ -1721,9 +1745,10 @@ var loot = {};
 	function handleDropAlways() {
 		// ajax end
 		item.awaitingDrop = false
-		$('#temp-dnd-link').remove()
+		item.identifyItemMode = false
 		item.isContextClick = false;
-		console.info('handleDropAlways')
+		$('#temp-dnd-link').remove()
+		info('handleDropAlways')
 	}
 
 	function getDragItemName() {
@@ -1790,7 +1815,7 @@ var loot = {};
 				tooltip.goldValue = 0
 			}
 			town.setMyGold(my.gold - item.goldValue)
-			town.setStoreGold()
+			town.setStoreGold(item.goldValue)
 		}).fail(function() {
 			items.inv[buyItemSlot] = {}
 		}).always(handleDropAlways)
@@ -1828,7 +1853,7 @@ var loot = {};
 
 
 	function handleSellSuccess() {
-		querySelector('#various-description').innerHTML = 'Thank you for selling ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!'
+		querySelector('#various-description').innerHTML = 'Thank you for selling ' + getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold!'
 		handleDestroySuccess()
 		tooltip.goldValue = 0
 		town.setMyGold(my.gold + item.goldValue)
@@ -1885,15 +1910,88 @@ var loot = {};
 					.fail(handleDropFail)
 					.always(handleDropAlways)
 			}
-			else if (item.dragData.itemType === 'scroll') {
-				if (item.dragData.name === 'Identification Scroll') {
-					// handle item to identify
-					// click mode
-					// then left-click flips flag to false... updates data and redoes tooltip
-				}
+			else if (item.dragData.name === 'Identification Scroll') {
+				toggleIdentifyMode(index, type)
 			}
 		}
 	}
+	function toggleIdentifyMode(index, type) {
+		if (item.isIdentifyMode) {
+			item.isIdentifyMode = false
+			$('#temp-identify-item').remove()
+		}
+		else {
+			item.isIdentifyMode = true
+			item.identifyScrollIndex = index * 1
+			item.identifyScrollType = type
+			var link = createElement('style')
+			link.type = 'text/css';
+			link.id = 'temp-identify-item'
+			document.head.appendChild(link)
+			link.sheet.addRule('.item-slot', 'cursor: url("css/cursor/gear.cur"), auto !important')
+		}
+	}
+	function preIdentifyItem() {
+		warn('preIdentifyItem', item.dragType, item.dragSlot, item.dragData)
+		if (!item.dragData.row) {
+			resetDrop()
+			return
+		}
+		if (typeof item.dragData.unidentified === 'undefined' ||
+			item.dragData.unidentified === false) {
+			chat.log('That item\'s properties are already known.', 'chat-warning')
+			resetDrop()
+			return
+		}
+		if (!myItemTypes.includes(item.dragType)) {
+			ng.msg('You can\'t identify items that don\'t belong to you!', 4)
+			resetDrop()
+			return
+		}
+		var index = items.inv.findIndex(slot => slot.name === 'Identification Scroll')
+		if (index === -1) {
+			chat.log('You must have an Identification Scroll in your inventory.', 'chat-warning')
+			resetDrop()
+			return
+		}
+		identifyItem(index, 'inv', item.dragSlot, item.dragType)
+	}
+	function identifyItem(scrollIndex, scrollType, itemSlot, itemType) {
+		if (typeof itemSlot === 'undefined') {
+			itemSlot = getFirstUnidentifiedItemSlot()
+		}
+		warn('identify item!', itemSlot)
+		if (itemSlot === -1) {
+			chat.log('You have no items that need to be identified.', 'chat-warning')
+			resetDrop()
+			return
+		}
+		var newItem = _.cloneDeep(items.inv[itemSlot])
+		newItem.unidentified = false
+
+		if (items[itemType][itemSlot].row &&
+			items[scrollType][scrollIndex].row) {
+			ng.lock(true)
+			$.post(app.url + 'item/update-item-data.php', {
+				itemRow: items[itemType][itemSlot].row,
+				data: JSON.stringify(_.omit(newItem, ['name'])),
+				scrollRow: items[scrollType][scrollIndex].row,
+			}).done(resp => {
+				info('okokokok', resp)
+				items[scrollType][scrollIndex] = {}
+				items[itemType][itemSlot].unidentified = false
+				bar.updateItemSlotDOM(scrollType, scrollIndex)
+				resetDrop()
+				chat.log('You successfully identified: ' + getItemNameString(items[itemType][itemSlot]))
+				tooltip.hide()
+				setTimeout(() => {
+					tooltip.show(items[itemType][itemSlot], querySelector('#' + itemType + '-slot-img-' + itemSlot), itemType)
+				}, 100)
+			}).always(ng.unlock)
+		}
+		else console.error('no row data found')
+	}
+
 	function handleUseSuccess() {
 		console.info('handleUseSuccess', item.dragData.itemType)
 		if (item.dragData.itemType === 'potion') {

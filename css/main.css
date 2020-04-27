@@ -2484,8 +2484,11 @@ background-image:
 .item-slot:active {
 	transform: scale(.9);
 }
-
 .item-slot-type-none .item-slot { filter: brightness(60%) grayscale(1); }
+
+.item-slot-type-none .item-slot:active {
+	transform: scale(1) !important;
+}
 .item-slot-type-normal .item-slot { border: 1px solid #777; }
 .item-slot-type-magic .item-slot { border: 1px solid #2a9aff; }
 .item-slot-type-rare .item-slot { border: 1px solid #ff0; }
@@ -3011,4 +3014,18 @@ background-image:
 }
 .academy-skill-restricted {
 	filter:
+}
+#inventory-footer {
+	margin: .2rem;
+	justify-content: flex-end;
+	border: .1rem solid #136;
+	background: #013;
+}
+.inv-btn {
+	font-size: .8rem;
+	margin: .2rem;
+	flex: 1;
+}
+.icon-gear {
+	cursor: url('cursor/gear.cur'), pointer!important;
 }

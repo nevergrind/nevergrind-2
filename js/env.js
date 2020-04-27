@@ -47,6 +47,7 @@ var env;
 	}
 
 	function triggerNextPhase() {
+		cloudSpeed = _.random(1000, 2500)
 		changePhase()
 		startSkyPhase()
 	}
@@ -54,7 +55,7 @@ var env;
 	function initPixiElements() {
 		if (!env.initialized) {
 			env.initialized = true
-			cloudSpeed = _.random(450, 1000)
+			cloudSpeed = _.random(500, 2500)
 			//TODO: experimental rain, snow
 			/*pix.elements = new PIXI.Application({
 				width: 1920,
@@ -311,11 +312,30 @@ var env;
 			TweenMax.to(pix.sun, phaseDuration, {
 				startAt: {
 					x: maxW * .65,
-					y: maxW * .5
+					y: maxW * .5,
 				},
 				y: maxW * -.8,
 				ease: Power2.easeOut,
 				onComplete: triggerNextPhase
+			})
+			TweenMax.set(pix.sun, {
+				pixi: {
+					colorize: 'orange',
+					scale: 1.3,
+					brightness: 1,
+					saturation: 1,
+					colorizeAmount: 1,
+				}
+			})
+			TweenMax.to(pix.sun, phaseDuration * .05, {
+				delay: phaseDuration * .07,
+				pixi: {
+					scale: 1,
+					brightness: 1.3,
+					saturation: 1.3,
+					colorizeAmount: 0,
+				},
+				ease: Linear.easeOut,
 			})
 		}
 		else if (env.phase === 'evening') {
@@ -350,13 +370,26 @@ var env;
 			})
 		}
 		else if (env.phase === 'night') {
+			TweenMax.to(pix.moon, phaseDuration, {
+				delay: phaseDuration * .25,
+				y: maxW * -.8,
+				ease: Power2.easeOut,
+			})
 			TweenMax.set(pix.moon, {
 				x: maxW * .65,
-				y: maxW * .5
+				y: maxW * .5,
+				pixi: {
+					scale: 1.3,
+					colorize: 'orange',
+					colorizeAmount: 1,
+				}
 			})
-			TweenMax.to(pix.moon, phaseDuration, {
-				delay: phaseDuration / 4,
-				y: maxW * -.8,
+			TweenMax.to(pix.moon, phaseDuration * .2, {
+				delay: phaseDuration * .3,
+				pixi: {
+					scale: 1,
+					colorizeAmount: 0,
+				},
 				ease: Power2.easeOut,
 			})
 		}
@@ -364,7 +397,7 @@ var env;
 
 	function animateClouds() {
 		if (env.phase === 'morning') {
-			TweenMax.to([pix.cloud1, pix.cloud2], phaseDuration / 2, {
+			TweenMax.to([pix.cloud1, pix.cloud2], phaseDuration * .5, {
 				startAt: {
 					alpha: .6,
 					pixi: {

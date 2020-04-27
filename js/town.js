@@ -544,13 +544,14 @@ var town;
 		})
 		my.gold = newGold
 	}
-	function setStoreGold() {
-		if (!item.lastEvent.ctrlKey) {
+	function setStoreGold(newV) {
+		if (!item.lastDragEvent.ctrlKey) {
+			console.info('animating to:', newV)
 			obj = {
 				value: _.clone(item.goldValue)
 			}
 			TweenMax.to(obj, .3, {
-				value: _.clone(tooltip.goldValue),
+				value: _.clone(newV),
 				onUpdate: updateStoreGold,
 				onUpdateParams: [obj]
 			})
@@ -577,7 +578,7 @@ var town;
 				// clicked my item
 				querySelector('#various-description').innerHTML = 'Would you like to sell ' + item.getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold?'
 			}
-			setStoreGold()
+			setStoreGold(tooltip.goldValue)
 			TweenMax.to('#town-value-wrap', .3, {
 				startAt: { filter: 'saturate(3) brightness(4)' },
 				filter: 'saturate(1) brightness(1)'
