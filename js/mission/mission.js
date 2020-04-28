@@ -218,7 +218,6 @@ var mission;
 			}
 			console.info('embark isLeader!', data)
 			socket.publish('party' + my.partyId, data)
-			$(".close-aside").trigger('click')
 		}
 	}
 

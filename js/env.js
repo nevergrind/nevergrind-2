@@ -116,7 +116,7 @@ var env;
 			pix.moon = PIXI.Sprite.from('images/env/moon.png')
 			pix.moon.anchor.set(.5)
 			pix.sky.stage.addChild(pix.moon)
-			TweenMax.set(pix.moon, { pixi: { brightness: 1.2 }})
+			TweenMax.set(pix.moon, { pixi: { brightness: 1.25 }})
 
 			pix.cloud1 = PIXI.Sprite.from('images/env/clouds-1.png')
 			pix.cloud1.anchor.set(0)
@@ -321,14 +321,14 @@ var env;
 			TweenMax.set(pix.sun, {
 				pixi: {
 					colorize: 'orange',
-					scale: 1.3,
+					scale: 1.4,
 					brightness: 1,
 					saturation: 1,
 					colorizeAmount: 1,
 				}
 			})
 			TweenMax.to(pix.sun, phaseDuration * .05, {
-				delay: phaseDuration * .07,
+				delay: phaseDuration * .05,
 				pixi: {
 					scale: 1,
 					brightness: 1.3,
@@ -379,12 +379,13 @@ var env;
 				x: maxW * .65,
 				y: maxW * .5,
 				pixi: {
+					brightness: 1.25,
 					scale: 1.3,
 					colorize: 'orange',
 					colorizeAmount: 1,
 				}
 			})
-			TweenMax.to(pix.moon, phaseDuration * .2, {
+			TweenMax.to(pix.moon, phaseDuration * .1, {
 				delay: phaseDuration * .3,
 				pixi: {
 					scale: 1,

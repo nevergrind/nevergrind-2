@@ -2648,6 +2648,9 @@ background-image:
 	outline: .1rem ridge #136;
 	height: 5rem;
 	background: radial-gradient(farthest-corner at 50% 50%, #05b 0, #001 100%);
+	/**
+	TODO: MAKE THIS A CANDLELIGHT BG
+	 */
 }
 .town-avatars {
 	width: 5rem;

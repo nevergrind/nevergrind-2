@@ -153,7 +153,7 @@ var my;
 		DOM.hud.style.visibility = 'hidden';
 	}
 	function resourceTick(type) {
-		if (my.view === 'battle' || !app.isApp) {
+		if (ng.view === 'battle' || !app.isApp) {
 			my[type] += stats[type + 'Regen']()
 			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
 		}

@@ -73,38 +73,22 @@ var whisper;
 				})
 			}
 		}
-		else if (action === 'toast-busy') {
-			chat.log(data.name + ' is busy right now.', 'chat-warning');
-		}
-		else if (action === 'party-invite-reject') {
-			chat.log(data.name + ' is already in a party!', 'chat-warning');
-		}
-		else if (action === 'party-confirmed') {
-			party.joinConfirmed(data);
-		}
-		else if (action === 'party-accept') {
-			chat.log(data.name + " has joined the party.", 'chat-warning');
-		}
-		else if (action === 'party-invite-decline') {
-			chat.log(data.name + " has declined to join the party.", 'chat-warning');
-		}
-		else if (action === 'guild-invite-decline') {
-			chat.log(data.name + " has declined to join the guild.", 'chat-warning');
-		}
+		else if (action === 'toast-busy') chat.log(data.name + ' is busy right now.', 'chat-warning')
+		else if (action === 'party-invite-reject') chat.log(data.name + ' is already in a party!', 'chat-warning')
+		else if (action === 'party-confirmed') party.joinConfirmed(data)
+		else if (action === 'party-accept') chat.log(data.name + " has joined the party.", 'chat-warning')
+		else if (action === 'party-invite-decline') chat.log(data.name + " has declined to join the party.", 'chat-warning')
+		else if (action === 'guild-invite-decline') chat.log(data.name + " has declined to join the guild.", 'chat-warning')
 		else if (action === 'friend>addedMe') {
 			chat.log(data.name + " has added you to "+ (my.gender === 'M' ? 'his' : 'her') +" friend list.", 'chat-warning');
 		}
-		else if (action === 'friend->getPresence') {
-			friend.listReceived(data);
-		}
-		else if (action === 'friend->sendPresence') {
-			friend.presenceReceived(data);
-		}
-		else if (data.action === 'all->received') {
-			who.presenceReceived(data);
-		}
-		else if (data.action === 'all->byFilterReceived') {
-			who.byFilterReceived(data);
-		}
+		else if (action === 'friend->getPresence') friend.listReceived(data)
+		else if (action === 'friend->sendPresence') friend.presenceReceived(data)
+		else if (data.action === 'all->received') who.presenceReceived(data)
+		else if (data.action === 'all->byFilterReceived') who.byFilterReceived(data)
+		else if (data.action === 'trade-request') trade.handleRequest(data)
+		else if (data.action === 'trade-reject-busy') trade.rejectTradeBusy(data)
+		else if (data.action === 'trade-request-decline') trade.declineTrade(data)
+		else if (data.action === 'trade-start') trade.tradeStartResp(data)
 	}
 })();

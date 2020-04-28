@@ -5,6 +5,7 @@ var town;
 		init,
 		preload,
 		openVarious,
+		openVariousConfirmed,
 		closeVarious,
 		handleGuildInputFocus,
 		handleGuildInputBlur,
@@ -103,7 +104,7 @@ var town;
 			chat.sizeLarge();
 			TweenMax.set(button.wrap, {
 				bottom: '-5rem'
-			});
+			})
 			$.post(app.url + 'character/load-character.php', {
 				row: create.selected
 			}).done(function(data) {
@@ -230,6 +231,7 @@ var town;
 				rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
 				itemIndex = _.random(0, itemTypesForSale[type].length - 1)
 				storeItems[i] = item.getItem({
+					store: true,
 					mobLevel: (Math.random() > .9 ? (my.level + 5) : my.level + 20),
 					bonus: 0,
 					rarity: rarity,
@@ -316,6 +318,10 @@ var town;
 	}
 
 	function openVarious(event) {
+		if (trade.data.name) chat.log('You are currently trading with ' + trade.data.name + '.', 'chat-warning')
+		else openVariousConfirmed(event)
+	}
+	function openVariousConfirmed(event) {
 		item.resetDrop()
 		if (event.currentTarget.dataset.id === town.openVariousWindow) closeVarious()
 		else {
@@ -415,6 +421,12 @@ var town;
 	function updateVariousDOM() {
 		querySelector('#root-various').innerHTML = getVariousHtml()
 		querySelector('#root-various').style.display = 'flex'
+		townConfig = {
+			duration: 1,
+			scale: 1,
+			x: 0,
+			y: 0
+		}
 
 		msg = ''
 		if (town.openVariousWindow === 'Academy') {
@@ -494,6 +506,15 @@ var town;
 				scale: 1.2,
 				x: 100,
 				y: -100
+			}
+		}
+		else if (town.openVariousWindow === 'Trade') {
+			msg = trade.data.name + ' says: "Let\'s make a deal, '+ my.name + '?"'
+			townConfig = {
+				duration: 1,
+				scale: 1,
+				x: 0,
+				y: 0
 			}
 		}
 		ng.splitText('various-description', msg)
@@ -603,6 +624,7 @@ var town;
 		else if (town.openVariousWindow === 'Guild Hall') html = guildHtml()
 		else if (town.openVariousWindow === 'Merchant') html = merchantHtml()
 		else if (town.openVariousWindow === 'Tavern') html = tavernHtml()
+		else if (town.openVariousWindow === 'Trade') html = tradeHtml()
 		return html
 	}
 	function getStoreBodyHtml() {
@@ -704,6 +726,16 @@ var town;
 		html = variousHeaderHtml() +
 		tavern.getBodyHtml() +
 		variousFooterHtml('seraph-male-3')
+		return html
+	}
+	function tradeHtml() {
+		html = variousHeaderHtml() +
+		trade.getBodyHtml() +
+		variousFooterHtml(
+			_.kebabCase(trade.data.race) +
+			'-' + (!trade.data.gender ? 'male' : 'female') +
+			'-' + trade.data.face
+		)
 		return html
 	}
 	function variousHeaderHtml() {

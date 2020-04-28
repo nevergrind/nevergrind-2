@@ -143,12 +143,12 @@ var bar;
 	}
 
 	function handleClickPartyContextMenu() {
-		id = $(this).attr('id')
+		id = this.id
 		arr = id.split("-")
-		slot = _.findIndex(party.presence, { row: arr[3] * 1 })
-
-		context.getPartyMenu(party.presence[slot].name)
-		console.info(id, slot, party.presence[slot].name)
+		context.player.row = arr[arr.length - 1] * 1
+		slot = _.findIndex(party.presence, { row: context.player.row })
+		context.player.name = party.presence[slot].name
+		context.setPartyMenuHtml()
 	}
 
 	function toggleCharacterStats() {

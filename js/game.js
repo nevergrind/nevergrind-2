@@ -38,6 +38,18 @@ var game;
 		'#scene-dungeon',
 		'#scene-battle'
 	]
+	const partyProps = [
+		'name',
+		'hp',
+		'hpMax',
+		'mp',
+		'mpMax',
+		'sp',
+		'spMax',
+		'job',
+		'partyId',
+		'avatar'
+	]
 	var played = {
 		timer: new delayedCall(0, ''),
 		interval: 60000
@@ -98,23 +110,13 @@ var game;
 				socket.publish(chat.getChannel(), obj);
 			}
 			// party traffic
-			obj.route = 'party->hb';
-			obj.isLeader = typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true;
-			socket.publish('party' + my.partyId, _.assign(obj,
-				_.pick(my, [
-					'name',
-					'hp',
-					'hpMax',
-					'mp',
-					'mpMax',
-					'sp',
-					'spMax',
-					'job',
-					'partyId',
-					'avatar'
-				])
-			));
-			console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
+			obj.route = 'party->hb'
+			obj.isLeader = typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true
+			socket.publish('party' + my.partyId, {
+				...obj,
+				..._.pick(my, partyProps)
+			})
+			//console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
 
 			heartbeat.sendTime = time;
 		}
@@ -125,7 +127,7 @@ var game;
 	}
 	function heartbeatReceived(data) {
 		if (data.name === my.name) {
-			console.info("%c town heartbeatReceived: ", "background: #0bf", data.name, data);
+			console.info("%c town heartbeatReceived: ", "background: #025", data.name, data);
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
 			bar.updatePing(ping);
@@ -133,7 +135,7 @@ var game;
 		upsertRoom(data);
 	}
 	function heartbeatReceivedParty(data) {
-		console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #0ff", data.name, data);
+		console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #048", data.name, data);
 		if (data.name === my.name) {
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
@@ -166,7 +168,7 @@ var game;
 			var el = createElement('div');
 			el.id = 'chat-player-' + player.row;
 			el.innerHTML =
-				'<span class="chat-player">' +
+				'<span data-row="'+ player.row +'" data-name="'+ player.name +'" class="chat-player">' +
 					'['+ player.level +':<span class="chat-'+ player.job +'">'+ player.name +'</span>]' +
 				'</span>';
 			chat.dom.chatRoom.appendChild(el);

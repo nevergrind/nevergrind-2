@@ -194,21 +194,12 @@ var chat;
 			chat.initialized = 1;
 			// show
 			// prevents auto scroll while scrolling
-			$("#chat-log").on('mousedown', function(){
-				chat.isClicked = true;
-			}).on('mouseup', function(){
-				chat.isClicked = false;
-			});
+			$("#chat-log")
+				.on('mousedown', handleMousedownChatLog)
+				.on('mouseup', handleMouseupChatLog);
 
-			$("#chat-room").on('click contextmenu', '.chat-player', function() {
-				var id = $(this).parent().attr('id'),
-					text = $(this).text(),
-					a2 = text.split(":"),
-					name = a2[1].replace(/\]/g, '').trim();
-
-				// console.info('id name ', playerId, name);
-				context.getChatMenu(name);
-			});
+			$("#chat-room")
+				.on('click contextmenu', '.chat-player', handlePlayerClick);
 			// dom cache
 			chat.dom.chatRoom = getElementById('chat-room');
 			chat.dom.chatHeader = getElementById('chat-header');
@@ -217,6 +208,22 @@ var chat;
 			chat.dom.chatInputMode = getElementById('chat-input-mode');
 			chat.dom.chatModeMsg = getElementById('chat-mode-msg');
 		}
+	}
+	function handleMousedownChatLog() {
+		chat.isClicked = true
+	}
+	function handleMouseupChatLog() {
+		chat.isClicked = false;
+	}
+	function handlePlayerClick(event) {
+		var {row, name} = _.pick(event.currentTarget.dataset, [
+			'row', 'name'
+		])
+		context.player.name = name
+		context.player.row = row * 1
+		console.info(this)
+		console.info(event)
+		context.setChatMenuHtml()
 	}
 	function log(msg, className) {
 		// report to chat-log

@@ -2,9 +2,9 @@ var toast;
 (function(TweenMax) {
 	toast = {
 		data: {},
-		getToastHtml: getToastHtml,
 		timer: new delayedCall(0, ''),
 		expired: 15,
+		getToastHtml,
 		add,
 		accept,
 		decline,
@@ -16,6 +16,13 @@ var toast;
 	}
 	var destroyData = {}
 	var el
+
+	// events
+	$('#toast-window')
+		.on('click', '#toast-accept', accept)
+		.on('click', '#toast-decline', decline)
+		.on('click', '#toast-accept-destroy', acceptDestroy)
+		.on('click', '#toast-decline-destroy', declineDestroy)
 	////////////////////////////////////////////////
 	function add(data) {
 		if (toast.data.action) {
@@ -25,6 +32,7 @@ var toast;
 			})
 		}
 		else {
+			// received toast request - display toast & start timer
 			console.info('prompt.add', data)
 			var el = createElement('div')
 			el.id = 'toast-wrap'
@@ -33,6 +41,9 @@ var toast;
 			querySelector('#toast-window').appendChild(el)
 			toast.data = data
 			toast.timer = delayedCall(toast.expired, removeToast)
+			if (data.action === 'trade-request') {
+				trade.timer = delayedCall(toast.expired, trade.tradeExpired, [ data.name ])
+			}
 		}
 	}
 
@@ -56,12 +67,23 @@ var toast;
 	function accept() {
 		// join party by player id?
 		console.info('accept: ', toast.data)
-		if (toast.data.action === 'party-invite') party.inviteAccepted(toast.data)
-		else if (toast.data.action === 'guild-invite') guild.inviteAccepted(toast.data)
-		removeToast()
+
+		if (toast.data.action === 'trade-request') {
+			// 2nd player confirms
+			trade.tradeStart()
+			removeToast()
+		}
+		else {
+			if (toast.data.action === 'party-invite') party.inviteAccepted(toast.data)
+			else if (toast.data.action === 'guild-invite') guild.inviteAccepted(toast.data)
+			removeToast()
+		}
 	}
 	function decline() {
 		console.info('decline: ', toast.data)
+		chat.log('You declined ' + toast.data.name + '\'s request.')
+		trade.data = {}
+		trade.timer.kill()
 		socket.publish('name' + toast.data.name, {
 			name: my.name,
 			action: toast.data.action + '-decline',

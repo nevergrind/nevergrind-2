@@ -166,19 +166,11 @@ var party;
 	 * LEADER: Sends invite to player
 	 * @param name
 	 */
-	function invite(name) {
-		if (my.name === name) {
-			chat.log("You can't invite yourself to a party.", 'chat-warning');
-		}
-		else if (!party.presence[0].isLeader) {
-			chat.log("Only the party leader may send invites.", 'chat-warning');
-		}
-		else if (my.quest.level) {
-			chat.log("You cannot invite adventurers to the party after starting the mission.", 'chat-warning');
-		}
-		else if (ng.view !== 'town') {
-			chat.log("You cannot invite adventurers from the depths of a dungeon.", 'chat-warning');
-		}
+	function invite(name) {inviteAccepted
+		if (my.name === name) chat.log("You can't invite yourself to a party.", 'chat-warning')
+		else if (!party.presence[0].isLeader) chat.log("Only the party leader may send invites.", 'chat-warning')
+		else if (my.quest.level) chat.log("You cannot invite adventurers to the party after starting the mission.", 'chat-warning')
+		else if (ng.view !== 'town') chat.log("You cannot invite adventurers from the depths of a dungeon.", 'chat-warning')
 		else {
 			if (name) {
 				chat.log('Sent party invite to '+ name +'.', 'chat-warning');
@@ -206,7 +198,7 @@ var party;
 		socket.publish('party' + data.row, {
 			route: 'party->inviteAccepted',
 			name: my.name.toLowerCase(),
-		});
+		})
 	}
 	/**
 	 * LEADER: leader confirms invite request is valid

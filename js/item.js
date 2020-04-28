@@ -943,6 +943,7 @@ var loot = {};
 	}
 	function getItem(config) {
 		/**
+		 * store: boolean to disable unidentified items
 		 * mobLevel: int = 1-max sets max possible item level
 		 * bonus: int = provides a boost to finding great items 10 is high
 		 * rarity: string = forces a rarity type
@@ -1043,7 +1044,7 @@ var loot = {};
 			}
 			// post-process item
 		}
-		if (rarity !== 'normal') {
+		if (!config.store && rarity !== 'normal') {
 			drop.unidentified = true
 		}
 		postProcessDrop(drop)
