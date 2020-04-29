@@ -2,6 +2,7 @@
 var gulp = require('gulp');
 // var minifyHTML = require('gulp-minify-html'); // Minify HTML
 var clean = require('gulp-rimraf'); // delete folder contents
+var del = require('del'); // new clean
 var cleanCSS = require('gulp-clean-css'); // Minify the CSS
 var stripDebug = require('gulp-strip-debug'); // Remove debugging stuffs
 var concat = require('gulp-concat'); // Join all JS files together to save space
@@ -11,7 +12,8 @@ var imagemin = require('imagemin');
 var imageminPngquant = require('imagemin-pngquant');
 var imageResize = require('gulp-image-resize');
 // variables
-var buildNg2Tasks = ['minify-css', 'minify-ng2-js', 'clean-ng2'];
+const buildNg2Tasks = ['minify-css', 'minify-ng2-js', 'clean-ng2'];
+//const buildNg2Tasks = ['minify-css', 'minify-ng2-js'];
 // tasks
 gulp.task('minify-css', minifyCss);
 gulp.task('minify-ng2-js', minifyJs);
@@ -24,6 +26,83 @@ gulp.task('build-ng2-sdk', buildNg2Tasks, function() { buildNg2(true); });
 gulp.task('rename', renameExe);
 gulp.task('default', defaultTask);
 gulp.task('resize-sprite', resizeSprite);
+
+
+const jsFiles = [
+	'build/beginWrap',
+	'alias',
+	'login',
+	'create',
+	'ng',
+	'env',
+	'pix',
+	'my',
+	'dom',
+	'audio',
+	'game',
+	'title',
+	'context',
+	'events',
+	'socket',
+	'chat/chat',
+	'chat/party',
+	'chat/guild',
+	'chat/friend',
+	'chat/whisper',
+	'chat/ignore',
+	'chat/broadcast',
+	'chat/who',
+	'components/toast',
+	'components/modal',
+	'components/button',
+	'components/popover',
+	'components/tooltip',
+	'components/dropdown',
+	'mission/mission',
+	'mission/zones',
+	'ui/bar',
+	'battle',
+	'mob',
+	'mobs',
+	'item',
+	'items/amulets',
+	'items/belts',
+	'items/boots',
+	'items/bows',
+	'items/bracers',
+	'items/charms',
+	'items/chests',
+	'items/cloaks',
+	'items/gloves',
+	'items/helms',
+	'items/legs',
+	'items/focus',
+	'items/oneHandBlunts',
+	'items/oneHandSlashers',
+	'items/piercers',
+	'items/rings',
+	'items/shields',
+	'items/shoulders',
+	'items/staves',
+	'items/twoHandBlunts',
+	'items/twoHandSlashers',
+	'town/town',
+	'town/trade',
+	'town/tavern',
+	'town/academy',
+	'cache',
+	'router',
+	'dungeon',
+	'skills',
+	'zone',
+	'stats',
+	'css',
+	'test/test',
+	'init',
+	'build/endWrap',
+].map(function(file) {
+	return './js/' + file + '.js';
+});
 
 //////////////////////////////////////////////
 function minifyCss() {
@@ -40,82 +119,7 @@ function minifyCss() {
 		.pipe(gulp.dest('./css'));
 }
 function minifyJs() {
-	var js = [
-		'build/beginWrap',
-		'alias',
-		'login',
-		'create',
-		'ng',
-		'env',
-		'pix',
-		'my',
-		'dom',
-		'audio',
-		'game',
-		'title',
-		'context',
-		'events',
-		'socket',
-		'chat/chat',
-		'chat/party',
-		'chat/guild',
-		'chat/friend',
-		'chat/whisper',
-		'chat/ignore',
-		'chat/broadcast',
-		'chat/who',
-		'components/toast',
-		'components/modal',
-		'components/button',
-		'components/popover',
-		'components/tooltip',
-		'components/dropdown',
-		'mission/mission',
-		'mission/zones',
-		'ui/bar',
-		'battle',
-		'mob',
-		'mobs',
-		'item',
-		'items/amulets',
-		'items/belts',
-		'items/boots',
-		'items/bows',
-		'items/bracers',
-		'items/charms',
-		'items/chests',
-		'items/cloaks',
-		'items/gloves',
-		'items/helms',
-		'items/legs',
-		'items/focus',
-		'items/oneHandBlunts',
-		'items/oneHandSlashers',
-		'items/piercers',
-		'items/rings',
-		'items/shields',
-		'items/shoulders',
-		'items/staves',
-		'items/twoHandBlunts',
-		'items/twoHandSlashers',
-		'town/town',
-		'town/trade',
-		'town/tavern',
-		'town/academy',
-		'cache',
-		'router',
-		'dungeon',
-		'skills',
-		'zone',
-		'stats',
-		'css',
-		'test/test',
-		'init',
-		'build/endWrap',
-	].map(function(file) {
-		return './js/' + file + '.js';
-	});
-	return gulp.src(js)
+	return gulp.src(jsFiles)
 		.pipe(concat('nevergrind-2.js'))
 		.pipe(gulp.dest('./js'))
 		//.pipe(stripDebug()) // watch out for this for nwjs - can't see console statements
@@ -166,9 +170,12 @@ function resizePng() {
 }
 function cleanNg2() {
 	console.info("Cleaning out ng2 build directory...");
-	return gulp.src("./build-ng2/*", {
+	// we don't want to clean this file though so we negate the pattern
+	// here we use a globbing pattern to match everything inside the `mobile` folder
+	return del([ './build-ng2/**/*']);
+	/*return gulp.src("./build-ng2/!*", {
 		read: false
-	}).pipe(clean());
+	}).pipe(clean());*/
 }
 function buildNg2(isSdk) {
 	// move app files

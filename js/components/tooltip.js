@@ -9,6 +9,8 @@ var tooltip;
 		blacksmith: { isHovering: false },
 		apothecary: { isHovering: false },
 		tavern: { isHovering: false },
+		tradeTo: { isHovering: false },
+		tradeFrom: { isHovering: false },
 		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,

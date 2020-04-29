@@ -7,7 +7,9 @@ var items = {
 	merchant: [],
 	blacksmith: [],
 	apothecary: [],
-	tavern: []
+	tavern: [],
+	tradeTo: [],
+	tradeFrom: [],
 }
 // where app code is invoked upon initial load
 login.init()

@@ -298,7 +298,11 @@ tbody { border: 0 }
 .title-bg-trans {
 	margin: 0;
 	padding: 0;
-	box-shadow: 0 1rem #00214d inset, -.2rem 0 #00214d inset, .2rem 0 #00214d inset, 0 -1rem #00214d inset
+	box-shadow:
+		inset 0 1rem #00214d,
+		inset -.2rem 0 #00214d,
+		inset .2rem 0 #00214d,
+		inset 0 -1rem #00214d
 }
 #neverworks-logo {
 	position: absolute;
@@ -1436,7 +1440,7 @@ background-clip: content-box;
 			#0016 0.5turn .75turn,
 			#025a .75turn
 	) top left / 3px 3px repeat;*/
-	background: repeating-linear-gradient(135deg, #001a 0px 2px, #0016 3px 4px);
+	background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px);
 	flex: 1;
 }
 
@@ -1515,7 +1519,7 @@ background-clip: content-box;
 .disabled {
 	cursor: default;
 	pointer-events: none;
-	filter: brightness(20%);
+	filter: brightness(.2);
 }
 
 #mission-abandon {
@@ -2297,17 +2301,17 @@ background-image:
 .ng-boolean:hover, .options-hotkey:hover {
 	color: #ffd;
 	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
-	filter: saturate(200%);
+	filter: saturate(2);
 	cursor: url('cursor/pointer.cur'), pointer;
 }
 .ng-boolean:active, .options-hotkey:active {
-	filter: saturate(300%);
+	filter: saturate(3);
 	transform: scale(.99);
 }
 .options-hotkey.active {
 	color: #ffd;
 	transform: scale(1.05);
-	filter: brightness(150%) hue-rotate(120deg);
+	filter: brightness(1.5) hue-rotate(120deg);
 }
 .option-button {
 	display: flex;
@@ -2322,10 +2326,10 @@ background-image:
 .option-button:hover {
 	color: #ffd;
 	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
-	filter: saturate(200%);
+	filter: saturate(2);
 }
 .option-button:active {
-	filter: saturate(300%);
+	filter: saturate(3);
 }
 .ng-drop-wrap {
 	position: relative;
@@ -2458,7 +2462,7 @@ background-image:
 	border: .1rem ridge #1a1a1a;
 	border-radius: 4px;
 	background: #0a0a0a;
-	background: repeating-linear-gradient(0deg, #111f 0px 1px, #000f 2px 3px);
+	background: repeating-linear-gradient(0deg, #111f, #111f 1px, #000f, #000f 3px);
 }
 .item-slot-wrap:hover { box-shadow: 0 0 .6rem #aef8 inset; }
 .item-slot-wrap:active { box-shadow: 0 0 .6rem #aeff inset, 0 0 .6rem #aeff inset; }
@@ -2484,7 +2488,7 @@ background-image:
 .item-slot:active {
 	transform: scale(.9);
 }
-.item-slot-type-none .item-slot { filter: brightness(60%) grayscale(1); }
+.item-slot-type-none .item-slot { filter: brightness(.6) grayscale(1); }
 
 .item-slot-type-none .item-slot:active {
 	transform: scale(1) !important;
@@ -2696,7 +2700,7 @@ background-image:
 			#0016 0.5turn .75turn,
 			#025a .75turn
 	) top left / 5px 5px repeat;
-	background: repeating-linear-gradient(135deg, #001a 0px 2px, #0016 3px 4px);
+	background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 4px);
 	margin: .2rem;
 	border: .1rem ridge #000;
 	z-index: 1;
@@ -2731,7 +2735,7 @@ background-image:
 	margin: 0 .2rem;
 	padding: .25rem 1.5rem;
 	border: .1rem ridge gold;
-	filter: hue-rotate(349deg) saturate(3);
+	filter: hue-rotate(350deg) saturate(3);
 }
 #town-value-wrap {
 	justify-content: space-between;
@@ -2749,7 +2753,7 @@ background-image:
 			#000f 0.5turn .75turn,
 			#090909 .75turn
 	) top left / 5px 5px repeat;*/
-	background: repeating-linear-gradient(0deg, #111f 0px 1px, #000f 2px 3px);
+	background: repeating-linear-gradient(0deg, #111f, #111f 1px, #000f, #000f 3px);
 }
 
 .tavern-tabs {
@@ -2935,9 +2939,8 @@ background-image:
 	flex: 1;
 }
 .academy-gold-img {
+	color: gold;
 	margin-right: .1rem;
-	width: .8rem;
-	height: .8rem;
 }
 .academy-lock {
 	width: .8rem;
@@ -2947,15 +2950,15 @@ background-image:
 	padding: .6rem;
 }
 .academy-shield {
-	width: 1.5rem;
-	height: 1.5rem;
-	background: radial-gradient(farthest-corner at 50% 50%, #000f, #880f, #000f);
+	background: radial-gradient(farthest-corner at 50% 50%, #887700ff, #222200ff, #000000ff);
 	padding: .25rem;
+	font-size: 1.5rem;
+	color: gold;
 }
 .academy-cross {
-	width: 1.8rem;
-	height: 1.8rem;
+	color: #789;
 	background: #001;
+	font-size: 1.8rem;
 	padding: .1rem;
 }
 .academy-rank0-locked {
@@ -3015,9 +3018,6 @@ background-image:
 	50% { outline-color: #05b; }
 	100% { outline-color: #fff; }
 }
-.academy-skill-restricted {
-	filter:
-}
 #inventory-footer {
 	margin: .2rem;
 	justify-content: flex-end;
@@ -3032,3 +3032,109 @@ background-image:
 .icon-gear {
 	cursor: url('cursor/gear.cur'), pointer!important;
 }
+.trade-avatars {
+	width: 3rem;
+	height: 3rem;
+}
+.trade-names {
+	color: gold;
+}
+.gold-img {
+	color: gold;
+	margin: .2rem;
+}
+#trade-gold,
+#trade-gold-from {
+	background: linear-gradient(to bottom, #062055, #000000);
+	border: .1rem ridge #048;
+	border-radius: 0 5px 5px 0;
+	color: #fff;
+	flex: 1;
+	font-size: 1rem;
+	line-height: 1.25;
+	text-align: right;
+	font-family: Play, Roboto, sans-serif;
+	padding: 0;
+}
+#trade-gold {
+	transition: filter .15s ease-out;
+}
+#trade-gold:hover {
+	filter: saturate(1.2) brightness(1.2);
+}
+#trade-gold:active {
+	transition: none;
+	filter: saturate(.8) brightness(.8);
+}
+.trade-gold-row {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	border: 1px solid #579;
+	border-radius: 5px;
+	background: #013;
+	margin: 0 .2rem;
+}
+.trade-column {
+	display: flex;
+	flex-direction: column;
+	background: #33332a;
+	box-shadow: inset -.3rem 0 .3rem #0008;
+	flex: 1;
+}
+.trade-column-from {
+	background: #6a6a5a;
+}
+#trade-gold-from {
+	padding-right: .5rem;
+}
+.trade-name-wrap {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 0 .2rem;
+}
+.trade-names {
+	flex:1;
+	text-align: center;
+	color: gold;
+}
+.trade-item-names {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	align-content: center;
+	align-self: stretch;
+	font-size: .7rem;
+	border-radius: 0 4px 4px 0;
+	text-align: center;
+	box-shadow: inset -.2rem .2rem .6rem #000;
+	background: #0004;
+}
+.trade-row {
+	display: flex;
+}
+#trade-options {
+	padding: .1rem;
+	border-top: .1rem ridge #1a1a1a;
+	background: #0a0a0a;
+}
+#trade-confirm {
+	font-size: 1rem;
+	padding: .1rem .5rem;
+}
+.trade-item-wrap {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	padding: 0 .2rem;
+	flex: 1;
+}
+.trade-row .item-slot-wrap,
+.trade-row .item-slot {
+	width: 3rem;
+	height: 3rem;
+	border-radius: 4px 0 0 4px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { margin-left: .25rem; }

@@ -560,7 +560,7 @@ var ng;
 				});
 			}
 			else {
-				ng.msg('Unable to initialize the Steam API! Contact support@nevergrind.com for assistance!', 50)
+				ng.msg('Unable to find your Steam credentials! Are you sure Steam is running? Contact support@nevergrind.com for assistance!', 999)
 			}
 		}
 		else {

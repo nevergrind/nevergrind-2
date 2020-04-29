@@ -515,8 +515,6 @@
       "resolved": "https://registry.npmjs.org/graceful-fs/-/graceful-fs-3.0.11.tgz",
       "version": "3.0.11"
     },
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
     "gulp-minify-css": "^1.2.4",
     "gulp-minify-html": "^1.0.6",
@@ -1398,9 +1396,12 @@
   },
   "devDependencies": {
     "compress": "^0.99.0",
-    "gulp-clean-css": "^3.9.0",
+    "del": "^5.1.0",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^4.3.0",
     "gulp-htmlmin": "^3.0.0",
-    "gulp-image-resize": "^0.13.0",
+    "gulp-image-resize": "^0.13.1",
     "gulp-imagemin": "^4.0.0",
     "gulp-minify": "^2.1.0",
     "gulp-plumber": "^1.1.0",

@@ -34,6 +34,8 @@ var loot = {};
 			blacksmith: 24,
 			apothecary: 17,
 			tavern: 24,
+			tradeFrom: 4,
+			tradeTo: 4,
 		},
 		allProps: [
 			'offense',
@@ -1536,7 +1538,6 @@ var loot = {};
 				tooltip.handleItemEnter(event)
 				return
 			}
-
 			item.dropData = items[type][index]
 			item.dropSlot = index
 			item.dropType = type
@@ -1547,26 +1548,32 @@ var loot = {};
 				resetDrop()
 				return
 			}
-
-			handleDragStart()
-			toast.hideDestroyToast()
 			item.lastDropEvent = event
 			if (item.dropData.name) {
 				// swap
-				$.post(app.url + 'item/swap-items.php', {
-					dragRow: item.dragData.row,
-					dragSlot: item.dropSlot,
-					dragType: item.dropType,
-					dropRow: item.dropData.row,
-					dropSlot: item.dragSlot,
-					dropType: item.dragType,
-				}).done(handleDropSuccess)
-					.fail(handleDropFail)
-					.always(handleDropAlways)
+				if (myItemTypes.includes(item.dropType)) {
+					handleDragStart()
+					toast.hideDestroyToast()
+					$.post(app.url + 'item/swap-items.php', {
+						dragRow: item.dragData.row,
+						dragSlot: item.dropSlot,
+						dragType: item.dropType,
+						dropRow: item.dropData.row,
+						dropSlot: item.dragSlot,
+						dropType: item.dragType,
+					}).done(handleDropSuccess)
+						.fail(handleDropFail)
+						.always(handleDropAlways)
+				}
+				else {
+					dropToOtherSlots()
+				}
 			}
 			else {
 				// update
 				if (myItemTypes.includes(item.dropType)) {
+					handleDragStart()
+					toast.hideDestroyToast()
 					$.post(app.url + 'item/update-item.php', {
 						dragRow: item.dragData.row,
 						dragSlot: item.dropSlot,
@@ -1577,7 +1584,7 @@ var loot = {};
 						.always(handleDropAlways)
 				}
 				else {
-					console.warn('Item type ', item.dropType, ' is client side only. Skipping update-item.php')
+					dropToOtherSlots()
 				}
 			}
 		}
@@ -1608,6 +1615,12 @@ var loot = {};
 			if (item.dragData.name) item.isDragging = true
 			else resetDrop()
 		}
+	}
+	function dropToOtherSlots() {
+		warn('dropToOtherSlots ', item.dropType, ' is client side only. Skipping update-item.php')
+		info('drag', item.dragType, item.dragSlot, item.dragData)
+		info('drop', item.dropType, item.dropSlot, item.dropData)
+		// resetDrop();
 	}
 
 	function showCursorImg(type, index) {

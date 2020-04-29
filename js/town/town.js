@@ -330,6 +330,11 @@ var town;
 		}
 	}
 	function closeVarious() {
+		if (town.openVariousWindow === 'Trade' &&
+			trade.data.name) {
+			chat.log('You closed the trade window.')
+			trade.closeTradeWindow()
+		}
 		town.openVariousWindow && tooltip.conditionalHide(town.openVariousWindow.toLowerCase())
 		town.openVariousWindow = ''
 		querySelector('#root-various').innerHTML = ''
@@ -731,11 +736,7 @@ var town;
 	function tradeHtml() {
 		html = variousHeaderHtml() +
 		trade.getBodyHtml() +
-		variousFooterHtml(
-			_.kebabCase(trade.data.race) +
-			'-' + (!trade.data.gender ? 'male' : 'female') +
-			'-' + trade.data.face
-		)
+		variousFooterHtml(trade.getTradeAvatar())
 		return html
 	}
 	function variousHeaderHtml() {

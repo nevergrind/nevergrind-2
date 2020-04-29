@@ -736,7 +736,9 @@ var bar;
 		updateCharacterDOM()
 		updateInventoryDOM()
 		updateOptionsDOM()
-		town.closeVarious()
+		if (town.openVariousWindow !== 'Trade') {
+			town.closeVarious()
+		}
 		toast.hideDestroyToast()
 		toast.removeToast()
 		item.resetDrop()
