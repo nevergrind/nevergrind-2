@@ -20,7 +20,7 @@ var modal;
 			},
 			body: function() {
 				return '<div id="modal-body">' +
-					'<p>Are you sure you want to delete this character?</p>' +
+					'<p>Are you sure you want to delete '+ create.name +'?</p>' +
 				'</div>';
 			}
 		},

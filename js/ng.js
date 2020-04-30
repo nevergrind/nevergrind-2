@@ -3,6 +3,7 @@ var ng;
 (function($, TweenMax, SplitText, undefined) {
 	ng = {
 		// defaults are defined in getDefaultOptions
+		selectIndex: 0,
 		initialized: false,
 		config: {
 			display: 'Full Screen',
@@ -288,11 +289,16 @@ var ng;
 		disconnect,
 		checkPlayerData,
 		goCreateCharacter,
-		displayAllCharacters,
 		toPercentWidth,
 		toPercentHeight,
 	}
 	var msgTimer = delayedCall(0, '')
+	let characterData = []
+	ng.selectIndex = 0
+
+	$('#ch-card-wrap')
+		.on('click', '#title-select-up', incrementCharacter)
+		.on('click', '#title-select-down', decrementCharacter)
 	///////////////////////////////
 	function init() {
 		$.ajaxSetup({
@@ -484,11 +490,23 @@ var ng;
 		var z = '#scene-title-select-character';
 		var prom = 0;
 		// hide
-		TweenMax.to(z, .6, {
+		TweenMax.to('#scene-title-select-character', .6, {
 			y: 20,
 			opacity: 0,
 			onComplete: allDone
 		});
+		TweenMax.to('#title-gwen', .6, {
+			startAt: { x: 0, filter: 'brightness(1)' },
+			x: -20,
+			filter: 'brightness(10)',
+			opacity: 0
+		})
+		TweenMax.to('#nevergrind-online-logo', .6, {
+			startAt: { y: 0, filter: 'brightness(1)' },
+			y: -20,
+			filter: 'brightness(10)',
+			opacity: 0
+		})
 
 		$("#create-character-name").val('')
 		allDone()
@@ -497,7 +515,7 @@ var ng;
 			if (++prom === 2){
 				ng.unlock();
 				// init create screen and show
-				TweenMax.set(z, {
+				TweenMax.set('#scene-title-select-character', {
 					display: 'none',
 					opacity: 1
 				});
@@ -582,31 +600,31 @@ var ng;
 		bar.updateDynamicStyles()
 		if (!ng.initialized) {
 			ng.initialized = true
-			TweenMax.to('#title-gwen', .2, {
-				delay: .5,
+			TweenMax.to('#title-gwen', .6, {
+				startAt: { filter: 'brightness(10) saturate(2)' },
+				delay: .6,
 				x: 0,
+				filter: 'brightness(1) saturate(1)',
 				opacity: 1,
 				ease: Power1.easeOut,
-				onComplete: function() {
-					TweenMax.to(this.target, .5, {
-						delay: .2,
-						startAt: {
-							filter: 'brightness(0)'
-						},
-						filter: 'brightness(1.8)',
-						ease: Power1.easeOut,
-						onComplete: function() {
-							TweenMax.to(this.target, .6, {
-								filter: 'brightness(1)',
-								ease: Power1.easeIn,
-							})
-						}
-					})
-				}
 			})
-			TweenMax.to('#scene-title-select-character', .5, {
-				delay: .5,
-				filter: 'opacity(1)'
+			TweenMax.to('#nevergrind-online-logo', .6, {
+				startAt: {
+					opacity: 0, filter: 'brightness(10)'
+				},
+				delay: .6,
+				opacity: 1,
+				filter: 'brightness(1)',
+				x: '-50%',
+				scale: 1,
+				ease: Power1.easeOut,
+			})
+			TweenMax.to('#scene-title-select-character', .6, {
+				startAt: { y: 20 },
+				y: 0,
+				delay: .6,
+				filter: 'opacity(1)',
+				ease: Power1.easeOut,
 			})
 			TweenMax.staggerTo(new SplitText(querySelector('#version')).chars, .5, {
 				delay: 2,
@@ -621,7 +639,7 @@ var ng;
 			if (!app.isApp) {
 				getElementById('logout').textContent = localStorage.getItem('account')
 			}
-			ng.displayAllCharacters(r.characterData)
+			displayCharacter(r.characterData)
 			ng.checkPlayerData()
 			$("#login-modal").remove()
 		}
@@ -642,27 +660,49 @@ var ng;
 		}
 		app.initialized = 1
 	}
-	function displayAllCharacters(r) {
+	function displayCharacter(r) {
+		create.selected = 0
+		ng.selectIndex = 0
+		characterData = r
+		updateCharacterCard()
+	}
+	function updateCharacterCard() {
 		var s = ''
-		r.forEach(function(d){
-			var url = my.getAvatarUrl(d);
-			//console.info('url', url);
-			// #ch-card-list
-			s +=
-				'<div data-row="'+ d.row +'" '+
-				'data-name="'+ d.name +'" '+
-				'class="ch-card center select-player-card text-center">'+
-					'<img class="avatar-title" src="'+ url +'" style="padding:0 .5rem">' +
-					'<div class="flex-column flex-max" style="padding: .2rem .5rem; justify-content: space-around">' +
-						'<div class="ch-card-name">'+ _.capitalize(d.name) +'</div>'+
-						'<div class="ch-card-level">Level '+ d.level +'</div>'+
-						'<div class="ch-card-details">'+ d.race +' '+ ng.toJobLong(d.job) +'</div>'+
-					'</div>'+
-					'<img class="title-icon" src="images/ui/job-'+ d.job +'.png" style="">' +
-				'</div>';
-		});
-		getElementById('ch-card-list').innerHTML = s;
-		$(".select-player-card:first").trigger('click');
+		var d = characterData[ng.selectIndex]
+		var url = my.getAvatarUrl(d);
+		s += '<div id="title-select-down" class="title-select-col flex-center">'+
+				'<img class="title-select-chevron" src="images/ui/chevron-left.png">' +
+			'</div>' +
+			'<div id="selected-ch-card" data-row="'+ d.row +'" data-name="'+ d.name +'" class="ch-card center select-player-card text-center">' +
+				'<img class="avatar-title" src="'+ url +'" style="padding:0 .5rem">' +
+				'<div class="flex-column flex-max" style="padding: .2rem .5rem; justify-content: space-around">' +
+					'<div class="ch-card-name">'+ _.capitalize(d.name) +'</div>' +
+					'<div class="ch-card-level">Level '+ d.level +'</div>' +
+					'<div class="ch-card-details">'+ d.race +' '+ ng.toJobLong(d.job) +'</div>' +
+				'</div>' +
+				'<img class="title-icon" src="images/ui/job-'+ d.job +'.png" style="">' +
+			'</div>' +
+			'<div id="title-select-up" class="title-select-col flex-center">'+
+				'<img class="title-select-chevron" src="images/ui/chevron-right.png">' +
+			'</div>'
+		getElementById('ch-card-wrap').innerHTML = s;
+
+		create.selected = d.row
+		create.name = d.name
+	}
+	function incrementCharacter() {
+		ng.selectIndex++
+		if (ng.selectIndex > characterData.length - 1) {
+			ng.selectIndex = 0
+		}
+		updateCharacterCard()
+	}
+	function decrementCharacter() {
+		ng.selectIndex--
+		if (ng.selectIndex < 0) {
+			ng.selectIndex = characterData.length - 1
+		}
+		updateCharacterCard()
 	}
 	function toPercentWidth(pixels) {
 		return pixels / 1920 * 100
@@ -670,5 +710,4 @@ var ng;
 	function toPercentHeight(pixels) {
 		return pixels / 1080 * 100
 	}
-	// private ///////////////////////////////////////////////////////
 })($, TweenMax, SplitText);

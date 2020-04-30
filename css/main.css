@@ -335,14 +335,6 @@ tbody { border: 0 }
 	justify-content: flex-end;
 	align-items: flex-start;
 }
-#scene-title-select-character {
-	display: flex;
-	flex-direction: column;
-	min-height: 12rem;
-	width: 28rem;
-	margin: 1rem 1rem 0 0;
-	filter: opacity(0);
-}
 #scene-title-create-character {
 	display: none;
 	width: 56rem;
@@ -385,7 +377,7 @@ tbody { border: 0 }
 	padding: .2rem 1rem;
 	font: 1.1rem/1 Play, Cinzel;
 	font-weight: 700;
-	border: .1rem outset #cb8;
+	border: .1rem ridge #3a3a3a;
 	text-align: center;
 	border-radius: 0;
 	cursor: url('cursor/pointer.cur'), pointer;
@@ -397,54 +389,16 @@ tbody { border: 0 }
 	-1px 1px #000,
 	1px -1px #000,
 	-1px -1px #000;
-	transition: background .2s ease-out, transform .1s ease-out;
+	transition: background .15s ease-out, transform .15s ease-out;
 }
 .ng-btn:hover {
 	background: #bb9;
 }
 .ng-btn:active {
 	transition: none;
-	outline: 1px solid #579 !important;
-	border: .1rem inset #eed;
+	outline: 1px solid #000 !important;
 	background: #dd9;
 	transform: scale(.98);
-}
-.ng-btn-alert {
-	outline: 1px solid #511;
-	border: .1rem outset #711;
-	background: #911;
-}
-.ng-btn-alert:hover {
-	background: #b11;
-}
-.ng-btn-alert:active {
-	outline: 1px solid #711 !important;
-	border: .1rem inset #b22;
-	background: #811
-}
-.ng-green {
-	background: rgba(11, 76, 11, 1);
-	border: 1px solid #3a3;
-	border-radius: 4px
-}
-
-.ng-text {
-	color: #aef;
-	text-shadow: .5px .5px #357, 1px 1px #357
-}
-
-.unlock-game {
-	color: #aef !important;
-	text-decoration: underline !important
-}
-
-#unlock-game-perks {
-	margin-bottom: 1rem;
-	color: #ff0
-}
-
-#unlock-game-card {
-	text-align: left
 }
 
 #modal-overlay {
@@ -1756,23 +1710,15 @@ background-image:
 	flex-direction: column;
 	justify-content: space-between
 }
-.title-ch-well {
-	display: flex;
-	padding: .2rem 0;
-	justify-content: center;
-	background: #025
-}
-#title-well-top {
-	box-shadow: 0 .1rem #103860;
-	border-bottom: 1px solid #05b;
-	/*background:
-		linear-gradient(135deg, transparent 10px, #025 0) top left,
-		linear-gradient(225deg, transparent 10px, #025 0) top right,
-		linear-gradient(315deg, transparent 0, #025 0) bottom right,
-		linear-gradient(45deg,  transparent 0, #025 0) bottom left;*/
-	background-size: 50% 50%;
-	background-repeat: no-repeat;
-}
+
+/*background:
+	linear-gradient(135deg, transparent 10px, #025 0) top left,
+	linear-gradient(225deg, transparent 10px, #025 0) top right,
+	linear-gradient(315deg, transparent 0, #025 0) bottom right,
+	linear-gradient(45deg,  transparent 0, #025 0) bottom left;
+background-size: 50% 50%;
+background-repeat: no-repeat;
+*/
 /* beveled corners
 
 	background:
@@ -1804,14 +1750,31 @@ background-image:
 	position: absolute;
 	height: 100vh;
 	bottom: -13vh;
-	left: -3vw;
+	left: 0;
 	opacity: 0;
 	transform: translate(-5%, 0%);
 	filter: brightness(0);
 }
-#title-well-bottom {
-	box-shadow: 0 -.1rem #103860;
-	border-top: 1px solid #05b;
+#nevergrind-online-logo {
+	position: absolute;
+	left: 66%;
+	top: 2vh;
+	width: 60vw;
+	max-width: 1280px;
+	transform: translate(-50%) scale(.8);
+	opacity: 0;
+}
+#scene-title-select-character {
+	position: absolute;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	width: 28rem;
+	left: 66%;
+	transform: translate(-50%);
+	margin-bottom: 3rem;
+	align-self: flex-end;
+	filter: opacity(0);
 }
 .title-btn-margin {
 	margin: .2rem
@@ -1826,42 +1789,61 @@ background-image:
 	align-self: center;
 	padding-right: .5rem;
 }
-#ch-card-list {
-	padding: 1rem 0;
-	min-height: 12rem;
+.title-ch-well {
+	display: flex;
+	padding: .2rem 0;
+	justify-content: center;
+	background: #0008;
+}
+#title-well-bottom {
+	border: .1rem solid #000;
+	border-top: none;
+	border-radius: 0 0 6px 6px;
+}
+#title-well-top {
+	border: .1rem solid #000;
+	border-bottom: none;
+	border-radius: 6px 6px 0 0;
+}
+#ch-card-wrap {
+	display: flex;
+	overflow: hidden;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+.title-select-col {
+	background: #665;
+	border-right: 1px solid #000;
+	border-left: 1px solid #000;
+	transition: background .15s ease-out;
+}
+.title-select-col:hover {
+	background: #775;
+}
+.title-select-col:active {
+	transition: none;
+	background: #554;
+}
+.title-select-chevron {
+	width: 1.5rem;
+	filter: brightness(0) drop-shadow(0 0 1px #ffa) drop-shadow(0 0 3px #ffa);
+	cursor: url('cursor/pointer.cur'), pointer;
 }
 .ch-card {
 	display: flex;
 	justify-content: center;
-	background: #27a;
-	background: rgba(255, 255, 255, .3);
-	border: .1rem ridge #013;
-	outline: 1px solid #048;
+	width: 100%;
+	background: #9978;
 	font: 1.25rem/1 Play, Quatro, Roboto Slab, serif;
 	padding: 0;
-	margin: 6px auto;
-	width: 90%;
 	border-radius: 0;
-	text-shadow: 1px 1px #000;
 	transform: scale(1);
 	cursor: url('cursor/pointer.cur'), pointer;
-	transition: text-shadow .2s ease-out, transform .2s ease-out;
-}
-.ch-card:active {
-	background: #26a;
-	outline: 1px solid #05b
+	transition: text-shadow .2s ease-out, backdrop-filter .2s ease-out;
+	color: #ff2 !important;
+	text-shadow: 1px 1px #000, -1px 0 #000, 1px 0 #000, -1px 1px #000, 1px -1px #000, -1px -1px #000;
 }
 .ch-card-active {
-	transform: scale(1.02);
-	background: #159;
-	color: #ff2 !important;
-	text-shadow: 1px 1px #000,
-	-1px 0 #000,
-	1px 0 #000,
-	-1px 1px #000,
-	1px -1px #000,
-	-1px -1px #000,
-	0 0 2px #000, 0 0 4px #000, 0 0 8px #000, 0 0 12px #000
 }
 .select-create-wrap {
 	text-transform: uppercase;

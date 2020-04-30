@@ -637,7 +637,7 @@ var town;
 			'<div id="various-item-wrap">'+ getStoreItemHtml() +'</div>' +
 			'<div id="buy-sell-row" class="flex-row align-center">' +
 				'<div id="town-value-wrap" class="flex-row">'+
-					'<i style="margin-top: .2rem" class="ra ra-gold-bar"></i>' +
+					'<i style="align-self: center;" class="ra ra-gold-bar"></i>' +
 					'<div id="town-value">0</div>' +
 				'</div>' +
 				'<div class="flex-row" style="height: 100%">' +

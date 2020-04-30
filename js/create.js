@@ -90,7 +90,7 @@ var create;
 				ng.logout();
 			});
 		}
-		$("#ch-card-list").on('click', '.ch-card', function(){
+		$("#ch-card-wrap").on('click', '.ch-card', function(){
 			$('.ch-card').removeClass('ch-card-active');
 			$(this).addClass('ch-card-active');
 		});
@@ -106,7 +106,6 @@ var create;
 		$(".attr-add-1").on('click', addAttribute);
 		$("#create-character-back").on('click', goCreateToTitle);
 		$("#create-character-btn").on('click', createCharacter);
-		$("#ch-card-list").on('click', '.select-player-card', selectCharacter);
 		$('#portrait-down').on('click', faceDown)
 		$('#portrait-up').on('click', faceUp)
 	}
@@ -168,12 +167,11 @@ var create;
 	function goCreateToTitle() {
 		ng.lock(1);
 		ng.initGame();
-		var z = getElementById('scene-title-create-character');
-		TweenMax.to(z, .6, {
+		TweenMax.to('#scene-title-create-character', .6, {
 			y: 20,
 			opacity: 0,
 			onComplete: function(){
-				TweenMax.set(z, {
+				TweenMax.set('#scene-title-create-character', {
 					display: 'none',
 					opacity: 1
 				});
@@ -187,14 +185,34 @@ var create;
 					opacity: 1,
 					onComplete: ng.unlock
 				});
+				TweenMax.to('#title-gwen', .6, {
+					startAt: { x: -20, filter: 'brightness(10)' },
+					x: 0,
+					filter: 'brightness(1)',
+					opacity: 1
+				})
+				TweenMax.to('#nevergrind-online-logo', .6, {
+					startAt: { y: -20, filter: 'brightness(10)' },
+					y: 0,
+					filter: 'brightness(1)',
+					opacity: 1
+				})
 			}
 		});
+		TweenMax.to('#title-gwen', .6, {
+			startAt: { x: 0, filter: 'brightness(1)' },
+			x: -20,
+			filter: 'brightness(10)',
+			opacity: 0
+		})
+		TweenMax.to('#nevergrind-online-logo', .6, {
+			startAt: { y: 0, filter: 'brightness(1)' },
+			y: -20,
+			filter: 'brightness(10)',
+			opacity: 0
+		})
 	}
-	function selectCharacter() {
-		var z = $(this);
-		create.selected = z.data('row');
-		create.name = z.data('name');
-	}
+
 	function createCharacter() {
 		//client-side validation
 		if (ng.locked) return;
