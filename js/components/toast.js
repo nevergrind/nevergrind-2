@@ -43,6 +43,11 @@ var toast;
 			toast.timer = delayedCall(toast.expired, removeToast)
 			if (data.action === 'trade-request') {
 				trade.timer = delayedCall(toast.expired, trade.tradeExpired, [ data.name ])
+				if (!ng.isApp) {
+					setTimeout(() => {
+						$('#toast-accept').trigger('click')
+					}, 100)
+				}
 			}
 		}
 	}

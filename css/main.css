@@ -3043,10 +3043,19 @@ background-image:
 	color: gold;
 	margin: .2rem;
 }
+.trade-gold-row {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	border: 1px solid #6a6a5a;
+	background: #1a1a1a;
+	border-radius: 5px;
+	margin: 0 .1rem;
+}
 #trade-gold,
 #trade-gold-from {
-	background: linear-gradient(to bottom, #062055, #000000);
-	border: .1rem ridge #048;
+	background: linear-gradient(to bottom, #313131, #000000);
+	border: .1rem ridge #3a3a2a;
 	border-radius: 0 5px 5px 0;
 	color: #fff;
 	flex: 1;
@@ -3060,29 +3069,23 @@ background-image:
 	transition: filter .15s ease-out;
 }
 #trade-gold:hover {
-	filter: saturate(1.2) brightness(1.2);
+	filter: saturate(1.5) brightness(1.5);
 }
 #trade-gold:active {
 	transition: none;
 	filter: saturate(.8) brightness(.8);
 }
-.trade-gold-row {
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	border: 1px solid #579;
-	border-radius: 5px;
-	background: #013;
-	margin: 0 .2rem;
-}
 .trade-column {
 	display: flex;
 	flex-direction: column;
-	background: #33332a;
+	width: 50%;
+	background: #3a3a2a;
+	padding: 0 .1rem;
+	border: .1rem ridge #5a5a4a;
 	box-shadow: inset -.3rem 0 .3rem #0008;
 	flex: 1;
 }
-.trade-column-from {
+#trade-column-to {
 	background: #6a6a5a;
 }
 #trade-gold-from {
@@ -3092,7 +3095,7 @@ background-image:
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	margin: 0 .2rem;
+	margin: 0 .1rem;
 }
 .trade-names {
 	flex:1;
@@ -3115,19 +3118,20 @@ background-image:
 	display: flex;
 }
 #trade-options {
-	padding: .1rem;
 	border-top: .1rem ridge #1a1a1a;
 	background: #0a0a0a;
 }
-#trade-confirm {
+#trade-confirm,
+#trade-cancel {
 	font-size: 1rem;
 	padding: .1rem .5rem;
+	margin: .2rem;
+	width: 4.5rem;
 }
 .trade-item-wrap {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
-	padding: 0 .2rem;
 	flex: 1;
 }
 .trade-row .item-slot-wrap,
