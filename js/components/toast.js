@@ -4,12 +4,8 @@ var toast;
 		data: {},
 		timer: new delayedCall(0, ''),
 		expired: 15,
-		getToastHtml,
 		add,
 		accept,
-		decline,
-		acceptDestroy,
-		declineDestroy,
 		destroyItem,
 		removeToast,
 		hideDestroyToast,
@@ -44,9 +40,8 @@ var toast;
 			if (data.action === 'trade-request') {
 				trade.timer = delayedCall(toast.expired, trade.tradeExpired, [ data.name ])
 				if (!ng.isApp) {
-					setTimeout(() => {
-						$('#toast-accept').trigger('click')
-					}, 100)
+					info('toast data', _.cloneDeep(toast.data))
+					setTimeout(toast.accept, 100)
 				}
 			}
 		}

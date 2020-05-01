@@ -1,12 +1,15 @@
 var trade;
 !function($, _, TweenMax, undefined) {
 	trade = {
+		startEq: [],
+		startInv: [],
 		timer: new delayedCall(0, ''),
 		data: {},
 		gold: 0,
 		initiator: false,
 		confirmed: false,
 		MAX_GOLD: 4294967295,
+		droppedItem,
 		init,
 		canTrade,
 		handleRequest,
@@ -16,16 +19,18 @@ var trade;
 		tradeStartResp,
 		tradeExpired,
 		openTradeWindow,
-		closeTradeWindow,
 		getBodyHtml,
-		tradeClosedReceived,
+		txCloseTradeWindow,
+		rxTradeClosedReceived,
 		getTradeAvatar,
 		rxTradeUpdate,
 		rxUpdateGold,
+		rxProcessing,
 	}
-	var str, i, val, el, count, len, key
+	var str, i, val, el, count, len, key, msg
 
 	let max = 0
+	let tradeData = {}
 	let rule = {
 		confirmed: 'box-shadow: inset 0 9999px #050; border: .1rem ridge #0a0;',
 	}
@@ -35,6 +40,67 @@ var trade;
 		.on('click', '#trade-confirm', tradeConfirm)
 		.on('click', '#trade-cancel', tradeCancelled)
 	///////////////////////////////////////////
+	function droppedItem() {
+		warn('trade dropToOtherSlots ', item.dropType, ' is client side only. Skipping update-item.php')
+
+		info('trade drag', item.dragType, item.dragSlot, item.dragData)
+
+		info('trade drop', item.dropType, item.dropSlot, item.dropData)
+		querySelector('#' + item.dropType + '-name-' + item.dropSlot).innerHTML = item.getItemNameString(item.dragData, item.dragData.baseName, true)
+		// broadcast to tradeFrom
+
+		updateTrade({
+			tradeTo: item.dragData,
+		}, item.dropSlot)
+
+		// update my client
+		items.tradeFrom[item.dropSlot] = _.cloneDeep(item.dragData)
+		items[item.dragType][item.dragSlot].isTrading = true
+		bar.updateItemSwapDOM()
+		item.resetDrop()
+		warn('lastDragEvent', item.lastDragEvent)
+		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
+		else tooltip.handleItemEnter(item.lastDropEvent)
+	}
+	function updateTrade(data, slot) {
+		tradeData = {
+			action: 'trade-update',
+			data: data
+		}
+		if (typeof slot !== 'undefined') tradeData.slot = slot
+		socket.publish('name' + trade.data.name, tradeData);
+	}
+	function updateToItem(obj) {
+		warn('tradeTo', obj)
+		items.tradeTo[obj.slot] = obj.data.tradeTo
+		bar.updateItemSlotDOM('tradeTo', obj.slot)
+		querySelector('#tradeTo-name-' + obj.slot).innerHTML = item.getItemNameString(obj.data.tradeTo, obj.data.tradeTo.baseName, true)
+	}
+	function rxTradeUpdate(obj) {
+		info('trade rxTradeUpdate', obj.data)
+		if (trade.data.name) {
+			for (key in obj.data) {
+				if (key === 'tradeTo') {
+					updateToItem(obj)
+				}
+				else {
+					trade.data[key] = obj.data[key]
+					if (key === 'gold') {
+						querySelector('#trade-gold-from').textContent = obj.data[key]
+					}
+
+					// should be last
+					if (key === 'confirmed') {
+						if (obj.data[key]) {
+							querySelector('#trade-column-to').setAttribute('style', rule.confirmed)
+							if (trade.confirmed && trade.data.confirmed) tradeCompleted()
+						}
+						else querySelector('#trade-column-to').setAttribute('style', '')
+					}
+				}
+			}
+		}
+	}
 	function tradeChanged() {
 		trade.confirmed = false
 		el = querySelector('#trade-column-from')
@@ -51,29 +117,42 @@ var trade;
 		}
 		trade.confirmed = true
 		updateTrade({
-			confirmed: true
+			confirmed: true,
 		})
-		if (trade.confirmed && trade.data.confirmed) tradeCompleted()
+		if (trade.confirmed && trade.data.confirmed) {
+			info('availableInvSlots', availableInvSlots())
+			info('trade.data.availableSlots', trade.data.availableSlots)
+			info('countToItems', countToItems())
+			info('countFromItems', countFromItems())
+
+			warn('/////////////////////////////')
+			info('compare 1', countToItems(), availableInvSlots() + countFromItems())
+			info('compare 2', countFromItems(), trade.data.availableSlots + countToItems())
+
+			if (countToItems() > availableInvSlots() + countFromItems()) {
+				msg = my.name + ' does not have enough inventory space to facilitate this trade.'
+				chat.log(msg, 'chat-warning')
+				txCloseTradeWindow(msg)
+			}
+			else if (countFromItems() > trade.data.availableSlots + countToItems()) {
+				msg = trade.data.name + ' does not have enough inventory space to facilitate this trade.'
+				chat.log(msg, 'chat-warning')
+				txCloseTradeWindow(msg)
+			}
+			else tradeCompleted()
+		}
 
 		el = querySelector('#trade-column-from')
-		el.setAttribute('style', rule.confirmed)
-		el.classList.add('no-pointer')
-		/*
-		el = querySelector('#trade-confirm')
-		el.classList.add('no-pointer')
-		*/
+		if (el !== null) {
+			el.setAttribute('style', rule.confirmed)
+			el.classList.add('no-pointer')
+		}
 	}
 	function tradeCancelled() {
 		tradeChanged()
 		updateTrade({
 			confirmed: false
 		})
-	}
-	function updateTrade(data) {
-		socket.publish('name' + trade.data.name, {
-			action: 'trade-update',
-			data: data
-		});
 	}
 	function goldChange() {
 		el = $(this)
@@ -100,25 +179,28 @@ var trade;
 			confirmed: false,
 		})
 	}
-	function rxTradeUpdate(obj) {
-		info('trade rxTradeUpdate', obj.data)
-		if (trade.data.name) {
-			for (key in obj.data) {
-				trade.data[key] = obj.data[key]
-				if (key === 'gold') {
-					querySelector('#trade-gold-from').textContent = obj.data[key]
-				}
-
-				// should be last
-				if (key === 'confirmed') {
-					if (obj.data[key]) {
-						querySelector('#trade-column-to').setAttribute('style', rule.confirmed)
-						if (trade.confirmed && trade.data.confirmed) tradeCompleted()
-					}
-					else querySelector('#trade-column-to').setAttribute('style', '')
-				}
-			}
-		}
+	function countFromItems() {
+		// Rhys
+		count = 0
+		items.tradeFrom.map(item => {
+			if (item.name) count++
+		})
+		return count
+	}
+	function countToItems() {
+		// Tigole
+		count = 0
+		items.tradeTo.map(item => {
+			if (item.name) count++
+		})
+		return count
+	}
+	function availableInvSlots() {
+		count = 0
+		items.inv.map(item => {
+			if (!item.name) count++
+		})
+		return count
 	}
 	function tradeCompleted() {
 		info('tradeCompleted gold', trade.gold)
@@ -131,6 +213,12 @@ var trade;
 			var toGold = trade.data.goldTotal - trade.data.gold + trade.gold
 			info('trade fromGold', fromGold)
 			info('trade toGold', toGold)
+			chat.log('Trade processing... please wait.')
+			socket.publish('name' + trade.data.name, {
+				action: 'trade-processing',
+			})
+
+			return
 			$.post(app.url + 'item/trade-item.php', {
 				fromGold: fromGold,
 				toGold: toGold,
@@ -150,6 +238,9 @@ var trade;
 			})
 		}
 	}
+	function rxProcessing() {
+		chat.log('Trade processing... please wait.')
+	}
 	function rxUpdateGold(data) {
 		info('trade rxUpdateGold gold set to ', data.gold)
 		town.setMyGold(data.gold)
@@ -167,8 +258,73 @@ var trade;
 			face: my.face,
 			gender: my.gender,
 			goldTotal: my.gold,
+			availableSlots: availableInvSlots(),
 		});
 		trade.timer = delayedCall(toast.expired, tradeExpired, [trade.data.name])
+	}
+	function handleRequest(data) {
+		info('trade handleRequest', data)
+		if (toast.data.action || trade.data.name) {
+			socket.publish('name' + data.name, {
+				action: 'trade-reject-busy',
+				name: my.name
+			})
+		}
+		else {
+			data.msg = data.name + ' has requested a trade.'
+			chat.log(data.msg, 'chat-warning')
+			// check if busy with windows, check if in town, check no mission, has a party request toast
+			toast.add(data)
+		}
+	}
+	function tradeStart() {
+		// 2nd player confirms with Accept toast
+		trade.timer.kill()
+		if (canTrade()) {
+			initTradeActions('You have accepted opening a trade window with ' + toast.data.name, {
+				initiator: false,
+				confirmed: false,
+				gold: 0,
+				row: toast.data.row,
+				name: toast.data.name,
+				race: toast.data.race,
+				face: toast.data.face,
+				gender: toast.data.gender,
+				goldTotal: toast.data.goldTotal,
+				availableSlots: toast.data.availableSlots,
+			})
+			socket.publish('name' + toast.data.name, {
+				action: 'trade-start',
+				name: my.name,
+				race: my.race,
+				face: my.face,
+				gender: my.gender,
+				goldTotal: my.gold,
+				availableSlots: availableInvSlots(),
+			})
+		}
+	}
+	function tradeStartResp(data) {
+		// 1st player receives trade Accept
+		trade.timer.kill()
+		if (ng.view === 'town') {
+			trade.initiator = true
+			initTradeActions(data.name + ' accepted opening a trade window with you.', {
+				...trade.data,
+				initiator: true,
+				confirmed: false,
+				gold: 0,
+				race: data.race,
+				face: data.face,
+				gender: data.gender,
+				goldTotal: data.goldTotal,
+				availableSlots: data.availableSlots,
+			})
+			// must update my goldTotal in case I bought something while waiting...
+			updateTrade({
+				goldTotal: my.gold
+			})
+		}
 	}
 	function totalItems(key) {
 		count = 0
@@ -189,58 +345,13 @@ var trade;
 		chat.log('Your trade request with ' + name + ' expired.', 'chat-warning')
 		trade.data = {}
 	}
-	function tradeStart() {
-		// 2nd player confirms with Accept
-		trade.timer.kill()
-		if (canTrade()) {
-			trade.data = {
-				initiator: false,
-				confirmed: false,
-				gold: 0,
-				row: toast.data.row,
-				name: toast.data.name,
-				race: toast.data.race,
-				face: toast.data.face,
-				gender: toast.data.gender,
-				goldTotal: toast.data.goldTotal,
-			}
-			chat.log('You have accepted opening a trade window with ' + toast.data.name)
-			socket.publish('name' + toast.data.name, {
-				action: 'trade-start',
-				name: my.name,
-				race: my.race,
-				face: my.face,
-				gender: my.gender,
-				goldTotal: my.gold,
-			})
-			town.closeVarious()
-			openTradeWindow()
-		}
-	}
-	function tradeStartResp(data) {
-		// 1st player receives trade Accept
-		trade.timer.kill()
-		if (ng.view === 'town') {
-			trade.initiator = true
-			trade.data = {
-				...trade.data,
-				initiator: true,
-				confirmed: false,
-				gold: 0,
-				race: data.race,
-				face: data.face,
-				gender: data.gender,
-				goldTotal: data.goldTotal,
-			}
-			chat.log(data.name + ' accepted opening a trade window with you.')
-			// must update my goldTotal in case I bought something while waiting...
-			updateTrade({
-				goldTotal: my.gold
-			})
-
-			town.closeVarious()
-			openTradeWindow()
-		}
+	function initTradeActions(msg, data) {
+		chat.log(msg)
+		trade.data = data
+		trade.startEq = _.cloneDeep(items.eq)
+		trade.startInv = _.cloneDeep(items.inv)
+		town.closeVarious()
+		openTradeWindow()
 	}
 	function initTradeData(type) {
 		for (i = 0; i<item.MAX_SLOTS[type]; i++) {
@@ -259,22 +370,33 @@ var trade;
 		})
 		console.info('openTradeWindow', trade.data)
 	}
-	function closeTradeWindow() {
+	function txCloseTradeWindow(msg) {
+		info('trade txCloseTradeWindow', 'name' + trade.data.name)
 		socket.publish('name' + trade.data.name, {
-			action: 'trade-close-received'
+			action: 'trade-close-received',
+			msg: msg
 		})
-		trade.data = {}
+		closeTradeWindow()
 	}
-	function tradeClosedReceived() {
-		chat.log(trade.data.name + ' closed the chat window.', 'chat-warning')
+	function rxTradeClosedReceived(data) {
+		info('trade tradeClosedReceived')
+		msg = data.msg || trade.data.name + ' closed the chat window.'
+		chat.log(msg, 'chat-warning')
 		closeTradeWindow()
 	}
 	function closeTradeWindow() {
 		trade.data = {}
 		town.closeVarious()
+		items.inv = items.inv.map(item => {
+			delete item.isTrading
+			return item;
+		})
+		bar.updateInventoryDOM()
 	}
+
 	function rejectTradeBusy(data) {
 		info('rejectTradeBusy', data)
+		trade.data = {}
 		trade.timer.kill()
 		chat.log(data.name + ' is busy right now.')
 	}
@@ -284,21 +406,6 @@ var trade;
 		trade.data = {}
 		chat.log(data.name + ' rejected your trade request.')
 	}
-	function handleRequest(data) {
-		info('trade handleRequest', data)
-		if (toast.data.action || trade.data.name) {
-			socket.publish('name' + data.name, {
-				action: 'trade-reject-busy',
-				name: my.name
-			})
-		}
-		else {
-			data.msg = data.name + ' has requested a trade.'
-			chat.log(data.msg, 'chat-warning')
-			// check if busy with windows, check if in town, check no mission, has a party request toast
-			toast.add(data)
-		}
-	}
 	function canTrade() {
 		return !my.quest.id && ng.view === 'town' && !trade.data.name
 	}
@@ -306,6 +413,15 @@ var trade;
 		return _.kebabCase(trade.data.race) +
 			'-' + (!trade.data.gender ? 'male' : 'female') +
 			'-' + trade.data.face
+	}
+	function noItem() {
+		return '<span class="chat-emote">No Item</span>'
+	}
+	function getTradeRow(type, slot) {
+		return '<div class="trade-row">' +
+			bar.getItemSlotHtml(type, slot) +
+			'<div id="'+ type +'-name-'+ slot +'" class="trade-item-names">' + noItem() + '</div>'+
+		'</div>'
 	}
 	function getBodyHtml() {
 		str =
@@ -321,27 +437,14 @@ var trade;
 						'<i class="ra ra-gold-bar gold-img"></i>' +
 						'<input id="trade-gold" type="number" min="0" max="'+ my.gold +'" value="0">' +
 					'</div>' +
-					'<div class="trade-item-wrap">' +
-						'<div class="trade-row">' +
-							bar.getItemSlotHtml('tradeTo', 0) +
-							'<div class="trade-item-names">Mithril Pauldrons of the Eagle</div>' +
-						'</div>' +
-						'<div class="trade-row">' +
-							bar.getItemSlotHtml('tradeTo', 1) +
-							'<div class="trade-item-names">Mithril Pauldrons of the Eagle</div>' +
-						'</div>' +
-						'<div class="trade-row">' +
-							bar.getItemSlotHtml('tradeTo', 2) +
-							'<div class="trade-item-names">Mithril Pauldrons of the Eagle</div>' +
-						'</div>' +
-						'<div class="trade-row">' +
-							bar.getItemSlotHtml('tradeTo', 3) +
-							'<div class="trade-item-names">Mithril Pauldrons of the Eagle</div>' +
-						'</div>' +
-					'</div>' +
+					'<div class="trade-item-wrap">'
+						for (i=0; i<item.MAX_SLOTS.tradeFrom; i++) {
+							str += getTradeRow('tradeFrom', i)
+						}
+					str += '</div>' +
 				'</div>' +
 				// column 2
-				'<div id="trade-column-to" class="trade-column no-pointer">' +
+				'<div id="trade-column-to" class="trade-column">' +
 					'<div class="trade-name-wrap">' +
 						'<img class="trade-avatars" src="images/avatars/'+ getTradeAvatar() +'.png">' +
 						'<div class="trade-names ellipsis">'+ trade.data.name +'</div>' +
@@ -350,24 +453,11 @@ var trade;
 						'<i class="ra ra-gold-bar gold-img"></i>' +
 						'<div id="trade-gold-from" class="flex-row" style="justify-content: flex-end">0</div>' +
 					'</div>' +
-					'<div class="trade-item-wrap">' +
-						'<div class="trade-row">' +
-							bar.getItemSlotHtml('tradeFrom', 0) +
-							'<div class="trade-item-names">Mithril Pauldrons of the Eagle</div>' +
-						'</div>' +
-						'<div class="trade-row">' +
-							bar.getItemSlotHtml('tradeFrom', 1) +
-							'<div class="trade-item-names">Mithril Pauldrons of the Eagle</div>' +
-						'</div>' +
-						'<div class="trade-row">' +
-							bar.getItemSlotHtml('tradeFrom', 2) +
-							'<div class="trade-item-names">Mithril Pauldrons of the Eagle</div>' +
-						'</div>' +
-						'<div class="trade-row">' +
-							bar.getItemSlotHtml('tradeFrom', 3) +
-							'<div class="trade-item-names">Mithril Pauldrons of the Eagle</div>' +
-						'</div>' +
-					'</div>' +
+					'<div class="trade-item-wrap">'
+						for (i=0; i<item.MAX_SLOTS.tradeTo; i++) {
+							str += getTradeRow('tradeTo', i)
+						}
+					str += '</div>' +
 				'</div>' +
 			'</div>' +
 			'<div id="trade-options" class="flex-row flex-center">'+

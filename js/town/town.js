@@ -333,7 +333,7 @@ var town;
 		if (town.openVariousWindow === 'Trade' &&
 			trade.data.name) {
 			chat.log('You closed the trade window.')
-			trade.closeTradeWindow()
+			trade.txCloseTradeWindow()
 		}
 		town.openVariousWindow && tooltip.conditionalHide(town.openVariousWindow.toLowerCase())
 		town.openVariousWindow = ''

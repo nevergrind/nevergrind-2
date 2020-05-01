@@ -1,9 +1,8 @@
 var bar;
 (function(_, $, Draggable, TweenMax, undefined) {
 	bar = {
+		updateInventoryDOM,
 		init,
-		linkdead,
-		hideParty,
 		updatePlayerBar,
 		addPlayer,
 		updatePing,
@@ -85,7 +84,7 @@ var bar;
 		conjuration: 'Conjuration enhances the power of all conjuration-based magic. Why get your hands dirty when you can summon an ally to do the dirty work for you?! Summon a fire-breathing hydra to melt your enemies! Or summon an army of angry bees to seek and destroy! The only limit is your imagination!',
 	}
 
-	var fileName, index, player, barRatio, html, str, el, elSfx, elMusic, id, arr, slot, resp, i, val, max
+	var fileName, index, player, barRatio, html, str, el, elSfx, elMusic, id, arr, slot, resp, i, val, max, getItem
 
 	var pingTimer = new delayedCall(0, '')
 	const volumeSettings = []
@@ -259,10 +258,13 @@ var bar;
 			else if (_.get(items[type][slot], 'rarity')) {
 				resp = 'item-slot-wrap item-slot-type-' + items[type][slot].rarity
 			}
-
+			if (_.get(items[type][slot], 'isTrading')) {
+				resp += ' item-trading'
+			}
 		}
 		return resp
 	}
+	const tradeSlots = ['tradeTo', 'tradeFrom']
 
 	function toggleInventory() {
 		// open all bags in the bottom-right corner
@@ -318,15 +320,6 @@ var bar;
 		return html
 	}
 
-	function updateItemSlotDOM(type, slot) {
-		console.warn('updateItemSlotDOM', type, slot)
-		el = querySelector('#'+ type +'-slot-' + slot)
-		if (el !== null) {
-			el.className = getInvItemClass(type, slot)
-			querySelector('#'+ type +'-slot-img-' + slot).src = getItemSlotImage(type, slot)
-		}
-	}
-
 	function updateCharacterDOM() {
 		if (bar.windowsOpen.character) {
 			querySelector('#bar-character-stats').innerHTML = getCharacterStatsHtml()
@@ -351,6 +344,15 @@ var bar;
 			console.info('update char stats')
 			updateCharStatPanels()
 			game.heartbeatSend()
+		}
+	}
+
+	function updateItemSlotDOM(type, slot) {
+		console.warn('trade updateItemSlotDOM', '#'+ type +'-slot-' + slot, type, slot)
+		el = querySelector('#'+ type +'-slot-' + slot)
+		if (el !== null) {
+			el.className = getInvItemClass(type, slot)
+			querySelector('#'+ type +'-slot-img-' + slot).src = getItemSlotImage(type, slot)
 		}
 	}
 

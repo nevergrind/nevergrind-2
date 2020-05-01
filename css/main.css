@@ -1811,6 +1811,8 @@ background-repeat: no-repeat;
 	border-top: 1px solid #000;
 	border-bottom: 1px solid #000;
 }
+#title-select-down { border-left: .1rem solid #000 }
+#title-select-up { border-right: .1rem solid #000 }
 .title-select-col {
 	background: #665;
 	border-right: 1px solid #000;
@@ -1833,7 +1835,7 @@ background-repeat: no-repeat;
 	display: flex;
 	justify-content: center;
 	width: 100%;
-	background: #9978;
+	background: linear-gradient(to top, #000d, #000a 50%, #000d);
 	font: 1.25rem/1 Play, Quatro, Roboto Slab, serif;
 	padding: 0;
 	border-radius: 0;
@@ -1842,8 +1844,6 @@ background-repeat: no-repeat;
 	transition: text-shadow .2s ease-out, backdrop-filter .2s ease-out;
 	color: #ff2 !important;
 	text-shadow: 1px 1px #000, -1px 0 #000, 1px 0 #000, -1px 1px #000, 1px -1px #000, -1px -1px #000;
-}
-.ch-card-active {
 }
 .select-create-wrap {
 	text-transform: uppercase;
@@ -3086,7 +3086,7 @@ background-repeat: no-repeat;
 }
 .trade-item-names {
 	display: flex;
-	justify-content: flex-start;
+	justify-content: center;
 	align-items: center;
 	align-content: center;
 	align-self: stretch;
@@ -3095,6 +3095,7 @@ background-repeat: no-repeat;
 	text-align: center;
 	box-shadow: inset -.2rem .2rem .6rem #000;
 	background: #0004;
+	flex: 1;
 }
 .trade-row {
 	display: flex;
@@ -3124,3 +3125,8 @@ background-repeat: no-repeat;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button { margin-left: .25rem; }
+
+.item-trading {
+	pointer-events: none!important;
+	filter: grayscale(1) brightness(.5);
+}

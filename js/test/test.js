@@ -66,7 +66,7 @@ var test;
 		for (var i=0; i<mob.max; i++){
 			if (singleMob && i === 2 || !singleMob) {
 				mobKey = mob.getRandomMobKey();
-				mobKey = 'angler';
+				mobKey = 'elephant';
 				cache.preloadMob(mobKey);
 				mob.setMob(i, mobKey);
 			}

@@ -90,8 +90,9 @@ var whisper;
 		else if (data.action === 'trade-reject-busy') trade.rejectTradeBusy(data)
 		else if (data.action === 'trade-request-decline') trade.declineTrade(data)
 		else if (data.action === 'trade-start') trade.tradeStartResp(data)
-		else if (data.action === 'trade-close-received') trade.tradeClosedReceived(data)
+		else if (data.action === 'trade-close-received') trade.rxTradeClosedReceived(data)
 		else if (data.action === 'trade-update') trade.rxTradeUpdate(data)
 		else if (data.action === 'trade-update-gold') trade.rxUpdateGold(data)
+		else if (data.action === 'trade-processing') trade.rxProcessing(data)
 	}
 })();

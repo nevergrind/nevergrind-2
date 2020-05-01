@@ -2,15 +2,14 @@ var item;
 var loot = {};
 (function(_, Object, JSON, $, SteppedEase, TweenMax, undefined) {
 	item = {
+		handleDropSuccess,
 		getItemNameString,
-		getEquipString,
 		getRarity,
 		getItem,
 		getLoot,
 		resetDrop,
 		toggleDrag,
 		updateCursorImgPosition,
-		dropItem,
 		buy,
 		sell,
 		destroy,
@@ -907,8 +906,10 @@ var loot = {};
 		}
 		return resp;
 	}
-	function getItemNameString(drop, baseName) {
-		return '<span class="item-'+ drop.rarity +'">[' + (baseName ? baseName : drop.name) + ']</span>'
+	function getItemNameString(drop, baseName, noBrackets) {
+		return '<span class="item-'+ drop.rarity +'">' + (noBrackets ? '' : '[') +
+			(baseName ? baseName : drop.name) +
+		(noBrackets ? '' : ']') + '</span>'
 	}
 	function getFirstAvailableInvSlot() {
 		var index = items.inv.findIndex(slot => !slot.name)
@@ -1503,6 +1504,23 @@ var loot = {};
 		if (item.awaitingDrop) return
 		var index = event.currentTarget.dataset.index * 1
 		var type = event.currentTarget.dataset.type
+		if (trade.data.name) {
+			if (type === 'eq') {
+				if (item.isDragging) chat.log('It would be unseemly to change your clothes while trading.', 'chat-warning')
+				else chat.log('You cannot trade items you are wearing!', 'chat-warning')
+				return
+			}
+			if (type === 'tradeTo') {
+				chat.log('You cannot drop items to ' + trade.data.name + '\'s trade slots!', 'chat-warning')
+				return
+			}
+			if (type === 'tradeFrom' && items[type][index].name) {
+				if (item.isIdentifyMode) chat.log('You cannot identify items in the trade window.', 'chat-warning')
+				else chat.log('You cannot drag items out of the trade window.', 'chat-warning')
+				return
+			}
+		}
+
 		if (item.isIdentifyMode) {
 			if (type === 'inv' || type === 'bank' &&
 				items[type][index].unidentified) {
@@ -1516,7 +1534,7 @@ var loot = {};
 			return
 		}
 
-		console.info('toggleDrag', type, index)
+		//console.info('toggleDrag', type, index)
 		if (item.isDragging) {
 			if (!myItemTypes.includes(item.dragType)) {
 				// I don't own this item
@@ -1565,9 +1583,7 @@ var loot = {};
 						.fail(handleDropFail)
 						.always(handleDropAlways)
 				}
-				else {
-					dropToOtherSlots()
-				}
+				else trade.droppedItem()
 			}
 			else {
 				// update
@@ -1583,9 +1599,7 @@ var loot = {};
 						.fail(handleDropFail)
 						.always(handleDropAlways)
 				}
-				else {
-					dropToOtherSlots()
-				}
+				else trade.droppedItem()
 			}
 		}
 		else {
@@ -1616,11 +1630,14 @@ var loot = {};
 			else resetDrop()
 		}
 	}
-	function dropToOtherSlots() {
-		warn('dropToOtherSlots ', item.dropType, ' is client side only. Skipping update-item.php')
-		info('drag', item.dragType, item.dragSlot, item.dragData)
-		info('drop', item.dropType, item.dropSlot, item.dropData)
-		// resetDrop();
+	function handleDropSuccess() {
+		items[item.dropType][item.dropSlot] = item.dragData
+		items[item.dragType][item.dragSlot] = item.dropData
+		bar.updateItemSwapDOM()
+		resetDrop()
+		warn('lastDragEvent', item.lastDragEvent)
+		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
+		else tooltip.handleItemEnter(item.lastDropEvent)
 	}
 
 	function showCursorImg(type, index) {
@@ -1736,15 +1753,6 @@ var loot = {};
 	function handleDropFail(r) {
 		ng.msg(r.responseText, 8);
 		resetDrop()
-	}
-	function handleDropSuccess() {
-		items[item.dropType][item.dropSlot] = item.dragData
-		items[item.dragType][item.dragSlot] = item.dropData
-		bar.updateItemSwapDOM()
-		resetDrop()
-		warn('lastDragEvent', item.lastDragEvent)
-		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
-		else tooltip.handleItemEnter(item.lastDropEvent)
 	}
 
 	function handleDragStart() {
