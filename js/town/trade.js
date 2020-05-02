@@ -381,8 +381,10 @@ var trade;
 	function rxTradeClosedReceived(data) {
 		info('trade tradeClosedReceived')
 		msg = data.msg || trade.data.name + ' closed the chat window.'
-		chat.log(msg, 'chat-warning')
-		closeTradeWindow()
+		if (trade.data.name) {
+			chat.log(msg, 'chat-warning')
+			closeTradeWindow()
+		}
 	}
 	function closeTradeWindow() {
 		trade.data = {}

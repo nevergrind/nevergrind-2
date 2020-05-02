@@ -526,6 +526,22 @@ var town;
 		hideLabel()
 		animateBuilding(townConfig)
 		tooltip.conditionalHide()
+		TweenMax.to('#town-avatar-bg', 3.3, {
+			startAt: {
+				scale: 1
+			},
+			scale: 1.1,
+			repeat: -1,
+			yoyo: true,
+			ease: RoughEase.ease.config({
+				template: Power0.easeOut,
+				strength: 3,
+				points: 50,
+				taper: 'both',
+				randomize: true,
+				clamp: true
+			}),
+		});
 	}
 	function animateBuilding(o) {
 		TweenMax.to('#town-wrap, #sky-wrap', o.duration, {
@@ -751,6 +767,7 @@ var town;
 		return '<div id="various-footer" class="flex-center">' +
 			'<div id="town-avatar-col">' +
 				'<div id="town-avatar-wrap">' +
+					'<div id="town-avatar-bg"></div>' +
 					'<img id="town-avatar" class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
 				'</div>' +
 			'</div>' +

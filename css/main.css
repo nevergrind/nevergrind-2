@@ -1758,7 +1758,7 @@ background-repeat: no-repeat;
 #nevergrind-online-logo {
 	position: absolute;
 	left: 66%;
-	top: 2vh;
+	top: 4vh;
 	width: 60vw;
 	max-width: 1280px;
 	transform: translate(-50%) scale(.8);
@@ -1780,8 +1780,8 @@ background-repeat: no-repeat;
 	margin: .2rem
 }
 .avatar-title {
-	width: 4.6rem;
-	height: 4.6rem;
+	width: 5rem;
+	height: 5rem;
 }
 .title-icon {
 	width: 3.2rem;
@@ -1805,12 +1805,6 @@ background-repeat: no-repeat;
 	border-bottom: none;
 	border-radius: 6px 6px 0 0;
 }
-#ch-card-wrap {
-	display: flex;
-	overflow: hidden;
-	border-top: 1px solid #000;
-	border-bottom: 1px solid #000;
-}
 #title-select-down { border-left: .1rem solid #000 }
 #title-select-up { border-right: .1rem solid #000 }
 .title-select-col {
@@ -1831,11 +1825,18 @@ background-repeat: no-repeat;
 	filter: brightness(0) drop-shadow(0 0 1px #ffa) drop-shadow(0 0 3px #ffa);
 	cursor: url('cursor/pointer.cur'), pointer;
 }
+#ch-card-wrap {
+	display: flex;
+	overflow: hidden;
+	height: 5rem;
+	background: #0008;
+	border: .1rem solid #000;
+}
 .ch-card {
 	display: flex;
 	justify-content: center;
 	width: 100%;
-	background: linear-gradient(to top, #000d, #000a 50%, #000d);
+	background: linear-gradient(to top, #0008, #0004 50%, #0008);
 	font: 1.25rem/1 Play, Quatro, Roboto Slab, serif;
 	padding: 0;
 	border-radius: 0;
@@ -2628,17 +2629,28 @@ background-repeat: no-repeat;
 	) top left / 5px 5px repeat;
 }
 #town-avatar-wrap {
+	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: flex-end;
 	outline: .1rem ridge #136;
 	height: 5rem;
-	background: radial-gradient(farthest-corner at 50% 50%, #05b 0, #001 100%);
-	/**
-	TODO: MAKE THIS A CANDLELIGHT BG
-	 */
+	width: 5rem;
+	overflow: hidden;
+	background: #000;
+}
+#town-avatar-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	background: radial-gradient(4.5rem 4.5rem at 2.5rem 5rem, #ffaf 0%, #ffa7 30%, #ffa3 75%, #ffa1 100%);
+	width: 10rem;
+	height: 10rem;
 }
 .town-avatars {
+	position: relative;
 	width: 5rem;
 	height: 5rem;
 }
