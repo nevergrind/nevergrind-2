@@ -392,12 +392,13 @@ var ng;
 	}
 
 	function keepAlive() {
-		game.session.timer.kill()
-		$.get(app.url + 'session/keep-alive.php').always(handleKeepAliveAlways);
+		clearTimeout(game.session.timer)
+		$.get(app.url + 'session/keep-alive.php')
+			.always(handleKeepAliveAlways);
 	}
 	function handleKeepAliveAlways() {
 		if (ng.view === 'title') {
-			game.session.timer = delayedCall(170, keepAlive);
+			game.session.timer = setTimeout(keepAlive,170000);
 		}
 	}
 

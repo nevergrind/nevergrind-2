@@ -1,8 +1,6 @@
 var trade;
 !function($, _, TweenMax, undefined) {
 	trade = {
-		startEq: [],
-		startInv: [],
 		timer: new delayedCall(0, ''),
 		data: {},
 		gold: 0,
@@ -26,8 +24,12 @@ var trade;
 		rxTradeUpdate,
 		rxUpdateGold,
 		rxProcessing,
+		rxSlotsAndSend,
+		availableInvSlots,
+		rxUpdateInventory,
+		updateTrade,
 	}
-	var str, i, val, el, count, len, key, msg
+	var str, i, val, el, count, len, key, msg, slots
 
 	let max = 0
 	let tradeData = {}
@@ -124,17 +126,18 @@ var trade;
 			info('trade.data.availableSlots', trade.data.availableSlots)
 			info('countToItems', countToItems())
 			info('countFromItems', countFromItems())
+			slots = availableInvSlots()
+			warn('///////////////////////////// availableInvSlots', slots)
+			warn('compare 1', countToItems(), '>', slots.length, '?')
+			warn('compare 2', countFromItems(), '>', trade.data.availableSlots.length, '?')
 
-			warn('/////////////////////////////')
-			info('compare 1', countToItems(), availableInvSlots() + countFromItems())
-			info('compare 2', countFromItems(), trade.data.availableSlots + countToItems())
-
-			if (countToItems() > availableInvSlots() + countFromItems()) {
+			if (countToItems() > slots.length) {
 				msg = my.name + ' does not have enough inventory space to facilitate this trade.'
 				chat.log(msg, 'chat-warning')
 				txCloseTradeWindow(msg)
 			}
-			else if (countFromItems() > trade.data.availableSlots + countToItems()) {
+			else if (countFromItems() > trade.data.availableSlots.length) {
+				// sending items > available slots (+trading)
 				msg = trade.data.name + ' does not have enough inventory space to facilitate this trade.'
 				chat.log(msg, 'chat-warning')
 				txCloseTradeWindow(msg)
@@ -196,34 +199,70 @@ var trade;
 		return count
 	}
 	function availableInvSlots() {
-		count = 0
-		items.inv.map(item => {
-			if (!item.name) count++
+		slots = []
+		items.inv.map((item, index) => {
+			if (!item.name || item.isTrading) slots.push(index)
 		})
-		return count
+		return slots
 	}
 	function tradeCompleted() {
-		info('tradeCompleted gold', trade.gold)
-		info('tradeCompleted tradeTo', items.tradeTo)
-		info('tradeCompleted gold 2', trade.data.gold)
-		info('tradeCompleted tradeFrom', items.tradeFrom)
+		ng.lock(true)
 		if (trade.initiator) {
 			warn("Initiating trade as " + my.name)
-			var fromGold = my.gold - trade.gold + trade.data.gold
-			var toGold = trade.data.goldTotal - trade.data.gold + trade.gold
-			info('trade fromGold', fromGold)
-			info('trade toGold', toGold)
 			chat.log('Trade processing... please wait.')
 			socket.publish('name' + trade.data.name, {
 				action: 'trade-processing',
 			})
+		}
+	}
+	function rxProcessing() {
+		chat.log('Trade processing... please wait.')
+		socket.publish('name' + trade.data.name, {
+			action: 'trade-send-slots',
+			availableSlots: availableInvSlots()
+		})
+	}
+	function rxSlotsAndSend(data) {
+		var fromGold = my.gold - trade.gold + trade.data.gold
+		var toGold = trade.data.goldTotal - trade.data.gold + trade.gold
+		var slotsFrom = availableInvSlots()
+		var slotsTo = data.availableSlots
+		// double check count is good
+		warn('///////////////////////////// availableInvSlots', slots)
+		warn('compare 1', countToItems(), '>', slotsFrom.length, '?')
+		warn('compare 2', countFromItems(), '>', slotsTo.length, '?')
+		if (countToItems() > slotsFrom.length) {
+			msg = my.name + ' does not have enough inventory space to facilitate this trade.'
+			chat.log(msg, 'chat-warning')
+			txCloseTradeWindow(msg)
+		}
+		else if (countFromItems() > slotsTo.length) {
+			msg = trade.data.name + ' does not have enough inventory space to facilitate this trade.'
+			chat.log(msg, 'chat-warning')
+			txCloseTradeWindow(msg)
+		}
+		else {
+			info('tradeCompleted gold', trade.gold)
+			info('tradeCompleted gold 2', trade.data.gold)
 
-			return
-			$.post(app.url + 'item/trade-item.php', {
+			info('tradeCompleted tradeFrom', items.tradeFrom)
+			info('trade rxSlotsAndSend slotsFrom', slotsFrom)
+
+			info('tradeCompleted tradeTo', items.tradeTo)
+			info('trade rxSlotsAndSend slotsTo', slotsTo)
+			//TODO: build object that has item1, slot1 etc and new owner id (row)
+			var postData = {
 				fromGold: fromGold,
 				toGold: toGold,
 				toRow: trade.data.row,
-			}).done(() => {
+				tradeFrom: convertItemsForDb(items.tradeFrom, slotsTo),
+				tradeTo: convertItemsForDb(items.tradeTo, slotsFrom),
+			}
+
+			info('trade postData', postData)
+			//TODO: when done load inventory and broadcast to load inventory
+
+			$.post(app.url + 'item/trade-item.php', postData).done(() => {
 				warn('trade done my gold:', fromGold)
 				town.setMyGold(fromGold)
 				if (trade.data.goldTotal !== toGold) {
@@ -232,14 +271,39 @@ var trade;
 						gold: toGold,
 					})
 				}
-				closeTradeWindow()
+				socket.publish('name' + trade.data.name, {
+					action: 'trade-update-inventory',
+				})
+				chat.log('Trade completed! Notifying ' + trade.data.name + '.')
+				$.get(app.url + 'item/get-inventory.php').done(finishTrade)
 			}).fail(data => {
 				warn('fail', data)
 			})
 		}
 	}
-	function rxProcessing() {
-		chat.log('Trade processing... please wait.')
+	function rxUpdateInventory() {
+		info('trade-update-gold rxUpdateInventory')
+		$.get(app.url + 'item/get-inventory.php').done(finishTrade)
+	}
+	function finishTrade(data) {
+		closeTradeWindow()
+		console.info('get-inventorry', data)
+		town.initItemData(data.inv, 'inv')
+		bar.updateInventoryDOM()
+		ng.unlock()
+		chat.log('Client update completed!')
+	}
+	function convertItemsForDb(items, slots) {
+		return _.filter(items.map(item => {
+			if (item.row) {
+				return {
+					slot: slots.shift(),
+					row: item.row,
+				}
+			} else return {}
+		}), item => {
+			return item.row
+		})
 	}
 	function rxUpdateGold(data) {
 		info('trade rxUpdateGold gold set to ', data.gold)
@@ -281,6 +345,8 @@ var trade;
 		// 2nd player confirms with Accept toast
 		trade.timer.kill()
 		if (canTrade()) {
+			trade.initiator = false
+			trade.confirmed = false
 			initTradeActions('You have accepted opening a trade window with ' + toast.data.name, {
 				initiator: false,
 				confirmed: false,
@@ -309,6 +375,7 @@ var trade;
 		trade.timer.kill()
 		if (ng.view === 'town') {
 			trade.initiator = true
+			trade.confirmed = false
 			initTradeActions(data.name + ' accepted opening a trade window with you.', {
 				...trade.data,
 				initiator: true,
@@ -348,8 +415,6 @@ var trade;
 	function initTradeActions(msg, data) {
 		chat.log(msg)
 		trade.data = data
-		trade.startEq = _.cloneDeep(items.eq)
-		trade.startInv = _.cloneDeep(items.inv)
 		town.closeVarious()
 		openTradeWindow()
 	}
@@ -394,6 +459,7 @@ var trade;
 			return item;
 		})
 		bar.updateInventoryDOM()
+		ng.unlock()
 	}
 
 	function rejectTradeBusy(data) {

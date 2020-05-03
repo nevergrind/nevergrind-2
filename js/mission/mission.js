@@ -1,13 +1,13 @@
 var mission;
-(function($, _, undefined) {
+(function(TweenMax, $, _, undefined) {
 	mission = {
 		data: {},
 		loaded: 0,
 		delegated: 0,
 		quests: [],
-		setMissionMenusAllOpen,
+		id: -1,
+		title: '',
 		getMissionBodyHtml,
-		asideHtml,
 		embark,
 		resetLocalQuestData,
 		abandon,
@@ -23,13 +23,9 @@ var mission;
 	var that = {}
 	const minusClasses = 'mission-tree-btn mission-minus'
 	const plusClasses = 'mission-tree-btn mission-plus'
+	let questLevel = -1
 
 	///////////////////////////////////////////////
-	function setMissionMenusAllOpen() {
-		zones.forEach(function(v) {
-			v.isOpen = 0;
-		});
-	}
 	function getOpenMenuClass(level) {
 		return (level <= my.level && level > ~~(my.level * .66)) ? 'mission-open-menu' : ''
 	}
@@ -47,11 +43,12 @@ var mission;
 		$("#mission-embark").removeClass('disabled');
 	}
 	function updateTitle() {
-		$("#mission-title").html(my.selectedMissionTitle);
+		$("#mission-title").html(mission.title);
 	}
 	function getMissionBodyHtml() {
 		questHtml = '<div id="various-body" class="flex-column flex-max">'
 		var headMsg = 'Mission Counter'
+		questLevel = -1
 
 		if (party.presence[0].isLeader) {
 			// is solo or a leader
@@ -61,9 +58,15 @@ var mission;
 			headMsg = my.quest.title;
 		}
 
-		questHtml = '<div id="mission-wrap" class="aside-frame text-center">' +
-			'<div id="mission-title">'+ headMsg +'</div>' +
-			'<div id="mission-embark" class="ng-btn disabled">Embark!</div>' +
+		questHtml = '<div id="mission-wrap" class="flex-row aside-frame">' +
+			'<img id="mission-preview" src="images/battle/salubrin-den-1.png">' +
+			'<div class="flex-max">'+
+				'<div class="flex-row space-between" style="font-size: .8rem;">'+
+					'<div id="mission-title">'+ headMsg +'</div>' +
+					'<div id="mission-level">'+ levelHtml() + '</div>' +
+				'</div>' +
+				'<div id="mission-embark" class="ng-btn disabled">Embark!</div>' +
+			'</div>' +
 		'</div>'
 
 		if (!reversedZones.length) {
@@ -87,7 +90,8 @@ var mission;
 		return questHtml
 
 	}
-	function asideHtml() {
+	function levelHtml() {
+		return questLevel > -1 ? 'Lv.' + questLevel + '-' + zones[mission.id].maxLevel : ''
 	}
 	function getMissionRowHtml(data) {
 		var html = '';
@@ -110,12 +114,16 @@ var mission;
 		that = $(this)
 		var id = this.dataset.id * 1
 		var title = that.data('title')
-		if (id && party.presence[0].isLeader) {
-			console.info("QUEST SELECTED: ", id, title);
-			my.selectedZone = id;
-			my.selectedMissionTitle = title;
-			showEmbark();
-			updateTitle();
+		if (id >= 0 && party.presence[0].isLeader) {
+			console.info("QUEST SELECTED: ", id, title)
+			mission.id = id
+			mission.title = title
+			questLevel = zones[mission.id].level
+			console.info("zones[mission.id].name: ", zones[mission.id].name)
+			console.info("image: ", 'images/battle/' + zones[mission.id].name + '.png')
+			showEmbark()
+			updateTitle()
+			querySelector('#mission-level').innerHTML = levelHtml()
 		}
 		else {
 			// TODO: non-party member needs to see something... EMBARK?
@@ -150,8 +158,8 @@ var mission;
 		}
 	}
 	function resetLocalQuestData() {
-		my.selectedZone = 0;
-		my.selectedMissionTitle = '';
+		mission.id = -1;
+		mission.title = '';
 		my.quest = {};
 	}
 	function abandon() {
@@ -170,7 +178,7 @@ var mission;
 				route: 'party->abandon',
 				msg: my.name + ' has abandoned the mission.',
 				popupMsg: 'Mission abandoned: ' + my.quest.title,
-				quest: getQuestData(my.selectedZone, my.selectedMissionTitle)
+				quest: getQuestData(mission.id, mission.title)
 			})
 		}
 	}
@@ -214,7 +222,7 @@ var mission;
 		if (party.presence[0].isLeader) {
 			var data = {
 				route: 'party->embarkReceived',
-				quest: getQuestData(my.selectedZone, my.selectedMissionTitle)
+				quest: getQuestData(mission.id, mission.title)
 			}
 			console.info('embark isLeader!', data)
 			socket.publish('party' + my.partyId, data)
@@ -245,8 +253,8 @@ var mission;
 
 	function setQuest(data) {
 		console.info("SETTING QUEST", data)
-		my.selectedZone = data.id
-		my.selectedMissionTitle = data.title
+		mission.id = data.id
+		mission.title = data.title
 		my.quest = data
 		my.zoneMobs = data.mobs
 	}
@@ -263,4 +271,4 @@ var mission;
 			mobs: zone.mobs
 		}
 	}
-})($, _);
+})(TweenMax, $, _);

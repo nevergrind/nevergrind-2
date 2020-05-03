@@ -5,7 +5,7 @@ var game;
 	game = {
 		heartbeatDifference: app.isApp ? 18000 : 18000,
 		session: {
-			timer: new delayedCall(0, '')
+			timer: 0
 		},
 		pingHistory: [],
 		questDelay: 3,

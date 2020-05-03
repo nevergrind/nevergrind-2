@@ -20,6 +20,7 @@ var town;
 		setStoreGold,
 		setMyGold,
 		socketReady,
+		initItemData,
 		isInitialized: {
 			'apothecary': false,
 			'blacksmith': false,
@@ -30,7 +31,7 @@ var town;
 		openVariousWindow: '',
 		isBankInitialized: false,
 	}
-	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, value, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, potionItems, potLevel, scrollItems
+	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, npc, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, potionItems, potLevel, scrollItems
 
 	var storeItems = []
 	const buyTypes = [
@@ -90,7 +91,7 @@ var town;
 	function go() {
 		if (ng.view === 'town') return;
 		if (create.selected) {
-			game.session.timer.kill()
+			clearTimeout(game.session.timer)
 			game.emptyScenesExcept('scene-town');
 			ng.lock(1);
 			if (ng.view === 'dungeon') {
@@ -434,7 +435,9 @@ var town;
 		}
 
 		msg = ''
+		npc = ''
 		if (town.openVariousWindow === 'Academy') {
+			npc = 'Magda: '
 			msg = 'All of your skills may be trained here. You will never reach your full potential without diligence! Each skill must be trained individually.'
 			townConfig = {
 				duration: 1,
@@ -444,6 +447,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Apothecary') {
+			npc = 'Briza: '
 			initStoreData()
 			msg = 'Fill your bag full of potions if you want to survive! I have a selection of items ranging from the deadly to the arcane!.'
 			townConfig = {
@@ -454,6 +458,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Bank') {
+			npc = 'Ingmar: '
 			msg = 'If you have any special items that you would like to share with other heroes, you have come to the right place. I take an interest to collecting rare treasures as well!'
 			if (!town.isBankInitialized) loadBank()
 			townConfig = {
@@ -464,6 +469,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Blacksmith') {
+			npc = 'Kalamin: '
 			initStoreData()
 			msg = 'Need armor or a weapon? You have come to the right place, lad. We offer the best iron and steel in all of Edenburg.'
 			townConfig = {
@@ -474,6 +480,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Guild Hall') {
+			npc = 'Charlotte: '
 			if (guild.memberList.length) {
 				guild.setGuildList(guild)
 				msg = 'You\'ll find a motley cross-section of adventurers out there! Don\'t be hesitant to make friends out there! After all—it\'s not so much what you know—it\'s who you know!'
@@ -491,6 +498,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Merchant') {
+			npc = 'Roland: '
 			initStoreData()
 			msg = 'Good day, ' + my.name + ', what are you looking for? We carry the finest jewelry in all of Vandamor! Be sure to check out the latest shipment of cloaks that we just received! I have a special price just for you, my friend!'
 			townConfig = {
@@ -501,6 +509,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Tavern') {
+			npc = 'Eber: '
 			zones = zones.map(zone => {
 				zone.isOpen = 0
 				return zone;
@@ -514,6 +523,7 @@ var town;
 			}
 		}
 		else if (town.openVariousWindow === 'Trade') {
+			npc = ''
 			msg = trade.data.name + ' says: "Let\'s make a deal, '+ my.name + '?"'
 			townConfig = {
 				duration: 1,
@@ -522,7 +532,7 @@ var town;
 				y: 0
 			}
 		}
-		ng.splitText('various-description', msg)
+		ng.splitText('various-description', npc + msg)
 		hideLabel()
 		animateBuilding(townConfig)
 		tooltip.conditionalHide()
@@ -717,7 +727,7 @@ var town;
 				'</div>'
 			}
 			else {
-				html += '<div class="flex-column" style="margin: .5rem">' +
+				html += '<div id="guild-create-wrap" class="flex-column flex-max">' +
 					'<input id="guild-input" class="text-shadow" type="text" maxlength="30" autocomplete="off" spellcheck="false">' +
 					'<div id="guild-create" class="ng-btn">Create Guild</div> ' +
 					'<div class="aside-frame" style="margin-top: 1rem">Only letters A through Z and apostrophes are accepted in guild names. Standarized capitalization will be automatically applied. The guild name must be between 4 and 30 characters. All guild names are subject to the royal statutes regarding common decency in Vandamor.</div>'

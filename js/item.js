@@ -1886,6 +1886,11 @@ var loot = {};
 		bar.updateItemSwapDOM()
 		resetDrop()
 		tooltip.conditionalHide()
+		if (trade.data.name) {
+			trade.updateTrade({
+				availableSlots: trade.availableInvSlots(),
+			})
+		}
 	}
 	function handleItemSlotContextClick(event) {
 		if (item.awaitingDrop || item.isDragging) return false

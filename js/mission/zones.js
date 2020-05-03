@@ -3,7 +3,7 @@ var zones = [
 		name: 'Ashenflow Peak',
 		level: 35,
 		maxLevel: 50,
-		id: 14,
+		id: 13,
 		isOpen: 0,
 		missions: [
 			{
@@ -45,7 +45,7 @@ var zones = [
 		name: 'Galeblast Fortress',
 		level: 35,
 		maxLevel: 50,
-		id: 13,
+		id: 12,
 		isOpen: 0,
 		missions: [
 			{
@@ -87,7 +87,7 @@ var zones = [
 		name: 'Anuran Ruins',
 		level: 32,
 		maxLevel: 50,
-		id: 12,
+		id: 11,
 		isOpen: 0,
 		missions: [
 			{
@@ -129,7 +129,7 @@ var zones = [
 		name: 'Fahlnir Citadel',
 		level: 28,
 		maxLevel: 45,
-		id: 11,
+		id: 10,
 		isOpen: 0,
 		missions: [
 			{
@@ -171,7 +171,7 @@ var zones = [
 		name: 'Temple of Prenssor',
 		level: 24,
 		maxLevel: 40,
-		id: 10,
+		id: 9,
 		isOpen: 0,
 		missions: [
 			{
@@ -214,7 +214,7 @@ var zones = [
 		name: "Arcturin's Crypt",
 		level: 20,
 		maxLevel: 35,
-		id: 9,
+		id: 8,
 		isOpen: 0,
 		missions: [
 			{
@@ -255,7 +255,7 @@ var zones = [
 		name: 'Sylong Mausoleum',
 		level: 16,
 		maxLevel: 30,
-		id: 8,
+		id: 7,
 		isOpen: 0,
 		missions: [
 			{
@@ -298,7 +298,7 @@ var zones = [
 		name: 'Kordata Cove',
 		level: 12,
 		maxLevel: 25,
-		id: 7,
+		id: 6,
 		isOpen: 0,
 		missions: [
 			{
@@ -338,7 +338,7 @@ var zones = [
 		name: "Babel's Bastille",
 		level: 8,
 		maxLevel: 20,
-		id: 6,
+		id: 5,
 		isOpen: 0,
 		missions: [
 			{
@@ -378,7 +378,7 @@ var zones = [
 		name: 'Lanfeld Refuge',
 		level: 5,
 		maxLevel: 20,
-		id: 5,
+		id: 4,
 		isOpen: 0,
 		missions: [
 			{
@@ -418,7 +418,7 @@ var zones = [
 		name: 'Riven Grotto',
 		level: 5,
 		maxLevel: 20,
-		id: 4,
+		id: 3,
 		isOpen: 0,
 		missions: [
 			{
@@ -459,7 +459,7 @@ var zones = [
 		name: 'Greenthorn Cavern',
 		level: 5,
 		maxLevel: 20,
-		id: 3,
+		id: 2,
 		isOpen: 0,
 		missions: [
 			{
@@ -499,7 +499,7 @@ var zones = [
 		name: 'Tendolin Hollow',
 		level: 1,
 		maxLevel: 8,
-		id: 2,
+		id: 1,
 		isOpen: 0,
 		missions: [
 			{
@@ -540,7 +540,7 @@ var zones = [
 		name: 'Salubrin Den',
 		level: 1,
 		maxLevel: 8,
-		id: 1,
+		id: 0,
 		isOpen: 0,
 		missions: [
 			{

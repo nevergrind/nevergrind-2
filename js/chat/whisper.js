@@ -94,5 +94,7 @@ var whisper;
 		else if (data.action === 'trade-update') trade.rxTradeUpdate(data)
 		else if (data.action === 'trade-update-gold') trade.rxUpdateGold(data)
 		else if (data.action === 'trade-processing') trade.rxProcessing(data)
+		else if (data.action === 'trade-send-slots') trade.rxSlotsAndSend(data)
+		else if (data.action === 'trade-update-inventory') trade.rxUpdateInventory(data)
 	}
 })();
