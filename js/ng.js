@@ -296,6 +296,12 @@ var ng;
 	let characterData = []
 	ng.selectIndex = 0
 
+	let steam = {
+		screenName: '',
+		steamId: '',
+		handle: 0
+	}
+
 	$('#ch-card-wrap')
 		.on('click', '#title-select-up', incrementCharacter)
 		.on('click', '#title-select-down', decrementCharacter)
@@ -543,44 +549,59 @@ var ng;
 	}
 	function initGame() {
 		if (app.isApp) {
-			ng.lock();
-			ng.msg('Communicating with Steam...', 1)
-			// app login, check for steam ticket
-			var greenworks = require('./greenworks');
-			var steam = {
-				screenName: '',
-				steamId: '',
-				handle: 0
-			}
+			if (!ng.initialized) {
+				ng.lock();
+				ng.msg('Communicating with Steam...', 1)
+				// app login, check for steam ticket
+				var greenworks = require('./greenworks');
+				if (greenworks.initAPI()) {
 
-			if (greenworks.initAPI()) {
-				greenworks.init()
-				var details = greenworks.getSteamId()
-				ng.msg('Verifying Steam Credentials...')
+					greenworks.init()
+					var details = greenworks.getSteamId()
+					ng.msg('Verifying Steam Credentials...')
 
-				steam.screenName = details.screenName
-				steam.steamId = details.steamId
-				greenworks.getAuthSessionTicket(function (data) {
-					steam.handle = data.handle;
-					$.post(app.url + 'init-game.php', {
-						version: app.version,
-						screenName: steam.screenName,
-						steamId: steam.steamId,
-						channel: my.channel,
-						ticket: data.ticket.toString('hex')
-					}).done(function(data) {
-						greenworks.cancelAuthTicket(steam.handle)
-						handleInitGame(data)
-						ng.unlock()
-					}).fail(function(data) {
-						console.warn(data.responseText)
-						data.responseText && ng.msg(data.responseText, 12)
+					steam.screenName = details.screenName
+					steam.steamId = details.steamId
+					console.info('steam', steam)
+					greenworks.getAuthSessionTicket(function (data) {
+						steam.handle = data.handle;
+						steam.ticket = data.ticket.toString('hex')
+						$.post(app.url + 'init-game.php', {
+							version: app.version,
+							screenName: steam.screenName,
+							steamId: steam.steamId,
+							channel: my.channel,
+							ticket: steam.ticket,
+						}).done(function (data) {
+							greenworks.cancelAuthTicket(steam.handle)
+							handleInitGame(data)
+							ng.unlock()
+						}).fail(function (data) {
+							console.warn(data.responseText)
+							data.responseText && ng.msg(data.responseText, 12)
+						});
 					});
-				});
+				}
+				else {
+					ng.msg('Unable to find your Steam credentials! Are you sure Steam is running? Contact support@nevergrind.com for assistance!', 999)
+				}
 			}
 			else {
-				ng.msg('Unable to find your Steam credentials! Are you sure Steam is running? Contact support@nevergrind.com for assistance!', 999)
+				$.post(app.url + 'init-game.php', {
+					version: app.version,
+					screenName: steam.screenName,
+					steamId: steam.steamId,
+					channel: my.channel,
+					ticket: steam.ticket
+				}).done(function (data) {
+					handleInitGame(data)
+					ng.unlock()
+				}).fail(function (data) {
+					console.warn(data.responseText)
+					data.responseText && ng.msg(data.responseText, 12)
+				})
 			}
+
 		}
 		else {
 			$.post(app.url + 'init-game.php', {

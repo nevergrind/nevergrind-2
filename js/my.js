@@ -151,10 +151,9 @@ var my;
 		DOM.hud.style.visibility = 'hidden';
 	}
 	function resourceTick(type) {
-		if (ng.view === 'battle' || !app.isApp) {
-			my[type] += stats[type + 'Regen']()
-			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
-		}
+		// hpRegen mpRegen spRegen
+		my[type] += stats[type + 'Regen']()
+		if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
 	}
 	function checkForDeath() {
 

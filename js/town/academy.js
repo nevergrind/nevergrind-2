@@ -99,9 +99,9 @@ var academy;
 		// my.skills = my.skills.map(() => _.random(0, 7))
 
 		str = '<div id="various-body" class="flex-column flex-max">' +
-			'<div id="academy-skill-wrap" class="flex-column flex-max" >' +
-				'<div id="academy-body" class="flex-column flex-max">' +
-				getAllSkillRowHtml() +
+			'<div id="academy-body" class="flex-column flex-max">' +
+				'<div id="academy-skill-wrap">' +
+					getAllSkillRowHtml() +
 				'</div>' +
 			'</div>' +
 			getTrainRow() +
@@ -112,7 +112,7 @@ var academy;
 		html = ''
 		for (i=0; i<academy.TOTAL_SKILLS; i++) {
 			//warn('row', i)
-			html += '<div id="academy-skill-'+ i +'" class="academy-row flex-row flex-max" style="margin-bottom: 1rem">' +
+			html += '<div id="academy-skill-'+ i +'" class="academy-row">' +
 				getSkillRowHtml(i) +
 			'</div>'
 		}
@@ -148,7 +148,7 @@ var academy;
 				if (my.skills[i] >= rank) {
 					//info('rank > 1 GREATER!', my.skills[i], rank)
 					// unlocked
-					row += '<div class="flex-center" style="position: relative">' +
+					row += '<div class="academy-skill-base">' +
 						'<div class="academy-skill-unlocked">' +
 							'<i class="ra ra-broken-shield academy-shield"></i>'+
 						'</div>' +
@@ -168,7 +168,7 @@ var academy;
 						reqText = 'color: #ff1611;'
 					}
 					// prompt buy
-					row += '<div class="flex-center" style="position: relative">' +
+					row += '<div class="academy-skill-base">' +
 						'<div data-index="'+ i +'" data-rank="'+ rank +'" class="academy-skill-buy academy-train '+reqClass +'">' +
 							'<i class="ra ra-crossed-swords academy-cross" style="'+ reqColor +'"></i>'+
 						'</div>' +
@@ -181,7 +181,7 @@ var academy;
 				else {
 					//warn('rank > 1 LESS!', my.skills[i], rank)
 					// locked
-					row += '<div class="flex-center" style="position: relative">' +
+					row += '<div class="academy-skill-base">' +
 						'<div class="academy-skill-locked">' +
 							'<img class="academy-lock" src="images/ui/lock.png">'+
 						'</div>' +

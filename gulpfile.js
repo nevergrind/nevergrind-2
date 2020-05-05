@@ -58,6 +58,7 @@ const jsFiles = [
 	'components/popover',
 	'components/tooltip',
 	'components/dropdown',
+	'mission/quests',
 	'mission/mission',
 	'mission/zones',
 	'ui/bar',
@@ -120,11 +121,11 @@ function minifyCss() {
 }
 function minifyJs() {
 	return gulp.src(jsFiles)
-		.pipe(concat('nevergrind-2.js'))
+		.pipe(concat('nevergrind-online.js'))
 		.pipe(gulp.dest('./js'))
 		//.pipe(stripDebug()) // watch out for this for nwjs - can't see console statements
 		//.pipe(uglify()) // needs update?
-		.pipe(rename('nevergrind-2.min.js'))
+		.pipe(rename('nevergrind-online.min.js'))
 		.pipe(gulp.dest('./js'));
 }
 function minifyPng() {
@@ -196,7 +197,7 @@ function buildNg2(isSdk) {
 		'./js/libs/**/*'
 	]).pipe(gulp.dest('./build-ng2/js/libs'));
 	gulp.src([
-		'./js/nevergrind-2.min.js'
+		'./js/nevergrind-online.min.js'
 	]).pipe(gulp.dest('./build-ng2/js'));
 
 	// css
@@ -245,7 +246,7 @@ function defaultTask() {
 }
 function renameExe() {
 	var from = 'nw.exe';
-	var to = 'nevergrind-2.exe';
+	var to = 'nevergrind-online.exe';
 	console.log('renaming from ' + from + ' to ' + to);
 	gulp.src("./build-ng2/" + from)
 		.pipe(clean())

@@ -1,5 +1,5 @@
 var battle;
-(function() {
+(function(TweenMax, $, _, undefined) {
 	battle = {
 		initialized: 0,
 		// 1080p defaults
@@ -16,13 +16,21 @@ var battle;
 	}
 	//////////////////////////////////////
 	function go() {
-		if (ng.view === 'battle') return;
+		if (ng.view === 'battle') return
 		town.closeVarious()
 		chat.sizeSmall();
 		mob.init();
 		game.emptyScenesExcept('scene-battle');
 		querySelector('#town-footer-wrap').style.display = 'none'
-		ng.setScene('battle');
+		ng.setScene('battle')
+		if (!ng.isApp) {
+			// setup some mission data
+			mission.inProgress = true
+			mission.id = 1
+			mission.title = _.cloneDeep(_.find(zones, { id: mission.id })).missions[0].title
+			my.quest = _.cloneDeep(_.find(zones, { id: mission.id }))
+			my.zoneMobs = _.cloneDeep(_.find(zones, { id: mission.id }).mobs)
+		}
 		TweenMax.to('#scene-battle', .5, {
 			startAt: { filter: 'brightness(0)' },
 			delay: .5,
@@ -43,7 +51,16 @@ var battle;
 		button.init();
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
-		test.battle();
+		var singleMob = true;
+		var mobKey = '';
+		for (var i=0; i<mob.max; i++){
+			if (singleMob && i === 2 || !singleMob) {
+				mobKey = mob.getRandomMobKey();
+				mobKey = 'orc';
+				cache.preloadMob(mobKey);
+				mob.setMob(i, mobKey);
+			}
+		}
 	}
 	function html() {
 		var s =
@@ -108,4 +125,4 @@ var battle;
 			cy: cy
 		}
 	}
-})();
+})(TweenMax, $, _);

@@ -169,7 +169,7 @@ var party;
 	function invite(name) {inviteAccepted
 		if (my.name === name) chat.log("You can't invite yourself to a party.", 'chat-warning')
 		else if (!party.presence[0].isLeader) chat.log("Only the party leader may send invites.", 'chat-warning')
-		else if (my.quest.level) chat.log("You cannot invite adventurers to the party after starting the mission.", 'chat-warning')
+		else if (mission.inProgress) chat.log("You cannot invite adventurers to the party after starting the mission.", 'chat-warning')
 		else if (ng.view !== 'town') chat.log("You cannot invite adventurers from the depths of a dungeon.", 'chat-warning')
 		else {
 			if (name) {
@@ -297,7 +297,7 @@ var party;
 					route: 'party->disband',
 				});
 				// stuff for disbander
-				my.quest.level && ng.msg('Mission abandoned: '+ my.quest.title);
+				mission.inProgress && ng.msg('Mission abandoned: '+ mission.title);
 				chat.log('You disbanded the party.');
 				var i = party.maxPlayers - 1;
 				for (; i > 0; i--) {

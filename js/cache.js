@@ -31,12 +31,15 @@ var cache;
 			cache.images.push(image)
 			cache.imageStrings.push(v)
 
-			image.onload = function() {
-				index = cache.images.indexOf(this)
-				if (index !== -1) {
-					cache.images.splice(index, 1)
+			!function(image) {
+				image.onload = () => {
+					index = cache.images.indexOf(image)
+					if (index !== -1) {
+						cache.images.push(image)
+					}
 				}
-			}
+
+			}(image);
 		}
 	}
 	function preloadAudio(a) {
@@ -49,12 +52,14 @@ var cache;
 			cache.audio.push(audio)
 			cache.audioStrings.push(v)
 
-			audio.onload = function() {
-				index = cache.audio.indexOf(this)
-				if (index !== -1) {
-					cache.images.splice(index, 1)
+			!function(audio) {
+				audio.onload = () => {
+					index = cache.audio.indexOf(this)
+					if (index !== -1) {
+						cache.images.push(audio)
+					}
 				}
-			}
+			}(audio)
 		}
 	}
 	function clearAll() {

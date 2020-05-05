@@ -94,9 +94,12 @@ var game;
 		}
 		else {
 			// insert regen tick logic here
-			my.resourceTick('hp')
-			my.resourceTick('mp')
-			my.resourceTick('sp')
+
+			if (ng.view === 'battle' || ng.view === 'town') {
+				my.resourceTick('hp')
+				my.resourceTick('mp')
+				my.resourceTick('sp')
+			}
 
 			obj = {
 				row: my.row,

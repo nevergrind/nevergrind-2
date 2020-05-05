@@ -1,42 +1,3 @@
-/*
-background: radial-gradient(
-    circle farthest-corner at center center,
-    white,
-    #111
-  ) no-repeat;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-.mask {
-
-  cursor: pointer;
-  display: inline-block;
-  overflow: hidden;
-
-  background: url("https://bit.ly/ZxCkSc");
-  background-position: 0 50%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -o-background-clip: text;
-  background-clip: text;
-
-  font-size: 150px;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-  line-height: 1;
-  letter-spacing: -10px;
-  padding: 0 15px;
-
-.three {
-  color: transparent;
-  text-shadow: 0 0 0px #ddd;
-  text-stroke: 5px;
-  transition: text-shadow 0.5s;
-}
-.three:hover {
-  text-shadow: 0 0 5px rgba(255,255,255,0.0);
-}
- */
 
 /* login styles */
 #loginWrap {
@@ -55,6 +16,46 @@ background: radial-gradient(
 	background: #0a0a1a;
 	box-shadow: 0 0 20px #000, 0 0 40px #000, 0 0 60px #000;
 	padding-bottom: 1rem;
+	/*
+	background: radial-gradient(
+		circle farthest-corner at center center,
+		white,
+		#111
+	  ) no-repeat;
+	  -webkit-background-clip: text;
+	  -webkit-text-fill-color: transparent;
+
+	.mask {
+
+	  cursor: pointer;
+	  display: inline-block;
+	  overflow: hidden;
+
+	  background: url("https://bit.ly/ZxCkSc");
+	  background-position: 0 50%;
+	  -webkit-background-clip: text;
+	  -moz-background-clip: text;
+	  -o-background-clip: text;
+	  background-clip: text;
+
+	  font-size: 150px;
+	  font-family: Arial, sans-serif;
+	  font-weight: bold;
+	  line-height: 1;
+	  letter-spacing: -10px;
+	  padding: 0 15px;
+
+	.three {
+	  color: transparent;
+	  text-shadow: 0 0 0px #ddd;
+	  text-stroke: 5px;
+	  transition: text-shadow 0.5s;
+	}
+	.three:hover {
+	  text-shadow: 0 0 5px rgba(255,255,255,0.0);
+	}
+	 */
+
 }
 #login-modal {
 	visibility: hidden;
@@ -258,8 +259,6 @@ tbody { border: 0 }
 	padding: 0 !important;
 	margin: 0 !important
 }
-.pointer { cursor: url('cursor/pointer.cur'), pointer }
-.pointer:active { cursor: url('cursor/pointer.cur'), pointer }
 .text { cursor: text !important }
 .wh-100 {
 	width: 100%;
@@ -1466,18 +1465,27 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 
 #mission-preview {
-	width: 5rem;
-	height: auto;
+	width: 6rem;
+	height: 3.375rem;
 	background: #000;
 	margin-right: .5rem;
 	border: .1rem ridge #aa8;
+	align-self: flex-start;
 }
-#mission-title {
-	font-size: 1rem;
+#mission-detail-col {
+	display: flex;
+	flex-direction: column;
+	align-self: stretch;
+	justify-content: space-around;
+	flex: 1;
+}
+#mission-details {
+	display: flex;
+	justify-content: space-between;
+	font-size: .8rem;
 }
 
 #mission-embark {
-	margin-top: .5rem;
 }
 .disabled {
 	cursor: default;
@@ -1871,7 +1879,20 @@ background-repeat: no-repeat;
 	cursor: url('cursor/pointer.cur'), pointer;
 	white-space: nowrap;
 	overflow: hidden;
-	text-overflow: ellipsis
+	text-overflow: ellipsis;
+	transition: filter .15s ease-out, transform .15s ease-out;
+}
+.select-class:hover,
+.select-race:hover {
+	filter: saturate(1.2) brightness(1.2);
+}
+.select-class:active,
+.select-race:active {
+	transition: none;
+	transform: scale(.98);
+	filter: saturate(.8) brightness(.8);
+	border: .1rem inset #776;
+	box-shadow: 0 0 5px #000 inset
 }
 .select-class.active,
 .select-race.active {
@@ -2088,16 +2109,16 @@ background-repeat: no-repeat;
 #bank-slot-wrap {
 	display: flex;
 	justify-content: space-around;
+	align-content: space-around;
 	flex-wrap: wrap;
 	padding: .3rem;
 	border: .1rem ridge #048;
 	height: 16rem;
 	overflow: auto;
-	align-content: flex-start;
 	flex: 1;
 }
 #bank-slot-wrap .item-slot-wrap {
-	margin: .1rem 0;
+	margin: 1px;
 }
 #bank-footer, #various-footer {
 	display: flex;
@@ -2763,6 +2784,7 @@ background-repeat: no-repeat;
 	padding: .25rem 1.5rem;
 	border: .1rem ridge gold;
 	filter: hue-rotate(350deg) saturate(3);
+	cursor: url('cursor/buy.cur'), pointer!important;
 }
 #town-value-wrap {
 	justify-content: space-between;
@@ -2905,20 +2927,18 @@ background-repeat: no-repeat;
 #academy-body {
 	border: 1px solid #001;
 	padding: .2rem .4rem;
+	background: repeating-linear-gradient(178deg, #9973 7rem, #9976 12rem, #9973 19rem);
 	overflow-x: hidden;
 	overflow-y: auto;
-	background: repeating-linear-gradient(178deg, #9973 7rem, #9976 12rem, #9973 19rem);
+	/*background: conic-gradient(
+			#0016 .25turn,
+			#025a .25turn .5turn,
+			#0016 0.5turn .75turn,
+			#025a .75turn
+	) top left / 5px 5px repeat;
+	*/
 }
-/*background: conic-gradient(
-		#0016 .25turn,
-		#025a .25turn .5turn,
-		#0016 0.5turn .75turn,
-		#025a .75turn
-) top left / 5px 5px repeat;*/
-#academy-skill-wrap {
-	position: relative;
-	overflow: auto;
-}
+#academy-skill-wrap {}
 .academy-skill-rank0 {
 	position: relative;
 	outline: 1px solid #000;
@@ -2983,6 +3003,18 @@ background-repeat: no-repeat;
 	padding: .25rem;
 	font-size: 1.5rem;
 	color: gold;
+}
+.academy-skill-base {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.academy-row {
+	display: flex;
+	flex: 1;
+	margin-bottom: 1rem;
 }
 .academy-cross {
 	color: #789;
@@ -3058,9 +3090,18 @@ background-repeat: no-repeat;
 	margin: .2rem;
 	flex: 1;
 }
-.icon-gear {
-	cursor: url('cursor/gear.cur'), pointer!important;
+.pointer { cursor: url('cursor/pointer.cur'), pointer }
+.pointer:active { cursor: url('cursor/pointer.cur'), pointer }
+.cursor-buy { cursor: url('cursor/buy.cur'), pointer!important; }
+.cursor-gear { cursor: url('cursor/gear.cur'), pointer!important; }
+.cursor-mail { cursor: url('cursor/mail.cur'), pointer!important; }
+.cursor-sword { cursor: url('cursor/sword.cur'), pointer!important; }
+.item-slot-merchant,
+.item-slot-apothecary,
+.item-slot-blacksmith {
+	cursor: url('cursor/buy.cur'), pointer!important;
 }
+
 .trade-avatars {
 	width: 3rem;
 	height: 3rem;

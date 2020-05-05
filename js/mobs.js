@@ -648,7 +648,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'orc': {
+	orc: {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 340,
@@ -672,7 +672,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'griffon': {
+	griffon: {
 		imgW: 2000,
 		imgH: 1200,
 		imgCy: 250,

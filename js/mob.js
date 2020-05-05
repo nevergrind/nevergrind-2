@@ -1,5 +1,5 @@
 var mob;
-(function() {
+(function(TweenMax, $, _, Object, undefined) {
 	mob = {
 		imageKeysLen: 0,
 		index: 0,
@@ -8,9 +8,6 @@ var mob;
 		initialized: 0,
 		max: 9,
 		element: {},
-		animationActive: 0,
-		frame: 1,
-		deathState: 0,
 		getRandomMobKey,
 		init,
 		// configs, resets (active animations) and idles mobs in one call for start of combat
@@ -19,12 +16,6 @@ var mob;
 		sizeMob,
 		setClickBox,
 		blur,
-		brightness,
-		contrast,
-		grayscale,
-		invert,
-		saturate,
-		sepia,
 		modifyMobStatsByClass,
 	};
 	var frame = {
@@ -59,10 +50,11 @@ var mob;
 			diff: 29.999
 		},
 	};
+	const testAnimations = false
 	//////////////////////////////////////////////////
 	function getRandomMobKey() {
-		var i = ~~(rand() * mob.imageKeysLen);
-		return mob.imageKeys[i];
+		var i = ~~(rand() * mob.imageKeysLen)
+		return mob.imageKeys[i]
 	}
 	function init() {
 		mob.imageKeys = Object.keys(mobs.images);
@@ -71,13 +63,13 @@ var mob;
 		// init mob/dom connections
 		for (var i=0; i<mob.max; i++){
 			mobs[i] = {
-				hp: 1,
+				hp: 0,
 				index: i,
 				frame: 0,
 				lastFrame: 0,
-				animationActive: 0,
+				isAnimationActive: false,
 				size: i < 5 ? 1 : .85,
-				deathState: 0,
+				isDead: true,
 				speed: 0,
 				type: '',
 				box: {},
@@ -96,6 +88,9 @@ var mob;
 			});
 		}
 	}
+	function getMobStats() {
+
+	}
 	function setMob(i, mobKey) {
 		// m.size = m.size;
 		mobs[i].type = mobKey
@@ -109,7 +104,7 @@ var mob;
 		TweenMax.set(mobs[i].dom.details, {
 			opacity: 1
 		})
-		resetIdle(i)
+		resetIdle(i, true)
 		idle(i)
 	}
 	function sizeMob(index) {
@@ -167,13 +162,12 @@ var mob;
 			mobs[i].lastFrame = mobs[i].frame
 		}
 	}
-
-	function resetIdle(i) {
-		mobs[i].animationActive = 0
-		idle(mobs[i].index, 1)
+	function resetIdle(i, runTests) {
+		mobs[i].isAnimationActive = false
+		idle(mobs[i].index, runTests)
 	}
 
-	function idle(i, skip) {
+	function idle(i, runTests) {
 		TweenMax.to(mobs[i], mobs[i].speed * frame.idle.diff * 2, {
 			startAt: {
 				frame: frame.idle.start
@@ -186,13 +180,15 @@ var mob;
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
 		})
-		if (skip) return
-		!app.isApp && delayedCall(.25, hit, [ mobs[i].index ])
+		if (runTests && testAnimations) {
+			delayedCall(.25, hit, [ mobs[i].index ])
+		}
 	}
 
 	function hit(i) {
-		if (mobs[i].animationActive) return;
-		mobs[i].animationActive = 1;
+		info('hit', i)
+		if (mobs[i].isAnimationActive) return;
+		mobs[i].isAnimationActive = true;
 		var speed = mobs[i].speed * frame.hit.diff
 
 		TweenMax.to(mobs[i], speed, {
@@ -213,14 +209,14 @@ var mob;
 
 	function hitComplete(m) {
 		resetIdle(m.index);
-		if (!app.isApp){
+		if (testAnimations){
 			delayedCall(1, attack, [ m.index, 'primary' ]);
 		}
 	}
 
 	function attack(i, force) {
-		if (mobs[i].animationActive) return
-		mobs[i].animationActive = 1
+		if (mobs[i].isAnimationActive) return
+		mobs[i].isAnimationActive = true
 		var attackType = force === 'primary' || force === 'secondary' ?
 			force : (_.round(rand()) ? 'primary' : 'secondary')
 		var speed = mobs[i].speed * frame[attackType].diff;
@@ -244,26 +240,20 @@ var mob;
 
 	function attackComplete(m, force) {
 		resetIdle(m.index)
-		if (!app.isApp){
-			if (force === 'primary'){
-				delayedCall(1, attack, [ m.index, 'secondary' ])
-			}
-			else if (force === 'death'){
-				delayedCall(1, death, [ m.index ])
-			}
-			else {
-				delayedCall(1, special, [ m.index ])
-			}
+		if (testAnimations) {
+			if (force === 'primary') delayedCall(1, attack, [ m.index, 'secondary' ])
+			else if (force === 'death') delayedCall(1, death, [ m.index ])
+			else delayedCall(1, special, [ m.index ])
 		}
 	}
 
 	function special(i) {
-		if (mobs[i].animationActive) return
+		if (mobs[i].isAnimationActive) return
 		if (!mobs[i].enableSpecial) {
 			attack(mobs[i].index, 'death')
 		}
 		else {
-			mobs[i].animationActive = 1
+			mobs[i].isAnimationActive = true
 			var speed = mobs[i].speed * frame.special.diff
 
 			TweenMax.to(mobs[i], speed, {
@@ -284,16 +274,14 @@ var mob;
 	}
 	function specialComplete(m) {
 		resetIdle(m.index)
-		if (!app.isApp) {
-			delayedCall(1, death, [ m.index ])
-		}
+		if (testAnimations) delayedCall(1, death, [ m.index ])
 	}
 	function death(i) {
-		if (mobs[i].deathState) return
-		mobs[i].deathState = 1
+		if (mobs[i].isDead) return
+		mobs[i].isDead = true
 		mobs[i].hp = 0
 		mob.setClickBox(mobs[i])
-		mobs[i].animationActive = 1
+		mobs[i].isAnimationActive = true
 		var speed = mobs[i].speed * frame.death.diff
 
 		TweenMax.to(mobs[i].dom.details, speed, {
@@ -309,153 +297,34 @@ var mob;
 			ease: Linear.easeNone,
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
-			onComplete: deathComplete,
-			onCompleteParams: [mobs[i]]
 		});
 		TweenMax.to(mobs[i].dom.details, speed / 2, {
 			opacity: 0
 		})
-	}
-	function deathComplete(m) {
-		var filters = {
-			opacity: 'opacity(100%)',
-			brightness: "brightness(100%)"
-		}
-		var e = m.dom.wrap
-
-		var tl = new TimelineMax({
-			onUpdate: function () {
-				test.filters.death(e, filters);
-			}
-		})
-		tl.to(filters, 2, {
-			opacity: 'opacity(0%)',
-			brightness: "brightness(0%)",
+		TweenMax.to(mobs[i].dom.wrap, speed + 2, {
+			startAt: { filter: 'opacity(1) brightness(3)'},
+			filter: 'opacity(0) brightness(0)',
 			ease: Linear.easeIn,
 			onComplete: deathCompleteFade,
-			onCompleteParams: [m, e]
+			onCompleteParams: [mobs[i], mobs[i].dom.wrap]
 		})
 	}
-	function deathCompleteFade(m, e) {
-		if (!app.isApp) {
-			m.hp = 1;
-			TweenMax.set(mobs[m.index].dom.details, {
-				opacity: 1
-			})
-			sizeMob(m.index);
-			idle(m.index);
-		}
-		delayedCall(.1, deathCompleteFadeReset, [ m, e ]);
+	function deathCompleteFade(mob, el) {
+		delayedCall(1, () => {
+			if (testAnimations) {
+				TweenMax.set(mobs[mob.index].dom.details, {
+					opacity: 1
+				})
+				sizeMob(mob.index);
+				idle(mob.index, true);
+			}
+		})
+		delayedCall(.1, deathCompleteFadeReset, [ mob, el ]);
 	}
 	function deathCompleteFadeReset(m, e) {
-		m.deathState = 0;
-		m.animationActive = 0;
+		m.isDead = false;
+		m.isAnimationActive = false;
 		e.style.filter = 'opacity(100%) brightness(100%)';
-	}
-	function blur() {
-		var e = getElementById('sprite'),
-			type = 'blur',
-			filters = {
-				blur: type + '(0px)'
-			};
-
-		TweenMax.to(filters, 1.5, {
-			blur: type + '(5px)',
-			yoyo: true,
-			repeat: -1,
-			onUpdate: mob.filters.effect,
-			onUpdateParams: [e, filters, type]
-		});
-	}
-	function brightness() {
-		var e = getElementById('sprite'),
-			type = 'brightness',
-			filters = {
-				brightness: type + '(0%)'
-			};
-
-		TweenMax.to(filters, 1.5, {
-			brightness: type + '(100%)',
-			yoyo: true,
-			repeat: -1,
-			onUpdate: mob.filters.effect,
-			onUpdateParams: [e, filters, type]
-		});
-	}
-	function contrast() {
-		var e = getElementById('sprite'),
-			type = 'contrast',
-			filters = {
-				contrast: type + '(0%)'
-			};
-
-		TweenMax.to(filters, 1.5, {
-			contrast: type + '(200%)',
-			yoyo: true,
-			repeat: -1,
-			onUpdate: mob.filters.effect,
-			onUpdateParams: [e, filters, type]
-		});
-	}
-	function grayscale() {
-		var e = getElementById('sprite'),
-			type = 'grayscale',
-			filters = {
-				grayscale: type + '(0%)'
-			};
-
-		TweenMax.to(filters, 1.5, {
-			grayscale: type + '(100%)',
-			yoyo: true,
-			repeat: -1,
-			onUpdate: mob.filters.effect,
-			onUpdateParams: [e, filters, type]
-		});
-	}
-	function invert() {
-		var e = getElementById('sprite'),
-			type = 'invert',
-			filters = {
-				invert: type + '(0%)'
-			};
-
-		TweenMax.to(filters, 1.5, {
-			invert: type + '(400%)',
-			yoyo: true,
-			repeat: -1,
-			onUpdate: mob.filters.effect,
-			onUpdateParams: [e, filters, type]
-		});
-	}
-	function saturate() {
-		var e = getElementById('sprite'),
-			type = 'saturate',
-			filters = {
-				saturate: type + '(0%)'
-			};
-
-		TweenMax.to(filters, 1.5, {
-			saturate: type + '(500%)',
-			yoyo: true,
-			repeat: -1,
-			onUpdate: mob.filters.effect,
-			onUpdateParams: [e, filters, type]
-		});
-	}
-	function sepia() {
-		var e = getElementById('sprite'),
-			type = 'sepia',
-			filters = {
-				sepia: type + '(0%)'
-			};
-
-		TweenMax.to(filters, 1.5, {
-			sepia: type + '(100%)',
-			yoyo: true,
-			repeat: -1,
-			onUpdate: mob.filters.effect,
-			onUpdateParams: [e, filters, type]
-		});
 	}
 	function modifyMobStatsByClass(mob) {
 		if (mob.job === 'WAR') {
@@ -599,4 +468,4 @@ var mob;
 		}
 	}
 
-})();
+})(TweenMax, $, _, Object);

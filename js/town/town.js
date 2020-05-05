@@ -406,8 +406,22 @@ var town;
 			}
 		}
 		if (!town.openVariousWindow) {
-			ng.splitText('town-building-label-header', id, .5, .05)
-			ng.splitText('town-build-label-description', msg, .2, .015)
+			var e = querySelector('#town-building-label-header');
+			e.textContent = id;
+			var split = new SplitText(e, {
+				type: 'words,chars'
+			});
+			TweenMax.staggerFromTo(split.chars, .5, {
+				immediateRender: true,
+				alpha: 0,
+				filter: 'saturate(2) brightness(10)',
+			}, {
+				delay: .1,
+				alpha: 1,
+				filter: 'saturate(1) brightness(1)',
+			}, .03)
+
+			ng.splitText('town-build-label-description', msg, .2, .01)
 			TweenMax.killTweensOf(labelObj)
 			TweenMax.to('#town-building-label-wrap', .2, {
 				startAt: {

@@ -1,377 +1,46 @@
-var zones = [
+var zones = [{},
 	{
-		name: 'Ashenflow Peak',
-		level: 35,
-		maxLevel: 50,
-		id: 13,
+		name: 'Salubrin Den',
+		level: 1,
+		maxLevel: 8,
+		id: 1,
 		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
+		missions: [1,2],
 		mobs: [
-			'kobold',
-			'imp',
-			'balrog',
-			'cerberus',
-			'fire giant',
-			'dragon',
-		]
-	},
-	{
-		name: 'Galeblast Fortress',
-		level: 35,
-		maxLevel: 50,
-		id: 12,
-		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
-		mobs: [
-			'ice goblin',
-			'polar bear',
-			'ice wolf',
-			'ice golem',
-			'ice giant',
-			'ice dragon',
-		]
-	},
-	{
-		name: 'Anuran Ruins',
-		level: 32,
-		maxLevel: 50,
-		id: 11,
-		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
-		mobs: [
-			'toadlok',
-			'minotaur',
-			'aviak',
-			'fungoid',
+			'snake',
 			'spider',
-			'skeleton',
+			'wolf',
+			'lion',
+			'elephant',
 		]
 	},
 	{
-		name: 'Fahlnir Citadel',
-		level: 28,
-		maxLevel: 45,
-		id: 10,
+		name: 'Tendolin Hollow',
+		level: 1,
+		maxLevel: 8,
+		id: 2,
 		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
+		missions: [1,2,3,4,5],
 		mobs: [
-			'vampire',
-			'gargoyle',
-			'werewolf',
-			'ghoul',
-			'giant',
-			'zombie',
+			'rat',
+			'snake',
+			'beetle',
+			'lioness',
+			'rhino',
 		]
 	},
 	{
-		name: 'Temple of Prenssor',
-		level: 24,
-		maxLevel: 40,
-		id: 9,
-		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
-		mobs: [
-			'lizardman',
-			'dragonkin',
-			'crocodile',
-			'stone golem',
-			'iron golem',
-			'griffon',
-			'giant',
-		]
-	},
-	{
-		name: "Arcturin's Crypt",
-		level: 20,
-		maxLevel: 35,
-		id: 8,
-		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
-		mobs: [
-			'skeleton',
-			'ghoul',
-			'mummy',
-			'spectre',
-			'fungoid',
-		]
-	},
-	{
-		name: 'Sylong Mausoleum',
-		level: 16,
-		maxLevel: 30,
-		id: 7,
-		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
-		mobs: [
-			'minotaur',
-			'centaur',
-			'aviak',
-			'griffon',
-			'harpy',
-			'skeleton',
-			'unicorn',
-		]
-	},
-	{
-		name: 'Kordata Cove',
-		level: 12,
-		maxLevel: 25,
-		id: 6,
-		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
-		mobs: [
-			'angler',
-			'fungoid',
-			'treant',
-			'stone golem',
-		]
-	},
-	{
-		name: "Babel's Bastille",
-		level: 8,
+		name: 'Greenthorn Cavern',
+		level: 5,
 		maxLevel: 20,
-		id: 5,
+		id: 3,
 		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
+		missions: [1,2,3,4,5],
 		mobs: [
-			'goblin',
 			'hobgoblin',
-			'evil eye',
-			'iron golem',
+			'bear',
+			'crocodile',
+			'scorpion',
 		]
 	},
 	{
@@ -380,33 +49,7 @@ var zones = [
 		maxLevel: 20,
 		id: 4,
 		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
+		missions: [1,2,3,4,5],
 		mobs: [
 			'orc',
 			'rat',
@@ -418,35 +61,9 @@ var zones = [
 		name: 'Riven Grotto',
 		level: 5,
 		maxLevel: 20,
-		id: 3,
+		id: 5,
 		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
+		missions: [1,2,3,4,5],
 		mobs: [
 			'ghoul',
 			'mummy',
@@ -456,125 +73,144 @@ var zones = [
 		]
 	},
 	{
-		name: 'Greenthorn Cavern',
-		level: 5,
+		name: "Babel's Bastille",
+		level: 8,
 		maxLevel: 20,
-		id: 2,
+		id: 6,
 		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
+		missions: [1,2,3,4,5],
 		mobs: [
+			'goblin',
 			'hobgoblin',
-			'bear',
+			'evil eye',
+			'iron golem',
+		]
+	},
+	{
+		name: 'Kordata Cove',
+		level: 12,
+		maxLevel: 25,
+		id: 7,
+		isOpen: 0,
+		missions: [1,2,3,4,5],
+		mobs: [
+			'angler',
+			'fungoid',
+			'treant',
+			'stone golem',
+		]
+	},
+	{
+		name: 'Sylong Mausoleum',
+		level: 16,
+		maxLevel: 30,
+		id: 8,
+		isOpen: 0,
+		missions: [1,2,3,4,5],
+		mobs: [
+			'minotaur',
+			'centaur',
+			'aviak',
+			'griffon',
+			'harpy',
+			'skeleton',
+			'unicorn',
+		]
+	},
+	{
+		name: "Arcturin's Crypt",
+		level: 20,
+		maxLevel: 35,
+		id: 9,
+		isOpen: 0,
+		missions: [1,2,3,4,5],
+		mobs: [
+			'skeleton',
+			'ghoul',
+			'mummy',
+			'spectre',
+			'fungoid',
+		]
+	},
+	{
+		name: 'Temple of Prenssor',
+		level: 24,
+		maxLevel: 40,
+		id: 10,
+		isOpen: 0,
+		missions: [1,2,3,4,5],
+		mobs: [
+			'lizardman',
+			'dragonkin',
 			'crocodile',
-			'scorpion',
+			'stone golem',
+			'iron golem',
+			'griffon',
+			'giant',
 		]
 	},
 	{
-		name: 'Tendolin Hollow',
-		level: 1,
-		maxLevel: 8,
-		id: 1,
+		name: 'Fahlnir Citadel',
+		level: 28,
+		maxLevel: 45,
+		id: 11,
 		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Himber',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Fahesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Umusaq',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Aslan',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Gaurav',
-				description: '',
-			},
-		],
+		missions: [1,2,3,4,5],
 		mobs: [
-			'rat',
-			'snake',
-			'beetle',
-			'lioness',
-			'rhino',
+			'vampire',
+			'gargoyle',
+			'werewolf',
+			'ghoul',
+			'giant',
+			'zombie',
 		]
 	},
 	{
-		name: 'Salubrin Den',
-		level: 1,
-		maxLevel: 8,
-		id: 0,
+		name: 'Anuran Ruins',
+		level: 32,
+		maxLevel: 50,
+		id: 12,
 		isOpen: 0,
-		missions: [
-			{
-				level: 1,
-				title: 'Kill Slitherfang',
-				description: '',
-			},
-			{
-				level: 2,
-				title: 'Kill Meshinesh',
-				description: '',
-			},
-			{
-				level: 3,
-				title: 'Kill Sharnash',
-				description: '',
-			},
-			{
-				level: 5,
-				title: 'Kill Ralfane the Coward',
-				description: '',
-			},
-			{
-				level: 7,
-				title: 'Kill Ephandore',
-				description: '',
-			},
-		],
+		missions: [1,2,3,4,5],
 		mobs: [
-			'snake',
+			'toadlok',
+			'minotaur',
+			'aviak',
+			'fungoid',
 			'spider',
-			'wolf',
-			'lion',
-			'elephant',
+			'skeleton',
 		]
-	}
+	},
+	{
+		name: 'Galeblast Fortress',
+		level: 35,
+		maxLevel: 50,
+		id: 13,
+		isOpen: 0,
+		missions: [1,2,3,4,5],
+		mobs: [
+			'ice goblin',
+			'polar bear',
+			'ice wolf',
+			'ice golem',
+			'ice giant',
+			'ice dragon',
+		]
+	},
+	{
+		name: 'Ashenflow Peak',
+		level: 35,
+		maxLevel: 50,
+		id: 14,
+		isOpen: 0,
+		missions: [1,2,3,4,5],
+		mobs: [
+			'kobold',
+			'imp',
+			'balrog',
+			'cerberus',
+			'fire giant',
+			'dragon',
+		]
+	},
 ];

@@ -29,6 +29,7 @@ var loot = {};
 		MAX_SLOTS: {
 			eq: 15,
 			inv: 16,
+			bank: 30,
 			merchant: 24,
 			blacksmith: 24,
 			apothecary: 17,

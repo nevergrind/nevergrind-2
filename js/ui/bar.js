@@ -119,7 +119,7 @@ var bar;
 				.on('click', '#bar-stats', toggleCharacterStats)
 				.on('click', '#bar-inventory', toggleInventory)
 				.on('click', '#bar-options', toggleOptions)
-				//.on('click', '#bar-mission-abandon', mission.abandon)
+				.on('click', '#bar-mission-abandon', mission.abandon)
 				.on('mouseenter', '.popover-icons', showBarMenuPopover)
 				.on('mousemove', '.popover-icons', popover.setPosition)
 				.on('mouseleave', '.popover-icons', popover.hide)
@@ -235,7 +235,7 @@ var bar;
 	}
 
 	function getItemSlotImage(type, slot, data) {
-		resp = type === 'eq' ? bar.defaultImage[slot] : 'item-bg-1'
+		resp = type === 'eq' ? bar.defaultImage[slot] : 'blank-item'
 		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'itemType')) {
 			resp = getItemIconFileNameByObj(items[type][slot])
 		}

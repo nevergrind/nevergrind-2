@@ -38,8 +38,6 @@ var test;
 		animateBtn,
 		lootItems,
 		pixi,
-		pixiRenderer,
-		pixiClouds,
 	}
 
 	var c;

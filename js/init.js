@@ -17,4 +17,5 @@ ng.init()
 audio.init()
 //audio.gameMusicInit();
 context.init()
+mission.init()
 $('script').remove()

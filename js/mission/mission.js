@@ -1,12 +1,14 @@
 var mission;
 (function(TweenMax, $, _, undefined) {
 	mission = {
+		inProgress: false,
 		data: {},
 		loaded: 0,
 		delegated: 0,
 		quests: [],
-		id: -1,
+		id: 0,
 		title: '',
+		init,
 		getMissionBodyHtml,
 		embark,
 		resetLocalQuestData,
@@ -18,14 +20,19 @@ var mission;
 		clickQuest,
 	};
 	var questHtml
-	var reversedZones = []
 	var html = ''
 	var that = {}
 	const minusClasses = 'mission-tree-btn mission-minus'
 	const plusClasses = 'mission-tree-btn mission-plus'
-	let questLevel = -1
 
 	///////////////////////////////////////////////
+	function init() {
+		resetLocalQuestData()
+	}
+	function resetLocalQuestData() {
+		mission.id = 1;
+		mission.title = 'Kill Slitherfang';
+	}
 	function getOpenMenuClass(level) {
 		return (level <= my.level && level > ~~(my.level * .66)) ? 'mission-open-menu' : ''
 	}
@@ -39,50 +46,36 @@ var mission;
 		else if (minQuestLvl >= ~~(my.level * .66) ) resp = 'con-green';
 		return resp;
 	}
-	function showEmbark() {
-		$("#mission-embark").removeClass('disabled');
-	}
-	function updateTitle() {
-		$("#mission-title").html(mission.title);
-	}
 	function getMissionBodyHtml() {
 		questHtml = '<div id="various-body" class="flex-column flex-max">'
-		var headMsg = 'Mission Counter'
-		questLevel = -1
+		var headMsg = party.presence[0].isLeader ? 'Select A Mission' : 'Mission Counter'
 
-		if (party.presence[0].isLeader) {
-			// is solo or a leader
-			headMsg = 'Select A Mission';
-		}
-		if (my.quest.level) {
-			headMsg = my.quest.title;
-		}
+		headMsg = mission.title
 
 		questHtml = '<div id="mission-wrap" class="flex-row aside-frame">' +
 			'<img id="mission-preview" src="images/battle/salubrin-den-1.png">' +
-			'<div class="flex-max">'+
-				'<div class="flex-row space-between" style="font-size: .8rem;">'+
+			'<div id="mission-detail-col">'+
+				'<div id="mission-details">'+
 					'<div id="mission-title">'+ headMsg +'</div>' +
 					'<div id="mission-level">'+ levelHtml() + '</div>' +
 				'</div>' +
-				'<div id="mission-embark" class="ng-btn disabled">Embark!</div>' +
+				(party.presence[0].isLeader ?
+					'<div id="mission-embark" class="ng-btn">Embark!</div>' :
+					'<div class="chat-warning">Waiting for party leader.</div>') +
 			'</div>' +
 		'</div>'
 
-		if (!reversedZones.length) {
-			reversedZones = zones.reverse()
-		}
 		questHtml += '<div id="mission-counter" class="aside-frame text-shadow">'
-		reversedZones.forEach(function(zone) {
+		zones.forEach(function(zone) {
 			if (my.level + 4 >= zone.level) {
 				questHtml +=
 				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ getDiffClass(zone.level) +'" data-id="'+ zone.id +'">'+
 					'<img class="mission-tree-btn mission-plus" src="images/ui/plus.png">'+
 					'<div>' + zone.name + '</div>' +
 				'</div>' +
-				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">';
-					questHtml += getMissionRowHtml(zone);
-				questHtml += '</div>';
+				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">' +
+					getMissionRowHtml(zone.id) +
+				'</div>';
 				console.info('zone', zone);
 			}
 		})
@@ -90,19 +83,15 @@ var mission;
 		return questHtml
 
 	}
-	function levelHtml() {
-		return questLevel > -1 ? 'Lv.' + questLevel + '-' + zones[mission.id].maxLevel : ''
-	}
-	function getMissionRowHtml(data) {
+	function getMissionRowHtml(zoneId) {
 		var html = '';
-		var zoneId = data.id;
-		data.missions.forEach(function(mission){
-			html +=
-				'<div class="mission-quest-item ellipsis ' + getDiffClass(mission.level) +'" '+
-					'data-id="'+ zoneId +'" ' +
-					'data-title="'+ mission.title +'">' +
-					mission.title +
-				'</div>';
+		zones[zoneId].missions.forEach(function(questId){
+			html += '<div class="mission-quest-item ellipsis ' + getDiffClass(quests[questId].level) +'" '+
+				'data-id="'+ zoneId +'" ' +
+				'data-quest="'+ questId +'" ' +
+				'data-title="'+ quests[questId].title +'">' +
+				quests[questId].title +
+			'</div>';
 		});
 
 		if (!html) {
@@ -110,24 +99,31 @@ var mission;
 		}
 		return html;
 	}
-	function clickQuest(that) {
-		that = $(this)
+	function levelHtml() {
+		return 'Lv.' + zones[mission.id].level + '-' + zones[mission.id].maxLevel
+	}
+	function clickQuest() {
 		var id = this.dataset.id * 1
-		var title = that.data('title')
+		var questId = this.dataset.quest * 1
+		var title = this.dataset.title
 		if (id >= 0 && party.presence[0].isLeader) {
-			console.info("QUEST SELECTED: ", id, title)
+			console.info("QUEST SELECTED: ", id, questId, title)
 			mission.id = id
+			mission.questId = questId
 			mission.title = title
-			questLevel = zones[mission.id].level
-			console.info("zones[mission.id].name: ", zones[mission.id].name)
-			console.info("image: ", 'images/battle/' + zones[mission.id].name + '.png')
-			showEmbark()
-			updateTitle()
+			console.info("zone name: ", zones[mission.id].name)
+			var png = getZoneImg()
+			warn('png', png)
+			querySelector('#mission-preview').src = png
+			$("#mission-title").html(mission.title);
 			querySelector('#mission-level').innerHTML = levelHtml()
 		}
 		else {
 			// TODO: non-party member needs to see something... EMBARK?
 		}
+	}
+	function getZoneImg() {
+		return 'images/battle/' + _.kebabCase(zones[mission.id].name.replace(/'/g, '')) + '-'+ quests[mission.questId].imgIndex +'.png'
 	}
 
 	function toggleZone() {
@@ -157,14 +153,9 @@ var mission;
 			zone.isOpen = 1;
 		}
 	}
-	function resetLocalQuestData() {
-		mission.id = -1;
-		mission.title = '';
-		my.quest = {};
-	}
 	function abandon() {
 		// clicked flag
-		if (!my.quest.level) {
+		if (!mission.inProgress) {
 			chat.log("You have not started a mission!", 'chat-warning');
 		}
 		else if (!party.presence[0].isLeader) {
@@ -177,20 +168,20 @@ var mission;
 			socket.publish('party' + my.partyId, {
 				route: 'party->abandon',
 				msg: my.name + ' has abandoned the mission.',
-				popupMsg: 'Mission abandoned: ' + my.quest.title,
-				quest: getQuestData(mission.id, mission.title)
+				popupMsg: 'Mission abandoned: ' + mission.title
 			})
 		}
 	}
 
 	function abandonReceived(data) {
-		info(arguments.callee.name, data)
+		info('abandonReceived', data)
 		chat.log(data.msg, 'chat-warning')
 		ng.msg(data.popupMsg, 4)
 		mission.abort()
 	}
 	function abort() {
 		if (ng.view === 'dungeon') {
+			mission.inProgress = false
 			button.hide()
 			chat.log('Returning to town...', 'chat-warning')
 			ng.lock(1)
@@ -220,9 +211,11 @@ var mission;
 
 	function embark() {
 		if (party.presence[0].isLeader) {
+			mission.inProgress = true
 			var data = {
 				route: 'party->embarkReceived',
-				quest: getQuestData(mission.id, mission.title)
+				id: mission.id,
+				title: mission.title,
 			}
 			console.info('embark isLeader!', data)
 			socket.publish('party' + my.partyId, data)
@@ -231,10 +224,14 @@ var mission;
 
 	function embarkReceived(data) {
 		console.info("MISSION UPDATE! ", data)
-		setQuest(data.quest)
+		mission.inProgress = true
+		mission.id = data.id
+		mission.title = data.title
+		my.quest = _.cloneDeep(_.find(zones, { id: mission.id }))
+		my.zoneMobs = _.cloneDeep(_.find(zones, { id: mission.id }).mobs)
 		town.closeVarious()
 
-		chat.log('Now departing for ' + my.quest.zone + '!', 'chat-warning')
+		chat.log('Now departing for ' + my.quest.name + '!', 'chat-warning')
 		ng.lock(1)
 		TweenMax.to('#sky-wrap', 3, {
 			delay: 1,
@@ -247,28 +244,7 @@ var mission;
 			filter: 'brightness(0)',
 			ease: Power4.easeOut
 		});
-		ng.msg('Mission started: ' + my.quest.title)
+		ng.msg('Mission started: ' + mission.title)
 		delayedCall(game.questDelay, dungeon.go)
-	}
-
-	function setQuest(data) {
-		console.info("SETTING QUEST", data)
-		mission.id = data.id
-		mission.title = data.title
-		my.quest = data
-		my.zoneMobs = data.mobs
-	}
-
-	function getQuestData(id, title) {
-		var zone = _.find(zones, { id: id })
-		var mission = _.find(zone.missions, { title: title })
-		return {
-			id: zone.id,
-			title: mission.title,
-			zone: zone.name,
-			level: mission.level,
-			description: mission.description,
-			mobs: zone.mobs
-		}
 	}
 })(TweenMax, $, _);
