@@ -31,7 +31,7 @@ var tooltip;
 		'CLR',
 		'DRU',
 		'MNK',
-		'PAL',
+		'CRU',
 		'RNG',
 		'ROG',
 		'SHD',
@@ -41,7 +41,7 @@ var tooltip;
 	var wearsMail = [
 		'BRD',
 		'CLR',
-		'PAL',
+		'CRU',
 		'RNG',
 		'SHD',
 		'SHM',
@@ -50,7 +50,7 @@ var tooltip;
 	var wearsPlate = [
 		'BRD',
 		'CLR',
-		'PAL',
+		'CRU',
 		'SHD',
 		'WAR',
 	]

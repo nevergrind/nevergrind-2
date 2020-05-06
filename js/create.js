@@ -38,7 +38,7 @@ var create;
 			Summoner: 'Magical DPS',
 			Monk: 'Physical DPS',
 			Necromancer: 'Magical DPS',
-			Paladin: 'Tank',
+			Crusader: 'Tank',
 			Ranger: 'Physical DPS',
 			Rogue: 'Physical DPS',
 			'Shadow Knight': 'Tank',
@@ -73,10 +73,10 @@ var create;
 				Summoner: 'Summoners are a magical DPS class that can only wear cloth armor. They boast the strongest pets in the game due to their ability to summon four types of pets. They also wield powerful elemental magic and some of the most useful support spells in the game.',
 				Monk: "Monks are a physical DPS class that can wear leather armor. Monks practice martial arts to deliver powerful punches and kicks. Monks deliver top-tier physical DPS with hand-to-hand or blunt weapons. They have solid dungeon skills and the best pulling ability among all classes.",
 				Necromancer: 'Necromancers are a magical DPS class that can only wear cloth armor. They have powerful skeleton pets that make quick work of their enemies. Powerful DoT spells, fear, and life tap make them a formidable addition to any party.',
-				Paladin: 'Paladins are a tank class that can wear plate armor. Paladins have the unique ability to lay hands, healing themselves when they need it most. Paladins also have strong stuns and healing spells which make them very difficult to kill.',
+				Crusader: 'Crusaders are a tank class that can wear plate armor. Crusaders have the unique ability to lay hands, healing themselves when they need it most. Crusaders also have strong stuns and healing spells which make them very difficult to kill.',
 				Ranger: "Rangers are a physical DPS class that can wear mail armor. They're the only class that can use bows, which help them inflict massive damage. A diverse arsenal of magic also aids them in battle. Notably, Rangers have the strongest overall dungeon skills, including the best scouting skills.",
 				Rogue: 'Rogues are a physical DPS class that can wear mail armor. Their combination of stealth and bursts of damage make them deadly on the battlefield. Rogues have unparalleled disarm trap skills, along with very strong treasure and scouting skills.',
-				'Shadow Knight': 'Shadow Knight are a tank class that can wear plate armor. They have the unique ability to harm touch a mob, dealing a large amount of damage to a single target. They have the strongest offensive potential among all tanks along with deadly abilities like fear and life tap.',
+				'Shadow Knight': 'Shadow Knights are a tank class that can wear plate armor. They have the unique ability to harm touch a mob, dealing a large amount of damage to a single target. They have the strongest offensive potential among all tanks along with deadly abilities like fear and life tap.',
 				Shaman: 'Shaman are a healing class that can wear mail armor. Their ability to buff their party and debuff mobs is capable of shifting the odds with ease. Their poison and frost spells make them both versatile and deadly in combat.',
 				Warrior: 'Warriors are a tank class that can wear plate armor. Warriors have the strongest physical defense and the highest hit points in the game. They can also dish out a solid amount of physical DPS. Their exceptional pulling skills help keep their party out of trouble.',
 				Wizard: 'Wizards are a magical DPS class that can only wear cloth armor. Instead of opting for trickery or pets, they focus on raw magical power. Wizards have a powerful and diverse arsenal of spells at their disposal that make quick work of their prey.'
@@ -407,7 +407,7 @@ var create;
 			}
 			else if (f.job === 'Druid' ||
 				f.job === 'Enchanter' ||
-				f.job === 'Paladin' ||
+				f.job === 'Crusader' ||
 				f.job === 'Warrior'){
 				v += 10;
 			}
@@ -439,7 +439,7 @@ var create;
 			// class
 			if (f.job === 'Summoner' ||
 				f.job === 'Necromancer' ||
-				f.job === 'Paladin' ||
+				f.job === 'Crusader' ||
 				f.job === 'Shaman'){
 				v += 5;
 			}
@@ -480,7 +480,7 @@ var create;
 				v += 5;
 			}
 			else if (f.job === 'Enchanter' ||
-				f.job === 'Paladin' ||
+				f.job === 'Crusader' ||
 				f.job === 'Shaman'){
 				v += 10;
 			}
@@ -519,7 +519,7 @@ var create;
 			else if (f.job === 'Enchanter' ||
 				f.job === 'Rogue' ||
 				f.job === 'Shadow Knight' ||
-				f.job === 'Paladin'){
+				f.job === 'Crusader'){
 				v += 10;
 			}
 			else if (f.job === 'Druid'){

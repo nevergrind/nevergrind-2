@@ -297,8 +297,8 @@ var party;
 					route: 'party->disband',
 				});
 				// stuff for disbander
-				mission.inProgress && ng.msg('Mission abandoned: '+ mission.title);
-				chat.log('You disbanded the party.');
+				mission.inProgress && ng.msg('Mission abandoned: '+ quests[mission.questId].title)
+				chat.log('You disbanded the party.')
 				var i = party.maxPlayers - 1;
 				for (; i > 0; i--) {
 					removePartyMember(party.presence[i], i === 1);

@@ -2,18 +2,14 @@ var my;
 !function($, _, TweenMax, undefined) {
 	my = {
 		hud,
-		Party,
-		clearHud,
 		getResistObject,
 		getPartyNames,
 		getAvatarUrl,
-		getNewLeaderName,
-		getPartySlotByRow,
-		isLowestPartyIdMine,
 		resourceTick,
 		checkForDeath,
+		fixTarget,
+		tabTarget,
 		initSkills,
-		saveCharacterData,
 		getMyData,
 		dataProps: [
 			'str',
@@ -61,16 +57,34 @@ var my;
 		team: 0,
 		gold: 0,
 		slot: 1,
-		tgt: 1,
+		target: 1,
 		attackOn: false,
 		hudTimer: new delayedCall(0, ''),
 		quest: {},
 		// buffs, potions, etc that need to be cancelled on death or whatever. looping through and killing them makes this easier
 		timers: [],
 	}
+	var i, tries, val
 
 	////////////////////////////////////
-
+	function fixTarget() {
+		if (!mobs[my.target].name) {
+			my.target = _.findIndex(mobs, mob => mob.name)
+			combat.targetChanged()
+		}
+	}
+	function tabTarget(event) {
+		if (event.shiftKey) {
+			my.target--
+			if (my.target < 0) my.target = mob.max - 1
+		}
+		else {
+			my.target++
+			if (++my.target >= mob.max) my.target = 0
+		}
+		if (!mobs[my.target].name) fixTarget(event)
+		else combat.targetChanged()
+	}
 	function getResistObject() {
 		var resp = {}
 		ng.resists.forEach(function(type) {
@@ -86,53 +100,9 @@ var my;
 		});
 		return a;
 	}
-	function isLowestPartyIdMine() {
-		var lowestId = party.presence[0].id;
-		party.presence.forEach(function(v) {
-			if (v.id && v.id < lowestId) {
-				lowestId = v.id;
-			}
-		});
-		return lowestId === party.presence[0].id;
-	}
 	function getAvatarUrl(obj) {
 		obj = obj || my
 		return 'images/avatars/' + _.kebabCase(obj.race) + '-' + (obj.gender ? 'female-' : 'male-') + obj.face + '.png';
-	}
-	function getNewLeaderName() {
-		var lowestId = party.presence[0].id,
-			name = party.presence[0].name;
-		party.presence.forEach(function(v) {
-			if (v.id && v.id < lowestId) {
-				name = v.name;
-			}
-		});
-		return name;
-	}
-	function getPartySlotByRow(row) {
-		var slot = 0;
-		party.presence.forEach(function(v, i) {
-			if (v.id === row) {
-				slot = i;
-			}
-		});
-		return slot;
-	}
-	function Party(isLeader) {
-		return {
-			row: 0, // not updated from server - failing at life
-			id: 0, // when updated
-			name: '',
-			isLeader: isLeader || false,
-			job: '',
-			level: 0,
-			hp: 0,
-			hpMax: 0,
-			mp: 0,
-			mpMax: 0,
-			isHidden: true,
-			heartbeat: Date.now()
-		};
 	}
 	function hud(msg, d) {
 		my.hudTimer.kill();
@@ -146,17 +116,15 @@ var my;
 			});
 		}
 	}
-	function clearHud() {
-		my.hudTimer.kill();
-		DOM.hud.style.visibility = 'hidden';
-	}
 	function resourceTick(type) {
 		// hpRegen mpRegen spRegen
 		my[type] += stats[type + 'Regen']()
 		if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
 	}
 	function checkForDeath() {
-
+		if (my.hp <= 0) {
+			warn("Oh no, I am dead")
+		}
 	}
 	function initSkills() {
 		warn('initSkills', my.skills)

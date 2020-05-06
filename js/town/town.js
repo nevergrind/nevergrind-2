@@ -103,8 +103,8 @@ var town;
 				town.isInitialized[key] = false
 			}
 			chat.sizeLarge();
-			TweenMax.set(button.wrap, {
-				bottom: '-5rem'
+			TweenMax.set('#button-wrap', {
+				display: 'none'
 			})
 			$.post(app.url + 'character/load-character.php', {
 				row: create.selected

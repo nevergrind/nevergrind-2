@@ -43,7 +43,7 @@ function getDungeonSkill($type, $hero){
 			'scout' => 0,
 			'pulling' => 5
 		],
-		'Paladin' => [
+		'Crusader' => [
 			'traps' => 10,
 			'treasure' => 5,
 			'scout' => 10,

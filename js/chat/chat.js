@@ -563,7 +563,8 @@ var chat;
 	function sizeSmall() {
 		TweenMax.set('#chat-wrap', {
 			x: '0%',
-			left: 0
+			y: -50,
+			left: '0%'
 		})
 		TweenMax.set('#chat-present-wrap', {
 			display: 'none'
@@ -575,6 +576,7 @@ var chat;
 		})
 		TweenMax.set('#chat-wrap', {
 			x: '-50%',
+			y: 0,
 			left: '50%'
 		})
 	}

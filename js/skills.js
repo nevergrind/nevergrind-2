@@ -630,10 +630,10 @@ var skills;
 				cooldown: 0,
 			},
 		],
-		PAL: [
+		CRU: [
 			{
 				name: 'TestSkill',
-				img: 'PAL-1',
+				img: 'CRU-1',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -641,7 +641,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-2',
+				img: 'CRU-2',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -649,7 +649,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-3',
+				img: 'CRU-3',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -657,7 +657,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-4',
+				img: 'CRU-4',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -665,7 +665,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-5',
+				img: 'CRU-5',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -673,7 +673,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-6',
+				img: 'CRU-6',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -681,7 +681,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-7',
+				img: 'CRU-7',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -689,7 +689,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-8',
+				img: 'CRU-8',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -697,7 +697,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-9',
+				img: 'CRU-9',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -705,7 +705,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-10',
+				img: 'CRU-10',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -713,7 +713,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-11',
+				img: 'CRU-11',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -721,7 +721,7 @@ var skills;
 				cooldown: 0,
 			}, {
 				name: 'TestSkill',
-				img: 'PAL-12',
+				img: 'CRU-12',
 				mp: 0,
 				sp: 0,
 				spellType: '',
@@ -830,7 +830,7 @@ var skills;
 		],
 		RNG: [
 			{
-				name: 'TestSkill',
+				name: 'TestSkill0',
 				img: 'RNG-1',
 				mp: 0,
 				sp: 0,
@@ -838,7 +838,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill1',
 				img: 'RNG-2',
 				mp: 0,
 				sp: 0,
@@ -846,7 +846,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill2',
 				img: 'RNG-3',
 				mp: 0,
 				sp: 0,
@@ -854,7 +854,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill3',
 				img: 'RNG-4',
 				mp: 0,
 				sp: 0,
@@ -862,7 +862,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill4',
 				img: 'RNG-5',
 				mp: 0,
 				sp: 0,
@@ -870,7 +870,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill5',
 				img: 'RNG-6',
 				mp: 0,
 				sp: 0,
@@ -878,7 +878,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill6',
 				img: 'RNG-7',
 				mp: 0,
 				sp: 0,
@@ -886,7 +886,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill7',
 				img: 'RNG-8',
 				mp: 0,
 				sp: 0,
@@ -894,7 +894,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill8',
 				img: 'RNG-9',
 				mp: 0,
 				sp: 0,
@@ -902,7 +902,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill9',
 				img: 'RNG-10',
 				mp: 0,
 				sp: 0,
@@ -910,7 +910,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill10',
 				img: 'RNG-11',
 				mp: 0,
 				sp: 0,
@@ -918,7 +918,7 @@ var skills;
 				castTime: 0,
 				cooldown: 0,
 			}, {
-				name: 'TestSkill',
+				name: 'TestSkill11',
 				img: 'RNG-12',
 				mp: 0,
 				sp: 0,

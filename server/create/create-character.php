@@ -149,7 +149,7 @@
 		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Sword", '. $data .')';
 	}
 	else if (
-		$f['job'] === 'Paladin' ||
+		$f['job'] === 'Crusader' ||
 		$f['job'] === 'Druid' ||
 		$f['job'] === 'Cleric' ||
 		$f['job'] === 'Shaman'

@@ -99,6 +99,7 @@ var game;
 				my.resourceTick('hp')
 				my.resourceTick('mp')
 				my.resourceTick('sp')
+				mob.resourceTick()
 			}
 
 			obj = {

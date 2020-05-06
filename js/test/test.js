@@ -65,7 +65,6 @@ var test;
 			if (singleMob && i === 2 || !singleMob) {
 				mobKey = mob.getRandomMobKey();
 				mobKey = 'elephant';
-				cache.preloadMob(mobKey);
 				mob.setMob(i, mobKey);
 			}
 		}
@@ -198,7 +197,7 @@ var test;
 		////////////////
 		function startSpin(i) {
 			var o = {
-				el: document.getElementById('class-btn-timer-' + i),
+				el: document.getElementById('skill-timer-' + i),
 				turn: 0
 			};
 			TweenMax.to(o, 5, {

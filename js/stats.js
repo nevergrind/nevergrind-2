@@ -23,6 +23,7 @@ var stats = {};
 		parry,
 		riposte,
 		damage,
+		offhandDamage,
 		damageString,
 		resistBlood,
 		resistPoison,
@@ -41,21 +42,21 @@ var stats = {};
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
-	var defensiveJobs = ['WAR', 'PAL', 'SHD']
-	var averagePunchJobs = ['WAR', 'PAL', 'SHD', 'ROG', 'RNG', 'BRD']
+	var defensiveJobs = ['WAR', 'CRU', 'SHD']
+	var averagePunchJobs = ['WAR', 'CRU', 'SHD', 'ROG', 'RNG', 'BRD']
 	var wisCasterJobs = ['DRU', 'CLR', 'SHM']
 	var intCasterJobs = ['NEC', 'ENC', 'SUM', 'WIZ']
 	var allCasterJobs = ['CLR', 'DRU', 'SHM', 'BRD', 'NEC', 'ENC', 'SUM', 'WIZ']
-	var hybridJobs = ['PAL', 'SHD', 'RNG']
-	var twoHandBluntAverageJobs = ['WAR', 'PAL', 'SHD', 'CLR', 'DRU', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
-	var tankJobs = ['WAR', 'PAL', 'SHD']
-	var averageArcherJobs = ['WAR', 'PAL', 'SHD', 'ROG', 'BRD']
+	var hybridJobs = ['CRU', 'SHD', 'RNG']
+	var twoHandBluntAverageJobs = ['WAR', 'CRU', 'SHD', 'CLR', 'DRU', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
+	var tankJobs = ['WAR', 'CRU', 'SHD']
+	var averageArcherJobs = ['WAR', 'CRU', 'SHD', 'ROG', 'BRD']
 	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
-	var averageOneHandSlashJobs = ['WAR', 'PAL', 'SHD', 'BRD', 'DRU']
+	var averageOneHandSlashJobs = ['WAR', 'CRU', 'SHD', 'BRD', 'DRU']
 
 	const hpTier = {
 		'WAR': 10,
-		'PAL': 9,
+		'CRU': 9,
 		'SHD': 9,
 		'MNK': 7,
 		'ROG': 7,
@@ -71,7 +72,7 @@ var stats = {};
 	}
 	const mpTier = {
 		'WAR': 2,
-		'PAL': 3,
+		'CRU': 3,
 		'SHD': 3,
 		'MNK': 2,
 		'ROG': 2,
@@ -87,7 +88,7 @@ var stats = {};
 	}
 	const spTier = {
 		'WAR': 2,
-		'PAL': 3,
+		'CRU': 3,
 		'SHD': 3,
 		'MNK': 2,
 		'ROG': 2,
@@ -210,7 +211,6 @@ var stats = {};
 			max = items.eq[12].maxDamage
 		}
 		else {
-			// TODO: Calculate punching damage
 			h2h = handToHand()
 			if (my.job === 'MNK') {
 				min = 1 + (h2h / 12)
@@ -224,10 +224,35 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		return [~~min, ~~max]
+		return [min, max]
+	}
+	function offhandDamage() {
+		if (!my.dualWield) return [0, 0]
+		min = 1
+		max = 1
+		atk = attack()
+		if (items.eq[13].minDamage) {
+			min = items.eq[13].minDamage
+			max = items.eq[13].maxDamage
+		}
+		else {
+			h2h = handToHand()
+			if (my.job === 'MNK') {
+				min = 1 + (h2h / 12)
+				max = 4 + (h2h / 4.5)
+			}
+			else {
+				min = 1 + (h2h / 16)
+				max = 2 + (h2h / 9)
+			}
+		}
+		min = min * (1 + (atk * .002))
+		max = max * (1 + (atk * .002))
+
+		return [min, max]
 	}
 	function damageString(damage) {
-		return damage[0] + '–' + damage[1]
+		return ~~damage[0] + '–' + ~~damage[1]
 	}
 	function resistBlood() {
 		return getStatTotal('resistBlood')
@@ -371,7 +396,7 @@ var stats = {};
 	function doubleAttackMax() {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (
-			my.job === 'PAL' && my.level >= 20 ||
+			my.job === 'CRU' && my.level >= 20 ||
 			my.job === 'SHD' && my.level >= 20 ||
 			my.job === 'MNK' && my.level >= 15 ||
 			my.job === 'ROG' && my.level >= 16 ||
@@ -392,7 +417,7 @@ var stats = {};
 		}
 		else if (
 			(my.job === 'WAR' && my.level >= 6) ||
-			(my.job === 'PAL' && my.level >= 10) ||
+			(my.job === 'CRU' && my.level >= 10) ||
 			(my.job === 'SHD' && my.level >= 10) ||
 			(my.job === 'MNK') ||
 			(my.job === 'RNG' && my.level >= 8)) {
@@ -409,7 +434,7 @@ var stats = {};
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (
 			(my.job === 'WAR' && my.level >= 10) ||
-			(my.job === 'PAL' && my.level >= 17)) {
+			(my.job === 'CRU' && my.level >= 17)) {
 			return base + my.level * 5
 		}
 		else if (
@@ -432,7 +457,7 @@ var stats = {};
 			return base + my.level * 5
 		}
 		else if (
-			(my.job === 'PAL' && my.level >= 30) ||
+			(my.job === 'CRU' && my.level >= 30) ||
 			(my.job === 'MNK' && my.level >= 35)) {
 			return base + my.level * 4
 		}

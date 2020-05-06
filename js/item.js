@@ -104,7 +104,7 @@ var loot = {};
 	const potionMap = {
 		WAR: { hp: 2, mp: 1, sp: 1 },
 		SHD: { hp: 2, mp: 1.5, sp: 1 },
-		PAL: { hp: 2, mp: 1.5, sp: 1.5 },
+		CRU: { hp: 2, mp: 1.5, sp: 1.5 },
 		MNK: { hp: 1.5, mp: 1.5, sp: 1.5 },
 		ROG: { hp: 1.5, mp: 1.5, sp: 1.5 },
 		RNG: { hp: 1.5, mp: 1.5, sp: 1.5 },
@@ -1686,7 +1686,7 @@ var loot = {};
 			chat.log('You cannot equip unidentified items! Try buying an Identify Scroll from the merchant.', 'chat-warning')
 			return false
 		}
-
+		info('itemLevel', my.level, itemLevel)
 		if (my.level < itemLevel) {
 			chat.log('Your level is not high enough to equip this item!', 'chat-warning')
 			return false

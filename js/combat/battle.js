@@ -27,9 +27,6 @@ var battle;
 			// setup some mission data
 			mission.inProgress = true
 			mission.id = 1
-			mission.title = _.cloneDeep(_.find(zones, { id: mission.id })).missions[0].title
-			my.quest = _.cloneDeep(_.find(zones, { id: mission.id }))
-			my.zoneMobs = _.cloneDeep(_.find(zones, { id: mission.id }).mobs)
 		}
 		TweenMax.to('#scene-battle', .5, {
 			startAt: { filter: 'brightness(0)' },
@@ -48,23 +45,26 @@ var battle;
 			mob.imageKeys = Object.keys(mobs.images);
 			mob.index = mob.imageKeys.length - 1;
 		}
-		button.init();
+		button.setAll();
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
 		var singleMob = true;
 		var mobKey = '';
 		for (var i=0; i<mob.max; i++){
 			if (singleMob && i === 2 || !singleMob) {
-				mobKey = mob.getRandomMobKey();
-				mobKey = 'orc';
-				cache.preloadMob(mobKey);
-				mob.setMob(i, mobKey);
+				/*mobKey = mob.getRandomMobKey();
+				mobKey = 'orc';*/
+				mob.setMob(i, mob.configMobType({
+					img: 'orc',
+					level: 1
+				}));
 			}
 		}
+		my.fixTarget()
 	}
 	function html() {
 		var s =
-			'<img id="battle-bg" src="images/battle/tendolin-hollow-2.png">' +
+			'<img id="battle-bg" src="'+ mission.getZoneImg() +'">' +
 			'<img id="battle-fg" src="images/battle/tendolin-hollow-2-fg.png" class="no-pointer">';
 		var test = '';
 
@@ -78,6 +78,7 @@ var battle;
 					'<div id="mob-name-' +i+ '" class="mob-name text-shadow"></div>' +
 					'<div id="mob-bar-' +i+ '" class="mob-bar">' +
 						'<div id="mob-health-' +i+ '" class="mob-health"></div>' +
+						'<div class="mob-health-grid"></div>' +
 					'</div>' +
 				'</div>' +
 				'<div id="mob-shadow-' +i+ '" class="mob-shadow"></div>' +

@@ -43,8 +43,8 @@ var dungeon;
 		ng.unlock()
 	}
 	function init() {
-		if (my.zoneMobs.length) {
-			my.zoneMobs.forEach(function(v){
+		if (zones[mission.id].mobs.length) {
+			zones[mission.id].mobs.forEach(function(v){
 				cache.preloadMob(_.kebabCase(v))
 			});
 		}
@@ -54,7 +54,7 @@ var dungeon;
 		else {
 			getElementById('scene-dungeon').innerHTML = dungeon.html()
 			battle.events()
-			button.init()
+			button.setAll()
 		}
 		chat.scrollBottom()
 		// delegate

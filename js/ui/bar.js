@@ -212,7 +212,7 @@ var bar;
 			bar.defaultImage[12] = 'bows0'
 		}
 		else if (my.jobLong === 'Warrior' ||
-			my.jobLong === 'Paladin' ||
+			my.jobLong === 'Crusader' ||
 			my.jobLong === 'Shadow Knight') {
 			bar.defaultImage[12] = 'oneHandSlashers0'
 		}
@@ -234,7 +234,7 @@ var bar;
 		'</div>';
 	}
 
-	function getItemSlotImage(type, slot, data) {
+	function getItemSlotImage(type, slot) {
 		resp = type === 'eq' ? bar.defaultImage[slot] : 'blank-item'
 		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'itemType')) {
 			resp = getItemIconFileNameByObj(items[type][slot])

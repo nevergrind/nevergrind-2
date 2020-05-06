@@ -7,7 +7,7 @@
 		'Summoner',
 		'Monk',
 		'Necromancer',
-		'Paladin',
+		'Crusader',
 		'Ranger',
 		'Rogue',
 		'Shadow Knight',

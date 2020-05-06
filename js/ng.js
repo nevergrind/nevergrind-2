@@ -28,7 +28,7 @@ var ng;
 				'Summoner': [0,2,0,0,4,4,0],
 				'Monk': [4,2,2,2,0,0,0],
 				'Necromancer': [0,2,0,0,4,4,0],
-				'Paladin': [2,4,0,2,2,0,0],
+				'Crusader': [2,4,0,2,2,0,0],
 				'Ranger': [2,2,2,2,2,0,0],
 				'Rogue': [4,0,4,2,0,0,0],
 				'Shadow Knight': [4,2,0,2,0,2,0],
@@ -64,7 +64,7 @@ var ng;
 				'attrs': [19,19,14,19,17,11,9],
 				'jobs': [
 					'Cleric',
-					'Paladin',
+					'Crusader',
 					'Rogue',
 					'Warrior'
 				]
@@ -76,7 +76,7 @@ var ng;
 					'Enchanter',
 					'Summoner',
 					'Necromancer',
-					'Paladin',
+					'Crusader',
 					'Shadow Knight',
 					'Wizard'
 				]
@@ -100,7 +100,7 @@ var ng;
 					'Bard',
 					'Druid',
 					'Monk',
-					'Paladin',
+					'Crusader',
 					'Ranger',
 					'Rogue',
 					'Warrior'
@@ -123,7 +123,7 @@ var ng;
 					'Cleric',
 					'Enchanter',
 					'Summoner',
-					'Paladin',
+					'Crusader',
 					'Wizard'
 				]
 			},
@@ -137,7 +137,7 @@ var ng;
 					'Summoner',
 					'Monk',
 					'Necromancer',
-					'Paladin',
+					'Crusader',
 					'Ranger',
 					'Rogue',
 					'Shadow Knight',
@@ -228,7 +228,7 @@ var ng;
 			'Summoner',
 			'Monk',
 			'Necromancer',
-			'Paladin',
+			'Crusader',
 			'Ranger',
 			'Rogue',
 			'Shadow Knight',
@@ -244,7 +244,7 @@ var ng;
 			Summoner: 'SUM',
 			Monk: 'MNK',
 			Necromancer: 'NEC',
-			Paladin: 'PAL',
+			Crusader: 'CRU',
 			Ranger: 'RNG',
 			Rogue: 'ROG',
 			'Shadow Knight': 'SHD',
@@ -260,7 +260,7 @@ var ng;
 			SUM: 'Summoner',
 			MNK: 'Monk',
 			NEC: 'Necromancer',
-			PAL: 'Paladin',
+			CRU: 'Crusader',
 			RNG: 'Ranger',
 			ROG: 'Rogue',
 			SHD: 'Shadow Knight',

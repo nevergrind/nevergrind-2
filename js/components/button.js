@@ -1,43 +1,79 @@
 var button;
-(function() {
+(function(TweenMax, $, _) {
 	button = {
 		initialized: 0,
-		wrap: getElementById('button-wrap'),
-		init,
+		setAll,
 		hide,
 	}
+	var arr, damage
+	/////////////////////////////
+
+	function isOffhandingWeapon() {
+		return item.offhandWeaponTypes.includes(items.eq[13].itemType)
+	}
+
+	$("#button-wrap")
+		.on('click', '.job-skill-btn', handleButtonClick)
+		.on('click', '#primary-attack-btn', primaryAttack)
+		.on('click', '#secondary-attack-btn', secondaryAttack)
+
 	//////////////////////////////////
-	function init() {
+	function handleButtonClick() {
+		var index = this.dataset.index * 1;
+		console.info('CLICKED SKILL: ', index);
+		info('clicked: ', skills[my.job][index].name)
+
+	}
+	function primaryAttack() {
+		info('primaryAttack')
+		my.fixTarget()
+		if (my.target === -1) return
+		arr = stats.damage()
+		damage = _.random(arr[0], arr[1])
+		damage && combat.damageMobMelee(my.target, damage)
+	}
+	function secondaryAttack() {
+		info('secondaryAttack')
+		my.fixTarget()
+		if (my.target === -1) return
+		arr = stats.offhandDamage()
+		damage = _.random(arr[0], arr[1])
+		damage && combat.damageMobMelee(my.target, damage)
+	}
+	function setAll() {
 		var s = '';
+		// base attack buttons
+		s += '<div id="main-attack-wrap">' +
+			'<div id="primary-attack-btn" class="skill-btn repeat-line-bg">' +
+				'<img class="skill-img" src="'+ bar.getItemSlotImage('eq', 12) +'">' +
+				'<div id="skill-timer-primary" class="no-pointer skill-timer"></div>' +
+			'</div>'
+			if (isOffhandingWeapon()) {
+				s += '<div id="secondary-attack-btn" class="skill-btn repeat-line-bg">' +
+					'<img class="skill-img" src="'+ bar.getItemSlotImage('eq', 13) +'">' +
+					'<div id="skill-timer-secondary" class="no-pointer skill-timer"></div>' +
+				'</div>'
+			}
+		s += '</div>' +
+		'<div id="skill-btn-wrap">'
 		// skill buttons
-		for (var i=0; i<10; i++) {
+		for (var i=0; i<12; i++) {
 			s +=
-			'<div id="class-btn-'+ i +'" '+
-				'class="class-btn" '+
-				'style="background-image: url(images/skills/'+ my.job +'.png)">' +
-				'<div id="class-btn-timer-'+ i +'" class="no-pointer class-btn-timer"></div>'+
-			'</div>';
+			'<div id="skill-btn-'+ i +'" class="skill-btn job-skill-btn" data-index="'+ i +'">' +
+				'<img class="skill-img" src="images/skills/'+ my.job +'/'+ i +'.png">' +
+				'<div id="skill-timer-'+ i +'" class="no-pointer skill-timer"></div>' +
+			'</div>'
 		}
-		button.wrap.innerHTML = s;
-		if (!button.initialized) {
-			$("#button-wrap").on('click', '.class-btn', function() {
-				var id = this.id.substr(10) * 1;
-				console.info('CLICKED SKILL: ', id, typeof id);
-				skills[my.job].route(id);
-			});
-			delayedCall(1, function() {
-				TweenMax.to(button.wrap, 1, {
-					startAt: {
-						display: 'flex'
-					},
-					bottom: 0
-				});
-			});
-		}
+		s += '</div>'
+
+		querySelector('#button-wrap').innerHTML = s;
+		TweenMax.set('#button-wrap', {
+			startAt: { display: 'flex' },
+		})
 	}
 	function hide() {
-		TweenMax.set(button.wrap, {
+		TweenMax.set('#button-wrap', {
 			display: 'none'
 		});
 	}
-})();
+})(TweenMax, $, _);

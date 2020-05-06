@@ -18,6 +18,7 @@ var mission;
 		embarkReceived,
 		toggleZone,
 		clickQuest,
+		getZoneImg,
 	};
 	var questHtml
 	var html = ''
@@ -30,8 +31,8 @@ var mission;
 		resetLocalQuestData()
 	}
 	function resetLocalQuestData() {
-		mission.id = 1;
-		mission.title = 'Kill Slitherfang';
+		mission.id = 1
+		mission.questId = 1
 	}
 	function getOpenMenuClass(level) {
 		return (level <= my.level && level > ~~(my.level * .66)) ? 'mission-open-menu' : ''
@@ -48,21 +49,21 @@ var mission;
 	}
 	function getMissionBodyHtml() {
 		questHtml = '<div id="various-body" class="flex-column flex-max">'
-		var headMsg = party.presence[0].isLeader ? 'Select A Mission' : 'Mission Counter'
-
-		headMsg = mission.title
 
 		questHtml = '<div id="mission-wrap" class="flex-row aside-frame">' +
 			'<img id="mission-preview" src="images/battle/salubrin-den-1.png">' +
-			'<div id="mission-detail-col">'+
-				'<div id="mission-details">'+
-					'<div id="mission-title">'+ headMsg +'</div>' +
-					'<div id="mission-level">'+ levelHtml() + '</div>' +
-				'</div>' +
-				(party.presence[0].isLeader ?
-					'<div id="mission-embark" class="ng-btn">Embark!</div>' :
-					'<div class="chat-warning">Waiting for party leader.</div>') +
-			'</div>' +
+			'<div id="mission-detail-col">'
+				if (party.presence[0].isLeader) {
+					questHtml += '<div id="mission-details">'+
+						'<div id="mission-title">'+ quests[mission.questId].title +'</div>' +
+						'<div id="mission-level">'+ levelHtml() + '</div>' +
+					'</div>' +
+					'<div id="mission-embark" class="ng-btn">Embark!</div>'
+				}
+				else {
+					questHtml += '<div id="mission-waiting-msg">Waiting for the party leader to select a mission.</div>'
+				}
+			questHtml += '</div>' +
 		'</div>'
 
 		questHtml += '<div id="mission-counter" class="aside-frame text-shadow">'
@@ -74,7 +75,7 @@ var mission;
 					'<div>' + zone.name + '</div>' +
 				'</div>' +
 				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">' +
-					getMissionRowHtml(zone.id) +
+					getMissionRowHtml(zone) +
 				'</div>';
 				console.info('zone', zone);
 			}
@@ -83,16 +84,15 @@ var mission;
 		return questHtml
 
 	}
-	function getMissionRowHtml(zoneId) {
+	function getMissionRowHtml(zone) {
 		var html = '';
-		zones[zoneId].missions.forEach(function(questId){
+		zones[zone.id].missions.forEach(questId => {
 			html += '<div class="mission-quest-item ellipsis ' + getDiffClass(quests[questId].level) +'" '+
-				'data-id="'+ zoneId +'" ' +
-				'data-quest="'+ questId +'" ' +
-				'data-title="'+ quests[questId].title +'">' +
+				'data-id="'+ zone.id +'" ' +
+				'data-quest="'+ questId +'">' +
 				quests[questId].title +
-			'</div>';
-		});
+			'</div>'
+		})
 
 		if (!html) {
 			html = '<div class="mission-quest-item">No missions found.</div>';
@@ -105,17 +105,14 @@ var mission;
 	function clickQuest() {
 		var id = this.dataset.id * 1
 		var questId = this.dataset.quest * 1
-		var title = this.dataset.title
-		if (id >= 0 && party.presence[0].isLeader) {
+		if (id && party.presence[0].isLeader) {
 			console.info("QUEST SELECTED: ", id, questId, title)
 			mission.id = id
 			mission.questId = questId
-			mission.title = title
 			console.info("zone name: ", zones[mission.id].name)
 			var png = getZoneImg()
-			warn('png', png)
 			querySelector('#mission-preview').src = png
-			$("#mission-title").html(mission.title);
+			$("#mission-title").html(quests[mission.questId].title);
 			querySelector('#mission-level').innerHTML = levelHtml()
 		}
 		else {
@@ -168,7 +165,7 @@ var mission;
 			socket.publish('party' + my.partyId, {
 				route: 'party->abandon',
 				msg: my.name + ' has abandoned the mission.',
-				popupMsg: 'Mission abandoned: ' + mission.title
+				popupMsg: 'Mission abandoned: ' + quests[mission.questId].title
 			})
 		}
 	}
@@ -215,7 +212,7 @@ var mission;
 			var data = {
 				route: 'party->embarkReceived',
 				id: mission.id,
-				title: mission.title,
+				questId: mission.questId,
 			}
 			console.info('embark isLeader!', data)
 			socket.publish('party' + my.partyId, data)
@@ -226,12 +223,10 @@ var mission;
 		console.info("MISSION UPDATE! ", data)
 		mission.inProgress = true
 		mission.id = data.id
-		mission.title = data.title
-		my.quest = _.cloneDeep(_.find(zones, { id: mission.id }))
-		my.zoneMobs = _.cloneDeep(_.find(zones, { id: mission.id }).mobs)
+		mission.questId = data.questId
 		town.closeVarious()
 
-		chat.log('Now departing for ' + my.quest.name + '!', 'chat-warning')
+		chat.log('Now departing for ' + zones[mission.id].name + '!', 'chat-warning')
 		ng.lock(1)
 		TweenMax.to('#sky-wrap', 3, {
 			delay: 1,
@@ -244,7 +239,7 @@ var mission;
 			filter: 'brightness(0)',
 			ease: Power4.easeOut
 		});
-		ng.msg('Mission started: ' + mission.title)
+		ng.msg('Mission started: ' + quests[mission.questId].title)
 		delayedCall(game.questDelay, dungeon.go)
 	}
 })(TweenMax, $, _);

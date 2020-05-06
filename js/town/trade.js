@@ -475,7 +475,7 @@ var trade;
 		chat.log(data.name + ' rejected your trade request.')
 	}
 	function canTrade() {
-		return !my.quest.id && ng.view === 'town' && !trade.data.name
+		return !mission.inProgress && ng.view === 'town' && !trade.data.name
 	}
 	function getTradeAvatar() {
 		return _.kebabCase(trade.data.race) +
