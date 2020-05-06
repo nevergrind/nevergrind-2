@@ -58,6 +58,7 @@ var my;
 		gold: 0,
 		slot: 1,
 		target: 1,
+		avatarBg: 5,
 		attackOn: false,
 		hudTimer: new delayedCall(0, ''),
 		quest: {},

@@ -139,8 +139,6 @@
 }
 
 html {
-	-webkit-touch-callout: none;
-	-webkit-font-smoothing: antialiased;
 	padding: 0;
 	margin: 0;
 	height: 100%;
@@ -237,7 +235,7 @@ tbody { border: 0 }
 	0 0 5px #000,
 	0 0 2px #000!important;
 }
-.text-shadow-thicc3 {
+.text-shadow3 {
 	text-shadow: 1px 1px #000, -1px 0 #000, 1px 0 #000, -1px 1px #000, 1px -1px #000, -1px -1px #000
 }
 /*.text-shadow3 {
@@ -1961,7 +1959,37 @@ background-repeat: no-repeat;
 	font-size: 1rem;
 	background: radial-gradient(closest-corner at 50% 50%, rgba(0, 64, 128, 1), rgba(0, 64, 128, 0));
 }
+#create-avatar-bg {
+	position: absolute;
+	width: 20rem;
+	height: 20rem;
+	top: 0;
+	left: 0;
+}
+#create-avatar-bg-icon-wrap {
+	display: flex;
+	width: 100%;
+}
+.create-avatar-bg-select {
+	position: relative;
+	width: .8rem;
+	height: .8rem;
+	cursor: url('cursor/pointer.cur'), pointer;
+	transition: transform .25s ease-out;
+	transform-origin: 50% 100%;
+	z-index: 1;
+}
+.create-avatar-bg-select:hover {
+	transform: scale(2);
+	z-index: 2;
+}
+.create-avatar-bg-select:active {
+	filter: saturate(1.2) brightness(1.2);
+	outline: 1px solid gold;
+	z-index: 2;
+}
 #create-portrait {
+	position: relative;
 	width: 20rem;
 	height: 20rem;
 	pointer-events: none;
@@ -1985,7 +2013,7 @@ background-repeat: no-repeat;
 	padding: .2rem;
 	border: .2rem inset #125;
 	background: #147;
-	flex: 1;
+	height: 7.6rem;
 }
 #create-character-name {
 	font-size: 1.25rem;
@@ -2519,12 +2547,26 @@ background-repeat: no-repeat;
 	position: relative;
 	display: flex;
 	justify-content: center;
+	background-size: 15rem 15rem;
+	overflow: hidden;
 }
-#inv-avatar-img {
+#inv-avatar-bg {
+	position: absolute;
+	z-index: 1;
 	width: 15rem;
 	height: 15rem;
-	border-radius: 4px;
+	animation: avatar-bg 60s linear infinite;
+}
+@keyframes avatar-bg {
+	0% { transform: scale(1); }
+	60% { transform: scale(1.2); }
+	100% { transform: scale(1); }
+}
+#inv-avatar-img {
+	position: relative;
 	z-index: 1;
+	width: 15rem;
+	height: 15rem;
 }
 #inv-resist-wrap {
 	position: absolute;
@@ -2536,14 +2578,25 @@ background-repeat: no-repeat;
 	z-index: 1;
 }
 .inv-resist-icon {
+	position: relative;
 	display: flex;
-	align-items: center;
 	width: 1.6rem;
 	height: 1.6rem;
-	border: .1rem ridge #136;
-	box-shadow: 0 1px #048 inset, -1px 0 #048 inset, 1px 0 #048 inset, 0 -1px #048 inset;
-	border-radius: 4px;
+	background-size: 1.6rem 1.6rem;
+	font-size: .8rem;
+	transition: filter .15s ease-out;
 }
+.inv-resist-icon:hover {
+	filter: saturate(1.2) brightness(1.2);
+}
+
+#inv-resist-blood { background-image: url(../images/ui/resist-blood.png); }
+#inv-resist-poison { background-image: url(../images/ui/resist-poison.png); }
+#inv-resist-arcane { background-image: url(../images/ui/resist-arcane.png); }
+#inv-resist-lightning { background-image: url(../images/ui/resist-lightning.png); }
+#inv-resist-fire { background-image: url(../images/ui/resist-fire.png); }
+#inv-resist-ice { background-image: url(../images/ui/resist-ice.png); }
+
 #inv-footer {
 	display: flex;
 	justify-content: flex-end;

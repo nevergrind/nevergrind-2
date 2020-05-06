@@ -1,5 +1,5 @@
 var create;
-(function(_) {
+(function($, TweenMax, _, undefined) {
 	create = {
 		events,
 		deleteCharacter,
@@ -129,7 +129,7 @@ var create;
 			if (job === create.form.job) return
 			$('.select-class').removeClass('active');
 			$(this).addClass('active');
-			create.set('job', job);
+			create.set('job', job)
 		}
 	}
 	function selectGender() {
@@ -576,6 +576,7 @@ var create;
 			gender: '',
 			name: '',
 			face: _.random(0, 3),
+			bg: _.random(0, 24),
 			str: 0,
 			sta: 0,
 			agi: 0,
@@ -588,15 +589,11 @@ var create;
 		}
 	}
 	function faceUp() {
-		if (++create.form.face > 3) {
-			create.form.face = 0
-		}
+		if (++create.form.face > 3) create.form.face = 0
 		setFace()
 	}
 	function faceDown() {
-		if (--create.form.face < 0) {
-			create.form.face = 3
-		}
+		if (--create.form.face < 0) create.form.face = 3
 		setFace()
 	}
 	function setFace() {
@@ -610,4 +607,4 @@ var create;
 	function getCleanName(name) {
 		return _.capitalize(_.map(name, char => create.whitelist.includes(char) ? char : '').join(''));
 	}
-})(_);
+})($, TweenMax, _);

@@ -62,6 +62,23 @@ var bar;
 		optionSelected: 'General',
 		activeTab: 'character',
 	};
+
+	const defaultBg = {
+		WAR: 9,
+		CRU: 10,
+		SHD: 4,
+		MNK: 22,
+		ROG: 2,
+		RNG: 5,
+		BRD: 17,
+		DRU: 19,
+		CLR: 11,
+		SHM: 13,
+		NEC: 18,
+		ENC: 1,
+		SMN: 3,
+		WIZ: 24,
+	}
 	var pingColors = [
 		'',
 		'chat-warning',
@@ -113,6 +130,11 @@ var bar;
 			bar.dom.inventory = getElementById('inventory')
 			// draw all bars
 			// bar events
+			$('body')
+				.on('mouseenter', '.popover-icons', showBarMenuPopover)
+				.on('mousemove', '.popover-icons', popover.setPosition)
+				.on('mouseleave', '.popover-icons', popover.hide)
+
 			$("#bar-wrap")
 				.on('click contextmenu', '.bar-avatar', handleClickPartyContextMenu)
 				.on('click', '#bar-camp', chat.camp)
@@ -120,9 +142,6 @@ var bar;
 				.on('click', '#bar-inventory', toggleInventory)
 				.on('click', '#bar-options', toggleOptions)
 				.on('click', '#bar-mission-abandon', mission.abandon)
-				.on('mouseenter', '.popover-icons', showBarMenuPopover)
-				.on('mousemove', '.popover-icons', popover.setPosition)
-				.on('mouseleave', '.popover-icons', popover.hide)
 		}
 	}
 	function appExit() {
@@ -748,8 +767,7 @@ var bar;
 	}
 
 	function showBarMenuPopover() {
-		id = $(this).attr('id');
-		popover.setMainMenuHtml(id);
+		popover.setMainMenuHtml(this.id);
 	}
 
 	function cachePlayerBars(index) {
@@ -933,7 +951,6 @@ var bar;
 		'</div>'
 		return html
 	}
-
 	function getCharacterHtml() {
 		// race class level guild
 		html =
@@ -945,14 +962,15 @@ var bar;
 			html += '</div>' +
 			'<div id="inv-column-avatar" class="bg-dark-' + my.job + '">'+
 				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
+					'<img id="inv-avatar-bg" src="images/avatar-bg/'+ defaultBg[my.job] +'.png">' +
 					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 					'<div id="inv-resist-wrap" class="text-shadow">'+
-						'<div id="inv-resist-blood" class="inv-resist-icon flex-center" style="background: #500">' + stats.resistBlood() + '</div>' +
-						'<div id="inv-resist-poison" class="inv-resist-icon flex-center" style="background: #090">' + stats.resistPoison() + '</div>' +
-						'<div id="inv-resist-arcane" class="inv-resist-icon flex-center" style="background: #808">' + stats.resistArcane() + '</div>' +
-						'<div id="inv-resist-lightning" class="inv-resist-icon flex-center" style="background: #aa0">' + stats.resistLightning() + '</div>' +
-						'<div id="inv-resist-fire" class="inv-resist-icon flex-center" style="background: #840">' + stats.resistFire() + '</div>' +
-						'<div id="inv-resist-ice" class="inv-resist-icon flex-center" style="background: #28c">' + stats.resistIce() + '</div>' +
+						'<div id="inv-resist-blood" class="inv-resist-icon flex-center popover-icons">' + + stats.resistBlood() + '</div>' +
+						'<div id="inv-resist-poison" class="inv-resist-icon flex-center popover-icons">' + stats.resistPoison() + '</div>' +
+						'<div id="inv-resist-arcane" class="inv-resist-icon flex-center popover-icons">' + stats.resistArcane() + '</div>' +
+						'<div id="inv-resist-lightning" class="inv-resist-icon flex-center popover-icons">' + stats.resistLightning() + '</div>' +
+						'<div id="inv-resist-fire" class="inv-resist-icon flex-center popover-icons">' + stats.resistFire() + '</div>' +
+						'<div id="inv-resist-ice" class="inv-resist-icon flex-center popover-icons">' + stats.resistIce() + '</div>' +
 					'</div>' +
 				'</div>' +
 				'<div class="flex" style="font-size: .8rem">'+

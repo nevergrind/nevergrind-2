@@ -25,6 +25,12 @@ var popover;
 	function setMainMenuHtml(id) {
 		if (!id) return;
 		mainMenuPopovers = {
+			'inv-resist-blood': 'Resist Blood',
+			'inv-resist-poison': 'Resist Poison',
+			'inv-resist-arcane': 'Resist Arcane',
+			'inv-resist-lightning': 'Resist Lightning',
+			'inv-resist-fire': 'Resist Fire',
+			'inv-resist-ice': 'Resist Ice',
 			'bar-last-ping': 'Last Ping',
 			'bar-average-ping': 'Average Ping',
 			'bar-camp': 'Camp and Exit',
