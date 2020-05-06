@@ -141,7 +141,7 @@ var academy;
 						'</div>' +
 					'</div>'
 				}
-				if (my.skills[i] >= rank) row += '<div class="academy-skill-divider" style="flex: 2"></div>'
+				if (my.skills[i] > rank) row += '<div class="academy-skill-divider" style="flex: 2"></div>'
 				else row += '<div class="academy-skill-divider" style="flex: 2; visibility: hidden"></div>'
 			}
 			else {
@@ -188,7 +188,7 @@ var academy;
 					'</div>'
 				}
 				if (rank < academy.MAX_RANK) {
-					if (my.skills[i] >= rank) row += '<div class="academy-skill-divider"></div>'
+					if (my.skills[i] > rank) row += '<div class="academy-skill-divider"></div>'
 					else row += '<div class="academy-skill-divider" style="visibility: hidden"></div>'
 				}
 			}

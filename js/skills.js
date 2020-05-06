@@ -539,7 +539,8 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				executionTime: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-2',
@@ -547,7 +548,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-3',
@@ -555,7 +556,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-4',
@@ -563,7 +564,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-5',
@@ -571,7 +572,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-6',
@@ -579,7 +580,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-7',
@@ -587,7 +588,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-8',
@@ -595,7 +596,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-9',
@@ -603,7 +604,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-10',
@@ -611,7 +612,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-11',
@@ -619,7 +620,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WAR-12',
@@ -627,7 +628,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		CRU: [
@@ -638,7 +639,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-2',
@@ -646,7 +647,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-3',
@@ -654,7 +655,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-4',
@@ -662,7 +663,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-5',
@@ -670,7 +671,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-6',
@@ -678,7 +679,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-7',
@@ -686,7 +687,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-8',
@@ -694,7 +695,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-9',
@@ -702,7 +703,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-10',
@@ -710,7 +711,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-11',
@@ -718,7 +719,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CRU-12',
@@ -726,7 +727,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		SHD: [
@@ -737,7 +738,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-2',
@@ -745,7 +746,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-3',
@@ -753,7 +754,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-4',
@@ -761,7 +762,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-5',
@@ -769,7 +770,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-6',
@@ -777,7 +778,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-7',
@@ -785,7 +786,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-8',
@@ -793,7 +794,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-9',
@@ -801,7 +802,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-10',
@@ -809,7 +810,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-11',
@@ -817,7 +818,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHD-12',
@@ -825,7 +826,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		RNG: [
@@ -836,7 +837,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill1',
 				img: 'RNG-2',
@@ -844,7 +845,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill2',
 				img: 'RNG-3',
@@ -852,7 +853,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill3',
 				img: 'RNG-4',
@@ -860,7 +861,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill4',
 				img: 'RNG-5',
@@ -868,7 +869,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill5',
 				img: 'RNG-6',
@@ -876,7 +877,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill6',
 				img: 'RNG-7',
@@ -884,7 +885,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill7',
 				img: 'RNG-8',
@@ -892,7 +893,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill8',
 				img: 'RNG-9',
@@ -900,7 +901,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill9',
 				img: 'RNG-10',
@@ -908,7 +909,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill10',
 				img: 'RNG-11',
@@ -916,7 +917,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill11',
 				img: 'RNG-12',
@@ -924,7 +925,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		MNK: [
@@ -935,7 +936,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-2',
@@ -943,7 +944,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-3',
@@ -951,7 +952,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-4',
@@ -959,7 +960,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-5',
@@ -967,7 +968,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-6',
@@ -975,7 +976,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-7',
@@ -983,7 +984,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-8',
@@ -991,7 +992,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-9',
@@ -999,7 +1000,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-10',
@@ -1007,7 +1008,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-11',
@@ -1015,7 +1016,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'MNK-12',
@@ -1023,7 +1024,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		ROG: [
@@ -1034,7 +1035,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-2',
@@ -1042,7 +1043,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-3',
@@ -1050,7 +1051,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-4',
@@ -1058,7 +1059,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-5',
@@ -1066,7 +1067,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-6',
@@ -1074,7 +1075,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-7',
@@ -1082,7 +1083,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-8',
@@ -1090,7 +1091,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-9',
@@ -1098,7 +1099,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-10',
@@ -1106,7 +1107,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-11',
@@ -1114,7 +1115,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ROG-12',
@@ -1122,7 +1123,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		DRU: [
@@ -1133,7 +1134,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-2',
@@ -1141,7 +1142,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-3',
@@ -1149,7 +1150,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-4',
@@ -1157,7 +1158,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-5',
@@ -1165,7 +1166,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-6',
@@ -1173,7 +1174,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-7',
@@ -1181,7 +1182,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-8',
@@ -1189,7 +1190,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-9',
@@ -1197,7 +1198,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-10',
@@ -1205,7 +1206,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-11',
@@ -1213,7 +1214,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'DRU-12',
@@ -1221,7 +1222,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		CLR: [
@@ -1232,7 +1233,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-2',
@@ -1240,7 +1241,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-3',
@@ -1248,7 +1249,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-4',
@@ -1256,7 +1257,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-5',
@@ -1264,7 +1265,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-6',
@@ -1272,7 +1273,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-7',
@@ -1280,7 +1281,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-8',
@@ -1288,7 +1289,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-9',
@@ -1296,7 +1297,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-10',
@@ -1304,7 +1305,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-11',
@@ -1312,7 +1313,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'CLR-12',
@@ -1320,7 +1321,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		SHM: [
@@ -1331,7 +1332,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-2',
@@ -1339,7 +1340,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-3',
@@ -1347,7 +1348,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-4',
@@ -1355,7 +1356,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-5',
@@ -1363,7 +1364,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-6',
@@ -1371,7 +1372,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-7',
@@ -1379,7 +1380,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-8',
@@ -1387,7 +1388,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-9',
@@ -1395,7 +1396,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-10',
@@ -1403,7 +1404,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-11',
@@ -1411,7 +1412,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SHM-12',
@@ -1419,7 +1420,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		BRD: [
@@ -1430,7 +1431,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-2',
@@ -1438,7 +1439,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-3',
@@ -1446,7 +1447,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-4',
@@ -1454,7 +1455,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-5',
@@ -1462,7 +1463,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-6',
@@ -1470,7 +1471,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-7',
@@ -1478,7 +1479,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-8',
@@ -1486,7 +1487,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-9',
@@ -1494,7 +1495,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-10',
@@ -1502,7 +1503,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-11',
@@ -1510,7 +1511,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'BRD-12',
@@ -1518,7 +1519,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		NEC: [
@@ -1529,7 +1530,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-2',
@@ -1537,7 +1538,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-3',
@@ -1545,7 +1546,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-4',
@@ -1553,7 +1554,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-5',
@@ -1561,7 +1562,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-6',
@@ -1569,7 +1570,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-7',
@@ -1577,7 +1578,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-8',
@@ -1585,7 +1586,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-9',
@@ -1593,7 +1594,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-10',
@@ -1601,7 +1602,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-11',
@@ -1609,7 +1610,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'NEC-12',
@@ -1617,7 +1618,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		ENC: [
@@ -1628,7 +1629,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-2',
@@ -1636,7 +1637,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-3',
@@ -1644,7 +1645,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-4',
@@ -1652,7 +1653,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-5',
@@ -1660,7 +1661,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-6',
@@ -1668,7 +1669,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-7',
@@ -1676,7 +1677,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-8',
@@ -1684,7 +1685,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-9',
@@ -1692,7 +1693,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-10',
@@ -1700,7 +1701,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-11',
@@ -1708,7 +1709,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'ENC-12',
@@ -1716,7 +1717,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		SUM: [
@@ -1727,7 +1728,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-2',
@@ -1735,7 +1736,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-3',
@@ -1743,7 +1744,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-4',
@@ -1751,7 +1752,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-5',
@@ -1759,7 +1760,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-6',
@@ -1767,7 +1768,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-7',
@@ -1775,7 +1776,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-8',
@@ -1783,7 +1784,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-9',
@@ -1791,7 +1792,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-10',
@@ -1799,7 +1800,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-11',
@@ -1807,7 +1808,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'SUM-12',
@@ -1815,7 +1816,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 		WIZ: [
@@ -1826,7 +1827,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-2',
@@ -1834,7 +1835,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-3',
@@ -1842,7 +1843,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-4',
@@ -1850,7 +1851,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-5',
@@ -1858,7 +1859,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-6',
@@ -1866,7 +1867,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-7',
@@ -1874,7 +1875,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-8',
@@ -1882,7 +1883,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-9',
@@ -1890,7 +1891,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-10',
@@ -1898,7 +1899,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-11',
@@ -1906,7 +1907,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			}, {
 				name: 'TestSkill',
 				img: 'WIZ-12',
@@ -1914,7 +1915,7 @@ var skills;
 				sp: 0,
 				spellType: '',
 				castTime: 0,
-				cooldown: 0,
+				cooldownTime: 0,
 			},
 		],
 	}

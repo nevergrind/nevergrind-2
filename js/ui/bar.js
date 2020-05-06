@@ -962,7 +962,8 @@ var bar;
 			html += '</div>' +
 			'<div id="inv-column-avatar" class="bg-dark-' + my.job + '">'+
 				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
-					'<img id="inv-avatar-bg" src="images/avatar-bg/'+ defaultBg[my.job] +'.png">' +
+					'<img class="inv-avatar-bg" src="images/avatar-bg/'+ defaultBg[my.job] +'.png">' +
+					'<img id="inv-avatar-bg2" class="inv-avatar-bg" src="images/avatar-bg/'+ defaultBg[my.job] +'.png">' +
 					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 					'<div id="inv-resist-wrap" class="text-shadow">'+
 						'<div id="inv-resist-blood" class="inv-resist-icon flex-center popover-icons">' + + stats.resistBlood() + '</div>' +

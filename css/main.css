@@ -2550,17 +2550,17 @@ background-repeat: no-repeat;
 	background-size: 15rem 15rem;
 	overflow: hidden;
 }
-#inv-avatar-bg {
+.inv-avatar-bg {
 	position: absolute;
 	z-index: 1;
 	width: 15rem;
 	height: 15rem;
-	animation: avatar-bg 60s linear infinite;
 }
-@keyframes avatar-bg {
-	0% { transform: scale(1); }
-	60% { transform: scale(1.2); }
-	100% { transform: scale(1); }
+#inv-avatar-bg2 { animation: avatar-bg2 30s linear infinite; }
+@keyframes avatar-bg2 {
+	0% { transform: scale(1); opacity: 1; }
+	90% { transform: scale(1.27); opacity: 1; }
+	100% { transform: scale(1.3); opacity: 0;  }
 }
 #inv-avatar-img {
 	position: relative;
