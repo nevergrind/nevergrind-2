@@ -185,17 +185,25 @@ var create;
 					opacity: 1,
 					onComplete: ng.unlock
 				});
+				TweenMax.set('#ngo-logo-fg', {
+					overwrite: 1,
+					webkitMaskPositionX: '-40rem',
+				});
 				TweenMax.to('#title-gwen', .6, {
 					startAt: { x: -20, filter: 'brightness(10)' },
 					x: 0,
 					filter: 'brightness(1)',
+					opacity: 1,
+					onComplete: ng.flashNgoLogo,
+				})
+				TweenMax.to('.ngo-logos', .6, {
+					startAt: { y: -20 },
+					y: 0,
 					opacity: 1
 				})
-				TweenMax.to('#nevergrind-online-logo', .6, {
-					startAt: { y: -20, filter: 'brightness(10)' },
-					y: 0,
+				TweenMax.to('#ngo-logo', .6, {
+					startAt: { filter: 'brightness(10)' },
 					filter: 'brightness(1)',
-					opacity: 1
 				})
 			}
 		});
@@ -205,10 +213,13 @@ var create;
 			filter: 'brightness(10)',
 			opacity: 0
 		})
-		TweenMax.to('#nevergrind-online-logo', .6, {
-			startAt: { y: 0, filter: 'brightness(1)' },
-			y: -20,
+		TweenMax.to('#ngo-logo', .6, {
+			startAt: { filter: 'brightness(1)' },
 			filter: 'brightness(10)',
+		})
+		TweenMax.to('.ngo-logos', .6, {
+			startAt: { y: 0, },
+			y: -20,
 			opacity: 0
 		})
 	}

@@ -70,10 +70,16 @@ var test;
 		}
 	}
 	function send(loops) {
+		// about 150ms per 1k data packets sent to 4 players
 		loops = loops || 1e3;
 		for (var i=0; i<loops; i++) {
 			socket.publish('test', {
-				test: ''
+				test: 'asdfasdf',
+				loop: i,
+				isLastSend: i === loops - 1,
+				age: 35,
+				name: 'asdflkajsdlfkjaslkdjflkasjdfklj',
+				isDumb: true
 			});
 		}
 	}
@@ -84,10 +90,10 @@ var test;
 			arr = typeof arr[0] === 'object' ?
 				arr[0] : obj;
 			if (arr.loop === 0) {
-				console.info('test received', arr.category, arr.loop, arr.time);
+				console.info('first data test received', arr.loop);
 				start = Date.now();
 			}
-			if (arr.loop === 999) {
+			if (arr.isLastSend) {
 				end = Date.now();
 				console.warn('Total time: ', end - start, 'ms');
 			}

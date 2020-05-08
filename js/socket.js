@@ -1,5 +1,5 @@
 var socket;
-(function() {
+(function(_, $, undefined) {
 	socket = {
 		connection: void 0,
 		enabled: false,
@@ -8,15 +8,21 @@ var socket;
 		excludeObj: { exclude_me: true },
 		initialConnection: 1,
 		subs: {}, // active channel subscriptions - required to unsub
+		msgPerSec: 0,
+		published: 0,
+		received: 0,
 		subscribe,
 		unsubscribe,
 		publish,
 		init,
 		routeMainChat,
 	}
+	let len, secs
+
+	let broadcasts = []
 	////////////////////////////////////////
 	function subscribe(topic, callback) {
-		topic = _.toLower(topic);
+		topic = _.toLower(topic)
 		if (typeof socket.subs[topic] !== 'object' ||
 			!socket.subs[topic].active) {
 			//console.info("subscribing:", topic, callback.name);
@@ -27,6 +33,13 @@ var socket;
 		topic = _.toLower(topic);
 		//console.info('publishing: ', topic, obj);
 		if (typeof socket.session === 'object') {
+			socket.published++
+			broadcasts.push(Date.now())
+			while (broadcasts.length > 100) broadcasts.shift()
+			len = broadcasts.length
+			secs = (Date.now() - broadcasts[0]) / 1000
+			socket.msgPerSec = (len / secs).toFixed(1)
+			// info('msgPerSec', socket.msgPerSec)
 			socket.session.publish(
 				topic,
 				socket.emptyArray,
@@ -35,6 +48,7 @@ var socket;
 			);
 		}
 	}
+
 	function registerSubscription(sub) {
 		//console.info('registerSubscription', sub);
 		socket.subs[sub.topic] = sub;
@@ -92,7 +106,7 @@ var socket;
 
 			// subscribe to admin broadcasts
 			socket.subscribe('allbroadcast', broadcast.route);
-			test.socketSub();
+			!app.isApp && test.socketSub();
 			//return;
 			(function retry(){
 				if (my.name){
@@ -109,4 +123,4 @@ var socket;
 			});
 		}
 	}
-})();
+})(_, $);

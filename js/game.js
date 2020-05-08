@@ -131,7 +131,8 @@ var game;
 	}
 	function heartbeatReceived(data) {
 		if (data.name === my.name) {
-			console.info("%c town heartbeatReceived: ", "background: #025", data.name, data);
+			//console.info("%c town heartbeatReceived: ", "background: #025", data.name, data);
+			info('socket rx', socket.published, socket.received)
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
 			bar.updatePing(ping);
@@ -139,7 +140,7 @@ var game;
 		upsertRoom(data);
 	}
 	function heartbeatReceivedParty(data) {
-		console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #048", data.name, data);
+		//console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #048", data.name, data);
 		if (data.name === my.name) {
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);

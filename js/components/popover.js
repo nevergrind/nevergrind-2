@@ -31,7 +31,7 @@ var popover;
 			'inv-resist-lightning': 'Resist Lightning',
 			'inv-resist-fire': 'Resist Fire',
 			'inv-resist-ice': 'Resist Ice',
-			'bar-last-ping': 'Last Ping',
+			'bar-msg-sec': 'Messages Sent Per Second',
 			'bar-average-ping': 'Average Ping',
 			'bar-camp': 'Camp and Exit',
 			'bar-stats': '['+ _.capitalize(ng.config.hotkey.characterStats) +'] Character Sheet',

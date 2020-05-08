@@ -157,7 +157,8 @@ var stats = {};
 		else if (type === 'twoHandSlashers') val += (twoHandSlash() * 2.66)
 		else if (type === 'twoHandBlunts' || type === 'staves') val += (twoHandBlunt() * 2.66)
 		else if (type === 'archery') val += (archery() * 2.66)
-		else val += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
+		//else val += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
+		else val += (handToHand() * 2.66)
 		return ~~val
 	}
 	function offense() {

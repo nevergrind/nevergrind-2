@@ -50,6 +50,7 @@ var bar;
 		],
 		dom: {},
 		averagePing: 100,
+
 		initialized: 0,
 		windowsOpen: {
 			character: false,
@@ -283,7 +284,6 @@ var bar;
 		}
 		return resp
 	}
-	const tradeSlots = ['tradeTo', 'tradeFrom']
 
 	function toggleInventory() {
 		// open all bags in the bottom-right corner
@@ -900,8 +900,16 @@ var bar;
 		bar.averagePing = ~~_.meanBy(game.pingHistory, val => val);
 		// dom
 		bar.dom.lag.innerHTML =
-			'<span class="popover-icons" id="bar-last-ping" class="'+ getPingColor(ping) +'">' + (ping) + 'ms</span>' +
-			'<span class="popover-icons" id="bar-average-ping" class="'+ getPingColor(bar.averagePing) +'">' + (bar.averagePing) + 'ms</span>';
+			'<span class="popover-icons" id="bar-msg-sec" class="'+ getPingColor(ping) +'">' + (socket.msgPerSec) + ' m/s</span>' +
+			'<span class="popover-icons" id="bar-average-ping" class="'+ getPingColor(ping) +')">' + ping +
+				' ('+ bar.averagePing + ') ms</span>'
+		/*
+		game.pingHistory.push(ping);
+		if (game.pingHistory.length > 20) {
+			game.pingHistory.shift();
+		}
+		bar.averagePing = ~~_.meanBy(game.pingHistory, val => val);
+		 */
 	}
 	function getPingColor(ping) {
 		if (ping < 150) index = 0;
@@ -939,7 +947,8 @@ var bar;
 
 	function getSkillsHtml() {
 		html = '<div id="inv-skills-wrap">';
-		item.allProps.forEach(function(prop) {
+		item.allProps.forEach(prop => {
+			info('prop', prop)
 			html += getPropSkillHtml(prop)
 		})
 		html += '</div>' +

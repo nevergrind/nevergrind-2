@@ -8,6 +8,7 @@ var router;
 	}
 	///////////////////////////////////////////////////////
 	function normalizeInput(arr, obj) {
+		socket.received++
 		return typeof arr[0] === 'object' ?
 			arr[0] : obj;
 	}

@@ -268,6 +268,7 @@ var ng;
 			WAR: 'Warrior',
 			WIZ: 'Wizard'
 		},
+		flashNgoLogo,
 		getExitTime,
 		getDefaultOptions,
 		msg,
@@ -508,10 +509,13 @@ var ng;
 			filter: 'brightness(10)',
 			opacity: 0
 		})
-		TweenMax.to('#nevergrind-online-logo', .6, {
-			startAt: { y: 0, filter: 'brightness(1)' },
-			y: -20,
+		TweenMax.to('#ngo-logo', .6, {
+			startAt: { filter: 'brightness(1)' },
 			filter: 'brightness(10)',
+		})
+		TweenMax.to('.ngo-logos', .6, {
+			startAt: { y: 0, },
+			y: -20,
 			opacity: 0
 		})
 
@@ -612,6 +616,15 @@ var ng;
 				});
 		}
 	}
+	function flashNgoLogo() {
+		TweenMax.to('#ngo-logo-fg', 1.5, {
+			startAt: { webkitMaskPositionX: '-40rem', },
+			webkitMaskPositionX: '40rem',
+			ease: Power0.easeIn,
+			repeat: -1,
+			repeatDelay: 3,
+		});
+	}
 	function handleInitGame(r) {
 		/*
 		$.get('https://nevergrind.com/php/nwjs.php').done((data) => {
@@ -630,13 +643,16 @@ var ng;
 				opacity: 1,
 				ease: Power1.easeOut,
 			})
-			TweenMax.to('#nevergrind-online-logo', .6, {
-				startAt: {
-					opacity: 0, filter: 'brightness(10)'
-				},
+			TweenMax.to('#ngo-logo', .6, {
+				startAt: { filter: 'brightness(10)' },
+				delay: .6,
+				filter: 'brightness(1)',
+				ease: Power1.easeOut,
+			})
+			TweenMax.to('.ngo-logos', .6, {
+				startAt: { opacity: 0, },
 				delay: .6,
 				opacity: 1,
-				filter: 'brightness(1)',
 				x: '-50%',
 				scale: 1,
 				ease: Power1.easeOut,
@@ -647,6 +663,7 @@ var ng;
 				delay: .6,
 				filter: 'opacity(1)',
 				ease: Power1.easeOut,
+				onComplete: flashNgoLogo
 			})
 			TweenMax.staggerTo(new SplitText(querySelector('#version')).chars, .5, {
 				delay: 2,

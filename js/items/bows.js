@@ -1,6 +1,6 @@
 loot.bows = {
 	base: {
-		slots: ['primary'],
+		slots: ['range'],
 		weaponSkill: 'Archery',
 	},
 	normal: [
