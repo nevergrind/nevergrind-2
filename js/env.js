@@ -447,10 +447,8 @@ var env;
 		pix.sky.view.style.height = ~~(pix.sky.screen.height / env.maxHeight * window.innerHeight) + 'px';
 	}
 	function resizeAll() {
-		if (ng.view === 'town') {
-			pixiResizeSky()
-		}
-		else if (ng.view === 'battle') {
+		pixiResizeSky()
+		if (ng.view === 'battle') {
 			combat.updateCombatTextLayer()
 		}
 	}

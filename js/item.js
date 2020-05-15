@@ -89,13 +89,13 @@ var loot = {};
 			belts: ['belts', void 0],
 			legs: ['legs', void 0],
 			boots: ['boots', void 0],
-			primary: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'twoHandBlunts', 'twoHandSlashers', 'staves', 'bows', void 0],
+			primary: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'twoHandBlunts', 'twoHandSlashers', 'staves', void 0],
 			secondary: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'shields', void 0],
-			charms: ['charms', void 0],
+			charms: ['charms', 'bows', void 0],
 		},
-		allWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
+		allWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'twoHandBlunts', 'twoHandSlashers', 'staves'],
 		offhandWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus'],
-		twoHandWeaponTypes: ['twoHandBlunts', 'twoHandSlashers', 'staves', 'bows'],
+		twoHandWeaponTypes: ['twoHandBlunts', 'twoHandSlashers', 'staves'],
 	}
 
 	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val, potionValue
@@ -390,7 +390,7 @@ var loot = {};
 		'amulets': 1,
 		'belts': 9,
 		'boots': 11,
-		'bows': 12,
+		'bows': 14,
 		'bracers': 7,
 		'charms': 14,
 		'chests': 6,
@@ -413,7 +413,7 @@ var loot = {};
 		'amulets': 'amulets',
 		'belts': 'belts',
 		'boots': 'boots',
-		'bows': 'primary',
+		'bows': 'charms',
 		'bracers': 'bracers',
 		'charms': 'charms',
 		'chests': 'chests',
@@ -838,12 +838,6 @@ var loot = {};
 		resistStun: 2,
 		resistSilence: 2,
 	}
-	var twoHandItemTypes = [
-		'twoHandSlashers',
-		'twoHandBlunts',
-		'staves',
-		'bows',
-	]
 	var rarePrefixNames = ['Beast', 'Armageddon', 'Fiend', 'Bitter', 'Blood', 'Bone', 'Bramble', 'Brimstone', 'Carrion', 'Chaos', 'Corpse', 'Corruption', 'Cruel', 'Death', 'Demon', 'Dire', 'Dread', 'Doom', 'Eagle', 'Entropy', 'Wraith', 'Gale', 'Ghoul', 'Glyph', 'Grim', 'Hailstone', 'Havoc', 'Imp', 'Loath', 'Order', 'Pain', 'Plague', 'Raven', 'Rift', 'Rune', 'Shadow', 'Skull', 'Soul', 'Beast', 'Spirit', 'Stone', 'Storm', 'Viper']
 	var rareSuffixNames = {
 		helms: ['Brow', 'Casque', 'Cowl', 'Crest', 'Horn', 'Mask', 'Veil', 'Visage', 'Visor'],
@@ -1617,9 +1611,7 @@ var loot = {};
 				town.showMerchantMsg()
 				if (town.isMerchantMode() &&
 					item.lastDragEvent.ctrlKey) {
-					if (item.dragType === 'inv' || item.dragType === 'eq') {
-						item.sell()
-					}
+					if (item.dragType === 'inv' || item.dragType === 'eq') item.sell()
 					else item.buy()
 					return
 				}
@@ -2052,13 +2044,13 @@ var loot = {};
 		}
 	}
 	function getEqIndexByType(drag) {
-		console.info('getEqIndexByType', drag.itemType)
 		var eqIndex = equipmentSlotIndex[drag.itemType]
 		if (eqIndex === 2 &&
 			items.eq[2].name &&
 			!items.eq[3].name) {
 			eqIndex = 3
 		}
+		console.info('getEqIndexByType eqIndex', eqIndex)
 		return eqIndex
 	}
 	function getItemValueHtml(item, isSelling) {

@@ -24,6 +24,7 @@ var stats = {};
 		riposte,
 		damage,
 		offhandDamage,
+		rangedDamage,
 		damageString,
 		resistBlood,
 		resistPoison,
@@ -33,6 +34,7 @@ var stats = {};
 		resistIce,
 		getPropMax,
 		setAllResources,
+		critChance,
 		hpMax,
 		mpMax,
 		spMax,
@@ -203,6 +205,10 @@ var stats = {};
 	function riposte() {
 		return getStatTotal('riposte')
 	}
+	function critChance() {
+		return (((5) + getEqTotal('crit') ) / 100)
+	}
+	let isCrit = false
 	function damage() {
 		min = 1
 		max = 1
@@ -225,10 +231,22 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		return [min, max]
+		isCrit = critChance() > rand()
+		if (isCrit) {
+			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
+				min *= 2
+				max *= 2
+			}
+			else {
+				min *= 1.5
+				max *= 1.5
+			}
+		}
+
+		return [min, max, isCrit]
 	}
 	function offhandDamage() {
-		if (!my.dualWield) return [0, 0]
+		if (!my.dualWield) return [0, 0, false]
 		min = 1
 		max = 1
 		atk = attack()
@@ -250,7 +268,26 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		return [min, max]
+		isCrit = critChance() > rand()
+		if (isCrit) {
+			min *= 1.5
+			max *= 1.5
+		}
+
+		return [min, max, isCrit]
+	}
+	function rangedDamage() {
+		if (!my.archery || items.eq[14].itemType !== 'bows') return [0, 0, false]
+		min = items.eq[14].minDamage * (1 + (atk * .002))
+		max = items.eq[14].maxDamage * (1 + (atk * .002))
+
+		isCrit = critChance() > rand()
+		if (isCrit) {
+			min *= 2
+			max *= 2
+		}
+
+		return [min, max, isCrit]
 	}
 	function damageString(damage) {
 		return ~~damage[0] + '–' + ~~damage[1]

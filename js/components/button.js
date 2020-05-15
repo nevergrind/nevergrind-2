@@ -4,6 +4,9 @@ var button;
 		initialized: 0,
 		setAll,
 		hide,
+		triggerGlobalCooldown,
+		btnUpdate,
+		btnComplete
 	}
 	var arr, damage, o
 	/////////////////////////////
@@ -13,15 +16,22 @@ var button;
 	}
 
 	$("#button-wrap")
-		.on('click', '.job-skill-btn', handleButtonClick)
+		.on('click', '.job-skill-btn', handleSkillButtonClick)
 		.on('click', '#primary-attack-btn', primaryAttack)
 		.on('click', '#secondary-attack-btn', secondaryAttack)
 
 	//////////////////////////////////
-	function handleButtonClick() {
-		var index = this.dataset.index * 1;
-		console.info('CLICKED SKILL: ', index);
-		info('clicked: ', skills[my.job][index].name)
+	function handleSkillButtonClick() {
+		var index = this.dataset.index * 1
+		var name = _.camelCase(skills[my.job][index].name)
+
+		info('CLICKED SKILL: ', index, name)
+		if (typeof skill[my.job][name] === 'function') {
+			skill[my.job][name](index)
+		}
+		else {
+			warn('This skill function is not defined!', name)
+		}
 
 	}
 	function primaryAttack() {
@@ -29,9 +39,9 @@ var button;
 		my.fixTarget()
 		if (my.target === -1) return
 		arr = stats.damage()
+
 		damage = _.random(arr[0], arr[1])
-		info('primaryAttack damage:', damage)
-		damage && combat.damageMobMelee(my.target, damage)
+		damage && combat.damageMobMelee(my.target, damage, arr[2])
 
 		timers.primaryAttack = 0
 		let el = querySelector('#skill-timer-primary-rotate')
@@ -50,18 +60,14 @@ var button;
 			onCompleteParams: [ o ],
 			ease: Linear.easeNone
 		})
-
-
 	}
 	function secondaryAttack() {
 		if (timers.secondaryAttack < 1) return
-		info('secondaryAttack')
 		my.fixTarget()
 		if (my.target === -1) return
 		arr = stats.offhandDamage()
 		damage = _.random(arr[0], arr[1])
-		info('secondaryAttack damage', damage)
-		damage && combat.damageMobMelee(my.target, damage)
+		damage && combat.damageMobMelee(my.target, damage, arr[2])
 
 		timers.secondaryAttack = 0
 		let el = querySelector('#skill-timer-secondary-rotate')
@@ -72,7 +78,7 @@ var button;
 			el: el,
 			key: 'secondaryAttack',
 		}
-		TweenMax.to(timers, items.eq[12].speed, {
+		TweenMax.to(timers, items.eq[13].speed, {
 			secondaryAttack: 1,
 			onUpdate: btnUpdate,
 			onUpdateParams: [ o ],
@@ -80,7 +86,6 @@ var button;
 			onCompleteParams: [ o ],
 			ease: Linear.easeNone
 		})
-
 	}
 	function triggerGlobalCooldown() {
 		timers.globalCooldown = 0
@@ -106,9 +111,16 @@ var button;
 		})
 	}
 	function btnUpdate(o) {
-		TweenMax.set(o.el, {
-			background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000d ' + timers[o.key] + 'turn)'
-		})
+		if (o.index) {
+			TweenMax.set(o.el, {
+				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
+			})
+		}
+		else {
+			TweenMax.set(o.el, {
+				background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000d ' + timers[o.key] + 'turn)'
+			})
+		}
 	}
 	function btnComplete(o) {
 		TweenMax.set(o.el, {

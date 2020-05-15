@@ -85,7 +85,8 @@ var mob;
 		}
 	}
 	function preProcessMobData(config) {
-		config.hpMax = config.hp = 25 + ((config.level - 1) * 22.2) * config.hp
+		const testHp = ng.isApp ? 25 : 99999
+		config.hpMax = config.hp = testHp + ((config.level - 1) * 22.2) * config.hp
 		config.mpMax = config.mp = 10 + ((config.level - 1) * 15) * config.mp
 		config.spMax = config.sp = 10 + ((config.level - 1) * 15) * config.sp
 	}

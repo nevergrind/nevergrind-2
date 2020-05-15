@@ -11,7 +11,7 @@ var combat;
 	var el, w, h
 
 	///////////////////////////////////////////
-	function damageMobMelee(index, damage) {
+	function damageMobMelee(index, damage, isCrit) {
 		mobs[index].hp -= damage
 		if (mobs[index].hp <= 0) {
 			warn('mob is dead!')
@@ -19,7 +19,7 @@ var combat;
 		mob.drawMobBar(index)
 		// post round operations
 		damage = round(damage)
-		popupDamage(index, damage)
+		popupDamage(index, damage, isCrit)
 	}
 	function initCombatTextLayer() {
 		combat.text = new PIXI.Application({
@@ -39,7 +39,6 @@ var combat;
 		h = ~~(combat.text.screen.height / env.maxHeight * window.innerHeight)
 		combat.text.view.style.width = w + 'px';
 		combat.text.view.style.height = h + 'px';
-		info('updateCombatTextLayer', w, h)
 	}
 
 	const textDuration = 1
@@ -48,19 +47,25 @@ var combat;
 	const combatTextRegularStyle = {
 		fontFamily: 'Play',
 		fontSize: 36,
-		// fill: ['#fff'],
 		fill: ['#048', '#ee8', '#ee8', '#048'],
 		stroke: '#013',
-		strokeThickness: 4,
+		strokeThickness: 3,
 	}
-	function popupDamage(index, damage) {
-
-		const basicText = new PIXI.Text(damage + '', combatTextRegularStyle)
+	const combatTextCritStyle = {
+		fontFamily: 'Play',
+		fontSize: 36,
+		fontWeight: 'bold',
+		fill: ['#ffd700', '#ffe', '#ffe', '#ffd700'],
+		stroke: '#000',
+		strokeThickness: 3,
+	}
+	function popupDamage(index, damage, isCrit) {
+		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)
 		basicText.anchor.set(0.5)
 		basicText.id = 'text-' + combat.textId++
 		basicText.x = mob.centerX[index]
 		basicText.y = env.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH
-
+		info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
 
 		TweenMax.to(basicText, textDuration * .6, {
@@ -71,19 +76,19 @@ var combat;
 					alpha: 0,
 					onComplete: removeText,
 					onCompleteParams: [ basicText.id ],
-					ease: Power2.easeIn
+					ease: Power1.easeIn
 				})
 			},
-			ease: Power2.easeOut
+			ease: Power3.easeOut
 		})
-		TweenMax.to(basicText, textDuration * .25, {
+		TweenMax.to(basicText, textDuration * .5, {
 			startAt: { pixi: {scale: 2}},
 			pixi: { scale: 1 },
-			ease: Back.easeInOut,
 		})
 		TweenMax.to(basicText, textDuration, {
-			startAt: { pixi: { brightness: 7, saturate: 7 }},
+			startAt: { pixi: { brightness: isCrit ? 3 : 7, saturate: isCrit ? 3 : 7 }},
 			pixi: { brightness: 1, saturate: 1 },
+
 		})
 
 		x = _.random(-textDistanceX, textDistanceX)
