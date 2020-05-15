@@ -197,7 +197,7 @@ var test;
 		return drop
 	}
 	function animateBtn() {
-		for (var i=0; i<=9; i++) {
+		for (var i=0; i<=12; i++) {
 			startSpin(i);
 		}
 		////////////////
@@ -208,12 +208,12 @@ var test;
 			};
 			TweenMax.to(o, 5, {
 				turn: 1,
-				onUpdate: colorize,
+				onUpdate: rotator,
 				onUpdateParams: [ o ],
 				ease: Linear.easeNone
 			});
 		}
-		function colorize(o) {
+		function rotator(o) {
 			TweenMax.set(o.el, {
 				background: 'conic-gradient(#0000 ' + o.turn + 'turn, #000e ' + o.turn + 'turn)'
 			});

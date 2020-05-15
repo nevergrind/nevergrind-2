@@ -63,7 +63,6 @@ var my;
 		hudTimer: new delayedCall(0, ''),
 		quest: {},
 		// buffs, potions, etc that need to be cancelled on death or whatever. looping through and killing them makes this easier
-		timers: [],
 	}
 	var i, tries, val
 

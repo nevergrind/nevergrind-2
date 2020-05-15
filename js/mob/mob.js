@@ -8,6 +8,8 @@ var mob;
 		initialized: 0,
 		max: 9,
 		element: {},
+		centerX: [192,576,960,1344,1728,384,768,1152,1536],
+		bottomY: [180,180,180,180,180,280,280,280,280],
 		getRandomMobKey,
 		init,
 		// configs, resets (active animations) and idles mobs in one call for start of combat

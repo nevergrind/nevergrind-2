@@ -11,14 +11,15 @@ var env;
 		cloud1: {},
 		cloud2: {},
 		initialized: false,
+		aspectRatio: 0,
+		resizeAll,
+		maxWidth: 1920,
+		maxHeight: 1080,
 	}
-	var w, h, x, y
-	var cloudSpeed = 777
 
+	var cloudSpeed = 777
 	const phaseDuration = 2000 // 20 minutes?
-	const maxW = 1920
-	const maxH = 1080
-	const ratio = maxW / maxH
+	env.aspectRatio = env.maxWidth / env.maxHeight
 	determineStartingPhase()
 	//////////////////////////////
 
@@ -147,8 +148,8 @@ var env;
 				repeat: -1
 			})
 
-			window.onresize = pixiResizeSky
-			pixiResizeSky()
+			window.onresize = resizeAll
+
 		}
 	}
 
@@ -311,10 +312,10 @@ var env;
 		if (env.phase === 'morning') {
 			TweenMax.to(pix.sun, phaseDuration, {
 				startAt: {
-					x: maxW * .65,
-					y: maxW * .5,
+					x: env.maxWidth * .65,
+					y: env.maxWidth * .5,
 				},
-				y: maxW * -.8,
+				y: env.maxWidth * -.8,
 				ease: Power2.easeOut,
 				onComplete: triggerNextPhase
 			})
@@ -341,16 +342,16 @@ var env;
 		else if (env.phase === 'evening') {
 			// do nothing basically
 			TweenMax.set(pix.sun, {
-				x: maxW * .65,
-				y: maxW * -.8,
+				x: env.maxWidth * .65,
+				y: env.maxWidth * -.8,
 			})
 			delayedCall(phaseDuration, triggerNextPhase)
 		}
 		else if (env.phase === 'night') {
 			// do nothing basically
 			TweenMax.set(pix.sun, {
-				x: maxW * .65,
-				y: maxW * -.8,
+				x: env.maxWidth * .65,
+				y: env.maxWidth * -.8,
 			})
 			delayedCall(phaseDuration, triggerNextPhase)
 		}
@@ -359,25 +360,25 @@ var env;
 	function animateMoon() {
 		if (env.phase === 'morning') {
 			TweenMax.set(pix.moon, {
-				x: maxW * .65,
-				y: maxW * -.8,
+				x: env.maxWidth * .65,
+				y: env.maxWidth * -.8,
 			})
 		}
 		else if (env.phase === 'evening') {
 			TweenMax.set(pix.moon, {
-				x: maxW * .65,
-				y: maxW * -.8,
+				x: env.maxWidth * .65,
+				y: env.maxWidth * -.8,
 			})
 		}
 		else if (env.phase === 'night') {
 			TweenMax.to(pix.moon, phaseDuration, {
 				delay: phaseDuration * .25,
-				y: maxW * -.8,
+				y: env.maxWidth * -.8,
 				ease: Power2.easeOut,
 			})
 			TweenMax.set(pix.moon, {
-				x: maxW * .65,
-				y: maxW * .5,
+				x: env.maxWidth * .65,
+				y: env.maxWidth * .5,
 				pixi: {
 					brightness: 1.25,
 					scale: 1.3,
@@ -442,10 +443,15 @@ var env;
 	}
 
 	function pixiResizeSky() {
-		// wider than default ratio
-		w = window.innerHeight * ratio;
-		h = window.innerHeight;
 		pix.sky.view.style.width = window.innerWidth + 'px';
-		pix.sky.view.style.height = ~~(pix.sky.screen.height / maxH * window.innerHeight) + 'px';
+		pix.sky.view.style.height = ~~(pix.sky.screen.height / env.maxHeight * window.innerHeight) + 'px';
+	}
+	function resizeAll() {
+		if (ng.view === 'town') {
+			pixiResizeSky()
+		}
+		else if (ng.view === 'battle') {
+			combat.updateCombatTextLayer()
+		}
 	}
 }(TweenMax, Power2, Expo, Linear, PIXI);

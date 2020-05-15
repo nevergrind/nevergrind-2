@@ -2,10 +2,6 @@ var battle;
 (function(TweenMax, $, _, undefined) {
 	battle = {
 		initialized: 0,
-		// 1080p defaults
-		boxCoordsCenter: [192,576,960,1344,1728,384,768,1152,1536],
-		// never changes
-		boxCoordsBottom: [180,180,180,180,180,280,280,280,280],
 		go,
 		show,
 		html,
@@ -18,9 +14,10 @@ var battle;
 	function go() {
 		if (ng.view === 'battle') return
 		town.closeVarious()
-		chat.sizeSmall();
-		mob.init();
-		game.emptyScenesExcept('scene-battle');
+		chat.sizeSmall()
+		mob.init()
+		game.emptyScenesExcept('scene-battle')
+
 		querySelector('#town-footer-wrap').style.display = 'none'
 		ng.setScene('battle')
 		if (!ng.isApp) {
@@ -46,6 +43,7 @@ var battle;
 			mob.index = mob.imageKeys.length - 1;
 		}
 		button.setAll();
+		combat.initCombatTextLayer()
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
 		var singleMob = true;
@@ -112,16 +110,16 @@ var battle;
 	}
 	function getResponsiveCenter(i) {
 		// responsive center
-		return ~~(battle.boxCoordsCenter[i] * (window.innerWidth / 1920));
+		return ~~(mob.centerX[i] * (window.innerWidth / 1920));
 	}
 	function getBox(i) {
 		// return absolute positioning about a specific mob box
 		var c = battle.getResponsiveCenter(i),
-			cy = ~~(battle.boxCoordsBottom[i] + (mobs[i].imgCy * mobs[i].size));
+			cy = ~~(mob.bottomY[i] + (mobs[i].imgCy * mobs[i].size));
 
 		return x = {
 			x: ~~(c - (mobs[i].width * .5)),
-			y: battle.boxCoordsBottom[i],
+			y: mob.bottomY[i],
 			cx: c,
 			cy: cy
 		}

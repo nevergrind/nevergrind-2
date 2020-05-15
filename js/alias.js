@@ -10,6 +10,7 @@ const delayedCall = TweenMax.delayedCall.bind(TweenMax)
 const rand = Math.random
 const ceil = Math.ceil
 const floor = Math.floor
+const round = Math.round
 const PI = Math.PI
 const parse = JSON.parse
 const stringify = JSON.stringify
