@@ -5,12 +5,32 @@ var battle;
 		go,
 		show,
 		html,
-		events,
 		getBox,
-		setTarget,
 		getResponsiveCenter,
 	}
+
+	let index
+	init()
 	//////////////////////////////////////
+	function init() {
+		$('#scene-battle')
+			.on('click', '.mob-alive, .mob-details', handleMobClick)
+			.on('mouseenter', '.mob-alive, .mob-details', handleMobEnter)
+			.on('mouseleave', '.mob-alive, .mob-details', handleMobLeave)
+	}
+	function handleMobClick() {
+		my.setTarget(this.getAttribute('index') * 1)
+	}
+	function handleMobEnter() {
+		index = this.getAttribute('index') * 1
+		my.hoverTarget = index
+		if (my.target !== index) querySelector('#mob-details-' + index).classList.add('block')
+	}
+	function handleMobLeave() {
+		index = this.getAttribute('index') * 1
+		my.hoverTarget = -1
+		if (my.target !== index) querySelector('#mob-details-' + index).classList.remove('block')
+	}
 	function go() {
 		if (ng.view === 'battle') return
 		town.closeVarious()
@@ -46,7 +66,7 @@ var battle;
 		combat.initCombatTextLayer()
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
-		var singleMob = true;
+		var singleMob = false;
 		var mobKey = '';
 		for (var i=0; i<mob.max; i++){
 			if (singleMob && i === 2 || !singleMob) {
@@ -89,24 +109,15 @@ var battle;
 		}
 		return s;
 	}
-	function events() {
-		$(".mob-alive, .mob-dead, .mob-details").on('click', function(){
-			battle.setTarget(this.getAttribute('index') * 1);
-		});
-	}
 	function show() {
 		ng.setScene('battle');
 		if (battle.initialized) {
-			getElementById('scene-battle').style.display = 'block';
+			getElementById('scene-battle').style.display = 'block'
 		}
 		else {
-			getElementById('scene-battle').innerHTML = battle.html();
-			battle.events();
+			getElementById('scene-battle').innerHTML = battle.html()
 			battle.isInit = 1;
 		}
-	}
-	function setTarget(i) {
-		console.info("Setting target ", i, Date.now());
 	}
 	function getResponsiveCenter(i) {
 		// responsive center

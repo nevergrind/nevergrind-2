@@ -7,10 +7,30 @@ var combat;
 		targetChanged,
 		initCombatTextLayer,
 		updateCombatTextLayer,
+		toggleAutoAttack,
 	}
 	var el, w, h
 
 	///////////////////////////////////////////
+	function toggleAutoAttack() {
+		if (!my.isAutoAttacking) autoAttackEnable()
+		else autoAttackDisable()
+	}
+	function autoAttackEnable() {
+		if (my.isAutoAttacking) return
+		my.isAutoAttacking = true
+		button.primaryAttack()
+		button.secondaryAttack()
+		el = querySelector('#main-attack-wrap')
+		el.classList.remove('active')
+		el.classList.add('active')
+	}
+	function autoAttackDisable() {
+		if (!my.isAutoAttacking) return
+		my.isAutoAttacking = false
+		el = querySelector('#main-attack-wrap')
+		el.classList.remove('active')
+	}
 	function damageMobMelee(index, damage, isCrit) {
 		mobs[index].hp -= damage
 		if (mobs[index].hp <= 0) {
@@ -31,6 +51,7 @@ var combat;
 		combat.text.view.id = 'combat-text'
 		combat.text.view.style.position = 'absolute'
 		combat.text.view.style.zIndex = 1
+		combat.text.view.style.pointerEvents = 'none'
 		querySelector('#scene-battle').appendChild(combat.text.view)
 		updateCombatTextLayer()
 	}
@@ -48,7 +69,7 @@ var combat;
 		fontFamily: 'Play',
 		fontSize: 36,
 		fill: ['#048', '#ee8', '#ee8', '#048'],
-		stroke: '#013',
+		stroke: '#025',
 		strokeThickness: 3,
 	}
 	const combatTextCritStyle = {
@@ -56,7 +77,7 @@ var combat;
 		fontSize: 36,
 		fontWeight: 'bold',
 		fill: ['#ffd700', '#ffe', '#ffe', '#ffd700'],
-		stroke: '#000',
+		stroke: '#430',
 		strokeThickness: 3,
 	}
 	function popupDamage(index, damage, isCrit) {
@@ -65,7 +86,7 @@ var combat;
 		basicText.id = 'text-' + combat.textId++
 		basicText.x = mob.centerX[index]
 		basicText.y = env.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH
-		info('basicText', basicText)
+		//info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
 
 		TweenMax.to(basicText, textDuration * .6, {
@@ -102,11 +123,19 @@ var combat;
 		combat.text.stage.removeChild(el)
 	}
 	function targetChanged() {
-		querySelectorAll('.mob-name')
-		for (el of querySelectorAll('.mob-name')) {
-			el.classList.remove('targeted')
+		let index = 0
+		for (el of querySelectorAll('.mob-details')) {
+			if (index !== my.hoverTarget) {
+				el.classList.remove('targeted', 'block')
+			}
+			else {
+				el.classList.remove('targeted')
+			}
+			index++
 		}
 		info('targetChanged my.target', my.target)
-		querySelector('#mob-name-' + my.target).classList.add('targeted')
+		if (my.target >= 0 && my.target < mob.max){
+			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block')
+		}
 	}
 }($, _, TweenMax, PIXI);

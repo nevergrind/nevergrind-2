@@ -24,6 +24,10 @@ for (var i=0; i<12; i++) {
 	// skill cooldowns
 	timers.skillCooldowns[i] = 1
 }
+let delays = {
+	primaryAttack: delayedCall(0, ''),
+	secondaryAttack: delayedCall(0, ''),
+}
 // where app code is invoked upon initial load
 login.init()
 ng.init()

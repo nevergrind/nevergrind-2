@@ -14,28 +14,28 @@
 <body id="body">
 
 <script>
-		var app = {
-			version: '2020.1.2',
-			initialized: 0, // init-game returned
-			isApp: location.protocol === 'chrome-extension:',
-			account: ''
-		};
-		// remove if server goes down
-		app.url = app.isApp ?
-			'http://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/ng2/server/' : 'server/';
-		app.socketUrl = app.isApp ?
-			'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com:9090/' :
-			'ws://127.0.0.1:9090';
-	(function(d){
-		var css = app.isApp ? ['ng2'] : ['main'];
-		var suffix = app.isApp ? '.min.css' : '.css';
-		for (var i=0, len = css.length; i<len; i++) {
-			var link = d.createElement('link');
-			link.href = 'css/' + css[i] + suffix + '?v='+ app.version;
-			link.rel = 'stylesheet';
-			document.write(link.outerHTML);
-		}
-	})(document);
+var app = {
+	version: '2020.1.2',
+	initialized: 0,
+	isApp: location.protocol === 'chrome-extension:',
+	account: ''
+}
+// remove if server goes down
+app.url = app.isApp ?
+	'http://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/ng2/server/' : 'server/'
+app.socketUrl = app.isApp ?
+	'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com:9090/' :
+	'ws://127.0.0.1:9090'
+!function(d){
+	var css = app.isApp ? ['ng2'] : ['main'];
+	var suffix = app.isApp ? '.min.css' : '.css';
+	for (var i=0, len = css.length; i<len; i++) {
+		var link = d.createElement('link');
+		link.href = 'css/' + css[i] + suffix + '?v='+ app.version;
+		link.rel = 'stylesheet';
+		document.write(link.outerHTML);
+	}
+}(document)
 </script>
 
 <div id="login-modal">
@@ -531,107 +531,107 @@
 <script>
 ((d) => {
 
-var files = ['nevergrind-online'];
-var ext = '.min';
-var script;
-if (!app.isApp){
-	ext = '';
-	files = [
-		'alias',
-		'login',
-		'create',
-		'ng',
-		'env',
-		'pix',
-		'my',
-		'dom',
-		'audio',
-		'game',
-		'title',
-		'context',
-		'events',
-		'socket',
-		'chat/chat',
-		'chat/party',
-		'chat/guild',
-		'chat/friend',
-		'chat/whisper',
-		'chat/ignore',
-		'chat/broadcast',
-		'chat/who',
-		'components/toast',
-		'components/modal',
-		'components/button',
-		'components/popover',
-		'components/tooltip',
-		'components/dropdown',
-		'mission/quests',
-		'mission/mission',
-		'mission/zones',
-		'ui/bar',
-		'combat/combat',
-		'combat/battle',
-		'mob/mob',
-		'mob/mobs',
-		'mob/mob-types',
-		'mob/mob-images',
-		'mob/mob-data',
-		'skills/WAR',
-		'skills/CRU',
-		'skills/SHD',
-		'skills/MNK',
-		'skills/ROG',
-		'skills/RNG',
-		'skills/DRU',
-		'skills/CLR',
-		'skills/SHM',
-		'skills/BRD',
-		'skills/NEC',
-		'skills/ENC',
-		'skills/SUM',
-		'skills/WIZ',
-		'item',
-		'items/amulets',
-		'items/belts',
-		'items/boots',
-		'items/bows',
-		'items/bracers',
-		'items/charms',
-		'items/chests',
-		'items/cloaks',
-		'items/gloves',
-		'items/helms',
-		'items/legs',
-		'items/focus',
-		'items/oneHandBlunts',
-		'items/oneHandSlashers',
-		'items/piercers',
-		'items/rings',
-		'items/shields',
-		'items/shoulders',
-		'items/staves',
-		'items/twoHandBlunts',
-		'items/twoHandSlashers',
-		'town/town',
-		'town/trade',
-		'town/tavern',
-		'town/academy',
-		'cache',
-		'router',
-		'dungeon',
-		'skills',
-		'zone',
-		'stats',
-		'css',
-		'test/test',
-		'init',
-	]
-}
-files.forEach((file) => {
-	script = d.createElement('script');
-	script.src = 'js/' + file + ext + '.js?v=' + app.version;
-	d.write(script.outerHTML);
-});
+	var files = ['nevergrind-online'];
+	var ext = '.min';
+	var script;
+	if (!app.isApp){
+		ext = '';
+		files = [
+			'core/alias',
+			'core/login',
+			'core/create',
+			'core/ng',
+			'core/env',
+			'core/pix',
+			'core/my',
+			'core/dom',
+			'core/audio',
+			'core/game',
+			'core/title',
+			'core/context',
+			'core/events',
+			'core/socket',
+			'chat/chat',
+			'chat/party',
+			'chat/guild',
+			'chat/friend',
+			'chat/whisper',
+			'chat/ignore',
+			'chat/broadcast',
+			'chat/who',
+			'components/toast',
+			'components/modal',
+			'components/button',
+			'components/popover',
+			'components/tooltip',
+			'components/dropdown',
+			'mission/quests',
+			'mission/mission',
+			'mission/zones',
+			'ui/bar',
+			'combat/combat',
+			'combat/battle',
+			'mob/mob',
+			'mob/mobs',
+			'mob/mob-types',
+			'mob/mob-images',
+			'mob/mob-data',
+			'skills/WAR',
+			'skills/CRU',
+			'skills/SHD',
+			'skills/MNK',
+			'skills/ROG',
+			'skills/RNG',
+			'skills/DRU',
+			'skills/CLR',
+			'skills/SHM',
+			'skills/BRD',
+			'skills/NEC',
+			'skills/ENC',
+			'skills/SUM',
+			'skills/WIZ',
+			'items/item',
+			'items/amulets',
+			'items/belts',
+			'items/boots',
+			'items/bows',
+			'items/bracers',
+			'items/charms',
+			'items/chests',
+			'items/cloaks',
+			'items/gloves',
+			'items/helms',
+			'items/legs',
+			'items/focus',
+			'items/oneHandBlunts',
+			'items/oneHandSlashers',
+			'items/piercers',
+			'items/rings',
+			'items/shields',
+			'items/shoulders',
+			'items/staves',
+			'items/twoHandBlunts',
+			'items/twoHandSlashers',
+			'town/town',
+			'town/trade',
+			'town/tavern',
+			'town/academy',
+			'core/cache',
+			'core/router',
+			'core/dungeon',
+			'core/skills',
+			'core/zone',
+			'core/stats',
+			'core/css',
+			'test/test',
+			'core/init',
+		]
+	}
+	files.forEach((file) => {
+		script = d.createElement('script');
+		script.src = 'js/' + file + ext + '.js?v=' + app.version;
+		d.write(script.outerHTML);
+	})
 
 })(document);
 </script>

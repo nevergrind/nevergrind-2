@@ -8,6 +8,7 @@ var my;
 		resourceTick,
 		checkForDeath,
 		fixTarget,
+		setTarget,
 		tabTarget,
 		initSkills,
 		getMyData,
@@ -57,29 +58,33 @@ var my;
 		team: 0,
 		gold: 0,
 		slot: 1,
-		target: 1,
+		target: -1,
+		hoverTarget: -1,
 		avatarBg: 5,
 		attackOn: false,
 		hudTimer: new delayedCall(0, ''),
 		quest: {},
+		isAutoAttacking: false
 		// buffs, potions, etc that need to be cancelled on death or whatever. looping through and killing them makes this easier
 	}
-	var i, tries, val
 
 	////////////////////////////////////
 	function fixTarget() {
-		if (!mobs[my.target].name) {
+		if (typeof mobs[my.target] === 'undefined' || !mobs[my.target].name) {
 			my.target = _.findIndex(mobs, mob => mob.name)
 			combat.targetChanged()
 		}
 	}
+	function setTarget(i) {
+		my.target = i
+		if (!mobs[my.target].name) fixTarget(event)
+		else combat.targetChanged()
+	}
 	function tabTarget(event) {
 		if (event.shiftKey) {
-			my.target--
-			if (my.target < 0) my.target = mob.max - 1
+			if (--my.target < 0) my.target = mob.max - 1
 		}
 		else {
-			my.target++
 			if (++my.target >= mob.max) my.target = 0
 		}
 		if (!mobs[my.target].name) fixTarget(event)

@@ -53,7 +53,6 @@ var dungeon;
 		}
 		else {
 			getElementById('scene-dungeon').innerHTML = dungeon.html()
-			battle.events()
 			button.setAll()
 		}
 		chat.scrollBottom()

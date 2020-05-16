@@ -258,20 +258,25 @@
 						chat.dom.chatInput.focus();
 					}
 
-					if (key === 'Tab') {
-						// tab
-						if (!e.shiftKey) {
-							my.nextTarget(false);
-						} else {
-							my.nextTarget(true);
-						}
-						e.preventDefault();
-					}
-					else if (key === 'v') {
+					if (key === 'v') {
 						// v
 						if (ng.view === 'game' && !ng.chatOn) {
 							game.toggleGameWindows(1); // ???
 						}
+					}
+
+					if (ng.view === 'battle') {
+						if (key === 'Tab') {
+							// tab
+							if (!e.shiftKey) my.tabTarget(e)
+							else my.tabTarget(e)
+							e.preventDefault()
+							return false
+						}
+						else if (key === 'a') {
+							combat.toggleAutoAttack()
+						}
+
 					}
 				}
 			}

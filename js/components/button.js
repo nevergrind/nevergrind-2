@@ -1,14 +1,21 @@
 var button;
-!function(TweenMax, $, _, Linear) {
+!function(TweenMax, $, _, Linear, Power4, undefined) {
 	button = {
 		initialized: 0,
 		setAll,
 		hide,
 		triggerGlobalCooldown,
-		btnUpdate,
-		btnComplete
+		handleButtonStart,
+		handleButtonUpdate,
+		handleButtonComplete,
+		updateSkillTime,
+		primaryAttack,
+		secondaryAttack,
 	}
 	var arr, damage, o
+
+	const displayBlock = { display: 'block' }
+	const displayNone = { display: 'none' }
 	/////////////////////////////
 
 	function isOffhandingWeapon() {
@@ -25,14 +32,13 @@ var button;
 		var index = this.dataset.index * 1
 		var name = _.camelCase(skills[my.job][index].name)
 
-		info('CLICKED SKILL: ', index, name)
+		//info('CLICKED SKILL: ', index, name)
 		if (typeof skill[my.job][name] === 'function') {
-			skill[my.job][name](index)
+			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {
 			warn('This skill function is not defined!', name)
 		}
-
 	}
 	function primaryAttack() {
 		if (timers.primaryAttack < 1) return
@@ -54,12 +60,16 @@ var button;
 		}
 		TweenMax.to(timers, items.eq[12].speed, {
 			primaryAttack: 1,
-			onUpdate: btnUpdate,
+			onStart: handleButtonStart,
+			onStartParams: [ o ],
+			onUpdate: handleButtonUpdate,
 			onUpdateParams: [ o ],
-			onComplete: btnComplete,
+			onComplete: handleButtonComplete,
 			onCompleteParams: [ o ],
 			ease: Linear.easeNone
 		})
+		delays.primaryAttack.kill()
+		delays.primaryAttack = delayedCall(items.eq[12].speed, autoAttackPrimary)
 	}
 	function secondaryAttack() {
 		if (timers.secondaryAttack < 1) return
@@ -74,57 +84,91 @@ var button;
 		TweenMax.set(el, {
 			display: 'block'
 		})
-		let o = {
+		let args = {
 			el: el,
 			key: 'secondaryAttack',
 		}
 		TweenMax.to(timers, items.eq[13].speed, {
 			secondaryAttack: 1,
-			onUpdate: btnUpdate,
-			onUpdateParams: [ o ],
-			onComplete: btnComplete,
-			onCompleteParams: [ o ],
+			onStart: handleButtonStart,
+			onStartParams: [ args ],
+			onUpdate: handleButtonUpdate,
+			onUpdateParams: [ args ],
+			onComplete: handleButtonComplete,
+			onCompleteParams: [ args ],
 			ease: Linear.easeNone
 		})
+		delays.secondaryAttack.kill()
+		delays.secondaryAttack = delayedCall(items.eq[13].speed, autoAttackSecondary)
+	}
+	function autoAttackPrimary() {
+		if (my.isAutoAttacking) primaryAttack()
+	}
+	function autoAttackSecondary() {
+		if (my.isAutoAttacking) secondaryAttack()
 	}
 	function triggerGlobalCooldown() {
 		timers.globalCooldown = 0
 		let selector = []
 		timers.skillCooldowns.forEach((skill, index) => {
-			skill === 1 && selector.push('#skill-timer-'+ index +'-rotate')
+			if (skill === 1) {
+				selector.push('#skill-timer-'+ index +'-rotate')
+			}
 		})
 		selector = selector.join(', ')
-		TweenMax.set(selector, {
-			display: 'block'
-		})
-		let o = {
+		TweenMax.set(selector, displayBlock)
+		let args = {
 			el: selector,
 			key: 'globalCooldown',
 		}
 		TweenMax.to(timers, 1.5, {
 			globalCooldown: 1,
-			onUpdate: btnUpdate,
-			onUpdateParams: [ o ],
-			onComplete: btnComplete,
-			onCompleteParams: [ o ],
+			onStart: handleButtonStart,
+			onStartParams: [ args ],
+			onUpdate: handleButtonUpdate,
+			onUpdateParams: [ args ],
+			onComplete: handleButtonComplete,
+			onCompleteParams: [ args ],
 			ease: Linear.easeNone
 		})
 	}
-	function btnUpdate(o) {
-		if (o.index) {
+	function handleButtonStart(o) {
+		TweenMax.set(o.el, {
+			scale: 1,
+			alpha: 1,
+		})
+	}
+
+	function handleButtonUpdate(o) {
+		if (typeof o.index === 'number') {
 			TweenMax.set(o.el, {
-				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
+				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000e ' + timers.skillCooldowns[o.index] + 'turn)'
 			})
 		}
 		else {
 			TweenMax.set(o.el, {
-				background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000d ' + timers[o.key] + 'turn)'
+				background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000e ' + timers[o.key] + 'turn)'
 			})
 		}
 	}
-	function btnComplete(o) {
-		TweenMax.set(o.el, {
-			display: 'none'
+	function handleButtonComplete(o) {
+		TweenMax.to(o.el, .5, {
+			startAt: {
+				scale: 1,
+				alpha: 1,
+				background: 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)',
+			},
+			scale: .75,
+			alpha: 0,
+		})
+	}
+	function updateSkillTime(obj) {
+		obj.remaining--
+		obj.el.innerHTML = !obj.remaining ? '' : obj.remaining
+		TweenMax.to(obj.el, 1, {
+			startAt: { scale: 1.15 },
+			scale: 1,
+			ease: Power4.easeNone
 		})
 	}
 	function setAll() {
@@ -148,8 +192,8 @@ var button;
 			s +=
 			'<div id="skill-btn-'+ i +'" class="skill-btn job-skill-btn" data-index="'+ i +'">' +
 				'<img class="skill-img" src="images/skills/'+ my.job +'/'+ i +'.png">' +
-				'<div id="skill-timer-'+ i +'" class="skill-timer"></div>' +
 				'<div id="skill-timer-'+ i +'-rotate" class="skill-timer-rotate"></div>' +
+				'<div id="skill-timer-'+ i +'" class="skill-timer"></div>' +
 			'</div>'
 		}
 		s += '</div>'
@@ -164,4 +208,4 @@ var button;
 			display: 'none'
 		});
 	}
-}(TweenMax, $, _, Linear);
+}(TweenMax, $, _, Linear, Power4);

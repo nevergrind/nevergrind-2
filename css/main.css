@@ -243,8 +243,8 @@ tbody { border: 0 }
 }*/
 .no-select { user-select: none; }
 .no-pointer { pointer-events: none; }
-.none { display: none }
-.block { display: block }
+.none { display: none!important }
+.block { display: block!important }
 .center {
 	position: relative;
 	display: block;
@@ -588,12 +588,12 @@ tbody { border: 0 }
 	width: 10rem;
 	cursor: url('cursor/pointer.cur'), pointer;
 }
+.mob-details.targeted .mob-name {
+	animation: flash-mob-name .2s ease-out infinite;
+}
 .mob-name {
 	font: 1.4rem Roboto Condensed;
 	text-align: center;
-}
-.mob-name.targeted {
-	animation: flash-mob-name .2s ease-out infinite;
 }
 @keyframes flash-mob-name {
 	0% { color: #fff; }
@@ -1530,7 +1530,18 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	align-self: center;
 	margin-right: 1rem;
+	border: .1rem ridge transparent;
+}
+#main-attack-wrap.active {
+	border: .1rem ridge #f11;
+	animation: repeat-auto-attack .5s ease-out infinite;
+}
+@keyframes repeat-auto-attack {
+	0% { border: .1rem ridge #f11; }
+	50% { border: .1rem ridge #800; }
+	100% { border: .1rem ridge #f11; }
 }
 #skill-btn-wrap {
 	display: flex;
@@ -1549,7 +1560,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 .skill-img {
 	position: relative;
 	z-index: 1;
-	border: .1rem ridge #013;
+	border: .1rem ridge #048;
 	cursor: url('cursor/pointer.cur'), pointer;
 	width: 2.5rem;
 	height: 2.5rem;
@@ -1563,20 +1574,20 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 .skill-timer,
 .skill-timer-rotate {
-	display: none;
 	position: absolute;
+	display: flex;
+	justify-content: center;
+	font-size: 2rem;
 	top: 0;
 	left: 0;
 	width: 2.7rem;
 	height: 2.7rem;
-	background: #000d;
 	font-family: Impacted, Impact;
 	pointer-events: none;
 	z-index: 1;
 }
-.repeat-line-bg {
-	background: repeating-linear-gradient(0deg, #111f, #111f 1px, #000f, #000f 3px)!important;
-}
+.skill-timer-rotate { display: none; }
+.repeat-line-bg { background: repeating-linear-gradient(0deg, #111f, #111f 1px, #000f, #000f 3px)!important; }
 /*
 background: conic-gradient(#0000 .25turn, #000c .25turn);
 background: conic-gradient(#0000 .25turn, #000f .25turn .5turn, #0000 0.5turn .75turn, #000f .75turn) top left / 20% 20% repeat;

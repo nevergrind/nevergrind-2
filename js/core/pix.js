@@ -74,7 +74,7 @@ var pix
 	*/
 	function getId(el, id) {
 		// example: pix.getId(pix.sky, 'test')
-		console.info('getId', el)
+		// console.info('getId', el)
 		return _.find(el.stage.children, {
 			id: id
 		})
