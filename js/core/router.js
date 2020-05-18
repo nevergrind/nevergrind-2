@@ -53,6 +53,10 @@ var router;
 		else if (r === 'party->promote') party.promoteReceived(data)
 		else if (r === 'party->boot') party.bootReceived(data)
 		else if (r === 'party->getPresence') game.heartbeatSend()
+		else if (r === 'party->goDungeon') dungeon.go(data)
+		else if (r === 'party->goBattle') battle.go(data)
+		else if (r === 'party->damage') combat.rxUpdateDamage(data)
+		else if (r === 'party->mobTick') mob.rxMobResourceTick(data)
 	}
 	function toGuild(data, r) {
 		if (r === 'guild->hasJoined') guild.hasJoined(data)

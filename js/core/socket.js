@@ -4,8 +4,6 @@ var socket;
 		connection: void 0,
 		enabled: false,
 		emptyArray: [],
-		noExcludeObj: { exclude_me: false },
-		excludeObj: { exclude_me: true },
 		initialConnection: 1,
 		subs: {}, // active channel subscriptions - required to unsub
 		msgPerSec: 0,
@@ -17,9 +15,12 @@ var socket;
 		init,
 		routeMainChat,
 	}
+
 	let len, secs
 
 	let broadcasts = []
+	const excludeObj = { exclude_me: true }
+	const includeObj = { exclude_me: false }
 	////////////////////////////////////////
 	function subscribe(topic, callback) {
 		topic = _.toLower(topic)
@@ -44,7 +45,7 @@ var socket;
 				topic,
 				socket.emptyArray,
 				obj,
-				exclude ? socket.excludeObj : socket.noExcludeObj
+				exclude ? excludeObj : includeObj
 			);
 		}
 	}

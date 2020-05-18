@@ -2,6 +2,31 @@
 var ng;
 (function($, TweenMax, SplitText, undefined) {
 	ng = {
+		flashNgoLogo,
+		getExitTime,
+		getDefaultOptions,
+		msg,
+		init,
+		lock,
+		splitText,
+		getId,
+		events,
+		unlock,
+		reloadGame,
+		logout,
+		processStatMap,
+		dimRetAttr,
+		dimRetSkill,
+		dimRetCrit,
+		setScene,
+		initGame,
+		toJobLong,
+		toJobShort,
+		disconnect,
+		checkPlayerData,
+		goCreateCharacter,
+		toPercentWidth,
+		toPercentHeight,
 		// defaults are defined in getDefaultOptions
 		selectIndex: 0,
 		initialized: false,
@@ -15,6 +40,7 @@ var ng;
 				characterStats: 'c',
 				inventory: 'i',
 				bank: 'b',
+				autoAttack: 'a',
 			}
 		},
 		responsiveRatio: 1,
@@ -268,30 +294,6 @@ var ng;
 			WAR: 'Warrior',
 			WIZ: 'Wizard'
 		},
-		flashNgoLogo,
-		getExitTime,
-		getDefaultOptions,
-		msg,
-		init,
-		lock,
-		splitText,
-		getId,
-		events,
-		unlock,
-		reloadGame,
-		logout,
-		processStatMap,
-		dimRetAttr,
-		dimRetSkill,
-		setScene,
-		initGame,
-		toJobLong,
-		toJobShort,
-		disconnect,
-		checkPlayerData,
-		goCreateCharacter,
-		toPercentWidth,
-		toPercentHeight,
 	}
 	var msgTimer = delayedCall(0, '')
 	let characterData = []
@@ -333,6 +335,7 @@ var ng;
 				characterStats: 'c',
 				inventory: 'i',
 				bank: 'b',
+				autoAttack: 'a',
 			}
 		}
 	}
@@ -468,7 +471,7 @@ var ng;
 			bonusPerPt = (maxBonus - damBonus) * multiplier;
 		}
 		console.warn('bonuses: ', bonuses.join(', '));
-		return Math.floor(damBonus); // 92% damage bonus for 255 strength
+		return floor(damBonus); // 92% damage bonus for 255 strength
 	}
 	function dimRetSkill(val) {
 		var skillBonus = 0
@@ -481,7 +484,25 @@ var ng;
 			console.warn(++i, +bonusPerPoint.toFixed(2), 'total: ', _.round(skillBonus));
 			bonusPerPoint = bonusPerPoint * multiplier;
 		}
-		return _.round(skillBonus); // 92% damage bonus for 255 strength
+		return round(skillBonus); // 92% damage bonus for 255 strength
+	}
+	function dimRetCrit(val) {
+		var resp = 0
+		var dimThreshold = 5
+		var bonusPerPoint = .5
+		var multiplier = 14/15
+		var i = 0
+
+		while (val-- > 0) {
+			resp += bonusPerPoint
+			i++
+			if (i >= dimThreshold) {
+				bonusPerPoint = bonusPerPoint * multiplier
+				multiplier = multiplier + ((1 - multiplier) * .05)
+			}
+			// console.warn(i, +bonusPerPoint.toFixed(2), multiplier, 'total: ', resp)
+		}
+		return resp > 75 ? 75 : resp // 19.49% at 100; 32.39% at 200
 	}
 	function processStatMap(r) {
 		ng.races.forEach(function(v){

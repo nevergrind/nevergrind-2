@@ -448,7 +448,7 @@ var chat;
 			if (ng.view === 'town') {
 				chat.publishRemove()
 			}
-			if (party.presence.length > 1) {
+			if (party.hasMoreThanOnePlayer()) {
 				// boot from party
 				party.disband()
 			}
@@ -563,7 +563,7 @@ var chat;
 	function sizeSmall() {
 		TweenMax.set('#chat-wrap', {
 			x: '0%',
-			y: -50,
+			y: 0,
 			left: '0%'
 		})
 		TweenMax.set('#chat-present-wrap', {

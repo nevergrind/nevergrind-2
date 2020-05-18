@@ -44,6 +44,11 @@ var toast;
 					setTimeout(toast.accept, 100)
 				}
 			}
+			else if (data.action === 'party-invite') {
+				if (!ng.isApp) {
+					setTimeout(toast.accept, 100)
+				}
+			}
 		}
 	}
 

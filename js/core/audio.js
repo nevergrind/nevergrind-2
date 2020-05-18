@@ -32,21 +32,33 @@ var audio;
 		setMusicVolume,
 		gameMusicPlayNext,
 	}
+	var key
 	///////////////////////////////////////////
 
 	function init(){
 		var config = localStorage.getItem('config');
 
-		if (typeof config !== 'string') audio.save()
+		if (typeof config !== 'string') {
+			// is null - inits to default ng.config
+			audio.save()
+		}
 		else {
+			// previous data found. put config on top of default
+			const savedConfig = JSON.parse(config)
 			ng.config = {
 				...ng.getDefaultOptions(),
-				...JSON.parse(config)
-			};
+				...savedConfig,
+			}
+			for (key in savedConfig.hotkey) {
+				ng.config.hotkey[key] = savedConfig.hotkey[key]
+			}
 		}
 
 		console.info("Loaded config...", ng.config);
-		audio.playMusic("WaitingBetweenWorlds")
+		//audio.playMusic("WaitingBetweenWorlds")
+	}
+	function save() {
+		localStorage.setItem('config', JSON.stringify(ng.config))
 	}
 	function events() {
 		/*$("#bgmusic").on('ended', function() {
@@ -83,10 +95,6 @@ var audio;
 		sfx.volume = ng.config.soundVolume / 100
 		sfx.play()
 		console.info('playSound', sfx)
-	}
-	function save() {
-		// save to storage
-		localStorage.setItem('config', JSON.stringify(ng.config))
 	}
 	function setMusicVolume(val) {
 		if (ng.config.musicVolume){

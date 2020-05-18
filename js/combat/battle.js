@@ -7,6 +7,8 @@ var battle;
 		html,
 		getBox,
 		getResponsiveCenter,
+		targetIsFrontRow,
+		targetIsBackRow,
 	}
 
 	let index
@@ -18,22 +20,31 @@ var battle;
 			.on('mouseenter', '.mob-alive, .mob-details', handleMobEnter)
 			.on('mouseleave', '.mob-alive, .mob-details', handleMobLeave)
 	}
+	function targetIsFrontRow(tgt) {
+		tgt = tgt || my.target
+		return tgt >= 0 && tgt < 5
+	}
+	function targetIsBackRow(tgt) {
+		tgt = tgt || my.target
+		return tgt > 4
+	}
 	function handleMobClick() {
 		my.setTarget(this.getAttribute('index') * 1)
 	}
 	function handleMobEnter() {
 		index = this.getAttribute('index') * 1
 		my.hoverTarget = index
-		if (my.target !== index) querySelector('#mob-details-' + index).classList.add('block')
+		if (my.target !== index) querySelector('#mob-details-' + index).classList.add('block-imp')
 	}
 	function handleMobLeave() {
 		index = this.getAttribute('index') * 1
 		my.hoverTarget = -1
-		if (my.target !== index) querySelector('#mob-details-' + index).classList.remove('block')
+		if (my.target !== index) querySelector('#mob-details-' + index).classList.remove('block-imp')
 	}
-	function go() {
+	function go(data) {
 		if (ng.view === 'battle') return
 		town.closeVarious()
+		item.resetDrop()
 		chat.sizeSmall()
 		mob.init()
 		game.emptyScenesExcept('scene-battle')
@@ -66,6 +77,23 @@ var battle;
 		combat.initCombatTextLayer()
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
+		if (data) {
+			warn('data in from goBattle')
+			setupMobs(data)
+		}
+		else {
+			setupMobs(data)
+		}
+		my.fixTarget()
+		if (party.presence[0].isLeader) {
+			console.info('embark isLeader!', data)
+			socket.publish('party' + my.partyId, {
+				route: 'party->goBattle',
+				data: []
+			})
+		}
+	}
+	function setupMobs(data) {
 		var singleMob = false;
 		var mobKey = '';
 		for (var i=0; i<mob.max; i++){
@@ -74,11 +102,10 @@ var battle;
 				mobKey = 'orc';*/
 				mob.setMob(i, mob.configMobType({
 					img: 'orc',
-					level: 1
+					level: 50
 				}));
 			}
 		}
-		my.fixTarget()
 	}
 	function html() {
 		var s =

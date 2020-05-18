@@ -259,7 +259,6 @@
 					}
 
 					if (key === 'v') {
-						// v
 						if (ng.view === 'game' && !ng.chatOn) {
 							game.toggleGameWindows(1); // ???
 						}
@@ -267,16 +266,19 @@
 
 					if (ng.view === 'battle') {
 						if (key === 'Tab') {
-							// tab
 							if (!e.shiftKey) my.tabTarget(e)
 							else my.tabTarget(e)
 							e.preventDefault()
 							return false
 						}
-						else if (key === 'a') {
-							combat.toggleAutoAttack()
-						}
-
+						else if (key === ng.config.hotkey.autoAttack) combat.toggleAutoAttack()
+						else if ('123456'.includes(key)) button.triggerSkill(key * 1 - 1)
+						else if (key === '!') button.triggerSkill(6)
+						else if (key === '@') button.triggerSkill(7)
+						else if (key === '#') button.triggerSkill(8)
+						else if (key === '$') button.triggerSkill(9)
+						else if (key === '%') button.triggerSkill(10)
+						else if (key === '^') button.triggerSkill(11)
 					}
 				}
 			}

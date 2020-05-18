@@ -8,7 +8,7 @@ var game;
 			timer: 0
 		},
 		pingHistory: [],
-		questDelay: 3,
+		questDelay: ng.isApp ? 3 : 0,
 		start: Date.now(),
 		upsertRoom,
 		removePlayer,

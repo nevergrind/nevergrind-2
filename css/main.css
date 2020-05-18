@@ -243,8 +243,9 @@ tbody { border: 0 }
 }*/
 .no-select { user-select: none; }
 .no-pointer { pointer-events: none; }
-.none { display: none!important }
-.block { display: block!important }
+.none { display: none; }
+.block { display: block; }
+.block-imp { display: block!important; }
 .center {
 	position: relative;
 	display: block;
@@ -1545,7 +1546,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 #skill-btn-wrap {
 	display: flex;
-	width: 17rem;
+	width: 18.5rem;
 	flex-direction: row;
 	justify-content: center;
 	flex-wrap: wrap;
@@ -1553,20 +1554,18 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 .skill-btn {
 	position: relative;
-	background: #0008;
-	width: 2.7rem;
-	height: 2.7rem;
+	width: 3rem;
+	height: 3rem;
 }
 .skill-img {
 	position: relative;
 	z-index: 1;
-	border: .1rem ridge #048;
 	cursor: url('cursor/pointer.cur'), pointer;
-	width: 2.5rem;
-	height: 2.5rem;
+	width: 3rem;
+	height: 3rem;
 }
 .skill-img:hover {
-	border: .1rem ridge #05b;
+	filter: saturate(1.2) brightness(1.2);
 }
 .skill-img:active {
 	transition: none;
@@ -1580,8 +1579,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	font-size: 2rem;
 	top: 0;
 	left: 0;
-	width: 2.7rem;
-	height: 2.7rem;
+	width: 3rem;
+	height: 3rem;
 	font-family: Impacted, Impact;
 	pointer-events: none;
 	z-index: 1;
@@ -3015,15 +3014,10 @@ background-repeat: no-repeat;
 	) top left / 5px 5px repeat;
 	*/
 }
-#academy-skill-wrap {}
 .academy-skill-rank0 {
 	position: relative;
-	outline: 1px solid #000;
-	outline-offset: 1px;
-	padding: .1rem;
-	background: #ff0;
-	width: 2.5rem;
-	height: 2.5rem;
+	width: 3.2rem;
+	height: 3.2rem;
 }
 .academy-locked-skill {
 	filter: brightness(.8) grayscale(1);
@@ -3033,16 +3027,14 @@ background-repeat: no-repeat;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	filter: brightness(.75) grayscale(1);
-	background: #000;
 	padding: .3rem;
 	width: .8rem;
 	height: .8rem;
 	z-index: 1;
 }
 .academy-skill-img {
-	width: 2.5rem;
-	height: 2.5rem;
+	width: 3.2rem;
+	height: 3.2rem;
 }
 .academy-gold-row {
 	position: absolute;
@@ -3069,17 +3061,14 @@ background-repeat: no-repeat;
 	margin-right: .1rem;
 }
 .academy-lock {
-	width: .8rem;
-	height: .8rem;
-	filter: grayscale(1) brightness(.5);
-	background: #001;
-	padding: .6rem;
+	width: 2.4rem;
+	height: 2.4rem;
+	filter: brightness(.4);
 }
 .academy-shield {
-	background: radial-gradient(farthest-corner at 50% 50%, #887700ff, #222200ff, #000000ff);
-	padding: .25rem;
-	font-size: 1.5rem;
-	color: gold;
+	/*background: radial-gradient(farthest-corner at 50% 50%, #887700ff, #222200ff, #000000ff);*/
+	width: 2.4rem;
+	height: 2.4rem;
 }
 .academy-skill-base {
 	position: relative;
@@ -3087,41 +3076,29 @@ background-repeat: no-repeat;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	align-self: center;
 }
 .academy-row {
 	display: flex;
 	flex: 1;
 	margin-bottom: 1rem;
 }
-.academy-cross {
-	color: #789;
-	background: #001;
-	font-size: 1.8rem;
-	padding: .1rem;
-}
-.academy-rank0-locked {
-	background: linear-gradient(to bottom, #aef, #145);
-}
-.academy-rank0-unlocked {
-	background: linear-gradient(to bottom, #ff0, #660);
+.academy-swords {
+	width: 2.4rem;
+	height: 2.4rem;
 }
 .academy-skill-buy {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: linear-gradient(to bottom, #aef, #145);
 	padding: .1rem;
-	width: 2rem;
-	height: 2rem;
-}
-.academy-buy-restricted {
-	background: linear-gradient(to bottom, #f22, #811);
+	width: 2.4rem;
+	height: 2.4rem;
 }
 .academy-skill-unlocked {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: linear-gradient(to bottom, #ff0, #660);
 	padding: .1rem;
 	width: 2rem;
 	height: 2rem;
@@ -3130,10 +3107,8 @@ background-repeat: no-repeat;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: linear-gradient(to bottom, #aef, #145);
-	padding: .1rem;
-	width: 2rem;
-	height: 2rem;
+	width: 2.4rem;
+	height: 2.4rem;
 }
 .academy-train {
 	cursor: url('cursor/pointer.cur'), pointer;
@@ -3148,13 +3123,12 @@ background-repeat: no-repeat;
 	transform: scale(.96);
 }
 .academy-train.active {
-	outline: .1rem solid #fff;
-	animation: repeat-active-training .3s ease-out infinite;
+	animation: repeat-active-training .4s ease-out infinite;
 }
 @keyframes repeat-active-training {
-	0% { outline-color: #fff; }
-	50% { outline-color: #05b; }
-	100% { outline-color: #fff; }
+	0% { filter: saturate(1.5) brightness(1.5); }
+	50% { filter: saturate(1) brightness(1); }
+	100% { filter: saturate(1.5) brightness(1.5); }
 }
 #inventory-footer {
 	margin: .2rem;

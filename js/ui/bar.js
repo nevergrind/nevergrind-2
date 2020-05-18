@@ -387,7 +387,7 @@ var bar;
 			querySelector('#char-stat-col-2').innerHTML = charStatColTwoHtml()
 		}
 		stats.setAllResources()
-
+		my.crit = stats.critChance()
 
 		if (my.hp > my.hpMax) my.hp = my.hpMax
 		if (my.mp > my.mpMax) my.mp = my.mpMax
@@ -720,6 +720,10 @@ var bar;
 			'<div style="flex-basis: 50%;">Inventory</div>' +
 			'<div data-id="inventory" class="options-hotkey flex-max">'+ ng.config.hotkey.inventory +'</div>'+
 		'</div>' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 50%;">Auto Attack</div>' +
+			'<div data-id="auto-attack" class="options-hotkey flex-max">'+ ng.config.hotkey.autoAttack +'</div>'+
+		'</div>' +
 		'</div>'
 
 		return str
@@ -864,7 +868,7 @@ var bar;
 		if (data.isLeader !== player.isLeader) {
 			player.isLeader = data.isLeader;
 			// set UI helmet
-			if (player.isLeader && party.presence.length >= 2) {
+			if (player.isLeader && party.hasMoreThanOnePlayer()) {
 				getElementById('bar-is-leader-' + data.row).classList.remove('none');
 			}
 			else {

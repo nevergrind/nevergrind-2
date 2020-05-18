@@ -1496,6 +1496,10 @@ var loot = {};
 	}
 
 	function toggleDrag(event) {
+		if (ng.view === 'battle') {
+			chat.log('You cannot adjust your equipment or inventory while in combat!', 'chat-warning')
+			return
+		}
 		if (item.awaitingDrop) return
 		var index = event.currentTarget.dataset.index * 1
 		var type = event.currentTarget.dataset.type

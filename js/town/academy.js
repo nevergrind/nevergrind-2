@@ -133,9 +133,9 @@ var academy;
 					// skill locked
 					//warn('rank ZERO LOCKED!', my.skills[i], rank)
 					row += '<div data-index="'+ i +'" data-rank="'+ rank +'" class="academy-skill-rank0 academy-rank0-locked academy-train">' +
-						'<img class="academy-skill-lock no-pointer" src="images/ui/lock.png">' +
+						//'<img class="academy-skill-lock no-pointer" src="images/ui/lock.png">' +
 						'<img class="academy-skill-img academy-locked-skill" src="images/skills/' + my.job +'/'+ i +'.png">' +
-						'<div class="academy-gold-row">' +
+						'<div class="academy-gold-row" style="justify-content: center">' +
 							'<i class="ra ra-gold-bar academy-gold-img"></i>' +
 							'<div class="academy-train-cost">'+ trainCosts[rank] +'</div>' +
 						'</div>' +
@@ -150,7 +150,7 @@ var academy;
 					// unlocked
 					row += '<div class="academy-skill-base">' +
 						'<div class="academy-skill-unlocked">' +
-							'<i class="ra ra-broken-shield academy-shield"></i>'+
+							'<img class="academy-shield" src="images/ui/academy-shield.png">'+
 						'</div>' +
 					'</div>'
 				}
@@ -170,7 +170,7 @@ var academy;
 					// prompt buy
 					row += '<div class="academy-skill-base">' +
 						'<div data-index="'+ i +'" data-rank="'+ rank +'" class="academy-skill-buy academy-train '+reqClass +'">' +
-							'<i class="ra ra-crossed-swords academy-cross" style="'+ reqColor +'"></i>'+
+							'<img class="academy-swords" style="'+ reqColor +'" src="images/ui/academy-swords.png">'+
 						'</div>' +
 						'<div class="academy-gold-row">' +
 							'<i class="ra ra-gold-bar academy-gold-img"></i>' +
@@ -183,7 +183,7 @@ var academy;
 					// locked
 					row += '<div class="academy-skill-base">' +
 						'<div class="academy-skill-locked">' +
-							'<img class="academy-lock" src="images/ui/lock.png">'+
+							'<img class="academy-lock" src="images/ui/academy-lock.png">'+
 						'</div>' +
 					'</div>'
 				}

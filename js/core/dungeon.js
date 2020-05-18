@@ -29,7 +29,7 @@ var dungeon;
 		chat.sizeSmall()
 		ng.setScene('dungeon')
 		dungeon.init()
-		console.info("DUNGEON GO")
+		warn("DUNGEON GO")
 		TweenMax.to('#scene-dungeon', .5, {
 			startAt: { filter: 'brightness(0)' },
 			delay: .5,
@@ -41,6 +41,11 @@ var dungeon;
 			filter: 'brightness(1)'
 		})
 		ng.unlock()
+		if (party.presence[0].isLeader) {
+			socket.publish('party' + my.partyId, {
+				route: 'party->goDungeon'
+			})
+		}
 	}
 	function init() {
 		if (zones[mission.id].mobs.length) {

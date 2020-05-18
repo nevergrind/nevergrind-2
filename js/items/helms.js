@@ -320,7 +320,8 @@ loot.helms = {
 			enhancedDamageToDragonkin: [7, 12],
 			hp: [40, 50],
 			sp: [24, 30],
-		}, /*{
+		},
+		/*{
 			name: 'Great Helm',
 			newName: 'Minotaur\'s Horns',
 			itemLevel: 30,
@@ -332,7 +333,8 @@ loot.helms = {
 			itemLevel: 30,
 			itemLevel: 30,
 			rarity: 'set',
-		},*/ {
+		},*/
+		{
 			name: 'Barbute',
 			newName: 'Wurmskull Barbute',
 			enhancedArmor: [96, 110],

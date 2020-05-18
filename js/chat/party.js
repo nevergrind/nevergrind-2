@@ -19,6 +19,7 @@ var party;
 		parse,
 		promote,
 		disband,
+		hasMoreThanOnePlayer,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -27,6 +28,9 @@ var party;
 	var player;
 	var diff;
 	//////////////////////////////////////
+	function hasMoreThanOnePlayer() {
+		return party.presence.length > 1
+	}
 	/**
 	 * unsubs current party channel and subs the new one
 	 * @param row
@@ -143,7 +147,7 @@ var party;
 			if (checkLeader) {
 				console.info('electLeader', player.isLeader, party.presence.length)
 				console.info('party', _.cloneDeep(party.presence))
-				if (player.isLeader && party.presence.length > 1) {
+				if (player.isLeader && party.hasMoreThanOnePlayer()) {
 					electLeader();
 				}
 				if (party.presence.length === 1) {
@@ -256,7 +260,7 @@ var party;
 			}
 			else {
 				// must be leader or bypass by auto-election when leader leaves
-				if ((party.presence[0].isLeader || bypass) && party.presence.length > 1 && name) {
+				if ((party.presence[0].isLeader || bypass) && party.hasMoreThanOnePlayer() && name) {
 					socket.publish('party' + my.partyId, {
 						name: name,
 						leader: my.name,
@@ -290,7 +294,7 @@ var party;
 			chat.log("You cannot disband the party during battle!", 'chat-warning');
 		}
 		else {
-			if (party.presence.length > 1) {
+			if (party.hasMoreThanOnePlayer()) {
 				my.isLeader = party.presence[0].isLeader = true;
 				socket.publish('party' + my.partyId, {
 					name: my.name,

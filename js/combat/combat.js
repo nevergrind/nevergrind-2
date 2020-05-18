@@ -2,16 +2,24 @@ var combat;
 !function($, _, TweenMax, PIXI, undefined) {
 	combat = {
 		textId: 0,
-		damageMobMelee,
+		rxUpdateDamage,
 		popupDamage,
 		targetChanged,
 		initCombatTextLayer,
 		updateCombatTextLayer,
 		toggleAutoAttack,
+		txDamageMobMelee,
 	}
 	var el, w, h
 
 	///////////////////////////////////////////
+	function rxUpdateDamage(data) {
+		data.d.forEach(processUpdateDamage)
+	}
+	function processUpdateDamage(hit) {
+		updateMobHp(hit.i, hit.d)
+		info('processing damage : ', hit.d)
+	}
 	function toggleAutoAttack() {
 		if (!my.isAutoAttacking) autoAttackEnable()
 		else autoAttackDisable()
@@ -31,15 +39,26 @@ var combat;
 		el = querySelector('#main-attack-wrap')
 		el.classList.remove('active')
 	}
-	function damageMobMelee(index, damage, isCrit) {
+	function updateMobHp(index, damage) {
 		mobs[index].hp -= damage
 		if (mobs[index].hp <= 0) {
 			warn('mob is dead!')
 		}
 		mob.drawMobBar(index)
-		// post round operations
+	}
+	function txDamageMobMelee(index, damage, isCrit) {
 		damage = round(damage)
+		updateMobHp(index, damage)
 		popupDamage(index, damage, isCrit)
+		info('processing damage: ', damage)
+		// post round operations
+		socket.publish('party' + my.partyId, {
+			route: 'party->damage',
+			d: [{
+				i: index,
+				d: damage,
+			}]
+		}, true)
 	}
 	function initCombatTextLayer() {
 		combat.text = new PIXI.Application({
@@ -85,7 +104,7 @@ var combat;
 		basicText.anchor.set(0.5)
 		basicText.id = 'text-' + combat.textId++
 		basicText.x = mob.centerX[index]
-		basicText.y = env.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH
+		basicText.y = env.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH * mobs[2].size
 		//info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
 
@@ -126,7 +145,7 @@ var combat;
 		let index = 0
 		for (el of querySelectorAll('.mob-details')) {
 			if (index !== my.hoverTarget) {
-				el.classList.remove('targeted', 'block')
+				el.classList.remove('targeted', 'block-imp')
 			}
 			else {
 				el.classList.remove('targeted')
@@ -135,7 +154,7 @@ var combat;
 		}
 		info('targetChanged my.target', my.target)
 		if (my.target >= 0 && my.target < mob.max){
-			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block')
+			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
 		}
 	}
 }($, _, TweenMax, PIXI);

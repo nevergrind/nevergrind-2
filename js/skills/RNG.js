@@ -18,9 +18,12 @@
 	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
-		var mpCost = data.mp[my.skills[index]]
-		info('crossSlash', index, mpCost)
 		if (timers.skillCooldowns[index] < 1) return
+		if (!battle.targetIsFrontRow()) {
+			chat.log('You must choose a target in the front row when using ' + data.name + '!', 'chat-warning')
+			return
+		}
+		var mpCost = data.mp[my.skills[index]]
 		/*if (mpCost > my.mp) {
 			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
 			return
@@ -32,7 +35,22 @@
 
 		arr = stats.damage()
 		damage = _.random(arr[0], arr[1])
-		damage && combat.damageMobMelee(my.target, damage, arr[2])
+		damage && combat.txDamageMobMelee(my.target, damage, arr[2])
+
+		let tgt = my.target - 1
+		if (battle.targetIsFrontRow(tgt)) {
+			arr = stats.damage()
+			damage = _.random(arr[0], arr[1])
+			damage && combat.txDamageMobMelee(tgt, damage, arr[2])
+		}
+		tgt = my.target + 1
+		if (battle.targetIsFrontRow(tgt)) {
+			arr = stats.damage()
+			damage = _.random(arr[0], arr[1])
+			damage && combat.txDamageMobMelee(tgt, damage, arr[2])
+		}
+
+
 
 		timers.skillCooldowns[index] = 0
 

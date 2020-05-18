@@ -11,8 +11,9 @@ var button;
 		updateSkillTime,
 		primaryAttack,
 		secondaryAttack,
+		triggerSkill,
 	}
-	var arr, damage, o
+	var arr, damage, name
 
 	const displayBlock = { display: 'block' }
 	const displayNone = { display: 'none' }
@@ -28,17 +29,17 @@ var button;
 		.on('click', '#secondary-attack-btn', secondaryAttack)
 
 	//////////////////////////////////
-	function handleSkillButtonClick() {
-		var index = this.dataset.index * 1
-		var name = _.camelCase(skills[my.job][index].name)
-
-		//info('CLICKED SKILL: ', index, name)
+	function triggerSkill(index) {
+		name = _.camelCase(skills[my.job][index].name)
 		if (typeof skill[my.job][name] === 'function') {
 			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {
 			warn('This skill function is not defined!', name)
 		}
+	}
+	function handleSkillButtonClick() {
+		triggerSkill(this.dataset.index * 1)
 	}
 	function primaryAttack() {
 		if (timers.primaryAttack < 1) return
@@ -47,7 +48,7 @@ var button;
 		arr = stats.damage()
 
 		damage = _.random(arr[0], arr[1])
-		damage && combat.damageMobMelee(my.target, damage, arr[2])
+		damage && combat.txDamageMobMelee(my.target, damage, arr[2])
 
 		timers.primaryAttack = 0
 		let el = querySelector('#skill-timer-primary-rotate')
@@ -72,34 +73,36 @@ var button;
 		delays.primaryAttack = delayedCall(items.eq[12].speed, autoAttackPrimary)
 	}
 	function secondaryAttack() {
-		if (timers.secondaryAttack < 1) return
+		if (timers.secondaryAttack < 1 || !isOffhandingWeapon()) return
 		my.fixTarget()
 		if (my.target === -1) return
 		arr = stats.offhandDamage()
 		damage = _.random(arr[0], arr[1])
-		damage && combat.damageMobMelee(my.target, damage, arr[2])
+		damage && combat.txDamageMobMelee(my.target, damage, arr[2])
 
-		timers.secondaryAttack = 0
 		let el = querySelector('#skill-timer-secondary-rotate')
-		TweenMax.set(el, {
-			display: 'block'
-		})
-		let args = {
-			el: el,
-			key: 'secondaryAttack',
+		if (el !== null) {
+			timers.secondaryAttack = 0
+			TweenMax.set(el, {
+				display: 'block'
+			})
+			let args = {
+				el: el,
+				key: 'secondaryAttack',
+			}
+			TweenMax.to(timers, items.eq[13].speed, {
+				secondaryAttack: 1,
+				onStart: handleButtonStart,
+				onStartParams: [ args ],
+				onUpdate: handleButtonUpdate,
+				onUpdateParams: [ args ],
+				onComplete: handleButtonComplete,
+				onCompleteParams: [ args ],
+				ease: Linear.easeNone
+			})
+			delays.secondaryAttack.kill()
+			delays.secondaryAttack = delayedCall(items.eq[13].speed, autoAttackSecondary)
 		}
-		TweenMax.to(timers, items.eq[13].speed, {
-			secondaryAttack: 1,
-			onStart: handleButtonStart,
-			onStartParams: [ args ],
-			onUpdate: handleButtonUpdate,
-			onUpdateParams: [ args ],
-			onComplete: handleButtonComplete,
-			onCompleteParams: [ args ],
-			ease: Linear.easeNone
-		})
-		delays.secondaryAttack.kill()
-		delays.secondaryAttack = delayedCall(items.eq[13].speed, autoAttackSecondary)
 	}
 	function autoAttackPrimary() {
 		if (my.isAutoAttacking) primaryAttack()
@@ -121,7 +124,7 @@ var button;
 			el: selector,
 			key: 'globalCooldown',
 		}
-		TweenMax.to(timers, 1.5, {
+		TweenMax.to(timers, 2, {
 			globalCooldown: 1,
 			onStart: handleButtonStart,
 			onStartParams: [ args ],

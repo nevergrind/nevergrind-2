@@ -55,6 +55,7 @@ var stats = {};
 	var averageArcherJobs = ['WAR', 'CRU', 'SHD', 'ROG', 'BRD']
 	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
 	var averageOneHandSlashJobs = ['WAR', 'CRU', 'SHD', 'BRD', 'DRU']
+	let isCrit = false
 
 	const hpTier = {
 		'WAR': 10,
@@ -206,9 +207,9 @@ var stats = {};
 		return getStatTotal('riposte')
 	}
 	function critChance() {
-		return (((5) + getEqTotal('crit') ) / 100)
+		//return ( ((5) + getEqTotal('crit') ) / 100)
+		return (ng.dimRetCrit(5 + getEqTotal('crit')) ) / 100
 	}
-	let isCrit = false
 	function damage() {
 		min = 1
 		max = 1
@@ -231,7 +232,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = critChance() > rand()
+		isCrit = my.crit > rand()
 		if (isCrit) {
 			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
 				min *= 2
@@ -268,7 +269,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = critChance() > rand()
+		isCrit = my.crit > rand()
 		if (isCrit) {
 			min *= 1.5
 			max *= 1.5
@@ -281,7 +282,7 @@ var stats = {};
 		min = items.eq[14].minDamage * (1 + (atk * .002))
 		max = items.eq[14].maxDamage * (1 + (atk * .002))
 
-		isCrit = critChance() > rand()
+		isCrit = my.crit > rand()
 		if (isCrit) {
 			min *= 2
 			max *= 2

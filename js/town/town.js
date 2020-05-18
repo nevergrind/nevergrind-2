@@ -124,6 +124,7 @@ var town;
 				guild.setGuildData(data)
 				initItemData(data.inv, 'inv')
 				initItemData(data.eq, 'eq')
+				my.crit = stats.critChance()
 				// skills
 				my.initSkills()
 
