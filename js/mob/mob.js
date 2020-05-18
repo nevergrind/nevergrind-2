@@ -148,7 +148,7 @@ var mob;
 		idle(i)
 	}
 	function preProcessMobData(config) {
-		config.hpMax = config.hp = ~~(25 + ((config.level - 1) * 22.2) * config.hp)
+		config.hpMax = config.hp = ~~(25 + ((config.level - 1) * 220) * config.hp)
 		config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)
 		config.spMax = config.sp = ~~(10 + ((config.level - 1) * 15) * config.sp)
 	}

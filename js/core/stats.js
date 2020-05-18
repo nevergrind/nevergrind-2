@@ -1,5 +1,5 @@
 var stats = {};
-(function() {
+(function($, TweenMax, _, undefined) {
 	stats = {
 		str,
 		sta,
@@ -210,7 +210,8 @@ var stats = {};
 		//return ( ((5) + getEqTotal('crit') ) / 100)
 		return (ng.dimRetCrit(5 + getEqTotal('crit')) ) / 100
 	}
-	function damage() {
+	function damage(tgt) {
+		tgt = tgt === undefined ? my.target : tgt
 		min = 1
 		max = 1
 		atk = attack()
@@ -231,6 +232,11 @@ var stats = {};
 		}
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
+		// range penalty
+		if (tgt > 4) {
+			min *= .5
+			max *= .5
+		}
 
 		isCrit = my.crit > rand()
 		if (isCrit) {
@@ -246,7 +252,8 @@ var stats = {};
 
 		return [min, max, isCrit]
 	}
-	function offhandDamage() {
+	function offhandDamage(tgt) {
+		tgt = tgt === undefined ? my.target : tgt
 		if (!my.dualWield) return [0, 0, false]
 		min = 1
 		max = 1
@@ -268,6 +275,11 @@ var stats = {};
 		}
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
+		// range penalty
+		if (tgt > 4) {
+			min *= .5
+			max *= .5
+		}
 
 		isCrit = my.crit > rand()
 		if (isCrit) {
@@ -277,7 +289,11 @@ var stats = {};
 
 		return [min, max, isCrit]
 	}
-	function rangedDamage() {
+	function rangedDamage(tgt) {
+		// tgt = tgt === undefined ? my.target : tgt
+		min = 1
+		max = 1
+		atk = attack()
 		if (!my.archery || items.eq[14].itemType !== 'bows') return [0, 0, false]
 		min = items.eq[14].minDamage * (1 + (atk * .002))
 		max = items.eq[14].maxDamage * (1 + (atk * .002))
@@ -593,4 +609,4 @@ var stats = {};
 		}
 		return val
 	}
-})();
+})($, TweenMax, _, );

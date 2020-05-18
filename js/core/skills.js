@@ -343,6 +343,7 @@ var skills;
 				img: 'RNG-1',
 				mp: [0, 8, 10, 12, 14, 16, 18, 20],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
+				enhancedDamage: [0, .55, .65, .75, .85, .95, 1.05, 1.15],
 				spellType: '',
 				castTime: 0,
 				cooldownTime: 8,
@@ -350,11 +351,12 @@ var skills;
 			}, {
 				name: 'Explosive Shot',
 				img: 'RNG-2',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
+				mp: [0, 10, 13, 16, 19, 22, 25, 28],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
+				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
 				spellType: '',
 				castTime: 0,
-				cooldownTime: 0,
+				cooldownTime: 15,
 				description: 'Launch an explosive fire arrow at 3x targets',
 			}, {
 				name: 'Trueshot Arrow',

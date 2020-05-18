@@ -9,6 +9,7 @@ var combat;
 		updateCombatTextLayer,
 		toggleAutoAttack,
 		txDamageMobMelee,
+		txSendDamage,
 	}
 	var el, w, h
 
@@ -46,18 +47,25 @@ var combat;
 		}
 		mob.drawMobBar(index)
 	}
-	function txDamageMobMelee(index, damage, isCrit) {
-		damage = round(damage)
-		updateMobHp(index, damage)
-		popupDamage(index, damage, isCrit)
-		info('processing damage: ', damage)
-		// post round operations
+	function txDamageMobMelee(damages) {
+		damages.forEach(processHit)
+	}
+	function processHit(hit) {
+		if (hit.damage > 0) {
+			hit.damage = round(hit.damage)
+			updateMobHp(hit.index, hit.damage)
+			popupDamage(hit.index, hit.damage, hit.isCrit)
+			info('processHit: ', hit.damage)
+			txSendDamage([{
+				i: hit.index,
+				d: hit.damage,
+			}])
+		}
+	}
+	function txSendDamage(arrOfDamage) {
 		socket.publish('party' + my.partyId, {
 			route: 'party->damage',
-			d: [{
-				i: index,
-				d: damage,
-			}]
+			d: arrOfDamage
 		}, true)
 	}
 	function initCombatTextLayer() {

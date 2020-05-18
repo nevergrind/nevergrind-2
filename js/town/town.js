@@ -130,9 +130,12 @@ var town;
 
 				stats.setAllResources()
 				if (!app.isApp) {
-					my.hp = 1
+					/*my.hp = 1
 					my.mp = 1
-					my.sp = 1
+					my.sp = 1*/
+					my.hp = my.hpMax
+					my.mp = my.mpMax
+					my.sp = my.spMax
 				}
 				else {
 					my.hp = my.hpMax

@@ -1031,7 +1031,7 @@ var bar;
 			'<div style="color: gold">Attack:</div><div>'+ stats.attack() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Damage:</div><div>'+ stats.damageString(stats.damage()) +'</div>' +
+			'<div style="color: gold">Damage:</div><div>'+ stats.damageString(stats.damage(2)) +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
 			'<div style="color: gold">Wisdom:</div><div>'+ stats.wis() +'</div>' +

@@ -2,6 +2,7 @@ var battle;
 (function(TweenMax, $, _, undefined) {
 	battle = {
 		initialized: 0,
+		getSplashTarget,
 		go,
 		show,
 		html,
@@ -11,9 +12,16 @@ var battle;
 		targetIsBackRow,
 	}
 
-	let index
+	let index, splashTgt
+	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	init()
 	//////////////////////////////////////
+	function getSplashTarget(shift) {
+		shift = shift || 0
+		index = _.findIndex(splashOrder, val => val === my.target)
+		index = splashOrder[index + shift]
+		return splashOrder.includes(index) ? index : -1
+	}
 	function init() {
 		$('#scene-battle')
 			.on('click', '.mob-alive, .mob-details', handleMobClick)

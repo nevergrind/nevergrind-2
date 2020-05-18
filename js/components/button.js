@@ -12,6 +12,7 @@ var button;
 		primaryAttack,
 		secondaryAttack,
 		triggerSkill,
+		processButtonTimers,
 	}
 	var arr, damage, name
 
@@ -29,6 +30,64 @@ var button;
 		.on('click', '#secondary-attack-btn', secondaryAttack)
 
 	//////////////////////////////////
+	function processButtonTimers(index, skillData) {
+		let el = querySelector('#skill-timer-' + index + '-rotate')
+		// processButtonTimers
+		TweenMax.set(el, displayBlock)
+		let args = {
+			el: el,
+			index: index,
+		}
+		let timerObj = {
+			onStart: handleButtonStart,
+			onStartParams: [ args ],
+			onUpdate: handleButtonUpdate,
+			onUpdateParams: [ args ],
+			onComplete: handleButtonComplete,
+			onCompleteParams: [ args ],
+			ease: Linear.easeNone
+		}
+		timerObj[index] = 1
+
+		let textEl = querySelector('#skill-timer-' + index)
+		let textObj = {
+			el: textEl,
+			remaining: skillData.cooldownTime
+		}
+
+		textEl.innerHTML = skillData.cooldownTime
+		TweenMax.to(textObj, 1, {
+			repeat: skillData.cooldownTime,
+			onRepeat: button.updateSkillTime,
+			onRepeatParams: [ textObj ]
+		})
+		TweenMax.to(timers.skillCooldowns, skillData.cooldownTime, timerObj)
+	}
+	function triggerGlobalCooldown() {
+		timers.globalCooldown = 0
+		let selector = []
+		timers.skillCooldowns.forEach((skill, index) => {
+			if (skill === 1) {
+				selector.push('#skill-timer-'+ index +'-rotate')
+			}
+		})
+		selector = selector.join(', ')
+		TweenMax.set(selector, displayBlock)
+		let args = {
+			el: selector,
+			key: 'globalCooldown',
+		}
+		TweenMax.to(timers, 2, {
+			globalCooldown: 1,
+			onStart: handleButtonStart,
+			onStartParams: [ args ],
+			onUpdate: handleButtonUpdate,
+			onUpdateParams: [ args ],
+			onComplete: handleButtonComplete,
+			onCompleteParams: [ args ],
+			ease: Linear.easeNone
+		})
+	}
 	function triggerSkill(index) {
 		name = _.camelCase(skills[my.job][index].name)
 		if (typeof skill[my.job][name] === 'function') {
@@ -48,7 +107,11 @@ var button;
 		arr = stats.damage()
 
 		damage = _.random(arr[0], arr[1])
-		damage && combat.txDamageMobMelee(my.target, damage, arr[2])
+		combat.txDamageMobMelee([{
+			index: my.target,
+			damage: damage,
+			isCrit: arr[2]
+		}])
 
 		timers.primaryAttack = 0
 		let el = querySelector('#skill-timer-primary-rotate')
@@ -78,7 +141,11 @@ var button;
 		if (my.target === -1) return
 		arr = stats.offhandDamage()
 		damage = _.random(arr[0], arr[1])
-		damage && combat.txDamageMobMelee(my.target, damage, arr[2])
+		combat.txDamageMobMelee([{
+			index: my.target,
+			damage: damage,
+			isCrit: arr[2]
+		}])
 
 		let el = querySelector('#skill-timer-secondary-rotate')
 		if (el !== null) {
@@ -109,31 +176,6 @@ var button;
 	}
 	function autoAttackSecondary() {
 		if (my.isAutoAttacking) secondaryAttack()
-	}
-	function triggerGlobalCooldown() {
-		timers.globalCooldown = 0
-		let selector = []
-		timers.skillCooldowns.forEach((skill, index) => {
-			if (skill === 1) {
-				selector.push('#skill-timer-'+ index +'-rotate')
-			}
-		})
-		selector = selector.join(', ')
-		TweenMax.set(selector, displayBlock)
-		let args = {
-			el: selector,
-			key: 'globalCooldown',
-		}
-		TweenMax.to(timers, 2, {
-			globalCooldown: 1,
-			onStart: handleButtonStart,
-			onStartParams: [ args ],
-			onUpdate: handleButtonUpdate,
-			onUpdateParams: [ args ],
-			onComplete: handleButtonComplete,
-			onCompleteParams: [ args ],
-			ease: Linear.easeNone
-		})
 	}
 	function handleButtonStart(o) {
 		TweenMax.set(o.el, {

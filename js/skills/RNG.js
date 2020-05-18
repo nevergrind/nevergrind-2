@@ -13,111 +13,269 @@
 		shimmeringOrb,
 		spiritOfTheHunter,
 	}
-	let arr, damage, data
+	let arr, damage, damages, enhanceDamage
 
 	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
-		if (timers.skillCooldowns[index] < 1) return
+		info('crossSlash', index)
+		// check constraints
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		if (!battle.targetIsFrontRow()) {
 			chat.log('You must choose a target in the front row when using ' + data.name + '!', 'chat-warning')
 			return
 		}
-		var mpCost = data.mp[my.skills[index]]
-		/*if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
-		}*/
-		my.mp -= mpCost
-		bar.updateBar('mp')
 		my.fixTarget()
 		if (my.target === -1) return
-
-		arr = stats.damage()
-		damage = _.random(arr[0], arr[1])
-		damage && combat.txDamageMobMelee(my.target, damage, arr[2])
-
-		let tgt = my.target - 1
-		if (battle.targetIsFrontRow(tgt)) {
-			arr = stats.damage()
-			damage = _.random(arr[0], arr[1])
-			damage && combat.txDamageMobMelee(tgt, damage, arr[2])
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
 		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// process skill data
+		let tgt = my.target
+		enhanceDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		arr = stats.damage().map(dam => dam * enhanceDamage)
+		damage = _.random(arr[0], arr[1])
+		damages.push({
+			index: tgt,
+			damage: damage,
+			isCrit: arr[2],
+		})
+
+		tgt = my.target - 1
+		if (battle.targetIsFrontRow(tgt)) {
+			arr = stats.damage(tgt).map(dam => dam * enhanceDamage)
+			damage = _.random(arr[0], arr[1])
+			damages.push({
+				index: tgt,
+				damage: damage,
+				isCrit: arr[2],
+			})
+		}
+
 		tgt = my.target + 1
 		if (battle.targetIsFrontRow(tgt)) {
-			arr = stats.damage()
+			arr = stats.damage(tgt).map(dam => dam * enhanceDamage)
 			damage = _.random(arr[0], arr[1])
-			damage && combat.txDamageMobMelee(tgt, damage, arr[2])
+			damages.push({
+				index: tgt,
+				damage: damage,
+				isCrit: arr[2],
+			})
 		}
 
-
-
+		combat.txDamageMobMelee(damages)
+		// animate timers
 		timers.skillCooldowns[index] = 0
-
-		let el = querySelector('#skill-timer-0-rotate')
-		let textEl = querySelector('#skill-timer-0')
-
-		TweenMax.set(el, displayBlock)
-		let args = {
-			el: el,
-			index: index,
-		}
-		let obj = {
-			onStart: button.handleButtonStart,
-			onStartParams: [ args ],
-			onUpdate: button.handleButtonUpdate,
-			onUpdateParams: [ args ],
-			onComplete: button.handleButtonComplete,
-			onCompleteParams: [ args ],
-			ease: Linear.easeNone
-		}
-
-		obj[index] = 1
-		let t = {
-			el: textEl,
-			remaining: data.cooldownTime
-		}
-
-		textEl.innerHTML = data.cooldownTime
-		TweenMax.to(t, 1, {
-			repeat: 8,
-			onRepeat: button.updateSkillTime,
-			onRepeatParams: [ t ]
-		})
-		TweenMax.to(timers.skillCooldowns, data.cooldownTime, obj)
+		button.processButtonTimers(index, data)
 		button.triggerGlobalCooldown()
 	}
+
 	function explosiveShot(index, data) {
 		info('explosiveShot', index)
+		// check constraints
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// process skill data
+		let tgt = my.target
+		enhanceDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		arr = stats.rangedDamage(tgt).map(dam => dam * enhanceDamage)
+		damage = _.random(arr[0], arr[1])
+		damages.push({
+			index: tgt,
+			damage: damage,
+			isCrit: arr[2],
+		})
+
+		tgt = battle.getSplashTarget(-1)
+		if (tgt > -1) {
+			arr = stats.rangedDamage(tgt).map(dam => dam * enhanceDamage)
+			damage = _.random(arr[0], arr[1])
+			damages.push({
+				index: tgt,
+				damage: damage,
+				isCrit: arr[2],
+			})
+		}
+
+		tgt = battle.getSplashTarget(1)
+		if (tgt > -1) {
+			arr = stats.rangedDamage(tgt).map(dam => dam * enhanceDamage)
+			damage = _.random(arr[0], arr[1])
+			damages.push({
+				index: tgt,
+				damage: damage,
+				isCrit: arr[2],
+			})
+		}
+
+		combat.txDamageMobMelee(damages)
+		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
 	function trueshotArrow(index, data) {
 		info('trueshotArrow', index)
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 	function spreadShot(index, data) {
 		info('spreadShot', index)
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 	function bladeStorm(index, data) {
 		info('bladeStorm', index)
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 	function suppressingVolley(index, data) {
 		info('suppressingVolley', index)
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 	function ignite(index, data) {
 		info('ignite', index)
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 	function shockNova(index, data) {
 		info('shockNova', index)
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 	function faerieFlame(index, data) {
 		info('faerieFlame', index)
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 	function fungalGrowth(index, data) {
 		info('fungalGrowth', index)
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 	function shimmeringOrb(index, data) {
 		info('shimmeringOrb', index)
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 	function spiritOfTheHunter(index, data) {
 		info('spiritOfTheHunter', index)
+		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
+		my.fixTarget()
+		if (my.target === -1) return
+		var mpCost = data.mp[my.skills[index]]
+		if (mpCost > my.mp) {
+			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
+			return
+		}
+		my.mp -= mpCost
+		bar.updateBar('mp')
+		// check constraints
+		// process skill data
+		// animate timers
 	}
 }($, _, TweenMax, Linear);
