@@ -1,7 +1,7 @@
 var mob;
 (function(TweenMax, $, _, Object, undefined) {
 	mob = {
-		enableMobHeartbeat: false,
+		enableMobHeartbeat: true,
 		imageKeysLen: 0,
 		index: 0,
 		cache: {},

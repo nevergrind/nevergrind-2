@@ -2,7 +2,7 @@
 	skill.RNG = {
 		crossSlash,
 		explosiveShot,
-		trueshotArrow,
+		trueshotStrike,
 		spreadShot,
 		bladeStorm,
 		suppressingVolley,
@@ -13,7 +13,7 @@
 		shimmeringOrb,
 		spiritOfTheHunter,
 	}
-	let arr, damage, damages, enhanceDamage
+	let damages, enhancedDamage, hit
 
 	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////
@@ -35,40 +35,43 @@
 		my.mp -= mpCost
 		bar.updateBar('mp')
 		// process skill data
-		let tgt = my.target
-		enhanceDamage = data.enhancedDamage[my.skills[index]]
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		arr = stats.damage().map(dam => dam * enhanceDamage)
-		damage = _.random(arr[0], arr[1])
+
+		let tgt = my.target
+		hit = stats.damage()
 		damages.push({
 			index: tgt,
-			damage: damage,
-			isCrit: arr[2],
+			damage: hit.damage,
+			isCrit: hit.isCrit,
+			enhancedDamage: enhancedDamage,
+			requiresFrontRow: true,
+			damageType: hit.damageType,
 		})
 
 		tgt = my.target - 1
-		if (battle.targetIsFrontRow(tgt)) {
-			arr = stats.damage(tgt).map(dam => dam * enhanceDamage)
-			damage = _.random(arr[0], arr[1])
-			damages.push({
-				index: tgt,
-				damage: damage,
-				isCrit: arr[2],
-			})
-		}
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			damage: hit.damage,
+			isCrit: hit.isCrit,
+			enhancedDamage: enhancedDamage,
+			requiresFrontRow: true,
+			damageType: hit.damageType,
+		})
 
 		tgt = my.target + 1
-		if (battle.targetIsFrontRow(tgt)) {
-			arr = stats.damage(tgt).map(dam => dam * enhanceDamage)
-			damage = _.random(arr[0], arr[1])
-			damages.push({
-				index: tgt,
-				damage: damage,
-				isCrit: arr[2],
-			})
-		}
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			damage: hit.damage,
+			isCrit: hit.isCrit,
+			enhancedDamage: enhancedDamage,
+			requiresFrontRow: true,
+			damageType: hit.damageType,
+		})
 
-		combat.txDamageMobMelee(damages)
+		combat.txDamageMob(damages)
 		// animate timers
 		timers.skillCooldowns[index] = 0
 		button.processButtonTimers(index, data)
@@ -89,47 +92,52 @@
 		my.mp -= mpCost
 		bar.updateBar('mp')
 		// process skill data
-		let tgt = my.target
-		enhanceDamage = data.enhancedDamage[my.skills[index]]
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		arr = stats.rangedDamage(tgt).map(dam => dam * enhanceDamage)
-		damage = _.random(arr[0], arr[1])
+
+		let tgt = my.target
+		hit = stats.rangedDamage(tgt)
 		damages.push({
 			index: tgt,
-			damage: damage,
-			isCrit: arr[2],
+			damage: hit.damage,
+			isCrit: hit.isCrit,
+			enhancedDamage: enhancedDamage,
+			isRanged: hit.isRanged,
+			damageType: hit.damageType,
 		})
 
+
 		tgt = battle.getSplashTarget(-1)
-		if (tgt > -1) {
-			arr = stats.rangedDamage(tgt).map(dam => dam * enhanceDamage)
-			damage = _.random(arr[0], arr[1])
-			damages.push({
-				index: tgt,
-				damage: damage,
-				isCrit: arr[2],
-			})
-		}
+		hit = stats.rangedDamage(tgt)
+		damages.push({
+			index: tgt,
+			damage: hit.damage,
+			isCrit: hit.isCrit,
+			enhancedDamage: enhancedDamage,
+			isRanged: hit.isRanged,
+			damageType: hit.damageType,
+		})
 
 		tgt = battle.getSplashTarget(1)
-		if (tgt > -1) {
-			arr = stats.rangedDamage(tgt).map(dam => dam * enhanceDamage)
-			damage = _.random(arr[0], arr[1])
-			damages.push({
-				index: tgt,
-				damage: damage,
-				isCrit: arr[2],
-			})
-		}
+		hit = stats.rangedDamage(tgt)
+		damages.push({
+			index: tgt,
+			damage: hit.damage,
+			isCrit: hit.isCrit,
+			enhancedDamage: enhancedDamage,
+			isRanged: hit.isRanged,
+			damageType: hit.damageType,
+		})
 
-		combat.txDamageMobMelee(damages)
+		combat.txDamageMob(damages)
 		// animate timers
 		timers.skillCooldowns[index] = 0
 		button.processButtonTimers(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function trueshotArrow(index, data) {
-		info('trueshotArrow', index)
+	function trueshotStrike(index, data) {
+		info('trueshotStrike', index)
+		// check constraints
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
@@ -140,9 +148,26 @@
 		}
 		my.mp -= mpCost
 		bar.updateBar('mp')
-		// check constraints
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.rangedDamage(tgt)
+		damages.push({
+			index: tgt,
+			damage: hit.damage,
+			isCrit: hit.isCrit,
+			enhancedDamage: enhancedDamage,
+			isRanged: hit.isRanged,
+			damageType: hit.damageType,
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
 	function spreadShot(index, data) {
 		info('spreadShot', index)

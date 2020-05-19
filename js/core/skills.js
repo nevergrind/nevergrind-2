@@ -341,7 +341,7 @@ var skills;
 			{
 				name: 'Cross Slash',
 				img: 'RNG-1',
-				mp: [0, 8, 10, 12, 14, 16, 18, 20],
+				mp: [0, 2, 4, 6, 8, 10, 12, 14],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .55, .65, .75, .85, .95, 1.05, 1.15],
 				spellType: '',
@@ -351,7 +351,7 @@ var skills;
 			}, {
 				name: 'Explosive Shot',
 				img: 'RNG-2',
-				mp: [0, 10, 13, 16, 19, 22, 25, 28],
+				mp: [0, 3, 6, 10, 14, 18, 22, 25],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
 				spellType: '',
@@ -359,14 +359,15 @@ var skills;
 				cooldownTime: 15,
 				description: 'Launch an explosive fire arrow at 3x targets',
 			}, {
-				name: 'Trueshot Arrow',
+				name: 'Trueshot Strike',
 				img: 'RNG-3',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
+				mp: [0, 4, 7, 11, 16, 21, 26, 30],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
+				enhancedDamage: [0, 1.6, 1.75, 1.9, 2.05, 2.2, 2.35, 2.5],
 				spellType: '',
 				castTime: 0,
-				cooldownTime: 0,
-				description: 'Strikes 3x targets with explosive physical damage (cannot dodge, parry, riposte)',
+				cooldownTime: 20,
+				description: 'Powerful single strike on single target (cannot dodge, parry, riposte)',
 			}, {
 				name: 'Spread Shot',
 				img: 'RNG-4',

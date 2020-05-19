@@ -15,7 +15,7 @@ let skill = {};
 		spiritOfTheHunter,
 	}
 	///////////////////////////////////////////
-	let arr, damage, damages, enhanceDamage
+	let arr, damage, damages, enhancedDamage
 
 	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////

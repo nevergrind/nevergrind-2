@@ -232,11 +232,6 @@ var stats = {};
 		}
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
-		// range penalty
-		if (tgt > 4) {
-			min *= .5
-			max *= .5
-		}
 
 		isCrit = my.crit > rand()
 		if (isCrit) {
@@ -250,7 +245,14 @@ var stats = {};
 			}
 		}
 
-		return [min, max, isCrit]
+		return {
+			min: min,
+			max: max,
+			damage: _.random(min, max),
+			isCrit: isCrit,
+			enhancedDamage: 1,
+			damageType: 'physical',
+		}
 	}
 	function offhandDamage(tgt) {
 		tgt = tgt === undefined ? my.target : tgt
@@ -275,11 +277,6 @@ var stats = {};
 		}
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
-		// range penalty
-		if (tgt > 4) {
-			min *= .5
-			max *= .5
-		}
 
 		isCrit = my.crit > rand()
 		if (isCrit) {
@@ -287,7 +284,14 @@ var stats = {};
 			max *= 1.5
 		}
 
-		return [min, max, isCrit]
+		return {
+			min: min,
+			max: max,
+			damage: _.random(min, max),
+			isCrit: isCrit,
+			enhancedDamage: 1,
+			damageType: 'physical',
+		}
 	}
 	function rangedDamage(tgt) {
 		// tgt = tgt === undefined ? my.target : tgt
@@ -304,7 +308,15 @@ var stats = {};
 			max *= 2
 		}
 
-		return [min, max, isCrit]
+		return {
+			min: min,
+			max: max,
+			damage: _.random(min, max),
+			isCrit: isCrit,
+			enhancedDamage: 1,
+			isRanged: true,
+			damageType: 'physical',
+		}
 	}
 	function damageString(damage) {
 		return ~~damage[0] + '–' + ~~damage[1]

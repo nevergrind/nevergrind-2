@@ -14,8 +14,9 @@ var button;
 		triggerSkill,
 		processButtonTimers,
 	}
-	var arr, damage, name
+	var arr, damage, name, hit
 
+	let damages
 	const displayBlock = { display: 'block' }
 	const displayNone = { display: 'none' }
 	/////////////////////////////
@@ -104,14 +105,17 @@ var button;
 		if (timers.primaryAttack < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
-		arr = stats.damage()
+		hit = stats.damage()
 
-		damage = _.random(arr[0], arr[1])
-		combat.txDamageMobMelee([{
+		damages = []
+		damages.push({
 			index: my.target,
-			damage: damage,
-			isCrit: arr[2]
-		}])
+			damage: hit.damage,
+			isCrit: hit.isCrit,
+			enhancedDamage: hit.enhancedDamage,
+			damageType: hit.damageType,
+		})
+		combat.txDamageMob(damages)
 
 		timers.primaryAttack = 0
 		let el = querySelector('#skill-timer-primary-rotate')
@@ -139,13 +143,16 @@ var button;
 		if (timers.secondaryAttack < 1 || !isOffhandingWeapon()) return
 		my.fixTarget()
 		if (my.target === -1) return
-		arr = stats.offhandDamage()
-		damage = _.random(arr[0], arr[1])
-		combat.txDamageMobMelee([{
+		hit = stats.offhandDamage()
+		damages = []
+		damages.push({
 			index: my.target,
-			damage: damage,
-			isCrit: arr[2]
-		}])
+			damage: hit.damage,
+			isCrit: hit.isCrit,
+			enhancedDamage: hit.enhancedDamage,
+			damageType: hit.damageType,
+		})
+		combat.txDamageMob(damages)
 
 		let el = querySelector('#skill-timer-secondary-rotate')
 		if (el !== null) {
@@ -220,12 +227,12 @@ var button;
 		var s = '';
 		// base attack buttons
 		s += '<div id="main-attack-wrap">' +
-			'<div class="skill-btn repeat-line-bg">' +
+			'<div class="skill-btn">' +
 				'<img id="primary-attack-btn" class="skill-img" src="'+ bar.getItemSlotImage('eq', 12) +'">' +
 				'<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>' +
 			'</div>'
 			if (isOffhandingWeapon()) {
-				s += '<div class="skill-btn repeat-line-bg">' +
+				s += '<div class="skill-btn">' +
 					'<img id="secondary-attack-btn" class="skill-img" src="'+ bar.getItemSlotImage('eq', 13) +'">' +
 					'<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>' +
 				'</div>'

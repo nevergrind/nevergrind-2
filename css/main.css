@@ -1546,23 +1546,29 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 #skill-btn-wrap {
 	display: flex;
-	width: 18.5rem;
+	width: 20rem;
 	flex-direction: row;
 	justify-content: center;
 	flex-wrap: wrap;
 	align-content: space-around;
 }
+#main-attack-wrap .skill-btn {
+	box-shadow: inset 0 0 0 1px #000;
+}
 .skill-btn {
 	position: relative;
 	width: 3rem;
 	height: 3rem;
+	padding: .1rem;
+	background: linear-gradient(135deg, #000, #1a1a1a);
 }
 .skill-img {
 	position: relative;
 	z-index: 1;
 	cursor: url('cursor/pointer.cur'), pointer;
-	width: 3rem;
-	height: 3rem;
+	width: 100%;
+	height: 100%;
+	align-self: center;
 }
 .skill-img:hover {
 	filter: saturate(1.2) brightness(1.2);
@@ -1579,8 +1585,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	font-size: 2rem;
 	top: 0;
 	left: 0;
-	width: 3rem;
-	height: 3rem;
+	width: 100%;
+	height: 100%;
 	font-family: Impacted, Impact;
 	pointer-events: none;
 	z-index: 1;
@@ -3014,86 +3020,57 @@ background-repeat: no-repeat;
 	) top left / 5px 5px repeat;
 	*/
 }
-.academy-skill-rank0 {
-	position: relative;
-	width: 3rem;
-	height: 3rem;
-}
 .academy-locked-skill {
 	filter: brightness(.8) grayscale(1);
 }
-.academy-skill-lock {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	padding: .3rem;
-	width: .8rem;
-	height: .8rem;
-	z-index: 1;
+.academy-skill-img-base {
+	background: linear-gradient(45deg, #aef, #05b, #048, #05b, #aef);
+	width: 3rem;
+	height: 3rem;
+	padding: .1rem;
 }
 .academy-skill-img {
 	width: 100%;
 	height: 100%;
+	align-self: center;
 }
 .academy-gold-row {
-	position: absolute;
 	display: flex;
-	bottom: 0;
-	left: 0;
-	transform: translate(0, 100%);
 	font-size: .8rem;
 	align-items: center;
-	justify-content: flex-end;
-	width: 100%;
-}
-.academy-skill-divider {
-	width: 1rem;
-	border-top: 1px solid #111;
-	border-bottom: 1px solid #111;
-	background: linear-gradient(to right, #025, #38b, #38b, #025);
-	height: .2rem;
-	align-self: center;
-	flex: 1;
+	justify-content: center;
 }
 .academy-gold-img {
 	color: gold;
 	margin-right: .1rem;
 }
-.academy-lock {
-	width: 2.4rem;
-	height: 2.4rem;
-	filter: brightness(.4);
-}
 .academy-shield {
-	/*background: radial-gradient(farthest-corner at 50% 50%, #887700ff, #222200ff, #000000ff);*/
-	width: 2.4rem;
-	height: 2.4rem;
+	width: 2.5rem;
+	height: 2.5rem;
+}
+.academy-swords {
+	width: 2.5rem;
+	height: 2.5rem;
+}
+.academy-lock {
+	width: 2.5rem;
+	height: 2.5rem;
 }
 .academy-skill-base {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	align-items: center;
-	align-self: center;
+	align-items: flex-end;
+	width: 4rem;
 }
 .academy-row {
 	display: flex;
 	flex: 1;
-	margin-bottom: 1rem;
-}
-.academy-swords {
-	width: 2.4rem;
-	height: 2.4rem;
-}
-.academy-skill-buy {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: .1rem;
-	width: 2.4rem;
-	height: 2.4rem;
+	font-size: .8rem;
+	margin-bottom: .25rem;
+	border: .1rem ridge #048;
+	padding: .2rem .5rem;
 }
 .academy-skill-unlocked {
 	display: flex;
@@ -3102,13 +3079,6 @@ background-repeat: no-repeat;
 	padding: .1rem;
 	width: 2rem;
 	height: 2rem;
-}
-.academy-skill-locked {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 2.4rem;
-	height: 2.4rem;
 }
 .academy-train {
 	cursor: url('cursor/pointer.cur'), pointer;

@@ -8,12 +8,44 @@ var combat;
 		initCombatTextLayer,
 		updateCombatTextLayer,
 		toggleAutoAttack,
-		txDamageMobMelee,
-		txSendDamage,
+		txDamageMob,
+		processDamages,
 	}
-	var el, w, h
+	var el, w, h, i, len
 
 	///////////////////////////////////////////
+	function processDamages(d) {
+		// check for things that immediately set to 0
+		// dodge, parry, riposte
+
+		// enhancedDamage
+
+
+		// reduce enhancedDamage
+
+		d.damage *= d.enhancedDamage
+		// damage penalties
+		if (d.requiresFrontRow && d.index > 4 ||
+			d.index === -1) {
+			d.damage = 0
+		}
+		if (d.damageType === 'physical' &&
+			!d.isRanged &&
+			d.index > 4) {
+			// physical on back row
+			d.damage *= .5
+		}
+		// mob armor
+
+		// +add spell damage
+
+
+		// damage penalties
+
+		// final sanity checks
+		d.damage = d.damage < 1 ? ceil(d.damage) : round(d.damage)
+		return d
+	}
 	function toggleAutoAttack() {
 		if (!my.isAutoAttacking) autoAttackEnable()
 		else autoAttackDisable()
@@ -34,7 +66,6 @@ var combat;
 		el.classList.remove('active')
 	}
 	function updateMobHp(index, damage, isCrit) {
-		// does not include popupDamage() or txSendDamage()
 		mobs[index].hp -= damage
 		if (mobs[index].hp <= 0) {
 			warn('mob is dead!')
@@ -47,34 +78,27 @@ var combat;
 		}
 		mob.drawMobBar(index)
 	}
-	function txDamageMobMelee(damages) {
-		damages.forEach(processHit)
-	}
-	function processHit(hit) {
-		if (hit.damage > 0) {
-			hit.damage = round(hit.damage)
-			updateMobHp(hit.index, hit.damage)
-			popupDamage(hit.index, hit.damage, hit.isCrit)
-			// info('processHit: ', hit.damage)
-			txSendDamage([{
-				i: hit.index,
-				d: hit.damage,
-				c: hit.isCrit,
-			}])
+	function txDamageMob(damages) {
+		damages = damages.map(combat.processDamages)
+		len = damages.length
+		for (i=0; i<len; i++) {
+			if (damages[i].damage > 0) {
+				updateMobHp(damages[i].index, damages[i].damage)
+				// popupDamage(damages[i].index, damages[i].damage, damages[i].isCrit)
+				info('tx processHit: ', damages[i].damage)
+				socket.publish('party' + my.partyId, {
+					route: 'party->damage',
+					d: arrOfDamage
+				}, true)
+			}
 		}
-	}
-	function txSendDamage(arrOfDamage) {
-		socket.publish('party' + my.partyId, {
-			route: 'party->damage',
-			d: arrOfDamage
-		}, true)
 	}
 	function rxUpdateDamage(data) {
 		data.d.forEach(processUpdateDamage)
 	}
 	function processUpdateDamage(hit) {
 		updateMobHp(hit.i, hit.d, hit.c)
-		info('processing damage : ', hit.d)
+		info('rx processing damage : ', hit.d)
 	}
 	function initCombatTextLayer() {
 		combat.text = new PIXI.Application({

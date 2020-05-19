@@ -7,7 +7,7 @@ var academy;
 		MAX_RANK: 7,
 		selected: '',
 	}
-	var i, el, str, row, html, obj, rank, goldEl, skillData, reqColor, reqClass, reqText
+	var i, el, str, row, html, obj, goldEl, skillData
 
 	let selected = {
 		index: -1,
@@ -24,6 +24,10 @@ var academy;
 	///////////////////////////////////////////
 	function handleTrainBuy() {
 		info('handleTrainBuy', selected)
+		if (!selected.cost) {
+			ng.splitText('various-description', 'Please clarify which skill you would like to train.')
+			return
+		}
 		if (!hasLevelRequired(selected.rank)) {
 			ng.splitText('various-description', 'Ummm... '+ my.name +'? Do you have a hearing problem? I said you cannot begin training until you reach level '+ reqLevel[selected.rank] +'. I would suggest not spending so much time "experimenting" with illicit substances at the apothecary.')
 			return
@@ -112,7 +116,7 @@ var academy;
 		html = ''
 		for (i=0; i<academy.TOTAL_SKILLS; i++) {
 			//warn('row', i)
-			html += '<div id="academy-skill-'+ i +'" class="academy-row">' +
+			html += '<div id="academy-skill-'+ i +'" class="academy-row stag-blue">' +
 				getSkillRowHtml(i) +
 			'</div>'
 		}
@@ -120,80 +124,58 @@ var academy;
 	}
 	function getSkillRowHtml(i) {
 		row = ''
-		for (rank=1; rank<=academy.MAX_RANK; rank++) {
-			if (rank === 1) {
-				if (my.skills[i] >= rank) {
-					//info('rank ZERO unlocked!', my.skills[i], rank)
-					// skill unlocked
-					row += '<div class="academy-skill-rank0 academy-rank0-unlocked">' +
-						'<img class="academy-skill-img" src="images/skills/' + my.job +'/'+ i +'.png">'+
+		let skillData = skills[my.job][i]
+		let nextRank = my.skills[i] + 1
+		row += '<div class="academy-skill-img-base">'+
+				'<img class="academy-skill-img" src="images/skills/' + my.job +'/'+ i +'.png">' +
+			'</div>' +
+			// row 2
+			'<div class="flex-column flex-max" style="margin-left: .5rem; justify-content: center">' +
+				'<div class="academy-skill-name">'+ skillData.name +'</div>'
+				if (my.skills[i] > 0) {
+					row += '<div class="academy-skill-rank">Current Rank: '+ my.skills[i] +'</div>'
+				}
+			row += '</div>' +
+			// col 3
+			'<div class="flex-column flex-center text-center" style="width: 4rem">'
+				if (!hasLevelRequired(nextRank)) {
+					row += '<div class="academy-skill-next" style="color: #f22">'+
+						'<div>Requires</div>'+
+						'<div>Level '+ reqLevel[nextRank] +'</div>' +
 					'</div>'
 				}
 				else {
-					// skill locked
-					//warn('rank ZERO LOCKED!', my.skills[i], rank)
-					row += '<div data-index="'+ i +'" data-rank="'+ rank +'" class="academy-skill-rank0 academy-rank0-locked academy-train">' +
-						//'<img class="academy-skill-lock no-pointer" src="images/ui/lock.png">' +
-						'<img class="academy-skill-img academy-locked-skill" src="images/skills/' + my.job +'/'+ i +'.png">' +
-						'<div class="academy-gold-row" style="justify-content: center">' +
-							'<i class="ra ra-gold-bar academy-gold-img"></i>' +
-							'<div class="academy-train-cost">'+ trainCosts[rank] +'</div>' +
-						'</div>' +
-					'</div>'
-				}
-				if (my.skills[i] > rank) row += '<div class="academy-skill-divider" style="flex: 2"></div>'
-				else row += '<div class="academy-skill-divider" style="flex: 2; visibility: hidden"></div>'
-			}
-			else {
-				if (my.skills[i] >= rank) {
-					//info('rank > 1 GREATER!', my.skills[i], rank)
-					// unlocked
-					row += '<div class="academy-skill-base">' +
-						'<div class="academy-skill-unlocked">' +
-							'<img class="academy-shield" src="images/ui/academy-shield.png">'+
-						'</div>' +
-					'</div>'
-				}
-				else if (my.skills[i] === rank - 1) {
-					info('rank EQUAL!', my.skills[i], rank)
-					warn('rank EQUAL!', reqLevel[rank], my.level)
-					if (hasLevelRequired(rank)) {
-						reqColor = ''
-						reqClass = ''
-						reqText = ''
+					if (my.skills[i] === 0) {
+						row += '<div class="academy-skill-next">'+
+							'<div>Learn Skill:</div>'+
+							'<div><i class="ra ra-gold-bar academy-gold-img"></i>'+ trainCosts[nextRank] + '</div>' +
+						'</div>'
+					}
+					else if (nextRank <= 7) {
+						row += '<div class="academy-skill-next">'+
+							'<div>Next Rank:</div>'+
+							'<div><i class="ra ra-gold-bar academy-gold-img"></i>'+ trainCosts[nextRank] + '</div>' +
+						'</div>'
 					}
 					else {
-						reqColor = 'color: #f55;'
-						reqClass = 'academy-buy-restricted'
-						reqText = 'color: #ff1611;'
+						row += '<div class="academy-skill-next">Skill Maxed</div>'
 					}
-					// prompt buy
-					row += '<div class="academy-skill-base">' +
-						'<div data-index="'+ i +'" data-rank="'+ rank +'" class="academy-skill-buy academy-train '+reqClass +'">' +
-							'<img class="academy-swords" style="'+ reqColor +'" src="images/ui/academy-swords.png">'+
-						'</div>' +
-						'<div class="academy-gold-row">' +
-							'<i class="ra ra-gold-bar academy-gold-img"></i>' +
-							'<div class="academy-train-cost" style="'+ reqText +'">'+ trainCosts[rank] +'</div>' +
-						'</div>' +
-					'</div>'
+				}
+			row += '</div>' +
+			// col 4
+			'<div class="academy-skill-base">'
+				if (hasLevelRequired(nextRank)) {
+					if (nextRank <= 7) {
+						row += '<img data-index="'+ i +'" data-rank="'+ nextRank +'" class="academy-swords academy-train" src="images/ui/academy-swords.png">'
+					}
+					else {
+						row += '<img class="academy-shield" src="images/ui/academy-shield.png">'
+					}
 				}
 				else {
-					//warn('rank > 1 LESS!', my.skills[i], rank)
-					// locked
-					row += '<div class="academy-skill-base">' +
-						'<div class="academy-skill-locked">' +
-							'<img class="academy-lock" src="images/ui/academy-lock.png">'+
-						'</div>' +
-					'</div>'
+					row += '<img class="academy-lock" src="images/ui/academy-lock.png">'
 				}
-				if (rank < academy.MAX_RANK) {
-					if (my.skills[i] > rank) row += '<div class="academy-skill-divider"></div>'
-					else row += '<div class="academy-skill-divider" style="visibility: hidden"></div>'
-				}
-			}
-		}
-
+			row += '</div>'
 		return row
 
 	}
