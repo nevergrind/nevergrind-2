@@ -24,6 +24,12 @@ var mob;
 		drawMobBar,
 		resourceTick,
 		rxMobResourceTick,
+		// animations
+		idle,
+		hit,
+		attack,
+		special,
+		death,
 	};
 	var percent, el
 	var frame = {
@@ -240,7 +246,7 @@ var mob;
 	}
 
 	function hit(i) {
-		info('hit', i)
+		//info('hit', i)
 		if (mobs[i].isAnimationActive) return;
 		mobs[i].isAnimationActive = true;
 		var speed = mobs[i].frameSpeed * frame.hit.diff

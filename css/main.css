@@ -3016,8 +3016,8 @@ background-repeat: no-repeat;
 }
 .academy-skill-rank0 {
 	position: relative;
-	width: 3.2rem;
-	height: 3.2rem;
+	width: 3rem;
+	height: 3rem;
 }
 .academy-locked-skill {
 	filter: brightness(.8) grayscale(1);
@@ -3033,8 +3033,8 @@ background-repeat: no-repeat;
 	z-index: 1;
 }
 .academy-skill-img {
-	width: 3.2rem;
-	height: 3.2rem;
+	width: 100%;
+	height: 100%;
 }
 .academy-gold-row {
 	position: absolute;

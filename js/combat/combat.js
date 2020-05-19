@@ -14,13 +14,6 @@ var combat;
 	var el, w, h
 
 	///////////////////////////////////////////
-	function rxUpdateDamage(data) {
-		data.d.forEach(processUpdateDamage)
-	}
-	function processUpdateDamage(hit) {
-		updateMobHp(hit.i, hit.d)
-		info('processing damage : ', hit.d)
-	}
 	function toggleAutoAttack() {
 		if (!my.isAutoAttacking) autoAttackEnable()
 		else autoAttackDisable()
@@ -40,10 +33,17 @@ var combat;
 		el = querySelector('#main-attack-wrap')
 		el.classList.remove('active')
 	}
-	function updateMobHp(index, damage) {
+	function updateMobHp(index, damage, isCrit) {
+		// does not include popupDamage() or txSendDamage()
 		mobs[index].hp -= damage
 		if (mobs[index].hp <= 0) {
 			warn('mob is dead!')
+			// mob.death(index)
+		}
+		else {
+			// alive
+			mob.hit(index)
+			popupDamage(index, damage, isCrit)
 		}
 		mob.drawMobBar(index)
 	}
@@ -55,10 +55,11 @@ var combat;
 			hit.damage = round(hit.damage)
 			updateMobHp(hit.index, hit.damage)
 			popupDamage(hit.index, hit.damage, hit.isCrit)
-			info('processHit: ', hit.damage)
+			// info('processHit: ', hit.damage)
 			txSendDamage([{
 				i: hit.index,
 				d: hit.damage,
+				c: hit.isCrit,
 			}])
 		}
 	}
@@ -67,6 +68,13 @@ var combat;
 			route: 'party->damage',
 			d: arrOfDamage
 		}, true)
+	}
+	function rxUpdateDamage(data) {
+		data.d.forEach(processUpdateDamage)
+	}
+	function processUpdateDamage(hit) {
+		updateMobHp(hit.i, hit.d, hit.c)
+		info('processing damage : ', hit.d)
 	}
 	function initCombatTextLayer() {
 		combat.text = new PIXI.Application({
@@ -160,7 +168,7 @@ var combat;
 			}
 			index++
 		}
-		info('targetChanged my.target', my.target)
+		// info('targetChanged my.target', my.target)
 		if (my.target >= 0 && my.target < mob.max){
 			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
 		}
