@@ -10,6 +10,7 @@ var battle;
 		getResponsiveCenter,
 		targetIsFrontRow,
 		targetIsBackRow,
+		updateTarget,
 	}
 
 	let index, splashTgt
@@ -93,6 +94,7 @@ var battle;
 			setupMobs(data)
 		}
 		my.fixTarget()
+		battle.updateTarget()
 		if (party.presence[0].isLeader) {
 			console.info('embark isLeader!', data)
 			socket.publish('party' + my.partyId, {
@@ -115,18 +117,42 @@ var battle;
 			}
 		}
 	}
+
+	let targetHtml = ''
+	function updateTarget() {
+		if (combat.isValidTarget()) {
+			targetHtml =  '<div id="mob-target-name">'+ mobs[my.target].name +'</div>' +
+				'<div id="mob-target-bar-wrap">'+
+					'<div id="mob-target-hp-wrap">'+
+						'<div id="mob-target-hp"></div>' +
+						'<div class="mob-health-grid"></div>' +
+					'</div>' +
+					'<img id="mob-target-hp-plate" class="mob-plate-'+ mobs[my.target].type +'" src="images/ui/bar-'+ mobs[my.target].type +'.png">' +
+				'</div>' +
+				'<div id="mob-target-level">'+ mobs[my.target].level +'</div>' +
+				'<div id="mob-target-percent">'+
+					ceil(100 - bar.getRatio('hp', mobs[my.target])) +
+				'%</div>' +
+				'<div id="mob-target-details">' +
+					'<div id="mob-target-traits">'+ mobs[my.target].traits.join('|') +'</div>' +
+				'</div>'
+			querySelector('#mob-target-wrap').innerHTML = targetHtml
+		}
+	}
+
 	function html() {
+		info('target:', my.target)
 		var s =
 			'<img id="battle-bg" src="'+ mission.getZoneImg() +'">' +
 			'<img id="battle-fg" src="images/battle/tendolin-hollow-2-fg.png" class="no-pointer">';
-		var test = '';
 
+		s += '<div id="mob-target-wrap" class="text-shadow3"></div>'
 		for (var i=0; i<mob.max; i++){
 			//test = i === 2 ? "" : " test";
 			test = '';
 			s +=
 			'<div id="mob-center-' +i+ '" class="mob-center"></div>' +
-			'<div id="mob-wrap-' +i+ '" class="mob-wrap' + test + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
+			'<div id="mob-wrap-' +i+ '" class="mob-wrap' + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
 				'<div id="mob-details-' +i+ '" class="mob-details" index="' + i + '">' +
 					'<div id="mob-name-' +i+ '" class="mob-name text-shadow"></div>' +
 					'<div id="mob-bar-' +i+ '" class="mob-bar">' +

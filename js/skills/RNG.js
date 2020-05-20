@@ -103,7 +103,7 @@
 			isCrit: hit.isCrit,
 			enhancedDamage: enhancedDamage,
 			isRanged: hit.isRanged,
-			damageType: hit.damageType,
+			damageType: 'fire',
 		})
 
 
@@ -115,7 +115,7 @@
 			isCrit: hit.isCrit,
 			enhancedDamage: enhancedDamage,
 			isRanged: hit.isRanged,
-			damageType: hit.damageType,
+			damageType: 'fire',
 		})
 
 		tgt = battle.getSplashTarget(1)
@@ -126,7 +126,7 @@
 			isCrit: hit.isCrit,
 			enhancedDamage: enhancedDamage,
 			isRanged: hit.isRanged,
-			damageType: hit.damageType,
+			damageType: 'fire',
 		})
 
 		combat.txDamageMob(damages)

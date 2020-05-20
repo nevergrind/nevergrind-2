@@ -166,14 +166,17 @@ var academy;
 			'<div class="academy-skill-base">'
 				if (hasLevelRequired(nextRank)) {
 					if (nextRank <= 7) {
-						row += '<img data-index="'+ i +'" data-rank="'+ nextRank +'" class="academy-swords academy-train" src="images/ui/academy-swords.png">'
+						row += '<div class="academy-train-label">Train</div>'+
+							'<img data-index="'+ i +'" data-rank="'+ nextRank +'" class="academy-swords academy-train" src="images/ui/academy-swords.png">'
 					}
 					else {
-						row += '<img class="academy-shield" src="images/ui/academy-shield.png">'
+						row += '<div class="academy-train-label">Maxed</div>'+
+							'<img class="academy-shield" src="images/ui/academy-shield.png">'
 					}
 				}
 				else {
-					row += '<img class="academy-lock" src="images/ui/academy-lock.png">'
+					row += '<div class="academy-train-label">Locked</div>'+
+						'<img class="academy-lock" src="images/ui/academy-lock.png">'
 				}
 			row += '</div>'
 		return row

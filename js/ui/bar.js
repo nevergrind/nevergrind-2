@@ -31,6 +31,7 @@ var bar;
 		setHotkey,
 		listenForHotkey,
 		updateBar,
+		getRatio,
 		defaultImage: [
 			'helms1',
 			'amulets0',
@@ -102,7 +103,7 @@ var bar;
 		conjuration: 'Conjuration enhances the power of all conjuration-based magic. Why get your hands dirty when you can summon an ally to do the dirty work for you?! Summon a fire-breathing hydra to melt your enemies! Or summon an army of angry bees to seek and destroy! The only limit is your imagination!',
 	}
 
-	var fileName, index, player, barRatio, html, str, el, elSfx, elMusic, id, arr, slot, resp, i, val, max, getItem
+	var fileName, index, player, html, str, el, elSfx, elMusic, id, arr, slot, resp, i, val, max
 
 	var pingTimer = new delayedCall(0, '')
 	const volumeSettings = []
@@ -183,12 +184,6 @@ var bar;
 			bar.activeTab = id
 			updateCharacterDOM()
 		}
-	}
-	function showBarText() {
-		updateAllMyBars()
-		/*querySelectorAll('.bar-text').forEach(el => {
-			el.style.visibility = 'visible'
-		})*/
 	}
 	function hideBarText() {
 		/*querySelectorAll('.bar-text').forEach(el => {
@@ -346,7 +341,7 @@ var bar;
 			if (bar.activeTab === 'passiveSkills') {
 				ng.splitText('inv-skill-description', skillDescriptions['offense']);
 			}
-			showBarText()
+			updateAllMyBars()
 		}
 		else {
 			querySelector('#bar-character-stats').innerHTML = ''
@@ -406,12 +401,15 @@ var bar;
 		updateBar('mp')
 		updateBar('sp')
 	}
+	function getRatio(type, data) {
+		data = data || my
+		return ((1 - data[type] / data[type + 'Max']) * 100)
+	}
 	function updateBar(type, data) {
 		data = data || my
 		// console.warn('updateBar', type, data.row)
-		barRatio = ((1 - data[type] / data[type + 'Max']) * 100)
 		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
-			x: '-' + barRatio + '%'
+			x: '-' + getRatio(type, data) + '%'
 		})
 		querySelector('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
 	}
@@ -824,7 +822,7 @@ var bar;
 		// bars
 		'<div class="flex-column '+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'" style="justify-content: space-around">' +
 			'<i id="bar-is-leader-'+ index +'" class="ra ra-crown bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></i>' +
-			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis">'+ (player.name || '') +'</div>' +
+			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis text-shadow3">'+ (player.name || '') +'</div>' +
 			'<div>' +
 			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-hp-fg-'+ index +'" class="bar-hp-fg"></div>' +

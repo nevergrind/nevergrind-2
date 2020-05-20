@@ -77,12 +77,12 @@ var mob;
 		name: 'monster',
 		type: 'normal',
 		resist: {
-			blood: 0,
-			poison: 0,
-			arcane: 0,
-			lightning: 0,
-			fire: 0,
-			ice: 0,
+			blood: 1,
+			poison: 1,
+			arcane: 1,
+			lightning: 1,
+			fire: 1,
+			ice: 1,
 		},
 		traits: []
 	}
@@ -91,6 +91,16 @@ var mob;
 	let hpTick = 0
 	let mpTick = 0
 	let spTick = 0
+
+	const mobElements = ['wrap',
+	'center',
+	'alive',
+	'dead',
+	'img',
+	'details',
+	'name',
+	'shadow',
+	'bar']
 	//////////////////////////////////////////////////
 	function getRandomMobKey() {
 		var i = ~~(rand() * mob.imageKeysLen)
@@ -120,16 +130,8 @@ var mob;
 				type: '',
 				box: {},
 				dom: {}
-			};
-			['wrap',
-			'center',
-			'alive',
-			'dead',
-			'img',
-			'details',
-			'name',
-			'shadow',
-			'bar'].forEach(function(e){
+			}
+			mobElements.forEach(function(e){
 				mobs[i].dom[e] = getElementById('mob-'+ e +'-' + i);
 			});
 		}
@@ -195,11 +197,17 @@ var mob;
 		mob.setClickBox(m);
 	}
 	function drawMobBar(index) {
-		percent = (100 - ((mobs[index].hp / mobs[index].hpMax) * 100)) * -1
-		//info('drawMobBar', index, percent)
+		percent = bar.getRatio('hp', mobs[index])
+		// info('drawMobBar', index, percent)
 		TweenMax.to('#mob-health-' + index, .15, {
-			x: percent + '%'
+			x: '-' + percent + '%'
 		})
+		if (index === my.target) {
+			querySelector('#mob-target-percent').innerHTML = ceil(100 - percent) + '%'
+			TweenMax.to('#mob-target-hp', .15, {
+				x: '-' + percent + '%'
+			})
+		}
 	}
 	function setClickBox(m) {
 		// alive box

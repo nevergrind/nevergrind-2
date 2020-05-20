@@ -10,38 +10,48 @@ var combat;
 		toggleAutoAttack,
 		txDamageMob,
 		processDamages,
+		isValidTarget,
 	}
-	var el, w, h, i, len
+	var el, w, h, i, len, damageArr
 
 	///////////////////////////////////////////
+	function isValidTarget() {
+		return my.target >= 0 && my.target < mob.max
+	}
 	function processDamages(d) {
 		// check for things that immediately set to 0
 		// dodge, parry, riposte
+		info('processDamages', d.damageType)
+		if (d.damageType === 'physical') {
+			// enhancedDamage
 
-		// enhancedDamage
+
+			// reduce enhancedDamage
+
+			d.damage *= d.enhancedDamage
+			// damage penalties
+			if (d.requiresFrontRow && d.index > 4 ||
+				d.index === -1) {
+				d.damage = 0
+			}
+			if (d.damageType === 'physical' &&
+				!d.isRanged &&
+				d.index > 4) {
+				// physical on back row
+				d.damage *= .5
+			}
+			// mob armor
+
+			// +add spell damage
 
 
-		// reduce enhancedDamage
 
-		d.damage *= d.enhancedDamage
-		// damage penalties
-		if (d.requiresFrontRow && d.index > 4 ||
-			d.index === -1) {
-			d.damage = 0
 		}
-		if (d.damageType === 'physical' &&
-			!d.isRanged &&
-			d.index > 4) {
-			// physical on back row
-			d.damage *= .5
+		else {
+			// mob magic resists
+			d.damage *= mobs[d.index].resist[d.damageType]
+
 		}
-		// mob armor
-
-		// +add spell damage
-
-
-		// damage penalties
-
 		// final sanity checks
 		d.damage = d.damage < 1 ? ceil(d.damage) : round(d.damage)
 		return d
@@ -80,25 +90,30 @@ var combat;
 	}
 	function txDamageMob(damages) {
 		damages = damages.map(combat.processDamages)
+		damageArr = []
 		len = damages.length
 		for (i=0; i<len; i++) {
 			if (damages[i].damage > 0) {
 				updateMobHp(damages[i].index, damages[i].damage)
-				// popupDamage(damages[i].index, damages[i].damage, damages[i].isCrit)
+				damageArr.push({
+					i: damages[i].index,
+					d: damages[i].damage,
+					c: damages[i].isCrit,
+				})
 				info('tx processHit: ', damages[i].damage)
-				socket.publish('party' + my.partyId, {
-					route: 'party->damage',
-					d: arrOfDamage
-				}, true)
 			}
 		}
+		socket.publish('party' + my.partyId, {
+			route: 'party->damage',
+			d: damageArr
+		}, true)
 	}
 	function rxUpdateDamage(data) {
-		data.d.forEach(processUpdateDamage)
-	}
-	function processUpdateDamage(hit) {
-		updateMobHp(hit.i, hit.d, hit.c)
-		info('rx processing damage : ', hit.d)
+		len = data.d.length
+		for (var i=0; i<len; i++) {
+			updateMobHp(data.d[i].i, data.d[i].d, data.d[i].c)
+			info('rx processing damage : ', data.d[i].d)
+		}
 	}
 	function initCombatTextLayer() {
 		combat.text = new PIXI.Application({
@@ -192,9 +207,10 @@ var combat;
 			}
 			index++
 		}
-		// info('targetChanged my.target', my.target)
-		if (my.target >= 0 && my.target < mob.max){
+		info('targetChanged my.target =>', my.target)
+		if (combat.isValidTarget()){
 			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
 		}
+		battle.updateTarget()
 	}
 }($, _, TweenMax, PIXI);

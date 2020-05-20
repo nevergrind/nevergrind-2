@@ -626,7 +626,7 @@ tbody { border: 0 }
 	position: absolute;
 	height: 100%;
 	width: 100%;
-	background: repeating-linear-gradient(to right, transparent, transparent 1.95rem, #111, #111 2.05rem);
+	background: repeating-linear-gradient(to right, transparent, transparent 19.5%, #111, #111 calc(20% + 2px));
 	top: 0;
 	left: 0;
 	z-index: 1;
@@ -1157,11 +1157,11 @@ background-clip: content-box;
 	transition: filter .2s ease-out, transform .1s ease-out;
 }
 .bar-avatar:hover {
-	filter: drop-shadow(0 0 2px gold);
+	filter: saturate(1.2) brightness(1.2);
 }
 .bar-avatar:active {
 	transition: none;
-	filter: drop-shadow(0 0 3px #ffffdd);
+	filter: saturate(.9) brightness(.9);
 }
 
 .bar-level {
@@ -3008,7 +3008,7 @@ background-repeat: no-repeat;
 
 #academy-body {
 	border: 1px solid #001;
-	padding: .2rem .4rem;
+	padding: .2rem;
 	background: repeating-linear-gradient(178deg, #9973 7rem, #9976 12rem, #9973 19rem);
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -3056,13 +3056,18 @@ background-repeat: no-repeat;
 	width: 2.5rem;
 	height: 2.5rem;
 }
+.academy-train-label {
+	font-family: Cinzel, serif;
+	letter-spacing: .15rem;
+	font-size: .6rem
+}
 .academy-skill-base {
-	position: relative;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	align-items: flex-end;
-	width: 4rem;
+	align-items: center;
+	margin-left: .5rem;
+	flex-basis: 3rem;
 }
 .academy-row {
 	display: flex;
@@ -3242,4 +3247,74 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 #mission-waiting-msg {
 	text-align: center;
 	font-size: .9rem;
+}
+#mob-target-wrap {
+	position: absolute;
+	top: .5rem;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	font-size: .8rem;
+	font-family: Play;
+	display: flex;
+	flex-direction: column;
+	width: 22.5rem;
+	text-align: center;
+}
+#mob-target-name {
+	position: relative;
+	z-index: 2;
+}
+#mob-target-level,
+#mob-target-percent {
+	position: absolute;
+	z-index: 2;
+	top: 1.1rem;
+	font-size: 1.3rem;
+	display: flex;
+	font-family: Cinzel;
+}
+#mob-target-level { left: 1rem; }
+#mob-target-percent { right: 0rem; }
+#mob-target-bar-wrap {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	margin-top: .25rem;
+}
+#mob-target-hp-wrap {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	width: 15rem;
+	height: 1.4rem;
+	background: linear-gradient(to bottom, #111, #444, #111);
+	overflow: hidden;
+}
+#mob-target-hp {
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+}
+#mob-target-hp-plate {
+	position: relative;
+	z-index: 1;
+}
+.mob-plate-normal { top: -.2rem; width: 17.45rem; height: 1.95rem; }
+.mob-plate-rare { top: -1.8rem; width: 19rem; height: 5rem; }
+.mob-plate-champion { top: -1.2rem; left: -1rem; width: 20.25rem; height: 4.05rem; }
+.mob-plate-boss { top: -1.2rem; left: -1rem; width: 22.6rem; height: 4.4rem; }
+#mob-target-details {
+	position: absolute;
+	z-index: 2;
+	top: 3.2rem;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+}
+#mob-target-hp {
+	background: linear-gradient(to top, #300, #b11, #b11, #300);
+	/*background: repeating-linear-gradient(to right, transparent, transparent 1.95rem, #111, #111 2.05rem)*/
 }
