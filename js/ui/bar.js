@@ -81,6 +81,7 @@ var bar;
 		SMN: 3,
 		WIZ: 24,
 	}
+	let ratio = 0
 	var pingColors = [
 		'',
 		'chat-warning',
@@ -403,7 +404,9 @@ var bar;
 	}
 	function getRatio(type, data) {
 		data = data || my
-		return ((1 - data[type] / data[type + 'Max']) * 100)
+		ratio = (1 - data[type] / data[type + 'Max'])
+		if (ratio > 1) ratio = 1
+		return ratio * 100
 	}
 	function updateBar(type, data) {
 		data = data || my

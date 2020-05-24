@@ -24,6 +24,11 @@ for (var i=0; i<12; i++) {
 	// skill cooldowns
 	timers.skillCooldowns[i] = 1
 }
+timers.mobAttack = []
+for (var i=0; i<mob.max; i++) {
+	// skill cooldowns
+	timers.mobAttack[i] = delayedCall(0, '')
+}
 let delays = {
 	primaryAttack: delayedCall(0, ''),
 	secondaryAttack: delayedCall(0, ''),

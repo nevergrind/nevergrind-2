@@ -1,5 +1,5 @@
 var dungeon;
-(function() {
+(function(TweenMax, $, _, undefined) {
 	dungeon = {
 		initialized: 0,
 		go,
@@ -7,6 +7,7 @@ var dungeon;
 		html,
 		enterCombat,
 	};
+	$('#scene-dungeon').on('click', battle.go)
 	///////////////////////////////////////
 	function go() {
 		if (ng.view === 'dungeon') return
@@ -29,6 +30,7 @@ var dungeon;
 		chat.sizeSmall()
 		ng.setScene('dungeon')
 		dungeon.init()
+		combat.autoAttackDisable()
 		warn("DUNGEON GO")
 		TweenMax.to('#scene-dungeon', .5, {
 			startAt: { filter: 'brightness(0)' },
@@ -57,11 +59,11 @@ var dungeon;
 			getElementById('scene-dungeon').style.display = 'block'
 		}
 		else {
-			getElementById('scene-dungeon').innerHTML = dungeon.html()
 			button.setAll()
+			dungeon.initialized = true
 		}
+		getElementById('scene-dungeon').innerHTML = dungeon.html()
 		chat.scrollBottom()
-		// delegate
 	}
 	function html() {
 		return '<img id="dungeon-bg" class="wh-100" src="images/battle/lanfeld-refuge-1.png">'
@@ -69,4 +71,4 @@ var dungeon;
 	function enterCombat() {
 		console.info("ENTERING COMBAT")
 	}
-})();
+})(TweenMax, $, _);

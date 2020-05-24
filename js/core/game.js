@@ -33,11 +33,6 @@ var game;
 		interval: 5,
 		activate,
 	}
-	const scenes = [
-		'#scene-town',
-		'#scene-dungeon',
-		'#scene-battle'
-	]
 	const partyProps = [
 		'name',
 		'hp',
@@ -201,6 +196,7 @@ var game;
 		TweenMax.set('#sky-wrap', {
 			filter: 'brightness(0)'
 		})
+		const scenes = ['#scene-town', '#scene-dungeon', '#scene-battle']
 		scenes.forEach(function(v) {
 			if (v === '#' + scene) querySelector(v).style.filter = 'brightness(0)'
 			else querySelector(v).innerHTML = ''

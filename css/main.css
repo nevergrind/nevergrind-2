@@ -590,16 +590,16 @@ tbody { border: 0 }
 	cursor: url('cursor/pointer.cur'), pointer;
 }
 .mob-details.targeted .mob-name {
-	animation: flash-mob-name .2s ease-out infinite;
+	animation: repeat-mob-name .1s ease-out infinite;
 }
 .mob-name {
-	font: 1.4rem Roboto Condensed;
+	font: 1.2rem Play;
 	text-align: center;
 }
-@keyframes flash-mob-name {
-	0% { color: #fff; }
-	50% { color: #4fb; }
-	100% { color: #fff; }
+@keyframes repeat-mob-name {
+	0% { filter: grayscale(.15) brightness(1); }
+	50% { filter: grayscale(0) brightness(1.5); }
+	100% { filter: grayscale(.15) brightness(1); }
 }
 .mob-bar {
 	position: relative;
@@ -1432,13 +1432,13 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 
 .mission-zone-headers:hover { background: #048; }
 
-.con-grey { color: #999; }
-.con-green { color: #191; }
-.con-low-blue { color: #1cc; }
-.con-high-blue { color: #15f; }
-.con-white { color: #fff; }
-.con-yellow { color: #ff1; }
-.con-red { color: #f11; }
+.con-grey { color: #777; }
+.con-green { color: #292; }
+.con-low-blue { color: #2cc; }
+.con-high-blue { color: #29f; }
+.con-white { color: #cef; }
+.con-yellow { color: #ee1; }
+.con-red { color: #d22; }
 
 .mission-tree-btn {
 	font-size: 1rem;
@@ -3250,11 +3250,10 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 }
 #mob-target-wrap {
 	position: absolute;
-	top: .5rem;
 	left: 0;
 	right: 0;
 	margin: 0 auto;
-	font-size: .8rem;
+	font-size: 1.2rem;
 	font-family: Play;
 	display: flex;
 	flex-direction: column;
@@ -3268,13 +3267,15 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 #mob-target-level,
 #mob-target-percent {
 	position: absolute;
-	z-index: 2;
-	top: 1.1rem;
-	font-size: 1.3rem;
 	display: flex;
+	justify-content: center;
+	z-index: 2;
+	top: 1.65rem;
+	font-size: 1rem;
 	font-family: Cinzel;
+	width: 3rem;
 }
-#mob-target-level { left: 1rem; }
+#mob-target-level { left: 1.5rem; }
 #mob-target-percent { right: 0rem; }
 #mob-target-bar-wrap {
 	position: relative;

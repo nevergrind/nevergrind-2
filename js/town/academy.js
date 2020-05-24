@@ -127,7 +127,7 @@ var academy;
 		let skillData = skills[my.job][i]
 		let nextRank = my.skills[i] + 1
 		row += '<div class="academy-skill-img-base">'+
-				'<img class="academy-skill-img" src="images/skills/' + my.job +'/'+ i +'.png">' +
+				'<img class="academy-skill-img" src="images/skills/' + my.job +'/'+ i +'.png?">' +
 			'</div>' +
 			// row 2
 			'<div class="flex-column flex-max" style="margin-left: .5rem; justify-content: center">' +

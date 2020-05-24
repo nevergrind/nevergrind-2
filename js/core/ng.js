@@ -652,7 +652,6 @@ var ng;
 			console.info('nwjs.php data', JSON.parse(data))
 		})
 		*/
-		console.info('init-game', r)
 		bar.updateDynamicStyles()
 		if (!ng.initialized) {
 			ng.initialized = true
@@ -692,6 +691,7 @@ var ng;
 				alpha: 0
 			}, .05);
 		}
+		console.info('init-game', r)
 
 
 		if (r.id) {
@@ -728,27 +728,35 @@ var ng;
 	}
 	function updateCharacterCard() {
 		var s = ''
-		var d = characterData[ng.selectIndex]
-		var url = my.getAvatarUrl(d);
-		s += '<div id="title-select-down" class="title-select-col flex-center">'+
-				'<img class="title-select-chevron" src="images/ui/chevron-left.png">' +
-			'</div>' +
-			'<div id="selected-ch-card" data-row="'+ d.row +'" data-name="'+ d.name +'" class="ch-card center select-player-card text-center">' +
-				'<img class="avatar-title" src="'+ url +'" style="padding:0 .5rem">' +
-				'<div class="flex-column flex-max" style="padding: .2rem .5rem; justify-content: space-around">' +
-					'<div class="ch-card-name">'+ _.capitalize(d.name) +'</div>' +
-					'<div class="ch-card-level">Level '+ d.level +'</div>' +
-					'<div class="ch-card-details">'+ d.race +' '+ ng.toJobLong(d.job) +'</div>' +
+		if (characterData.length) {
+			var d = characterData[ng.selectIndex]
+			var url = my.getAvatarUrl(d);
+			s += '<div id="title-select-down" class="title-select-col flex-center">'+
+					'<img class="title-select-chevron" src="images/ui/chevron-left.png">' +
 				'</div>' +
-				'<img class="title-icon" src="images/ui/job-'+ d.job +'.png" style="">' +
-			'</div>' +
-			'<div id="title-select-up" class="title-select-col flex-center">'+
-				'<img class="title-select-chevron" src="images/ui/chevron-right.png">' +
+				'<div id="selected-ch-card" data-row="'+ d.row +'" data-name="'+ d.name +'" class="ch-card center select-player-card text-center">' +
+					'<img class="avatar-title" src="'+ url +'" style="padding:0 .5rem">' +
+					'<div class="flex-column flex-max" style="padding: .2rem .5rem; justify-content: space-around">' +
+						'<div class="ch-card-name">'+ _.capitalize(d.name) +'</div>' +
+						'<div class="ch-card-level">Level '+ d.level +'</div>' +
+						'<div class="ch-card-details">'+ d.race +' '+ ng.toJobLong(d.job) +'</div>' +
+					'</div>' +
+					'<img class="title-icon" src="images/ui/job-'+ d.job +'.png" style="">' +
+				'</div>' +
+				'<div id="title-select-up" class="title-select-col flex-center">'+
+					'<img class="title-select-chevron" src="images/ui/chevron-right.png">' +
+				'</div>'
+			create.selected = d.row
+			create.name = d.name
+		}
+		else {
+			s = '<div class="flex-column flex-center flex-max">'+
+				'<div>Create your first character</div>'+
+				'<div>to play Nevergrind Online!</div>'+
 			'</div>'
+		}
 		getElementById('ch-card-wrap').innerHTML = s;
 
-		create.selected = d.row
-		create.name = d.name
 	}
 	function incrementCharacter() {
 		ng.selectIndex++

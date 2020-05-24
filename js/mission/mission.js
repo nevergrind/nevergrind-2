@@ -37,16 +37,6 @@ var mission;
 	function getOpenMenuClass(level) {
 		return (level <= my.level && level > ~~(my.level * .66)) ? 'mission-open-menu' : ''
 	}
-	function getDiffClass(minQuestLvl) {
-		var resp = 'con-grey';
-		if (minQuestLvl >= my.level + 3) resp = 'con-red';
-		else if (minQuestLvl > my.level) resp = 'con-yellow';
-		else if (minQuestLvl === my.level) resp = 'con-white';
-		else if (minQuestLvl >= ~~(my.level * .88) ) resp = 'con-high-blue';
-		else if (minQuestLvl >= ~~(my.level * .77) ) resp = 'con-low-blue';
-		else if (minQuestLvl >= ~~(my.level * .66) ) resp = 'con-green';
-		return resp;
-	}
 	function getMissionBodyHtml() {
 		questHtml = '<div id="various-body" class="flex-column flex-max">'
 
@@ -70,7 +60,7 @@ var mission;
 		zones.forEach(function(zone) {
 			if (my.level + 4 >= zone.level) {
 				questHtml +=
-				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ getDiffClass(zone.level) +'" data-id="'+ zone.id +'">'+
+				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ combat.getDiffClass(zone.level) +'" data-id="'+ zone.id +'">'+
 					'<img class="mission-tree-btn mission-plus" src="images/ui/plus.png">'+
 					'<div>' + zone.name + '</div>' +
 				'</div>' +
@@ -87,7 +77,7 @@ var mission;
 	function getMissionRowHtml(zone) {
 		var html = '';
 		zones[zone.id].missions.forEach(questId => {
-			html += '<div class="mission-quest-item ellipsis ' + getDiffClass(quests[questId].level) +'" '+
+			html += '<div class="mission-quest-item ellipsis ' + combat.getDiffClass(quests[questId].level) +'" '+
 				'data-id="'+ zone.id +'" ' +
 				'data-quest="'+ questId +'">' +
 				quests[questId].title +
@@ -100,7 +90,7 @@ var mission;
 		return html;
 	}
 	function levelHtml() {
-		return 'Lv.' + zones[mission.id].level + '-' + zones[mission.id].maxLevel
+		return 'Lv.' + quests[mission.questId].level
 	}
 	function clickQuest() {
 		var id = this.dataset.id * 1

@@ -158,6 +158,7 @@
 			index: tgt,
 			damage: hit.damage,
 			isCrit: hit.isCrit,
+			isPiercing: true,
 			enhancedDamage: enhancedDamage,
 			isRanged: hit.isRanged,
 			damageType: hit.damageType,

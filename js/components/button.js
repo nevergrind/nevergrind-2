@@ -102,7 +102,7 @@ var button;
 		triggerSkill(this.dataset.index * 1)
 	}
 	function primaryAttack() {
-		if (timers.primaryAttack < 1) return
+		if (ng.view !== 'battle' || timers.primaryAttack < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
 		hit = stats.damage()
@@ -140,7 +140,7 @@ var button;
 		delays.primaryAttack = delayedCall(items.eq[12].speed, autoAttackPrimary)
 	}
 	function secondaryAttack() {
-		if (timers.secondaryAttack < 1 || !isOffhandingWeapon()) return
+		if (ng.view !== 'battle' || timers.secondaryAttack < 1 || !isOffhandingWeapon()) return
 		my.fixTarget()
 		if (my.target === -1) return
 		hit = stats.offhandDamage()
@@ -194,12 +194,12 @@ var button;
 	function handleButtonUpdate(o) {
 		if (typeof o.index === 'number') {
 			TweenMax.set(o.el, {
-				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000e ' + timers.skillCooldowns[o.index] + 'turn)'
+				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
 			})
 		}
 		else {
 			TweenMax.set(o.el, {
-				background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000e ' + timers[o.key] + 'turn)'
+				background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000d ' + timers[o.key] + 'turn)'
 			})
 		}
 	}
@@ -224,6 +224,7 @@ var button;
 		})
 	}
 	function setAll() {
+		if (button.initialized) return
 		var s = '';
 		// base attack buttons
 		s += '<div id="main-attack-wrap">' +
@@ -254,6 +255,7 @@ var button;
 		TweenMax.set('#button-wrap', {
 			startAt: { display: 'flex' },
 		})
+		button.initialized = 1
 	}
 	function hide() {
 		TweenMax.set('#button-wrap', {

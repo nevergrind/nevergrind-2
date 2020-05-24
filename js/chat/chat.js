@@ -26,7 +26,7 @@ var chat;
 		],
 		modeCommand: '/say',
 		modeName: '',
-		focusKeys: 'Enter/@',
+		focusKeys: 'Enter/',
 		log,
 		init,
 		html,
@@ -122,7 +122,7 @@ var chat;
 	function modeChange(h) {
 		// only trim leading spaces
 		var mode = h === void 0 ? (chat.dom.chatInput.value + ng.lastKey) : h.mode;
-		var mode = mode.replace(/^\s+/g, '');
+		mode = mode.replace(/^\s+/g, '');
 
 		if (mode === '/say' && !my.channel) {
 			log("You cannot communicate in town while in a dungeon", 'chat-warning');

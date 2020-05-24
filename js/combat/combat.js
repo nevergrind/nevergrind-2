@@ -1,5 +1,5 @@
 var combat;
-!function($, _, TweenMax, PIXI, undefined) {
+!function($, _, TweenMax, PIXI, Math, undefined) {
 	combat = {
 		textId: 0,
 		rxUpdateDamage,
@@ -11,19 +11,49 @@ var combat;
 		txDamageMob,
 		processDamages,
 		isValidTarget,
+		getDiffClass,
+		autoAttackDisable,
 	}
 	var el, w, h, i, len, damageArr
 
+	let levelDiff = 0
 	///////////////////////////////////////////
 	function isValidTarget() {
 		return my.target >= 0 && my.target < mob.max
 	}
 	function processDamages(d) {
+		if (typeof mobs[d.index] === 'undefined' || !mobs[d.index].name) {
+			d.damage = 0
+			return d
+		}
+		if (my.level > mobs[d.index]) {
+			levelDiff = 0
+		}
+
 		// check for things that immediately set to 0
-		// dodge, parry, riposte
-		info('processDamages', d.damageType)
+		// dodge
+		if (!d.isPiercing && Math.random() * 100 < mobs[d.index].dodge) {
+			warn('dodged!')
+			d.damage = 0
+			return d
+		}
+
+		// info('processDamages', d)
 		if (d.damageType === 'physical') {
+			// riposte
+			if (!d.isPiercing && Math.random() * 100 < mobs[d.index].riposte) {
+				warn('riposted!')
+				d.damage = 0
+				return d
+			}
+			// parry
+			if (!d.isPiercing && Math.random() * 100 < mobs[d.index].parry) {
+				warn('parried!')
+				d.damage = 0
+				return d
+			}
 			// enhancedDamage
+
 
 
 			// reduce enhancedDamage
@@ -49,6 +79,7 @@ var combat;
 		}
 		else {
 			// mob magic resists
+			info('fire:', d.index, mobs[d.index])
 			d.damage *= mobs[d.index].resist[d.damageType]
 
 		}
@@ -77,17 +108,36 @@ var combat;
 	}
 	function updateMobHp(index, damage, isCrit) {
 		mobs[index].hp -= damage
+		// alive
+		mob.hit(index)
+		popupDamage(index, damage, isCrit)
+		mob.drawMobBar(index)
 		if (mobs[index].hp <= 0) {
 			warn('mob is dead!')
-			// mob.death(index)
+			mob.death(index)
+			my.fixTarget()
+			if (isBattleOver()) {
+				endCombat()
+			}
 		}
-		else {
-			// alive
-			mob.hit(index)
-			popupDamage(index, damage, isCrit)
-		}
-		mob.drawMobBar(index)
 	}
+	function endCombat() {
+		warn('battle is over!')
+		autoAttackDisable()
+		querySelector('#mob-target-wrap').style.display = 'none'
+		delayedCall(5, dungeon.go)
+	}
+
+	function isBattleOver() {
+		var resp = true
+		var i = 0
+		while (i < mob.max) {
+			if (mobs[i].name) resp = false
+			i++
+		}
+		return resp
+	}
+
 	function txDamageMob(damages) {
 		damages = damages.map(combat.processDamages)
 		damageArr = []
@@ -207,10 +257,20 @@ var combat;
 			}
 			index++
 		}
-		info('targetChanged my.target =>', my.target)
+		info('targetChanged my.target =>', my.target, mobs[my.target].level, mobs[my.target])
 		if (combat.isValidTarget()){
 			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
 		}
-		battle.updateTarget()
+		battle.updateTarget(true)
 	}
-}($, _, TweenMax, PIXI);
+	function getDiffClass(minQuestLvl) {
+		var resp = 'con-grey';
+		if (minQuestLvl >= my.level + 3) resp = 'con-red';
+		else if (minQuestLvl > my.level) resp = 'con-yellow';
+		else if (minQuestLvl === my.level) resp = 'con-white';
+		else if (minQuestLvl >= ~~(my.level * .88) ) resp = 'con-high-blue';
+		else if (minQuestLvl >= ~~(my.level * .77) ) resp = 'con-low-blue';
+		else if (minQuestLvl >= ~~(my.level * .66) ) resp = 'con-green';
+		return resp;
+	}
+}($, _, TweenMax, PIXI, Math);

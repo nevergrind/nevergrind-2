@@ -86,42 +86,77 @@ var battle;
 		combat.initCombatTextLayer()
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
-		if (data) {
-			warn('data in from goBattle')
-			setupMobs(data)
+		if (typeof data === 'object' && typeof data.config === 'object' && data.config.length) {
+			warn('data in from goBattle', data.config)
+			setupMobs(data.config)
 		}
 		else {
-			setupMobs(data)
+			setupMobs()
 		}
 		my.fixTarget()
 		battle.updateTarget()
 		if (party.presence[0].isLeader) {
-			console.info('embark isLeader!', data)
+			info('txData!', mob.txData)
 			socket.publish('party' + my.partyId, {
 				route: 'party->goBattle',
-				data: []
+				config: mob.txData
 			})
 		}
 	}
-	function setupMobs(data) {
-		var singleMob = false;
-		var mobKey = '';
-		for (var i=0; i<mob.max; i++){
-			if (singleMob && i === 2 || !singleMob) {
-				/*mobKey = mob.getRandomMobKey();
-				mobKey = 'orc';*/
-				mob.setMob(i, mob.configMobType({
+	function setupMobs(config) {
+		if (typeof config === 'object') {
+			// followers
+			config.forEach((mobData, index) => {
+				if (mobData.name) {
+					mob.setMob(index, mobData)
+				}
+			})
+		}
+		else {
+			// leader
+			let minLevel = ~~(quests[mission.questId].level * .7)
+			if (minLevel < 1) minLevel = 1
+			let maxLevel = quests[mission.questId].level
+
+			let availableSlots = []
+			mob.txData = []
+			for (var i=0; i<mob.max; i++) {
+				mob.txData.push({})
+				availableSlots.push(i)
+			}
+			let minMobs = 1
+			let maxMobs = ceil(quests[mission.questId].level / 7)
+			if (maxMobs > mob.max) maxMobs = mob.max
+
+			let totalMobs = _.random(minMobs, maxMobs)
+
+			if (!ng.isApp) {
+				totalMobs = 5
+				minLevel = 40
+				maxLevel = 55
+			}
+			info('levels', minLevel, maxLevel)
+			var mobSlot
+			for (i=0; i<totalMobs; i++) {
+				if (!i) mobSlot = 2
+				else mobSlot = _.random(0, availableSlots.length - 1)
+
+				let mobConfig = mob.configMobType({
 					img: 'orc',
-					level: 50
-				}));
+					name: 'orc legionnaire',
+					minLevel: minLevel,
+					maxLevel: maxLevel,
+				})
+				mob.setMob(availableSlots[mobSlot], mobConfig)
+				_.remove(availableSlots, val => val === availableSlots[mobSlot])
 			}
 		}
 	}
 
 	let targetHtml = ''
-	function updateTarget() {
+	function updateTarget(drawInstant) {
 		if (combat.isValidTarget()) {
-			targetHtml =  '<div id="mob-target-name">'+ mobs[my.target].name +'</div>' +
+			targetHtml =  '<div id="mob-target-name" class="'+ combat.getDiffClass(mobs[my.target].level) +'">'+ mobs[my.target].name +'</div>' +
 				'<div id="mob-target-bar-wrap">'+
 					'<div id="mob-target-hp-wrap">'+
 						'<div id="mob-target-hp"></div>' +
@@ -129,7 +164,7 @@ var battle;
 					'</div>' +
 					'<img id="mob-target-hp-plate" class="mob-plate-'+ mobs[my.target].type +'" src="images/ui/bar-'+ mobs[my.target].type +'.png">' +
 				'</div>' +
-				'<div id="mob-target-level">'+ mobs[my.target].level +'</div>' +
+				//'<div id="mob-target-level">'+ mobs[my.target].level +'</div>' +
 				'<div id="mob-target-percent">'+
 					ceil(100 - bar.getRatio('hp', mobs[my.target])) +
 				'%</div>' +
@@ -137,6 +172,7 @@ var battle;
 					'<div id="mob-target-traits">'+ mobs[my.target].traits.join('|') +'</div>' +
 				'</div>'
 			querySelector('#mob-target-wrap').innerHTML = targetHtml
+			mob.drawMobBar(my.target, drawInstant)
 		}
 	}
 
@@ -154,7 +190,7 @@ var battle;
 			'<div id="mob-center-' +i+ '" class="mob-center"></div>' +
 			'<div id="mob-wrap-' +i+ '" class="mob-wrap' + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
 				'<div id="mob-details-' +i+ '" class="mob-details" index="' + i + '">' +
-					'<div id="mob-name-' +i+ '" class="mob-name text-shadow"></div>' +
+					'<div id="mob-name-' +i+ '" class="mob-name text-shadow3"></div>' +
 					'<div id="mob-bar-' +i+ '" class="mob-bar">' +
 						'<div id="mob-health-' +i+ '" class="mob-health"></div>' +
 						'<div class="mob-health-grid"></div>' +

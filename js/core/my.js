@@ -71,8 +71,8 @@ var my;
 	////////////////////////////////////
 	function fixTarget() {
 		if (typeof mobs[my.target] === 'undefined' || !mobs[my.target].name) {
-			my.target = _.findIndex(mobs, mob => mob.name)
-			combat.targetChanged()
+			// my.target = _.findIndex(mobs, mob => mob.name)
+			tabTarget({ shiftKey: false })
 		}
 	}
 	function setTarget(i) {
@@ -80,15 +80,22 @@ var my;
 		if (!mobs[my.target].name) fixTarget(event)
 		else combat.targetChanged()
 	}
-	function tabTarget(event) {
+	function tabTarget(event, tries) {
+		if (typeof tries === 'undefined') tries = 0
 		if (event.shiftKey) {
 			if (--my.target < 0) my.target = mob.max - 1
 		}
 		else {
 			if (++my.target >= mob.max) my.target = 0
 		}
-		if (!mobs[my.target].name) fixTarget(event)
-		else combat.targetChanged()
+		if (tries > 9) my.target = -1
+		else {
+			if (!mobs[my.target].name) {
+				tries++
+				tabTarget(event, tries)
+			}
+			else combat.targetChanged()
+		}
 	}
 	function getResistObject() {
 		var resp = {}

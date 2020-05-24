@@ -3,17 +3,31 @@ mob.data['Salubrin Den'] = [
 	{
 		img: 'orc',
 		name: 'orc pawn',
-		level: 1,
+		minLevel: 1,
+		maxLevel: 1,
+		size: .65,
+		job: 'WAR',
+		type: 'normal', // champion, unique, boss?
+		traits: [], // champ traits
+	},
+	{
+		img: 'orc',
+		name: 'orc centurion',
+		minLevel: 1,
+		maxLevel: 1,
 		size: .7,
+		job: 'WAR',
 		type: 'normal', // champion, unique, boss?
 		traits: [], // champ traits
 	},
 	{
 		img: 'orc',
 		name: 'orc legionnaire',
-		level: 50,
+		minLevel: 35,
+		maxLevel: 60,
 		size: .8,
-		type: 'normal', // champion, unique, boss?
+		job: 'WAR',
+		type: 'normal', // normal, champion, unique, boss?
 		traits: [], // champ traits
 	},
 ]
