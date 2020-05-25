@@ -1269,10 +1269,11 @@ background-clip: content-box;
 }
 /* context */
 #popover-wrap {
-	position: fixed;
+	position: absolute;
 	visibility: hidden;
 	opacity: 0;
 	width: auto;
+	white-space: nowrap;
 	font: .9rem/1.5 Play, Cinzel, Palatino Linotype, serif;
 	border: 2px ridge gold;
 	z-index: 2;

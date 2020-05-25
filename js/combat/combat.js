@@ -1,5 +1,5 @@
 var combat;
-!function($, _, TweenMax, PIXI, Math, undefined) {
+!function($, _, TweenMax, PIXI, Math, Power1, Power3, Linear, undefined) {
 	combat = {
 		textId: 0,
 		rxUpdateDamage,
@@ -17,6 +17,25 @@ var combat;
 	var el, w, h, i, len, damageArr
 
 	let levelDiff = 0
+
+	const textDuration = 1
+	const textDistanceY = 150
+	const textDistanceX = 80
+	const combatTextRegularStyle = {
+		fontFamily: 'Play',
+		fontSize: 36,
+		fill: ['#048', '#ee8', '#ee8', '#048'],
+		stroke: '#025',
+		strokeThickness: 3,
+	}
+	const combatTextCritStyle = {
+		fontFamily: 'Play',
+		fontSize: 36,
+		fontWeight: 'bold',
+		fill: ['#ffd700', '#ffe', '#ffe', '#ffd700'],
+		stroke: '#430',
+		strokeThickness: 3,
+	}
 	///////////////////////////////////////////
 	function isValidTarget() {
 		return my.target >= 0 && my.target < mob.max
@@ -74,8 +93,6 @@ var combat;
 
 			// +add spell damage
 
-
-
 		}
 		else {
 			// mob magic resists
@@ -106,21 +123,6 @@ var combat;
 		el = querySelector('#main-attack-wrap')
 		el.classList.remove('active')
 	}
-	function updateMobHp(index, damage, isCrit) {
-		mobs[index].hp -= damage
-		// alive
-		mob.hit(index)
-		popupDamage(index, damage, isCrit)
-		mob.drawMobBar(index)
-		if (mobs[index].hp <= 0) {
-			warn('mob is dead!')
-			mob.death(index)
-			my.fixTarget()
-			if (isBattleOver()) {
-				endCombat()
-			}
-		}
-	}
 	function endCombat() {
 		warn('battle is over!')
 		autoAttackDisable()
@@ -138,14 +140,38 @@ var combat;
 		return resp
 	}
 
+	function updateMobHp(o) {
+		mobs[o.index].hp -= o.damage
+		if (!o.hate) o.hate = 1
+		party.damage[o.row] += (o.damage * o.hate)
+
+		// alive
+		mob.hit(o.index)
+		popupDamage(o.index, o.damage, o.isCrit)
+		mob.updateHate(o)
+		mob.drawMobBar(o.index)
+		if (mobs[o.index].hp <= 0) {
+			warn('mob is dead!')
+			mob.death(o.index)
+			my.fixTarget()
+			if (isBattleOver()) {
+				endCombat()
+			}
+		}
+	}
 	function txDamageMob(damages) {
 		damages = damages.map(combat.processDamages)
 		damageArr = []
 		len = damages.length
 		for (i=0; i<len; i++) {
 			if (damages[i].damage > 0) {
-				updateMobHp(damages[i].index, damages[i].damage)
+				updateMobHp({
+					row: my.row,
+					index: damages[i].index,
+					damage: damages[i].damage,
+				})
 				damageArr.push({
+					r: my.row,
 					i: damages[i].index,
 					d: damages[i].damage,
 					c: damages[i].isCrit,
@@ -161,48 +187,14 @@ var combat;
 	function rxUpdateDamage(data) {
 		len = data.d.length
 		for (var i=0; i<len; i++) {
-			updateMobHp(data.d[i].i, data.d[i].d, data.d[i].c)
+			updateMobHp({
+				row: data.d[i].r,
+				index: data.d[i].i,
+				damage: data.d[i].d,
+				crit: data.d[i].c
+			})
 			info('rx processing damage : ', data.d[i].d)
 		}
-	}
-	function initCombatTextLayer() {
-		combat.text = new PIXI.Application({
-			width: 1920,
-			height: 1080,
-			transparent: true
-		});
-		// style
-		combat.text.view.id = 'combat-text'
-		combat.text.view.style.position = 'absolute'
-		combat.text.view.style.zIndex = 1
-		combat.text.view.style.pointerEvents = 'none'
-		querySelector('#scene-battle').appendChild(combat.text.view)
-		updateCombatTextLayer()
-	}
-	function updateCombatTextLayer() {
-		w = window.innerWidth
-		h = ~~(combat.text.screen.height / env.maxHeight * window.innerHeight)
-		combat.text.view.style.width = w + 'px';
-		combat.text.view.style.height = h + 'px';
-	}
-
-	const textDuration = 1
-	const textDistanceY = 150
-	const textDistanceX = 80
-	const combatTextRegularStyle = {
-		fontFamily: 'Play',
-		fontSize: 36,
-		fill: ['#048', '#ee8', '#ee8', '#048'],
-		stroke: '#025',
-		strokeThickness: 3,
-	}
-	const combatTextCritStyle = {
-		fontFamily: 'Play',
-		fontSize: 36,
-		fontWeight: 'bold',
-		fill: ['#ffd700', '#ffe', '#ffe', '#ffd700'],
-		stroke: '#430',
-		strokeThickness: 3,
 	}
 	function popupDamage(index, damage, isCrit) {
 		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)
@@ -242,6 +234,26 @@ var combat;
 			ease: Linear.easeOut
 		})
 	}
+	function initCombatTextLayer() {
+		combat.text = new PIXI.Application({
+			width: 1920,
+			height: 1080,
+			transparent: true
+		});
+		// style
+		combat.text.view.id = 'combat-text'
+		combat.text.view.style.position = 'absolute'
+		combat.text.view.style.zIndex = 1
+		combat.text.view.style.pointerEvents = 'none'
+		querySelector('#scene-battle').appendChild(combat.text.view)
+		updateCombatTextLayer()
+	}
+	function updateCombatTextLayer() {
+		w = window.innerWidth
+		h = ~~(combat.text.screen.height / env.maxHeight * window.innerHeight)
+		combat.text.view.style.width = w + 'px';
+		combat.text.view.style.height = h + 'px';
+	}
 	function removeText(id) {
 		el = pix.getId(combat.text, id)
 		combat.text.stage.removeChild(el)
@@ -273,4 +285,4 @@ var combat;
 		else if (minQuestLvl >= ~~(my.level * .66) ) resp = 'con-green';
 		return resp;
 	}
-}($, _, TweenMax, PIXI, Math);
+}($, _, TweenMax, PIXI, Math, Power1, Power3, Linear);

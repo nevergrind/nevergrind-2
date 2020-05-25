@@ -4,6 +4,7 @@ var party;
 		prefix: (sessionStorage.getItem('reloads') ? +sessionStorage.getItem('reloads') : 1),
 		presence: [],
 		maxPlayers: 6,
+		damage: {},
 		getUniquePartyChannel,
 		upsertParty,
 		listen,

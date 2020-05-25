@@ -82,7 +82,13 @@ var battle;
 			mob.imageKeys = Object.keys(mobs.images);
 			mob.index = mob.imageKeys.length - 1;
 		}
-		button.setAll();
+
+		party.damage = {}
+		party.presence.forEach(member => {
+			party.damage[member.row] = 0
+		})
+
+		button.setAll()
 		combat.initCombatTextLayer()
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly

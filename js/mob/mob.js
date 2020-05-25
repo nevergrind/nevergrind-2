@@ -25,6 +25,7 @@ var mob;
 		drawMobBar,
 		resourceTick,
 		rxMobResourceTick,
+		updateHate,
 		// animations
 		idle,
 		hit,
@@ -106,6 +107,10 @@ var mob;
 	function getRandomMobKey() {
 		var i = ~~(rand() * mob.imageKeysLen)
 		return mob.imageKeys[i]
+	}
+	function updateHate(o) {
+		info('updateHate for row', o.row, o)
+		mobs[o.index].hate[o.row] += o.damage
 	}
 	function init() {
 		mob.imageKeys = Object.keys(mobs.images)
@@ -192,6 +197,12 @@ var mob;
 		warn("SETMOB ATTACK", mobs[i].speed)
 		timers.mobAttack[i].kill()
 		timers.mobAttack[i] = delayedCall(Math.random() * 1.5 + 1.5, mob.attack, [i])
+		mobs[i].hate = {}
+		party.presence.forEach(member => {
+			mobs[i].hate[member.row] = 0
+		})
+
+
 		// delete mobs[i].cache;
 		sizeMob(i)
 		TweenMax.set(mobs[i].dom.details, {

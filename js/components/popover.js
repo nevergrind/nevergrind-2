@@ -1,5 +1,5 @@
 var popover;
-(function() {
+(function($, parseInt, getComputedStyle, TweenMax, window, undefined) {
 	var mainMenuPopovers = {}
 
 	popover = {
@@ -11,15 +11,15 @@ var popover;
 		setPosition,
 		setMainMenuHtml
 	};
-	var el
-	var style
+	var computedStyle
 	var padding
 	var width
 	var popoverHalfWidth
-	var innerWidth
-	var verticalOffset
 	var isMenuAbove
 	var yAdjust
+	let x, y
+
+	let el = getElementById('popover-wrap');
 	//////////////////////////////////////////////////
 
 	function setMainMenuHtml(id) {
@@ -32,7 +32,7 @@ var popover;
 			'inv-resist-fire': 'Resist Fire',
 			'inv-resist-ice': 'Resist Ice',
 			'bar-msg-sec': 'Messages Sent Per Second',
-			'bar-average-ping': 'Average Ping',
+			'bar-average-ping': 'Last Ping (Average)',
 			'bar-camp': 'Camp and Exit',
 			'bar-stats': '['+ _.capitalize(ng.config.hotkey.characterStats) +'] Character Sheet',
 			'bar-inventory': '['+ _.capitalize(ng.config.hotkey.inventory) +'] Inventory',
@@ -44,23 +44,29 @@ var popover;
 		html && popover.show(html);
 	}
 	function show(html) {
-		if (!html) return;
-		el = getElementById('popover-wrap');
-		el.innerHTML = html;
+		if (!html) return
+		el.innerHTML = html
 		setPosition()
-		el.style.visibility = 'visible';
-		popover.isOpen = 1;
-		popover.openDate = Date.now();
+		el.style.visibility = 'visible'
+		popover.isOpen = 1
+		popover.openDate = Date.now()
 		TweenMax.set(el, {
 			opacity: 1,
-		});
+		})
 	}
 	function setPosition() {
-		el.style.top = posY() + 'px';
-		el.style.left = posX() + 'px';
+		computedStyle = getComputedStyle(el)
+		el.style.top = posY(computedStyle) + 'px'
+		x = posX(computedStyle)
+		if (x < window.innerWidth / 2) {
+			el.style.left = x +'px'
+		}
+		else {
+			el.style.left = x +'px'
+		}
+
 	}
 	function hide() {
-		el = getElementById('popover-wrap');
 		TweenMax.set(el, {
 			opacity: 0,
 			onComplete: function() {
@@ -69,37 +75,27 @@ var popover;
 			}
 		});
 	}
-	function posX() {
-		el = getElementById('popover-wrap')
-		style = getComputedStyle(el)
+	function posX(style) {
 		padding = parseInt(style.paddingLeft, 10) * 2
 		width = parseInt(style.width, 10)
-		popoverHalfWidth = (padding * 2) + width / 2;
-		if (my.mouse.x < popoverHalfWidth) {
-			// too small
-			my.mouse.x += popoverHalfWidth / 2;
-			if (my.mouse.x < 80) {
-				my.mouse.x = 80;
-			}
+		popoverHalfWidth = (padding + width) / 2
+
+		info('posX', my.mouse.x, popoverHalfWidth)
+		if (my.mouse.x < popoverHalfWidth + 10) {
+			my.mouse.x = popoverHalfWidth + 10
 		}
-		else if (my.mouse.x > window.innerWidth - popoverHalfWidth) {
+		else if (my.mouse.x > window.innerWidth - popoverHalfWidth - 10) {
 			// too big
-			my.mouse.x -= popoverHalfWidth / 2;
-			innerWidth = window.innerWidth - 80;
-			if (my.mouse.x > innerWidth) {
-				my.mouse.x = innerWidth
-			}
-
+			my.mouse.x = window.innerWidth - popoverHalfWidth - 10
 		}
-		return my.mouse.x;
+		return my.mouse.x
 	}
 
-	function posY() {
+	function posY(style) {
 		// determine Y adjustment
-		verticalOffset = 15;
-		isMenuAbove = my.mouse.y < window.innerHeight / 2;
-		yAdjust = isMenuAbove ?
-			verticalOffset : (~~$("#context-wrap").height() + verticalOffset) * -1;
-		return my.mouse.y + yAdjust;
+		y = parseInt(style.height, 10)
+		isMenuAbove = my.mouse.y < window.innerHeight / 2
+		yAdjust = isMenuAbove ? 15 : (y + 15) * -1
+		return my.mouse.y + yAdjust
 	}
-})();
+})($, parseInt, getComputedStyle, TweenMax, window);
