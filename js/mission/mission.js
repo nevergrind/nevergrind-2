@@ -153,7 +153,7 @@ var mission;
 		}
 		else {
 			socket.publish('party' + my.partyId, {
-				route: 'party->abandon',
+				route: 'p->abandon',
 				msg: my.name + ' has abandoned the mission.',
 				popupMsg: 'Mission abandoned: ' + quests[mission.questId].title
 			})
@@ -200,7 +200,7 @@ var mission;
 		if (party.presence[0].isLeader) {
 			mission.inProgress = true
 			var data = {
-				route: 'party->embarkReceived',
+				route: 'p->embarkReceived',
 				id: mission.id,
 				questId: mission.questId,
 			}

@@ -124,7 +124,12 @@ var town;
 				guild.setGuildData(data)
 				initItemData(data.inv, 'inv')
 				initItemData(data.eq, 'eq')
-				my.crit = stats.critChance()
+
+				if (typeof my.handToHand === 'undefined') {
+					my.handToHand = 1
+					my.saveCharacterData()
+				}
+				my.cacheStatValues()
 				// skills
 				my.initSkills()
 

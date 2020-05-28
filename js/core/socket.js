@@ -31,7 +31,7 @@ var socket;
 		}
 	}
 	function publish(topic, obj, exclude) {
-		topic = _.toLower(topic);
+		topic = _.toLower(topic)
 		//console.info('publishing: ', topic, obj);
 		if (typeof socket.session === 'object') {
 			socket.published++
@@ -41,6 +41,10 @@ var socket;
 			secs = (Date.now() - broadcasts[0]) / 1000
 			socket.msgPerSec = (len / secs).toFixed(1)
 			// info('msgPerSec', socket.msgPerSec)
+
+			// name channels are always exclusionary broadcasts
+			if (topic.startsWith('name')) exclude = true
+
 			socket.session.publish(
 				topic,
 				socket.emptyArray,

@@ -16,6 +16,13 @@ var dungeon;
 		querySelector('#town-footer-wrap').style.display = 'none'
 		tavern.leaders = ''
 		game.emptyScenesExcept('scene-dungeon')
+
+		// coming out of battle - save!
+		// TODO: change this to update gold+exp+level too later
+		if (ng.view === 'battle') {
+			mob.killAttacks()
+			my.saveCharacterData()
+		}
 		if (ng.view === 'town') chat.publishRemove()
 		if (my.channel) socket.unsubscribe(chat.getChannel())
 
@@ -45,7 +52,7 @@ var dungeon;
 		ng.unlock()
 		if (party.presence[0].isLeader) {
 			socket.publish('party' + my.partyId, {
-				route: 'party->goDungeon'
+				route: 'p->goDungeon'
 			})
 		}
 	}
@@ -66,7 +73,7 @@ var dungeon;
 		chat.scrollBottom()
 	}
 	function html() {
-		return '<img id="dungeon-bg" class="wh-100" src="images/battle/lanfeld-refuge-1.png">'
+		return '<img id="dungeon-bg" class="wh-100" src="images/dungeon/1.jpg">'
 	}
 	function enterCombat() {
 		console.info("ENTERING COMBAT")

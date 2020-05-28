@@ -12,6 +12,8 @@ var my;
 		tabTarget,
 		initSkills,
 		getMyData,
+		cacheStatValues,
+		saveCharacterData,
 		dataProps: [
 			'str',
 			'sta',
@@ -28,6 +30,7 @@ var my;
 			'twoHandBlunt',
 			'piercing',
 			'archery',
+			'handToHand',
 			'dodge',
 			'parry',
 			'riposte',
@@ -130,8 +133,10 @@ var my;
 	}
 	function resourceTick(type) {
 		// hpRegen mpRegen spRegen
-		my[type] += stats[type + 'Regen']()
-		if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
+		if (my.hp > 0) {
+			my[type] += stats[type + 'Regen']()
+			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
+		}
 	}
 	function checkForDeath() {
 		if (my.hp <= 0) {
@@ -153,5 +158,9 @@ var my;
 	}
 	function getMyData() {
 		return _.pick(my, my.dataProps)
+	}
+	function cacheStatValues() {
+		my.crit = stats.critChance()
+		my.armor = stats.armor()
 	}
 }($, _, TweenMax);

@@ -25,7 +25,6 @@ var stats = {};
 		damage,
 		offhandDamage,
 		rangedDamage,
-		damageString,
 		resistBlood,
 		resistPoison,
 		resistArcane,
@@ -41,6 +40,8 @@ var stats = {};
 		hpRegen,
 		mpRegen,
 		spRegen,
+		armor,
+		armorReductionRatio,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
@@ -145,6 +146,11 @@ var stats = {};
 	function armor() {
 		return ~~((agi() * .66) +(defense() * 3.3)) + getEqTotal('armor')
 	}
+	function armorReductionRatio() {
+		// max of 75% reduction
+		return (my.armor > 3000 ? 3000 : my.armor) / 4000
+	}
+
 	function attack() {
 		val = 0
 		type = items.eq[12].itemType
@@ -210,8 +216,7 @@ var stats = {};
 		//return ( ((5) + getEqTotal('crit') ) / 100)
 		return (ng.dimRetCrit(5 + getEqTotal('crit')) ) / 100
 	}
-	function damage(tgt) {
-		tgt = tgt === undefined ? my.target : tgt
+	function damage(skipSkillChecks) {
 		min = 1
 		max = 1
 		atk = attack()
@@ -245,6 +250,9 @@ var stats = {};
 			}
 		}
 
+		if (!skipSkillChecks) {
+			combat.levelSkillCheck(typeof items.eq[12] === 'object' ? items.eq[12].weaponSkill : 'handToHand')
+		}
 		return {
 			min: min,
 			max: max,
@@ -254,8 +262,7 @@ var stats = {};
 			damageType: 'physical',
 		}
 	}
-	function offhandDamage(tgt) {
-		tgt = tgt === undefined ? my.target : tgt
+	function offhandDamage() {
 		if (!my.dualWield) return [0, 0, false]
 		min = 1
 		max = 1
@@ -284,6 +291,8 @@ var stats = {};
 			max *= 1.5
 		}
 
+		combat.levelSkillCheck(typeof items.eq[13] === 'object' ? items.eq[13].weaponSkill : 'handToHand')
+		combat.levelSkillCheck('dualWield')
 		return {
 			min: min,
 			max: max,
@@ -293,8 +302,7 @@ var stats = {};
 			damageType: 'physical',
 		}
 	}
-	function rangedDamage(tgt) {
-		// tgt = tgt === undefined ? my.target : tgt
+	function rangedDamage() {
 		min = 1
 		max = 1
 		atk = attack()
@@ -308,6 +316,7 @@ var stats = {};
 			max *= 2
 		}
 
+		combat.levelSkillCheck('archery')
 		return {
 			min: min,
 			max: max,
@@ -317,9 +326,6 @@ var stats = {};
 			isRanged: true,
 			damageType: 'physical',
 		}
-	}
-	function damageString(damage) {
-		return ~~damage[0] + '–' + ~~damage[1]
 	}
 	function resistBlood() {
 		return getStatTotal('resistBlood')
@@ -449,8 +455,8 @@ var stats = {};
 	function dualWieldMax() {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (my.job === 'MNK' ||
-			my.level === 'ROG' && my.level >= 13 ||
-			my.level === 'RNG' && my.level >= 17) {
+			my.job === 'ROG' && my.level >= 13 ||
+			my.job === 'RNG' && my.level >= 17) {
 			return base + my.level * 5
 		}
 		else if (
@@ -538,7 +544,7 @@ var stats = {};
 	function alterationMax() {
 		base = my.race === 'Dwarf' || my.race === 'Seraph' ? 5 : 0
 		if (allCasterJobs.includes(my.job)) return base + my.level * 5
-		else if (hybridJobs.includes(my.job) && my.level >= 9) return base + my.level * 4
+		else if (hybridJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
 	function evocationMax() {
@@ -546,7 +552,7 @@ var stats = {};
 		else if (my.race === 'Seraph') base = 5
 		else base = 0
 		if (allCasterJobs.includes(my.job)) return base + my.level * 5
-		else if (hybridJobs.includes(my.job) && my.level >= 9) return base + my.level * 4
+		else if (hybridJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
 	function conjurationMax() {
@@ -554,7 +560,7 @@ var stats = {};
 		else if (my.race === 'Seraph') base = 5
 		else base = 0
 		if (allCasterJobs.includes(my.job)) return base + my.level * 5
-		else if (hybridJobs.includes(my.job) && my.level >= 9) return base + my.level * 4
+		else if (hybridJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
 	function setAllResources() {

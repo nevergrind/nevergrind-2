@@ -32,6 +32,7 @@ var bar;
 		listenForHotkey,
 		updateBar,
 		getRatio,
+		getSkillBarHtml,
 		defaultImage: [
 			'helms1',
 			'amulets0',
@@ -92,11 +93,14 @@ var bar;
 		defense: 'Defense boosts your natural armor which helps you survive melee attacks. Strong defensive skills can also make your foes completely miss their mark. ',
 		oneHandSlash: 'One-hand slash boosts your attack power with one-hand slashing weapons such as swords and axes. A pair of deft hands with a firm grip on powerful blades can create problems for any adversary.',
 		oneHandBlunt: 'One-hand blunt boosts your attack power with one-hand blunt weapons such as maces and clubs. Due to their ease of use, blunt weapons may be equipped by any class. Heroes have long favored them due to their utility and power against undead foes.',
+		twoHandSlash: 'Two-hand slash boosts the attack power of all two-hand slash weapons like giant axes and bastard swords. Critical hits with two-hand weapons do more damage than one-hand weapons. Jump into the fray and cleave a path in front of you! Leave a trail of death in your wake!',
+		twoHandBlunt: 'Two-hand blunt boosts the attack power of all two-hand blunt weapons like staves, mauls, and sledgehammers. Critical hits with two-hand weapons do more damage than one-hand weapons. And as with all blunt weapons, two-hand blunt weapons are stronger against the undead.',
 		piercing: 'Piercing boosts your attack power with all piercing weapons such as daggers and dirks. A perfectly placed dagger can bring even the most deadly foes to their knees. Rogues are feared and hated for their prowess with piercing weapons.',
 		archery: 'Archery boosts your attack power with all bow weapons from simple hunting bows to powerful siege bows. Archery is a powerful, but specialized, skill typically relegated to rangers, though other adventurers have taken a bemusing casual interest in them as well.',
 		handToHand: 'Hand-to-hand boosts the attack power of your fists in combat. Who needs fancy weapons when you have honed your very fists into martial weapons of death? Jab, hook, and uppercut your way to victory! Monks are renowned for their mastery of hand-to-hand combat.',
-		twoHandSlash: 'Two-hand slash boosts the attack power of all two-hand slash weapons like giant axes and bastard swords. Critical hits with two-hand weapons do more damage than one-hand weapons. Jump into the fray and cleave a path in front of you! Leave a trail of death in your wake!',
-		twoHandBlunt: 'Two-hand blunt boosts the attack power of all two-hand blunt weapons like staves, mauls, and sledgehammers. Critical hits with two-hand weapons do more damage than one-hand weapons. And as with all blunt weapons, two-hand blunt weapons are stronger against the undead.',
+		dodge: 'Dodge prevents physical and magical attacks from hitting you. When a dodge is successful, you will avoid all damage completely. Skills that pierce cannot be dodged.',
+		parry: 'Parry deflects a physical attack which reduces the incoming attack\'s damage to zero. A successful parry also restarts your auto attack swing timer. Skills that pierce cannot be parried.',
+		riposte: 'Riposte deflects a physical attack and counters with your own physical attack. Ripostes are considered piercing strikes, which cannot be dodged, parried, or riposted. A riposte also restarts your auto attack swing. Skills that pierce cannot be riposted.',
 		dualWield: 'Dual wield boosts your chance to attack with an off-hand weapon. The only thing more deadly than one weapon is two! Mastery of this skill allows you to hold your own against even the most powerful two-hand weapons.',
 		doubleAttack: 'Double attack boosts your chance to double attack with your standard attack. Though double attack only applies to your standard attacks, this technique remains a fundamental skill to master for all melee classes.',
 		alteration: 'Alteration enhances the power of all alteration-based magic. Bend reality to your will by healing allies, summoning magical barriers, or fortifying your defenses.',
@@ -357,6 +361,7 @@ var bar;
 		console.info('//////////// updateItemSwapDOM', item.dropType, item.dragType)
 		if ([item.dropType, item.dragType].includes('eq')) {
 			console.info('update char stats')
+			my.cacheStatValues()
 			updateCharStatPanels()
 			game.heartbeatSend()
 		}
@@ -938,25 +943,38 @@ var bar;
 	}
 
 	function getPropSkillHtml(prop) {
-		if (!my[prop]) return ''
+		info('prop', prop, my[prop])
+		if (!skills[prop][my.job].level) return ''
+		// dynamic cap for current race/job/level
 		max = stats.getPropMax(prop)
+		let width = my.level < skills[prop][my.job].level ? 0 : my[prop] / max * 100
 		html = '<div data-id="'+ prop +'" class="inv-skill-row">' +
-				'<div class="inv-skill-bar" style="width: '+ (my[prop] / max * 100) +'%"></div>' +
-				'<div class="inv-skill-label-wrap">' +
-					'<div class="inv-skill-label">'+ (item.specialPropLabels[prop] || _.capitalize(prop)) + '</div>' +
-					'<div>'+ my[prop] +'/' + max +'</div>' +
-				'</div>' +
-			'</div>';
+			'<div class="inv-skill-bar" style="width: '+ width +'%"></div>' +
+			'<div class="inv-skill-label-wrap">' +
+				'<div class="inv-skill-label">'+ skills.getName(prop) + '</div>' +
+				'<div class="flex-center">'
+				if (my.level < skills[prop][my.job].level) {
+					html += '<img class="skill-lock" src="images/ui/academy-lock.png">Level '+ skills[prop][my.job].level
+				}
+				else html += my[prop] +'/' + max
+				html += '</div>' +
+			'</div>' +
+		'</div>'
+		return html
+	}
+
+	function getSkillBarHtml() {
+		let html = ''
+		item.allProps.forEach(prop => {
+			html += getPropSkillHtml(prop)
+		})
 		return html
 	}
 
 	function getSkillsHtml() {
-		html = '<div id="inv-skills-wrap">';
-		item.allProps.forEach(prop => {
-			info('prop', prop)
-			html += getPropSkillHtml(prop)
-		})
-		html += '</div>' +
+		html = '<div id="inv-skills-wrap">' +
+			getSkillBarHtml() +
+		'</div>' +
 		'<div id="inv-skill-description-wrap">' +
 			'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">Description</div>' +
@@ -1012,7 +1030,7 @@ var bar;
 	}
 	function charStatColOneHtml() {
 		return '<div class="flex space-between">' +
-			'<div style="color: gold">Armor:</div><div>'+ stats.armor() +'</div>' +
+			'<div style="color: gold">Armor:</div><div>'+ my.armor +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
 			'<div style="color: gold">Strength:</div><div>'+ stats.str() +'</div>' +
@@ -1028,11 +1046,12 @@ var bar;
 		'</div>'
 	}
 	function charStatColTwoHtml() {
+		let hit = stats.damage(true)
 		return '<div class="flex space-between">' +
 			'<div style="color: gold">Attack:</div><div>'+ stats.attack() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Damage:</div><div>'+ stats.damageString(stats.damage(2)) +'</div>' +
+			'<div style="color: gold">Damage:</div><div>'+ round(hit.min) + '–' + round(hit.max) +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
 			'<div style="color: gold">Wisdom:</div><div>'+ stats.wis() +'</div>' +

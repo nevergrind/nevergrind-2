@@ -44,19 +44,20 @@ var router;
 		}
 	}
 	function toParty(data, r) {
-		if (r === 'party->hb') game.heartbeatReceivedParty(data)
-		else if (r === 'party->abandon') mission.abandonReceived(data)
-		else if (r === 'party->embarkReceived') mission.embarkReceived(data)
-		else if (r === 'party->notifyJoin') party.notifyJoin(data)
-		else if (r === 'party->inviteAccepted') party.joinAck(data)
-		else if (r === 'party->disband') party.disbandReceived(data)
-		else if (r === 'party->promote') party.promoteReceived(data)
-		else if (r === 'party->boot') party.bootReceived(data)
-		else if (r === 'party->getPresence') game.heartbeatSend()
-		else if (r === 'party->goDungeon') dungeon.go(data)
-		else if (r === 'party->goBattle') battle.go(data)
-		else if (r === 'party->damage') combat.rxUpdateDamage(data)
-		else if (r === 'party->mobTick') mob.rxMobResourceTick(data)
+		if (r === 'p->hb') game.heartbeatReceivedParty(data)
+		else if (r === 'p->abandon') mission.abandonReceived(data)
+		else if (r === 'p->embarkReceived') mission.embarkReceived(data)
+		else if (r === 'p->notifyJoin') party.notifyJoin(data)
+		else if (r === 'p->inviteAccepted') party.joinAck(data)
+		else if (r === 'p->disband') party.disbandReceived(data)
+		else if (r === 'p->promote') party.promoteReceived(data)
+		else if (r === 'p->boot') party.bootReceived(data)
+		else if (r === 'p->getPresence') game.heartbeatSend()
+		else if (r === 'p->goDungeon') dungeon.go(data)
+		else if (r === 'p->goBattle') battle.go(data)
+		else if (r === 'p->damage') combat.rxUpdateDamage(data)
+		else if (r === 'p->mobTick') mob.rxMobResourceTick(data)
+		else if (r === 'p->damageHero') combat.rxDamageHero(data)
 	}
 	function toGuild(data, r) {
 		if (r === 'guild->hasJoined') guild.hasJoined(data)

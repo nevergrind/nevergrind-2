@@ -1,5 +1,5 @@
 var mob;
-(function(TweenMax, $, _, Object, undefined) {
+(function(TweenMax, $, _, Object, Linear, undefined) {
 	mob = {
 		txData: [],
 		enableMobHeartbeat: true,
@@ -9,6 +9,7 @@ var mob;
 		imageKeys: [],
 		initialized: 0,
 		max: 9,
+		maxLevel: 50,
 		element: {},
 		centerX: [192,576,960,1344,1728,384,768,1152,1536],
 		bottomY: [180,180,180,180,180,280,280,280,280],
@@ -30,10 +31,12 @@ var mob;
 		idle,
 		hit,
 		attack,
+		animateAttack,
 		special,
 		death,
+		killAttacks,
 	};
-	var percent, el
+	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el
 	var frame = {
 		idle: {
 			start: 1,
@@ -93,6 +96,7 @@ var mob;
 	let hpTick = 0
 	let mpTick = 0
 	let spTick = 0
+	let mobRow = -1
 
 	const mobElements = ['wrap',
 	'center',
@@ -104,6 +108,11 @@ var mob;
 	'shadow',
 	'bar']
 	//////////////////////////////////////////////////
+	function killAttacks() {
+		timers.mobAttack.forEach(time => {
+			time.kill()
+		})
+	}
 	function getRandomMobKey() {
 		var i = ~~(rand() * mob.imageKeysLen)
 		return mob.imageKeys[i]
@@ -258,7 +267,8 @@ var mob;
 			x: '-' + percent + '%'
 		})
 		if (index === my.target) {
-			querySelector('#mob-target-percent').innerHTML = ceil(100 - percent) + '%'
+			el = querySelector('#mob-target-percent')
+			if (el !== null) el.innerHTML = ceil(100 - percent) + '%'
 			TweenMax.to('#mob-target-hp', drawInstant ? 0 : .15, {
 				x: '-' + percent + '%'
 			})
@@ -331,27 +341,90 @@ var mob;
 	}
 
 	function hitComplete(m) {
-		resetIdle(m.index);
-		if (testAnimations){
-			delayedCall(1, attack, [ m.index, 'primary' ]);
+		resetIdle(m.index)
+	}
+	function getMobTargetRow(slot) {
+		mostHatedRow = []
+		mostHatedValue = null
+		for (row in mobs[slot].hate) {
+			row *= 1
+			val = mobs[slot].hate[row]
+			index = party.getIndexByRow(row)
+			info(row, index, val)
+			if (party.presence[index].hp > 0) {
+				if (mostHatedValue === null) {
+					// first one is always added
+					mostHatedValue = val
+					mostHatedRow.push(row)
+				}
+				else {
+					if (val === mostHatedValue) {
+						// tie
+						mostHatedRow.push(row)
+					}
+					else if (val > mostHatedValue) {
+						// exceeds - new array with only that row
+						mostHatedValue = val
+						mostHatedRow = [row]
+					}
+				}
+			}
+		}
+		// set the host row
+		len = mostHatedRow.length
+		if (!len) {
+			mostHatedRow = -1
+		}
+		else if (len === 1) {
+			mostHatedRow = mostHatedRow[0]
+		}
+		else if (len > 1) {
+			// party members tied for hate - pick a random target among them
+			index = _.random(0, mostHatedRow.length - 1)
+			mostHatedRow = mostHatedRow[index]
+		}
+		return mostHatedRow *= 1
+	}
+
+	function getMobDamage(i, row) {
+		return {
+			row: row,
+			index: i,
+			damage: _.random(ceil(mobs[i].level * .33), mobs[i].attack),
+			damageType: 'physical'
 		}
 	}
 
-	function attack(i, force) {
+	function attack(i) {
 		timers.mobAttack[i].kill()
-		if (mobs[i].name && party.presence[0].isLeader) {
+		if (!mobs[i].name) return
+
+		if (party.presence[0].isLeader) {
 			// only party leader should trigger attacks
-			info('mob attacking!', i)
-			timers.mobAttack[i] = delayedCall(mobs[i].speed, mob.attack, [i])
+			if (party.isSomeoneAlive()) {
+				mobRow = getMobTargetRow(i)
+				if (mobRow > -1) {
+					// party.getIndexByRow(mostHatedRow)
+					info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
+					mobDamages = [
+						getMobDamage(i, mobRow)
+					]
+					if (Math.random() * 100 < mobs[i].doubleAttack) {
+						mobDamages.push(getMobDamage(i, mobRow))
+					}
+					combat.txDamageHero(mobDamages)
+				}
+			}
 		}
-		else return
-		// TODO: combat logic needed
+		// keep it going for all in case some else takes over leader
+		timers.mobAttack[i] = delayedCall(mobs[i].speed, mob.attack, [i])
+	}
+	function animateAttack(i, isSecondary) {
 		// animate
 		if (mobs[i].isAnimationActive) return
 
 		mobs[i].isAnimationActive = true
-		var attackType = force === 'primary' || force === 'secondary' ?
-			force : (_.round(rand()) ? 'primary' : 'secondary')
+		var attackType = isSecondary ? 'secondary' : 'primary'
 		var speed = mobs[i].frameSpeed * frame[attackType].diff;
 		if (!mobs[i].enableSecondary) {
 			attackType = 'primary'
@@ -367,17 +440,12 @@ var mob;
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
 			onComplete: attackComplete,
-			onCompleteParams: [mobs[i], force]
+			onCompleteParams: [mobs[i]]
 		})
 	}
 
-	function attackComplete(m, force) {
+	function attackComplete(m) {
 		resetIdle(m.index)
-		if (testAnimations) {
-			if (force === 'primary') delayedCall(1, attack, [ m.index, 'secondary' ])
-			else if (force === 'death') delayedCall(1, death, [ m.index ])
-			else delayedCall(1, special, [ m.index ])
-		}
 	}
 
 	function special(i) {
@@ -460,26 +528,29 @@ var mob;
 		m.isAnimationActive = false;
 		e.style.filter = 'opacity(100%) brightness(100%)';
 	}
-	function setMobDefensiveSkill(config, val) {
-		return config.level * val / 50
+	function setMobSkill(config, val) {
+		// adjusts value based on what it is at max level
+		return config.level * val / mob.maxLevel
 	}
 	function modifyMobStatsByClass(config) {
 		//if (typeof config.job === 'undefined') config.job = 'WAR'
 		// base resources
-		config.hp = ~~(25 + ((config.level - 1) * 220) * config.hp)
+		config.hp = ~~((25 + ((config.level - 1) * 220) * config.hp) * party.presence.length)
 		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)
 		//config.spMax = config.sp = ~~(10 + ((config.level - 1) * 15) * config.sp)
 		config.attack = ~~(3 + (config.level * 1.66))
 		config.dodge = 0
 		config.parry = 0
 		config.riposte = 0
+		config.doubleAttack = 0
 		// class modifications
 		if (config.job === 'WAR') {
 			config.hp = ~~(config.hp * 1.2)
 			config.attack = ~~(config.attack * 1.1)
-			if (config.level >= 6) config.dodge = setMobDefensiveSkill(config, 7.5)
-			if (config.level >= 10) config.parry = setMobDefensiveSkill(config, 12.5)
-			if (config.level >= 25) config.riposte = setMobDefensiveSkill(config, 12.5)
+			if (config.level >= 6) config.dodge = setMobSkill(config, 7.5)
+			if (config.level >= 10) config.parry = setMobSkill(config, 12.5)
+			if (config.level >= 15) config.doubleAttack = setMobSkill(config, 25)
+			if (config.level >= 25) config.riposte = setMobSkill(config, 12.5)
 			config.skills = [
 				'Furious Slam',
 				'Pummel',
@@ -489,9 +560,10 @@ var mob;
 		else if (config.job === 'CRU') {
 			config.hp = ~~(config.hp * 1.1)
 			config.attack = ~~(config.attack * 1.1);
-			if (config.level >= 10) config.dodge = setMobDefensiveSkill(config, 7.5)
-			if (config.level >= 17) config.parry = setMobDefensiveSkill(config, 12.5)
-			if (config.level >= 30) config.riposte = setMobDefensiveSkill(config, 10)
+			if (config.level >= 10) config.dodge = setMobSkill(config, 7.5)
+			if (config.level >= 17) config.parry = setMobSkill(config, 12.5)
+			if (config.level >= 20) config.doubleAttack = setMobSkill(config, 33)
+			if (config.level >= 30) config.riposte = setMobSkill(config, 10)
 			config.skills = [
 				'Ardent Bash',
 				'Holy Light',
@@ -502,9 +574,10 @@ var mob;
 		else if (config.job === 'SHD') {
 			config.hp = ~~(config.hp * 1.2)
 			config.attack = ~~(config.attack * 1.1);
-			if (config.level >= 10) config.dodge = setMobDefensiveSkill(config, 7.5)
-			if (config.level >= 17) config.parry = setMobDefensiveSkill(config, 10)
-			if (config.level >= 30) config.riposte = setMobDefensiveSkill(config, 12.5)
+			if (config.level >= 10) config.dodge = setMobSkill(config, 7.5)
+			if (config.level >= 17) config.parry = setMobSkill(config, 10)
+			if (config.level >= 20) config.doubleAttack = setMobSkill(config, 33)
+			if (config.level >= 30) config.riposte = setMobSkill(config, 12.5)
 			config.skills = [
 				'Bash',
 				'Engulfing Darkness',
@@ -514,9 +587,10 @@ var mob;
 		}
 		else if (config.job === 'MNK') {
 			config.attack = ~~(config.attack * 1.15);
-			config.dodge = setMobDefensiveSkill(config, 7.5)
-			if (config.level >= 12) config.parry = setMobDefensiveSkill(config, 7.5)
-			if (config.level >= 35) config.riposte = setMobDefensiveSkill(config, 10)
+			config.dodge = setMobSkill(config, 7.5)
+			if (config.level >= 12) config.parry = setMobSkill(config, 7.5)
+			if (config.level >= 15) config.doubleAttack = setMobSkill(config, 40)
+			if (config.level >= 35) config.riposte = setMobSkill(config, 10)
 			config.skills = [
 				'Shadow Kick',
 				'Dragon Punch',
@@ -524,9 +598,10 @@ var mob;
 		}
 		else if (config.job === 'ROG') {
 			config.attack = ~~(config.attack * 1.15);
-			if (config.level >= 4) config.dodge = setMobDefensiveSkill(config, 10)
-			if (config.level >= 17) config.parry = setMobDefensiveSkill(config, 7.5)
-			if (config.level >= 30) config.riposte = setMobDefensiveSkill(config, 7.5)
+			if (config.level >= 4) config.dodge = setMobSkill(config, 10)
+			if (config.level >= 17) config.parry = setMobSkill(config, 7.5)
+			if (config.level >= 16) config.doubleAttack = setMobSkill(config, 40)
+			if (config.level >= 30) config.riposte = setMobSkill(config, 7.5)
 			config.skills = [
 				'Backstab',
 				'Widow Strike'
@@ -534,9 +609,10 @@ var mob;
 		}
 		else if (config.job === 'RNG') {
 			config.attack = ~~(config.attack * 1.15);
-			if (config.level >= 8) config.dodge = setMobDefensiveSkill(config, 7.5)
-			if (config.level >= 18) config.parry = setMobDefensiveSkill(config, 10)
-			if (config.level >= 35) config.riposte = setMobDefensiveSkill(config, 7.5)
+			if (config.level >= 8) config.dodge = setMobSkill(config, 7.5)
+			if (config.level >= 18) config.parry = setMobSkill(config, 10)
+			if (config.level >= 20) config.doubleAttack = setMobSkill(config, 40)
+			if (config.level >= 35) config.riposte = setMobSkill(config, 7.5)
 			config.skills = [
 				'Light Healing',
 				'Faerie Flame',
@@ -546,7 +622,8 @@ var mob;
 		}
 		else if (config.job === 'BRD') {
 			config.attack = ~~(config.attack * 1.05);
-			if (config.level >= 10) config.dodge = setMobDefensiveSkill(config, 10)
+			if (config.level >= 10) config.dodge = setMobSkill(config, 10)
+			if (config.level >= 17) config.doubleAttack = setMobSkill(config, 12)
 			// cannot dispel bard songs
 			config.skills = [
 				'Psalm of Flames', // damage shield, FR boost
@@ -559,7 +636,7 @@ var mob;
 			];
 		}
 		else if (config.job === 'DRU') {
-			if (config.level >= 15) config.dodge = setMobDefensiveSkill(config, 5)
+			if (config.level >= 15) config.dodge = setMobSkill(config, 5)
 			config.skills = [
 				'Regrowth',
 				'Lightning Blast',
@@ -568,7 +645,7 @@ var mob;
 			];
 		}
 		else if (config.job === 'CLR') {
-			if (config.level >= 15) config.dodge = setMobDefensiveSkill(config, 5)
+			if (config.level >= 15) config.dodge = setMobSkill(config, 5)
 			config.skills = [
 				'Holy Light',
 				'Smite',
@@ -577,7 +654,7 @@ var mob;
 		}
 		else if (config.job === 'SHM') {
 			config.attack = ~~(config.attack * 1.05);
-			if (config.level >= 15) config.dodge = setMobDefensiveSkill(config, 5)
+			if (config.level >= 15) config.dodge = setMobSkill(config, 5)
 			config.skills = [
 				'Rekindle',
 				'Static Shock',
@@ -588,7 +665,7 @@ var mob;
 		}
 		else if (config.job === 'NEC') {
 			config.hp = ~~(config.hp * .9)
-			if (config.level >= 22) config.dodge = setMobDefensiveSkill(config, 5)
+			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
 				'Blood Boil',
 				'Engulfing Darkness',
@@ -598,7 +675,7 @@ var mob;
 		}
 		else if (config.job === 'ENC') {
 			config.hp = ~~(config.hp * .9)
-			if (config.level >= 22) config.dodge = setMobDefensiveSkill(config, 5)
+			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
 				'Gravity Flux',
 				'Runic Shield',
@@ -609,7 +686,7 @@ var mob;
 		}
 		else if (config.job === 'SUM') {
 			config.hp = ~~(config.hp * .9)
-			if (config.level >= 22) config.dodge = setMobDefensiveSkill(config, 5)
+			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
 				'Lava Bolt',
 				'Frozen Orb',
@@ -618,7 +695,7 @@ var mob;
 		}
 		else if (config.job === 'WIZ') {
 			config.hp = ~~(config.hp * .9)
-			if (config.level >= 22) config.dodge = setMobDefensiveSkill(config, 5)
+			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
 				'Ice Bolt',
 				'Arcane Missiles',
@@ -637,7 +714,7 @@ var mob;
 				mobs.forEach(processMobResourceTick)
 				if (tickData.length) {
 					socket.publish('party' + my.partyId, {
-						route: 'party->mobTick',
+						route: 'p->mobTick',
 						d: tickData
 					}, true)
 				}
@@ -684,4 +761,4 @@ var mob;
 		})
 	}
 
-})(TweenMax, $, _, Object);
+})(TweenMax, $, _, Object, Linear);

@@ -21,6 +21,8 @@ var party;
 		promote,
 		disband,
 		hasMoreThanOnePlayer,
+		getIndexByRow,
+		isSomeoneAlive,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -29,6 +31,12 @@ var party;
 	var player;
 	var diff;
 	//////////////////////////////////////
+	function isSomeoneAlive() {
+		return party.presence.some(member => member.hp > 0) || my.hp > 0
+	}
+	function getIndexByRow(row) {
+		return party.presence.findIndex(member => member.row === row)
+	}
 	function hasMoreThanOnePlayer() {
 		return party.presence.length > 1
 	}
@@ -201,7 +209,7 @@ var party;
 		// clicked CONFIRM - request join ack
 		console.info('party.inviteAccepted: ', data);
 		socket.publish('party' + data.row, {
-			route: 'party->inviteAccepted',
+			route: 'p->inviteAccepted',
 			name: my.name.toLowerCase(),
 		})
 	}
@@ -234,7 +242,7 @@ var party;
 		delayedCall(.1, () => {
 			socket.publish('party' + my.partyId, {
 				msg: my.name + ' has joined the party.',
-				route: 'party->notifyJoin',
+				route: 'p->notifyJoin',
 			});
 		})
 	}
@@ -247,7 +255,7 @@ var party;
 		chat.log(data.msg, 'chat-warning');
 		// refresh party bars
 		socket.publish('party' + my.partyId, {
-			route: 'party->getPresence',
+			route: 'p->getPresence',
 		});
 	}
 	function boot(name, bypass) {
@@ -265,7 +273,7 @@ var party;
 					socket.publish('party' + my.partyId, {
 						name: name,
 						leader: my.name,
-						route: 'party->boot',
+						route: 'p->boot',
 					});
 				}
 			}
@@ -299,7 +307,7 @@ var party;
 				my.isLeader = party.presence[0].isLeader = true;
 				socket.publish('party' + my.partyId, {
 					name: my.name,
-					route: 'party->disband',
+					route: 'p->disband',
 				});
 				// stuff for disbander
 				mission.inProgress && ng.msg('Mission abandoned: '+ quests[mission.questId].title)
@@ -349,7 +357,7 @@ var party;
 			if (id >= 1) {
 				my.isLeader = party.presence[0].isLeader = false;
 				socket.publish('party' + my.partyId, {
-					route: 'party->promote',
+					route: 'p->promote',
 					name: name,
 					leaderRow: my.row
 				});

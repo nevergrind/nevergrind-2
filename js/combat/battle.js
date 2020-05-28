@@ -79,8 +79,8 @@ var battle;
 		if (!mob.initialized) {
 			// initialization things only
 			mob.initialized = 1;
-			mob.imageKeys = Object.keys(mobs.images);
-			mob.index = mob.imageKeys.length - 1;
+			mob.imageKeys = Object.keys(mobs.images)
+			mob.index = mob.imageKeys.length - 1
 		}
 
 		party.damage = {}
@@ -104,7 +104,7 @@ var battle;
 		if (party.presence[0].isLeader) {
 			info('txData!', mob.txData)
 			socket.publish('party' + my.partyId, {
-				route: 'party->goBattle',
+				route: 'p->goBattle',
 				config: mob.txData
 			})
 		}

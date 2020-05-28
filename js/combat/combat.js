@@ -13,8 +13,13 @@ var combat;
 		isValidTarget,
 		getDiffClass,
 		autoAttackDisable,
+		processDamagesHero,
+		txDamageHero,
+		rxDamageHero,
+		levelSkillCheck,
+		skillLevelChance,
 	}
-	var el, w, h, i, len, damageArr
+	var el, w, h, i, len, damageArr, index
 
 	let levelDiff = 0
 
@@ -36,12 +41,33 @@ var combat;
 		stroke: '#430',
 		strokeThickness: 3,
 	}
+	let chance = 0
+
 	///////////////////////////////////////////
+	function levelSkillCheck(name) {
+		name = _.camelCase(name)
+		if (my.level >= skills[name][my.job].level &&
+			my[name] < stats.getPropMax(name)) { //TODO: Dynamic max
+			if (Math.random() < skillLevelChance(name)) {
+				my[name]++
+				chat.log('You got better at ' +skills.getName(name) + '! (' + my[name] + ')', 'chat-skill')
+				if (bar.windowsOpen.character &&
+					bar.activeTab === 'passiveSkills') {
+					querySelector('#inv-skills-wrap').innerHTML = bar.getSkillBarHtml()
+				}
+			}
+		}
+	}
+	function skillLevelChance(name) {
+		chance = (20 - (my[name] / 10)) / 100
+		if (chance < .01) chance = .01 // beyond 140 skill has a 1/100 chance
+		return chance
+	}
 	function isValidTarget() {
 		return my.target >= 0 && my.target < mob.max
 	}
 	function processDamages(d) {
-		if (typeof mobs[d.index] === 'undefined' || !mobs[d.index].name) {
+		if (typeof mobs[d.index] === 'undefined' || !mobs[d.index].name || my.hp <= 0) {
 			d.damage = 0
 			return d
 		}
@@ -52,7 +78,7 @@ var combat;
 		// check for things that immediately set to 0
 		// dodge
 		if (!d.isPiercing && Math.random() * 100 < mobs[d.index].dodge) {
-			warn('dodged!')
+			warn('mob dodged!', d.index)
 			d.damage = 0
 			return d
 		}
@@ -61,13 +87,13 @@ var combat;
 		if (d.damageType === 'physical') {
 			// riposte
 			if (!d.isPiercing && Math.random() * 100 < mobs[d.index].riposte) {
-				warn('riposted!')
+				warn('mob riposted!', d.index)
 				d.damage = 0
 				return d
 			}
 			// parry
 			if (!d.isPiercing && Math.random() * 100 < mobs[d.index].parry) {
-				warn('parried!')
+				warn('mob parried!', d.index)
 				d.damage = 0
 				return d
 			}
@@ -102,6 +128,7 @@ var combat;
 		}
 		// final sanity checks
 		d.damage = d.damage < 1 ? ceil(d.damage) : round(d.damage)
+		combat.levelSkillCheck('offense')
 		return d
 	}
 	function toggleAutoAttack() {
@@ -109,7 +136,7 @@ var combat;
 		else autoAttackDisable()
 	}
 	function autoAttackEnable() {
-		if (my.isAutoAttacking) return
+		if (my.isAutoAttacking || my.hp <= 0) return
 		my.isAutoAttacking = true
 		button.primaryAttack()
 		button.secondaryAttack()
@@ -126,6 +153,7 @@ var combat;
 	function endCombat() {
 		warn('battle is over!')
 		autoAttackDisable()
+		mob.killAttacks()
 		querySelector('#mob-target-wrap').style.display = 'none'
 		delayedCall(5, dungeon.go)
 	}
@@ -179,10 +207,12 @@ var combat;
 				info('tx processHit: ', damages[i].damage)
 			}
 		}
-		socket.publish('party' + my.partyId, {
-			route: 'party->damage',
-			d: damageArr
-		}, true)
+		if (damageArr.length) {
+			socket.publish('party' + my.partyId, {
+				route: 'p->damage',
+				d: damageArr
+			}, true)
+		}
 	}
 	function rxUpdateDamage(data) {
 		len = data.d.length
@@ -195,6 +225,158 @@ var combat;
 			})
 			info('rx processing damage : ', data.d[i].d)
 		}
+	}
+
+	/*
+	function updateBar(type, data) {
+		data = data || my
+		// console.warn('updateBar', type, data.row)
+		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
+			x: '-' + getRatio(type, data) + '%'
+		})
+		querySelector('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
+	}
+	 */
+	function selfDied() {
+		warn('You died!')
+		autoAttackDisable()
+		let el = querySelector('#scene-battle')
+		let o = {
+			saturate: 1,
+			contrast: 1,
+			brightness: 1,
+		}
+		TweenMax.to(o, 1, {
+			saturate: 5,
+			contrast: 3,
+			brightness: .5,
+			onUpdate: setFilter,
+			onUpdateParams: [o]
+		})
+		function setFilter(o) {
+			TweenMax.set(el, {
+				filter: 'grayscale(1) sepia(1) saturate('+ o.saturate +') hue-rotate(-30deg) contrast('+ o.contrast +') brightness('+ o.brightness +') '
+			})
+		}
+	}
+	// damage hero functions
+	function updateHeroHp(o) {
+		party.presence[0].hp = my.hp -= o.damage
+		if (my.hp <= 0) {
+			if (ng.isApp) selfDied()
+			else party.presence[0].hp = my.hp = 1
+		}
+		bar.updateBar('hp')
+	}
+	function processDamagesHero(d) {
+		if (my.hp <= 0) {
+			d.damage = 0
+			return d
+		}
+
+		// check for things that immediately set to 0
+		if (my.level > mobs[d.index]) {
+			levelDiff = 0
+		}
+
+		// dodge
+		combat.levelSkillCheck('dodge')
+		if (Math.random() * 100 < mobs[d.index].dodge) {
+			warn('I dodged!')
+			d.damage = 0
+			return d
+		}
+		info('processDamagesHero', d)
+		// info('processDamages', d)
+		if (d.damageType === 'physical') {
+			// riposte
+			combat.levelSkillCheck('riposte')
+			if (Math.random() * 100 < mobs[d.index].riposte) {
+				warn('I riposted!')
+				d.damage = 0
+				return d
+			}
+			// parry
+			combat.levelSkillCheck('parry')
+			if (Math.random() * 100 < mobs[d.index].parry) {
+				warn('I parried!')
+				d.damage = 0
+				return d
+			}
+			// enhancedDamage
+
+			// reduce enhancedDamage
+			let damageReduced = 1 - stats.armorReductionRatio()
+			let amountReduced = _.random(damageReduced, 1)
+			d.damage *= amountReduced
+
+			// damage penalties
+
+			// phyMit
+
+			// armor
+
+			// +add spell damage
+
+		}
+		else {
+			// magMit
+
+			// mob magic resists
+			info('fire:', d.index, mobs[d.index])
+			d.damage *= mobs[d.index].resist[d.damageType]
+
+		}
+		// final sanity checks
+		d.damage = d.damage < 1 ? ceil(d.damage) : round(d.damage)
+		combat.levelSkillCheck('defense')
+		return d
+	}
+	function txDamageHero(damages) {
+		index = party.getIndexByRow(damages[0].row)
+		if (my.row === damages[0].row) {
+			processDamageToMe(damages)
+		}
+		else {
+			// tell party member they were hit
+			if (party.presence[index].name) {
+				socket.publish('party' + my.partyId, {
+					route: 'p->damageHero',
+					d: damages
+				}, true)
+			}
+		}
+		mob.animateAttack(damages[0].index)
+	}
+	function processDamageToMe(damages) {
+		damages = damages.map(combat.processDamagesHero)
+		damageArr = []
+		len = damages.length
+		for (i=0; i<len; i++) {
+			if (damages[i].damage > 0) {
+				updateHeroHp({
+					row: damages[i].row,
+					damage: damages[i].damage,
+				})
+				damageArr.push({
+					r: damages[i].row,
+					i: damages[i].index,
+					d: damages[i].damage,
+				})
+				info('tx processHit: ', damages[i].damage)
+			}
+		}
+		// TODO: if damageArr hits hard enough it should broadcast to party
+	}
+	function rxDamageHero(data) {
+		len = data.d.length
+		for (var i=0; i<len; i++) {
+			if (my.row === data.d[0].row) {
+				processDamageToMe(data.d)
+			}
+			info('rx processing damage : ', data.d[i].d)
+		}
+		mob.animateAttack(data.d[0].index)
 	}
 	function popupDamage(index, damage, isCrit) {
 		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)
@@ -259,6 +441,7 @@ var combat;
 		combat.text.stage.removeChild(el)
 	}
 	function targetChanged() {
+		if (my.hp <= 0) return
 		let index = 0
 		for (el of querySelectorAll('.mob-details')) {
 			if (index !== my.hoverTarget) {

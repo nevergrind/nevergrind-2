@@ -91,7 +91,7 @@ var button;
 	}
 	function triggerSkill(index) {
 		name = _.camelCase(skills[my.job][index].name)
-		if (typeof skill[my.job][name] === 'function') {
+		if (typeof skill[my.job][name] === 'function' && my.hp > 0) {
 			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {
@@ -101,13 +101,20 @@ var button;
 	function handleSkillButtonClick() {
 		triggerSkill(this.dataset.index * 1)
 	}
+
+	function successfulDoubleAttack() {
+		return my.doubleAttack / 600
+	}
+	function successfulDualWield() {
+		return my.dualWield / 350
+	}
 	function primaryAttack() {
-		if (ng.view !== 'battle' || timers.primaryAttack < 1) return
+		if (ng.view !== 'battle' || timers.primaryAttack < 1 || my.hp <= 0) return
 		my.fixTarget()
 		if (my.target === -1) return
-		hit = stats.damage()
-
 		damages = []
+
+		hit = stats.damage()
 		damages.push({
 			index: my.target,
 			damage: hit.damage,
@@ -115,6 +122,20 @@ var button;
 			enhancedDamage: hit.enhancedDamage,
 			damageType: hit.damageType,
 		})
+		// double attack?
+		if (my.level >= skills.doubleAttack[my.job].level) {
+			combat.levelSkillCheck('doubleAttack')
+			if (Math.random() < successfulDoubleAttack()) {
+				hit = stats.damage()
+				damages.push({
+					index: my.target,
+					damage: hit.damage,
+					isCrit: hit.isCrit,
+					enhancedDamage: hit.enhancedDamage,
+					damageType: hit.damageType,
+				})
+			}
+		}
 		combat.txDamageMob(damages)
 
 		timers.primaryAttack = 0
@@ -140,19 +161,37 @@ var button;
 		delays.primaryAttack = delayedCall(items.eq[12].speed, autoAttackPrimary)
 	}
 	function secondaryAttack() {
-		if (ng.view !== 'battle' || timers.secondaryAttack < 1 || !isOffhandingWeapon()) return
+		if (ng.view !== 'battle' || timers.secondaryAttack < 1 || !isOffhandingWeapon() || my.hp <= 0) return
 		my.fixTarget()
 		if (my.target === -1) return
-		hit = stats.offhandDamage()
-		damages = []
-		damages.push({
-			index: my.target,
-			damage: hit.damage,
-			isCrit: hit.isCrit,
-			enhancedDamage: hit.enhancedDamage,
-			damageType: hit.damageType,
-		})
-		combat.txDamageMob(damages)
+
+		if (my.level >= skills.dualWield[my.job].level) {
+			combat.levelSkillCheck('dualWield')
+			if (successfulDualWield()) {
+				hit = stats.offhandDamage()
+				damages = []
+				damages.push({
+					index: my.target,
+					damage: hit.damage,
+					isCrit: hit.isCrit,
+					enhancedDamage: hit.enhancedDamage,
+					damageType: hit.damageType,
+				})
+				if (my.level >= skills.doubleAttack[my.job].level) {
+					if (Math.random() < successfulDoubleAttack()) {
+						hit = stats.damage()
+						damages.push({
+							index: my.target,
+							damage: hit.damage,
+							isCrit: hit.isCrit,
+							enhancedDamage: hit.enhancedDamage,
+							damageType: hit.damageType,
+						})
+					}
+				}
+				combat.txDamageMob(damages)
+			}
+		}
 
 		let el = querySelector('#skill-timer-secondary-rotate')
 		if (el !== null) {

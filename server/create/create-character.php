@@ -108,6 +108,7 @@
 		'twoHandBlunt' => $f['twoHandBlunt'],
 		'piercing' => $f['piercing'],
 		'archery' => $f['archery'],
+		'handToHand' => $f['handToHand'],
 		'dodge' => $f['dodge'],
 		'parry' => $f['parry'],
 		'riposte' => $f['riposte'],

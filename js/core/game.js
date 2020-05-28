@@ -109,7 +109,7 @@ var game;
 				socket.publish(chat.getChannel(), obj);
 			}
 			// party traffic
-			obj.route = 'party->hb'
+			obj.route = 'p->hb'
 			obj.isLeader = typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true
 			socket.publish('party' + my.partyId, {
 				...obj,
