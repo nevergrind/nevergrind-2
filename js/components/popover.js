@@ -39,7 +39,7 @@ var popover;
 			'bar-options': '[ESC] Options',
 			'bar-mission-abandon': 'Abandon Mission'
 		};
-		console.info('setMainMenuHtml', mainMenuPopovers['bar-inventory'])
+		// console.info('setMainMenuHtml', mainMenuPopovers['bar-inventory'])
 		var html = mainMenuPopovers[id];
 		html && popover.show(html);
 	}
@@ -80,7 +80,7 @@ var popover;
 		width = parseInt(style.width, 10)
 		popoverHalfWidth = (padding + width) / 2
 
-		info('posX', my.mouse.x, popoverHalfWidth)
+		// info('posX', my.mouse.x, popoverHalfWidth)
 		if (my.mouse.x < popoverHalfWidth + 10) {
 			my.mouse.x = popoverHalfWidth + 10
 		}

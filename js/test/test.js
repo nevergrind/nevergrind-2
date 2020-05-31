@@ -7,7 +7,7 @@ var test;
 			room: chatRoom,
 			log: chatLog
 		},
-		send: send,
+		send,
 		orcs,
 		opacity,
 		opacityDOM,
@@ -69,10 +69,12 @@ var test;
 			}
 		}
 	}
+	let sendStart = 0
 	function send(loops) {
 		// about 150ms per 1k data packets sent to 4 players
 		loops = loops || 1e3;
 		for (var i=0; i<loops; i++) {
+			if (i === 0) sendStart = Date.now()
 			socket.publish('test', {
 				test: 'asdfasdf',
 				loop: i,
@@ -90,12 +92,13 @@ var test;
 			arr = typeof arr[0] === 'object' ?
 				arr[0] : obj;
 			if (arr.loop === 0) {
-				console.info('first data test received', arr.loop);
+				console.info('socketRx first data test received', arr.loop);
 				start = Date.now();
 			}
 			if (arr.isLastSend) {
 				end = Date.now();
-				console.warn('Total time: ', end - start, 'ms');
+				console.warn('socketRx Send Total time: ', end - sendStart, 'ms');
+				console.warn('socketRx Rx Total time: ', end - start, 'ms');
 			}
 		}
 	}

@@ -185,7 +185,7 @@ var mission;
 					chat.joinChannel('town', 1)
 					game.getPresence()
 					delayedCall(.5, function() {
-						game.heartbeatSend()
+						game.updateChat()
 						chat.modeChange({
 							mode: '/say'
 						})

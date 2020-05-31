@@ -22,6 +22,9 @@ var game;
 		played,
 		getCachedMinutes,
 		initPlayedCache,
+		updateChat,
+		updateParty,
+		updatePartyResources,
 	};
 	/** private */
 	var pingStart = 0;
@@ -56,6 +59,7 @@ var game;
 	var obj;
 	var ping;
 	var el;
+	let partyData
 	/////////////////////////////////////////////////////
 	/** public */
 	function initSocket() {
@@ -67,6 +71,7 @@ var game;
 			playedStart();
 			whisper.listen();
 			listenFriendAlerts();
+			updateParty()
 			guild.listen();
 			game.getPresence();
 		}
@@ -97,42 +102,64 @@ var game;
 				mob.resourceTick()
 			}
 
-			obj = {
-				row: my.row,
-				level: my.level,
-				job: my.job,
-				name: my.name
-			};
 			if (ng.view === 'town') {
-				// town chat traffic
-				obj.route = 'chat->hb';
-				socket.publish(chat.getChannel(), obj);
+				updateChat()
 			}
 			// party traffic
-			obj.route = 'p->hb'
-			obj.isLeader = typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true
-			socket.publish('party' + my.partyId, {
-				...obj,
-				..._.pick(my, partyProps)
-			})
+			updateParty()
 			//console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
 
 			heartbeat.sendTime = time;
 		}
+	}
+	function updateChat() {
+		obj = {
+			row: my.row,
+			level: my.level,
+			job: my.job,
+			name: my.name,
+			route: 'chat->hb',
+		}
+		socket.publish(chat.getChannel(), obj, true)
+		upsertRoom(obj)
+	}
+	function updateParty() {
+		obj = {
+			route: 'p->hb',
+			row: my.row,
+			level: my.level,
+			job: my.job,
+			name: my.name,
+			isLeader: typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true
+		}
+		partyData = {
+			...obj,
+			..._.pick(my, partyProps)
+		}
+		socket.publish('party' + my.partyId, partyData)
+	}
+	function updatePartyResources(changedResourceObj) {
+		// broadcast health update for party member and animate attack
+		partyData = {
+			route: 'p->HP',
+			row: my.row,
+			...changedResourceObj
+		}
+		socket.publish('party' + my.partyId, partyData)
 	}
 	function heartbeatTimeout() {
 		clearTimeout(heartbeat.timer)
 		heartbeat.timer = setTimeout(heartbeatTick, heartbeat.interval * 1000)
 	}
 	function heartbeatReceived(data) {
-		if (data.name === my.name) {
+		/*if (data.name === my.name) {
 			//console.info("%c town heartbeatReceived: ", "background: #025", data.name, data);
 			info('socket rx', socket.published, socket.received)
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
 			bar.updatePing(ping);
-		}
-		upsertRoom(data);
+		}*/
+		upsertRoom(data)
 	}
 	function heartbeatReceivedParty(data) {
 		//console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #048", data.name, data);
@@ -149,6 +176,7 @@ var game;
 		});
 	}
 	function upsertRoom(player) {
+		info('upsertRoom', player)
 		time = Date.now();
 		index = _.findIndex(chat.presence, { row: player.row });
 		if (index >= 0) {
@@ -264,14 +292,14 @@ var game;
 	}
 
 	function activate() {
-		delayedCall(heartbeat.interval, function() {
+		delayedCall(heartbeat.interval, () => {
 			TweenMax.to('#bar-lag', .5, {
 				opacity: 1
 			});
 		});
-		heartbeat.sendTime = Date.now();
-		heartbeat.receiveTime = Date.now();
-		heartbeatTimeout();
+		heartbeat.sendTime = Date.now()
+		heartbeat.receiveTime = Date.now()
+		heartbeatTimeout()
 	}
 	function listenFriendAlerts() {
 		ng.friends.forEach(function(v){

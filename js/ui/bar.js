@@ -363,7 +363,7 @@ var bar;
 			console.info('update char stats')
 			my.cacheStatValues()
 			updateCharStatPanels()
-			game.heartbeatSend()
+			game.updateParty()
 		}
 	}
 
@@ -378,14 +378,14 @@ var bar;
 
 	function updateCharStatPanels() {
 		if (bar.windowsOpen.character) {
-			querySelector('#inv-resist-blood').innerHTML = stats.resistBlood()
-			querySelector('#inv-resist-poison').innerHTML = stats.resistPoison()
-			querySelector('#inv-resist-arcane').innerHTML = stats.resistArcane()
-			querySelector('#inv-resist-lightning').innerHTML = stats.resistLightning()
-			querySelector('#inv-resist-fire').innerHTML = stats.resistFire()
-			querySelector('#inv-resist-ice').innerHTML = stats.resistIce()
-			querySelector('#char-stat-col-1').innerHTML = charStatColOneHtml()
-			querySelector('#char-stat-col-2').innerHTML = charStatColTwoHtml()
+			ng.html('#inv-resist-blood', stats.resistBlood())
+			ng.html('#inv-resist-poison', stats.resistPoison())
+			ng.html('#inv-resist-arcane', stats.resistArcane())
+			ng.html('#inv-resist-lightning', stats.resistLightning())
+			ng.html('#inv-resist-fire', stats.resistFire())
+			ng.html('#inv-resist-ice', stats.resistIce())
+			ng.html('#char-stat-col-1', charStatColOneHtml())
+			ng.html('#char-stat-col-2', charStatColTwoHtml())
 		}
 		stats.setAllResources()
 		my.crit = stats.critChance()
@@ -825,6 +825,8 @@ var bar;
 		// job icon
 		console.info('getPlayerBarHtml', player)
 		html +=
+		// red background
+		'<div id="bar-card-bg-'+ index +'" class="bar-card-bg"></div>' +
 		// avatar
 		'<img id="bar-avatar-'+ index +'" class="bar-avatar" src="'+ player.avatar +'">' +
 		// bars

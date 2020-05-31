@@ -972,6 +972,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-ooc { color: #090; }
 .chat-guild { color: #0f0; }
 .chat-warning { color: #ffff1a; }
+.chat-alert { color: #ff1a1a; }
 .chat-quest { color: gold; }
 
 .chat-help-header {
@@ -1143,19 +1144,28 @@ background-clip: content-box;
 
 .bar-player-wrap {
 	display: flex;
+	position: relative;
 	margin-bottom: .2rem;
 	transform: scale(.875);
 }
-
 .bar-player-wrap:first-of-type {
 	transform: scale(1);
-	background: rgba(0,0,0,.7)
+}
+.bar-card-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #f00;
+	opacity: 0;
 }
 
 .bar-avatar {
 	width: 4rem;
 	height: 4rem;
 	transition: filter .2s ease-out, transform .1s ease-out;
+	z-index: 1;
 }
 .bar-avatar:hover {
 	filter: saturate(1.2) brightness(1.2);

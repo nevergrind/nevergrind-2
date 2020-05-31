@@ -406,9 +406,7 @@ var mob;
 				if (mobRow > -1) {
 					// party.getIndexByRow(mostHatedRow)
 					info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
-					mobDamages = [
-						getMobDamage(i, mobRow)
-					]
+					mobDamages = [getMobDamage(i, mobRow)]
 					if (Math.random() * 100 < mobs[i].doubleAttack) {
 						mobDamages.push(getMobDamage(i, mobRow))
 					}

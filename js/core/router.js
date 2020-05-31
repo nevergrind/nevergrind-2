@@ -40,7 +40,7 @@ var router;
 			game.removePlayer(data)
 		}
 		else if (r === 'chat->getPresence') {
-			game.heartbeatSend()
+			game.updateChat()
 		}
 	}
 	function toParty(data, r) {
@@ -52,12 +52,13 @@ var router;
 		else if (r === 'p->disband') party.disbandReceived(data)
 		else if (r === 'p->promote') party.promoteReceived(data)
 		else if (r === 'p->boot') party.bootReceived(data)
-		else if (r === 'p->getPresence') game.heartbeatSend()
+		else if (r === 'p->getPresence') game.updateParty()
 		else if (r === 'p->goDungeon') dungeon.go(data)
 		else if (r === 'p->goBattle') battle.go(data)
 		else if (r === 'p->damage') combat.rxUpdateDamage(data)
 		else if (r === 'p->mobTick') mob.rxMobResourceTick(data)
-		else if (r === 'p->damageHero') combat.rxDamageHero(data)
+		else if (r === 'p->hit') combat.rxDamageHero(data)
+		else if (r === 'p->HP') party.upsertPartyResource(data)
 	}
 	function toGuild(data, r) {
 		if (r === 'guild->hasJoined') guild.hasJoined(data)

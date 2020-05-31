@@ -6,6 +6,7 @@ var party;
 		maxPlayers: 6,
 		damage: {},
 		getUniquePartyChannel,
+		upsertPartyResource,
 		upsertParty,
 		listen,
 		invite,
@@ -30,6 +31,11 @@ var party;
 	var index;
 	var player;
 	var diff;
+
+	var updateHp = false
+	var updateMp = false
+	var updateSp = false
+	const resourceKeys = ['hp', 'mp', 'sp', 'hpMax', 'mpMax', 'spMax']
 	//////////////////////////////////////
 	function isSomeoneAlive() {
 		return party.presence.some(member => member.hp > 0) || my.hp > 0
@@ -84,8 +90,29 @@ var party;
 			bar.updateBar('sp', data)
 		}
 	}
+	function upsertPartyResource(data) {
+		updateHp = false
+		updateMp = false
+		updateSp = false
+		index = _.findIndex(party.presence, { row: data.row })
+		player = party.presence[index]
+		if (index >= 0) {
+			info('upsertPartyResource', data)
+			for (var key in data) {
+				if (resourceKeys.includes(key)) {
+					player[key] = data[key]
+					if (key === 'hp') updateHp = true
+					if (key === 'mp') updateMp = true
+					if (key === 'sp') updateSp = true
+				}
+			}
+			updateHp && bar.updateBar('hp', data)
+			updateMp && bar.updateBar('mp', data)
+			updateSp && bar.updateBar('sp', data)
+		}
+	}
 	function upsertParty(data) {
-		if (my.partyId !== data.partyId) return;
+		// if (my.partyId !== data.partyId) return;
 		time = Date.now();
 		index = _.findIndex(party.presence, { row: data.row });
 		player = party.presence[index];
@@ -179,7 +206,7 @@ var party;
 	 * LEADER: Sends invite to player
 	 * @param name
 	 */
-	function invite(name) {inviteAccepted
+	function invite(name) {
 		if (my.name === name) chat.log("You can't invite yourself to a party.", 'chat-warning')
 		else if (!party.presence[0].isLeader) chat.log("Only the party leader may send invites.", 'chat-warning')
 		else if (mission.inProgress) chat.log("You cannot invite adventurers to the party after starting the mission.", 'chat-warning')
@@ -338,7 +365,7 @@ var party;
 		if (player.name === my.name) {
 			index = 0;
 			my.isLeader = party.presence[index].isLeader = true;
-			game.heartbeatSend();
+			game.updateParty();
 			console.warn("New leader!", player.name);
 		}
 		else {

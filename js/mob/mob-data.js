@@ -23,7 +23,7 @@ mob.data['Salubrin Den'] = [
 	{
 		img: 'orc',
 		name: 'orc legionnaire',
-		minLevel: 35,
+		minLevel: 1,
 		maxLevel: 60,
 		size: .8,
 		job: 'WAR',

@@ -27,6 +27,8 @@ var ng;
 		goCreateCharacter,
 		toPercentWidth,
 		toPercentHeight,
+		html,
+		getArticle,
 		// defaults are defined in getDefaultOptions
 		selectIndex: 0,
 		initialized: false,
@@ -299,11 +301,14 @@ var ng;
 	let characterData = []
 	ng.selectIndex = 0
 
+	const vowels = 'aeiou'
 	let steam = {
 		screenName: '',
 		steamId: '',
 		handle: 0
 	}
+
+	let el
 
 	$('#ch-card-wrap')
 		.on('click', '#title-select-up', incrementCharacter)
@@ -777,5 +782,12 @@ var ng;
 	}
 	function toPercentHeight(pixels) {
 		return pixels / 1080 * 100
+	}
+	function html(id, html) {
+		el = querySelector(id)
+		if (el !== null) el.innerHTML = html
+	}
+	function getArticle(name) {
+		return vowels.includes(name[0]) ? 'An' : 'A'
 	}
 })($, TweenMax, SplitText);

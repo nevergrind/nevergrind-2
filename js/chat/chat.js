@@ -552,7 +552,7 @@ var chat;
 		})
 		game.getPresence()
 		chat.setHeader()
-		game.heartbeatSend()
+		game.updateChat()
 	}
 	function publishRemove() {
 		socket.publish(chat.getChannel(), {

@@ -4,7 +4,7 @@ var whisper;
 		listen,
 		route
 	};
-	var action;
+	var r;
 	////////////////////////////////////////////////
 	function listen() {
 		socket.subscribe('name' + my.name, whisper.route);
@@ -12,11 +12,11 @@ var whisper;
 
 	function route(data, obj) {
 		data = router.normalizeInput(data, obj)
-		action = data.action
-		if (data.action === 'party') {
+		r = data.action
+		if (r === 'party') {
 			router.party(data, data.route)
 		}
-		else if (action === 'send') {
+		else if (r === 'send') {
 			console.info('Sent whisper: ', data)
 			// report message
 			router.toTown(data, data.route)
@@ -34,7 +34,7 @@ var whisper;
 			})
 		}
 		// receive pong
-		else if (action === 'receive') {
+		else if (r === 'receive') {
 			if (!chat.lastWhisper.name) {
 				chat.lastWhisper = {
 					name: data.name
@@ -46,7 +46,7 @@ var whisper;
 			chat.log(data.msg, data.class)
 		}
 		// guild invite
-		else if (action === 'guild-invite') {
+		else if (r === 'guild-invite') {
 			if (!my.guild.id) {
 				console.info("guild invite received! ", data);
 				toast.add(data);
@@ -58,11 +58,11 @@ var whisper;
 				})
 			}
 		}
-		else if (data.action === 'guild-invite-reject') {
+		else if (r === 'guild-invite-reject') {
 			chat.log(data.name + ' is already in a guild!', 'chat-warning');
 		}
 		// party invite
-		else if (action === 'party-invite') {
+		else if (r === 'party-invite') {
 			if (party.presence.length === 1) {
 				toast.add(data);
 			}
@@ -73,28 +73,28 @@ var whisper;
 				})
 			}
 		}
-		else if (action === 'toast-busy') chat.log(data.name + ' is busy right now.', 'chat-warning')
-		else if (action === 'party-invite-reject') chat.log(data.name + ' is already in a party!', 'chat-warning')
-		else if (action === 'party-confirmed') party.joinConfirmed(data)
-		else if (action === 'party-accept') chat.log(data.name + " has joined the party.", 'chat-warning')
-		else if (action === 'party-invite-decline') chat.log(data.name + " has declined to join the party.", 'chat-warning')
-		else if (action === 'guild-invite-decline') chat.log(data.name + " has declined to join the guild.", 'chat-warning')
-		else if (action === 'friend>addedMe') {
+		else if (r === 'toast-busy') chat.log(data.name + ' is busy right now.', 'chat-warning')
+		else if (r === 'party-invite-reject') chat.log(data.name + ' is already in a party!', 'chat-warning')
+		else if (r === 'party-confirmed') party.joinConfirmed(data)
+		else if (r === 'party-accept') chat.log(data.name + " has joined the party.", 'chat-warning')
+		else if (r === 'party-invite-decline') chat.log(data.name + " has declined to join the party.", 'chat-warning')
+		else if (r === 'guild-invite-decline') chat.log(data.name + " has declined to join the guild.", 'chat-warning')
+		else if (r === 'friend>addedMe') {
 			chat.log(data.name + " has added you to "+ (my.gender === 'M' ? 'his' : 'her') +" friend list.", 'chat-warning');
 		}
-		else if (action === 'friend->getPresence') friend.listReceived(data)
-		else if (action === 'friend->sendPresence') friend.presenceReceived(data)
-		else if (data.action === 'all->received') who.presenceReceived(data)
-		else if (data.action === 'all->byFilterReceived') who.byFilterReceived(data)
-		else if (data.action === 'trade-request') trade.handleRequest(data)
-		else if (data.action === 'trade-reject-busy') trade.rejectTradeBusy(data)
-		else if (data.action === 'trade-request-decline') trade.declineTrade(data)
-		else if (data.action === 'trade-start') trade.tradeStartResp(data)
-		else if (data.action === 'trade-close-received') trade.rxTradeClosedReceived(data)
-		else if (data.action === 'trade-update') trade.rxTradeUpdate(data)
-		else if (data.action === 'trade-update-gold') trade.rxUpdateGold(data)
-		else if (data.action === 'trade-processing') trade.rxProcessing(data)
-		else if (data.action === 'trade-send-slots') trade.rxSlotsAndSend(data)
-		else if (data.action === 'trade-update-inventory') trade.rxUpdateInventory(data)
+		else if (r === 'friend->getPresence') friend.listReceived(data)
+		else if (r === 'friend->sendPresence') friend.presenceReceived(data)
+		else if (r === 'all->received') who.presenceReceived(data)
+		else if (r === 'all->byFilterReceived') who.byFilterReceived(data)
+		else if (r === 'trade-request') trade.handleRequest(data)
+		else if (r === 'trade-reject-busy') trade.rejectTradeBusy(data)
+		else if (r === 'trade-request-decline') trade.declineTrade(data)
+		else if (r === 'trade-start') trade.tradeStartResp(data)
+		else if (r === 'trade-close-received') trade.rxTradeClosedReceived(data)
+		else if (r === 'trade-update') trade.rxTradeUpdate(data)
+		else if (r === 'trade-update-gold') trade.rxUpdateGold(data)
+		else if (r === 'trade-processing') trade.rxProcessing(data)
+		else if (r === 'trade-send-slots') trade.rxSlotsAndSend(data)
+		else if (r === 'trade-update-inventory') trade.rxUpdateInventory(data)
 	}
 })();

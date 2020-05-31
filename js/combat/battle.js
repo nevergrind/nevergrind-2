@@ -138,8 +138,8 @@ var battle;
 
 			if (!ng.isApp) {
 				totalMobs = 5
-				minLevel = 40
-				maxLevel = 55
+				minLevel = 1
+				maxLevel = 5
 			}
 			info('levels', minLevel, maxLevel)
 			var mobSlot

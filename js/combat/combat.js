@@ -19,7 +19,7 @@ var combat;
 		levelSkillCheck,
 		skillLevelChance,
 	}
-	var el, w, h, i, len, damageArr, index
+	var el, w, h, i, len, damageArr, index, key, row, name, damages
 
 	let levelDiff = 0
 
@@ -42,6 +42,7 @@ var combat;
 		strokeThickness: 3,
 	}
 	let chance = 0
+	let hits = {}
 
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
@@ -264,7 +265,7 @@ var combat;
 		party.presence[0].hp = my.hp -= o.damage
 		if (my.hp <= 0) {
 			if (ng.isApp) selfDied()
-			else party.presence[0].hp = my.hp = 1
+			else party.presence[0].hp = my.hp = my.maxHp
 		}
 		bar.updateBar('hp')
 	}
@@ -280,28 +281,35 @@ var combat;
 		}
 
 		// dodge
-		combat.levelSkillCheck('dodge')
-		if (Math.random() * 100 < mobs[d.index].dodge) {
-			warn('I dodged!')
-			d.damage = 0
-			return d
+		if (my.level >= skills['dodge'][my.job].level) {
+			combat.levelSkillCheck('dodge')
+			if (Math.random() * 100 < mobs[d.index].dodge) {
+				warn('I dodged!')
+				d.damage = 0
+				return d
+			}
 		}
 		info('processDamagesHero', d)
 		// info('processDamages', d)
 		if (d.damageType === 'physical') {
 			// riposte
-			combat.levelSkillCheck('riposte')
-			if (Math.random() * 100 < mobs[d.index].riposte) {
-				warn('I riposted!')
-				d.damage = 0
-				return d
+			if (my.level >= skills['riposte'][my.job].level) {
+				combat.levelSkillCheck('riposte')
+				if (Math.random() * 100 < mobs[d.index].riposte) {
+					warn('I riposted!')
+					d.damage = 0
+					return d
+				}
 			}
 			// parry
-			combat.levelSkillCheck('parry')
-			if (Math.random() * 100 < mobs[d.index].parry) {
-				warn('I parried!')
-				d.damage = 0
-				return d
+			if (my.level >= skills['parry'][my.job].level) {
+				combat.levelSkillCheck('parry')
+				if (Math.random() * 100 < mobs[d.index].parry) {
+					warn('I parried!')
+					d.damage = 0
+					return d
+				}
+
 			}
 			// enhancedDamage
 
@@ -333,50 +341,44 @@ var combat;
 		return d
 	}
 	function txDamageHero(damages) {
-		index = party.getIndexByRow(damages[0].row)
-		if (my.row === damages[0].row) {
-			processDamageToMe(damages)
-		}
-		else {
-			// tell party member they were hit
-			if (party.presence[index].name) {
-				socket.publish('party' + my.partyId, {
-					route: 'p->damageHero',
-					d: damages
-				}, true)
-			}
-		}
+		// damages is an object with indices that point to player row (target)
+		info('txDamageHero', damages)
+		processDamageToMe(damages)
+		mob.animateAttack(damages[0].index)
+		// animate mob for other players and check if they were hit
+		socket.publish('party' + my.partyId, {
+			route: 'p->hit',
+			d: damages,
+		}, true)
+	}
+	function rxDamageHero(data) {
+		// mob is hitting me
+		damages = data.d
+		processDamageToMe(damages)
+		info('rx processing damage : ', damages)
 		mob.animateAttack(damages[0].index)
 	}
 	function processDamageToMe(damages) {
-		damages = damages.map(combat.processDamagesHero)
-		damageArr = []
-		len = damages.length
-		for (i=0; i<len; i++) {
-			if (damages[i].damage > 0) {
-				updateHeroHp({
-					row: damages[i].row,
-					damage: damages[i].damage,
-				})
-				damageArr.push({
-					r: damages[i].row,
-					i: damages[i].index,
-					d: damages[i].damage,
-				})
-				info('tx processHit: ', damages[i].damage)
+		if (damages.findIndex(dam => dam.row === my.row) >= 0) {
+			// something hit me
+			damages = damages.map(combat.processDamagesHero)
+			len = damages.length
+			for (i=0; i<len; i++) {
+				if (damages[i].damage > 0) {
+					updateHeroHp({
+						row: damages[i].row,
+						damage: damages[i].damage,
+					})
+					chat.log(ng.getArticle(mobs[damages[i].index].name) + ' ' + mobs[damages[i].index].name + ' hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
+					info('tx processHit: ', damages[i].damage)
+				}
 			}
+			animatePlayerFrames()
+			game.updatePartyResources({
+				hp: my.hp,
+				hpMax: my.hpMax,
+			})
 		}
-		// TODO: if damageArr hits hard enough it should broadcast to party
-	}
-	function rxDamageHero(data) {
-		len = data.d.length
-		for (var i=0; i<len; i++) {
-			if (my.row === data.d[0].row) {
-				processDamageToMe(data.d)
-			}
-			info('rx processing damage : ', data.d[i].d)
-		}
-		mob.animateAttack(data.d[0].index)
 	}
 	function popupDamage(index, damage, isCrit) {
 		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)
@@ -414,6 +416,12 @@ var combat;
 		TweenMax.to(basicText, textDuration, {
 			x: x < 0 ? '-=' + (x * -1) : '+=' + x,
 			ease: Linear.easeOut
+		})
+	}
+	function animatePlayerFrames() {
+		TweenMax.to('#bar-card-bg-' + my.row, .5, {
+			startAt: { opacity: .5 },
+			opacity: 0
 		})
 	}
 	function initCombatTextLayer() {
