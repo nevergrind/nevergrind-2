@@ -71,6 +71,8 @@ var my;
 		// buffs, potions, etc that need to be cancelled on death or whatever. looping through and killing them makes this easier
 	}
 
+	const tabOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
+	let index
 	////////////////////////////////////
 	function fixTarget() {
 		if (typeof mobs[my.target] === 'undefined' || !mobs[my.target].name) {
@@ -85,13 +87,16 @@ var my;
 	}
 	function tabTarget(event, tries) {
 		if (typeof tries === 'undefined') tries = 0
+		index = tabOrder.findIndex(val => val === my.target)
 		if (event.shiftKey) {
-			if (--my.target < 0) my.target = mob.max - 1
+			if (my.target === 0) my.target = tabOrder[tabOrder.length - 1]
+			else my.target = tabOrder[index - 1]
 		}
 		else {
-			if (++my.target >= mob.max) my.target = 0
+			if (my.target === tabOrder[tabOrder.length - 1]) my.target = tabOrder[0]
+			else my.target = tabOrder[index + 1]
 		}
-		if (tries > 9) my.target = -1
+		if (tries > tabOrder.length) my.target = -1
 		else {
 			if (!mobs[my.target].name) {
 				tries++

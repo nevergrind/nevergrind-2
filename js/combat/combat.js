@@ -269,33 +269,33 @@ var combat;
 		}
 		bar.updateBar('hp')
 	}
-	function processDamagesHero(d) {
+	function processDamagesHero(index, d) {
 		if (my.hp <= 0) {
 			d.damage = 0
 			return d
 		}
 
 		// check for things that immediately set to 0
-		if (my.level > mobs[d.index]) {
+		if (my.level > mobs[index]) {
 			levelDiff = 0
 		}
 
+		info('processDamagesHero', index, d)
 		// dodge
 		if (my.level >= skills['dodge'][my.job].level) {
 			combat.levelSkillCheck('dodge')
-			if (Math.random() * 100 < mobs[d.index].dodge) {
+			if (Math.random() * 100 < mobs[index].dodge) {
 				warn('I dodged!')
 				d.damage = 0
 				return d
 			}
 		}
-		info('processDamagesHero', d)
 		// info('processDamages', d)
 		if (d.damageType === 'physical') {
 			// riposte
 			if (my.level >= skills['riposte'][my.job].level) {
 				combat.levelSkillCheck('riposte')
-				if (Math.random() * 100 < mobs[d.index].riposte) {
+				if (Math.random() * 100 < mobs[index].riposte) {
 					warn('I riposted!')
 					d.damage = 0
 					return d
@@ -304,7 +304,7 @@ var combat;
 			// parry
 			if (my.level >= skills['parry'][my.job].level) {
 				combat.levelSkillCheck('parry')
-				if (Math.random() * 100 < mobs[d.index].parry) {
+				if (Math.random() * 100 < mobs[index].parry) {
 					warn('I parried!')
 					d.damage = 0
 					return d
@@ -331,8 +331,8 @@ var combat;
 			// magMit
 
 			// mob magic resists
-			info('fire:', d.index, mobs[d.index])
-			d.damage *= mobs[d.index].resist[d.damageType]
+			info('fire:', index, mobs[index])
+			d.damage *= mobs[index].resist[d.damageType]
 
 		}
 		// final sanity checks
@@ -340,28 +340,29 @@ var combat;
 		combat.levelSkillCheck('defense')
 		return d
 	}
-	function txDamageHero(damages) {
+	function txDamageHero(index, damages) {
 		// damages is an object with indices that point to player row (target)
 		info('txDamageHero', damages)
-		processDamageToMe(damages)
-		mob.animateAttack(damages[0].index)
+		processDamageToMe(index, damages)
+		mob.animateAttack(index)
 		// animate mob for other players and check if they were hit
 		socket.publish('party' + my.partyId, {
 			route: 'p->hit',
+			i: index,
 			d: damages,
 		}, true)
 	}
 	function rxDamageHero(data) {
 		// mob is hitting me
 		damages = data.d
-		processDamageToMe(damages)
+		processDamageToMe(data.i, damages)
 		info('rx processing damage : ', damages)
-		mob.animateAttack(damages[0].index)
+		mob.animateAttack(data.i)
 	}
-	function processDamageToMe(damages) {
+	function processDamageToMe(index, damages) {
 		if (damages.findIndex(dam => dam.row === my.row) >= 0) {
 			// something hit me
-			damages = damages.map(combat.processDamagesHero)
+			damages = damages.map(dam => combat.processDamagesHero(index, dam))
 			len = damages.length
 			for (i=0; i<len; i++) {
 				if (damages[i].damage > 0) {
@@ -369,7 +370,7 @@ var combat;
 						row: damages[i].row,
 						damage: damages[i].damage,
 					})
-					chat.log(ng.getArticle(mobs[damages[i].index].name) + ' ' + mobs[damages[i].index].name + ' hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
+					chat.log(ng.getArticle(mobs[index].name) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
 					info('tx processHit: ', damages[i].damage)
 				}
 			}

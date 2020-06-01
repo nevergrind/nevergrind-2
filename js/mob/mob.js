@@ -35,6 +35,7 @@ var mob;
 		special,
 		death,
 		killAttacks,
+		getHitArea,
 	};
 	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el
 	var frame = {
@@ -389,7 +390,6 @@ var mob;
 	function getMobDamage(i, row) {
 		return {
 			row: row,
-			index: i,
 			damage: _.random(ceil(mobs[i].level * .33), mobs[i].attack),
 			damageType: 'physical'
 		}
@@ -410,7 +410,7 @@ var mob;
 					if (Math.random() * 100 < mobs[i].doubleAttack) {
 						mobDamages.push(getMobDamage(i, mobRow))
 					}
-					combat.txDamageHero(mobDamages)
+					combat.txDamageHero(i, mobDamages)
 				}
 			}
 		}
@@ -757,6 +757,17 @@ var mob;
 			drawMobBar(tick.i)
 			info('resource tick B', tick)
 		})
+	}
+	function getHitArea(mob) {
+		var o = mobs.images[mob]
+		let c = {
+			x: (o.width * .5) - (o.clickAliveW * .5),
+			y: o.height - o.clickAliveY - o.clickAliveH,
+			w: o.clickAliveW,
+			h: o.clickAliveH
+		}
+		info('coords', c)
+		return new PIXI.Rectangle(c.x, c.y, c.w, c.h)
 	}
 
 })(TweenMax, $, _, Object, Linear);

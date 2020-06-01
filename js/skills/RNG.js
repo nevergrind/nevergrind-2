@@ -22,7 +22,7 @@
 		// check constraints
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		if (!battle.targetIsFrontRow()) {
-			chat.log('You must choose a target in the front row when using ' + data.name + '!', 'chat-warning')
+			chat.log(data.name + ' must target the front row!', 'chat-warning')
 			return
 		}
 		my.fixTarget()

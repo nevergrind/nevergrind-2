@@ -38,6 +38,9 @@ var test;
 		animateBtn,
 		lootItems,
 		pixi,
+		mobImage,
+		mobPix,
+		textures: [],
 	}
 
 	var c;
@@ -433,4 +436,83 @@ var test;
 		pixApp.view.style.width = width + 'px';
 		pixApp.view.style.height = height + 'px';
 	}
+	function mobImage() {
+		let el = createElement('img')
+		el.style.position = 'absolute'
+		el.style.zIndex = 999
+		el.style.left = _.random(-300, 800) + 'px'
+		el.style.top = _.random(-200, 300) + 'px'
+		el.src = 'mobs/orc/1.png'
+		document.body.appendChild(el)
+		let o = {
+			frame: 1
+		}
+		TweenMax.to(o, 1.75, {
+			frame: 105,
+			onUpdate: setImg,
+			onUpdateParams: [el, o],
+			ease: Linear.easeNone,
+			repeat: -1,
+		})
+	}
+	function setImg(el, o) {
+		el.src = 'mobs/orc/' + ~~o.frame + '.png'
+	}
+	function mobPix(mobName) {
+		mobName = mobName || 'orc'
+		const defaultIcon = "url('css/cursor/normal.cur'), auto"
+		const hoverIcon = "url('css/cursor/pointer.cur'), auto"
+		if (!test.mob) {
+			test.mob = new PIXI.Application({
+				width: 1920,
+				height: 1080,
+				transparent: true
+			});
+			test.mob.view.style.position = 'absolute'
+			test.mob.view.style.zIndex = 999
+			test.mob.view.style.left = '0px'
+			test.mob.view.style.top = '0px'
+			//test.mob.renderer.plugins.interaction.cursorStyles.default = defaultIcon
+			// test.mob.renderer.plugins.interaction.cursorStyles.hover = hoverIcon
+			//test.mob.renderer.plugins.interaction.cursorStyles.hover = "url('images/favicon.png'), auto"
+
+			test.textures = []
+			for (var i=1; i<=105; i++) {
+				test.textures[i] = PIXI.Texture.from('mobs/'+ mobName +'/'+ i +'.png')
+			}
+		}
+		querySelector('body').appendChild(test.mob.view)
+
+		let mobSprite = PIXI.Sprite.from('mobs/orc/1.png')
+		let x = _.random(-480, 1920 - 960)
+		let y = _.random(-400, 1080 - 800)
+		mobSprite.x = x
+		mobSprite.y = y
+		mobSprite.interactive = true
+		mobSprite.buttonMode = true
+		mobSprite.hitArea = mob.getHitArea(mobName)
+		mobSprite.cursor = hoverIcon
+		mobSprite.on('pointerdown', onMobClick)
+		test.sprite = mobSprite
+
+		test.mob.stage.addChild(mobSprite)
+
+		let o = { frame: 1 }
+		TweenMax.to(o, 1.75, {
+			frame: 105,
+			onUpdate: setPix,
+			onUpdateParams: [mobSprite, o],
+			ease: Linear.easeNone,
+			repeat: -1,
+		})
+	}
+
+	function onMobClick(e) {
+		info('click!', e)
+	}
+
+	function setPix(el, o) {
+		el.texture = test.textures[~~o.frame]
+	}
+
 })(Linear, TweenMax, TimelineMax, PIXI, $);
