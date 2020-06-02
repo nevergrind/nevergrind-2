@@ -9,7 +9,7 @@ mobs.images = {
 		yoyo: true,
 		cache: [],
 		frameSpeed: .05,
-		barAliveBottom: 620,
+		barAliveBottom: 570,
 		barDeathBottom: 240,
 		shadowBottom: 40,
 		shadowWidth: 400,
@@ -191,7 +191,7 @@ mobs.images = {
 		enableSecondary: false,
 		enableSpecial: true
 	},
-	'snake': {
+	snake: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 160,
@@ -204,8 +204,8 @@ mobs.images = {
 		barAliveBottom: 320,
 		barDeathBottom: 200,
 		shadowBottom: 40,
-		shadowWidth: 200,
-		shadowHeight: 60,
+		shadowWidth: 120,
+		shadowHeight: 30,
 		clickAliveY: 30,
 		clickAliveW: 150,
 		clickAliveH: 230,
@@ -215,7 +215,7 @@ mobs.images = {
 		enableSecondary: false,
 		enableSpecial: true
 	},
-	'dragonkin': {
+	dragonkin: {
 		imgW: 1300,
 		imgH: 1300,
 		imgCy: 340,

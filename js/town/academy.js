@@ -23,7 +23,7 @@ var academy;
 		.on('click', '#train-buy', handleTrainBuy)
 	///////////////////////////////////////////
 	function handleTrainBuy() {
-		info('handleTrainBuy', selected)
+		console.info('handleTrainBuy', selected)
 		if (!selected.cost) {
 			ng.splitText('various-description', 'Please clarify which skill you would like to train.')
 			return

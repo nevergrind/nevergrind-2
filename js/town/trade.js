@@ -45,9 +45,9 @@ var trade;
 	function droppedItem() {
 		warn('trade dropToOtherSlots ', item.dropType, ' is client side only. Skipping update-item.php')
 
-		info('trade drag', item.dragType, item.dragSlot, item.dragData)
+		console.info('trade drag', item.dragType, item.dragSlot, item.dragData)
 
-		info('trade drop', item.dropType, item.dropSlot, item.dropData)
+		console.info('trade drop', item.dropType, item.dropSlot, item.dropData)
 		querySelector('#' + item.dropType + '-name-' + item.dropSlot).innerHTML = item.getItemNameString(item.dragData, item.dragData.baseName, true)
 		// broadcast to tradeFrom
 
@@ -79,7 +79,7 @@ var trade;
 		querySelector('#tradeTo-name-' + obj.slot).innerHTML = item.getItemNameString(obj.data.tradeTo, obj.data.tradeTo.baseName, true)
 	}
 	function rxTradeUpdate(obj) {
-		info('trade rxTradeUpdate', obj.data)
+		console.info('trade rxTradeUpdate', obj.data)
 		if (trade.data.name) {
 			for (key in obj.data) {
 				if (key === 'tradeTo') {
@@ -110,9 +110,9 @@ var trade;
 		el.classList.remove('no-pointer')
 	}
 	function tradeConfirm() {
-		info('tradeConfirm tradeTo', items.tradeTo)
-		info('tradeConfirm tradeFrom', items.tradeFrom)
-		info('valid?', isTradeValid())
+		console.info('tradeConfirm tradeTo', items.tradeTo)
+		console.info('tradeConfirm tradeFrom', items.tradeFrom)
+		console.info('valid?', isTradeValid())
 		if (my.gold - trade.gold + trade.data.gold > trade.MAX_GOLD) {
 			ng.msg('This trade would put you over the gold limit! It is illegal to have that much gold!')
 			return
@@ -122,10 +122,10 @@ var trade;
 			confirmed: true,
 		})
 		if (trade.confirmed && trade.data.confirmed) {
-			info('availableInvSlots', availableInvSlots())
-			info('trade.data.availableSlots', trade.data.availableSlots)
-			info('countToItems', countToItems())
-			info('countFromItems', countFromItems())
+			console.info('availableInvSlots', availableInvSlots())
+			console.info('trade.data.availableSlots', trade.data.availableSlots)
+			console.info('countToItems', countToItems())
+			console.info('countFromItems', countFromItems())
 			slots = availableInvSlots()
 			warn('///////////////////////////// availableInvSlots', slots)
 			warn('compare 1', countToItems(), '>', slots.length, '?')
@@ -161,7 +161,7 @@ var trade;
 		el = $(this)
 		val = el.val() * 1
 		max = maxGoldSend()
-		info('val', val)
+		console.info('val', val)
 		if (val < 0) {
 			val = 0
 			el.val(val)
@@ -174,7 +174,7 @@ var trade;
 		}
 		if (val > my.gold) val = my.gold
 		trade.gold = val
-		info('final val', val)
+		console.info('final val', val)
 		tradeChanged()
 
 		updateTrade({
@@ -242,14 +242,14 @@ var trade;
 			txCloseTradeWindow(msg)
 		}
 		else {
-			info('tradeCompleted gold', trade.gold)
-			info('tradeCompleted gold 2', trade.data.gold)
+			console.info('tradeCompleted gold', trade.gold)
+			console.info('tradeCompleted gold 2', trade.data.gold)
 
-			info('tradeCompleted tradeFrom', items.tradeFrom)
-			info('trade rxSlotsAndSend slotsFrom', slotsFrom)
+			console.info('tradeCompleted tradeFrom', items.tradeFrom)
+			console.info('trade rxSlotsAndSend slotsFrom', slotsFrom)
 
-			info('tradeCompleted tradeTo', items.tradeTo)
-			info('trade rxSlotsAndSend slotsTo', slotsTo)
+			console.info('tradeCompleted tradeTo', items.tradeTo)
+			console.info('trade rxSlotsAndSend slotsTo', slotsTo)
 			//TODO: build object that has item1, slot1 etc and new owner id (row)
 			var postData = {
 				fromGold: fromGold,
@@ -259,7 +259,7 @@ var trade;
 				tradeTo: convertItemsForDb(items.tradeTo, slotsFrom),
 			}
 
-			info('trade postData', postData)
+			console.info('trade postData', postData)
 			//TODO: when done load inventory and broadcast to load inventory
 
 			$.post(app.url + 'item/trade-item.php', postData).done(() => {
@@ -282,7 +282,7 @@ var trade;
 		}
 	}
 	function rxUpdateInventory() {
-		info('trade-update-gold rxUpdateInventory')
+		console.info('trade-update-gold rxUpdateInventory')
 		$.get(app.url + 'item/get-inventory.php').done(finishTrade)
 	}
 	function finishTrade(data) {
@@ -306,7 +306,7 @@ var trade;
 		})
 	}
 	function rxUpdateGold(data) {
-		info('trade rxUpdateGold gold set to ', data.gold)
+		console.info('trade rxUpdateGold gold set to ', data.gold)
 		town.setMyGold(data.gold)
 		closeTradeWindow()
 	}
@@ -327,7 +327,7 @@ var trade;
 		trade.timer = delayedCall(toast.expired, tradeExpired, [trade.data.name])
 	}
 	function handleRequest(data) {
-		info('trade handleRequest', data)
+		console.info('trade handleRequest', data)
 		if (toast.data.action || trade.data.name) {
 			socket.publish('name' + data.name, {
 				action: 'trade-reject-busy',
@@ -436,7 +436,7 @@ var trade;
 		console.info('openTradeWindow', trade.data)
 	}
 	function txCloseTradeWindow(msg) {
-		info('trade txCloseTradeWindow', 'name' + trade.data.name)
+		console.info('trade txCloseTradeWindow', 'name' + trade.data.name)
 		socket.publish('name' + trade.data.name, {
 			action: 'trade-close-received',
 			msg: msg
@@ -444,7 +444,7 @@ var trade;
 		closeTradeWindow()
 	}
 	function rxTradeClosedReceived(data) {
-		info('trade tradeClosedReceived')
+		console.info('trade tradeClosedReceived')
 		msg = data.msg || trade.data.name + ' closed the chat window.'
 		if (trade.data.name) {
 			chat.log(msg, 'chat-warning')
@@ -463,13 +463,13 @@ var trade;
 	}
 
 	function rejectTradeBusy(data) {
-		info('rejectTradeBusy', data)
+		console.info('rejectTradeBusy', data)
 		trade.data = {}
 		trade.timer.kill()
 		chat.log(data.name + ' is busy right now.')
 	}
 	function declineTrade(data) {
-		info('sendDecline', data)
+		console.info('sendDecline', data)
 		trade.timer.kill()
 		trade.data = {}
 		chat.log(data.name + ' rejected your trade request.')

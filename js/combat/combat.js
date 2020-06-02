@@ -123,7 +123,7 @@ var combat;
 		}
 		else {
 			// mob magic resists
-			info('fire:', d.index, mobs[d.index])
+			console.info('fire:', d.index, mobs[d.index])
 			d.damage *= mobs[d.index].resist[d.damageType]
 
 		}
@@ -172,7 +172,7 @@ var combat;
 	function updateMobHp(o) {
 		mobs[o.index].hp -= o.damage
 		if (!o.hate) o.hate = 1
-		party.damage[o.row] += (o.damage * o.hate)
+		party.damage[o.row] += o.damage
 
 		// alive
 		mob.hit(o.index)
@@ -198,14 +198,17 @@ var combat;
 					row: my.row,
 					index: damages[i].index,
 					damage: damages[i].damage,
+					isCrit: damages[i].isCrit,
+					hate: damages[i].hate,
 				})
 				damageArr.push({
 					r: my.row,
 					i: damages[i].index,
 					d: damages[i].damage,
 					c: damages[i].isCrit,
+					h: damages[i].hate,
 				})
-				info('tx processHit: ', damages[i].damage)
+				console.info('tx processHit: ', damages[i].damage)
 			}
 		}
 		if (damageArr.length) {
@@ -222,9 +225,10 @@ var combat;
 				row: data.d[i].r,
 				index: data.d[i].i,
 				damage: data.d[i].d,
-				crit: data.d[i].c
+				crit: data.d[i].c,
+				hate: data.d[i].h,
 			})
-			info('rx processing damage : ', data.d[i].d)
+			console.info('rx processing damage : ', data.d[i].d)
 		}
 	}
 
@@ -265,7 +269,7 @@ var combat;
 		party.presence[0].hp = my.hp -= o.damage
 		if (my.hp <= 0) {
 			if (ng.isApp) selfDied()
-			else party.presence[0].hp = my.hp = my.maxHp
+			else party.presence[0].hp = my.hp = my.hpMax
 		}
 		bar.updateBar('hp')
 	}
@@ -280,7 +284,7 @@ var combat;
 			levelDiff = 0
 		}
 
-		info('processDamagesHero', index, d)
+		console.info('processDamagesHero', index, d)
 		// dodge
 		if (my.level >= skills['dodge'][my.job].level) {
 			combat.levelSkillCheck('dodge')
@@ -316,6 +320,10 @@ var combat;
 			// reduce enhancedDamage
 			let damageReduced = 1 - stats.armorReductionRatio()
 			let amountReduced = _.random(damageReduced, 1)
+
+			if (buff.isSuppressing.includes(index)) {
+				amountReduced = .5
+			}
 			d.damage *= amountReduced
 
 			// damage penalties
@@ -331,7 +339,7 @@ var combat;
 			// magMit
 
 			// mob magic resists
-			info('fire:', index, mobs[index])
+			console.info('fire:', index, mobs[index])
 			d.damage *= mobs[index].resist[d.damageType]
 
 		}
@@ -342,7 +350,7 @@ var combat;
 	}
 	function txDamageHero(index, damages) {
 		// damages is an object with indices that point to player row (target)
-		info('txDamageHero', damages)
+		console.info('txDamageHero', damages)
 		processDamageToMe(index, damages)
 		mob.animateAttack(index)
 		// animate mob for other players and check if they were hit
@@ -356,7 +364,7 @@ var combat;
 		// mob is hitting me
 		damages = data.d
 		processDamageToMe(data.i, damages)
-		info('rx processing damage : ', damages)
+		console.info('rx processing damage : ', damages)
 		mob.animateAttack(data.i)
 	}
 	function processDamageToMe(index, damages) {
@@ -371,7 +379,7 @@ var combat;
 						damage: damages[i].damage,
 					})
 					chat.log(ng.getArticle(mobs[index].name) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
-					info('tx processHit: ', damages[i].damage)
+					console.info('tx processHit: ', damages[i].damage)
 				}
 			}
 			animatePlayerFrames()
@@ -408,7 +416,7 @@ var combat;
 			pixi: { scale: 1 },
 		})
 		TweenMax.to(basicText, textDuration, {
-			startAt: { pixi: { brightness: isCrit ? 3 : 7, saturate: isCrit ? 3 : 7 }},
+			startAt: { pixi: { brightness: isCrit ? 5 : 12, saturate: isCrit ? 5 : 12 }},
 			pixi: { brightness: 1, saturate: 1 },
 
 		})
@@ -444,6 +452,9 @@ var combat;
 		h = ~~(combat.text.screen.height / env.maxHeight * window.innerHeight)
 		combat.text.view.style.width = w + 'px';
 		combat.text.view.style.height = h + 'px';
+
+		battle.layer.view.style.width = w + 'px';
+		battle.layer.view.style.height = h + 'px';
 	}
 	function removeText(id) {
 		el = pix.getId(combat.text, id)
@@ -461,7 +472,7 @@ var combat;
 			}
 			index++
 		}
-		info('targetChanged my.target =>', my.target, mobs[my.target].level, mobs[my.target])
+		console.info('targetChanged my.target =>', my.target, mobs[my.target].level, mobs[my.target])
 		if (combat.isValidTarget()){
 			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
 		}

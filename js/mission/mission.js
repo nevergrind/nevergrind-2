@@ -161,7 +161,7 @@ var mission;
 	}
 
 	function abandonReceived(data) {
-		info('abandonReceived', data)
+		console.info('abandonReceived', data)
 		chat.log(data.msg, 'chat-warning')
 		ng.msg(data.popupMsg, 4)
 		mission.abort()

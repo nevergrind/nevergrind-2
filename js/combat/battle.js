@@ -1,13 +1,11 @@
 var battle;
-(function(TweenMax, $, _, undefined) {
+(function(TweenMax, $, _, PIXI, undefined) {
 	battle = {
 		initialized: 0,
 		getSplashTarget,
 		go,
 		show,
 		html,
-		getBox,
-		getResponsiveCenter,
 		targetIsFrontRow,
 		targetIsBackRow,
 		updateTarget,
@@ -57,6 +55,9 @@ var battle;
 		chat.sizeSmall()
 		mob.init()
 		game.emptyScenesExcept('scene-battle')
+		if (chat.modeCommand === '/say') {
+			chat.modeChange({ mode: '/party' })
+		}
 
 		querySelector('#town-footer-wrap').style.display = 'none'
 		ng.setScene('battle')
@@ -87,27 +88,42 @@ var battle;
 		party.presence.forEach(member => {
 			party.damage[member.row] = 0
 		})
-
 		button.setAll()
-		combat.initCombatTextLayer()
+		initBattleLayer()
+		combat.initCombatTextLayer() // must come after battle
+
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
-		if (typeof data === 'object' && typeof data.config === 'object' && data.config.length) {
+		if (typeof data === 'object' &&
+			typeof data.config === 'object' &&
+			data.config.length) {
 			warn('data in from goBattle', data.config)
 			setupMobs(data.config)
 		}
-		else {
-			setupMobs()
-		}
+		else setupMobs()
+
 		my.fixTarget()
 		battle.updateTarget()
 		if (party.presence[0].isLeader) {
-			info('txData!', mob.txData)
+			console.info('txData!', mob.txData)
 			socket.publish('party' + my.partyId, {
 				route: 'p->goBattle',
 				config: mob.txData
 			})
 		}
+	}
+	function initBattleLayer() {
+		battle.layer = new PIXI.Application({
+			width: 1920,
+			height: 1080,
+			transparent: true
+		});
+		battle.layer.stage.sortableChildren = true
+		battle.layer.view.id = 'battle-layer'
+		battle.layer.view.style.pointerEvents = 'none'
+		battle.layer.view.style.position = 'absolute'
+		battle.layer.view.style.zIndex = 1
+		querySelector('#scene-battle').appendChild(battle.layer.view)
 	}
 	function setupMobs(config) {
 		if (typeof config === 'object') {
@@ -139,22 +155,34 @@ var battle;
 			if (!ng.isApp) {
 				totalMobs = 5
 				minLevel = 1
-				maxLevel = 3
+				maxLevel = 1
 			}
-			info('levels', minLevel, maxLevel)
+			console.info('levels', minLevel, maxLevel)
 			var mobSlot
+			mob.textures = {}
 			for (i=0; i<totalMobs; i++) {
 				if (!i) mobSlot = 2
 				else mobSlot = _.random(0, availableSlots.length - 1)
+				let imgName = 'orc'
 
 				let mobConfig = mob.configMobType({
-					img: 'orc',
-					name: 'orc legionnaire',
+					img: imgName,
+					name: 'orc centurion',
 					minLevel: minLevel,
 					maxLevel: maxLevel,
 				})
+				loadTextures(imgName)
 				mob.setMob(availableSlots[mobSlot], mobConfig)
 				_.remove(availableSlots, val => val === availableSlots[mobSlot])
+			}
+		}
+	}
+	function loadTextures(imgName) {
+		if (typeof mob.textures[imgName] === 'undefined') {
+			mob.textures[imgName] = []
+			warn('textures loading for', imgName)
+			for (var i=1; i<=105; i++) {
+				mob.textures[imgName][i] = PIXI.Texture.from('mobs/'+ imgName +'/'+ i +'.png')
 			}
 		}
 	}
@@ -162,6 +190,7 @@ var battle;
 	let targetHtml = ''
 	function updateTarget(drawInstant) {
 		if (combat.isValidTarget()) {
+			console.info('updateTarget', my.target)
 			targetHtml =  '<div id="mob-target-name" class="'+ combat.getDiffClass(mobs[my.target].level) +'">'+ mobs[my.target].name +'</div>' +
 				'<div id="mob-target-bar-wrap">'+
 					'<div id="mob-target-hp-wrap">'+
@@ -183,18 +212,14 @@ var battle;
 	}
 
 	function html() {
-		info('target:', my.target)
+		//info('target:', my.target)
 		var s =
 			'<img id="battle-bg" src="'+ mission.getZoneImg() +'">' +
 			'<img id="battle-fg" src="images/battle/tendolin-hollow-2-fg.png" class="no-pointer">';
 
 		s += '<div id="mob-target-wrap" class="text-shadow3"></div>'
 		for (var i=0; i<mob.max; i++){
-			//test = i === 2 ? "" : " test";
-			test = '';
-			s +=
-			'<div id="mob-center-' +i+ '" class="mob-center"></div>' +
-			'<div id="mob-wrap-' +i+ '" class="mob-wrap' + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
+			s += '<div id="mob-wrap-' +i+ '" class="mob-wrap' + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
 				'<div id="mob-details-' +i+ '" class="mob-details" index="' + i + '">' +
 					'<div id="mob-name-' +i+ '" class="mob-name text-shadow3"></div>' +
 					'<div id="mob-bar-' +i+ '" class="mob-bar">' +
@@ -203,12 +228,9 @@ var battle;
 					'</div>' +
 				'</div>' +
 				'<div id="mob-shadow-' +i+ '" class="mob-shadow"></div>' +
-				'<div class="mob-img-wrap">' +
-					'<img id="mob-img-' +i+ '" class="mob-img" src="images/blank.png">' +
-				'</div>' +
 				'<div id="mob-alive-' +i+ '" class="mob-alive" index="' + i + '"></div>' +
 				'<div id="mob-dead-' +i+ '" class="mob-dead" index="' + i + '"></div>' +
-			'</div>';
+			'</div>'
 		}
 		return s;
 	}
@@ -222,20 +244,4 @@ var battle;
 			battle.isInit = 1;
 		}
 	}
-	function getResponsiveCenter(i) {
-		// responsive center
-		return ~~(mob.centerX[i] * (window.innerWidth / 1920));
-	}
-	function getBox(i) {
-		// return absolute positioning about a specific mob box
-		var c = battle.getResponsiveCenter(i),
-			cy = ~~(mob.bottomY[i] + (mobs[i].imgCy * mobs[i].size));
-
-		return x = {
-			x: ~~(c - (mobs[i].width * .5)),
-			y: mob.bottomY[i],
-			cx: c,
-			cy: cy
-		}
-	}
-})(TweenMax, $, _);
+})(TweenMax, $, _, PIXI);

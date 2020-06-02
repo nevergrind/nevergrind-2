@@ -40,7 +40,7 @@ var toast;
 			if (data.action === 'trade-request') {
 				trade.timer = delayedCall(toast.expired, trade.tradeExpired, [ data.name ])
 				if (!ng.isApp) {
-					info('toast data', _.cloneDeep(toast.data))
+					console.info('toast data', _.cloneDeep(toast.data))
 					setTimeout(toast.accept, 100)
 				}
 			}

@@ -125,7 +125,7 @@ var chat;
 		mode = mode.replace(/^\s+/g, '');
 
 		if (mode === '/say' && !my.channel) {
-			log("You cannot communicate in town while in a dungeon", 'chat-warning');
+			console.log("You cannot communicate in town while in a dungeon", 'chat-warning');
 			delayedCall(0, function() {
 				// wipe input after keyup to get rid of /say
 				$("#chat-input").val('');
@@ -237,7 +237,7 @@ var chat;
 			}
 			el.innerHTML = msg
 			chat.dom.chatLog.appendChild(el)
-			setTimeout(chat.scrollBottom)
+			chat.scrollBottom()
 		}
 	}
 	function updateHistory(msg) {
@@ -253,7 +253,7 @@ var chat;
 	}
 	function help(filter) {
 		if (filter) log('<div class="chat-warning">Showing help results for <b>/help '+ filter +'</b>:</div>')
-		log(chat.divider)
+		console.log(chat.divider)
 		helpHtml = ''
 		for (var i=0, len=helpArr.length; i<len; i++) {
 			if (filter) {
@@ -310,9 +310,9 @@ var chat;
 			// whisper
 			if (my.name !== chat.modeName) {
 				if (ng.ignore.includes(chat.modeName)) {
-					log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', 'chat-warning');
+					console.log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', 'chat-warning');
 				}
-				info('@ send', msg)
+				console.info('@ send', msg)
 				socket.publish('name' + _.toLower(chat.modeName), {
 					job: my.job,
 					name: my.name,
@@ -336,11 +336,11 @@ var chat;
 				if (o.msg[0] !== '/') {
 					console.info(o)
 					if (!my.guild.id && o.category.startsWith('guild')) {
-						log("You are not in a guild.", 'chat-warning')
+						console.log("You are not in a guild.", 'chat-warning')
 					}
 					else {
 						if (o.category === 'ng2') {
-							log("You cannot communicate in town while in a dungeon", 'chat-warning')
+							console.log("You cannot communicate in town while in a dungeon", 'chat-warning')
 						}
 						else {
 							socket.publish(_.toLower(o.category), {
@@ -442,7 +442,7 @@ var chat;
 		}
 		else {
 			if (ng.view !== 'title') {
-				log('Camping...', 'chat-warning');
+				console.log('Camping...', 'chat-warning');
 			}
 			// from town
 			if (ng.view === 'town') {
@@ -512,7 +512,7 @@ var chat;
 						channel: channel
 					}).done(function (data) {
 						clearLog();
-						log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>');
+						console.log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>');
 						joinChangeCallback(data);
 					});
 				}

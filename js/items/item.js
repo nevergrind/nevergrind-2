@@ -1682,7 +1682,7 @@ var loot = {};
 			chat.log('You cannot equip unidentified items! Try buying an Identify Scroll from the merchant.', 'chat-warning')
 			return false
 		}
-		info('itemLevel', my.level, itemLevel)
+		console.info('itemLevel', my.level, itemLevel)
 		if (my.level < itemLevel) {
 			chat.log('Your level is not high enough to equip this item!', 'chat-warning')
 			return false
@@ -1767,7 +1767,7 @@ var loot = {};
 		item.identifyItemMode = false
 		item.isContextClick = false;
 		$('#temp-dnd-link').remove()
-		info('handleDropAlways')
+		console.info('handleDropAlways')
 	}
 
 	function getDragItemName() {
@@ -2001,7 +2001,7 @@ var loot = {};
 				data: JSON.stringify(_.omit(newItem, ['name'])),
 				scrollRow: items[scrollType][scrollIndex].row,
 			}).done(resp => {
-				info('okokokok', resp)
+				console.info('okokokok', resp)
 				items[scrollType][scrollIndex] = {}
 				items[itemType][itemSlot].unidentified = false
 				bar.updateItemSlotDOM(scrollType, scrollIndex)

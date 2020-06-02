@@ -176,6 +176,10 @@ html {
 	overflow: hidden;
 	cursor: url('cursor/normal.cur'), auto;
 }
+canvas {
+	min-width: 1280px;
+	min-height: 720px;
+}
 label {
 	font-weight: normal;
 	display: block;
@@ -571,23 +575,24 @@ tbody { border: 0 }
 	overflow: visible;
 }
 
-#mob-wrap-0 { left: 10%; z-index: 1 }
-#mob-wrap-1 { left: 30%; z-index: 1 }
-#mob-wrap-2 { left: 50%; z-index: 1 }
-#mob-wrap-3 { left: 70%; z-index: 1 }
-#mob-wrap-4 { left: 90%; z-index: 1 }
-#mob-wrap-5 { left: 20% }
+#mob-wrap-0 { left: 10%; }
+#mob-wrap-1 { left: 30%; }
+#mob-wrap-2 { left: 50%; }
+#mob-wrap-3 { left: 70%; }
+#mob-wrap-4 { left: 90%; }
+#mob-wrap-5 { left: 20%; }
 #mob-wrap-6 { left: 40%; }
 #mob-wrap-7 { left: 60%; }
 #mob-wrap-8 { left: 80%; }
-.mob-front-row { bottom: 11rem; }
-.mob-back-row { bottom: 16.5rem; }
+.mob-front-row { bottom: 18.51%; }
+.mob-back-row { bottom: 27.77%; }
 .mob-details {
 	position: absolute;
 	display: none;
 	left: -5rem;
 	width: 10rem;
 	cursor: url('cursor/pointer.cur'), pointer;
+	z-index: 2
 }
 .mob-details.targeted .mob-name {
 	animation: repeat-mob-name .1s ease-out infinite;
@@ -631,35 +636,25 @@ tbody { border: 0 }
 	left: 0;
 	z-index: 1;
 }
-.mob-shadow {
-	position: absolute;
-	display: none;
-	transform: translate(-50%);
-	bottom: 1.5rem;
-	border-radius: 50%;
-	background: radial-gradient(farthest-side at 50% 50%, rgba(0, 0, 0, .8) 0%, rgba(0, 0, 0, .8) 30%, rgba(0, 0, 0, 0) 100%);
-	height: 2rem;
-	width: 20rem;
-	z-index: 0;
-	/*outline: 2px dotted #aaa;*/
-}
 .mob-img {
 	position: absolute;
 	left: -50%;
 	bottom: 0;
 	pointer-events: none;
 }
-.mob-center {
-	display: none;
-	position: absolute;
-	border-radius: 50%;
-	border: .2rem solid #000;
-	background: #f00;
-	left: -.55rem;
-	width: 1.1rem;
-	height: 1.1rem;
-	z-index: 5;
+.mob-shadow {
+       position: absolute;
+       display: none;
+       transform: translate(-50%);
+       bottom: 1.5rem;
+       border-radius: 50%;
+       background: radial-gradient(farthest-side at 50% 50%, #000a 0%, #000a 30%, #0000 100%);
+       height: 2rem;
+       width: 20rem;
+       z-index: 0;
+       /*outline: 2px dotted #aaa;*/
 }
+
 .mob-alive {
 	position: absolute;
 	/*outline: 2px dotted #0f0;*/

@@ -18,7 +18,7 @@
 	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
-		info('crossSlash', index)
+		console.info('crossSlash', index)
 		// check constraints
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		if (!battle.targetIsFrontRow()) {
@@ -79,7 +79,7 @@
 	}
 
 	function explosiveShot(index, data) {
-		info('explosiveShot', index)
+		console.info('explosiveShot', index)
 		// check constraints
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
@@ -94,49 +94,29 @@
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-
-		let tgt = my.target
-		hit = stats.rangedDamage(tgt)
-		damages.push({
-			index: tgt,
-			damage: hit.damage,
-			isCrit: hit.isCrit,
-			enhancedDamage: enhancedDamage,
-			isRanged: hit.isRanged,
-			damageType: 'fire',
-		})
-
-
-		tgt = battle.getSplashTarget(-1)
-		hit = stats.rangedDamage(tgt)
-		damages.push({
-			index: tgt,
-			damage: hit.damage,
-			isCrit: hit.isCrit,
-			enhancedDamage: enhancedDamage,
-			isRanged: hit.isRanged,
-			damageType: 'fire',
-		})
-
-		tgt = battle.getSplashTarget(1)
-		hit = stats.rangedDamage(tgt)
-		damages.push({
-			index: tgt,
-			damage: hit.damage,
-			isCrit: hit.isCrit,
-			enhancedDamage: enhancedDamage,
-			isRanged: hit.isRanged,
-			damageType: 'fire',
-		})
-
+		let splashIndex = -1
+		let tgt
+		for (var i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			hit = stats.rangedDamage(tgt)
+			damages.push({
+				index: tgt,
+				damage: hit.damage,
+				isCrit: hit.isCrit,
+				enhancedDamage: enhancedDamage,
+				isRanged: hit.isRanged,
+				damageType: 'fire',
+			})
+		}
 		combat.txDamageMob(damages)
+
 		// animate timers
 		timers.skillCooldowns[index] = 0
 		button.processButtonTimers(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function trueshotStrike(index, data) {
-		info('trueshotStrike', index)
+		console.info('trueshotStrike', index)
 		// check constraints
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
@@ -171,7 +151,8 @@
 		button.triggerGlobalCooldown()
 	}
 	function spreadShot(index, data) {
-		info('spreadShot', index)
+		console.info('spreadShot', index)
+		// check constraints
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
@@ -182,12 +163,40 @@
 		}
 		my.mp -= mpCost
 		bar.updateBar('mp')
-		// check constraints
+		// select targets
+		let targets = [my.target]
+		mobs.forEach((mob, index) => {
+			if (mob.name) {
+				if (!targets.includes(index) && targets.length < 5) {
+					console.info('asdf mob', index)
+					targets.push(index)
+				}
+			}
+		})
 		// process skill data
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		targets.forEach(target => {
+			hit = stats.rangedDamage(target)
+			damages.push({
+				index: target,
+				damage: hit.damage,
+				isCrit: hit.isCrit,
+				enhancedDamage: enhancedDamage,
+				isRanged: hit.isRanged,
+				damageType: hit.damageType,
+			})
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
 	function bladeStorm(index, data) {
-		info('bladeStorm', index)
+		console.info('bladeStorm', index)
+		// check constraints
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
@@ -198,12 +207,38 @@
 		}
 		my.mp -= mpCost
 		bar.updateBar('mp')
-		// check constraints
 		// process skill data
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		let tgt = my.target
+		let hits = 5
+		for (var i=0; i<hits; i++) {
+			(function(i) {
+				delayedCall(i * .2, () => {
+					let finalBlow = i === hits - 1
+					hit = stats.damage(tgt, finalBlow)
+					damages = []
+					damages.push({
+						index: tgt,
+						damage: finalBlow ? hit.damage * 4 : hit.damage,
+						isCrit: hit.isCrit,
+						isPiercing: true,
+						enhancedDamage: enhancedDamage,
+						isRanged: hit.isRanged,
+						damageType: hit.damageType,
+					})
+					combat.txDamageMob(damages)
+				})
+			})(i)
+		}
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
 	function suppressingVolley(index, data) {
-		info('suppressingVolley', index)
+		console.info('suppressingVolley', index)
+		// check constraints
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
@@ -214,12 +249,38 @@
 		}
 		my.mp -= mpCost
 		bar.updateBar('mp')
-		// check constraints
 		// process skill data
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		let splashIndex = -1
+		let tgt
+		buff.isSuppressing = []
+		for (var i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			buff.isSuppressing.push(tgt)
+			hit = stats.rangedDamage(tgt)
+			damages.push({
+				index: tgt,
+				damage: hit.damage,
+				isCrit: hit.isCrit,
+				enhancedDamage: enhancedDamage,
+				isRanged: hit.isRanged,
+				damageType: hit.damageType,
+				hate: -1
+			})
+		}
+		combat.txDamageMob(damages)
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
+		// special effects
+		delayedCall(9, () => {
+			buff.isSuppressing = []
+		})
 	}
 	function ignite(index, data) {
-		info('ignite', index)
+		console.info('ignite', index)
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
@@ -235,7 +296,7 @@
 		// animate timers
 	}
 	function shockNova(index, data) {
-		info('shockNova', index)
+		console.info('shockNova', index)
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
@@ -251,7 +312,7 @@
 		// animate timers
 	}
 	function faerieFlame(index, data) {
-		info('faerieFlame', index)
+		console.info('faerieFlame', index)
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
@@ -267,13 +328,13 @@
 		// animate timers
 	}
 	function fungalGrowth(index, data) {
-		info('fungalGrowth', index)
+		console.info('fungalGrowth', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function shimmeringOrb(index, data) {
-		info('shimmeringOrb', index)
+		console.info('shimmeringOrb', index)
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
 		if (my.target === -1) return
@@ -289,7 +350,7 @@
 		// animate timers
 	}
 	function spiritOfTheHunter(index, data) {
-		info('spiritOfTheHunter', index)
+		console.info('spiritOfTheHunter', index)
 		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
 		my.fixTarget()
 		if (my.target === -1) return

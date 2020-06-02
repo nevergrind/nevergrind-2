@@ -91,7 +91,12 @@ var button;
 	}
 	function triggerSkill(index) {
 		name = _.camelCase(skills[my.job][index].name)
-		if (typeof skill[my.job][name] === 'function' && my.hp > 0) {
+		console.info('triggerSkill', name)
+		if (my.hp <= 0) {
+			warn('You are dead')
+			if (ng.isApp) return
+		}
+		if (typeof skill[my.job][name] === 'function') {
 			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {

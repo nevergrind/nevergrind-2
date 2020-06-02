@@ -1,18 +1,20 @@
 var mob;
-(function(TweenMax, $, _, Object, Linear, undefined) {
+(function(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2, undefined) {
 	mob = {
 		txData: [],
 		enableMobHeartbeat: true,
 		imageKeysLen: 0,
 		index: 0,
 		cache: {},
+		textures: {},
 		imageKeys: [],
 		initialized: 0,
 		max: 9,
 		maxLevel: 50,
 		element: {},
 		centerX: [192,576,960,1344,1728,384,768,1152,1536],
-		bottomY: [180,180,180,180,180,280,280,280,280],
+		//bottomY: [240,240,240,240,240,340,340,340,340],
+		bottomY: [200,200,200,200,200,300,300,300,300],
 		getRandomMobKey,
 		init,
 		// configs, resets (active animations) and idles mobs in one call for start of combat
@@ -35,7 +37,6 @@ var mob;
 		special,
 		death,
 		killAttacks,
-		getHitArea,
 	};
 	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el
 	var frame = {
@@ -70,7 +71,6 @@ var mob;
 			diff: 29.999
 		},
 	};
-	const testAnimations = false
 	const mobBaseConfig = {
 		hp: 1,
 		mp: 1,
@@ -98,6 +98,8 @@ var mob;
 	let mpTick = 0
 	let spTick = 0
 	let mobRow = -1
+	let newHate = 0
+	const hoverIcon = "url('css/cursor/pointer.cur'), auto"
 
 	const mobElements = ['wrap',
 	'center',
@@ -119,8 +121,10 @@ var mob;
 		return mob.imageKeys[i]
 	}
 	function updateHate(o) {
-		info('updateHate for row', o.row, o)
-		mobs[o.index].hate[o.row] += o.damage
+		newHate = o.damage * o.hate
+		console.info('updateHate mob', o.index, mobs[o.index].hate)
+		mobs[o.index].hate[o.row] += newHate
+		if (mobs[o.index].hate[o.row] < 0) mobs[o.index].hate[o.row] = 0
 	}
 	function init() {
 		mob.imageKeys = Object.keys(mobs.images)
@@ -131,7 +135,7 @@ var mob;
 			mobs[i] = {
 				hp: 0,
 				index: i,
-				frame: 0,
+				frame: 1,
 				lastFrame: 0,
 				isAnimationActive: false,
 				size: i < 5 ? 1 : .85,
@@ -143,7 +147,7 @@ var mob;
 			}
 			mobElements.forEach(function(e){
 				mobs[i].dom[e] = getElementById('mob-'+ e +'-' + i);
-			});
+			})
 		}
 	}
 	function configMobType(config) {
@@ -182,7 +186,7 @@ var mob;
 				}
 			}
 		})
-		info('configMobType results', results)
+		console.info('configMobType results', results)
 		let index = _.random(0, results.length - 1)
 		return {
 			...mobBaseConfig,
@@ -195,7 +199,7 @@ var mob;
 			'maxLevel',
 			'minLevel',
 		])
-		info('mobConfig', i, mobConfig)
+		console.info('mobConfig', i, mobConfig)
 		cache.preloadMob(mobConfig.img)
 		// combine/assign image object props to mobs[index]
 		mobs[i] = {
@@ -204,7 +208,6 @@ var mob;
 			...mobConfig,
 		}
 		// start attack cycle
-		warn("SETMOB ATTACK", mobs[i].speed)
 		timers.mobAttack[i].kill()
 		timers.mobAttack[i] = delayedCall(Math.random() * 1.5 + 1.5, mob.attack, [i])
 		mobs[i].hate = {}
@@ -212,54 +215,72 @@ var mob;
 			mobs[i].hate[member.row] = 0
 		})
 
-
 		// delete mobs[i].cache;
 		sizeMob(i)
-		TweenMax.set(mobs[i].dom.details, {
-			opacity: 1
-		})
 		resetIdle(i, true)
 		idle(i)
 	}
-	function sizeMob(index, setSizeOnly) {
-		var m = mobs[index]
+	function sizeMob(i) {
+		var m = mobs[i]
 		if (!m.img) return
 		// set dom
-		var w = ~~(m.size * (mobs.images[m.img].width))
+		let yAdjust = 20
+		let images = mobs.images[m.img]
+		let width = ~~(m.size * (images.width))
+		let height = ~~(m.size * (images.height))
+		let x = mob.centerX[i]
+		let y = 1080 - mob.bottomY[i] - images.yFloor // mystery adjustment of 20
+		// mob sprite
+		mobs[i].sprite = PIXI.Sprite.from('mobs/'+ m.img +'/' + m.frame +'.png')
+		mobs[i].sprite.anchor.set(.5, 1)
+		mobs[i].sprite.index = i
+		mobs[i].sprite.x = x
+		mobs[i].sprite.y = y
+		mobs[i].sprite.width = width
+		mobs[i].sprite.height = height
+		mobs[i].sprite.interactive = true
+		mobs[i].sprite.buttonMode = true
+		mobs[i].sprite.zIndex = 100 - i
 
-		m.box = battle.getBox(m.index);
-		// wrapper
-		//m.dom.details.style.display = 'block';
-		// img
-		m.dom.img.style.left = (w * -.5) + 'px'
-		m.dom.img.style.width = w + 'px'
-		m.dom.img.style.bottom = (mobs.images[m.img].yFloor * m.size) + 'px'
-		// details
-		TweenMax.set(m.dom.details, {
+		setClickBox(m, i)
+		//mobs[i].sprite.hitArea = new PIXI.Rectangle(c.x, c.y, c.w, c.h)
+		battle.layer.stage.addChild(mobs[i].sprite)
+
+		// shadow
+		let el = querySelector('#mob-shadow-' + i)
+		el.style.display = 'block'
+        el.style.width = ~~(m.shadowWidth * m.size) + 'px'
+        el.style.height = (m.shadowHeight * m.size) + 'px'
+        el.style.bottom = '0px'
+
+		TweenMax.set(querySelector('#mob-details-' + i), {
 			y: 0,
 			bottom: m.barAliveBottom * m.size
 		})
-		// shadow
-		m.dom.shadow.style.display = 'block'
-		m.dom.shadow.style.width = ~~((m.shadowWidth * m.size) * 1.5) + 'px'
-		m.dom.shadow.style.height = (m.shadowHeight * m.size) + 'px'
-		// m.dom.shadow.style.left = ((m.shadowWidth * m.size ) * -.5) + 'px'
-		m.dom.shadow.style.bottom = ((m.shadowBottom - (m.shadowHeight * .3))* m.size) + 'px'
-		// test stuff below
+		querySelector('#mob-name-' + i).textContent = mobs[i].name
+		// name
+		el = querySelector('#mob-name-' + i)
+		el.innerHTML = m.name;
+		el.classList.add(combat.getDiffClass(m.level))
+		// health
+		drawMobBar(index)
+	}
+	function setClickBox(m, i) {
+		// alive box
+		let el = querySelector('#mob-alive-' + i)
+		el.style.left = ((m.clickAliveW  * m.size) * -.5) + 'px';
+		el.style.bottom = (m.clickAliveY  * m.size) + 'px';
+		el.style.width = (m.clickAliveW  * m.size) + 'px';
+		el.style.height = (m.clickAliveH * m.size) + 'px';
+		el.style.display = m.hp ? 'block' : 'none';
 
-		// center dot
-		m.dom.center.style.left = (m.box.cx - 11) + 'px';
-		m.dom.center.style.bottom = (m.box.cy - 11) + 'px';
-		mob.setClickBox(m);
-		if (!setSizeOnly) {
-			// name
-			m.dom.name.innerHTML = m.name;
-			m.dom.name.classList.add(combat.getDiffClass(m.level))
-			// init frame
-			m.dom.img.src = 'mobs/' + m.img + '/1.png';
-			// health
-			drawMobBar(index)
-		}
+		// dead box
+		el = querySelector('#mob-dead-' + i)
+		el.style.left = ((m.clickDeadW * m.size) * -.5) + 'px';
+		el.style.bottom = (m.clickDeadY * m.size) + 'px';
+		el.style.width = (m.clickDeadW * m.size) + 'px';
+		el.style.height = (m.clickDeadH * m.size) + 'px';
+		el.style.display = m.hp ? 'none' : 'block';
 	}
 	function drawMobBar(index, drawInstant) {
 		percent = bar.getRatio('hp', mobs[index])
@@ -275,33 +296,23 @@ var mob;
 			})
 		}
 	}
-	function setClickBox(m) {
-		// alive box
-		m.dom.alive.style.left = ((m.clickAliveW  * m.size) * -.5) + 'px';
-		m.dom.alive.style.bottom = (m.clickAliveY  * m.size) + 'px';
-		m.dom.alive.style.width = (m.clickAliveW  * m.size) + 'px';
-		m.dom.alive.style.height = (m.clickAliveH * m.size) + 'px';
-		m.dom.alive.style.display = m.hp ? 'block' : 'none';
-		// dead box
-		m.dom.dead.style.left = ((m.clickDeadW * m.size) * -.5) + 'px';
-		m.dom.dead.style.bottom = (m.clickDeadY * m.size) + 'px';
-		m.dom.dead.style.width = (m.clickDeadW * m.size) + 'px';
-		m.dom.dead.style.height = (m.clickDeadH * m.size) + 'px';
-		m.dom.dead.style.display = m.hp ? 'none' : 'block';
-	}
 	function setSrc(i) {
 		mobs[i].frame = ~~mobs[i].frame
 		if (mobs[i].frame !== mobs[i].lastFrame) {
-			mobs[i].dom.img.src = 'mobs/' + mobs[i].img + '/' + mobs[i].frame + '.png'
-			mobs[i].lastFrame = mobs[i].frame
+			let frame = mobs[i].frame
+			let name = mobs[i].img
+			//if (typeof mob.textures[name] !== 'undefined') {
+				mobs[i].sprite.texture = mob.textures[name][frame]
+				mobs[i].lastFrame = mobs[i].frame
+			//}
 		}
 	}
-	function resetIdle(i, runTests) {
+	function resetIdle(i) {
 		mobs[i].isAnimationActive = false
-		idle(mobs[i].index, runTests)
+		idle(mobs[i].index)
 	}
 
-	function idle(i, runTests) {
+	function idle(i) {
 		TweenMax.to(mobs[i], mobs[i].frameSpeed * frame.idle.diff * 2, {
 			startAt: {
 				frame: frame.idle.start
@@ -314,9 +325,6 @@ var mob;
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
 		})
-		if (runTests && testAnimations) {
-			delayedCall(.25, hit, [ mobs[i].index ])
-		}
 	}
 
 	function hit(i) {
@@ -336,13 +344,8 @@ var mob;
 			repeat: 1,
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
-			onComplete: hitComplete,
-			onCompleteParams: [mobs[i]]
+			onComplete: () => { resetIdle(mobs[i].index) },
 		});
-	}
-
-	function hitComplete(m) {
-		resetIdle(m.index)
 	}
 	function getMobTargetRow(slot) {
 		mostHatedRow = []
@@ -351,7 +354,7 @@ var mob;
 			row *= 1
 			val = mobs[slot].hate[row]
 			index = party.getIndexByRow(row)
-			info(row, index, val)
+			console.info(row, index, val)
 			if (party.presence[index].hp > 0) {
 				if (mostHatedValue === null) {
 					// first one is always added
@@ -405,7 +408,7 @@ var mob;
 				mobRow = getMobTargetRow(i)
 				if (mobRow > -1) {
 					// party.getIndexByRow(mostHatedRow)
-					info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
+					console.info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
 					mobDamages = [getMobDamage(i, mobRow)]
 					if (Math.random() * 100 < mobs[i].doubleAttack) {
 						mobDamages.push(getMobDamage(i, mobRow))
@@ -437,13 +440,8 @@ var mob;
 			ease: Linear.easeNone,
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
-			onComplete: attackComplete,
-			onCompleteParams: [mobs[i]]
+			onComplete: () => { resetIdle(mobs[i].index) },
 		})
-	}
-
-	function attackComplete(m) {
-		resetIdle(m.index)
 	}
 
 	function special(i) {
@@ -466,25 +464,20 @@ var mob;
 				repeat: mobs[i].yoyo ? 1 : 0,
 				onUpdate: setSrc,
 				onUpdateParams: [mobs[i].index],
-				onComplete: specialComplete,
-				onCompleteParams: [mobs[i]]
+				onComplete: () => { resetIdle(mobs[i].index) },
 			})
 		}
-	}
-	function specialComplete(m) {
-		resetIdle(m.index)
-		if (testAnimations) delayedCall(1, death, [ m.index ])
 	}
 	function death(i) {
 		if (mobs[i].isDead) return
 		mobs[i].isDead = true
 		mobs[i].name = ''
 		mobs[i].hp = 0
-		mob.setClickBox(mobs[i])
+		mob.setClickBox(mobs[i], i)
 		mobs[i].isAnimationActive = true
 		var speed = mobs[i].frameSpeed * frame.death.diff
-
-		TweenMax.to(mobs[i].dom.details, speed, {
+		let el = querySelector('#mob-details-' + i)
+		TweenMax.to(el, speed, {
 			y: mobs[i].barDeathBottom * mobs[i].size,
 			ease: Power4.easeIn
 		});
@@ -498,6 +491,21 @@ var mob;
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
 		});
+		TweenMax.to([mobs[i].sprite, mobs[i].shadow], 3, {
+			startAt: {
+				alpha: 1,
+				pixi: {
+					saturate: 4,
+					brightness: 2,
+				}
+			},
+			alpha: 0,
+			pixi: {
+				saturate: 1,
+				brightness: 0,
+			},
+			ease: Power2.easeIn
+		})
 		TweenMax.to(mobs[i].dom.details, speed / 2, {
 			opacity: 0
 		})
@@ -505,26 +513,7 @@ var mob;
 			startAt: { filter: 'opacity(1) brightness(3)'},
 			filter: 'opacity(0) brightness(0)',
 			ease: Linear.easeIn,
-			onComplete: deathCompleteFade,
-			onCompleteParams: [mobs[i], mobs[i].dom.wrap]
 		})
-	}
-	function deathCompleteFade(mob, el) {
-		delayedCall(1, () => {
-			if (testAnimations) {
-				TweenMax.set(mobs[mob.index].dom.details, {
-					opacity: 1
-				})
-				sizeMob(mob.index);
-				idle(mob.index, true);
-				delayedCall(.1, deathCompleteFadeReset, [ mob, el ])
-			}
-		})
-	}
-	function deathCompleteFadeReset(m, e) {
-		m.isDead = false;
-		m.isAnimationActive = false;
-		e.style.filter = 'opacity(100%) brightness(100%)';
 	}
 	function setMobSkill(config, val) {
 		// adjusts value based on what it is at max level
@@ -739,7 +728,7 @@ var mob;
 				spTick = mob.spMax - mob.sp
 			}
 			mobs[index].sp += spTick
-			info('sending hpTick:', hpTick)
+			console.info('sending hpTick:', hpTick)
 			tickData.push({
 				i: index,
 				h: hpTick,
@@ -755,19 +744,8 @@ var mob;
 			mobs[tick.i].mp += tick.m
 			mobs[tick.i].sp += tick.s
 			drawMobBar(tick.i)
-			info('resource tick B', tick)
+			console.info('resource tick B', tick)
 		})
 	}
-	function getHitArea(mob) {
-		var o = mobs.images[mob]
-		let c = {
-			x: (o.width * .5) - (o.clickAliveW * .5),
-			y: o.height - o.clickAliveY - o.clickAliveH,
-			w: o.clickAliveW,
-			h: o.clickAliveH
-		}
-		info('coords', c)
-		return new PIXI.Rectangle(c.x, c.y, c.w, c.h)
-	}
 
-})(TweenMax, $, _, Object, Linear);
+})(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2);

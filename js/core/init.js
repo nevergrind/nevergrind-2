@@ -1,5 +1,7 @@
 // global objects
-let buff = []
+let buff = {
+	isSuppressing: []
+}
 let items = {
 	inv: [],
 	eq: [],

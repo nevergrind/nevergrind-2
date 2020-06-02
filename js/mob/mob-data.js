@@ -24,12 +24,22 @@ mob.data['Salubrin Den'] = [
 		img: 'orc',
 		name: 'orc legionnaire',
 		minLevel: 1,
-		maxLevel: 60,
+		maxLevel: 1,
 		size: .8,
 		job: 'WAR',
 		type: 'normal', // normal, champion, unique, boss?
 		traits: [], // champ traits
 	},
+	/*{
+		img: 'snake',
+		name: 'snake',
+		minLevel: 1,
+		maxLevel: 35,
+		size: 1,
+		job: 'WAR',
+		type: 'normal', // normal, champion, unique, boss?
+		traits: [], // champ traits
+	},*/
 ]
 mob.data['Tendolin Hollow'] = {
 

@@ -216,7 +216,7 @@ var stats = {};
 		//return ( ((5) + getEqTotal('crit') ) / 100)
 		return (ng.dimRetCrit(5 + getEqTotal('crit')) ) / 100
 	}
-	function damage(skipSkillChecks) {
+	function damage(skipSkillChecks, forceCrit) {
 		min = 1
 		max = 1
 		atk = attack()
@@ -238,7 +238,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = my.crit > rand()
+		isCrit = forceCrit || my.crit > rand()
 		if (isCrit) {
 			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
 				min *= 2

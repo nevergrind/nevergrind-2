@@ -97,7 +97,7 @@ var party;
 		index = _.findIndex(party.presence, { row: data.row })
 		player = party.presence[index]
 		if (index >= 0) {
-			info('upsertPartyResource', data)
+			console.info('upsertPartyResource', data)
 			for (var key in data) {
 				if (resourceKeys.includes(key)) {
 					player[key] = data[key]

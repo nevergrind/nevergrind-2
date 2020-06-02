@@ -41,7 +41,7 @@ var context;
 	}
 
 	function handleContextClick() {
-		info('context-items clicked: ', this.id);
+		console.info('context-items clicked: ', this.id);
 		id = this.id
 		if (id === 'context-invite') context.contextInvite()
 		else if (id === 'context-trade') context.contextTrade()

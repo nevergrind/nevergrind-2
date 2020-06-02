@@ -460,7 +460,6 @@ var test;
 	}
 	function mobPix(mobName) {
 		mobName = mobName || 'orc'
-		const defaultIcon = "url('css/cursor/normal.cur'), auto"
 		const hoverIcon = "url('css/cursor/pointer.cur'), auto"
 		if (!test.mob) {
 			test.mob = new PIXI.Application({
@@ -472,9 +471,6 @@ var test;
 			test.mob.view.style.zIndex = 999
 			test.mob.view.style.left = '0px'
 			test.mob.view.style.top = '0px'
-			//test.mob.renderer.plugins.interaction.cursorStyles.default = defaultIcon
-			// test.mob.renderer.plugins.interaction.cursorStyles.hover = hoverIcon
-			//test.mob.renderer.plugins.interaction.cursorStyles.hover = "url('images/favicon.png'), auto"
 
 			test.textures = []
 			for (var i=1; i<=105; i++) {
@@ -483,7 +479,7 @@ var test;
 		}
 		querySelector('body').appendChild(test.mob.view)
 
-		let mobSprite = PIXI.Sprite.from('mobs/orc/1.png')
+		let mobSprite = PIXI.Sprite.from('mobs/'+ mobName +'/1.png')
 		let x = _.random(-480, 1920 - 960)
 		let y = _.random(-400, 1080 - 800)
 		mobSprite.x = x
@@ -493,8 +489,6 @@ var test;
 		mobSprite.hitArea = mob.getHitArea(mobName)
 		mobSprite.cursor = hoverIcon
 		mobSprite.on('pointerdown', onMobClick)
-		test.sprite = mobSprite
-
 		test.mob.stage.addChild(mobSprite)
 
 		let o = { frame: 1 }
@@ -508,7 +502,7 @@ var test;
 	}
 
 	function onMobClick(e) {
-		info('click!', e)
+		console.info('click!', e)
 	}
 
 	function setPix(el, o) {

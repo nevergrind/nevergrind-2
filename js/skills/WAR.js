@@ -20,74 +20,74 @@ let skill = {};
 	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
-		info('crossSlash', index)
+		console.info('crossSlash', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 
 	function explosiveShot(index, data) {
-		info('explosiveShot', index)
+		console.info('explosiveShot', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function trueshotArrow(index, data) {
-		info('trueshotArrow', index)
+		console.info('trueshotArrow', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function spreadShot(index, data) {
-		info('spreadShot', index)
+		console.info('spreadShot', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function bladeStorm(index, data) {
-		info('bladeStorm', index)
+		console.info('bladeStorm', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function suppressingVolley(index, data) {
-		info('suppressingVolley', index)
+		console.info('suppressingVolley', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function ignite(index, data) {
-		info('ignite', index)
+		console.info('ignite', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function shockNova(index, data) {
-		info('shockNova', index)
+		console.info('shockNova', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function faerieFlame(index, data) {
-		info('faerieFlame', index)
+		console.info('faerieFlame', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function fungalGrowth(index, data) {
-		info('fungalGrowth', index)
+		console.info('fungalGrowth', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function shimmeringOrb(index, data) {
-		info('shimmeringOrb', index)
+		console.info('shimmeringOrb', index)
 		// check constraints
 		// process skill data
 		// animate timers
 	}
 	function spiritOfTheHunter(index, data) {
-		info('spiritOfTheHunter', index)
+		console.info('spiritOfTheHunter', index)
 		// check constraints
 		// process skill data
 		// animate timers

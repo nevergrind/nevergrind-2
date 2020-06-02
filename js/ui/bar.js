@@ -945,7 +945,7 @@ var bar;
 	}
 
 	function getPropSkillHtml(prop) {
-		info('prop', prop, my[prop])
+		console.info('prop', prop, my[prop])
 		if (!skills[prop][my.job].level) return ''
 		// dynamic cap for current race/job/level
 		max = stats.getPropMax(prop)

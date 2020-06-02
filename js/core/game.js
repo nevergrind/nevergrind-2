@@ -154,7 +154,7 @@ var game;
 	function heartbeatReceived(data) {
 		/*if (data.name === my.name) {
 			//console.info("%c town heartbeatReceived: ", "background: #025", data.name, data);
-			info('socket rx', socket.published, socket.received)
+			console.info('socket rx', socket.published, socket.received)
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
 			bar.updatePing(ping);
@@ -176,7 +176,7 @@ var game;
 		});
 	}
 	function upsertRoom(player) {
-		info('upsertRoom', player)
+		console.info('upsertRoom', player)
 		time = Date.now();
 		index = _.findIndex(chat.presence, { row: player.row });
 		if (index >= 0) {

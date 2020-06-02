@@ -101,11 +101,6 @@
 		if (chat.initialized) {
 			chat.scrollBottom()
 		}
-		if (ng.view === 'battle') {
-			for (i=0; i<mob.max; i++) {
-				mob.sizeMob(i, true)
-			}
-		}
 		ng.responsiveRatio = parseInt(getComputedStyle(getElementById('body')).fontSize, 10) / 20
 	}
 	function mousedown(e) {

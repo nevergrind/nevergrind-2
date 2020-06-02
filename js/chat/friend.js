@@ -79,7 +79,7 @@ var friend;
 			')' + guild.format(data.guild)
 	}
 	function add(name) {
-		info(name, my.name)
+		console.info(name, my.name)
 		if (ng.friends.includes(name)) {
 			chat.log(o + " is already your friend.", 'chat-warning');
 		}
