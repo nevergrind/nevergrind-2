@@ -103,14 +103,16 @@ var battle;
 		}
 		else setupMobs()
 
+		my.target = 2
+		combat.targetChanged()
 		my.fixTarget()
 		battle.updateTarget()
-		if (party.presence[0].isLeader) {
+		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
 			console.info('txData!', mob.txData)
 			socket.publish('party' + my.partyId, {
 				route: 'p->goBattle',
 				config: mob.txData
-			})
+			}, true)
 		}
 	}
 	function initBattleLayer() {
@@ -155,19 +157,19 @@ var battle;
 
 			if (!ng.isApp) {
 				totalMobs = 5
-				minLevel = 1
-				maxLevel = 5
+				minLevel = 33
+				maxLevel = 53
 			}
 			console.info('levels', minLevel, maxLevel)
 			var mobSlot
 			for (i=0; i<totalMobs; i++) {
 				if (!i) mobSlot = 2
 				else mobSlot = _.random(0, availableSlots.length - 1)
-				let imgName = 'orc'
+				let imgName = 'toadlok'
 
 				let mobConfig = mob.configMobType({
 					img: imgName,
-					name: 'orc legionnaire',
+					name: 'gaz toadlok knight',
 					minLevel: minLevel,
 					maxLevel: maxLevel,
 				})

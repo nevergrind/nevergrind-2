@@ -56,10 +56,10 @@ var dungeon;
 			filter: 'brightness(1)'
 		})
 		ng.unlock()
-		if (party.presence[0].isLeader) {
+		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
 			socket.publish('party' + my.partyId, {
 				route: 'p->goDungeon'
-			})
+			}, true)
 		}
 		delayedCall(1, () => {
 			if (_.size(mob.textures) === 0) {

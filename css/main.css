@@ -1138,13 +1138,15 @@ background-clip: content-box;
 }
 
 .bar-player-wrap {
-	display: flex;
 	position: relative;
+	display: flex;
 	margin-bottom: .2rem;
 	transform: scale(.875);
 }
 .bar-player-wrap:first-of-type {
 	transform: scale(1);
+	background: #0008;
+	border: 1px solid #000;
 }
 .bar-card-bg {
 	position: absolute;

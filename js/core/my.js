@@ -76,13 +76,12 @@ var my;
 	////////////////////////////////////
 	function fixTarget() {
 		if (typeof mobs[my.target] === 'undefined' || !mobs[my.target].name) {
-			// my.target = _.findIndex(mobs, mob => mob.name)
 			tabTarget({ shiftKey: false })
 		}
 	}
 	function setTarget(i) {
 		my.target = i
-		if (!mobs[my.target].name) fixTarget(event)
+		if (!mobs[my.target].name) fixTarget()
 		else combat.targetChanged()
 	}
 	function tabTarget(event, tries) {

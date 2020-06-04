@@ -1,7 +1,7 @@
 var button;
 !function(TweenMax, $, _, Linear, Power4, undefined) {
 	button = {
-		initialized: false,
+		startSwing,
 		setAll,
 		hide,
 		triggerGlobalCooldown,
@@ -13,6 +13,7 @@ var button;
 		secondaryAttack,
 		triggerSkill,
 		processButtonTimers,
+		initialized: false,
 	}
 	var arr, damage, name, hit
 
@@ -113,19 +114,30 @@ var button;
 	function successfulDualWield() {
 		return my.dualWield / 350
 	}
-	function primaryAttack() {
-		if (ng.view !== 'battle' || timers.primaryAttack < 1 || my.hp <= 0) return
+	function primaryAttack(isPiercing, index) {
+		if (isPiercing) {
+			if (ng.view !== 'battle' ||
+			my.hp <= 0) return
+		}
+		else {
+			if (
+				ng.view !== 'battle' ||
+				!my.isAutoAttacking ||
+				timers.primaryAttack < 1 ||
+				my.hp <= 0) return
+		}
 		my.fixTarget()
 		if (my.target === -1) return
 		damages = []
 
 		hit = stats.damage()
 		damages.push({
-			index: my.target,
+			index: isPiercing ? index : my.target,
+			isPiercing: isPiercing,
 			...hit
 		})
 		// double attack?
-		if (my.level >= skills.doubleAttack[my.job].level) {
+		if (!isPiercing && my.level >= skills.doubleAttack[my.job].level) {
 			combat.levelSkillCheck('doubleAttack')
 			if (Math.random() < successfulDoubleAttack()) {
 				hit = stats.damage()
@@ -136,31 +148,14 @@ var button;
 			}
 		}
 		combat.txDamageMob(damages)
-
-		timers.primaryAttack = 0
-		let el = querySelector('#skill-timer-primary-rotate')
-		TweenMax.set(el, {
-			display: 'block'
-		})
-		let o = {
-			el: el,
-			key: 'primaryAttack',
-		}
-		TweenMax.to(timers, items.eq[12].speed, {
-			primaryAttack: 1,
-			onStart: handleButtonStart,
-			onStartParams: [ o ],
-			onUpdate: handleButtonUpdate,
-			onUpdateParams: [ o ],
-			onComplete: handleButtonComplete,
-			onCompleteParams: [ o ],
-			ease: Linear.easeNone
-		})
-		delays.primaryAttack.kill()
-		delays.primaryAttack = delayedCall(items.eq[12].speed, autoAttackPrimary)
+		button.startSwing('primaryAttack')
 	}
 	function secondaryAttack() {
-		if (ng.view !== 'battle' || timers.secondaryAttack < 1 || !isOffhandingWeapon() || my.hp <= 0) return
+		if (!my.isAutoAttacking ||
+			ng.view !== 'battle' ||
+			timers.secondaryAttack < 1 ||
+			!isOffhandingWeapon() ||
+			my.hp <= 0) return
 		my.fixTarget()
 		if (my.target === -1) return
 
@@ -186,35 +181,46 @@ var button;
 			}
 		}
 
-		let el = querySelector('#skill-timer-secondary-rotate')
-		if (el !== null) {
-			timers.secondaryAttack = 0
-			TweenMax.set(el, {
-				display: 'block'
-			})
-			let args = {
-				el: el,
-				key: 'secondaryAttack',
-			}
-			TweenMax.to(timers, items.eq[13].speed, {
-				secondaryAttack: 1,
-				onStart: handleButtonStart,
-				onStartParams: [ args ],
-				onUpdate: handleButtonUpdate,
-				onUpdateParams: [ args ],
-				onComplete: handleButtonComplete,
-				onCompleteParams: [ args ],
-				ease: Linear.easeNone
-			})
-			delays.secondaryAttack.kill()
-			delays.secondaryAttack = delayedCall(items.eq[13].speed, autoAttackSecondary)
+		button.startSwing('secondaryAttack')
+	}
+	function startSwing(key) {
+		timers[key] = 0
+		let slot, el
+		if (key === 'primaryAttack') {
+			slot = 12
+			el = querySelector('#skill-timer-primary-rotate')
 		}
-	}
-	function autoAttackPrimary() {
-		if (my.isAutoAttacking) primaryAttack()
-	}
-	function autoAttackSecondary() {
-		if (my.isAutoAttacking) secondaryAttack()
+		else {
+			slot = 13
+			el = querySelector('#skill-timer-secondary-rotate')
+		}
+
+		TweenMax.set(el, { display: 'block' })
+		let o = {
+			el: el,
+			key: key,
+		}
+		let to = {
+			onStart: handleButtonStart,
+			onStartParams: [ o ],
+			onUpdate: handleButtonUpdate,
+			onUpdateParams: [ o ],
+			onComplete: handleButtonComplete,
+			onCompleteParams: [ o ],
+			ease: Linear.easeNone
+		}
+		to.startAt = {}
+		to.startAt[key] = 0
+		to[key] = 1
+
+		TweenMax.to(timers, items.eq[slot].speed, to)
+		delays[key].kill()
+		if (key === 'primaryAttack') {
+			delays[key] = delayedCall(items.eq[slot].speed, button[key])
+		}
+		else {
+			delays[key] = delayedCall(items.eq[slot].speed, button[key])
+		}
 	}
 	function handleButtonStart(o) {
 		TweenMax.set(o.el, {

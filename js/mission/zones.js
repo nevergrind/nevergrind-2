@@ -12,6 +12,7 @@ var zones = [{},
 			'wolf',
 			'lion',
 			'orc',
+			'toadlok',
 		]
 	},
 	{

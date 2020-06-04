@@ -825,9 +825,10 @@ var bar;
 		html = '';
 		// job icon
 		console.info('getPlayerBarHtml', player)
-		html +=
 		// red background
-		'<div id="bar-card-bg-'+ index +'" class="bar-card-bg"></div>' +
+		if (my.row === index) html += '<div id="bar-card-bg-'+ index +'" class="bar-card-bg"></div>'
+
+		html +=
 		// avatar
 		'<img id="bar-avatar-'+ index +'" class="bar-avatar" src="'+ player.avatar +'">' +
 		// bars

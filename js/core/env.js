@@ -58,15 +58,15 @@ var env;
 			env.initialized = true
 			cloudSpeed = _.random(500, 2500)
 			//TODO: experimental rain, snow
-			/*pix.elements = new PIXI.Application({
+			/*env.elements = new PIXI.Application({
 				width: 1920,
 				height: 1920,
 				transparent: true
 			});
 			// style
-			pix.elements.view.id = 'pix-elements'
-			pix.elements.view.style.position = 'absolute'
-			querySelector('#sky-elements').appendChild(pix.elements.view)*/
+			env.elements.view.id = 'pix-elements'
+			env.elements.view.style.position = 'absolute'
+			querySelector('#sky-elements').appendChild(env.elements.view)*/
 			/*
 			TweenMax.to('#sky-rain1', .45, {
 				startAt: { y: '-100%' },
@@ -90,50 +90,50 @@ var env;
 			})
 			*/
 
-			pix.sky = new PIXI.Application({
+			env.sky = new PIXI.Application({
 				width: 1920,
 				height: 517,
 				transparent: true
 			});
 			// style
-			pix.sky.view.id = 'pix-sky'
-			pix.sky.view.style.position = 'absolute'
-			querySelector('#sky-wrap').appendChild(pix.sky.view)
+			env.sky.view.id = 'pix-sky'
+			env.sky.view.style.position = 'absolute'
+			querySelector('#sky-wrap').appendChild(env.sky.view)
 
-			pix.stars = PIXI.Sprite.from('images/env/stars-2.png')
-			pix.sky.stage.addChild(pix.stars)
+			env.stars = PIXI.Sprite.from('images/env/stars-2.png')
+			env.sky.stage.addChild(env.stars)
 
-			pix.sun = PIXI.Sprite.from('images/env/sun-6.png')
-			pix.sun.anchor.set(.5)
-			pix.sky.stage.addChild(pix.sun)
+			env.sun = PIXI.Sprite.from('images/env/sun-6.png')
+			env.sun.anchor.set(.5)
+			env.sky.stage.addChild(env.sun)
 
-			TweenMax.set(pix.sun, { pixi: { brightness: 1.2 }})
-			/*TweenMax.to(pix.sun, 1/60, {
+			TweenMax.set(env.sun, { pixi: { brightness: 1.2 }})
+			/*TweenMax.to(env.sun, 1/60, {
 				rotation: 360,
 				repeat: -1,
 				ease: Linear.easeOut
 			})*/
 
-			pix.moon = PIXI.Sprite.from('images/env/moon.png')
-			pix.moon.anchor.set(.5)
-			pix.sky.stage.addChild(pix.moon)
-			TweenMax.set(pix.moon, { pixi: { brightness: 1.25 }})
+			env.moon = PIXI.Sprite.from('images/env/moon.png')
+			env.moon.anchor.set(.5)
+			env.sky.stage.addChild(env.moon)
+			TweenMax.set(env.moon, { pixi: { brightness: 1.25 }})
 
-			pix.cloud1 = PIXI.Sprite.from('images/env/clouds-1.png')
-			pix.cloud1.anchor.set(0)
-			pix.cloud1.x = 0
-			pix.sky.stage.addChild(pix.cloud1)
+			env.cloud1 = PIXI.Sprite.from('images/env/clouds-1.png')
+			env.cloud1.anchor.set(0)
+			env.cloud1.x = 0
+			env.sky.stage.addChild(env.cloud1)
 
-			pix.cloud2 = PIXI.Sprite.from('images/env/clouds-1.png')
-			pix.cloud2.anchor.set(0)
-			pix.cloud2.x = 1920
-			pix.sky.stage.addChild(pix.cloud2)
+			env.cloud2 = PIXI.Sprite.from('images/env/clouds-1.png')
+			env.cloud2.anchor.set(0)
+			env.cloud2.x = 1920
+			env.sky.stage.addChild(env.cloud2)
 
-			TweenMax.to(pix.cloud1, cloudSpeed / 2, {
+			TweenMax.to(env.cloud1, cloudSpeed / 2, {
 				x: -1920,
 				ease: Linear.easeNone,
 				onComplete: function() {
-					TweenMax.to(pix.cloud1, cloudSpeed, {
+					TweenMax.to(env.cloud1, cloudSpeed, {
 						startAt: { x: 1920 },
 						x: -1920,
 						ease: Linear.easeNone,
@@ -142,7 +142,7 @@ var env;
 				}
 			})
 
-			TweenMax.to(pix.cloud2, cloudSpeed, {
+			TweenMax.to(env.cloud2, cloudSpeed, {
 				x: -1920,
 				ease: Linear.easeNone,
 				repeat: -1
@@ -264,7 +264,7 @@ var env;
 
 	function animateStars() {
 		if (env.phase === 'morning') {
-			TweenMax.to(pix.stars, phaseDuration * .4, {
+			TweenMax.to(env.stars, phaseDuration * .4, {
 				startAt: {
 					pixi: {
 						alpha: 1,
@@ -278,13 +278,13 @@ var env;
 			})
 		}
 		else if (env.phase === 'evening') {
-			TweenMax.set(pix.stars, {
+			TweenMax.set(env.stars, {
 				pixi: {
 					alpha: 0,
 					brightness: 1
 				},
 			})
-			TweenMax.to(pix.stars, phaseDuration * .4, {
+			TweenMax.to(env.stars, phaseDuration * .4, {
 				delay: phaseDuration * .6,
 				pixi: {
 					alpha: 1,
@@ -293,13 +293,13 @@ var env;
 			})
 		}
 		else if (env.phase === 'night') {
-			TweenMax.set(pix.stars, {
+			TweenMax.set(env.stars, {
 				pixi: {
 					alpha: 1,
 					brightness: 2
 				},
 			})
-			TweenMax.to(pix.stars, phaseDuration * .2, {
+			TweenMax.to(env.stars, phaseDuration * .2, {
 				delay: phaseDuration * .8,
 				pixi: {
 					alpha: 1,
@@ -311,7 +311,7 @@ var env;
 
 	function animateSun() {
 		if (env.phase === 'morning') {
-			TweenMax.to(pix.sun, phaseDuration, {
+			TweenMax.to(env.sun, phaseDuration, {
 				startAt: {
 					x: env.maxWidth * .65,
 					y: env.maxWidth * .5,
@@ -320,7 +320,7 @@ var env;
 				ease: Power2.easeOut,
 				onComplete: triggerNextPhase
 			})
-			TweenMax.set(pix.sun, {
+			TweenMax.set(env.sun, {
 				pixi: {
 					colorize: 'orange',
 					scale: 1.4,
@@ -329,7 +329,7 @@ var env;
 					colorizeAmount: 1,
 				}
 			})
-			TweenMax.to(pix.sun, phaseDuration * .05, {
+			TweenMax.to(env.sun, phaseDuration * .05, {
 				delay: phaseDuration * .05,
 				pixi: {
 					scale: 1,
@@ -342,7 +342,7 @@ var env;
 		}
 		else if (env.phase === 'evening') {
 			// do nothing basically
-			TweenMax.set(pix.sun, {
+			TweenMax.set(env.sun, {
 				x: env.maxWidth * .65,
 				y: env.maxWidth * -.8,
 			})
@@ -350,7 +350,7 @@ var env;
 		}
 		else if (env.phase === 'night') {
 			// do nothing basically
-			TweenMax.set(pix.sun, {
+			TweenMax.set(env.sun, {
 				x: env.maxWidth * .65,
 				y: env.maxWidth * -.8,
 			})
@@ -360,24 +360,24 @@ var env;
 
 	function animateMoon() {
 		if (env.phase === 'morning') {
-			TweenMax.set(pix.moon, {
+			TweenMax.set(env.moon, {
 				x: env.maxWidth * .65,
 				y: env.maxWidth * -.8,
 			})
 		}
 		else if (env.phase === 'evening') {
-			TweenMax.set(pix.moon, {
+			TweenMax.set(env.moon, {
 				x: env.maxWidth * .65,
 				y: env.maxWidth * -.8,
 			})
 		}
 		else if (env.phase === 'night') {
-			TweenMax.to(pix.moon, phaseDuration, {
+			TweenMax.to(env.moon, phaseDuration, {
 				delay: phaseDuration * .25,
 				y: env.maxWidth * -.8,
 				ease: Power2.easeOut,
 			})
-			TweenMax.set(pix.moon, {
+			TweenMax.set(env.moon, {
 				x: env.maxWidth * .65,
 				y: env.maxWidth * .5,
 				pixi: {
@@ -387,7 +387,7 @@ var env;
 					colorizeAmount: 1,
 				}
 			})
-			TweenMax.to(pix.moon, phaseDuration * .1, {
+			TweenMax.to(env.moon, phaseDuration * .1, {
 				delay: phaseDuration * .3,
 				pixi: {
 					scale: 1,
@@ -400,7 +400,7 @@ var env;
 
 	function animateClouds() {
 		if (env.phase === 'morning') {
-			TweenMax.to([pix.cloud1, pix.cloud2], phaseDuration * .5, {
+			TweenMax.to([env.cloud1, env.cloud2], phaseDuration * .5, {
 				startAt: {
 					alpha: .6,
 					pixi: {
@@ -414,25 +414,25 @@ var env;
 			})
 		}
 		else if (env.phase === 'evening') {
-			TweenMax.set([pix.cloud1, pix.cloud2], {
+			TweenMax.set([env.cloud1, env.cloud2], {
 				alpha: .85,
 				pixi: {
 					brightness: 1
 				},
 			})
-			TweenMax.to([pix.cloud1, pix.cloud2], phaseDuration * .3, {
+			TweenMax.to([env.cloud1, env.cloud2], phaseDuration * .3, {
 				delay: phaseDuration * .3,
 				alpha: 0
 			})
 		}
 		else if (env.phase === 'night') {
-			TweenMax.set([pix.cloud1, pix.cloud2], {
+			TweenMax.set([env.cloud1, env.cloud2], {
 				alpha: 0,
 				pixi: {
 					brightness: .1
 				},
 			})
-			TweenMax.to([pix.cloud1, pix.cloud2], phaseDuration * .2, {
+			TweenMax.to([env.cloud1, env.cloud2], phaseDuration * .2, {
 				delay: phaseDuration * .8,
 				alpha: .6,
 				pixi: {
@@ -444,8 +444,8 @@ var env;
 	}
 
 	function pixiResizeSky() {
-		pix.sky.view.style.width = window.innerWidth + 'px';
-		pix.sky.view.style.height = ~~(pix.sky.screen.height / env.maxHeight * window.innerHeight) + 'px';
+		env.sky.view.style.width = window.innerWidth + 'px';
+		env.sky.view.style.height = ~~(env.sky.screen.height / env.maxHeight * window.innerHeight) + 'px';
 	}
 	function resizeAll() {
 		pixiResizeSky()

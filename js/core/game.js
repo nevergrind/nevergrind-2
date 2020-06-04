@@ -140,12 +140,14 @@ var game;
 	}
 	function updatePartyResources(changedResourceObj) {
 		// broadcast health update for party member and animate attack
-		partyData = {
-			route: 'p->HP',
-			row: my.row,
-			...changedResourceObj
+		if (party.hasMoreThanOnePlayer()) {
+			partyData = {
+				route: 'p->HP',
+				row: my.row,
+				...changedResourceObj
+			}
+			socket.publish('party' + my.partyId, partyData, true)
 		}
-		socket.publish('party' + my.partyId, partyData)
 	}
 	function heartbeatTimeout() {
 		clearTimeout(heartbeat.timer)

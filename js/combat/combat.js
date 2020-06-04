@@ -24,7 +24,7 @@ var combat;
 
 	const textDuration = 1
 	const textDistanceY = 150
-	const textDistanceX = 80
+	const textDistanceX = 150
 	const combatTextRegularStyle = {
 		fontFamily: 'Play',
 		fontSize: 36,
@@ -84,8 +84,8 @@ var combat;
 			return d
 		}
 		// dodge
-		if (!d.isPiercing && Math.random() * 100 < mobs[d.index].dodge) {
-			// chat.log(ng.getArticle(d.index, true) + ' ' + mobs[d.index].name + ' dodged your attack!')
+		if (!d.isPiercing &&
+			Math.random() * 100 < mobs[d.index].dodge) {
 			d.damage = 0
 			combat.popupDamage(d.index, 'DODGE!')
 			return d
@@ -94,15 +94,16 @@ var combat;
 		// info('processDamages', d)
 		if (d.damageType === 'physical') {
 			// riposte
-			if (!d.isPiercing && Math.random() * 100 < mobs[d.index].riposte) {
-				// chat.log(ng.getArticle(d.index, true) + ' '+ mobs[d.index].name + ' riposted your attack!')
+			if (!d.isPiercing &&
+				Math.random() * 100 < mobs[d.index].riposte) {
 				d.damage = 0
+				combat.txDamageHero(d.index, [ mob.getMobDamage(d.index, my.row, true) ])
 				combat.popupDamage(d.index, 'RIPOSTE!')
 				return d
 			}
 			// parry
-			if (!d.isPiercing && Math.random() * 100 < mobs[d.index].parry) {
-				// chat.log(ng.getArticle(d.index, true) + ' '+ mobs[d.index].name + ' parried your attack!')
+			if (!d.isPiercing &&
+				Math.random() * 100 < mobs[d.index].parry) {
 				d.damage = 0
 				combat.popupDamage(d.index, 'PARRY!')
 				return d
@@ -221,7 +222,7 @@ var combat;
 				console.info('tx processHit: ', damages[i].damage)
 			}
 		}
-		if (damageArr.length) {
+		if (damageArr.length && party.hasMoreThanOnePlayer()) {
 			socket.publish('party' + my.partyId, {
 				route: 'p->damage',
 				d: damageArr
@@ -299,7 +300,8 @@ var combat;
 		// dodge
 		if (my.level >= skills['dodge'][my.job].level) {
 			combat.levelSkillCheck('dodge')
-			if (Math.random() < stats.dodgeChance()) {
+			if (!d.isPiercing &&
+				Math.random() < stats.dodgeChance()) {
 				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you dodged!')
 				d.damage = 0
 				return d
@@ -310,8 +312,10 @@ var combat;
 			// riposte
 			if (my.level >= skills['riposte'][my.job].level) {
 				combat.levelSkillCheck('riposte')
-				if (Math.random() < stats.riposteChance()) {
+				if (!d.isPiercing &&
+					Math.random() < stats.riposteChance()) {
 					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you riposted!')
+					button.primaryAttack(true, index)
 					d.damage = 0
 					return d
 				}
@@ -319,9 +323,11 @@ var combat;
 			// parry
 			if (my.level >= skills['parry'][my.job].level) {
 				combat.levelSkillCheck('parry')
-				if (Math.random() < stats.parryChance()) {
+				if (!d.isPiercing &&
+					Math.random() < stats.parryChance()) {
 					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you parried!')
 					d.damage = 0
+					button.startSwing('primaryAttack')
 					return d
 				}
 
@@ -365,11 +371,13 @@ var combat;
 		processDamageToMe(index, damages)
 		mob.animateAttack(index)
 		// animate mob for other players and check if they were hit
-		socket.publish('party' + my.partyId, {
-			route: 'p->hit',
-			i: index,
-			d: damages,
-		}, true)
+		if (party.hasMoreThanOnePlayer()) {
+			socket.publish('party' + my.partyId, {
+				route: 'p->hit',
+				i: index,
+				d: damages,
+			}, true)
+		}
 	}
 	function rxDamageHero(data) {
 		// mob is hitting me
@@ -389,8 +397,13 @@ var combat;
 						row: damages[i].row,
 						damage: damages[i].damage,
 					})
-					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
-					console.info('tx processHit: ', damages[i].damage)
+					if (damages[i].isPiercing) {
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
+					}
+					else {
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
+					}
+					//console.info('tx processHit: ', damages[i].damage)
 				}
 			}
 			animatePlayerFrames()
@@ -404,11 +417,11 @@ var combat;
 		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)
 		basicText.anchor.set(0.5)
 		basicText.id = 'text-' + combat.textId++
+		mobs[index].hitCount++
 		basicText.x = mob.centerX[index]
-		basicText.y = env.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH * mobs[2].size
+		basicText.y = env.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH * mobs[2].size + ((mobs[index].hitCount % 5) * 20)
 		//info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
-
 		TweenMax.to(basicText, textDuration * .6, {
 			y: '-=' + textDistanceY + '',
 			onComplete: function() {
@@ -453,7 +466,7 @@ var combat;
 		// style
 		combat.text.view.id = 'combat-text'
 		combat.text.view.style.position = 'absolute'
-		combat.text.view.style.zIndex = 1
+		combat.text.view.style.zIndex = 2
 		combat.text.view.style.pointerEvents = 'none'
 		querySelector('#scene-battle').appendChild(combat.text.view)
 		updateCombatTextLayer()

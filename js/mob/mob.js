@@ -1,19 +1,6 @@
 var mob;
 (function(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2, undefined) {
 	mob = {
-		txData: [],
-		enableMobHeartbeat: true,
-		imageKeysLen: 0,
-		index: 0,
-		cache: {},
-		textures: {},
-		imageKeys: [],
-		initialized: 0,
-		max: 9,
-		maxLevel: 50,
-		element: {},
-		centerX: [192,576,960,1344,1728,384,768,1152,1536],
-		bottomY: [220,220,220,220,220,320,320,320,320],
 		getRandomMobKey,
 		init,
 		// configs, resets (active animations) and idles mobs in one call for start of combat
@@ -37,6 +24,20 @@ var mob;
 		death,
 		killAttacks,
 		missChance,
+		getMobDamage,
+		txData: [],
+		enableMobHeartbeat: true,
+		imageKeysLen: 0,
+		index: 0,
+		cache: {},
+		textures: {},
+		imageKeys: [],
+		initialized: 0,
+		max: 9,
+		maxLevel: 50,
+		element: {},
+		centerX: [192,576,960,1344,1728,384,768,1152,1536],
+		bottomY: [220,220,220,220,220,320,320,320,320],
 	};
 	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el, chance
 	var frame = {
@@ -124,7 +125,7 @@ var mob;
 	function init() {
 		mob.imageKeys = Object.keys(mobs.images)
 		mob.imageKeysLen = mob.imageKeys.length
-		battle.show();
+		battle.show()
 		// init mob/dom connections
 		for (var i=0; i<mob.max; i++){
 			mobs[i] = {
@@ -136,6 +137,7 @@ var mob;
 				size: i < 5 ? 1 : .85,
 				isDead: true,
 				speed: 0,
+				hitCount: 0,
 				type: '',
 				box: {},
 				dom: {}
@@ -371,7 +373,8 @@ var mob;
 			val = mobs[slot].hate[row]
 			index = party.getIndexByRow(row)
 			console.info(row, index, val)
-			if (party.presence[index].hp > 0) {
+			if (typeof party.presence[index] === 'object' &&
+				party.presence[index].hp > 0) {
 				if (mostHatedValue === null) {
 					// first one is always added
 					mostHatedValue = val
@@ -406,10 +409,11 @@ var mob;
 		return mostHatedRow *= 1
 	}
 
-	function getMobDamage(i, row) {
+	function getMobDamage(i, row, isPiercing) {
 		return {
 			row: row,
 			damage: _.random(ceil(mobs[i].level * .33), mobs[i].attack),
+			isPiercing: isPiercing,
 			damageType: 'physical'
 		}
 	}

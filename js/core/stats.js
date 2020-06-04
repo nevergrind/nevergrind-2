@@ -356,6 +356,7 @@ var stats = {};
 			damage: _.random(min, max),
 			isCrit: isCrit,
 			enhancedDamage: 1,
+			isPiercing: true,
 			isRanged: true,
 			weaponSkill: 'Archery',
 			damageType: 'physical',

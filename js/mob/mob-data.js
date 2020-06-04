@@ -30,16 +30,16 @@ mob.data['Salubrin Den'] = [
 		type: 'normal', // normal, champion, unique, boss?
 		traits: [], // champ traits
 	},
-	/*{
-		img: 'balrog',
-		name: 'balrog',
+	{
+		img: 'toadlok',
+		name: 'toadlok',
 		minLevel: 1,
-		maxLevel: 5,
+		maxLevel: 60,
 		size: 1,
 		job: 'WAR',
 		type: 'normal', // normal, champion, unique, boss?
 		traits: [], // champ traits
-	},*/
+	},
 ]
 mob.data['Tendolin Hollow'] = {
 
