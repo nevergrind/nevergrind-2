@@ -98,17 +98,19 @@ var battle;
 		if (typeof data === 'object' &&
 			typeof data.config === 'object' &&
 			data.config.length) {
-			warn('data in from goBattle', data.config)
+			warn('p->goBattle data in from goBattle', data.config)
 			setupMobs(data.config)
 		}
 		else setupMobs()
 
+		// set to center target
 		my.target = 2
 		combat.targetChanged()
 		my.fixTarget()
 		battle.updateTarget()
+
 		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
-			console.info('txData!', mob.txData)
+			console.info('p->goBattle txData!', mob.txData)
 			socket.publish('party' + my.partyId, {
 				route: 'p->goBattle',
 				config: mob.txData
@@ -133,7 +135,7 @@ var battle;
 			// followers
 			config.forEach((mobData, index) => {
 				if (mobData.name) {
-					mob.setMob(index, mobData)
+					mob.setMob(index, mobData, true)
 				}
 			})
 		}

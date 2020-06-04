@@ -190,13 +190,15 @@ var mob;
 			...results[index],
 		}
 	}
-	function setMob(i, mobConfig) {
-		modifyMobStatsByClass(mobConfig)
-		mob.txData[i] = _.omit(mobConfig, [
-			'maxLevel',
-			'minLevel',
-		])
-		console.info('mobConfig', i, mobConfig)
+	function setMob(i, mobConfig, fromLeader) {
+		if (!fromLeader) {
+			modifyMobStatsByClass(mobConfig)
+			mob.txData[i] = _.omit(mobConfig, [
+				'maxLevel',
+				'minLevel',
+			])
+		}
+		console.info('p->goBattle', mobConfig)
 		cache.preloadMob(mobConfig.img)
 		// combine/assign image object props to mobs[index]
 		mobs[i] = {
@@ -289,23 +291,23 @@ var mob;
 	function setClickBox(m, i) {
 		// alive box
 		let el = querySelector('#mob-alive-' + i)
-		el.style.left = ((m.clickAliveW  * m.size) * -.5) + 'px';
-		el.style.bottom = (m.clickAliveY  * m.size) + 'px';
-		el.style.width = (m.clickAliveW  * m.size) + 'px';
-		el.style.height = (m.clickAliveH * m.size) + 'px';
-		el.style.display = m.hp ? 'block' : 'none';
+		el.style.left = ((m.clickAliveW  * m.size) * -.5) + 'px'
+		el.style.bottom = (m.clickAliveY  * m.size) + 'px'
+		el.style.width = (m.clickAliveW  * m.size) + 'px'
+		el.style.height = (m.clickAliveH * m.size) + 'px'
+		el.style.display = m.hp ? 'block' : 'none'
 
 		// dead box
 		el = querySelector('#mob-dead-' + i)
-		el.style.left = ((m.clickDeadW * m.size) * -.5) + 'px';
-		el.style.bottom = (m.clickDeadY * m.size) + 'px';
-		el.style.width = (m.clickDeadW * m.size) + 'px';
-		el.style.height = (m.clickDeadH * m.size) + 'px';
-		el.style.display = m.hp ? 'none' : 'block';
+		el.style.left = ((m.clickDeadW * m.size) * -.5) + 'px'
+		el.style.bottom = (m.clickDeadY * m.size) + 'px'
+		el.style.width = (m.clickDeadW * m.size) + 'px'
+		el.style.height = (m.clickDeadH * m.size) + 'px'
+		el.style.display = m.hp ? 'none' : 'block'
 	}
 	function drawMobBar(index, drawInstant) {
 		percent = bar.getRatio('hp', mobs[index])
-		// info('drawMobBar', index, percent)
+		// console.info('drawMobBar', index, percent)
 		TweenMax.to('#mob-health-' + index, drawInstant ? 0 : .15, {
 			x: '-' + percent + '%'
 		})

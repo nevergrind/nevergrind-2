@@ -180,8 +180,8 @@ var combat;
 	}
 
 	function updateMobHp(o) {
-		mobs[o.index].hp -= o.damage
 		if (!o.hate) o.hate = 1
+		mobs[o.index].hp -= o.damage
 		party.damage[o.row] += o.damage
 
 		// alive
@@ -219,7 +219,7 @@ var combat;
 					c: damages[i].isCrit,
 					h: damages[i].hate,
 				})
-				console.info('tx processHit: ', damages[i].damage)
+				console.info('tx processHit: ', damages[i])
 			}
 		}
 		if (damageArr.length && party.hasMoreThanOnePlayer()) {
@@ -239,7 +239,7 @@ var combat;
 				crit: data.d[i].c,
 				hate: data.d[i].h,
 			})
-			console.info('rx processing damage : ', data.d[i].d)
+			console.info('rxUpdateDamage : ', data.d)
 		}
 	}
 
@@ -383,7 +383,7 @@ var combat;
 		// mob is hitting me
 		damages = data.d
 		processDamageToMe(data.i, damages)
-		console.info('rx processing damage : ', damages)
+		console.info('rxDamageHero: ', damages)
 		mob.animateAttack(data.i)
 	}
 	function processDamageToMe(index, damages) {

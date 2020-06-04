@@ -294,7 +294,7 @@ var stats = {};
 		}
 	}
 	function offhandDamage() {
-		if (!my.dualWield) return [0, 0, false]
+		if (!my.dualWield) return { min: 0, max: 0, isCrit: false }
 		min = 1
 		max = 1
 		weaponSkill = typeof items.eq[13] === 'object' ? items.eq[13].weaponSkill : 'Hand-to-Hand'
@@ -339,7 +339,7 @@ var stats = {};
 		min = 1
 		max = 1
 		atk = attack('Archery')
-		if (!my.archery || items.eq[14].itemType !== 'bows') return [0, 0, false]
+		if (!my.archery || items.eq[14].itemType !== 'bows') return { min: 0, max: 0, isCrit: false }
 		min = items.eq[14].minDamage * (1 + (atk * .002))
 		max = items.eq[14].maxDamage * (1 + (atk * .002))
 

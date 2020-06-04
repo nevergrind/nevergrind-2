@@ -117,7 +117,7 @@ const jsFiles = [
 	'core/stats',
 	'core/css',
 	'core/init',
-	'core/tips',
+	'core/loading',
 	'build/endWrap',
 ].map(function(file) {
 	return './js/' + file + '.js';
