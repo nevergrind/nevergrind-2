@@ -39,12 +39,12 @@ var dungeon;
 		dungeon.init()
 		combat.autoAttackDisable()
 		// reset some combat data
-		mobs.forEach((m,i) => {
+		mobs.forEach((m, i) => {
 			mobs[i].name = ''
 			mobs[i].hp = 0
 		})
+		combat.endCombat()
 
-		warn("DUNGEON GO")
 		TweenMax.to('#scene-dungeon', .5, {
 			startAt: { filter: 'brightness(0)' },
 			delay: .5,
@@ -61,6 +61,11 @@ var dungeon;
 				route: 'p->goDungeon'
 			})
 		}
+		delayedCall(1, () => {
+			if (_.size(mob.textures) === 0) {
+				battle.loadTextures()
+			}
+		})
 	}
 	function init() {
 		if (zones[mission.id].mobs.length) {
@@ -72,9 +77,9 @@ var dungeon;
 			getElementById('scene-dungeon').style.display = 'block'
 		}
 		else {
-			button.setAll()
 			dungeon.initialized = true
 		}
+		button.setAll()
 		getElementById('scene-dungeon').innerHTML = dungeon.html()
 		chat.scrollBottom()
 	}

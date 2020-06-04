@@ -503,7 +503,7 @@ var chat;
 		return c[1] === void 0 ?
 			'' : c[1].toLowerCase().trim();
 	}
-	function joinChannel(channel, bypass) {
+	function joinChannel(channel, bypass, keepLog) {
 		if (ng.view === 'town' || bypass) {
 			if (channel) {
 				// remove from channel
@@ -511,9 +511,9 @@ var chat;
 					$.post(app.url + 'chat/set-channel.php', {
 						channel: channel
 					}).done(function (data) {
-						clearLog();
-						console.log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>');
-						joinChangeCallback(data);
+						!keepLog && clearLog()
+						console.log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>')
+						joinChangeCallback(data)
 					});
 				}
 			}

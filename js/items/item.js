@@ -2,6 +2,7 @@ var item;
 var loot = {};
 (function(_, Object, JSON, $, SteppedEase, TweenMax, undefined) {
 	item = {
+		canEquipArmor,
 		handleDropSuccess,
 		getItemNameString,
 		getRarity,
@@ -1668,8 +1669,8 @@ var loot = {};
 			console.warn('drag 1 itemType', drag.itemType, 'to slot', item.dropEqType)
 			console.warn('drag 2 itemType', drop.itemType, 'to slot', item.dragEqType)
 
-			if (eqDropValid(drag.itemType, item.dropEqType, drag.itemLevel, drag.unidentified) &&
-				eqDropValid(drop.itemType, item.dragEqType, drop.itemLevel, drop.unidentified)) {
+			if (eqDropValid(drag, item.dropEqType, drag.itemLevel, drag.unidentified) &&
+				eqDropValid(drop, item.dragEqType, drop.itemLevel, drop.unidentified)) {
 				resp = true
 			}
 		}
@@ -1677,7 +1678,7 @@ var loot = {};
 		return resp;
 	}
 
-	function eqDropValid(itemType, eqType, itemLevel, unidentified) {
+	function eqDropValid(_item, eqType, itemLevel, unidentified) {
 		if (unidentified) {
 			chat.log('You cannot equip unidentified items! Try buying an Identify Scroll from the merchant.', 'chat-warning')
 			return false
@@ -1687,23 +1688,28 @@ var loot = {};
 			chat.log('Your level is not high enough to equip this item!', 'chat-warning')
 			return false
 		}
+		// armor checks
+		if (!item.canEquipArmor(_item.armorType)) {
+			chat.log('You cannot equip '+ _item.armorType + ' armor!', 'chat-warning')
+			return false
+		}
 		// weapon checks
 		if (eqType === 'primary' || eqType === 'secondary' &&
-			item.allWeaponTypes.includes(itemType)) {
+			item.allWeaponTypes.includes(_item.itemType)) {
 			// check character can equip a weapon
-			if (itemType === 'oneHandSlashers' && !stats.oneHandSlash() ||
-				itemType === 'oneHandBlunts' && !stats.oneHandBlunt() ||
-				itemType === 'twoHandSlashers' && !stats.twoHandSlash() ||
-				itemType === 'twoHandBlunts' && !stats.twoHandBlunt() ||
-				itemType === 'piercing' && !stats.piercing() ||
-				itemType === 'bows' && !stats.archery()) {
+			if (_item.itemType === 'oneHandSlashers' && !stats.oneHandSlash() ||
+				_item.itemType === 'oneHandBlunts' && !stats.oneHandBlunt() ||
+				_item.itemType === 'twoHandSlashers' && !stats.twoHandSlash() ||
+				_item.itemType === 'twoHandBlunts' && !stats.twoHandBlunt() ||
+				_item.itemType === 'piercing' && !stats.piercing() ||
+				_item.itemType === 'bows' && !stats.archery()) {
 				chat.log('You cannot equip this type of weapon!', 'chat-warning')
 				return false
 			}
 		}
 
 		if (eqType === 'secondary' &&
-			item.offhandWeaponTypes.includes(itemType)) {
+			item.offhandWeaponTypes.includes(_item.itemType)) {
 			// off-hand weapon check
 			if (!stats.dualWield()) {
 				chat.log('You cannot dual wield!', 'chat-warning')
@@ -1712,7 +1718,7 @@ var loot = {};
 		}
 
 		if (eqType === 'primary' &&
-			item.twoHandWeaponTypes.includes(itemType)) {
+			item.twoHandWeaponTypes.includes(_item.itemType)) {
 			// two-hand constraint checks (no off-hand)
 			if (items.eq[13].name) {
 				chat.log('You cannot equip a two-hand weapon while dual wielding!', 'chat-warning')
@@ -1720,7 +1726,7 @@ var loot = {};
 			}
 		}
 
-		console.info('eqDropValid', eqType, itemType)
+		console.info('eqDropValid', eqType, _item.itemType)
 		if (eqType === 'secondary' &&
 			item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
 			chat.log('You cannot equip a shield while wielding a two-hand weapon!', 'chat-warning')
@@ -1730,7 +1736,7 @@ var loot = {};
 		// dropping to non-eq slot
 		return item.eqSlots[eqType] === void 0 ||
 			// dropping to eq slot
-			item.eqSlots[eqType].includes(itemType)
+			item.eqSlots[eqType].includes(_item.itemType)
 	}
 
 	function resetDrop() {
@@ -2106,5 +2112,42 @@ var loot = {};
 	}
 	function getIdentifyScroll() {
 		return _.clone(identifyScroll)
+	}
+
+
+	const wearsLeather = [
+		'BRD',
+		'CLR',
+		'DRU',
+		'MNK',
+		'CRU',
+		'RNG',
+		'ROG',
+		'SHD',
+		'SHM',
+		'WAR',
+	]
+	const wearsMail = [
+		'BRD',
+		'CLR',
+		'CRU',
+		'RNG',
+		'SHD',
+		'SHM',
+		'WAR',
+	]
+	const wearsPlate = [
+		'BRD',
+		'CLR',
+		'CRU',
+		'SHD',
+		'WAR',
+	]
+	function canEquipArmor(armorType) {
+		if (armorType === void 0) return true
+		if (armorType === 'cloth') return true
+		else if (armorType === 'leather') return wearsLeather.includes(my.job)
+		else if (armorType === 'mail') return wearsMail.includes(my.job)
+		else if (armorType === 'plate') return wearsPlate.includes(my.job)
 	}
 })(_, Object, JSON, $, SteppedEase, TweenMax);

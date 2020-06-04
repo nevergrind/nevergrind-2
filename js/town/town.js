@@ -90,6 +90,8 @@ var town;
 	////////////////////////////////////////////
 	function go() {
 		if (ng.view === 'town') return;
+		mob.textures = {}
+		mob.killAttacks()
 		if (create.selected) {
 			clearTimeout(game.session.timer)
 			game.emptyScenesExcept('scene-town');
@@ -100,6 +102,7 @@ var town;
 				})
 			}
 			for (key in town.isInitialized) {
+				// reset stores
 				town.isInitialized[key] = false
 			}
 			chat.sizeLarge();
@@ -158,7 +161,6 @@ var town;
 
 
 				if (socket.enabled) {
-					warn('ENABLED!')
 					town.socketReady()
 				}
 				else {
@@ -168,7 +170,8 @@ var town;
 					ignore.init()
 					game.initPlayedCache()
 				}
-				!env.initialized && env.startSkyPhase()
+				//!env.initialized && env.startSkyPhase()
+				env.startSkyPhase()
 				town.init()
 				bar.init()
 				tavern.init()

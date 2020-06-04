@@ -13,8 +13,7 @@ var mob;
 		maxLevel: 50,
 		element: {},
 		centerX: [192,576,960,1344,1728,384,768,1152,1536],
-		//bottomY: [240,240,240,240,240,340,340,340,340],
-		bottomY: [200,200,200,200,200,300,300,300,300],
+		bottomY: [220,220,220,220,220,320,320,320,320],
 		getRandomMobKey,
 		init,
 		// configs, resets (active animations) and idles mobs in one call for start of combat
@@ -37,8 +36,9 @@ var mob;
 		special,
 		death,
 		killAttacks,
+		missChance,
 	};
-	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el
+	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el, chance
 	var frame = {
 		idle: {
 			start: 1,
@@ -111,11 +111,6 @@ var mob;
 	'shadow',
 	'bar']
 	//////////////////////////////////////////////////
-	function killAttacks() {
-		timers.mobAttack.forEach(time => {
-			time.kill()
-		})
-	}
 	function getRandomMobKey() {
 		var i = ~~(rand() * mob.imageKeysLen)
 		return mob.imageKeys[i]
@@ -220,18 +215,27 @@ var mob;
 		resetIdle(i, true)
 		idle(i)
 	}
+	function sizeOffset(size) {
+		val = 0
+		if (size >= 1) val = 16
+		else if (size > .9) val = 12
+		else if (size > .8) val = 8
+		else if (size > .7) val = 4
+		else val = 0
+		return val
+	}
 	function sizeMob(i) {
 		var m = mobs[i]
 		if (!m.img) return
 		// set dom
-		let yAdjust = 20
 		let images = mobs.images[m.img]
 		let width = ~~(m.size * (images.width))
 		let height = ~~(m.size * (images.height))
 		let x = mob.centerX[i]
-		let y = 1080 - mob.bottomY[i] - images.yFloor // mystery adjustment of 20
+		// botttom - row offset - image size offset for transparency at bottom - more size offset?
+		let y = 1080 - mob.bottomY[i] - (images.yFloor * m.size) + sizeOffset(m.size)
 		// mob sprite
-		mobs[i].sprite = PIXI.Sprite.from('mobs/'+ m.img +'/' + m.frame +'.png')
+		mobs[i].sprite = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
 		mobs[i].sprite.anchor.set(.5, 1)
 		mobs[i].sprite.index = i
 		mobs[i].sprite.x = x
@@ -242,16 +246,31 @@ var mob;
 		mobs[i].sprite.buttonMode = true
 		mobs[i].sprite.zIndex = 100 - i
 
+		// mob shadow
+		/*mobs[i].shadow = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
+		mobs[i].shadow.anchor.set(.5, 1)
+		mobs[i].shadow.x = x
+		mobs[i].shadow.y = y
+		mobs[i].shadow.width = width
+		mobs[i].shadow.height = height
+		mobs[i].shadow.zIndex = 90 - i
+		TweenMax.set(mobs[i].shadow, {
+			pixi: {
+				brightness: 0,
+				alpha: .2
+			}
+		})*/
 		setClickBox(m, i)
 		//mobs[i].sprite.hitArea = new PIXI.Rectangle(c.x, c.y, c.w, c.h)
 		battle.layer.stage.addChild(mobs[i].sprite)
 
 		// shadow
+		//TODO: change to percentages and use shadowBottom
 		let el = querySelector('#mob-shadow-' + i)
 		el.style.display = 'block'
-        el.style.width = ~~(m.shadowWidth * m.size) + 'px'
-        el.style.height = (m.shadowHeight * m.size) + 'px'
-        el.style.bottom = '0px'
+        el.style.width = (m.shadowWidth * m.size) * 100 / 1920 + '%'
+        el.style.height = (m.shadowHeight * m.size) * 100 / 1080 + '%'
+        el.style.bottom = '0%'
 
 		TweenMax.set(querySelector('#mob-details-' + i), {
 			y: 0,
@@ -299,12 +318,8 @@ var mob;
 	function setSrc(i) {
 		mobs[i].frame = ~~mobs[i].frame
 		if (mobs[i].frame !== mobs[i].lastFrame) {
-			let frame = mobs[i].frame
-			let name = mobs[i].img
-			//if (typeof mob.textures[name] !== 'undefined') {
-				mobs[i].sprite.texture = mob.textures[name][frame]
-				mobs[i].lastFrame = mobs[i].frame
-			//}
+			mobs[i].sprite.texture = mob.textures[mobs[i].img][mobs[i].frame]
+			mobs[i].lastFrame = mobs[i].frame
 		}
 	}
 	function resetIdle(i) {
@@ -313,7 +328,8 @@ var mob;
 	}
 
 	function idle(i) {
-		TweenMax.to(mobs[i], mobs[i].frameSpeed * frame.idle.diff * 2, {
+		if (ng.view !== 'battle') return
+		mobs[i].animation = TweenMax.to(mobs[i], mobs[i].frameSpeed * frame.idle.diff * 2, {
 			startAt: {
 				frame: frame.idle.start
 			},
@@ -328,12 +344,12 @@ var mob;
 	}
 
 	function hit(i) {
-		//info('hit', i)
+		if (ng.view !== 'battle') return
 		if (mobs[i].isAnimationActive) return;
 		mobs[i].isAnimationActive = true;
 		var speed = mobs[i].frameSpeed * frame.hit.diff
 
-		TweenMax.to(mobs[i], speed, {
+		mobs[i].animation = TweenMax.to(mobs[i], speed, {
 			startAt: {
 				frame: frame.hit.start
 			},
@@ -431,7 +447,7 @@ var mob;
 			attackType = 'primary'
 		}
 
-		TweenMax.to(mobs[i], speed, {
+		mobs[i].animation = TweenMax.to(mobs[i], speed, {
 			startAt: {
 				frame: frame[attackType].start
 			},
@@ -453,7 +469,7 @@ var mob;
 			mobs[i].isAnimationActive = true
 			var speed = mobs[i].frameSpeed * frame.special.diff
 
-			TweenMax.to(mobs[i], speed, {
+			mobs[i].animation = TweenMax.to(mobs[i], speed, {
 				startAt: {
 					frame: frame.special.start
 				},
@@ -481,7 +497,7 @@ var mob;
 			y: mobs[i].barDeathBottom * mobs[i].size,
 			ease: Power4.easeIn
 		});
-		TweenMax.to(mobs[i], speed, {
+		mobs[i].animation = TweenMax.to(mobs[i], speed, {
 			startAt: {
 				frame: frame.death.start
 			},
@@ -746,6 +762,25 @@ var mob;
 			drawMobBar(tick.i)
 			console.info('resource tick B', tick)
 		})
+	}
+	function killAttacks(finishDeath) {
+		mobs.forEach((m, i) => {
+			timers.mobAttack[i].kill()
+			!finishDeath && typeof mobs[i].animation === 'object' && mobs[i].animation.pause()
+		})
+	}
+	function missChance(level) {
+		chance = .2
+		if (my.level > level) {
+			chance += ((my.level - level) / 150)
+		}
+		else if (my.level < level) {
+			chance -= ((level - my.level) / 25)
+		}
+		if (chance > .5) chance = .5
+		else if (chance < .05) chance = .05
+		// console.info('missChance', level, chance)
+		return chance
 	}
 
 })(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2);

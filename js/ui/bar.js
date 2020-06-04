@@ -33,6 +33,8 @@ var bar;
 		updateBar,
 		getRatio,
 		getSkillBarHtml,
+		updateCharStatPanels,
+		charStatColTwoHtml,
 		defaultImage: [
 			'helms1',
 			'amulets0',
@@ -388,7 +390,6 @@ var bar;
 			ng.html('#char-stat-col-2', charStatColTwoHtml())
 		}
 		stats.setAllResources()
-		my.crit = stats.critChance()
 
 		if (my.hp > my.hpMax) my.hp = my.hpMax
 		if (my.mp > my.mpMax) my.mp = my.mpMax
@@ -999,13 +1000,13 @@ var bar;
 					'<img class="inv-avatar-bg" src="images/avatar-bg/'+ defaultBg[my.job] +'.png">' +
 					'<img id="inv-avatar-bg2" class="inv-avatar-bg" src="images/avatar-bg/'+ defaultBg[my.job] +'.png">' +
 					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
-					'<div id="inv-resist-wrap" class="text-shadow">'+
-						'<div id="inv-resist-blood" class="inv-resist-icon flex-center popover-icons">' + + stats.resistBlood() + '</div>' +
-						'<div id="inv-resist-poison" class="inv-resist-icon flex-center popover-icons">' + stats.resistPoison() + '</div>' +
-						'<div id="inv-resist-arcane" class="inv-resist-icon flex-center popover-icons">' + stats.resistArcane() + '</div>' +
-						'<div id="inv-resist-lightning" class="inv-resist-icon flex-center popover-icons">' + stats.resistLightning() + '</div>' +
-						'<div id="inv-resist-fire" class="inv-resist-icon flex-center popover-icons">' + stats.resistFire() + '</div>' +
-						'<div id="inv-resist-ice" class="inv-resist-icon flex-center popover-icons">' + stats.resistIce() + '</div>' +
+					'<div id="inv-resist-wrap" class="text-shadow3">'+
+						'<div id="inv-resist-blood" class="inv-resist-icon popover-icons">' + + stats.resistBlood() + '</div>' +
+						'<div id="inv-resist-poison" class="inv-resist-icon popover-icons">' + stats.resistPoison() + '</div>' +
+						'<div id="inv-resist-arcane" class="inv-resist-icon popover-icons">' + stats.resistArcane() + '</div>' +
+						'<div id="inv-resist-lightning" class="inv-resist-icon popover-icons">' + stats.resistLightning() + '</div>' +
+						'<div id="inv-resist-fire" class="inv-resist-icon popover-icons">' + stats.resistFire() + '</div>' +
+						'<div id="inv-resist-ice" class="inv-resist-icon popover-icons">' + stats.resistIce() + '</div>' +
 					'</div>' +
 				'</div>' +
 				'<div class="flex" style="font-size: .8rem">'+
@@ -1048,7 +1049,7 @@ var bar;
 		'</div>'
 	}
 	function charStatColTwoHtml() {
-		let hit = stats.damage(true)
+		let hit = stats.damage(true, false, true)
 		return '<div class="flex space-between">' +
 			'<div style="color: gold">Attack:</div><div>'+ stats.attack() +'</div>' +
 		'</div>' +

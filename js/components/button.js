@@ -1,7 +1,7 @@
 var button;
 !function(TweenMax, $, _, Linear, Power4, undefined) {
 	button = {
-		initialized: 0,
+		initialized: false,
 		setAll,
 		hide,
 		triggerGlobalCooldown,
@@ -122,10 +122,7 @@ var button;
 		hit = stats.damage()
 		damages.push({
 			index: my.target,
-			damage: hit.damage,
-			isCrit: hit.isCrit,
-			enhancedDamage: hit.enhancedDamage,
-			damageType: hit.damageType,
+			...hit
 		})
 		// double attack?
 		if (my.level >= skills.doubleAttack[my.job].level) {
@@ -134,10 +131,7 @@ var button;
 				hit = stats.damage()
 				damages.push({
 					index: my.target,
-					damage: hit.damage,
-					isCrit: hit.isCrit,
-					enhancedDamage: hit.enhancedDamage,
-					damageType: hit.damageType,
+					...hit
 				})
 			}
 		}
@@ -177,20 +171,14 @@ var button;
 				damages = []
 				damages.push({
 					index: my.target,
-					damage: hit.damage,
-					isCrit: hit.isCrit,
-					enhancedDamage: hit.enhancedDamage,
-					damageType: hit.damageType,
+					...hit
 				})
 				if (my.level >= skills.doubleAttack[my.job].level) {
 					if (Math.random() < successfulDoubleAttack()) {
 						hit = stats.damage()
 						damages.push({
 							index: my.target,
-							damage: hit.damage,
-							isCrit: hit.isCrit,
-							enhancedDamage: hit.enhancedDamage,
-							damageType: hit.damageType,
+							...hit
 						})
 					}
 				}
@@ -268,6 +256,9 @@ var button;
 		})
 	}
 	function setAll() {
+		TweenMax.set('#button-wrap', {
+			startAt: { display: 'flex' },
+		})
 		if (button.initialized) return
 		var s = '';
 		// base attack buttons
@@ -296,10 +287,7 @@ var button;
 		s += '</div>'
 
 		querySelector('#button-wrap').innerHTML = s;
-		TweenMax.set('#button-wrap', {
-			startAt: { display: 'flex' },
-		})
-		button.initialized = 1
+		button.initialized = true
 	}
 	function hide() {
 		TweenMax.set('#button-wrap', {

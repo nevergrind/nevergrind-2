@@ -9,6 +9,7 @@ var battle;
 		targetIsFrontRow,
 		targetIsBackRow,
 		updateTarget,
+		loadTextures,
 	}
 
 	let index, splashTgt
@@ -155,11 +156,10 @@ var battle;
 			if (!ng.isApp) {
 				totalMobs = 5
 				minLevel = 1
-				maxLevel = 1
+				maxLevel = 5
 			}
 			console.info('levels', minLevel, maxLevel)
 			var mobSlot
-			mob.textures = {}
 			for (i=0; i<totalMobs; i++) {
 				if (!i) mobSlot = 2
 				else mobSlot = _.random(0, availableSlots.length - 1)
@@ -167,24 +167,23 @@ var battle;
 
 				let mobConfig = mob.configMobType({
 					img: imgName,
-					name: 'orc centurion',
+					name: 'orc legionnaire',
 					minLevel: minLevel,
 					maxLevel: maxLevel,
 				})
-				loadTextures(imgName)
 				mob.setMob(availableSlots[mobSlot], mobConfig)
 				_.remove(availableSlots, val => val === availableSlots[mobSlot])
 			}
 		}
 	}
-	function loadTextures(imgName) {
-		if (typeof mob.textures[imgName] === 'undefined') {
-			mob.textures[imgName] = []
-			warn('textures loading for', imgName)
+	function loadTextures() {
+		zones[mission.id].mobs.forEach(name => {
+			console.warn('loading mob', name)
+			mob.textures[name] = []
 			for (var i=1; i<=105; i++) {
-				mob.textures[imgName][i] = PIXI.Texture.from('mobs/'+ imgName +'/'+ i +'.png')
+				mob.textures[name][i] = PIXI.Texture.from('mobs/'+ name +'/'+ i +'.png')
 			}
-		}
+		})
 	}
 
 	let targetHtml = ''

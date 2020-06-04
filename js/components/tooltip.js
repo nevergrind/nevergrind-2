@@ -26,34 +26,6 @@ var tooltip;
 		usePadding: 'padding: .5rem .5rem 0 .5rem'
 	}
 	var tooltipEl = getElementById('tooltip-wrap')
-	var wearsLeather = [
-		'BRD',
-		'CLR',
-		'DRU',
-		'MNK',
-		'CRU',
-		'RNG',
-		'ROG',
-		'SHD',
-		'SHM',
-		'WAR',
-	]
-	var wearsMail = [
-		'BRD',
-		'CLR',
-		'CRU',
-		'RNG',
-		'SHD',
-		'SHM',
-		'WAR',
-	]
-	var wearsPlate = [
-		'BRD',
-		'CLR',
-		'CRU',
-		'SHD',
-		'WAR',
-	]
 	var useHtml = ''
 	//////////////////////////////////////////////////
 	function getItemHtml(obj, type) {
@@ -284,7 +256,7 @@ var tooltip;
 		if (slots[1] === 'secondary') {
 			prefix = 'Slots: '
 			if (my.dualWield) {
-				str += _.capitalize(slots[1])
+				str += ' ' + _.capitalize(slots[1])
 			}
 			else {
 				str += ' <span class="item-restricted">' + _.capitalize(slots[1]) + '</span>'
@@ -294,7 +266,7 @@ var tooltip;
 	}
 	function getRequiredItemProficiency(obj) {
 		if (obj.armorType) {
-			if (canEquipArmor(obj.armorType)) {
+			if (item.canEquipArmor(obj.armorType)) {
 				return '<span>Proficiency:&nbsp;'+ _.startCase(obj.armorType) +'</span>'
 			}
 			else {
@@ -312,12 +284,6 @@ var tooltip;
 		else {
 			return ''
 		}
-	}
-	function canEquipArmor(armorType) {
-		if (armorType === 'cloth') return true
-		else if (armorType === 'leather') return wearsLeather.includes(my.job)
-		else if (armorType === 'mail') return wearsMail.includes(my.job)
-		else if (armorType === 'plate') return wearsPlate.includes(my.job)
 	}
 	function canEquipWeapon(weaponSkill) {
 		if (weaponSkill === 'One-hand Slash') {

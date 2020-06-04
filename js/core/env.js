@@ -31,8 +31,8 @@ var env;
 	}
 
 	function startSkyPhase() {
-		/*console.warn('//////////////////////////////////////////////////////')
-		console.warn('startSkyPhase', env.phase)*/
+		console.warn('//////////////////////////////////////////////////////')
+		console.warn('startSkyPhase', env.phase)
 		initPixiElements()
 		animateSky()
 		animateBuildings()
@@ -232,6 +232,7 @@ var env;
 	}
 
 	function animateBuildings() {
+		warn('animateBuildings')
 		if (env.phase === 'morning') {
 			TweenMax.to('#town-building-wrap', phaseDuration * .2, {
 				startAt: {
@@ -247,16 +248,16 @@ var env;
 			})
 			TweenMax.to('#town-building-wrap', phaseDuration * .4, {
 				delay: phaseDuration * .6,
-				filter: 'saturate(.5) brightness(.5)',
+				filter: 'saturate(.7) brightness(.7)',
 			})
 		}
 		else if (env.phase === 'night') {
 			TweenMax.set('#town-building-wrap', {
-				filter: 'saturate(.5) brightness(.5)'
+				filter: 'saturate(.7) brightness(.7)'
 			})
 			TweenMax.to('#town-building-wrap', phaseDuration * .2, {
 				delay: phaseDuration * .8,
-				filter: 'saturate(.66) brightness(.66)',
+				filter: 'saturate(.85) brightness(.85)',
 			})
 		}
 	}

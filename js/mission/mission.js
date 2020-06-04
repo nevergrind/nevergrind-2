@@ -182,7 +182,7 @@ var mission;
 				onComplete: function() {
 					// rejoin main chat
 					town.go()
-					chat.joinChannel('town', 1)
+					chat.joinChannel('town', 1, true)
 					game.getPresence()
 					delayedCall(.5, function() {
 						game.updateChat()

@@ -42,33 +42,27 @@
 		hit = stats.damage()
 		damages.push({
 			index: tgt,
-			damage: hit.damage,
-			isCrit: hit.isCrit,
 			enhancedDamage: enhancedDamage,
 			requiresFrontRow: true,
-			damageType: hit.damageType,
+			...hit
 		})
 
 		tgt = my.target - 1
 		hit = stats.damage(tgt)
 		damages.push({
 			index: tgt,
-			damage: hit.damage,
-			isCrit: hit.isCrit,
 			enhancedDamage: enhancedDamage,
 			requiresFrontRow: true,
-			damageType: hit.damageType,
+			...hit
 		})
 
 		tgt = my.target + 1
 		hit = stats.damage(tgt)
 		damages.push({
 			index: tgt,
-			damage: hit.damage,
-			isCrit: hit.isCrit,
 			enhancedDamage: enhancedDamage,
 			requiresFrontRow: true,
-			damageType: hit.damageType,
+			...hit
 		})
 
 		combat.txDamageMob(damages)
@@ -101,11 +95,9 @@
 			hit = stats.rangedDamage(tgt)
 			damages.push({
 				index: tgt,
-				damage: hit.damage,
-				isCrit: hit.isCrit,
 				enhancedDamage: enhancedDamage,
-				isRanged: hit.isRanged,
 				damageType: 'fire',
+				...hit
 			})
 		}
 		combat.txDamageMob(damages)
@@ -136,12 +128,9 @@
 		hit = stats.rangedDamage(tgt)
 		damages.push({
 			index: tgt,
-			damage: hit.damage,
-			isCrit: hit.isCrit,
 			isPiercing: true,
 			enhancedDamage: enhancedDamage,
-			isRanged: hit.isRanged,
-			damageType: hit.damageType,
+			...hit
 		})
 		combat.txDamageMob(damages)
 
@@ -180,11 +169,8 @@
 			hit = stats.rangedDamage(target)
 			damages.push({
 				index: target,
-				damage: hit.damage,
-				isCrit: hit.isCrit,
 				enhancedDamage: enhancedDamage,
-				isRanged: hit.isRanged,
-				damageType: hit.damageType,
+				...hit
 			})
 		})
 		combat.txDamageMob(damages)
@@ -217,14 +203,12 @@
 					let finalBlow = i === hits - 1
 					hit = stats.damage(tgt, finalBlow)
 					damages = []
+					hit.damage = finalBlow ? hit.damage * 4 : hit.damage
 					damages.push({
 						index: tgt,
-						damage: finalBlow ? hit.damage * 4 : hit.damage,
-						isCrit: hit.isCrit,
 						isPiercing: true,
 						enhancedDamage: enhancedDamage,
-						isRanged: hit.isRanged,
-						damageType: hit.damageType,
+						...hit
 					})
 					combat.txDamageMob(damages)
 				})
@@ -261,12 +245,9 @@
 			hit = stats.rangedDamage(tgt)
 			damages.push({
 				index: tgt,
-				damage: hit.damage,
-				isCrit: hit.isCrit,
+				hate: -1,
 				enhancedDamage: enhancedDamage,
-				isRanged: hit.isRanged,
-				damageType: hit.damageType,
-				hate: -1
+				...hit
 			})
 		}
 		combat.txDamageMob(damages)

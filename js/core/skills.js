@@ -736,7 +736,7 @@ var skills;
 				spellType: '',
 				castTime: 0,
 				cooldownTime: 0,
-				description: 'Mark a target - Direct fire damage and boosts',
+				description: 'Mark a target - Direct fire damage and boost accuracy of attacks',
 			}, {
 				name: 'Fungal Growth',
 				img: 'RNG-10',

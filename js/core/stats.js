@@ -40,8 +40,13 @@ var stats = {};
 		hpRegen,
 		mpRegen,
 		spRegen,
-		armor,
 		armorReductionRatio,
+		getEqTotal,
+		getStatTotal,
+		dodgeChance,
+		parryChance,
+		riposteChance,
+		missChance,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
@@ -57,6 +62,7 @@ var stats = {};
 	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
 	var averageOneHandSlashJobs = ['WAR', 'CRU', 'SHD', 'BRD', 'DRU']
 	let isCrit = false
+	let chance, weaponSkill
 
 	const hpTier = {
 		'WAR': 10,
@@ -106,42 +112,42 @@ var stats = {};
 		'SUM': 3,
 		'WIZ': 3,
 	}
-	var val, base, i, len, type, min, max, atk, h2h
+	var val, base, i, len, type, min, max, atk, h2h, atk
 
 	function str() {
 		return my.str +
 			create.raceAttrs[my.race][0] +
-			create.jobAttrs[my.jobLong][0] + getEqTotal('str')
+			create.jobAttrs[my.jobLong][0] + getEqTotal('str') + getEqTotal('allStats')
 	}
 	function sta() {
 		return my.sta +
 			create.raceAttrs[my.race][1] +
-			create.jobAttrs[my.jobLong][1] + getEqTotal('sta')
+			create.jobAttrs[my.jobLong][1] + getEqTotal('sta') + getEqTotal('allStats')
 	}
 	function agi() {
 		return my.agi +
 			create.raceAttrs[my.race][2] +
-			create.jobAttrs[my.jobLong][2] + getEqTotal('agi')
+			create.jobAttrs[my.jobLong][2] + getEqTotal('agi') + getEqTotal('allStats')
 	}
 	function dex() {
 		return my.dex +
 			create.raceAttrs[my.race][3] +
-			create.jobAttrs[my.jobLong][3] + getEqTotal('dex')
+			create.jobAttrs[my.jobLong][3] + getEqTotal('dex') + getEqTotal('allStats')
 	}
 	function wis() {
 		return my.wis +
 			create.raceAttrs[my.race][4] +
-			create.jobAttrs[my.jobLong][4] + getEqTotal('wis')
+			create.jobAttrs[my.jobLong][4] + getEqTotal('wis') + getEqTotal('allStats')
 	}
 	function intel() {
 		return my.intel +
 			create.raceAttrs[my.race][5] +
-			create.jobAttrs[my.jobLong][5] + getEqTotal('intel')
+			create.jobAttrs[my.jobLong][5] + getEqTotal('intel') + getEqTotal('allStats')
 	}
 	function cha() {
 		return my.cha +
 			create.raceAttrs[my.race][6] +
-			create.jobAttrs[my.jobLong][6] + getEqTotal('cha')
+			create.jobAttrs[my.jobLong][6] + getEqTotal('cha') + getEqTotal('allStats')
 	}
 	function armor() {
 		return ~~((agi() * .66) +(defense() * 3.3)) + getEqTotal('armor')
@@ -151,75 +157,97 @@ var stats = {};
 		return (my.armor > 3000 ? 3000 : my.armor) / 4000
 	}
 
-	function attack() {
-		val = 0
-		type = items.eq[12].itemType
-		for (i = 0; i<= 14; i++) {
-			if (items.eq[i].attack) val += items.eq[i].attack
-		}
+	function attack(type) {
+		atk = 0
+		type = type || items.eq[12].weaponSkill
+		atk = getEqTotal('attack') + (getEqTotal('str') * .33)
 		// offense
-		val += (offense() * 1.66)
+		atk += (offense() * 1.66)
 		// primary weapon
-		if (type === 'oneHandSlashers') val += (oneHandSlash() * 2.66)
-		else if (type === 'oneHandBlunts' || type === 'focus') val += (oneHandBlunt() * 2.66)
-		else if (type === 'piercers') val += (piercing() * 2.66)
-		else if (type === 'twoHandSlashers') val += (twoHandSlash() * 2.66)
-		else if (type === 'twoHandBlunts' || type === 'staves') val += (twoHandBlunt() * 2.66)
-		else if (type === 'archery') val += (archery() * 2.66)
-		//else val += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
-		else val += (handToHand() * 2.66)
-		return ~~val
+		if (type === 'One-hand Slash') atk += (oneHandSlash() * 2.66)
+		else if (type === 'One-hand Blunt') atk += (oneHandBlunt() * 2.66)
+		else if (type === 'Piercing') atk += (piercing() * 2.66)
+		else if (type === 'Two-hand Slash') atk += (twoHandSlash() * 2.66)
+		else if (type === 'Two-hand Blunt') atk += (twoHandBlunt() * 2.66)
+		else if (type === 'Archery') atk += (archery() * 2.66)
+		else if (type === 'Hand-to-Hand') atk += (handToHand() * 2.66)
+		//info('stats.missChance', type, ~~atk)
+		return ~~atk
+		//else atk += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
 	}
 	function offense() {
-		return getStatTotal('offense')
+		return getStatTotal('offense') + getEqTotal('allSkills')
 	}
 	function defense() {
-		return getStatTotal('defense')
+		return getStatTotal('defense') + getEqTotal('allSkills')
 	}
 	function oneHandSlash() {
-		return getStatTotal('oneHandSlash')
+		return getStatTotal('oneHandSlash') + getEqTotal('allSkills')
 	}
 	function oneHandBlunt() {
-		return getStatTotal('oneHandBlunt')
+		return getStatTotal('oneHandBlunt') + getEqTotal('allSkills')
 	}
 	function piercing() {
-		return getStatTotal('piercing')
+		return getStatTotal('piercing') + getEqTotal('allSkills')
 	}
 	function twoHandSlash() {
-		return getStatTotal('twoHandSlash')
+		return getStatTotal('twoHandSlash') + getEqTotal('allSkills')
 	}
 	function twoHandBlunt() {
-		return getStatTotal('twoHandBlunt')
+		return getStatTotal('twoHandBlunt') + getEqTotal('allSkills')
 	}
 	function handToHand() {
-		return getStatTotal('handToHand')
+		return getStatTotal('handToHand') + getEqTotal('allSkills')
 	}
 	function archery() {
-		return getStatTotal('archery')
+		return getStatTotal('archery') + getEqTotal('allSkills')
 	}
 	function dualWield() {
-		return getStatTotal('dualWield')
+		return getStatTotal('dualWield') + getEqTotal('allSkills')
 	}
 	function doubleAttack() {
-		return getStatTotal('doubleAttack')
+		return getStatTotal('doubleAttack') + getEqTotal('allSkills')
+	}
+	function missChance(level, weaponSkill) {
+		chance = .2
+		// 24 is about how much attack you get per level (21.6?)
+		chance += ((level * 24) - stats.attack(weaponSkill)) / 2400
+		if (my.level < level) {
+			chance += ((level - my.level) / 40)
+		}
+		if (chance > .5) chance = .5
+		else if (chance < .05) chance = .05
+		// console.info('stats.missChance', weaponSkill, chance)
+		return chance
+
 	}
 	function dodge() {
-		return getStatTotal('dodge')
+		return getStatTotal('dodge') + getEqTotal('allSkills')
 	}
 	function parry() {
-		return getStatTotal('parry')
+		return getStatTotal('parry') + getEqTotal('allSkills')
 	}
 	function riposte() {
-		return getStatTotal('riposte')
+		return getStatTotal('riposte') + getEqTotal('allSkills')
+	}
+	function dodgeChance() {
+		return dodge() / 2500 + (agi() / 2000)
+	}
+	function parryChance() {
+		return parry() / 2500 + (dex() / 2000)
+	}
+	function riposteChance() {
+		return riposte() / 2500 + (dex() / 2000)
 	}
 	function critChance() {
 		//return ( ((5) + getEqTotal('crit') ) / 100)
 		return (ng.dimRetCrit(5 + getEqTotal('crit')) ) / 100
 	}
-	function damage(skipSkillChecks, forceCrit) {
+	function damage(skipSkillChecks, forceCrit, getNonCrit) {
 		min = 1
 		max = 1
-		atk = attack()
+		weaponSkill = typeof items.eq[12] === 'object' ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		atk = attack(weaponSkill)
 		if (items.eq[12].minDamage) {
 			min = items.eq[12].minDamage
 			max = items.eq[12].maxDamage
@@ -238,7 +266,9 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = forceCrit || my.crit > rand()
+		if (getNonCrit) isCrit = false
+		else isCrit = forceCrit || my.crit > rand()
+
 		if (isCrit) {
 			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
 				min *= 2
@@ -251,7 +281,7 @@ var stats = {};
 		}
 
 		if (!skipSkillChecks) {
-			combat.levelSkillCheck(typeof items.eq[12] === 'object' ? items.eq[12].weaponSkill : 'handToHand')
+			combat.levelSkillCheck(weaponSkill)
 		}
 		return {
 			min: min,
@@ -259,6 +289,7 @@ var stats = {};
 			damage: _.random(min, max),
 			isCrit: isCrit,
 			enhancedDamage: 1,
+			weaponSkill: weaponSkill,
 			damageType: 'physical',
 		}
 	}
@@ -266,7 +297,8 @@ var stats = {};
 		if (!my.dualWield) return [0, 0, false]
 		min = 1
 		max = 1
-		atk = attack()
+		weaponSkill = typeof items.eq[13] === 'object' ? items.eq[13].weaponSkill : 'Hand-to-Hand'
+		atk = attack(weaponSkill)
 		if (items.eq[13].minDamage) {
 			min = items.eq[13].minDamage
 			max = items.eq[13].maxDamage
@@ -291,7 +323,7 @@ var stats = {};
 			max *= 1.5
 		}
 
-		combat.levelSkillCheck(typeof items.eq[13] === 'object' ? items.eq[13].weaponSkill : 'handToHand')
+		combat.levelSkillCheck(weaponSkill)
 		combat.levelSkillCheck('dualWield')
 		return {
 			min: min,
@@ -299,13 +331,14 @@ var stats = {};
 			damage: _.random(min, max),
 			isCrit: isCrit,
 			enhancedDamage: 1,
+			weaponSkill: weaponSkill,
 			damageType: 'physical',
 		}
 	}
 	function rangedDamage() {
 		min = 1
 		max = 1
-		atk = attack()
+		atk = attack('Archery')
 		if (!my.archery || items.eq[14].itemType !== 'bows') return [0, 0, false]
 		min = items.eq[14].minDamage * (1 + (atk * .002))
 		max = items.eq[14].maxDamage * (1 + (atk * .002))
@@ -316,7 +349,7 @@ var stats = {};
 			max *= 2
 		}
 
-		combat.levelSkillCheck('archery')
+		combat.levelSkillCheck('Archery')
 		return {
 			min: min,
 			max: max,
@@ -324,27 +357,29 @@ var stats = {};
 			isCrit: isCrit,
 			enhancedDamage: 1,
 			isRanged: true,
+			weaponSkill: 'Archery',
 			damageType: 'physical',
 		}
 	}
 	function resistBlood() {
-		return getStatTotal('resistBlood')
+		return getStatTotal('resistBlood') + getEqTotal('resistAll')
 	}
 	function resistPoison() {
-		return getStatTotal('resistPoison')
+		return getStatTotal('resistPoison') + getEqTotal('resistAll')
 	}
 	function resistArcane() {
-		return getStatTotal('resistArcane')
+		return getStatTotal('resistArcane') + getEqTotal('resistAll')
 	}
 	function resistLightning() {
-		return getStatTotal('resistLightning')
+		return getStatTotal('resistLightning') + getEqTotal('resistAll')
 	}
 	function resistFire() {
-		return getStatTotal('resistFire')
+		return getStatTotal('resistFire') + getEqTotal('resistAll')
 	}
 	function resistIce() {
-		return getStatTotal('resistIce')
+		return getStatTotal('resistIce') + getEqTotal('resistAll')
 	}
+	// adds my raw value plus equipment
 	function getStatTotal(attr) {
 		val = my[attr] || 0
 		i = 0
@@ -353,6 +388,7 @@ var stats = {};
 		}
 		return val
 	}
+	// equipped value only
 	function getEqTotal(attr) {
 		val = 0
 		i = 0

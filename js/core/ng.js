@@ -787,7 +787,14 @@ var ng;
 		el = querySelector(id)
 		if (el !== null) el.innerHTML = html
 	}
-	function getArticle(name) {
-		return vowels.includes(name[0]) ? 'An' : 'A'
+	let article
+	function getArticle(index, capitalize) {
+		article = ''
+		if (mobs[index].type === 'normal' || mobs[index].type === 'champion') {
+			article = vowels.includes(mobs[index].name[0]) ? 'an' : 'a'
+		}
+		if (capitalize) article = _.capitalize(article)
+		return article
+
 	}
 })($, TweenMax, SplitText);

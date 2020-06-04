@@ -151,7 +151,7 @@ loot.chests = {
 			str: 12,
 			dodge: 2,
 			defense: [1, 2],
-			allResist: [10, 15],
+			resistAll: [10, 15],
 		}, {
 			name: 'Chain Mail',
 			newName: 'Samurai\'s Duty',

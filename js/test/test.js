@@ -454,9 +454,10 @@ var test;
 			ease: Linear.easeNone,
 			repeat: -1,
 		})
-	}
-	function setImg(el, o) {
-		el.src = 'mobs/orc/' + ~~o.frame + '.png'
+		////////////////////////////////
+		function setImg(el, o) {
+			el.src = 'mobs/orc/' + ~~o.frame + '.png'
+		}
 	}
 	function mobPix(mobName) {
 		mobName = mobName || 'orc'
@@ -486,7 +487,7 @@ var test;
 		mobSprite.y = y
 		mobSprite.interactive = true
 		mobSprite.buttonMode = true
-		mobSprite.hitArea = mob.getHitArea(mobName)
+		//mobSprite.hitArea = mob.getHitArea(mobName)
 		mobSprite.cursor = hoverIcon
 		mobSprite.on('pointerdown', onMobClick)
 		test.mob.stage.addChild(mobSprite)
@@ -499,14 +500,15 @@ var test;
 			ease: Linear.easeNone,
 			repeat: -1,
 		})
+		////////////////////////////////
+		function setPix(el, o) {
+			el.texture = test.textures[~~o.frame]
+		}
+		function onMobClick(e) {
+			console.info('click!', e)
+		}
 	}
 
-	function onMobClick(e) {
-		console.info('click!', e)
-	}
 
-	function setPix(el, o) {
-		el.texture = test.textures[~~o.frame]
-	}
 
 })(Linear, TweenMax, TimelineMax, PIXI, $);

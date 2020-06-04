@@ -570,8 +570,8 @@ tbody { border: 0 }
 	position: absolute;
 	left: 50%;
 	bottom: 0;
-	width: 0;
-	height: 0;
+	width: 1920px;
+	height: 1080px;
 	overflow: visible;
 }
 
@@ -584,8 +584,8 @@ tbody { border: 0 }
 #mob-wrap-6 { left: 40%; }
 #mob-wrap-7 { left: 60%; }
 #mob-wrap-8 { left: 80%; }
-.mob-front-row { bottom: 18.51%; }
-.mob-back-row { bottom: 27.77%; }
+.mob-front-row { bottom: 20.37%; }
+.mob-back-row { bottom: 29.63%; }
 .mob-details {
 	position: absolute;
 	display: none;
@@ -645,10 +645,10 @@ tbody { border: 0 }
 .mob-shadow {
        position: absolute;
        display: none;
-       transform: translate(-50%);
+       transform: translate(-50%, 0);
        bottom: 1.5rem;
        border-radius: 50%;
-       background: radial-gradient(farthest-side at 50% 50%, #000a 0%, #000a 30%, #0000 100%);
+       background: radial-gradient(farthest-side at 50% 50%, #000a 0%, #0008 30%, #0000 100%);
        height: 2rem;
        width: 20rem;
        z-index: 0;
@@ -856,7 +856,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 	bottom: 0;
 	left: 50%;
 	transform: translate(-50%);
-	height: 13rem;
+	height: 24%;
 	z-index: 2;
 }
 
@@ -2615,6 +2615,8 @@ background-repeat: no-repeat;
 .inv-resist-icon {
 	position: relative;
 	display: flex;
+	justify-content: center;
+	align-items: center;
 	width: 1.6rem;
 	height: 1.6rem;
 	background-size: 1.6rem 1.6rem;
@@ -2712,7 +2714,7 @@ background-repeat: no-repeat;
 	left: 0;
 	width: 2.5rem;
 	height: 2.5rem;
-	z-index: 2;
+	z-index: 100;
 	background: radial-gradient(farthest-corner at 50% 50%, #048, #0000);
 	background: #0a0a0a;
 	box-shadow: 0 0 .6rem #aeff inset, 0 0 .6rem #aeff inset;

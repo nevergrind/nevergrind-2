@@ -18,10 +18,9 @@ var combat;
 		rxDamageHero,
 		levelSkillCheck,
 		skillLevelChance,
+		endCombat,
 	}
 	var el, w, h, i, len, damageArr, index, key, row, name, damages
-
-	let levelDiff = 0
 
 	const textDuration = 1
 	const textDistanceY = 150
@@ -52,9 +51,13 @@ var combat;
 			if (Math.random() < skillLevelChance(name)) {
 				my[name]++
 				chat.log('You got better at ' +skills.getName(name) + '! (' + my[name] + ')', 'chat-skill')
-				if (bar.windowsOpen.character &&
-					bar.activeTab === 'passiveSkills') {
-					querySelector('#inv-skills-wrap').innerHTML = bar.getSkillBarHtml()
+				if (bar.windowsOpen.character) {
+					if (bar.activeTab === 'character') {
+						ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
+					}
+					else if (bar.activeTab === 'passiveSkills') {
+						querySelector('#inv-skills-wrap').innerHTML = bar.getSkillBarHtml()
+					}
 				}
 			}
 		}
@@ -72,15 +75,19 @@ var combat;
 			d.damage = 0
 			return d
 		}
-		if (my.level > mobs[d.index]) {
-			levelDiff = 0
-		}
-
+		console.info('asdfasdf', d)
 		// check for things that immediately set to 0
+		if (Math.random() < stats.missChance(mobs[d.index].level, d.weaponSkill)) {
+			// chat.log('Your attack misses ' + ng.getArticle(d.index) + ' ' + mobs[d.index].name + '!')
+			d.damage = 0
+			combat.popupDamage(d.index, 'MISS!')
+			return d
+		}
 		// dodge
 		if (!d.isPiercing && Math.random() * 100 < mobs[d.index].dodge) {
-			warn('mob dodged!', d.index)
+			// chat.log(ng.getArticle(d.index, true) + ' ' + mobs[d.index].name + ' dodged your attack!')
 			d.damage = 0
+			combat.popupDamage(d.index, 'DODGE!')
 			return d
 		}
 
@@ -88,14 +95,16 @@ var combat;
 		if (d.damageType === 'physical') {
 			// riposte
 			if (!d.isPiercing && Math.random() * 100 < mobs[d.index].riposte) {
-				warn('mob riposted!', d.index)
+				// chat.log(ng.getArticle(d.index, true) + ' '+ mobs[d.index].name + ' riposted your attack!')
 				d.damage = 0
+				combat.popupDamage(d.index, 'RIPOSTE!')
 				return d
 			}
 			// parry
 			if (!d.isPiercing && Math.random() * 100 < mobs[d.index].parry) {
-				warn('mob parried!', d.index)
+				// chat.log(ng.getArticle(d.index, true) + ' '+ mobs[d.index].name + ' parried your attack!')
 				d.damage = 0
+				combat.popupDamage(d.index, 'PARRY!')
 				return d
 			}
 			// enhancedDamage
@@ -154,9 +163,9 @@ var combat;
 	function endCombat() {
 		warn('battle is over!')
 		autoAttackDisable()
-		mob.killAttacks()
-		querySelector('#mob-target-wrap').style.display = 'none'
-		delayedCall(5, dungeon.go)
+		mob.killAttacks(true)
+		let el = querySelector('#mob-target-wrap')
+		if (el !== null) el.style.display = 'none'
 	}
 
 	function isBattleOver() {
@@ -185,6 +194,7 @@ var combat;
 			my.fixTarget()
 			if (isBattleOver()) {
 				endCombat()
+				delayedCall(5, dungeon.go)
 			}
 		}
 	}
@@ -278,18 +288,19 @@ var combat;
 			d.damage = 0
 			return d
 		}
-
 		// check for things that immediately set to 0
-		if (my.level > mobs[index]) {
-			levelDiff = 0
+		// check miss
+		if (Math.random() < mob.missChance(mobs[index].level)) {
+			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but misses!')
+			d.damage = 0
+			return d
 		}
-
 		console.info('processDamagesHero', index, d)
 		// dodge
 		if (my.level >= skills['dodge'][my.job].level) {
 			combat.levelSkillCheck('dodge')
-			if (Math.random() * 100 < mobs[index].dodge) {
-				warn('I dodged!')
+			if (Math.random() < stats.dodgeChance()) {
+				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you dodged!')
 				d.damage = 0
 				return d
 			}
@@ -299,8 +310,8 @@ var combat;
 			// riposte
 			if (my.level >= skills['riposte'][my.job].level) {
 				combat.levelSkillCheck('riposte')
-				if (Math.random() * 100 < mobs[index].riposte) {
-					warn('I riposted!')
+				if (Math.random() < stats.riposteChance()) {
+					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you riposted!')
 					d.damage = 0
 					return d
 				}
@@ -308,8 +319,8 @@ var combat;
 			// parry
 			if (my.level >= skills['parry'][my.job].level) {
 				combat.levelSkillCheck('parry')
-				if (Math.random() * 100 < mobs[index].parry) {
-					warn('I parried!')
+				if (Math.random() < stats.parryChance()) {
+					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you parried!')
 					d.damage = 0
 					return d
 				}
@@ -378,7 +389,7 @@ var combat;
 						row: damages[i].row,
 						damage: damages[i].damage,
 					})
-					chat.log(ng.getArticle(mobs[index].name) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
+					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
 					console.info('tx processHit: ', damages[i].damage)
 				}
 			}
