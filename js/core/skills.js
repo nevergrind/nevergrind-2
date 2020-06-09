@@ -3,6 +3,7 @@ var skills;
 	skills = {
 		init,
 		getName,
+		notReady,
 		roman: ['I', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'],
 		oneHandSlash: {
 			WAR: { max: 200, level: 1 },
@@ -710,13 +711,17 @@ var skills;
 			}, {
 				name: 'Ignite',
 				img: 'RNG-7',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
+				mp: [0, 7, 11, 16, 22, 29, 37, 46],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
+				spellDamage: level => {
+					damage = values.ignite[level] + my.level
+					return _.random(~~(damage * .75), damage)
+				},
+				spellVariance: .75,
 				spellType: '',
-				castTime: 0,
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Ignites the target for X damage. Enhances all physical damage by X% for 12 seconds',
+				description: 'Ignites the target for X damage. Reduces armor by X% for 12 seconds',
 			}, {
 				name: 'Shock Nova',
 				img: 'RNG-8',
@@ -2000,6 +2005,10 @@ var skills;
 			},
 		],
 	}
+	let damage = 0
+	let values = {
+		ignite: [0, 15, 37, 88, 156, 231, 298, 347]
+	}
 
 	///////////////////////////////////////////
 	function init() {
@@ -2015,5 +2024,28 @@ var skills;
 	}
 	function getClassKeys() {
 		return skills[my.job].map(o => o.name)
+	}
+	function notReady(config) {
+		if (timers.castBar < 1) return true
+		if (config.global && timers.globalCooldown < 1) return true
+		if (config.skillIndex && timers.skillCooldowns[config.skillIndex] < 1) return true
+		// check for a valid target
+		if (config.target) {
+			my.fixTarget()
+			if (my.target === -1) return true
+		}
+		if (config.mpCost) {
+			if (config.mpCost > my.mp) {
+				chat.log('Not enough mana for ' + config.name + '!', 'chat-warning')
+				return true
+			}
+		}
+		if (config.spCost) {
+			if (config.spCost > my.sp) {
+				chat.log('Not enough spirit for ' + config.name + '!', 'chat-warning')
+				return true
+			}
+		}
+		return false
 	}
 }($, _, TweenMax, Object);

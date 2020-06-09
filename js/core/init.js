@@ -20,6 +20,7 @@ let timers = {
 	mpPotion: 1,
 	spPotion: 1,
 	globalCooldown: 1,
+	castBar: 1,
 }
 timers.skillCooldowns = []
 for (var i=0; i<12; i++) {

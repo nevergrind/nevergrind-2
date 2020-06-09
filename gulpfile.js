@@ -64,6 +64,7 @@ const jsFiles = [
 	'ui/bar',
 	'combat/combat',
 	'combat/battle',
+	'combat/spell',
 	'mob/mob',
 	'mob/mobs',
 	'mob/mob-types',

@@ -7,64 +7,39 @@
 		bladeStorm,
 		suppressingVolley,
 		ignite,
+		igniteCompleted,
 		shockNova,
 		faerieFlame,
 		fungalGrowth,
 		shimmeringOrb,
 		spiritOfTheHunter,
 	}
-	let damages, enhancedDamage, hit
+	let damages, enhancedDamage, hit, config
 
 	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
 		console.info('crossSlash', index)
 		// check constraints
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		if (!battle.targetIsFrontRow()) {
-			chat.log(data.name + ' must target the front row!', 'chat-warning')
-			return
+		config = {
+			skillIndex: index,
+			global: true,
+			target: true,
 		}
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
-		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
+		if (skills.notReady(config)) return
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 
-		let tgt = my.target
-		hit = stats.damage()
-		damages.push({
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-			requiresFrontRow: true,
-			...hit
-		})
-
-		tgt = my.target - 1
-		hit = stats.damage(tgt)
-		damages.push({
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-			requiresFrontRow: true,
-			...hit
-		})
-
-		tgt = my.target + 1
-		hit = stats.damage(tgt)
-		damages.push({
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-			requiresFrontRow: true,
-			...hit
-		})
-
+		for (var i = my.target - 1; i<=my.target+1; i++) {
+			hit = stats.damage(i)
+			damages.push({
+				index: i,
+				enhancedDamage: enhancedDamage,
+				requiresFrontRow: true,
+				...hit
+			})
+		}
 		combat.txDamageMob(damages)
 		// animate timers
 		timers.skillCooldowns[index] = 0
@@ -75,16 +50,12 @@
 	function explosiveShot(index, data) {
 		console.info('explosiveShot', index)
 		// check constraints
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
+		config = {
+			skillIndex: index,
+			global: true,
+			target: true,
 		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
+		if (skills.notReady(config)) return
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
@@ -110,16 +81,12 @@
 	function trueshotStrike(index, data) {
 		console.info('trueshotStrike', index)
 		// check constraints
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
+		config = {
+			skillIndex: index,
+			global: true,
+			target: true,
 		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
+		if (skills.notReady(config)) return
 
 		// process skill data
 		let tgt = my.target
@@ -142,16 +109,12 @@
 	function spreadShot(index, data) {
 		console.info('spreadShot', index)
 		// check constraints
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
+		config = {
+			skillIndex: index,
+			global: true,
+			target: true,
 		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
+		if (skills.notReady(config)) return
 		// select targets
 		let targets = [my.target]
 		mobs.forEach((mob, index) => {
@@ -183,16 +146,12 @@
 	function bladeStorm(index, data) {
 		console.info('bladeStorm', index)
 		// check constraints
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
+		config = {
+			skillIndex: index,
+			global: true,
+			target: true,
 		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
+		if (skills.notReady(config)) return
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		let tgt = my.target
@@ -223,16 +182,12 @@
 	function suppressingVolley(index, data) {
 		console.info('suppressingVolley', index)
 		// check constraints
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
+		config = {
+			skillIndex: index,
+			global: true,
+			target: true,
 		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
+		if (skills.notReady(config)) return
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
@@ -262,19 +217,19 @@
 	}
 	function ignite(index, data) {
 		console.info('ignite', index)
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
-		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
 		// check constraints
-		// process skill data
-		// animate timers
+		config = {
+			skillIndex: index,
+			global: true,
+			target: true,
+			mpCost: data.mp[my.skills[index]],
+			name: data.name,
+		}
+		if (skills.notReady(config)) return
+		spell.startCasting(index, data)
+	}
+	function igniteCompleted() {
+		info('called: igniteCompleted')
 	}
 	function shockNova(index, data) {
 		console.info('shockNova', index)

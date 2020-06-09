@@ -462,6 +462,15 @@ app.socketUrl = app.isApp ?
 	<img id="sky-rain2" class="env-rain" src="images/env/rain.png">
 	<img id="sky-rain3" class="env-rain" src="images/env/rain.png">
 </div>
+<div id="cast-bar-wrap" class="flex-column no-pointer">
+	<div id="cast-bar-base" class="flex-column flex-max stag-blue">
+		<div>CASTING</div>
+		<div id="cast-bar-bg">
+			<div id="cast-bar"></div>
+			<div class="mob-health-grid"></div>
+		</div>
+	</div>
+</div>
 
 <!-- layer 2 -->
 <div id="bar-wrap" class="no-select text-shadow"></div>
@@ -571,6 +580,7 @@ app.socketUrl = app.isApp ?
 			'ui/bar',
 			'combat/combat',
 			'combat/battle',
+			'combat/spell',
 			'mob/mob',
 			'mob/mobs',
 			'mob/mob-types',
