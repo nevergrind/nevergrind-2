@@ -22,9 +22,11 @@ var stats = {};
 		dodge,
 		parry,
 		riposte,
+		spellDamage,
 		damage,
 		offhandDamage,
 		rangedDamage,
+		getResistPercent,
 		resistBlood,
 		resistPoison,
 		resistArcane,
@@ -47,6 +49,8 @@ var stats = {};
 		parryChance,
 		riposteChance,
 		missChance,
+		someIgnoreTargetArmor,
+		someReduceTargetArmor,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
@@ -62,7 +66,8 @@ var stats = {};
 	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
 	var averageOneHandSlashJobs = ['WAR', 'CRU', 'SHD', 'BRD', 'DRU']
 	let isCrit = false
-	let chance, weaponSkill
+	let chance, weaponSkill, enhanceDamage, addedDamage
+	let resistPercent
 
 	const hpTier = {
 		'WAR': 10,
@@ -241,7 +246,48 @@ var stats = {};
 	}
 	function critChance() {
 		//return ( ((5) + getEqTotal('crit') ) / 100)
-		return (ng.dimRetCrit(5 + getEqTotal('crit')) ) / 100
+		return ( (dex() / 75) + ng.dimRetCrit(getEqTotal('crit')) ) / 100
+	}
+	function spellDamage(skipSkillChecks, forceCrit, getNonCrit) {
+		max = spell.data.spellDamage(my.skills[spell.index])
+		// enhance by type % and ALL%
+		enhanceDamage = getEqTotal('enhance'+ _.capitalize(spell.data.damageType))
+		enhanceDamage += getEqTotal('enhanceAll')
+		// wis boosts conjuration
+		if (my[spell.data.spellType] === 'conjuration') enhanceDamage += (stats.wis() / 15)
+		else if (my[spell.data.spellType] === 'evocation') enhanceDamage += (stats.intel() / 15)
+		else if (my[spell.data.spellType] === 'alteration') enhanceDamage += (stats.cha() / 15)
+
+		max = max * (1 + (enhanceDamage / 100))
+		// add spell damage by type and ALL
+		addedDamage = getEqTotal('addedSpell'+ _.capitalize(spell.data.damageType))
+		addedDamage += getEqTotal('addedSpellAll')
+
+		max += addedDamage
+
+		min = max * spell.data.spellVariance
+		// crit?
+		if (getNonCrit) isCrit = false
+		else isCrit = forceCrit || my.crit > rand()
+
+		if (isCrit) {
+			min *= 1.5
+			max *= 1.5
+		}
+
+		if (!skipSkillChecks) combat.levelSkillCheck(spell.data.spellType)
+
+		if (min < 1) min = 1
+		if (max < 1) max = 1
+		min = ~~min
+		max = ~~max
+
+		return {
+			min: min,
+			max: max,
+			damage: _.random(min, max),
+			isCrit: isCrit,
+		}
 	}
 	function damage(skipSkillChecks, forceCrit, getNonCrit) {
 		min = 1
@@ -361,6 +407,16 @@ var stats = {};
 			weaponSkill: 'Archery',
 			damageType: 'physical',
 		}
+	}
+	function getResistPercent(type) {
+		resistPercent = 1
+		if (type === 'blood') resistPercent = 1 - (resistBlood() / 400)
+		else if (type === 'poison') resistPercent = 1 - (resistPoison() / 400)
+		else if (type === 'arcane') resistPercent = 1 - (resistArcane() / 400)
+		else if (type === 'lightning') resistPercent = 1 - (resistLightning() / 400)
+		else if (type === 'fire') resistPercent = 1 - (resistFire() / 400)
+		else if (type === 'ice') resistPercent = 1 - (resistIce() / 400)
+		return resistPercent
 	}
 	function resistBlood() {
 		return getStatTotal('resistBlood') + getEqTotal('resistAll')
@@ -663,5 +719,11 @@ var stats = {};
 			if (buff[i][attr]) val += buff[i][attr]
 		}
 		return val
+	}
+	function someIgnoreTargetArmor() {
+		return items.eq.some(eq => eq.ignoreTargetArmor)
+	}
+	function someReduceTargetArmor() {
+		return items.eq.some(eq => eq.reduceTargetArmor)
 	}
 })($, TweenMax, _, );

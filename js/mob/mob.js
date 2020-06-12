@@ -77,8 +77,10 @@ var mob;
 		mp: 1,
 		sp: 1,
 		speed: 3,
+		speedMod: 1,
 		level: 1,
-		armor: 0,
+		armor: 1,
+		healing: 1,
 		img: 'orc',
 		size: 1,
 		name: 'monster',
@@ -192,6 +194,10 @@ var mob;
 	}
 	function setMob(i, mobConfig, fromLeader) {
 		if (!fromLeader) {
+			mobConfig = {
+				...mobConfig,
+				...mob.type[mobConfig.img],
+			}
 			modifyMobStatsByClass(mobConfig)
 			mob.txData[i] = _.omit(mobConfig, [
 				'maxLevel',
@@ -208,7 +214,7 @@ var mob;
 		}
 		// start attack cycle
 		timers.mobAttack[i].kill()
-		timers.mobAttack[i] = delayedCall(Math.random() * 1.5 + 1.5, mob.attack, [i])
+		timers.mobAttack[i] = delayedCall(Math.random() * 2 + 2, mob.attack, [i])
 		mobs[i].hate = {}
 		party.presence.forEach(member => {
 			mobs[i].hate[member.row] = 0
@@ -440,7 +446,10 @@ var mob;
 			}
 		}
 		// keep it going for all in case some else takes over leader
-		timers.mobAttack[i] = delayedCall(mobs[i].speed, mob.attack, [i])
+		timers.mobAttack[i] = delayedCall(mobAttackSpeed(i), mob.attack, [i])
+	}
+	function mobAttackSpeed(i) {
+		return mobs[i].speed * mobs[i].speedMod
 	}
 	function animateAttack(i, isSecondary) {
 		// animate

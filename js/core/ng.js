@@ -494,7 +494,7 @@ var ng;
 	function dimRetCrit(val) {
 		var resp = 0
 		var dimThreshold = 5
-		var bonusPerPoint = .5
+		var bonusPerPoint = .4
 		var multiplier = 14/15
 		var i = 0
 

@@ -657,7 +657,7 @@ var skills;
 				spellType: '',
 				castTime: 0,
 				cooldownTime: 8,
-				description: 'Hits 3 front line targets for % damage',
+				description: 'Hits 3 front row targets for % damage',
 			}, {
 				name: 'Explosive Shot',
 				img: 'RNG-2',
@@ -714,11 +714,11 @@ var skills;
 				mp: [0, 7, 11, 16, 22, 29, 37, 46],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				spellDamage: level => {
-					damage = values.ignite[level] + my.level
-					return _.random(~~(damage * .75), damage)
+					return values.ignite[level] + my.level
 				},
-				spellVariance: .75,
-				spellType: '',
+				spellVariance: .8,
+				spellType: 'evocation',
+				damageType: 'fire',
 				castTime: 2.5,
 				cooldownTime: 0,
 				description: 'Ignites the target for X damage. Reduces armor by X% for 12 seconds',
@@ -728,7 +728,7 @@ var skills;
 				mp: [0, 0, 0, 0, 0, 0, 0, 0],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
-				spellType: '',
+				spellType: 'evocation',
 				castTime: 0,
 				cooldownTime: 0,
 				description: 'Hits all targets for X lightning damage. Interrupts all spells.',
@@ -738,7 +738,7 @@ var skills;
 				mp: [0, 0, 0, 0, 0, 0, 0, 0],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
-				spellType: '',
+				spellType: 'conjuration',
 				castTime: 0,
 				cooldownTime: 0,
 				description: 'Mark a target - Direct fire damage and boost accuracy of attacks',
@@ -748,7 +748,7 @@ var skills;
 				mp: [0, 0, 0, 0, 0, 0, 0, 0],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
-				spellType: '',
+				spellType: 'alteration',
 				castTime: 0,
 				cooldownTime: 0,
 				description: 'Restores x health over time for 18 seconds',
@@ -758,7 +758,7 @@ var skills;
 				mp: [0, 0, 0, 0, 0, 0, 0, 0],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
-				spellType: '',
+				spellType: 'conjuration',
 				castTime: 0,
 				cooldownTime: 0,
 				description: 'Conjure a shimmering globe that protects you for 20 seconds. Reducing all magic damage by X % for X seconds.',
@@ -768,7 +768,7 @@ var skills;
 				mp: [0, 0, 0, 0, 0, 0, 0, 0],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
-				spellType: '',
+				spellType: 'alteration',
 				castTime: 0,
 				cooldownTime: 0,
 				description: 'Boost your ability to dodge attacks by X% and receive x% haste for X seconds.',
@@ -2030,9 +2030,13 @@ var skills;
 		if (config.global && timers.globalCooldown < 1) return true
 		if (config.skillIndex && timers.skillCooldowns[config.skillIndex] < 1) return true
 		// check for a valid target
-		if (config.target) {
+		if (config.fixTarget) {
 			my.fixTarget()
 			if (my.target === -1) return true
+		}
+		if (config.requiresFrontRow && my.target > 4) {
+			chat.log('This skill can only target the front row!', 'chat-warning')
+			return true
 		}
 		if (config.mpCost) {
 			if (config.mpCost > my.mp) {

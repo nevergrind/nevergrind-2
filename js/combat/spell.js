@@ -12,7 +12,7 @@ var spell;
 	let functionName
 	///////////////////////////////////////////
 
-	function startCasting(index, data) {
+	function startCasting(index, data, callbackFn) {
 		spell.index = index
 		spell.data = data
 		castBarWrap.style.opacity = 1
@@ -23,6 +23,7 @@ var spell;
 			onUpdate: updateSpellBar,
 			ease: Power0.easeIn,
 			onComplete: spellComplete,
+			onCompleteParams: [callbackFn]
 		})
 
 	}
@@ -39,7 +40,7 @@ var spell;
 		return ratio * 100
 	}
 
-	function spellComplete() {
+	function spellComplete(callbackFn) {
 		stopCasting()
 		info('complete spell cast:', spell.data.name)
 		functionName = _.camelCase(spell.data.name + 'Completed')
@@ -54,7 +55,7 @@ var spell;
 			my.sp -= spCost
 			bar.updateBar('sp')
 		}
-		skill[my.job][functionName]()
+		callbackFn()
 	}
 
 	function stopCasting() {

@@ -22,9 +22,9 @@ var app = {
 }
 // remove if server goes down
 app.url = app.isApp ?
-	'http://ec2-34-220-110-228.us-west-2.compute.amazonaws.com/ng2/server/' : 'server/'
+	'http://34.220.110.228/ng2/server/' : 'server/'
 app.socketUrl = app.isApp ?
-	'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com:9090/' :
+	'ws://34.220.110.228:9090/' :
 	'ws://127.0.0.1:9090'
 !function(d){
 	var css = app.isApp ? ['ng2'] : ['main'];

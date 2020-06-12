@@ -30,7 +30,7 @@ var battle;
 	}
 	function targetIsFrontRow(tgt) {
 		tgt = tgt || my.target
-		return tgt >= 0 && tgt < 5
+		return tgt >= 0 && tgt <= 4
 	}
 	function targetIsBackRow(tgt) {
 		tgt = tgt || my.target
@@ -158,7 +158,7 @@ var battle;
 			let totalMobs = _.random(minMobs, maxMobs)
 
 			if (!ng.isApp) {
-				totalMobs = 5
+				totalMobs = 9
 				minLevel = 33
 				maxLevel = 53
 			}

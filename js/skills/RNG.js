@@ -14,8 +14,9 @@
 		shimmeringOrb,
 		spiritOfTheHunter,
 	}
-	let damages, enhancedDamage, hit, config
+	let enhancedDamage, hit, config, spellConfig
 
+	let damages = []
 	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
@@ -25,6 +26,7 @@
 			skillIndex: index,
 			global: true,
 			target: true,
+			requiresFrontRow: true,
 		}
 		if (skills.notReady(config)) return
 		// process skill data
@@ -188,6 +190,8 @@
 			target: true,
 		}
 		if (skills.notReady(config)) return
+		//TODO: add fizzle checks
+
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
@@ -218,18 +222,28 @@
 	function ignite(index, data) {
 		console.info('ignite', index)
 		// check constraints
-		config = {
+		spellConfig = {
 			skillIndex: index,
 			global: true,
-			target: true,
+			target: my.target,
+			fixTarget: true,
 			mpCost: data.mp[my.skills[index]],
 			name: data.name,
 		}
-		if (skills.notReady(config)) return
-		spell.startCasting(index, data)
+		if (skills.notReady(spellConfig)) return
+		spell.startCasting(index, data, igniteCompleted)
 	}
 	function igniteCompleted() {
-		info('called: igniteCompleted')
+		info('called: igniteCompleted', spellConfig)
+		damages = []
+		damages.push({
+			index: spellConfig.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		})
+		combat.txDamageMob(damages)
+		info('IGNITE:', damages)
 	}
 	function shockNova(index, data) {
 		console.info('shockNova', index)

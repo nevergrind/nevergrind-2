@@ -7,7 +7,7 @@
 <script>
 
 var socketUrl = location.hostname === 'localhost' ?
-	'ws://127.0.0.1:9090' : 'ws://ec2-34-220-110-228.us-west-2.compute.amazonaws.com:9090/';
+	'ws://127.0.0.1:9090' : 'ws://34.220.110.228:9090/';
 var connection = new autobahn.Connection({
 	url: socketUrl,
 	realm: 'realm1'

@@ -9,7 +9,6 @@ var combat;
 		updateCombatTextLayer,
 		toggleAutoAttack,
 		txDamageMob,
-		processDamages,
 		isValidTarget,
 		getDiffClass,
 		autoAttackDisable,
@@ -40,8 +39,10 @@ var combat;
 		stroke: '#430',
 		strokeThickness: 3,
 	}
+	const addedDamageTypes = ['addBlood', 'addPoison', 'addArcane', 'addLightning', 'addFire', 'addIce']
 	let chance = 0
 	let hits = {}
+	let addedDamage
 
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
@@ -70,19 +71,13 @@ var combat;
 	function isValidTarget() {
 		return my.target >= 0 && my.target < mob.max
 	}
-	function processDamages(d) {
+	function processDamagesMob(d) {
 		if (typeof mobs[d.index] === 'undefined' || !mobs[d.index].name || my.hp <= 0) {
 			d.damage = 0
 			return d
 		}
-		console.info('asdfasdf', d)
-		// check for things that immediately set to 0
-		if (Math.random() < stats.missChance(mobs[d.index].level, d.weaponSkill)) {
-			// chat.log('Your attack misses ' + ng.getArticle(d.index) + ' ' + mobs[d.index].name + '!')
-			d.damage = 0
-			combat.popupDamage(d.index, 'MISS!')
-			return d
-		}
+		//console.info('asdfasdf', d)
+
 		// dodge
 		if (!d.isPiercing &&
 			Math.random() * 100 < mobs[d.index].dodge) {
@@ -91,8 +86,15 @@ var combat;
 			return d
 		}
 
-		// info('processDamages', d)
+		// info('processDamagesMob', d)
 		if (d.damageType === 'physical') {
+			// check for things that immediately set to 0
+			if (Math.random() < stats.missChance(mobs[d.index].level, d.weaponSkill)) {
+				// chat.log('Your attack misses ' + ng.getArticle(d.index) + ' ' + mobs[d.index].name + '!')
+				d.damage = 0
+				combat.popupDamage(d.index, 'MISS!')
+				return d
+			}
 			// riposte
 			if (!d.isPiercing &&
 				Math.random() * 100 < mobs[d.index].riposte) {
@@ -111,13 +113,33 @@ var combat;
 			// enhancedDamage
 
 
-
 			// reduce enhancedDamage
 
 			d.damage *= d.enhancedDamage
+
+			// mob armor
+			if (mobs[d.index].armor < 1) {
+				if (stats.someIgnoreTargetArmor()) {
+					mobs[d.index].armor = 1
+				}
+				if (stats.someReduceTargetArmor()) {
+					mobs[d.index].armor += .001
+					if (mobs[d.index].armor > 1) mobs[d.index].armor = 1
+				}
+			}
+
+			d.damage *= mobs[d.index].armor
+
+			// +add spell damage
+			addedDamage = 0
+			addedDamageTypes.forEach(elType => {
+				addedDamage += (stats.getEqTotal(elType) * mobs[d.index].resist[elType])
+			})
+			addedDamage += stats.getEqTotal('addAll')
+
+
 			// damage penalties
-			if (d.requiresFrontRow && d.index > 4 ||
-				d.index === -1) {
+			if (d.requiresFrontRow && !battle.targetIsFrontRow(d.index)) {
 				d.damage = 0
 			}
 			if (d.damageType === 'physical' &&
@@ -126,14 +148,11 @@ var combat;
 				// physical on back row
 				d.damage *= .5
 			}
-			// mob armor
-
-			// +add spell damage
 
 		}
 		else {
 			// mob magic resists
-			console.info('fire:', d.index, mobs[d.index])
+			console.info('spell:', d.index, mobs[d.index])
 			d.damage *= mobs[d.index].resist[d.damageType]
 
 		}
@@ -200,7 +219,8 @@ var combat;
 		}
 	}
 	function txDamageMob(damages) {
-		damages = damages.map(combat.processDamages)
+		damages = damages.map(processDamagesMob)
+		warn('damages', damages)
 		damageArr = []
 		len = damages.length
 		for (i=0; i<len; i++) {
@@ -356,8 +376,8 @@ var combat;
 			// magMit
 
 			// mob magic resists
-			console.info('fire:', index, mobs[index])
-			d.damage *= mobs[index].resist[d.damageType]
+			console.info(d.damageType, index)
+			d.damage *= stats.getResistPercent(d.damageType)
 
 		}
 		// final sanity checks

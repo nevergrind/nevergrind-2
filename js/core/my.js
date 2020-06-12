@@ -80,11 +80,13 @@ var my;
 		}
 	}
 	function setTarget(i) {
+		if (timers.castBar < 1) return
 		my.target = i
 		if (!mobs[my.target].name) fixTarget()
 		else combat.targetChanged()
 	}
 	function tabTarget(event, tries) {
+		if (timers.castBar < 1) return
 		if (typeof tries === 'undefined') tries = 0
 		index = tabOrder.findIndex(val => val === my.target)
 		if (event.shiftKey) {
