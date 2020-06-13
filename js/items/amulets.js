@@ -36,7 +36,7 @@ loot.amulets = {
 			addSpellArcane: [3, 5],
 			sp: [20, 25],
 			spRegen: [3, 4],
-			enhancedDamageToEldritch: [7, 11],
+			enhancedDamageToMystical: [7, 11],
 			dex: [8, 12],
 			cha: 10,
 			itemLevel: 4,

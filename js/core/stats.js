@@ -51,6 +51,11 @@ var stats = {};
 		missChance,
 		someIgnoreTargetArmor,
 		someReduceTargetArmor,
+		enhanceDamageToMobType,
+		phyMit,
+		magMit,
+		damageTakenToMana,
+		damageTakenToSpirit,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
@@ -725,5 +730,20 @@ var stats = {};
 	}
 	function someReduceTargetArmor() {
 		return items.eq.some(eq => eq.reduceTargetArmor)
+	}
+	function enhanceDamageToMobType(mobType) {
+		return getEqTotal('enhancedDamageTo' + mobType) / 100
+	}
+	function phyMit() {
+		return getEqTotal('phyMit')
+	}
+	function magMit() {
+		return getEqTotal('magMit')
+	}
+	function damageTakenToMana() {
+		return getEqTotal('damageTakenToMana')
+	}
+	function damageTakenToSpirit() {
+		return getEqTotal('damageTakenToSpirit')
 	}
 })($, TweenMax, _, );

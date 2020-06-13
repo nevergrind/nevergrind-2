@@ -40,9 +40,70 @@ var combat;
 		strokeThickness: 3,
 	}
 	const addedDamageTypes = ['addBlood', 'addPoison', 'addArcane', 'addLightning', 'addFire', 'addIce']
+	/*
+	 */
+	const mobType = {
+		"balrog": 'Demons',
+		"ice-golem": 'Mystical',
+		"stone-golem": 'Mystical',
+		"iron-golem": 'Mystical',
+		"treant": 'Mystical',
+		"spider": 'Beasts',
+		"wolf": 'Beasts',
+		"rat": 'Beasts',
+		"snake": 'Beasts',
+		"dragonkin": 'Dragonkin',
+		"lizardman": 'Humanoids',
+		"dragon": 'Dragonkin',
+		"dragon-fire": 'Dragonkin',
+		"dragon-poison": 'Dragonkin',
+		"dragon-frost": 'Dragonkin',
+		"dragon-plains": 'Dragonkin',
+		"dragon-water": 'Dragonkin',
+		"dragon-forest": 'Dragonkin',
+		"dragon-desert": 'Dragonkin',
+		"ghoul": 'Undead',
+		"mummy": 'Undead',
+		"skeleton": 'Undead',
+		"zombie": 'Undead',
+		"vampire": 'Undead',
+		"goblin": 'Humanoids',
+		"hobgoblin": 'Humanoids',
+		"kobold": 'Humanoids',
+		"orc": 'Humanoids',
+		"griffon": 'Mystical',
+		"harpy": 'Mystical',
+		"werewolf": 'Mystical',
+		"centaur": 'Mystical',
+		"cerberus": 'Demons',
+		"fungoid": 'Humanoids',
+		"gargoyle": 'Mystical',
+		"beetle": 'Beasts',
+		"imp": 'Demons',
+		"minotaur": 'Mystical',
+		"aviak": 'Humanoids',
+		"elephant": 'Beasts',
+		"lion": 'Beasts',
+		"crocodile": 'Beasts',
+		"rhino": 'Beasts',
+		"lioness": 'Beasts',
+		"bear": 'Beasts',
+		"toadlok": 'Humanoids',
+		"giant": 'Giants',
+		"ice-giant": 'Giants',
+		"fire-giant": 'Giants',
+		"spectre": 'Undead',
+		"angler": 'Humanoids',
+		"evil-eye": 'Mystical',
+		"unicorn": 'Mystical',
+		"scorpion": 'Beasts',
+	}
 	let chance = 0
 	let hits = {}
 	let addedDamage
+	let totalDamage = 0
+	let myDamage = 0
+	let leechHp, wraithMp, vulpineMp, vulpineSp
 
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
@@ -111,7 +172,7 @@ var combat;
 				return d
 			}
 			// enhancedDamage
-
+			d.enhancedDamage += stats.enhanceDamageToMobType(mobType[mobs[d.index].img])
 
 			// reduce enhancedDamage
 
@@ -223,8 +284,10 @@ var combat;
 		warn('damages', damages)
 		damageArr = []
 		len = damages.length
+		myDamage = 0
 		for (i=0; i<len; i++) {
 			if (damages[i].damage > 0) {
+				myDamage += damages[i].damage
 				updateMobHp({
 					row: my.row,
 					index: damages[i].index,
@@ -241,6 +304,12 @@ var combat;
 				})
 				console.info('tx processHit: ', damages[i])
 			}
+		}
+		if (myDamage) {
+			// damageTakenToMana leechHp
+
+			// damageTakenToSpirit wraithMp
+			
 		}
 		if (damageArr.length && party.hasMoreThanOnePlayer()) {
 			socket.publish('party' + my.partyId, {
@@ -352,6 +421,9 @@ var combat;
 				}
 
 			}
+			// phyMit
+			d.damage -= stats.phyMit()
+
 			// enhancedDamage
 
 			// reduce enhancedDamage
@@ -365,7 +437,6 @@ var combat;
 
 			// damage penalties
 
-			// phyMit
 
 			// armor
 
@@ -374,6 +445,7 @@ var combat;
 		}
 		else {
 			// magMit
+			d.damage -= stats.magMit()
 
 			// mob magic resists
 			console.info(d.damageType, index)
@@ -411,8 +483,10 @@ var combat;
 			// something hit me
 			damages = damages.map(dam => combat.processDamagesHero(index, dam))
 			len = damages.length
+			totalDamage = 0
 			for (i=0; i<len; i++) {
 				if (damages[i].damage > 0) {
+					totalDamage += damages[i].damage
 					updateHeroHp({
 						row: damages[i].row,
 						damage: damages[i].damage,
@@ -427,6 +501,11 @@ var combat;
 				}
 			}
 			animatePlayerFrames()
+			if (totalDamage) {
+				// damageTakenToMana vulpineMp
+
+				// damageTakenToSpirit vulpineSp
+			}
 			game.updatePartyResources({
 				hp: my.hp,
 				hpMax: my.hpMax,

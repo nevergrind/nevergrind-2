@@ -248,7 +248,7 @@ loot.belts = {
 			spRegen: [2, 3],
 			reduceHealing: [4, 6],
 			spKill: [4, 6],
-			enhancedDamageToEldritch: [5, 8],
+			enhancedDamageToMystical: [5, 8],
 		}, {
 			name: 'Woven Sash',
 			newName: 'Fairy\'s Trap',

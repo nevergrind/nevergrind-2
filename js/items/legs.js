@@ -197,7 +197,7 @@ loot.legs = {
 			dodge: [3, 5],
 			resistStun: [5, 10],
 			resistIce: [25, 35],
-			enhancedDamageToEldritch: [5, 8],
+			enhancedDamageToMystical: [5, 8],
 		}, {
 			name: 'Studded Legs',
 			newName: 'Friar\'s Penance',

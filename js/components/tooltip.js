@@ -143,7 +143,7 @@ var tooltip;
 				getGenericPercentStatHtml(obj.enhancedDamageToUndead, 'Enhanced Damage vs Undead') +
 				getGenericPercentStatHtml(obj.enhancedDamageToDemons, 'Enhanced Damage vs Demons') +
 				getGenericPercentStatHtml(obj.enhancedDamageToDragonkin, 'Enhanced Damage vs Dragonkin') +
-				getGenericPercentStatHtml(obj.enhancedDamageToEldritch, 'Enhanced Damage vs Eldritch') +
+				getGenericPercentStatHtml(obj.enhancedDamageToMystical, 'Enhanced Damage vs Mystical') +
 				// mitigation
 				getGenericReducedStatHtml(obj.phyMit, 'Physical Damage Reduced by') +
 				getGenericReducedStatHtml(obj.magMit, 'Magical Damage Reduced by') +
@@ -160,7 +160,7 @@ var tooltip;
 				getGenericPercentStatHtml(obj.resistStun, 'Stun Resist') +
 				getGenericPercentStatHtml(obj.resistSilence, 'Silence Resist') +
 				// debuff
-				getPropHtml(obj.reducedHealing, obj.reducedHealing + '% Healing on Monsters') +
+				getPropHtml(obj.reduceHealing, obj.reduceHealing + '% Healing on Monsters') +
 				getPropHtml(obj.restInPeace, 'Slain Monsters Rest in Peace') +
 				getPropHtml(obj.slowsTarget, 'Slows Target ' + obj.slowsTarget + '%') +
 				getPropHtml(obj.reduceTargetArmor, 'Reduces Target Armor ' + obj.reduceTargetArmor + '%') +

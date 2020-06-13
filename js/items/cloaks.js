@@ -278,7 +278,7 @@ loot.cloaks = {
 			resistIce: [16, 20],
 			addSpellIce: [33, 40],
 			addSpellBlood: [28, 35],
-			enhancedDamageToEldritch: [3, 5],
+			enhancedDamageToMystical: [3, 5],
 		}, {
 			name: 'Pall',
 			newName: 'Soothsayer\'s Ethereal Cloak',

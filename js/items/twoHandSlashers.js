@@ -174,7 +174,7 @@ loot.twoHandSlashers = {
 			addIce: [15, 22],
 			enhancePoison: [4, 6],
 			enhancedDamageToHumanoids: [3, 5],
-			enhancedDamageToEldritch: [6, 8],
+			enhancedDamageToMystical: [6, 8],
 			resistParalyze: [15, 20],
 		}, {
 			name: 'Mythical Sword',

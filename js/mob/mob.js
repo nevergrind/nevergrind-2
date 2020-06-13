@@ -140,7 +140,7 @@ var mob;
 				isDead: true,
 				speed: 0,
 				hitCount: 0,
-				type: '',
+				type: 'normal',
 				box: {},
 				dom: {}
 			}

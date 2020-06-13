@@ -351,7 +351,7 @@ var loot = {};
 		enhancedDamageToUndead: 2,
 		enhancedDamageToDemons: 2,
 		enhancedDamageToDragonkin: 2,
-		enhancedDamageToEldritch: 2,
+		enhancedDamageToMystical: 2,
 		phyMit: 3,
 		magMit: 3,
 		resistPhysical: 6,

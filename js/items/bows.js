@@ -90,7 +90,7 @@ loot.bows = {
 			sp: [11, 15],
 			addArcane: [3, 5],
 			dex: [15, 20],
-			enhancedDamageToEldritch: [3, 6],
+			enhancedDamageToMystical: [3, 6],
 			resistBlood: [15, 20],
 			resistLightning: [15, 20],
 		}, {
@@ -156,7 +156,7 @@ loot.bows = {
 			addLightning: [7, 10],
 			enhanceLightning: [3, 5],
 			resistLightning: 60,
-			enhancedDamageToEldritch: [5, 7],
+			enhancedDamageToMystical: [5, 7],
 			damageTakenToMana: [5, 7],
 			resistStun: 12,
 		}, {
