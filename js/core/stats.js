@@ -54,8 +54,17 @@ var stats = {};
 		enhanceDamageToMobType,
 		phyMit,
 		magMit,
+		leech,
+		wraith,
 		damageTakenToMana,
 		damageTakenToSpirit,
+		hpKill,
+		mpKill,
+		spKill,
+		resistParalyze,
+		resistFear,
+		resistStun,
+		resistSilence,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
@@ -73,6 +82,9 @@ var stats = {};
 	let isCrit = false
 	let chance, weaponSkill, enhanceDamage, addedDamage
 	let resistPercent
+	let vulpineMp = 0
+	let vulpineSp = 0
+	let resistStatusVal = 0
 
 	const hpTier = {
 		'WAR': 10,
@@ -421,6 +433,7 @@ var stats = {};
 		else if (type === 'lightning') resistPercent = 1 - (resistLightning() / 400)
 		else if (type === 'fire') resistPercent = 1 - (resistFire() / 400)
 		else if (type === 'ice') resistPercent = 1 - (resistIce() / 400)
+		if (resistPercent < .25) resistPercent = .25
 		return resistPercent
 	}
 	function resistBlood() {
@@ -740,10 +753,49 @@ var stats = {};
 	function magMit() {
 		return getEqTotal('magMit')
 	}
+	function leech() {
+		return getEqTotal('leech')
+	}
+	function wraith() {
+		return getEqTotal('wraith')
+	}
 	function damageTakenToMana() {
-		return getEqTotal('damageTakenToMana')
+		vulpineMp = getEqTotal('damageTakenToMana')
+		if (vulpineMp > 50) vulpineMp = 50
+		return vulpineMp
 	}
 	function damageTakenToSpirit() {
-		return getEqTotal('damageTakenToSpirit')
+		vulpineSp = getEqTotal('damageTakenToSpirit')
+		if (vulpineSp > 50) vulpineSp = 50
+		return vulpineSp
 	}
-})($, TweenMax, _, );
+	function hpKill() {
+		return getEqTotal('hpKill')
+	}
+	function mpKill() {
+		return getEqTotal('mpKill')
+	}
+	function spKill() {
+		return getEqTotal('spKill')
+	}
+	function resistParalyze() {
+		resistStatusVal = getEqTotal('resistParalyze')
+		if (resistStatusVal > 50) resistStatusVal = 50
+		return resistStatusVal
+	}
+	function resistFear() {
+		resistStatusVal = getEqTotal('resistFear')
+		if (resistStatusVal > 50) resistStatusVal = 50
+		return resistStatusVal
+	}
+	function resistStun() {
+		resistStatusVal = getEqTotal('resistStun')
+		if (resistStatusVal > 50) resistStatusVal = 50
+		return resistStatusVal
+	}
+	function resistSilence() {
+		resistStatusVal = getEqTotal('resistSilence')
+		if (resistStatusVal > 50) resistStatusVal = 50
+		return resistStatusVal
+	}
+})($, TweenMax, _);

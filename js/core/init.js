@@ -1,7 +1,4 @@
 // global objects
-let buff = {
-	isSuppressing: []
-}
 let items = {
 	inv: [],
 	eq: [],
@@ -43,4 +40,5 @@ audio.init()
 //audio.gameMusicInit();
 context.init()
 mission.init()
+button.init()
 $('script').remove()

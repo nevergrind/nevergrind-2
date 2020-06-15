@@ -13,23 +13,26 @@ var button;
 		secondaryAttack,
 		triggerSkill,
 		processButtonTimers,
+		init,
 		initialized: false,
 	}
 	var arr, damage, name, hit
 
+	let globalCooldownDur = 2
 	let damages
 	const displayBlock = { display: 'block' }
-	const displayNone = { display: 'none' }
 	/////////////////////////////
+
+	function init() {
+		$("#button-wrap")
+			.on('click', '.job-skill-btn', handleSkillButtonClick)
+			.on('click', '#skill-primary-attack-btn', combat.toggleAutoAttack)
+			.on('click', '#skill-secondary-attack-btn', combat.toggleAutoAttack)
+	}
 
 	function isOffhandingWeapon() {
 		return item.offhandWeaponTypes.includes(items.eq[13].itemType)
 	}
-
-	$("#button-wrap")
-		.on('click', '.job-skill-btn', handleSkillButtonClick)
-		.on('click', '#primary-attack-btn', primaryAttack)
-		.on('click', '#secondary-attack-btn', secondaryAttack)
 
 	//////////////////////////////////
 	function processButtonTimers(index, skillData) {
@@ -46,7 +49,7 @@ var button;
 			onUpdate: handleButtonUpdate,
 			onUpdateParams: [ args ],
 			onComplete: handleButtonComplete,
-			onCompleteParams: [ args ],
+			onCompleteParams: [ args, true ],
 			ease: Linear.easeNone
 		}
 		timerObj[index] = 1
@@ -79,7 +82,7 @@ var button;
 			el: selector,
 			key: 'globalCooldown',
 		}
-		TweenMax.to(timers, 2, {
+		TweenMax.to(timers, globalCooldownDur, {
 			globalCooldown: 1,
 			onStart: handleButtonStart,
 			onStartParams: [ args ],
@@ -151,6 +154,7 @@ var button;
 		button.startSwing('primaryAttack')
 	}
 	function secondaryAttack() {
+		warn('secondaryAttack')
 		if (!my.isAutoAttacking ||
 			ng.view !== 'battle' ||
 			timers.secondaryAttack < 1 ||
@@ -230,27 +234,57 @@ var button;
 	}
 
 	function handleButtonUpdate(o) {
+		/*if (o.type === 'singleGlobal') {
+
+		}*/
 		if (typeof o.index === 'number') {
+			// skill
 			TweenMax.set(o.el, {
 				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
 			})
 		}
 		else {
+			// global
 			TweenMax.set(o.el, {
 				background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000d ' + timers[o.key] + 'turn)'
 			})
 		}
 	}
-	function handleButtonComplete(o) {
-		TweenMax.to(o.el, .5, {
-			startAt: {
-				scale: 1,
-				alpha: 1,
-				background: 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)',
-			},
-			scale: .75,
-			alpha: 0,
-		})
+	function handleButtonComplete(o, checkGlobalInProgress) {
+		if (checkGlobalInProgress &&
+			timers.globalCooldown < 1) {
+			let duration = globalCooldownDur - (timers.globalCooldown * globalCooldownDur)
+			TweenMax.set(o.el, displayBlock)
+			let newTimer = {
+				globalCooldown: 1
+			}
+			let args = {
+				el: o.el,
+				key: 'globalCooldown',
+			}
+			TweenMax.to(newTimer, duration, {
+				globalCooldown: 1,
+				onStart: handleButtonStart,
+				onStartParams: [ args ],
+				onUpdate: handleButtonUpdate,
+				onUpdateParams: [ args ],
+				onComplete: handleButtonComplete,
+				onCompleteParams: [ args ],
+				ease: Linear.easeNone
+			})
+		}
+		else {
+			// button flash
+			TweenMax.to(o.el, .5, {
+				startAt: {
+					scale: 1,
+					alpha: 1,
+					background: 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)',
+				},
+				scale: .75,
+				alpha: 0,
+			})
+		}
 	}
 	function updateSkillTime(obj) {
 		obj.remaining--
@@ -270,12 +304,12 @@ var button;
 		// base attack buttons
 		s += '<div id="main-attack-wrap">' +
 			'<div class="skill-btn">' +
-				'<img id="primary-attack-btn" class="skill-img" src="'+ bar.getItemSlotImage('eq', 12) +'">' +
+				'<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="'+ bar.getItemSlotImage('eq', 12) +'">' +
 				'<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>' +
 			'</div>'
 			if (isOffhandingWeapon()) {
 				s += '<div class="skill-btn">' +
-					'<img id="secondary-attack-btn" class="skill-img" src="'+ bar.getItemSlotImage('eq', 13) +'">' +
+					'<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="'+ bar.getItemSlotImage('eq', 13) +'">' +
 					'<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>' +
 				'</div>'
 			}
@@ -285,7 +319,7 @@ var button;
 		for (var i=0; i<12; i++) {
 			s +=
 			'<div id="skill-btn-'+ i +'" class="skill-btn job-skill-btn" data-index="'+ i +'">' +
-				'<img class="skill-img" src="images/skills/'+ my.job +'/'+ i +'.png">' +
+				'<img id="skill-'+ i +'" class="skill-img popover-icons" src="images/skills/'+ my.job +'/'+ i +'.png">' +
 				'<div id="skill-timer-'+ i +'-rotate" class="skill-timer-rotate"></div>' +
 				'<div id="skill-timer-'+ i +'" class="skill-timer"></div>' +
 			'</div>'

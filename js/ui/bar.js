@@ -182,6 +182,7 @@ var bar;
 		bar.windowsOpen.character = !bar.windowsOpen.character
 		if (bar.windowsOpen.character) bar.activeTab = 'character'
 		tooltip.conditionalHide()
+		popover.conditionalHide()
 		updateCharacterDOM()
 	}
 
@@ -778,7 +779,7 @@ var bar;
 	}
 
 	function showBarMenuPopover() {
-		popover.setMainMenuHtml(this.id);
+		popover.setPopoverHtml(this.id);
 	}
 
 	function cachePlayerBars(index) {

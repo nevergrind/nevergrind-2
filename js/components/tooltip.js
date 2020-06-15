@@ -160,9 +160,9 @@ var tooltip;
 				getGenericPercentStatHtml(obj.resistStun, 'Stun Resist') +
 				getGenericPercentStatHtml(obj.resistSilence, 'Silence Resist') +
 				// debuff
-				getPropHtml(obj.reduceHealing, obj.reduceHealing + '% Healing on Monsters') +
-				getPropHtml(obj.restInPeace, 'Slain Monsters Rest in Peace') +
-				getPropHtml(obj.slowsTarget, 'Slows Target ' + obj.slowsTarget + '%') +
+				//getPropHtml(obj.reduceHealing, obj.reduceHealing + '% Healing on Monsters') +
+				//getPropHtml(obj.restInPeace, 'Slain Monsters Rest in Peace') +
+				//getPropHtml(obj.slowsTarget, 'Slows Target ' + obj.slowsTarget + '%') +
 				getPropHtml(obj.reduceTargetArmor, 'Reduces Target Armor ' + obj.reduceTargetArmor + '%') +
 				getPropHtml(obj.ignoreTargetArmor, 'Ignores Target Armor') +
 				getPropHtml(obj.increaseHpPercent, '+' + obj.increaseHpPercent + '% Maximum Health') +

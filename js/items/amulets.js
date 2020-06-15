@@ -88,14 +88,14 @@ loot.amulets = {
 		}, {
 			name: 'Amulet',
 			newName: 'The Prowler\'s Eye',
-			archery: 3,
+			archery: 4,
 			piercing: [4, 6],
 			armor: 25,
-			addSpellBlood: [5, 7],
+			addSpellBlood: [5, 9],
 			dex: [18, 24],
 			agi: [27, 34],
-			restInPeace: true,
-			leech: [4, 6],
+			//restInPeace: true,
+			leech: [4, 7],
 			itemLevel: 13,
 		}, {
 			name: 'Amulet',

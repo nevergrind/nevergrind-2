@@ -6,10 +6,12 @@ var popover;
 		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
+		isHoveringResistElement: false,
 		hide,
 		show,
+		conditionalHide,
 		setPosition,
-		setMainMenuHtml
+		setPopoverHtml
 	};
 	var computedStyle
 	var padding
@@ -18,12 +20,16 @@ var popover;
 	var isMenuAbove
 	var yAdjust
 	let x, y
+	let html
+	let buffName
+	let index
 
 	let el = getElementById('popover-wrap');
 	//////////////////////////////////////////////////
 
-	function setMainMenuHtml(id) {
+	function setPopoverHtml(id) {
 		if (!id) return;
+		popover.isHoveringResistElement = false
 		mainMenuPopovers = {
 			'inv-resist-blood': 'Resist Blood',
 			'inv-resist-poison': 'Resist Poison',
@@ -38,10 +44,29 @@ var popover;
 			'bar-inventory': '['+ _.capitalize(ng.config.hotkey.inventory) +'] Inventory',
 			'bar-options': '[ESC] Options',
 			'bar-mission-abandon': 'Abandon Mission'
-		};
-		// console.info('setMainMenuHtml', mainMenuPopovers['bar-inventory'])
-		var html = mainMenuPopovers[id];
-		html && popover.show(html);
+		}
+		if (id.startsWith('skill-')) {
+			if (id === 'skill-primary-attack-btn') html = 'Primary Attack'
+			else if (id === 'skill-secondary-attack-btn') html = 'Secondary Attack'
+			else {
+				// job skills
+				index = +id.split('-')[1]
+				html = skills[my.job][index].name
+			}
+		}
+		else if (id.startsWith('buff-')) {
+			buffName = _.camelCase(id.split('-')[1])
+			console.info('buffName', buffName)
+			html = buffs[buffName].name
+		}
+		else {
+			if (id.startsWith('inv-resist')) {
+				popover.isHoveringResistElement = true
+			}
+			html = mainMenuPopovers[id]
+		}
+		// console.info('setPopoverHtml', mainMenuPopovers['bar-inventory'])
+		html && popover.show(html)
 	}
 	function show(html) {
 		if (!html) return
@@ -64,7 +89,11 @@ var popover;
 		else {
 			el.style.left = x +'px'
 		}
-
+	}
+	function conditionalHide() {
+		if (popover.isHoveringResistElement) {
+			hide()
+		}
 	}
 	function hide() {
 		TweenMax.set(el, {
@@ -95,7 +124,7 @@ var popover;
 		// determine Y adjustment
 		y = parseInt(style.height, 10)
 		isMenuAbove = my.mouse.y < window.innerHeight / 2
-		yAdjust = isMenuAbove ? 15 : (y + 15) * -1
+		yAdjust = isMenuAbove ? 15 : (y + 25) * -1
 		return my.mouse.y + yAdjust
 	}
 })($, parseInt, getComputedStyle, TweenMax, window);

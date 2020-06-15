@@ -10,9 +10,13 @@ var battle;
 		targetIsBackRow,
 		updateTarget,
 		loadTextures,
+		updateMobTargetTraits,
+		updateMobTargetBuffs,
+		txBuffMob,
+		rxBuffMob,
 	}
 
-	let index, splashTgt
+	let index, splashTgt, buffHtml, traitHtml
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	init()
 	//////////////////////////////////////
@@ -207,11 +211,40 @@ var battle;
 					ceil(100 - bar.getRatio('hp', mobs[my.target])) +
 				'%</div>' +
 				'<div id="mob-target-details">' +
-					'<div id="mob-target-traits">'+ mobs[my.target].traits.join('|') +'</div>' +
+					'<div id="mob-target-traits">'+ getMobTargetTraitsHtml() +'</div>' +
+					'<div id="mob-target-buffs">'+ getMobTargetBuffsHtml() +'</div>' +
 				'</div>'
 			querySelector('#mob-target-wrap').innerHTML = targetHtml
 			mob.drawMobBar(my.target, drawInstant)
 		}
+	}
+	function getMobTargetBuffsHtml() {
+		buffHtml = ''
+		mobs[my.target].buffs.forEach(buff => {
+			buffHtml += '<img id="buff-'+ buff.name +'" class="target-buff popover-icons" src="images/skills/' + buff.job + '/' + buff.img + '.png">'
+		})
+		return buffHtml
+	}
+	function getMobTargetTraitsHtml() {
+		// remove trailing s from value
+		traitHtml = ['<div class="mob-trait">' + combat.mobType[mobs[2].img].replace(/s+$/, '') + '</div>']
+		mobs[my.target].traits.forEach(trait => {
+			traitHtml.push('<div class="mob-trait">' + trait + '</div>')
+		})
+		return traitHtml.join('<div class="trait-pipe"></div>')
+	}
+	function updateMobTargetTraits() {
+		querySelector('#mob-target-traits').innerHTML = getMobTargetTraitsHtml()
+	}
+	function updateMobTargetBuffs() {
+		querySelector('#mob-target-buffs').innerHTML = getMobTargetBuffsHtml()
+	}
+	function txBuffMob(d) {
+		mobs[d.i].buffs.push(d)
+		updateMobTargetBuffs()
+	}
+	function rxBuffMob(data) {
+
 	}
 
 	function html() {

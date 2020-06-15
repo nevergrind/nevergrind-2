@@ -18,8 +18,65 @@ var combat;
 		levelSkillCheck,
 		skillLevelChance,
 		endCombat,
+		updateHeroResource,
+		mobType: {
+			'balrog': 'Demons',
+			'ice-golem': 'Mystical',
+			'stone-golem': 'Mystical',
+			'iron-golem': 'Mystical',
+			'treant': 'Mystical',
+			'spider': 'Beasts',
+			'wolf': 'Beasts',
+			'rat': 'Beasts',
+			'snake': 'Beasts',
+			'dragonkin': 'Dragonkin',
+			'lizardman': 'Humanoids',
+			'dragon': 'Dragonkin',
+			'dragon-fire': 'Dragonkin',
+			'dragon-poison': 'Dragonkin',
+			'dragon-frost': 'Dragonkin',
+			'dragon-plains': 'Dragonkin',
+			'dragon-water': 'Dragonkin',
+			'dragon-forest': 'Dragonkin',
+			'dragon-desert': 'Dragonkin',
+			'ghoul': 'Undead',
+			'mummy': 'Undead',
+			'skeleton': 'Undead',
+			'zombie': 'Undead',
+			'vampire': 'Undead',
+			'goblin': 'Humanoids',
+			'hobgoblin': 'Humanoids',
+			'kobold': 'Humanoids',
+			'orc': 'Humanoids',
+			'griffon': 'Mystical',
+			'harpy': 'Mystical',
+			'werewolf': 'Mystical',
+			'centaur': 'Mystical',
+			'cerberus': 'Demons',
+			'fungoid': 'Humanoids',
+			'gargoyle': 'Mystical',
+			'beetle': 'Beasts',
+			'imp': 'Demons',
+			'minotaur': 'Mystical',
+			'aviak': 'Humanoids',
+			'elephant': 'Beasts',
+			'lion': 'Beasts',
+			'crocodile': 'Beasts',
+			'rhino': 'Beasts',
+			'lioness': 'Beasts',
+			'bear': 'Beasts',
+			'toadlok': 'Humanoids',
+			'giant': 'Giants',
+			'ice-giant': 'Giants',
+			'fire-giant': 'Giants',
+			'spectre': 'Undead',
+			'angler': 'Humanoids',
+			'evil-eye': 'Mystical',
+			'unicorn': 'Mystical',
+			'scorpion': 'Beasts',
+		}
 	}
-	var el, w, h, i, len, damageArr, index, key, row, name, damages
+	var el, w, h, i, len, damageArr, damages
 
 	const textDuration = 1
 	const textDistanceY = 150
@@ -40,70 +97,15 @@ var combat;
 		strokeThickness: 3,
 	}
 	const addedDamageTypes = ['addBlood', 'addPoison', 'addArcane', 'addLightning', 'addFire', 'addIce']
-	/*
-	 */
-	const mobType = {
-		"balrog": 'Demons',
-		"ice-golem": 'Mystical',
-		"stone-golem": 'Mystical',
-		"iron-golem": 'Mystical',
-		"treant": 'Mystical',
-		"spider": 'Beasts',
-		"wolf": 'Beasts',
-		"rat": 'Beasts',
-		"snake": 'Beasts',
-		"dragonkin": 'Dragonkin',
-		"lizardman": 'Humanoids',
-		"dragon": 'Dragonkin',
-		"dragon-fire": 'Dragonkin',
-		"dragon-poison": 'Dragonkin',
-		"dragon-frost": 'Dragonkin',
-		"dragon-plains": 'Dragonkin',
-		"dragon-water": 'Dragonkin',
-		"dragon-forest": 'Dragonkin',
-		"dragon-desert": 'Dragonkin',
-		"ghoul": 'Undead',
-		"mummy": 'Undead',
-		"skeleton": 'Undead',
-		"zombie": 'Undead',
-		"vampire": 'Undead',
-		"goblin": 'Humanoids',
-		"hobgoblin": 'Humanoids',
-		"kobold": 'Humanoids',
-		"orc": 'Humanoids',
-		"griffon": 'Mystical',
-		"harpy": 'Mystical',
-		"werewolf": 'Mystical',
-		"centaur": 'Mystical',
-		"cerberus": 'Demons',
-		"fungoid": 'Humanoids',
-		"gargoyle": 'Mystical',
-		"beetle": 'Beasts',
-		"imp": 'Demons',
-		"minotaur": 'Mystical',
-		"aviak": 'Humanoids',
-		"elephant": 'Beasts',
-		"lion": 'Beasts',
-		"crocodile": 'Beasts',
-		"rhino": 'Beasts',
-		"lioness": 'Beasts',
-		"bear": 'Beasts',
-		"toadlok": 'Humanoids',
-		"giant": 'Giants',
-		"ice-giant": 'Giants',
-		"fire-giant": 'Giants',
-		"spectre": 'Undead',
-		"angler": 'Humanoids',
-		"evil-eye": 'Mystical',
-		"unicorn": 'Mystical',
-		"scorpion": 'Beasts',
-	}
+	const resourceLeechDivider = 1000
 	let chance = 0
-	let hits = {}
 	let addedDamage
 	let totalDamage = 0
 	let myDamage = 0
-	let leechHp, wraithMp, vulpineMp, vulpineSp
+	let leechHp = 0
+	let wraithMp = 0
+	let vulpineMp = 0
+	let vulpineSp = 0
 
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
@@ -172,7 +174,7 @@ var combat;
 				return d
 			}
 			// enhancedDamage
-			d.enhancedDamage += stats.enhanceDamageToMobType(mobType[mobs[d.index].img])
+			d.enhancedDamage += stats.enhanceDamageToMobType(combat.mobType[mobs[d.index].img])
 
 			// reduce enhancedDamage
 
@@ -209,7 +211,6 @@ var combat;
 				// physical on back row
 				d.damage *= .5
 			}
-
 		}
 		else {
 			// mob magic resists
@@ -223,6 +224,7 @@ var combat;
 		return d
 	}
 	function toggleAutoAttack() {
+		warn('toggleAutoAttack')
 		if (!my.isAutoAttacking) autoAttackEnable()
 		else autoAttackDisable()
 	}
@@ -302,16 +304,22 @@ var combat;
 					c: damages[i].isCrit,
 					h: damages[i].hate,
 				})
-				console.info('tx processHit: ', damages[i])
 			}
 		}
 		if (myDamage) {
-			// damageTakenToMana leechHp
-
-			// damageTakenToSpirit wraithMp
-			
+			leechHp += myDamage * (stats.leech() / resourceLeechDivider)
+			if (leechHp >= 1) {
+				updateHeroResource('hp', ~~leechHp)
+				leechHp = leechHp % 1
+			}
+			wraithMp += myDamage * (stats.wraith() / resourceLeechDivider)
+			if (wraithMp >= 1) {
+				updateHeroResource('mp', ~~wraithMp)
+				wraithMp = wraithMp % 1
+			}
 		}
 		if (damageArr.length && party.hasMoreThanOnePlayer()) {
+			console.info('tx processHit: ', damageArr)
 			socket.publish('party' + my.partyId, {
 				route: 'p->damage',
 				d: damageArr
@@ -332,16 +340,6 @@ var combat;
 		}
 	}
 
-	/*
-	function updateBar(type, data) {
-		data = data || my
-		// console.warn('updateBar', type, data.row)
-		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
-			x: '-' + getRatio(type, data) + '%'
-		})
-		querySelector('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
-	}
-	 */
 	function selfDied() {
 		warn('You died!')
 		autoAttackDisable()
@@ -365,13 +363,24 @@ var combat;
 		}
 	}
 	// damage hero functions
-	function updateHeroHp(o) {
-		party.presence[0].hp = my.hp -= o.damage
-		if (my.hp <= 0) {
-			if (ng.isApp) selfDied()
-			else party.presence[0].hp = my.hp = my.hpMax
+	function updateHeroResource(type, addValue) {
+		party.presence[0][type] = my[type] += addValue
+		// sanity check
+		if (my[type] < 0) {
+			party.presence[0][type] = my[type] = 0
 		}
-		bar.updateBar('hp')
+		else if (my[type] > my[type + 'Max']) {
+			party.presence[0][type] = my[type] = my[type + 'Max']
+		}
+		// special cases
+		if (type === 'hp') {
+			if (my.hp <= 0) {
+				// death
+				if (ng.isApp) selfDied()
+				else party.presence[0].hp = my.hp = my.hpMax // testing
+			}
+		}
+		bar.updateBar(type)
 	}
 	function processDamagesHero(index, d) {
 		if (my.hp <= 0) {
@@ -434,14 +443,6 @@ var combat;
 				amountReduced = .5
 			}
 			d.damage *= amountReduced
-
-			// damage penalties
-
-
-			// armor
-
-			// +add spell damage
-
 		}
 		else {
 			// magMit
@@ -487,10 +488,7 @@ var combat;
 			for (i=0; i<len; i++) {
 				if (damages[i].damage > 0) {
 					totalDamage += damages[i].damage
-					updateHeroHp({
-						row: damages[i].row,
-						damage: damages[i].damage,
-					})
+					updateHeroResource('hp', -damages[i].damage)
 					if (damages[i].isPiercing) {
 						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
 					}
@@ -503,8 +501,16 @@ var combat;
 			animatePlayerFrames()
 			if (totalDamage) {
 				// damageTakenToMana vulpineMp
-
-				// damageTakenToSpirit vulpineSp
+				vulpineMp += totalDamage * (stats.damageTakenToMana() / resourceLeechDivider)
+				if (vulpineMp >= 1) {
+					updateHeroResource('mp', ~~vulpineMp)
+					vulpineMp = vulpineMp % 1
+				}
+				vulpineSp += totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider)
+				if (vulpineSp >= 1) {
+					updateHeroResource('sp', ~~vulpineSp)
+					vulpineSp = vulpineSp % 1
+				}
 			}
 			game.updatePartyResources({
 				hp: my.hp,

@@ -711,10 +711,10 @@ var skills;
 			}, {
 				name: 'Ignite',
 				img: 'RNG-7',
-				mp: [0, 7, 11, 16, 22, 29, 37, 46],
+				mp: [0, 5, 12, 29, 52, 77, 99, 115],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				spellDamage: level => {
-					return values.ignite[level] + my.level
+					return spellValues.ignite[level] + my.level
 				},
 				spellVariance: .8,
 				spellType: 'evocation',
@@ -2006,8 +2006,12 @@ var skills;
 		],
 	}
 	let damage = 0
-	let values = {
-		ignite: [0, 15, 37, 88, 156, 231, 298, 347]
+	// 2 mana per damage is bad
+	// 3 mana per damage is average
+	// 4 mana per damage is good
+	// 5 mana per damage is excellent!
+	let spellValues = {
+		ignite: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115],
 	}
 
 	///////////////////////////////////////////

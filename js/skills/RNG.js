@@ -17,7 +17,6 @@
 	let enhancedDamage, hit, config, spellConfig
 
 	let damages = []
-	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
 		console.info('crossSlash', index)
@@ -243,6 +242,13 @@
 			...stats.spellDamage()
 		})
 		combat.txDamageMob(damages)
+		battle.txBuffMob({
+			i: spellConfig.target,
+			name: 'ignite',
+			job: my.job,
+			img: +spell.data.img.split('-')[1],
+			dur: 12
+		})
 		info('IGNITE:', damages)
 	}
 	function shockNova(index, data) {
@@ -273,6 +279,7 @@
 		}
 		my.mp -= mpCost
 		bar.updateBar('mp')
+
 		// check constraints
 		// process skill data
 		// animate timers

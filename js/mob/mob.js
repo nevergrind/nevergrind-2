@@ -40,6 +40,9 @@ var mob;
 		bottomY: [220,220,220,220,220,320,320,320,320],
 	};
 	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el, chance
+	let hpKillVal = 0
+	let spKillVal = 0
+	let mpKillVal = 0
 	var frame = {
 		idle: {
 			start: 1,
@@ -141,6 +144,7 @@ var mob;
 				speed: 0,
 				hitCount: 0,
 				type: 'normal',
+				buffs: [],
 				box: {},
 				dom: {}
 			}
@@ -545,6 +549,18 @@ var mob;
 			filter: 'opacity(0) brightness(0)',
 			ease: Linear.easeIn,
 		})
+		hpKillVal = stats.hpKill()
+		if (hpKillVal) {
+			combat.updateHeroResource('hp', hpKillVal)
+		}
+		mpKillVal = stats.mpKill()
+		if (mpKillVal) {
+			combat.updateHeroResource('mp', mpKillVal)
+		}
+		spKillVal = stats.spKill()
+		if (spKillVal) {
+			combat.updateHeroResource('sp', spKillVal)
+		}
 	}
 	function setMobSkill(config, val) {
 		// adjusts value based on what it is at max level
