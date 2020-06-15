@@ -16,7 +16,7 @@ var button;
 		init,
 		initialized: false,
 	}
-	var arr, damage, name, hit
+	var name, hit
 
 	let globalCooldownDur = 2
 	let damages

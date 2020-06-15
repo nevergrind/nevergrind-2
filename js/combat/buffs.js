@@ -4,7 +4,7 @@ let buff = {
 let buffs;
 !function($, _, TweenMax, undefined) {
 	buffs = {
-		ignite: {
+		igniteArmor: {
 			name: 'Ignite Armor',
 			img: 7,
 			job: 'RNG',

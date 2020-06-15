@@ -59,6 +59,7 @@ var router;
 		else if (r === 'p->mobTick') mob.rxMobResourceTick(data)
 		else if (r === 'p->hit') combat.rxDamageHero(data)
 		else if (r === 'p->HP') party.upsertPartyResource(data)
+		else if (r === 'p->buff') battle.rxBuffMob(data)
 	}
 	function toGuild(data, r) {
 		if (r === 'guild->hasJoined') guild.hasJoined(data)

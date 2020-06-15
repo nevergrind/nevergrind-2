@@ -76,7 +76,7 @@ var combat;
 			'scorpion': 'Beasts',
 		}
 	}
-	var el, w, h, i, len, damageArr, damages
+	var el, w, h, i, len, damageArr, hit, damages, buffArr
 
 	const textDuration = 1
 	const textDistanceY = 150
@@ -225,7 +225,7 @@ var combat;
 	}
 	function toggleAutoAttack() {
 		warn('toggleAutoAttack')
-		if (!my.isAutoAttacking) autoAttackEnable()
+		if (ng.view === 'battle' && !my.isAutoAttacking) autoAttackEnable()
 		else autoAttackDisable()
 	}
 	function autoAttackEnable() {
@@ -285,25 +285,20 @@ var combat;
 		damages = damages.map(processDamagesMob)
 		warn('damages', damages)
 		damageArr = []
+		buffArr = []
 		len = damages.length
 		myDamage = 0
 		for (i=0; i<len; i++) {
 			if (damages[i].damage > 0) {
 				myDamage += damages[i].damage
-				updateMobHp({
-					row: my.row,
-					index: damages[i].index,
-					damage: damages[i].damage,
-					isCrit: damages[i].isCrit,
-					hate: damages[i].hate,
-				})
-				damageArr.push({
-					r: my.row,
-					i: damages[i].index,
-					d: damages[i].damage,
-					c: damages[i].isCrit,
-					h: damages[i].hate,
-				})
+				damages[i].row = my.row
+				if (typeof damages[i].buffs === 'object') {
+					damages[i].buffs.forEach(buff => {
+						buffArr.push(buff)
+					})
+				}
+				updateMobHp(damages[i])
+				damageArr.push(damages[i])
 			}
 		}
 		if (myDamage) {
@@ -319,25 +314,31 @@ var combat;
 			}
 		}
 		if (damageArr.length && party.hasMoreThanOnePlayer()) {
-			console.info('tx processHit: ', damageArr)
-			socket.publish('party' + my.partyId, {
+			let damageData = {
 				route: 'p->damage',
-				d: damageArr
-			}, true)
+				damages: damageArr
+			}
+			if (buffArr.length) damageData.buffs = buffArr
+			console.info('tx processHit: ', damageData)
+			socket.publish('party' + my.partyId, damageData, true)
 		}
+		buffArr.length && battle.processBuffs(buffArr)
 	}
 	function rxUpdateDamage(data) {
-		len = data.d.length
-		for (var i=0; i<len; i++) {
-			updateMobHp({
-				row: data.d[i].r,
-				index: data.d[i].i,
-				damage: data.d[i].d,
-				crit: data.d[i].c,
-				hate: data.d[i].h,
-			})
-			console.info('rxUpdateDamage : ', data.d)
+		// damages
+		len = data.damages.length
+		buffArr = []
+		for (i=0; i<len; i++) {
+			updateMobHp(data.damages[i])
+			console.info('rxUpdateDamage : ', data.damages)
 		}
+		// buffs
+		if (typeof data.buffs === 'object') {
+			data.buffs.forEach(buff => {
+				buffArr.push(buff)
+			})
+		}
+		buffArr.length && battle.processBuffs(buffArr)
 	}
 
 	function selfDied() {

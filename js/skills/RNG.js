@@ -239,16 +239,14 @@
 			index: spellConfig.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
+			buffs: [{
+				i: spellConfig.target,
+				row: my.row,
+				key: 'igniteArmor',
+			}],
 			...stats.spellDamage()
 		})
 		combat.txDamageMob(damages)
-		battle.txBuffMob({
-			i: spellConfig.target,
-			name: 'ignite',
-			job: my.job,
-			img: +spell.data.img.split('-')[1],
-			dur: 12
-		})
 		info('IGNITE:', damages)
 	}
 	function shockNova(index, data) {

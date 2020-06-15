@@ -83,17 +83,11 @@ var popover;
 		computedStyle = getComputedStyle(el)
 		el.style.top = posY(computedStyle) + 'px'
 		x = posX(computedStyle)
-		if (x < window.innerWidth / 2) {
-			el.style.left = x +'px'
-		}
-		else {
-			el.style.left = x +'px'
-		}
+		if (x < window.innerWidth / 2) el.style.left = x +'px'
+		else el.style.left = x +'px'
 	}
 	function conditionalHide() {
-		if (popover.isHoveringResistElement) {
-			hide()
-		}
+		if (popover.isHoveringResistElement) hide()
 	}
 	function hide() {
 		TweenMax.set(el, {

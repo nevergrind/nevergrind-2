@@ -1,5 +1,5 @@
 var battle;
-(function(TweenMax, $, _, PIXI, undefined) {
+(function(TweenMax, $, _, PIXI, Linear, undefined) {
 	battle = {
 		initialized: 0,
 		getSplashTarget,
@@ -10,13 +10,13 @@ var battle;
 		targetIsBackRow,
 		updateTarget,
 		loadTextures,
-		updateMobTargetTraits,
 		updateMobTargetBuffs,
-		txBuffMob,
-		rxBuffMob,
+		processBuffs,
 	}
 
-	let index, splashTgt, buffHtml, traitHtml
+	let index, splashTgt, buffHtml, traitHtml, buffEl
+	let buffTimers = []
+	const flashDuration = 10
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	init()
 	//////////////////////////////////////
@@ -198,53 +198,112 @@ var battle;
 	function updateTarget(drawInstant) {
 		if (combat.isValidTarget()) {
 			console.info('updateTarget', my.target)
-			targetHtml =  '<div id="mob-target-name" class="'+ combat.getDiffClass(mobs[my.target].level) +'">'+ mobs[my.target].name +'</div>' +
-				'<div id="mob-target-bar-wrap">'+
-					'<div id="mob-target-hp-wrap">'+
-						'<div id="mob-target-hp"></div>' +
-						'<div class="mob-health-grid"></div>' +
-					'</div>' +
-					'<img id="mob-target-hp-plate" class="mob-plate-'+ mobs[my.target].type +'" src="images/ui/bar-'+ mobs[my.target].type +'.png">' +
+			targetHtml = '<div id="mob-target-name" class="' + combat.getDiffClass(mobs[my.target].level) + '">' + mobs[my.target].name + '</div>' +
+				'<div id="mob-target-bar-wrap">' +
+				'<div id="mob-target-hp-wrap">' +
+				'<div id="mob-target-hp"></div>' +
+				'<div class="mob-health-grid"></div>' +
+				'</div>' +
+				'<img id="mob-target-hp-plate" class="mob-plate-' + mobs[my.target].type + '" src="images/ui/bar-' + mobs[my.target].type + '.png">' +
 				'</div>' +
 				//'<div id="mob-target-level">'+ mobs[my.target].level +'</div>' +
-				'<div id="mob-target-percent">'+
-					ceil(100 - bar.getRatio('hp', mobs[my.target])) +
+				'<div id="mob-target-percent">' +
+				ceil(100 - bar.getRatio('hp', mobs[my.target])) +
 				'%</div>' +
 				'<div id="mob-target-details">' +
-					'<div id="mob-target-traits">'+ getMobTargetTraitsHtml() +'</div>' +
-					'<div id="mob-target-buffs">'+ getMobTargetBuffsHtml() +'</div>' +
+				'<div id="mob-target-traits">' + getMobTargetTraitsHtml() + '</div>' +
+				'<div id="mob-target-buffs">' + getMobTargetBuffsHtml() + '</div>' +
 				'</div>'
 			querySelector('#mob-target-wrap').innerHTML = targetHtml
 			mob.drawMobBar(my.target, drawInstant)
+			startBuffTimers()
 		}
-	}
-	function getMobTargetBuffsHtml() {
-		buffHtml = ''
-		mobs[my.target].buffs.forEach(buff => {
-			buffHtml += '<img id="buff-'+ buff.name +'" class="target-buff popover-icons" src="images/skills/' + buff.job + '/' + buff.img + '.png">'
-		})
-		return buffHtml
 	}
 	function getMobTargetTraitsHtml() {
 		// remove trailing s from value
-		traitHtml = ['<div class="mob-trait">' + combat.mobType[mobs[2].img].replace(/s+$/, '') + '</div>']
+		traitHtml = ['<div class="mob-trait">' +
+			combat.mobType[mobs[my.target].img].replace(/s+$/, '') +
+		'</div>']
 		mobs[my.target].traits.forEach(trait => {
 			traitHtml.push('<div class="mob-trait">' + trait + '</div>')
 		})
 		return traitHtml.join('<div class="trait-pipe"></div>')
 	}
-	function updateMobTargetTraits() {
-		querySelector('#mob-target-traits').innerHTML = getMobTargetTraitsHtml()
+	function getMobTargetBuffsHtml() {
+		buffHtml = ''
+		for (var key in mobs[my.target].buffs) {
+			let buffData = mobs[my.target].buffs[key]
+			buffHtml += '<img id="buff-'+ key + '" class="target-buff popover-icons" src="images/skills/' + buffs[buffData.key].job + '/' + buffs[buffData.key].img + '.png">'
+		}
+		return buffHtml
 	}
 	function updateMobTargetBuffs() {
 		querySelector('#mob-target-buffs').innerHTML = getMobTargetBuffsHtml()
 	}
-	function txBuffMob(d) {
-		mobs[d.i].buffs.push(d)
+	function processBuffs(arrayOfBuffs) {
+		arrayOfBuffs.forEach(buff => {
+			let idKey = buff.key + '-' + buff.row
+			if (typeof mobs[buff.i].buffs[idKey] === 'object' &&
+				typeof mobs[buff.i].buffs[idKey].timer === 'object') {
+				mobs[buff.i].buffs[idKey].timer.kill()
+			}
+			console.info('processBuffs', buff)
+			mobs[buff.i].buffs[idKey] = {
+				row: buff.row,
+				key: buff.key,
+				duration: buffs[buff.key].duration,
+			}
+			mobs[buff.i].buffs[idKey].timer = TweenMax.to(
+				mobs[buff.i].buffs[idKey],
+				buffs[buff.key].duration, {
+				duration: 0,
+				ease: Linear.easeNone
+			})
+		})
 		updateMobTargetBuffs()
+		startBuffTimers()
 	}
-	function rxBuffMob(data) {
-
+	function startBuffTimers() {
+		// flashDuration = 10
+		buffTimers.forEach(b => {
+			b.kill()
+		})
+		buffTimers = []
+		for (var key in mobs[my.target].buffs) {
+			if (mobs[my.target].buffs[key].duration < flashDuration) {
+				// flash and remove
+				let newBuff = TweenMax.to('#buff-' + key)
+				buffTimers.push(newBuff)
+				console.info('startBuffTimers less 10', mobs[my.target].buffs[key].duration)
+			}
+			else {
+				// delay into flash and remove
+				console.info('startBuffTimers over 10', mobs[my.target].buffs[key].duration)
+			}
+			console.info('startBuffTimers key', key, mobs[my.target].buffs[key].duration)
+		}
+	}
+	function flashBuff(index, key) {
+		let el = '#buff-' + key
+		mobs[index].buffs[key] = delayedCall(10, removeBuff, [el, index, key])
+		TweenMax.to(el, .5, {
+			startAt: { opacity: 1 },
+			repeat: -1,
+			yoyo: true,
+			opacity: .3,
+			ease: Linear.easeOut,
+			onComplete: removeBuff,
+			onCompleteParams: [el, index, key]
+		})
+	}
+	function removeBuff(el, index, key) {
+		mobs[index].buffs[key].kill()
+		if (mobs[index].buffs[key] !== null) {
+			mobs[index].buffs[key] = null
+		}
+		buffEl = querySelector(el)
+		console.info('removeBuff', el, buffEl)
+		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
 	}
 
 	function html() {
@@ -280,4 +339,4 @@ var battle;
 			battle.isInit = 1;
 		}
 	}
-})(TweenMax, $, _, PIXI);
+})(TweenMax, $, _, PIXI, Linear);

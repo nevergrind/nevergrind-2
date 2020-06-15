@@ -144,7 +144,7 @@ var mob;
 				speed: 0,
 				hitCount: 0,
 				type: 'normal',
-				buffs: [],
+				buffs: {},
 				box: {},
 				dom: {}
 			}
