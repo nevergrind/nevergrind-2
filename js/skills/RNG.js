@@ -121,7 +121,6 @@
 		mobs.forEach((mob, index) => {
 			if (mob.name) {
 				if (!targets.includes(index) && targets.length < 5) {
-					console.info('asdf mob', index)
 					targets.push(index)
 				}
 			}
