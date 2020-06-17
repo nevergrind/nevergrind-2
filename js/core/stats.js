@@ -230,16 +230,19 @@ var stats = {};
 	function doubleAttack() {
 		return getStatTotal('doubleAttack') + getEqTotal('allSkills')
 	}
-	function missChance(level, weaponSkill) {
+	function missChance(index, weaponSkill) {
 		chance = .2
 		// 24 is about how much attack you get per level (21.6?)
-		chance += ((level * 24) - stats.attack(weaponSkill)) / 2400
-		if (my.level < level) {
-			chance += ((level - my.level) / 40)
+		chance += ((mobs[index].level * 24) - stats.attack(weaponSkill)) / 2400
+		if (my.level < mobs[index].level) {
+			chance += ((mobs[index].level - my.level) / 40)
 		}
+		// console.info('stats.missChance before', weaponSkill, chance)
+		if (mobs[index].buffFlags.faerieFlame) chance -= .12
+		// console.info('stats.missChance after', weaponSkill, chance)
+		// limit check
 		if (chance > .5) chance = .5
 		else if (chance < .05) chance = .05
-		// console.info('stats.missChance', weaponSkill, chance)
 		return chance
 
 	}

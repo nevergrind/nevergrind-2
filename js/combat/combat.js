@@ -106,6 +106,7 @@ var combat;
 	let wraithMp = 0
 	let vulpineMp = 0
 	let vulpineSp = 0
+	let mobArmor = 1
 
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
@@ -152,7 +153,7 @@ var combat;
 		// info('processDamagesMob', d)
 		if (d.damageType === 'physical') {
 			// check for things that immediately set to 0
-			if (Math.random() < stats.missChance(mobs[d.index].level, d.weaponSkill)) {
+			if (Math.random() < stats.missChance(d.index, d.weaponSkill)) {
 				// chat.log('Your attack misses ' + ng.getArticle(d.index) + ' ' + mobs[d.index].name + '!')
 				d.damage = 0
 				combat.popupDamage(d.index, 'MISS!')
@@ -180,18 +181,22 @@ var combat;
 
 			d.damage *= d.enhancedDamage
 
-			// mob armor
+			// modify mob armor for self
 			if (mobs[d.index].armor < 1) {
 				if (stats.someIgnoreTargetArmor()) {
 					mobs[d.index].armor = 1
 				}
 				if (stats.someReduceTargetArmor()) {
 					mobs[d.index].armor += .001
-					if (mobs[d.index].armor > 1) mobs[d.index].armor = 1
 				}
 			}
-
-			d.damage *= mobs[d.index].armor
+			if (mobs[d.index].armor > 1) mobs[d.index].armor = 1
+			// modify mob armor for all (buffs)
+			mobArmor = mobs[d.index].armor
+			if (mobs[d.index].buffFlags.igniteArmor) mobArmor += .15
+			if (mobArmor > 1) mobArmor = 1
+			// console.info('mobArmor', d.index, mobArmor)
+			d.damage *= mobArmor
 
 			// +add spell damage
 			addedDamage = 0
@@ -283,7 +288,7 @@ var combat;
 	}
 	function txDamageMob(damages) {
 		damages = damages.map(processDamagesMob)
-		warn('damages', damages)
+		console.warn('damages', damages)
 		damageArr = []
 		buffArr = []
 		len = damages.length
@@ -293,9 +298,8 @@ var combat;
 				myDamage += damages[i].damage
 				damages[i].row = my.row
 				if (typeof damages[i].buffs === 'object') {
-					damages[i].buffs.forEach(buff => {
-						buffArr.push(buff)
-					})
+					// buffs only get added if it hits
+					damages[i].buffs.forEach(buff => buffArr.push(buff))
 				}
 				updateMobHp(damages[i])
 				damageArr.push(damages[i])
@@ -319,7 +323,7 @@ var combat;
 				damages: damageArr
 			}
 			if (buffArr.length) damageData.buffs = buffArr
-			console.info('tx processHit: ', damageData)
+			// console.info('tx processHit: ', damageData)
 			socket.publish('party' + my.partyId, damageData, true)
 		}
 		buffArr.length && battle.processBuffs(buffArr)
@@ -330,13 +334,11 @@ var combat;
 		buffArr = []
 		for (i=0; i<len; i++) {
 			updateMobHp(data.damages[i])
-			console.info('rxUpdateDamage : ', data.damages)
+			// console.info('rxUpdateDamage : ', data.damages)
 		}
 		// buffs
 		if (typeof data.buffs === 'object') {
-			data.buffs.forEach(buff => {
-				buffArr.push(buff)
-			})
+			data.buffs.forEach(buff => buffArr.push(buff))
 		}
 		buffArr.length && battle.processBuffs(buffArr)
 	}
@@ -440,9 +442,7 @@ var combat;
 			let damageReduced = 1 - stats.armorReductionRatio()
 			let amountReduced = _.random(damageReduced, 1)
 
-			if (buff.isSuppressing.includes(index)) {
-				amountReduced = .5
-			}
+			if (mobs[index].buffFlags.suppressingVolley) amountReduced = .5
 			d.damage *= amountReduced
 		}
 		else {

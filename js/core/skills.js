@@ -707,41 +707,43 @@ var skills;
 				spellType: '',
 				castTime: 0,
 				cooldownTime: 30,
-				description: 'Hits 3x targets - Reduces threat - Physical damage to you reduced by 50% for 9 seconds',
+				description: 'Hits 3x targets - Reduces your threat and mobs\' physical damage by 50% for 9 seconds',
 			}, {
 				name: 'Ignite',
 				img: 'RNG-7',
 				mp: [0, 5, 12, 29, 52, 77, 99, 115],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellDamage: level => {
-					return spellValues.ignite[level] + my.level
-				},
+				spellDamage: level => spellValues.ignite[level] + (my.level * 2),
 				spellVariance: .8,
 				spellType: 'evocation',
 				damageType: 'fire',
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Ignites the target for X damage. Reduces armor by X% for 12 seconds',
+				description: 'Ignites the target for X damage. Reduces armor by 15% for 15 seconds',
 			}, {
 				name: 'Shock Nova',
 				img: 'RNG-8',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
+				mp: [0, 7, 14, 33, 58, 86, 110, 127],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
+				spellDamage: level => spellValues.shockNova[level] + my.level,
+				spellVariance: .7,
 				spellType: 'evocation',
-				castTime: 0,
+				damageType: 'lightning',
+				castTime: 1.5,
 				cooldownTime: 0,
 				description: 'Hits all targets for X lightning damage. Interrupts all spells.',
 			}, {
 				name: 'Faerie Flame',
 				img: 'RNG-9',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
+				mp: [0, 8, 17, 41, 72, 107, 137, 158],
 				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
+				spellDamage: level => spellValues.faerieFlame[level] + (my.level * 3),
+				spellVariance: .85,
 				spellType: 'conjuration',
-				castTime: 0,
+				damageType: 'fire',
+				castTime: 3,
 				cooldownTime: 0,
-				description: 'Mark a target - Direct fire damage and boost accuracy of attacks',
+				description: 'Mark a target - Direct fire damage and reduces miss chance by 15% for 45 seconds',
 			}, {
 				name: 'Fungal Growth',
 				img: 'RNG-10',
@@ -2005,13 +2007,14 @@ var skills;
 			},
 		],
 	}
-	let damage = 0
 	// 2 mana per damage is bad
 	// 3 mana per damage is average
 	// 4 mana per damage is good
 	// 5 mana per damage is excellent!
-	let spellValues = {
-		ignite: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115],
+	const spellValues = {
+		ignite: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115]
+		shockNova: [0, 9, 20, 47, 81, 123, 152, 179], // mp: [0, 7, 14, 33, 58, 86, 110, 127]
+		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461], // mp: [0, 8, 17, 41, 72, 107, 137, 158]
 	}
 
 	///////////////////////////////////////////
@@ -2032,7 +2035,7 @@ var skills;
 	function notReady(config) {
 		if (timers.castBar < 1) return true
 		if (config.global && timers.globalCooldown < 1) return true
-		if (config.skillIndex && timers.skillCooldowns[config.skillIndex] < 1) return true
+		if (config.skillIndex >= 0 && timers.skillCooldowns[config.skillIndex] < 1) return true
 		// check for a valid target
 		if (config.fixTarget) {
 			my.fixTarget()

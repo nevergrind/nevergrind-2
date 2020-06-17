@@ -7,11 +7,11 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2],
 		mobs: [
-			'snake',
+			/*'snake',
 			'spider',
 			'wolf',
 			'lion',
-			'orc',
+			'orc',*/
 			'toadlok',
 		]
 	},

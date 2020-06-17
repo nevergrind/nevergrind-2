@@ -145,6 +145,7 @@ var mob;
 				hitCount: 0,
 				type: 'normal',
 				buffs: {},
+				buffFlags: {},
 				box: {},
 				dom: {}
 			}

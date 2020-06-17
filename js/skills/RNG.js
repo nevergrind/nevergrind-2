@@ -188,22 +188,24 @@
 			target: true,
 		}
 		if (skills.notReady(config)) return
-		//TODO: add fizzle checks
 
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		let splashIndex = -1
 		let tgt
-		buff.isSuppressing = []
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			buff.isSuppressing.push(tgt)
 			hit = stats.rangedDamage(tgt)
 			damages.push({
 				index: tgt,
 				hate: -1,
 				enhancedDamage: enhancedDamage,
+				buffs: [{
+					i: tgt, // target
+					row: my.row, // this identifies unique buff state/icon
+					key: 'suppressingVolley', // this sets the flag
+				}],
 				...hit
 			})
 		}
@@ -213,9 +215,6 @@
 		button.processButtonTimers(index, data)
 		button.triggerGlobalCooldown()
 		// special effects
-		delayedCall(9, () => {
-			buff.isSuppressing = []
-		})
 	}
 	function ignite(index, data) {
 		console.info('ignite', index)
@@ -239,47 +238,69 @@
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			buffs: [{
-				i: spellConfig.target,
-				row: my.row,
-				key: 'igniteArmor',
+				i: spellConfig.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'igniteArmor', // this sets the flag
 			}],
 			...stats.spellDamage()
 		})
 		combat.txDamageMob(damages)
-		info('IGNITE:', damages)
 	}
 	function shockNova(index, data) {
 		console.info('shockNova', index)
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
+		spellConfig = {
+			skillIndex: index,
+			global: true,
+			target: my.target,
+			fixTarget: true,
+			mpCost: data.mp[my.skills[index]],
+			name: data.name,
 		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
-		// check constraints
-		// process skill data
-		// animate timers
+		if (skills.notReady(spellConfig)) return
+		spell.startCasting(index, data, shockNovaCompleted)
+	}
+	function shockNovaCompleted() {
+		damages = []
+		for (var i=0; i<mob.max; i++) {
+			if (mobs[i].hp > 0) {
+				damages.push({
+					index: i,
+					spellType: spell.data.spellType,
+					damageType: spell.data.damageType,
+					interrupt: true,
+					...stats.spellDamage()
+				})
+			}
+		}
+		combat.txDamageMob(damages)
 	}
 	function faerieFlame(index, data) {
 		console.info('faerieFlame', index)
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
+		spellConfig = {
+			skillIndex: index,
+			global: true,
+			target: my.target,
+			fixTarget: true,
+			mpCost: data.mp[my.skills[index]],
+			name: data.name,
 		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
-
-		// check constraints
-		// process skill data
-		// animate timers
+		if (skills.notReady(spellConfig)) return
+		spell.startCasting(index, data, faerieFlameCompleted)
+	}
+	function faerieFlameCompleted() {
+		damages = []
+		damages.push({
+			index: spellConfig.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			buffs: [{
+				i: spellConfig.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'faerieFlame', // this sets the flag
+			}],
+			...stats.spellDamage()
+		})
+		combat.txDamageMob(damages)
 	}
 	function fungalGrowth(index, data) {
 		console.info('fungalGrowth', index)

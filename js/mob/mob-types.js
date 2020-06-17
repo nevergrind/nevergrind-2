@@ -2,7 +2,7 @@
 mob.type = {
 	'balrog': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -14,7 +14,7 @@ mob.type = {
 	},
 	'ice-golem': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -26,7 +26,7 @@ mob.type = {
 	},
 	'stone-golem': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -38,7 +38,7 @@ mob.type = {
 	},
 	'iron-golem': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -50,7 +50,7 @@ mob.type = {
 	},
 	'treant': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -62,7 +62,7 @@ mob.type = {
 	},
 	'spider': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -74,7 +74,7 @@ mob.type = {
 	},
 	'wolf': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -86,7 +86,7 @@ mob.type = {
 	},
 	'rat': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -98,7 +98,7 @@ mob.type = {
 	},
 	'snake': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -110,7 +110,7 @@ mob.type = {
 	},
 	'dragonkin': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -122,7 +122,7 @@ mob.type = {
 	},
 	'lizardman': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -134,7 +134,7 @@ mob.type = {
 	},
 	'dragon': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -146,7 +146,7 @@ mob.type = {
 	},
 	'dragon-fire': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -158,7 +158,7 @@ mob.type = {
 	},
 	'dragon-poison': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -170,7 +170,7 @@ mob.type = {
 	},
 	'dragon-frost': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -182,7 +182,7 @@ mob.type = {
 	},
 	'dragon-plains': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -194,7 +194,7 @@ mob.type = {
 	},
 	'dragon-water': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -206,7 +206,7 @@ mob.type = {
 	},
 	'dragon-forest': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -218,7 +218,7 @@ mob.type = {
 	},
 	'dragon-desert': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -230,7 +230,7 @@ mob.type = {
 	},
 	'ghoul': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -242,7 +242,7 @@ mob.type = {
 	},
 	'mummy': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -254,7 +254,7 @@ mob.type = {
 	},
 	'skeleton': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -266,7 +266,7 @@ mob.type = {
 	},
 	'zombie': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -278,7 +278,7 @@ mob.type = {
 	},
 	'vampire': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -290,7 +290,7 @@ mob.type = {
 	},
 	'goblin': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -302,7 +302,7 @@ mob.type = {
 	},
 	'hobgoblin': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -314,7 +314,7 @@ mob.type = {
 	},
 	'kobold': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -326,7 +326,7 @@ mob.type = {
 	},
 	orc: {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -338,7 +338,7 @@ mob.type = {
 	},
 	griffon: {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -350,7 +350,7 @@ mob.type = {
 	},
 	'harpy': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -362,7 +362,7 @@ mob.type = {
 	},
 	'werewolf': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -374,7 +374,7 @@ mob.type = {
 	},
 	'centaur': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -386,7 +386,7 @@ mob.type = {
 	},
 	'cerberus': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -398,7 +398,7 @@ mob.type = {
 	},
 	'fungoid': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -410,7 +410,7 @@ mob.type = {
 	},
 	'gargoyle': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -422,7 +422,7 @@ mob.type = {
 	},
 	'beetle': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -434,7 +434,7 @@ mob.type = {
 	},
 	'imp': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -446,7 +446,7 @@ mob.type = {
 	},
 	'minotaur': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -458,7 +458,7 @@ mob.type = {
 	},
 	'aviak': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -470,7 +470,7 @@ mob.type = {
 	},
 	'elephant': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -482,7 +482,7 @@ mob.type = {
 	},
 	'lion': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -494,7 +494,7 @@ mob.type = {
 	},
 	'crocodile': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -506,7 +506,7 @@ mob.type = {
 	},
 	'rhino': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -518,7 +518,7 @@ mob.type = {
 	},
 	'lioness': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -530,7 +530,7 @@ mob.type = {
 	},
 	'bear': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -542,7 +542,7 @@ mob.type = {
 	},
 	'toadlok': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: .7,
@@ -554,7 +554,7 @@ mob.type = {
 	},
 	'giant': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -566,7 +566,7 @@ mob.type = {
 	},
 	'ice-giant': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -578,7 +578,7 @@ mob.type = {
 	},
 	'fire-giant': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -590,7 +590,7 @@ mob.type = {
 	},
 	'spectre': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -602,7 +602,7 @@ mob.type = {
 	},
 	'angler': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -614,7 +614,7 @@ mob.type = {
 	},
 	'evil-eye': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -626,7 +626,7 @@ mob.type = {
 	},
 	'unicorn': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -638,7 +638,7 @@ mob.type = {
 	},
 	'scorpion': {
 		hp: 1,
-		armor: 1,
+		armor: .8,
 		resist: {
 			blood: 1,
 			poison: 1,
