@@ -14,7 +14,7 @@
 		shimmeringOrb,
 		spiritOfTheHunter,
 	}
-	let enhancedDamage, hit, config, spellConfig
+	let enhancedDamage, hit, config
 
 	let damages = []
 	///////////////////////////////////////////
@@ -26,6 +26,7 @@
 			global: true,
 			target: true,
 			requiresFrontRow: true,
+			isMob: true,
 		}
 		if (skills.notReady(config)) return
 		// process skill data
@@ -55,6 +56,7 @@
 			skillIndex: index,
 			global: true,
 			target: true,
+			isMob: true,
 		}
 		if (skills.notReady(config)) return
 		// process skill data
@@ -86,6 +88,7 @@
 			skillIndex: index,
 			global: true,
 			target: true,
+			isMob: true,
 		}
 		if (skills.notReady(config)) return
 
@@ -114,6 +117,7 @@
 			skillIndex: index,
 			global: true,
 			target: true,
+			isMob: true,
 		}
 		if (skills.notReady(config)) return
 		// select targets
@@ -150,6 +154,7 @@
 			skillIndex: index,
 			global: true,
 			target: true,
+			isMob: true,
 		}
 		if (skills.notReady(config)) return
 		// process skill data
@@ -166,6 +171,7 @@
 					damages.push({
 						index: tgt,
 						isPiercing: true,
+						isMob: config.isMob,
 						enhancedDamage: enhancedDamage,
 						...hit
 					})
@@ -186,6 +192,7 @@
 			skillIndex: index,
 			global: true,
 			target: true,
+			isMob: true,
 		}
 		if (skills.notReady(config)) return
 
@@ -203,6 +210,7 @@
 				enhancedDamage: enhancedDamage,
 				buffs: [{
 					i: tgt, // target
+					isMob: config.isMob,
 					row: my.row, // this identifies unique buff state/icon
 					key: 'suppressingVolley', // this sets the flag
 				}],
@@ -219,26 +227,28 @@
 	function ignite(index, data) {
 		console.info('ignite', index)
 		// check constraints
-		spellConfig = {
+		spell.config = {
 			skillIndex: index,
 			global: true,
 			target: my.target,
+			isMob: true,
 			fixTarget: true,
 			mpCost: data.mp[my.skills[index]],
 			name: data.name,
 		}
-		if (skills.notReady(spellConfig)) return
+		if (skills.notReady(spell.config)) return
 		spell.startCasting(index, data, igniteCompleted)
 	}
 	function igniteCompleted() {
-		info('called: igniteCompleted', spellConfig)
+		info('called: igniteCompleted', spell.config)
 		damages = []
 		damages.push({
-			index: spellConfig.target,
+			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			buffs: [{
-				i: spellConfig.target, // target
+				i: spell.config.target, // target
+				isMob: spell.config.isMob,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'igniteArmor', // this sets the flag
 			}],
@@ -248,15 +258,16 @@
 	}
 	function shockNova(index, data) {
 		console.info('shockNova', index)
-		spellConfig = {
+		spell.config = {
 			skillIndex: index,
 			global: true,
 			target: my.target,
+			isMob: true,
 			fixTarget: true,
 			mpCost: data.mp[my.skills[index]],
 			name: data.name,
 		}
-		if (skills.notReady(spellConfig)) return
+		if (skills.notReady(spell.config)) return
 		spell.startCasting(index, data, shockNovaCompleted)
 	}
 	function shockNovaCompleted() {
@@ -267,6 +278,7 @@
 					index: i,
 					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
+					isMob: spell.config.isMob,
 					interrupt: true,
 					...stats.spellDamage()
 				})
@@ -276,25 +288,27 @@
 	}
 	function faerieFlame(index, data) {
 		console.info('faerieFlame', index)
-		spellConfig = {
+		spell.config = {
 			skillIndex: index,
 			global: true,
 			target: my.target,
+			isMob: true,
 			fixTarget: true,
 			mpCost: data.mp[my.skills[index]],
 			name: data.name,
 		}
-		if (skills.notReady(spellConfig)) return
+		if (skills.notReady(spell.config)) return
 		spell.startCasting(index, data, faerieFlameCompleted)
 	}
 	function faerieFlameCompleted() {
 		damages = []
 		damages.push({
-			index: spellConfig.target,
+			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			buffs: [{
-				i: spellConfig.target, // target
+				i: spell.config.target, // target
+				isMob: spell.config.isMob,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'faerieFlame', // this sets the flag
 			}],
@@ -304,9 +318,35 @@
 	}
 	function fungalGrowth(index, data) {
 		console.info('fungalGrowth', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		spell.config = {
+			skillIndex: index,
+			global: true,
+			target: my.target,
+			targetName: party.getNameByRow(my.target),
+			isMob: false,
+			fixTarget: true,
+			spCost: data.sp[my.skills[index]],
+			name: data.name,
+		}
+		if (skills.notReady(spell.config)) return
+		spell.startCasting(index, data, fungalGrowthCompleted)
+	}
+	function fungalGrowthCompleted() {
+		damages = []
+		damages.push({
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			buffs: [{
+				i: my.row, // target
+				isMob: spell.config.isMob,
+				row: my.row, // this identifies unique buff state/icon
+				key: 'fungalGrowth', // this sets the flag
+			}],
+			...stats.spellDamage(false, false, true) // skill check, noCrit, force noCrit
+		})
+		console.info('fungalGrowthCompleted', damages)
+		combat.txHotHero(spell.config.target, damages)
 	}
 	function shimmeringOrb(index, data) {
 		console.info('shimmeringOrb', index)

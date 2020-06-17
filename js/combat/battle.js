@@ -14,8 +14,9 @@ var battle;
 		processBuffs,
 	}
 
-	let index, buffHtml, traitHtml, buffEl, key, keyRow
+	let index, buffHtml, traitHtml, buffEl, key, keyRow, el
 	let buffIconTimers = {}
+	let tgt = {}
 	const flashDuration = 10
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	init()
@@ -109,6 +110,7 @@ var battle;
 
 		// set to center target
 		my.target = 2
+		my.targetIsMob = true
 		combat.targetChanged()
 		my.fixTarget()
 		battle.updateTarget()
@@ -197,26 +199,38 @@ var battle;
 	let targetHtml = ''
 	function updateTarget(drawInstant) {
 		if (combat.isValidTarget()) {
+			el = querySelector('#mob-target-wrap')
+			if (my.targetIsMob) {
+				tgt = {
+					class: combat.getDiffClass(mobs[my.target].level),
+					name: mobs[my.target].name,
+					type: mobs[my.target].type,
+					hp: ceil(100 - bar.getRatio('hp', mobs[my.target])),
+					traits: getMobTargetTraitsHtml(),
+					buffs: getMobTargetBuffsHtml(),
+				}
+				targetHtml = '<div id="mob-target-name" class="' + tgt.class + '">' + tgt.name + '</div>' +
+					'<div id="mob-target-bar-wrap">' +
+					'<div id="mob-target-hp-wrap">' +
+					'<div id="mob-target-hp"></div>' +
+					'<div class="mob-health-grid"></div>' +
+					'</div>' +
+					'<img id="mob-target-hp-plate" class="mob-plate-' + tgt.type + '" src="images/ui/bar-' + tgt.type + '.png">' +
+					'</div>' +
+					//'<div id="mob-target-level">'+ mobs[my.target].level +'</div>' +
+					'<div id="mob-target-percent">' + tgt.hp + '%</div>' +
+					'<div id="mob-target-details">' +
+					'<div id="mob-target-traits">' + tgt.traits + '</div>' +
+					'<div id="mob-target-buffs">' + tgt.buffs + '</div>' +
+					'</div>'
+				el.style.display = 'flex'
+				el.innerHTML = targetHtml
+				mob.drawMobBar(my.target, drawInstant)
+				startBuffTimers()
+			}
+			else if (el !== null) el.style.display = 'none'
+
 			console.info('updateTarget', my.target)
-			targetHtml = '<div id="mob-target-name" class="' + combat.getDiffClass(mobs[my.target].level) + '">' + mobs[my.target].name + '</div>' +
-				'<div id="mob-target-bar-wrap">' +
-				'<div id="mob-target-hp-wrap">' +
-				'<div id="mob-target-hp"></div>' +
-				'<div class="mob-health-grid"></div>' +
-				'</div>' +
-				'<img id="mob-target-hp-plate" class="mob-plate-' + mobs[my.target].type + '" src="images/ui/bar-' + mobs[my.target].type + '.png">' +
-				'</div>' +
-				//'<div id="mob-target-level">'+ mobs[my.target].level +'</div>' +
-				'<div id="mob-target-percent">' +
-				ceil(100 - bar.getRatio('hp', mobs[my.target])) +
-				'%</div>' +
-				'<div id="mob-target-details">' +
-				'<div id="mob-target-traits">' + getMobTargetTraitsHtml() + '</div>' +
-				'<div id="mob-target-buffs">' + getMobTargetBuffsHtml() + '</div>' +
-				'</div>'
-			querySelector('#mob-target-wrap').innerHTML = targetHtml
-			mob.drawMobBar(my.target, drawInstant)
-			startBuffTimers()
 		}
 	}
 	function getMobTargetTraitsHtml() {

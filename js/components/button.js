@@ -129,23 +129,28 @@ var button;
 				timers.primaryAttack < 1 ||
 				my.hp <= 0) return
 		}
-		my.fixTarget()
-		if (my.target === -1) return
+		if (typeof index === 'undefined') {
+			// ripostes target index - makes it possible to riposte while targeting party
+			my.fixTarget()
+			if (my.target === -1) return
+			index = my.target
+		}
 		damages = []
 
 		hit = stats.damage()
 		damages.push({
-			index: isPiercing ? index : my.target,
+			index: index,
 			isPiercing: isPiercing,
 			...hit
 		})
 		// double attack?
-		if (!isPiercing && my.level >= skills.doubleAttack[my.job].level) {
+		if (!isPiercing &&
+			my.level >= skills.doubleAttack[my.job].level) {
 			combat.levelSkillCheck('doubleAttack')
 			if (Math.random() < successfulDoubleAttack()) {
 				hit = stats.damage()
 				damages.push({
-					index: my.target,
+					index: index,
 					...hit
 				})
 			}

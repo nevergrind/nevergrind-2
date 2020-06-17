@@ -19,6 +19,8 @@ var combat;
 		skillLevelChance,
 		endCombat,
 		updateHeroResource,
+		txHotHero,
+		rxHotHero,
 		mobType: {
 			'balrog': 'Demons',
 			'ice-golem': 'Mystical',
@@ -76,7 +78,7 @@ var combat;
 			'scorpion': 'Beasts',
 		}
 	}
-	var el, w, h, i, len, damageArr, hit, damages, buffArr
+	var el, w, h, i, len, damageArr, hit, damages, buffArr, index
 
 	const textDuration = 1
 	const textDistanceY = 150
@@ -133,7 +135,8 @@ var combat;
 		return chance
 	}
 	function isValidTarget() {
-		return my.target >= 0 && my.target < mob.max
+		if (my.targetIsMob) return my.target >= 0 && my.target < mob.max
+		else return my.target >= 0
 	}
 	function processDamagesMob(d) {
 		if (typeof mobs[d.index] === 'undefined' || !mobs[d.index].name || my.hp <= 0) {
@@ -557,6 +560,28 @@ var combat;
 			ease: Linear.easeOut
 		})
 	}
+
+	function txHotHero(index, data) {
+		// damages is an object with indices that point to player row (target)
+		console.info('txDamageHero', data, spell.config.targetName)
+		if (spell.config.targetName === my.name) {
+			processHotToMe(data)
+		}
+		else {
+			socket.publish('name' + spell.config.targetName, {
+				action: 'p->HoT',
+				data: data,
+			}, true)
+		}
+	}
+	function rxHotHero(data) {
+		console.info('rxDamageHero: ', data)
+		processHotToMe(data.d)
+	}
+	function processHotToMe(data) {
+		console.info('processHotToMe', data)
+	}
+
 	function animatePlayerFrames() {
 		TweenMax.to('#bar-card-bg-' + my.row, .5, {
 			startAt: { opacity: .5 },
@@ -592,21 +617,36 @@ var combat;
 	}
 	function targetChanged() {
 		if (my.hp <= 0) return
-		let index = 0
+		if (my.targetIsMob) targetChangedToMob()
+		else targetChangedToPlayer()
+		console.info('targetChanged my.target =>', my.target, my.targetIsMob)
+		battle.updateTarget(true)
+	}
+	function targetChangedToPlayer() {
+		// remove mob targeting
+		index = 0
 		for (el of querySelectorAll('.mob-details')) {
-			if (index !== my.hoverTarget) {
-				el.classList.remove('targeted', 'block-imp')
-			}
-			else {
-				el.classList.remove('targeted')
-			}
-			index++
+			if (index++ !== my.hoverTarget) el.classList.remove('targeted', 'block-imp')
 		}
-		console.info('targetChanged my.target =>', my.target, mobs[my.target].level, mobs[my.target])
+		// remove player
+		for (el of querySelectorAll('.player-targeted')) {
+			el.classList.remove('player-targeted')
+		}
+		el = querySelector('#bar-player-wrap-' + my.target)
+		el.classList.add('player-targeted')
+	}
+	function targetChangedToMob() {
+		index = 0
+		for (el of querySelectorAll('.mob-details')) {
+			if (index++ !== my.hoverTarget) el.classList.remove('targeted', 'block-imp')
+			else el.classList.remove('targeted')
+		}
+		for (el of querySelectorAll('.player-targeted')) {
+			el.classList.remove('player-targeted')
+		}
 		if (combat.isValidTarget()){
 			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
 		}
-		battle.updateTarget(true)
 	}
 	function getDiffClass(minQuestLvl) {
 		var resp = 'con-grey';

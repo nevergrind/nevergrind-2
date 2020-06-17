@@ -23,6 +23,7 @@ var party;
 		disband,
 		hasMoreThanOnePlayer,
 		getIndexByRow,
+		getNameByRow,
 		isSomeoneAlive,
 	};
 	party.prefix++;
@@ -42,6 +43,11 @@ var party;
 	}
 	function getIndexByRow(row) {
 		return party.presence.findIndex(member => member.row === row)
+	}
+	function getNameByRow(row) {
+		return _.find(party.presence, {
+			row: row
+		}).name
 	}
 	function hasMoreThanOnePlayer() {
 		return party.presence.length > 1

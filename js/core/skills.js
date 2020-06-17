@@ -651,8 +651,6 @@ var skills;
 			{
 				name: 'Cross Slash',
 				img: 'RNG-1',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .55, .65, .75, .85, .95, 1.05, 1.15],
 				spellType: '',
 				castTime: 0,
@@ -661,8 +659,6 @@ var skills;
 			}, {
 				name: 'Explosive Shot',
 				img: 'RNG-2',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
 				spellType: '',
 				castTime: 0,
@@ -681,8 +677,6 @@ var skills;
 			}, {
 				name: 'Spread Shot',
 				img: 'RNG-4',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .33, .39, .45, .51, .57, .63, .69],
 				spellType: '',
 				castTime: 0,
@@ -691,8 +685,6 @@ var skills;
 			}, {
 				name: 'Blade Storm',
 				img: 'RNG-5',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .3, .34, .38, .42, .46, .5, .54],
 				spellType: '',
 				castTime: 0,
@@ -701,8 +693,6 @@ var skills;
 			}, {
 				name: 'Suppressing Volley',
 				img: 'RNG-6',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				enhancedDamage: [0, .45, .5, 55, .6, .65, .7, .75],
 				spellType: '',
 				castTime: 0,
@@ -712,7 +702,6 @@ var skills;
 				name: 'Ignite',
 				img: 'RNG-7',
 				mp: [0, 5, 12, 29, 52, 77, 99, 115],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				spellDamage: level => spellValues.ignite[level] + (my.level * 2),
 				spellVariance: .8,
 				spellType: 'evocation',
@@ -724,7 +713,6 @@ var skills;
 				name: 'Shock Nova',
 				img: 'RNG-8',
 				mp: [0, 7, 14, 33, 58, 86, 110, 127],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				spellDamage: level => spellValues.shockNova[level] + my.level,
 				spellVariance: .7,
 				spellType: 'evocation',
@@ -736,7 +724,6 @@ var skills;
 				name: 'Faerie Flame',
 				img: 'RNG-9',
 				mp: [0, 8, 17, 41, 72, 107, 137, 158],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
 				spellDamage: level => spellValues.faerieFlame[level] + (my.level * 3),
 				spellVariance: .85,
 				spellType: 'conjuration',
@@ -747,13 +734,14 @@ var skills;
 			}, {
 				name: 'Fungal Growth',
 				img: 'RNG-10',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
+				sp: [0, 7, 14, 31, 57, 85, 106, 127],
+				spellDamage: level => spellValues.fungalGrowth[level] + (my.level),
+				spellVariance: 1,
 				spellType: 'alteration',
-				castTime: 0,
+				damageType: 'arcane',
+				castTime: 2,
 				cooldownTime: 0,
-				description: 'Restores x health over time for 18 seconds',
+				description: 'Restores x health over time for 30 seconds',
 			}, {
 				name: 'Shimmering Orb',
 				img: 'RNG-11',
@@ -2007,6 +1995,10 @@ var skills;
 			},
 		],
 	}
+
+	// 2 spirit per heal is normal for instant
+	// 3 spirit per heal is good (regen)
+
 	// 2 mana per damage is bad
 	// 3 mana per damage is average
 	// 4 mana per damage is good
@@ -2015,6 +2007,7 @@ var skills;
 		ignite: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115]
 		shockNova: [0, 9, 20, 47, 81, 123, 152, 179], // mp: [0, 7, 14, 33, 58, 86, 110, 127]
 		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461], // mp: [0, 8, 17, 41, 72, 107, 137, 158]
+		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382], // sp: [0, 7, 14, 31, 57, 85, 106, 127]
 	}
 
 	///////////////////////////////////////////
@@ -2034,6 +2027,18 @@ var skills;
 	}
 	function notReady(config) {
 		if (timers.castBar < 1) return true
+		if (config.isMob) {
+			if (!my.targetIsMob) {
+				chat.log('You must target a mob with this skill.', 'chat-warning')
+				return true
+			}
+		}
+		else {
+			if (my.targetIsMob) {
+				chat.log('You must target a player with this skill.', 'chat-warning')
+				return true
+			}
+		}
 		if (config.global && timers.globalCooldown < 1) return true
 		if (config.skillIndex >= 0 && timers.skillCooldowns[config.skillIndex] < 1) return true
 		// check for a valid target

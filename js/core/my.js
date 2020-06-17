@@ -10,6 +10,7 @@ var my;
 		fixTarget,
 		setTarget,
 		tabTarget,
+		partyTarget,
 		initSkills,
 		getMyData,
 		cacheStatValues,
@@ -62,6 +63,7 @@ var my;
 		gold: 0,
 		slot: 1,
 		target: -1,
+		targetIsMob: true,
 		hoverTarget: -1,
 		avatarBg: 5,
 		attackOn: false,
@@ -82,12 +84,21 @@ var my;
 	function setTarget(i) {
 		if (timers.castBar < 1) return
 		my.target = i
+		my.targetIsMob = true
 		if (!mobs[my.target].name) fixTarget()
 		else combat.targetChanged()
 	}
 	function tabTarget(event, tries) {
 		if (timers.castBar < 1) return
+
 		if (typeof tries === 'undefined') tries = 0
+
+
+		if (my.target >= mob.max) {
+			// out of range - from player to mob target
+			if (event.shiftKey) my.target = tabOrder[0]
+			else my.target = tabOrder[tabOrder.length - 1]
+		}
 		index = tabOrder.findIndex(val => val === my.target)
 		if (event.shiftKey) {
 			if (my.target === 0) my.target = tabOrder[tabOrder.length - 1]
@@ -97,6 +108,7 @@ var my;
 			if (my.target === tabOrder[tabOrder.length - 1]) my.target = tabOrder[0]
 			else my.target = tabOrder[index + 1]
 		}
+		my.targetIsMob = true
 		if (tries > tabOrder.length) my.target = -1
 		else {
 			if (!mobs[my.target].name) {
@@ -104,6 +116,15 @@ var my;
 				tabTarget(event, tries)
 			}
 			else combat.targetChanged()
+		}
+	}
+	function partyTarget(index) {
+		if (timers.castBar < 1) return
+		if (typeof party.presence[index] === 'object' &&
+			party.presence[index].row >= 0) {
+			my.target = party.presence[index].row
+			my.targetIsMob = false
+			combat.targetChanged()
 		}
 	}
 	function getResistObject() {

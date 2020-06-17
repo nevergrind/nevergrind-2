@@ -3,6 +3,7 @@ var spell;
 	spell = {
 		index: -1,
 		data: {},
+		config: {},
 		startCasting,
 		stopCasting,
 	}
@@ -42,11 +43,11 @@ var spell;
 
 	function spellComplete(callbackFn) {
 		stopCasting()
-		info('complete spell cast:', spell.data.name)
+		console.info('complete spell cast:', spell.data.name)
 		functionName = _.camelCase(spell.data.name + 'Completed')
-		warn('calling:', functionName)
-		let mpCost = spell.data.mp[my.skills[spell.index]]
-		let spCost = spell.data.sp[my.skills[spell.index]]
+		console.warn('calling:', functionName)
+		let mpCost = typeof spell.data.mp === 'object' ? spell.data.mp[my.skills[spell.index]] : 0
+		let spCost = typeof spell.data.sp === 'object' ? spell.data.sp[my.skills[spell.index]] : 0
 		if (mpCost) {
 			my.mp -= mpCost
 			bar.updateBar('mp')

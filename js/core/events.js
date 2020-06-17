@@ -253,16 +253,40 @@
 						chat.dom.chatInput.focus();
 					}
 
-					if (key === 'v') {
-						if (ng.view === 'game' && !ng.chatOn) {
-							game.toggleGameWindows(1); // ???
-						}
+					if (key === 'F1') {
+						my.partyTarget(0)
+						e.preventDefault()
+						return false
+					}
+					else if (key === 'F2') {
+						my.partyTarget(1)
+						e.preventDefault()
+						return false
+					}
+					else if (key === 'F3') {
+						my.partyTarget(2)
+						e.preventDefault()
+						return false
+					}
+					else if (key === 'F4') {
+						my.partyTarget(3)
+						e.preventDefault()
+						return false
+					}
+					else if (key === 'F5') {
+						my.partyTarget(4)
+						e.preventDefault()
+						return false
+					}
+					else if (key === 'F6') {
+						my.partyTarget(5)
+						e.preventDefault()
+						return false
 					}
 
 					if (ng.view === 'battle') {
 						if (key === 'Tab') {
-							if (!e.shiftKey) my.tabTarget(e)
-							else my.tabTarget(e)
+							my.tabTarget(e)
 							e.preventDefault()
 							return false
 						}
