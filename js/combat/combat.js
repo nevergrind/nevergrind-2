@@ -164,6 +164,7 @@ var combat;
 			}
 			// riposte
 			if (!d.isPiercing &&
+				timers.castBar < 1 &&
 				Math.random() * 100 < mobs[d.index].riposte) {
 				d.damage = 0
 				combat.txDamageHero(d.index, [ mob.getMobDamage(d.index, my.row, true) ])
@@ -172,6 +173,7 @@ var combat;
 			}
 			// parry
 			if (!d.isPiercing &&
+				timers.castBar < 1 &&
 				Math.random() * 100 < mobs[d.index].parry) {
 				d.damage = 0
 				combat.popupDamage(d.index, 'PARRY!')
@@ -232,7 +234,6 @@ var combat;
 		return d
 	}
 	function toggleAutoAttack() {
-		warn('toggleAutoAttack')
 		if (ng.view === 'battle' && !my.isAutoAttacking) autoAttackEnable()
 		else autoAttackDisable()
 	}
@@ -375,7 +376,7 @@ var combat;
 		if (my[type] < 0) {
 			party.presence[0][type] = my[type] = 0
 		}
-		else if (my[type] > my[type + 'Max']) {
+		if (my[type] > my[type + 'Max']) {
 			party.presence[0][type] = my[type] = my[type + 'Max']
 		}
 		// special cases
@@ -563,7 +564,7 @@ var combat;
 
 	function txHotHero(index, data) {
 		// damages is an object with indices that point to player row (target)
-		console.info('txDamageHero', data, spell.config.targetName)
+		console.info('txHotHero', data, spell.config.targetName)
 		if (spell.config.targetName === my.name) {
 			processHotToMe(data)
 		}
@@ -571,17 +572,60 @@ var combat;
 			socket.publish('name' + spell.config.targetName, {
 				action: 'p->HoT',
 				data: data,
+				//data: _.pick(data, ['damage', 'index', 'key']),
 			}, true)
 		}
 	}
 	function rxHotHero(data) {
-		console.info('rxDamageHero: ', data)
-		processHotToMe(data.d)
+		console.info('rxHotHero: ', data)
+		processHotToMe(data.data)
 	}
 	function processHotToMe(data) {
 		console.info('processHotToMe', data)
+		data.forEach(buff => {
+			let keyRow = buff.key + '-' + buff.index
+			// cancel/overwrite existing buff timer data keyRow: duration, function
+			if (typeof my.buffs[keyRow] === 'object' &&
+				typeof my.buffs[keyRow].timer === 'object') {
+				my.buffs[keyRow].timer.kill()
+				my.buffs[keyRow].hotTicks.kill()
+				el = querySelector('#mybuff-' + keyRow)
+				if (el !== null) el.parentNode.removeChild(el)
+				if (typeof my.buffIconTimers[keyRow] === 'object') {
+					// started flashing/removing
+					my.buffIconTimers[keyRow].kill()
+					my.buffIconTimers[keyRow + '-remove'].kill()
+				}
+			}
+			// setup buff timer data
+			my.buffs[keyRow] = {
+				row: buff.index,
+				key: buff.key,
+				duration: buffs[buff.key].duration,
+			}
+			my.buffs[keyRow].timer = TweenMax.to(
+				my.buffs[keyRow],
+				my.buffs[keyRow].duration, {
+				duration: 0,
+					ease: Linear.easeNone,
+					onComplete: battle.removeMyBuffFlag,
+					onCompleteParams: [keyRow],
+			})
+			my.buffFlags[keyRow] = true
+			let healAmount = Math.round(buff.damage / buffs[buff.key].ticks)
+			my.buffs[keyRow].hotTicks = TweenMax.to({}, buffs[buff.key].interval, {
+				repeat: buffs[buff.key].ticks,
+				onRepeat: onHotTick,
+				onRepeatParams: [buff, healAmount],
+			})
+			battle.addMyBuff(buff.key, keyRow)
+			chat.log(buffs[buff.key].msg, 'chat-heal')
+		})
 	}
-
+	function onHotTick(buff, healAmount) {
+		chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', 'chat-heal')
+		updateHeroResource('hp', healAmount)
+	}
 	function animatePlayerFrames() {
 		TweenMax.to('#bar-card-bg-' + my.row, .5, {
 			startAt: { opacity: .5 },
@@ -632,8 +676,13 @@ var combat;
 		for (el of querySelectorAll('.player-targeted')) {
 			el.classList.remove('player-targeted')
 		}
-		el = querySelector('#bar-player-wrap-' + my.target)
-		el.classList.add('player-targeted')
+		if (my.target === -1) {
+			querySelector('#mob-target-wrap').style.display = 'none'
+		}
+		else {
+			el = querySelector('#bar-player-wrap-' + my.target)
+			el.classList.add('player-targeted')
+		}
 	}
 	function targetChangedToMob() {
 		index = 0

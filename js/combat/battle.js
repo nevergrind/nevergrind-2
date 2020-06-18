@@ -12,11 +12,15 @@ var battle;
 		loadTextures,
 		updateMobTargetBuffs,
 		processBuffs,
+		addMyBuff,
+		removeMyBuff,
+		removeMyBuffFlag,
 	}
 
 	let index, buffHtml, traitHtml, buffEl, key, keyRow, el
 	let buffIconTimers = {}
 	let tgt = {}
+	let mobBuffData = {}
 	const flashDuration = 10
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	init()
@@ -198,8 +202,8 @@ var battle;
 
 	let targetHtml = ''
 	function updateTarget(drawInstant) {
+		el = querySelector('#mob-target-wrap')
 		if (combat.isValidTarget()) {
-			el = querySelector('#mob-target-wrap')
 			if (my.targetIsMob) {
 				tgt = {
 					class: combat.getDiffClass(mobs[my.target].level),
@@ -209,28 +213,41 @@ var battle;
 					traits: getMobTargetTraitsHtml(),
 					buffs: getMobTargetBuffsHtml(),
 				}
-				targetHtml = '<div id="mob-target-name" class="' + tgt.class + '">' + tgt.name + '</div>' +
-					'<div id="mob-target-bar-wrap">' +
-					'<div id="mob-target-hp-wrap">' +
-					'<div id="mob-target-hp"></div>' +
-					'<div class="mob-health-grid"></div>' +
-					'</div>' +
-					'<img id="mob-target-hp-plate" class="mob-plate-' + tgt.type + '" src="images/ui/bar-' + tgt.type + '.png">' +
-					'</div>' +
-					//'<div id="mob-target-level">'+ mobs[my.target].level +'</div>' +
-					'<div id="mob-target-percent">' + tgt.hp + '%</div>' +
-					'<div id="mob-target-details">' +
-					'<div id="mob-target-traits">' + tgt.traits + '</div>' +
-					'<div id="mob-target-buffs">' + tgt.buffs + '</div>' +
-					'</div>'
-				el.style.display = 'flex'
-				el.innerHTML = targetHtml
-				mob.drawMobBar(my.target, drawInstant)
 				startBuffTimers()
 			}
-			else if (el !== null) el.style.display = 'none'
+			else {
+				tgt = {
+					class: 'con-white',
+					name: party.getNameByRow(my.target),
+					type: 'normal',
+					hp: ceil(100 - bar.getRatio('hp', party.presence[party.getIndexByRow(my.target)])),
+					traits: 'Player',
+					buffs: '',
+				}
+
+			}
+			targetHtml = '<div id="mob-target-name" class="' + tgt.class + '">' + tgt.name + '</div>' +
+				'<div id="mob-target-bar-wrap">' +
+				'<div id="mob-target-hp-wrap">' +
+				'<div id="mob-target-hp"></div>' +
+				'<div class="mob-health-grid"></div>' +
+				'</div>' +
+				'<img id="mob-target-hp-plate" class="mob-plate-' + tgt.type + '" src="images/ui/bar-' + tgt.type + '.png">' +
+				'</div>' +
+				//'<div id="mob-target-level">'+ mobs[my.target].level +'</div>' +
+				'<div id="mob-target-percent">' + tgt.hp + '%</div>' +
+				'<div id="mob-target-details">' +
+				'<div id="mob-target-traits">' + tgt.traits + '</div>' +
+				'<div id="mob-target-buffs">' + tgt.buffs + '</div>' +
+				'</div>'
+			el.style.display = 'flex'
+			el.innerHTML = targetHtml
+			mob.drawMobBar(my.target, drawInstant)
 
 			console.info('updateTarget', my.target)
+		}
+		else {
+			el.style.display = 'none'
 		}
 	}
 	function getMobTargetTraitsHtml() {
@@ -246,8 +263,8 @@ var battle;
 	function getMobTargetBuffsHtml() {
 		buffHtml = ''
 		for (key in mobs[my.target].buffs) {
-			let buffKeyRow = mobs[my.target].buffs[key]
-			buffHtml += '<img id="buff-'+ key + '" class="target-buff popover-icons" src="images/skills/' + buffs[buffKeyRow.key].job + '/' + buffs[buffKeyRow.key].img + '.png">'
+			mobBuffData = mobs[my.target].buffs[key]
+			buffHtml += '<img id="buff-'+ key + '" class="target-buff popover-icons" src="images/skills/' + buffs[mobBuffData.key].job + '/' + buffs[mobBuffData.key].img + '.png">'
 		}
 		return buffHtml
 	}
@@ -279,7 +296,7 @@ var battle;
 				buffs[buff.key].duration, {
 				duration: 0,
 				ease: Linear.easeNone,
-				onComplete: removeMobBuff,
+				onComplete: removeMobBuffFlag,
 				onCompleteParams: [buff.i, buff.key],
 			})
 			mobs[buff.i].buffFlags[buff.key] = true
@@ -287,7 +304,7 @@ var battle;
 		updateTargetBuffs && updateMobTargetBuffs()
 		startBuffTimers()
 	}
-	function removeMobBuff(i, buffKey) {
+	function removeMobBuffFlag(i, buffKey) {
 		var buffStillActive = false
 		for (keyRow in mobs[i].buffs) {
 			if (buffKey === mobs[i].buffs[keyRow].key &&
@@ -298,34 +315,27 @@ var battle;
 		if (!buffStillActive) mobs[i].buffFlags[buffKey] = false
 	}
 	function startBuffTimers() {
-		// flashDuration = 10
-		// console.info('buffIconTimers', buffIconTimers)
+		if (my.target < 0) return
+		let tgt = my.target
 		for (key in buffIconTimers) {
-			if (buffIsTimer(key)) buffIconTimers[key].kill()
+			if (buffIsTimer(key)) {
+				buffIconTimers[key].kill()
+				buffIconTimers[key + '-remove'].kill()
+			}
 		}
 		buffIconTimers = {}
 		for (key in mobs[my.target].buffs) {
-			if (mobs[my.target].buffs[key].duration < flashDuration) {
-				// flash and remove
-				flashTargetBuff(key)
-			}
+			if (mobs[tgt].buffs[key].duration < flashDuration) flashTargetBuff(key, tgt)
 			else {
-				// delay into flash and remove
-				// console.info('startBuffTimers over 10', mobs[my.target].buffs[key].duration)
 				buffIconTimers[key] = delayedCall(
-					mobs[my.target].buffs[key].duration - flashDuration,
-					flashTargetBuff, [key]
+					mobs[tgt].buffs[key].duration - flashDuration,
+					flashTargetBuff, [key, tgt]
 				)
 			}
 			// console.info('startBuffTimers key', key, mobs[my.target].buffs[key].duration)
 		}
 	}
-	function flashTargetBuff(key) {
-		// console.info('flashTargetBuff buffIconTimers', buffIconTimers)
-		if (buffIsTimer(key)) {
-			// console.info('flashTargetBuff buffIconTimers key', key)
-			buffIconTimers[key].kill()
-		}
+	function flashTargetBuff(key, tgt) {
 		buffIconTimers[key] = TweenMax.to('#buff-' + key, .5, {
 			startAt: { opacity: 1 },
 			repeat: -1,
@@ -334,22 +344,79 @@ var battle;
 			ease: Linear.easeNone,
 		})
 		buffIconTimers[key + '-remove'] = delayedCall(
-			mobs[my.target].buffs[key].duration,
+			mobs[tgt].buffs[key].duration,
 			removeTargetBuff, [key]
 		)
 		// console.info('startBuffTimers less 10', mobs[my.target].buffs[key].duration)
 	}
 	function removeTargetBuff(key) {
-		buffIconTimers[key].kill()
-		buffIconTimers[key + '-remove'].kill()
-		if (buffIconTimers[key] !== null) buffIconTimers[key] = null
-		if (buffIconTimers[key + '-remove'] !== null) buffIconTimers[key + '-remove'] = null
+		if (buffIsTimer(key)) {
+			buffIconTimers[key].kill()
+			buffIconTimers[key + '-remove'].kill()
+		}
+		/*if (buffIconTimers[key] !== null) buffIconTimers[key] = null
+		if (buffIconTimers[key + '-remove'] !== null) buffIconTimers[key + '-remove'] = null*/
 		buffEl = querySelector('#buff-' + key)
 		// console.info('removeTargetBuff', key, buffIconTimers)
 		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
 	}
 	function buffIsTimer(key) {
-		return buffIconTimers[key] !== null && typeof buffIconTimers[key] !== 'undefined'
+		return buffIconTimers[key] === 'object'
+	}
+	///////////////////////// myBuffs
+	function myBuffHasTimer(key) {
+		return my.buffIconTimers[key] === 'object'
+	}
+	function removeMyBuffFlag(keyRow) {
+		var buffStillActive = false
+		for (var k in my.buffs) {
+			if (keyRow === my.buffs[k].key &&
+				my.buffs[k].duration > 0) {
+				buffStillActive = true
+			}
+		}
+		if (!buffStillActive) my.buffFlags[keyRow] = false
+	}
+	function addMyBuff(key, keyRow) {
+		console.info('addMyBuff', key, keyRow)
+		el = createElement('img')
+		el.id = 'mybuff-' + keyRow
+		el.className = 'buff-icons popover-icons'
+		el.src = 'images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png'
+		querySelector('#mybuff-wrap').appendChild(el)
+		// kill if exists
+		if (myBuffHasTimer(keyRow)) my.buffIconTimers[keyRow].kill()
+		// start timer
+		if (buffs[key].duration < flashDuration) flashMyBuff(key, keyRow)
+		else {
+			my.buffIconTimers[keyRow] = delayedCall(
+				buffs[key].duration - flashDuration,
+				flashMyBuff, [key, keyRow]
+			)
+		}
+	}
+	function flashMyBuff(key, keyRow) {
+		console.info('flashMyBuff', key)
+		my.buffIconTimers[keyRow] = TweenMax.to('#mybuff-' + keyRow, .5, {
+			startAt: { opacity: 1 },
+			repeat: -1,
+			yoyo: true,
+			opacity: .5,
+			ease: Linear.easeNone,
+		})
+		my.buffIconTimers[keyRow + '-remove'] = delayedCall(
+			my.buffs[keyRow].duration,
+			removeMyBuff, [key, keyRow]
+		)
+	}
+	function removeMyBuff(key, keyRow) {
+		console.info('removeMyBuff', key, keyRow)
+		my.buffIconTimers[keyRow].kill()
+		my.buffIconTimers[keyRow + '-remove'].kill()
+		/*if (my.buffIconTimers[keyRow] !== null) my.buffIconTimers[keyRow] = null
+		if (my.buffIconTimers[keyRow + '-remove'] !== null) my.buffIconTimers[keyRow + '-remove'] = null*/
+		buffEl = querySelector('#mybuff-' + keyRow)
+		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
 	}
 
 	function html() {

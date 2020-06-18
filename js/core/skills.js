@@ -736,7 +736,7 @@ var skills;
 				img: 'RNG-10',
 				sp: [0, 7, 14, 31, 57, 85, 106, 127],
 				spellDamage: level => spellValues.fungalGrowth[level] + (my.level),
-				spellVariance: 1,
+				spellVariance: .95,
 				spellType: 'alteration',
 				damageType: 'arcane',
 				castTime: 2,
@@ -2027,6 +2027,12 @@ var skills;
 	}
 	function notReady(config) {
 		if (timers.castBar < 1) return true
+		console.info('oocEnabled', config.oocEnabled, ng.view)
+		if (!config.oocEnabled &&
+			ng.view !== 'battle') {
+			chat.log('You cannot use this skill out of combat.', 'chat-warning')
+			return true
+		}
 		if (config.isMob) {
 			if (!my.targetIsMob) {
 				chat.log('You must target a mob with this skill.', 'chat-warning')

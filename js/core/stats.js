@@ -734,11 +734,12 @@ var stats = {};
 	}
 	function getBuffTotal(attr) {
 		val = 0
-		i = 0
+		// TODO: add spell buff flags based on my.buffFlags
+		/*i = 0
 		len = buff.length
 		for (; i<len; i++) {
 			if (buff[i][attr]) val += buff[i][attr]
-		}
+		}*/
 		return val
 	}
 	function someIgnoreTargetArmor() {

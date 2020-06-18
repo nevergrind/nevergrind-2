@@ -85,6 +85,7 @@ var bar;
 		WIZ: 24,
 	}
 	let ratio = 0
+	let percent = 0
 	var pingColors = [
 		'',
 		'chat-warning',
@@ -418,10 +419,16 @@ var bar;
 	function updateBar(type, data) {
 		data = data || my
 		// console.warn('updateBar', type, data.row)
+		percent = getRatio(type, data)
 		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
-			x: '-' + getRatio(type, data) + '%'
+			x: '-' + percent + '%'
 		})
 		querySelector('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
+		if (type === 'hp' &&
+			!my.targetIsMob &&
+			my.target === data.row) {
+			mob.drawTargetBar(percent)
+		}
 	}
 	function getMaxType(type, data) {
 		return (type === 'hp' ? data.hpMax : type === 'mp' ? data.mpMax : data.spMax)

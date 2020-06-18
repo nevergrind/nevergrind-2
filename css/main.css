@@ -972,6 +972,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-warning { color: #ffff1a; }
 .chat-alert { color: #ff1a1a; }
 .chat-quest { color: gold; }
+.chat-heal { color: #5fe }
 
 .chat-help-header {
 	color: #ffff1a;
@@ -1162,18 +1163,19 @@ background-clip: content-box;
 	background: #f00;
 	opacity: 0;
 }
-#buff-wrap {
+#mybuff-wrap {
 	position: absolute;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	align-items: flex-end;
+	align-items: flex-start;
 	flex-wrap: wrap-reverse;
-	height: 20rem;
-	width: 5rem;
+	height: auto;
+	width: auto;
+	max-height: 20rem;
+	max-width: 5rem;
 	top: .5rem;
 	right: .5rem;
-	padding: .2rem;
 	/*border: 1px solid #000;
 	background: #0008;*/
 	overflow: hidden;
@@ -3298,6 +3300,7 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	flex-direction: column;
 	width: 22.5rem;
 	text-align: center;
+	z-index: 2;
 }
 #mob-target-name {
 	position: relative;
@@ -3410,12 +3413,12 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	margin-bottom: .2rem;
 	flex-wrap: nowrap;
 	align-self: center;
-}
-.mob-trait {
-	font-variant: small-caps;
-	white-space: nowrap;
 	color: #2a9aff;
 	letter-spacing: .5px;
+	font-variant: small-caps;
+	white-space: nowrap;
+}
+.mob-trait {
 }
 .trait-pipe {
 	background: linear-gradient(to bottom, #908858, #ffd700, #908858);

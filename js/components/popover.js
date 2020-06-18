@@ -59,6 +59,11 @@ var popover;
 			console.info('buffName', buffName)
 			html = buffs[buffName].name
 		}
+		else if (id.startsWith('mybuff-')) {
+			buffName = _.camelCase(id.split('-')[1])
+			console.info('buffName', buffName)
+			html = buffs[buffName].name
+		}
 		else {
 			if (id.startsWith('inv-resist')) {
 				popover.isHoveringResistElement = true

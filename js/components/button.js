@@ -123,20 +123,28 @@ var button;
 			my.hp <= 0) return
 		}
 		else {
-			if (
-				ng.view !== 'battle' ||
+			if (ng.view !== 'battle' ||
 				!my.isAutoAttacking ||
 				timers.primaryAttack < 1 ||
 				my.hp <= 0) return
 		}
+
+		if (!isPiercing) {
+			if (timers.castBar < 1 || !my.targetIsMob) {
+				// non-ripostes are held back by these conditions ^
+				if (my.isAutoAttacking) delays['primaryAttack'] = delayedCall(.1, primaryAttack)
+				return
+			}
+		}
+
 		if (typeof index === 'undefined') {
 			// ripostes target index - makes it possible to riposte while targeting party
 			my.fixTarget()
 			if (my.target === -1) return
 			index = my.target
 		}
-		damages = []
 
+		damages = []
 		hit = stats.damage()
 		damages.push({
 			index: index,
@@ -156,16 +164,20 @@ var button;
 			}
 		}
 		combat.txDamageMob(damages)
-		button.startSwing('primaryAttack')
+		startSwing('primaryAttack')
 	}
 	function secondaryAttack() {
 		warn('secondaryAttack')
-		if (!my.isAutoAttacking ||
-			ng.view !== 'battle' ||
+		if (ng.view !== 'battle' ||
+			!my.isAutoAttacking ||
 			timers.secondaryAttack < 1 ||
-			!isOffhandingWeapon() ||
-			my.hp <= 0) return
-		my.fixTarget()
+			my.hp <= 0 ||
+			!isOffhandingWeapon()) return
+
+		if (timers.castBar < 1 || !my.targetIsMob) {
+			if (my.isAutoAttacking) delays['secondaryAttack'] = delayedCall(.1, secondaryAttack)
+			return
+		}
 		if (my.target === -1) return
 
 		if (my.level >= skills.dualWield[my.job].level) {
@@ -190,7 +202,7 @@ var button;
 			}
 		}
 
-		button.startSwing('secondaryAttack')
+		startSwing('secondaryAttack')
 	}
 	function startSwing(key) {
 		timers[key] = 0
@@ -202,6 +214,14 @@ var button;
 		else {
 			slot = 13
 			el = querySelector('#skill-timer-secondary-rotate')
+		}
+
+		if (timers.castBar < 1) {
+			// TODO: FIX THIS SHIT
+			// cannot auto attack while casting
+			console.info('casting...', Date.now())
+			delays[key] = delayedCall(.1, startSwing, [key])
+			return
 		}
 
 		TweenMax.set(el, { display: 'block' })
@@ -224,12 +244,7 @@ var button;
 
 		TweenMax.to(timers, items.eq[slot].speed, to)
 		delays[key].kill()
-		if (key === 'primaryAttack') {
-			delays[key] = delayedCall(items.eq[slot].speed, button[key])
-		}
-		else {
-			delays[key] = delayedCall(items.eq[slot].speed, button[key])
-		}
+		delays[key] = delayedCall(items.eq[slot].speed, button[key])
 	}
 	function handleButtonStart(o) {
 		TweenMax.set(o.el, {

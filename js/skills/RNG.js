@@ -324,7 +324,7 @@
 			target: my.target,
 			targetName: party.getNameByRow(my.target),
 			isMob: false,
-			fixTarget: true,
+			oocEnabled: true,
 			spCost: data.sp[my.skills[index]],
 			name: data.name,
 		}
@@ -335,14 +335,9 @@
 		damages = []
 		damages.push({
 			index: spell.config.target,
+			key: 'fungalGrowth',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			buffs: [{
-				i: my.row, // target
-				isMob: spell.config.isMob,
-				row: my.row, // this identifies unique buff state/icon
-				key: 'fungalGrowth', // this sets the flag
-			}],
 			...stats.spellDamage(false, false, true) // skill check, noCrit, force noCrit
 		})
 		console.info('fungalGrowthCompleted', damages)

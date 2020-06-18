@@ -12,6 +12,7 @@ var mob;
 		modifyMobStatsByClass,
 		configMobType,
 		drawMobBar,
+		drawTargetBar,
 		resourceTick,
 		rxMobResourceTick,
 		updateHate,
@@ -322,13 +323,14 @@ var mob;
 		TweenMax.to('#mob-health-' + index, drawInstant ? 0 : .15, {
 			x: '-' + percent + '%'
 		})
-		if (index === my.target) {
-			el = querySelector('#mob-target-percent')
-			if (el !== null) el.innerHTML = ceil(100 - percent) + '%'
-			TweenMax.to('#mob-target-hp', drawInstant ? 0 : .15, {
-				x: '-' + percent + '%'
-			})
-		}
+		if (index === my.target) drawTargetBar(percent, drawInstant)
+	}
+	function drawTargetBar(percent, drawInstant) {
+		el = querySelector('#mob-target-percent')
+		if (el !== null) el.innerHTML = ceil(100 - percent) + '%'
+		TweenMax.to('#mob-target-hp', drawInstant ? 0 : .15, {
+			x: '-' + percent + '%'
+		})
 	}
 	function setSrc(i) {
 		mobs[i].frame = ~~mobs[i].frame

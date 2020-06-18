@@ -14,6 +14,7 @@ var loading;
 		'All melee damage to the back row is reduced by 50%. This should affect which targets you decide to target first.',
 		'Each monster has its own hate list. Managing how much each mob hates you is important to your survival.',
 		'Some skills allow you to reduce how much each monster hates you. Highly efficient parties manage their hate effectively.',
+		'You cannot parry or riposte while casting a spell.'
 	]
 	loading.tipCount = loading.tips.length
 

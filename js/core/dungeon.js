@@ -7,7 +7,9 @@ var dungeon;
 		html,
 		enterCombat,
 	};
-	$('#scene-dungeon').on('click', battle.go)
+	$('#scene-dungeon').on('click', function() {
+		if (party.presence[0].isLeader) battle.go()
+	})
 	///////////////////////////////////////
 	function go() {
 		if (ng.view === 'dungeon') return

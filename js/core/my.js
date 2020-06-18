@@ -69,7 +69,10 @@ var my;
 		attackOn: false,
 		hudTimer: new delayedCall(0, ''),
 		quest: {},
-		isAutoAttacking: false
+		isAutoAttacking: false,
+		buffs: {},
+		buffFlags: {},
+		buffIconTimers: {},
 		// buffs, potions, etc that need to be cancelled on death or whatever. looping through and killing them makes this easier
 	}
 
@@ -89,7 +92,7 @@ var my;
 		else combat.targetChanged()
 	}
 	function tabTarget(event, tries) {
-		if (timers.castBar < 1) return
+		if (ng.view !== 'battle' || timers.castBar < 1) return
 
 		if (typeof tries === 'undefined') tries = 0
 
@@ -122,8 +125,9 @@ var my;
 		if (timers.castBar < 1) return
 		if (typeof party.presence[index] === 'object' &&
 			party.presence[index].row >= 0) {
-			my.target = party.presence[index].row
 			my.targetIsMob = false
+			if (my.target === party.presence[index].row) my.target = -1
+			else my.target = party.presence[index].row
 			combat.targetChanged()
 		}
 	}

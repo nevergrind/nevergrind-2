@@ -1,7 +1,7 @@
-let buff = [] // buffs to me
 let buffs; // buff data for use with skill/spells/icons
 !function($, _, TweenMax, undefined) {
 	buffs = {
+		// damage debuffs
 		suppressingVolley: {
 			name: 'Suppressing Volley',
 			img: 5,
@@ -19,6 +19,16 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 8,
 			job: 'RNG',
 			duration: 45,
+		},
+		// HoTs
+		fungalGrowth: {
+			name: 'Fungal Growth',
+			img: 9,
+			job: 'RNG',
+			ticks: 10,
+			interval: 3,
+			duration: 30,
+			msg: 'Regenerative spores begin to heal your wounds.',
 		},
 	}
 	///////////////////////////////////////////
