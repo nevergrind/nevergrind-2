@@ -97,14 +97,13 @@ var button;
 		name = _.camelCase(skills[my.job][index].name)
 		console.info('triggerSkill', name)
 		if (my.hp <= 0) {
-			warn('You are dead')
 			if (ng.isApp) return
 		}
 		if (typeof skill[my.job][name] === 'function') {
 			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {
-			warn('This skill function is not defined!', name)
+			chat.log('This skill is not defined:' + name, 'chat-warning')
 		}
 	}
 	function handleSkillButtonClick() {

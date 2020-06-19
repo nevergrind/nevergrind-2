@@ -2027,7 +2027,10 @@ var skills;
 	}
 	function notReady(config) {
 		if (timers.castBar < 1) return true
-		console.info('oocEnabled', config.oocEnabled, ng.view)
+		if (config.target === -1) {
+			chat.log('You must select a target to use this skill.', 'chat-warning')
+			return true
+		}
 		if (!config.oocEnabled &&
 			ng.view !== 'battle') {
 			chat.log('You cannot use this skill out of combat.', 'chat-warning')

@@ -322,13 +322,13 @@
 			skillIndex: index,
 			global: true,
 			target: my.target,
-			targetName: party.getNameByRow(my.target),
 			isMob: false,
 			oocEnabled: true,
 			spCost: data.sp[my.skills[index]],
 			name: data.name,
 		}
 		if (skills.notReady(spell.config)) return
+		spell.config.targetName = party.getNameByRow(my.target)
 		spell.startCasting(index, data, fungalGrowthCompleted)
 	}
 	function fungalGrowthCompleted() {

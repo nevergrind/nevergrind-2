@@ -78,7 +78,7 @@ var combat;
 			'scorpion': 'Beasts',
 		}
 	}
-	var el, w, h, i, len, damageArr, hit, damages, buffArr, index
+	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData
 
 	const textDuration = 1
 	const textDistanceY = 150
@@ -256,8 +256,7 @@ var combat;
 		warn('battle is over!')
 		autoAttackDisable()
 		mob.killAttacks(true)
-		let el = querySelector('#mob-target-wrap')
-		if (el !== null) el.style.display = 'none'
+		battle.hideTarget()
 	}
 
 	function isBattleOver() {
@@ -569,10 +568,13 @@ var combat;
 			processHotToMe(data)
 		}
 		else {
+			hotData = data.map(hot => {
+				return _.pick(hot, ['damage', 'index', 'key'])
+			})
 			socket.publish('name' + spell.config.targetName, {
 				action: 'p->HoT',
-				data: data,
-				//data: _.pick(data, ['damage', 'index', 'key']),
+				//data: data,
+				data: hotData,
 			}, true)
 		}
 	}
@@ -677,7 +679,7 @@ var combat;
 			el.classList.remove('player-targeted')
 		}
 		if (my.target === -1) {
-			querySelector('#mob-target-wrap').style.display = 'none'
+			battle.hideTarget()
 		}
 		else {
 			el = querySelector('#bar-player-wrap-' + my.target)

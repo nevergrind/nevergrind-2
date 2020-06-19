@@ -253,36 +253,19 @@
 						chat.dom.chatInput.focus();
 					}
 
-					if (key === 'F1') {
-						my.partyTarget(0)
-						e.preventDefault()
-						return false
-					}
-					else if (key === 'F2') {
-						my.partyTarget(1)
-						e.preventDefault()
-						return false
-					}
-					else if (key === 'F3') {
-						my.partyTarget(2)
-						e.preventDefault()
-						return false
-					}
-					else if (key === 'F4') {
-						my.partyTarget(3)
-						e.preventDefault()
-						return false
-					}
-					else if (key === 'F5') {
-						my.partyTarget(4)
-						e.preventDefault()
-						return false
-					}
-					else if (key === 'F6') {
-						my.partyTarget(5)
-						e.preventDefault()
-						return false
-					}
+					if (key === 'F1') my.partyTarget(0)
+					else if (key === 'F2') my.partyTarget(1)
+					else if (key === 'F3') my.partyTarget(2)
+					else if (key === 'F4') my.partyTarget(3)
+					else if (key === 'F5') my.partyTarget(4)
+					else if (key === 'F6') my.partyTarget(5)
+					else if ('123456'.includes(key)) button.triggerSkill(+key - 1)
+					else if (key === '!') button.triggerSkill(6)
+					else if (key === '@') button.triggerSkill(7)
+					else if (key === '#') button.triggerSkill(8)
+					else if (key === '$') button.triggerSkill(9)
+					else if (key === '%') button.triggerSkill(10)
+					else if (key === '^') button.triggerSkill(11)
 
 					if (ng.view === 'battle') {
 						if (key === 'Tab') {
@@ -291,15 +274,34 @@
 							return false
 						}
 						else if (key === ng.config.hotkey.autoAttack) combat.toggleAutoAttack()
-						else if ('123456'.includes(key)) button.triggerSkill(key * 1 - 1)
-						else if (key === '!') button.triggerSkill(6)
-						else if (key === '@') button.triggerSkill(7)
-						else if (key === '#') button.triggerSkill(8)
-						else if (key === '$') button.triggerSkill(9)
-						else if (key === '%') button.triggerSkill(10)
-						else if (key === '^') button.triggerSkill(11)
 					}
 				}
+			}
+
+			// prevent default behaviors in all scenes
+			if (key === 'F1') {
+				e.preventDefault()
+				return false
+			}
+			else if (key === 'F2') {
+				e.preventDefault()
+				return false
+			}
+			else if (key === 'F3') {
+				e.preventDefault()
+				return false
+			}
+			else if (key === 'F4') {
+				e.preventDefault()
+				return false
+			}
+			else if (key === 'F5') {
+				e.preventDefault()
+				return false
+			}
+			else if (key === 'F6') {
+				e.preventDefault()
+				return false
 			}
 		}
 	}

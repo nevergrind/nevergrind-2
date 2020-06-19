@@ -15,8 +15,12 @@ var battle;
 		addMyBuff,
 		removeMyBuff,
 		removeMyBuffFlag,
+		setTargetHtml,
+		hideTarget,
+		showTarget,
 	}
-
+	var mobTargetWrap = querySelector('#mob-target-wrap')
+	var show
 	let index, buffHtml, traitHtml, buffEl, key, keyRow, el
 	let buffIconTimers = {}
 	let tgt = {}
@@ -199,10 +203,17 @@ var battle;
 			}
 		})
 	}
-
+	function setTargetHtml(html) {
+		mobTargetWrap.innerHTML = html
+	}
+	function showTarget() {
+		mobTargetWrap.style.display = 'flex'
+	}
+	function hideTarget() {
+		mobTargetWrap.style.display = 'none'
+	}
 	let targetHtml = ''
 	function updateTarget(drawInstant) {
-		el = querySelector('#mob-target-wrap')
 		if (combat.isValidTarget()) {
 			if (my.targetIsMob) {
 				tgt = {
@@ -239,16 +250,15 @@ var battle;
 				'<div id="mob-target-details">' +
 				'<div id="mob-target-traits">' + tgt.traits + '</div>' +
 				'<div id="mob-target-buffs">' + tgt.buffs + '</div>' +
-				'</div>'
-			el.style.display = 'flex'
-			el.innerHTML = targetHtml
+			'</div>'
 			mob.drawMobBar(my.target, drawInstant)
-
+			showTarget()
 			console.info('updateTarget', my.target)
 		}
 		else {
-			el.style.display = 'none'
+			hideTarget()
 		}
+		setTargetHtml(targetHtml)
 	}
 	function getMobTargetTraitsHtml() {
 		// remove trailing s from value
@@ -425,7 +435,7 @@ var battle;
 			'<img id="battle-bg" src="'+ mission.getZoneImg() +'">' +
 			'<img id="battle-fg" src="images/battle/tendolin-hollow-2-fg.png" class="no-pointer">';
 
-		s += '<div id="mob-target-wrap" class="text-shadow3"></div>'
+		// s += '<div id="mob-target-wrap" class="text-shadow3"></div>'
 		for (var i=0; i<mob.max; i++){
 			s += '<div id="mob-wrap-' +i+ '" class="mob-wrap' + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
 				'<div id="mob-details-' +i+ '" class="mob-details" index="' + i + '">' +
