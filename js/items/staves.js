@@ -66,6 +66,7 @@ loot.staves = {
 		wraith: 10,
 		regen: 20,
 		haste: 40,
+		ease: 2,
 	},
 	rare: {
 		addDamage: 40,

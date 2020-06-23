@@ -128,6 +128,7 @@ loot.belts = {
 		crit: 20,
 		leech: 5,
 		wraith: 5,
+		ease: 2,
 	},
 	rare: {
 		attack: 10,

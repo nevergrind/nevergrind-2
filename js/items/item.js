@@ -101,6 +101,7 @@ var loot = {};
 
 	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val, potionValue
 
+	const MAX_TREASURE_CLASS = 45
 	const potionRecovers = [20,40,80,160,320,640]
 	const potionMap = {
 		WAR: { hp: 2, mp: 1, sp: 1 },
@@ -344,6 +345,7 @@ var loot = {};
 		addFire: .3,
 		addIce: .3,
 		increasedBlock: .3,
+		ease: 25,
 		damageTakenToMana: .5,
 		damageTakenToSpirit: .5,
 		enhancedDamageToHumanoids: 2,
@@ -774,6 +776,10 @@ var loot = {};
 			else if (val <= 16) { return 'of the Rampart' }
 			else { return 'of the Bulwark' }
 		},
+		ease: function(val) {
+			if (val <= 1) return 'of Ease'
+			if (val <= 2) return 'of Simplicity'
+		}
 	}
 	var minValue = {
 		resistBlood: 2,
@@ -834,6 +840,7 @@ var loot = {};
 		addFire: 2,
 		addIce: 2,
 		increasedBlock: 2,
+		ease: 1,
 		resistParalyze: 2,
 		resistFear: 2,
 		resistStun: 2,
@@ -1035,12 +1042,8 @@ var loot = {};
 			suffixKeys = Object.keys(itemObj.suffix)
 
 			//console.info('rarity', rarity)
-			if (rarity === 'magic') {
-				processMagicDrop(drop)
-			}
-			else if (rarity === 'rare') {
-				processRareDrop(drop)
-			}
+			if (rarity === 'magic') processMagicDrop(drop)
+			else if (rarity === 'rare') processRareDrop(drop)
 			// post-process item
 		}
 		if (!config.store && rarity !== 'normal') {
@@ -1175,6 +1178,8 @@ var loot = {};
 			drop.minDamage = _.round(newMinDamage)
 			drop.maxDamage = _.round(newMaxDamage)
 		}
+		if (drop.ease === 1) drop.itemLevel = ceil(drop.itemLevel * .8)
+		else if (drop.ease === 2) drop.itemLevel = ceil(drop.itemLevel * .7)
 	}
 
 	function filterKeys(key) {
@@ -1390,11 +1395,10 @@ var loot = {};
 		_.pull(rareKeys, key)
 	}
 	function setMaxPropValue(obj, key, tc) {
-		var MAX_TREASURE_CLASS = 45
 		//console.info('set max', obj)
 		//console.info('setMaxPropValue', obj[key], key, tc)
 		var val = (obj[key] * (tc / MAX_TREASURE_CLASS)) - minValue[key]
-		if (val < minValue[key]) { val = minValue[key] }
+		if (val < minValue[key]) val = minValue[key]
 		return _.round(val)
 	}
 	function getTreasureClass(tc) {

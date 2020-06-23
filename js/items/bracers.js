@@ -125,6 +125,7 @@ loot.bracers = {
 	suffix: {
 		stats: 20,
 		points: 20,
+		ease: 2,
 	},
 	rare: {
 		skills: 2,

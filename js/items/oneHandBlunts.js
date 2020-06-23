@@ -74,6 +74,7 @@ loot.oneHandBlunts = {
 		leech: 5,
 		wraith: 5,
 		haste: 40,
+		ease: 2,
 	},
 	rare: {
 		addDamage: 10,

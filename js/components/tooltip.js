@@ -170,6 +170,7 @@ var tooltip;
 				getPropHtml(obj.hpKill, '+' + obj.hpKill + ' Health on Kill') +
 				getPropHtml(obj.mpKill, '+' + obj.mpKill + ' Mana on Kill') +
 				getPropHtml(obj.spKill, '+' + obj.spKill + ' Spirit on Kill') +
+				(obj.ease ? getEaseHtml(obj.ease) : '') +
 			'</div>';
 			if (statHtml.includes('item-magic')) {
 				// found at least one stat added to html str
@@ -189,6 +190,10 @@ var tooltip;
 		'';
 
 		return html
+	}
+	function getEaseHtml(ease) {
+		if (ease === 1) return '<div class="item-magic">Requirements -20%</div>'
+		else if (ease === 2) return '<div class="item-magic">Requirements -30%</div>'
 	}
 	function getPropHtml(stat, label) {
 		return stat ? '<div class="item-magic">' + label + '</div>' : ''

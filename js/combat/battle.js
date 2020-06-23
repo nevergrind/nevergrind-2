@@ -18,10 +18,11 @@ var battle;
 		setTargetHtml,
 		hideTarget,
 		showTarget,
+		killAllBattleTimers,
 	}
 	var mobTargetWrap = querySelector('#mob-target-wrap')
 	var show
-	let index, buffHtml, traitHtml, buffEl, key, keyRow, el
+	let index, buffHtml, traitHtml, buffEl, key, keyRow, el, i
 	let buffIconTimers = {}
 	let tgt = {}
 	let mobBuffData = {}
@@ -172,7 +173,7 @@ var battle;
 			let totalMobs = _.random(minMobs, maxMobs)
 
 			if (!ng.isApp) {
-				totalMobs = 3
+				totalMobs = 9
 				minLevel = 25
 				maxLevel = 53
 			}
@@ -427,6 +428,43 @@ var battle;
 		if (my.buffIconTimers[keyRow + '-remove'] !== null) my.buffIconTimers[keyRow + '-remove'] = null*/
 		buffEl = querySelector('#mybuff-' + keyRow)
 		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
+	}
+
+	function killAllBattleTimers() {
+		i=0
+		// mob buff/debuffs
+		for (; i<mob.max; i++) {
+			for (key in mobs[i].buffs) {
+				if (mobBuffTimerExists(i, key)) {
+					mobs[i].buffs[key].timer.kill() // tweens duration
+					mobs[i].buffs[key].duration = 0 // set duration to 0 so flags update
+				}
+			}
+			for (key in mobs[i].buffFlags) {
+				if (mobBuffTimerExists(i, key)) {
+					mobs[i].buffFlags[key] = false
+				}
+			}
+		}
+		// mob buff icon flash/remove timers
+		for (key in buffIconTimers) {
+			if (buffIsTimer(key)) {
+				buffIconTimers[key].kill()
+				buffIconTimers[key + '-remove'].kill()
+			}
+		}
+		// my buff icon flash/remove timers
+		for (key in my.buffIconTimers) {
+			if (myBuffHasTimer(key)) {
+				my.buffIconTimers[key].kill()
+				my.buffIconTimers[key + 'remove'].kill()
+			}
+		}
+		for (key in my.buffFlags) {
+			my.buffFlags[key] = false
+		}
+		querySelector('#mob-target-buffs').innerHTML = ''
+		querySelector('#mybuff-wrap').innerHTML = ''
 	}
 
 	function html() {

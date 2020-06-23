@@ -126,6 +126,7 @@ loot.helms = {
 		stats: 30,
 		points: 40,
 		crit: 40,
+		ease: 2,
 	},
 	rare: {
 		skills: 3,

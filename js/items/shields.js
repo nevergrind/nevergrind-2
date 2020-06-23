@@ -70,6 +70,7 @@ loot.shields = {
 		stats: 15,
 		points: 50,
 		increasedBlock: 20,
+		ease: 2,
 	},
 	rare: {
 		skills: 3,

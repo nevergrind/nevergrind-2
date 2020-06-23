@@ -78,6 +78,7 @@ loot.focus = {
 		wraith: 5,
 		regen: 10,
 		haste: 40,
+		ease: 2,
 	},
 	rare: {
 		addDamage: 20,

@@ -125,6 +125,7 @@ loot.boots = {
 	suffix: {
 		stats: 30,
 		points: 30,
+		ease: 2,
 	},
 	rare: {
 		skills: 2,

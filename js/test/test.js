@@ -225,9 +225,15 @@ var test;
 			});
 		}
 	}
-	function lootItems(count, rarity) {
-		count = count || 16
-		for (var i=0; i<count; i++) item.getLoot({ mobLevel: 50, rarity: (rarity ? rarity : 'unique') })
+	function lootItems(count = 16, rarity = 'unique', itemSlot = '', itemName = '') {
+		for (var i=0; i<count; i++) {
+			item.getLoot({
+				mobLevel: 50,
+				rarity: (rarity ? rarity : 'unique'),
+				itemSlot: itemSlot,
+				itemName: itemName,
+			})
+		}
 	}
 	function opacity(count) {
 		var max = count || 2000

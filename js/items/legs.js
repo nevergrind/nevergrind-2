@@ -125,6 +125,7 @@ loot.legs = {
 	suffix: {
 		stats: 30,
 		points: 40,
+		ease: 2,
 	},
 	rare: {
 		skills: 3,

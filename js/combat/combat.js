@@ -78,7 +78,7 @@ var combat;
 			'scorpion': 'Beasts',
 		}
 	}
-	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData
+	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, key
 
 	const textDuration = 1
 	const textDistanceY = 150
@@ -109,6 +109,7 @@ var combat;
 	let vulpineMp = 0
 	let vulpineSp = 0
 	let mobArmor = 1
+	let blockMsg = ''
 
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
@@ -229,7 +230,7 @@ var combat;
 
 		}
 		// final sanity checks
-		d.damage = d.damage < 1 ? ceil(d.damage) : round(d.damage)
+		d.damage = d.damage < 1 ? 1 : round(d.damage)
 		combat.levelSkillCheck('offense')
 		return d
 	}
@@ -405,7 +406,7 @@ var combat;
 		if (my.level >= skills['dodge'][my.job].level) {
 			combat.levelSkillCheck('dodge')
 			if (!d.isPiercing &&
-				Math.random() < stats.dodgeChance()) {
+				rand() < stats.dodgeChance()) {
 				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you dodged!')
 				d.damage = 0
 				return d
@@ -417,7 +418,7 @@ var combat;
 			if (my.level >= skills['riposte'][my.job].level) {
 				combat.levelSkillCheck('riposte')
 				if (!d.isPiercing &&
-					Math.random() < stats.riposteChance()) {
+					rand() < stats.riposteChance()) {
 					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you riposted!')
 					button.primaryAttack(true, index)
 					d.damage = 0
@@ -428,24 +429,30 @@ var combat;
 			if (my.level >= skills['parry'][my.job].level) {
 				combat.levelSkillCheck('parry')
 				if (!d.isPiercing &&
-					Math.random() < stats.parryChance()) {
+					rand() < stats.parryChance()) {
 					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you parried!')
 					d.damage = 0
 					button.startSwing('primaryAttack')
 					return d
 				}
-
 			}
+			// magic debuffs
+			if (mobs[index].buffFlags.suppressingVolley) d.damage *= .5
+
 			// phyMit
 			d.damage -= stats.phyMit()
 
-			// enhancedDamage
+			// enhancedDamage ?
 
-			// reduce enhancedDamage
-			let damageReduced = 1 - stats.armorReductionRatio()
-			let amountReduced = _.random(damageReduced, 1)
+			// shield block? maxes 75% reduction of damage; skips armor
+			let amountReduced = 1 - stats.armorReductionRatio()
 
-			if (mobs[index].buffFlags.suppressingVolley) amountReduced = .5
+			if (items.eq[13].blockRate &&
+				rand() * 100 < items.eq[13].blockRate) {
+				amountReduced -= .25
+				d.blocked = round(d.damage * .25)
+			}
+			if (amountReduced < .25) amountReduced = .25
 			d.damage *= amountReduced
 		}
 		else {
@@ -458,7 +465,7 @@ var combat;
 
 		}
 		// final sanity checks
-		d.damage = d.damage < 1 ? ceil(d.damage) : round(d.damage)
+		d.damage = d.damage < 1 ? 1 : round(d.damage)
 		combat.levelSkillCheck('defense')
 		return d
 	}
@@ -497,7 +504,11 @@ var combat;
 						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
 					}
 					else {
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
+						blockMsg = ''
+						if (damages[i].blocked) {
+							blockMsg = ' ('+ damages[i].blocked +' blocked)'
+						}
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, 'chat-alert')
 					}
 					//console.info('tx processHit: ', damages[i].damage)
 				}

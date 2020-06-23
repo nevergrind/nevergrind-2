@@ -130,6 +130,9 @@ var my;
 			else my.target = party.presence[index].row
 			combat.targetChanged()
 		}
+		else {
+			chat.log('Target failed! Player not found.', 'chat-warning')
+		}
 	}
 	function getResistObject() {
 		var resp = {}

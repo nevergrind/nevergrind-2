@@ -333,7 +333,12 @@ var button;
 				'</div>'
 			}
 		s += '</div>' +
-		'<div id="skill-btn-wrap">'
+		'<div id="skill-col">' +
+			'<div id="exp-bar-wrap">' +
+				'<div id="exp-bar"></div>' +
+				'<div id="exp-bar-grid"></div>' +
+			'</div>' +
+			'<div id="skill-btn-wrap">'
 		// skill buttons
 		for (var i=0; i<12; i++) {
 			s +=
@@ -343,7 +348,8 @@ var button;
 				'<div id="skill-timer-'+ i +'" class="skill-timer"></div>' +
 			'</div>'
 		}
-		s += '</div>'
+		s += '</div>' +
+		'</div>'
 
 		querySelector('#button-wrap').innerHTML = s;
 		button.initialized = true

@@ -125,6 +125,7 @@ loot.shoulders = {
 	suffix: {
 		stats: 20,
 		points: 25,
+		ease: 2,
 	},
 	rare: {
 		skills: 2,

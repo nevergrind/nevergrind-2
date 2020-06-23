@@ -74,6 +74,7 @@ loot.bows = {
 		leech: 10,
 		wraith: 10,
 		haste: 40,
+		ease: 2,
 	},
 	rare: {
 		addDamage: 20,

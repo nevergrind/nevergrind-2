@@ -1126,8 +1126,8 @@ background-clip: content-box;
 
 #bar-all-player-wrap { padding: .2rem; }
 #bar-all-player-wrap .player-targeted {
-	outline: .1rem ridge #8fe;
-	animation: repeat-border-flash .5s linear infinite;
+	outline: .1rem ridge #5fd;
+	/*animation: repeat-border-flash .5s linear infinite;*/
 }
 @keyframes repeat-border-flash {
 	0% { outline: .1rem ridge #8fe; }
@@ -1584,11 +1584,45 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 #skill-btn-wrap {
 	display: flex;
-	width: 20rem;
+	width: 19.2rem;
 	flex-direction: row;
 	justify-content: center;
 	flex-wrap: wrap;
 	align-content: space-around;
+}
+#skill-col {
+	display: flex;
+	flex-direction: column;
+}
+#exp-bar-wrap {
+	position: relative;
+	height: .5rem;
+	border: 2px ridge #1a1a1a;
+	overflow: hidden;
+	background: linear-gradient(to top, #222, #444, #444, #222);
+}
+#exp-bar {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	background: linear-gradient(to top, #950, #ea0, #ea0, #950);
+	top: 0;
+	left: 0;
+	transform: translate(-50%, 0%);
+	z-index: 1;
+}
+#exp-bar-grid {
+	position: absolute;
+	height: 100%;
+	width: 98%; /* no idea why */
+	background: repeating-linear-gradient(to right,
+		transparent,
+		transparent 10%,
+		#111 10%,
+		#111 calc(10% + 1px));
+	top: 0;
+	left: 0;
+	z-index: 1;
 }
 #main-attack-wrap .skill-btn {
 	box-shadow: inset 0 0 0 1px #000;
@@ -3152,6 +3186,9 @@ background-repeat: no-repeat;
 	border: .1rem solid #136;
 	background: #013;
 }
+#inventory-destroy {
+	font-size: 1rem;
+}
 .inv-btn {
 	font-size: .8rem;
 	margin: .2rem;
@@ -3439,3 +3476,4 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	height: 1.2rem;
 	border: 1px solid #0a0a0a;
 }
+

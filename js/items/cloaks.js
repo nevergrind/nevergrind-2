@@ -127,6 +127,7 @@ loot.cloaks = {
 		allStats: 10,
 		points: 30,
 		crit: 20,
+		ease: 2,
 	},
 	rare: {
 		skills: 2,

@@ -126,6 +126,7 @@ loot.chests = {
 		stats: 30,
 		points: 50,
 		crit: 40,
+		ease: 2,
 	},
 	rare: {
 		skills: 3,
