@@ -2,6 +2,30 @@ var battle;
 (function(TweenMax, $, _, PIXI, Linear, undefined) {
 	battle = {
 		initialized: 0,
+		expRequired: [0, 0,
+			100, 220, 365, 540, 750, 1000, 1295, 1640, 2040, 2500,
+			3025, 3620, 4290, 5040, 5875, 6800, 7820, 8940, 10165, 11500,
+			12950, 14520, 16215, 18040, 20000, 22100, 24345, 26740, 29290, 32000,
+			34875, 37920, 41140, 44540, 48125, 51900, 55870, 60040, 64415, 69000,
+			73800, 78820, 84065, 89540, 95250, 101200, 107395, 113840, 120540, 127500,
+			134725, 142220, 149990, 158040, 166375, 175000, 183920, 193140, 202665, 212500,
+			222650, 233120, 243915, 255040, 266500, 278300, 290445, 302940, 315790, 329000,
+			342575, 356520, 370840, 385540, 400625, 416100, 431970, 448240, 464915, 482000,
+			499500, 517420, 535765, 554540, 573750, 593400, 613495, 634040, 655040, 676500,
+			698425, 720820, 743690, 767040, 790875, 815200, 840020, 865340, 891165
+		],
+		/* exp formula
+		var arr = [100];
+		var inc = 120
+		for (var i=1; i<99; i++) {
+			var newV = (arr[arr.length - 1] + inc)
+			arr.push(newV)
+			console.info('arr inc', i, ~~inc)
+			inc += 20 + (i * 5);
+		}
+		 */
+		getExpBarRatio,
+		nextLevel,
 		getSplashTarget,
 		go,
 		show,
@@ -19,17 +43,43 @@ var battle;
 		hideTarget,
 		showTarget,
 		killAllBattleTimers,
+		drawExpBar,
 	}
 	var mobTargetWrap = querySelector('#mob-target-wrap')
-	var show
 	let index, buffHtml, traitHtml, buffEl, key, keyRow, el, i
 	let buffIconTimers = {}
 	let tgt = {}
+	let ratio = 0
+	let expBar
 	let mobBuffData = {}
 	const flashDuration = 10
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	init()
+
+	let cache = {}
 	//////////////////////////////////////
+	function drawExpBar(duration) {
+		duration = duration ?? .3
+		if (!cache.expBar) cache.expBar = querySelector('#exp-bar')
+		TweenMax.to(cache.expBar, duration, {
+			x: getExpBarRatio() + '%',
+		})
+		TweenMax.to(cache.expBar, duration * 1.5, {
+			startAt: { filter: 'saturate(2) brightness(2)' },
+			filter: 'saturate(1) brightness(1)',
+			repeat: 1,
+		})
+	}
+	function getExpBarRatio(level) {
+		level = level ?? my.level
+		ratio = -(1 - ((my.exp - battle.expRequired[level]) / nextLevel())) * 100
+		// console.info('vals', num, denom, ratio)
+		return ratio
+	}
+	function nextLevel(level) {
+		level = level ?? my.level
+		return battle.expRequired[level + 1] - battle.expRequired[level]
+	}
 	function getSplashTarget(shift) {
 		shift = shift || 0
 		index = _.findIndex(splashOrder, val => val === my.target)

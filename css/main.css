@@ -1597,7 +1597,6 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 #exp-bar-wrap {
 	position: relative;
 	height: .5rem;
-	border: 2px ridge #1a1a1a;
 	overflow: hidden;
 	background: linear-gradient(to top, #222, #444, #444, #222);
 }
@@ -1608,18 +1607,19 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	background: linear-gradient(to top, #950, #ea0, #ea0, #950);
 	top: 0;
 	left: 0;
-	transform: translate(-50%, 0%);
+	transform: translate(0%, 0%);
 	z-index: 1;
 }
 #exp-bar-grid {
 	position: absolute;
 	height: 100%;
-	width: 98%; /* no idea why */
+	width: 100%;
 	background: repeating-linear-gradient(to right,
 		transparent,
-		transparent 10%,
-		#111 10%,
-		#111 calc(10% + 1px));
+		transparent calc(1.9rem - .5px),
+		#1a1a1a calc(1.9rem - .5px),
+		#1a1a1a calc(1.9rem + .5px));
+	box-shadow: 1px 0 #1a1a1a inset, 0 1px #1a1a1a inset, -1px 0 #1a1a1a inset, 0 -1px #1a1a1a inset;
 	top: 0;
 	left: 0;
 	z-index: 1;

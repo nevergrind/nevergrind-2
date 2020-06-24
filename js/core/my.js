@@ -60,6 +60,7 @@ var my;
 			name: ''
 		},
 		team: 0,
+		exp: 0,
 		gold: 0,
 		slot: 1,
 		target: -1,

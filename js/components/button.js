@@ -353,6 +353,7 @@ var button;
 
 		querySelector('#button-wrap').innerHTML = s;
 		button.initialized = true
+		battle.drawExpBar(0)
 	}
 	function hide() {
 		TweenMax.set('#button-wrap', {
