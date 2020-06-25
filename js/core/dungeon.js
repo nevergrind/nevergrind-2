@@ -57,6 +57,7 @@ var dungeon;
 			delay: .5,
 			filter: 'brightness(1)'
 		})
+		if (mob.earnedExp) battle.upsertGX()
 		ng.unlock()
 		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
 			socket.publish('party' + my.partyId, {

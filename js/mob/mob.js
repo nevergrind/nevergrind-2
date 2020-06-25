@@ -26,6 +26,7 @@ var mob;
 		killAttacks,
 		missChance,
 		getMobDamage,
+		updateMobName,
 		txData: [],
 		enableMobHeartbeat: true,
 		imageKeysLen: 0,
@@ -39,11 +40,17 @@ var mob;
 		element: {},
 		centerX: [192,576,960,1344,1728,384,768,1152,1536],
 		bottomY: [220,220,220,220,220,320,320,320,320],
+		earnedExp: 0,
+		earnedGold: 0,
 	};
 	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el, chance
+	let goldChance = 0
+	let goldFound = 0
+	let exp = 0
 	let hpKillVal = 0
 	let spKillVal = 0
 	let mpKillVal = 0
+	var index = 0
 	var frame = {
 		idle: {
 			start: 1,
@@ -192,19 +199,41 @@ var mob;
 			}
 		})
 		console.info('configMobType results', results)
-		let index = _.random(0, results.length - 1)
+		index = _.random(0, results.length - 1)
 		return {
 			...mobBaseConfig,
 			...results[index],
 		}
 	}
-	function setMob(i, mobConfig, fromLeader) {
-		if (!fromLeader) {
+	function getMobGold(config) {
+		goldChance = rand()
+		goldFound = 0
+		if (goldChance > .3) goldFound = 0
+		else goldFound = ~~_.random(2, config.level * 2.66)
+		return goldFound
+	}
+	function getMobExp(config) {
+		exp = config.level * 3
+		index = combat.getDiffIndex(config.level)
+		//console.info('getMobExp', index, exp)
+		exp = round(exp * battle.earnedExpRatio[index])
+		if (exp < 1) exp = 1
+		//console.info('getMobExp', exp)
+		return exp
+	}
+	function setMob(i, mobConfig, dataFromLeader) {
+		mob.earnedExp = 0
+		mob.earnedGold = 0
+		if (!dataFromLeader) {
+			// leader
 			mobConfig = {
 				...mobConfig,
 				...mob.type[mobConfig.img],
+				gold: getMobGold(mobConfig)
 			}
 			modifyMobStatsByClass(mobConfig)
+			console.info('mobConfig omit some props?', mobConfig)
+
 			mob.txData[i] = _.omit(mobConfig, [
 				'maxLevel',
 				'minLevel',
@@ -217,6 +246,7 @@ var mob;
 			...mobs[i],
 			...mobs.images[mobConfig.img],
 			...mobConfig,
+			exp: getMobExp(mobConfig)
 		}
 		// start attack cycle
 		timers.mobAttack[i].kill()
@@ -251,34 +281,34 @@ var mob;
 		// botttom - row offset - image size offset for transparency at bottom - more size offset?
 		let y = 1080 - mob.bottomY[i] - (images.yFloor * m.size) + sizeOffset(m.size)
 		// mob sprite
-		mobs[i].sprite = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
-		mobs[i].sprite.anchor.set(.5, 1)
-		mobs[i].sprite.index = i
-		mobs[i].sprite.x = x
-		mobs[i].sprite.y = y
-		mobs[i].sprite.width = width
-		mobs[i].sprite.height = height
-		mobs[i].sprite.interactive = true
-		mobs[i].sprite.buttonMode = true
-		mobs[i].sprite.zIndex = 100 - i
+		m.sprite = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
+		m.sprite.anchor.set(.5, 1)
+		m.sprite.index = i
+		m.sprite.x = x
+		m.sprite.y = y
+		m.sprite.width = width
+		m.sprite.height = height
+		m.sprite.interactive = true
+		m.sprite.buttonMode = true
+		m.sprite.zIndex = 100 - i
 
 		// mob shadow
-		/*mobs[i].shadow = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
-		mobs[i].shadow.anchor.set(.5, 1)
-		mobs[i].shadow.x = x
-		mobs[i].shadow.y = y
-		mobs[i].shadow.width = width
-		mobs[i].shadow.height = height
-		mobs[i].shadow.zIndex = 90 - i
-		TweenMax.set(mobs[i].shadow, {
+		/*m.shadow = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
+		m.shadow.anchor.set(.5, 1)
+		m.shadow.x = x
+		m.shadow.y = y
+		m.shadow.width = width
+		m.shadow.height = height
+		m.shadow.zIndex = 90 - i
+		TweenMax.set(m.shadow, {
 			pixi: {
 				brightness: 0,
 				alpha: .2
 			}
 		})*/
 		setClickBox(m, i)
-		//mobs[i].sprite.hitArea = new PIXI.Rectangle(c.x, c.y, c.w, c.h)
-		battle.layer.stage.addChild(mobs[i].sprite)
+		//m.sprite.hitArea = new PIXI.Rectangle(c.x, c.y, c.w, c.h)
+		battle.layer.stage.addChild(m.sprite)
 
 		// shadow
 		//TODO: change to percentages and use shadowBottom
@@ -292,13 +322,16 @@ var mob;
 			y: 0,
 			bottom: m.barAliveBottom * m.size
 		})
-		querySelector('#mob-name-' + i).textContent = mobs[i].name
 		// name
-		el = querySelector('#mob-name-' + i)
-		el.innerHTML = m.name;
-		el.classList.add(combat.getDiffClass(m.level))
+		updateMobName(i)
 		// health
-		drawMobBar(index)
+		drawMobBar(i)
+	}
+	function updateMobName(i) {
+		el = querySelector('#mob-name-' + i)
+		el.innerHTML = mobs[i].name;
+		el.className = 'mob-name text-shadow3'
+		el.classList.add(combat.considerClass[combat.getDiffIndex(mobs[i].level)])
 	}
 	function setClickBox(m, i) {
 		// alive box
@@ -564,6 +597,11 @@ var mob;
 		if (spKillVal) {
 			combat.updateHeroResource('sp', spKillVal)
 		}
+		// gold
+		mob.earnedGold += battle.addGold(mobs[i].gold)
+		// exp
+		mob.earnedExp += battle.addExp(mobs[i].exp)
+		battle.drawExpBar()
 	}
 	function setMobSkill(config, val) {
 		// adjusts value based on what it is at max level

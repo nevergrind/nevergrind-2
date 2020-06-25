@@ -2,17 +2,26 @@ var battle;
 (function(TweenMax, $, _, PIXI, Linear, undefined) {
 	battle = {
 		initialized: 0,
-		expRequired: [0, 0,
-			100, 220, 365, 540, 750, 1000, 1295, 1640, 2040, 2500,
-			3025, 3620, 4290, 5040, 5875, 6800, 7820, 8940, 10165, 11500,
-			12950, 14520, 16215, 18040, 20000, 22100, 24345, 26740, 29290, 32000,
-			34875, 37920, 41140, 44540, 48125, 51900, 55870, 60040, 64415, 69000,
-			73800, 78820, 84065, 89540, 95250, 101200, 107395, 113840, 120540, 127500,
-			134725, 142220, 149990, 158040, 166375, 175000, 183920, 193140, 202665, 212500,
-			222650, 233120, 243915, 255040, 266500, 278300, 290445, 302940, 315790, 329000,
-			342575, 356520, 370840, 385540, 400625, 416100, 431970, 448240, 464915, 482000,
-			499500, 517420, 535765, 554540, 573750, 593400, 613495, 634040, 655040, 676500,
-			698425, 720820, 743690, 767040, 790875, 815200, 840020, 865340, 891165
+		expRequired: [0,
+			0, 100, 220, 365, 540, 750, 1000, 1295, 1640, 2040,
+			2500, 3025, 3620, 4290, 5040, 5875, 6800, 7820, 8940, 10165,
+			11500, 12950, 14520, 16215, 18040, 20000, 22100, 24345, 26740, 29290,
+			32000, 34875, 37920, 41140, 44540, 48125, 51900, 55870, 60040, 64415,
+			69000, 73800, 78820, 84065, 89540, 95250, 101200, 107395, 113840, 120540,
+			127500, 134725, 142220, 149990, 158040, 166375, 175000, 183920, 193140, 202665,
+			212500, 222650, 233120, 243915, 255040, 266500, 278300, 290445, 302940, 315790,
+			329000, 342575, 356520, 370840, 385540, 400625, 416100, 431970, 448240, 464915,
+			482000, 499500, 517420, 535765, 554540, 573750, 593400, 613495, 634040, 655040,
+			676500, 698425, 720820, 743690, 767040, 790875, 815200, 840020, 865340, 891165
+		],
+		earnedExpRatio: [
+			0, // grey
+			.4,
+			.6,
+			.8,
+			1,
+			1.1,
+			1.2, // red
 		],
 		/* exp formula
 		var arr = [100];
@@ -44,20 +53,70 @@ var battle;
 		showTarget,
 		killAllBattleTimers,
 		drawExpBar,
+		addExp,
+		addGold,
+		upsertGX,
 	}
 	var mobTargetWrap = querySelector('#mob-target-wrap')
 	let index, buffHtml, traitHtml, buffEl, key, keyRow, el, i
 	let buffIconTimers = {}
 	let tgt = {}
 	let ratio = 0
-	let expBar
 	let mobBuffData = {}
+	let leveled = false
 	const flashDuration = 10
+	const maxHeroLevel = 50
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	init()
 
 	let cache = {}
 	//////////////////////////////////////
+	function upsertGX() {
+		$.post(app.url + 'character/upsert-gx.php', {
+			gold: mob.earnedGold,
+			exp: mob.earnedExp,
+			level: my.level,
+		}).done(() => {
+			warn('upsertGX success!')
+			// update gold on UI
+		})
+	}
+	function addExp(exp) {
+		leveled = false
+		if (my.exp + exp > battle.expRequired[maxHeroLevel]) {
+			exp = battle.expRequired[maxHeroLevel] - my.exp
+		}
+		my.exp += exp
+		if (exp) chat.log('You earned experience!', 'chat-exp')
+		while (my.exp >= nextLevel()) {
+			leveled = true
+			my.level++
+			chat.log('You have reached level ' + my.level + '!', 'chat-level')
+			audio.playSound('levelup')
+		}
+		if (leveled) {
+			for (var i=0; i<mob.max; i++) {
+				mob.updateMobName(i)
+			}
+			battle.updateTarget()
+		}
+		return exp
+	}
+	function getExpBarRatio() {
+		ratio = -(1 - ((my.exp - battle.expRequired[my.level]) / nextLevel())) * 100
+		return ratio
+	}
+	function nextLevel() {
+		return battle.expRequired[my.level + 1]
+	}
+	function addGold(gold) {
+		if (my.gold + gold > trade.MAX_GOLD) {
+			gold = trade.MAX_GOLD - my.gold
+		}
+		my.gold += gold
+		if (gold) chat.log('You found ' + gold + ' gold!', 'chat-gold')
+		return gold
+	}
 	function drawExpBar(duration) {
 		duration = duration ?? .3
 		if (!cache.expBar) cache.expBar = querySelector('#exp-bar')
@@ -69,16 +128,6 @@ var battle;
 			filter: 'saturate(1) brightness(1)',
 			repeat: 1,
 		})
-	}
-	function getExpBarRatio(level) {
-		level = level ?? my.level
-		ratio = -(1 - ((my.exp - battle.expRequired[level]) / nextLevel())) * 100
-		// console.info('vals', num, denom, ratio)
-		return ratio
-	}
-	function nextLevel(level) {
-		level = level ?? my.level
-		return battle.expRequired[level + 1] - battle.expRequired[level]
 	}
 	function getSplashTarget(shift) {
 		shift = shift || 0
@@ -224,8 +273,8 @@ var battle;
 
 			if (!ng.isApp) {
 				totalMobs = 9
-				minLevel = 25
-				maxLevel = 53
+				minLevel = 1
+				maxLevel = 4
 			}
 			console.info('levels', minLevel, maxLevel)
 			var mobSlot
@@ -268,7 +317,7 @@ var battle;
 		if (combat.isValidTarget()) {
 			if (my.targetIsMob) {
 				tgt = {
-					class: combat.getDiffClass(mobs[my.target].level),
+					class: combat.considerClass[combat.getDiffIndex(mobs[my.target].level)],
 					name: mobs[my.target].name,
 					type: mobs[my.target].type,
 					hp: ceil(100 - bar.getRatio('hp', mobs[my.target])),

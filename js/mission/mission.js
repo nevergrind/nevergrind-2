@@ -60,7 +60,7 @@ var mission;
 		zones.forEach(function(zone) {
 			if (my.level + 4 >= zone.level) {
 				questHtml +=
-				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ combat.getDiffClass(zone.level) +'" data-id="'+ zone.id +'">'+
+				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ combat.considerClass[combat.getDiffIndex(zone.level)] +'" data-id="'+ zone.id +'">'+
 					'<img class="mission-tree-btn mission-plus" src="images/ui/plus.png">'+
 					'<div>' + zone.name + '</div>' +
 				'</div>' +
@@ -77,7 +77,7 @@ var mission;
 	function getMissionRowHtml(zone) {
 		var html = '';
 		zones[zone.id].missions.forEach(questId => {
-			html += '<div class="mission-quest-item ellipsis ' + combat.getDiffClass(quests[questId].level) +'" '+
+			html += '<div class="mission-quest-item ellipsis ' + combat.considerClass[combat.getDiffIndex(quests[questId].level)] +'" '+
 				'data-id="'+ zone.id +'" ' +
 				'data-quest="'+ questId +'">' +
 				quests[questId].title +

@@ -969,9 +969,10 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-skill { color: #18f; }
 .chat-ooc { color: #090; }
 .chat-guild { color: #0f0; }
-.chat-warning { color: #ffff1a; }
-.chat-alert { color: #ff1a1a; }
-.chat-quest { color: gold; }
+.chat-alert, .chat-warning { color: yellow; }
+.chat-exp { color: goldenrod; }
+.chat-quest, .chat-level { color: palegoldenrod; }
+.chat-gold { color: gold; }
 .chat-heal { color: #5fe }
 
 .chat-help-header {

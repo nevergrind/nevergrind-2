@@ -2,25 +2,15 @@ var combat;
 !function($, _, TweenMax, PIXI, Math, Power1, Power3, Linear, undefined) {
 	combat = {
 		textId: 0,
-		rxUpdateDamage,
-		popupDamage,
-		targetChanged,
-		initCombatTextLayer,
-		updateCombatTextLayer,
-		toggleAutoAttack,
-		txDamageMob,
-		isValidTarget,
-		getDiffClass,
-		autoAttackDisable,
-		processDamagesHero,
-		txDamageHero,
-		rxDamageHero,
-		levelSkillCheck,
-		skillLevelChance,
-		endCombat,
-		updateHeroResource,
-		txHotHero,
-		rxHotHero,
+		considerClass: [
+			'con-grey',
+			'con-green',
+			'con-low-blue',
+			'con-high-blue',
+			'con-white',
+			'con-yellow',
+			'con-red',
+		],
 		mobType: {
 			'balrog': 'Demons',
 			'ice-golem': 'Mystical',
@@ -76,7 +66,26 @@ var combat;
 			'evil-eye': 'Mystical',
 			'unicorn': 'Mystical',
 			'scorpion': 'Beasts',
-		}
+		},
+		rxUpdateDamage,
+		popupDamage,
+		targetChanged,
+		initCombatTextLayer,
+		updateCombatTextLayer,
+		toggleAutoAttack,
+		txDamageMob,
+		isValidTarget,
+		getDiffIndex,
+		autoAttackDisable,
+		processDamagesHero,
+		txDamageHero,
+		rxDamageHero,
+		levelSkillCheck,
+		skillLevelChance,
+		endCombat,
+		updateHeroResource,
+		txHotHero,
+		rxHotHero,
 	}
 	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, key
 
@@ -235,11 +244,12 @@ var combat;
 		return d
 	}
 	function toggleAutoAttack() {
-		if (ng.view === 'battle' && !my.isAutoAttacking) autoAttackEnable()
+		if (!my.isAutoAttacking) autoAttackEnable()
 		else autoAttackDisable()
 	}
 	function autoAttackEnable() {
-		if (my.isAutoAttacking || my.hp <= 0) return
+		if (ng.view !== 'battle' ||
+			my.hp <= 0) return
 		my.isAutoAttacking = true
 		button.primaryAttack()
 		button.secondaryAttack()
@@ -248,14 +258,11 @@ var combat;
 		el.classList.add('active')
 	}
 	function autoAttackDisable() {
-		if (!my.isAutoAttacking) return
 		my.isAutoAttacking = false
 		el = querySelector('#main-attack-wrap')
 		el.classList.remove('active')
 	}
 	function endCombat() {
-		warn('battle is over!')
-		autoAttackDisable()
 		mob.killAttacks(true)
 		battle.hideTarget()
 	}
@@ -451,6 +458,7 @@ var combat;
 				rand() * 100 < items.eq[13].blockRate) {
 				amountReduced -= .25
 				d.blocked = round(d.damage * .25)
+				if (d.blocked < 0) d.blocked = 0
 			}
 			if (amountReduced < .25) amountReduced = .25
 			d.damage *= amountReduced
@@ -710,14 +718,14 @@ var combat;
 			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
 		}
 	}
-	function getDiffClass(minQuestLvl) {
-		var resp = 'con-grey';
-		if (minQuestLvl >= my.level + 3) resp = 'con-red';
-		else if (minQuestLvl > my.level) resp = 'con-yellow';
-		else if (minQuestLvl === my.level) resp = 'con-white';
-		else if (minQuestLvl >= ~~(my.level * .88) ) resp = 'con-high-blue';
-		else if (minQuestLvl >= ~~(my.level * .77) ) resp = 'con-low-blue';
-		else if (minQuestLvl >= ~~(my.level * .66) ) resp = 'con-green';
-		return resp;
+	function getDiffIndex(level) {
+		var resp = 0
+		if (level >= my.level + 3) resp = 6
+		else if (level > my.level) resp = 5
+		else if (level === my.level) resp = 4
+		else if (level >= ~~(my.level * .88) ) resp = 3
+		else if (level >= ~~(my.level * .77) ) resp = 2
+		else if (level >= ~~(my.level * .66) ) resp = 1
+		return resp
 	}
 }($, _, TweenMax, PIXI, Math, Power1, Power3, Linear);
