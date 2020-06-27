@@ -268,7 +268,7 @@ var stats = {};
 		//return ( ((5) + getEqTotal('crit') ) / 100)
 		return ( (dex() / 75) + ng.dimRetCrit(getEqTotal('crit')) ) / 100
 	}
-	function spellDamage(skipSkillChecks, forceCrit, getNonCrit) {
+	function spellDamage(forceCrit, getNonCrit) {
 		max = spell.data.spellDamage(my.skills[spell.index])
 		// enhance by type % and ALL%
 		enhanceDamage = getEqTotal('enhance'+ _.capitalize(spell.data.damageType))
@@ -294,8 +294,6 @@ var stats = {};
 			min *= 1.5
 			max *= 1.5
 		}
-
-		if (!skipSkillChecks) combat.levelSkillCheck(spell.data.spellType)
 
 		if (min < 1) min = 1
 		if (max < 1) max = 1
@@ -658,7 +656,7 @@ var stats = {};
 	function alterationMax() {
 		base = my.race === 'Dwarf' || my.race === 'Seraph' ? 5 : 0
 		if (allCasterJobs.includes(my.job)) return base + my.level * 5
-		else if (hybridJobs.includes(my.job)) return base + my.level * 4
+		else if (hybridJobs.includes(my.job)) return base + my.level * 5
 		else return 0
 	}
 	function evocationMax() {
@@ -666,7 +664,7 @@ var stats = {};
 		else if (my.race === 'Seraph') base = 5
 		else base = 0
 		if (allCasterJobs.includes(my.job)) return base + my.level * 5
-		else if (hybridJobs.includes(my.job)) return base + my.level * 4
+		else if (hybridJobs.includes(my.job)) return base + my.level * 5
 		else return 0
 	}
 	function conjurationMax() {
@@ -674,7 +672,7 @@ var stats = {};
 		else if (my.race === 'Seraph') base = 5
 		else base = 0
 		if (allCasterJobs.includes(my.job)) return base + my.level * 5
-		else if (hybridJobs.includes(my.job)) return base + my.level * 4
+		else if (hybridJobs.includes(my.job)) return base + my.level * 5
 		else return 0
 	}
 	function setAllResources() {

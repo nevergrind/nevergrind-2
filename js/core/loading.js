@@ -16,6 +16,9 @@ var loading;
 		'Some skills allow you to reduce how much each monster hates you. Highly efficient parties manage their hate effectively.',
 		'You cannot parry or riposte while casting a spell.',
 		'Shields will help any class survive longer. When you block a shield reduces melee damage by an additional 25%.',
+		'You can cancel a spell by pressing the space bar.',
+		'If a mob hits you while you are casting a spell, you will experience spell knockback which makes your spell take a longer time to cast. This can make life difficult for a caster, but other players can help take the heat off of you.',
+		'Be wary about training spells that require skills that you have not sufficiently practiced. High-level spells may frequently fizzle if your alteration, conjuration, or evocation are not adequate.',
 	]
 	loading.tipCount = loading.tips.length
 

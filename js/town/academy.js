@@ -16,7 +16,8 @@ var academy;
 	}
 	let lastCost = 0
 	const trainCosts = [0, 100, 250, 625, 1500, 3750, 9000, 22500]
-	const reqLevel = [0, 1, 6, 12, 18, 24, 30, 39, 49]
+	const reqLevel = [0, 1, 6, 12, 18, 24, 30, 39, 49] // [0, 5, 30, 60, 90, 120, 150, 195, 245]
+
 
 	$('#root-various')
 		.on('click', '.academy-train', handleRankClick)

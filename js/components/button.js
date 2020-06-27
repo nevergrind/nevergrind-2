@@ -94,11 +94,10 @@ var button;
 		})
 	}
 	function triggerSkill(index) {
+		if (my.hp <= 0) return
+
 		name = _.camelCase(skills[my.job][index].name)
 		console.info('triggerSkill', name)
-		if (my.hp <= 0) {
-			if (ng.isApp) return
-		}
 		if (typeof skill[my.job][name] === 'function') {
 			skill[my.job][name](index, skills[my.job][index])
 		}
@@ -353,7 +352,7 @@ var button;
 
 		querySelector('#button-wrap').innerHTML = s;
 		button.initialized = true
-		battle.drawExpBar(0)
+		battle.drawExpBar(0, 0)
 	}
 	function hide() {
 		TweenMax.set('#button-wrap', {

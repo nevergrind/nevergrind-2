@@ -338,7 +338,7 @@
 			key: 'fungalGrowth',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, false, true) // skill check, noCrit, force noCrit
+			...stats.spellDamage(false, true) // skill check, noCrit, force noCrit
 		})
 		console.info('fungalGrowthCompleted', damages)
 		combat.txHotHero(spell.config.target, damages)

@@ -2,7 +2,7 @@ var battle;
 (function(TweenMax, $, _, PIXI, Linear, undefined) {
 	battle = {
 		initialized: 0,
-		expRequired: [0,
+		expThreshold: [0,
 			0, 100, 220, 365, 540, 750, 1000, 1295, 1640, 2040,
 			2500, 3025, 3620, 4290, 5040, 5875, 6800, 7820, 8940, 10165,
 			11500, 12950, 14520, 16215, 18040, 20000, 22100, 24345, 26740, 29290,
@@ -56,6 +56,10 @@ var battle;
 		addExp,
 		addGold,
 		upsertGX,
+		upsertLevel,
+		reckonGXL,
+		subtractExpPenalty,
+		getDeathPenaltyRatio,
 	}
 	var mobTargetWrap = querySelector('#mob-target-wrap')
 	let index, buffHtml, traitHtml, buffEl, key, keyRow, el, i
@@ -64,32 +68,62 @@ var battle;
 	let ratio = 0
 	let mobBuffData = {}
 	let leveled = false
+	let penalty = 0
+	let cache = {}
 	const flashDuration = 10
 	const maxHeroLevel = 50
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
+
 	init()
 
-	let cache = {}
 	//////////////////////////////////////
+	function getDeathPenaltyRatio() {
+		ratio = 0
+		if (my.level >= 5) ratio = my.level / 150 // 20% @ level 30
+		if (ratio > .25) ratio = .25
+		return ratio
+	}
+	function subtractExpPenalty() {
+		penalty = ~~(getDeathPenaltyRatio() * (battle.nextLevel() - battle.expThreshold[my.level]))
+		if (my.exp - penalty < battle.expThreshold[my.level]) {
+			// prevent de-level
+			penalty = my.exp - battle.expThreshold[my.level]
+		}
+		console.info('penalty', penalty)
+		if (penalty) {
+			mob.earnedExp -= penalty
+			my.exp -= penalty
+			chat.log('You lost experience!', 'chat-exp')
+			battle.drawExpBar(0, 4.5)
+		}
+	}
+	function reckonGXL() {
+		if (mob.earnedExp !== 0 || mob.earnedGold > 0) battle.upsertGX()
+		if (mob.leveledUp) battle.upsertLevel()
+	}
 	function upsertGX() {
 		$.post(app.url + 'character/upsert-gx.php', {
 			gold: mob.earnedGold,
 			exp: mob.earnedExp,
+		})
+	}
+	function upsertLevel() {
+		$.post(app.url + 'character/upsert-level.php', {
 			level: my.level,
-		}).done(() => {
-			warn('upsertGX success!')
-			// update gold on UI
 		})
 	}
 	function addExp(exp) {
-		leveled = false
-		if (my.exp + exp > battle.expRequired[maxHeroLevel]) {
-			exp = battle.expRequired[maxHeroLevel] - my.exp
+		leveled = false // to determine UI updates
+		if (my.exp + exp > battle.expThreshold[maxHeroLevel]) {
+			exp = battle.expThreshold[maxHeroLevel] - my.exp
 		}
 		my.exp += exp
-		if (exp) chat.log('You earned experience!', 'chat-exp')
+		if (exp) {
+			chat.log('You earned experience!', 'chat-exp')
+			battle.drawExpBar()
+		}
 		while (my.exp >= nextLevel()) {
-			leveled = true
+			mob.leveledUp = leveled = true
 			my.level++
 			chat.log('You have reached level ' + my.level + '!', 'chat-level')
 			audio.playSound('levelup')
@@ -103,27 +137,31 @@ var battle;
 		return exp
 	}
 	function getExpBarRatio() {
-		ratio = -(1 - ((my.exp - battle.expRequired[my.level]) / nextLevel())) * 100
+		ratio = -(1 - ((my.exp - battle.expThreshold[my.level]) / nextLevel())) * 100
 		return ratio
 	}
 	function nextLevel() {
-		return battle.expRequired[my.level + 1]
+		return battle.expThreshold[my.level + 1]
 	}
 	function addGold(gold) {
 		if (my.gold + gold > trade.MAX_GOLD) {
 			gold = trade.MAX_GOLD - my.gold
 		}
-		my.gold += gold
-		if (gold) chat.log('You found ' + gold + ' gold!', 'chat-gold')
+		if (gold) {
+			my.gold += gold
+			chat.log('You found ' + gold + ' gold!', 'chat-gold')
+			bar.updateInventoryGold()
+		}
 		return gold
 	}
-	function drawExpBar(duration) {
+	function drawExpBar(duration, flashDuration) {
 		duration = duration ?? .3
+		flashDuration = flashDuration ?? duration * 1.5
 		if (!cache.expBar) cache.expBar = querySelector('#exp-bar')
 		TweenMax.to(cache.expBar, duration, {
 			x: getExpBarRatio() + '%',
 		})
-		TweenMax.to(cache.expBar, duration * 1.5, {
+		TweenMax.to(cache.expBar, flashDuration, {
 			startAt: { filter: 'saturate(2) brightness(2)' },
 			filter: 'saturate(1) brightness(1)',
 			repeat: 1,
@@ -274,7 +312,7 @@ var battle;
 			if (!ng.isApp) {
 				totalMobs = 9
 				minLevel = 1
-				maxLevel = 4
+				maxLevel = 8
 			}
 			console.info('levels', minLevel, maxLevel)
 			var mobSlot

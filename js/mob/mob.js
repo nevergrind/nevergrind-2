@@ -27,6 +27,7 @@ var mob;
 		missChance,
 		getMobDamage,
 		updateMobName,
+		isAnyMobAlive,
 		txData: [],
 		enableMobHeartbeat: true,
 		imageKeysLen: 0,
@@ -42,6 +43,7 @@ var mob;
 		bottomY: [220,220,220,220,220,320,320,320,320],
 		earnedExp: 0,
 		earnedGold: 0,
+		leveledUp: false,
 	};
 	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el, chance
 	let goldChance = 0
@@ -217,13 +219,16 @@ var mob;
 		index = combat.getDiffIndex(config.level)
 		//console.info('getMobExp', index, exp)
 		exp = round(exp * battle.earnedExpRatio[index])
-		if (exp < 1) exp = 1
 		//console.info('getMobExp', exp)
 		return exp
+	}
+	function isAnyMobAlive() {
+		return mobs.some(mob => mob.hp > 0)
 	}
 	function setMob(i, mobConfig, dataFromLeader) {
 		mob.earnedExp = 0
 		mob.earnedGold = 0
+		mob.leveledUp = false
 		if (!dataFromLeader) {
 			// leader
 			mobConfig = {
@@ -443,12 +448,8 @@ var mob;
 		}
 		// set the host row
 		len = mostHatedRow.length
-		if (!len) {
-			mostHatedRow = -1
-		}
-		else if (len === 1) {
-			mostHatedRow = mostHatedRow[0]
-		}
+		if (!len) mostHatedRow = -1
+		else if (len === 1) mostHatedRow = mostHatedRow[0]
 		else if (len > 1) {
 			// party members tied for hate - pick a random target among them
 			index = _.random(0, mostHatedRow.length - 1)
@@ -495,48 +496,51 @@ var mob;
 		// animate
 		if (mobs[i].isAnimationActive) return
 
-		mobs[i].isAnimationActive = true
-		var attackType = isSecondary ? 'secondary' : 'primary'
-		var speed = mobs[i].frameSpeed * frame[attackType].diff;
-		if (!mobs[i].enableSecondary) {
-			attackType = 'primary'
-		}
-
-		mobs[i].animation = TweenMax.to(mobs[i], speed, {
-			startAt: {
-				frame: frame[attackType].start
-			},
-			overwrite: 1,
-			frame: frame[attackType].end,
-			ease: Linear.easeNone,
-			onUpdate: setSrc,
-			onUpdateParams: [mobs[i].index],
-			onComplete: () => { resetIdle(mobs[i].index) },
-		})
-	}
-
-	function special(i) {
-		if (mobs[i].isAnimationActive) return
-		if (!mobs[i].enableSpecial) {
-			attack(mobs[i].index, 'death')
-		}
-		else {
+		console.info('animateAttack', party.isSomeoneAlive())
+		if (party.isSomeoneAlive()) {
 			mobs[i].isAnimationActive = true
-			var speed = mobs[i].frameSpeed * frame.special.diff
+			var attackType = isSecondary ? 'secondary' : 'primary'
+			var speed = mobs[i].frameSpeed * frame[attackType].diff;
+			if (!mobs[i].enableSecondary) {
+				attackType = 'primary'
+			}
 
 			mobs[i].animation = TweenMax.to(mobs[i], speed, {
 				startAt: {
-					frame: frame.special.start
+					frame: frame[attackType].start
 				},
 				overwrite: 1,
-				frame: frame.special.end,
+				frame: frame[attackType].end,
 				ease: Linear.easeNone,
-				yoyo: mobs[i].yoyo,
-				repeat: mobs[i].yoyo ? 1 : 0,
 				onUpdate: setSrc,
 				onUpdateParams: [mobs[i].index],
 				onComplete: () => { resetIdle(mobs[i].index) },
 			})
+		}
+	}
+
+	function special(i) {
+		if (mobs[i].isAnimationActive) return
+		if (party.isSomeoneAlive()) {
+			if (!mobs[i].enableSpecial) attack(mobs[i].index)
+			else {
+				mobs[i].isAnimationActive = true
+				var speed = mobs[i].frameSpeed * frame.special.diff
+
+				mobs[i].animation = TweenMax.to(mobs[i], speed, {
+					startAt: {
+						frame: frame.special.start
+					},
+					overwrite: 1,
+					frame: frame.special.end,
+					ease: Linear.easeNone,
+					yoyo: mobs[i].yoyo,
+					repeat: mobs[i].yoyo ? 1 : 0,
+					onUpdate: setSrc,
+					onUpdateParams: [mobs[i].index],
+					onComplete: () => { resetIdle(mobs[i].index) },
+				})
+			}
 		}
 	}
 	function death(i) {
@@ -597,11 +601,8 @@ var mob;
 		if (spKillVal) {
 			combat.updateHeroResource('sp', spKillVal)
 		}
-		// gold
 		mob.earnedGold += battle.addGold(mobs[i].gold)
-		// exp
 		mob.earnedExp += battle.addExp(mobs[i].exp)
-		battle.drawExpBar()
 	}
 	function setMobSkill(config, val) {
 		// adjusts value based on what it is at max level
@@ -835,10 +836,10 @@ var mob;
 			console.info('resource tick B', tick)
 		})
 	}
-	function killAttacks(finishDeath) {
+	function killAttacks(continueIdling) {
 		mobs.forEach((m, i) => {
 			timers.mobAttack[i].kill()
-			!finishDeath && typeof mobs[i].animation === 'object' && mobs[i].animation.pause()
+			!continueIdling && typeof mobs[i].animation === 'object' && mobs[i].animation.pause()
 		})
 	}
 	function missChance(level) {

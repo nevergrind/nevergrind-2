@@ -973,6 +973,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-exp { color: goldenrod; }
 .chat-quest, .chat-level { color: palegoldenrod; }
 .chat-gold { color: gold; }
+.chat-spell { color: dodgerblue; }
 .chat-heal { color: #5fe }
 
 .chat-help-header {
@@ -2213,6 +2214,13 @@ background-repeat: no-repeat;
 	height: auto;
 	width: auto;
 }
+#inventory-gold-row {
+	align-items: center;
+	justify-content: flex-end;
+	background: #001;
+	margin: .2rem;
+	border: 1px solid #048;
+}
 #inventory-slot-wrap {
 	border: 2px ridge #048;
 	margin: 2px;
@@ -2713,6 +2721,7 @@ background-repeat: no-repeat;
 	flex-direction: column;
 	border: .1rem ridge #136;
 	flex: 1;
+	overflow-x: hidden;
 	overflow-y: auto;
 	font-size: .9rem;
 	line-height: 1.5;

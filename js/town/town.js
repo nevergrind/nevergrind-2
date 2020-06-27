@@ -640,6 +640,7 @@ var town;
 	function updateMyGold(obj) {
 		myGoldEl = querySelector('#town-gold')
 		if (myGoldEl!== null) myGoldEl.textContent = floor(obj.value)
+		bar.updateInventoryGold()
 	}
 	function updateStoreGold(obj) {
 		goldEl = querySelector('#town-value')

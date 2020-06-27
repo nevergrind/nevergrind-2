@@ -86,6 +86,7 @@ var combat;
 		updateHeroResource,
 		txHotHero,
 		rxHotHero,
+		selfDied,
 	}
 	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, key
 
@@ -125,7 +126,7 @@ var combat;
 		name = _.camelCase(name)
 		if (my.level >= skills[name][my.job].level &&
 			my[name] < stats.getPropMax(name)) { //TODO: Dynamic max
-			if (Math.random() < skillLevelChance(name)) {
+			if (rand() < skillLevelChance(name)) {
 				my[name]++
 				chat.log('You got better at ' +skills.getName(name) + '! (' + my[name] + ')', 'chat-skill')
 				if (bar.windowsOpen.character) {
@@ -140,6 +141,7 @@ var combat;
 		}
 	}
 	function skillLevelChance(name) {
+		// from 20% at 1 down to about 1% at 140+
 		chance = (20 - (my[name] / 10)) / 100
 		if (chance < .01) chance = .01 // beyond 140 skill has a 1/100 chance
 		return chance
@@ -293,7 +295,8 @@ var combat;
 			my.fixTarget()
 			if (isBattleOver()) {
 				endCombat()
-				delayedCall(5, dungeon.go)
+				ng.view = 'dungeon'
+				delayedCall(5, dungeon.go, [true])
 			}
 		}
 	}
@@ -356,23 +359,39 @@ var combat;
 
 	function selfDied() {
 		warn('You died!')
+		// subtract XP
+		if (!ng.isApp) {
+			// really just for testing
+			party.presence[0].hp = my.hp = 0
+			bar.updateBar('hp')
+		}
 		autoAttackDisable()
+		battle.subtractExpPenalty()
+		if (!party.isSomeoneAlive()) {
+			mob.killAttacks(true)
+		}
+		battle.reckonGXL()
+		animateMyDeath()
+	}
+	function animateMyDeath() {
 		let el = querySelector('#scene-battle')
 		let o = {
+			grayscale: 0,
 			saturate: 1,
 			contrast: 1,
 			brightness: 1,
 		}
-		TweenMax.to(o, 1, {
+		TweenMax.to(o, 3, {
+			grayscale: .666,
 			saturate: 5,
-			contrast: 3,
-			brightness: .5,
+			contrast: 5,
+			brightness: .333,
 			onUpdate: setFilter,
 			onUpdateParams: [o]
 		})
 		function setFilter(o) {
 			TweenMax.set(el, {
-				filter: 'grayscale(1) sepia(1) saturate('+ o.saturate +') hue-rotate(-30deg) contrast('+ o.contrast +') brightness('+ o.brightness +') '
+				filter: 'grayscale(1) sepia(1) saturate('+ o.saturate +') hue-rotate(-30deg) contrast('+ o.contrast +') brightness('+ o.brightness +') grayscale('+ o.grayscale +') '
 			})
 		}
 	}
@@ -517,6 +536,9 @@ var combat;
 							blockMsg = ' ('+ damages[i].blocked +' blocked)'
 						}
 						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, 'chat-alert')
+					}
+					if (damages[i].damageType === 'physical') {
+						spell.knockback()
 					}
 					//console.info('tx processHit: ', damages[i].damage)
 				}

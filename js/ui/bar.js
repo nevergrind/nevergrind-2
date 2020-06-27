@@ -1,6 +1,7 @@
 var bar;
 (function(_, $, Draggable, TweenMax, undefined) {
 	bar = {
+		updateInventoryGold,
 		updateInventoryDOM,
 		init,
 		updatePlayerBar,
@@ -307,6 +308,16 @@ var bar;
 		}
 	}
 
+	function updateInventoryGold() {
+		if (!bar.windowsOpen.inventory) return
+		el = querySelector('#inventory-gold')
+		el.textContent = my.gold
+		TweenMax.to('#inventory-gold-row', 1, {
+			startAt: { filter: 'saturate(3) brightness(3)' },
+			filter: 'saturate(1) brightness(1)'
+		})
+	}
+
 	function getInventoryHtml() {
 		i = 0
 		html =
@@ -334,6 +345,10 @@ var bar;
 			html += getItemSlotHtml('inv', i)
 		}
 		html += '</div>' +
+		'<div id="inventory-gold-row" class="flex-row flex-max">'+
+			'<div id="inventory-gold">'+ my.gold +'</div>' +
+			'<i class="ra ra-gold-bar gold-img"></i>' +
+		'</div>'+
 		'<div id="inventory-footer" class="flex-row flex-max">'+
 			//'<div id="inventory-identify" class="ng-btn text-shadow inv-btn">Identify</div>' +
 			'<div id="inventory-destroy" class="ng-btn text-shadow inv-btn">Destroy</div>' +
@@ -960,6 +975,7 @@ var bar;
 		// dynamic cap for current race/job/level
 		max = stats.getPropMax(prop)
 		let width = my.level < skills[prop][my.job].level ? 0 : my[prop] / max * 100
+		if (width > 100) width = 100
 		html = '<div data-id="'+ prop +'" class="inv-skill-row">' +
 			'<div class="inv-skill-bar" style="width: '+ width +'%"></div>' +
 			'<div class="inv-skill-label-wrap">' +

@@ -11,8 +11,8 @@ var dungeon;
 		if (party.presence[0].isLeader) battle.go()
 	})
 	///////////////////////////////////////
-	function go() {
-		if (ng.view === 'dungeon') return
+	function go(force) {
+		if (!force && ng.view === 'dungeon') return
 		// cleanup sort of activities when going into dungeon
 		town.closeVarious()
 		querySelector('#town-footer-wrap').style.display = 'none'
@@ -57,7 +57,10 @@ var dungeon;
 			delay: .5,
 			filter: 'brightness(1)'
 		})
-		if (mob.earnedExp) battle.upsertGX()
+		battle.reckonGXL()
+		mob.earnedExp = 0
+		mob.earnedGold = 0
+		mob.leveledUp = false
 		ng.unlock()
 		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
 			socket.publish('party' + my.partyId, {

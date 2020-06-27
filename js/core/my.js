@@ -86,18 +86,16 @@ var my;
 		}
 	}
 	function setTarget(i) {
-		if (timers.castBar < 1) return
+		if (timers.castBar < 1 || my.hp <= 0) return
 		my.target = i
 		my.targetIsMob = true
 		if (!mobs[my.target].name) fixTarget()
 		else combat.targetChanged()
 	}
 	function tabTarget(event, tries) {
-		if (ng.view !== 'battle' || timers.castBar < 1) return
+		if (ng.view !== 'battle' || timers.castBar < 1 || my.hp <= 0) return
 
 		if (typeof tries === 'undefined') tries = 0
-
-
 		if (my.target >= mob.max) {
 			// out of range - from player to mob target
 			if (event.shiftKey) my.target = tabOrder[0]
