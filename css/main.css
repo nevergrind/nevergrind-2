@@ -930,6 +930,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 	background: transparent;
 	margin: .1rem;
 	border: .1rem groove #025;
+	line-height: 1.3;
 }
 
 #chat-input-mode {
@@ -946,6 +947,8 @@ animation: town-repeat-bg 90s linear infinite;*/
 }
 
 #chat-input {
+	font-family: Play;
+	font-size: .8rem;
 	background: transparent;
 	flex: 1;
 	color: #fdd;
@@ -974,7 +977,8 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-quest, .chat-level { color: palegoldenrod; }
 .chat-gold { color: gold; }
 .chat-spell { color: dodgerblue; }
-.chat-heal { color: #5fe }
+.chat-heal { color: aqua }
+.chat-buff { color: royalblue; }
 
 .chat-help-header {
 	color: #ffff1a;
@@ -1636,6 +1640,13 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	padding: .1rem;
 	background: linear-gradient(135deg, #000, #1a1a1a);
 }
+.skill-disabled {
+	pointer-events: none;
+	padding: 0;
+	border: .1rem outset #0a0a0a;
+	background: #0008;
+}
+.skill-disabled * { visibility: hidden }
 .skill-img {
 	position: relative;
 	z-index: 1;

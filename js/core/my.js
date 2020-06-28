@@ -1,12 +1,11 @@
 var my;
 !function($, _, TweenMax, undefined) {
 	my = {
-		hud,
+		//hud,
 		getResistObject,
 		getPartyNames,
 		getAvatarUrl,
 		resourceTick,
-		checkForDeath,
 		fixTarget,
 		setTarget,
 		tabTarget,
@@ -152,7 +151,7 @@ var my;
 		obj = obj || my
 		return 'images/avatars/' + _.kebabCase(obj.race) + '-' + (obj.gender ? 'female-' : 'male-') + obj.face + '.png';
 	}
-	function hud(msg, d) {
+	/*function hud(msg, d) {
 		my.hudTimer.kill();
 		DOM.hud.style.visibility = 'visible';
 		DOM.hud.textContent = msg;
@@ -163,7 +162,7 @@ var my;
 				}
 			});
 		}
-	}
+	}*/
 	function resourceTick(type) {
 		// hpRegen mpRegen spRegen
 		if (my.hp > 0) {
@@ -171,15 +170,10 @@ var my;
 			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
 		}
 	}
-	function checkForDeath() {
-		if (my.hp <= 0) {
-			warn("Oh no, I am dead")
-		}
-	}
 	function initSkills() {
 		warn('initSkills', my.skills)
 		if (my.skills === void 0) {
-			my.skills = [1,0,0,0,0,0,0,0,0,0,0,0]
+			my.skills = [0,0,0,0,0,0,0,0,0,0,0,0]
 			saveCharacterData()
 		}
 	}

@@ -30,6 +30,19 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 30,
 			msg: 'Regenerative spores begin to heal your wounds.',
 		},
+		shimmeringOrb: {
+			name: 'Shimmering Orb',
+			img: 10,
+			job: 'RNG',
+			msg: 'A luminescent aura wraps you in a protective shell.',
+		},
+		spiritOfTheHunter: {
+			name: 'Spirit of the Hunter',
+			img: 11,
+			job: 'RNG',
+			duration: 300,
+			msg: 'A brief lupine energy courses through your spirit.',
+		},
 	}
 	///////////////////////////////////////////
 

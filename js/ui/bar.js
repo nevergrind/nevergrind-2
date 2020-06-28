@@ -907,7 +907,7 @@ var bar;
 			else {
 				getElementById('bar-is-leader-' + data.row).classList.add('none');
 			}
-			console.warn('isLeader', data.row, index, player.isLeader);
+			// console.warn('isLeader', data.row, index, player.isLeader);
 		}
 		if (data.job !== player.job) {
 			player.job = data.job;

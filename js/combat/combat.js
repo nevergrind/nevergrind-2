@@ -86,10 +86,12 @@ var combat;
 		updateHeroResource,
 		txHotHero,
 		rxHotHero,
+		txBuffHero,
+		rxBuffHero,
 		selfDied,
 	}
-	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, key
-
+	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, buffData, key
+	let battleTextInitialized = false
 	const textDuration = 1
 	const textDistanceY = 150
 	const textDistanceX = 150
@@ -466,6 +468,17 @@ var combat;
 			if (mobs[index].buffFlags.suppressingVolley) d.damage *= .5
 
 			// phyMit
+			if (my.buffFlags.shimmeringOrb) {
+				let val = skills.RNG[10].magMit[my.buffs.shimmeringOrb.level]
+				console.info('shimmeringOrb', val)
+				d.damage -= val
+				my.buffs.shimmeringOrb.damage -= val
+				if (my.buffs.shimmeringOrb.damage <= 0) {
+					console.info('shimmeringOrb removing orb!')
+					my.buffs.shimmeringOrb.damage = 0
+					battle.removeBuff('shimmeringOrb')
+				}
+			}
 			d.damage -= stats.phyMit()
 
 			// enhancedDamage ?
@@ -484,6 +497,9 @@ var combat;
 		}
 		else {
 			// magMit
+			if (my.buffFlags.shimmeringOrb) {
+				d.damage -= skills.RNG.shimmeringOrb[10].magMit[my.buffs.shimmeringOrb.level]
+			}
 			d.damage -= stats.magMit()
 
 			// mob magic resists
@@ -632,13 +648,7 @@ var combat;
 				typeof my.buffs[keyRow].timer === 'object') {
 				my.buffs[keyRow].timer.kill()
 				my.buffs[keyRow].hotTicks.kill()
-				el = querySelector('#mybuff-' + keyRow)
-				if (el !== null) el.parentNode.removeChild(el)
-				if (typeof my.buffIconTimers[keyRow] === 'object') {
-					// started flashing/removing
-					my.buffIconTimers[keyRow].kill()
-					my.buffIconTimers[keyRow + '-remove'].kill()
-				}
+				battle.removeBuff(buff.key, keyRow)
 			}
 			// setup buff timer data
 			my.buffs[keyRow] = {
@@ -669,6 +679,79 @@ var combat;
 		chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', 'chat-heal')
 		updateHeroResource('hp', healAmount)
 	}
+
+	// buff hero
+	function txBuffHero(index, data) {
+		// damages is an object with indices that point to player row (target)
+		console.info('txBuffHero', data, spell.config.targetName)
+		if (spell.config.targetName === my.name) {
+			processBuffToMe(data)
+		}
+		else {
+			buffData = data.map(buff => {
+				return _.pick(buff, ['damage', 'index', 'key', 'level'])
+			})
+			socket.publish('name' + spell.config.targetName, {
+				action: 'p->buff',
+				//data: data,
+				data: buffData,
+			}, true)
+		}
+	}
+	function rxBuffHero(data) {
+		console.info('rxBuffHero: ', data)
+		processBuffToMe(data.data)
+	}
+	function processBuffToMe(data) {
+		console.info('processBuffToMe', data)
+		chat.log(buffs[data[0].key].msg, 'chat-heal')
+		data.forEach(buff => {
+			let key = buff.key
+			// check level of buff - cancel if lower
+			if (typeof my.buffs[key] === 'object') {
+				if (buff.level < my.buffs[key].level) {
+					// buff is lower level - now check if it's still active
+					if (typeof my.buffs[key].duration === 'undefined' && my.buffs[key].damage > 0 ||
+						my.buffs[key].duration > 0) {
+						// duration not defined or still active
+						chat.log(buffs[buff.key].name + ' failed to take hold.', 'chat-warning')
+						return
+					}
+				}
+
+				// cancel/overwrite existing buff timer data keyRow: duration, function
+				if (typeof my.buffs[key].timer === 'object') {
+					my.buffs[key].timer.kill()
+				}
+			}
+
+			battle.removeBuff(key)
+			// setup buff timer data
+			my.buffs[key] = {
+				row: buff.index,
+				key: buff.key,
+			}
+			// optional keys
+			if (buff.level) my.buffs[key].level = buff.level
+			if (buff.damage) my.buffs[key].damage = buff.damage
+
+			// not timer based - my.buffFlags[key] must be set to false via depletion
+			if (buffs[buff.key].duration > 0) {
+				// timer based
+				console.warn('SotH', buffs[buff.key].duration)
+				my.buffs[key].duration = buffs[buff.key].duration
+				my.buffs[key].timer = TweenMax.to(my.buffs[key], my.buffs[key].duration, {
+					duration: 0,
+					ease: Linear.easeNone,
+					onComplete: battle.removeMyBuffFlag,
+					onCompleteParams: [key],
+				})
+			}
+			my.buffFlags[key] = true
+			battle.addMyBuff(buff.key, key)
+		})
+	}
+
 	function animatePlayerFrames() {
 		TweenMax.to('#bar-card-bg-' + my.row, .5, {
 			startAt: { opacity: .5 },
@@ -676,6 +759,8 @@ var combat;
 		})
 	}
 	function initCombatTextLayer() {
+		if (battleTextInitialized) return
+		battleTextInitialized = true
 		combat.text = new PIXI.Application({
 			width: 1920,
 			height: 1080,

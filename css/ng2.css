@@ -969,9 +969,11 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-skill { color: #18f; }
 .chat-ooc { color: #090; }
 .chat-guild { color: #0f0; }
-.chat-warning { color: #ffff1a; }
-.chat-alert { color: #ff1a1a; }
-.chat-quest { color: gold; }
+.chat-alert, .chat-warning { color: yellow; }
+.chat-exp { color: goldenrod; }
+.chat-quest, .chat-level { color: palegoldenrod; }
+.chat-gold { color: gold; }
+.chat-spell { color: dodgerblue; }
 .chat-heal { color: #5fe }
 
 .chat-help-header {
@@ -1126,8 +1128,8 @@ background-clip: content-box;
 
 #bar-all-player-wrap { padding: .2rem; }
 #bar-all-player-wrap .player-targeted {
-	outline: .1rem ridge #8fe;
-	animation: repeat-border-flash .5s linear infinite;
+	outline: .1rem ridge #5fd;
+	/*animation: repeat-border-flash .5s linear infinite;*/
 }
 @keyframes repeat-border-flash {
 	0% { outline: .1rem ridge #8fe; }
@@ -1584,11 +1586,45 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 #skill-btn-wrap {
 	display: flex;
-	width: 20rem;
+	width: 19.2rem;
 	flex-direction: row;
 	justify-content: center;
 	flex-wrap: wrap;
 	align-content: space-around;
+}
+#skill-col {
+	display: flex;
+	flex-direction: column;
+}
+#exp-bar-wrap {
+	position: relative;
+	height: .5rem;
+	overflow: hidden;
+	background: linear-gradient(to top, #222, #444, #444, #222);
+}
+#exp-bar {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	background: linear-gradient(to top, #950, #ea0, #ea0, #950);
+	top: 0;
+	left: 0;
+	transform: translate(0%, 0%);
+	z-index: 1;
+}
+#exp-bar-grid {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	background: repeating-linear-gradient(to right,
+		transparent,
+		transparent calc(1.9rem - .5px),
+		#1a1a1a calc(1.9rem - .5px),
+		#1a1a1a calc(1.9rem + .5px));
+	box-shadow: 1px 0 #1a1a1a inset, 0 1px #1a1a1a inset, -1px 0 #1a1a1a inset, 0 -1px #1a1a1a inset;
+	top: 0;
+	left: 0;
+	z-index: 1;
 }
 #main-attack-wrap .skill-btn {
 	box-shadow: inset 0 0 0 1px #000;
@@ -2178,6 +2214,13 @@ background-repeat: no-repeat;
 	height: auto;
 	width: auto;
 }
+#inventory-gold-row {
+	align-items: center;
+	justify-content: flex-end;
+	background: #001;
+	margin: .2rem;
+	border: 1px solid #048;
+}
 #inventory-slot-wrap {
 	border: 2px ridge #048;
 	margin: 2px;
@@ -2678,6 +2721,7 @@ background-repeat: no-repeat;
 	flex-direction: column;
 	border: .1rem ridge #136;
 	flex: 1;
+	overflow-x: hidden;
 	overflow-y: auto;
 	font-size: .9rem;
 	line-height: 1.5;
@@ -3152,6 +3196,9 @@ background-repeat: no-repeat;
 	border: .1rem solid #136;
 	background: #013;
 }
+#inventory-destroy {
+	font-size: 1rem;
+}
 .inv-btn {
 	font-size: .8rem;
 	margin: .2rem;
@@ -3439,3 +3486,4 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	height: 1.2rem;
 	border: 1px solid #0a0a0a;
 }
+

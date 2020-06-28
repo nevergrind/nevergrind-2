@@ -20,7 +20,8 @@ var spell;
 	let castProgress = 0
 	let mpCost = 0
 	let spCost = 0
-	const fizzleMaxed = [0, 10, 35, 65, 95, 125, 155, 200, 250]
+	const fizzleMaxed = [0, 20, 45, 75, 105, 135, 165, 210, 260]
+	let chance = 0
 	///////////////////////////////////////////
 	function noop() {}
 	function cancelSpell() {
@@ -30,7 +31,7 @@ var spell;
 		}
 	}
 	function knockback() {
-		if (timers.castBar < 1) {
+		if (timers.castBar < 1 && !channelSuccessful()) {
 			spell.timer.kill()
 			castPenalty = .5 / spell.castTime
 			timers.castBar -= castPenalty
@@ -66,17 +67,19 @@ var spell;
 		})
 		checkSpellFizzle()
 	}
-	function checkSpellFizzle() {
-		let type = skills[my.job][spell.config.skillIndex].spellType
-		let skillLevel = my.skills[spell.index]
-		let chance = 1 - (my[type] / fizzleMaxed[skillLevel])
-		if (chance < .08) chance = .08
+	function channelSuccessful() {
+
+	}
+	function spellFizzleChance() {
+		chance = .08 + ((fizzleMaxed[my.skills[spell.index]] - my[skills[my.job][spell.index].spellType]) / 100)
+		console.info('chance', chance)
+		if (chance < .05) chance = .05
 		else if (chance > .8) chance = .8
-		console.log('checkSpellFizzle', chance)
-		if (rand() < chance) {
-			// add mana penalty
-			delayedCall(.2, spellFizzle)
-		}
+		console.info('chance after', chance)
+		return rand() < chance
+	}
+	function checkSpellFizzle() {
+		spellFizzleChance() && delayedCall(.2, spellFizzle)
 	}
 	function spellFizzle() {
 		expendSpellResources(true)

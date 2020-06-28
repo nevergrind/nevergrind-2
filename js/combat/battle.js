@@ -1,7 +1,6 @@
 var battle;
 (function(TweenMax, $, _, PIXI, Linear, undefined) {
 	battle = {
-		initialized: 0,
 		expThreshold: [0,
 			0, 100, 220, 365, 540, 750, 1000, 1295, 1640, 2040,
 			2500, 3025, 3620, 4290, 5040, 5875, 6800, 7820, 8940, 10165,
@@ -33,6 +32,7 @@ var battle;
 			inc += 20 + (i * 5);
 		}
 		 */
+		removeBuff,
 		getExpBarRatio,
 		nextLevel,
 		getSplashTarget,
@@ -46,7 +46,7 @@ var battle;
 		updateMobTargetBuffs,
 		processBuffs,
 		addMyBuff,
-		removeMyBuff,
+		removeMyBuffIcon,
 		removeMyBuffFlag,
 		setTargetHtml,
 		hideTarget,
@@ -70,9 +70,11 @@ var battle;
 	let leveled = false
 	let penalty = 0
 	let cache = {}
+	let battleSceneInitialized = false
 	const flashDuration = 10
 	const maxHeroLevel = 50
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
+	let battleLayerInitialized = false
 
 	init()
 
@@ -206,7 +208,7 @@ var battle;
 		item.resetDrop()
 		chat.sizeSmall()
 		mob.init()
-		game.emptyScenesExcept('scene-battle')
+		game.sceneCleanup('scene-battle')
 		if (chat.modeCommand === '/say') {
 			chat.modeChange({ mode: '/party' })
 		}
@@ -270,6 +272,9 @@ var battle;
 		}
 	}
 	function initBattleLayer() {
+		if (battleLayerInitialized) return
+		battleLayerInitialized = true
+
 		battle.layer = new PIXI.Application({
 			width: 1920,
 			height: 1080,
@@ -515,32 +520,28 @@ var battle;
 	function myBuffHasTimer(key) {
 		return my.buffIconTimers[key] === 'object'
 	}
-	function removeMyBuffFlag(keyRow) {
-		var buffStillActive = false
-		for (var k in my.buffs) {
-			if (keyRow === my.buffs[k].key &&
-				my.buffs[k].duration > 0) {
-				buffStillActive = true
-			}
-		}
-		if (!buffStillActive) my.buffFlags[keyRow] = false
-	}
 	function addMyBuff(key, keyRow) {
+		// buffs that can only be active once
+		if (typeof keyRow === 'undefined') keyRow = key
 		console.info('addMyBuff', key, keyRow)
+
 		el = createElement('img')
 		el.id = 'mybuff-' + keyRow
 		el.className = 'buff-icons popover-icons'
 		el.src = 'images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png'
 		querySelector('#mybuff-wrap').appendChild(el)
-		// kill if exists
-		if (myBuffHasTimer(keyRow)) my.buffIconTimers[keyRow].kill()
-		// start timer
-		if (buffs[key].duration < flashDuration) flashMyBuff(key, keyRow)
-		else {
-			my.buffIconTimers[keyRow] = delayedCall(
-				buffs[key].duration - flashDuration,
-				flashMyBuff, [key, keyRow]
-			)
+
+		if (buffs[key].duration > 0) {
+			// kill if exists
+			if (myBuffHasTimer(keyRow)) my.buffIconTimers[keyRow].kill()
+			// start timer
+			if (buffs[key].duration < flashDuration) flashMyBuff(key, keyRow)
+			else {
+				my.buffIconTimers[keyRow] = delayedCall(
+					buffs[key].duration - flashDuration,
+					flashMyBuff, [key, keyRow]
+				)
+			}
 		}
 	}
 	function flashMyBuff(key, keyRow) {
@@ -554,17 +555,39 @@ var battle;
 		})
 		my.buffIconTimers[keyRow + '-remove'] = delayedCall(
 			my.buffs[keyRow].duration,
-			removeMyBuff, [key, keyRow]
+			removeMyBuffIcon, [key, keyRow]
 		)
 	}
-	function removeMyBuff(key, keyRow) {
+	function removeMyBuffFlag(keyRow) {
+		console.info('removeMyBuffFlag', keyRow)
+		var buffStillActive = false
+		for (var k in my.buffs) {
+			if (keyRow === my.buffs[k].key &&
+				my.buffs[k].duration > 0) {
+				buffStillActive = true
+			}
+		}
+		if (!buffStillActive) my.buffFlags[keyRow] = false
+	}
+	function removeMyBuffIcon(key, keyRow) {
 		console.info('removeMyBuff', key, keyRow)
-		my.buffIconTimers[keyRow].kill()
-		my.buffIconTimers[keyRow + '-remove'].kill()
-		/*if (my.buffIconTimers[keyRow] !== null) my.buffIconTimers[keyRow] = null
-		if (my.buffIconTimers[keyRow + '-remove'] !== null) my.buffIconTimers[keyRow + '-remove'] = null*/
+		if (typeof keyRow === 'undefined') keyRow = key
+		// only when it has DURATION
+		if (typeof my.buffIconTimers[keyRow] === 'object') {
+			my.buffIconTimers[keyRow].kill()
+		}
+		if (typeof my.buffIconTimers[keyRow + '-remove'] === 'object') {
+			my.buffIconTimers[keyRow + '-remove'].kill()
+		}
 		buffEl = querySelector('#mybuff-' + keyRow)
 		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
+	}
+	function removeBuff(key, keyRow) {
+		if (typeof my.buffs[key] === 'object') {
+			if (my.buffs[key].damage) my.buffs[key].damage = 0
+		}
+		battle.removeMyBuffFlag(key, keyRow)
+		battle.removeMyBuffIcon(key, keyRow)
 	}
 
 	function killAllBattleTimers() {
@@ -629,12 +652,14 @@ var battle;
 	}
 	function show() {
 		ng.setScene('battle');
-		if (battle.initialized) {
+		if (battleSceneInitialized) {
 			getElementById('scene-battle').style.display = 'block'
+			battle.layer.stage.removeChildren()
+			combat.text.stage.removeChildren()
 		}
 		else {
 			getElementById('scene-battle').innerHTML = battle.html()
-			battle.isInit = 1;
+			battleSceneInitialized = true
 		}
 	}
 })(TweenMax, $, _, PIXI, Linear);

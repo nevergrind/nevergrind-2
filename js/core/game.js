@@ -17,7 +17,7 @@ var game;
 		heartbeatReceived,
 		heartbeatReceivedParty,
 		getPresence,
-		emptyScenesExcept,
+		sceneCleanup,
 		getPetName,
 		played,
 		getCachedMinutes,
@@ -48,6 +48,8 @@ var game;
 		'partyId',
 		'avatar'
 	]
+	const scenes = ['#scene-town', '#scene-dungeon', '#scene-battle']
+	const filterBrightnessDark = { filter: 'brightness(0)' }
 	var played = {
 		timer: new delayedCall(0, ''),
 		interval: 60000
@@ -222,15 +224,19 @@ var game;
 		el !== null && el.parentNode.removeChild(el);
 		chat.setHeader();
 	}
-	function emptyScenesExcept(scene) {
-		TweenMax.set('#sky-wrap', {
-			filter: 'brightness(0)'
+	function sceneCleanup(currentScene) {
+		TweenMax.set('#sky-wrap', filterBrightnessDark)
+		scenes.forEach(v => {
+			if (v === '#' + currentScene) {
+				// this is the new scene - prep fading in
+				querySelector(v).style.filter = 'brightness(0)'
+			}
+			else {
+				if (v === '#scene-town' && currentScene !== 'town') {
+					querySelector(v).innerHTML = ''
+				}
+			}
 		})
-		const scenes = ['#scene-town', '#scene-dungeon', '#scene-battle']
-		scenes.forEach(function(v) {
-			if (v === '#' + scene) querySelector(v).style.filter = 'brightness(0)'
-			else querySelector(v).innerHTML = ''
-		});
 	}
 	function getPetName() {
 		var s1 = [

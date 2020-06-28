@@ -19,6 +19,7 @@ var loading;
 		'You can cancel a spell by pressing the space bar.',
 		'If a mob hits you while you are casting a spell, you will experience spell knockback which makes your spell take a longer time to cast. This can make life difficult for a caster, but other players can help take the heat off of you.',
 		'Be wary about training spells that require skills that you have not sufficiently practiced. High-level spells may frequently fizzle if your alteration, conjuration, or evocation are not adequate.',
+		'Improving your alteration, conjuration, and evocation will help you channel your spells while taking a beating from mobs. Failed channeling rolls will result in longer cast times.',
 	]
 	loading.tipCount = loading.tips.length
 

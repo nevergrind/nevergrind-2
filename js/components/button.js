@@ -21,6 +21,7 @@ var button;
 	let globalCooldownDur = 2
 	let damages
 	const displayBlock = { display: 'block' }
+	const displayFlex = { display: 'flex' }
 	/////////////////////////////
 
 	function init() {
@@ -315,44 +316,51 @@ var button;
 	}
 	function setAll() {
 		TweenMax.set('#button-wrap', {
-			startAt: { display: 'flex' },
+			startAt: displayFlex,
 		})
-		if (button.initialized) return
-		var s = '';
-		// base attack buttons
-		s += '<div id="main-attack-wrap">' +
-			'<div class="skill-btn">' +
-				'<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="'+ bar.getItemSlotImage('eq', 12) +'">' +
-				'<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>' +
-			'</div>'
-			if (isOffhandingWeapon()) {
-				s += '<div class="skill-btn">' +
-					'<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="'+ bar.getItemSlotImage('eq', 13) +'">' +
-					'<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>' +
+		if (!button.initialized) {
+			var s = '';
+			// base attack buttons
+			s += '<div id="main-attack-wrap">' +
+				'<div class="skill-btn">' +
+					'<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="'+ bar.getItemSlotImage('eq', 12) +'">' +
+					'<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>' +
+				'</div>'
+				if (isOffhandingWeapon()) {
+					s += '<div class="skill-btn">' +
+						'<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="'+ bar.getItemSlotImage('eq', 13) +'">' +
+						'<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>' +
+					'</div>'
+				}
+			s += '</div>' +
+			'<div id="skill-col">' +
+				'<div id="exp-bar-wrap">' +
+					'<div id="exp-bar"></div>' +
+					'<div id="exp-bar-grid"></div>' +
+				'</div>' +
+				'<div id="skill-btn-wrap">'
+			// skill buttons
+			for (var i=0; i<12; i++) {
+				s += '<div id="skill-btn-'+ i +'" class="skill-btn job-skill-btn" data-index="'+ i +'">' +
+					'<img id="skill-'+ i +'" class="skill-img popover-icons" src="images/skills/'+ my.job +'/'+ i +'.png">' +
+					'<div id="skill-timer-'+ i +'-rotate" class="skill-timer-rotate"></div>' +
+					'<div id="skill-timer-'+ i +'" class="skill-timer"></div>' +
 				'</div>'
 			}
-		s += '</div>' +
-		'<div id="skill-col">' +
-			'<div id="exp-bar-wrap">' +
-				'<div id="exp-bar"></div>' +
-				'<div id="exp-bar-grid"></div>' +
-			'</div>' +
-			'<div id="skill-btn-wrap">'
-		// skill buttons
-		for (var i=0; i<12; i++) {
-			s +=
-			'<div id="skill-btn-'+ i +'" class="skill-btn job-skill-btn" data-index="'+ i +'">' +
-				'<img id="skill-'+ i +'" class="skill-img popover-icons" src="images/skills/'+ my.job +'/'+ i +'.png">' +
-				'<div id="skill-timer-'+ i +'-rotate" class="skill-timer-rotate"></div>' +
-				'<div id="skill-timer-'+ i +'" class="skill-timer"></div>' +
+			s += '</div>' +
 			'</div>'
-		}
-		s += '</div>' +
-		'</div>'
 
-		querySelector('#button-wrap').innerHTML = s;
-		button.initialized = true
-		battle.drawExpBar(0, 0)
+			querySelector('#button-wrap').innerHTML = s;
+			button.initialized = true
+			battle.drawExpBar(0, 0)
+		}
+		updateBtnEnabled()
+	}
+	function updateBtnEnabled() {
+		querySelectorAll('#skill-btn-wrap .skill-btn').forEach((el, i) => {
+			el.classList.remove('skill-disabled')
+			if (my.skills[i] === 0) el.classList.add('skill-disabled')
+		})
 	}
 	function hide() {
 		TweenMax.set('#button-wrap', {

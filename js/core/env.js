@@ -232,7 +232,7 @@ var env;
 	}
 
 	function animateBuildings() {
-		warn('animateBuildings')
+		// warn('animateBuildings')
 		if (env.phase === 'morning') {
 			TweenMax.to('#town-building-wrap', phaseDuration * .2, {
 				startAt: {

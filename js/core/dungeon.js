@@ -17,7 +17,7 @@ var dungeon;
 		town.closeVarious()
 		querySelector('#town-footer-wrap').style.display = 'none'
 		tavern.leaders = ''
-		game.emptyScenesExcept('scene-dungeon')
+		game.sceneCleanup('scene-dungeon')
 
 		// coming out of battle - save!
 		// TODO: change this to update gold+exp+level too later

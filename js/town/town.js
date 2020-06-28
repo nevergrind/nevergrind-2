@@ -89,12 +89,15 @@ var town;
 	]
 	////////////////////////////////////////////
 	function go() {
-		if (ng.view === 'town') return;
+		if (ng.view === 'town') return
 		mob.textures = {}
+		my.target = -1
+		my.targetIsMob = true
+		battle.hideTarget()
 		mob.killAttacks()
 		if (create.selected) {
 			clearTimeout(game.session.timer)
-			game.emptyScenesExcept('scene-town');
+			game.sceneCleanup('scene-town');
 			ng.lock(1);
 			if (ng.view === 'dungeon') {
 				TweenMax.set('#body', {
@@ -204,7 +207,7 @@ var town;
 			filter: 'brightness(1)',
 			onComplete: ng.unlock
 		})
-		warn('town.socketReady!')
+		// warn('town.socketReady!')
 	}
 
 	function initItemData(obj, type) {

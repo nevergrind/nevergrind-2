@@ -745,23 +745,24 @@ var skills;
 			}, {
 				name: 'Shimmering Orb',
 				img: 'RNG-11',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
+				sp: [0, 9, 18, 40, 74, 110, 137, 165],
+				spellDamage: level => spellValues.shimmeringOrb[level],
+				magMit: [0, 2, 4, 7, 9, 12, 15, 19],
+				spellVariance: 1,
 				spellType: 'conjuration',
-				castTime: 0,
-				cooldownTime: 0,
-				description: 'Conjure a shimmering globe that protects you for 20 seconds. Reducing all magic damage by X % for X seconds.',
+				castTime: 4,
+				cooldownTime: 5,
+				description: 'Conjure a shimmering orb that shields your target. Reduces magical damage received by X per hit. Absorbs a total of X damage.',
 			}, {
 				name: 'Spirit of the Hunter',
 				img: 'RNG-12',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
+				sp: [0, 13, 27, 60, 111, 165, 205, 247],
+				spellDamage: level => spellValues.spiritOfTheHunter[level],
+				spellVariance: 1,
 				spellType: 'alteration',
-				castTime: 0,
-				cooldownTime: 0,
-				description: 'Boost your ability to dodge attacks by X% and receive x% haste for X seconds.',
+				castTime: 3.5,
+				cooldownTime: 15,
+				description: 'Boost your attack by X by X and receive 20% attack haste for X seconds.',
 			},
 		],
 		MNK: [
@@ -2008,6 +2009,8 @@ var skills;
 		shockNova: [0, 9, 20, 47, 81, 123, 152, 179], // mp: [0, 7, 14, 33, 58, 86, 110, 127]
 		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461], // mp: [0, 8, 17, 41, 72, 107, 137, 158]
 		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382], // sp: [0, 7, 14, 31, 57, 85, 106, 127]
+		shimmeringOrb: [0, 33, 67, 152, 275, 408, 508, 611], // sp: [0, 9, 18, 40, 74, 110, 137, 165]
+		spiritOfTheHunter: [0, 4, 8, 13, 19, 26, 34, 45],
 	}
 
 	///////////////////////////////////////////
@@ -2026,7 +2029,10 @@ var skills;
 		return skills[my.job].map(o => o.name)
 	}
 	function notReady(config) {
-		if (timers.castBar < 1) return true
+		if (timers.castBar < 1 ||
+			(config.global && timers.globalCooldown < 1) ||
+			(config.skillIndex >= 0 && timers.skillCooldowns[config.skillIndex] < 1) ||
+			my.skills[config.skillIndex] === 0) return true
 		if (config.target === -1) {
 			chat.log('You must select a target to use this skill.', 'chat-warning')
 			return true
@@ -2048,8 +2054,6 @@ var skills;
 				return true
 			}
 		}
-		if (config.global && timers.globalCooldown < 1) return true
-		if (config.skillIndex >= 0 && timers.skillCooldowns[config.skillIndex] < 1) return true
 		// check for a valid target
 		if (config.fixTarget) {
 			my.fixTarget()

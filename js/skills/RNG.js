@@ -15,6 +15,7 @@
 		spiritOfTheHunter,
 	}
 	let enhancedDamage, hit, config
+	let lastData = {}
 
 	let damages = []
 	///////////////////////////////////////////
@@ -50,7 +51,6 @@
 	}
 
 	function explosiveShot(index, data) {
-		console.info('explosiveShot', index)
 		// check constraints
 		config = {
 			skillIndex: index,
@@ -82,7 +82,6 @@
 		button.triggerGlobalCooldown()
 	}
 	function trueshotStrike(index, data) {
-		console.info('trueshotStrike', index)
 		// check constraints
 		config = {
 			skillIndex: index,
@@ -111,7 +110,6 @@
 		button.triggerGlobalCooldown()
 	}
 	function spreadShot(index, data) {
-		console.info('spreadShot', index)
 		// check constraints
 		config = {
 			skillIndex: index,
@@ -148,7 +146,6 @@
 		button.triggerGlobalCooldown()
 	}
 	function bladeStorm(index, data) {
-		console.info('bladeStorm', index)
 		// check constraints
 		config = {
 			skillIndex: index,
@@ -186,7 +183,6 @@
 		button.triggerGlobalCooldown()
 	}
 	function suppressingVolley(index, data) {
-		console.info('suppressingVolley', index)
 		// check constraints
 		config = {
 			skillIndex: index,
@@ -225,7 +221,7 @@
 		// special effects
 	}
 	function ignite(index, data) {
-		console.info('ignite', index)
+		if (timers.castBar < 1) return
 		// check constraints
 		spell.config = {
 			skillIndex: index,
@@ -240,7 +236,6 @@
 		spell.startCasting(index, data, igniteCompleted)
 	}
 	function igniteCompleted() {
-		info('called: igniteCompleted', spell.config)
 		damages = []
 		damages.push({
 			index: spell.config.target,
@@ -257,7 +252,7 @@
 		combat.txDamageMob(damages)
 	}
 	function shockNova(index, data) {
-		console.info('shockNova', index)
+		if (timers.castBar < 1) return
 		spell.config = {
 			skillIndex: index,
 			global: true,
@@ -287,7 +282,7 @@
 		combat.txDamageMob(damages)
 	}
 	function faerieFlame(index, data) {
-		console.info('faerieFlame', index)
+		if (timers.castBar < 1) return
 		spell.config = {
 			skillIndex: index,
 			global: true,
@@ -317,7 +312,7 @@
 		combat.txDamageMob(damages)
 	}
 	function fungalGrowth(index, data) {
-		console.info('fungalGrowth', index)
+		if (timers.castBar < 1) return
 		spell.config = {
 			skillIndex: index,
 			global: true,
@@ -338,41 +333,68 @@
 			key: 'fungalGrowth',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true) // skill check, noCrit, force noCrit
+			...stats.spellDamage(false, true) // noCrit, force noCrit
 		})
 		console.info('fungalGrowthCompleted', damages)
 		combat.txHotHero(spell.config.target, damages)
 	}
 	function shimmeringOrb(index, data) {
-		console.info('shimmeringOrb', index)
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
+		if (timers.castBar < 1) return
+		spell.config = {
+			skillIndex: index,
+			global: true,
+			target: my.target,
+			isMob: false,
+			oocEnabled: true,
+			spCost: data.sp[my.skills[index]],
+			name: data.name,
 		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
-		// check constraints
-		// process skill data
-		// animate timers
+		if (skills.notReady(spell.config)) return
+		lastData = data
+		spell.config.targetName = party.getNameByRow(my.target)
+		spell.startCasting(index, data, shimmeringOrbCompleted)
 	}
+	function shimmeringOrbCompleted() {
+		damages = []
+		damages.push({
+			index: spell.config.target,
+			key: 'shimmeringOrb',
+			spellType: spell.data.spellType,
+			...stats.spellDamage(false, true) // noCrit, force noCrit
+		})
+		damages[0].level = my.skills[spell.config.skillIndex]
+		combat.txBuffHero(spell.config.target, damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, lastData)
+	}
+
 	function spiritOfTheHunter(index, data) {
-		console.info('spiritOfTheHunter', index)
-		if (timers.skillCooldowns[index] < 1 || timers.globalCooldown < 1) return
-		my.fixTarget()
-		if (my.target === -1) return
-		var mpCost = data.mp[my.skills[index]]
-		if (mpCost > my.mp) {
-			chat.log('Not enough mana for ' + data.name + '!', 'chat-warning')
-			return
+		if (timers.castBar < 1) return
+		spell.config = {
+			skillIndex: index,
+			global: true,
+			target: my.target,
+			isMob: false,
+			oocEnabled: true,
+			spCost: data.sp[my.skills[index]],
+			name: data.name,
 		}
-		my.mp -= mpCost
-		bar.updateBar('mp')
-		// check constraints
-		// process skill data
-		// animate timers
+		if (skills.notReady(spell.config)) return
+		lastData = data
+		spell.config.targetName = party.getNameByRow(my.target)
+		spell.startCasting(index, data, spiritOfTheHunterCompleted)
+	}
+	function spiritOfTheHunterCompleted() {
+		damages = []
+		damages.push({
+			index: spell.config.target,
+			key: 'spiritOfTheHunter',
+			spellType: spell.data.spellType,
+			...stats.spellDamage(false, true) // noCrit, force noCrit
+		})
+		damages[0].level = my.skills[spell.config.skillIndex]
+		combat.txBuffHero(spell.config.target, damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, lastData)
 	}
 }($, _, TweenMax, Linear);
