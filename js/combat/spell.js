@@ -22,6 +22,8 @@ var spell;
 	let spCost = 0
 	const fizzleMaxed = [0, 20, 45, 75, 105, 135, 165, 210, 260]
 	let chance = 0
+	let success = 0
+	let spellType = ''
 	///////////////////////////////////////////
 	function noop() {}
 	function cancelSpell() {
@@ -29,6 +31,16 @@ var spell;
 			spell.timer.kill()
 			stopCasting()
 		}
+	}
+	// TODO: Fix cast knockback calc
+	function channelSuccessful() {
+		spellType = skills[my.job][spell.index].spellType
+		success = .6 - ((fizzleMaxed[my.skills[spell.index]] - my[spellType]) / 100)
+		//console.info('channelSuccessful success 1', success)
+		if (success > .5) success = .5 // max 50% chance to channel
+		else if (success < 0) success = 0 // at worst 0% chance requires 60+ diff
+		//console.info('channelSuccessful success 2', success)
+		return rand() < success
 	}
 	function knockback() {
 		if (timers.castBar < 1 && !channelSuccessful()) {
@@ -67,11 +79,9 @@ var spell;
 		})
 		checkSpellFizzle()
 	}
-	function channelSuccessful() {
-
-	}
 	function spellFizzleChance() {
-		chance = .08 + ((fizzleMaxed[my.skills[spell.index]] - my[skills[my.job][spell.index].spellType]) / 100)
+		spellType = skills[my.job][spell.index].spellType
+		chance = .08 + ((fizzleMaxed[my.skills[spell.index]] - my[spellType]) / 100)
 		console.info('chance', chance)
 		if (chance < .05) chance = .05
 		else if (chance > .8) chance = .8

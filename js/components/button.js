@@ -17,7 +17,9 @@ var button;
 		initialized: false,
 	}
 	var name, hit
-
+	let speed = 0
+	let speedHaste = 1
+	let mySwingSpeed = 0
 	let globalCooldownDur = 2
 	let damages
 	const displayBlock = { display: 'block' }
@@ -216,8 +218,6 @@ var button;
 		}
 
 		if (timers.castBar < 1) {
-			// TODO: FIX THIS SHIT
-			// cannot auto attack while casting
 			console.info('casting...', Date.now())
 			delays[key] = delayedCall(.1, startSwing, [key])
 			return
@@ -240,10 +240,20 @@ var button;
 		to.startAt = {}
 		to.startAt[key] = 0
 		to[key] = 1
-
-		TweenMax.to(timers, items.eq[slot].speed, to)
+		mySwingSpeed = getAttackSpeed(slot)
+		TweenMax.to(timers, mySwingSpeed, to)
 		delays[key].kill()
-		delays[key] = delayedCall(items.eq[slot].speed, button[key])
+		delays[key] = delayedCall(mySwingSpeed, button[key])
+	}
+	function getAttackSpeed(slot) {
+		speed = items.eq[slot].speed
+		speedHaste = 1
+		// buffs
+		if (my.buffFlags.spiritOfTheHunter) speedHaste -= .2
+		// debuffs
+		if (speedHaste < .25) speedHaste = .25
+		else if (speedHaste > 2) speedHaste = 2
+		return speed * speedHaste
 	}
 	function handleButtonStart(o) {
 		TweenMax.set(o.el, {

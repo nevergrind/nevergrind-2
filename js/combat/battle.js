@@ -315,7 +315,7 @@ var battle;
 			let totalMobs = _.random(minMobs, maxMobs)
 
 			if (!ng.isApp) {
-				totalMobs = 9
+				totalMobs = 3
 				minLevel = 1
 				maxLevel = 8
 			}

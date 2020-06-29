@@ -396,5 +396,8 @@
 		combat.txBuffHero(spell.config.target, damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, lastData)
+		if (bar.windowsOpen.character && bar.activeTab === 'character') {
+			ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
+		}
 	}
 }($, _, TweenMax, Linear);

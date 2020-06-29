@@ -194,6 +194,10 @@ var stats = {};
 		else if (type === 'Archery') atk += (archery() * 2.66)
 		else if (type === 'Hand-to-Hand') atk += (handToHand() * 2.66)
 		//info('stats.missChance', type, ~~atk)
+		// buffs
+		if (my.buffFlags.spiritOfTheHunter) {
+			atk += skills.RNG[11].spellDamage(my.buffs.spiritOfTheHunter.level)
+		}
 		return ~~atk
 		//else atk += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
 	}
