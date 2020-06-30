@@ -1138,9 +1138,9 @@ var skills;
 			{
 				name: 'Smite',
 				img: 'CLR-1',
-				mp: [0, 5, 12, 29, 52, 77, 99, 115],
-				spellDamage: level => spellValues.ignite[level] + (my.level * 2),
-				spellVariance: .875,
+				mp: [0, 6, 13, 31, 57, 84, 108, 126],
+				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
 				castTime: 2.5,
@@ -1149,113 +1149,124 @@ var skills;
 			}, {
 				name: 'Deliverance',
 				img: 'CLR-2',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
-				cooldownTime: 0,
-				description: 'LoremIpsum',
+				mp: [0, 4, 10, 23, 42, 66, 85, 98],
+				spellDamage: level => spellValues.deliverance[level] + (my.level * 2),
+				spellVariance: .9,
+				spellType: 'evocation',
+				damageType: 'arcane',
+				castTime: 3.5,
+				cooldownTime: 8,
+				description: 'Single-target arcane damage - +50% damage to undead and demons.',
 			}, {
 				name: 'Condemnation',
 				img: 'CLR-3',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
-				cooldownTime: 0,
-				description: 'LoremIpsum',
+				mp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.condemnation[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'evocation',
+				damageType: 'arcane',
+				castTime: 3.5,
+				cooldownTime: 15,
+				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Sacred Revelation',
 				img: 'CLR-4',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
-				cooldownTime: 0,
-				description: 'LoremIpsum',
+				mp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.sacredRevelation[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'evocation',
+				damageType: 'arcane',
+				castTime: 1.5,
+				cooldownTime: 30,
+				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Holy Sanctuary',
 				img: 'CLR-5',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
+				mp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.holySanctuary[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'conjuration',
+				damageType: 'arcane',
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'LoremIpsum',
+				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Force of Glory',
 				img: 'CLR-6',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
+				mp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.forceOfGlory[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'conjuration',
+				damageType: 'arcane',
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'LoremIpsum',
+				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Circle of Prayer',
 				img: 'CLR-7',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
+				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.circleOfPrayer[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'conjuration',
+				damageType: 'arcane',
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'LoremIpsum',
+				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Guardian Angel',
 				img: 'CLR-8',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
+				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.guardianAngel[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'conjuration',
+				damageType: 'arcane',
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'LoremIpsum',
+				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Divine Light',
 				img: 'CLR-9',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
+				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.divineLight[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'alteration',
+				damageType: 'arcane',
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'LoremIpsum',
+				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Divine Embrace',
 				img: 'CLR-10',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
+				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.divineEmbrace[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'alteration',
+				damageType: 'arcane',
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'LoremIpsum',
+				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Seal of Redemption',
 				img: 'CLR-11',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
+				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.sealOfRedemption[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'alteration',
+				damageType: 'arcane',
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'LoremIpsum',
+				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Zealous Resolve',
 				img: 'CLR-12',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
+				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				spellDamage: level => spellValues.zealousResolve[level] + (my.level * 2),
+				spellVariance: .875,
+				spellType: 'alteration',
+				damageType: 'arcane',
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'LoremIpsum',
+				description: 'Smite your target for X arcane damage.',
 			},
 		],
 		SHM: [
@@ -1997,21 +2008,33 @@ var skills;
 			},
 		],
 	}
+	// HoT 3-4 sp/heal
+	// DIRECT HEALING 2-3 spirit per heal
+	// AE HEALING .5-1.25 sp/heal
 
-	// 2 spirit per heal is normal for instant
-	// 3 spirit per heal is good (regen)
-
-	// 2 mana per damage is bad
-	// 3 mana per damage is average
-	// 4 mana per damage is good
-	// 5 mana per damage is excellent!
+	// DOT 3-5 mp/d
+	// DIRECT DAMAGE 2-4 m/d
+	// AE DAMAGE 1.5-3 m/d
 	const spellValues = {
-		ignite: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115]
-		shockNova: [0, 9, 20, 47, 81, 123, 152, 179], // mp: [0, 7, 14, 33, 58, 86, 110, 127]
-		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461], // mp: [0, 8, 17, 41, 72, 107, 137, 158]
-		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382], // sp: [0, 7, 14, 31, 57, 85, 106, 127]
+		ignite: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115] 3
+		shockNova: [0, 9, 20, 47, 81, 123, 152, 179], // mp: [0, 7, 14, 33, 58, 86, 110, 127] 1.3?
+		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461], // mp: [0, 8, 17, 41, 72, 107, 137, 158] 2.1?
+		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382], // sp: [0, 7, 14, 31, 57, 85, 106, 127] 3?
 		shimmeringOrb: [0, 33, 67, 152, 275, 408, 508, 611], // sp: [0, 9, 18, 40, 74, 110, 137, 165]
-		spiritOfTheHunter: [0, 4, 8, 13, 19, 26, 34, 45],
+		spiritOfTheHunter: [0, 4, 8, 13, 19, 26, 34, 45], // sp [0, 13, 27, 60, 111, 165, 205, 247],
+		// cleric
+		smite: [0, 18, 44, 105, 187, 277, 357, 416], // mp: [0, 6, 13, 31, 57, 84, 108, 126] 3.3
+		deliverance: [0, 11, 28, 64, 117, 184, 237, 274], // mp: [0, 4, 10, 23, 42, 66, 85, 98] 2.8
+		condemnation: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115] 1.6
+		sacredRevelation: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115]
+		holySanctuary: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115]
+		forceOfGlory: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115]
+		circleOfPrayer: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
+		guardianAngel: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
+		divineLight: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
+		divineEmbrace: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
+		sealOfRedemption: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
+		zealousResolve: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
 	}
 
 	///////////////////////////////////////////

@@ -11,6 +11,7 @@ var spell;
 		stopCasting,
 		cancelSpell,
 		knockback,
+		getSpellConfig,
 	}
 	let castBarWrap = querySelector('#cast-bar-wrap')
 	let castBar = querySelector('#cast-bar')
@@ -49,9 +50,10 @@ var spell;
 			timers.castBar -= castPenalty
 			if (timers.castBar < 0) timers.castBar = 0
 			/////////////////////////
-			castProgress = 1 - (timers.castBar / spell.castTime)
+			castProgress = (1 - (timers.castBar / 1)) * spell.castTime
+			console.info('knockback', castProgress, spell.castTime)
 			TweenMax.set(castBar, { x: '-' + spellRatio() + '%' })
-			spell.timer = TweenMax.to(timers, spell.castTime * castProgress, {
+			spell.timer = TweenMax.to(timers, castProgress, {
 				startAt: { castBar: timers.castBar },
 				castBar: 1,
 				onUpdate: updateSpellBar,
@@ -139,5 +141,16 @@ var spell;
 	function stopCasting() {
 		timers.castBar = 1
 		castBarWrap.style.opacity = 0
+	}
+	function getSpellConfig(index, skillData, manaType = 'mp', isMob = true) {
+		return {
+			skillIndex: index,
+			global: true,
+			target: my.target,
+			isMob: true,
+			fixTarget: true,
+			mpCost: skillData[manaType][my.skills[index]],
+			name: skillData.name,
+		}
 	}
 }($, _, TweenMax, Power0);

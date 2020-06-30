@@ -20,35 +20,24 @@
 	///////////////////////////////////////////
 	function smite(index, data) {
 		if (timers.castBar < 1) return
-		// check constraints
-		spell.config = {
-			skillIndex: index,
-			global: true,
-			target: my.target,
-			isMob: true,
-			fixTarget: true,
-			mpCost: data.mp[my.skills[index]],
-			name: data.name,
-		}
+		spell.config = spell.getSpellConfig(index, data)
 		if (skills.notReady(spell.config)) return
 		spell.startCasting(index, data, smiteCompleted)
 	}
 	function smiteCompleted() {
-		damages = []
-		damages.push({
+		combat.txDamageMob([{
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
-		})
-		combat.txDamageMob(damages)
+		}])
 	}
 
 	function deliverance(index, data) {
-		console.info('explosiveShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = spell.getSpellConfig(index, data)
+		if (skills.notReady(spell.config)) return
+		spell.startCasting(index, data, smiteCompleted)
 	}
 	function deliveranceCompleted() {
 

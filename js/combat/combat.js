@@ -90,7 +90,7 @@ var combat;
 		rxBuffHero,
 		selfDied,
 	}
-	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, buffData, key
+	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, buffData, key, resist, resistPenalty
 	let battleTextInitialized = false
 	const textDuration = 1
 	const textDistanceY = 150
@@ -197,7 +197,23 @@ var combat;
 			d.enhancedDamage += stats.enhanceDamageToMobType(combat.mobType[mobs[d.index].img])
 
 			// reduce enhancedDamage
+			if (mobs[d.index].mobType === 'undead' || mobs[d.index].mobType === 'humanoid') {
+				if (d.weaponSkill === 'One-hand Blunt' || d.weaponSkill === 'Two-hand Blunt') {
+					d.enhancedDamage += .25
+				}
+			}
+			else if (mobs[d.index].mobType === 'beast') {
+				if (d.weaponSkill === 'One-hand Slash' || d.weaponSkill === 'Two-hand Slash') {
+					d.enhancedDamage += .25
+				}
+			}
+			else if (mobs[d.index].mobType === 'mystical') {
+				if (d.weaponSkill === 'Piercing') {
+					d.enhancedDamage += .25
+				}
+			}
 
+			//console.info('combat damage', d)
 			d.damage *= d.enhancedDamage
 
 			// modify mob armor for self
@@ -238,14 +254,25 @@ var combat;
 		}
 		else {
 			// mob magic resists
-			console.info('spell:', d.index, mobs[d.index])
-			d.damage *= mobs[d.index].resist[d.damageType]
+			d.damage *= getMobResist(d)
 
 		}
 		// final sanity checks
 		d.damage = d.damage < 1 ? 1 : round(d.damage)
 		combat.levelSkillCheck('offense')
 		return d
+	}
+	function getMobResist(d) {
+		resist = mobs[d.index].resist[d.damageType]
+		resistPenalty = 0
+		if (mobs[d.index].level > my.level) {
+			// 20% when 3 levels higher
+			resistPenalty = Math.pow(mobs[d.index].level - my.level + 1, 2.16) / 100
+		}
+		resist -= resistPenalty
+		if (resist < .25) resist = .25
+
+		return resist
 	}
 	function toggleAutoAttack() {
 		if (!my.isAutoAttacking) autoAttackEnable()
@@ -375,28 +402,6 @@ var combat;
 		battle.reckonGXL()
 		animateMyDeath()
 	}
-	function animateMyDeath() {
-		let el = querySelector('#scene-battle')
-		let o = {
-			grayscale: 0,
-			saturate: 1,
-			contrast: 1,
-			brightness: 1,
-		}
-		TweenMax.to(o, 3, {
-			grayscale: .666,
-			saturate: 5,
-			contrast: 5,
-			brightness: .333,
-			onUpdate: setFilter,
-			onUpdateParams: [o]
-		})
-		function setFilter(o) {
-			TweenMax.set(el, {
-				filter: 'grayscale(1) sepia(1) saturate('+ o.saturate +') hue-rotate(-30deg) contrast('+ o.contrast +') brightness('+ o.brightness +') grayscale('+ o.grayscale +') '
-			})
-		}
-	}
 	// damage hero functions
 	function updateHeroResource(type, addValue) {
 		party.presence[0][type] = my[type] += addValue
@@ -418,6 +423,7 @@ var combat;
 		bar.updateBar(type)
 	}
 	function processDamagesHero(index, d) {
+		console.info('txDamageHero', index, d)
 		if (my.hp <= 0) {
 			d.damage = 0
 			return d
@@ -431,7 +437,8 @@ var combat;
 		}
 		console.info('processDamagesHero', index, d)
 		// dodge
-		if (my.level >= skills['dodge'][my.job].level) {
+		if (skills.dodge[my.job].level &&
+			my.level >= skills.dodge[my.job].level) {
 			combat.levelSkillCheck('dodge')
 			if (!d.isPiercing &&
 				rand() < stats.dodgeChance()) {
@@ -443,7 +450,8 @@ var combat;
 		// info('processDamages', d)
 		if (d.damageType === 'physical') {
 			// riposte
-			if (my.level >= skills['riposte'][my.job].level) {
+			if (skills.riposte[my.job].level &&
+				my.level >= skills.riposte[my.job].level) {
 				combat.levelSkillCheck('riposte')
 				if (!d.isPiercing &&
 					rand() < stats.riposteChance()) {
@@ -454,7 +462,8 @@ var combat;
 				}
 			}
 			// parry
-			if (my.level >= skills['parry'][my.job].level) {
+			if (skills.parry[my.job].level &&
+				my.level >= skills.parry[my.job].level) {
 				combat.levelSkillCheck('parry')
 				if (!d.isPiercing &&
 					rand() < stats.parryChance()) {
@@ -514,7 +523,6 @@ var combat;
 	}
 	function txDamageHero(index, damages) {
 		// damages is an object with indices that point to player row (target)
-		console.info('txDamageHero', damages)
 		processDamageToMe(index, damages)
 		mob.animateAttack(index)
 		// animate mob for other players and check if they were hit
@@ -536,7 +544,7 @@ var combat;
 	function processDamageToMe(index, damages) {
 		if (damages.findIndex(dam => dam.row === my.row) >= 0) {
 			// something hit me
-			damages = damages.map(dam => combat.processDamagesHero(index, dam))
+			damages = damages.map(dam => processDamagesHero(index, dam))
 			len = damages.length
 			totalDamage = 0
 			for (i=0; i<len; i++) {
@@ -834,5 +842,27 @@ var combat;
 		else if (level >= ~~(my.level * .77) ) resp = 2
 		else if (level >= ~~(my.level * .66) ) resp = 1
 		return resp
+	}
+	function animateMyDeath() {
+		let el = querySelector('#scene-battle')
+		let o = {
+			grayscale: 0,
+			saturate: 1,
+			contrast: 1,
+			brightness: 1,
+		}
+		TweenMax.to(o, 3, {
+			grayscale: .666,
+			saturate: 5,
+			contrast: 5,
+			brightness: .333,
+			onUpdate: setFilter,
+			onUpdateParams: [o]
+		})
+		function setFilter(o) {
+			TweenMax.set(el, {
+				filter: 'grayscale(1) sepia(1) saturate('+ o.saturate +') hue-rotate(-30deg) contrast('+ o.contrast +') brightness('+ o.brightness +') grayscale('+ o.grayscale +') '
+			})
+		}
 	}
 }($, _, TweenMax, PIXI, Math, Power1, Power3, Linear);

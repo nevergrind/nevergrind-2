@@ -54,7 +54,7 @@ var audio;
 			}
 		}
 
-		console.info("Loaded config...", ng.config);
+		console.info("Loaded config...", ng.config)
 		//audio.playMusic("WaitingBetweenWorlds")
 	}
 	function save() {

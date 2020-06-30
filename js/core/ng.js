@@ -23,7 +23,6 @@ var ng;
 		toJobLong,
 		toJobShort,
 		disconnect,
-		checkPlayerData,
 		goCreateCharacter,
 		toPercentWidth,
 		toPercentHeight,
@@ -38,6 +37,7 @@ var ng;
 			soundVolume: 100,
 			fastDestroy: false,
 			showNetwork: true,
+			selectedRowIndex: 0,
 			hotkey: {
 				characterStats: 'c',
 				inventory: 'i',
@@ -299,8 +299,6 @@ var ng;
 	}
 	var msgTimer = delayedCall(0, '')
 	let characterData = []
-	ng.selectIndex = 0
-
 	const vowels = 'aeiou'
 	let steam = {
 		screenName: '',
@@ -308,7 +306,7 @@ var ng;
 		handle: 0
 	}
 
-	let el
+	let index, el
 
 	$('#ch-card-wrap')
 		.on('click', '#title-select-up', incrementCharacter)
@@ -336,6 +334,7 @@ var ng;
 			soundVolume: 100,
 			fastDestroy: false,
 			showNetwork: true,
+			selectedRowIndex: 0,
 			hotkey: {
 				characterStats: 'c',
 				inventory: 'i',
@@ -705,13 +704,14 @@ var ng;
 				getElementById('logout').textContent = localStorage.getItem('account')
 			}
 			displayCharacter(r.characterData)
-			ng.checkPlayerData()
+			checkPlayerData()
 			$("#login-modal").remove()
 		}
 		else {
 			login.notLoggedIn()
 		}
 		if (!app.initialized) {
+			app.initialized = 1
 			keepAlive()
 			TweenMax.to('#scene-title', .5, {
 				startAt: {
@@ -723,12 +723,20 @@ var ng;
 				ease: Back.easeOut
 			})
 		}
-		app.initialized = 1
+	}
+	function getSelectedRowIndex(r) {
+		index = 0
+		if (r.length && ng.config.selectedRowIndex) {
+			index = _.findIndex(r, {
+				row: ng.config.selectedRowIndex
+			})
+		}
+		return typeof index === 'number' ? index : 0
 	}
 	function displayCharacter(r) {
-		create.selected = 0
-		ng.selectIndex = 0
 		characterData = r
+		create.selected = 0
+		ng.selectIndex = getSelectedRowIndex(r)
 		updateCharacterCard()
 	}
 	function updateCharacterCard() {
@@ -751,7 +759,7 @@ var ng;
 				'<div id="title-select-up" class="title-select-col flex-center">'+
 					'<img class="title-select-chevron" src="images/ui/chevron-right.png">' +
 				'</div>'
-			create.selected = d.row
+			ng.config.selectedRowIndex = create.selected = d.row
 			create.name = d.name
 		}
 		else {
@@ -761,6 +769,7 @@ var ng;
 			'</div>'
 		}
 		getElementById('ch-card-wrap').innerHTML = s;
+		audio.save()
 
 	}
 	function incrementCharacter() {

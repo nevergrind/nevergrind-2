@@ -218,8 +218,8 @@ var button;
 		}
 
 		if (timers.castBar < 1) {
-			console.info('casting...', Date.now())
-			delays[key] = delayedCall(.1, startSwing, [key])
+			delays[key].kill()
+			delays[key] = delayedCall(mySwingSpeed, button[key])
 			return
 		}
 

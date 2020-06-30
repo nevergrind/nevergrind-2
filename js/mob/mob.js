@@ -425,7 +425,7 @@ var mob;
 			row *= 1
 			val = mobs[slot].hate[row]
 			index = party.getIndexByRow(row)
-			console.info(row, index, val)
+			// console.info(row, index, val)
 			if (typeof party.presence[index] === 'object' &&
 				party.presence[index].hp > 0) {
 				if (mostHatedValue === null) {
@@ -477,7 +477,7 @@ var mob;
 				mobRow = getMobTargetRow(i)
 				if (mobRow > -1) {
 					// party.getIndexByRow(mostHatedRow)
-					console.info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
+					//console.info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
 					mobDamages = [getMobDamage(i, mobRow)]
 					if (Math.random() * 100 < mobs[i].doubleAttack) {
 						mobDamages.push(getMobDamage(i, mobRow))
@@ -496,7 +496,7 @@ var mob;
 		// animate
 		if (mobs[i].isAnimationActive) return
 
-		console.info('animateAttack', party.isSomeoneAlive())
+		// console.info('animateAttack', party.isSomeoneAlive())
 		if (party.isSomeoneAlive()) {
 			mobs[i].isAnimationActive = true
 			var attackType = isSecondary ? 'secondary' : 'primary'
