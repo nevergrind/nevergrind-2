@@ -20,7 +20,12 @@
 	///////////////////////////////////////////
 	function smite(index, data) {
 		if (timers.castBar < 1) return
-		spell.config = spell.getSpellConfig(index, data)
+		spell.config = {
+			...spell.getSpellDefaults(),
+			skillIndex: index,
+			mpCost: data.mp[my.skills[index]],
+			name: data.name,
+		}
 		if (skills.notReady(spell.config)) return
 		spell.startCasting(index, data, smiteCompleted)
 	}

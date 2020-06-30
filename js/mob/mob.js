@@ -117,15 +117,6 @@ var mob;
 	let newHate = 0
 	const hoverIcon = "url('css/cursor/pointer.cur'), auto"
 
-	const mobElements = ['wrap',
-	'center',
-	'alive',
-	'dead',
-	'img',
-	'details',
-	'name',
-	'shadow',
-	'bar']
 	//////////////////////////////////////////////////
 	function getRandomMobKey() {
 		var i = ~~(rand() * mob.imageKeysLen)
@@ -159,9 +150,7 @@ var mob;
 				box: {},
 				dom: {}
 			}
-			mobElements.forEach(function(e){
-				mobs[i].dom[e] = getElementById('mob-'+ e +'-' + i);
-			})
+			querySelector('#mob-wrap-' + i).style.display = 'none'
 		}
 	}
 	function configMobType(config) {
@@ -262,6 +251,7 @@ var mob;
 		})
 
 		// delete mobs[i].cache;
+		querySelector('#mob-wrap-' + i).style.display = 'block'
 		sizeMob(i)
 		resetIdle(i, true)
 		idle(i)
@@ -581,10 +571,10 @@ var mob;
 			},
 			ease: Power2.easeIn
 		})
-		TweenMax.to(mobs[i].dom.details, speed / 2, {
+		TweenMax.to(querySelector('#mob-details-' + i), speed / 2, {
 			opacity: 0
 		})
-		TweenMax.to(mobs[i].dom.wrap, speed + 2, {
+		TweenMax.to(querySelector('#mob-wrap-' + i), speed + 2, {
 			startAt: { filter: 'opacity(1) brightness(3)'},
 			filter: 'opacity(0) brightness(0)',
 			ease: Linear.easeIn,
@@ -840,6 +830,7 @@ var mob;
 		mobs.forEach((m, i) => {
 			timers.mobAttack[i].kill()
 			!continueIdling && typeof mobs[i].animation === 'object' && mobs[i].animation.pause()
+
 		})
 	}
 	function missChance(level) {

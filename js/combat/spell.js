@@ -11,7 +11,7 @@ var spell;
 		stopCasting,
 		cancelSpell,
 		knockback,
-		getSpellConfig,
+		getDefaults,
 	}
 	let castBarWrap = querySelector('#cast-bar-wrap')
 	let castBar = querySelector('#cast-bar')
@@ -142,15 +142,17 @@ var spell;
 		timers.castBar = 1
 		castBarWrap.style.opacity = 0
 	}
-	function getSpellConfig(index, skillData, manaType = 'mp', isMob = true) {
+	// defaults for combat DD on mob
+	function getDefaults(skillIndex) {
 		return {
-			skillIndex: index,
+			skillIndex: skillIndex,
 			global: true,
-			target: my.target,
 			isMob: true,
 			fixTarget: true,
-			mpCost: skillData[manaType][my.skills[index]],
-			name: skillData.name,
+			target: my.target,
+			oocEnabled: false,
+			mpCost: 0,
+			spCost: 0,
 		}
 	}
 }($, _, TweenMax, Power0);

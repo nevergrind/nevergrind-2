@@ -296,6 +296,8 @@ var combat;
 	function endCombat() {
 		mob.killAttacks(true)
 		battle.hideTarget()
+		battle.killMobBuffTimers()
+		battle.killTargetBuffTimers()
 	}
 
 	function isBattleOver() {

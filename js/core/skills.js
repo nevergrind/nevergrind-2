@@ -4,6 +4,8 @@ var skills;
 		init,
 		getName,
 		notReady,
+		getDefaults,
+		lastData: {},
 		roman: ['I', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'],
 		oneHandSlash: {
 			WAR: { max: 200, level: 1 },
@@ -2052,15 +2054,28 @@ var skills;
 	function getClassKeys() {
 		return skills[my.job].map(o => o.name)
 	}
-	function notReady(config) {
+	function notReady(config, data = {}) {
 		if (timers.castBar < 1 ||
 			(config.global && timers.globalCooldown < 1) ||
 			(config.skillIndex >= 0 && timers.skillCooldowns[config.skillIndex] < 1) ||
 			my.skills[config.skillIndex] === 0) return true
-		if (config.target === -1) {
+
+		// check for a valid target
+		if (config.fixTarget) {
+			if (config.isMob) my.fixTarget()
+			else {
+				my.partyTarget(0)
+			}
+			if (my.target === -1) {
+				chat.log('There are no valid targets for this skill.', 'chat-warning')
+				return true
+			}
+		}
+		if (my.target === -1) {
 			chat.log('You must select a target to use this skill.', 'chat-warning')
 			return true
 		}
+
 		if (!config.oocEnabled &&
 			ng.view !== 'battle') {
 			chat.log('You cannot use this skill out of combat.', 'chat-warning')
@@ -2078,11 +2093,6 @@ var skills;
 				return true
 			}
 		}
-		// check for a valid target
-		if (config.fixTarget) {
-			my.fixTarget()
-			if (my.target === -1) return true
-		}
 		if (config.requiresFrontRow && my.target > 4) {
 			chat.log('This skill can only target the front row!', 'chat-warning')
 			return true
@@ -2099,6 +2109,16 @@ var skills;
 				return true
 			}
 		}
+		// SUCCESS!
+		// set last data used for spell completed reference
+		skills.lastData = data
 		return false
+	}
+	function getDefaults(skillIndex) {
+		return {
+			skillIndex: skillIndex,
+			global: true,
+			isMob: true,
+		}
 	}
 }($, _, TweenMax, Object);

@@ -23,11 +23,8 @@
 		console.info('crossSlash', index)
 		// check constraints
 		config = {
-			skillIndex: index,
-			global: true,
-			target: true,
+			...skills.getDefaults(index),
 			requiresFrontRow: true,
-			isMob: true,
 		}
 		if (skills.notReady(config)) return
 		// process skill data
@@ -53,10 +50,7 @@
 	function explosiveShot(index, data) {
 		// check constraints
 		config = {
-			skillIndex: index,
-			global: true,
-			target: true,
-			isMob: true,
+			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
 		// process skill data
@@ -84,10 +78,7 @@
 	function trueshotStrike(index, data) {
 		// check constraints
 		config = {
-			skillIndex: index,
-			global: true,
-			target: true,
-			isMob: true,
+			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
 
@@ -112,10 +103,7 @@
 	function spreadShot(index, data) {
 		// check constraints
 		config = {
-			skillIndex: index,
-			global: true,
-			target: true,
-			isMob: true,
+			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
 		// select targets
@@ -148,10 +136,7 @@
 	function bladeStorm(index, data) {
 		// check constraints
 		config = {
-			skillIndex: index,
-			global: true,
-			target: true,
-			isMob: true,
+			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
 		// process skill data
@@ -185,10 +170,7 @@
 	function suppressingVolley(index, data) {
 		// check constraints
 		config = {
-			skillIndex: index,
-			global: true,
-			target: true,
-			isMob: true,
+			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
 
@@ -224,11 +206,7 @@
 		if (timers.castBar < 1) return
 		// check constraints
 		spell.config = {
-			skillIndex: index,
-			global: true,
-			target: my.target,
-			isMob: true,
-			fixTarget: true,
+			...spell.getDefaults(index),
 			mpCost: data.mp[my.skills[index]],
 			name: data.name,
 		}
@@ -254,11 +232,7 @@
 	function shockNova(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			skillIndex: index,
-			global: true,
-			target: my.target,
-			isMob: true,
-			fixTarget: true,
+			...spell.getDefaults(index),
 			mpCost: data.mp[my.skills[index]],
 			name: data.name,
 		}
@@ -284,11 +258,7 @@
 	function faerieFlame(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			skillIndex: index,
-			global: true,
-			target: my.target,
-			isMob: true,
-			fixTarget: true,
+			...spell.getDefaults(index),
 			mpCost: data.mp[my.skills[index]],
 			name: data.name,
 		}
@@ -314,9 +284,8 @@
 	function fungalGrowth(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			skillIndex: index,
-			global: true,
-			target: my.target,
+			...spell.getDefaults(index),
+			fixTarget: false,
 			isMob: false,
 			oocEnabled: true,
 			spCost: data.sp[my.skills[index]],
@@ -341,16 +310,14 @@
 	function shimmeringOrb(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			skillIndex: index,
-			global: true,
-			target: my.target,
+			...spell.getDefaults(index),
+			fixTarget: false,
 			isMob: false,
 			oocEnabled: true,
 			spCost: data.sp[my.skills[index]],
 			name: data.name,
 		}
-		if (skills.notReady(spell.config)) return
-		lastData = data
+		if (skills.notReady(spell.config, data)) return
 		spell.config.targetName = party.getNameByRow(my.target)
 		spell.startCasting(index, data, shimmeringOrbCompleted)
 	}
@@ -365,22 +332,20 @@
 		damages[0].level = my.skills[spell.config.skillIndex]
 		combat.txBuffHero(spell.config.target, damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, lastData)
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 
 	function spiritOfTheHunter(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			skillIndex: index,
-			global: true,
-			target: my.target,
+			...spell.getDefaults(index),
+			fixTarget: false,
 			isMob: false,
 			oocEnabled: true,
 			spCost: data.sp[my.skills[index]],
 			name: data.name,
 		}
-		if (skills.notReady(spell.config)) return
-		lastData = data
+		if (skills.notReady(spell.config, data)) return
 		spell.config.targetName = party.getNameByRow(my.target)
 		spell.startCasting(index, data, spiritOfTheHunterCompleted)
 	}
@@ -395,7 +360,7 @@
 		damages[0].level = my.skills[spell.config.skillIndex]
 		combat.txBuffHero(spell.config.target, damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, lastData)
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 		if (bar.windowsOpen.character && bar.activeTab === 'character') {
 			ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
 		}
