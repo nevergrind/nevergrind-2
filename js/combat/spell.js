@@ -143,7 +143,7 @@ var spell;
 		castBarWrap.style.opacity = 0
 	}
 	// defaults for combat DD on mob
-	function getDefaults(skillIndex) {
+	function getDefaults(skillIndex, data) {
 		return {
 			skillIndex: skillIndex,
 			global: true,
@@ -151,8 +151,9 @@ var spell;
 			fixTarget: true,
 			target: my.target,
 			oocEnabled: false,
-			mpCost: 0,
-			spCost: 0,
+			mpCost: typeof data.mp === 'object' ? data.mp([my.skills[skillIndex]]) : 0,
+			spCost: typeof data.sp === 'object'? data.sp([my.skills[skillIndex]]) : 0,
+			name: data.name,
 		}
 	}
 }($, _, TweenMax, Power0);

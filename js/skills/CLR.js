@@ -14,19 +14,15 @@
 		zealousResolve,
 	}
 	///////////////////////////////////////////
-	let enhancedDamage, hit, config
-	let lastData = {}
+	let i, splashIndex, tgt
 	let damages = []
 	///////////////////////////////////////////
 	function smite(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			...spell.getSpellDefaults(),
-			skillIndex: index,
-			mpCost: data.mp[my.skills[index]],
-			name: data.name,
+			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(spell.config)) return
+		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, smiteCompleted)
 	}
 	function smiteCompleted() {
@@ -40,99 +36,144 @@
 
 	function deliverance(index, data) {
 		if (timers.castBar < 1) return
-		spell.config = spell.getSpellConfig(index, data)
-		if (skills.notReady(spell.config)) return
-		spell.startCasting(index, data, smiteCompleted)
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, deliveranceCompleted)
 	}
 	function deliveranceCompleted() {
-
+		combat.txDamageMob([{
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage(),
+			isBlighted: true,
+		}])
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function condemnation(index, data) {
-		console.info('trueshotArrow', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, condemnationCompleted)
 	}
 	function condemnationCompleted() {
-
+		splashIndex = -1
+		tgt = 0
+		damages = []
+		for (i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			damages.push({
+				index: tgt,
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage(),
+				isBlighted: true,
+			})
+		}
+		combat.txDamageMob(damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function sacredRevelation(index, data) {
-		console.info('spreadShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, sacredRevelationCompleted)
 	}
 	function sacredRevelationCompleted() {
 
 	}
 	function holySanctuary(index, data) {
-		console.info('bladeStorm', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, holySanctuaryCompleted)
 	}
 	function holySanctuaryCompleted() {
 
 	}
 	function forceOfGlory(index, data) {
-		console.info('suppressingVolley', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, forceOfGloryCompleted)
 	}
 	function forceOfGloryCompleted() {
 
 	}
 	function circleOfPrayer(index, data) {
-		console.info('ignite', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, circleOfPrayerCompleted)
 	}
 	function circleOfPrayerCompleted() {
 
 	}
 	function guardianAngel(index, data) {
-		console.info('shockNova', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, guardianAngelCompleted)
 	}
 	function guardianAngelCompleted() {
 
 	}
 	function divineLight(index, data) {
-		console.info('faerieFlame', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, divineLightCompleted)
 	}
 	function divineLightCompleted() {
 
 	}
 	function divineEmbrace(index, data) {
-		console.info('fungalGrowth', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, divineEmbraceCompleted)
 	}
 	function divineEmbraceCompleted() {
 
 	}
 	function sealOfRedemption(index, data) {
-		console.info('shimmeringOrb', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, sealOfRedemptionCompleted)
 	}
 	function sealOfRedemptionCompleted() {
 
 	}
 	function zealousResolve(index, data) {
-		console.info('spiritOfTheHunter', index)
-		// check constraints
-		// process skill data
-		// animate timers
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, zealousResolveCompleted)
 	}
 	function zealousResolveCompleted() {
 

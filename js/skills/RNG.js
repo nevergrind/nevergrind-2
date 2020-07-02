@@ -15,8 +15,6 @@
 		spiritOfTheHunter,
 	}
 	let enhancedDamage, hit, config
-	let lastData = {}
-
 	let damages = []
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
@@ -206,9 +204,7 @@
 		if (timers.castBar < 1) return
 		// check constraints
 		spell.config = {
-			...spell.getDefaults(index),
-			mpCost: data.mp[my.skills[index]],
-			name: data.name,
+			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config)) return
 		spell.startCasting(index, data, igniteCompleted)
@@ -232,9 +228,7 @@
 	function shockNova(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			...spell.getDefaults(index),
-			mpCost: data.mp[my.skills[index]],
-			name: data.name,
+			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config)) return
 		spell.startCasting(index, data, shockNovaCompleted)
@@ -258,9 +252,7 @@
 	function faerieFlame(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			...spell.getDefaults(index),
-			mpCost: data.mp[my.skills[index]],
-			name: data.name,
+			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config)) return
 		spell.startCasting(index, data, faerieFlameCompleted)
@@ -284,12 +276,10 @@
 	function fungalGrowth(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			...spell.getDefaults(index),
+			...spell.getDefaults(index, data),
 			fixTarget: false,
 			isMob: false,
 			oocEnabled: true,
-			spCost: data.sp[my.skills[index]],
-			name: data.name,
 		}
 		if (skills.notReady(spell.config)) return
 		spell.config.targetName = party.getNameByRow(my.target)
@@ -310,12 +300,10 @@
 	function shimmeringOrb(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			...spell.getDefaults(index),
+			...spell.getDefaults(index, data),
 			fixTarget: false,
 			isMob: false,
 			oocEnabled: true,
-			spCost: data.sp[my.skills[index]],
-			name: data.name,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.config.targetName = party.getNameByRow(my.target)
@@ -338,12 +326,10 @@
 	function spiritOfTheHunter(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
-			...spell.getDefaults(index),
+			...spell.getDefaults(index, data),
 			fixTarget: false,
 			isMob: false,
 			oocEnabled: true,
-			spCost: data.sp[my.skills[index]],
-			name: data.name,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.config.targetName = party.getNameByRow(my.target)

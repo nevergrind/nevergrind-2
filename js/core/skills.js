@@ -703,7 +703,7 @@ var skills;
 			}, {
 				name: 'Ignite',
 				img: 'RNG-7',
-				mp: [0, 5, 12, 29, 52, 77, 99, 115],
+				mp: level => spellValues.igniteMana[level],
 				spellDamage: level => spellValues.ignite[level] + (my.level * 2),
 				spellVariance: .8,
 				spellType: 'evocation',
@@ -714,7 +714,7 @@ var skills;
 			}, {
 				name: 'Shock Nova',
 				img: 'RNG-8',
-				mp: [0, 7, 14, 33, 58, 86, 110, 127],
+				mp: level => spellValues.shockNovaMana[level],
 				spellDamage: level => spellValues.shockNova[level] + my.level,
 				spellVariance: .7,
 				spellType: 'evocation',
@@ -725,7 +725,7 @@ var skills;
 			}, {
 				name: 'Faerie Flame',
 				img: 'RNG-9',
-				mp: [0, 8, 17, 41, 72, 107, 137, 158],
+				mp: level => spellValues.faerieFlameMana[level],
 				spellDamage: level => spellValues.faerieFlame[level] + (my.level * 3),
 				spellVariance: .85,
 				spellType: 'conjuration',
@@ -736,7 +736,7 @@ var skills;
 			}, {
 				name: 'Fungal Growth',
 				img: 'RNG-10',
-				sp: [0, 7, 14, 31, 57, 85, 106, 127],
+				mp: level => spellValues.fungalGrowthMana[level],
 				spellDamage: level => spellValues.fungalGrowth[level] + (my.level),
 				spellVariance: .95,
 				spellType: 'alteration',
@@ -747,7 +747,7 @@ var skills;
 			}, {
 				name: 'Shimmering Orb',
 				img: 'RNG-11',
-				sp: [0, 9, 18, 40, 74, 110, 137, 165],
+				mp: level => spellValues.shimmeringOrbMana[level],
 				spellDamage: level => spellValues.shimmeringOrb[level],
 				magMit: [0, 2, 4, 7, 9, 12, 15, 19],
 				spellVariance: 1,
@@ -758,7 +758,7 @@ var skills;
 			}, {
 				name: 'Spirit of the Hunter',
 				img: 'RNG-12',
-				sp: [0, 13, 27, 60, 111, 165, 205, 247],
+				mp: level => spellValues.spiritOfTheHunterMana[level],
 				spellDamage: level => spellValues.spiritOfTheHunter[level],
 				spellVariance: 1,
 				spellType: 'alteration',
@@ -1140,35 +1140,36 @@ var skills;
 			{
 				name: 'Smite',
 				img: 'CLR-1',
-				mp: [0, 6, 13, 31, 57, 84, 108, 126],
+				mp: level => spellValues.smiteMana[level],
 				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
-				castTime: 2.5,
+				castTime: 3,
 				cooldownTime: 0,
 				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Deliverance',
 				img: 'CLR-2',
 				mp: [0, 4, 10, 23, 42, 66, 85, 98],
+				mp: level => spellValues.deliveranceMana[level],
 				spellDamage: level => spellValues.deliverance[level] + (my.level * 2),
 				spellVariance: .9,
 				spellType: 'evocation',
-				damageType: 'arcane',
-				castTime: 3.5,
-				cooldownTime: 8,
+				damageType: 'fire',
+				castTime: 2,
+				cooldownTime: 6,
 				description: 'Single-target arcane damage - +50% damage to undead and demons.',
 			}, {
 				name: 'Condemnation',
 				img: 'CLR-3',
-				mp: [0, 5, 12, 29, 52, 77, 99, 115],
+				mp: level => spellValues.condemnationMana[level],
 				spellDamage: level => spellValues.condemnation[level] + (my.level * 2),
 				spellVariance: .875,
 				spellType: 'evocation',
 				damageType: 'arcane',
 				castTime: 3.5,
-				cooldownTime: 15,
+				cooldownTime: 12,
 				description: 'Smite your target for X arcane damage.',
 			}, {
 				name: 'Sacred Revelation',
@@ -2018,25 +2019,43 @@ var skills;
 	// DIRECT DAMAGE 2-4 m/d
 	// AE DAMAGE 1.5-3 m/d
 	const spellValues = {
-		ignite: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115] 3
-		shockNova: [0, 9, 20, 47, 81, 123, 152, 179], // mp: [0, 7, 14, 33, 58, 86, 110, 127] 1.3?
-		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461], // mp: [0, 8, 17, 41, 72, 107, 137, 158] 2.1?
-		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382], // sp: [0, 7, 14, 31, 57, 85, 106, 127] 3?
-		shimmeringOrb: [0, 33, 67, 152, 275, 408, 508, 611], // sp: [0, 9, 18, 40, 74, 110, 137, 165]
-		spiritOfTheHunter: [0, 4, 8, 13, 19, 26, 34, 45], // sp [0, 13, 27, 60, 111, 165, 205, 247],
+		igniteMana: [0, 5, 12, 29, 52, 77, 99, 115], // mp:  3
+		ignite: [0, 15, 37, 88, 156, 231, 298, 347],
+		shockNovaMana: [0, 7, 14, 33, 58, 86, 110, 127], // mp:  1.3?
+		shockNova: [0, 9, 20, 47, 81, 123, 152, 179],
+		faerieFlameMana: [0, 8, 17, 41, 72, 107, 137, 158], // mp:  2.1?
+		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461],
+		fungalGrowthMana: [0, 7, 14, 31, 57, 85, 106, 127], // sp:  3?
+		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382],
+		shimmeringOrbMana: [0, 9, 18, 40, 74, 110, 137, 165],
+		shimmeringOrb: [0, 33, 67, 152, 275, 408, 508, 611],
+		spiritOfTheHunterMana: [0, 13, 27, 60, 111, 165, 205, 247],
+		spiritOfTheHunter: [0, 4, 8, 13, 19, 26, 34, 45],
 		// cleric
-		smite: [0, 18, 44, 105, 187, 277, 357, 416], // mp: [0, 6, 13, 31, 57, 84, 108, 126] 3.3
-		deliverance: [0, 11, 28, 64, 117, 184, 237, 274], // mp: [0, 4, 10, 23, 42, 66, 85, 98] 2.8
-		condemnation: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115] 1.6
-		sacredRevelation: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115]
-		holySanctuary: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115]
-		forceOfGlory: [0, 15, 37, 88, 156, 231, 298, 347], // mp: [0, 5, 12, 29, 52, 77, 99, 115]
-		circleOfPrayer: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
-		guardianAngel: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
-		divineLight: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
-		divineEmbrace: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
-		sealOfRedemption: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
-		zealousResolve: [0, 15, 37, 88, 156, 231, 298, 347], // sp: [0, 5, 12, 29, 52, 77, 99, 115]
+		smiteMana: [0, 6, 13, 31, 57, 84, 108, 126], // mp: 3.3
+		smite: [0, 18, 44, 105, 187, 277, 357, 416],
+		deliveranceMana: [0, 4, 10, 23, 42, 66, 85, 98], // mp:  2.8
+		deliverance: [0, 14, 33, 76, 140, 220, 284, 328],
+		condemnationMana: [0, 8, 18, 41, 72, 105, 135, 157],
+		condemnation: [0, 16, 39, 88, 154, 225, 291, 341], //  1.6
+		sacredRevelationMana: [0, 5, 12, 29, 52, 77, 99, 115],
+		sacredRevelation: [0, 15, 37, 88, 156, 231, 298, 347],
+		holySanctuaryMana: [0, 5, 12, 29, 52, 77, 99, 115],
+		holySanctuary: [0, 15, 37, 88, 156, 231, 298, 347],
+		forceOfGloryMana: [0, 5, 12, 29, 52, 77, 99, 115],
+		forceOfGlory: [0, 15, 37, 88, 156, 231, 298, 347],
+		circleOfPrayerMana: [0, 5, 12, 29, 52, 77, 99, 115],
+		circleOfPrayer: [0, 15, 37, 88, 156, 231, 298, 347],
+		guardianAngelMana: [0, 5, 12, 29, 52, 77, 99, 115],
+		guardianAngel: [0, 15, 37, 88, 156, 231, 298, 347],
+		divineLightMana: [0, 5, 12, 29, 52, 77, 99, 115],
+		divineLight: [0, 15, 37, 88, 156, 231, 298, 347],
+		divineEmbraceMana: [0, 5, 12, 29, 52, 77, 99, 115],
+		divineEmbrace: [0, 15, 37, 88, 156, 231, 298, 347],
+		sealOfRedemptionMana: [0, 5, 12, 29, 52, 77, 99, 115],
+		sealOfRedemption: [0, 15, 37, 88, 156, 231, 298, 347],
+		zealousResolveMana: [0, 5, 12, 29, 52, 77, 99, 115],
+		zealousResolve: [0, 15, 37, 88, 156, 231, 298, 347],
 	}
 
 	///////////////////////////////////////////

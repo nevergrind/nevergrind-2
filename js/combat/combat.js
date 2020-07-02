@@ -254,6 +254,14 @@ var combat;
 		}
 		else {
 			// mob magic resists
+			d.enhancedDamage = 1
+			if (d.isBlighted &&
+				(mobs[d.index].mobType === 'undead' || mobs[d.index].mobType === 'demon')) {
+				console.warn("isBlighted", d)
+				d.enhancedDamage += .5
+
+			}
+			d.damage *= d.enhancedDamage
 			d.damage *= getMobResist(d)
 
 		}
