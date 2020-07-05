@@ -14,7 +14,7 @@
 		zealousResolve,
 	}
 	///////////////////////////////////////////
-	let i, splashIndex, tgt
+	let i, splashIndex, tgt, hit, hate, damage
 	let damages = []
 	///////////////////////////////////////////
 	function smite(index, data) {
@@ -88,18 +88,50 @@
 		spell.startCasting(index, data, sacredRevelationCompleted)
 	}
 	function sacredRevelationCompleted() {
-
+		splashIndex = -1
+		tgt = 0
+		damages = []
+		for (var i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			//TODO: STUN
+			damages.push({
+				index: tgt,
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				stun: 3,
+				...stats.spellDamage(),
+			})
+		}
+		combat.txDamageMob(damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function holySanctuary(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, holySanctuaryCompleted)
 	}
 	function holySanctuaryCompleted() {
-
+		damages = []
+		for (var i=0; i<mob.max; i++) {
+			hit = stats.spellDamage()
+			damages.push({
+				index: i,
+				key: 'holySanctuary',
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				hate: -hit.damage,
+				...hit
+			})
+		}
+		// combat.txBuffHero(spell.config.target, damages)
+		combat.txDamageMob(damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function forceOfGlory(index, data) {
 		if (timers.castBar < 1) return
@@ -110,7 +142,14 @@
 		spell.startCasting(index, data, forceOfGloryCompleted)
 	}
 	function forceOfGloryCompleted() {
-
+		// TODO: STUN
+		combat.txDamageMob([{
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			stun: 5,
+			...stats.spellDamage()
+		}])
 	}
 	function circleOfPrayer(index, data) {
 		if (timers.castBar < 1) return

@@ -267,9 +267,18 @@ var bar;
 		return 'images/items/' + resp + '.png'
 	}
 	function getItemIconFileNameByObj(data) {
-		if (data.itemSubType) {
-			fileName = data.itemType + _.startCase(data.itemSubType) + data.imgIndex
+		if (data.use) {
+			if (data.itemType === 'potion') {
+				// potions
+				fileName = data.itemType + '/' + data.itemSubType + data.imgIndex
+			}
+			else {
+				// scrolls
+				fileName = data.itemType + '/' + data.imgIndex
+			}
+
 		}
+		// normal items
 		else fileName = data.itemType + data.imgIndex
 		return fileName
 	}

@@ -182,7 +182,7 @@
 			hit = stats.rangedDamage(tgt)
 			damages.push({
 				index: tgt,
-				hate: -1,
+				hate: -enhancedDamage,
 				enhancedDamage: enhancedDamage,
 				buffs: [{
 					i: tgt, // target
@@ -229,6 +229,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config)) return
 		spell.startCasting(index, data, shockNovaCompleted)
@@ -343,7 +344,6 @@
 			spellType: spell.data.spellType,
 			...stats.spellDamage(false, true) // noCrit, force noCrit
 		})
-		damages[0].level = my.skills[spell.config.skillIndex]
 		combat.txBuffHero(spell.config.target, damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)

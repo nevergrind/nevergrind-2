@@ -114,7 +114,6 @@ var mob;
 	let mpTick = 0
 	let spTick = 0
 	let mobRow = -1
-	let newHate = 0
 	const hoverIcon = "url('css/cursor/pointer.cur'), auto"
 
 	//////////////////////////////////////////////////
@@ -123,9 +122,8 @@ var mob;
 		return mob.imageKeys[i]
 	}
 	function updateHate(o) {
-		newHate = o.damage * o.hate
-		console.info('updateHate mob', o.index, mobs[o.index].hate)
-		mobs[o.index].hate[o.row] += newHate
+		console.info('updateHate mob', o.index, o.hate)
+		mobs[o.index].hate[o.row] += o.hate
 		if (mobs[o.index].hate[o.row] < 0) mobs[o.index].hate[o.row] = 0
 	}
 	function init() {

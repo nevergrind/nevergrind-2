@@ -319,7 +319,7 @@ var combat;
 	}
 
 	function updateMobHp(o) {
-		if (!o.hate) o.hate = 1
+		if (!o.hate) o.hate = o.damage
 		mobs[o.index].hp -= o.damage
 		party.damage[o.row] += o.damage
 

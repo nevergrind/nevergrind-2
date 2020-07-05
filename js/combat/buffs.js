@@ -43,6 +43,12 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 300,
 			msg: 'A brief lupine energy courses through your spirit.',
 		},
+		sacredRevelation: {
+			name: 'Sacred Revelation',
+			img: 3,
+			job: 'CLR',
+			duration: 3,
+		}
 	}
 	///////////////////////////////////////////
 

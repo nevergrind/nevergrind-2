@@ -1170,44 +1170,44 @@ var skills;
 				damageType: 'arcane',
 				castTime: 3.5,
 				cooldownTime: 12,
-				description: 'Smite your target for X arcane damage.',
+				description: 'Hit 3x targets arcane damage - +50% damage to undead, demons.',
 			}, {
 				name: 'Sacred Revelation',
 				img: 'CLR-4',
-				mp: [0, 5, 12, 29, 52, 77, 99, 115],
-				spellDamage: level => spellValues.sacredRevelation[level] + (my.level * 2),
-				spellVariance: .875,
+				mp: level => spellValues.sacredRevelationMana[level],
+				spellDamage: level => spellValues.sacredRevelation[level] + (my.level * 1.5),
+				spellVariance: .95,
 				spellType: 'evocation',
 				damageType: 'arcane',
 				castTime: 1.5,
 				cooldownTime: 30,
-				description: 'Smite your target for X arcane damage.',
+				description: 'Hits 3x targets for X arcane damage and stuns them for 3 seconds.',
 			}, {
 				name: 'Holy Sanctuary',
 				img: 'CLR-5',
-				mp: [0, 5, 12, 29, 52, 77, 99, 115],
-				spellDamage: level => spellValues.holySanctuary[level] + (my.level * 2),
-				spellVariance: .875,
+				mp: level => spellValues.holySanctuaryMana[level],
+				spellDamage: level => spellValues.holySanctuary[level],
+				spellVariance: .9,
 				spellType: 'conjuration',
 				damageType: 'arcane',
-				castTime: 2.5,
-				cooldownTime: 0,
-				description: 'Smite your target for X arcane damage.',
+				castTime: 1.5,
+				cooldownTime: 24,
+				description: 'Blast all targets with arcane damage and reduce threat by X.',
 			}, {
 				name: 'Force of Glory',
 				img: 'CLR-6',
-				mp: [0, 5, 12, 29, 52, 77, 99, 115],
+				mp: level => spellValues.forceOfGloryMana[level],
 				spellDamage: level => spellValues.forceOfGlory[level] + (my.level * 2),
-				spellVariance: .875,
+				spellVariance: .9,
 				spellType: 'conjuration',
 				damageType: 'arcane',
-				castTime: 2.5,
-				cooldownTime: 0,
-				description: 'Smite your target for X arcane damage.',
+				castTime: 1,
+				cooldownTime: 60,
+				description: 'Powerful Strike a single target with X arcane damage - Stuns for 5 seconds.',
 			}, {
 				name: 'Circle of Prayer',
 				img: 'CLR-7',
-				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				mp: level => spellValues.circleOfPrayerMana[level],
 				spellDamage: level => spellValues.circleOfPrayer[level] + (my.level * 2),
 				spellVariance: .875,
 				spellType: 'conjuration',
@@ -1218,7 +1218,7 @@ var skills;
 			}, {
 				name: 'Guardian Angel',
 				img: 'CLR-8',
-				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				mp: level => spellValues.guardianAngelMana[level],
 				spellDamage: level => spellValues.guardianAngel[level] + (my.level * 2),
 				spellVariance: .875,
 				spellType: 'conjuration',
@@ -1229,7 +1229,7 @@ var skills;
 			}, {
 				name: 'Divine Light',
 				img: 'CLR-9',
-				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				mp: level => spellValues.divineLightMana[level],
 				spellDamage: level => spellValues.divineLight[level] + (my.level * 2),
 				spellVariance: .875,
 				spellType: 'alteration',
@@ -1240,7 +1240,7 @@ var skills;
 			}, {
 				name: 'Divine Embrace',
 				img: 'CLR-10',
-				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				mp: level => spellValues.divineEmbraceMana[level],
 				spellDamage: level => spellValues.divineEmbrace[level] + (my.level * 2),
 				spellVariance: .875,
 				spellType: 'alteration',
@@ -1251,7 +1251,7 @@ var skills;
 			}, {
 				name: 'Seal of Redemption',
 				img: 'CLR-11',
-				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				mp: level => spellValues.sealOfRedemptionMana[level],
 				spellDamage: level => spellValues.sealOfRedemption[level] + (my.level * 2),
 				spellVariance: .875,
 				spellType: 'alteration',
@@ -2038,24 +2038,24 @@ var skills;
 		deliverance: [0, 14, 33, 76, 140, 220, 284, 328],
 		condemnationMana: [0, 8, 18, 41, 72, 105, 135, 157],
 		condemnation: [0, 16, 39, 88, 154, 225, 291, 341], //  1.6
-		sacredRevelationMana: [0, 5, 12, 29, 52, 77, 99, 115],
-		sacredRevelation: [0, 15, 37, 88, 156, 231, 298, 347],
-		holySanctuaryMana: [0, 5, 12, 29, 52, 77, 99, 115],
-		holySanctuary: [0, 15, 37, 88, 156, 231, 298, 347],
-		forceOfGloryMana: [0, 5, 12, 29, 52, 77, 99, 115],
-		forceOfGlory: [0, 15, 37, 88, 156, 231, 298, 347],
-		circleOfPrayerMana: [0, 5, 12, 29, 52, 77, 99, 115],
-		circleOfPrayer: [0, 15, 37, 88, 156, 231, 298, 347],
-		guardianAngelMana: [0, 5, 12, 29, 52, 77, 99, 115],
-		guardianAngel: [0, 15, 37, 88, 156, 231, 298, 347],
-		divineLightMana: [0, 5, 12, 29, 52, 77, 99, 115],
-		divineLight: [0, 15, 37, 88, 156, 231, 298, 347],
-		divineEmbraceMana: [0, 5, 12, 29, 52, 77, 99, 115],
-		divineEmbrace: [0, 15, 37, 88, 156, 231, 298, 347],
-		sealOfRedemptionMana: [0, 5, 12, 29, 52, 77, 99, 115],
-		sealOfRedemption: [0, 15, 37, 88, 156, 231, 298, 347],
-		zealousResolveMana: [0, 5, 12, 29, 52, 77, 99, 115],
-		zealousResolve: [0, 15, 37, 88, 156, 231, 298, 347],
+		sacredRevelationMana: [0, 7, 16, 36, 64, 94, 121, 141],
+		sacredRevelation: [0, 10, 24, 54, 96, 141, 181, 211],
+		holySanctuaryMana: [0, 5, 9, 23, 41, 58, 76, 88],
+		holySanctuary: [0, 9, 22, 52, 93, 138, 178, 208], // negative hate
+		forceOfGloryMana: [0, 7, 15, 33, 60, 88, 112, 130],
+		forceOfGlory: [0, 20, 50, 120, 215, 318, 410, 478],
+		circleOfPrayerMana: [0, 0, 0, 0, 0, 0, 0, 0],
+		circleOfPrayer: [0, 0, 0, 0, 0, 0, 0, 0],
+		guardianAngelMana: [0, 0, 0, 0, 0, 0, 0, 0],
+		guardianAngel: [0, 0, 0, 0, 0, 0, 0, 0],
+		divineLightMana: [0, 0, 0, 0, 0, 0, 0, 0],
+		divineLight: [0, 0, 0, 0, 0, 0, 0, 0],
+		divineEmbraceMana: [0, 0, 0, 0, 0, 0, 0, 0],
+		divineEmbrace: [0, 0, 0, 0, 0, 0, 0, 0],
+		sealOfRedemptionMana: [0, 0, 0, 0, 0, 0, 0, 0],
+		sealOfRedemption: [0, 0, 0, 0, 0, 0, 0, 0],
+		zealousResolveMana: [0, 0, 0, 0, 0, 0, 0, 0],
+		zealousResolve: [0, 0, 0, 0, 0, 0, 0, 0],
 	}
 
 	///////////////////////////////////////////
@@ -2079,38 +2079,43 @@ var skills;
 			(config.skillIndex >= 0 && timers.skillCooldowns[config.skillIndex] < 1) ||
 			my.skills[config.skillIndex] === 0) return true
 
-		// check for a valid target
-		if (config.fixTarget) {
-			if (config.isMob) my.fixTarget()
+		// targeting
+		if (config.anyTarget) {
+			// A OK
+		}
+		else {
+			if (config.isMob) {
+				if (!my.targetIsMob) {
+					chat.log('You must target a mob with this skill.', 'chat-warning')
+					return true
+				}
+			}
 			else {
-				my.partyTarget(0)
+				if (my.targetIsMob) {
+					chat.log('You must target a player with this skill.', 'chat-warning')
+					return true
+				}
+			}
+			if (config.fixTarget) {
+				if (config.isMob) my.fixTarget()
+				else {
+					my.partyTarget(0)
+				}
+				if (my.target === -1) {
+					chat.log('There are no valid targets for this skill.', 'chat-warning')
+					return true
+				}
 			}
 			if (my.target === -1) {
-				chat.log('There are no valid targets for this skill.', 'chat-warning')
+				chat.log('You must select a target to use this skill.', 'chat-warning')
 				return true
 			}
-		}
-		if (my.target === -1) {
-			chat.log('You must select a target to use this skill.', 'chat-warning')
-			return true
 		}
 
 		if (!config.oocEnabled &&
 			ng.view !== 'battle') {
 			chat.log('You cannot use this skill out of combat.', 'chat-warning')
 			return true
-		}
-		if (config.isMob) {
-			if (!my.targetIsMob) {
-				chat.log('You must target a mob with this skill.', 'chat-warning')
-				return true
-			}
-		}
-		else {
-			if (my.targetIsMob) {
-				chat.log('You must target a player with this skill.', 'chat-warning')
-				return true
-			}
 		}
 		if (config.requiresFrontRow && my.target > 4) {
 			chat.log('This skill can only target the front row!', 'chat-warning')

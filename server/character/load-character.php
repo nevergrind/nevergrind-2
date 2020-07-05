@@ -53,5 +53,5 @@ if ($i) {
 	echo json_encode($r);
 }
 else {
-	exit("No character data found!");
+	exit('No character data found!');
 }
