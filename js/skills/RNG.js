@@ -282,21 +282,17 @@
 			isMob: false,
 			oocEnabled: true,
 		}
-		if (skills.notReady(spell.config)) return
-		spell.config.targetName = party.getNameByRow(my.target)
+		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, fungalGrowthCompleted)
 	}
 	function fungalGrowthCompleted() {
-		damages = []
-		damages.push({
+		combat.txHotHero(spell.config.target, {
 			index: spell.config.target,
 			key: 'fungalGrowth',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true) // noCrit, force noCrit
+			...stats.spellDamage(false, true) // force crit, get non-crit
 		})
-		console.info('fungalGrowthCompleted', damages)
-		combat.txHotHero(spell.config.target, damages)
 	}
 	function shimmeringOrb(index, data) {
 		if (timers.castBar < 1) return
@@ -307,7 +303,6 @@
 			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.config.targetName = party.getNameByRow(my.target)
 		spell.startCasting(index, data, shimmeringOrbCompleted)
 	}
 	function shimmeringOrbCompleted() {
@@ -316,7 +311,7 @@
 			index: spell.config.target,
 			key: 'shimmeringOrb',
 			spellType: spell.data.spellType,
-			...stats.spellDamage(false, true) // noCrit, force noCrit
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
 		damages[0].level = my.skills[spell.config.skillIndex]
 		combat.txBuffHero(spell.config.target, damages)
@@ -333,7 +328,6 @@
 			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.config.targetName = party.getNameByRow(my.target)
 		spell.startCasting(index, data, spiritOfTheHunterCompleted)
 	}
 	function spiritOfTheHunterCompleted() {
@@ -342,7 +336,7 @@
 			index: spell.config.target,
 			key: 'spiritOfTheHunter',
 			spellType: spell.data.spellType,
-			...stats.spellDamage(false, true) // noCrit, force noCrit
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
 		combat.txBuffHero(spell.config.target, damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0

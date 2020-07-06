@@ -98,36 +98,16 @@ var spell;
 		chat.log('Your spell fizzled!', 'chat-spell')
 		cancelSpell()
 	}
-	function expendSpellResources(fizzlePenalty) {
-		fizzlePenalty = fizzlePenalty ? .1 : 1
-		mpCost = typeof spell.data.mp === 'object' ? spell.data.mp[my.skills[spell.index]] : 0
-		spCost = typeof spell.data.sp === 'object' ? spell.data.sp[my.skills[spell.index]] : 0
-		if (mpCost) {
-			mpCost = ~~(mpCost * fizzlePenalty)
-			if (mpCost < 1) mpCost = 1
-			my.mp -= mpCost
-			bar.updateBar('mp')
-		}
-		if (spCost) {
-			spCost = ~~(spCost * fizzlePenalty)
-			if (spCost < 1) spCost = 1
-			my.sp -= spCost
-			bar.updateBar('sp')
-		}
-	}
-
 	function updateSpellBar() {
 		TweenMax.set(castBar, {
 			x: '-' + spellRatio() + '%'
 		})
 	}
-
 	function spellRatio() {
 		ratio = (1 - timers.castBar / 1)
 		if (ratio > 1) ratio = 1
 		return ratio * 100
 	}
-
 	function spellComplete(callbackFn) {
 		stopCasting()
 		//console.info('complete spell cast:', spell.data.name)
@@ -137,22 +117,40 @@ var spell;
 		callbackFn()
 		combat.levelSkillCheck(spell.data.spellType)
 	}
-
+	function expendSpellResources(fizzlePenalty) {
+		fizzlePenalty = fizzlePenalty ? .1 : 1
+		mpCost = 0
+		spCost = 0
+		if (spell.config.mpCost) {
+			mpCost = ~~(spell.config.mpCost * fizzlePenalty)
+			if (mpCost < 1) mpCost = 1
+			my.mp -= mpCost
+			bar.updateBar('mp')
+		}
+		if (spell.config.spCost) {
+			spCost = ~~(spell.config.spCost * fizzlePenalty)
+			if (spCost < 1) spCost = 1
+			my.sp -= spCost
+			bar.updateBar('sp')
+		}
+	}
 	function stopCasting() {
 		timers.castBar = 1
 		castBarWrap.style.opacity = 0
 	}
 	// defaults for combat DD on mob
 	function getDefaults(skillIndex, data) {
+		console.info('getDefaults', skillIndex, data.sp(my.skills[skillIndex]))
 		return {
 			skillIndex: skillIndex,
 			global: true,
 			isMob: true,
 			fixTarget: true,
 			target: my.target,
+			targetName: party.getNameByRow(my.target),
 			oocEnabled: false,
-			mpCost: typeof data.mp === 'object' ? data.mp([my.skills[skillIndex]]) : 0,
-			spCost: typeof data.sp === 'object'? data.sp([my.skills[skillIndex]]) : 0,
+			mpCost: typeof data.mp === 'function' ? data.mp(my.skills[skillIndex]) : 0,
+			spCost: typeof data.sp === 'function'? data.sp(my.skills[skillIndex]) : 0,
 			name: data.name,
 		}
 	}

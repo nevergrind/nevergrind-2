@@ -586,6 +586,8 @@ var battle;
 	}
 	function removeBuff(key, keyRow) {
 		if (typeof my.buffs[key] === 'object') {
+			if (my.buffs[key].level) my.buffs[key].level = 0
+			if (my.buffs[key].duration) my.buffs[key].duration = 0
 			if (my.buffs[key].damage) my.buffs[key].damage = 0
 		}
 		battle.removeMyBuffFlag(key, keyRow)

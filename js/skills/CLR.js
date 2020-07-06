@@ -9,7 +9,7 @@
 		circleOfPrayer,
 		guardianAngel,
 		divineLight,
-		divineEmbrace,
+		bindingGrace,
 		sealOfRedemption,
 		zealousResolve,
 	}
@@ -137,6 +137,9 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, forceOfGloryCompleted)
@@ -151,49 +154,116 @@
 			...stats.spellDamage()
 		}])
 	}
-	function circleOfPrayer(index, data) {
+	function bindingGrace(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
+			targetOther: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, circleOfPrayerCompleted)
+		spell.startCasting(index, data, bindingGraceCompleted)
 	}
-	function circleOfPrayerCompleted() {
-
+	function bindingGraceCompleted() {
+		damages = []
+		damages.push({
+			index: my.row,
+			name: my.name,
+			key: 'bindingGrace',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		})
+		damages.push({
+			index: spell.config.target,
+			name: spell.config.targetName,
+			key: 'bindingGrace',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		})
+		damages.forEach(d => {
+			combat.txHotHero(d.index, d)
+		})
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function guardianAngel(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, guardianAngelCompleted)
 	}
 	function guardianAngelCompleted() {
-
+		damages = []
+		damages.push({
+			index: spell.config.target,
+			key: 'guardianAngel',
+			spellType: spell.data.spellType,
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		damages[0].level = my.skills[spell.config.skillIndex]
+		combat.txBuffHero(spell.config.target, damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function divineLight(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, divineLightCompleted)
 	}
 	function divineLightCompleted() {
-
+		damages = []
+		damages.push({
+			index: spell.config.target,
+			name: spell.config.targetName,
+			key: 'divineLight',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		})
+		damages.forEach(d => {
+			combat.txHotHero(d.index, d)
+		})
 	}
-	function divineEmbrace(index, data) {
+	function circleOfPrayer(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			oocEnabled: true,
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, divineEmbraceCompleted)
+		spell.startCasting(index, data, circleOfPrayerCompleted)
 	}
-	function divineEmbraceCompleted() {
-
+	function circleOfPrayerCompleted() {
+		damages = []
+		party.presence.forEach(p => {
+			damages.push({
+				index: p.row,
+				name: p.name,
+				key: 'circleOfPrayer',
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage()
+			})
+		})
+		damages.forEach(d => {
+			combat.txHotHero(d.index, d)
+		})
 	}
 	function sealOfRedemption(index, data) {
 		if (timers.castBar < 1) return

@@ -1133,11 +1133,11 @@ background-clip: content-box;
 #bar-all-player-wrap { padding: .2rem; }
 #bar-all-player-wrap .player-targeted {
 	outline: .1rem ridge #5fd;
-	/*animation: repeat-border-flash .5s linear infinite;*/
+	animation: repeat-border-flash .25s linear infinite;
 }
 @keyframes repeat-border-flash {
-	0% { outline: .1rem ridge #8fe; }
-	100% { outline: .1rem ridge #05b; }
+	0% { outline: .1rem ridge #5fd; }
+	100% { outline: .1rem ridge #098; }
 }
 
 .bar-icons {

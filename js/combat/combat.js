@@ -413,7 +413,11 @@ var combat;
 		animateMyDeath()
 	}
 	// damage hero functions
-	function updateHeroResource(type, addValue) {
+	function updateHeroResource(type, addValue, bypassDeath) {
+		if (my.hp <= 0 && !bypassDeath) {
+			console.warn('updateHeroResource you are dead - no action taken')
+			return
+		}
 		party.presence[0][type] = my[type] += addValue
 		// sanity check
 		if (my[type] < 0) {
@@ -487,17 +491,6 @@ var combat;
 			if (mobs[index].buffFlags.suppressingVolley) d.damage *= .5
 
 			// phyMit
-			if (my.buffFlags.shimmeringOrb) {
-				let val = skills.RNG[10].magMit[my.buffs.shimmeringOrb.level]
-				console.info('shimmeringOrb', val)
-				d.damage -= val
-				my.buffs.shimmeringOrb.damage -= val
-				if (my.buffs.shimmeringOrb.damage <= 0) {
-					console.info('shimmeringOrb removing orb!')
-					my.buffs.shimmeringOrb.damage = 0
-					battle.removeBuff('shimmeringOrb')
-				}
-			}
 			d.damage -= stats.phyMit()
 
 			// enhancedDamage ?
@@ -516,18 +509,16 @@ var combat;
 		}
 		else {
 			// magMit
-			if (my.buffFlags.shimmeringOrb) {
-				d.damage -= skills.RNG.shimmeringOrb[10].magMit[my.buffs.shimmeringOrb.level]
-			}
+			if (my.buffFlags.shimmeringOrb) reduceShimmeringOrbDamage(d)
 			d.damage -= stats.magMit()
 
 			// mob magic resists
 			console.info(d.damageType, index)
 			d.damage *= stats.getResistPercent(d.damageType)
-
 		}
 		// final sanity checks
 		d.damage = d.damage < 1 ? 1 : round(d.damage)
+		if (my.buffFlags.guardianAngel) reduceGuardianAngelDamage(d)
 		combat.levelSkillCheck('defense')
 		return d
 	}
@@ -638,28 +629,27 @@ var combat;
 
 	function txHotHero(index, data) {
 		// damages is an object with indices that point to player row (target)
-		console.info('txHotHero', data, spell.config.targetName)
-		if (spell.config.targetName === my.name) {
-			processHotToMe(data)
+		console.info('txHotHero', index, data)
+		if (data.index === my.row) {
+			processHealToMe(data)
 		}
 		else {
-			hotData = data.map(hot => {
-				return _.pick(hot, ['damage', 'index', 'key'])
-			})
-			socket.publish('name' + spell.config.targetName, {
-				action: 'p->HoT',
-				//data: data,
-				data: hotData,
-			}, true)
+			let name = party.getNameByRow(data.index)
+			if (name) {
+				socket.publish('name' + name, {
+					action: 'p->HoT',
+					data: _.pick(data, ['damage', 'index', 'key'])
+				}, true)
+			}
 		}
 	}
 	function rxHotHero(data) {
 		console.info('rxHotHero: ', data)
-		processHotToMe(data.data)
+		processHealToMe(data.data)
 	}
-	function processHotToMe(data) {
-		console.info('processHotToMe', data)
-		data.forEach(buff => {
+	function processHealToMe(buff) {
+		console.info('processHealToMe', buff)
+		if (buffs[buff.key].duration > 0) {
 			let keyRow = buff.key + '-' + buff.index
 			// cancel/overwrite existing buff timer data keyRow: duration, function
 			if (typeof my.buffs[keyRow] === 'object' &&
@@ -690,8 +680,17 @@ var combat;
 				onRepeatParams: [buff, healAmount],
 			})
 			battle.addMyBuff(buff.key, keyRow)
-			chat.log(buffs[buff.key].msg, 'chat-heal')
-		})
+			chat.log(buffs[buff.key].msg(buff), 'chat-heal')
+		}
+		else {
+			let healAmount = buff.damage
+			chat.log(buffs[buff.key].msg(buff), 'chat-heal')
+			updateHeroResource('hp', healAmount)
+			game.updatePartyResources({
+				hp: my.hp,
+				hpMax: my.hpMax,
+			})
+		}
 	}
 	function onHotTick(buff, healAmount) {
 		chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', 'chat-heal')
@@ -722,14 +721,16 @@ var combat;
 	}
 	function processBuffToMe(data) {
 		console.info('processBuffToMe', data)
-		chat.log(buffs[data[0].key].msg, 'chat-heal')
+		chat.log(buffs[data[0].key].msg(), 'chat-heal')
 		data.forEach(buff => {
 			let key = buff.key
 			// check level of buff - cancel if lower
 			if (typeof my.buffs[key] === 'object') {
 				if (buff.level < my.buffs[key].level) {
-					// buff is lower level - now check if it's still active
-					if (typeof my.buffs[key].duration === 'undefined' && my.buffs[key].damage > 0 ||
+					// buff is lower level -
+					if (//no timer but has damage
+						typeof my.buffs[key].duration === 'undefined' && my.buffs[key].damage > 0 ||
+						// timer-based active
 						my.buffs[key].duration > 0) {
 						// duration not defined or still active
 						chat.log(buffs[buff.key].name + ' failed to take hold.', 'chat-warning')
@@ -751,12 +752,13 @@ var combat;
 			}
 			// optional keys
 			if (buff.level) my.buffs[key].level = buff.level
+			// sets shield type damage absorption shimmeringOrb, guardianAngel, etc
 			if (buff.damage) my.buffs[key].damage = buff.damage
 
 			// not timer based - my.buffFlags[key] must be set to false via depletion
 			if (buffs[buff.key].duration > 0) {
 				// timer based
-				console.warn('SotH', buffs[buff.key].duration)
+				console.warn('adding buff - dur:', buffs[buff.key].duration)
 				my.buffs[key].duration = buffs[buff.key].duration
 				my.buffs[key].timer = TweenMax.to(my.buffs[key], my.buffs[key].duration, {
 					duration: 0,
@@ -873,6 +875,30 @@ var combat;
 			TweenMax.set(el, {
 				filter: 'grayscale(1) sepia(1) saturate('+ o.saturate +') hue-rotate(-30deg) contrast('+ o.contrast +') brightness('+ o.brightness +') grayscale('+ o.grayscale +') '
 			})
+		}
+	}
+	function reduceShimmeringOrbDamage(d) {
+		let val = skills.RNG[10].magMit[my.buffs.shimmeringOrb.level]
+		d.damage -= val
+		console.info('reduceShimmeringOrbDamage remaining', my.buffs.shimmeringOrb.damage)
+		my.buffs.shimmeringOrb.damage -= val
+		if (my.buffs.shimmeringOrb.damage <= 0) {
+			my.buffs.shimmeringOrb.damage = 0
+			battle.removeBuff('shimmeringOrb')
+		}
+	}
+	function reduceGuardianAngelDamage(d) {
+		chat.log(buffs.guardianAngel.msgAbsorb, 'chat-buff')
+		console.info('reduceGuardianAngelDamage', my.buffs.guardianAngel.damage)
+		if (d.damage > my.buffs.guardianAngel.damage) {
+			d.damage -= my.buffs.guardianAngel.damage
+			my.buffs.guardianAngel.damage = 0
+			battle.removeBuff('guardianAngel')
+		}
+		else {
+			my.buffs.guardianAngel.damage -= d.damage
+			d.damage = 0
+
 		}
 	}
 }($, _, TweenMax, PIXI, Math, Power1, Power3, Linear);
