@@ -3,6 +3,14 @@ var party;
 	party = {
 		prefix: (sessionStorage.getItem('reloads') ? +sessionStorage.getItem('reloads') : 1),
 		presence: [],
+		color: [
+			'#d11',
+			'#05b',
+			'#dd0',
+			'#080',
+			'#0dd',
+			'#a0f',
+		],
 		maxPlayers: 6,
 		damage: {},
 		getUniquePartyChannel,

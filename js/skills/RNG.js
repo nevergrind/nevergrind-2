@@ -286,12 +286,18 @@
 		spell.startCasting(index, data, fungalGrowthCompleted)
 	}
 	function fungalGrowthCompleted() {
+		hit = stats.spellDamage(false, true) // force crit, get non-crit
 		combat.txHotHero(spell.config.target, {
 			index: spell.config.target,
 			key: 'fungalGrowth',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true) // force crit, get non-crit
+			...hit,
+		})
+		socket.publish('party' + my.partyId, {
+			route: 'p->hate',
+			hate: ~~hit.damage * .5,
+			row: my.row,
 		})
 	}
 	function shimmeringOrb(index, data) {

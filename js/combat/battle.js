@@ -658,7 +658,10 @@ var battle;
 		for (var i=0; i<mob.max; i++){
 			s += '<div id="mob-wrap-' +i+ '" class="mob-wrap' + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
 				'<div id="mob-details-' +i+ '" class="mob-details" index="' + i + '">' +
-					'<div id="mob-name-' +i+ '" class="mob-name text-shadow3"></div>' +
+					'<div class="flex-center" style="position: relative; white-space: nowrap;">' +
+						'<div id="mob-name-' +i+ '" class="mob-name text-shadow3"></div>' +
+						'<img id="mob-target-avatar-' +i+ '" class="mob-target-avatar" src="images/blank.png">' +
+					'</div>' +
 					'<div id="mob-bar-' +i+ '" class="mob-bar">' +
 						'<div id="mob-health-' +i+ '" class="mob-health"></div>' +
 						'<div class="mob-health-grid"></div>' +

@@ -518,6 +518,40 @@ tbody { border: 0 }
 	background-image: linear-gradient(to left, rgba(32, 32, 32, .4), rgba(128, 128, 128, 1), rgba(32, 32, 32, .4))
 }
 
+.grad-black {
+	position: relative;
+	z-index: 1;
+}
+.grad-black:after {
+	position: absolute;
+	content: "";
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+	background: linear-gradient(to bottom,
+		#0000006f 0,
+		#0000006f 10%,
+		#00000068 10%,
+		#00000068 20%,
+		#0000005f 20%,
+		#0000005f 30%,
+		#00000058 30%,
+		#00000058 40%,
+		#0000004f 40%,
+		#0000004f 50%,
+		#00000048 50%,
+		#00000048 60%,
+		#0000003f 60%,
+		#0000003f 70%,
+		#00000038 70%,
+		#00000038 80%,
+		#0000002f 80%,
+		#0000002f 90%,
+		#00000028 90%,
+		#00000028 100%);
+}
 .stag-blue {
 	background: linear-gradient(to top,
 		rgba(0, 24, 60, .8) 0,
@@ -602,10 +636,6 @@ tbody { border: 0 }
 	50% { filter: grayscale(0) brightness(1.5); }
 	100% { filter: grayscale(.15) brightness(1); }
 }
-.mob-name {
-	font: 1.2rem Play;
-	text-align: center;
-}
 .mob-bar {
 	position: relative;
 	width: 10rem;
@@ -647,16 +677,27 @@ tbody { border: 0 }
 	pointer-events: none;
 }
 .mob-shadow {
-       position: absolute;
-       display: none;
-       transform: translate(-50%, 0);
-       bottom: 1.5rem;
-       border-radius: 50%;
-       background: radial-gradient(farthest-side at 50% 50%, #000a 0%, #0008 30%, #0000 100%);
-       height: 2rem;
-       width: 20rem;
-       z-index: 0;
-       /*outline: 2px dotted #aaa;*/
+	position: absolute;
+	display: none;
+	transform: translate(-50%, 0);
+	bottom: 1.5rem;
+	border-radius: 50%;
+	background: radial-gradient(farthest-side at 50% 50%, #000a 0%, #0008 30%, #0000 100%);
+	height: 2rem;
+	width: 20rem;
+	z-index: 0;
+	/*outline: 2px dotted #aaa;*/
+}
+.mob-name {
+	font: 1.2rem Play;
+	text-align: center;
+	white-space: nowrap;
+	margin-left: 1.4rem;
+}
+.mob-target-avatar {
+	width: 1.2rem;
+	height: 1.2rem;
+	margin-left: .2rem;
 }
 .mob-alive {
 	position: absolute;

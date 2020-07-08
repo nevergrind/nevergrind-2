@@ -184,8 +184,15 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
 		})
+		hate = 0
 		damages.forEach(d => {
 			combat.txHotHero(d.index, d)
+			hate += d.damage * .4
+		})
+		socket.publish('party' + my.partyId, {
+			route: 'p->hate',
+			hate: ~~hate,
+			row: my.row,
 		})
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
@@ -211,6 +218,11 @@
 		})
 		damages[0].level = my.skills[spell.config.skillIndex]
 		combat.txBuffHero(spell.config.target, damages)
+		socket.publish('party' + my.partyId, {
+			route: 'p->hate',
+			hate: ~~damages[0].damage * .5,
+			row: my.row,
+		})
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
@@ -235,8 +247,16 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
 		})
+		hate = 0
 		damages.forEach(d => {
 			combat.txHotHero(d.index, d)
+			hate += d.damage * .8
+		})
+		// broadcast hate
+		socket.publish('party' + my.partyId, {
+			route: 'p->hate',
+			hate: ~~hate,
+			row: my.row,
 		})
 	}
 	function circleOfPrayer(index, data) {
@@ -261,8 +281,15 @@
 				...stats.spellDamage()
 			})
 		})
+		hate = 0
 		damages.forEach(d => {
 			combat.txHotHero(d.index, d)
+			hate += d.damage * .5
+		})
+		socket.publish('party' + my.partyId, {
+			route: 'p->hate',
+			hate: ~~hate,
+			row: my.row,
 		})
 	}
 	function sealOfRedemption(index, data) {

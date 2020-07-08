@@ -28,6 +28,8 @@ var mob;
 		getMobDamage,
 		updateMobName,
 		isAnyMobAlive,
+		addHateHeal,
+		hideMobTargets,
 		txData: [],
 		enableMobHeartbeat: true,
 		imageKeysLen: 0,
@@ -46,6 +48,7 @@ var mob;
 		leveledUp: false,
 	};
 	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el, chance
+	let isSomeoneAlive = false
 	let goldChance = 0
 	let goldFound = 0
 	let exp = 0
@@ -114,6 +117,7 @@ var mob;
 	let mpTick = 0
 	let spTick = 0
 	let mobRow = -1
+	let i = 0
 	const hoverIcon = "url('css/cursor/pointer.cur'), auto"
 
 	//////////////////////////////////////////////////
@@ -121,10 +125,24 @@ var mob;
 		var i = ~~(rand() * mob.imageKeysLen)
 		return mob.imageKeys[i]
 	}
+	function addHateHeal(data) {
+		if (ng.view === 'battle') {
+			console.info('updateHate addHateHeal', data)
+			for (i=0; i<mob.max; i++) {
+				updateHate({
+					index: i,
+					row: data.row,
+					hate: data.hate,
+				})
+			}
+		}
+	}
 	function updateHate(o) {
-		console.info('updateHate mob', o.index, o.hate)
-		mobs[o.index].hate[o.row] += o.hate
-		if (mobs[o.index].hate[o.row] < 0) mobs[o.index].hate[o.row] = 0
+		if (mobs[o.index].name && mobs[o.index].hp > 0) {
+			console.info('updateHate mob', o.index, o.hate)
+			mobs[o.index].hate[o.row] += o.hate
+			if (mobs[o.index].hate[o.row] < 0) mobs[o.index].hate[o.row] = 0
+		}
 	}
 	function init() {
 		mob.imageKeys = Object.keys(mobs.images)
@@ -480,14 +498,18 @@ var mob;
 	function mobAttackSpeed(i) {
 		return mobs[i].speed * mobs[i].speedMod
 	}
-	function animateAttack(i, isSecondary) {
+	function animateAttack(i, row) {
+		isSomeoneAlive = party.isSomeoneAlive()
+		let tgt = party.presence.findIndex(p => p.row === row)
+		if (tgt > -1) animateMobTarget(i, tgt)
 		// animate
 		if (mobs[i].isAnimationActive) return
 
 		// console.info('animateAttack', party.isSomeoneAlive())
-		if (party.isSomeoneAlive()) {
+		if (isSomeoneAlive) {
 			mobs[i].isAnimationActive = true
-			var attackType = isSecondary ? 'secondary' : 'primary'
+			// var attackType = isSecondary ? 'secondary' : 'primary'
+			var attackType = 'primary'
 			var speed = mobs[i].frameSpeed * frame[attackType].diff;
 			if (!mobs[i].enableSecondary) {
 				attackType = 'primary'
@@ -505,6 +527,19 @@ var mob;
 				onComplete: () => { resetIdle(mobs[i].index) },
 			})
 		}
+	}
+	function hideMobTargets() {
+		querySelectorAll('.mob-target-avatar').forEach(el => {
+			el.src = 'images/blank.png'
+			el.style.background = 'transparent'
+			el.style.border = 'none'
+		})
+	}
+	function animateMobTarget(i, tgt) {
+		el = querySelector('#mob-target-avatar-' + i)
+		el.src = party.presence[tgt].avatar
+		el.style.background = party.color[tgt]
+		el.style.border = '1px solid #000'
 	}
 
 	function special(i) {

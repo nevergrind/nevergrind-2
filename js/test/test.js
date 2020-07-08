@@ -7,6 +7,7 @@ var test;
 			room: chatRoom,
 			log: chatLog
 		},
+		getHate,
 		send,
 		orcs,
 		opacity,
@@ -515,6 +516,9 @@ var test;
 		}
 	}
 
-
-
+	function getHate() {
+		for (var i=0; i<mob.max; i++) {
+			console.info('hate:', i, mobs[i].hate)
+		}
+	}
 })(Linear, TweenMax, TimelineMax, PIXI, $);

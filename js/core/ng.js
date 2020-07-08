@@ -744,7 +744,7 @@ var ng;
 		if (characterData.length) {
 			var d = characterData[ng.selectIndex]
 			var url = my.getAvatarUrl(d);
-			s += '<div id="title-select-down" class="title-select-col flex-center">'+
+			s += '<div id="title-select-down" class="title-select-col flex-center grad-black">'+
 					'<img class="title-select-chevron" src="images/ui/chevron-left.png">' +
 				'</div>' +
 				'<div id="selected-ch-card" data-row="'+ d.row +'" data-name="'+ d.name +'" class="ch-card center select-player-card text-center">' +

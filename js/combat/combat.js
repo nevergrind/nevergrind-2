@@ -303,6 +303,7 @@ var combat;
 	}
 	function endCombat() {
 		mob.killAttacks(true)
+		mob.hideMobTargets()
 		battle.hideTarget()
 		battle.killMobBuffTimers()
 		battle.killTargetBuffTimers()
@@ -525,7 +526,6 @@ var combat;
 	function txDamageHero(index, damages) {
 		// damages is an object with indices that point to player row (target)
 		processDamageToMe(index, damages)
-		mob.animateAttack(index)
 		// animate mob for other players and check if they were hit
 		if (party.hasMoreThanOnePlayer()) {
 			socket.publish('party' + my.partyId, {
@@ -540,11 +540,10 @@ var combat;
 		damages = data.d
 		processDamageToMe(data.i, damages)
 		console.info('rxDamageHero: ', damages)
-		mob.animateAttack(data.i)
 	}
 	function processDamageToMe(index, damages) {
 		if (damages.findIndex(dam => dam.row === my.row) >= 0) {
-			// something hit me
+			// something hit me - single or double hit
 			damages = damages.map(dam => processDamagesHero(index, dam))
 			len = damages.length
 			totalDamage = 0
@@ -587,6 +586,11 @@ var combat;
 				hpMax: my.hpMax,
 			})
 		}
+		// animate
+		damages.forEach(dam => {
+			console.info('processDamageToMe', index, dam.row)
+			mob.animateAttack(index, dam.row)
+		})
 	}
 	function popupDamage(index, damage, isCrit) {
 		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)

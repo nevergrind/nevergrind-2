@@ -33,6 +33,14 @@ var town;
 	}
 	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, npc, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, potionItems, potLevel, scrollItems
 
+	const candleAnimation = RoughEase.ease.config({
+		template: Power0.easeOut,
+		strength: 3,
+		points: 50,
+		taper: 'both',
+		randomize: true,
+		clamp: true
+	})
 	var storeItems = []
 	const buyTypes = [
 		'merchant',
@@ -572,14 +580,7 @@ var town;
 			scale: 1.1,
 			repeat: -1,
 			yoyo: true,
-			ease: RoughEase.ease.config({
-				template: Power0.easeOut,
-				strength: 3,
-				points: 50,
-				taper: 'both',
-				randomize: true,
-				clamp: true
-			}),
+			ease: candleAnimation,
 		});
 	}
 	function animateBuilding(o) {

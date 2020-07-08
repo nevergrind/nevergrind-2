@@ -140,18 +140,22 @@ var spell;
 	}
 	// defaults for combat DD on mob
 	function getDefaults(skillIndex, data) {
-		console.info('getDefaults', skillIndex, data.sp(my.skills[skillIndex]))
+		// console.info('getDefaults', skillIndex)
 		return {
 			skillIndex: skillIndex,
 			global: true,
 			isMob: true,
 			fixTarget: true,
 			target: my.target,
-			targetName: party.getNameByRow(my.target),
+			targetName: getTargetName(),
 			oocEnabled: false,
 			mpCost: typeof data.mp === 'function' ? data.mp(my.skills[skillIndex]) : 0,
 			spCost: typeof data.sp === 'function'? data.sp(my.skills[skillIndex]) : 0,
 			name: data.name,
 		}
+	}
+	function getTargetName() {
+		if (my.targetIsMob && my.target !== -1) return mobs[my.target].name
+		else return my.target === -1 ? '' : party.getNameByRow(my.target)
 	}
 }($, _, TweenMax, Power0);
