@@ -287,18 +287,13 @@
 	}
 	function fungalGrowthCompleted() {
 		hit = stats.spellDamage(false, true) // force crit, get non-crit
-		combat.txHotHero(spell.config.target, {
+		combat.txHotHero([{
 			index: spell.config.target,
 			key: 'fungalGrowth',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...hit,
-		})
-		socket.publish('party' + my.partyId, {
-			route: 'p->hate',
-			hate: ~~hit.damage * .5,
-			row: my.row,
-		})
+		}])
 	}
 	function shimmeringOrb(index, data) {
 		if (timers.castBar < 1) return
@@ -317,10 +312,10 @@
 			index: spell.config.target,
 			key: 'shimmeringOrb',
 			spellType: spell.data.spellType,
+			level: my.skills[spell.config.skillIndex],
 			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
-		damages[0].level = my.skills[spell.config.skillIndex]
-		combat.txBuffHero(spell.config.target, damages)
+		combat.txBuffHero(damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
@@ -344,7 +339,7 @@
 			spellType: spell.data.spellType,
 			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
-		combat.txBuffHero(spell.config.target, damages)
+		combat.txBuffHero(damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 		if (bar.windowsOpen.character && bar.activeTab === 'character') {

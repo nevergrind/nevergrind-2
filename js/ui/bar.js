@@ -859,13 +859,16 @@ var bar;
 		console.info('getPlayerBarHtml', player)
 		// red background
 		if (my.row === index) html += '<div id="bar-card-bg-'+ index +'" class="bar-card-bg"></div>'
-
+		let partyIndex = party.presence.findIndex(p=> p.row === player.row)
 		html +=
 		// avatar
-		'<img id="bar-avatar-'+ index +'" class="bar-avatar" src="'+ player.avatar +'">' +
+		'<div style="position: relative;">' +
+			'<div class="party-circle" style="background: '+ party.color[partyIndex] +'"></div>' +
+			'<div id="bar-is-leader-'+ index +'" class="party-circle bar-is-leader '+ (player.isLeader ? 'block' : 'none') +'"></div>' +
+			'<img id="bar-avatar-'+ index +'" class="bar-avatar" src="'+ player.avatar +'">' +
+		'</div>' +
 		// bars
 		'<div class="flex-column '+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'" style="justify-content: space-around">' +
-			'<i id="bar-is-leader-'+ index +'" class="ra ra-crown bar-is-leader '+ (player.isLeader ? 'block' : 'none') +' no-pointer"></i>' +
 			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis text-shadow3">'+ (player.name || '') +'</div>' +
 			'<div>' +
 			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +

@@ -1224,7 +1224,7 @@ var skills;
 				spellType: 'conjuration',
 				damageType: 'arcane',
 				castTime: 1.5,
-				cooldownTime: 24,
+				cooldownTime: 15,
 				description: 'Protect target with a holy shield that absorbs X damage - cannot be feared while effect is active.',
 			}, {
 				name: 'Divine Light',

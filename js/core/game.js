@@ -24,7 +24,7 @@ var game;
 		initPlayedCache,
 		updateChat,
 		updateParty,
-		updatePartyResources,
+		txPartyResources,
 	};
 	/** private */
 	var pingStart = 0;
@@ -140,7 +140,7 @@ var game;
 		}
 		socket.publish('party' + my.partyId, partyData)
 	}
-	function updatePartyResources(changedResourceObj) {
+	function txPartyResources(changedResourceObj) {
 		// broadcast health update for party member and animate attack
 		if (party.hasMoreThanOnePlayer()) {
 			partyData = {

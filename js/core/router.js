@@ -60,6 +60,8 @@ var router;
 		else if (r === 'p->hit') combat.rxDamageHero(data)
 		else if (r === 'p->HP') party.upsertPartyResource(data)
 		else if (r === 'p->hate') mob.addHateHeal(data)
+		else if (r === 'p->heal') combat.rxHotHero(data)
+		else if (r === 'p->buff') combat.rxBuffHero(data)
 	}
 	function toGuild(data, r) {
 		if (r === 'guild->hasJoined') guild.hasJoined(data)

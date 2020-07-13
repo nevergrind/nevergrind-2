@@ -25,6 +25,7 @@ var spell;
 	let chance = 0
 	let success = 0
 	let spellType = ''
+	let shieldsActive = false
 	///////////////////////////////////////////
 	function noop() {}
 	function cancelSpell() {
@@ -43,15 +44,23 @@ var spell;
 		//console.info('channelSuccessful success 2', success)
 		return rand() < success
 	}
+	function noShieldsActive() {
+		// buffs that help you ignore knockback
+		shieldsActive = false
+		if (my.buffFlags.guardianAngel) shieldsActive = true
+		return shieldsActive
+	}
 	function knockback() {
-		if (timers.castBar < 1 && !channelSuccessful()) {
+		if (timers.castBar < 1 &&
+			!channelSuccessful() &&
+			noShieldsActive()) {
 			spell.timer.kill()
 			castPenalty = .5 / spell.castTime
 			timers.castBar -= castPenalty
 			if (timers.castBar < 0) timers.castBar = 0
 			/////////////////////////
 			castProgress = (1 - (timers.castBar / 1)) * spell.castTime
-			console.info('knockback', castProgress, spell.castTime)
+			// console.info('knockback', castProgress, spell.castTime)
 			TweenMax.set(castBar, { x: '-' + spellRatio() + '%' })
 			spell.timer = TweenMax.to(timers, castProgress, {
 				startAt: { castBar: timers.castBar },
@@ -150,7 +159,7 @@ var spell;
 			targetName: getTargetName(),
 			oocEnabled: false,
 			mpCost: typeof data.mp === 'function' ? data.mp(my.skills[skillIndex]) : 0,
-			spCost: typeof data.sp === 'function'? data.sp(my.skills[skillIndex]) : 0,
+			spCost: typeof data.sp === 'function' ? data.sp(my.skills[skillIndex]) : 0,
 			name: data.name,
 		}
 	}

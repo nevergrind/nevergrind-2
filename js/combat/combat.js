@@ -122,6 +122,8 @@ var combat;
 	let vulpineSp = 0
 	let mobArmor = 1
 	let blockMsg = ''
+	let hate = 0
+	let healAmount = 0
 
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
@@ -581,7 +583,7 @@ var combat;
 					vulpineSp = vulpineSp % 1
 				}
 			}
-			game.updatePartyResources({
+			game.txPartyResources({
 				hp: my.hp,
 				hpMax: my.hpMax,
 			})
@@ -631,68 +633,96 @@ var combat;
 		})
 	}
 
-	function txHotHero(index, data) {
+	function txHotHero(data) {
 		// damages is an object with indices that point to player row (target)
-		console.info('txHotHero', index, data)
-		if (data.index === my.row) {
-			processHealToMe(data)
-		}
-		else {
-			let name = party.getNameByRow(data.index)
-			if (name) {
-				socket.publish('name' + name, {
-					action: 'p->HoT',
-					data: _.pick(data, ['damage', 'index', 'key'])
-				}, true)
-			}
-		}
+		data = data.map(heal => _.pick(heal, ['damage', 'index', 'key']))
+		console.info('txHotHero', data)
+		socket.publish('party' + my.partyId, {
+			route: 'p->heal',
+			row: my.row,
+			heals: data
+		})
 	}
 	function rxHotHero(data) {
 		console.info('rxHotHero: ', data)
-		processHealToMe(data.data)
+		processHealToMe(data)
 	}
 	function processHealToMe(buff) {
-		console.info('processHealToMe', buff)
-		if (buffs[buff.key].duration > 0) {
-			let keyRow = buff.key + '-' + buff.index
-			// cancel/overwrite existing buff timer data keyRow: duration, function
-			if (typeof my.buffs[keyRow] === 'object' &&
-				typeof my.buffs[keyRow].timer === 'object') {
-				my.buffs[keyRow].timer.kill()
-				my.buffs[keyRow].hotTicks.kill()
-				battle.removeBuff(buff.key, keyRow)
+		if (buffs[buff.heals[0].key]?.duration > 0) hotToMe(buff)
+		else healToMe(buff)
+	}
+	function healToMe(data) {
+		console.info('healToMe', data)
+		hate = 0
+		data.heals.forEach(heal => {
+			if (!buffs[heal.key].hate) heal.hate = 1
+			hate += heal.damage * buffs[heal.key].hate
+			if (my.row === heal.index) {
+				// healing ME
+				healAmount = heal.damage
+				chat.log(buffs[heal.key].msg(heal), 'chat-heal')
+				updateHeroResource('hp', healAmount)
+				// let everyone know I got the heal
+				game.txPartyResources({
+					hp: my.hp,
+					hpMax: my.hpMax,
+				})
 			}
-			// setup buff timer data
-			my.buffs[keyRow] = {
-				row: buff.index,
-				key: buff.key,
-				duration: buffs[buff.key].duration,
-			}
-			my.buffs[keyRow].timer = TweenMax.to(
-				my.buffs[keyRow],
-				my.buffs[keyRow].duration, {
-				duration: 0,
-					ease: Linear.easeNone,
-					onComplete: battle.removeMyBuffFlag,
-					onCompleteParams: [keyRow],
+		})
+		hate = ~~hate
+		if (hate > 0) {
+			mob.addHateHeal({
+				row: data.row,
+				hate: hate
 			})
-			my.buffFlags[keyRow] = true
-			let healAmount = Math.round(buff.damage / buffs[buff.key].ticks)
-			my.buffs[keyRow].hotTicks = TweenMax.to({}, buffs[buff.key].interval, {
-				repeat: buffs[buff.key].ticks,
-				onRepeat: onHotTick,
-				onRepeatParams: [buff, healAmount],
-			})
-			battle.addMyBuff(buff.key, keyRow)
-			chat.log(buffs[buff.key].msg(buff), 'chat-heal')
 		}
-		else {
-			let healAmount = buff.damage
-			chat.log(buffs[buff.key].msg(buff), 'chat-heal')
-			updateHeroResource('hp', healAmount)
-			game.updatePartyResources({
-				hp: my.hp,
-				hpMax: my.hpMax,
+	}
+	function hotToMe(data) {
+		console.info('hotToMe', data)
+		hate = 0
+		data.heals.forEach(heal => {
+			if (!buffs[heal.key].hate) heal.hate = 1
+			hate += heal.damage * buffs[heal.key].hate
+			if (my.row === heal.index) {
+				// HoT
+				let keyRow = heal.key + '-' + heal.index
+				// cancel/overwrite existing buff timer data keyRow: duration, function
+				if (typeof my.buffs[keyRow] === 'object' &&
+					typeof my.buffs[keyRow].timer === 'object') {
+					my.buffs[keyRow].timer.kill()
+					my.buffs[keyRow].hotTicks.kill()
+					battle.removeBuff(heal.key, keyRow)
+				}
+				// setup buff timer data
+				my.buffs[keyRow] = {
+					row: heal.index,
+					key: heal.key,
+					duration: buffs[heal.key].duration,
+				}
+				my.buffs[keyRow].timer = TweenMax.to(
+					my.buffs[keyRow],
+					my.buffs[keyRow].duration, {
+					duration: 0,
+						ease: Linear.easeNone,
+						onComplete: battle.removeMyBuffFlag,
+						onCompleteParams: [keyRow],
+				})
+				my.buffFlags[keyRow] = true
+				healAmount = Math.round(heal.damage / buffs[heal.key].ticks)
+				my.buffs[keyRow].hotTicks = TweenMax.to({}, buffs[heal.key].interval, {
+					repeat: buffs[heal.key].ticks,
+					onRepeat: onHotTick,
+					onRepeatParams: [heal, healAmount],
+				})
+				battle.addMyBuff(heal.key, keyRow)
+				chat.log(buffs[heal.key].msg(heal), 'chat-heal')
+			}
+		})
+		hate = ~~hate
+		if (hate > 0) {
+			mob.addHateHeal({
+				row: data.row,
+				hate: hate
 			})
 		}
 	}
@@ -702,78 +732,84 @@ var combat;
 	}
 
 	// buff hero
-	function txBuffHero(index, data) {
-		// damages is an object with indices that point to player row (target)
-		console.info('txBuffHero', data, spell.config.targetName)
-		if (spell.config.targetName === my.name) {
-			processBuffToMe(data)
-		}
-		else {
-			buffData = data.map(buff => {
-				return _.pick(buff, ['damage', 'index', 'key', 'level'])
-			})
-			socket.publish('name' + spell.config.targetName, {
-				action: 'p->buff',
-				//data: data,
-				data: buffData,
-			}, true)
-		}
+	function txBuffHero(data) {
+		console.info('txBuffHero', data)
+		data = data.map(buff => _.pick(buff, ['damage', 'index', 'key']))
+		socket.publish('party' + my.partyId, {
+			route: 'p->buff',
+			row: my.row,
+			buffs: data
+		})
 	}
 	function rxBuffHero(data) {
 		console.info('rxBuffHero: ', data)
-		processBuffToMe(data.data)
+		processBuffToMe(data)
 	}
 	function processBuffToMe(data) {
+		hate = 0
 		console.info('processBuffToMe', data)
-		chat.log(buffs[data[0].key].msg(), 'chat-heal')
-		data.forEach(buff => {
-			let key = buff.key
-			// check level of buff - cancel if lower
-			if (typeof my.buffs[key] === 'object') {
-				if (buff.level < my.buffs[key].level) {
-					// buff is lower level -
-					if (//no timer but has damage
-						typeof my.buffs[key].duration === 'undefined' && my.buffs[key].damage > 0 ||
-						// timer-based active
-						my.buffs[key].duration > 0) {
-						// duration not defined or still active
-						chat.log(buffs[buff.key].name + ' failed to take hold.', 'chat-warning')
-						return
+		data.buffs.forEach(buff => {
+			if (!buffs[buff.key].hate) buff.hate = 0
+			if (buff.hate) hate += buff.damage * buffs[buff.key].hate
+
+			if (my.row === buff.index) {
+				chat.log(buffs[buff.key].msg(), 'chat-heal')
+				let key = buff.key
+				// check level of buff - cancel if lower
+				if (typeof my.buffs[key] === 'object') {
+					if (buff.level < my.buffs[key].level) {
+						// buff is lower level -
+						if (//no timer but has damage
+							typeof my.buffs[key].duration === 'undefined' && my.buffs[key].damage > 0 ||
+							// timer-based active
+							my.buffs[key].duration > 0) {
+							// duration not defined or still active
+							chat.log(buffs[buff.key].name + ' failed to take hold.', 'chat-warning')
+							return
+						}
+					}
+
+					// cancel/overwrite existing buff timer data keyRow: duration, function
+					if (typeof my.buffs[key].timer === 'object') {
+						my.buffs[key].timer.kill()
 					}
 				}
 
-				// cancel/overwrite existing buff timer data keyRow: duration, function
-				if (typeof my.buffs[key].timer === 'object') {
-					my.buffs[key].timer.kill()
+				battle.removeBuff(key)
+				// setup buff timer data
+				my.buffs[key] = {
+					row: buff.index,
+					key: buff.key,
 				}
-			}
+				// optional keys
+				if (buff.level) my.buffs[key].level = buff.level
+				// sets shield type damage absorption shimmeringOrb, guardianAngel, etc
+				if (buff.damage) my.buffs[key].damage = buff.damage
 
-			battle.removeBuff(key)
-			// setup buff timer data
-			my.buffs[key] = {
-				row: buff.index,
-				key: buff.key,
+				// not timer based - my.buffFlags[key] must be set to false via depletion
+				if (buffs[buff.key].duration > 0) {
+					// timer based
+					console.warn('adding buff - dur:', buffs[buff.key].duration)
+					my.buffs[key].duration = buffs[buff.key].duration
+					my.buffs[key].timer = TweenMax.to(my.buffs[key], my.buffs[key].duration, {
+						duration: 0,
+						ease: Linear.easeNone,
+						onComplete: battle.removeMyBuffFlag,
+						onCompleteParams: [key],
+					})
+				}
+				my.buffFlags[key] = true
+				battle.addMyBuff(buff.key, key)
 			}
-			// optional keys
-			if (buff.level) my.buffs[key].level = buff.level
-			// sets shield type damage absorption shimmeringOrb, guardianAngel, etc
-			if (buff.damage) my.buffs[key].damage = buff.damage
-
-			// not timer based - my.buffFlags[key] must be set to false via depletion
-			if (buffs[buff.key].duration > 0) {
-				// timer based
-				console.warn('adding buff - dur:', buffs[buff.key].duration)
-				my.buffs[key].duration = buffs[buff.key].duration
-				my.buffs[key].timer = TweenMax.to(my.buffs[key], my.buffs[key].duration, {
-					duration: 0,
-					ease: Linear.easeNone,
-					onComplete: battle.removeMyBuffFlag,
-					onCompleteParams: [key],
-				})
-			}
-			my.buffFlags[key] = true
-			battle.addMyBuff(buff.key, key)
 		})
+
+		hate = ~~hate
+		if (hate > 0) {
+			mob.addHateHeal({
+				row: data.row,
+				hate: hate
+			})
+		}
 	}
 
 	function animatePlayerFrames() {

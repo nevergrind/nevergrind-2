@@ -55,6 +55,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 9,
 			job: 'CLR',
 			duration: 0,
+				hate: .5,
 			msg: (buff) => 'Circle of Prayer heals you for ' + buff.damage + ' health.',
 		},
 		bindingGrace: {
@@ -62,13 +63,15 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 6,
 			job: 'CLR',
 			duration: 0,
+			hate: .4,
 			msg: (buff) => 'Binding Grace heals you for ' + buff.damage + ' health.',
 		},
 		guardianAngel: {
 			name: 'Guardian Angel',
 			img: 7,
 			job: 'CLR',
-			duration: 15,
+			duration: 30,
+			hate: .5,
 			msg: () => 'A guardian angel\'s wings surround you.',
 			msgAbsorb: 'Your guardian angel protects you from harm.'
 		},
@@ -77,6 +80,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 8,
 			job: 'CLR',
 			duration: 0,
+			hate: .8,
 			msg: (buff) => 'Divine Light heals you for ' + buff.damage + ' health.',
 		},
 	}

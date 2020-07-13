@@ -623,7 +623,7 @@ tbody { border: 0 }
 .mob-details {
 	position: absolute;
 	display: none;
-	left: -5rem;
+	left: -5.5rem;
 	width: 10rem;
 	cursor: url('cursor/pointer.cur'), pointer;
 	z-index: 2
@@ -639,13 +639,14 @@ tbody { border: 0 }
 .mob-bar {
 	position: relative;
 	width: 10rem;
-	height: .5rem;
-	border: 2px ridge #1a1a1a;
+	height: 1rem;
+	border: 1px solid #000;
+	border-left: none;
 	left: 0;
 	right: 0;
 	margin: 0 auto;
 	overflow: hidden;
-	border-radius: 5px;
+	border-radius: 0 5px 5px 0;
 	background: linear-gradient(to top, #222, #444, #444, #222);
 }
 .mob-health {
@@ -689,15 +690,19 @@ tbody { border: 0 }
 	/*outline: 2px dotted #aaa;*/
 }
 .mob-name {
+	display: flex;
 	font: 1.2rem Play;
 	text-align: center;
 	white-space: nowrap;
-	margin-left: 1.4rem;
+	margin-left: 1rem;
+	flex-wrap: nowrap;
+	justify-content: center;
 }
 .mob-target-avatar {
-	width: 1.2rem;
-	height: 1.2rem;
-	margin-left: .2rem;
+	width: 1rem;
+	height: 1rem;
+	background: #500;
+	border: 1px solid #000;
 }
 .mob-alive {
 	position: absolute;
@@ -1247,6 +1252,21 @@ background-clip: content-box;
 	transition: none;
 	filter: saturate(.9) brightness(.9);
 }
+.party-circle {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: translate(-100%, -0%);
+	border: 1px solid #000;
+	border-radius: 25%;
+	width: .5rem;
+	height: .5rem;
+}
+.bar-is-leader {
+	top: .6rem;
+	background: #ffd700;
+	transform: translate(-100%);
+}
 
 .bar-level {
 	font-size: .9rem;
@@ -1254,13 +1274,6 @@ background-clip: content-box;
 	color: gold;
 }
 
-.bar-is-leader {
-	position: absolute;
-	top: -.1rem;
-	left: -.75rem;
-	color: #ffa;
-	font-size: .8rem;
-}
 
 .bar-col-data {
 	flex: none;

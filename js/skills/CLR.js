@@ -128,7 +128,6 @@
 				...hit
 			})
 		}
-		// combat.txBuffHero(spell.config.target, damages)
 		combat.txDamageMob(damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
@@ -137,9 +136,6 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
-			isMob: false,
-			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, forceOfGloryCompleted)
@@ -153,6 +149,8 @@
 			stun: 5,
 			...stats.spellDamage()
 		}])
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function bindingGrace(index, data) {
 		if (timers.castBar < 1) return
@@ -184,16 +182,7 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
 		})
-		hate = 0
-		damages.forEach(d => {
-			combat.txHotHero(d.index, d)
-			hate += d.damage * .4
-		})
-		socket.publish('party' + my.partyId, {
-			route: 'p->hate',
-			hate: ~~hate,
-			row: my.row,
-		})
+		combat.txHotHero(damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
@@ -214,15 +203,10 @@
 			index: spell.config.target,
 			key: 'guardianAngel',
 			spellType: spell.data.spellType,
+			level: my.skills[spell.config.skillIndex],
 			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
-		damages[0].level = my.skills[spell.config.skillIndex]
-		combat.txBuffHero(spell.config.target, damages)
-		socket.publish('party' + my.partyId, {
-			route: 'p->hate',
-			hate: ~~damages[0].damage * .5,
-			row: my.row,
-		})
+		combat.txBuffHero(damages)
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
@@ -247,17 +231,7 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
 		})
-		hate = 0
-		damages.forEach(d => {
-			combat.txHotHero(d.index, d)
-			hate += d.damage * .8
-		})
-		// broadcast hate
-		socket.publish('party' + my.partyId, {
-			route: 'p->hate',
-			hate: ~~hate,
-			row: my.row,
-		})
+		combat.txHotHero(damages)
 	}
 	function circleOfPrayer(index, data) {
 		if (timers.castBar < 1) return
@@ -281,16 +255,7 @@
 				...stats.spellDamage()
 			})
 		})
-		hate = 0
-		damages.forEach(d => {
-			combat.txHotHero(d.index, d)
-			hate += d.damage * .5
-		})
-		socket.publish('party' + my.partyId, {
-			route: 'p->hate',
-			hate: ~~hate,
-			row: my.row,
-		})
+		combat.txHotHero(damages)
 	}
 	function sealOfRedemption(index, data) {
 		if (timers.castBar < 1) return

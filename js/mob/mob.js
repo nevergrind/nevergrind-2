@@ -129,6 +129,7 @@ var mob;
 		if (ng.view === 'battle') {
 			console.info('updateHate addHateHeal', data)
 			for (i=0; i<mob.max; i++) {
+				// applied to all mobs
 				updateHate({
 					index: i,
 					row: data.row,
@@ -530,16 +531,14 @@ var mob;
 	}
 	function hideMobTargets() {
 		querySelectorAll('.mob-target-avatar').forEach(el => {
-			el.src = 'images/blank.png'
-			el.style.background = 'transparent'
-			el.style.border = 'none'
+			el.src = my.avatar
+			el.style.background = party.color[0]
 		})
 	}
 	function animateMobTarget(i, tgt) {
 		el = querySelector('#mob-target-avatar-' + i)
 		el.src = party.presence[tgt].avatar
 		el.style.background = party.color[tgt]
-		el.style.border = '1px solid #000'
 	}
 
 	function special(i) {
