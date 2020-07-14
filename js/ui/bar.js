@@ -417,10 +417,6 @@ var bar;
 		}
 		stats.setAllResources()
 
-		if (my.hp > my.hpMax) my.hp = my.hpMax
-		if (my.mp > my.mpMax) my.mp = my.mpMax
-		if (my.sp > my.spMax) my.sp = my.spMax
-
 		/*if (ng.view === 'town') {
 			// max out health automatically
 			my.hp = my.hpMax

@@ -337,6 +337,7 @@
 			index: spell.config.target,
 			key: 'spiritOfTheHunter',
 			spellType: spell.data.spellType,
+			level: my.skills[spell.config.skillIndex],
 			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
 		combat.txBuffHero(damages)

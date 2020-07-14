@@ -1253,23 +1253,23 @@ var skills;
 				img: 'CLR-11',
 				sp: level => spellValues.sealOfRedemptionMana[level],
 				spellDamage: level => spellValues.sealOfRedemption[level] + (my.level * 2),
-				spellVariance: .875,
-				spellType: 'alteration',
+				spellVariance: 1,
+				spellType: 'conjuration',
 				damageType: 'arcane',
-				castTime: 2.5,
+				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Smite your target for X arcane damage.',
+				description: 'Buffs target with +HP and + X Blood resist for X ticks.',
 			}, {
 				name: 'Zealous Resolve',
 				img: 'CLR-12',
-				sp: [0, 5, 12, 29, 52, 77, 99, 115],
+				sp: level => spellValues.zealousResolveMana[level],
 				spellDamage: level => spellValues.zealousResolve[level] + (my.level * 2),
-				spellVariance: .875,
+				spellVariance: 1,
 				spellType: 'alteration',
 				damageType: 'arcane',
-				castTime: 2.5,
+				castTime: 4,
 				cooldownTime: 0,
-				description: 'Smite your target for X arcane damage.',
+				description: 'Imbues target with +HP +AC for X ticks.',
 			},
 		],
 		SHM: [
@@ -2052,10 +2052,10 @@ var skills;
 		divineLight: [0, 24, 54, 123, 228, 336, 426, 495],
 		circleOfPrayerMana: [0, 12, 27, 65, 119, 176, 226, 264],
 		circleOfPrayer: [0, 14, 32, 78, 142, 211, 271, 316],
-		sealOfRedemptionMana: [0, 0, 0, 0, 0, 0, 0, 0],
-		sealOfRedemption: [0, 0, 0, 0, 0, 0, 0, 0],
-		zealousResolveMana: [0, 0, 0, 0, 0, 0, 0, 0],
-		zealousResolve: [0, 0, 0, 0, 0, 0, 0, 0],
+		sealOfRedemptionMana: [0, 15, 34, 85, 156, 231, 297, 348],
+		sealOfRedemption: [0, 16, 38, 93, 170, 253, 325, 379], // HP and +bResist
+		zealousResolveMana: [0, 13, 29, 71, 130, 193, 248, 290],
+		zealousResolve: [0, 10, 24, 60, 110, 164, 211, 246], // HP and armor
 	}
 
 	///////////////////////////////////////////

@@ -152,14 +152,14 @@ var town;
 					/*my.hp = 1
 					my.mp = 1
 					my.sp = 1*/
-					my.hp = my.hpMax
-					my.mp = my.mpMax
-					my.sp = my.spMax
+					my.set('hp', my.hpMax)
+					my.set('mp', my.mpMax)
+					my.set('sp', my.spMax)
 				}
 				else {
-					my.hp = my.hpMax
-					my.mp = my.mpMax
-					my.sp = my.spMax
+					my.set('hp', my.hpMax)
+					my.set('mp', my.mpMax)
+					my.set('sp', my.spMax)
 				}
 
 				// init party member values

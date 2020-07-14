@@ -561,7 +561,11 @@ var battle;
 		)
 	}
 	function removeMyBuffFlag(keyRow) {
+		/**
+		 * Buff naturally times out via duration
+		 */
 		console.info('removeMyBuffFlag', keyRow)
+		var startedActive = my.buffFlags[keyRow]
 		var buffStillActive = false
 		for (var k in my.buffs) {
 			if (keyRow === my.buffs[k].key &&
@@ -569,9 +573,18 @@ var battle;
 				buffStillActive = true
 			}
 		}
-		if (!buffStillActive) my.buffFlags[keyRow] = false
+		if (!buffStillActive) {
+			my.buffFlags[keyRow] = false
+			if (startedActive && buffs[keyRow].fadeMsg) {
+				chat.log(buffs[keyRow].fadeMsg, 'chat-heal')
+				combat.processBuffStats(keyRow)
+			}
+		}
 	}
 	function removeMyBuffIcon(key, keyRow) {
+		/**
+		 * Buff naturally times out via duration
+		 */
 		console.info('removeMyBuff', key, keyRow)
 		if (typeof keyRow === 'undefined') keyRow = key
 		// only when it has DURATION
@@ -585,6 +598,9 @@ var battle;
 		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
 	}
 	function removeBuff(key, keyRow) {
+		/**
+		 * Used for pre-emptive removal before the timer is done
+		 */
 		if (typeof my.buffs[key] === 'object') {
 			if (my.buffs[key].level) my.buffs[key].level = 0
 			if (my.buffs[key].duration) my.buffs[key].duration = 0

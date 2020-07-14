@@ -2,6 +2,7 @@ var my;
 !function($, _, TweenMax, undefined) {
 	my = {
 		//hud,
+		set,
 		getResistObject,
 		getPartyNames,
 		getAvatarUrl,
@@ -79,6 +80,15 @@ var my;
 	const tabOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	let index
 	////////////////////////////////////
+	function set(key, val, increment) {
+		if (increment) {
+			party.presence[0][key] = my[key] += val
+		}
+		else {
+			if (typeof party.presence[0] === 'object') party.presence[0][key] = val
+			my[key] = val
+		}
+	}
 	function fixTarget() {
 		if (typeof mobs[my.target] === 'undefined' || !mobs[my.target].name) {
 			tabTarget({ shiftKey: false })

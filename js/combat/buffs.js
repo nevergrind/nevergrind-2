@@ -83,6 +83,22 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: .8,
 			msg: (buff) => 'Divine Light heals you for ' + buff.damage + ' health.',
 		},
+		sealOfRedemption: {
+			name: 'Seal of Redemption',
+			img: 10,
+			job: 'CLR',
+			duration: 5,
+			msg: () => 'Your forehead is emblazoned with a crimson seal.',
+			fadeMsg: 'Your crimson seal fades.'
+		},
+		zealousResolve: {
+			name: 'Zealous Resolve',
+			img: 11,
+			job: 'CLR',
+			duration: 5,
+			msg: () => 'Your spirit ignites with zealous resolve.',
+			fadeMsg: 'Your zealous resolve fades.'
+		},
 	}
 	///////////////////////////////////////////
 

@@ -4,7 +4,7 @@ var party;
 		prefix: (sessionStorage.getItem('reloads') ? +sessionStorage.getItem('reloads') : 1),
 		presence: [],
 		color: [
-			'#500',
+			'#e11',
 			'#05b',
 			'#dd0',
 			'#080',

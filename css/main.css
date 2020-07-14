@@ -639,7 +639,7 @@ tbody { border: 0 }
 .mob-bar {
 	position: relative;
 	width: 10rem;
-	height: 1rem;
+	height: .8rem;
 	border: 1px solid #000;
 	border-left: none;
 	left: 0;
@@ -701,7 +701,8 @@ tbody { border: 0 }
 .mob-target-avatar {
 	width: 1rem;
 	height: 1rem;
-	background: #500;
+	background: #e11;
+	border-radius: 0 3px 3px 0;
 	border: 1px solid #000;
 }
 .mob-alive {
@@ -1256,16 +1257,15 @@ background-clip: content-box;
 	position: absolute;
 	top: 0;
 	left: 0;
-	transform: translate(-100%, -0%);
+	transform: translate(-.7rem);
 	border: 1px solid #000;
 	border-radius: 25%;
 	width: .5rem;
 	height: .5rem;
 }
 .bar-is-leader {
-	top: .6rem;
+	top: .65rem;
 	background: #ffd700;
-	transform: translate(-100%);
 }
 
 .bar-level {

@@ -261,23 +261,45 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, sealOfRedemptionCompleted)
 	}
 	function sealOfRedemptionCompleted() {
-
+		damages = []
+		damages.push({
+			index: spell.config.target,
+			key: 'sealOfRedemption',
+			spellType: spell.data.spellType,
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		combat.txBuffHero(damages)
 	}
 	function zealousResolve(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, zealousResolveCompleted)
 	}
 	function zealousResolveCompleted() {
-
+		damages = []
+		damages.push({
+			index: spell.config.target,
+			key: 'zealousResolve',
+			spellType: spell.data.spellType,
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		combat.txBuffHero(damages)
 	}
 
 }($, _, TweenMax);

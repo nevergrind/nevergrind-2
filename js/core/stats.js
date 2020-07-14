@@ -85,6 +85,7 @@ var stats = {};
 	let vulpineMp = 0
 	let vulpineSp = 0
 	let resistStatusVal = 0
+	let value = 0
 
 	const hpTier = {
 		'WAR': 10,
@@ -442,7 +443,9 @@ var stats = {};
 		return resistPercent
 	}
 	function resistBlood() {
-		return getStatTotal('resistBlood') + getEqTotal('resistAll')
+		value = getStatTotal('resistBlood') + getEqTotal('resistAll')
+		if (my.buffFlags.sealOfRedemption) value += (8 + (my.buffs.sealOfRedemption.level * 2))
+		return value
 	}
 	function resistPoison() {
 		return getStatTotal('resistPoison') + getEqTotal('resistAll')
@@ -680,22 +683,28 @@ var stats = {};
 		else return 0
 	}
 	function setAllResources() {
-		my.hpMax = hpMax()
-		my.mpMax = mpMax()
-		my.spMax = spMax()
+		my.set('hpMax', hpMax())
+		my.set('mpMax', mpMax())
+		my.set('spMax', spMax())
+
+		if (my.hp > my.hpMax) my.set('hp', my.hpMax)
+		if (my.mp > my.mpMax) my.set('mp', my.mpMax)
+		if (my.sp > my.spMax) my.set('sp', my.spMax)
 	}
 	function hpMax() {
-		return ~~(
+		value = ~~(
 			((stats.sta() * hpTier[my.job]) * (my.level / 50) +
 				(my.level * (hpTier[my.job] * 2.5) + 20)) * hpPercentBonus()
-			+ getEqTotal('hp') + getBuffTotal('hp')
+			+ getEqTotal('hp')
 		)
+		if (my.buffFlags.sealOfRedemption) value += (my.buffs.sealOfRedemption.damage)
+		return value
 	}
 	function mpMax() {
 		return ~~(
 			((stats.intel() * mpTier[my.job]) * (my.level / 50) +
 				(my.level * (mpTier[my.job] * 2.5) + 12)) * mpPercentBonus()
-			+ getEqTotal('mp') + getBuffTotal('mp')
+			+ getEqTotal('mp')
 		)
 	}
 
@@ -703,7 +712,7 @@ var stats = {};
 		return ~~(
 			((stats.cha() * spTier[my.job]) * (my.level / 50) +
 				(my.level * (spTier[my.job] * 2.5) + 8)) +
-			getEqTotal('sp') + getBuffTotal('sp')
+			getEqTotal('sp')
 		)
 	}
 	// troll 9, normal 5
@@ -719,13 +728,13 @@ var stats = {};
 		return (my.race === 'Human' ? 4 : 2) + (my.level * (my.race === 'Human' ? .24 : .16))
 	}
 	function hpRegen() {
-		return ~~(baseHpRegen() + getEqTotal('hpRegen') + getBuffTotal('hpRegen'))
+		return ~~(baseHpRegen() + getEqTotal('hpRegen'))
 	}
 	function mpRegen() {
-		return ~~(baseMpRegen() + getEqTotal('mpRegen') + getBuffTotal('mpRegen'))
+		return ~~(baseMpRegen() + getEqTotal('mpRegen'))
 	}
 	function spRegen() {
-		return ~~(baseSpRegen() + getEqTotal('spRegen') + getBuffTotal('spRegen'))
+		return ~~(baseSpRegen() + getEqTotal('spRegen'))
 	}
 
 	function hpPercentBonus() {
@@ -733,16 +742,6 @@ var stats = {};
 	}
 	function mpPercentBonus() {
 		return 1 + (getStatTotal('increaseMpPercent') / 100);
-	}
-	function getBuffTotal(attr) {
-		val = 0
-		// TODO: add spell buff flags based on my.buffFlags
-		/*i = 0
-		len = buff.length
-		for (; i<len; i++) {
-			if (buff[i][attr]) val += buff[i][attr]
-		}*/
-		return val
 	}
 	function someIgnoreTargetArmor() {
 		return items.eq.some(eq => eq.ignoreTargetArmor)

@@ -89,8 +89,10 @@ var combat;
 		txBuffHero,
 		rxBuffHero,
 		selfDied,
+		processBuffStats,
 	}
 	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, buffData, key, resist, resistPenalty
+	let txHpUpdate = false
 	let battleTextInitialized = false
 	const textDuration = 1
 	const textDistanceY = 150
@@ -404,7 +406,7 @@ var combat;
 		// subtract XP
 		if (!ng.isApp) {
 			// really just for testing
-			party.presence[0].hp = my.hp = 0
+			my.set('hp', 0)
 			bar.updateBar('hp')
 		}
 		autoAttackDisable()
@@ -417,24 +419,23 @@ var combat;
 	}
 	// damage hero functions
 	function updateHeroResource(type, addValue, bypassDeath) {
+		/**
+		 * when hero's hp, mp, sp increments or decrements
+		 */
 		if (my.hp <= 0 && !bypassDeath) {
 			console.warn('updateHeroResource you are dead - no action taken')
 			return
 		}
-		party.presence[0][type] = my[type] += addValue
+		my.set(type, addValue, true)
 		// sanity check
-		if (my[type] < 0) {
-			party.presence[0][type] = my[type] = 0
-		}
-		if (my[type] > my[type + 'Max']) {
-			party.presence[0][type] = my[type] = my[type + 'Max']
-		}
+		if (my[type] < 0) my.set(type, 0)
+		else if (my[type] > my[type + 'Max']) my.set(type, my[type + 'Max'])
 		// special cases
 		if (type === 'hp') {
 			if (my.hp <= 0) {
 				// death
 				if (ng.isApp) selfDied()
-				else party.presence[0].hp = my.hp = my.hpMax // testing
+				else my.set('hp', my.hpMax) // testing
 			}
 		}
 		bar.updateBar(type)
@@ -734,7 +735,7 @@ var combat;
 	// buff hero
 	function txBuffHero(data) {
 		console.info('txBuffHero', data)
-		data = data.map(buff => _.pick(buff, ['damage', 'index', 'key']))
+		data = data.map(buff => _.pick(buff, ['damage', 'index', 'key', 'level']))
 		socket.publish('party' + my.partyId, {
 			route: 'p->buff',
 			row: my.row,
@@ -800,6 +801,7 @@ var combat;
 				}
 				my.buffFlags[key] = true
 				battle.addMyBuff(buff.key, key)
+				processBuffStats(key)
 			}
 		})
 
@@ -812,6 +814,27 @@ var combat;
 		}
 	}
 
+	function processBuffStats(key) {
+		txHpUpdate = false
+		console.info('processBuffStats key!', key)
+		if (key === 'sealOfRedemption') {
+			if (bar.windowsOpen.character) ng.html('#inv-resist-blood', stats.resistBlood())
+			my.set('hpMax', stats.hpMax())
+			bar.updateBar('hp')
+			txHpUpdate = true
+		}
+		else if (key === 'zealousResolve') {
+
+			txHpUpdate = true
+		}
+		if (txHpUpdate) {
+			console.info('processBuffStats tx!', key)
+			game.txPartyResources({
+				hp: my.hp,
+				hpMax: my.hpMax,
+			})
+		}
+	}
 	function animatePlayerFrames() {
 		TweenMax.to('#bar-card-bg-' + my.row, .5, {
 			startAt: { opacity: .5 },
