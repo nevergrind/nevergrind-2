@@ -13,7 +13,6 @@ var my;
 		partyTarget,
 		initSkills,
 		getMyData,
-		cacheStatValues,
 		saveCharacterData,
 		dataProps: [
 			'str',
@@ -195,9 +194,5 @@ var my;
 	}
 	function getMyData() {
 		return _.pick(my, my.dataProps)
-	}
-	function cacheStatValues() {
-		my.crit = stats.critChance()
-		my.armor = stats.armor()
 	}
 }($, _, TweenMax);

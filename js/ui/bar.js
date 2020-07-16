@@ -35,6 +35,7 @@ var bar;
 		getRatio,
 		getSkillBarHtml,
 		updateCharStatPanels,
+		charStatColOneHtml,
 		charStatColTwoHtml,
 		defaultImage: [
 			'helms1',
@@ -389,7 +390,7 @@ var bar;
 		console.info('//////////// updateItemSwapDOM', item.dropType, item.dragType)
 		if ([item.dropType, item.dragType].includes('eq')) {
 			console.info('update char stats')
-			my.cacheStatValues()
+			stats.cache = {}
 			updateCharStatPanels()
 			game.updateParty()
 		}
@@ -1066,7 +1067,7 @@ var bar;
 	}
 	function charStatColOneHtml() {
 		return '<div class="flex space-between">' +
-			'<div style="color: gold">Armor:</div><div>'+ my.armor +'</div>' +
+			'<div style="color: gold">Armor:</div><div>'+ stats.armor() +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
 			'<div style="color: gold">Strength:</div><div>'+ stats.str() +'</div>' +

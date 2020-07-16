@@ -575,11 +575,15 @@ var battle;
 		}
 		if (!buffStillActive) {
 			my.buffFlags[keyRow] = false
-			if (startedActive && buffs[keyRow].fadeMsg) {
-				chat.log(buffs[keyRow].fadeMsg, 'chat-heal')
-				combat.processBuffStats(keyRow)
+			if (startedActive && buffs[getBuffKey(keyRow)].fadeMsg) {
+				chat.log(buffs[getBuffKey(keyRow)].fadeMsg, 'chat-heal')
+				combat.processBuffStats(getBuffKey(keyRow))
 			}
 		}
+	}
+	function getBuffKey(keyRow) {
+		if (keyRow.includes('-')) keyRow = keyRow.split('-')[0]
+		return keyRow
 	}
 	function removeMyBuffIcon(key, keyRow) {
 		/**

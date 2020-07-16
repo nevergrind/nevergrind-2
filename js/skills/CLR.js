@@ -93,7 +93,6 @@
 		damages = []
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			//TODO: STUN
 			damages.push({
 				index: tgt,
 				spellType: spell.data.spellType,
@@ -141,7 +140,6 @@
 		spell.startCasting(index, data, forceOfGloryCompleted)
 	}
 	function forceOfGloryCompleted() {
-		// TODO: STUN
 		combat.txDamageMob([{
 			index: spell.config.target,
 			spellType: spell.data.spellType,

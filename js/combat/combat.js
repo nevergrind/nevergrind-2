@@ -165,7 +165,7 @@ var combat;
 
 		// dodge
 		if (!d.isPiercing &&
-			Math.random() * 100 < mobs[d.index].dodge) {
+			rand() * 100 < mobs[d.index].dodge) {
 			d.damage = 0
 			combat.popupDamage(d.index, 'DODGE!')
 			return d
@@ -174,7 +174,7 @@ var combat;
 		// info('processDamagesMob', d)
 		if (d.damageType === 'physical') {
 			// check for things that immediately set to 0
-			if (Math.random() < stats.missChance(d.index, d.weaponSkill)) {
+			if (rand() < stats.missChance(d.index, d.weaponSkill)) {
 				// chat.log('Your attack misses ' + ng.getArticle(d.index) + ' ' + mobs[d.index].name + '!')
 				d.damage = 0
 				combat.popupDamage(d.index, 'MISS!')
@@ -183,7 +183,7 @@ var combat;
 			// riposte
 			if (!d.isPiercing &&
 				timers.castBar < 1 &&
-				Math.random() * 100 < mobs[d.index].riposte) {
+				rand() * 100 < mobs[d.index].riposte) {
 				d.damage = 0
 				combat.txDamageHero(d.index, [ mob.getMobDamage(d.index, my.row, true) ])
 				combat.popupDamage(d.index, 'RIPOSTE!')
@@ -192,7 +192,7 @@ var combat;
 			// parry
 			if (!d.isPiercing &&
 				timers.castBar < 1 &&
-				Math.random() * 100 < mobs[d.index].parry) {
+				rand() * 100 < mobs[d.index].parry) {
 				d.damage = 0
 				combat.popupDamage(d.index, 'PARRY!')
 				return d
@@ -441,7 +441,6 @@ var combat;
 		bar.updateBar(type)
 	}
 	function processDamagesHero(index, d) {
-		console.info('txDamageHero', index, d)
 		if (my.hp <= 0) {
 			d.damage = 0
 			return d
@@ -547,6 +546,7 @@ var combat;
 	function processDamageToMe(index, damages) {
 		if (damages.findIndex(dam => dam.row === my.row) >= 0) {
 			// something hit me - single or double hit
+			console.info('processDamageToMe', damages[0].damage)
 			damages = damages.map(dam => processDamagesHero(index, dam))
 			len = damages.length
 			totalDamage = 0
@@ -815,25 +815,28 @@ var combat;
 	}
 
 	function processBuffStats(key) {
-		txHpUpdate = false
 		console.info('processBuffStats key!', key)
 		if (key === 'sealOfRedemption') {
+			stats.resistBlood(true)
 			if (bar.windowsOpen.character) ng.html('#inv-resist-blood', stats.resistBlood())
 			my.set('hpMax', stats.hpMax())
 			bar.updateBar('hp')
-			txHpUpdate = true
+			txHpChange()
 		}
 		else if (key === 'zealousResolve') {
-
-			txHpUpdate = true
+			stats.armor(true)
+			if (bar.windowsOpen.character) ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+			my.set('hpMax', stats.hpMax())
+			bar.updateBar('hp')
+			txHpChange()
 		}
-		if (txHpUpdate) {
-			console.info('processBuffStats tx!', key)
-			game.txPartyResources({
-				hp: my.hp,
-				hpMax: my.hpMax,
-			})
-		}
+	}
+	function txHpChange() {
+		console.info('processBuffStats tx!', key)
+		game.txPartyResources({
+			hp: my.hp,
+			hpMax: my.hpMax,
+		})
 	}
 	function animatePlayerFrames() {
 		TweenMax.to('#bar-card-bg-' + my.row, .5, {

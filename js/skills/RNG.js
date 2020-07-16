@@ -151,7 +151,6 @@
 					damages.push({
 						index: tgt,
 						isPiercing: true,
-						isMob: config.isMob,
 						enhancedDamage: enhancedDamage,
 						...hit
 					})

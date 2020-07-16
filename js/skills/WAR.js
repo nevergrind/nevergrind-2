@@ -1,96 +1,325 @@
 let skill = {};
 !function($, _, TweenMax, undefined) {
 	skill.WAR = {
-		crossSlash,
-		explosiveShot,
-		trueshotArrow,
-		spreadShot,
-		bladeStorm,
-		suppressingVolley,
-		ignite,
-		shockNova,
-		faerieFlame,
-		fungalGrowth,
-		shimmeringOrb,
-		spiritOfTheHunter,
+		shieldBash,
+		rupture,
+		whirlwind,
+		pummel,
+		doubleThrow,
+		shockwave,
+		frenzy,
+		jumpStrike,
+		primalStomp,
+		bulwark,
+		commandingShout,
+		furiousCleave,
 	}
 	///////////////////////////////////////////
-	let arr, damage, damages, enhancedDamage
+	let enhancedDamage, hit, config
+	let damages = []
 
-	const displayBlock = { display: 'block' }
 	///////////////////////////////////////////
-	function crossSlash(index, data) {
-		console.info('crossSlash', index)
+	function shieldBash(index, data) {
 		// check constraints
-		// process skill data
-		// animate timers
-	}
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
 
-	function explosiveShot(index, data) {
-		console.info('explosiveShot', index)
-		// check constraints
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (items.eq[13]?.itemType === 'shields') enhancedDamage += .2
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+			interrupt: true,
+			...hit
+		})
+		console.info('damages', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function trueshotArrow(index, data) {
-		console.info('trueshotArrow', index)
+	function rupture(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function spreadShot(index, data) {
-		console.info('spreadShot', index)
+	function whirlwind(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function bladeStorm(index, data) {
-		console.info('bladeStorm', index)
+	function pummel(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function suppressingVolley(index, data) {
-		console.info('suppressingVolley', index)
+	function doubleThrow(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function ignite(index, data) {
-		console.info('ignite', index)
+	function shockwave(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function shockNova(index, data) {
-		console.info('shockNova', index)
+	function frenzy(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function faerieFlame(index, data) {
-		console.info('faerieFlame', index)
+	function jumpStrike(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function fungalGrowth(index, data) {
-		console.info('fungalGrowth', index)
+	function primalStomp(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function shimmeringOrb(index, data) {
-		console.info('shimmeringOrb', index)
+	function bulwark(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
-	function spiritOfTheHunter(index, data) {
-		console.info('spiritOfTheHunter', index)
+	function commandingShout(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
 		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
+	}
+	function furiousCleave(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
+		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		hit = stats.damage(tgt)
+		damages.push({
+			index: tgt,
+			isPiercing: true,
+			enhancedDamage: enhancedDamage,
+			...hit
+		})
+		combat.txDamageMob(damages)
+
+		// animate timers
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
 
 }($, _, TweenMax);

@@ -57,8 +57,8 @@ loot.twoHandSlashers = {
 			name: 'Mythical Sword',
 			minDamage: 67,
 			maxDamage: 118,
-			speed: 4.4, // 42.04
-			itemLevel: 35,
+			speed: 4.4, // 42.04 - max 63 min 50.4 vs 1hs: 28.8 - max 57.6 min 50.6
+			itemLevel: 35, // (this is the unique's DPS) (147-260 skarlon) 46.25 dps
 			imgIndex: 7,
 		},
 	],

@@ -2348,13 +2348,13 @@ background-repeat: no-repeat;
 	left: 0;
 	display: flex;
 	transform: translate(0%, 100%);
-	font-size: 1rem;
+	font-size: .8rem;
 	line-height: 1.5;
 }
 .inv-tabs {
 	color: gold;
 	border: 1px solid #136;
-	margin-left: .5rem;
+	margin-left: .2rem;
 	background: #001;
 	padding: 0 .5rem;
 	border-radius: 0 0 8px 8px;

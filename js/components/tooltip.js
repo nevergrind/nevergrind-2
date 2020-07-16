@@ -260,7 +260,7 @@ var tooltip;
 		var str =  _.capitalize(slots[0]);
 		if (slots[1] === 'secondary') {
 			prefix = 'Slots: '
-			if (my.dualWield) {
+			if (stats.getPropMax('dualWield')) {
 				str += ' ' + _.capitalize(slots[1])
 			}
 			else {

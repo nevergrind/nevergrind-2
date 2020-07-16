@@ -1,6 +1,7 @@
 var stats = {};
 (function($, TweenMax, _, undefined) {
 	stats = {
+		cache: {},
 		str,
 		sta,
 		agi,
@@ -23,6 +24,7 @@ var stats = {};
 		parry,
 		riposte,
 		spellDamage,
+		autoAttackDamage,
 		damage,
 		offhandDamage,
 		rangedDamage,
@@ -86,7 +88,23 @@ var stats = {};
 	let vulpineSp = 0
 	let resistStatusVal = 0
 	let value = 0
+	var val, base, i, len, type, min, max, atk, h2h, atk, stat, dps
 
+	const failedWeaponDamage = {
+		min: 0,
+		max: 0,
+		damage: 0,
+		damageType: 'physical',
+		isCrit: false
+	}
+	const failedRangeDamage = {
+		min: 0,
+		max: 0,
+		damage: 0,
+		weaponSkill: 'Archery',
+		damageType: 'physical',
+		isCrit: false
+	}
 	const hpTier = {
 		'WAR': 10,
 		'CRU': 9,
@@ -135,7 +153,6 @@ var stats = {};
 		'SUM': 3,
 		'WIZ': 3,
 	}
-	var val, base, i, len, type, min, max, atk, h2h, atk
 
 	function str() {
 		return my.str +
@@ -172,12 +189,19 @@ var stats = {};
 			create.raceAttrs[my.race][6] +
 			create.jobAttrs[my.jobLong][6] + getEqTotal('cha') + getEqTotal('allStats')
 	}
-	function armor() {
-		return ~~((agi() * .66) +(defense() * 3.3)) + getEqTotal('armor')
+	function armor(fresh) {
+		if (fresh || typeof stats.cache.armor === 'undefined') {
+			stats.cache.armor = ((agi() * .66) +(defense() * 3.3)) + getEqTotal('armor')
+			if (my.buffFlags.zealousResolve) {
+				stats.cache.armor += (my.buffs.zealousResolve.damage * buffs.zealousResolve.armorRatio)
+			}
+			 stats.cache.armor = round(stats.cache.armor)
+		}
+		return stats.cache.armor
 	}
 	function armorReductionRatio() {
 		// max of 75% reduction
-		return (my.armor > 3000 ? 3000 : my.armor) / 4000
+		return (stats.armor() > 3000 ? 3000 : stats.armor()) / 4000
 	}
 
 	function attack(type) {
@@ -270,8 +294,10 @@ var stats = {};
 		return riposte() / 2500 + (dex() / 2000)
 	}
 	function critChance() {
-		//return ( ((5) + getEqTotal('crit') ) / 100)
-		return ( (dex() / 75) + ng.dimRetCrit(getEqTotal('crit')) ) / 100
+		if (typeof stats.cache.crit === 'undefined') {
+			stats.cache.crit = ( (dex() / 75) + ng.dimRetCrit(getEqTotal('crit')) ) / 100
+		}
+		return stats.cache.crit
 	}
 	function spellDamage(forceCrit, getNonCrit) {
 		max = spell.data.spellDamage(my.skills[spell.index])
@@ -293,7 +319,7 @@ var stats = {};
 		min = max * spell.data.spellVariance
 		// crit?
 		if (getNonCrit) isCrit = false
-		else isCrit = forceCrit || my.crit > rand()
+		else isCrit = forceCrit || stats.critChance() > rand()
 
 		if (isCrit) {
 			min *= 1.5
@@ -312,10 +338,10 @@ var stats = {};
 			isCrit: isCrit,
 		}
 	}
-	function damage(skipSkillChecks, forceCrit, getNonCrit) {
+	function autoAttackDamage() {
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[12] === 'object' ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = items.eq[12]?.name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[12].minDamage) {
 			min = items.eq[12].minDamage
@@ -324,8 +350,8 @@ var stats = {};
 		else {
 			h2h = handToHand()
 			if (my.job === 'MNK') {
-				min = 1 + (h2h / 12)
-				max = 4 + (h2h / 4.5)
+				max = 4 + (h2h / 2) // 125
+				min = 1 + (h2h / 8) // 31.25 about 26 dps at 250
 			}
 			else {
 				min = 1 + (h2h / 16)
@@ -335,8 +361,71 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
+		isCrit = stats.critChance() > rand()
+
+		if (isCrit) {
+			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
+				min *= 2
+				max *= 2
+			}
+			else {
+				min *= 1.5
+				max *= 1.5
+			}
+		}
+
+		combat.levelSkillCheck(weaponSkill)
+		return {
+			min: min,
+			max: max,
+			damage: _.random(min, max),
+			isCrit: isCrit,
+			enhancedDamage: 1,
+			weaponSkill: weaponSkill,
+			damageType: 'physical',
+		}
+	}
+	function damage(skipSkillChecks, forceCrit, getNonCrit) {
+		// normalized damage for skills
+		min = 1
+		max = 1
+		weaponSkill = items.eq[12]?.name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		atk = attack(weaponSkill)
+		 // get normalized DPS value for min/max
+		if (weaponSkill !== 'Hand-to-Hand') {
+			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
+				dps = tooltip.getDps(items.eq[12])
+				max = dps * 1.5
+				min = max * .8
+			}
+			else {
+				dps = tooltip.getDps(items.eq[12])
+				max = dps * 2
+				min = max * .88
+			}
+		}
+		else {
+			h2h = handToHand()
+			if (my.job === 'MNK') {
+				max = 4 + (h2h / 2) // 125
+				min = 1 + (h2h / 8) // 31.25 about 26 dps at 250
+				dps = button.getPunchDps(min, max)
+				max = dps * 2
+				min = max * .88
+			}
+			else {
+				min = 1 + (h2h / 16)
+				max = 2 + (h2h / 9)
+				dps = button.getPunchDps(min, max)
+				max = dps * 2
+				min = max * .88
+			}
+		}
+		min = min * (1 + (atk * .002))
+		max = max * (1 + (atk * .002))
+
 		if (getNonCrit) isCrit = false
-		else isCrit = forceCrit || my.crit > rand()
+		else isCrit = forceCrit || stats.critChance() > rand()
 
 		if (isCrit) {
 			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
@@ -363,10 +452,10 @@ var stats = {};
 		}
 	}
 	function offhandDamage() {
-		if (!my.dualWield) return { min: 0, max: 0, isCrit: false }
+		if (!my.dualWield) return failedWeaponDamage
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[13] === 'object' ? items.eq[13].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = items.eq[13]?.name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[13].minDamage) {
 			min = items.eq[13].minDamage
@@ -386,7 +475,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = my.crit > rand()
+		isCrit = stats.critChance() > rand()
 		if (isCrit) {
 			min *= 1.5
 			max *= 1.5
@@ -408,11 +497,16 @@ var stats = {};
 		min = 1
 		max = 1
 		atk = attack('Archery')
-		if (!my.archery || items.eq[14].itemType !== 'bows') return { min: 0, max: 0, isCrit: false }
-		min = items.eq[14].minDamage * (1 + (atk * .002))
-		max = items.eq[14].maxDamage * (1 + (atk * .002))
+		if (!my.archery || items.eq[14].itemType !== 'bows') return failedRangeDamage
 
-		isCrit = my.crit > rand()
+		dps = tooltip.getDps(items.eq[14])
+		max = dps * 1.5
+		min = max * .8
+
+		min = min * (1 + (atk * .002))
+		max = max * (1 + (atk * .002))
+
+		isCrit = stats.critChance() > rand()
 		if (isCrit) {
 			min *= 2
 			max *= 2
@@ -442,25 +536,45 @@ var stats = {};
 		if (resistPercent < .25) resistPercent = .25
 		return resistPercent
 	}
-	function resistBlood() {
-		value = getStatTotal('resistBlood') + getEqTotal('resistAll')
-		if (my.buffFlags.sealOfRedemption) value += (8 + (my.buffs.sealOfRedemption.level * 2))
-		return value
+	function resistBlood(fresh) {
+		if (fresh || typeof stats.cache.resistBlood === 'undefined') {
+			stats.cache.resistBlood = getStatTotal('resistBlood') + getEqTotal('resistAll')
+			if (my.buffFlags.sealOfRedemption) {
+				stats.cache.resistBlood += (buffs.sealOfRedemption.base + (my.buffs.sealOfRedemption.level * buffs.sealOfRedemption.bloodPerLevel))
+			}
+			stats.cache.resistBlood = round(stats.cache.resistBlood)
+		}
+		return stats.cache.resistBlood
 	}
-	function resistPoison() {
-		return getStatTotal('resistPoison') + getEqTotal('resistAll')
+	function resistPoison(fresh) {
+		if (fresh || typeof stats.cache.resistPoison === 'undefined') {
+			stats.cache.resistPoison = getStatTotal('resistPoison') + getEqTotal('resistAll')
+		}
+		return stats.cache.resistPoison
 	}
-	function resistArcane() {
-		return getStatTotal('resistArcane') + getEqTotal('resistAll')
+	function resistArcane(fresh) {
+		if (fresh || typeof stats.cache.resistArcane === 'undefined') {
+			stats.cache.resistArcane = getStatTotal('resistArcane') + getEqTotal('resistAll')
+		}
+		return stats.cache.resistArcane
 	}
-	function resistLightning() {
-		return getStatTotal('resistLightning') + getEqTotal('resistAll')
+	function resistLightning(fresh) {
+		if (fresh || typeof stats.cache.resistLightning === 'undefined') {
+			stats.cache.resistLightning = getStatTotal('resistLightning') + getEqTotal('resistAll')
+		}
+		return stats.cache.resistLightning
 	}
-	function resistFire() {
-		return getStatTotal('resistFire') + getEqTotal('resistAll')
+	function resistFire(fresh) {
+		if (fresh || typeof stats.cache.resistFire === 'undefined') {
+			stats.cache.resistFire = getStatTotal('resistFire') + getEqTotal('resistAll')
+		}
+		return stats.cache.resistFire
 	}
-	function resistIce() {
-		return getStatTotal('resistIce') + getEqTotal('resistAll')
+	function resistIce(fresh) {
+		if (fresh || typeof stats.cache.resistIce === 'undefined') {
+			stats.cache.resistIce = getStatTotal('resistIce') + getEqTotal('resistAll')
+		}
+		return stats.cache.resistIce
 	}
 	// adds my raw value plus equipment
 	function getStatTotal(attr) {
@@ -698,6 +812,7 @@ var stats = {};
 			+ getEqTotal('hp')
 		)
 		if (my.buffFlags.sealOfRedemption) value += (my.buffs.sealOfRedemption.damage)
+		if (my.buffFlags.zealousResolve) value += (my.buffs.zealousResolve.damage)
 		return value
 	}
 	function mpMax() {

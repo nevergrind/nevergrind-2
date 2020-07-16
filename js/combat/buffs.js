@@ -87,7 +87,9 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Seal of Redemption',
 			img: 10,
 			job: 'CLR',
-			duration: 5,
+			duration: 720,
+			base: 8,
+			bloodPerLevel: 2,
 			msg: () => 'Your forehead is emblazoned with a crimson seal.',
 			fadeMsg: 'Your crimson seal fades.'
 		},
@@ -95,7 +97,8 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Zealous Resolve',
 			img: 11,
 			job: 'CLR',
-			duration: 5,
+			duration: 720,
+			armorRatio: .25,
 			msg: () => 'Your spirit ignites with zealous resolve.',
 			fadeMsg: 'Your zealous resolve fades.'
 		},

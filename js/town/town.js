@@ -143,7 +143,6 @@ var town;
 					my.handToHand = 1
 					my.saveCharacterData()
 				}
-				my.cacheStatValues()
 				// skills
 				my.initSkills()
 

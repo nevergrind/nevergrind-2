@@ -14,7 +14,9 @@ var button;
 		triggerSkill,
 		processButtonTimers,
 		init,
+		getPunchDps,
 		initialized: false,
+		autoAttackSpeed: 3,
 	}
 	var name, hit
 	let speed = 0
@@ -146,7 +148,7 @@ var button;
 		}
 
 		damages = []
-		hit = stats.damage()
+		hit = stats.autoAttackDamage()
 		damages.push({
 			index: index,
 			isPiercing: isPiercing,
@@ -157,7 +159,7 @@ var button;
 			my.level >= skills.doubleAttack[my.job].level) {
 			combat.levelSkillCheck('doubleAttack')
 			if (Math.random() < successfulDoubleAttack()) {
-				hit = stats.damage()
+				hit = stats.autoAttackDamage()
 				damages.push({
 					index: index,
 					...hit
@@ -192,7 +194,7 @@ var button;
 				})
 				if (my.level >= skills.doubleAttack[my.job].level) {
 					if (Math.random() < successfulDoubleAttack()) {
-						hit = stats.damage()
+						hit = stats.offhandDamage()
 						damages.push({
 							index: my.target,
 							...hit
@@ -245,8 +247,12 @@ var button;
 		delays[key].kill()
 		delays[key] = delayedCall(mySwingSpeed, button[key])
 	}
+	function getPunchDps(min, max) {
+		return (((min + max) / 2) / button.autoAttackSpeed)
+	}
 	function getAttackSpeed(slot) {
-		speed = items.eq[slot].speed
+		// weapon or punch speed?
+		speed = items.eq[slot]?.name ? items.eq[slot].speed : button.autoAttackSpeed
 		speedHaste = 1
 		// buffs
 		if (my.buffFlags.spiritOfTheHunter) speedHaste -= .2

@@ -226,13 +226,14 @@ var test;
 			});
 		}
 	}
-	function lootItems(count = 16, rarity = 'unique', itemSlot = '', itemName = '') {
+	function lootItems(count = 16, rarity = 'unique', itemSlot = '', itemName = '', store = true) {
 		for (var i=0; i<count; i++) {
 			item.getLoot({
 				mobLevel: 50,
 				rarity: (rarity ? rarity : 'unique'),
 				itemSlot: itemSlot,
 				itemName: itemName,
+				store: store,
 			})
 		}
 	}
