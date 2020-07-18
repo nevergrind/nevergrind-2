@@ -435,7 +435,8 @@ var battle;
 	function processBuffs(arrayOfBuffs) {
 		let updateTargetBuffs = false
 		arrayOfBuffs.forEach(buff => {
-			if (my.target === buff.i) updateTargetBuffs = true
+			// buff needs i, key, row
+			if (my.targetIsMob && my.target === buff.i) updateTargetBuffs = true
 			let buffKeyRow = buff.key + '-' + buff.row
 			if (mobBuffTimerExists(buff.i, buffKeyRow)) {
 				mobs[buff.i].buffs[buffKeyRow].timer.kill()
@@ -455,6 +456,7 @@ var battle;
 			})
 			mobs[buff.i].buffFlags[buff.key] = true
 		})
+		// updates the DOM based on mob buffs
 		updateTargetBuffs && updateMobTargetBuffs()
 		startBuffTimers()
 	}
@@ -582,7 +584,7 @@ var battle;
 			my.buffFlags[keyRow] = false
 			if (startedActive && buffs[getBuffKey(keyRow)].fadeMsg) {
 				chat.log(buffs[getBuffKey(keyRow)].fadeMsg, 'chat-heal')
-				combat.processBuffStats(getBuffKey(keyRow))
+				combat.processStatBuffsToMe(getBuffKey(keyRow))
 			}
 		}
 	}
@@ -615,7 +617,7 @@ var battle;
 			if (my.buffs[key].duration) my.buffs[key].duration = 0
 			if (my.buffs[key].damage) my.buffs[key].damage = 0
 		}
-		battle.removeMyBuffFlag(key, keyRow)
+		battle.removeMyBuffFlag(key)
 		battle.removeMyBuffIcon(key, keyRow)
 	}
 
@@ -651,6 +653,8 @@ var battle;
 				if (mobBuffTimerExists(i, key)) {
 					mobs[i].buffs[key].timer.kill() // tweens duration
 					mobs[i].buffs[key].duration = 0 // set duration to 0 so flags update
+					//if (typeof mobs[i].buffs[key].dotTicks ===)
+					mobs[i].buffs[key].dotTicks.kill()
 				}
 			}
 			for (key in mobs[i].buffFlags) {

@@ -123,6 +123,8 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 3,
 			hate: 3,
 			duration: 24,
+			spellType: '',
+			damageType: 'blood',
 		},
 	}
 	///////////////////////////////////////////

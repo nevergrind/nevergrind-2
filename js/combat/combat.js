@@ -91,7 +91,7 @@ var combat;
 		txBuffHero,
 		rxBuffHero,
 		selfDied,
-		processBuffStats,
+		processStatBuffsToMe,
 	}
 	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, buffData, key, resist, resistPenalty
 	let txHpUpdate = false
@@ -175,7 +175,6 @@ var combat;
 			return d
 		}
 
-		// info('processDamagesMob', d)
 		if (d.damageType === 'physical') {
 			// check for things that immediately set to 0
 			if (rand() < stats.missChance(d.index, d.weaponSkill)) {
@@ -328,7 +327,7 @@ var combat;
 	}
 
 	function updateMobHp(o) {
-		console.info('updateHate obj', _.clone(o))
+		// console.info('updateHate obj', _.clone(o))
 		if (typeof buffs[o.key] === 'object') {
 			if (buffs[o.key].hate === undefined) o.hate = 1
 			else o.hate = buffs[o.key].hate
@@ -337,7 +336,7 @@ var combat;
 			// default damage hate value
 			o.hate = 1
 		}
-		console.info('updateHate hate val', o.hate)
+		// console.info('updateHate hate val', o.hate)
 		mobs[o.index].hp -= o.damage
 		party.damage[o.row] += o.damage
 
@@ -420,15 +419,12 @@ var combat;
 	}
 	const dotKeys = [
 		'damage',
-		'key',
 		'index',
-		'row',
 	]
 	function txDotMob(damages) {
 		// only checks dodge?
-		console.info('txDotMob in', damages)
+		// console.info('txDotMob 1', damages)
 		damages = damages.map(processDamagesMob)
-		buffArr = []
 		damageArr = []
 		len = damages.length
 		for (i=0; i<len; i++) {
@@ -442,15 +438,70 @@ var combat;
 			damageArr = damageArr.map(dam => _.pick(dam, dotKeys))
 			let dotData = {
 				route: 'p->dot',
+				key: damages[0].key,
+				row: my.row,
 				damages: damageArr
 			}
-			if (buffArr.length) dotData.buffs = buffArr
-			console.info('txDotMob: ', _.cloneDeep(damageArr))
-			socket.publish('party' + my.partyId, damageArr)
+			// console.info('txDotMob 2 ', _.cloneDeep(dotData))
+			socket.publish('party' + my.partyId, dotData)
 		}
 	}
 	function rxDotMob(data) {
-		console.info('txDotMob:', data)
+		len = data.damages.length
+		damages = data.damages
+		// console.info('txDotMob 3', data)
+		for (i=0; i<len; i++) {
+			let rowKey = data.key +'-'+ data.row
+			if (my.row === data.row) {
+				// kill buffs
+				if (typeof mobs[damages[i].index].buffs[rowKey] === 'object') {
+					if (typeof mobs[damages[i].index].buffs[rowKey].timer === 'object') {
+						mobs[damages[i].index].buffs[rowKey].timer.kill()
+					}
+					if (typeof mobs[damages[i].index].buffs[rowKey].dotTicks === 'object') {
+						mobs[damages[i].index].buffs[rowKey].dotTicks.kill()
+					}
+				}
+
+				battle.processBuffs([{
+					i: damages[i].index,
+					row: data.row,
+					key: data.key,
+				}])
+
+				let damPerTick = round(damages[i].damage / buffs[data.key].ticks)
+				// interval only exists on caster's client - broadcasts on tick
+				mobs[damages[i].index].buffs[rowKey].dotTicks = TweenMax.to({},
+					buffs[data.key].interval, {
+					repeat: buffs[data.key].ticks,
+					onRepeat: onDotTick,
+					onRepeatParams: [damages[i].index, data.key, damPerTick],
+				})
+			}
+			else {
+				if (typeof mobs[damages[i].index].buffs[rowKey] === 'object') {
+					if (typeof mobs[damages[i].index].buffs[rowKey].timer === 'object') {
+						mobs[damages[i].index].buffs[rowKey].timer.kill()
+					}
+				}
+				battle.processBuffs([{
+					i: damages[i].index,
+					row: data.row,
+					key: data.key,
+				}])
+			}
+		}
+	}
+	function onDotTick(index, key, damage) {
+		combat.txDamageMob([{
+			key: key,
+			index: index,
+			spellType: buffs[key].spellType,
+			damageType: buffs[key].damageType,
+			isDot: true,
+			isPiercing: true,
+			damage: damage,
+		}])
 	}
 
 	function selfDied() {
@@ -749,9 +800,9 @@ var combat;
 					my.buffs[keyRow],
 					my.buffs[keyRow].duration, {
 					duration: 0,
-						ease: Linear.easeNone,
-						onComplete: battle.removeMyBuffFlag,
-						onCompleteParams: [keyRow],
+					ease: Linear.easeNone,
+					onComplete: battle.removeMyBuffFlag,
+					onCompleteParams: [keyRow],
 				})
 				my.buffFlags[keyRow] = true
 				healAmount = Math.round(heal.damage / buffs[heal.key].ticks)
@@ -848,7 +899,7 @@ var combat;
 				}
 				my.buffFlags[key] = true
 				battle.addMyBuff(buff.key, key)
-				processBuffStats(key)
+				processStatBuffsToMe(key)
 			}
 		})
 		if (~~hate > 0) {
@@ -859,8 +910,8 @@ var combat;
 		}
 	}
 
-	function processBuffStats(key) {
-		console.info('processBuffStats key!', key)
+	function processStatBuffsToMe(key) {
+		console.info('processStatBuffsToMe key!', key)
 		if (key === 'sealOfRedemption') {
 			stats.resistBlood(true)
 			if (bar.windowsOpen.character) ng.html('#inv-resist-blood', stats.resistBlood())
@@ -877,7 +928,7 @@ var combat;
 		}
 	}
 	function txHpChange() {
-		console.info('processBuffStats tx!', key)
+		console.info('processStatBuffsToMe tx!', key)
 		game.txPartyResources({
 			hp: my.hp,
 			hpMax: my.hpMax,
