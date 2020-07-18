@@ -121,6 +121,7 @@ var button;
 		return my.dualWield / 350
 	}
 	function primaryAttack(isPiercing, index) {
+		// piercing is a riposte
 		if (isPiercing) {
 			if (ng.view !== 'battle' ||
 			my.hp <= 0) return
@@ -150,6 +151,7 @@ var button;
 		damages = []
 		hit = stats.autoAttackDamage()
 		damages.push({
+			key: 'autoAttack',
 			index: index,
 			isPiercing: isPiercing,
 			...hit
@@ -161,6 +163,7 @@ var button;
 			if (Math.random() < successfulDoubleAttack()) {
 				hit = stats.autoAttackDamage()
 				damages.push({
+					key: 'autoAttack',
 					index: index,
 					...hit
 				})
@@ -189,6 +192,7 @@ var button;
 				hit = stats.offhandDamage()
 				damages = []
 				damages.push({
+					key: 'autoAttack',
 					index: my.target,
 					...hit
 				})
@@ -196,6 +200,7 @@ var button;
 					if (Math.random() < successfulDoubleAttack()) {
 						hit = stats.offhandDamage()
 						damages.push({
+							key: 'autoAttack',
 							index: my.target,
 							...hit
 						})

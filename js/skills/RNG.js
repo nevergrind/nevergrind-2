@@ -30,13 +30,16 @@
 		damages = []
 
 		for (var i = my.target - 1; i<=my.target+1; i++) {
-			hit = stats.damage(i)
-			damages.push({
-				index: i,
-				enhancedDamage: enhancedDamage,
-				requiresFrontRow: true,
-				...hit
-			})
+			if (i <= 4) {
+				hit = stats.damage(i)
+				damages.push({
+					key: 'crossSlash',
+					index: i,
+					enhancedDamage: enhancedDamage,
+					requiresFrontRow: true,
+					...hit
+				})
+			}
 		}
 		combat.txDamageMob(damages)
 		// animate timers
@@ -60,6 +63,7 @@
 			tgt = battle.getSplashTarget(splashIndex++)
 			hit = stats.rangedDamage(tgt)
 			damages.push({
+				key: 'explosiveShot',
 				index: tgt,
 				enhancedDamage: enhancedDamage,
 				damageType: 'fire',
@@ -86,6 +90,7 @@
 		damages = []
 		hit = stats.rangedDamage(tgt)
 		damages.push({
+			key: 'trueshotStrike',
 			index: tgt,
 			isPiercing: true,
 			enhancedDamage: enhancedDamage,
@@ -119,6 +124,7 @@
 		targets.forEach(target => {
 			hit = stats.rangedDamage(target)
 			damages.push({
+				key: 'spreadShot',
 				index: target,
 				enhancedDamage: enhancedDamage,
 				...hit
@@ -149,6 +155,7 @@
 					damages = []
 					hit.damage = finalBlow ? hit.damage * 4 : hit.damage
 					damages.push({
+						key: 'bladeStorm',
 						index: tgt,
 						isPiercing: true,
 						enhancedDamage: enhancedDamage,
@@ -181,11 +188,11 @@
 			hit = stats.rangedDamage(tgt)
 			damages.push({
 				index: tgt,
-				hate: -enhancedDamage,
+				key: 'suppressingVolley',
 				enhancedDamage: enhancedDamage,
 				buffs: [{
 					i: tgt, // target
-					isMob: config.isMob,
+					isMob: config.isMob, // no idea what this is for
 					row: my.row, // this identifies unique buff state/icon
 					key: 'suppressingVolley', // this sets the flag
 				}],

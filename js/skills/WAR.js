@@ -3,6 +3,7 @@ let skill = {};
 	skill.WAR = {
 		shieldBash,
 		rupture,
+		ruptureCompleted,
 		whirlwind,
 		pummel,
 		doubleThrow,
@@ -33,6 +34,7 @@ let skill = {};
 		damages = []
 		hit = stats.damage(tgt)
 		damages.push({
+			key: 'shieldBash',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
 			interrupt: true,
@@ -47,28 +49,22 @@ let skill = {};
 		button.triggerGlobalCooldown()
 	}
 	function rupture(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+			cannotFizzle: true
 		}
-		if (skills.notReady(config)) return
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		damages = []
-		hit = stats.damage(tgt)
-		damages.push({
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
-			...hit
-		})
-		combat.txDamageMob(damages)
-
-		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, ruptureCompleted)
+	}
+	function ruptureCompleted() {
+		combat.txDotMob([{
+			key: 'rupture',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage(),
+		}])
 		button.triggerGlobalCooldown()
 	}
 	function whirlwind(index, data) {

@@ -289,11 +289,13 @@ var skills;
 			}, {
 				name: 'Rupture',
 				img: 'WAR-2',
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
-				cooldownTime: 5,
 				description: 'Bleeds single target - all hits on this target receives damage bonus %',
+				mp: level => spellValues.ruptureMana[level],
+				spellDamage: level => spellValues.rupture[level] + (my.level),
+				spellVariance: .95,
+				castTime: 0,
+				cooldownTime: 0,
+				damageType: 'blood',
 			}, {
 				name: 'Whirlwind',
 				img: 'WAR-3',
@@ -1122,7 +1124,6 @@ var skills;
 			}, {
 				name: 'Deliverance',
 				img: 'CLR-2',
-				mp: [0, 4, 10, 23, 42, 66, 85, 98],
 				mp: level => spellValues.deliveranceMana[level],
 				spellDamage: level => spellValues.deliverance[level] + (my.level * 2),
 				spellVariance: .9,
@@ -1990,18 +1991,9 @@ var skills;
 	// DIRECT DAMAGE 2-4 m/d
 	// AE DAMAGE 1.5-3 m/d
 	const spellValues = {
-		igniteMana: [0, 5, 12, 29, 52, 77, 99, 115], // mp:  3
-		ignite: [0, 15, 37, 88, 156, 231, 298, 347],
-		shockNovaMana: [0, 7, 14, 33, 58, 86, 110, 127], // mp:  1.3?
-		shockNova: [0, 9, 20, 47, 81, 123, 152, 179],
-		faerieFlameMana: [0, 8, 17, 41, 72, 107, 137, 158], // mp:  2.1?
-		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461],
-		fungalGrowthMana: [0, 7, 14, 31, 57, 85, 106, 127], // sp:  3?
-		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382],
-		shimmeringOrbMana: [0, 9, 18, 40, 74, 110, 137, 165],
-		shimmeringOrb: [0, 33, 67, 152, 275, 408, 508, 611],
-		spiritOfTheHunterMana: [0, 13, 27, 60, 111, 165, 205, 247],
-		spiritOfTheHunter: [0, 4, 8, 13, 19, 26, 34, 45],
+		// warrior
+		ruptureMana: [0, 0, 0, 0, 0, 0, 0, 0],
+		rupture: [0, 34, 83, 199, 355, 526, 678, 790],
 		// cleric
 		smiteMana: [0, 6, 13, 31, 57, 84, 108, 126], // mp: 3.3
 		smite: [0, 18, 44, 105, 187, 277, 357, 416],
@@ -2027,6 +2019,19 @@ var skills;
 		sealOfRedemption: [0, 16, 38, 93, 170, 253, 325, 379], // HP and +bResist
 		zealousResolveMana: [0, 13, 29, 71, 130, 193, 248, 290],
 		zealousResolve: [0, 10, 24, 60, 110, 164, 211, 246], // HP and armor
+		// ranger
+		igniteMana: [0, 5, 12, 29, 52, 77, 99, 115], // mp:  3
+		ignite: [0, 15, 37, 88, 156, 231, 298, 347],
+		shockNovaMana: [0, 7, 14, 33, 58, 86, 110, 127], // mp:  1.3?
+		shockNova: [0, 9, 20, 47, 81, 123, 152, 179],
+		faerieFlameMana: [0, 8, 17, 41, 72, 107, 137, 158], // mp:  2.1?
+		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461],
+		fungalGrowthMana: [0, 7, 14, 31, 57, 85, 106, 127], // sp:  3?
+		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382],
+		shimmeringOrbMana: [0, 9, 18, 40, 74, 110, 137, 165],
+		shimmeringOrb: [0, 33, 67, 152, 275, 408, 508, 611],
+		spiritOfTheHunterMana: [0, 13, 27, 60, 111, 165, 205, 247],
+		spiritOfTheHunter: [0, 4, 8, 13, 19, 26, 34, 45],
 	}
 
 	///////////////////////////////////////////

@@ -27,6 +27,7 @@
 	}
 	function smiteCompleted() {
 		combat.txDamageMob([{
+			key: 'smite',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
@@ -44,6 +45,7 @@
 	}
 	function deliveranceCompleted() {
 		combat.txDamageMob([{
+			key: 'deliverance',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
@@ -68,6 +70,7 @@
 		for (i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
 			damages.push({
+				key: 'condemnation',
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
@@ -94,6 +97,7 @@
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
 			damages.push({
+				key: 'sacredRevelation',
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
@@ -123,7 +127,6 @@
 				key: 'holySanctuary',
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				hate: -hit.damage,
 				...hit
 			})
 		}
@@ -141,6 +144,7 @@
 	}
 	function forceOfGloryCompleted() {
 		combat.txDamageMob([{
+			key: 'forceOfGlory',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,

@@ -127,21 +127,22 @@ var mob;
 	}
 	function addHateHeal(data) {
 		if (ng.view === 'battle') {
-			console.info('updateHate addHateHeal', data)
+			//console.info('updateHate addHateHeal', data)
 			for (i=0; i<mob.max; i++) {
 				// applied to all mobs
 				updateHate({
 					index: i,
 					row: data.row,
-					hate: data.hate,
+					damage: data.hate,
+					hate: 1,
 				})
 			}
 		}
 	}
 	function updateHate(o) {
 		if (mobs[o.index].name && mobs[o.index].hp > 0) {
-			console.info('updateHate mob', o.index, o.hate)
-			mobs[o.index].hate[o.row] += o.hate
+			console.info('updateHate mob', o.index, o.damage, ~~o.hate * o.damage)
+			mobs[o.index].hate[o.row] += ~~(o.hate * o.damage)
 			if (mobs[o.index].hate[o.row] < 0) mobs[o.index].hate[o.row] = 0
 		}
 	}

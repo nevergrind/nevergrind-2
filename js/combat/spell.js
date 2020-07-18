@@ -88,7 +88,9 @@ var spell;
 			onComplete: spellComplete,
 			onCompleteParams: [spell.callbackFn]
 		})
-		checkSpellFizzle()
+		if (!spell.config.cannotFizzle) {
+			checkSpellFizzle()
+		}
 	}
 	function spellFizzleChance() {
 		spellType = skills[my.job][spell.index].spellType

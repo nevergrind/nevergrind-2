@@ -1,6 +1,7 @@
 var battle;
 (function(TweenMax, $, _, PIXI, Linear, undefined) {
 	battle = {
+		buffIconTimers: {},
 		expThreshold: [0,
 			0, 100, 220, 365, 540, 750, 1000, 1295, 1640, 2040,
 			2500, 3025, 3620, 4290, 5040, 5875, 6800, 7820, 8940, 10165,
@@ -66,7 +67,6 @@ var battle;
 	}
 	var mobTargetWrap = querySelector('#mob-target-wrap')
 	let index, buffHtml, traitHtml, buffEl, key, keyRow, el, i
-	let buffIconTimers = {}
 	let tgt = {}
 	let ratio = 0
 	let mobBuffData = {}
@@ -159,14 +159,14 @@ var battle;
 		}
 		return gold
 	}
-	function drawExpBar(duration, flashDuration) {
+	function drawExpBar(duration, dur) {
 		duration = duration ?? .3
-		flashDuration = flashDuration ?? duration * 1.5
+		dur = dur ?? duration * 1.5
 		if (!cache.expBar) cache.expBar = querySelector('#exp-bar')
 		TweenMax.to(cache.expBar, duration, {
 			x: getExpBarRatio() + '%',
 		})
-		TweenMax.to(cache.expBar, flashDuration, {
+		TweenMax.to(cache.expBar, dur, {
 			startAt: { filter: 'saturate(2) brightness(2)' },
 			filter: 'saturate(1) brightness(1)',
 			repeat: 1,
@@ -370,7 +370,6 @@ var battle;
 					traits: getMobTargetTraitsHtml(),
 					buffs: getMobTargetBuffsHtml(),
 				}
-				startBuffTimers()
 			}
 			else {
 				tgt = {
@@ -405,6 +404,7 @@ var battle;
 			hideTarget()
 		}
 		setTargetHtml(targetHtml)
+		my.targetIsMob && startBuffTimers()
 	}
 	function getMobTargetTraitsHtml() {
 		// remove trailing s from value
@@ -447,9 +447,7 @@ var battle;
 				duration: buffs[buff.key].duration,
 			}
 			// animate the actual duration down to 0
-			mobs[buff.i].buffs[buffKeyRow].timer = TweenMax.to(
-				mobs[buff.i].buffs[buffKeyRow],
-				buffs[buff.key].duration, {
+			mobs[buff.i].buffs[buffKeyRow].timer = TweenMax.to(mobs[buff.i].buffs[buffKeyRow], buffs[buff.key].duration, {
 				duration: 0,
 				ease: Linear.easeNone,
 				onComplete: removeMobBuffFlag,
@@ -473,19 +471,25 @@ var battle;
 	function startBuffTimers() {
 		if (my.target < 0) return
 		let tgt = my.target
-		for (key in buffIconTimers) {
-			if (typeof buffIconTimers[key] === 'object') {
-				buffIconTimers[key].kill()
-				if (typeof buffIconTimers[key + '-remove'] === 'object') {
-					buffIconTimers[key + '-remove'].kill()
+		// kill previous
+		for (key in battle.buffIconTimers) {
+			if (typeof battle.buffIconTimers[key] === 'object') {
+				battle.buffIconTimers[key].kill()
+				if (typeof battle.buffIconTimers[key + '-remove'] === 'object') {
+					battle.buffIconTimers[key + '-remove'].kill()
 				}
 			}
 		}
-		buffIconTimers = {}
+		battle.buffIconTimers = {}
+		// start current
 		for (key in mobs[my.target].buffs) {
-			if (mobs[tgt].buffs[key].duration < flashDuration) flashTargetBuff(key, tgt)
+			if (mobs[tgt].buffs[key].duration < flashDuration) {
+				flashTargetBuff(key, tgt)
+			}
 			else {
-				buffIconTimers[key] = delayedCall(
+				console.info('flashTargetBuff startBuffTimers',
+					key, tgt, mobs[tgt].buffs[key].duration, flashDuration)
+				battle.buffIconTimers[key] = delayedCall(
 					mobs[tgt].buffs[key].duration - flashDuration,
 					flashTargetBuff, [key, tgt]
 				)
@@ -494,31 +498,32 @@ var battle;
 		}
 	}
 	function flashTargetBuff(key, tgt) {
-		console.info('flashTargetBuff', key, tgt)
-		buffIconTimers[key] = TweenMax.to('#buff-' + key, .5, {
+		console.warn('flashTargetBuff startBuffTimers', key, tgt)
+		battle.buffIconTimers[key] = TweenMax.to('#buff-' + key, .5, {
 			startAt: { opacity: 1 },
 			repeat: -1,
 			yoyo: true,
 			opacity: .5,
 			ease: Linear.easeNone,
 		})
-		buffIconTimers[key + '-remove'] = delayedCall(
+		battle.buffIconTimers[key + '-remove'] = delayedCall(
 			mobs[tgt].buffs[key].duration,
 			removeTargetBuff, [key]
 		)
 		// console.info('startBuffTimers less 10', mobs[my.target].buffs[key].duration)
 	}
 	function removeTargetBuff(key) {
-		if (typeof buffIconTimers[key] === 'object') {
-			buffIconTimers[key].kill()
-			if (typeof buffIconTimers[key + '-remove'] === 'object') {
-				buffIconTimers[key + '-remove'].kill()
+		console.info('removeTargetBuff startBuffTimers', key)
+		if (typeof battle.buffIconTimers[key] === 'object') {
+			battle.buffIconTimers[key].kill()
+			if (typeof battle.buffIconTimers[key + '-remove'] === 'object') {
+				battle.buffIconTimers[key + '-remove'].kill()
 			}
 		}
-		/*if (buffIconTimers[key] !== null) buffIconTimers[key] = null
-		if (buffIconTimers[key + '-remove'] !== null) buffIconTimers[key + '-remove'] = null*/
+		/*if (battle.buffIconTimers[key] !== null) battle.buffIconTimers[key] = null
+		if (battle.buffIconTimers[key + '-remove'] !== null) battle.buffIconTimers[key + '-remove'] = null*/
 		buffEl = querySelector('#buff-' + key)
-		// console.info('removeTargetBuff', key, buffIconTimers)
+		// console.info('removeTargetBuff', key, battle.buffIconTimers)
 		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
 	}
 	///////////////////////// myBuffs
@@ -658,11 +663,11 @@ var battle;
 	function killTargetBuffTimers() {
 		if (!mob.initialized) return
 		// mob buff icon flash/remove timers
-		for (key in buffIconTimers) {
-			if (typeof buffIconTimers[key] === 'object') {
-				buffIconTimers[key].kill()
-				if (typeof buffIconTimers[key + '-remove'] === 'object') {
-					buffIconTimers[key + '-remove'].kill()
+		for (key in battle.buffIconTimers) {
+			if (typeof battle.buffIconTimers[key] === 'object') {
+				battle.buffIconTimers[key].kill()
+				if (typeof battle.buffIconTimers[key + '-remove'] === 'object') {
+					battle.buffIconTimers[key + '-remove'].kill()
 				}
 			}
 		}

@@ -2,10 +2,16 @@ let buffs; // buff data for use with skill/spells/icons
 !function($, _, TweenMax, undefined) {
 	buffs = {
 		// damage debuffs
+		crossSlash: { hate: .5 },
+		explosiveShot: { hate: .8 },
+		trueshotStrike: { hate: 2 },
+		spreadShot: { hate: .5 },
+		bladeStorm: { hate: 1.2 },
 		suppressingVolley: {
 			name: 'Suppressing Volley',
 			img: 5,
 			job: 'RNG',
+			hate: -1.5,
 			duration: 9,
 		},
 		igniteArmor: {
@@ -20,7 +26,6 @@ let buffs; // buff data for use with skill/spells/icons
 			job: 'RNG',
 			duration: 45,
 		},
-		// HoTs
 		fungalGrowth: {
 			name: 'Fungal Growth',
 			img: 9,
@@ -28,6 +33,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 10,
 			interval: 3,
 			duration: 30,
+			hate: 3,
 			msg: () => 'Regenerative spores begin to heal your wounds.',
 		},
 		shimmeringOrb: {
@@ -43,27 +49,33 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 300,
 			msg: () => 'A brief lupine energy courses through your spirit.',
 		},
+		smite: { hate: 2 },
+		deliverance: { hate: 1 },
+		condemnation: { hate: .7 },
 		sacredRevelation: {
 			name: 'Sacred Revelation',
 			img: 3,
+			hate: 1.6,
 			job: 'CLR',
 			duration: 3,
 		},
+		holySanctuary: { hate: -2.5 },
+		forceOfGlory: { hate: 3 },
 		// instant heals
 		circleOfPrayer: {
 			name: 'Circle of Prayer',
 			img: 9,
 			job: 'CLR',
 			duration: 0,
-				hate: .5,
+			hate: 12,
 			msg: (buff) => 'Circle of Prayer heals you for ' + buff.damage + ' health.',
 		},
 		bindingGrace: {
-			name: 'Circle of Prayer',
+			name: 'Binding Grace',
 			img: 6,
 			job: 'CLR',
 			duration: 0,
-			hate: .4,
+			hate: 3.2,
 			msg: (buff) => 'Binding Grace heals you for ' + buff.damage + ' health.',
 		},
 		guardianAngel: {
@@ -71,7 +83,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 7,
 			job: 'CLR',
 			duration: 30,
-			hate: .5,
+			hate: 2.5,
 			msg: () => 'A guardian angel\'s wings surround you.',
 			msgAbsorb: 'Your guardian angel protects you from harm.'
 		},
@@ -80,7 +92,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 8,
 			job: 'CLR',
 			duration: 0,
-			hate: .8,
+			hate: 4,
 			msg: (buff) => 'Divine Light heals you for ' + buff.damage + ' health.',
 		},
 		sealOfRedemption: {
@@ -101,6 +113,16 @@ let buffs; // buff data for use with skill/spells/icons
 			armorRatio: .25,
 			msg: () => 'Your spirit ignites with zealous resolve.',
 			fadeMsg: 'Your zealous resolve fades.'
+		},
+		shieldBash: { hate: 2.5 },
+		rupture: {
+			name: 'Rupture',
+			img: 1,
+			job: 'WAR',
+			ticks: 8,
+			interval: 3,
+			hate: 3,
+			duration: 24,
 		},
 	}
 	///////////////////////////////////////////

@@ -67,7 +67,7 @@ var combat;
 			'unicorn': 'Mystical',
 			'scorpion': 'Beasts',
 		},
-		rxUpdateDamage,
+		rxDamageMob,
 		popupDamage,
 		targetChanged,
 		initCombatTextLayer,
@@ -80,6 +80,8 @@ var combat;
 		processDamagesHero,
 		txDamageHero,
 		rxDamageHero,
+		txDotMob,
+		rxDotMob,
 		levelSkillCheck,
 		skillLevelChance,
 		endCombat,
@@ -130,17 +132,19 @@ var combat;
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
 		name = _.camelCase(name)
-		if (my.level >= skills[name][my.job].level &&
-			my[name] < stats.getPropMax(name)) { //TODO: Dynamic max
-			if (rand() < skillLevelChance(name)) {
-				my[name]++
-				chat.log('You got better at ' +skills.getName(name) + '! (' + my[name] + ')', 'chat-skill')
-				if (bar.windowsOpen.character) {
-					if (bar.activeTab === 'character') {
-						ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
-					}
-					else if (bar.activeTab === 'passiveSkills') {
-						querySelector('#inv-skills-wrap').innerHTML = bar.getSkillBarHtml()
+		if (skills[name]) {
+			if (my.level >= skills[name][my.job].level &&
+				my[name] < stats.getPropMax(name)) { //TODO: Dynamic max
+				if (rand() < skillLevelChance(name)) {
+					my[name]++
+					chat.log('You got better at ' +skills.getName(name) + '! (' + my[name] + ')', 'chat-skill')
+					if (bar.windowsOpen.character) {
+						if (bar.activeTab === 'character') {
+							ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
+						}
+						else if (bar.activeTab === 'passiveSkills') {
+							querySelector('#inv-skills-wrap').innerHTML = bar.getSkillBarHtml()
+						}
 					}
 				}
 			}
@@ -324,7 +328,16 @@ var combat;
 	}
 
 	function updateMobHp(o) {
-		if (!o.hate) o.hate = o.damage
+		console.info('updateHate obj', _.clone(o))
+		if (typeof buffs[o.key] === 'object') {
+			if (buffs[o.key].hate === undefined) o.hate = 1
+			else o.hate = buffs[o.key].hate
+		}
+		else {
+			// default damage hate value
+			o.hate = 1
+		}
+		console.info('updateHate hate val', o.hate)
 		mobs[o.index].hp -= o.damage
 		party.damage[o.row] += o.damage
 
@@ -344,9 +357,15 @@ var combat;
 			}
 		}
 	}
+	const damageKeys = [
+		'damage',
+		'key',
+		'index',
+		'row'
+	]
 	function txDamageMob(damages) {
 		damages = damages.map(processDamagesMob)
-		console.warn('damages', damages)
+		console.warn('txDamageMob', damages)
 		damageArr = []
 		buffArr = []
 		len = damages.length
@@ -359,7 +378,6 @@ var combat;
 					// buffs only get added if it hits
 					damages[i].buffs.forEach(buff => buffArr.push(buff))
 				}
-				updateMobHp(damages[i])
 				damageArr.push(damages[i])
 			}
 		}
@@ -375,30 +393,64 @@ var combat;
 				wraithMp = wraithMp % 1
 			}
 		}
-		if (damageArr.length && party.hasMoreThanOnePlayer()) {
+		if (damageArr.length) {
 			let damageData = {
 				route: 'p->damage',
-				damages: damageArr
+				damages: damageArr.map(dam => _.pick(dam, damageKeys))
 			}
+			// optionally adds buffs key if it exists
 			if (buffArr.length) damageData.buffs = buffArr
-			// console.info('tx processHit: ', damageData)
-			socket.publish('party' + my.partyId, damageData, true)
+			console.info('txDamageMob: ', _.cloneDeep(damageData))
+			socket.publish('party' + my.partyId, damageData)
 		}
-		buffArr.length && battle.processBuffs(buffArr)
 	}
-	function rxUpdateDamage(data) {
+	function rxDamageMob(data) {
 		// damages
 		len = data.damages.length
 		buffArr = []
 		for (i=0; i<len; i++) {
+			console.info('txDamageMob : ', _.cloneDeep(data.damages))
 			updateMobHp(data.damages[i])
-			// console.info('rxUpdateDamage : ', data.damages)
 		}
 		// buffs
 		if (typeof data.buffs === 'object') {
 			data.buffs.forEach(buff => buffArr.push(buff))
 		}
 		buffArr.length && battle.processBuffs(buffArr)
+	}
+	const dotKeys = [
+		'damage',
+		'key',
+		'index',
+		'row',
+	]
+	function txDotMob(damages) {
+		// only checks dodge?
+		console.info('txDotMob in', damages)
+		damages = damages.map(processDamagesMob)
+		buffArr = []
+		damageArr = []
+		len = damages.length
+		for (i=0; i<len; i++) {
+			if (damages[i].damage > 0) {
+				damages[i].row = my.row
+				damageArr.push(damages[i])
+			}
+		}
+		// optionally adds buffs key if it exists
+		if (damageArr.length) {
+			damageArr = damageArr.map(dam => _.pick(dam, dotKeys))
+			let dotData = {
+				route: 'p->dot',
+				damages: damageArr
+			}
+			if (buffArr.length) dotData.buffs = buffArr
+			console.info('txDotMob: ', _.cloneDeep(damageArr))
+			socket.publish('party' + my.partyId, damageArr)
+		}
+	}
+	function rxDotMob(data) {
+		console.info('txDotMob:', data)
 	}
 
 	function selfDied() {
@@ -527,21 +579,18 @@ var combat;
 	}
 	function txDamageHero(index, damages) {
 		// damages is an object with indices that point to player row (target)
-		processDamageToMe(index, damages)
-		// animate mob for other players and check if they were hit
-		if (party.hasMoreThanOnePlayer()) {
-			socket.publish('party' + my.partyId, {
-				route: 'p->hit',
-				i: index,
-				d: damages,
-			}, true)
-		}
+		// TODO: Single player mode should bypass publishes everywhere...? lots of work
+		socket.publish('party' + my.partyId, {
+			route: 'p->hit',
+			i: index,
+			d: damages,
+		})
 	}
 	function rxDamageHero(data) {
 		// mob is hitting me
 		damages = data.d
 		processDamageToMe(data.i, damages)
-		console.info('rxDamageHero: ', damages)
+		console.info('rxDamageHero: ', damages.length, data)
 	}
 	function processDamageToMe(index, damages) {
 		if (damages.findIndex(dam => dam.row === my.row) >= 0) {
@@ -634,9 +683,10 @@ var combat;
 		})
 	}
 
+	const healKeys = ['damage', 'index', 'key']
 	function txHotHero(data) {
 		// damages is an object with indices that point to player row (target)
-		data = data.map(heal => _.pick(heal, ['damage', 'index', 'key']))
+		data = data.map(heal => _.pick(heal, healKeys))
 		console.info('txHotHero', data)
 		socket.publish('party' + my.partyId, {
 			route: 'p->heal',
@@ -646,18 +696,14 @@ var combat;
 	}
 	function rxHotHero(data) {
 		console.info('rxHotHero: ', data)
-		processHealToMe(data)
-	}
-	function processHealToMe(buff) {
-		if (buffs[buff.heals[0].key]?.duration > 0) hotToMe(buff)
-		else healToMe(buff)
+		if (buffs[data.heals[0].key]?.duration > 0) hotToMe(data)
+		else healToMe(data)
 	}
 	function healToMe(data) {
-		console.info('healToMe', data)
 		hate = 0
 		data.heals.forEach(heal => {
-			if (!buffs[heal.key].hate) heal.hate = 1
-			hate += heal.damage * buffs[heal.key].hate
+			console.info('healToMe updateHate', _.clone(heal))
+			hate += heal.damage * (buffs[heal.key].hate ?? 1)
 			if (my.row === heal.index) {
 				// healing ME
 				healAmount = heal.damage
@@ -670,8 +716,7 @@ var combat;
 				})
 			}
 		})
-		hate = ~~hate
-		if (hate > 0) {
+		if (~~hate > 0) {
 			mob.addHateHeal({
 				row: data.row,
 				hate: hate
@@ -682,8 +727,8 @@ var combat;
 		console.info('hotToMe', data)
 		hate = 0
 		data.heals.forEach(heal => {
-			if (!buffs[heal.key].hate) heal.hate = 1
-			hate += heal.damage * buffs[heal.key].hate
+			console.info('hotToMe updateHate', heal)
+			hate += heal.damage * (buffs[heal.key].hate ?? 1)
 			if (my.row === heal.index) {
 				// HoT
 				let keyRow = heal.key + '-' + heal.index
@@ -719,8 +764,7 @@ var combat;
 				chat.log(buffs[heal.key].msg(heal), 'chat-heal')
 			}
 		})
-		hate = ~~hate
-		if (hate > 0) {
+		if (~~hate > 0) {
 			mob.addHateHeal({
 				row: data.row,
 				hate: hate
@@ -750,8 +794,11 @@ var combat;
 		hate = 0
 		console.info('processBuffToMe', data)
 		data.buffs.forEach(buff => {
-			if (!buffs[buff.key].hate) buff.hate = 0
-			if (buff.hate) hate += buff.damage * buffs[buff.key].hate
+			console.info('updateHate', _.clone(buff))
+			if (buffs[buff.key].hate) {
+				hate += ~~(buff.damage * buffs[buff.key].hate)
+			}
+			console.info('updateHate hate', hate)
 
 			if (my.row === buff.index) {
 				chat.log(buffs[buff.key].msg(), 'chat-heal')
@@ -804,9 +851,7 @@ var combat;
 				processBuffStats(key)
 			}
 		})
-
-		hate = ~~hate
-		if (hate > 0) {
+		if (~~hate > 0) {
 			mob.addHateHeal({
 				row: data.row,
 				hate: hate
