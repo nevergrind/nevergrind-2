@@ -141,7 +141,7 @@ var mob;
 	}
 	function updateHate(o) {
 		if (mobs[o.index].name && mobs[o.index].hp > 0) {
-			console.info('updateHate mob', o.index, o.damage, ~~o.hate * o.damage)
+			console.info('updateHate mob', o.index, o.damage, ~~(o.hate * o.damage))
 			mobs[o.index].hate[o.row] += ~~(o.hate * o.damage)
 			if (mobs[o.index].hate[o.row] < 0) mobs[o.index].hate[o.row] = 0
 		}

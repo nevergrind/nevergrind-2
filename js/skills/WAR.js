@@ -30,7 +30,7 @@ let skill = {};
 		// process skill data
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (items.eq[13]?.itemType === 'shields') enhancedDamage += .2
+		if (items.eq[13]?.itemType === 'shields') enhancedDamage += .5
 		damages = []
 		hit = stats.damage(tgt)
 		damages.push({
@@ -73,18 +73,21 @@ let skill = {};
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
-
 		// process skill data
-		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.damage(tgt)
-		damages.push({
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
-			...hit
-		})
+		let splashIndex = -2
+		let tgt
+		for (var i=0; i<5; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			hit = stats.damage(tgt)
+			damages.push({
+				key: 'whirlwind',
+				index: tgt,
+				enhancedDamage: enhancedDamage,
+				...hit
+			})
+		}
 		combat.txDamageMob(damages)
 
 		// animate timers
@@ -103,12 +106,13 @@ let skill = {};
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.damage(tgt)
 		damages.push({
+			key: 'pummel',
 			index: tgt,
 			isPiercing: true,
+			stun: 3,
 			enhancedDamage: enhancedDamage,
-			...hit
+			...stats.damage(tgt)
 		})
 		combat.txDamageMob(damages)
 
@@ -128,13 +132,19 @@ let skill = {};
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.damage(tgt)
-		damages.push({
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
-			...hit
-		})
+		for (var i=0; i<2; i++) {
+			damages.push({
+				key: 'doubleThrow',
+				index: tgt,
+				isRanged: true,
+				interrupt: true,
+				enhancedDamage: enhancedDamage,
+				...stats.damage(tgt)
+			})
+			if (battle.targetIsBackRow(tgt)) {
+				damages[i].damage *= 2
+			}
+		}
 		combat.txDamageMob(damages)
 
 		// animate timers
@@ -143,25 +153,31 @@ let skill = {};
 		button.triggerGlobalCooldown()
 	}
 	function shockwave(index, data) {
+		console.info('crossSlash', index)
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
+			anyTarget: true,
 		}
 		if (skills.notReady(config)) return
 
 		// process skill data
-		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (items.eq[13]?.itemType === 'shields') enhancedDamage += .2
 		damages = []
-		hit = stats.damage(tgt)
-		damages.push({
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
-			...hit
-		})
+		for (var i = 0; i<=4; i++) {
+			if (mobs[i].hp) {
+				hit = stats.damage(i)
+				damages.push({
+					key: 'shockwave',
+					index: i,
+					requiresFrontRow: true,
+					enhancedDamage: enhancedDamage,
+					...hit
+				})
+			}
+		}
 		combat.txDamageMob(damages)
-
 		// animate timers
 		timers.skillCooldowns[index] = 0
 		button.processButtonTimers(index, data)

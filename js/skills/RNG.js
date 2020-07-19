@@ -147,24 +147,20 @@
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		let tgt = my.target
 		let hits = 5
+		damages = []
 		for (var i=0; i<hits; i++) {
-			(function(i) {
-				delayedCall(i * .2, () => {
-					let finalBlow = i === hits - 1
-					hit = stats.damage(tgt, finalBlow)
-					damages = []
-					hit.damage = finalBlow ? hit.damage * 4 : hit.damage
-					damages.push({
-						key: 'bladeStorm',
-						index: tgt,
-						isPiercing: true,
-						enhancedDamage: enhancedDamage,
-						...hit
-					})
-					combat.txDamageMob(damages)
-				})
-			})(i)
+			let finalBlow = i === hits - 1
+			hit = stats.damage(tgt, finalBlow)
+			hit.damage = finalBlow ? hit.damage * 4 : hit.damage
+			damages.push({
+				key: 'bladeStorm',
+				index: tgt,
+				isPiercing: true,
+				enhancedDamage: enhancedDamage,
+				...hit
+			})
 		}
+		combat.txDamageMob(damages)
 
 		// animate timers
 		timers.skillCooldowns[index] = 0

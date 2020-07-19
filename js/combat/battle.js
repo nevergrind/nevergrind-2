@@ -318,9 +318,9 @@ var battle;
 			let totalMobs = _.random(minMobs, maxMobs)
 
 			if (!ng.isApp) {
-				totalMobs = 3
-				minLevel = 1
-				maxLevel = 8
+				totalMobs = 9
+				minLevel = 7
+				maxLevel = 15
 			}
 			console.info('levels', minLevel, maxLevel)
 			var mobSlot

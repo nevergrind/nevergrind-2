@@ -67,7 +67,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 9,
 			job: 'CLR',
 			duration: 0,
-			hate: 12,
+			hate: 6,
 			msg: (buff) => 'Circle of Prayer heals you for ' + buff.damage + ' health.',
 		},
 		bindingGrace: {
@@ -114,18 +114,22 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'Your spirit ignites with zealous resolve.',
 			fadeMsg: 'Your zealous resolve fades.'
 		},
-		shieldBash: { hate: 2.5 },
+		shieldBash: { hate: 1.2 },
 		rupture: {
 			name: 'Rupture',
 			img: 1,
 			job: 'WAR',
 			ticks: 8,
 			interval: 3,
-			hate: 3,
+			hate: 1.2,
 			duration: 24,
 			spellType: '',
 			damageType: 'blood',
 		},
+		whirlwind: { hate: 1 },
+		pummel: { hate: 2.5 },
+		doubleThrow: { hate: .8 },
+		shockwave: { hate: .8 },
 	}
 	///////////////////////////////////////////
 
