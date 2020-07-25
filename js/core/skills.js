@@ -283,19 +283,19 @@ var skills;
 			{
 				name: 'Shield Bash',
 				img: 'WAR-1',
-				enhancedDamage: [0, .68, .77, .86, .95, 1.04, 1.13, 1.22],
-				cooldownTime: 10,
-				description: 'Shield Bash: Bash your target - +50% damage with shields equipped (interrupts when equipped shield)',
+				enhancedDamage: [0, .48, .56, .64, .72, .8, .88, .96],
+				cooldownTime: 0,
+				description: 'Shield Bash: Bash your target - +50% damage with shields equipped',
 			}, {
 				name: 'Rupture',
 				img: 'WAR-2',
-				description: 'Bleeds single target - all hits on this target receives damage bonus %',
 				mp: level => spellValues.ruptureMana[level],
-				spellDamage: level => spellValues.rupture[level] + (my.level),
+				spellDamage: level => spellValues.rupture[level] + my.level,
 				spellVariance: .95,
 				castTime: 0,
 				cooldownTime: 0,
 				damageType: 'blood',
+				description: 'Bleeds single target - all hits on this target receives damage bonus %',
 			}, {
 				name: 'Whirlwind',
 				img: 'WAR-3',
@@ -307,7 +307,7 @@ var skills;
 				img: 'WAR-4',
 				enhancedDamage: [0, .66, .75, .84, .93, 1.02, 1.11, 1.2],
 				cooldownTime: 30,
-				description: 'Pummel: Single-target piercing stun, large hate',
+				description: 'Pummel: Single-target piercing stun, large hate - front row only',
 			}, {
 				name: 'Double Throw',
 				img: 'WAR-5',
@@ -323,33 +323,27 @@ var skills;
 			}, {
 				name: 'Frenzy',
 				img: 'WAR-7',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
+				haste: [0, .28, .13, .16, .19, .22, .25, .28],
+				mp: level => spellValues.frenzyMana[level],
+				spellVariance: 1,
 				castTime: 0,
-				cooldownTime: 5,
-				description: 'Reduce execution time of skills for x seconds',
+				cooldownTime: 60,
+				damageType: '',
+				description: 'Reduce global skill cooldown time by X for x seconds',
 			}, {
 				name: 'Jump Strike',
 				img: 'WAR-8',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
-				cooldownTime: 5,
-				description: 'Leaping strike that makes warrior invincible while in the air',
+				mp: level => spellValues.jumpStrikeMana[level],
+				enhancedDamage: [0, .87, .96, 1.05, 1.14, 1.03, 1.12, 1.21],
+				cooldownTime: 24,
+				description: 'Leaping strike that makes warrior invincible while in the air - Pierces defenses',
 			}, {
 				name: 'Primal Stomp',
 				img: 'WAR-9',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
-				castTime: 0,
-				cooldownTime: 5,
-				description: 'Interrupt all targets and do small damage and high threat',
+				mp: level => spellValues.primalStompMana[level],
+				enhancedDamage: [0, .26, .29, .32, .35, .38, .41, .44],
+				cooldownTime: 16,
+				description: 'stagger all targets - small damage and high threat - Ranged',
 			}, {
 				name: 'Bulwark',
 				img: 'WAR-10',
@@ -686,7 +680,7 @@ var skills;
 				damageType: 'lightning',
 				castTime: 1.5,
 				cooldownTime: 0,
-				description: 'Hits all targets for X lightning damage. Interrupts all spells.',
+				description: 'Hits all targets for X lightning damage. stagger all targets.',
 			}, {
 				name: 'Faerie Flame',
 				img: 'RNG-9',
@@ -782,7 +776,7 @@ var skills;
 				spellType: '',
 				castTime: 0,
 				cooldownTime: 0,
-				description: 'Strikes target for % damage - Interrupts -1 chi',
+				description: 'Strikes target for % damage - stagger -1 chi',
 			}, {
 				name: 'Feign Death',
 				img: 'MNK-6',
@@ -1983,9 +1977,12 @@ var skills;
 	// DIRECT DAMAGE 2-4 m/d
 	// AE DAMAGE 1.5-3 m/d
 	const spellValues = {
-		// warrior
+		// warrior frenzyMana
 		ruptureMana: [0, 0, 0, 0, 0, 0, 0, 0],
 		rupture: [0, 34, 83, 199, 355, 526, 678, 790],
+		frenzyMana: [0, 5, 11, 28, 52, 77, 99, 115],
+		jumpStrikeMana: [0, 6, 13, 33, 62, 92, 118, 138],
+		primalStompMana: [0, 4, 10, 26, 49, 73, 94, 110],
 		// cleric
 		smiteMana: [0, 6, 13, 31, 57, 84, 108, 126], // mp: 3.3
 		smite: [0, 18, 44, 105, 187, 277, 357, 416],
@@ -2040,6 +2037,13 @@ var skills;
 	}
 	function getClassKeys() {
 		return skills[my.job].map(o => o.name)
+	}
+	function getDefaults(skillIndex) {
+		return {
+			skillIndex: skillIndex,
+			global: true,
+			isMob: true,
+		}
 	}
 	function notReady(config, data = {}) {
 		if (timers.castBar < 1 ||
@@ -2109,12 +2113,5 @@ var skills;
 		// set last data used for spell completed reference
 		skills.lastData = data
 		return false
-	}
-	function getDefaults(skillIndex) {
-		return {
-			skillIndex: skillIndex,
-			global: true,
-			isMob: true,
-		}
 	}
 }($, _, TweenMax, Object);

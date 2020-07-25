@@ -12,6 +12,7 @@ var spell;
 		cancelSpell,
 		knockback,
 		getDefaults,
+		expendSpellResources,
 	}
 	let castBarWrap = querySelector('#cast-bar-wrap')
 	let castBar = querySelector('#cast-bar')
@@ -37,6 +38,7 @@ var spell;
 	// TODO: Fix cast knockback calc
 	function channelSuccessful() {
 		spellType = skills[my.job][spell.index].spellType
+		if (!spellType) return true;
 		success = .6 - ((fizzleMaxed[my.skills[spell.index]] - my[spellType]) / 100)
 		//console.info('channelSuccessful success 1', success)
 		if (success > .5) success = .5 // max 50% chance to channel
@@ -123,7 +125,7 @@ var spell;
 		stopCasting()
 		//console.info('complete spell cast:', spell.data.name)
 		//console.warn('calling:', functionName)
-		functionName = _.camelCase(spell.data.name + 'Completed')
+		// functionName = _.camelCase(spell.data.name + 'Completed')
 		expendSpellResources()
 		callbackFn()
 		combat.levelSkillCheck(spell.data.spellType)

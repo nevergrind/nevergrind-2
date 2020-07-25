@@ -9,6 +9,7 @@ let skill = {};
 		doubleThrow,
 		shockwave,
 		frenzy,
+		frenzyCompleted,
 		jumpStrike,
 		primalStomp,
 		bulwark,
@@ -37,15 +38,12 @@ let skill = {};
 			key: 'shieldBash',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
-			interrupt: true,
 			...hit
 		})
 		console.info('damages', damages)
 		combat.txDamageMob(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function rupture(index, data) {
@@ -99,6 +97,7 @@ let skill = {};
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
+			requiresFrontRow: true,
 		}
 		if (skills.notReady(config)) return
 
@@ -137,7 +136,7 @@ let skill = {};
 				key: 'doubleThrow',
 				index: tgt,
 				isRanged: true,
-				interrupt: true,
+				stagger: true,
 				enhancedDamage: enhancedDamage,
 				...stats.damage(tgt)
 			})
@@ -184,49 +183,69 @@ let skill = {};
 		button.triggerGlobalCooldown()
 	}
 	function frenzy(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+			anyTarget: true,
+			cannotFizzle: true,
+			oocEnabled: true,
 		}
-		if (skills.notReady(config)) return
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, frenzyCompleted)
+	}
+	function frenzyCompleted() {
 		damages = []
-		hit = stats.damage(tgt)
 		damages.push({
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
-			...hit
+			index: my.row,
+			key: 'frenzy',
+			spellType: spell.data.spellType,
+			level: my.skills[spell.config.skillIndex],
+			damage: 0
 		})
-		combat.txDamageMob(damages)
+		combat.txBuffHero(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
-		button.triggerGlobalCooldown()
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, spell.data)
 	}
+
+	const jumpStrikeDuration = 1.5
 	function jumpStrike(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
+			isPiercing: true,
+			mpCost: data.mp(my.skills[index])
 		}
 		if (skills.notReady(config)) return
+		spell.config.spCost = 0
+		spell.config.mpCost = data.mp(my.skills[index])
+		spell.expendSpellResources()
+
+		// buff
+		combat.txBuffHero([{
+			index: my.row,
+			key: 'jumpStrike',
+			spellType: '',
+			level: my.skills[my.skills[index]],
+			damage: 0,
+			isCrit: false,
+		}])
 
 		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		damages = []
-		hit = stats.damage(tgt)
-		damages.push({
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
-			...hit
+		delayedCall(jumpStrikeDuration, () => {
+			if (my.hp <= 0) return
+			let tgt = my.target
+			enhancedDamage = data.enhancedDamage[my.skills[index]]
+			damages = []
+			hit = stats.damage(tgt)
+			damages.push({
+				index: tgt,
+				enhancedDamage: enhancedDamage,
+				...hit
+			})
+			combat.txDamageMob(damages)
 		})
-		combat.txDamageMob(damages)
 
 		// animate timers
 		timers.skillCooldowns[index] = 0
@@ -237,19 +256,31 @@ let skill = {};
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
+			mpCost: data.mp(my.skills[index])
 		}
 		if (skills.notReady(config)) return
+		spell.config.spCost = 0
+		spell.config.mpCost = data.mp(my.skills[index])
+		spell.expendSpellResources()
 
+		// select targets
+		let targets = []
+		mobs.forEach((mob, index) => {
+			if (mob.name) targets.push(index)
+		})
 		// process skill data
-		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.damage(tgt)
-		damages.push({
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
-			...hit
+		targets.forEach(target => {
+			hit = stats.damage(target)
+			damages.push({
+				key: 'primalStomp',
+				index: target,
+				stagger: true,
+				isRanged: true,
+				enhancedDamage: enhancedDamage,
+				...hit
+			})
 		})
 		combat.txDamageMob(damages)
 

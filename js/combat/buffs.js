@@ -130,6 +130,25 @@ let buffs; // buff data for use with skill/spells/icons
 		pummel: { hate: 2.5 },
 		doubleThrow: { hate: .8 },
 		shockwave: { hate: .8 },
+		frenzy: {
+			name: 'Frenzy',
+			img: 6,
+			job: 'WAR',
+			duration: 20,
+			hate: 0,
+			msg: () => 'You unleash your wrath in a crazed frenzy!',
+			fadeMsg: 'Your frenzy fades.'
+		},
+		jumpStrike: {
+			name: 'Jump Strike',
+			img: 7,
+			job: 'WAR',
+			duration: 1.5,
+			hate: 1.5,
+			msg: () => '',
+			fadeMsg: ''
+		},
+		primalStomp: { hate: 2.5 },
 	}
 	///////////////////////////////////////////
 

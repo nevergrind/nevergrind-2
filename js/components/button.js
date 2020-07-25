@@ -22,7 +22,8 @@ var button;
 	let speed = 0
 	let speedHaste = 1
 	let mySwingSpeed = 0
-	let globalCooldownDur = 2
+	const globalCooldownDur = 2
+	let globalHaste = 1
 	let damages
 	const displayBlock = { display: 'block' }
 	const displayFlex = { display: 'flex' }
@@ -65,7 +66,7 @@ var button;
 			remaining: skillData.cooldownTime
 		}
 
-		textEl.innerHTML = skillData.cooldownTime
+		textEl.innerHTML = getSkillTimeString(skillData.cooldownTime)
 		TweenMax.to(textObj, 1, {
 			repeat: skillData.cooldownTime,
 			onRepeat: button.updateSkillTime,
@@ -87,7 +88,12 @@ var button;
 			el: selector,
 			key: 'globalCooldown',
 		}
-		TweenMax.to(timers, globalCooldownDur, {
+		// haste
+		globalHaste = 1
+		if (my.buffFlags.frenzy) globalHaste -= skills.WAR[6].haste[my.buffs.frenzy.level]
+		if (globalHaste < .25) globalHaste = .25
+
+		TweenMax.to(timers, globalCooldownDur * globalHaste, {
 			globalCooldown: 1,
 			onStart: handleButtonStart,
 			onStartParams: [ args ],
@@ -328,12 +334,21 @@ var button;
 	}
 	function updateSkillTime(obj) {
 		obj.remaining--
-		obj.el.innerHTML = !obj.remaining ? '' : obj.remaining
-		TweenMax.to(obj.el, 1, {
-			startAt: { scale: 1.15 },
+		obj.el.innerHTML = getSkillTimeString(obj.remaining)
+		/*TweenMax.to(obj.el, 1, {
+			startAt: { scale: 1.05 },
 			scale: 1,
 			ease: Power4.easeNone
-		})
+		})*/
+	}
+	function getSkillTimeString(time) {
+		if (time >= 100) {
+			return (~~(time / 60)) + 'm'
+		}
+		else {
+			return !time ? '' : time
+		}
+
 	}
 	function setAll() {
 		TweenMax.set('#button-wrap', {

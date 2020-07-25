@@ -550,12 +550,13 @@ var combat;
 		}
 		// check for things that immediately set to 0
 		// check miss
-		if (Math.random() < mob.missChance(mobs[index].level)) {
+		if (rand() < mob.missChance(mobs[index].level) ||
+			my.buffFlags.jumpStrike) {
 			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but misses!')
 			d.damage = 0
 			return d
 		}
-		console.info('processDamagesHero', index, d)
+		// console.info('processDamagesHero', index, d)
 		// dodge
 		if (skills.dodge[my.job].level &&
 			my.level >= skills.dodge[my.job].level) {
