@@ -149,6 +149,15 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: ''
 		},
 		primalStomp: { hate: 2.5 },
+		bulwark: {
+			name: 'Bulwark',
+			img: 9,
+			job: 'WAR',
+			duration: 8,
+			hate: 0,
+			msg: () => 'A protective bulwark surrounds you!',
+			fadeMsg: 'The bulwark fades.'
+		},
 	}
 	///////////////////////////////////////////
 

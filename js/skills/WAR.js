@@ -290,29 +290,30 @@ let skill = {};
 		button.triggerGlobalCooldown()
 	}
 	function bulwark(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+			anyTarget: true,
+			cannotFizzle: true,
+			oocEnabled: true,
 		}
-		if (skills.notReady(config)) return
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, bulwarkCompleted)
+	}
+	function bulwarkCompleted() {
 		damages = []
-		hit = stats.damage(tgt)
 		damages.push({
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
-			...hit
+			index: my.row,
+			key: 'bulwark',
+			spellType: spell.data.spellType,
+			level: my.skills[spell.config.skillIndex],
+			damage: 0
 		})
-		combat.txDamageMob(damages)
+		combat.txBuffHero(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
-		button.triggerGlobalCooldown()
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, spell.data)
 	}
 	function commandingShout(index, data) {
 		// check constraints

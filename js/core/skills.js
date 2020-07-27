@@ -325,7 +325,6 @@ var skills;
 				img: 'WAR-7',
 				haste: [0, .28, .13, .16, .19, .22, .25, .28],
 				mp: level => spellValues.frenzyMana[level],
-				spellVariance: 1,
 				castTime: 0,
 				cooldownTime: 60,
 				damageType: '',
@@ -347,12 +346,11 @@ var skills;
 			}, {
 				name: 'Bulwark',
 				img: 'WAR-10',
-				mp: [0, 0, 0, 0, 0, 0, 0, 0],
-				sp: [0, 0, 0, 0, 0, 0, 0, 0],
-				enhancedDamage: [0, 0, 0, 0, 0, 0, 0, 0],
-				spellType: '',
+				mitigation: [0, 7, 13, 19, 25, 31, 37, 43],
+				sp: level => spellValues.bulwarkMana[level],
 				castTime: 0,
-				cooldownTime: 5,
+				damageType: '',
+				cooldownTime: 60,
 				description: 'Defensive shield skill - boost all damage reduction for X seconds',
 			}, {
 				name: 'Commanding Shout',
@@ -1983,6 +1981,7 @@ var skills;
 		frenzyMana: [0, 5, 11, 28, 52, 77, 99, 115],
 		jumpStrikeMana: [0, 6, 13, 33, 62, 92, 118, 138],
 		primalStompMana: [0, 4, 10, 26, 49, 73, 94, 110],
+		bulwarkMana: [0, 5, 12, 32, 61, 91, 117, 137],
 		// cleric
 		smiteMana: [0, 6, 13, 31, 57, 84, 108, 126], // mp: 3.3
 		smite: [0, 18, 44, 105, 187, 277, 357, 416],

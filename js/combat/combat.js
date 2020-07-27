@@ -594,8 +594,6 @@ var combat;
 					return d
 				}
 			}
-			// magic debuffs
-			if (mobs[index].buffFlags.suppressingVolley) d.damage *= .5
 
 			// phyMit
 			d.damage -= stats.phyMit()
@@ -611,6 +609,7 @@ var combat;
 				d.blocked = round(d.damage * .25)
 				if (d.blocked < 0) d.blocked = 0
 			}
+			if (mobs[index].buffFlags.suppressingVolley) amountReduced -= .5
 			if (amountReduced < .25) amountReduced = .25
 			d.damage *= amountReduced
 		}
@@ -625,6 +624,7 @@ var combat;
 		}
 		// final sanity checks
 		d.damage = d.damage < 1 ? 1 : round(d.damage)
+		// shield damage
 		if (my.buffFlags.guardianAngel) reduceGuardianAngelDamage(d)
 		combat.levelSkillCheck('defense')
 		return d
@@ -926,6 +926,10 @@ var combat;
 			my.set('hpMax', stats.hpMax())
 			bar.updateBar('hp')
 			txHpChange()
+		}
+		else if (key === 'bulwark') {
+			stats.phyMit(true)
+			stats.magMit(true)
 		}
 	}
 	function txHpChange() {

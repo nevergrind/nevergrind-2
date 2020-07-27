@@ -867,11 +867,19 @@ var stats = {};
 	function enhanceDamageToMobType(mobType) {
 		return getEqTotal('enhancedDamageTo' + mobType) / 100
 	}
-	function phyMit() {
-		return getEqTotal('phyMit')
+	function phyMit(fresh) {
+		if (fresh || typeof stats.cache.phyMit === 'undefined') {
+			stats.cache.phyMit = getEqTotal('phyMit')
+			if (my.buffFlags.bulwark) stats.cache.phyMit += skills.WAR[9].mitigation[my.buffs.bulwark.level]
+		}
+		return stats.cache.phyMit
 	}
-	function magMit() {
-		return getEqTotal('magMit')
+	function magMit(fresh) {
+		if (fresh || typeof stats.cache.magMit === 'undefined') {
+			stats.cache.magMit = getEqTotal('magMit')
+			if (my.buffFlags.bulwark) stats.cache.magMit += skills.WAR[9].mitigation[my.buffs.bulwark.level]
+		}
+		return stats.cache.magMit
 	}
 	function leech() {
 		return getEqTotal('leech')
