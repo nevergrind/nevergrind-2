@@ -290,12 +290,10 @@ var skills;
 				name: 'Rupture',
 				img: 'WAR-2',
 				mp: level => spellValues.ruptureMana[level],
-				spellDamage: level => spellValues.rupture[level] + my.level,
-				spellVariance: .95,
-				castTime: 0,
+				// rupture: [0, 34, 83, 199, 355, 526, 678, 790],
+				enhancedDamage: [0, 4.2, 4.6, 5, 5.4, 5.8, 6.2, 6.6],
 				cooldownTime: 0,
-				damageType: 'blood',
-				description: 'Bleeds single target - all hits on this target receives damage bonus %',
+				description: 'Bleeds single target for % weapon damage over 24 seconds - all hits on this target receives damage bonus % - Ranged - Piercing',
 			}, {
 				name: 'Whirlwind',
 				img: 'WAR-3',
@@ -1977,7 +1975,6 @@ var skills;
 	const spellValues = {
 		// warrior frenzyMana
 		ruptureMana: [0, 0, 0, 0, 0, 0, 0, 0],
-		rupture: [0, 34, 83, 199, 355, 526, 678, 790],
 		frenzyMana: [0, 5, 11, 28, 52, 77, 99, 115],
 		jumpStrikeMana: [0, 6, 13, 33, 62, 92, 118, 138],
 		primalStompMana: [0, 4, 10, 26, 49, 73, 94, 110],
@@ -2044,12 +2041,13 @@ var skills;
 			isMob: true,
 		}
 	}
-	function notReady(config, data = {}) {
+	function notReady(config, spellData = {}) {
 		if (timers.castBar < 1 ||
 			(config.global && timers.globalCooldown < 1) ||
 			(config.skillIndex >= 0 && timers.skillCooldowns[config.skillIndex] < 1) ||
 			my.skills[config.skillIndex] === 0) return true
 
+		console.info('notReady', config)
 		// targeting
 		if (config.anyTarget) {
 			// A OK
@@ -2108,9 +2106,8 @@ var skills;
 				return true
 			}
 		}
-		// SUCCESS!
-		// set last data used for spell completed reference
-		skills.lastData = data
+		// SUCCESS: set last data used for spell completed reference
+		skills.lastData = spellData
 		return false
 	}
 }($, _, TweenMax, Object);

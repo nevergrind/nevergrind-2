@@ -22,7 +22,7 @@ var button;
 	let speed = 0
 	let speedHaste = 1
 	let mySwingSpeed = 0
-	const globalCooldownDur = 2
+	const globalCooldownDur = 2.5
 	let globalHaste = 1
 	let damages
 	const displayBlock = { display: 'block' }

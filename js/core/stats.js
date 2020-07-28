@@ -338,7 +338,7 @@ var stats = {};
 			isCrit: isCrit,
 		}
 	}
-	function autoAttackDamage() {
+	function autoAttackDamage(getNonCrit) {
 		min = 1
 		max = 1
 		weaponSkill = items.eq[12]?.name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
@@ -361,16 +361,18 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = stats.critChance() > rand()
+		if (typeof getNonCrit === 'undefined') {
+			isCrit = stats.critChance() > rand()
 
-		if (isCrit) {
-			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
-				min *= 2
-				max *= 2
-			}
-			else {
-				min *= 1.5
-				max *= 1.5
+			if (isCrit) {
+				if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
+					min *= 2
+					max *= 2
+				}
+				else {
+					min *= 1.5
+					max *= 1.5
+				}
 			}
 		}
 

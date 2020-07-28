@@ -3,13 +3,11 @@ let skill = {};
 	skill.WAR = {
 		shieldBash,
 		rupture,
-		ruptureCompleted,
 		whirlwind,
 		pummel,
 		doubleThrow,
 		shockwave,
 		frenzy,
-		frenzyCompleted,
 		jumpStrike,
 		primalStomp,
 		bulwark,
@@ -33,36 +31,36 @@ let skill = {};
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		if (items.eq[13]?.itemType === 'shields') enhancedDamage += .5
 		damages = []
-		hit = stats.damage(tgt)
 		damages.push({
+			...stats.damage(),
 			key: 'shieldBash',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
-			...hit
 		})
-		console.info('damages', damages)
+		console.info('shieldBash', damages)
 		combat.txDamageMob(damages)
 
 		// animate timers
 		button.triggerGlobalCooldown()
 	}
 	function rupture(index, data) {
-		if (timers.castBar < 1) return
-		spell.config = {
-			...spell.getDefaults(index, data),
-			cannotFizzle: true
+		config = {
+			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, ruptureCompleted)
-	}
-	function ruptureCompleted() {
-		combat.txDotMob([{
+		if (skills.notReady(config, data)) return
+
+		damages = [{
 			key: 'rupture',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage(),
-		}])
+			index: my.target,
+			isRanged: true,
+			isPiercing: true,
+			damageType: 'blood',
+			...stats.damage(false, false, true)
+		}]
+		damages[0].damage = damages[0].max
+		damages[0].damage = (damages[0].damage * data.enhancedDamage[my.skills[index]]) + my.level
+
+		combat.txDotMob(damages)
 		button.triggerGlobalCooldown()
 	}
 	function whirlwind(index, data) {
@@ -78,12 +76,12 @@ let skill = {};
 		let tgt
 		for (var i=0; i<5; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.damage(tgt)
+			hit = stats.damage()
 			damages.push({
+				...hit,
 				key: 'whirlwind',
 				index: tgt,
 				enhancedDamage: enhancedDamage,
-				...hit
 			})
 		}
 		combat.txDamageMob(damages)
@@ -106,12 +104,12 @@ let skill = {};
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		damages.push({
+			...stats.damage(),
 			key: 'pummel',
 			index: tgt,
 			isPiercing: true,
 			stun: 3,
 			enhancedDamage: enhancedDamage,
-			...stats.damage(tgt)
 		})
 		combat.txDamageMob(damages)
 
@@ -133,12 +131,12 @@ let skill = {};
 		damages = []
 		for (var i=0; i<2; i++) {
 			damages.push({
+				...stats.damage(),
 				key: 'doubleThrow',
 				index: tgt,
 				isRanged: true,
 				stagger: true,
 				enhancedDamage: enhancedDamage,
-				...stats.damage(tgt)
 			})
 			if (battle.targetIsBackRow(tgt)) {
 				damages[i].damage *= 2
@@ -166,13 +164,13 @@ let skill = {};
 		damages = []
 		for (var i = 0; i<=4; i++) {
 			if (mobs[i].hp) {
-				hit = stats.damage(i)
+				hit = stats.damage()
 				damages.push({
+					...hit,
 					key: 'shockwave',
 					index: i,
 					requiresFrontRow: true,
 					enhancedDamage: enhancedDamage,
-					...hit
 				})
 			}
 		}
@@ -183,30 +181,27 @@ let skill = {};
 		button.triggerGlobalCooldown()
 	}
 	function frenzy(index, data) {
-		if (timers.castBar < 1) return
-		spell.config = {
-			...spell.getDefaults(index, data),
+		config = {
+			...skills.getDefaults(index),
+			mpCost: data.mp(my.skills[index]),
 			anyTarget: true,
-			cannotFizzle: true,
 			oocEnabled: true,
 		}
-		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, frenzyCompleted)
-	}
-	function frenzyCompleted() {
-		damages = []
-		damages.push({
+		if (skills.notReady(config)) return
+		spell.config.mpCost = data.mp(my.skills[index])
+		spell.config.spCost = 0
+		spell.expendSpellResources()
+
+		combat.txBuffHero([{
 			index: my.row,
 			key: 'frenzy',
-			spellType: spell.data.spellType,
-			level: my.skills[spell.config.skillIndex],
+			level: my.skills[index],
 			damage: 0
-		})
-		combat.txBuffHero(damages)
+		}])
 
 		// animate timers
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, spell.data)
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
 	}
 
 	const jumpStrikeDuration = 1.5
@@ -238,11 +233,11 @@ let skill = {};
 			let tgt = my.target
 			enhancedDamage = data.enhancedDamage[my.skills[index]]
 			damages = []
-			hit = stats.damage(tgt)
+			hit = stats.damage()
 			damages.push({
+				...hit,
 				index: tgt,
 				enhancedDamage: enhancedDamage,
-				...hit
 			})
 			combat.txDamageMob(damages)
 		})
@@ -272,14 +267,14 @@ let skill = {};
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		targets.forEach(target => {
-			hit = stats.damage(target)
+			hit = stats.damage()
 			damages.push({
+				...hit,
 				key: 'primalStomp',
 				index: target,
 				stagger: true,
 				isRanged: true,
 				enhancedDamage: enhancedDamage,
-				...hit
 			})
 		})
 		combat.txDamageMob(damages)
@@ -302,8 +297,6 @@ let skill = {};
 		spell.config.mpCost = 0
 		spell.expendSpellResources()
 
-		damages = []
-		damages.push()
 		combat.txBuffHero([{
 			index: my.row,
 			key: 'bulwark',
@@ -327,12 +320,12 @@ let skill = {};
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.damage(tgt)
+		hit = stats.damage()
 		damages.push({
+			...hit,
 			index: tgt,
 			isPiercing: true,
 			enhancedDamage: enhancedDamage,
-			...hit
 		})
 		combat.txDamageMob(damages)
 
@@ -352,12 +345,12 @@ let skill = {};
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.damage(tgt)
+		hit = stats.damage()
 		damages.push({
+			...hit,
 			index: tgt,
 			isPiercing: true,
 			enhancedDamage: enhancedDamage,
-			...hit
 		})
 		combat.txDamageMob(damages)
 
