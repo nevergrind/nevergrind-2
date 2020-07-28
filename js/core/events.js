@@ -4,11 +4,11 @@
 	// window
 
 	// document events
-	$(document).ready(ready)
+	document.addEventListener('DOMContentLoaded', ready)
 
 	//////////////////////////////////////////////
 	function ready() {
-		// console.info("Initializing title screen...");
+		// console.info("document ready...");
 		delayedCall(.1, readyFire);
 
 		$(window)

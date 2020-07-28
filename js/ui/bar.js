@@ -916,10 +916,10 @@ var bar;
 			player.isLeader = data.isLeader;
 			// set UI helmet
 			if (player.isLeader && party.hasMoreThanOnePlayer()) {
-				getElementById('bar-is-leader-' + data.row).classList.remove('none');
+				getElementById('bar-name-' + data.row).classList.add('chat-gold')
 			}
 			else {
-				getElementById('bar-is-leader-' + data.row).classList.add('none');
+				getElementById('bar-name-' + data.row).classList.remove('chat-gold')
 			}
 			// console.warn('isLeader', data.row, index, player.isLeader);
 		}

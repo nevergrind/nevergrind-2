@@ -188,21 +188,21 @@ var party;
 	function removePartyMember(player, checkLeader = true) {
 		if (typeof player === 'object') {
 			index = _.findIndex(party.presence, { row: player.row });
-			console.warn('removing party member: index', index, 'row', player.row);
-			_.pullAt(party.presence, [ index ]);
-			bar.dom[player.row] = undefined;
-			$('#bar-player-wrap-' + player.row).remove();
+			console.warn('removing party member: index', index, 'row', player.row)
+			_.pullAt(party.presence, [ index ])
+			bar.dom[player.row] = undefined
+			$('#bar-player-wrap-' + player.row).remove()
 			// elect new leader - only possible if timed out
 			console.info('checkLeader', checkLeader)
 			if (checkLeader) {
 				console.info('electLeader', player.isLeader, party.presence.length)
 				console.info('party', _.cloneDeep(party.presence))
 				if (player.isLeader && party.hasMoreThanOnePlayer()) {
-					electLeader();
+					electLeader()
 				}
 				if (party.presence.length === 1) {
-					my.isLeader = party.presence[0].isLeader = true;
-					getElementById('bar-is-leader-' + my.row).classList.add('none');
+					my.isLeader = party.presence[0].isLeader = true
+					getElementById('bar-name-' + my.row).classList.remove('chat-gold')
 				}
 			}
 		}
@@ -267,7 +267,7 @@ var party;
 				row: my.partyId
 			});
 			console.warn('length: ', party.presence.length)
-			party.presence.length === 1 && getElementById('bar-is-leader-' + my.row).classList.remove('none');
+			party.presence.length === 1 && getElementById('bar-name-' + my.row).classList.add('chat-gold');
 		}
 	}
 	/**
@@ -387,7 +387,7 @@ var party;
 			party.presence[index].isLeader = true;
 		}
 		console.warn("LEADER INDEX: ", index, player.row);
-		getElementById('bar-is-leader-' + player.row).classList.remove('none');
+		getElementById('bar-name-' + player.row).classList.add('chat-gold');
 	}
 	function promote(name) {
 		console.info('/promote ', name);
@@ -404,32 +404,32 @@ var party;
 				});
 			}
 			else {
-				chat.log('That player was not found in your party. Did you spell it right?');
+				chat.log('That player was not found in your party. Did you spell it right?')
 			}
 		}
 		else {
-			chat.log('You must be the leader to promote a party member!');
+			chat.log('You must be the leader to promote a party member!')
 		}
 	}
 	function promoteReceived(data) {
-		var index = _.findIndex(party.presence, { name: data.name });
+		var index = _.findIndex(party.presence, { name: data.name })
 		if (index >= 0) {
-			chat.log(data.name + " has been promoted to party leader.", 'chat-warning');
-			console.warn('index', index);
-			party.presence[index].isLeader = true;
+			chat.log(data.name + " has been promoted to party leader.", 'chat-warning')
+			console.warn('index', index)
+			party.presence[index].isLeader = true
 			if (!index) {
-			console.warn('Look at me. I am the leader now');
-				my.isLeader = true;
+				console.warn('Look at me. I am the leader now')
+				my.isLeader = true
 			}
-			var oldLeader = _.findIndex(party.presence, { row: data.leaderRow });
-			console.warn('oldLeader', oldLeader);
-			getElementById('bar-is-leader-' + party.presence[index].row).classList.remove('none');
-			getElementById('bar-is-leader-' + party.presence[oldLeader].row).classList.add('none');
+			var oldLeader = _.findIndex(party.presence, { row: data.leaderRow })
+			console.warn('oldLeader', oldLeader)
+			getElementById('bar-name-' + party.presence[index].row).classList.add('chat-gold')
+			getElementById('bar-name-' + party.presence[oldLeader].row).classList.remove('chat-gold')
 		}
 	}
 	function parse(msg) { // 2-part upper case
-		var a = msg.replace(/ +/g, " ").split(" ");
+		var a = msg.replace(/ +/g, " ").split(" ")
 		return a[1] === void 0 ?
-			'' : (_.capitalize(a[1].trim()));
+			'' : (_.capitalize(a[1].trim()))
 	}
 })(Date, _, $);
