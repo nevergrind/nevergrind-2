@@ -290,30 +290,31 @@ let skill = {};
 		button.triggerGlobalCooldown()
 	}
 	function bulwark(index, data) {
-		if (timers.castBar < 1) return
-		spell.config = {
-			...spell.getDefaults(index, data),
+		console.info('bulwark', data)
+		config = {
+			...skills.getDefaults(index),
+			mpCost: data.sp(my.skills[index]),
 			anyTarget: true,
-			cannotFizzle: true,
 			oocEnabled: true,
 		}
-		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, bulwarkCompleted)
-	}
-	function bulwarkCompleted() {
+		if (skills.notReady(config)) return
+		spell.config.spCost = data.sp(my.skills[index])
+		spell.config.mpCost = 0
+		spell.expendSpellResources()
+
 		damages = []
-		damages.push({
+		damages.push()
+		combat.txBuffHero([{
 			index: my.row,
 			key: 'bulwark',
-			spellType: spell.data.spellType,
-			level: my.skills[spell.config.skillIndex],
+			level: my.skills[index],
 			damage: 0
-		})
-		combat.txBuffHero(damages)
+		}])
 
 		// animate timers
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, spell.data)
+		timers.skillCooldowns[index] = 0
+		button.processButtonTimers(index, data)
+		button.triggerGlobalCooldown()
 	}
 	function commandingShout(index, data) {
 		// check constraints
