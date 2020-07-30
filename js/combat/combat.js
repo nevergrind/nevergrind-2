@@ -327,7 +327,7 @@ var combat;
 	}
 
 	function updateMobHp(o) {
-		// console.info('updateHate obj', _.clone(o))
+		console.info('updateMobHp updateHate obj', _.clone(o))
 		if (typeof buffs[o.key] === 'object') {
 			if (buffs[o.key].hate === undefined) o.hate = 1
 			else o.hate = buffs[o.key].hate
@@ -355,12 +355,20 @@ var combat;
 				delayedCall(5, dungeon.go, [true])
 			}
 		}
+		if (typeof o.effects === 'object') {
+			if (o.effects.stun) mobEffects.stun(o.index, o.effects.stun)
+			if (o.effects.stagger) mobEffects.stagger(o.index)
+		}
+		if (o.key && typeof animateSkill[key] === 'function') {
+
+		}
 	}
 	const damageKeys = [
 		'damage',
 		'key',
 		'index',
-		'row'
+		'row',
+		'effects'
 	]
 	function txDamageMob(damages) {
 		damages = damages.map(processDamagesMob)
@@ -853,7 +861,6 @@ var combat;
 			console.info('updateHate hate', hate)
 
 			if (my.row === buff.index) {
-				chat.log(buffs[buff.key].msg(), 'chat-heal')
 				let key = buff.key
 				// check level of buff - cancel if lower
 				if (typeof my.buffs[key] === 'object') {
@@ -875,6 +882,7 @@ var combat;
 					}
 				}
 
+				chat.log(buffs[buff.key].msg(), 'chat-heal')
 				battle.removeBuff(key)
 				// setup buff timer data
 				my.buffs[key] = {
@@ -921,8 +929,7 @@ var combat;
 			txHpChange()
 		}
 		else if (key === 'zealousResolve') {
-			stats.armor(true)
-			if (bar.windowsOpen.character) ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+			cacheBustArmor()
 			my.set('hpMax', stats.hpMax())
 			bar.updateBar('hp')
 			txHpChange()
@@ -931,7 +938,16 @@ var combat;
 			stats.phyMit(true)
 			stats.magMit(true)
 		}
+		else if (key === 'intrepidShout') {
+			cacheBustArmor()
+			stats.resistFear(true)
+		}
 	}
+	function cacheBustArmor() {
+		stats.armor(true)
+		if (bar.windowsOpen.character) ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+	}
+
 	function txHpChange() {
 		console.info('processStatBuffsToMe tx!', key)
 		game.txPartyResources({

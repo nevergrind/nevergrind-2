@@ -11,7 +11,7 @@ let skill = {};
 		jumpStrike,
 		primalStomp,
 		bulwark,
-		commandingShout,
+		intrepidShout,
 		furiousCleave,
 	}
 	///////////////////////////////////////////
@@ -108,7 +108,7 @@ let skill = {};
 			key: 'pummel',
 			index: tgt,
 			isPiercing: true,
-			stun: 3,
+			effects: { stun: 3 },
 			enhancedDamage: enhancedDamage,
 		})
 		combat.txDamageMob(damages)
@@ -135,7 +135,7 @@ let skill = {};
 				key: 'doubleThrow',
 				index: tgt,
 				isRanged: true,
-				stagger: true,
+				effects: { stagger: true },
 				enhancedDamage: enhancedDamage,
 			})
 			if (battle.targetIsBackRow(tgt)) {
@@ -170,6 +170,7 @@ let skill = {};
 					key: 'shockwave',
 					index: i,
 					requiresFrontRow: true,
+					stagger: true,
 					enhancedDamage: enhancedDamage,
 				})
 			}
@@ -188,9 +189,7 @@ let skill = {};
 			oocEnabled: true,
 		}
 		if (skills.notReady(config)) return
-		spell.config.mpCost = data.mp(my.skills[index])
-		spell.config.spCost = 0
-		spell.expendSpellResources()
+		spell.expendMana(data, index)
 
 		combat.txBuffHero([{
 			index: my.row,
@@ -213,9 +212,7 @@ let skill = {};
 			mpCost: data.mp(my.skills[index])
 		}
 		if (skills.notReady(config)) return
-		spell.config.spCost = 0
-		spell.config.mpCost = data.mp(my.skills[index])
-		spell.expendSpellResources()
+		spell.expendMana(data, index)
 
 		// buff
 		combat.txBuffHero([{
@@ -254,9 +251,7 @@ let skill = {};
 			mpCost: data.mp(my.skills[index])
 		}
 		if (skills.notReady(config)) return
-		spell.config.spCost = 0
-		spell.config.mpCost = data.mp(my.skills[index])
-		spell.expendSpellResources()
+		spell.expendMana(data, index)
 
 		// select targets
 		let targets = []
@@ -272,7 +267,7 @@ let skill = {};
 				...hit,
 				key: 'primalStomp',
 				index: target,
-				stagger: true,
+				effects: { stagger: true },
 				isRanged: true,
 				enhancedDamage: enhancedDamage,
 			})
@@ -288,14 +283,12 @@ let skill = {};
 		console.info('bulwark', data)
 		config = {
 			...skills.getDefaults(index),
-			mpCost: data.sp(my.skills[index]),
+			spCost: data.sp(my.skills[index]),
 			anyTarget: true,
 			oocEnabled: true,
 		}
 		if (skills.notReady(config)) return
-		spell.config.spCost = data.sp(my.skills[index])
-		spell.config.mpCost = 0
-		spell.expendSpellResources()
+		spell.expendSpirit(data, index)
 
 		combat.txBuffHero([{
 			index: my.row,
@@ -309,25 +302,26 @@ let skill = {};
 		button.processButtonTimers(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function commandingShout(index, data) {
+	function intrepidShout(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
+			spCost: data.sp(my.skills[index]),
+			anyTarget: true,
+			oocEnabled: true,
 		}
 		if (skills.notReady(config)) return
+		spell.expendSpirit(data, index)
 
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.damage()
-		damages.push({
-			...hit,
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
+		party.presence.forEach(p => {
+			damages.push({
+				index: p.row,
+				key: 'intrepidShout',
+				level: my.skills[index],
+			})
 		})
-		combat.txDamageMob(damages)
+		combat.txBuffHero(damages)
 
 		// animate timers
 		timers.skillCooldowns[index] = 0
@@ -338,26 +332,33 @@ let skill = {};
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
+			spCost: data.sp(my.skills[index]),
 		}
 		if (skills.notReady(config)) return
-
+		spell.expendSpirit(data, index)
 		// process skill data
-		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.damage()
-		damages.push({
-			...hit,
-			index: tgt,
-			isPiercing: true,
-			enhancedDamage: enhancedDamage,
-		})
+		let splashIndex = -1
+		let tgt
+		for (var i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			hit = stats.damage(tgt)
+			damages.push({
+				...hit,
+				key: 'furiousCleave',
+				index: tgt,
+				effects: { stun: 2 },
+				enhancedDamage: enhancedDamage,
+				damageType: 'arcane',
+			})
+		}
 		combat.txDamageMob(damages)
 
 		// animate timers
 		timers.skillCooldowns[index] = 0
 		button.processButtonTimers(index, data)
-		button.triggerGlobalCooldown()
+		// button.triggerGlobalCooldown()
 	}
 
 }($, _, TweenMax);

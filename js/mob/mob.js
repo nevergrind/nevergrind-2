@@ -23,6 +23,7 @@ var mob;
 		animateAttack,
 		special,
 		death,
+		mobAttackSpeed,
 		killAttacks,
 		missChance,
 		getMobDamage,
@@ -166,7 +167,8 @@ var mob;
 				buffs: {},
 				buffFlags: {},
 				box: {},
-				dom: {}
+				dom: {},
+				stunDuration: 0,
 			}
 			querySelector('#mob-wrap-' + i).style.display = 'none'
 		}
@@ -406,9 +408,10 @@ var mob;
 		})
 	}
 
-	function hit(i) {
+	function hit(i, bypass) {
 		if (ng.view !== 'battle') return
-		if (mobs[i].isAnimationActive) return;
+		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return;
+		if (bypass) mobs[i].animation.pause()
 		mobs[i].isAnimationActive = true;
 		var speed = mobs[i].frameSpeed * frame.hit.diff
 

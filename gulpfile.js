@@ -71,6 +71,8 @@ const jsFiles = [
 	'mob/mob-types',
 	'mob/mob-images',
 	'mob/mob-data',
+	'mob/mob-effects',
+	'skills/animate-skill',
 	'skills/WAR',
 	'skills/CRU',
 	'skills/SHD',

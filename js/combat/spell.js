@@ -13,6 +13,8 @@ var spell;
 		knockback,
 		getDefaults,
 		expendSpellResources,
+		expendMana,
+		expendSpirit,
 	}
 	let castBarWrap = querySelector('#cast-bar-wrap')
 	let castBar = querySelector('#cast-bar')
@@ -170,5 +172,15 @@ var spell;
 	function getTargetName() {
 		if (my.targetIsMob && my.target !== -1) return mobs[my.target].name
 		else return my.target === -1 ? '' : party.getNameByRow(my.target)
+	}
+	function expendMana(data, index) {
+		spell.config.mpCost = data.mp(my.skills[index])
+		spell.config.spCost = 0
+		expendSpellResources()
+	}
+	function expendSpirit(data, index) {
+		spell.config.mpCost = 0
+		spell.config.spCost = data.sp(my.skills[index])
+		expendSpellResources()
 	}
 }($, _, TweenMax, Power0);

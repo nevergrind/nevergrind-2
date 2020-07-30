@@ -195,7 +195,10 @@ var stats = {};
 			if (my.buffFlags.zealousResolve) {
 				stats.cache.armor += (my.buffs.zealousResolve.damage * buffs.zealousResolve.armorRatio)
 			}
-			 stats.cache.armor = round(stats.cache.armor)
+			if (my.buffFlags.intrepidShout) {
+				stats.cache.armor += buffs.intrepidShout.armor[my.buffs.intrepidShout.level]
+			}
+			stats.cache.armor = round(stats.cache.armor)
 		}
 		return stats.cache.armor
 	}
@@ -913,10 +916,15 @@ var stats = {};
 		if (resistStatusVal > 50) resistStatusVal = 50
 		return resistStatusVal
 	}
-	function resistFear() {
-		resistStatusVal = getEqTotal('resistFear')
-		if (resistStatusVal > 50) resistStatusVal = 50
-		return resistStatusVal
+	function resistFear(fresh) {
+		if (fresh || typeof stats.cache.resistFear === 'undefined') {
+			stats.cache.resistFear = getEqTotal('resistFear')
+			if (my.buffFlags.intrepidShout) {
+				stats.cache.resistFear += buffs.intrepidShout.base + (buffs.intrepidShout.fearPerLevel * my.buffs.intrepidShout.level)
+			}
+			if (stats.cache.resistFear > 50) stats.cache.resistFear = 50
+		}
+		return stats.cache.resistFear
 	}
 	function resistStun() {
 		resistStatusVal = getEqTotal('resistStun')

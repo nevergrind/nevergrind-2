@@ -110,7 +110,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 11,
 			job: 'CLR',
 			duration: 720,
-			armorRatio: .25,
+			armorRatio: .25, // % of health buff
 			msg: () => 'Your spirit ignites with zealous resolve.',
 			fadeMsg: 'Your zealous resolve fades.'
 		},
@@ -158,6 +158,19 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'A protective bulwark surrounds you!',
 			fadeMsg: 'The bulwark fades.'
 		},
+		intrepidShout: {
+			name: 'Intrepid Shout',
+			img: 10,
+			job: 'WAR',
+			duration: 240,
+			hate: 0,
+			armor: [0, 25, 50, 75, 100, 125, 150, 175],
+			base: 5,
+			fearPerLevel: 2,
+			msg: () => 'An intrepid shout makes you feel dauntless!',
+			fadeMsg: 'The intrepid shout fades.'
+		},
+		furiousCleave: { hate: 1.5 },
 	}
 	///////////////////////////////////////////
 

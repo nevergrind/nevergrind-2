@@ -245,7 +245,7 @@
 					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
 					isMob: spell.config.isMob,
-					stagger: true,
+					effects: { stagger: true },
 					...stats.spellDamage()
 				})
 			}

@@ -101,7 +101,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				stun: 3,
+				effects: { stun: 3 },
 				...stats.spellDamage(),
 			})
 		}
@@ -148,7 +148,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			stun: 5,
+			effects: { stun: 5 },
 			...stats.spellDamage()
 		}])
 		timers.skillCooldowns[spell.config.skillIndex] = 0

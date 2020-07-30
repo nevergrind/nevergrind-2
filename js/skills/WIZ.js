@@ -1,95 +1,225 @@
 !function($, _, TweenMax, undefined) {
 	skill.WIZ = {
-		crossSlash,
-		explosiveShot,
-		trueshotArrow,
-		spreadShot,
-		bladeStorm,
-		suppressingVolley,
-		ignite,
-		shockNova,
-		faerieFlame,
-		fungalGrowth,
-		shimmeringOrb,
-		spiritOfTheHunter,
+		fireBolt,
+		iceBolt,
+		lightningBolt,
+		magicMissiles,
+		fireball,
+		chainLightning,
+		frostNova,
+		meteor,
+		iceBlock,
+		mirrorImages,
+		counterspell,
+		brainFreeze,
 	}
 	///////////////////////////////////////////
-	let arr, damage, damages, enhancedDamage
-
-	const displayBlock = { display: 'block' }
+	let enhancedDamage, hit, config
+	let damages = []
 	///////////////////////////////////////////
-	function crossSlash(index, data) {
-		console.info('crossSlash', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function fireBolt(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, fireBoltCompleted)
 	}
-
-	function explosiveShot(index, data) {
-		console.info('explosiveShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function fireBoltCompleted() {
+		combat.txDamageMob([{
+			key: 'fireBolt',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function trueshotArrow(index, data) {
-		console.info('trueshotArrow', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function iceBolt(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, iceBoltCompleted)
 	}
-	function spreadShot(index, data) {
-		console.info('spreadShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function iceBoltCompleted() {
+		combat.txDamageMob([{
+			key: 'iceBolt',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function bladeStorm(index, data) {
-		console.info('bladeStorm', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function lightningBolt(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, lightningBoltCompleted)
 	}
-	function suppressingVolley(index, data) {
-		console.info('suppressingVolley', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function lightningBoltCompleted() {
+		combat.txDamageMob([{
+			key: 'lightningBolt',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function ignite(index, data) {
-		console.info('ignite', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function magicMissiles(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, magicMissilesCompleted)
 	}
-	function shockNova(index, data) {
-		console.info('shockNova', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function magicMissilesCompleted() {
+		combat.txDamageMob([{
+			key: 'magicMissiles',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function faerieFlame(index, data) {
-		console.info('faerieFlame', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function fireball(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, fireballCompleted)
 	}
-	function fungalGrowth(index, data) {
-		console.info('fungalGrowth', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function fireballCompleted() {
+		combat.txDamageMob([{
+			key: 'fireball',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function shimmeringOrb(index, data) {
-		console.info('shimmeringOrb', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function chainLightning(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, chainLightningCompleted)
 	}
-	function spiritOfTheHunter(index, data) {
-		console.info('spiritOfTheHunter', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function chainLightningCompleted() {
+		combat.txDamageMob([{
+			key: 'chainLightning',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function frostNova(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, frostNovaCompleted)
+	}
+	function frostNovaCompleted() {
+		combat.txDamageMob([{
+			key: 'frostNova',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function meteor(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, meteorCompleted)
+	}
+	function meteorCompleted() {
+		combat.txDamageMob([{
+			key: 'meteor',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function iceBlock(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, iceBlockCompleted)
+	}
+	function iceBlockCompleted() {
+		combat.txDamageMob([{
+			key: 'iceBlock',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function mirrorImages(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, mirrorImagesCompleted)
+	}
+	function mirrorImagesCompleted() {
+		combat.txDamageMob([{
+			key: 'mirrorImages',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function counterspell(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, counterspellCompleted)
+	}
+	function counterspellCompleted() {
+		combat.txDamageMob([{
+			key: 'counterspell',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function brainFreeze(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, brainFreezeCompleted)
+	}
+	function brainFreezeCompleted() {
+		combat.txDamageMob([{
+			key: 'smite',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 
 }($, _, TweenMax);
