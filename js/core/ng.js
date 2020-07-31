@@ -299,6 +299,7 @@ var ng;
 	}
 	var msgTimer = delayedCall(0, '')
 	let characterData = []
+	let routedToCharacterPage = false
 	const vowels = 'aeiou'
 	let steam = {
 		screenName: '',
@@ -707,9 +708,8 @@ var ng;
 			checkPlayerData()
 			$("#login-modal").remove()
 		}
-		else {
-			login.notLoggedIn()
-		}
+		else login.notLoggedIn()
+
 		if (!app.initialized) {
 			app.initialized = 1
 			keepAlive()
@@ -721,6 +721,15 @@ var ng;
 				},
 				filter: 'brightness(1)',
 				ease: Back.easeOut
+			})
+		}
+
+		if (!r.characterData.length && !routedToCharacterPage) {
+			// go-create-character
+			routedToCharacterPage = true
+			delayedCall(1.5, () => {
+				ng.goCreateCharacter()
+				ng.msg('Create your first character.', 5)
 			})
 		}
 	}
@@ -764,8 +773,7 @@ var ng;
 		}
 		else {
 			s = '<div class="flex-column flex-center flex-max">'+
-				'<div>Create your first character</div>'+
-				'<div>to play Nevergrind Online!</div>'+
+				'<div>No Character Data Found</div>'+
 			'</div>'
 		}
 		getElementById('ch-card-wrap').innerHTML = s;

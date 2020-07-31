@@ -97,10 +97,10 @@ var login;
 		}).done(function(data) {
 			if (!data.includes("Account Created")){
 				// something went wrong
-				localStorage.setItem('account', account);
 				login.msg(data);
 			}
 			else {
+				localStorage.setItem('account', account);
 				login.msg("Account Created! Reloading!");
 				delayedCall(.5, ng.reloadGame)
 			}
@@ -130,21 +130,21 @@ var login;
 	}
 	function authenticate() {
 		if (login.authenticationLock === true) {
-			return false;
+			return false
 		}
-		var account = _.toLower($("#account").val());
+		var account = _.toLower($("#account").val())
 		if (account.length < 3) {
-			login.msg("This is not a valid account name.");
-			return false;
+			login.msg("This is not a valid account name.")
+			return false
 		}
-		login.msg("Connecting to server...");
-		login.authenticationLock = true;
+		login.msg("Connecting to server...")
+		login.authenticationLock = true
+		localStorage.setItem('account', account)
 		$.post(app.url + 'account/authenticate.php', {
 			account: account
 		}).done(function(data){
 			console.info('data', data.success, data.account);
 			if (data.success){
-				localStorage.setItem('account', account)
 				location.reload();
 			}
 			else {

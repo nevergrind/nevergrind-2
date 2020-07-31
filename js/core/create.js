@@ -86,9 +86,7 @@ var create;
 	// public //////////////////////////////////////
 	function events() {
 		if (!app.isApp) {
-			$("#logout").on('click', function () {
-				ng.logout();
-			});
+			$("#logout").on('click', ng.logout);
 		}
 		$("#ch-card-wrap").on('click', '.ch-card', function(){
 			$('.ch-card').removeClass('ch-card-active');
