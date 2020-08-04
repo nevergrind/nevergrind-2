@@ -26,13 +26,16 @@ for (var i=0; i<12; i++) {
 }
 timers.mobAttack = []
 timers.mobStunTimer = []
+timers.mobChillTimer = []
 timers.mobEffects = []
 for (var i=0; i<mob.max; i++) {
 	// skill cooldowns
 	timers.mobAttack[i] = delayedCall(0, '')
 	timers.mobStunTimer[i] = delayedCall(0, '')
+	timers.mobChillTimer[i] = delayedCall(0, '')
 	timers.mobEffects[i] = {
-		stunDuration: 0
+		stunDuration: 0,
+		chillDuration: 0,
 	}
 }
 let delays = {

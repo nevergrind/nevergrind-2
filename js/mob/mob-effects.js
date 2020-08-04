@@ -3,6 +3,7 @@ var mobEffects;
 	mobEffects = {
 		stun,
 		stagger,
+		chill,
 	}
 	///////////////////////////////////////////
 	function stun(i, duration) {
@@ -28,15 +29,28 @@ var mobEffects;
 		timers.mobAttack[i].resume()
 	}
 	function stagger(i) {
-		if (timers.mobEffects[i].stunDuration === 0) {
-			console.info('mobEffects STAGGERED!', i)
-			timers.mobAttack[i].kill()
-			timers.mobAttack[i] = delayedCall(mob.mobAttackSpeed(i), mob.attack, [i])
+		console.info('mobEffects STAGGERED!', i)
+		timers.mobAttack[i].kill()
+		timers.mobAttack[i] = delayedCall(mob.mobAttackSpeed(i), mob.attack, [i])
+		mob.hit(i, true)
+	}
+	function chill(i, duration) {
+		if (duration > timers.mobEffects[i].chillDuration) {
+			console.info('mobEffects STUNNED!', i)
+			timers.mobChillTimer[i].kill()
+			timers.mobEffects[i].chillDuration = duration
+			// timers.mobStunDuration
+			timers.mobChillTimer[i] = TweenMax.to(timers.mobEffects[i], duration, {
+				chillDuration: 0,
+				onComplete: mob.setTimeScaleSpeed,
+				onCompleteParams: [i],
+				ease: Linear.easeNone,
+			})
+			mob.setTimeScaleSpeed(i)
 		}
 		else {
-			console.warn("mobEffects STILL STUNNED", i, timers.mobEffects[i].stunDuration)
+			console.warn('mobEffects chillDuration SKIPPED!', duration, timers.mobEffects[i].chillDuration)
 		}
-		mob.hit(i, true)
 	}
 
 }($, _, TweenMax, Linear);

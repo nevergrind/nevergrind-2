@@ -31,6 +31,7 @@ var mob;
 		isAnyMobAlive,
 		addHateHeal,
 		hideMobTargets,
+		setTimeScaleSpeed,
 		txData: [],
 		enableMobHeartbeat: true,
 		imageKeysLen: 0,
@@ -95,6 +96,7 @@ var mob;
 		sp: 1,
 		speed: 3,
 		speedMod: 1,
+		timeScale: 1,
 		level: 1,
 		armor: 1,
 		healing: 1,
@@ -112,14 +114,14 @@ var mob;
 		},
 		traits: []
 	}
-	let mobData = {}
+	let mobSpeed = 1
+	let timeScaleSpeed = 1
 	let tickData = []
 	let hpTick = 0
 	let mpTick = 0
 	let spTick = 0
 	let mobRow = -1
 	let i = 0
-	const hoverIcon = "url('css/cursor/pointer.cur'), auto"
 
 	//////////////////////////////////////////////////
 	function getRandomMobKey() {
@@ -168,7 +170,6 @@ var mob;
 				buffFlags: {},
 				box: {},
 				dom: {},
-				stunDuration: 0,
 			}
 			querySelector('#mob-wrap-' + i).style.display = 'none'
 		}
@@ -406,6 +407,29 @@ var mob;
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
 		})
+		setTimeScaleSpeed(i)
+	}
+	function setTimeScaleSpeed(i) {
+		// default speed for this mob
+		timeScaleSpeed = mobs[i].timeScale
+		// things that modify mob speed
+		if (mobs[i].buffFlags.chill) timeScaleSpeed -= .2
+		// constraints
+		if (timeScaleSpeed > 3) timeScaleSpeed = 3
+		else if (timeScaleSpeed < .5) timeScaleSpeed = .5
+		console.info('timeScaleSpeed', timeScaleSpeed)
+		mobs[i].animation.timeScale(timeScaleSpeed)
+	}
+	function mobAttackSpeed(i) {
+		// default speed for this mob
+		mobSpeed = mobs[i].speedMod
+		// things that modify mob speed
+		if (mobs[i].buffFlags.chill) mobSpeed += .2
+		// constraints
+		if (mobSpeed > 3) mobSpeed = 3
+		else if (mobSpeed < .5) mobSpeed = .5
+		console.info('mobSpeed', mobSpeed)
+		return mobs[i].speed * mobSpeed
 	}
 
 	function hit(i, bypass) {
@@ -427,7 +451,8 @@ var mob;
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
 			onComplete: () => { resetIdle(mobs[i].index) },
-		});
+		})
+		setTimeScaleSpeed(i)
 	}
 	function getMobTargetRow(slot) {
 		mostHatedRow = []
@@ -500,9 +525,6 @@ var mob;
 		// keep it going for all in case some else takes over leader
 		timers.mobAttack[i] = delayedCall(mobAttackSpeed(i), mob.attack, [i])
 	}
-	function mobAttackSpeed(i) {
-		return mobs[i].speed * mobs[i].speedMod
-	}
 	function animateAttack(i, row) {
 		isSomeoneAlive = party.isSomeoneAlive()
 		let tgt = party.presence.findIndex(p => p.row === row)
@@ -531,6 +553,7 @@ var mob;
 				onUpdateParams: [mobs[i].index],
 				onComplete: () => { resetIdle(mobs[i].index) },
 			})
+			setTimeScaleSpeed(i)
 		}
 	}
 	function hideMobTargets() {
@@ -566,6 +589,7 @@ var mob;
 					onUpdateParams: [mobs[i].index],
 					onComplete: () => { resetIdle(mobs[i].index) },
 				})
+				setTimeScaleSpeed(i)
 			}
 		}
 	}
@@ -591,7 +615,8 @@ var mob;
 			ease: Linear.easeNone,
 			onUpdate: setSrc,
 			onUpdateParams: [mobs[i].index],
-		});
+		})
+		setTimeScaleSpeed(i)
 		TweenMax.to([mobs[i].sprite, mobs[i].shadow], 3, {
 			startAt: {
 				alpha: 1,

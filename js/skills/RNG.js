@@ -189,7 +189,6 @@
 				enhancedDamage: enhancedDamage,
 				buffs: [{
 					i: tgt, // target
-					isMob: config.isMob, // no idea what this is for
 					row: my.row, // this identifies unique buff state/icon
 					key: 'suppressingVolley', // this sets the flag
 				}],
@@ -219,7 +218,6 @@
 			damageType: spell.data.damageType,
 			buffs: [{
 				i: spell.config.target, // target
-				isMob: spell.config.isMob,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'igniteArmor', // this sets the flag
 			}],
@@ -268,7 +266,6 @@
 			damageType: spell.data.damageType,
 			buffs: [{
 				i: spell.config.target, // target
-				isMob: spell.config.isMob,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'faerieFlame', // this sets the flag
 			}],

@@ -56,14 +56,6 @@
 				duration: 8,
 			}],
 		}])
-		/*
-		buffs: [{
-			i: tgt, // target
-			isMob: config.isMob, // no idea what this is for
-			row: my.row, // this identifies unique buff state/icon
-			key: 'suppressingVolley', // this sets the flag
-		}],
-		 */
 	}
 	function lightningBolt(index, data) {
 		if (timers.castBar < 1) return

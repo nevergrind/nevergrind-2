@@ -182,9 +182,14 @@ let buffs; // buff data for use with skill/spells/icons
 		},
 		chill: {
 			name: 'Chilled',
-			img: 0,
+			img: 1,
 			job: 'WIZ',
 		},
+		freeze: {
+			name: 'Freeze',
+			img: 11,
+			job: 'WIZ',
+		}
 	}
 	///////////////////////////////////////////
 

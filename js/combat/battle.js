@@ -462,7 +462,7 @@ var battle;
 			if (buff.duration) {
 				console.warn('processBuffs effect found', buff.i, buff.key, buff.duration)
 				if (buff.key === 'stun') mobEffects.stun(buff.i, buff.duration)
-				else if (buff.key === 'stagger') mobEffects.stagger(buff.i)
+				else if (buff.key === 'chill') mobEffects.chill(buff.i, buff.duration)
 			}
 		})
 		// updates the DOM based on mob buffs
