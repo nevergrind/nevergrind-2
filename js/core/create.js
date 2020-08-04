@@ -256,11 +256,13 @@ var create;
 			$.post(app.url + 'create/create-character.php', {
 				form: finalForm
 			}).done(function(r){
-				ng.msg(r.hero.name + ' has been created!');
-				$("#create-character-back").trigger('click');
+				ng.config.selectedRowIndex = r.id
+				ng.msg(r.hero.name + ' has been created!')
+				$("#create-character-back").trigger('click')
+				audio.save()
 			}).fail(function(r){
-				ng.msg(r.responseText, 8);
-				ng.unlock();
+				ng.msg(r.responseText, 8)
+				ng.unlock()
 			});
 		}
 	}

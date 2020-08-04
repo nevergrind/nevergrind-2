@@ -355,12 +355,16 @@ var combat;
 				delayedCall(5, dungeon.go, [true])
 			}
 		}
-		if (typeof o.effects === 'object') {
-			if (o.effects.stun) mobEffects.stun(o.index, o.effects.stun)
-			if (o.effects.stagger) mobEffects.stagger(o.index)
-		}
+		processEffects(o)
 		if (o.key && typeof animateSkill[key] === 'function') {
 
+		}
+	}
+	function processEffects(o) {
+		if (typeof o.effects === 'object') {
+			console.info('processEffects')
+			// non-duration effects that are not buffs, but apply instantly
+			if (o.effects.stagger) mobEffects.stagger(o.index)
 		}
 	}
 	const damageKeys = [

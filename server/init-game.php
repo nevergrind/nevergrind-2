@@ -153,5 +153,4 @@ if (isset($_SESSION['account'])) {
 	require 'create/load-all-characters.php';
 }
 
-
 echo json_encode($r);

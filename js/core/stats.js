@@ -304,6 +304,7 @@ var stats = {};
 	}
 	function spellDamage(forceCrit, getNonCrit) {
 		max = spell.data.spellDamage(my.skills[spell.index])
+		// console.info('spellDamage 1', max)
 		// enhance by type % and ALL%
 		enhanceDamage = getEqTotal('enhance'+ _.capitalize(spell.data.damageType))
 		enhanceDamage += getEqTotal('enhanceAll')
@@ -318,8 +319,8 @@ var stats = {};
 		addedDamage += getEqTotal('addedSpellAll')
 
 		max += addedDamage
-
 		min = max * spell.data.spellVariance
+		// console.info('spellDamage 2', min, max)
 		// crit?
 		if (getNonCrit) isCrit = false
 		else isCrit = forceCrit || stats.critChance() > rand()

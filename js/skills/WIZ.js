@@ -44,12 +44,26 @@
 	}
 	function iceBoltCompleted() {
 		combat.txDamageMob([{
+			...stats.spellDamage(),
 			key: 'iceBolt',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			buffs: [{
+				i: spell.config.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'chill', // this sets the flag,
+				duration: 8,
+			}],
 		}])
+		/*
+		buffs: [{
+			i: tgt, // target
+			isMob: config.isMob, // no idea what this is for
+			row: my.row, // this identifies unique buff state/icon
+			key: 'suppressingVolley', // this sets the flag
+		}],
+		 */
 	}
 	function lightningBolt(index, data) {
 		if (timers.castBar < 1) return

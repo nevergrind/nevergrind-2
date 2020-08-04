@@ -318,7 +318,7 @@ var battle;
 			let totalMobs = _.random(minMobs, maxMobs)
 
 			if (!ng.isApp) {
-				totalMobs = 9
+				totalMobs = 3
 				minLevel = 7
 				maxLevel = 15
 			}
@@ -438,6 +438,9 @@ var battle;
 			// buff needs i, key, row
 			if (my.targetIsMob && my.target === buff.i) updateTargetBuffs = true
 			let buffKeyRow = buff.key + '-' + buff.row
+			// is duration dynamically specified?
+			let duration = buff.duration || buffs[buff.key].duration
+			console.info('processBuffs duration', duration)
 			if (mobBuffTimerExists(buff.i, buffKeyRow)) {
 				mobs[buff.i].buffs[buffKeyRow].timer.kill()
 			}
@@ -445,16 +448,22 @@ var battle;
 			mobs[buff.i].buffs[buffKeyRow] = {
 				row: buff.row,
 				key: buff.key,
-				duration: buffs[buff.key].duration,
+				duration: duration,
 			}
 			// animate the actual duration down to 0
-			mobs[buff.i].buffs[buffKeyRow].timer = TweenMax.to(mobs[buff.i].buffs[buffKeyRow], buffs[buff.key].duration, {
+			mobs[buff.i].buffs[buffKeyRow].timer = TweenMax.to(mobs[buff.i].buffs[buffKeyRow], duration, {
 				duration: 0,
 				ease: Linear.easeNone,
 				onComplete: removeMobBuffFlag,
 				onCompleteParams: [buff.i, buff.key],
 			})
 			mobs[buff.i].buffFlags[buff.key] = true
+			// status effects
+			if (buff.duration) {
+				console.warn('processBuffs effect found', buff.i, buff.key, buff.duration)
+				if (buff.key === 'stun') mobEffects.stun(buff.i, buff.duration)
+				else if (buff.key === 'stagger') mobEffects.stagger(buff.i)
+			}
 		})
 		// updates the DOM based on mob buffs
 		updateTargetBuffs && updateMobTargetBuffs()
@@ -527,6 +536,7 @@ var battle;
 		buffEl = querySelector('#buff-' + key)
 		// console.info('removeTargetBuff', key, battle.buffIconTimers)
 		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
+		if (popover.lastHoverId.startsWith('buff-')) popover.hide()
 	}
 	///////////////////////// myBuffs
 	function addMyBuff(key, keyRow) {
@@ -617,8 +627,8 @@ var battle;
 			if (my.buffs[key].duration) my.buffs[key].duration = 0
 			if (my.buffs[key].damage) my.buffs[key].damage = 0
 		}
-		battle.removeMyBuffFlag(key)
-		battle.removeMyBuffIcon(key, keyRow)
+		removeMyBuffFlag(key)
+		removeMyBuffIcon(key, keyRow)
 	}
 
 	function killAllBattleTimers() {

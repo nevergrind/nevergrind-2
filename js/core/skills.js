@@ -360,7 +360,7 @@ var skills;
 				name: 'Furious Cleave',
 				img: 'WAR-12',
 				enhancedDamage: [0, 4.2, 4.6, 5, 5.4, 5.8, 6.2, 6.6],
-				sp: level => spellValues.intrepidShoutMana[level],
+				sp: level => spellValues.furiousCleaveMana[level],
 				cooldownTime: 24,
 				description: 'Swing wildly hitting 3 targets for % damage - Stuns briefly - Arcane damage',
 			},
@@ -1838,41 +1838,41 @@ var skills;
 			{
 				name: 'Fire Bolt',
 				img: 'WIZ-1',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
-				spellVariance: .825,
+				mp: level => spellValues.fireBoltMana[level],
+				spellDamage: level => spellValues.fireBolt[level] + (my.level),
+				spellVariance: .875,
 				spellType: 'evocation',
-				damageType: 'arcane',
+				damageType: 'fire',
 				castTime: 3,
 				cooldownTime: 0,
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Ice Bolt',
 				img: 'WIZ-2',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
-				spellVariance: .825,
+				mp: level => spellValues.iceBoltMana[level],
+				spellDamage: level => spellValues.iceBolt[level] + (my.level * .5),
+				spellVariance: .9,
 				spellType: 'evocation',
-				damageType: 'arcane',
-				castTime: 3,
+				damageType: 'ice',
+				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Hits target for X ice damage Effect: Slows by 25%.',
+				description: 'Hits target for X ice damage Effect: Slows by 20% for X seconds.',
 			}, {
 				name: 'Lightning Bolt',
 				img: 'WIZ-3',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
-				spellVariance: .825,
-				spellType: 'evocation',
-				damageType: 'arcane',
-				castTime: 3,
+				mp: level => spellValues.lightningBoltMana[level],
+				spellDamage: level => spellValues.lightningBolt[level] + (my.level),
+				spellVariance: .8,
+				spellType: 'conjuration',
+				damageType: 'lightning',
+				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Hits targets for X lightning damage.',
+				description: 'Hits target for X lightning damage.',
 			}, {
 				name: 'Magic Missiles',
 				img: 'WIZ-4',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				mp: level => spellValues.magicMissilesMana[level],
+				spellDamage: level => spellValues.magicMissiles[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
@@ -1882,8 +1882,8 @@ var skills;
 			}, {
 				name: 'Fireball',
 				img: 'WIZ-5',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				mp: level => spellValues.fireballMana[level],
+				spellDamage: level => spellValues.fireball[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
@@ -1893,8 +1893,8 @@ var skills;
 			}, {
 				name: 'Chain Lightning',
 				img: 'WIZ-6',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				mp: level => spellValues.chainLightningMana[level],
+				spellDamage: level => spellValues.chainLightning[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
@@ -1904,8 +1904,8 @@ var skills;
 			}, {
 				name: 'Frost Nova',
 				img: 'WIZ-7',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				mp: level => spellValues.frostNovaMana[level],
+				spellDamage: level => spellValues.frostNova[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
@@ -1915,8 +1915,8 @@ var skills;
 			}, {
 				name: 'Meteor',
 				img: 'WIZ-8',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				mp: level => spellValues.meteorMana[level],
+				spellDamage: level => spellValues.meteor[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
@@ -1926,8 +1926,8 @@ var skills;
 			}, {
 				name: 'Ice Block',
 				img: 'WIZ-9',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				mp: level => spellValues.iceBlockMana[level],
+				spellDamage: level => spellValues.iceBlock[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
@@ -1937,8 +1937,8 @@ var skills;
 			}, {
 				name: 'Mirror Images',
 				img: 'WIZ-10',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				mp: level => spellValues.mirrorImagesMana[level],
+				spellDamage: level => spellValues.mirrorImages[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
@@ -1948,8 +1948,8 @@ var skills;
 			}, {
 				name: 'Counterspell',
 				img: 'WIZ-11',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				mp: level => spellValues.counterspellMana[level],
+				spellDamage: level => spellValues.counterspell[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
@@ -1959,8 +1959,8 @@ var skills;
 			}, {
 				name: 'Brain Freeze',
 				img: 'WIZ-12',
-				mp: level => spellValues.smiteMana[level],
-				spellDamage: level => spellValues.smite[level] + (my.level * 1.5),
+				mp: level => spellValues.brainFreezeMana[level],
+				spellDamage: level => spellValues.brainFreeze[level] + (my.level * 1.5),
 				spellVariance: .825,
 				spellType: 'evocation',
 				damageType: 'arcane',
@@ -1970,6 +1970,15 @@ var skills;
 			},
 		],
 	}
+	// [0, 1, 6, 12, 18, 24, 30, 39, 49]
+	// rog: 17/13 // war: 427/428
+	// shm: 23/21 // clr: 624/727 dru: 584/708
+	// nec: 27/16 // wiz: 812/416
+					  // [0, 4, 8, 12, 15, 18, 20, 22]
+	const baseManaTier = [0, 4, 12, 24, 40, 58, 78, 100]
+	function getManaTier(multiplier) {
+		return baseManaTier.map(v => round(v * multiplier))
+	}
 	// HoT 3-4 sp/heal
 	// DIRECT HEALING 2-3 spirit per heal
 	// AE HEALING .5-1.25 sp/heal
@@ -1978,50 +1987,76 @@ var skills;
 	// DIRECT DAMAGE 2-4 m/d
 	// AE DAMAGE 1.5-3 m/d
 	const spellValues = {
-		// warrior frenzyMana
+		// wiz
+		fireBoltMana: getManaTier(1.1),
+		fireBolt: [0, 20, 50, 120, 215, 318, 410, 478],
+		iceBoltMana: getManaTier(1.2),
+		iceBolt: [0, 16, 40, 96, 172, 254, 328, 382],
+		lightningBoltMana: getManaTier(1.1),
+		lightningBolt: [0, 26, 65, 156, 279, 413, 533, 621],
+		magicMissilesMana: getManaTier(1.1),
+		magicMissiles: [0, 20, 50, 120, 215, 318, 410, 478],
+		fireballMana: getManaTier(1.1),
+		fireball: [0, 20, 50, 120, 215, 318, 410, 478],
+		chainLightningMana: getManaTier(1.1),
+		chainLightning: [0, 20, 50, 120, 215, 318, 410, 478],
+		frostNovaMana: getManaTier(1.1),
+		frostNova: [0, 20, 50, 120, 215, 318, 410, 478],
+		meteorMana: getManaTier(1.1),
+		meteor: [0, 20, 50, 120, 215, 318, 410, 478],
+		iceBlockMana: getManaTier(1.1),
+		iceBlock: [0, 20, 50, 120, 215, 318, 410, 478],
+		mirrorImagesMana: getManaTier(1.1),
+		mirrorImages: [0, 20, 50, 120, 215, 318, 410, 478],
+		counterspellMana: getManaTier(1.1),
+		counterspell: [0, 20, 50, 120, 215, 318, 410, 478],
+		brainFreezeMana: getManaTier(1.1),
+		brainFreeze: [0, 20, 50, 120, 215, 318, 410, 478],
+		// warrior
 		ruptureMana: [0, 0, 0, 0, 0, 0, 0, 0],
-		frenzyMana: [0, 5, 11, 28, 52, 77, 99, 115],
-		jumpStrikeMana: [0, 6, 13, 33, 62, 92, 118, 138],
-		primalStompMana: [0, 4, 10, 26, 49, 73, 94, 110],
-		bulwarkMana: [0, 5, 12, 32, 61, 91, 117, 137],
-		intrepidShoutMana: [0, 6, 14, 38, 74, 110, 142, 166],
+		frenzyMana: getManaTier(1.15),
+		jumpStrikeMana: getManaTier(1.4),
+		primalStompMana: getManaTier(1.1),
+		bulwarkMana: getManaTier(1.35),
+		intrepidShoutMana: getManaTier(1.65),
+		furiousCleaveMana: getManaTier(1.4),
 		// cleric
-		smiteMana: [0, 6, 13, 31, 57, 84, 108, 126], // mp: 3.3
+		smiteMana: getManaTier(1.25),
 		smite: [0, 18, 44, 105, 187, 277, 357, 416],
-		deliveranceMana: [0, 4, 10, 23, 42, 66, 85, 98], // mp:  2.8
+		deliveranceMana: getManaTier(1),
 		deliverance: [0, 14, 33, 76, 140, 220, 284, 328],
-		condemnationMana: [0, 8, 18, 41, 72, 105, 135, 157],
-		condemnation: [0, 16, 39, 88, 154, 225, 291, 341], //  1.6
-		sacredRevelationMana: [0, 7, 16, 36, 64, 94, 121, 141],
+		condemnationMana: getManaTier(1.55),
+		condemnation: [0, 16, 39, 88, 154, 225, 291, 341],
+		sacredRevelationMana: getManaTier(1.4),
 		sacredRevelation: [0, 10, 24, 54, 96, 141, 181, 211],
-		holySanctuaryMana: [0, 5, 9, 23, 41, 58, 76, 88],
-		holySanctuary: [0, 9, 22, 52, 93, 138, 178, 208], // negative hate
-		forceOfGloryMana: [0, 7, 15, 33, 60, 88, 112, 130],
+		holySanctuaryMana: getManaTier(.9),
+		holySanctuary: [0, 9, 22, 52, 93, 138, 178, 208],
+		forceOfGloryMana: getManaTier(1.3),
 		forceOfGlory: [0, 20, 45, 111, 196, 288, 348, 415],
-		bindingGraceMana: [0, 10, 22, 49, 90, 132, 168, 195],
+		bindingGraceMana: getManaTier(1.95),
 		bindingGrace: [0, 21, 46, 102, 189, 277, 352, 409],
-		guardianAngelMana: [0, 8, 17, 39, 72, 105, 134, 156],
+		guardianAngelMana: getManaTier(1.55),
 		guardianAngel: [0, 20, 42, 97, 180, 262, 335, 390],
-		divineLightMana: [0, 8, 18, 41, 76, 112, 142, 165],
+		divineLightMana: getManaTier(1.65),
 		divineLight: [0, 24, 54, 123, 228, 336, 426, 495],
-		circleOfPrayerMana: [0, 12, 27, 65, 119, 176, 226, 264],
+		circleOfPrayerMana: getManaTier(2.6),
 		circleOfPrayer: [0, 14, 32, 78, 142, 211, 271, 316],
-		sealOfRedemptionMana: [0, 15, 34, 85, 156, 231, 297, 348],
-		sealOfRedemption: [0, 16, 38, 93, 170, 253, 325, 379], // HP and +bResist
-		zealousResolveMana: [0, 13, 29, 71, 130, 193, 248, 290],
-		zealousResolve: [0, 10, 24, 60, 110, 164, 211, 246], // HP and armor
+		sealOfRedemptionMana: getManaTier(3.5),
+		sealOfRedemption: [0, 16, 38, 93, 170, 253, 325, 379],
+		zealousResolveMana: getManaTier(2.9),
+		zealousResolve: [0, 10, 24, 60, 110, 164, 211, 246],
 		// ranger
-		igniteMana: [0, 5, 12, 29, 52, 77, 99, 115], // mp:  3
+		igniteMana: getManaTier(1.15),
 		ignite: [0, 15, 37, 88, 156, 231, 298, 347],
-		shockNovaMana: [0, 7, 14, 33, 58, 86, 110, 127], // mp:  1.3?
+		shockNovaMana: getManaTier(1.25),
 		shockNova: [0, 9, 20, 47, 81, 123, 152, 179],
-		faerieFlameMana: [0, 8, 17, 41, 72, 107, 137, 158], // mp:  2.1?
+		faerieFlameMana: getManaTier(1.6),
 		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461],
-		fungalGrowthMana: [0, 7, 14, 31, 57, 85, 106, 127], // sp:  3?
+		fungalGrowthMana: getManaTier(1.25),
 		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382],
-		shimmeringOrbMana: [0, 9, 18, 40, 74, 110, 137, 165],
+		shimmeringOrbMana: getManaTier(1.65),
 		shimmeringOrb: [0, 33, 67, 152, 275, 408, 508, 611],
-		spiritOfTheHunterMana: [0, 13, 27, 60, 111, 165, 205, 247],
+		spiritOfTheHunterMana: getManaTier(2.5),
 		spiritOfTheHunter: [0, 4, 8, 13, 19, 26, 34, 45],
 	}
 

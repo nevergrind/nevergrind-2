@@ -108,7 +108,12 @@ let skill = {};
 			key: 'pummel',
 			index: tgt,
 			isPiercing: true,
-			effects: { stun: 3 },
+			buffs: [{
+				i: tgt, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'stun', // this sets the flag,
+				duration: 3,
+			}],
 			enhancedDamage: enhancedDamage,
 		})
 		combat.txDamageMob(damages)
@@ -135,7 +140,7 @@ let skill = {};
 				key: 'doubleThrow',
 				index: tgt,
 				isRanged: true,
-				effects: { stagger: true },
+				stagger: true,
 				enhancedDamage: enhancedDamage,
 			})
 			if (battle.targetIsBackRow(tgt)) {
@@ -170,7 +175,7 @@ let skill = {};
 					key: 'shockwave',
 					index: i,
 					requiresFrontRow: true,
-					stagger: true,
+					effects: { stagger: true },
 					enhancedDamage: enhancedDamage,
 				})
 			}
@@ -348,7 +353,12 @@ let skill = {};
 				...hit,
 				key: 'furiousCleave',
 				index: tgt,
-				effects: { stun: 2 },
+				buffs: [{
+					i: tgt, // target
+					row: my.row, // this identifies unique buff state/icon
+					key: 'stun', // this sets the flag,
+					duration: 2,
+				}],
 				enhancedDamage: enhancedDamage,
 				damageType: 'arcane',
 			})

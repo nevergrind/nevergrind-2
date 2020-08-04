@@ -28,7 +28,7 @@ var spell;
 	let chance = 0
 	let success = 0
 	let spellType = ''
-	let shieldsActive = false
+	let isShieldActive = false
 	///////////////////////////////////////////
 	function noop() {}
 	function cancelSpell() {
@@ -40,24 +40,26 @@ var spell;
 	// TODO: Fix cast knockback calc
 	function channelSuccessful() {
 		spellType = skills[my.job][spell.index].spellType
+		//console.info('channelSuccessful', spellType)
 		if (!spellType) return true;
 		success = .6 - ((fizzleMaxed[my.skills[spell.index]] - my[spellType]) / 100)
-		//console.info('channelSuccessful success 1', success)
 		if (success > .5) success = .5 // max 50% chance to channel
 		else if (success < 0) success = 0 // at worst 0% chance requires 60+ diff
-		//console.info('channelSuccessful success 2', success)
-		return rand() < success
+		let resp = rand() < success
+		//console.info('channelSuccessful success 2', resp, success)
+		return resp
 	}
-	function noShieldsActive() {
+	function shieldsActive() {
 		// buffs that help you ignore knockback
-		shieldsActive = false
-		if (my.buffFlags.guardianAngel) shieldsActive = true
-		return shieldsActive
+		isShieldActive = false
+		if (my.buffFlags.guardianAngel) isShieldActive = true
+		return isShieldActive
 	}
 	function knockback() {
 		if (timers.castBar < 1 &&
-			!channelSuccessful() &&
-			noShieldsActive()) {
+			!shieldsActive() &&
+			!channelSuccessful()) {
+			//console.info('channelSuccessful knockback', success)
 			spell.timer.kill()
 			castPenalty = .5 / spell.castTime
 			timers.castBar -= castPenalty

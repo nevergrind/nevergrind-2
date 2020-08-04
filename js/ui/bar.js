@@ -185,7 +185,7 @@ var bar;
 		bar.windowsOpen.character = !bar.windowsOpen.character
 		if (bar.windowsOpen.character) bar.activeTab = 'character'
 		tooltip.conditionalHide()
-		popover.conditionalHide()
+		if (popover.lastHoverId.startsWith('inv-')) popover.hide()
 		updateCharacterDOM()
 	}
 
@@ -853,7 +853,7 @@ var bar;
 		player = player || {};
 		html = '';
 		// job icon
-		console.info('getPlayerBarHtml', player)
+		// console.info('getPlayerBarHtml', player)
 		// red background
 		if (my.row === index) html += '<div id="bar-card-bg-'+ index +'" class="bar-card-bg"></div>'
 		let partyIndex = party.presence.findIndex(p => p.row === player.row)

@@ -48,8 +48,10 @@
 		$totalCharacters = $charCount;
 	}
 	// max is 8
-	if ($totalCharacters >= 8){
-		exit('Eight is the maximum number of characters you can have!');
+	if ($_SERVER['SERVER_NAME'] !== 'localhost'){
+		if ($totalCharacters >= 8){
+			exit('Eight is the maximum number of characters you can have!');
+		}
 	}
 
 	// validate and normalize gender
@@ -177,4 +179,5 @@
 
 	// echo something for fun
 	$r['hero'] = $f;
+	$r['id'] = $character_id;
 	echo json_encode($r);

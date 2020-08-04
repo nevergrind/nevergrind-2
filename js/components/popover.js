@@ -6,10 +6,9 @@ var popover;
 		timer: new delayedCall(0, ''),
 		isOpen: 0,
 		openDate: 0,
-		isHoveringResistElement: false,
+		lastHoverId: '',
 		hide,
 		show,
-		conditionalHide,
 		setPosition,
 		setPopoverHtml
 	};
@@ -29,7 +28,7 @@ var popover;
 
 	function setPopoverHtml(id) {
 		if (!id) return;
-		popover.isHoveringResistElement = false
+		popover.lastHoverId = id
 		mainMenuPopovers = {
 			'inv-resist-blood': 'Resist Blood',
 			'inv-resist-poison': 'Resist Poison',
@@ -65,9 +64,6 @@ var popover;
 			html = buffs[buffName].name
 		}
 		else {
-			if (id.startsWith('inv-resist')) {
-				popover.isHoveringResistElement = true
-			}
 			html = mainMenuPopovers[id]
 		}
 		// console.info('setPopoverHtml', mainMenuPopovers['bar-inventory'])
@@ -90,9 +86,6 @@ var popover;
 		x = posX(computedStyle)
 		if (x < window.innerWidth / 2) el.style.left = x +'px'
 		else el.style.left = x +'px'
-	}
-	function conditionalHide() {
-		if (popover.isHoveringResistElement) hide()
 	}
 	function hide() {
 		TweenMax.set(el, {

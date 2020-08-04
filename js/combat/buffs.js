@@ -171,6 +171,20 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: 'The intrepid shout fades.'
 		},
 		furiousCleave: { hate: 1.5 },
+		fireBolt: { hate: 1 },
+		iceBolt: { hate: 1 },
+		lightningBolt: { hate: 1 },
+		// dynamic shared effects
+		stun: {
+			name: 'Stunned',
+			img: 3,
+			job: 'WAR',
+		},
+		chill: {
+			name: 'Chilled',
+			img: 0,
+			job: 'WIZ',
+		},
 	}
 	///////////////////////////////////////////
 

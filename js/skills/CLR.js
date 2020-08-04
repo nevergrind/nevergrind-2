@@ -101,7 +101,12 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				effects: { stun: 3 },
+				buffs: [{
+					i: tgt, // target
+					row: my.row, // this identifies unique buff state/icon
+					key: 'stun', // this sets the flag,
+					duration: 3,
+				}],
 				...stats.spellDamage(),
 			})
 		}
@@ -148,7 +153,12 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			effects: { stun: 5 },
+			buffs: [{
+				i: spell.config.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'stun', // this sets the flag,
+				duration: 5,
+			}],
 			...stats.spellDamage()
 		}])
 		timers.skillCooldowns[spell.config.skillIndex] = 0

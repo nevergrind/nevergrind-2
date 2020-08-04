@@ -29,7 +29,8 @@ var login;
 			}
 		});
 		// delegate login events
-		$("#login-form-contents").on('click', '#login-btn', login.authenticate)
+		$("#login-form-contents")
+			.on('click', '#login-btn', login.authenticate)
 			.on('click', '#create-account', login.createAccount);
 
 		setLoginHtml();
