@@ -318,7 +318,7 @@ var battle;
 			let totalMobs = _.random(minMobs, maxMobs)
 
 			if (!ng.isApp) {
-				totalMobs = 3
+				totalMobs = 9
 				minLevel = 7
 				maxLevel = 15
 			}
@@ -327,7 +327,7 @@ var battle;
 			for (i=0; i<totalMobs; i++) {
 				if (!i) mobSlot = 2
 				else mobSlot = _.random(0, availableSlots.length - 1)
-				let imgName = 'toadlok'
+				let imgName = 'orc'
 
 				let mobConfig = mob.configMobType({
 					img: imgName,

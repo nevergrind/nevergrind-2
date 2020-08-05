@@ -57,6 +57,7 @@ let skill = {};
 			damageType: 'blood',
 			...stats.damage(false, false, true)
 		}]
+		// defaults to max instead of large melee weapon range
 		damages[0].damage = damages[0].max
 		damages[0].damage = (damages[0].damage * data.enhancedDamage[my.skills[index]]) + my.level
 

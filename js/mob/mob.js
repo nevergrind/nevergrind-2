@@ -432,27 +432,31 @@ var mob;
 		return mobs[i].speed * mobSpeed
 	}
 
-	function hit(i, bypass) {
+	function hit(i, bypass, damage) {
 		if (ng.view !== 'battle') return
+		setTimeScaleSpeed(i)
 		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return;
 		if (bypass) mobs[i].animation.pause()
-		mobs[i].isAnimationActive = true;
-		var speed = mobs[i].frameSpeed * frame.hit.diff
 
-		mobs[i].animation = TweenMax.to(mobs[i], speed, {
-			startAt: {
-				frame: frame.hit.start
-			},
-			overwrite: 1,
-			frame: frame.hit.end,
-			ease: Linear.easeNone,
-			yoyo: true,
-			repeat: 1,
-			onUpdate: setSrc,
-			onUpdateParams: [mobs[i].index],
-			onComplete: () => { resetIdle(mobs[i].index) },
-		})
-		setTimeScaleSpeed(i)
+		if (damage > (2 + (mobs[i].level * .75))) {
+			mobs[i].isAnimationActive = true;
+			var speed = mobs[i].frameSpeed * frame.hit.diff
+
+			mobs[i].animation = TweenMax.to(mobs[i], speed, {
+				startAt: {
+					frame: frame.hit.start
+				},
+				overwrite: 1,
+				frame: frame.hit.end,
+				ease: Linear.easeNone,
+				yoyo: true,
+				repeat: 1,
+				onUpdate: setSrc,
+				onUpdateParams: [mobs[i].index],
+				onComplete: () => { resetIdle(mobs[i].index) },
+			})
+		}
+
 	}
 	function getMobTargetRow(slot) {
 		mostHatedRow = []
@@ -529,6 +533,7 @@ var mob;
 		isSomeoneAlive = party.isSomeoneAlive()
 		let tgt = party.presence.findIndex(p => p.row === row)
 		if (tgt > -1) animateMobTarget(i, tgt)
+		setTimeScaleSpeed(i)
 		// animate
 		if (mobs[i].isAnimationActive) return
 
@@ -553,7 +558,6 @@ var mob;
 				onUpdateParams: [mobs[i].index],
 				onComplete: () => { resetIdle(mobs[i].index) },
 			})
-			setTimeScaleSpeed(i)
 		}
 	}
 	function hideMobTargets() {
@@ -571,6 +575,7 @@ var mob;
 	function special(i) {
 		if (mobs[i].isAnimationActive) return
 		if (party.isSomeoneAlive()) {
+			setTimeScaleSpeed(i)
 			if (!mobs[i].enableSpecial) attack(mobs[i].index)
 			else {
 				mobs[i].isAnimationActive = true
@@ -589,7 +594,6 @@ var mob;
 					onUpdateParams: [mobs[i].index],
 					onComplete: () => { resetIdle(mobs[i].index) },
 				})
-				setTimeScaleSpeed(i)
 			}
 		}
 	}

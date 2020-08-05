@@ -235,6 +235,7 @@ var combat;
 			if (mobs[d.index].armor > 1) mobs[d.index].armor = 1
 			// modify mob armor for all (buffs)
 			mobArmor = mobs[d.index].armor
+			// higher REDUCES armor
 			if (mobs[d.index].buffFlags.igniteArmor) mobArmor += .15
 			if (mobArmor > 1) mobArmor = 1
 			// console.info('mobArmor', d.index, mobArmor)
@@ -341,7 +342,7 @@ var combat;
 		party.damage[o.row] += o.damage
 
 		// alive
-		mob.hit(o.index)
+		mob.hit(o.index, false, o.damage)
 		popupDamage(o.index, o.damage, o.isCrit)
 		mob.updateHate(o)
 		mob.drawMobBar(o.index)

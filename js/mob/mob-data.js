@@ -4,7 +4,7 @@ mob.data['Salubrin Den'] = [
 		img: 'orc',
 		name: 'orc pawn',
 		minLevel: 1,
-		maxLevel: 1,
+		maxLevel: 60,
 		size: .65,
 		job: 'WAR',
 		type: 'normal', // champion, unique, boss?
@@ -25,7 +25,7 @@ mob.data['Salubrin Den'] = [
 		name: 'orc legionnaire',
 		minLevel: 1,
 		maxLevel: 60,
-		size: 1,
+		size: .75,
 		job: 'WAR',
 		type: 'normal', // normal, champion, unique, boss?
 		traits: [], // champ traits

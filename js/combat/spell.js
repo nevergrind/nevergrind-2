@@ -56,7 +56,7 @@ var spell;
 		return isShieldActive
 	}
 	function knockback() {
-		if (timers.castBar < 1 &&
+		if (timers.castBar < 1 && false &&
 			!shieldsActive() &&
 			!channelSuccessful()) {
 			//console.info('channelSuccessful knockback', success)
