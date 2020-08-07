@@ -322,7 +322,7 @@ var battle;
 				minLevel = 7
 				maxLevel = 15
 			}
-			console.info('levels', minLevel, maxLevel)
+			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
 			for (i=0; i<totalMobs; i++) {
 				if (!i) mobSlot = 2
@@ -544,10 +544,10 @@ var battle;
 		if (typeof keyRow === 'undefined') keyRow = key
 		console.info('addMyBuff', key, keyRow)
 
-		el = createElement('img')
+		el = createElement('div')
 		el.id = 'mybuff-' + keyRow
-		el.className = 'buff-icons popover-icons'
-		el.src = 'images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png'
+		el.className = 'buff-icons popover-icons text-shadow3'
+		el.style.backgroundImage = 'url(images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png)'
 		querySelector('#mybuff-wrap').appendChild(el)
 
 		if (buffs[key].duration > 0) {
@@ -664,7 +664,9 @@ var battle;
 					mobs[i].buffs[key].timer.kill() // tweens duration
 					mobs[i].buffs[key].duration = 0 // set duration to 0 so flags update
 					//if (typeof mobs[i].buffs[key].dotTicks ===)
-					mobs[i].buffs[key].dotTicks.kill()
+					if (typeof mobs[i].buffs[key].dotTicks === 'object') {
+						mobs[i].buffs[key].dotTicks.kill()
+					}
 				}
 			}
 			for (key in mobs[i].buffFlags) {

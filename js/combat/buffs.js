@@ -1,6 +1,22 @@
 let buffs; // buff data for use with skill/spells/icons
 !function($, _, TweenMax, undefined) {
 	buffs = {
+		// dynamic shared effects
+		stun: {
+			name: 'Stunned',
+			img: 3,
+			job: 'WAR',
+		},
+		chill: {
+			name: 'Chilled',
+			img: 1,
+			job: 'WIZ',
+		},
+		freeze: {
+			name: 'Freeze',
+			img: 11,
+			job: 'WIZ',
+		},
 		// damage debuffs
 		crossSlash: { hate: .5 },
 		explosiveShot: { hate: .8 },
@@ -190,22 +206,22 @@ let buffs; // buff data for use with skill/spells/icons
 			spellType: 'conjuration',
 			damageType: 'fire',
 		},
-		// dynamic shared effects
-		stun: {
-			name: 'Stunned',
-			img: 3,
-			job: 'WAR',
-		},
-		chill: {
-			name: 'Chilled',
-			img: 1,
+		frozenBarrier: {
+			name: 'Frozen Barrier',
+			img: 8,
 			job: 'WIZ',
+			duration: 8,
+			msg: () => 'You are encased in a frozen barrier.',
+			fadeMsg: 'The barrier fades.',
 		},
-		freeze: {
-			name: 'Freeze',
-			img: 11,
-			job: 'WIZ',
-		}
+		mirrorImage: {
+			name: 'Mirror Images',
+			img: 9,
+			job: 'Wiz',
+			hate: 1,
+			msg: () => 'Your mirror form materializes from the void.',
+			msgAbsorb: 'Your mirror image shields you from harm.'
+		},
 	}
 	///////////////////////////////////////////
 

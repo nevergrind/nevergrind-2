@@ -66,6 +66,7 @@ const jsFiles = [
 	'combat/battle',
 	'combat/spell',
 	'combat/buffs',
+	'combat/timers',
 	'mob/mob',
 	'mob/mobs',
 	'mob/mob-types',

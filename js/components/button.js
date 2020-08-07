@@ -140,9 +140,9 @@ var button;
 		}
 
 		if (!isPiercing) {
-			if (timers.castBar < 1 || !my.targetIsMob) {
-				// non-ripostes are held back by these conditions ^
-				if (my.isAutoAttacking) delays['primaryAttack'] = delayedCall(.1, primaryAttack)
+			if (cannotAutoAttack()) {
+				// non-ripostes are held back by these conditions
+				if (my.isAutoAttacking) timers['primaryAttackCall'] = delayedCall(.1, primaryAttack)
 				return
 			}
 		}
@@ -186,8 +186,8 @@ var button;
 			my.hp <= 0 ||
 			!isOffhandingWeapon()) return
 
-		if (timers.castBar < 1 || !my.targetIsMob) {
-			if (my.isAutoAttacking) delays['secondaryAttack'] = delayedCall(.1, secondaryAttack)
+		if (cannotAutoAttack()) {
+			if (my.isAutoAttacking) timers['secondaryAttackCall'] = delayedCall(.1, secondaryAttack)
 			return
 		}
 		if (my.target === -1) return
@@ -215,8 +215,12 @@ var button;
 				combat.txDamageMob(damages)
 			}
 		}
-
 		startSwing('secondaryAttack')
+	}
+	function cannotAutoAttack() {
+		return timers.castBar < 1 ||
+			!my.targetIsMob ||
+			my.buffFlags.frozenBarrier
 	}
 	function startSwing(key) {
 		timers[key] = 0
@@ -231,8 +235,8 @@ var button;
 		}
 
 		if (timers.castBar < 1) {
-			delays[key].kill()
-			delays[key] = delayedCall(mySwingSpeed, button[key])
+			timers[key + 'Call'].kill()
+			timers[key + 'Call'] = delayedCall(mySwingSpeed, button[key])
 			return
 		}
 
@@ -255,8 +259,9 @@ var button;
 		to[key] = 1
 		mySwingSpeed = getAttackSpeed(slot)
 		TweenMax.to(timers, mySwingSpeed, to)
-		delays[key].kill()
-		delays[key] = delayedCall(mySwingSpeed, button[key])
+		console.info('startSwing', key, timers[key])
+		timers[key + 'Call'].kill()
+		timers[key + 'Call'] = delayedCall(mySwingSpeed, button[key])
 	}
 	function getPunchDps(min, max) {
 		return (((min + max) / 2) / button.autoAttackSpeed)

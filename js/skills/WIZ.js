@@ -8,8 +8,9 @@
 		chainLightning,
 		frostNova,
 		meteor,
-		iceBlock,
-		mirrorImages,
+		frozenBarrier,
+		frozenBarrierEffect,
+		mirrorImage,
 		counterspell,
 		brainFreeze,
 	}
@@ -241,39 +242,68 @@
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
-	function iceBlock(index, data) {
+	function frozenBarrier(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, iceBlockCompleted)
+		spell.startCasting(index, data, frozenBarrierCompleted)
 	}
-	function iceBlockCompleted() {
-		combat.txDamageMob([{
-			key: 'iceBlock',
-			index: spell.config.target,
+	function frozenBarrierCompleted() {
+		damages = []
+		damages.push({
+			index: my.row,
+			key: 'frozenBarrier',
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		combat.txBuffHero(damages)
+
+		// animate timers
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
-	function mirrorImages(index, data) {
+	function frozenBarrierEffect() {
+		let val = round(my.buffs.frozenBarrier.damage / 8)
+		timers.frozenBarrier.kill()
+		timers.frozenBarrier = TweenMax.to({}, 1, {
+			repeat: 8,
+			onRepeat: () => {
+				if (my.hp > 0) {
+					combat.updateHeroResource('hp', val)
+					combat.updateHeroResource('mp', val)
+				}
+			},
+		})
+	}
+	function mirrorImage(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, mirrorImagesCompleted)
+		spell.startCasting(index, data, mirrorImageCompleted)
 	}
-	function mirrorImagesCompleted() {
-		combat.txDamageMob([{
-			key: 'mirrorImages',
-			index: spell.config.target,
+	function mirrorImageCompleted() {
+		damages = []
+		damages.push({
+			index: my.row,
+			key: 'mirrorImage',
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		combat.txBuffHero(damages)
+
+		// animate timers
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function counterspell(index, data) {
 		if (timers.castBar < 1) return

@@ -267,7 +267,6 @@ var combat;
 				(mobs[d.index].mobType === 'undead' || mobs[d.index].mobType === 'demon')) {
 				console.warn("isBlighted", d)
 				d.enhancedDamage += .5
-
 			}
 			d.damage *= d.enhancedDamage
 			d.damage *= getMobResist(d)
@@ -525,6 +524,7 @@ var combat;
 			my.set('hp', 0)
 			bar.updateBar('hp')
 		}
+		timers.clearMy()
 		autoAttackDisable()
 		battle.subtractExpPenalty()
 		if (!party.isSomeoneAlive()) {
@@ -562,9 +562,15 @@ var combat;
 			return d
 		}
 		// check for things that immediately set to 0
-		// check miss
-		if (rand() < mob.missChance(mobs[index].level) ||
+		// check invulnerable
+		if (my.buffFlags.frozenBarrier ||
 			my.buffFlags.jumpStrike) {
+			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you are invulnerable!')
+			d.damage = 0
+			return d
+		}
+		// check miss
+		if (rand() < mob.missChance(mobs[index].level)) {
 			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but misses!')
 			d.damage = 0
 			return d
@@ -638,7 +644,8 @@ var combat;
 		// final sanity checks
 		d.damage = d.damage < 1 ? 1 : round(d.damage)
 		// shield damage
-		if (my.buffFlags.guardianAngel) reduceGuardianAngelDamage(d)
+		if (my.buffFlags.guardianAngel) reduceMagicShieldDamage(d, 'guardianAngel')
+		if (my.buffFlags.mirrorImage) reduceMagicShieldDamage(d, 'mirrorImage')
 		combat.levelSkillCheck('defense')
 		return d
 	}
@@ -947,6 +954,13 @@ var combat;
 			cacheBustArmor()
 			stats.resistFear(true)
 		}
+		else if (key === 'frozenBarrier') {
+			// delayed call to allow for
+			if (my.buffFlags.frozenBarrier) skill.WIZ.frozenBarrierEffect()
+			else {
+
+			}
+		}
 	}
 	function cacheBustArmor() {
 		stats.armor(true)
@@ -1075,18 +1089,17 @@ var combat;
 			battle.removeBuff('shimmeringOrb')
 		}
 	}
-	function reduceGuardianAngelDamage(d) {
-		chat.log(buffs.guardianAngel.msgAbsorb, 'chat-buff')
-		console.info('reduceGuardianAngelDamage', my.buffs.guardianAngel.damage)
-		if (d.damage > my.buffs.guardianAngel.damage) {
-			d.damage -= my.buffs.guardianAngel.damage
-			my.buffs.guardianAngel.damage = 0
-			battle.removeBuff('guardianAngel')
+	function reduceMagicShieldDamage(d, key) {
+		chat.log(buffs[key].msgAbsorb, 'chat-buff')
+		if (d.damage > my.buffs[key].damage) {
+			d.damage -= my.buffs[key].damage
+			my.buffs[key].damage = 0
+			battle.removeBuff(key)
 		}
 		else {
-			my.buffs.guardianAngel.damage -= d.damage
+			my.buffs[key].damage -= d.damage
 			d.damage = 0
-
 		}
+
 	}
 }($, _, TweenMax, PIXI, Math, Power1, Power3, Linear);

@@ -1925,27 +1925,27 @@ var skills;
 				cooldownTime: 45,
 				description: 'Hits target for X fire damage plus 5x splash fire damage over 6 seconds - High hate - Piercing.',
 			}, {
-				name: 'Ice Block',
+				name: 'Frozen Barrier',
 				img: 'WIZ-9',
-				sp: level => spellValues.iceBlockMana[level],
-				spellDamage: level => spellValues.iceBlock[level] + (my.level * 1),
-				spellVariance: .825,
+				sp: level => spellValues.frozenBarrierMana[level],
+				spellDamage: level => spellValues.frozenBarrier[level] + (my.level * 1),
+				spellVariance: 1,
 				spellType: 'alteration',
 				damageType: 'ice',
-				castTime: 3,
-				cooldownTime: 0,
+				castTime: 1.5,
+				cooldownTime: 90,
 				description: 'Shield yourself in ice: Recover X health and X mana every second.',
 			}, {
-				name: 'Mirror Images',
+				name: 'Mirror Image',
 				img: 'WIZ-10',
-				sp: level => spellValues.mirrorImagesMana[level],
-				spellDamage: level => spellValues.mirrorImages[level] + (my.level * 1),
-				spellVariance: .825,
+				sp: level => spellValues.mirrorImageMana[level],
+				spellDamage: level => spellValues.mirrorImage[level] + (my.level * .5),
+				spellVariance: 1,
 				spellType: 'alteration',
 				damageType: 'arcane',
-				castTime: 3,
-				cooldownTime: 0,
-				description: 'create an illusion of yourself that mirrors your spellcasting: absorbs X damage and adds X spell damage to all of your spells while alive.',
+				castTime: 2.5,
+				cooldownTime: 60,
+				description: 'create an illusion of yourself that mirrors your spellcasting: absorbs X damage; mirror image shield power is added to each spell\'s damage.',
 			}, {
 				name: 'Counterspell',
 				img: 'WIZ-11',
@@ -2005,10 +2005,10 @@ var skills;
 		frostNova: [0, 10, 25, 60, 108, 159, 205, 239],
 		meteorMana: getManaTier(2),
 		meteor: [0, 36, 90, 216, 387, 572, 738, 860],
-		iceBlockMana: getManaTier(1.1),
-		iceBlock: [0, 20, 50, 120, 215, 318, 410, 478],
-		mirrorImagesMana: getManaTier(1.1),
-		mirrorImages: [0, 20, 50, 120, 215, 318, 410, 478],
+		frozenBarrierMana: getManaTier(1.5),
+		frozenBarrier: [0, 16, 40, 96, 172, 254, 328, 382],
+		mirrorImageMana: getManaTier(1.2),
+		mirrorImage: [0, 10, 25, 60, 108, 159, 205, 239],
 		counterspellMana: getManaTier(1.1),
 		counterspell: [0, 20, 50, 120, 215, 318, 410, 478],
 		brainFreezeMana: getManaTier(1.1),
@@ -2083,6 +2083,10 @@ var skills;
 			isMob: true,
 		}
 	}
+	function cannotCast() {
+		return my.buffFlags.silenced ||
+			my.buffFlags.frozenBarrier
+	}
 	function notReady(config, spellData = {}) {
 		if (timers.castBar < 1 ||
 			(config.global && timers.globalCooldown < 1) ||
@@ -2090,6 +2094,11 @@ var skills;
 			my.skills[config.skillIndex] === 0) return true
 
 		console.info('notReady', config)
+		// some active spells disable casting
+		if (cannotCast()) {
+			chat.log('You cannot cast any spells!', 'chat-warning')
+			return true
+		}
 		// targeting
 		if (config.anyTarget) {
 			// A OK

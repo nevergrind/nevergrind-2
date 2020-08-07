@@ -318,6 +318,8 @@ var stats = {};
 		addedDamage = getEqTotal('addedSpell'+ _.capitalize(spell.data.damageType))
 		addedDamage += getEqTotal('addedSpellAll')
 
+		if (my.buffFlags.mirrorImage) addedDamage += my.buffs.mirrorImage.damage
+
 		max += addedDamage
 		min = max * spell.data.spellVariance
 		// console.info('spellDamage 2', min, max)
