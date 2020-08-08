@@ -154,37 +154,37 @@ var stats = {};
 		'WIZ': 3,
 	}
 
-	function str() {
+	function str(fresh) {
 		return my.str +
 			create.raceAttrs[my.race][0] +
 			create.jobAttrs[my.jobLong][0] + getEqTotal('str') + getEqTotal('allStats')
 	}
-	function sta() {
+	function sta(fresh) {
 		return my.sta +
 			create.raceAttrs[my.race][1] +
 			create.jobAttrs[my.jobLong][1] + getEqTotal('sta') + getEqTotal('allStats')
 	}
-	function agi() {
+	function agi(fresh) {
 		return my.agi +
 			create.raceAttrs[my.race][2] +
 			create.jobAttrs[my.jobLong][2] + getEqTotal('agi') + getEqTotal('allStats')
 	}
-	function dex() {
+	function dex(fresh) {
 		return my.dex +
 			create.raceAttrs[my.race][3] +
 			create.jobAttrs[my.jobLong][3] + getEqTotal('dex') + getEqTotal('allStats')
 	}
-	function wis() {
+	function wis(fresh) {
 		return my.wis +
 			create.raceAttrs[my.race][4] +
 			create.jobAttrs[my.jobLong][4] + getEqTotal('wis') + getEqTotal('allStats')
 	}
-	function intel() {
+	function intel(fresh) {
 		return my.intel +
 			create.raceAttrs[my.race][5] +
 			create.jobAttrs[my.jobLong][5] + getEqTotal('intel') + getEqTotal('allStats')
 	}
-	function cha() {
+	function cha(fresh) {
 		return my.cha +
 			create.raceAttrs[my.race][6] +
 			create.jobAttrs[my.jobLong][6] + getEqTotal('cha') + getEqTotal('allStats')
@@ -229,37 +229,37 @@ var stats = {};
 		return ~~atk
 		//else atk += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
 	}
-	function offense() {
+	function offense(fresh) {
 		return getStatTotal('offense') + getEqTotal('allSkills')
 	}
-	function defense() {
+	function defense(fresh) {
 		return getStatTotal('defense') + getEqTotal('allSkills')
 	}
-	function oneHandSlash() {
+	function oneHandSlash(fresh) {
 		return getStatTotal('oneHandSlash') + getEqTotal('allSkills')
 	}
-	function oneHandBlunt() {
+	function oneHandBlunt(fresh) {
 		return getStatTotal('oneHandBlunt') + getEqTotal('allSkills')
 	}
-	function piercing() {
+	function piercing(fresh) {
 		return getStatTotal('piercing') + getEqTotal('allSkills')
 	}
-	function twoHandSlash() {
+	function twoHandSlash(fresh) {
 		return getStatTotal('twoHandSlash') + getEqTotal('allSkills')
 	}
-	function twoHandBlunt() {
+	function twoHandBlunt(fresh) {
 		return getStatTotal('twoHandBlunt') + getEqTotal('allSkills')
 	}
-	function handToHand() {
+	function handToHand(fresh) {
 		return getStatTotal('handToHand') + getEqTotal('allSkills')
 	}
-	function archery() {
+	function archery(fresh) {
 		return getStatTotal('archery') + getEqTotal('allSkills')
 	}
-	function dualWield() {
+	function dualWield(fresh) {
 		return getStatTotal('dualWield') + getEqTotal('allSkills')
 	}
-	function doubleAttack() {
+	function doubleAttack(fresh) {
 		return getStatTotal('doubleAttack') + getEqTotal('allSkills')
 	}
 	function missChance(index, weaponSkill) {
@@ -278,26 +278,26 @@ var stats = {};
 		return chance
 
 	}
-	function dodge() {
+	function dodge(fresh) {
 		return getStatTotal('dodge') + getEqTotal('allSkills')
 	}
-	function parry() {
+	function parry(fresh) {
 		return getStatTotal('parry') + getEqTotal('allSkills')
 	}
-	function riposte() {
+	function riposte(fresh) {
 		return getStatTotal('riposte') + getEqTotal('allSkills')
 	}
-	function dodgeChance() {
+	function dodgeChance(fresh) {
 		return dodge() / 2500 + (agi() / 2000)
 	}
-	function parryChance() {
+	function parryChance(fresh) {
 		return parry() / 2500 + (dex() / 2000)
 	}
-	function riposteChance() {
+	function riposteChance(fresh) {
 		return riposte() / 2500 + (dex() / 2000)
 	}
-	function critChance() {
-		if (typeof stats.cache.crit === 'undefined') {
+	function critChance(fresh) {
+		if (fresh || typeof stats.cache.crit === 'undefined') {
 			stats.cache.crit = ( (dex() / 75) + ng.dimRetCrit(getEqTotal('crit')) ) / 100
 		}
 		return stats.cache.crit
@@ -550,6 +550,7 @@ var stats = {};
 			if (my.buffFlags.sealOfRedemption) {
 				stats.cache.resistBlood += (buffs.sealOfRedemption.base + (my.buffs.sealOfRedemption.level * buffs.sealOfRedemption.bloodPerLevel))
 			}
+			stats.cache.resistBlood += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
 			stats.cache.resistBlood = round(stats.cache.resistBlood)
 		}
 		return stats.cache.resistBlood
@@ -557,30 +558,35 @@ var stats = {};
 	function resistPoison(fresh) {
 		if (fresh || typeof stats.cache.resistPoison === 'undefined') {
 			stats.cache.resistPoison = getStatTotal('resistPoison') + getEqTotal('resistAll')
+			stats.cache.resistPoison += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
 		}
 		return stats.cache.resistPoison
 	}
 	function resistArcane(fresh) {
 		if (fresh || typeof stats.cache.resistArcane === 'undefined') {
 			stats.cache.resistArcane = getStatTotal('resistArcane') + getEqTotal('resistAll')
+			stats.cache.resistArcane += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
 		}
 		return stats.cache.resistArcane
 	}
 	function resistLightning(fresh) {
 		if (fresh || typeof stats.cache.resistLightning === 'undefined') {
 			stats.cache.resistLightning = getStatTotal('resistLightning') + getEqTotal('resistAll')
+			stats.cache.resistLightning += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
 		}
 		return stats.cache.resistLightning
 	}
 	function resistFire(fresh) {
 		if (fresh || typeof stats.cache.resistFire === 'undefined') {
 			stats.cache.resistFire = getStatTotal('resistFire') + getEqTotal('resistAll')
+			stats.cache.resistFire += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
 		}
 		return stats.cache.resistFire
 	}
 	function resistIce(fresh) {
 		if (fresh || typeof stats.cache.resistIce === 'undefined') {
 			stats.cache.resistIce = getStatTotal('resistIce') + getEqTotal('resistAll')
+			stats.cache.resistIce += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
 		}
 		return stats.cache.resistIce
 	}
@@ -602,28 +608,28 @@ var stats = {};
 		}
 		return val
 	}
-	function getPropMax(prop) {
+	function getPropMax(prop, fresh) {
 		var resp = 0
-		if (prop === 'offense') resp = offenseMax()
-		else if (prop === 'defense') resp = defenseMax()
-		else if (prop === 'oneHandSlash') resp = oneHandSlashMax()
-		else if (prop === 'oneHandBlunt') resp = oneHandBluntMax()
-		else if (prop === 'piercing') resp = piercingMax()
-		else if (prop === 'archery') resp = archeryMax()
-		else if (prop === 'handToHand') resp = handToHandMax()
-		else if (prop === 'twoHandSlash') resp = twoHandSlashMax()
-		else if (prop === 'twoHandBlunt') resp = twoHandBluntMax()
-		else if (prop === 'dualWield') resp = dualWieldMax()
-		else if (prop === 'doubleAttack') resp = doubleAttackMax()
-		else if (prop === 'dodge') resp = dodgeMax()
-		else if (prop === 'parry') resp = parryMax()
-		else if (prop === 'riposte') resp = riposteMax()
-		else if (prop === 'alteration') resp = alterationMax()
-		else if (prop === 'evocation') resp = evocationMax()
-		else if (prop === 'conjuration') resp = conjurationMax()
+		if (prop === 'offense') resp = offenseMax(fresh)
+		else if (prop === 'defense') resp = defenseMax(fresh)
+		else if (prop === 'oneHandSlash') resp = oneHandSlashMax(fresh)
+		else if (prop === 'oneHandBlunt') resp = oneHandBluntMax(fresh)
+		else if (prop === 'piercing') resp = piercingMax(fresh)
+		else if (prop === 'archery') resp = archeryMax(fresh)
+		else if (prop === 'handToHand') resp = handToHandMax(fresh)
+		else if (prop === 'twoHandSlash') resp = twoHandSlashMax(fresh)
+		else if (prop === 'twoHandBlunt') resp = twoHandBluntMax(fresh)
+		else if (prop === 'dualWield') resp = dualWieldMax(fresh)
+		else if (prop === 'doubleAttack') resp = doubleAttackMax(fresh)
+		else if (prop === 'dodge') resp = dodgeMax(fresh)
+		else if (prop === 'parry') resp = parryMax(fresh)
+		else if (prop === 'riposte') resp = riposteMax(fresh)
+		else if (prop === 'alteration') resp = alterationMax(fresh)
+		else if (prop === 'evocation') resp = evocationMax(fresh)
+		else if (prop === 'conjuration') resp = conjurationMax(fresh)
 		return resp
 	}
-	function offenseMax() {
+	function offenseMax(fresh) {
 		if (my.race === 'Halfling') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
@@ -631,13 +637,13 @@ var stats = {};
 		else if (intCasterJobs.includes(my.job)) return base + my.level * 3
 		else return base + my.level * 4
 	}
-	function defenseMax() {
+	function defenseMax(fresh) {
 		base = my.race === 'Dwarf' ? 5 : 0
 		if (defensiveJobs.includes(my.job)) return base + my.level * 5
 		else if (intCasterJobs.includes(my.job)) return base + my.level * 3
 		else return base + my.level * 4
 	}
-	function oneHandSlashMax() {
+	function oneHandSlashMax(fresh) {
 		if (my.race === 'Human') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
@@ -646,7 +652,7 @@ var stats = {};
 		else if (averageOneHandSlashJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
-	function oneHandBluntMax() {
+	function oneHandBluntMax(fresh) {
 		if (my.race === 'Barbarian') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
@@ -655,7 +661,7 @@ var stats = {};
 		else if (my.job === 'ROG') return base + _.min([my.level * 5, 225])
 		else return base + my.level * 4
 	}
-	function piercingMax() {
+	function piercingMax(fresh) {
 		if (my.race === 'Halfling') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
@@ -664,19 +670,19 @@ var stats = {};
 		else if (averagePiercingJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
-	function archeryMax() {
+	function archeryMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (my.job === 'RNG') return base + my.level * 5
 		else if (averageArcherJobs.includes(my.job)) return base + my.level * 2
 		else return 0
 	}
-	function handToHandMax() {
+	function handToHandMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (my.job === 'MNK') return base + my.level * 5
 		else if (averagePunchJobs.includes(my.job)) return base + my.level * 2
 		else return my.level
 	}
-	function twoHandSlashMax() {
+	function twoHandSlashMax(fresh) {
 		if (my.race === 'Human' || my.race === 'Orc') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
@@ -684,7 +690,7 @@ var stats = {};
 		else if (tankJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
-	function twoHandBluntMax() {
+	function twoHandBluntMax(fresh) {
 		if (my.race === 'Barbarian' || my.race === 'Orc') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
@@ -693,7 +699,7 @@ var stats = {};
 		else if (twoHandBluntAverageJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
-	function dualWieldMax() {
+	function dualWieldMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (my.job === 'MNK' ||
 			my.job === 'ROG' && my.level >= 13 ||
@@ -707,7 +713,7 @@ var stats = {};
 		}
 		else return 0
 	}
-	function doubleAttackMax() {
+	function doubleAttackMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (
 			my.job === 'CRU' && my.level >= 20 ||
@@ -720,7 +726,7 @@ var stats = {};
 		else if (my.job === 'WAR' && my.level >= 15) return base + my.level * 4
 		else return 0
 	}
-	function dodgeMax() {
+	function dodgeMax(fresh) {
 		if (my.race === 'Halfling') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
@@ -744,7 +750,7 @@ var stats = {};
 		}
 		else return 0
 	}
-	function parryMax() {
+	function parryMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (
 			(my.job === 'WAR' && my.level >= 10) ||
@@ -763,7 +769,7 @@ var stats = {};
 		}
 		else return 0
 	}
-	function riposteMax() {
+	function riposteMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (
 			(my.job === 'WAR' && my.level >= 25) ||
@@ -782,13 +788,13 @@ var stats = {};
 		}
 		else return 0
 	}
-	function alterationMax() {
+	function alterationMax(fresh) {
 		base = my.race === 'Dwarf' || my.race === 'Seraph' ? 5 : 0
 		if (allCasterJobs.includes(my.job)) return base + my.level * 5
 		else if (hybridJobs.includes(my.job)) return base + my.level * 5
 		else return 0
 	}
-	function evocationMax() {
+	function evocationMax(fresh) {
 		if (my.race === 'High Elf') base = 10
 		else if (my.race === 'Seraph') base = 5
 		else base = 0
@@ -796,7 +802,7 @@ var stats = {};
 		else if (hybridJobs.includes(my.job)) return base + my.level * 5
 		else return 0
 	}
-	function conjurationMax() {
+	function conjurationMax(fresh) {
 		if (my.race === 'Troll') base = 10
 		else if (my.race === 'Seraph') base = 5
 		else base = 0
@@ -813,7 +819,7 @@ var stats = {};
 		if (my.mp > my.mpMax) my.set('mp', my.mpMax)
 		if (my.sp > my.spMax) my.set('sp', my.spMax)
 	}
-	function hpMax() {
+	function hpMax(fresh) {
 		value = ~~(
 			((stats.sta() * hpTier[my.job]) * (my.level / 50) +
 				(my.level * (hpTier[my.job] * 2.5) + 20)) * hpPercentBonus()
@@ -823,7 +829,7 @@ var stats = {};
 		if (my.buffFlags.zealousResolve) value += (my.buffs.zealousResolve.damage)
 		return value
 	}
-	function mpMax() {
+	function mpMax(fresh) {
 		return ~~(
 			((stats.intel() * mpTier[my.job]) * (my.level / 50) +
 				(my.level * (mpTier[my.job] * 2.5) + 12)) * mpPercentBonus()
@@ -831,7 +837,7 @@ var stats = {};
 		)
 	}
 
-	function spMax() {
+	function spMax(fresh) {
 		return ~~(
 			((stats.cha() * spTier[my.job]) * (my.level / 50) +
 				(my.level * (spTier[my.job] * 2.5) + 8)) +
@@ -839,37 +845,37 @@ var stats = {};
 		)
 	}
 	// troll 9, normal 5
-	function baseHpRegen() {
+	function baseHpRegen(fresh) {
 		return (my.race === 'Troll' ? 3 : 1) + (my.level * (my.race === 'Troll' ? .12 : .08))
 	}
 	// high elf 16, normal 10
-	function baseMpRegen() {
+	function baseMpRegen(fresh) {
 		return (my.race === 'High Elf' ? 4 : 2) + (my.level * (my.race === 'High Elf' ? .24 : .16))
 	}
 	// human 16, normal 10
-	function baseSpRegen() {
+	function baseSpRegen(fresh) {
 		return (my.race === 'Human' ? 4 : 2) + (my.level * (my.race === 'Human' ? .24 : .16))
 	}
-	function hpRegen() {
+	function hpRegen(fresh) {
 		return ~~(baseHpRegen() + getEqTotal('hpRegen'))
 	}
-	function mpRegen() {
+	function mpRegen(fresh) {
 		return ~~(baseMpRegen() + getEqTotal('mpRegen'))
 	}
-	function spRegen() {
+	function spRegen(fresh) {
 		return ~~(baseSpRegen() + getEqTotal('spRegen'))
 	}
 
-	function hpPercentBonus() {
+	function hpPercentBonus(fresh) {
 		return 1 + (getStatTotal('increaseHpPercent') / 100);
 	}
-	function mpPercentBonus() {
+	function mpPercentBonus(fresh) {
 		return 1 + (getStatTotal('increaseMpPercent') / 100);
 	}
-	function someIgnoreTargetArmor() {
+	function someIgnoreTargetArmor(fresh) {
 		return items.eq.some(eq => eq.ignoreTargetArmor)
 	}
-	function someReduceTargetArmor() {
+	function someReduceTargetArmor(fresh) {
 		return items.eq.some(eq => eq.reduceTargetArmor)
 	}
 	function enhanceDamageToMobType(mobType) {
@@ -889,37 +895,42 @@ var stats = {};
 		}
 		return stats.cache.magMit
 	}
-	function leech() {
+	function leech(fresh) {
 		return getEqTotal('leech')
 	}
-	function wraith() {
+	function wraith(fresh) {
 		return getEqTotal('wraith')
 	}
-	function damageTakenToMana() {
+	function damageTakenToMana(fresh) {
 		vulpineMp = getEqTotal('damageTakenToMana')
 		if (vulpineMp > 50) vulpineMp = 50
 		return vulpineMp
 	}
-	function damageTakenToSpirit() {
+	function damageTakenToSpirit(fresh) {
 		vulpineSp = getEqTotal('damageTakenToSpirit')
 		if (vulpineSp > 50) vulpineSp = 50
 		return vulpineSp
 	}
-	function hpKill() {
+	function hpKill(fresh) {
 		return getEqTotal('hpKill')
 	}
-	function mpKill() {
+	function mpKill(fresh) {
 		return getEqTotal('mpKill')
 	}
-	function spKill() {
+	function spKill(fresh) {
 		return getEqTotal('spKill')
 	}
-	function resistParalyze() {
+	function resistParalyze(fresh) {
+		// cannot change targets or use melee skills? (auto attack works)
 		resistStatusVal = getEqTotal('resistParalyze')
-		if (resistStatusVal > 50) resistStatusVal = 50
-		return resistStatusVal
+		if (fresh || typeof stats.cache.resistParalyze === 'undefined') {
+			stats.cache.resistParalyze = getEqTotal('resistParalyze')
+			if (stats.cache.resistParalyze > 50) stats.cache.resistParalyze = 50
+		}
+		return stats.cache.resistParalyze
 	}
 	function resistFear(fresh) {
+		// all skill/spell damage output halved
 		if (fresh || typeof stats.cache.resistFear === 'undefined') {
 			stats.cache.resistFear = getEqTotal('resistFear')
 			if (my.buffFlags.intrepidShout) {
@@ -929,14 +940,21 @@ var stats = {};
 		}
 		return stats.cache.resistFear
 	}
-	function resistStun() {
-		resistStatusVal = getEqTotal('resistStun')
-		if (resistStatusVal > 50) resistStatusVal = 50
-		return resistStatusVal
+	function resistStun(fresh) {
+		// can't do anything
+		if (fresh || typeof stats.cache.resistFear === 'undefined') {
+			stats.cache.resistStun = getEqTotal('resistStun')
+			if (stats.cache.resistStun > 50) stats.cache.resistStun = 50
+		}
+		return stats.cache.resistStun
 	}
-	function resistSilence() {
-		resistStatusVal = getEqTotal('resistSilence')
-		if (resistStatusVal > 50) resistStatusVal = 50
-		return resistStatusVal
+	function resistSilence(fresh) {
+		// cannot cast spells
+		if (fresh || typeof stats.cache.resistFear === 'undefined') {
+			stats.cache.resistSilence = getEqTotal('resistSilence')
+			stats.cache.resistSilence += my.buffFlags.manaShell ? buffs.manaShell.silence[my.buffs.manaShell.level] : 0
+			if (stats.cache.resistSilence > 50) stats.cache.resistSilence = 50
+		}
+		return stats.cache.resistSilence
 	}
 })($, TweenMax, _);

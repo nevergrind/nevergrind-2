@@ -958,11 +958,24 @@ var combat;
 			// delayed call to allow for
 			if (my.buffFlags.frozenBarrier) skill.WIZ.frozenBarrierEffect()
 			else {
-
+				// do nothing?
+			}
+		}
+		else if (key === 'manaShell') {
+			stats.resistSilence(true)
+			stats.resistBlood(true)
+			stats.resistPoison(true)
+			stats.resistArcane(true)
+			stats.resistLightning(true)
+			stats.resistFire(true)
+			stats.resistIce(true)
+			if (bar.windowsOpen.character) {
+				bar.updateAllResistsDOM()
 			}
 		}
 	}
 	function cacheBustArmor() {
+		// utility function that busts armor cache and updates DOM
 		stats.armor(true)
 		if (bar.windowsOpen.character) ng.html('#char-stat-col-1', bar.charStatColOneHtml())
 	}

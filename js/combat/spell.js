@@ -24,7 +24,6 @@ var spell;
 	let castProgress = 0
 	let mpCost = 0
 	let spCost = 0
-	const fizzleMaxed = [0, 20, 45, 75, 105, 135, 165, 210, 260]
 	let chance = 0
 	let success = 0
 	let spellType = ''
@@ -37,16 +36,26 @@ var spell;
 			stopCasting()
 		}
 	}
-	// TODO: Fix cast knockback calc
+
+	const fizzleMaxed = [0, 20, 45, 75, 105, 135, 165, 210, 260]
+	const defaultMaxChannel = .5
+	function getMaxChannelChance() {
+		return my.buffFlags.manaShell ? .6 : defaultMaxChannel
+	}
 	function channelSuccessful() {
 		spellType = skills[my.job][spell.index].spellType
 		//console.info('channelSuccessful', spellType)
-		if (!spellType) return true;
+		if (!spellType) return true
 		success = .6 - ((fizzleMaxed[my.skills[spell.index]] - my[spellType]) / 100)
-		if (success > .5) success = .5 // max 50% chance to channel
+		if (my.buffFlags.manaShell) success += .1
+		// constraints
+		 // max 50% chance to channel (60 with wiz buff)
+		if (success > getMaxChannelChance()) success = getMaxChannelChance()
 		else if (success < 0) success = 0 // at worst 0% chance requires 60+ diff
+
 		let resp = rand() < success
-		//console.info('channelSuccessful success 2', resp, success)
+		console.info('channelSuccessful success 2', resp, success)
+		// HIGHER success value is better
 		return resp
 	}
 	function shieldsActive() {

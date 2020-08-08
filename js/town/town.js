@@ -706,19 +706,19 @@ var town;
 	function academyHtml() {
 		html = variousHeaderHtml() +
 		academy.getBodyHtml() +
-		variousFooterHtml('human-female-0')
+		variousFooterHtml('images/town/npc-academy')
 		return html
 	}
 	function apothecaryHtml() {
 		html = variousHeaderHtml() +
 		getStoreBodyHtml() +
-		variousFooterHtml('orc-female-1')
+		variousFooterHtml('images/town/npc-apothecary')
 		return html
 	}
 	function blacksmithHtml() {
 		html = variousHeaderHtml() +
 		getStoreBodyHtml() +
-		variousFooterHtml('barbarian-male-2')
+		variousFooterHtml('images/town/npc-blacksmith')
 		return html
 	}
 	function bankHtml() {
@@ -731,7 +731,7 @@ var town;
 		'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
 			'<div class="stag-blue-top" style="' + css.name + '">Bank Details</div>' +
 		'</div>' +
-		variousFooterHtml('dwarf-male-0')
+		variousFooterHtml('images/town/npc-bank')
 		return html
 	}
 	function guildHtml() {
@@ -765,13 +765,13 @@ var town;
 			}
 			html += '</div>' +
 		'</div>' +
-		variousFooterHtml('seraph-female-1')
+		variousFooterHtml('images/town/npc-guild')
 		return html
 	}
 	function merchantHtml() {
 		html = variousHeaderHtml() +
 		getStoreBodyHtml() +
-		variousFooterHtml('gnome-male-0')
+		variousFooterHtml('images/town/npc-merchant')
 		return html
 	}
 	function getStoreItemHtml() {
@@ -786,13 +786,14 @@ var town;
 	function tavernHtml() {
 		html = variousHeaderHtml() +
 		tavern.getBodyHtml() +
-		variousFooterHtml('seraph-male-3')
+		variousFooterHtml('images/town/npc-tavern')
 		return html
 	}
 	function tradeHtml() {
+		// for trading to PCs
 		html = variousHeaderHtml() +
 		trade.getBodyHtml() +
-		variousFooterHtml(trade.getTradeAvatar())
+		variousFooterHtml('images/avatar/' + trade.getTradeAvatar())
 		return html
 	}
 	function variousHeaderHtml() {
@@ -803,12 +804,12 @@ var town;
 			'<img data-id="various" class="close-menu" src="images/ui/close.png">' +
 		'</div>'
 	}
-	function variousFooterHtml(avatar) {
+	function variousFooterHtml(path) {
 		return '<div id="various-footer" class="flex-center">' +
 			'<div id="town-avatar-col">' +
 				'<div id="town-avatar-wrap">' +
 					'<div id="town-avatar-bg"></div>' +
-					'<img id="town-avatar" class="town-avatars" src="images/avatars/'+ avatar +'.png">' +
+					'<img id="town-avatar" class="town-avatars" src="'+ path +'.png">' +
 				'</div>' +
 			'</div>' +
 			'<div id="various-description" class="flex-max""></div>' +

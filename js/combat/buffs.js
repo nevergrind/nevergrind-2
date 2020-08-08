@@ -116,8 +116,8 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 10,
 			job: 'CLR',
 			duration: 720,
-			base: 8,
-			bloodPerLevel: 2,
+			base: 4,
+			bloodPerLevel: 3,
 			msg: () => 'Your forehead is emblazoned with a crimson seal.',
 			fadeMsg: 'Your crimson seal fades.'
 		},
@@ -222,6 +222,21 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'Your mirror form materializes from the void.',
 			msgAbsorb: 'Your mirror image shields you from harm.'
 		},
+		manaShell: {
+			name: 'Mana Shell',
+			img: 10,
+			job: 'WIZ',
+			duration: 480,
+			hate: 0,
+			silence: [0, 3, 5, 7, 9, 11, 13, 15],
+			resistAll: [0, 2, 3, 4, 6, 7, 8, 10],
+			knockback: 10,
+			msg: () => 'You are protected by a mana shell.',
+			fadeMsg: 'The mana shell fades.'
+		},
+		deepFreeze: {
+			hate: .5,
+		}
 	}
 	///////////////////////////////////////////
 

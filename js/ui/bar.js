@@ -37,6 +37,7 @@ var bar;
 		updateCharStatPanels,
 		charStatColOneHtml,
 		charStatColTwoHtml,
+		updateAllResistsDOM,
 		defaultImage: [
 			'helms1',
 			'amulets0',
@@ -405,14 +406,18 @@ var bar;
 		}
 	}
 
+	function updateAllResistsDOM() {
+		ng.html('#inv-resist-blood', stats.resistBlood())
+		ng.html('#inv-resist-poison', stats.resistPoison())
+		ng.html('#inv-resist-arcane', stats.resistArcane())
+		ng.html('#inv-resist-lightning', stats.resistLightning())
+		ng.html('#inv-resist-fire', stats.resistFire())
+		ng.html('#inv-resist-ice', stats.resistIce())
+	}
+
 	function updateCharStatPanels() {
 		if (bar.windowsOpen.character) {
-			ng.html('#inv-resist-blood', stats.resistBlood())
-			ng.html('#inv-resist-poison', stats.resistPoison())
-			ng.html('#inv-resist-arcane', stats.resistArcane())
-			ng.html('#inv-resist-lightning', stats.resistLightning())
-			ng.html('#inv-resist-fire', stats.resistFire())
-			ng.html('#inv-resist-ice', stats.resistIce())
+			updateAllResistsDOM()
 			ng.html('#char-stat-col-1', charStatColOneHtml())
 			ng.html('#char-stat-col-2', charStatColTwoHtml())
 		}

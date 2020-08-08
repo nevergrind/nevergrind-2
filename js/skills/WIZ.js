@@ -11,7 +11,7 @@
 		frozenBarrier,
 		frozenBarrierEffect,
 		mirrorImage,
-		counterspell,
+		manaShell,
 		brainFreeze,
 	}
 	///////////////////////////////////////////
@@ -305,22 +305,27 @@
 		timers.skillCooldowns[spell.config.skillIndex] = 0
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
-	function counterspell(index, data) {
+	function manaShell(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, counterspellCompleted)
+		spell.startCasting(index, data, manaShellCompleted)
 	}
-	function counterspellCompleted() {
-		combat.txDamageMob([{
-			key: 'counterspell',
+	function manaShellCompleted() {
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			key: 'manaShell',
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			damage: 0,
+		})
+		combat.txBuffHero(damages)
 	}
 	function brainFreeze(index, data) {
 		if (timers.castBar < 1) return
@@ -336,8 +341,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			...stats.spellDamage()}])
 	}
 
 }($, _, TweenMax);
