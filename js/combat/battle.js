@@ -462,6 +462,7 @@ var battle;
 			if (buff.duration) {
 				console.warn('processBuffs effect found', buff.i, buff.key, buff.duration)
 				if (buff.key === 'stun') mobEffects.stun(buff.i, buff.duration)
+				else if (buff.key === 'freeze') mobEffects.freeze(buff.i, buff.duration)
 				else if (buff.key === 'chill') mobEffects.chill(buff.i, buff.duration)
 			}
 		})

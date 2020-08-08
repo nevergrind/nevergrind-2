@@ -17,6 +17,7 @@ var mob;
 		rxMobResourceTick,
 		updateHate,
 		// animations
+		resetIdle,
 		idle,
 		hit,
 		attack,
@@ -31,6 +32,7 @@ var mob;
 		isAnyMobAlive,
 		addHateHeal,
 		hideMobTargets,
+		setFilter,
 		setTimeScaleSpeed,
 		txData: [],
 		enableMobHeartbeat: true,
@@ -144,7 +146,7 @@ var mob;
 	}
 	function updateHate(o) {
 		if (mobs[o.index].name && mobs[o.index].hp > 0) {
-			console.info('updateHate mob', o.index, o.damage, ~~(o.hate * o.damage))
+			console.info('updateHate mob', o.index, o.damage, ~~(o.hate * o.damage), o.key)
 			mobs[o.index].hate[o.row] += ~~(o.hate * o.damage)
 			if (mobs[o.index].hate[o.row] < 0) mobs[o.index].hate[o.row] = 0
 		}
@@ -417,8 +419,34 @@ var mob;
 		// constraints
 		if (timeScaleSpeed > 3) timeScaleSpeed = 3
 		else if (timeScaleSpeed < .5) timeScaleSpeed = .5
-		console.info('timeScaleSpeed', timeScaleSpeed)
+		// console.info('timeScaleSpeed', timeScaleSpeed)
 		mobs[i].animation.timeScale(timeScaleSpeed)
+	}
+
+	const filter = {
+		freeze: { pixi: {
+			colorize: '#0ff',
+			colorizeAmount: 1,
+		}},
+		chill: { pixi: {
+			colorize: '0af',
+			colorizeAmount: .6,
+		}},
+		default: { pixi: {
+			colorize: 'aqua',
+			colorizeAmount: 0,
+		}}
+	}
+	function setFilter(i) {
+		if (timers.mobEffects[i].freezeDuration) {
+			TweenMax.set(mobs[i].sprite, filter.freeze)
+		}
+		else if (timers.mobEffects[i].chillDuration) {
+			TweenMax.set(mobs[i].sprite, filter.chill)
+		}
+		else {
+			TweenMax.set(mobs[i].sprite, filter.default)
+		}
 	}
 	function mobAttackSpeed(i) {
 		// default speed for this mob
@@ -436,9 +464,10 @@ var mob;
 		if (ng.view !== 'battle') return
 		setTimeScaleSpeed(i)
 		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return;
-		if (bypass) mobs[i].animation.pause()
 
-		if (damage > (2 + (mobs[i].level * .75))) {
+		if (!timers.mobEffects[i].freezeDuration &&
+			damage > (2 + (mobs[i].level * .75))) {
+			if (bypass) mobs[i].animation.pause()
 			mobs[i].isAnimationActive = true;
 			var speed = mobs[i].frameSpeed * frame.hit.diff
 
@@ -452,8 +481,9 @@ var mob;
 				yoyo: true,
 				repeat: 1,
 				onUpdate: setSrc,
-				onUpdateParams: [mobs[i].index],
-				onComplete: () => { resetIdle(mobs[i].index) },
+				onUpdateParams: [i],
+				onComplete: resetIdle,
+				onCompleteParams: [i]
 			})
 		}
 
@@ -555,8 +585,9 @@ var mob;
 				frame: frame[attackType].end,
 				ease: Linear.easeNone,
 				onUpdate: setSrc,
-				onUpdateParams: [mobs[i].index],
-				onComplete: () => { resetIdle(mobs[i].index) },
+				onUpdateParams: [i],
+				onComplete: resetIdle,
+				onCompleteParams: [i]
 			})
 		}
 	}
@@ -591,8 +622,9 @@ var mob;
 					yoyo: mobs[i].yoyo,
 					repeat: mobs[i].yoyo ? 1 : 0,
 					onUpdate: setSrc,
-					onUpdateParams: [mobs[i].index],
-					onComplete: () => { resetIdle(mobs[i].index) },
+					onUpdateParams: [i],
+					onComplete: resetIdle,
+					onCompleteParams: [i]
 				})
 			}
 		}

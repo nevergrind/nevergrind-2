@@ -1,6 +1,7 @@
 var combat;
 !function($, _, TweenMax, PIXI, Math, Power1, Power3, Linear, undefined) {
 	combat = {
+		MAX_DAMAGE: 999999999,
 		textId: 0,
 		considerClass: [
 			'con-grey',
@@ -362,7 +363,7 @@ var combat;
 	}
 	function processEffects(o) {
 		if (typeof o.effects === 'object') {
-			console.info('processEffects')
+			// console.info('processEffects')
 			// non-duration effects that are not buffs, but apply instantly
 			if (o.effects.stagger) mobEffects.stagger(o.index)
 		}

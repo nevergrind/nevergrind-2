@@ -3411,6 +3411,7 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	z-index: 2;
 }
 #mob-target-name {
+	font-size: 1rem;
 	position: relative;
 	z-index: 2;
 }

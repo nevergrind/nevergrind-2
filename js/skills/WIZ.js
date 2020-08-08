@@ -12,7 +12,7 @@
 		frozenBarrierEffect,
 		mirrorImage,
 		manaShell,
-		brainFreeze,
+		deepFreeze,
 	}
 	///////////////////////////////////////////
 	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = []
@@ -327,21 +327,30 @@
 		})
 		combat.txBuffHero(damages)
 	}
-	function brainFreeze(index, data) {
+	function deepFreeze(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, brainFreezeCompleted)
+		spell.startCasting(index, data, deepFreezeCompleted)
 	}
-	function brainFreezeCompleted() {
+	function deepFreezeCompleted() {
 		combat.txDamageMob([{
-			key: 'smite',
+			key: 'deepFreeze',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()}])
+			buffs: [{
+				i: spell.config.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'freeze', // this sets the flag,
+				duration: 5,
+			}],
+			...stats.spellDamage()
+		}])
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 
 }($, _, TweenMax);

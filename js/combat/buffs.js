@@ -13,7 +13,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: 'WIZ',
 		},
 		freeze: {
-			name: 'Freeze',
+			name: 'Frozen',
 			img: 11,
 			job: 'WIZ',
 		},
@@ -226,7 +226,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Mana Shell',
 			img: 10,
 			job: 'WIZ',
-			duration: 480,
+			duration: 720,
 			hate: 0,
 			silence: [0, 3, 5, 7, 9, 11, 13, 15],
 			resistAll: [0, 2, 3, 4, 6, 7, 8, 10],
@@ -234,9 +234,7 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'You are protected by a mana shell.',
 			fadeMsg: 'The mana shell fades.'
 		},
-		deepFreeze: {
-			hate: .5,
-		}
+		deepFreeze: { hate: -1, }
 	}
 	///////////////////////////////////////////
 
