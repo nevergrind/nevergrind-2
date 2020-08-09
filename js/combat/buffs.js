@@ -187,6 +187,7 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: 'The intrepid shout fades.'
 		},
 		furiousCleave: { hate: 1.5 },
+		// wiz
 		fireBolt: { hate: 1 },
 		iceBolt: { hate: -.5 },
 		lightningBolt: { hate: .7 },
@@ -234,7 +235,20 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'You are protected by a mana shell.',
 			fadeMsg: 'The mana shell fades.'
 		},
-		deepFreeze: { hate: -1, }
+		deepFreeze: { hate: -1, },
+		// dru
+		starfire: { hate: 1 },
+		fissure: { hate: .75 },
+		lightningBlast: { hate: .5 },
+		blizzard: { hate: 1 },
+		toxicSpores: { hate: 1 },
+		moltenBoulder: { hate: 1 },
+		barbedThicket: { hate: 1 },
+		tornado: { hate: 1 },
+		naturesTouch: { hate: 1 },
+		mossBreath: { hate: 1 },
+		synthesize: { hate: 1 },
+		branchSpirit: { hate: 1 },
 	}
 	///////////////////////////////////////////
 

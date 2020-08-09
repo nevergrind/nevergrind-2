@@ -42,13 +42,28 @@
 		spell.startCasting(index, data, fissureCompleted)
 	}
 	function fissureCompleted() {
-		combat.txDamageMob([{
-			key: 'fissure',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		let originalTarget = my.target
+		for (var j=0; j<5; j++) {
+			!function(j) {
+				delayedCall(j + 1, () => {
+					splashIndex = -1
+					damages = []
+					for (i=0; i<3; i++) {
+						tgt = battle.getSplashTarget(splashIndex++, originalTarget)
+						damages.push({
+							key: 'fissure',
+							index: tgt,
+							spellType: spell.data.spellType,
+							damageType: spell.data.damageType,
+							...stats.spellDamage(),
+						})
+					}
+					combat.txDamageMob(damages)
+				})
+			}(j)
+		}
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function lightningBlast(index, data) {
 		if (timers.castBar < 1) return

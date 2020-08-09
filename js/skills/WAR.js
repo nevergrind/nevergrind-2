@@ -128,8 +128,10 @@ let skill = {};
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
+			mpCost: data.mp(my.skills[index]),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -160,9 +162,11 @@ let skill = {};
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
+			mpCost: data.mp(my.skills[index]),
 			anyTarget: true,
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
@@ -254,10 +258,10 @@ let skill = {};
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
-			mpCost: data.mp(my.skills[index])
+			spCost: data.sp(my.skills[index])
 		}
 		if (skills.notReady(config)) return
-		spell.expendMana(data, index)
+		spell.expendSpirit(data, index)
 
 		// select targets
 		let targets = []

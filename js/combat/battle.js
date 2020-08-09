@@ -172,9 +172,10 @@ var battle;
 			repeat: 1,
 		})
 	}
-	function getSplashTarget(shift) {
+	function getSplashTarget(shift, tgt) {
 		shift = shift || 0
-		index = _.findIndex(splashOrder, val => val === my.target)
+		if (tgt) index = _.findIndex(splashOrder, val => val === tgt)
+		else index = _.findIndex(splashOrder, val => val === my.target)
 		index = splashOrder[index + shift]
 		return splashOrder.includes(index) ? index : -1
 	}
