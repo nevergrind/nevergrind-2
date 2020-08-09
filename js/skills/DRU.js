@@ -1,94 +1,223 @@
 !function($, _, TweenMax, undefined) {
 	skill.DRU = {
-		crossSlash,
-		explosiveShot,
-		trueshotArrow,
-		spreadShot,
-		bladeStorm,
-		suppressingVolley,
-		ignite,
-		shockNova,
-		faerieFlame,
-		fungalGrowth,
-		shimmeringOrb,
-		spiritOfTheHunter,
+		starfire,
+		fissure,
+		lightningBlast,
+		blizzard,
+		toxicSpores,
+		moltenBoulder,
+		barbedThicket,
+		tornado,
+		naturesTouch,
+		mossBreath,
+		synthesize,
+		branchSpirit,
 	}
 	///////////////////////////////////////////
-	let arr, damage, damages, enhancedDamage
-
-	const displayBlock = { display: 'block' }
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = []
 	///////////////////////////////////////////
-	function crossSlash(index, data) {
-		console.info('crossSlash', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function starfire(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, starfireCompleted)
 	}
-
-	function explosiveShot(index, data) {
-		console.info('explosiveShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function starfireCompleted() {
+		combat.txDamageMob([{
+			key: 'starfire',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function trueshotArrow(index, data) {
-		console.info('trueshotArrow', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function fissure(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, fissureCompleted)
 	}
-	function spreadShot(index, data) {
-		console.info('spreadShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function fissureCompleted() {
+		combat.txDamageMob([{
+			key: 'fissure',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function bladeStorm(index, data) {
-		console.info('bladeStorm', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function lightningBlast(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, lightningBlastCompleted)
 	}
-	function suppressingVolley(index, data) {
-		console.info('suppressingVolley', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function lightningBlastCompleted() {
+		combat.txDamageMob([{
+			key: 'lightningBlast',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function ignite(index, data) {
-		console.info('ignite', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function blizzard(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, blizzardCompleted)
 	}
-	function shockNova(index, data) {
-		console.info('shockNova', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function blizzardCompleted() {
+		combat.txDamageMob([{
+			key: 'blizzard',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function faerieFlame(index, data) {
-		console.info('faerieFlame', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function toxicSpores(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, toxicSporesCompleted)
 	}
-	function fungalGrowth(index, data) {
-		console.info('fungalGrowth', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function toxicSporesCompleted() {
+		combat.txDamageMob([{
+			key: 'toxicSpores',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function shimmeringOrb(index, data) {
-		console.info('shimmeringOrb', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function moltenBoulder(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, moltenBoulderCompleted)
 	}
-	function spiritOfTheHunter(index, data) {
-		console.info('spiritOfTheHunter', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function moltenBoulderCompleted() {
+		combat.txDamageMob([{
+			key: 'moltenBoulder',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function barbedThicket(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, barbedThicketCompleted)
+	}
+	function barbedThicketCompleted() {
+		combat.txDamageMob([{
+			key: 'barbedThicket',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function tornado(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, tornadoCompleted)
+	}
+	function tornadoCompleted() {
+		combat.txDamageMob([{
+			key: 'tornado',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function naturesTouch(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, naturesTouchCompleted)
+	}
+	function naturesTouchCompleted() {
+		combat.txDamageMob([{
+			key: 'naturesTouch',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function mossBreath(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, mossBreathCompleted)
+	}
+	function mossBreathCompleted() {
+		combat.txDamageMob([{
+			key: 'mossBreath',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function synthesize(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, synthesizeCompleted)
+	}
+	function synthesizeCompleted() {
+		combat.txDamageMob([{
+			key: 'synthesize',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function branchSpirit(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, branchSpiritCompleted)
+	}
+	function branchSpiritCompleted() {
+		combat.txDamageMob([{
+			key: 'fireBolt',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 }($, _, TweenMax);
