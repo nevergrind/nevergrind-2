@@ -501,7 +501,7 @@ var battle;
 			}
 			else {
 				console.info('flashTargetBuff startBuffTimers',
-					key, tgt, mobs[tgt].buffs[key].duration, flashDuration)
+					key, tgt, mobs[tgt].buffs[key].duration)
 				battle.buffIconTimers[key] = delayedCall(
 					mobs[tgt].buffs[key].duration - flashDuration,
 					flashTargetBuff, [key, tgt]

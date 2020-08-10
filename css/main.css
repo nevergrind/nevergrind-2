@@ -291,7 +291,7 @@ tbody { border: 0 }
 	position: relative;
 	width: 90%;
 	display: block;
-	margin: 4px auto
+	margin: 4px auto;
 }
 .title-bg-color {
 	background: #00214d;
@@ -1454,17 +1454,13 @@ background-clip: content-box;
 	line-height: 1.5;
 	vertical-align: middle;
 }
-
-
 #guild-member-flex {
 	display: flex;
 	align-content: center;
 }
-
 #guild-member-label {
 	flex: 1;
 }
-
 #guild-member-refresh-btn {
 	display: flex;
 	align-items: center;

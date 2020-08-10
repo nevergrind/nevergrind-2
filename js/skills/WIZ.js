@@ -140,7 +140,7 @@
 		let isFrontRow = tgt <= 4
 		let increment
 		if (isFrontRow) increment = tgt <= 2
-		else increment = tgt <= 7
+		else increment = tgt <= 6
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
 
