@@ -159,18 +159,12 @@
 	function moltenBoulderCompleted() {
 		let i = 0
 		let tgt = spell.config.target
-		let isFrontRow = tgt <= 4
-		let increment
-		if (isFrontRow) increment = tgt <= 2
-		else increment = tgt <= 6
+		let increment = tgt <= 2
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
 		let tgts = []
 
-		while (
-			isFrontRow && tgt >= 0 && tgt <= 4 ||
-			!isFrontRow && tgt >= 5 && tgt <= mob.max - 1
-		) {
+		while (tgt >= 0 && tgt <= 4) {
 			i++
 			tgts.push(tgt)
 			if (increment) tgt++
@@ -206,7 +200,7 @@
 						dots[0].damage *= .5
 						combat.txDotMob(dots)
 					}
-					console.info('moltenBoulder', i, 'target', tgt, damages[0].damage)
+					// console.info('moltenBoulder', i, 'target', tgt, damages[0].damage)
 					combat.txDamageMob(damages)
 				})
 			})
@@ -223,97 +217,156 @@
 		spell.startCasting(index, data, barbedThicketCompleted)
 	}
 	function barbedThicketCompleted() {
-		combat.txDamageMob([{
-			key: 'barbedThicket',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		splashIndex = -1
+		damages = []
+		for (i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			damages.push({
+				key: 'barbedThicket',
+				index: tgt,
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				effects: { stagger: true },
+				...stats.spellDamage(),
+			})
+		}
+		combat.txDamageMob(damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function tornado(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, tornadoCompleted)
 	}
 	function tornadoCompleted() {
-		combat.txDamageMob([{
+		spell.config.target = battle.getRandomTarget()
+		damages = []
+		damages.push({
 			key: 'tornado',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
-		}])
+		})
+		damages.push({
+			key: 'tornado',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: 'ice',
+			buffs: [{
+				i: spell.config.target,
+				row: my.row, // this identifies unique buff state/icon
+				key: 'chill', // this sets the flag,
+				duration: 30,
+			}],
+			...stats.spellDamage()
+		})
+		combat.txDamageMob(damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function naturesTouch(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, naturesTouchCompleted)
 	}
 	function naturesTouchCompleted() {
-		combat.txDamageMob([{
-			key: 'naturesTouch',
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			name: spell.config.targetName,
+			key: 'naturesTouch',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
-		}])
+		})
+		hit = stats.spellDamage(false, true)
+		damages.push({
+			index: spell.config.target,
+			key: 'naturesTouchHot',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			damage: ~~(hit.damage * .33),
+		})
+		combat.txHotHero(damages)
 	}
 	function mossBreath(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, mossBreathCompleted)
 	}
 	function mossBreathCompleted() {
-		combat.txDamageMob([{
-			key: 'mossBreath',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		damages = []
+		party.presence.forEach(p => {
+			damages.push({
+				index: p.row,
+				name: p.name,
+				key: 'mossBreath',
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage()
+			})
+		})
+		combat.txHotHero(damages)
 	}
 	function synthesize(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			oocEnabled: true,
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, synthesizeCompleted)
 	}
 	function synthesizeCompleted() {
-		combat.txDamageMob([{
-			key: 'synthesize',
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			key: 'synthesize',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			...stats.spellDamage(false, true)
+		})
+		combat.txHotHero(damages)
 	}
 	function branchSpirit(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, branchSpiritCompleted)
 	}
 	function branchSpiritCompleted() {
-		combat.txDamageMob([{
-			key: 'fireBolt',
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			key: 'branchSpirit',
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		combat.txBuffHero(damages)
 	}
 }($, _, TweenMax);

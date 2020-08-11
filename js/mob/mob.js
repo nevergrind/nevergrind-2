@@ -1,6 +1,7 @@
 var mob;
 (function(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2, undefined) {
 	mob = {
+		isAlive,
 		getRandomMobKey,
 		init,
 		// configs, resets (active animations) and idles mobs in one call for start of combat
@@ -459,7 +460,9 @@ var mob;
 		console.info('mobSpeed', mobSpeed)
 		return mobs[i].speed * mobSpeed
 	}
-
+	function isAlive(i) {
+		return mobs[i].name && mobs[i].hp > 0
+	}
 	function hit(i, bypass, damage) {
 		if (ng.view !== 'battle') return
 		setTimeScaleSpeed(i)

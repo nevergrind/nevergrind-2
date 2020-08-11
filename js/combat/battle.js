@@ -37,6 +37,7 @@ var battle;
 		getExpBarRatio,
 		nextLevel,
 		getSplashTarget,
+		getRandomTarget,
 		go,
 		show,
 		html,
@@ -178,6 +179,17 @@ var battle;
 		else index = _.findIndex(splashOrder, val => val === my.target)
 		index = splashOrder[index + shift]
 		return splashOrder.includes(index) ? index : -1
+	}
+	function getAllAliveMobs() {
+		return mobs.reduce((acc, val, ind) => {
+			if (mob.isAlive(ind)) acc.push(ind)
+			return acc;
+		}, [])
+	}
+	function getRandomTarget() {
+		let aliveMobs = getAllAliveMobs()
+		let len = aliveMobs.length
+		return _.random(0, len - 1)
 	}
 	function init() {
 		$('#scene-battle')

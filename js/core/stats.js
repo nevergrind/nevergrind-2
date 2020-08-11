@@ -198,6 +198,9 @@ var stats = {};
 			if (my.buffFlags.intrepidShout) {
 				stats.cache.armor += buffs.intrepidShout.armor[my.buffs.intrepidShout.level]
 			}
+			if (my.buffFlags.branchSpirit) {
+				stats.cache.armor += (my.buffs.branchSpirit.damage * buffs.branchSpirit.armorRatio)
+			}
 			stats.cache.armor = round(stats.cache.armor)
 		}
 		return stats.cache.armor
@@ -224,7 +227,10 @@ var stats = {};
 		//info('stats.missChance', type, ~~atk)
 		// buffs
 		if (my.buffFlags.spiritOfTheHunter) {
-			atk += skills.RNG[11].spellDamage(my.buffs.spiritOfTheHunter.level)
+			atk += buffs.spiritOfTheHunter.attackBonus[my.buffs.spiritOfTheHunter.level]
+		}
+		if (my.buffFlags.branchSpirit) {
+			atk += (my.buffs.branchSpirit.damage * buffs.branchSpirit.attackRatio)
 		}
 		return ~~atk
 		//else atk += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
@@ -857,7 +863,14 @@ var stats = {};
 		return (my.race === 'Human' ? 4 : 2) + (my.level * (my.race === 'Human' ? .24 : .16))
 	}
 	function hpRegen(fresh) {
-		return ~~(baseHpRegen() + getEqTotal('hpRegen'))
+		if (fresh || typeof stats.cache.hpRegen === 'undefined') {
+			stats.cache.hpRegen = ~~(baseHpRegen() + getEqTotal('hpRegen'))
+			if (my.buffFlags.branchSpirit) {
+				stats.cache.hpRegen += ceil(1 + (my.buffs.branchSpirit.level * buffs.branchSpirit.regenPerLevel))
+			}
+
+		}
+		return stats.cache.hpRegen
 	}
 	function mpRegen(fresh) {
 		return ~~(baseMpRegen() + getEqTotal('mpRegen'))
@@ -884,14 +897,14 @@ var stats = {};
 	function phyMit(fresh) {
 		if (fresh || typeof stats.cache.phyMit === 'undefined') {
 			stats.cache.phyMit = getEqTotal('phyMit')
-			if (my.buffFlags.bulwark) stats.cache.phyMit += skills.WAR[9].mitigation[my.buffs.bulwark.level]
+			if (my.buffFlags.bulwark) stats.cache.phyMit += buffs.bulwark.mitigation[my.buffs.bulwark.level]
 		}
 		return stats.cache.phyMit
 	}
 	function magMit(fresh) {
 		if (fresh || typeof stats.cache.magMit === 'undefined') {
 			stats.cache.magMit = getEqTotal('magMit')
-			if (my.buffFlags.bulwark) stats.cache.magMit += skills.WAR[9].mitigation[my.buffs.bulwark.level]
+			if (my.buffFlags.bulwark) stats.cache.magMit += buffs.bulwark.mitigation[my.buffs.bulwark.level]
 		}
 		return stats.cache.magMit
 	}
@@ -942,7 +955,7 @@ var stats = {};
 	}
 	function resistStun(fresh) {
 		// can't do anything
-		if (fresh || typeof stats.cache.resistFear === 'undefined') {
+		if (fresh || typeof stats.cache.resistStun === 'undefined') {
 			stats.cache.resistStun = getEqTotal('resistStun')
 			if (stats.cache.resistStun > 50) stats.cache.resistStun = 50
 		}
@@ -950,7 +963,7 @@ var stats = {};
 	}
 	function resistSilence(fresh) {
 		// cannot cast spells
-		if (fresh || typeof stats.cache.resistFear === 'undefined') {
+		if (fresh || typeof stats.cache.resistSilence === 'undefined') {
 			stats.cache.resistSilence = getEqTotal('resistSilence')
 			stats.cache.resistSilence += my.buffFlags.manaShell ? buffs.manaShell.silence[my.buffs.manaShell.level] : 0
 			if (stats.cache.resistSilence > 50) stats.cache.resistSilence = 50

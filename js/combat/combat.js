@@ -769,83 +769,82 @@ var combat;
 	}
 	function rxHotHero(data) {
 		console.info('rxHotHero: ', data)
-		if (buffs[data.heals[0].key]?.duration > 0) hotToMe(data)
-		else healToMe(data)
-	}
-	function healToMe(data) {
-		hate = 0
 		data.heals.forEach(heal => {
-			console.info('healToMe updateHate', _.clone(heal))
-			hate += heal.damage * (buffs[heal.key].hate ?? 1)
-			if (my.row === heal.index) {
-				// healing ME
-				healAmount = heal.damage
-				chat.log(buffs[heal.key].msg(heal), 'chat-heal')
-				updateHeroResource('hp', healAmount)
-				// let everyone know I got the heal
-				game.txPartyResources({
-					hp: my.hp,
-					hpMax: my.hpMax,
-				})
-			}
+			if (buffs[heal.key]?.duration > 0) hotToMe(data.row, heal)
+			else healToMe(data.row, heal)
 		})
+	}
+	function healToMe(row, heal) {
+		hate = 0
+		console.info('healToMe rxHotHero', _.clone(heal))
+		hate += heal.damage * (buffs[heal.key].hate ?? 1)
+		if (my.row === heal.index) {
+			// healing ME
+			healAmount = heal.damage
+			chat.log(buffs[heal.key].msg(heal), 'chat-heal')
+			updateHeroResource('hp', healAmount)
+			// let everyone know I got the heal
+			game.txPartyResources({
+				hp: my.hp,
+				hpMax: my.hpMax,
+			})
+		}
 		if (~~hate > 0) {
 			mob.addHateHeal({
-				row: data.row,
-				hate: hate
+				row: row,
+				hate: ~~hate
 			})
 		}
 	}
-	function hotToMe(data) {
-		console.info('hotToMe', data)
+	function hotToMe(row, heal) {
+		console.info('hotToMe rxHotHero', row, heal)
 		hate = 0
-		data.heals.forEach(heal => {
-			console.info('hotToMe updateHate', heal)
-			hate += heal.damage * (buffs[heal.key].hate ?? 1)
-			if (my.row === heal.index) {
-				// HoT
-				let keyRow = heal.key + '-' + heal.index
-				// cancel/overwrite existing buff timer data keyRow: duration, function
-				if (typeof my.buffs[keyRow] === 'object' &&
-					typeof my.buffs[keyRow].timer === 'object') {
-					my.buffs[keyRow].timer.kill()
-					my.buffs[keyRow].hotTicks.kill()
-					battle.removeBuff(heal.key, keyRow)
-				}
-				// setup buff timer data
-				my.buffs[keyRow] = {
-					row: heal.index,
-					key: heal.key,
-					duration: buffs[heal.key].duration,
-				}
-				my.buffs[keyRow].timer = TweenMax.to(
-					my.buffs[keyRow],
-					my.buffs[keyRow].duration, {
-					duration: 0,
-					ease: Linear.easeNone,
-					onComplete: battle.removeMyBuffFlag,
-					onCompleteParams: [keyRow],
-				})
-				my.buffFlags[keyRow] = true
-				healAmount = Math.round(heal.damage / buffs[heal.key].ticks)
-				my.buffs[keyRow].hotTicks = TweenMax.to({}, buffs[heal.key].interval, {
-					repeat: buffs[heal.key].ticks,
-					onRepeat: onHotTick,
-					onRepeatParams: [heal, healAmount],
-				})
-				battle.addMyBuff(heal.key, keyRow)
-				chat.log(buffs[heal.key].msg(heal), 'chat-heal')
+		hate += heal.damage * (buffs[heal.key].hate ?? 1)
+		if (my.row === heal.index) {
+			// HoT
+			let keyRow = heal.key + '-' + heal.index
+			// cancel/overwrite existing buff timer data keyRow: duration, function
+			if (typeof my.buffs[keyRow] === 'object' &&
+				typeof my.buffs[keyRow].timer === 'object') {
+				my.buffs[keyRow].timer.kill()
+				my.buffs[keyRow].hotTicks.kill()
+				battle.removeBuff(heal.key, keyRow)
 			}
-		})
+			// setup buff timer data
+			my.buffs[keyRow] = {
+				row: heal.index,
+				key: heal.key,
+				duration: buffs[heal.key].duration,
+			}
+			my.buffs[keyRow].timer = TweenMax.to(
+				my.buffs[keyRow],
+				my.buffs[keyRow].duration, {
+				duration: 0,
+				ease: Linear.easeNone,
+				onComplete: battle.removeMyBuffFlag,
+				onCompleteParams: [keyRow],
+			})
+			my.buffFlags[keyRow] = true
+			healAmount = Math.round(heal.damage / buffs[heal.key].ticks)
+			// long-term heals synthesize, etc
+			if (buffs[heal.key].addPerTick) healAmount += buffs[heal.key].addPerTick
+			my.buffs[keyRow].hotTicks = TweenMax.to({}, buffs[heal.key].interval, {
+				repeat: buffs[heal.key].ticks,
+				onRepeat: onHotTick,
+				onRepeatParams: [heal, healAmount],
+			})
+			battle.addMyBuff(heal.key, keyRow)
+			chat.log(buffs[heal.key].msg(heal), 'chat-heal')
+		}
 		if (~~hate > 0) {
 			mob.addHateHeal({
-				row: data.row,
-				hate: hate
+				row: row,
+				hate: ~~hate
 			})
 		}
 	}
 	function onHotTick(buff, healAmount) {
-		chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', 'chat-heal')
+		// chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', 'chat-heal')
 		updateHeroResource('hp', healAmount)
 	}
 
@@ -934,7 +933,10 @@ var combat;
 
 	function processStatBuffsToMe(key) {
 		console.info('processStatBuffsToMe key!', key)
-		if (key === 'sealOfRedemption') {
+		if (key === 'spiritOfTheHunter') {
+			cacheBustAttack()
+		}
+		else if (key === 'sealOfRedemption') {
 			stats.resistBlood(true)
 			if (bar.windowsOpen.character) ng.html('#inv-resist-blood', stats.resistBlood())
 			my.set('hpMax', stats.hpMax())
@@ -974,6 +976,17 @@ var combat;
 				bar.updateAllResistsDOM()
 			}
 		}
+		else if (key === 'branchSpirit') {
+			cacheBustArmor()
+			cacheBustAttack()
+			stats.hpRegen(true)
+			my.set('hpMax', stats.hpMax())
+			bar.updateBar('hp')
+			txHpChange()
+		}
+	}
+	function cacheBustAttack() {
+		if (bar.windowsOpen.character) ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
 	}
 	function cacheBustArmor() {
 		// utility function that busts armor cache and updates DOM
