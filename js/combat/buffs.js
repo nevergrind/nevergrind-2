@@ -316,6 +316,46 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'A branch spirit rests in your heart.',
 			fadeMsg: 'Your branch spirit fades.'
 		},
+		frostRift: { hate: -.25 },
+		poisonNova: { hate: .7 },
+		scourge: {
+			name: 'Scourge',
+			img: 2,
+			job: 'SHM',
+			hate: .8,
+			ticks: 6,
+			interval: 3,
+			duration: 18,
+			damageType: 'blood',
+		},
+		poisonBolt: { hate: 1.25 },
+		vampiricGaze: { hate: 1 },
+		glacialShard: { hate: -1 },
+		affliction: {
+			name: 'Affliction',
+			img: 6,
+			job: 'SHM',
+			hate: .7,
+			ticks: 12,
+			interval: 3,
+			duration: 36,
+			damageType: 'poison',
+		},
+		devouringSwarm: {
+			name: 'Devouring Swarm',
+			img: 7,
+			job: 'SHM',
+			hate: 1.25,
+			ticks: 10,
+			interval: 3,
+			duration: 30,
+			damageType: 'arcane',
+			healRatio: .5
+		},
+		rejuvinate: { hate: 1 },
+		mysticalGlow: { hate: 1 },
+		vampiricAllure: { hate: 1 },
+		borealTalisman: { hate: 1 },
 	}
 	///////////////////////////////////////////
 

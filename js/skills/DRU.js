@@ -46,13 +46,12 @@
 		for (var j=0; j<5; j++) {
 			!function(j) {
 				delayedCall(j + 1, () => {
-					splashIndex = -1
-					damages = []
+					let splashIndex = -1
+					let damages = []
 					for (i=0; i<3; i++) {
-						tgt = battle.getSplashTarget(splashIndex++, originalTarget)
 						damages.push({
 							key: 'fissure',
-							index: tgt,
+							index: battle.getSplashTarget(splashIndex++, originalTarget),
 							spellType: spell.data.spellType,
 							damageType: spell.data.damageType,
 							...stats.spellDamage(),
@@ -103,8 +102,8 @@
 		for (var j=0; j<5; j++) {
 			!function(j) {
 				delayedCall((j + 1) * 1.5, () => {
-					splashIndex = -1
-					damages = []
+					let splashIndex = -1
+					let damages = []
 					for (i=0; i<3; i++) {
 						tgt = battle.getSplashTarget(splashIndex++, originalTarget)
 						damages.push({

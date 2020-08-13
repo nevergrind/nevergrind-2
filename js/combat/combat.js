@@ -421,8 +421,9 @@ var combat;
 		len = data.damages.length
 		buffArr = []
 		for (i=0; i<len; i++) {
-			console.info('txDamageMob : ', _.cloneDeep(data.damages))
+			console.info('txDamageMob : ', data.damages)
 			updateMobHp(data.damages[i])
+			if (data.damages[i].key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(data.damages[i])
 		}
 		// buffs
 		if (typeof data.buffs === 'object') {
