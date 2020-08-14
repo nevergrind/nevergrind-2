@@ -180,8 +180,8 @@ var town;
 					ignore.init()
 					game.initPlayedCache()
 				}
-				//!env.initialized && env.startSkyPhase()
-				env.startSkyPhase()
+				//!expanse.initialized && expanse.startSkyPhase()
+				expanse.startSkyPhase()
 				town.init()
 				bar.init()
 				tavern.init()

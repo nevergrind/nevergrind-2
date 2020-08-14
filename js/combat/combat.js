@@ -724,7 +724,7 @@ var combat;
 		basicText.id = 'text-' + combat.textId++
 		mobs[index].hitCount++
 		basicText.x = mob.centerX[index]
-		basicText.y = env.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH * mobs[2].size + ((mobs[index].hitCount % 5) * 20)
+		basicText.y = expanse.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH * mobs[2].size + ((mobs[index].hitCount % 5) * 20)
 		//info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
 		TweenMax.to(basicText, textDuration * .6, {
@@ -1026,7 +1026,7 @@ var combat;
 	}
 	function updateCombatTextLayer() {
 		w = window.innerWidth
-		h = ~~(combat.text.screen.height / env.maxHeight * window.innerHeight)
+		h = ~~(combat.text.screen.height / expanse.maxHeight * window.innerHeight)
 		combat.text.view.style.width = w + 'px';
 		combat.text.view.style.height = h + 'px';
 

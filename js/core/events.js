@@ -4,10 +4,10 @@
 	// window
 
 	// document events
-	document.addEventListener('DOMContentLoaded', ready)
+	document.addEventListener('DOMContentLoaded', readyFn)
 
 	//////////////////////////////////////////////
-	function ready() {
+	function readyFn() {
 		// console.info("document ready...");
 		delayedCall(.1, readyFire);
 

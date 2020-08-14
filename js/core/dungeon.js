@@ -25,7 +25,10 @@ var dungeon;
 			mob.killAttacks()
 			my.saveCharacterData()
 		}
-		if (ng.view === 'town') chat.publishRemove()
+		if (ng.view === 'town') {
+			expanse.killAllTweens()
+			chat.publishRemove()
+		}
 		if (my.channel) socket.unsubscribe(chat.getChannel())
 
 		// set new channel data

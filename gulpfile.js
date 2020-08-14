@@ -34,7 +34,7 @@ const jsFiles = [
 	'core/login',
 	'core/create',
 	'core/ng',
-	'core/env',
+	'core/expanse',
 	'core/pix',
 	'core/my',
 	'core/dom',

@@ -712,7 +712,7 @@ tbody { border: 0 }
 	width: 1px;
 	height: 1px;
 	z-index: 5;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/sword.cur'), pointer;
 }
 .mob-dead {
 	position: absolute;
