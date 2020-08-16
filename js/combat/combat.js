@@ -129,6 +129,7 @@ var combat;
 	let blockMsg = ''
 	let hate = 0
 	let healAmount = 0
+	let enhanceHeal = 0
 
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
@@ -138,6 +139,7 @@ var combat;
 				my[name] < stats.getPropMax(name)) { //TODO: Dynamic max
 				if (rand() < skillLevelChance(name)) {
 					my[name]++
+					stats.cache = {}
 					chat.log('You got better at ' +skills.getName(name) + '! (' + my[name] + ')', 'chat-skill')
 					if (bar.windowsOpen.character) {
 						if (bar.activeTab === 'character') {
@@ -260,6 +262,11 @@ var combat;
 				// physical on back row
 				d.damage *= .5
 			}
+			// effects
+			if (mobs[d.index].buffFlags.vampiricGaze) {
+				// small boost to make it slightly stronger at lower levels
+				processLeech(skill.SHM.getMaxVampiricGaze(d.index) + .5)
+			}
 		}
 		else {
 			// mob magic resists
@@ -368,6 +375,21 @@ var combat;
 			if (o.effects.stagger) mobEffects.stagger(o.index)
 		}
 	}
+	function processLeech(leechValue) {
+		leechValue = processHeal(leechValue)
+		leechHp += leechValue
+		if (leechHp >= 1) {
+			updateHeroResource('hp', ~~leechHp)
+			leechHp = leechHp % 1
+		}
+	}
+	function processWraith(wraithValue) {
+		wraithMp += wraithValue
+		if (wraithMp >= 1) {
+			updateHeroResource('mp', ~~wraithMp)
+			wraithMp = wraithMp % 1
+		}
+	}
 	const damageKeys = [
 		'damage',
 		'key',
@@ -394,15 +416,11 @@ var combat;
 			}
 		}
 		if (myDamage) {
-			leechHp += myDamage * (stats.leech() / resourceLeechDivider)
-			if (leechHp >= 1) {
-				updateHeroResource('hp', ~~leechHp)
-				leechHp = leechHp % 1
+			if (stats.leech()) {
+				processLeech(myDamage * (stats.leech() / resourceLeechDivider))
 			}
-			wraithMp += myDamage * (stats.wraith() / resourceLeechDivider)
-			if (wraithMp >= 1) {
-				updateHeroResource('mp', ~~wraithMp)
-				wraithMp = wraithMp % 1
+			if (stats.wraith()) {
+				processWraith(myDamage * (stats.wraith() / resourceLeechDivider))
 			}
 		}
 		if (damageArr.length) {
@@ -434,6 +452,7 @@ var combat;
 	const dotKeys = [
 		'damage',
 		'index',
+		'level',
 	]
 	function txDotMob(damages) {
 		// only checks dodge?
@@ -476,9 +495,11 @@ var combat;
 						mobs[damages[i].index].buffs[rowKey].dotTicks.kill()
 					}
 				}
+				console.info('rxDotMob duration', damages[i])
 
 				battle.processBuffs([{
 					i: damages[i].index,
+					level: damages[i].level,
 					row: data.row,
 					key: data.key,
 				}])
@@ -775,13 +796,18 @@ var combat;
 			else healToMe(data.row, heal)
 		})
 	}
+	function processHeal(value) {
+		enhanceHeal = 1
+		if (skill.SHM.mysticalGlowActive()) enhanceHeal += .2
+		return round(value * enhanceHeal)
+	}
 	function healToMe(row, heal) {
 		hate = 0
 		console.info('healToMe rxHotHero', _.clone(heal))
 		hate += heal.damage * (buffs[heal.key].hate ?? 1)
 		if (my.row === heal.index) {
 			// healing ME
-			healAmount = heal.damage
+			healAmount = processHeal(heal.damage)
 			chat.log(buffs[heal.key].msg(heal), 'chat-heal')
 			updateHeroResource('hp', healAmount)
 			// let everyone know I got the heal
@@ -845,7 +871,10 @@ var combat;
 		}
 	}
 	function onHotTick(buff, healAmount) {
-		// chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', 'chat-heal')
+		healAmount = processHeal(healAmount)
+		if (!app.isApp) {
+			chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', 'chat-heal')
+		}
 		updateHeroResource('hp', healAmount)
 	}
 
@@ -973,9 +1002,7 @@ var combat;
 			stats.resistLightning(true)
 			stats.resistFire(true)
 			stats.resistIce(true)
-			if (bar.windowsOpen.character) {
-				bar.updateAllResistsDOM()
-			}
+			if (bar.windowsOpen.character) bar.updateAllResistsDOM()
 		}
 		else if (key === 'branchSpirit') {
 			cacheBustArmor()
@@ -985,14 +1012,34 @@ var combat;
 			bar.updateBar('hp')
 			txHpChange()
 		}
-	}
-	function cacheBustAttack() {
-		if (bar.windowsOpen.character) ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
-	}
-	function cacheBustArmor() {
-		// utility function that busts armor cache and updates DOM
-		stats.armor(true)
-		if (bar.windowsOpen.character) ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+		else if (key === 'vampiricAllure') {
+			stats.leech(true)
+			stats.wraith(true)
+			stats.cha(true)
+			if (bar.windowsOpen.character) ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
+		}
+		else if (key === 'borealTalisman') {
+			stats.resistIce(true)
+			stats.str(true)
+			stats.sta(true)
+			my.set('hpMax', stats.hpMax())
+			bar.updateBar('hp')
+			txHpChange()
+			cacheBustAttack()
+			if (bar.windowsOpen.character) bar.updateAllResistsDOM()
+			if (bar.windowsOpen.character) ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+		}
+		////////////////////////////////
+		function cacheBustAttack() {
+			stats.offense(true)
+			stats.attack(void 0, true)
+			if (bar.windowsOpen.character) ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
+		}
+		function cacheBustArmor() {
+			// utility function that busts armor cache and updates DOM
+			stats.armor(true)
+			if (bar.windowsOpen.character) ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+		}
 	}
 
 	function txHpChange() {

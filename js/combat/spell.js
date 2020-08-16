@@ -65,7 +65,8 @@ var spell;
 		return isShieldActive
 	}
 	function knockback() {
-		if (timers.castBar < 1 && false &&
+		if (timers.castBar < 1 &&
+			app.isApp && // knockback only happens in real app for testing purposes
 			!shieldsActive() &&
 			!channelSuccessful()) {
 			//console.info('channelSuccessful knockback', success)

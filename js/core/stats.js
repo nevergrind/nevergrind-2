@@ -11,6 +11,8 @@ var stats = {};
 		cha,
 		armor,
 		attack,
+		offense,
+		defense,
 		oneHandSlash,
 		oneHandBlunt,
 		piercing,
@@ -88,7 +90,7 @@ var stats = {};
 	let vulpineSp = 0
 	let resistStatusVal = 0
 	let value = 0
-	var val, base, i, len, type, min, max, atk, h2h, atk, stat, dps
+	var val, base, i, len, type, min, max, totalAttack, h2h, atk, stat, dps
 
 	const failedWeaponDamage = {
 		min: 0,
@@ -155,39 +157,49 @@ var stats = {};
 	}
 
 	function str(fresh) {
-		return my.str +
-			create.raceAttrs[my.race][0] +
-			create.jobAttrs[my.jobLong][0] + getEqTotal('str') + getEqTotal('allStats')
+		if (fresh || typeof stats.cache.str === 'undefined') {
+			stats.cache.str = my.str + create.raceAttrs[my.race][0] + create.jobAttrs[my.jobLong][0] + getEqTotal('str') + getEqTotal('allStats')
+			if (my.buffFlags.borealTalisman) stats.cache.str += buffs.borealTalisman.str[my.buffs.borealTalisman.level]
+		}
+		return stats.cache.str
 	}
 	function sta(fresh) {
-		return my.sta +
-			create.raceAttrs[my.race][1] +
-			create.jobAttrs[my.jobLong][1] + getEqTotal('sta') + getEqTotal('allStats')
+		if (fresh || typeof stats.cache.sta === 'undefined') {
+			stats.cache.sta = my.sta + create.raceAttrs[my.race][1] + create.jobAttrs[my.jobLong][1] + getEqTotal('sta') + getEqTotal('allStats')
+			if (my.buffFlags.borealTalisman) stats.cache.sta += buffs.borealTalisman.sta[my.buffs.borealTalisman.level]
+		}
+		return stats.cache.sta
 	}
 	function agi(fresh) {
-		return my.agi +
-			create.raceAttrs[my.race][2] +
-			create.jobAttrs[my.jobLong][2] + getEqTotal('agi') + getEqTotal('allStats')
+		if (fresh || typeof stats.cache.agi === 'undefined') {
+			stats.cache.agi = my.agi + create.raceAttrs[my.race][2] + create.jobAttrs[my.jobLong][2] + getEqTotal('agi') + getEqTotal('allStats')
+		}
+		return stats.cache.agi
 	}
 	function dex(fresh) {
-		return my.dex +
-			create.raceAttrs[my.race][3] +
-			create.jobAttrs[my.jobLong][3] + getEqTotal('dex') + getEqTotal('allStats')
+		if (fresh || typeof stats.cache.dex === 'undefined') {
+			stats.cache.dex = my.dex + create.raceAttrs[my.race][3] + create.jobAttrs[my.jobLong][3] + getEqTotal('dex') + getEqTotal('allStats')
+		}
+		return stats.cache.dex
 	}
 	function wis(fresh) {
-		return my.wis +
-			create.raceAttrs[my.race][4] +
-			create.jobAttrs[my.jobLong][4] + getEqTotal('wis') + getEqTotal('allStats')
+		if (fresh || typeof stats.cache.wis === 'undefined') {
+			stats.cache.wis = my.wis + create.raceAttrs[my.race][4] + create.jobAttrs[my.jobLong][4] + getEqTotal('wis') + getEqTotal('allStats')
+		}
+		return stats.cache.wis
 	}
 	function intel(fresh) {
-		return my.intel +
-			create.raceAttrs[my.race][5] +
-			create.jobAttrs[my.jobLong][5] + getEqTotal('intel') + getEqTotal('allStats')
+		if (fresh || typeof stats.cache.intel === 'undefined') {
+			stats.cache.intel = my.intel + create.raceAttrs[my.race][5] + create.jobAttrs[my.jobLong][5] + getEqTotal('intel') + getEqTotal('allStats')
+		}
+		return stats.cache.intel
 	}
 	function cha(fresh) {
-		return my.cha +
-			create.raceAttrs[my.race][6] +
-			create.jobAttrs[my.jobLong][6] + getEqTotal('cha') + getEqTotal('allStats')
+		if (fresh || typeof stats.cache.cha === 'undefined') {
+			stats.cache.cha = my.cha + create.raceAttrs[my.race][6] + create.jobAttrs[my.jobLong][6] + getEqTotal('cha') + getEqTotal('allStats')
+			if (my.buffFlags.vampiricAllure) stats.cache.cha += buffs.vampiricAllure.cha[my.buffs.vampiricAllure.level]
+		}
+		return stats.cache.cha
 	}
 	function armor(fresh) {
 		if (fresh || typeof stats.cache.armor === 'undefined') {
@@ -210,63 +222,101 @@ var stats = {};
 		return (stats.armor() > 3000 ? 3000 : stats.armor()) / 4000
 	}
 
-	function attack(type) {
-		atk = 0
+	function attack(type, fresh) {
 		type = type || items.eq[12].weaponSkill
-		atk = getEqTotal('attack') + (getEqTotal('str') * .33)
-		// offense
-		atk += (offense() * 1.66)
-		// primary weapon
-		if (type === 'One-hand Slash') atk += (oneHandSlash() * 2.66)
-		else if (type === 'One-hand Blunt') atk += (oneHandBlunt() * 2.66)
-		else if (type === 'Piercing') atk += (piercing() * 2.66)
-		else if (type === 'Two-hand Slash') atk += (twoHandSlash() * 2.66)
-		else if (type === 'Two-hand Blunt') atk += (twoHandBlunt() * 2.66)
-		else if (type === 'Archery') atk += (archery() * 2.66)
-		else if (type === 'Hand-to-Hand') atk += (handToHand() * 2.66)
-		//info('stats.missChance', type, ~~atk)
-		// buffs
-		if (my.buffFlags.spiritOfTheHunter) {
-			atk += buffs.spiritOfTheHunter.attackBonus[my.buffs.spiritOfTheHunter.level]
+		if (fresh || typeof stats.cache.attack === 'undefined') {
+			stats.cache.attack = getEqTotal('attack') + (str() * .35)
+			//info('stats.missChance', type, ~~stats.cache.attack)
+			// buffs
+			if (my.buffFlags.spiritOfTheHunter) {
+				stats.cache.attack += buffs.spiritOfTheHunter.attackBonus[my.buffs.spiritOfTheHunter.level]
+			}
+			if (my.buffFlags.branchSpirit) {
+				stats.cache.attack += (my.buffs.branchSpirit.damage * buffs.branchSpirit.attackRatio)
+			}
 		}
-		if (my.buffFlags.branchSpirit) {
-			atk += (my.buffs.branchSpirit.damage * buffs.branchSpirit.attackRatio)
-		}
-		return ~~atk
+
+		totalAttack = stats.cache.attack
+		totalAttack += (offense() * 1.66)
+		// by weapon type
+		if (type === 'One-hand Slash') totalAttack += (oneHandSlash() * 2.66)
+		else if (type === 'One-hand Blunt') totalAttack += (oneHandBlunt() * 2.66)
+		else if (type === 'Piercing') totalAttack += (piercing() * 2.66)
+		else if (type === 'Two-hand Slash') totalAttack += (twoHandSlash() * 2.66)
+		else if (type === 'Two-hand Blunt') totalAttack += (twoHandBlunt() * 2.66)
+		else if (type === 'Archery') totalAttack += (archery() * 2.66)
+		else if (type === 'Hand-to-Hand') totalAttack += (handToHand() * 2.66)
+
+		totalAttack = ~~totalAttack
+
+		return totalAttack
 		//else atk += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
 	}
 	function offense(fresh) {
-		return getStatTotal('offense') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.offense === 'undefined') {
+			stats.cache.offense = getStatTotal('offense') + getEqTotal('allSkills')
+		}
+		return stats.cache.offense
 	}
 	function defense(fresh) {
-		return getStatTotal('defense') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.defense === 'undefined') {
+			stats.cache.defense = getStatTotal('defense') + getEqTotal('allSkills')
+		}
+		return stats.cache.defense
 	}
 	function oneHandSlash(fresh) {
-		return getStatTotal('oneHandSlash') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.oneHandSlash === 'undefined') {
+			stats.cache.oneHandSlash = getStatTotal('oneHandSlash') + getEqTotal('allSkills')
+		}
+		return stats.cache.oneHandSlash
 	}
 	function oneHandBlunt(fresh) {
-		return getStatTotal('oneHandBlunt') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.oneHandBlunt === 'undefined') {
+			stats.cache.oneHandBlunt = getStatTotal('oneHandBlunt') + getEqTotal('allSkills')
+		}
+		return stats.cache.oneHandBlunt
 	}
 	function piercing(fresh) {
-		return getStatTotal('piercing') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.piercing === 'undefined') {
+			stats.cache.piercing = getStatTotal('piercing') + getEqTotal('allSkills')
+		}
+		return stats.cache.piercing
 	}
 	function twoHandSlash(fresh) {
-		return getStatTotal('twoHandSlash') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.twoHandSlash === 'undefined') {
+			stats.cache.twoHandSlash = getStatTotal('twoHandSlash') + getEqTotal('allSkills')
+		}
+		return stats.cache.twoHandSlash
 	}
 	function twoHandBlunt(fresh) {
-		return getStatTotal('twoHandBlunt') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.twoHandBlunt === 'undefined') {
+			stats.cache.twoHandBlunt = getStatTotal('twoHandBlunt') + getEqTotal('allSkills')
+		}
+		return stats.cache.twoHandBlunt
 	}
 	function handToHand(fresh) {
-		return getStatTotal('handToHand') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.handToHand === 'undefined') {
+			stats.cache.handToHand = getStatTotal('handToHand') + getEqTotal('allSkills')
+		}
+		return stats.cache.handToHand
 	}
 	function archery(fresh) {
-		return getStatTotal('archery') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.archery === 'undefined') {
+			stats.cache.archery = getStatTotal('archery') + getEqTotal('allSkills')
+		}
+		return stats.cache.archery
 	}
 	function dualWield(fresh) {
-		return getStatTotal('dualWield') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.dualWield === 'undefined') {
+			stats.cache.dualWield = getStatTotal('dualWield') + getEqTotal('allSkills')
+		}
+		return stats.cache.dualWield
 	}
 	function doubleAttack(fresh) {
-		return getStatTotal('doubleAttack') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.doubleAttack === 'undefined') {
+			stats.cache.doubleAttack = getStatTotal('doubleAttack') + getEqTotal('allSkills')
+		}
+		return stats.cache.doubleAttack
 	}
 	function missChance(index, weaponSkill) {
 		chance = .2
@@ -285,22 +335,40 @@ var stats = {};
 
 	}
 	function dodge(fresh) {
-		return getStatTotal('dodge') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.dodge === 'undefined') {
+			stats.cache.dodge = getStatTotal('dodge') + getEqTotal('allSkills')
+		}
+		return stats.cache.dodge
 	}
 	function parry(fresh) {
-		return getStatTotal('parry') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.parry === 'undefined') {
+			stats.cache.parry = getStatTotal('parry') + getEqTotal('allSkills')
+		}
+		return stats.cache.parry
 	}
 	function riposte(fresh) {
-		return getStatTotal('riposte') + getEqTotal('allSkills')
+		if (fresh || typeof stats.cache.riposte === 'undefined') {
+			stats.cache.riposte = getStatTotal('riposte') + getEqTotal('allSkills')
+		}
+		return stats.cache.riposte
 	}
 	function dodgeChance(fresh) {
-		return dodge() / 2500 + (agi() / 2000)
+		if (fresh || typeof stats.cache.dodgeChance === 'undefined') {
+			stats.cache.dodgeChance = dodge() / 2500 + (agi() / 2000)
+		}
+		return stats.cache.dodgeChance
 	}
 	function parryChance(fresh) {
-		return parry() / 2500 + (dex() / 2000)
+		if (fresh || typeof stats.cache.parryChance === 'undefined') {
+			stats.cache.parryChance = parry() / 2500 + (dex() / 2000)
+		}
+		return stats.cache.parryChance
 	}
 	function riposteChance(fresh) {
-		return riposte() / 2500 + (dex() / 2000)
+		if (fresh || typeof stats.cache.riposteChance === 'undefined') {
+			stats.cache.riposteChance = riposte() / 2500 + (dex() / 2000)
+		}
+		return stats.cache.riposteChance
 	}
 	function critChance(fresh) {
 		if (fresh || typeof stats.cache.crit === 'undefined') {
@@ -593,6 +661,7 @@ var stats = {};
 		if (fresh || typeof stats.cache.resistIce === 'undefined') {
 			stats.cache.resistIce = getStatTotal('resistIce') + getEqTotal('resistAll')
 			stats.cache.resistIce += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
+			if (my.buffFlags.borealTalisman) stats.cache.resistIce += buffs.borealTalisman.resistIce[my.buffs.borealTalisman.level]
 		}
 		return stats.cache.resistIce
 	}
@@ -909,10 +978,18 @@ var stats = {};
 		return stats.cache.magMit
 	}
 	function leech(fresh) {
-		return getEqTotal('leech')
+		if (fresh || typeof stats.cache.leech === 'undefined') {
+			stats.cache.leech = getEqTotal('leech')
+			if (my.buffFlags.vampiricAllure) stats.cache.leech += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]
+		}
+		return stats.cache.leech
 	}
 	function wraith(fresh) {
-		return getEqTotal('wraith')
+		if (fresh || typeof stats.cache.wraith === 'undefined') {
+			stats.cache.wraith = getEqTotal('wraith')
+			if (my.buffFlags.vampiricAllure) stats.cache.wraith += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]
+		}
+		return stats.cache.wraith
 	}
 	function damageTakenToMana(fresh) {
 		vulpineMp = getEqTotal('damageTakenToMana')

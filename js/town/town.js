@@ -186,6 +186,7 @@ var town;
 				bar.init()
 				tavern.init()
 				skills.init()
+				battle.removeAllBuffs()
 			}).fail(function(data){
 				ng.disconnect(data.responseText);
 			});

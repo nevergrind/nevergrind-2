@@ -280,7 +280,8 @@ var button;
 	function handleButtonStart(o) {
 		TweenMax.set(o.el, {
 			scale: 1,
-			alpha: 1,
+			opacity: 1,
+			overwrite: true,
 		})
 	}
 
@@ -301,10 +302,12 @@ var button;
 			})
 		}
 	}
+	const flashGradient = 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)'
 	function handleButtonComplete(o, checkGlobalInProgress) {
 		if (checkGlobalInProgress &&
 			timers.globalCooldown < 1) {
 			let duration = globalCooldownDur - (timers.globalCooldown * globalCooldownDur)
+			console.info('handleButtonComplete', o.el, duration)
 			TweenMax.set(o.el, displayBlock)
 			let newTimer = {
 				globalCooldown: 1
@@ -325,15 +328,16 @@ var button;
 			})
 		}
 		else {
+			console.info('handleButtonComplete FLASH', o.el)
 			// button flash
 			TweenMax.to(o.el, .5, {
 				startAt: {
 					scale: 1,
-					alpha: 1,
-					background: 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)',
+					opacity: 1,
+					background: flashGradient,
 				},
 				scale: .75,
-				alpha: 0,
+				opacity: 0,
 			})
 		}
 	}

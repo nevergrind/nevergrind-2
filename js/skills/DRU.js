@@ -296,7 +296,7 @@
 			key: 'naturesTouchHot',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			damage: ~~(hit.damage * .33),
+			damage: ~~(hit.damage * .5),
 		})
 		combat.txHotHero(damages)
 	}

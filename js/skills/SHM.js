@@ -5,18 +5,20 @@
 		scourge,
 		poisonBolt,
 		vampiricGaze,
+		getMaxVampiricGaze,
 		glacialShard,
 		affliction,
 		devouringSwarm,
 		devouringSwarmHeal,
 		rejuvinate,
 		mysticalGlow,
+		mysticalGlowActive,
 		vampiricAllure,
 		borealTalisman,
 
 	}
 	///////////////////////////////////////////
-	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = []
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], maxGaze, key, glowActive
 	///////////////////////////////////////////
 	function frostRift(index, data) {
 		if (timers.castBar < 1) return
@@ -118,14 +120,30 @@
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, vampiricGazeCompleted)
 	}
+	function getMaxVampiricGaze(index) {
+		maxGaze = 0
+		for (key in mobs[index].buffs) {
+			if (mobs[index].buffs[key].key === 'vampiricGaze' &&
+				mobs[index].buffs[key].duration > 0 && // must be active
+				mobs[index].buffs[key].level > maxGaze) {
+				maxGaze = mobs[index].buffs[key].level
+			}
+		}
+		return maxGaze
+	}
 	function vampiricGazeCompleted() {
-		combat.txDamageMob([{
+		damages = []
+		damages.push({
 			key: 'vampiricGaze',
 			index: spell.config.target,
-			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.index],
+			...stats.spellDamage(false, true)
+		})
+		console.info('vampiricGaze', damages[0])
+		combat.txDotMob(damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function glacialShard(index, data) {
 		if (timers.castBar < 1) return
@@ -198,76 +216,113 @@
 		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
 	}
 	function devouringSwarmHeal(data) {
-		console.info('devouringSwarmHeal', ~~(data.damage * buffs.devouringSwarm.healRatio), data)
+		// console.info('devouringSwarmHeal', ~~(data.damage * buffs.devouringSwarm.healRatio), data)
 		combat.updateHeroResource('hp', ~~(data.damage * buffs.devouringSwarm.healRatio))
 	}
 	function rejuvinate(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, rejuvinateCompleted)
 	}
 	function rejuvinateCompleted() {
-		combat.txDamageMob([{
-			key: 'rejuvinate',
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			name: spell.config.targetName,
+			key: 'rejuvinate',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
-		}])
+		})
+		hit = stats.spellDamage(false, true)
+		damages.push({
+			index: spell.config.target,
+			key: 'rejuvinateHot',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			damage: ~~(hit.damage * .33),
+		})
+		combat.txHotHero(damages)
 	}
 	function mysticalGlow(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, mysticalGlowCompleted)
 	}
 	function mysticalGlowCompleted() {
-		combat.txDamageMob([{
-			key: 'mysticalGlow',
+		combat.txHotHero([{
 			index: spell.config.target,
+			key: 'mysticalGlow',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(false, true) // force crit, get non-crit,
 		}])
+	}
+	function mysticalGlowActive() {
+		glowActive = false
+		for (key in my.buffs) {
+			if (my.buffs[key].key === 'mysticalGlow' &&
+				my.buffs[key].duration > 0) {
+				glowActive = true
+			}
+		}
+		return glowActive
 	}
 	function vampiricAllure(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, vampiricAllureCompleted)
 	}
 	function vampiricAllureCompleted() {
-		combat.txDamageMob([{
-			key: 'vampiricAllure',
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			key: 'vampiricAllure',
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		combat.txBuffHero(damages)
 	}
 	function borealTalisman(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, borealTalismanCompleted)
 	}
 	function borealTalismanCompleted() {
-		combat.txDamageMob([{
-			key: 'borealTalisman',
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			key: 'borealTalisman',
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		combat.txBuffHero(damages)
 	}
 
 }($, _, TweenMax);

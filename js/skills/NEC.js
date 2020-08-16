@@ -1,95 +1,224 @@
 !function($, _, TweenMax, undefined) {
 	skill.NEC = {
-		crossSlash,
-		explosiveShot,
-		trueshotArrow,
-		spreadShot,
-		bladeStorm,
-		suppressingVolley,
-		ignite,
-		shockNova,
-		faerieFlame,
-		fungalGrowth,
-		shimmeringOrb,
-		spiritOfTheHunter,
+		venomBolt,
+		explosivePlague,
+		bloodFire,
+		demonicPact,
+		hauntingVision,
+		summonSkeleton,
+		sanguinePact,
+		gleamOfMadness,
+		drainSoul,
+		breathOfTheDead,
+		defiledSpirit,
+		bloodSacrifice,
 	}
 	///////////////////////////////////////////
-	let arr, damage, damages, enhancedDamage
-
-	const displayBlock = { display: 'block' }
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = []
 	///////////////////////////////////////////
-	function crossSlash(index, data) {
-		console.info('crossSlash', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function venomBolt(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, venomBoltCompleted)
 	}
-
-	function explosiveShot(index, data) {
-		console.info('explosiveShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function venomBoltCompleted() {
+		combat.txDamageMob([{
+			key: 'venomBolt',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function trueshotArrow(index, data) {
-		console.info('trueshotArrow', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function explosivePlague(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, explosivePlagueCompleted)
 	}
-	function spreadShot(index, data) {
-		console.info('spreadShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function explosivePlagueCompleted() {
+		combat.txDamageMob([{
+			key: 'explosivePlague',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function bladeStorm(index, data) {
-		console.info('bladeStorm', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function bloodFire(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, bloodFireCompleted)
 	}
-	function suppressingVolley(index, data) {
-		console.info('suppressingVolley', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function bloodFireCompleted() {
+		combat.txDamageMob([{
+			key: 'bloodFire',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function ignite(index, data) {
-		console.info('ignite', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function demonicPact(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, demonicPactCompleted)
 	}
-	function shockNova(index, data) {
-		console.info('shockNova', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function demonicPactCompleted() {
+		combat.txDamageMob([{
+			key: 'demonicPact',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function faerieFlame(index, data) {
-		console.info('faerieFlame', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function hauntingVision(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, hauntingVisionCompleted)
 	}
-	function fungalGrowth(index, data) {
-		console.info('fungalGrowth', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function hauntingVisionCompleted() {
+		combat.txDamageMob([{
+			key: 'hauntingVision',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function shimmeringOrb(index, data) {
-		console.info('shimmeringOrb', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function summonSkeleton(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, summonSkeletonCompleted)
 	}
-	function spiritOfTheHunter(index, data) {
-		console.info('spiritOfTheHunter', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function summonSkeletonCompleted() {
+		combat.txDamageMob([{
+			key: 'summonSkeleton',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function sanguinePact(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, sanguinePactCompleted)
+	}
+	function sanguinePactCompleted() {
+		combat.txDamageMob([{
+			key: 'sanguinePact',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function gleamOfMadness(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, gleamOfMadnessCompleted)
+	}
+	function gleamOfMadnessCompleted() {
+		combat.txDamageMob([{
+			key: 'gleamOfMadness',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function drainSoul(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, drainSoulCompleted)
+	}
+	function drainSoulCompleted() {
+		combat.txDamageMob([{
+			key: 'drainSoul',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function breathOfTheDead(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, breathOfTheDeadCompleted)
+	}
+	function breathOfTheDeadCompleted() {
+		combat.txDamageMob([{
+			key: 'breathOfTheDead',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function defiledSpirit(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, defiledSpiritCompleted)
+	}
+	function defiledSpiritCompleted() {
+		combat.txDamageMob([{
+			key: 'defiledSpirit',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function bloodSacrifice(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, bloodSacrificeCompleted)
+	}
+	function bloodSacrificeCompleted() {
+		combat.txDamageMob([{
+			key: 'bloodSacrifice',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 
 }($, _, TweenMax);

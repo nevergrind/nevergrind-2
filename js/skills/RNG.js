@@ -285,13 +285,12 @@
 		spell.startCasting(index, data, fungalGrowthCompleted)
 	}
 	function fungalGrowthCompleted() {
-		hit = stats.spellDamage(false, true) // force crit, get non-crit
 		combat.txHotHero([{
 			index: spell.config.target,
 			key: 'fungalGrowth',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...hit,
+			...stats.spellDamage(false, true) // force crit, get non-crit,
 		}])
 	}
 	function shimmeringOrb(index, data) {

@@ -34,6 +34,7 @@ var battle;
 		}
 		 */
 		removeBuff,
+		removeAllBuffs,
 		getExpBarRatio,
 		nextLevel,
 		getSplashTarget,
@@ -453,14 +454,14 @@ var battle;
 			let buffKeyRow = buff.key + '-' + buff.row
 			// is duration dynamically specified?
 			let duration = buff.duration || buffs[buff.key].duration
-			console.info('processBuffs duration', duration)
+			// console.info('processBuffs duration', buff)
 			if (mobBuffTimerExists(buff.i, buffKeyRow)) {
 				mobs[buff.i].buffs[buffKeyRow].timer.kill()
 			}
-			// console.info('processBuffs', buff)
 			mobs[buff.i].buffs[buffKeyRow] = {
 				row: buff.row,
 				key: buff.key,
+				level: buff.level,
 				duration: duration,
 			}
 			// animate the actual duration down to 0
@@ -638,11 +639,24 @@ var battle;
 		 */
 		if (typeof my.buffs[key] === 'object') {
 			if (my.buffs[key].level) my.buffs[key].level = 0
-			if (my.buffs[key].duration) my.buffs[key].duration = 0
+			if (my.buffs[key].duration) {
+				if (typeof my.buffs[key].timer === 'object') {
+					my.buffs[key].timer.kill()
+				}
+				my.buffs[key].duration = 0
+			}
 			if (my.buffs[key].damage) my.buffs[key].damage = 0
 		}
 		removeMyBuffFlag(key)
 		removeMyBuffIcon(key, keyRow)
+	}
+	function removeAllBuffs() {
+		for (var key in my.buffFlags) {
+			if (my.buffs[key].duration > 0) {
+				console.info(key, my.buffs[key])
+				removeBuff(key)
+			}
+		}
 	}
 
 	function killAllBattleTimers() {
