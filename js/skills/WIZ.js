@@ -94,7 +94,6 @@
 						index: tgt,
 						spellType: spellType,
 						damageType: damageType,
-						isPiercing: true,
 						...stats.spellDamage()
 					}])
 				})
@@ -216,7 +215,6 @@
 				damages.push({
 					key: 'meteor',
 					index: tgt,
-					isPiercing: true,
 					spellType: spellType,
 					damageType: damageType,
 					...stats.spellDamage()

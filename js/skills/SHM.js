@@ -80,7 +80,6 @@
 		combat.txDamageMob([{
 			key: 'scourge',
 			index: spell.config.target,
-			isPiercing: true,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
@@ -91,6 +90,7 @@
 			key: 'scourge',
 			index: spell.config.target,
 			damageType: spell.data.damageType,
+			spellType: spell.data.spellType,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
@@ -137,6 +137,7 @@
 			key: 'vampiricGaze',
 			index: spell.config.target,
 			damageType: spell.data.damageType,
+			spellType: spell.data.spellType,
 			level: my.skills[spell.index],
 			...stats.spellDamage(false, true)
 		})
@@ -191,6 +192,7 @@
 			key: 'affliction',
 			index: spell.config.target,
 			damageType: spell.data.damageType,
+			spellType: spell.data.spellType,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
@@ -209,6 +211,7 @@
 			key: 'devouringSwarm',
 			index: spell.config.target,
 			damageType: spell.data.damageType,
+			spellType: spell.data.spellType,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)

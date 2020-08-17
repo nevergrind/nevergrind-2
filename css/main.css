@@ -712,7 +712,7 @@ tbody { border: 0 }
 	width: 1px;
 	height: 1px;
 	z-index: 5;
-	cursor: url('cursor/sword.cur'), pointer;
+	cursor: url('cursor/sword-color.png'), pointer;
 }
 .mob-dead {
 	position: absolute;
@@ -3266,7 +3266,7 @@ background-repeat: no-repeat;
 .cursor-buy { cursor: url('cursor/buy.cur'), pointer!important; }
 .cursor-gear { cursor: url('cursor/gear.cur'), pointer!important; }
 .cursor-mail { cursor: url('cursor/mail.cur'), pointer!important; }
-.cursor-sword { cursor: url('cursor/sword.cur'), pointer!important; }
+.cursor-sword { cursor: url('cursor/sword-color.png'), pointer!important; }
 .item-slot-merchant,
 .item-slot-apothecary,
 .item-slot-blacksmith {

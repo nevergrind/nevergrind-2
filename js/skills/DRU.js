@@ -140,8 +140,8 @@
 		damages.push({
 			key: 'toxicSpores',
 			index: spell.config.target,
+			spellType: spell.data.spellType,
 			damageType: 'poison',
-			isPiercing: true,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
@@ -193,7 +193,6 @@
 							key: 'moltenBoulder',
 							index: tgt,
 							damageType: 'fire',
-							isPiercing: true,
 							...stats.spellDamage(false, true)
 						})
 						dots[0].damage *= .5

@@ -1,9 +1,12 @@
 !function($, _, TweenMax, undefined) {
 	skill.NEC = {
+		maxPact: 0,
 		venomBolt,
 		explosivePlague,
+		explosivePlagueExplode,
 		bloodFire,
 		demonicPact,
+		getMaxDemonicPact,
 		hauntingVision,
 		summonSkeleton,
 		sanguinePact,
@@ -14,7 +17,7 @@
 		bloodSacrifice,
 	}
 	///////////////////////////////////////////
-	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = []
+	let enhancedDamage, hit, config, i, key, splashIndex, tgt, damages = []
 	///////////////////////////////////////////
 	function venomBolt(index, data) {
 		if (timers.castBar < 1) return
@@ -42,13 +45,29 @@
 		spell.startCasting(index, data, explosivePlagueCompleted)
 	}
 	function explosivePlagueCompleted() {
-		combat.txDamageMob([{
+		damages = []
+		damages.push({
 			key: 'explosivePlague',
 			index: spell.config.target,
-			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			spellType: spell.data.spellType,
+			...stats.spellDamage(false, true)
+		})
+		combat.txDotMob(damages)
+	}
+	function explosivePlagueExplode(index, damage) {
+		splashIndex = -2
+		damages = []
+		for (i=0; i<5; i++) {
+			tgt = battle.getSplashTarget(splashIndex++, index)
+			damages.push({
+				key: 'explosivePlagueExplosion',
+				index: tgt,
+				damageType: spell.data.damageType,
+				damage: damage * 4,
+			})
+		}
+		combat.txDamageMob(damages)
 	}
 	function bloodFire(index, data) {
 		if (timers.castBar < 1) return
@@ -59,6 +78,7 @@
 		spell.startCasting(index, data, bloodFireCompleted)
 	}
 	function bloodFireCompleted() {
+		// dd
 		combat.txDamageMob([{
 			key: 'bloodFire',
 			index: spell.config.target,
@@ -66,6 +86,16 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
 		}])
+		// dot
+		damages = []
+		damages.push({
+			key: 'bloodFire',
+			index: spell.config.target,
+			damageType: spell.data.damageType,
+			spellType: spell.data.spellType,
+			...stats.spellDamage(false, true)
+		})
+		combat.txDotMob(damages)
 	}
 	function demonicPact(index, data) {
 		if (timers.castBar < 1) return
@@ -76,6 +106,7 @@
 		spell.startCasting(index, data, demonicPactCompleted)
 	}
 	function demonicPactCompleted() {
+		// dd
 		combat.txDamageMob([{
 			key: 'demonicPact',
 			index: spell.config.target,
@@ -83,6 +114,30 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
 		}])
+		// dot
+		damages = []
+		damages.push({
+			key: 'demonicPact',
+			index: spell.config.target,
+			damageType: spell.data.damageType,
+			spellType: spell.data.spellType,
+			level: my.skills[spell.index],
+			...stats.spellDamage(false, true)
+		})
+		combat.txDotMob(damages)
+		timers.skillCooldowns[spell.config.skillIndex] = 0
+		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+	}
+	function getMaxDemonicPact(index) {
+		skill.NEC.maxPact = 0
+		for (key in mobs[index].buffs) {
+			if (mobs[index].buffs[key].key === 'demonicPact' &&
+				mobs[index].buffs[key].duration > 0 && // must be active
+				mobs[index].buffs[key].level > skill.NEC.maxPact) {
+				skill.NEC.maxPact = mobs[index].buffs[key].level
+			}
+		}
+		return skill.NEC.maxPact
 	}
 	function hauntingVision(index, data) {
 		if (timers.castBar < 1) return
@@ -93,13 +148,25 @@
 		spell.startCasting(index, data, hauntingVisionCompleted)
 	}
 	function hauntingVisionCompleted() {
-		combat.txDamageMob([{
-			key: 'hauntingVision',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		splashIndex = -1
+		damages = []
+		for (var i=0; i<3; i++) {
+			let tgt = battle.getSplashTarget(splashIndex++)
+			damages.push({
+				key: 'hauntingVision',
+				index: tgt,
+				damageType: spell.data.damageType,
+				spellType: spell.data.spellType,
+				...stats.spellDamage(false, true),
+				buffs: [{
+					i: tgt, // target
+					row: my.row, // this identifies unique buff state/icon
+					key: 'fear', // this sets the flag,
+					duration: buffs.hauntingVision.duration,
+				}],
+			})
+		}
+		combat.txDotMob(damages)
 	}
 	function summonSkeleton(index, data) {
 		if (timers.castBar < 1) return

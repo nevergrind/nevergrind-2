@@ -170,14 +170,6 @@ var combat;
 		}
 		//console.info('asdfasdf', d)
 
-		// dodge
-		if (!d.isPiercing &&
-			rand() * 100 < mobs[d.index].dodge) {
-			d.damage = 0
-			combat.popupDamage(d.index, 'DODGE!')
-			return d
-		}
-
 		if (d.damageType === 'physical') {
 			// check for things that immediately set to 0
 			if (rand() < stats.missChance(d.index, d.weaponSkill)) {
@@ -186,22 +178,25 @@ var combat;
 				combat.popupDamage(d.index, 'MISS!')
 				return d
 			}
-			// riposte
-			if (!d.isPiercing &&
-				timers.castBar < 1 &&
-				rand() * 100 < mobs[d.index].riposte) {
-				d.damage = 0
-				combat.txDamageHero(d.index, [ mob.getMobDamage(d.index, my.row, true) ])
-				combat.popupDamage(d.index, 'RIPOSTE!')
-				return d
-			}
-			// parry
-			if (!d.isPiercing &&
-				timers.castBar < 1 &&
-				rand() * 100 < mobs[d.index].parry) {
-				d.damage = 0
-				combat.popupDamage(d.index, 'PARRY!')
-				return d
+			if (!d.isPiercing) {
+				if (rand() * 100 < mobs[d.index].dodge) {
+					d.damage = 0
+					combat.popupDamage(d.index, 'DODGE!')
+					return d
+				}
+				else if (timers.castBar < 1) {
+					if (rand() * 100 < mobs[d.index].riposte) {
+						d.damage = 0
+						combat.txDamageHero(d.index, [ mob.getMobDamage(d.index, my.row, true) ])
+						combat.popupDamage(d.index, 'RIPOSTE!')
+						return d
+					}
+					else if (rand() * 100 < mobs[d.index].parry) {
+						d.damage = 0
+						combat.popupDamage(d.index, 'PARRY!')
+						return d
+					}
+				}
 			}
 			// enhancedDamage
 			d.enhancedDamage += stats.enhanceDamageToMobType(combat.mobType[mobs[d.index].img])
@@ -240,6 +235,8 @@ var combat;
 			mobArmor = mobs[d.index].armor
 			// higher REDUCES armor
 			if (mobs[d.index].buffFlags.igniteArmor) mobArmor += .15
+			if (mobs[d.index].buffFlags.bloodFire) mobArmor += .1
+
 			if (mobArmor > 1) mobArmor = 1
 			// console.info('mobArmor', d.index, mobArmor)
 			d.damage *= mobArmor
@@ -287,6 +284,9 @@ var combat;
 	}
 	function getMobResist(d) {
 		resist = mobs[d.index].resist[d.damageType]
+		if (skill.NEC.getMaxDemonicPact(d.index)) {
+			resist += buffs.demonicPact.lowerResists[skill.NEC.maxPact]
+		}
 		resistPenalty = 0
 		if (mobs[d.index].level > my.level) {
 			// 20% when 3 levels higher
@@ -294,6 +294,7 @@ var combat;
 		}
 		resist -= resistPenalty
 		if (resist < .25) resist = .25
+		else if (resist > 1) resist = 1
 
 		return resist
 	}
@@ -537,6 +538,15 @@ var combat;
 			isPiercing: true,
 			damage: damage,
 		}])
+		for (var k in mobs[index].buffs) {
+			// console.info('onDotTick', k, mobs[index].buffs[k].row, mobs[index].buffs[k].duration)
+			if (mobs[index].buffs[k].key === 'explosivePlague' &&
+				my.row === mobs[index].buffs[k].row &&
+				mobs[index].buffs[k].duration === 0) {
+				// console.info('onDotTick DONE!', k, mobs[index].buffs[k])
+				skill.NEC.explosivePlagueExplode(index, damage)
+			}
+		}
 	}
 
 	function selfDied() {
@@ -750,15 +760,7 @@ var combat;
 		combat.text.stage.addChild(basicText)
 		TweenMax.to(basicText, textDuration * .6, {
 			y: '-=' + textDistanceY + '',
-			onComplete: function() {
-				TweenMax.to(basicText, textDuration * .4, {
-					y: '+=' + textDistanceY * .5 + '',
-					alpha: 0,
-					onComplete: removeText,
-					onCompleteParams: [ basicText.id ],
-					ease: Power1.easeIn
-				})
-			},
+			onComplete: popupDamageFade,
 			ease: Power3.easeOut
 		})
 		TweenMax.to(basicText, textDuration * .5, {
@@ -768,7 +770,6 @@ var combat;
 		TweenMax.to(basicText, textDuration, {
 			startAt: { pixi: { brightness: isCrit ? 5 : 12, saturate: isCrit ? 5 : 12 }},
 			pixi: { brightness: 1, saturate: 1 },
-
 		})
 
 		x = _.random(-textDistanceX, textDistanceX)
@@ -776,6 +777,16 @@ var combat;
 			x: x < 0 ? '-=' + (x * -1) : '+=' + x,
 			ease: Linear.easeOut
 		})
+		/////////////////////////
+		function popupDamageFade() {
+			TweenMax.to(basicText, textDuration * .4, {
+				y: '+=' + textDistanceY * .5 + '',
+				alpha: 0,
+				onComplete: removeText,
+				onCompleteParams: [ basicText.id ],
+				ease: Power1.easeIn
+			})
+		}
 	}
 
 	const healKeys = ['damage', 'index', 'key']
