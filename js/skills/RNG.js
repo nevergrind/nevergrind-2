@@ -43,8 +43,7 @@
 		}
 		combat.txDamageMob(damages)
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 
@@ -73,8 +72,7 @@
 		combat.txDamageMob(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function trueshotStrike(index, data) {
@@ -99,8 +97,7 @@
 		combat.txDamageMob(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function spreadShot(index, data) {
@@ -133,8 +130,7 @@
 		combat.txDamageMob(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function bladeStorm(index, data) {
@@ -163,8 +159,7 @@
 		combat.txDamageMob(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function suppressingVolley(index, data) {
@@ -196,8 +191,7 @@
 		}
 		combat.txDamageMob(damages)
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 		// special effects
 	}
@@ -314,8 +308,7 @@
 			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
 		combat.txBuffHero(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 
 	function spiritOfTheHunter(index, data) {
@@ -339,10 +332,6 @@
 			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
 		combat.txBuffHero(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
-		if (bar.windowsOpen.character && bar.activeTab === 'character') {
-			ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
-		}
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 }($, _, TweenMax, Linear);

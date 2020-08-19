@@ -13,6 +13,7 @@ var timers;
 		mobStunTimer: [],
 		mobFreezeTimer: [],
 		mobChillTimer: [],
+		mobFearTimer: [],
 		mobEffects: [],
 		primaryAttackCall: delayedCall(0, ''),
 		secondaryAttackCall: delayedCall(0, ''),
@@ -33,10 +34,12 @@ var timers;
 			timers.mobStunTimer[i] = delayedCall(0, '')
 			timers.mobFreezeTimer[i] = delayedCall(0, '')
 			timers.mobChillTimer[i] = delayedCall(0, '')
+			timers.mobFearTimer[i] = delayedCall(0, '')
 			timers.mobEffects[i] = {
 				stunDuration: 0,
 				freezeDuration: 0,
 				chillDuration: 0,
+				fearDuration: 0,
 			}
 		}
 	}

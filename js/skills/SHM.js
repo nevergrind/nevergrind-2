@@ -65,8 +65,7 @@
 			}
 		}
 		combat.txDamageMob(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function scourge(index, data) {
 		if (timers.castBar < 1) return
@@ -141,10 +140,9 @@
 			level: my.skills[spell.index],
 			...stats.spellDamage(false, true)
 		})
-		console.info('vampiricGaze', damages[0])
+		// console.info('vampiricGaze', damages[0])
 		combat.txDotMob(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function glacialShard(index, data) {
 		if (timers.castBar < 1) return
@@ -159,24 +157,25 @@
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
 		let splashIndex = -1
+		damages = []
 		for (var i=0; i<3; i++) {
 			let tgt = battle.getSplashTarget(splashIndex++, originalTarget)
-			combat.txDamageMob([{
+			damages.push({
 				key: 'glacialShard',
 				index: tgt,
 				spellType: spellType,
 				damageType: damageType,
+				...stats.spellDamage(),
 				buffs: [{
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'freeze', // this sets the flag,
 					duration: 3,
 				}],
-				...stats.spellDamage()
-			}])
+			})
 		}
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		combat.txDamageMob(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function affliction(index, data) {
 		if (timers.castBar < 1) return
@@ -215,8 +214,7 @@
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function devouringSwarmHeal(data) {
 		// console.info('devouringSwarmHeal', ~~(data.damage * buffs.devouringSwarm.healRatio), data)

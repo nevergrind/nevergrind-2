@@ -52,8 +52,7 @@
 			...stats.spellDamage(),
 			isBlighted: true,
 		}])
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function condemnation(index, data) {
 		if (timers.castBar < 1) return
@@ -79,8 +78,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function sacredRevelation(index, data) {
 		if (timers.castBar < 1) return
@@ -111,8 +109,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function holySanctuary(index, data) {
 		if (timers.castBar < 1) return
@@ -136,8 +133,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function forceOfGlory(index, data) {
 		if (timers.castBar < 1) return
@@ -161,8 +157,7 @@
 			}],
 			...stats.spellDamage()
 		}])
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function bindingGrace(index, data) {
 		if (timers.castBar < 1) return
@@ -195,8 +190,7 @@
 			...stats.spellDamage()
 		})
 		combat.txHotHero(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function guardianAngel(index, data) {
 		if (timers.castBar < 1) return
@@ -219,8 +213,7 @@
 			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
 		combat.txBuffHero(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function divineLight(index, data) {
 		if (timers.castBar < 1) return

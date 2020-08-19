@@ -5,6 +5,7 @@ var mobEffects;
 		freeze,
 		stagger,
 		chill,
+		fear,
 	}
 	///////////////////////////////////////////
 	function stun(i, duration) {
@@ -81,5 +82,23 @@ var mobEffects;
 		mob.setTimeScaleSpeed(i)
 		mob.setFilter(i)
 	}
-
+	function fear(i, duration) {
+		if (duration > timers.mobEffects[i].fearDuration) {
+			console.info('mobEffects FEARED!', i)
+			timers.mobFearTimer[i].kill()
+			timers.mobEffects[i].fearDuration = duration
+			// timers.mobStunDuration
+			timers.mobFearTimer[i] = TweenMax.to(timers.mobEffects[i], duration, {
+				fearDuration: 0,
+				onComplete: chillComplete,
+				onCompleteParams: [i],
+				ease: Linear.easeNone,
+			})
+			/*mob.setTimeScaleSpeed(i)
+			mob.setFilter(i)*/
+		}
+		else {
+			console.warn('mobEffects chillDuration SKIPPED!', duration, timers.mobEffects[i].chillDuration)
+		}
+	}
 }($, _, TweenMax, Linear);

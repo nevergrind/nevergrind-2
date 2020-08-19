@@ -200,8 +200,6 @@ var combat;
 			}
 			// enhancedDamage
 			d.enhancedDamage += stats.enhanceDamageToMobType(combat.mobType[mobs[d.index].img])
-
-			// reduce enhancedDamage
 			if (mobs[d.index].mobType === 'undead' || mobs[d.index].mobType === 'humanoid') {
 				if (d.weaponSkill === 'One-hand Blunt' || d.weaponSkill === 'Two-hand Blunt') {
 					d.enhancedDamage += .25
@@ -217,8 +215,11 @@ var combat;
 					d.enhancedDamage += .25
 				}
 			}
+			if (mobs[d.index].buffFlags.demonicPact) d.enhancedDamage += .15
 
-			//console.info('combat damage', d)
+			// console.info('d.enhancedDamage', d.enhancedDamage)
+
+			// reduce enhancedDamage
 			d.damage *= d.enhancedDamage
 
 			// modify mob armor for self
@@ -284,8 +285,24 @@ var combat;
 	}
 	function getMobResist(d) {
 		resist = mobs[d.index].resist[d.damageType]
-		if (skill.NEC.getMaxDemonicPact(d.index)) {
-			resist += buffs.demonicPact.lowerResists[skill.NEC.maxPact]
+		//console.info('getMobResist', d.index, d.damageType, resist)
+		if (d.damageType === 'blood') {
+			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
+		}
+		else if (d.damageType === 'poison') {
+			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
+		}
+		else if (d.damageType === 'arcane') {
+			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
+		}
+		else if (d.damageType === 'lightning') {
+
+		}
+		else if (d.damageType === 'fire') {
+
+		}
+		else if (d.damageType === 'ice') {
+
 		}
 		resistPenalty = 0
 		if (mobs[d.index].level > my.level) {
@@ -294,8 +311,8 @@ var combat;
 		}
 		resist -= resistPenalty
 		if (resist < .25) resist = .25
-		else if (resist > 1) resist = 1
-
+		else if (resist > 2) resist = 2 // cannot lower resists beyond -100%
+		//console.info('getMobResist', d.index, d.damageType, resist)
 		return resist
 	}
 	function toggleAutoAttack() {
@@ -496,6 +513,7 @@ var combat;
 						mobs[damages[i].index].buffs[rowKey].dotTicks.kill()
 					}
 				}
+				console.info('rxDotMob data', data)
 				console.info('rxDotMob duration', damages[i])
 
 				battle.processBuffs([{
@@ -670,7 +688,7 @@ var combat;
 			if (my.buffFlags.shimmeringOrb) reduceShimmeringOrbDamage(d)
 			d.damage -= stats.magMit()
 
-			// mob magic resists
+			// my magic resists
 			console.info(d.damageType, index)
 			d.damage *= stats.getResistPercent(d.damageType)
 		}
@@ -911,7 +929,7 @@ var combat;
 			if (buffs[buff.key].hate) {
 				hate += ~~(buff.damage * buffs[buff.key].hate)
 			}
-			console.info('updateHate hate', hate)
+			// console.info('updateHate hate', hate)
 
 			if (my.row === buff.index) {
 				let key = buff.key
@@ -976,10 +994,11 @@ var combat;
 		console.info('processStatBuffsToMe key!', key)
 		if (key === 'spiritOfTheHunter') {
 			cacheBustAttack()
+			updateCharStatColTwo()
 		}
 		else if (key === 'sealOfRedemption') {
 			stats.resistBlood(true)
-			if (bar.windowsOpen.character) ng.html('#inv-resist-blood', stats.resistBlood())
+			bar.updateAllResistsDOM()
 			my.set('hpMax', stats.hpMax())
 			bar.updateBar('hp')
 			txHpChange()
@@ -1013,7 +1032,7 @@ var combat;
 			stats.resistLightning(true)
 			stats.resistFire(true)
 			stats.resistIce(true)
-			if (bar.windowsOpen.character) bar.updateAllResistsDOM()
+			bar.updateAllResistsDOM()
 		}
 		else if (key === 'branchSpirit') {
 			cacheBustArmor()
@@ -1027,7 +1046,7 @@ var combat;
 			stats.leech(true)
 			stats.wraith(true)
 			stats.cha(true)
-			if (bar.windowsOpen.character) ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
+			updateCharStatColTwo()
 		}
 		else if (key === 'borealTalisman') {
 			stats.resistIce(true)
@@ -1037,19 +1056,30 @@ var combat;
 			bar.updateBar('hp')
 			txHpChange()
 			cacheBustAttack()
-			if (bar.windowsOpen.character) bar.updateAllResistsDOM()
-			if (bar.windowsOpen.character) ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+			bar.updateAllResistsDOM()
+			updateCharStatColOne()
 		}
 		////////////////////////////////
 		function cacheBustAttack() {
 			stats.offense(true)
 			stats.attack(void 0, true)
-			if (bar.windowsOpen.character) ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
+			updateCharStatColTwo()
 		}
 		function cacheBustArmor() {
 			// utility function that busts armor cache and updates DOM
 			stats.armor(true)
-			if (bar.windowsOpen.character) ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+			updateCharStatColOne()
+		}
+	}
+	
+	function updateCharStatColOne() {
+		if (bar.windowsOpen.character && bar.activeTab === 'character') {
+			ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+		}
+	}
+	function updateCharStatColTwo() {
+		if (bar.windowsOpen.character && bar.activeTab === 'character') {
+			ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
 		}
 	}
 

@@ -473,11 +473,13 @@ var battle;
 			})
 			mobs[buff.i].buffFlags[buff.key] = true
 			// status effects
+			console.info('processBuffs', buff)
 			if (buff.duration) {
 				console.warn('processBuffs effect found', buff.i, buff.key, buff.duration)
 				if (buff.key === 'stun') mobEffects.stun(buff.i, buff.duration)
 				else if (buff.key === 'freeze') mobEffects.freeze(buff.i, buff.duration)
 				else if (buff.key === 'chill') mobEffects.chill(buff.i, buff.duration)
+				else if (buff.key === 'fear') mobEffects.fear(buff.i, buff.duration)
 			}
 		})
 		// updates the DOM based on mob buffs

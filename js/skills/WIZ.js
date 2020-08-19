@@ -122,8 +122,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function chainLightning(index, data) {
 		if (timers.castBar < 1) return
@@ -163,8 +162,7 @@
 			if (increment) tgt++
 			else tgt--
 		}
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function frostNova(index, data) {
 		if (timers.castBar < 1) return
@@ -194,8 +192,7 @@
 			}
 		}
 		combat.txDamageMob(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function meteor(index, data) {
 		if (timers.castBar < 1) return
@@ -237,8 +234,7 @@
 				combat.txDotMob(damages)
 			}
 		})
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function frozenBarrier(index, data) {
 		if (timers.castBar < 1) return
@@ -260,10 +256,7 @@
 			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
 		combat.txBuffHero(damages)
-
-		// animate timers
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function frozenBarrierEffect() {
 		let val = round(my.buffs.frozenBarrier.damage / 8)
@@ -298,10 +291,7 @@
 			...stats.spellDamage(false, true) // forceCrit, getNonCrit
 		})
 		combat.txBuffHero(damages)
-
-		// animate timers
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function manaShell(index, data) {
 		if (timers.castBar < 1) return
@@ -347,8 +337,7 @@
 			}],
 			...stats.spellDamage()
 		}])
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 
 }($, _, TweenMax);

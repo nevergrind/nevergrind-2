@@ -1,15 +1,14 @@
 !function($, _, TweenMax, undefined) {
 	skill.NEC = {
-		maxPact: 0,
+		maxCurseOfShadows: 0,
 		venomBolt,
 		explosivePlague,
 		explosivePlagueExplode,
 		bloodFire,
 		demonicPact,
-		getMaxDemonicPact,
 		hauntingVision,
-		summonSkeleton,
-		sanguinePact,
+		icingDeath,
+		curseOfShadows,
 		gleamOfMadness,
 		drainSoul,
 		breathOfTheDead,
@@ -125,19 +124,7 @@
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
-		timers.skillCooldowns[spell.config.skillIndex] = 0
-		button.processButtonTimers(spell.config.skillIndex, skills.lastData)
-	}
-	function getMaxDemonicPact(index) {
-		skill.NEC.maxPact = 0
-		for (key in mobs[index].buffs) {
-			if (mobs[index].buffs[key].key === 'demonicPact' &&
-				mobs[index].buffs[key].duration > 0 && // must be active
-				mobs[index].buffs[key].level > skill.NEC.maxPact) {
-				skill.NEC.maxPact = mobs[index].buffs[key].level
-			}
-		}
-		return skill.NEC.maxPact
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function hauntingVision(index, data) {
 		if (timers.castBar < 1) return
@@ -151,55 +138,68 @@
 		splashIndex = -1
 		damages = []
 		for (var i=0; i<3; i++) {
-			let tgt = battle.getSplashTarget(splashIndex++)
+			tgt = battle.getSplashTarget(splashIndex++)
 			damages.push({
 				key: 'hauntingVision',
 				index: tgt,
-				damageType: spell.data.damageType,
 				spellType: spell.data.spellType,
-				...stats.spellDamage(false, true),
+				damageType: spell.data.damageType,
+				...stats.spellDamage(),
 				buffs: [{
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'fear', // this sets the flag,
-					duration: buffs.hauntingVision.duration,
+					duration: 12,
 				}],
 			})
 		}
-		combat.txDotMob(damages)
+		combat.txDamageMob(damages)
 	}
-	function summonSkeleton(index, data) {
+	function icingDeath(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, summonSkeletonCompleted)
+		spell.startCasting(index, data, icingDeathCompleted)
 	}
-	function summonSkeletonCompleted() {
-		combat.txDamageMob([{
-			key: 'summonSkeleton',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+	function icingDeathCompleted() {
+		splashIndex = -1
+		damages = []
+		for (var i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			damages.push({
+				key: 'icingDeath',
+				index: tgt,
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage(),
+				buffs: [{
+					i: tgt, // target
+					row: my.row, // this identifies unique buff state/icon
+					key: 'chill', // this sets the flag,
+					duration: 6,
+				}],
+			})
+		}
+		combat.txDamageMob(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
-	function sanguinePact(index, data) {
+	function curseOfShadows(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, sanguinePactCompleted)
+		spell.startCasting(index, data, curseOfShadowsCompleted)
 	}
-	function sanguinePactCompleted() {
-		combat.txDamageMob([{
-			key: 'sanguinePact',
+	function curseOfShadowsCompleted() {
+		combat.txDotMob([{
+			key: 'curseOfShadows',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(),
 		}])
 	}
 	function gleamOfMadness(index, data) {

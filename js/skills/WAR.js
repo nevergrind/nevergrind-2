@@ -88,8 +88,7 @@ let skill = {};
 		combat.txDamageMob(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function pummel(index, data) {
@@ -120,8 +119,7 @@ let skill = {};
 		combat.txDamageMob(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function doubleThrow(index, data) {
@@ -153,8 +151,7 @@ let skill = {};
 		combat.txDamageMob(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function shockwave(index, data) {
@@ -187,8 +184,7 @@ let skill = {};
 		}
 		combat.txDamageMob(damages)
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function frenzy(index, data) {
@@ -209,8 +205,7 @@ let skill = {};
 		}])
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 	}
 
 	const jumpStrikeDuration = 1.5
@@ -250,8 +245,7 @@ let skill = {};
 		})
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function primalStomp(index, data) {
@@ -285,8 +279,7 @@ let skill = {};
 		combat.txDamageMob(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function bulwark(index, data) {
@@ -308,8 +301,7 @@ let skill = {};
 		}])
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function intrepidShout(index, data) {
@@ -334,8 +326,7 @@ let skill = {};
 		combat.txBuffHero(damages)
 
 		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function furiousCleave(index, data) {
@@ -369,11 +360,7 @@ let skill = {};
 			})
 		}
 		combat.txDamageMob(damages)
-
-		// animate timers
-		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data)
-		// button.triggerGlobalCooldown()
+		spell.triggerCooldown(index, data)
 	}
 
 }($, _, TweenMax);
