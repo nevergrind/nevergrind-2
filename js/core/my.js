@@ -174,7 +174,7 @@ var my;
 	}*/
 	function resourceTick(type) {
 		// hpRegen mpRegen spRegen
-		if (my.hp > 0) {
+		if (my.hp > 0 && !my.buffFlags.frozen) {
 			my[type] += stats[type + 'Regen']()
 			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
 		}

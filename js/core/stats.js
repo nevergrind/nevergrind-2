@@ -75,13 +75,13 @@ var stats = {};
 	var defensiveJobs = ['WAR', 'CRU', 'SHD']
 	var averagePunchJobs = ['WAR', 'CRU', 'SHD', 'ROG', 'RNG', 'BRD']
 	var wisCasterJobs = ['DRU', 'CLR', 'SHM']
-	var intCasterJobs = ['NEC', 'ENC', 'SUM', 'WIZ']
-	var allCasterJobs = ['CLR', 'DRU', 'SHM', 'BRD', 'NEC', 'ENC', 'SUM', 'WIZ']
+	var intCasterJobs = ['NEC', 'ENC', 'TMP', 'WIZ']
+	var allCasterJobs = ['CLR', 'DRU', 'SHM', 'BRD', 'NEC', 'ENC', 'TMP', 'WIZ']
 	var hybridJobs = ['CRU', 'SHD', 'RNG']
-	var twoHandBluntAverageJobs = ['WAR', 'CRU', 'SHD', 'CLR', 'DRU', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
+	var twoHandBluntAverageJobs = ['WAR', 'CRU', 'SHD', 'CLR', 'DRU', 'SHM', 'NEC', 'ENC', 'TMP', 'WIZ']
 	var tankJobs = ['WAR', 'CRU', 'SHD']
 	var averageArcherJobs = ['WAR', 'CRU', 'SHD', 'ROG', 'BRD']
-	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'SUM', 'WIZ']
+	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'TMP', 'WIZ']
 	var averageOneHandSlashJobs = ['WAR', 'CRU', 'SHD', 'BRD', 'DRU']
 	let isCrit = false
 	let chance, weaponSkill, enhanceDamage, addedDamage
@@ -120,7 +120,7 @@ var stats = {};
 		'SHM': 7,
 		'NEC': 6,
 		'ENC': 6,
-		'SUM': 6,
+		'TMP': 6,
 		'WIZ': 6,
 	}
 	const mpTier = {
@@ -136,7 +136,7 @@ var stats = {};
 		'SHM': 4,
 		'NEC': 5,
 		'ENC': 5,
-		'SUM': 5,
+		'TMP': 5,
 		'WIZ': 5,
 	}
 	const spTier = {
@@ -152,7 +152,7 @@ var stats = {};
 		'SHM': 5,
 		'NEC': 3,
 		'ENC': 5,
-		'SUM': 3,
+		'TMP': 3,
 		'WIZ': 3,
 	}
 

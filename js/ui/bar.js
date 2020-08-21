@@ -84,7 +84,7 @@ var bar;
 		SHM: 13,
 		NEC: 18,
 		ENC: 1,
-		SMN: 3,
+		TMP: 3,
 		WIZ: 24,
 	}
 	let ratio = 0
@@ -246,7 +246,7 @@ var bar;
 		else if (my.jobLong === 'Rogue' ||
 			my.jobLong === 'Necromancer' ||
 			my.jobLong === 'Enchanter' ||
-			my.jobLong === 'Summoner' ||
+			my.jobLong === 'Templar' ||
 			my.jobLong === 'Wizard') {
 			bar.defaultImage[12] = 'piercers0'
 		}

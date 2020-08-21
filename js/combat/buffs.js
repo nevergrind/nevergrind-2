@@ -512,7 +512,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 10,
 			interval: 3,
 			duration: 30,
-			damageType: 'arcane',
+			damageType: 'poison',
 		},
 		// resistIce: [0, 4, 7, 10, 13, 16, 19, 22],
 		profaneSpirit: {

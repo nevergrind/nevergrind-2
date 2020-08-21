@@ -18,7 +18,7 @@ var tavern;
 			'SHM': void 0,
 			'NEC': void 0,
 			'ENC': void 0,
-			'SUM': void 0,
+			'TMP': void 0,
 			'WIZ': void 0,
 		},
 		getBodyHtml,

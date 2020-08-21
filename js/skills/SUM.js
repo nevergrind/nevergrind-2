@@ -1,5 +1,5 @@
 !function($, _, TweenMax, undefined) {
-	skill.SUM = {
+	skill.TMP = {
 		crossSlash,
 		explosiveShot,
 		trueshotArrow,

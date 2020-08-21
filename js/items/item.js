@@ -116,7 +116,7 @@ var loot = {};
 		SHM: { hp: 1.5, mp: 1.5, sp: 2 },
 		NEC: { hp: 1, mp: 2, sp: 1.5 },
 		ENC: { hp: 1, mp: 2, sp: 1.5 },
-		SUM: { hp: 1, mp: 2, sp: 1.5 },
+		TMP: { hp: 1, mp: 2, sp: 1.5 },
 		WIZ: { hp: 1, mp: 2, sp: 1.5 },
 	}
 	// events
@@ -2118,35 +2118,9 @@ var loot = {};
 		return _.clone(identifyScroll)
 	}
 
-
-	const wearsLeather = [
-		'BRD',
-		'CLR',
-		'DRU',
-		'MNK',
-		'CRU',
-		'RNG',
-		'ROG',
-		'SHD',
-		'SHM',
-		'WAR',
-	]
-	const wearsMail = [
-		'BRD',
-		'CLR',
-		'CRU',
-		'RNG',
-		'SHD',
-		'SHM',
-		'WAR',
-	]
-	const wearsPlate = [
-		'BRD',
-		'CLR',
-		'CRU',
-		'SHD',
-		'WAR',
-	]
+	const wearsLeather = ['BRD', 'CLR', 'CRU', 'SHD', 'WAR', 'RNG', 'ROG', 'SHM', 'DRU', 'MNK', 'TMP']
+	const wearsMail = ['BRD', 'CLR', 'CRU', 'SHD', 'WAR', 'RNG', 'SHM']
+	const wearsPlate = ['BRD', 'CLR', 'CRU', 'SHD', 'WAR']
 	function canEquipArmor(armorType) {
 		if (armorType === void 0) return true
 		if (armorType === 'cloth') return true

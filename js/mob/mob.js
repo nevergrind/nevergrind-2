@@ -35,6 +35,7 @@ var mob;
 		hideMobTargets,
 		setFilter,
 		setTimeScaleSpeed,
+		isMobPoisoned,
 		txData: [],
 		enableMobHeartbeat: true,
 		imageKeysLen: 0,
@@ -850,7 +851,7 @@ var mob;
 				'Glacial Enchant',
 			];
 		}
-		else if (config.job === 'SUM') {
+		else if (config.job === 'TMP') {
 			config.hp = ~~(config.hp * .9)
 			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
@@ -874,21 +875,28 @@ var mob;
 
 	function resourceTick() {
 		//TODO: This code works, but I think it will create unnecessary network strain... explore later?
-		if (mob.enableMobHeartbeat) {
-			if (my.isLeader && party.hasMoreThanOnePlayer()) {
-				tickData = []
-				mobs.forEach(processMobResourceTick)
-				if (tickData.length) {
-					socket.publish('party' + my.partyId, {
-						route: 'p->mobTick',
-						d: tickData
-					}, true)
-				}
+		if (mob.enableMobHeartbeat &&
+			my.isLeader &&
+			party.hasMoreThanOnePlayer()) {
+			tickData = []
+			mobs.forEach(processMobResourceTick)
+			if (tickData.length) {
+				socket.publish('party' + my.partyId, {
+					route: 'p->mobTick',
+					d: tickData
+				}, true)
 			}
 		}
 	}
+	function isMobPoisoned(mob) {
+		return Boolean(mob.buffFlags.engulfingDarkness ||
+			mob.buffFlags.toxicSpores ||
+			mob.buffFlags.affliction)
+	}
 	function processMobResourceTick(mob, index) {
-		if (mob.name) {
+		if (mob.name &&
+			timers.mobEffects[index].freezeDuration === 0 &&
+			!isMobPoisoned(mobs[index])) {
 			// hp
 			hpTick = mob.level
 			if (mob.hp + hpTick > mob.hpMax) {

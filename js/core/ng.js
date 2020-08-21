@@ -53,7 +53,7 @@ var ng;
 				'Cleric': [0,2,2,0,4,2,0],
 				'Druid': [0,2,2,0,4,2,0],
 				'Enchanter': [0,0,0,0,2,4,4],
-				'Summoner': [0,2,0,0,4,4,0],
+				'Templar': [0,2,0,0,4,4,0],
 				'Monk': [4,2,2,2,0,0,0],
 				'Necromancer': [0,2,0,0,4,4,0],
 				'Crusader': [2,4,0,2,2,0,0],
@@ -79,7 +79,7 @@ var ng;
 				'jobs': [
 					'Cleric',
 					'Enchanter',
-					'Summoner',
+					'Templar',
 					'Necromancer',
 					'Ranger',
 					'Rogue',
@@ -102,7 +102,7 @@ var ng;
 				'jobs': [
 					'Cleric',
 					'Enchanter',
-					'Summoner',
+					'Templar',
 					'Necromancer',
 					'Crusader',
 					'Shadow Knight',
@@ -114,7 +114,7 @@ var ng;
 				'jobs': [
 					'Cleric',
 					'Enchanter',
-					'Summoner',
+					'Templar',
 					'Necromancer',
 					'Rogue',
 					'Shadow Knight',
@@ -150,7 +150,7 @@ var ng;
 				'jobs': [
 					'Cleric',
 					'Enchanter',
-					'Summoner',
+					'Templar',
 					'Crusader',
 					'Wizard'
 				]
@@ -162,7 +162,7 @@ var ng;
 					'Cleric',
 					'Druid',
 					'Enchanter',
-					'Summoner',
+					'Templar',
 					'Monk',
 					'Necromancer',
 					'Crusader',
@@ -253,7 +253,7 @@ var ng;
 			'Cleric',
 			'Druid',
 			'Enchanter',
-			'Summoner',
+			'Templar',
 			'Monk',
 			'Necromancer',
 			'Crusader',
@@ -269,7 +269,7 @@ var ng;
 			Cleric: 'CLR',
 			Druid: 'DRU',
 			Enchanter: 'ENC',
-			Summoner: 'SUM',
+			Templar: 'TMP',
 			Monk: 'MNK',
 			Necromancer: 'NEC',
 			Crusader: 'CRU',
@@ -285,7 +285,7 @@ var ng;
 			CLR: 'Cleric',
 			DRU: 'Druid',
 			ENC: 'Enchanter',
-			SUM: 'Summoner',
+			TMP: 'Templar',
 			MNK: 'Monk',
 			NEC: 'Necromancer',
 			CRU: 'Crusader',
@@ -751,7 +751,7 @@ var ng;
 	function updateCharacterCard() {
 		var s = ''
 		if (characterData.length) {
-			var d = characterData[ng.selectIndex]
+			var d = characterData[ng.selectIndex] || characterData[0]
 			var url = my.getAvatarUrl(d);
 			s += '<div id="title-select-down" class="title-select-col flex-center grad-black">'+
 					'<img class="title-select-chevron" src="images/ui/chevron-left.png">' +

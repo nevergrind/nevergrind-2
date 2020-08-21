@@ -4,7 +4,7 @@
 		'Cleric',
 		'Druid',
 		'Enchanter',
-		'Summoner',
+		'Templar',
 		'Monk',
 		'Necromancer',
 		'Crusader',

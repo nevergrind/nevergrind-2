@@ -131,7 +131,7 @@
 	// chest
 	if ($f['job'] === 'Necromancer' ||
 		$f['job'] === 'Enchanter' ||
-		$f['job'] === 'Summoner' ||
+		$f['job'] === 'Templar' ||
 		$f['job'] === 'Wizard') {
 		$data = json_encode('{"slots":["chest"],"armorType":"cloth","armor":1,"rarity":"normal","itemLevel":1,"imgIndex":4,"itemType":"chests"}');
 		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 6, "Training Robe", '. $data .')';
@@ -163,7 +163,7 @@
 	else if (
 		$f['job'] === 'Necromancer' ||
 		$f['job'] === 'Enchanter' ||
-		$f['job'] === 'Summoner' ||
+		$f['job'] === 'Templar' ||
 		$f['job'] === 'Wizard'
 	) {
 		$data = json_encode('{"slots":["primary","secondary"],"weaponSkill":"Piercing","minDamage":1,"maxDamage":3,"speed":2.2,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"piercers"}');

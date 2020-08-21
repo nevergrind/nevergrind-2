@@ -210,7 +210,7 @@ loot.helms = {
 			twoHandBlunt: 5,
 		}, {
 			name: 'Miter',
-			newName: 'Summoner\'s Beacon',
+			newName: 'Templar\'s Beacon',
 			enhancedArmor: [60, 70],
 			conjuration: 3,
 			evocation: [1, 2],

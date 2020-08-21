@@ -21,7 +21,7 @@ var skills;
 			SHM: { max: 0, level: 0, },
 			NEC: { max: 0, level: 0, },
 			ENC: { max: 0, level: 0, },
-			SUM: { max: 0, level: 0, },
+			TMP: { max: 0, level: 0, },
 			WIZ: { max: 0, level: 0, },
 		},
 		twoHandSlash: {
@@ -37,7 +37,7 @@ var skills;
 			SHM: { max: 0, level: 0, },
 			NEC: { max: 0, level: 0, },
 			ENC: { max: 0, level: 0, },
-			SUM: { max: 0, level: 0, },
+			TMP: { max: 0, level: 0, },
 			WIZ: { max: 0, level: 0, },
 		},
 		oneHandBlunt: {
@@ -53,7 +53,7 @@ var skills;
 			SHM: { max: 200, level: 1, },
 			NEC: { max: 200, level: 1, },
 			ENC: { max: 200, level: 1, },
-			SUM: { max: 200, level: 1, },
+			TMP: { max: 200, level: 1, },
 			WIZ: { max: 200, level: 1, },
 		},
 		twoHandBlunt: {
@@ -69,7 +69,7 @@ var skills;
 			SHM: { max: 200, level: 1, },
 			NEC: { max: 200, level: 1, },
 			ENC: { max: 200, level: 1, },
-			SUM: { max: 200, level: 1, },
+			TMP: { max: 200, level: 1, },
 			WIZ: { max: 200, level: 1, },
 		},
 		piercing: {
@@ -85,7 +85,7 @@ var skills;
 			SHM: { max: 200, level: 1, },
 			NEC: { max: 200, level: 1, },
 			ENC: { max: 200, level: 1, },
-			SUM: { max: 200, level: 1, },
+			TMP: { max: 200, level: 1, },
 			WIZ: { max: 200, level: 1, },
 		},
 		handToHand: {
@@ -101,7 +101,7 @@ var skills;
 			SHM: { max: 50, level: 1, },
 			NEC: { max: 50, level: 1, },
 			ENC: { max: 50, level: 1, },
-			SUM: { max: 50, level: 1, },
+			TMP: { max: 50, level: 1, },
 			WIZ: { max: 50, level: 1, },
 		},
 		archery: {
@@ -117,7 +117,7 @@ var skills;
 			SHM: { max: 0, level: 0, },
 			NEC: { max: 0, level: 0, },
 			ENC: { max: 0, level: 0, },
-			SUM: { max: 0, level: 0, },
+			TMP: { max: 0, level: 0, },
 			WIZ: { max: 0, level: 0, },
 		},
 		offense: {
@@ -133,7 +133,7 @@ var skills;
 			SHM: { max: 200, level: 1, },
 			NEC: { max: 150, level: 1, },
 			ENC: { max: 150, level: 1, },
-			SUM: { max: 150, level: 1, },
+			TMP: { max: 150, level: 1, },
 			WIZ: { max: 150, level: 1, },
 		},
 		defense: {
@@ -149,7 +149,7 @@ var skills;
 			SHM: { max: 200, level: 1, },
 			NEC: { max: 150, level: 1, },
 			ENC: { max: 150, level: 1, },
-			SUM: { max: 150, level: 1, },
+			TMP: { max: 150, level: 1, },
 			WIZ: { max: 150, level: 1, },
 		},
 		dodge: {
@@ -165,7 +165,7 @@ var skills;
 			SHM: { max: 100, level: 15, },
 			NEC: { max: 100, level: 22, },
 			ENC: { max: 100, level: 22, },
-			SUM: { max: 100, level: 22, },
+			TMP: { max: 100, level: 22, },
 			WIZ: { max: 100, level: 22, },
 		},
 		parry: {
@@ -181,7 +181,7 @@ var skills;
 			SHM: { max: 0, level: 0, },
 			NEC: { max: 0, level: 0, },
 			ENC: { max: 0, level: 0, },
-			SUM: { max: 0, level: 0, },
+			TMP: { max: 0, level: 0, },
 			WIZ: { max: 0, level: 0, },
 		},
 		riposte: {
@@ -197,7 +197,7 @@ var skills;
 			SHM: { max: 0, level: 0, },
 			NEC: { max: 0, level: 0, },
 			ENC: { max: 0, level: 0, },
-			SUM: { max: 0, level: 0, },
+			TMP: { max: 0, level: 0, },
 			WIZ: { max: 0, level: 0, },
 		},
 		dualWield: {
@@ -213,7 +213,7 @@ var skills;
 			SHM: { max: 0, level: 0, },
 			NEC: { max: 0, level: 0, },
 			ENC: { max: 0, level: 0, },
-			SUM: { max: 0, level: 0, },
+			TMP: { max: 0, level: 0, },
 			WIZ: { max: 0, level: 0, },
 		},
 		doubleAttack: {
@@ -229,7 +229,7 @@ var skills;
 			SHM: { max: 0, level: 0, },
 			NEC: { max: 0, level: 0, },
 			ENC: { max: 0, level: 0, },
-			SUM: { max: 0, level: 0, },
+			TMP: { max: 0, level: 0, },
 			WIZ: { max: 0, level: 0, },
 		},
 		alteration: {
@@ -245,7 +245,7 @@ var skills;
 			SHM: { max: 250, level: 1, },
 			NEC: { max: 250, level: 1, },
 			ENC: { max: 250, level: 1, },
-			SUM: { max: 250, level: 1, },
+			TMP: { max: 250, level: 1, },
 			WIZ: { max: 250, level: 1, },
 		},
 		evocation: {
@@ -261,7 +261,7 @@ var skills;
 			SHM: { max: 250, level: 1, },
 			NEC: { max: 250, level: 1, },
 			ENC: { max: 250, level: 1, },
-			SUM: { max: 250, level: 1, },
+			TMP: { max: 250, level: 1, },
 			WIZ: { max: 250, level: 1, },
 		},
 		conjuration: {
@@ -277,7 +277,7 @@ var skills;
 			SHM: { max: 250, level: 1, },
 			NEC: { max: 250, level: 1, },
 			ENC: { max: 250, level: 1, },
-			SUM: { max: 250, level: 1, },
+			TMP: { max: 250, level: 1, },
 			WIZ: { max: 250, level: 1, },
 		},
 		WAR: [
@@ -1503,10 +1503,10 @@ var skills;
 				spellDamage: level => spellValues.engulfingDarkness[level] + (my.level),
 				spellVariance: .92,
 				spellType: 'alteration',
-				damageType: 'arcane',
+				damageType: 'poison',
 				castTime: 3,
 				cooldownTime: 45,
-				description: 'Hits target for X arcane damage over X seconds; Effect: Nullifies ranged defenses - Reduces hate',
+				description: 'Hits target for X poison damage over X seconds; Effect: Nullifies ranged defenses - Reduces hate - Halts regen',
 			}, {
 				name: 'Profane Spirit',
 				img: 'NEC-12',
@@ -1664,10 +1664,10 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			},
 		],
-		SUM: [
+		TMP: [
 			{
 				name: 'Lava Bolt',
-				img: 'SUM-1',
+				img: 'TMP-1',
 				mp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1678,7 +1678,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Frozen Orb',
-				img: 'SUM-2',
+				img: 'TMP-2',
 				mp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1689,7 +1689,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Static Storm',
-				img: 'SUM-3',
+				img: 'TMP-3',
 				mp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1700,7 +1700,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Fire Wall',
-				img: 'SUM-4',
+				img: 'TMP-4',
 				mp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1711,7 +1711,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Glacial Spike',
-				img: 'SUM-5',
+				img: 'TMP-5',
 				mp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1722,7 +1722,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Golem Sludge',
-				img: 'SUM-6',
+				img: 'TMP-6',
 				mp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1733,7 +1733,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Summon Golem',
-				img: 'SUM-7',
+				img: 'TMP-7',
 				sp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1744,7 +1744,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Golem Fury',
-				img: 'SUM-8',
+				img: 'TMP-8',
 				sp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1755,7 +1755,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Golem Drain',
-				img: 'SUM-9',
+				img: 'TMP-9',
 				sp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1766,7 +1766,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Lava Shield',
-				img: 'SUM-10',
+				img: 'TMP-10',
 				sp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1777,7 +1777,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Lucid Synergy',
-				img: 'SUM-11',
+				img: 'TMP-11',
 				sp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
@@ -1788,7 +1788,7 @@ var skills;
 				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Elemental Focus',
-				img: 'SUM-12',
+				img: 'TMP-12',
 				sp: level => spellValues.starfireMana[level],
 				spellDamage: level => spellValues.starfire[level] + (my.level),
 				spellVariance: .875,
