@@ -213,6 +213,9 @@ var stats = {};
 			if (my.buffFlags.branchSpirit) {
 				stats.cache.armor += (my.buffs.branchSpirit.damage * buffs.branchSpirit.armorRatio)
 			}
+			if (my.buffFlags.lichForm) {
+				stats.cache.armor += buffs.lichForm.armor[my.buffs.lichForm.level]
+			}
 			stats.cache.armor = round(stats.cache.armor)
 		}
 		return stats.cache.armor
@@ -386,6 +389,13 @@ var stats = {};
 		if (my[spell.data.spellType] === 'conjuration') enhanceDamage += (stats.wis() / 15)
 		else if (my[spell.data.spellType] === 'evocation') enhanceDamage += (stats.intel() / 15)
 		else if (my[spell.data.spellType] === 'alteration') enhanceDamage += (stats.cha() / 15)
+
+		if (my.buffFlags.lichForm) {
+			if (spell.data.damageType === 'poison' || spell.data.damageType === 'blood') {
+				enhanceDamage = buffs.lichForm.enhancePnB[my.buffs.lichForm.level]
+				console.info('lichForm', buffs.lichForm.enhancePnB[my.buffs.lichForm.level])
+			}
+		}
 
 		max = max * (1 + (enhanceDamage / 100))
 		// add spell damage by type and ALL
@@ -633,6 +643,9 @@ var stats = {};
 		if (fresh || typeof stats.cache.resistPoison === 'undefined') {
 			stats.cache.resistPoison = getStatTotal('resistPoison') + getEqTotal('resistAll')
 			stats.cache.resistPoison += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
+			if (my.buffFlags.profaneSpirit) {
+				stats.cache.resistPoison += buffs.profaneSpirit.resistPoison[my.buffs.profaneSpirit.level]
+			}
 		}
 		return stats.cache.resistPoison
 	}
@@ -937,12 +950,20 @@ var stats = {};
 			if (my.buffFlags.branchSpirit) {
 				stats.cache.hpRegen += ceil(1 + (my.buffs.branchSpirit.level * buffs.branchSpirit.regenPerLevel))
 			}
-
+			if (my.buffFlags.lichForm) {
+				stats.cache.hpRegen -= buffs.lichForm.hpRegen[my.buffs.lichForm.level]
+			}
 		}
 		return stats.cache.hpRegen
 	}
 	function mpRegen(fresh) {
-		return ~~(baseMpRegen() + getEqTotal('mpRegen'))
+		if (fresh || typeof stats.cache.mpRegen === 'undefined') {
+			stats.cache.mpRegen = ~~(baseMpRegen() + getEqTotal('mpRegen'))
+			if (my.buffFlags.lichForm) {
+				stats.cache.mpRegen += buffs.lichForm.mpRegen[my.buffs.lichForm.level]
+			}
+		}
+		return stats.cache.mpRegen
 	}
 	function spRegen(fresh) {
 		return ~~(baseSpRegen() + getEqTotal('spRegen'))

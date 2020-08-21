@@ -2,10 +2,25 @@ let buffs; // buff data for use with skill/spells/icons
 !function($, _, TweenMax, undefined) {
 	buffs = {
 		// dynamic shared effects
+		paralyze: {
+			name: 'Paralyzed',
+			img: 4,
+			job: 'NEC',
+		},
 		stun: {
 			name: 'Stunned',
 			img: 3,
 			job: 'WAR',
+		},
+		fear: {
+			name: 'Feared',
+			img: 4,
+			job: 'NEC',
+		},
+		silence: {
+			name: 'Silenced',
+			img: 4,
+			job: 'NEC',
 		},
 		chill: {
 			name: 'Chilled',
@@ -16,11 +31,6 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Frozen',
 			img: 11,
 			job: 'WIZ',
-		},
-		fear: {
-			name: 'Fear',
-			img: 4,
-			job: 'NEC',
 		},
 		// damage debuffs
 		crossSlash: { hate: .5 },
@@ -473,11 +483,48 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 42,
 			damageType: 'arcane',
 		},
-		gleamOfMadness: { hate: 1 },
-		drainSoul: { hate: 1 },
-		breathOfTheDead: { hate: 1 },
-		defiledSpirit: { hate: 1 },
-		bloodSacrifice: { hate: 1 },
+		panicStrike: { hate: 1.5 },
+		drainSoul: {
+			name: 'Drain Soul',
+			img: 8,
+			job: 'NEC',
+			hate: 1.2,
+			damageType: 'arcane',
+			msg: (buff) => 'Drain Soul heals you for ' + buff.damage + ' health.',
+		},
+		lichForm: {
+			name: 'Lich Form',
+			img: 9,
+			job: 'NEC',
+			duration: 720,
+			hpRegen: [0, 2, 5, 9, 12, 15, 19, 22],
+			mpRegen: [0, 4, 10, 16, 22, 28, 34, 40],
+			armor: [0, 33, 66, 100, 133, 166, 200, 233],
+			enhancePnB: [0, 12, 25, 37, 49, 61, 73, 85],
+			msg: () => 'Your flesh rots revealing an unholy form.',
+			fadeMsg: 'Your flesh returns.'
+		},
+		engulfingDarkness: {
+			name: 'Engulfing Darkness',
+			img: 10,
+			job: 'NEC',
+			hate: -2,
+			ticks: 10,
+			interval: 3,
+			duration: 30,
+			damageType: 'arcane',
+		},
+		// resistIce: [0, 4, 7, 10, 13, 16, 19, 22],
+		profaneSpirit: {
+			name: 'Profane Spirit',
+			img: 11,
+			job: 'NEC',
+			duration: 900,
+			addPoison: [0, 9, 3, 4, 5, 6, 7],
+			resistPoison: [0, 4, 7, 10, 13, 16, 19, 22],
+			msg: () => 'A profane aura imbues your spirit.',
+			fadeMsg: 'The profane aura fades.'
+		},
 	}
 	///////////////////////////////////////////
 

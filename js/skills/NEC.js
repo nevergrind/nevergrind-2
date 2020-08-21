@@ -9,11 +9,12 @@
 		hauntingVision,
 		icingDeath,
 		curseOfShadows,
-		gleamOfMadness,
+		panicStrike,
 		drainSoul,
-		breathOfTheDead,
-		defiledSpirit,
-		bloodSacrifice,
+		lichForm,
+		engulfingDarkness,
+		profaneSpirit,
+		profaneSpiritExplosion,
 	}
 	///////////////////////////////////////////
 	let enhancedDamage, hit, config, i, key, splashIndex, tgt, damages = []
@@ -90,8 +91,8 @@
 		damages.push({
 			key: 'bloodFire',
 			index: spell.config.target,
-			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
+			damageType: 'blood',
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
@@ -154,6 +155,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function icingDeath(index, data) {
 		if (timers.castBar < 1) return
@@ -202,22 +204,31 @@
 			...stats.spellDamage(),
 		}])
 	}
-	function gleamOfMadness(index, data) {
+	function panicStrike(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, gleamOfMadnessCompleted)
+		spell.startCasting(index, data, panicStrikeCompleted)
 	}
-	function gleamOfMadnessCompleted() {
-		combat.txDamageMob([{
-			key: 'gleamOfMadness',
+	function panicStrikeCompleted() {
+		damages = []
+		damages.push({
+			key: 'panicStrike',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			...stats.spellDamage(),
+			buffs: [{
+				i: spell.config.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'fear', // this sets the flag,
+				duration: 25,
+			}],
+		})
+		combat.txDamageMob(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function drainSoul(index, data) {
 		if (timers.castBar < 1) return
@@ -228,64 +239,113 @@
 		spell.startCasting(index, data, drainSoulCompleted)
 	}
 	function drainSoulCompleted() {
-		combat.txDamageMob([{
+		damages = []
+		hit = stats.spellDamage(false, true)
+		damages.push({
 			key: 'drainSoul',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			cannotResist: true,
+			...hit,
+		})
+		console.info('drainSoul', hit)
+		combat.txDamageMob(damages)
+		combat.txHotHero([{
+			index: my.row,
+			key: 'drainSoul',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...hit
 		}])
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
-	function breathOfTheDead(index, data) {
+	function lichForm(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, lichFormCompleted)
+	}
+	function lichFormCompleted() {
+		damages = []
+		damages.push({
+			index: my.row,
+			key: 'lichForm',
+			spellType: spell.data.spellType,
+			level: my.skills[spell.config.skillIndex],
+			damage: 0,
+		})
+		combat.txBuffHero(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
+	}
+	function engulfingDarkness(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, breathOfTheDeadCompleted)
+		spell.startCasting(index, data, engulfingDarknessCompleted)
 	}
-	function breathOfTheDeadCompleted() {
-		combat.txDamageMob([{
-			key: 'breathOfTheDead',
+	function engulfingDarknessCompleted() {
+		damages = []
+		damages.push({
+			key: 'engulfingDarkness',
 			index: spell.config.target,
-			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			spellType: spell.data.spellType,
+			...stats.spellDamage(false, true)
+		})
+		combat.txDotMob(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
-	function defiledSpirit(index, data) {
+	function profaneSpirit(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, defiledSpiritCompleted)
+		spell.startCasting(index, data, profaneSpiritCompleted)
 	}
-	function defiledSpiritCompleted() {
-		combat.txDamageMob([{
-			key: 'defiledSpirit',
+	function profaneSpiritCompleted() {
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			key: 'profaneSpirit',
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true)
+		})
+		combat.txBuffHero(damages)
 	}
-	function bloodSacrifice(index, data) {
-		if (timers.castBar < 1) return
+	function profaneSpiritExplosion(index, data) {
+		spell.cancelSpell()
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
 		}
-		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, bloodSacrificeCompleted)
+		spell.startCasting(index, data, profaneSpiritExplosionCompleted)
 	}
-	function bloodSacrificeCompleted() {
-		combat.txDamageMob([{
-			key: 'bloodSacrifice',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+	function profaneSpiritExplosionCompleted() {
+		damages = []
+		for (i=0; i<mob.max; i++) {
+			if (mobs[i].hp >= 0) {
+				damages.push({
+					key: 'profaneSpiritExplosion',
+					index: i,
+					spellType: '',
+					damageType: 'poison',
+					...stats.spellDamage()
+				})
+			}
+		}
+		combat.txDamageMob(damages)
 	}
 
-}($, _, TweenMax);
+}($, _, TweenMax)

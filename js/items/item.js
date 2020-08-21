@@ -1769,7 +1769,7 @@ var loot = {};
 		link.type = 'text/css';
 		link.id = 'temp-dnd-link'
 		document.head.appendChild(link)
-		link.sheet.addRule('.item-slot', 'pointer-events: none; cursor: url("css/cursor/normal.cur"), auto !important')
+		link.sheet.addRule('.item-slot', 'pointer-events: none; cursor: url("css/cursor/normal.png"), auto !important')
 	}
 	function handleDropAlways() {
 		// ajax end
@@ -1962,7 +1962,7 @@ var loot = {};
 			link.type = 'text/css';
 			link.id = 'temp-identify-item'
 			document.head.appendChild(link)
-			link.sheet.addRule('.item-slot', 'cursor: url("css/cursor/gear.cur"), auto !important')
+			link.sheet.addRule('.item-slot', 'cursor: url("css/cursor/gear.png"), auto !important')
 		}
 	}
 	function preIdentifyItem() {

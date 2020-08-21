@@ -105,7 +105,7 @@ var spell;
 			onComplete: spellComplete,
 			onCompleteParams: [spell.callbackFn]
 		})
-		if (!spell.config.cannotFizzle) {
+		if (!spell.config.cannotFizzle || !ng.isApp) {
 			checkSpellFizzle()
 		}
 	}

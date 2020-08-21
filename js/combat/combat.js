@@ -254,11 +254,12 @@ var combat;
 			if (d.requiresFrontRow && !battle.targetIsFrontRow(d.index)) {
 				d.damage = 0
 			}
-			if (d.damageType === 'physical' &&
-				!d.isRanged &&
+			if (!d.isRanged &&
 				d.index > 4) {
 				// physical on back row
-				d.damage *= .5
+				if (!mobs[d.index].buffFlags.engulfingDarkness) {
+					d.damage *= .5
+				}
 			}
 			// effects
 			if (mobs[d.index].buffFlags.vampiricGaze) {
@@ -269,13 +270,21 @@ var combat;
 		else {
 			// mob magic resists
 			d.enhancedDamage = 1
-			if (d.isBlighted &&
-				(mobs[d.index].mobType === 'undead' || mobs[d.index].mobType === 'demon')) {
-				console.warn("isBlighted", d)
-				d.enhancedDamage += .5
+			if (mobs[d.index].mobType === 'undead') {
+				if (d.isBlighted) {
+					d.enhancedDamage += .5
+				}
+				if (d.key === 'icingDeath') {
+					d.enhancedDamage += .5
+				}
+			}
+			else if (mobs[d.index].mobType === 'demon') {
+				if (d.isBlighted) {
+					d.enhancedDamage += .5
+				}
 			}
 			d.damage *= d.enhancedDamage
-			d.damage *= getMobResist(d)
+			if (!d.cannotResist) d.damage *= getMobResist(d)
 
 		}
 		// final sanity checks
@@ -448,7 +457,7 @@ var combat;
 			}
 			// optionally adds buffs key if it exists
 			if (buffArr.length) damageData.buffs = buffArr
-			console.info('txDamageMob: ', _.cloneDeep(damageData))
+			// console.info('txDamageMob: ', _.cloneDeep(damageData))
 			socket.publish('party' + my.partyId, damageData)
 		}
 	}
@@ -457,9 +466,11 @@ var combat;
 		len = data.damages.length
 		buffArr = []
 		for (i=0; i<len; i++) {
-			console.info('txDamageMob : ', data.damages)
+			// console.info('txDamageMob : ', data.damages[i])
 			updateMobHp(data.damages[i])
-			if (data.damages[i].key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(data.damages[i])
+			if (my.row === data.damages[i].row) {
+				if (data.damages[i].key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(data.damages[i])
+			}
 		}
 		// buffs
 		if (typeof data.buffs === 'object') {
@@ -577,12 +588,20 @@ var combat;
 		}
 		timers.clearMy()
 		autoAttackDisable()
+		spell.cancelSpell()
 		battle.subtractExpPenalty()
 		if (!party.isSomeoneAlive()) {
 			mob.killAttacks(true)
 		}
 		battle.reckonGXL()
 		animateMyDeath()
+	}
+	function triggerOnMyDeath() {
+		// on death - must be done before health is subtracted
+		if (my.buffFlags.profaneSpirit) {
+			skill.NEC.profaneSpiritExplosion(12, skills[my.job][12])
+			battle.removeBuff('profaneSpirit')
+		}
 	}
 	// damage hero functions
 	function updateHeroResource(type, addValue, bypassDeath) {
@@ -592,6 +611,9 @@ var combat;
 		if (my.hp <= 0 && !bypassDeath) {
 			console.warn('updateHeroResource you are dead - no action taken')
 			return
+		}
+		if (type === 'hp') {
+			if (my.hp + addValue <= 0) triggerOnMyDeath()
 		}
 		my.set(type, addValue, true)
 		// sanity check
@@ -1059,6 +1081,12 @@ var combat;
 			bar.updateAllResistsDOM()
 			updateCharStatColOne()
 		}
+		else if (key === 'lichForm') cacheBustArmor()
+		else if (key === 'profaneSpirit') {
+			stats.resistPoison(true)
+			bar.updateAllResistsDOM()
+			updateCharStatColOne()
+		}
 		////////////////////////////////
 		function cacheBustAttack() {
 			stats.offense(true)
@@ -1070,16 +1098,15 @@ var combat;
 			stats.armor(true)
 			updateCharStatColOne()
 		}
-	}
-	
-	function updateCharStatColOne() {
-		if (bar.windowsOpen.character && bar.activeTab === 'character') {
-			ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+		function updateCharStatColOne() {
+			if (bar.windowsOpen.character && bar.activeTab === 'character') {
+				ng.html('#char-stat-col-1', bar.charStatColOneHtml())
+			}
 		}
-	}
-	function updateCharStatColTwo() {
-		if (bar.windowsOpen.character && bar.activeTab === 'character') {
-			ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
+		function updateCharStatColTwo() {
+			if (bar.windowsOpen.character && bar.activeTab === 'character') {
+				ng.html('#char-stat-col-2', bar.charStatColTwoHtml())
+			}
 		}
 	}
 

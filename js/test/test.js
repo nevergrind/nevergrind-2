@@ -469,7 +469,7 @@ var test;
 	}
 	function mobPix(mobName) {
 		mobName = mobName || 'orc'
-		const hoverIcon = "url('css/cursor/pointer.cur'), auto"
+		const hoverIcon = "url('css/cursor/pointer.png'), auto"
 		if (!test.mob) {
 			test.mob = new PIXI.Application({
 				width: 1920,
