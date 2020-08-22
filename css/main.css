@@ -3266,7 +3266,7 @@ background-repeat: no-repeat;
 .pointer { cursor: url('cursor/pointer.png'), pointer }
 .pointer:active { cursor: url('cursor/pointer.png'), pointer }
 .cursor-buy { cursor: url('cursor/buy.png'), pointer!important; }
-.cursor-gear { cursor: url('cursor/gear.cur'), pointer!important; }
+.cursor-gear { cursor: url('cursor/gear.png'), pointer!important; }
 .cursor-mail { cursor: url('cursor/mail.png'), pointer!important; }
 .cursor-sword { cursor: url('cursor/sword-color.png'), pointer!important; }
 .item-slot-merchant,

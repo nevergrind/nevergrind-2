@@ -1526,14 +1526,15 @@ var loot = {};
 		}
 
 		if (item.isIdentifyMode) {
-			if (type === 'inv' || type === 'bank' &&
-				items[type][index].unidentified) {
-				warn(item.identifyScrollIndex, item.identifyScrollType, index, type)
-				identifyItem(item.identifyScrollIndex, item.identifyScrollType, index, type)
-			}
-			else {
-				chat.log('That item does not need to be identified.', 'chat-warning')
-				toggleIdentifyMode()
+			if (type === 'inv' || type === 'bank') {
+				if (!items[type][index].unidentified) {
+					chat.log('That item does not need to be identified.', 'chat-warning')
+					toggleIdentifyMode()
+				}
+				else {
+					// console.warn(item.identifyScrollIndex, item.identifyScrollType, index, type)
+					identifyItem(item.identifyScrollIndex, item.identifyScrollType, index, type)
+				}
 			}
 			return
 		}
