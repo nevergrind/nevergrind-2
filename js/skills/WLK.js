@@ -1,5 +1,5 @@
 !function($, _, TweenMax, undefined) {
-	skill.NEC = {
+	skill.WLK = {
 		maxCurseOfShadows: 0,
 		venomBolt,
 		explosivePlague,

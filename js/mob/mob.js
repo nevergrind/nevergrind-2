@@ -311,6 +311,7 @@ var mob;
 		m.sprite.interactive = true
 		m.sprite.buttonMode = true
 		m.sprite.zIndex = 100 - i
+		TweenMax.set(mobs[i].sprite, filter.default(i))
 
 		// mob shadow
 		/*m.shadow = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
@@ -425,29 +426,42 @@ var mob;
 		mobs[i].animation.timeScale(timeScaleSpeed)
 	}
 
+	const alphaStasis = { alpha: .5 }
+	const alphaDefault = { alpha: 1 }
 	const filter = {
-		freeze: { pixi: {
-			colorize: '#0ff',
-			colorizeAmount: 1,
-		}},
-		chill: { pixi: {
-			colorize: '0af',
-			colorizeAmount: .6,
-		}},
-		default: { pixi: {
-			colorize: 'aqua',
-			colorizeAmount: 0,
-		}}
+		stasis: (i) => timers.mobEffects[i].stasisDuration > 0 ? alphaStasis : alphaDefault,
+		freeze: (i) => {
+			return { pixi: {
+				...filter.stasis(i),
+				colorize: '#0ff',
+				colorizeAmount: 1,
+			}}
+		},
+		chill: (i) => {
+			return { pixi: {
+				...filter.stasis(i),
+				colorize: '0af',
+				colorizeAmount: .6,
+			}}
+		},
+		default: (i) => {
+			return { pixi: {
+				...filter.stasis(i),
+				colorize: 'aqua',
+				colorizeAmount: 0,
+			}}
+		}
 	}
 	function setFilter(i) {
 		if (timers.mobEffects[i].freezeDuration) {
-			TweenMax.set(mobs[i].sprite, filter.freeze)
+			TweenMax.to(mobs[i].sprite, .5, filter.freeze(i))
 		}
 		else if (timers.mobEffects[i].chillDuration) {
-			TweenMax.set(mobs[i].sprite, filter.chill)
+			TweenMax.to(mobs[i].sprite, .5, filter.chill(i))
 		}
 		else {
-			TweenMax.set(mobs[i].sprite, filter.default)
+			console.info('mobEffects setting to default', timers.mobEffects[i].stasisDuration, filter.default(i))
+			TweenMax.to(mobs[i].sprite, .5, filter.default(i))
 		}
 	}
 	function mobAttackSpeed(i) {
@@ -830,7 +844,7 @@ var mob;
 				'Slumber',
 			];
 		}
-		else if (config.job === 'NEC') {
+		else if (config.job === 'WLK') {
 			config.hp = ~~(config.hp * .9)
 			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
@@ -891,6 +905,7 @@ var mob;
 	function isMobPoisoned(mob) {
 		return Boolean(mob.buffFlags.engulfingDarkness ||
 			mob.buffFlags.toxicSpores ||
+			mob.buffFlags.subversion ||
 			mob.buffFlags.affliction)
 	}
 	function processMobResourceTick(mob, index) {

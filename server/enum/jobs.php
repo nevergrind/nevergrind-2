@@ -6,7 +6,7 @@
 		'Enchanter',
 		'Templar',
 		'Monk',
-		'Necromancer',
+		'Warlock',
 		'Crusader',
 		'Ranger',
 		'Rogue',

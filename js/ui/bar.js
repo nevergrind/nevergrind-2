@@ -82,7 +82,7 @@ var bar;
 		DRU: 19,
 		CLR: 11,
 		SHM: 13,
-		NEC: 18,
+		WLK: 18,
 		ENC: 1,
 		TMP: 3,
 		WIZ: 24,
@@ -244,7 +244,7 @@ var bar;
 			bar.defaultImage[12] = 'oneHandSlashers0'
 		}
 		else if (my.jobLong === 'Rogue' ||
-			my.jobLong === 'Necromancer' ||
+			my.jobLong === 'Warlock' ||
 			my.jobLong === 'Enchanter' ||
 			my.jobLong === 'Templar' ||
 			my.jobLong === 'Wizard') {

@@ -114,7 +114,7 @@ var loot = {};
 		DRU: { hp: 1.5, mp: 1.5, sp: 2 },
 		CLR: { hp: 1.5, mp: 1.5, sp: 2 },
 		SHM: { hp: 1.5, mp: 1.5, sp: 2 },
-		NEC: { hp: 1, mp: 2, sp: 1.5 },
+		WLK: { hp: 1, mp: 2, sp: 1.5 },
 		ENC: { hp: 1, mp: 2, sp: 1.5 },
 		TMP: { hp: 1, mp: 2, sp: 1.5 },
 		WIZ: { hp: 1, mp: 2, sp: 1.5 },

@@ -480,6 +480,7 @@ var battle;
 				else if (buff.key === 'freeze') mobEffects.freeze(buff.i, buff.duration)
 				else if (buff.key === 'chill') mobEffects.chill(buff.i, buff.duration)
 				else if (buff.key === 'fear') mobEffects.fear(buff.i, buff.duration)
+				else if (buff.key === 'stasisField') mobEffects.stasis(buff.i, buff.duration)
 			}
 		})
 		// updates the DOM based on mob buffs
@@ -704,6 +705,7 @@ var battle;
 					mobs[i].buffFlags[key] = false
 				}
 			}
+			timers.clearMob(i)
 		}
 	}
 	function killTargetBuffTimers() {

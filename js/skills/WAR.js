@@ -141,7 +141,7 @@ let skill = {};
 				key: 'doubleThrow',
 				index: tgt,
 				isRanged: true,
-				stagger: true,
+				effects: { stagger: true },
 				enhancedDamage: enhancedDamage,
 			})
 			if (battle.targetIsBackRow(tgt)) {

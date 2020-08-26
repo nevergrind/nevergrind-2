@@ -37,7 +37,7 @@ var create;
 			Enchanter: 'Utility',
 			Templar: 'Magical DPS',
 			Monk: 'Physical DPS',
-			Necromancer: 'Magical DPS',
+			Warlock: 'Magical DPS',
 			Crusader: 'Tank',
 			Ranger: 'Physical DPS',
 			Rogue: 'Physical DPS',
@@ -70,9 +70,9 @@ var create;
 				Cleric: "Clerics are a healing class that can wear plate armor. They specialize in directly healing their allies in combat. They boast powerful support spells that buff their party's health and armor. They also have strong magic-based stuns and they can do modest magic damage in a pinch.",
 				Druid: 'Druids are a healing class that can wear leather armor. They have strong direct healing skills and HoT spells. Druids also have powerful elemental spells that make them highly adaptive. Their strong support spells and exception dungeon skills make them an asset to any party.',
 				Enchanter: 'Enchanters are a utility class that can only wear cloth armor. Among the cloth-wearing casters, their magic does the least amount of damage, but they have the strongest support spells in the game. Their ability to crowd control is unmatched, and they have the ability to charm mobs when you really need to turn the tables.',
-				Templar: 'Templar are a magical DPS class that can wear leather armor. They boast the strongest pets in the game due to their ability to summon four types of pets. They also wield powerful elemental magic and some of the most useful support spells in the game.',
+				Templar: 'Templar are a magical DPS class that can wear leather armor. They are the most flexible casting class with a deadly assortment of spells at their disposal. They can even fill in as a support healer role in a pinch.',
 				Monk: "Monks are a physical DPS class that can wear leather armor. Monks practice martial arts to deliver powerful punches and kicks. Monks deliver top-tier physical DPS with hand-to-hand or blunt weapons. They have solid dungeon skills and the best pulling ability among all classes.",
-				Necromancer: 'Necromancers are a magical DPS class that can only wear cloth armor. They have powerful skeleton pets that make quick work of their enemies. Powerful DoT spells, fear, and life tap make them a formidable addition to any party.',
+				Warlock: 'Warlocks are a magical DPS class that can only wear cloth armor. They have powerful damage-over-time spells that wear down foes over time. Their spells strike fear into their enemies, weakening them in combat. Their ability to transform into a lich form and steal health makes them resilient in combat and less dependent on others.',
 				Crusader: 'Crusaders are a tank class that can wear plate armor. Crusaders have the unique ability to lay hands, healing themselves when they need it most. Crusaders also have strong stuns and healing spells which make them very difficult to kill.',
 				Ranger: "Rangers are a physical DPS class that can wear mail armor. They're the only class that can use bows, which help them inflict massive damage. A diverse arsenal of magic also aids them in battle. Notably, Rangers have the strongest overall dungeon skills, including the best scouting skills.",
 				Rogue: 'Rogues are a physical DPS class that can wear mail armor. Their combination of stealth and bursts of damage make them deadly on the battlefield. Rogues have unparalleled disarm trap skills, along with very strong treasure and scouting skills.',
@@ -449,7 +449,7 @@ var create;
 			}
 			// class
 			if (f.job === 'Templar' ||
-				f.job === 'Necromancer' ||
+				f.job === 'Warlock' ||
 				f.job === 'Crusader' ||
 				f.job === 'Shaman'){
 				v += 5;
@@ -523,7 +523,7 @@ var create;
 			}
 			// class
 			if (f.job === 'Templar' ||
-				f.job === 'Necromancer' ||
+				f.job === 'Warlock' ||
 				f.job === 'Shaman'){
 				v += 5;
 			}

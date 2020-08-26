@@ -1,6 +1,33 @@
 var combat;
 !function($, _, TweenMax, PIXI, Math, Power1, Power3, Linear, undefined) {
 	combat = {
+		getAddedDamage,
+		getMobResist,
+		rxDamageMob,
+		popupDamage,
+		targetChanged,
+		initCombatTextLayer,
+		updateCombatTextLayer,
+		toggleAutoAttack,
+		txDamageMob,
+		isValidTarget,
+		getDiffIndex,
+		autoAttackDisable,
+		processDamagesHero,
+		txDamageHero,
+		rxDamageHero,
+		txDotMob,
+		rxDotMob,
+		levelSkillCheck,
+		skillLevelChance,
+		endCombat,
+		updateHeroResource,
+		txHotHero,
+		rxHotHero,
+		txBuffHero,
+		rxBuffHero,
+		selfDied,
+		processStatBuffsToMe,
 		MAX_DAMAGE: 999999999,
 		textId: 0,
 		considerClass: [
@@ -68,31 +95,6 @@ var combat;
 			'unicorn': 'Mystical',
 			'scorpion': 'Beasts',
 		},
-		rxDamageMob,
-		popupDamage,
-		targetChanged,
-		initCombatTextLayer,
-		updateCombatTextLayer,
-		toggleAutoAttack,
-		txDamageMob,
-		isValidTarget,
-		getDiffIndex,
-		autoAttackDisable,
-		processDamagesHero,
-		txDamageHero,
-		rxDamageHero,
-		txDotMob,
-		rxDotMob,
-		levelSkillCheck,
-		skillLevelChance,
-		endCombat,
-		updateHeroResource,
-		txHotHero,
-		rxHotHero,
-		txBuffHero,
-		rxBuffHero,
-		selfDied,
-		processStatBuffsToMe,
 	}
 	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, buffData, key, resist, resistPenalty
 	let txHpUpdate = false
@@ -115,10 +117,29 @@ var combat;
 		stroke: '#430',
 		strokeThickness: 3,
 	}
-	const addedDamageTypes = ['addBlood', 'addPoison', 'addArcane', 'addLightning', 'addFire', 'addIce']
+	const addedDamageTypes = [{
+		add: 'addBlood',
+		resist: 'blood',
+	}, {
+		add: 'addPoison',
+		resist: 'poison',
+	}, {
+		add: 'addArcane',
+		resist: 'arcane',
+	}, {
+		add: 'addLightning',
+		resist: 'lightning',
+	}, {
+		add: 'addFire',
+		resist: 'fire',
+	}, {
+		add: 'addIce',
+		resist: 'ice',
+	}]
 	const resourceLeechDivider = 1000
 	let chance = 0
 	let addedDamage
+	let totalAddedDamage = 0
 	let totalDamage = 0
 	let myDamage = 0
 	let leechHp = 0
@@ -242,14 +263,6 @@ var combat;
 			// console.info('mobArmor', d.index, mobArmor)
 			d.damage *= mobArmor
 
-			// +add spell damage
-			addedDamage = 0
-			addedDamageTypes.forEach(elType => {
-				addedDamage += (stats.getEqTotal(elType) * mobs[d.index].resist[elType])
-			})
-			addedDamage += stats.getEqTotal('addAll')
-
-
 			// damage penalties
 			if (d.requiresFrontRow && !battle.targetIsFrontRow(d.index)) {
 				d.damage = 0
@@ -261,6 +274,8 @@ var combat;
 					d.damage *= .5
 				}
 			}
+			// +add spell damage
+			d.damage += getAddedDamage(d.index)
 			// effects
 			if (mobs[d.index].buffFlags.vampiricGaze) {
 				// small boost to make it slightly stronger at lower levels
@@ -287,14 +302,30 @@ var combat;
 			if (!d.cannotResist) d.damage *= getMobResist(d)
 
 		}
+
+		if (mobs[d.index].buffFlags.stasisField) {
+			console.info('stasisField', buffs.stasisField.pveMitigationRatio)
+			d.damage *= buffs.stasisField.pveMitigationRatio
+		}
 		// final sanity checks
 		d.damage = d.damage < 1 ? 1 : round(d.damage)
 		combat.levelSkillCheck('offense')
 		return d
 	}
+	function getAddedDamage(index) {
+		totalAddedDamage = 0
+		totalAddedDamage += stats.addBlood() * mobs[index].resist.blood
+		totalAddedDamage += stats.addPoison() * mobs[index].resist.poison
+		totalAddedDamage += stats.addArcane() * mobs[index].resist.arcane
+		totalAddedDamage += stats.addLightning() * mobs[index].resist.lightning
+		totalAddedDamage += stats.addFire() * mobs[index].resist.fire
+		totalAddedDamage += stats.addIce() * mobs[index].resist.ice
+		console.info('getAddedDamage 3', index, totalAddedDamage)
+		return totalAddedDamage
+	}
 	function getMobResist(d) {
 		resist = mobs[d.index].resist[d.damageType]
-		//console.info('getMobResist', d.index, d.damageType, resist)
+		console.info('getMobResist b4', d.index, d.damageType, resist)
 		if (d.damageType === 'blood') {
 			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
 		}
@@ -303,6 +334,7 @@ var combat;
 		}
 		else if (d.damageType === 'arcane') {
 			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
+			if (mobs[d.index].buffFlags.mindBlitzEffect) resist += .3
 		}
 		else if (d.damageType === 'lightning') {
 
@@ -321,7 +353,7 @@ var combat;
 		resist -= resistPenalty
 		if (resist < .25) resist = .25
 		else if (resist > 2) resist = 2 // cannot lower resists beyond -100%
-		//console.info('getMobResist', d.index, d.damageType, resist)
+		console.info('getMobResist after', d.index, d.damageType, resist)
 		return resist
 	}
 	function toggleAutoAttack() {
@@ -573,7 +605,7 @@ var combat;
 				my.row === mobs[index].buffs[k].row &&
 				mobs[index].buffs[k].duration === 0) {
 				// console.info('onDotTick DONE!', k, mobs[index].buffs[k])
-				skill.NEC.explosivePlagueExplode(index, damage)
+				skill.WLK.explosivePlagueExplode(index, damage)
 			}
 		}
 	}
@@ -599,7 +631,7 @@ var combat;
 	function triggerOnMyDeath() {
 		// on death - must be done before health is subtracted
 		if (my.buffFlags.profaneSpirit) {
-			skill.NEC.profaneSpiritExplosion(12, skills[my.job][12])
+			skill.WLK.profaneSpiritExplosion(12, skills[my.job][12])
 			battle.removeBuff('profaneSpirit')
 		}
 	}
@@ -713,6 +745,11 @@ var combat;
 			// my magic resists
 			console.info(d.damageType, index)
 			d.damage *= stats.getResistPercent(d.damageType)
+		}
+
+		if (mobs[index].buffFlags.stasisField) {
+			console.info('stasisField', buffs.stasisField.pvpMitigation[skill.ENC.getHighestStasis(index)])
+			d.damage -= buffs.stasisField.pvpMitigation[skill.ENC.getHighestStasis(index)]
 		}
 		// final sanity checks
 		d.damage = d.damage < 1 ? 1 : round(d.damage)
@@ -1084,8 +1121,14 @@ var combat;
 		else if (key === 'lichForm') cacheBustArmor()
 		else if (key === 'profaneSpirit') {
 			stats.resistPoison(true)
+			stats.addPoison(true)
 			bar.updateAllResistsDOM()
 			updateCharStatColOne()
+		}
+		else if (key === 'phaseBlade') {
+			stats.resistLightning(true)
+			stats.addLightning(true)
+			bar.updateAllResistsDOM()
 		}
 		////////////////////////////////
 		function cacheBustAttack() {

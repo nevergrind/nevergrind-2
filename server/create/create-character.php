@@ -129,7 +129,7 @@
 
 	// add equipment data
 	// chest
-	if ($f['job'] === 'Necromancer' ||
+	if ($f['job'] === 'Warlock' ||
 		$f['job'] === 'Enchanter' ||
 		$f['job'] === 'Templar' ||
 		$f['job'] === 'Wizard') {
@@ -161,7 +161,7 @@
 		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Club", '. $data .')';
 	}
 	else if (
-		$f['job'] === 'Necromancer' ||
+		$f['job'] === 'Warlock' ||
 		$f['job'] === 'Enchanter' ||
 		$f['job'] === 'Templar' ||
 		$f['job'] === 'Wizard'

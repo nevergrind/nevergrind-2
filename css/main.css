@@ -1059,9 +1059,9 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-DRU { color: #8f0; }
 .chat-CLR { color: #ff5; }
 .chat-SHM { color: #08f; }
-.chat-NEC { color: #84f; }
+.chat-WLK { color: #84f; }
 .chat-ENC { color: #0df; }
-.chat-SUM { color: #f90; }
+.chat-TMP { color: #f90; }
 .chat-WIZ { color: #f22; }
 
 .bg-WAR { background: #a736; }
@@ -1074,9 +1074,9 @@ animation: town-repeat-bg 90s linear infinite;*/
 .bg-DRU { background: #8f06; }
 .bg-CLR { background: #ff56; }
 .bg-SHM { background: #08f6; }
-.bg-NEC { background: #84f6; }
+.bg-WLK { background: #84f6; }
 .bg-ENC { background: #0df6; }
-.bg-SUM { background: #f906; }
+.bg-TMP { background: #f906; }
 .bg-WIZ { background: #f226; }
 
 
@@ -1090,9 +1090,9 @@ animation: town-repeat-bg 90s linear infinite;*/
 .bg-dark-DRU { background: #8f03; }
 .bg-dark-CLR { background: #ff53; }
 .bg-dark-SHM { background: #08f3; }
-.bg-dark-NEC { background: #84f3; }
+.bg-dark-WLK { background: #84f3; }
 .bg-dark-ENC { background: #0df3; }
-.bg-dark-SUM { background: #f903; }
+.bg-dark-TMP { background: #f903; }
 .bg-dark-WIZ { background: #f223; }
 
 
@@ -1186,11 +1186,12 @@ background-clip: content-box;
 }
 #bar-all-player-wrap .player-targeted {
 	outline: .1rem ridge #5fd;
-	animation: repeat-border-flash .25s linear infinite;
+	animation: repeat-border-flash 1s ease-out infinite;
 }
 @keyframes repeat-border-flash {
 	0% { outline: .1rem ridge #5fd; }
-	100% { outline: .1rem ridge #098; }
+	50% { outline: .1rem ridge #098; }
+	100% { outline: .1rem ridge #5fd; }
 }
 .bar-icons {
 	color: gold;

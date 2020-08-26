@@ -2,6 +2,12 @@ var stats = {};
 (function($, TweenMax, _, undefined) {
 	stats = {
 		cache: {},
+		addBlood,
+		addPoison,
+		addArcane,
+		addLightning,
+		addFire,
+		addIce,
 		str,
 		sta,
 		agi,
@@ -75,13 +81,13 @@ var stats = {};
 	var defensiveJobs = ['WAR', 'CRU', 'SHD']
 	var averagePunchJobs = ['WAR', 'CRU', 'SHD', 'ROG', 'RNG', 'BRD']
 	var wisCasterJobs = ['DRU', 'CLR', 'SHM']
-	var intCasterJobs = ['NEC', 'ENC', 'TMP', 'WIZ']
-	var allCasterJobs = ['CLR', 'DRU', 'SHM', 'BRD', 'NEC', 'ENC', 'TMP', 'WIZ']
+	var intCasterJobs = ['WLK', 'ENC', 'TMP', 'WIZ']
+	var allCasterJobs = ['CLR', 'DRU', 'SHM', 'BRD', 'WLK', 'ENC', 'TMP', 'WIZ']
 	var hybridJobs = ['CRU', 'SHD', 'RNG']
-	var twoHandBluntAverageJobs = ['WAR', 'CRU', 'SHD', 'CLR', 'DRU', 'SHM', 'NEC', 'ENC', 'TMP', 'WIZ']
+	var twoHandBluntAverageJobs = ['WAR', 'CRU', 'SHD', 'CLR', 'DRU', 'SHM', 'WLK', 'ENC', 'TMP', 'WIZ']
 	var tankJobs = ['WAR', 'CRU', 'SHD']
 	var averageArcherJobs = ['WAR', 'CRU', 'SHD', 'ROG', 'BRD']
-	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'NEC', 'ENC', 'TMP', 'WIZ']
+	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'WLK', 'ENC', 'TMP', 'WIZ']
 	var averageOneHandSlashJobs = ['WAR', 'CRU', 'SHD', 'BRD', 'DRU']
 	let isCrit = false
 	let chance, weaponSkill, enhanceDamage, addedDamage
@@ -118,7 +124,7 @@ var stats = {};
 		'DRU': 7,
 		'CLR': 7,
 		'SHM': 7,
-		'NEC': 6,
+		'WLK': 6,
 		'ENC': 6,
 		'TMP': 6,
 		'WIZ': 6,
@@ -134,7 +140,7 @@ var stats = {};
 		'DRU': 4,
 		'CLR': 4,
 		'SHM': 4,
-		'NEC': 5,
+		'WLK': 5,
 		'ENC': 5,
 		'TMP': 5,
 		'WIZ': 5,
@@ -150,7 +156,7 @@ var stats = {};
 		'DRU': 5,
 		'CLR': 5,
 		'SHM': 5,
-		'NEC': 3,
+		'WLK': 3,
 		'ENC': 5,
 		'TMP': 3,
 		'WIZ': 3,
@@ -379,12 +385,144 @@ var stats = {};
 		}
 		return stats.cache.crit
 	}
+	function addBlood(fresh) {
+		if (fresh || typeof stats.cache.addBlood === 'undefined') {
+			stats.cache.addBlood = getEqTotal('addBlood')
+		}
+		return stats.cache.addBlood
+	}
+	function addPoison(fresh) {
+		if (fresh || typeof stats.cache.addPoison === 'undefined') {
+			stats.cache.addPoison = getEqTotal('addPoison')
+			if (my.buffFlags.profaneSpirit) {
+				stats.cache.addPoison = buffs.profaneSpirit.addPoison[my.buffs.profaneSpirit.level]
+			}
+		}
+		return stats.cache.addPoison
+	}
+	function addArcane(fresh) {
+		if (fresh || typeof stats.cache.addArcane === 'undefined') {
+			stats.cache.addArcane = getEqTotal('addArcane')
+		}
+		return stats.cache.addArcane
+	}
+	function addLightning(fresh) {
+		if (fresh || typeof stats.cache.addLightning === 'undefined') {
+			stats.cache.addLightning = getEqTotal('addLightning')
+			if (my.buffFlags.phaseBlade) {
+				stats.cache.addLightning = buffs.phaseBlade.addLightning[my.buffs.phaseBlade.level]
+			}
+		}
+		return stats.cache.addLightning
+	}
+	function addFire(fresh) {
+		if (fresh || typeof stats.cache.addFire === 'undefined') {
+			stats.cache.addFire = getEqTotal('addFire')
+		}
+		return stats.cache.addFire
+	}
+	function addIce(fresh) {
+		if (fresh || typeof stats.cache.addIce === 'undefined') {
+			stats.cache.addIce = getEqTotal('addIce')
+		}
+		return stats.cache.addIce
+	}
+	function addSpellBlood(fresh) {
+		if (fresh || typeof stats.cache.addSpellBlood === 'undefined') {
+			stats.cache.addSpellBlood = getEqTotal('addSpellBlood')
+		}
+		return stats.cache.addSpellBlood
+	}
+	function addSpellPoison(fresh) {
+		if (fresh || typeof stats.cache.addSpellPoison === 'undefined') {
+			stats.cache.addSpellPoison = getEqTotal('addSpellPoison')
+		}
+		return stats.cache.addSpellPoison
+	}
+	function addSpellArcane(fresh) {
+		if (fresh || typeof stats.cache.addSpellArcane === 'undefined') {
+			stats.cache.addSpellArcane = getEqTotal('addSpellArcane')
+		}
+		return stats.cache.addSpellArcane
+	}
+	function addSpellLightning(fresh) {
+		if (fresh || typeof stats.cache.addSpellLightning === 'undefined') {
+			stats.cache.addSpellLightning = getEqTotal('addSpellLightning')
+		}
+		return stats.cache.addSpellLightning
+	}
+	function addSpellFire(fresh) {
+		if (fresh || typeof stats.cache.addSpellFire === 'undefined') {
+			stats.cache.addSpellFire = getEqTotal('addSpellFire')
+		}
+		return stats.cache.addSpellFire
+	}
+	function addSpellIce(fresh) {
+		if (fresh || typeof stats.cache.addSpellIce === 'undefined') {
+			stats.cache.addSpellIce = getEqTotal('addSpellIce')
+		}
+		return stats.cache.addSpellIce
+	}
+	function addSpellAll(fresh) {
+		if (fresh || typeof stats.cache.addSpellAll === 'undefined') {
+			stats.cache.addSpellAll = getEqTotal('addSpellAll')
+		}
+		return stats.cache.addSpellAll
+	}
+	function enhanceBlood(fresh) {
+		if (fresh || typeof stats.cache.addSpellIce === 'undefined') {
+			stats.cache.enhanceBlood = getEqTotal('enhanceBlood')
+		}
+		return stats.cache.enhanceBlood
+	}
+	function enhancePoison(fresh) {
+		if (fresh || typeof stats.cache.addSpellIce === 'undefined') {
+			stats.cache.enhancePoison = getEqTotal('enhancePoison')
+		}
+		return stats.cache.enhancePoison
+	}
+	function enhanceArcane(fresh) {
+		if (fresh || typeof stats.cache.enhanceArcane === 'undefined') {
+			stats.cache.enhanceArcane = getEqTotal('enhanceArcane')
+		}
+		return stats.cache.enhanceArcane
+	}
+	function enhanceLightning(fresh) {
+		if (fresh || typeof stats.cache.enhanceLightning === 'undefined') {
+			stats.cache.enhanceLightning = getEqTotal('enhanceLightning')
+		}
+		return stats.cache.enhanceLightning
+	}
+	function enhanceFire(fresh) {
+		if (fresh || typeof stats.cache.enhanceFire === 'undefined') {
+			stats.cache.enhanceFire = getEqTotal('enhanceFire')
+		}
+		return stats.cache.enhanceFire
+	}
+	function enhanceIce(fresh) {
+		if (fresh || typeof stats.cache.enhanceIce === 'undefined') {
+			stats.cache.enhanceIce = getEqTotal('enhanceIce')
+		}
+		return stats.cache.enhanceIce
+	}
+	function enhanceAll(fresh) {
+		if (fresh || typeof stats.cache.enhanceAll === 'undefined') {
+			stats.cache.enhanceAll = getEqTotal('enhanceAll')
+		}
+		return stats.cache.enhanceAll
+	}
 	function spellDamage(forceCrit, getNonCrit) {
 		max = spell.data.spellDamage(my.skills[spell.index])
 		// console.info('spellDamage 1', max)
 		// enhance by type % and ALL%
-		enhanceDamage = getEqTotal('enhance'+ _.capitalize(spell.data.damageType))
-		enhanceDamage += getEqTotal('enhanceAll')
+		if (spell.data.damageType === 'blood') enhanceDamage = enhanceBlood()
+		else if (spell.data.damageType === 'poison') enhanceDamage = enhancePoison()
+		else if (spell.data.damageType === 'arcane') enhanceDamage = enhanceArcane()
+		else if (spell.data.damageType === 'lightning') enhanceDamage = enhanceLightning()
+		else if (spell.data.damageType === 'fire') enhanceDamage = enhanceFire()
+		else if (spell.data.damageType === 'ice') enhanceDamage = enhanceIce()
+		enhanceDamage += enhanceAll()
+
 		// wis boosts conjuration
 		if (my[spell.data.spellType] === 'conjuration') enhanceDamage += (stats.wis() / 15)
 		else if (my[spell.data.spellType] === 'evocation') enhanceDamage += (stats.intel() / 15)
@@ -399,8 +537,13 @@ var stats = {};
 
 		max = max * (1 + (enhanceDamage / 100))
 		// add spell damage by type and ALL
-		addedDamage = getEqTotal('addedSpell'+ _.capitalize(spell.data.damageType))
-		addedDamage += getEqTotal('addedSpellAll')
+		if (spell.data.damageType === 'blood') addedDamage = addSpellBlood()
+		else if (spell.data.damageType === 'poison') addedDamage = addSpellPoison()
+		else if (spell.data.damageType === 'arcane') addedDamage = addSpellArcane()
+		else if (spell.data.damageType === 'lightning') addedDamage = addSpellLightning()
+		else if (spell.data.damageType === 'fire') addedDamage = addSpellFire()
+		else if (spell.data.damageType === 'ice') addedDamage = addSpellIce()
+		addedDamage += addSpellAll()
 
 		if (my.buffFlags.mirrorImage) addedDamage += my.buffs.mirrorImage.damage
 
@@ -660,6 +803,9 @@ var stats = {};
 		if (fresh || typeof stats.cache.resistLightning === 'undefined') {
 			stats.cache.resistLightning = getStatTotal('resistLightning') + getEqTotal('resistAll')
 			stats.cache.resistLightning += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
+			if (my.buffFlags.phaseBlade) {
+				stats.cache.resistLightning += buffs.phaseBlade.resistLightning[my.buffs.phaseBlade.level]
+			}
 		}
 		return stats.cache.resistLightning
 	}

@@ -5,7 +5,7 @@ let buffs; // buff data for use with skill/spells/icons
 		paralyze: {
 			name: 'Paralyzed',
 			img: 4,
-			job: 'NEC',
+			job: 'WLK',
 		},
 		stun: {
 			name: 'Stunned',
@@ -15,12 +15,12 @@ let buffs; // buff data for use with skill/spells/icons
 		fear: {
 			name: 'Feared',
 			img: 4,
-			job: 'NEC',
+			job: 'WLK',
 		},
 		silence: {
 			name: 'Silenced',
 			img: 4,
-			job: 'NEC',
+			job: 'WLK',
 		},
 		chill: {
 			name: 'Chilled',
@@ -428,7 +428,7 @@ let buffs; // buff data for use with skill/spells/icons
 		explosivePlague: {
 			name: 'Explosive Plague',
 			img: 1,
-			job: 'NEC',
+			job: 'WLK',
 			hate: .7,
 			ticks: 15,
 			interval: 3,
@@ -438,7 +438,7 @@ let buffs; // buff data for use with skill/spells/icons
 		bloodFire: {
 			name: 'Blood Fire',
 			img: 2,
-			job: 'NEC',
+			job: 'WLK',
 			hate: .8,
 			ticks: 12,
 			interval: 3,
@@ -448,7 +448,7 @@ let buffs; // buff data for use with skill/spells/icons
 		demonicPact: {
 			name: 'Demonic Pact',
 			img: 3,
-			job: 'NEC',
+			job: 'WLK',
 			hate: .8,
 			ticks: 20,
 			interval: 3,
@@ -459,7 +459,7 @@ let buffs; // buff data for use with skill/spells/icons
 		hauntingVision: {
 			name: 'Haunting Vision',
 			img: 4,
-			job: 'NEC',
+			job: 'WLK',
 			hate: 1.5,
 			ticks: 5,
 			interval: 3,
@@ -469,14 +469,14 @@ let buffs; // buff data for use with skill/spells/icons
 		icingDeath: {
 			name: 'Icing Death',
 			img: 5,
-			job: 'NEC',
+			job: 'WLK',
 			hate: -1,
 			damageType: 'ice',
 		},
 		curseOfShadows: {
 			name: 'Curse of Shadows',
 			img: 6,
-			job: 'NEC',
+			job: 'WLK',
 			hate: 1,
 			ticks: 14,
 			interval: 3,
@@ -487,7 +487,7 @@ let buffs; // buff data for use with skill/spells/icons
 		drainSoul: {
 			name: 'Drain Soul',
 			img: 8,
-			job: 'NEC',
+			job: 'WLK',
 			hate: 1.2,
 			damageType: 'arcane',
 			msg: (buff) => 'Drain Soul heals you for ' + buff.damage + ' health.',
@@ -495,7 +495,7 @@ let buffs; // buff data for use with skill/spells/icons
 		lichForm: {
 			name: 'Lich Form',
 			img: 9,
-			job: 'NEC',
+			job: 'WLK',
 			duration: 720,
 			hpRegen: [0, 2, 5, 9, 12, 15, 19, 22],
 			mpRegen: [0, 4, 10, 16, 22, 28, 34, 40],
@@ -507,24 +507,79 @@ let buffs; // buff data for use with skill/spells/icons
 		engulfingDarkness: {
 			name: 'Engulfing Darkness',
 			img: 10,
-			job: 'NEC',
+			job: 'WLK',
 			hate: -2,
 			ticks: 10,
 			interval: 3,
 			duration: 30,
 			damageType: 'poison',
 		},
-		// resistIce: [0, 4, 7, 10, 13, 16, 19, 22],
 		profaneSpirit: {
 			name: 'Profane Spirit',
 			img: 11,
-			job: 'NEC',
+			job: 'WLK',
 			duration: 900,
-			addPoison: [0, 9, 3, 4, 5, 6, 7],
+			addPoison: [0, 2, 3, 4, 5, 6, 7, 8],
 			resistPoison: [0, 4, 7, 10, 13, 16, 19, 22],
 			msg: () => 'A profane aura imbues your spirit.',
 			fadeMsg: 'The profane aura fades.'
 		},
+		gravityFlux: { hate: 1},
+		staticSuffocation: {
+			name: 'Static Suffocation',
+			img: 1,
+			job: 'ENC',
+			hate: 1.2,
+			ticks: 9,
+			interval: 3,
+			duration: 27,
+			damageType: 'lightning',
+		},
+		mindBlitz: { hate: 1.25 },
+		mindBlitzEffect: {
+			name: 'Debased Mind',
+			job: 'ENC',
+			img: 2,
+			duration: 45,
+		},
+		subversion: {
+			name: 'Subversion',
+			img: 3,
+			job: 'ENC',
+			hate: .9,
+			ticks: 11,
+			interval: 3,
+			duration: 33,
+			damageType: 'poison',
+		},
+		colorShift: { hate: 2},
+		phaseBlade: {
+			name: 'Phase Blade',
+			img: 5,
+			job: 'ENC',
+			duration: 300,
+			addLightning: [0, 3, 6, 9, 12, 15, 18, 21],
+			resistLightning: [0, 3, 5, 7, 9, 11, 13, 15],
+			msg: () => 'Your weapons are enchanted with phased energy.',
+			fadeMsg: 'The phased energy fades.'
+		},
+		stasisField: {
+			name: 'Stasis Field',
+			img: 6,
+			job: 'ENC',
+			hate: 0,
+			ticks: 1,
+			interval: 30,
+			duration: 30,
+			damageType: 'arcane',
+			pveMitigationRatio: .1,
+			pvpMitigation: [0, 7, 15, 25, 38, 45, 57, 60],
+		},
+		shiftingEther: { hate: 1},
+		rune: { hate: 1},
+		augmentation: { hate: 1},
+		clarity: { hate: 1},
+		enthrall: { hate: 1},
 	}
 	///////////////////////////////////////////
 

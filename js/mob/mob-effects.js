@@ -6,8 +6,24 @@ var mobEffects;
 		stagger,
 		chill,
 		fear,
+		stasis,
 	}
 	///////////////////////////////////////////
+	function stasis(i, duration) {
+		if (duration > timers.mobEffects[i].stasisDuration) {
+			console.info('mobEffects stasis!', i, duration)
+			timers.mobStasisTimer[i].kill()
+			timers.mobEffects[i].stasisDuration = duration
+			// timers.mobStunDuration
+			timers.mobStasisTimer[i] = TweenMax.to(timers.mobEffects[i], duration, {
+				stasisDuration: 0,
+				onComplete: mob.setFilter,
+				onCompleteParams: [i],
+				ease: Linear.easeNone,
+			})
+			mob.setFilter(i)
+		}
+	}
 	function stun(i, duration) {
 		if (duration > timers.mobEffects[i].stunDuration) {
 			console.info('mobEffects STUNNED!', i, duration)
