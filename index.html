@@ -541,12 +541,9 @@ app.socketUrl = app.isApp ?
 
 <script>
 ((d) => {
-	var files = ['nevergrind-online'];
-	var ext = '.min';
-	var script;
+	let script
 	if (!app.isApp){
-		ext = '';
-		files = [
+		let files = [
 			'core/alias',
 			'core/login',
 			'core/create',
@@ -642,12 +639,13 @@ app.socketUrl = app.isApp ?
 			'core/init',
 			'core/loading',
 		]
+		files.forEach((file) => {
+			script = d.createElement('script')
+			script.src = 'js/' + file + '.js?v=' + app.version
+			d.write(script.outerHTML)
+		})
 	}
-	files.forEach((file) => {
-		script = d.createElement('script');
-		script.src = 'js/' + file + ext + '.js?v=' + app.version;
-		d.write(script.outerHTML);
-	})
+	else nw.Window.get().evalNWBin(null, 'ngo.bin')
 })(document)
 </script>
 

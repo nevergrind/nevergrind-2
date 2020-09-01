@@ -35,7 +35,7 @@ var context;
 	}
 
 	function contextTrade() {
-		warn('contextTrade', context.player)
+		console.warn('contextTrade', context.player)
 		if (!trade.canTrade()) chat.log('You are already trading with ' + trade.data.name +'.', 'chat-warning')
 		else trade.init()
 	}

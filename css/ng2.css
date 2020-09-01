@@ -174,7 +174,7 @@ html {
 	max-height: 2160px;
 	margin: 0;
 	overflow: hidden;
-	cursor: url('cursor/normal.cur'), auto;
+	cursor: url('cursor/normal.png'), auto;
 }
 canvas {
 	min-width: 1280px;
@@ -185,10 +185,10 @@ label {
 	display: block;
 	margin: .1em 0
 }
-input { cursor: url('cursor/pointer.cur'), pointer; }
+input { cursor: url('cursor/pointer.png'), pointer; }
 a {
 	color: #aef;
-	cursor: url('cursor/pointer.cur'), pointer
+	cursor: url('cursor/pointer.png'), pointer
 }
 h1, h2 {
 	color: #fff;
@@ -291,7 +291,7 @@ tbody { border: 0 }
 	position: relative;
 	width: 90%;
 	display: block;
-	margin: 4px auto
+	margin: 4px auto;
 }
 .title-bg-color {
 	background: #00214d;
@@ -382,7 +382,7 @@ tbody { border: 0 }
 	border: .1rem ridge #3a3a3a;
 	text-align: center;
 	border-radius: 0;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	letter-spacing: .1rem;
 	background: #997;
 	text-shadow: 1px 1px #000,
@@ -625,7 +625,7 @@ tbody { border: 0 }
 	display: none;
 	left: -5.5rem;
 	width: 10rem;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	z-index: 2
 }
 .mob-details.targeted .mob-name {
@@ -712,7 +712,7 @@ tbody { border: 0 }
 	width: 1px;
 	height: 1px;
 	z-index: 5;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/sword-color.png'), pointer;
 }
 .mob-dead {
 	position: absolute;
@@ -721,7 +721,7 @@ tbody { border: 0 }
 	width: 1px;
 	height: 1px;
 	z-index: 5;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/sword-grey.png'), pointer;
 	display: none;
 }
 /* town stuff */
@@ -830,7 +830,7 @@ tbody { border: 0 }
 .town-building {
 	position: absolute;
 	bottom: 0;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: filter .2s ease-out;
 }
 .town-building:hover {
@@ -961,7 +961,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 }
 #chat-log *::selection { background: #38d; }
 .chat-player {
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: background .2s linear;
 }
 
@@ -1000,7 +1000,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 	flex: 1;
 	color: #fdd;
 	width: 100%;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	padding: .2rem .4rem;
 	border: 1px solid #013;
 	transition: border, background .2s linear;
@@ -1036,7 +1036,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-danger { color: #f22; }
 .chat-broadcast { color: #f80; }
 .chat-exp { color: gold; }
-.chat-join { cursor: url('cursor/pointer.cur'), pointer; }
+.chat-join { cursor: url('cursor/pointer.png'), pointer; }
 .chat-hidden {
 	color: #000;
 	background: #000;
@@ -1059,9 +1059,9 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-DRU { color: #8f0; }
 .chat-CLR { color: #ff5; }
 .chat-SHM { color: #08f; }
-.chat-NEC { color: #84f; }
+.chat-WLK { color: #84f; }
 .chat-ENC { color: #0df; }
-.chat-SUM { color: #f90; }
+.chat-TMP { color: #f90; }
 .chat-WIZ { color: #f22; }
 
 .bg-WAR { background: #a736; }
@@ -1074,9 +1074,9 @@ animation: town-repeat-bg 90s linear infinite;*/
 .bg-DRU { background: #8f06; }
 .bg-CLR { background: #ff56; }
 .bg-SHM { background: #08f6; }
-.bg-NEC { background: #84f6; }
+.bg-WLK { background: #84f6; }
 .bg-ENC { background: #0df6; }
-.bg-SUM { background: #f906; }
+.bg-TMP { background: #f906; }
 .bg-WIZ { background: #f226; }
 
 
@@ -1090,9 +1090,9 @@ animation: town-repeat-bg 90s linear infinite;*/
 .bg-dark-DRU { background: #8f03; }
 .bg-dark-CLR { background: #ff53; }
 .bg-dark-SHM { background: #08f3; }
-.bg-dark-NEC { background: #84f3; }
+.bg-dark-WLK { background: #84f3; }
 .bg-dark-ENC { background: #0df3; }
-.bg-dark-SUM { background: #f903; }
+.bg-dark-TMP { background: #f903; }
 .bg-dark-WIZ { background: #f223; }
 
 
@@ -1186,15 +1186,16 @@ background-clip: content-box;
 }
 #bar-all-player-wrap .player-targeted {
 	outline: .1rem ridge #5fd;
-	animation: repeat-border-flash .25s linear infinite;
+	animation: repeat-border-flash 1s ease-out infinite;
 }
 @keyframes repeat-border-flash {
 	0% { outline: .1rem ridge #5fd; }
-	100% { outline: .1rem ridge #098; }
+	50% { outline: .1rem ridge #098; }
+	100% { outline: .1rem ridge #5fd; }
 }
 .bar-icons {
 	color: gold;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	padding: .2rem;
 	background: #103860;
 	border: 2px groove #579;
@@ -1344,7 +1345,7 @@ background-clip: content-box;
 	background: radial-gradient(farthest-corner at 0% 0%, rgba(16, 32, 80, 1), rgba(0, 0, 0, 1));
 }
 .context-items {
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	white-space: nowrap;
 	padding: .1rem .5rem;
 	border-bottom: 1px solid #048;
@@ -1438,7 +1439,7 @@ background-clip: content-box;
 }
 
 .close-aside:hover {
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	color: #f00 !important;
 }
 
@@ -1454,17 +1455,13 @@ background-clip: content-box;
 	line-height: 1.5;
 	vertical-align: middle;
 }
-
-
 #guild-member-flex {
 	display: flex;
 	align-content: center;
 }
-
 #guild-member-label {
 	flex: 1;
 }
-
 #guild-member-refresh-btn {
 	display: flex;
 	align-items: center;
@@ -1475,7 +1472,7 @@ background-clip: content-box;
 	border: 1px solid #05b;
 	color: #fff;
 	outline-offset: 0;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: background .2s ease-out;
 }
 #guild-member-refresh-btn:active {
@@ -1520,7 +1517,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	color: #aaa;
 	line-height: 1.5rem;
 	margin: .2rem 0;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 }
 
 .mission-zone-headers:hover { background: #048; }
@@ -1560,7 +1557,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 
 .mission-quest-item {
 	text-indent: 2.5rem;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 }
 
 .mission-quest-item:hover {
@@ -1699,7 +1696,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 .skill-img {
 	position: relative;
 	z-index: 1;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	width: 100%;
 	height: 100%;
 	align-self: center;
@@ -2002,7 +1999,7 @@ background-repeat: no-repeat;
 .title-select-chevron {
 	width: 1.5rem;
 	filter: brightness(0) drop-shadow(0 0 1px #ffa) drop-shadow(0 0 3px #ffa);
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 }
 #ch-card-wrap {
 	display: flex;
@@ -2020,7 +2017,6 @@ background-repeat: no-repeat;
 	padding: 0;
 	border-radius: 0;
 	transform: scale(1);
-	cursor: url('cursor/pointer.cur'), pointer;
 	transition: text-shadow .2s ease-out, backdrop-filter .2s ease-out;
 	color: #ff2 !important;
 	text-shadow: 1px 1px #000, -1px 0 #000, 1px 0 #000, -1px 1px #000, 1px -1px #000, -1px -1px #000;
@@ -2038,7 +2034,7 @@ background-repeat: no-repeat;
 	padding: .1rem;
 	line-height: 1.5;
 	text-align: center;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -2091,7 +2087,7 @@ background-repeat: no-repeat;
 	background: #bba;
 	box-shadow: 1px 1px #579 inset, -1px -1px #579 inset, 1px -1px 2px #000 inset, -3px 3px 6px 2px #fff8 inset;
 	border: .1rem groove #579;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: background .1s ease-out;
 }
 .attr-add-1:hover { background: #8f8; }
@@ -2137,7 +2133,7 @@ background-repeat: no-repeat;
 	position: relative;
 	width: .8rem;
 	height: .8rem;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: transform .25s ease-out;
 	transform-origin: 50% 100%;
 	z-index: 1;
@@ -2238,7 +2234,7 @@ background-repeat: no-repeat;
 	letter-spacing: .1rem;
 	font-size: 1rem;
 	background: #08f;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: background .2s ease;
 }
 .toast-btn:hover {
@@ -2353,7 +2349,7 @@ background-repeat: no-repeat;
 	background: #001;
 	padding: 0 .5rem;
 	border-radius: 0 0 8px 8px;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	margin-top: -2px;
 	transition: filter .15s ease-out;
 }
@@ -2422,6 +2418,9 @@ background-repeat: no-repeat;
 	border: 4px ridge #888;
 	z-index: 100;
 }
+.option-category:hover {
+	cursor: url('cursor/pointer.png'), pointer;
+}
 .option-category.active {
 	background: #ff05;
 	color: #ffd;
@@ -2450,7 +2449,7 @@ background-repeat: no-repeat;
 		#888 .75turn,
 		#fff .875turn,
 		#888 1turn);
-	cursor: url("cursor/pointer.cur"), pointer;
+	cursor: url("cursor/pointer.png"), pointer;
 }
 .options-volume {
 	position: absolute;
@@ -2514,7 +2513,7 @@ background-repeat: no-repeat;
 	color: #ffd;
 	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
 	filter: saturate(2);
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 }
 .ng-boolean:active, .options-hotkey:active {
 	filter: saturate(3);
@@ -2533,7 +2532,7 @@ background-repeat: no-repeat;
 	background: radial-gradient(farthest-corner at 50% 50%, #013, #025);
 	margin: .2rem;
 	border: .1rem ridge #555;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 }
 .option-button:hover {
 	color: #ffd;
@@ -2558,7 +2557,7 @@ background-repeat: no-repeat;
 	border-radius: 5px;
 	font-size: .9rem;
 	padding: .2rem .2rem .2rem .4rem;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 }
 .ng-dropdown-btn:hover {
 	filter: saturate(1.5);
@@ -2588,7 +2587,7 @@ background-repeat: no-repeat;
 .ng-dropdown-select {
 	background: #025;
 	text-indent: .5rem;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	line-height: 2;
 	transition: background .2s ease-out, color .2s ease-out;
 }
@@ -2606,7 +2605,7 @@ background-repeat: no-repeat;
 #app-exit:hover, #app-reset:hover {
 	color: #ffd;
 	box-shadow: 0 0 0 1rem #ff08 inset;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 }
 #app-exit:active, #app-reset:active { box-shadow: 0 0 0 1rem #ff0c inset; }
 
@@ -2624,7 +2623,7 @@ background-repeat: no-repeat;
 	transition: filter .12s ease-out;
 }
 .close-menu:hover {
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	filter: saturate(1.2) brightness(1.2);
 }
 .close-menu:active {
@@ -2691,7 +2690,7 @@ background-repeat: no-repeat;
 .item-slot {
 	width: 3.2rem;
 	height: 3.2rem;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	border-radius: 4px;
 	border: 1px solid #777;
 	flex-shrink: 0;
@@ -2794,7 +2793,7 @@ background-repeat: no-repeat;
 	border: .1rem ridge #333;
 	background: #001;
 	border-radius: 5px;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: filter .15s ease-out;
 }
 .inv-skill-row:hover { border: .1rem ridge #048; filter: brightness(1.5); }
@@ -2928,7 +2927,7 @@ background-repeat: no-repeat;
 	border: .1rem ridge #579;
 	outline: 1px solid #025;
 	text-transform: capitalize;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	margin: 1rem 0;
 	transition: filter .15s ease-out;
 }
@@ -3012,7 +3011,7 @@ background-repeat: no-repeat;
 	padding: .25rem 1.5rem;
 	border: .1rem ridge gold;
 	filter: hue-rotate(350deg) saturate(3);
-	cursor: url('cursor/buy.cur'), pointer!important;
+	cursor: url('cursor/buy.png'), pointer!important;
 }
 #town-value-wrap {
 	justify-content: space-between;
@@ -3040,7 +3039,7 @@ background-repeat: no-repeat;
 	background: #001;
 	padding: 0 .5rem;
 	border-radius: 8px 8px 0 0;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: filter .15s ease-out;
 }
 .tavern-tabs:hover {
@@ -3056,7 +3055,7 @@ background-repeat: no-repeat;
 	border-bottom: none;
 	background: #136;
 	padding: 0 .5rem;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 }
 #tavern-body {
 	display: flex;
@@ -3088,7 +3087,7 @@ background-repeat: no-repeat;
 	flex: 1;
 	color: gold;
 	border: 1px solid #013;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: filter .15s ease-out;
 }
 .tavern-jobs:hover {
@@ -3137,7 +3136,7 @@ background-repeat: no-repeat;
 .tavern-tips {
 	padding: 0 1rem;
 	transition: text-indent .15s ease-out, background .15s ease-out, color .15s ease-out;
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	background: #0004;
 }
 .tavern-tips:hover {
@@ -3232,7 +3231,7 @@ background-repeat: no-repeat;
 	height: 2rem;
 }
 .academy-train {
-	cursor: url('cursor/pointer.cur'), pointer;
+	cursor: url('cursor/pointer.png'), pointer;
 	transition: transform .15s ease-out, filter .15s ease-out;
 }
 .academy-train:hover {
@@ -3265,16 +3264,16 @@ background-repeat: no-repeat;
 	margin: .2rem;
 	flex: 1;
 }
-.pointer { cursor: url('cursor/pointer.cur'), pointer }
-.pointer:active { cursor: url('cursor/pointer.cur'), pointer }
-.cursor-buy { cursor: url('cursor/buy.cur'), pointer!important; }
-.cursor-gear { cursor: url('cursor/gear.cur'), pointer!important; }
-.cursor-mail { cursor: url('cursor/mail.cur'), pointer!important; }
-.cursor-sword { cursor: url('cursor/sword.cur'), pointer!important; }
+.pointer { cursor: url('cursor/pointer.png'), pointer }
+.pointer:active { cursor: url('cursor/pointer.png'), pointer }
+.cursor-buy { cursor: url('cursor/buy.png'), pointer!important; }
+.cursor-gear { cursor: url('cursor/gear.png'), pointer!important; }
+.cursor-mail { cursor: url('cursor/mail.png'), pointer!important; }
+.cursor-sword { cursor: url('cursor/sword-color.png'), pointer!important; }
 .item-slot-merchant,
 .item-slot-apothecary,
 .item-slot-blacksmith {
-	cursor: url('cursor/buy.cur'), pointer!important;
+	cursor: url('cursor/buy.png'), pointer!important;
 }
 
 .trade-avatars {

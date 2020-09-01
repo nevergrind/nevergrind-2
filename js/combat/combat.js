@@ -2,7 +2,6 @@ var combat;
 !function($, _, TweenMax, PIXI, Math, Power1, Power3, Linear, undefined) {
 	combat = {
 		getAddedDamage,
-		getMobResist,
 		rxDamageMob,
 		popupDamage,
 		targetChanged,
@@ -281,6 +280,7 @@ var combat;
 				// small boost to make it slightly stronger at lower levels
 				processLeech(skill.SHM.getMaxVampiricGaze(d.index) + .5)
 			}
+			combat.levelSkillCheck('offense')
 		}
 		else {
 			// mob magic resists
@@ -299,7 +299,7 @@ var combat;
 				}
 			}
 			d.damage *= d.enhancedDamage
-			if (!d.cannotResist) d.damage *= getMobResist(d)
+			if (!d.cannotResist) d.damage *= mob.getMobResist(d)
 
 		}
 
@@ -308,8 +308,9 @@ var combat;
 			d.damage *= buffs.stasisField.pveMitigationRatio
 		}
 		// final sanity checks
-		d.damage = d.damage < 1 ? 1 : round(d.damage)
-		combat.levelSkillCheck('offense')
+		if (d.damage <= 0) d.damage = 0
+		else if (d.damage < 1) d.damage = 1
+		else d.damage = round(d.damage)
 		return d
 	}
 	function getAddedDamage(index) {
@@ -322,39 +323,6 @@ var combat;
 		totalAddedDamage += stats.addIce() * mobs[index].resist.ice
 		console.info('getAddedDamage 3', index, totalAddedDamage)
 		return totalAddedDamage
-	}
-	function getMobResist(d) {
-		resist = mobs[d.index].resist[d.damageType]
-		console.info('getMobResist b4', d.index, d.damageType, resist)
-		if (d.damageType === 'blood') {
-			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
-		}
-		else if (d.damageType === 'poison') {
-			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
-		}
-		else if (d.damageType === 'arcane') {
-			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
-			if (mobs[d.index].buffFlags.mindBlitzEffect) resist += .3
-		}
-		else if (d.damageType === 'lightning') {
-
-		}
-		else if (d.damageType === 'fire') {
-
-		}
-		else if (d.damageType === 'ice') {
-
-		}
-		resistPenalty = 0
-		if (mobs[d.index].level > my.level) {
-			// 20% when 3 levels higher
-			resistPenalty = Math.pow(mobs[d.index].level - my.level + 1, 2.16) / 100
-		}
-		resist -= resistPenalty
-		if (resist < .25) resist = .25
-		else if (resist > 2) resist = 2 // cannot lower resists beyond -100%
-		console.info('getMobResist after', d.index, d.damageType, resist)
-		return resist
 	}
 	function toggleAutoAttack() {
 		if (!my.isAutoAttacking) autoAttackEnable()
@@ -413,7 +381,7 @@ var combat;
 		mob.updateHate(o)
 		mob.drawMobBar(o.index)
 		if (mobs[o.index].hp <= 0) {
-			warn('mob is dead!')
+			console.warn('mob is dead!')
 			mob.death(o.index)
 			my.fixTarget()
 			if (isBattleOver()) {
@@ -464,7 +432,7 @@ var combat;
 		len = damages.length
 		myDamage = 0
 		for (i=0; i<len; i++) {
-			if (damages[i].damage > 0) {
+			if (damages[i].damage > 0 || damages[i].isBuff) {
 				myDamage += damages[i].damage
 				damages[i].row = my.row
 				if (typeof damages[i].buffs === 'object') {
@@ -517,12 +485,12 @@ var combat;
 	]
 	function txDotMob(damages) {
 		// only checks dodge?
-		// console.info('txDotMob 1', damages)
+		console.info('txDotMob 1', damages)
 		damages = damages.map(processDamagesMob)
 		damageArr = []
 		len = damages.length
 		for (i=0; i<len; i++) {
-			if (damages[i].damage > 0) {
+			if (damages[i].damage > 0 || buffs[damages[i].key].isDebuff) {
 				damages[i].row = my.row
 				damageArr.push(damages[i])
 			}
@@ -597,6 +565,7 @@ var combat;
 			damageType: buffs[key].damageType,
 			isDot: true,
 			isPiercing: true,
+			isDebuff: Boolean(buffs[key].isDebuff),
 			damage: damage,
 		}])
 		for (var k in mobs[index].buffs) {
@@ -611,7 +580,7 @@ var combat;
 	}
 
 	function selfDied() {
-		warn('You died!')
+		console.warn('You died!')
 		// subtract XP
 		if (!ng.isApp) {
 			// really just for testing
@@ -692,7 +661,7 @@ var combat;
 				return d
 			}
 		}
-		// info('processDamages', d)
+		// console.info('processDamages', d)
 		if (d.damageType === 'physical') {
 			// riposte
 			if (skills.riposte[my.job].level &&
@@ -720,6 +689,8 @@ var combat;
 			}
 
 			// phyMit
+			if (my.buffFlags.shimmeringOrb) buffMitigatesDamage(d, 'shimmeringOrb')
+			if (my.buffFlags.sereneSigil) buffMitigatesDamage(d, 'sereneSigil')
 			d.damage -= stats.phyMit()
 
 			// enhancedDamage ?
@@ -739,7 +710,8 @@ var combat;
 		}
 		else {
 			// magMit
-			if (my.buffFlags.shimmeringOrb) reduceShimmeringOrbDamage(d)
+			if (my.buffFlags.shimmeringOrb) buffMitigatesDamage(d, 'shimmeringOrb')
+			if (my.buffFlags.sereneSigil) buffMitigatesDamage(d, 'sereneSigil')
 			d.damage -= stats.magMit()
 
 			// my magic resists
@@ -798,7 +770,7 @@ var combat;
 					if (damages[i].damageType === 'physical') {
 						spell.knockback()
 					}
-					//console.info('tx processHit: ', damages[i].damage)
+					// console.info('tx processHit: ', damages[i].damage)
 				}
 			}
 			animatePlayerFrames()
@@ -833,7 +805,7 @@ var combat;
 		mobs[index].hitCount++
 		basicText.x = mob.centerX[index]
 		basicText.y = expanse.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH * mobs[2].size + ((mobs[index].hitCount % 5) * 20)
-		//info('basicText', basicText)
+		// console.info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
 		TweenMax.to(basicText, textDuration * .6, {
 			y: '-=' + textDistanceY + '',
@@ -880,7 +852,7 @@ var combat;
 	function rxHotHero(data) {
 		console.info('rxHotHero: ', data)
 		data.heals.forEach(heal => {
-			if (buffs[heal.key]?.duration > 0) hotToMe(data.row, heal)
+			if (typeof buffs[heal.key] && buffs[heal.key].duration > 0) hotToMe(data.row, heal)
 			else healToMe(data.row, heal)
 		})
 	}
@@ -892,7 +864,7 @@ var combat;
 	function healToMe(row, heal) {
 		hate = 0
 		console.info('healToMe rxHotHero', _.clone(heal))
-		hate += heal.damage * (buffs[heal.key].hate ?? 1)
+		hate += heal.damage * (typeof buffs[heal.key].hate === 'number' ? buffs[heal.key].hate : 1)
 		if (my.row === heal.index) {
 			// healing ME
 			healAmount = processHeal(heal.damage)
@@ -914,7 +886,7 @@ var combat;
 	function hotToMe(row, heal) {
 		console.info('hotToMe rxHotHero', row, heal)
 		hate = 0
-		hate += heal.damage * (buffs[heal.key].hate ?? 1)
+		hate += heal.damage * (typeof buffs[heal.key].hate === 'number' ? buffs[heal.key].hate : 1)
 		if (my.row === heal.index) {
 			// HoT
 			let keyRow = heal.key + '-' + heal.index
@@ -1021,7 +993,7 @@ var combat;
 				}
 				// optional keys
 				if (buff.level) my.buffs[key].level = buff.level
-				// sets shield type damage absorption shimmeringOrb, guardianAngel, etc
+				// sets shield type damage absorption shimmeringOrb, guardianAngel, sereneSigil etc
 				if (buff.damage) my.buffs[key].damage = buff.damage
 
 				// not timer based - my.buffFlags[key] must be set to false via depletion
@@ -1130,6 +1102,18 @@ var combat;
 			stats.addLightning(true)
 			bar.updateAllResistsDOM()
 		}
+		else if (key === 'augmentation') {
+			stats.agi(true)
+			stats.dex(true)
+			updateCharStatColOne()
+		}
+		else if (key === 'clarity') {
+			stats.intel(true)
+			updateCharStatColTwo()
+			my.set('mpMax', stats.mpMax())
+			bar.updateBar('mp')
+			txMpChange()
+		}
 		////////////////////////////////
 		function cacheBustAttack() {
 			stats.offense(true)
@@ -1158,6 +1142,21 @@ var combat;
 		game.txPartyResources({
 			hp: my.hp,
 			hpMax: my.hpMax,
+		})
+	}
+
+	function txMpChange() {
+		console.info('processStatBuffsToMe tx!', key)
+		game.txPartyResources({
+			mp: my.mp,
+			mpMax: my.mpMax,
+		})
+	}
+	function txSpChange() {
+		console.info('processStatBuffsToMe tx!', key)
+		game.txPartyResources({
+			sp: my.sp,
+			spMax: my.spMax,
 		})
 	}
 	function animatePlayerFrames() {
@@ -1265,14 +1264,14 @@ var combat;
 			})
 		}
 	}
-	function reduceShimmeringOrbDamage(d) {
-		let val = skills.RNG[10].magMit[my.buffs.shimmeringOrb.level]
+	function buffMitigatesDamage(d, key) {
+		let val = buffs[key].mitigation[my.buffs[key].level]
 		d.damage -= val
-		console.info('reduceShimmeringOrbDamage remaining', my.buffs.shimmeringOrb.damage)
-		my.buffs.shimmeringOrb.damage -= val
-		if (my.buffs.shimmeringOrb.damage <= 0) {
-			my.buffs.shimmeringOrb.damage = 0
-			battle.removeBuff('shimmeringOrb')
+		console.info('buffMitigatesDamage remaining', my.buffs[key].damage)
+		my.buffs[key].damage -= val
+		if (my.buffs[key].damage <= 0) {
+			my.buffs[key].damage = 0
+			battle.removeBuff(key)
 		}
 	}
 	function reduceMagicShieldDamage(d, key) {

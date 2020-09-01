@@ -179,12 +179,25 @@ var stats = {};
 	function agi(fresh) {
 		if (fresh || typeof stats.cache.agi === 'undefined') {
 			stats.cache.agi = my.agi + create.raceAttrs[my.race][2] + create.jobAttrs[my.jobLong][2] + getEqTotal('agi') + getEqTotal('allStats')
+			if (my.buffFlags.augmentation) stats.cache.agi += buffs.augmentation.stats[my.buffs.augmentation.level]
+
+			if (fresh) {
+				dodgeChance(true)
+				armor(true)
+			}
 		}
 		return stats.cache.agi
 	}
 	function dex(fresh) {
 		if (fresh || typeof stats.cache.dex === 'undefined') {
 			stats.cache.dex = my.dex + create.raceAttrs[my.race][3] + create.jobAttrs[my.jobLong][3] + getEqTotal('dex') + getEqTotal('allStats')
+			if (my.buffFlags.augmentation) stats.cache.dex += buffs.augmentation.stats[my.buffs.augmentation.level]
+
+			if (fresh) {
+				parryChance(true)
+				riposteChance(true)
+				critChance(true)
+			}
 		}
 		return stats.cache.dex
 	}
@@ -197,6 +210,11 @@ var stats = {};
 	function intel(fresh) {
 		if (fresh || typeof stats.cache.intel === 'undefined') {
 			stats.cache.intel = my.intel + create.raceAttrs[my.race][5] + create.jobAttrs[my.jobLong][5] + getEqTotal('intel') + getEqTotal('allStats')
+			if (my.buffFlags.clarity) stats.cache.intel += buffs.clarity.stats[my.buffs.clarity.level]
+
+			if (fresh) {
+				mpMax(true)
+			}
 		}
 		return stats.cache.intel
 	}
@@ -235,7 +253,7 @@ var stats = {};
 		type = type || items.eq[12].weaponSkill
 		if (fresh || typeof stats.cache.attack === 'undefined') {
 			stats.cache.attack = getEqTotal('attack') + (str() * .35)
-			//info('stats.missChance', type, ~~stats.cache.attack)
+			// console.info('stats.missChance', type, ~~stats.cache.attack)
 			// buffs
 			if (my.buffFlags.spiritOfTheHunter) {
 				stats.cache.attack += buffs.spiritOfTheHunter.attackBonus[my.buffs.spiritOfTheHunter.level]
@@ -574,7 +592,7 @@ var stats = {};
 	function autoAttackDamage(getNonCrit) {
 		min = 1
 		max = 1
-		weaponSkill = items.eq[12]?.name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[12].minDamage) {
 			min = items.eq[12].minDamage
@@ -624,7 +642,7 @@ var stats = {};
 		// normalized damage for skills
 		min = 1
 		max = 1
-		weaponSkill = items.eq[12]?.name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		 // get normalized DPS value for min/max
 		if (weaponSkill !== 'Hand-to-Hand') {
@@ -690,7 +708,7 @@ var stats = {};
 		if (!my.dualWield) return failedWeaponDamage
 		min = 1
 		max = 1
-		weaponSkill = items.eq[13]?.name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[13] === 'object' && items.eq[13].name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[13].minDamage) {
 			min = items.eq[13].minDamage
@@ -1064,11 +1082,14 @@ var stats = {};
 		return value
 	}
 	function mpMax(fresh) {
-		return ~~(
-			((stats.intel() * mpTier[my.job]) * (my.level / 50) +
-				(my.level * (mpTier[my.job] * 2.5) + 12)) * mpPercentBonus()
-			+ getEqTotal('mp')
-		)
+		if (fresh || typeof stats.cache.hpRegen === 'undefined') {
+			stats.cache.mpMax = ~~(
+				((stats.intel() * mpTier[my.job]) * (my.level / 50) +
+					(my.level * (mpTier[my.job] * 2.5) + 12)) * mpPercentBonus()
+				+ getEqTotal('mp')
+			)
+		}
+		return stats.cache.mpMax
 	}
 
 	function spMax(fresh) {
@@ -1108,11 +1129,17 @@ var stats = {};
 			if (my.buffFlags.lichForm) {
 				stats.cache.mpRegen += buffs.lichForm.mpRegen[my.buffs.lichForm.level]
 			}
+			if (my.buffFlags.clarity) {
+				stats.cache.mpRegen += buffs.clarity.mpRegen[my.buffs.clarity.level]
+			}
 		}
 		return stats.cache.mpRegen
 	}
 	function spRegen(fresh) {
-		return ~~(baseSpRegen() + getEqTotal('spRegen'))
+		if (fresh || typeof stats.cache.spRegen === 'undefined') {
+			stats.cache.spRegen = ~~(baseSpRegen() + getEqTotal('spRegen'))
+		}
+		return stats.cache.spRegen
 	}
 
 	function hpPercentBonus(fresh) {

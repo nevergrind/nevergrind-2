@@ -27,6 +27,7 @@ var button;
 	let damages
 	const displayBlock = { display: 'block' }
 	const displayFlex = { display: 'flex' }
+	const globalHasteCap = .4
 	/////////////////////////////
 
 	function init() {
@@ -74,6 +75,7 @@ var button;
 		})
 		TweenMax.to(timers.skillCooldowns, skillData.cooldownTime, timerObj)
 	}
+
 	function triggerGlobalCooldown() {
 		timers.globalCooldown = 0
 		let selector = []
@@ -90,8 +92,9 @@ var button;
 		}
 		// haste
 		globalHaste = 1
-		if (my.buffFlags.frenzy) globalHaste -= skills.WAR[6].haste[my.buffs.frenzy.level]
-		if (globalHaste < .25) globalHaste = .25
+		if (my.buffFlags.frenzy) globalHaste -= buffs.frenzy.haste[my.buffs.frenzy.level]
+		if (my.buffFlags.augmentation) globalHaste -= buffs.augmentation.haste[my.buffs.augmentation.level]
+		if (globalHaste < globalHasteCap) globalHaste = globalHasteCap
 
 		TweenMax.to(timers, globalCooldownDur * globalHaste, {
 			globalCooldown: 1,
@@ -179,7 +182,7 @@ var button;
 		startSwing('primaryAttack')
 	}
 	function secondaryAttack() {
-		warn('secondaryAttack')
+		console.warn('secondaryAttack')
 		if (ng.view !== 'battle' ||
 			!my.isAutoAttacking ||
 			timers.secondaryAttack < 1 ||
@@ -268,7 +271,8 @@ var button;
 	}
 	function getAttackSpeed(slot) {
 		// weapon or punch speed?
-		speed = items.eq[slot]?.name ? items.eq[slot].speed : button.autoAttackSpeed
+		if (typeof items.eq[slot] === 'object') speed = items.eq[slot].speed
+		else speed = button.autoAttackSpeed
 		speedHaste = 1
 		// buffs
 		if (my.buffFlags.spiritOfTheHunter) speedHaste -= .2

@@ -9,7 +9,7 @@
 		stasisField,
 		getHighestStasis,
 		shiftingEther,
-		rune,
+		sereneSigil,
 		augmentation,
 		clarity,
 		enthrall,
@@ -217,63 +217,81 @@
 		spell.startCasting(index, data, shiftingEtherCompleted)
 	}
 	function shiftingEtherCompleted() {
-		combat.txDamageMob([{
+		damages = []
+		damages.push({
 			key: 'shiftingEther',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			damageType: 'arcane',
+			...stats.spellDamage(false, true)
+		})
+		combat.txDotMob(damages)
 	}
-	function rune(index, data) {
+	function sereneSigil(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, runeCompleted)
+		spell.startCasting(index, data, sereneSigilCompleted)
 	}
-	function runeCompleted() {
-		combat.txDamageMob([{
-			key: 'rune',
+	function sereneSigilCompleted() {
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			key: 'sereneSigil',
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		combat.txBuffHero(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function augmentation(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, augmentationCompleted)
 	}
 	function augmentationCompleted() {
-		combat.txDamageMob([{
+		damages = []
+		damages.push({
 			key: 'augmentation',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			damage: 0
+		})
+		combat.txBuffHero(damages)
 	}
 	function clarity(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, clarityCompleted)
 	}
 	function clarityCompleted() {
-		combat.txDamageMob([{
+		combat.txBuffHero([{
 			key: 'clarity',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			level: my.skills[spell.config.skillIndex],
+			damage: 0
 		}])
 	}
 	function enthrall(index, data) {
@@ -285,12 +303,32 @@
 		spell.startCasting(index, data, enthrallCompleted)
 	}
 	function enthrallCompleted() {
-		combat.txDamageMob([{
-			key: 'enthrall',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		splashIndex = -1
+		damages = []
+		for (i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			damages.push({
+				key: 'enthrall',
+				index: tgt,
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage(),
+			})
+		}
+		combat.txDamageMob(damages)
+		// AE DoT damage
+		splashIndex = -1
+		damages = []
+		for (i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			damages.push({
+				key: 'enthrall',
+				index: tgt,
+				damageType: spell.data.damageType,
+				spellType: spell.data.spellType,
+				damage: 0
+			})
+		}
+		combat.txDotMob(damages)
 	}
 }($, _, TweenMax);

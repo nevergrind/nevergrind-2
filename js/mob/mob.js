@@ -1,6 +1,7 @@
 var mob;
 (function(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2, undefined) {
 	mob = {
+		getMobResist,
 		isAlive,
 		getRandomMobKey,
 		init,
@@ -25,7 +26,7 @@ var mob;
 		animateAttack,
 		special,
 		death,
-		mobAttackSpeed,
+		getMobAttackSpeed,
 		killAttacks,
 		missChance,
 		getMobDamage,
@@ -35,7 +36,7 @@ var mob;
 		hideMobTargets,
 		setFilter,
 		setTimeScaleSpeed,
-		isMobPoisoned,
+		isPoisoned,
 		txData: [],
 		enableMobHeartbeat: true,
 		imageKeysLen: 0,
@@ -126,6 +127,8 @@ var mob;
 	let spTick = 0
 	let mobRow = -1
 	let i = 0
+	let resist = 0
+	let resistPenalty = 0
 
 	//////////////////////////////////////////////////
 	function getRandomMobKey() {
@@ -197,7 +200,7 @@ var mob;
 				// constrain max level
 				level = _.random(possibleLvls[0], possibleLvls[possibleLvls.length - 1])
 				if (mob.name === config.name) {
-					//info('pushing by name', mob.name, config.name)
+					// console.info('pushing by name', mob.name, config.name)
 					results.push({
 						...mob,
 						level: level,
@@ -205,7 +208,7 @@ var mob;
 					})
 				}
 				else if (mob.img === config.img) {
-					//info('pushing by img', mob.img, config.img)
+					// console.info('pushing by img', mob.img, config.img)
 					results.push({
 						...mob,
 						level: level,
@@ -231,9 +234,9 @@ var mob;
 	function getMobExp(config) {
 		exp = config.level * 3
 		index = combat.getDiffIndex(config.level)
-		//console.info('getMobExp', index, exp)
+		// console.info('getMobExp', index, exp)
 		exp = round(exp * battle.earnedExpRatio[index])
-		//console.info('getMobExp', exp)
+		// console.info('getMobExp', exp)
 		return exp
 	}
 	function isAnyMobAlive() {
@@ -464,13 +467,14 @@ var mob;
 			TweenMax.to(mobs[i].sprite, .5, filter.default(i))
 		}
 	}
-	function mobAttackSpeed(i) {
+	function getMobAttackSpeed(i) {
 		// default speed for this mob
 		mobSpeed = mobs[i].speedMod
 		// things that modify mob speed
 		if (mobs[i].buffFlags.chill) mobSpeed += .2
+		if (mobs[i].buffFlags.shiftingEther) mobSpeed += .3
 		// constraints
-		if (mobSpeed > 3) mobSpeed = 3
+		if (mobSpeed > 2) mobSpeed = 2
 		else if (mobSpeed < .5) mobSpeed = .5
 		console.info('mobSpeed', mobSpeed)
 		return mobs[i].speed * mobSpeed
@@ -575,7 +579,7 @@ var mob;
 			}
 		}
 		// keep it going for all in case some else takes over leader
-		timers.mobAttack[i] = delayedCall(mobAttackSpeed(i), mob.attack, [i])
+		timers.mobAttack[i] = delayedCall(getMobAttackSpeed(i), mob.attack, [i])
 	}
 	function animateAttack(i, row) {
 		isSomeoneAlive = party.isSomeoneAlive()
@@ -902,7 +906,7 @@ var mob;
 			}
 		}
 	}
-	function isMobPoisoned(mob) {
+	function isPoisoned(mob) {
 		return Boolean(mob.buffFlags.engulfingDarkness ||
 			mob.buffFlags.toxicSpores ||
 			mob.buffFlags.subversion ||
@@ -911,7 +915,7 @@ var mob;
 	function processMobResourceTick(mob, index) {
 		if (mob.name &&
 			timers.mobEffects[index].freezeDuration === 0 &&
-			!isMobPoisoned(mobs[index])) {
+			!isPoisoned(mobs[index])) {
 			// hp
 			hpTick = mob.level
 			if (mob.hp + hpTick > mob.hpMax) {
@@ -968,6 +972,39 @@ var mob;
 		else if (chance < .05) chance = .05
 		// console.info('missChance', level, chance)
 		return chance
+	}
+	function getMobResist(d) {
+		resist = mobs[d.index].resist[d.damageType]
+		// console.info('getMobResist b4', d.index, d.damageType, resist)
+		if (d.damageType === 'blood') {
+			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
+		}
+		else if (d.damageType === 'poison') {
+			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
+		}
+		else if (d.damageType === 'arcane') {
+			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
+			if (mobs[d.index].buffFlags.mindBlitzEffect) resist += .3
+		}
+		else if (d.damageType === 'lightning') {
+
+		}
+		else if (d.damageType === 'fire') {
+
+		}
+		else if (d.damageType === 'ice') {
+
+		}
+		resistPenalty = 0
+		if (mobs[d.index].level > my.level) {
+			// 20% when 3 levels higher
+			resistPenalty = Math.pow(mobs[d.index].level - my.level + 1, 2.16) / 100
+		}
+		resist -= resistPenalty
+		if (resist < .25) resist = .25
+		else if (resist > 2) resist = 2 // cannot lower resists beyond -100%
+		// console.info('getMobResist after', d.index, d.damageType, resist)
+		return resist
 	}
 
 })(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2);

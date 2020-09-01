@@ -1,95 +1,261 @@
 !function($, _, TweenMax, undefined) {
 	skill.TMP = {
-		crossSlash,
-		explosiveShot,
-		trueshotArrow,
-		spreadShot,
-		bladeStorm,
-		suppressingVolley,
-		ignite,
-		shockNova,
-		faerieFlame,
-		fungalGrowth,
-		shimmeringOrb,
-		spiritOfTheHunter,
+		lavaBolt,
+		thunderclap,
+		frozenOrb,
+		staticStorm,
+		fireWall,
+		glacialSpike,
+		primordialSludge,
+		arclight,
+		primevalWithering,
+		lavaShield,
+		lucidEnergy,
+		etherealFocus,
 	}
 	///////////////////////////////////////////
-	let arr, damage, damages, enhancedDamage
-
-	const displayBlock = { display: 'block' }
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam
 	///////////////////////////////////////////
-	function crossSlash(index, data) {
-		console.info('crossSlash', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function lavaBolt(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, lavaBoltCompleted)
 	}
-
-	function explosiveShot(index, data) {
-		console.info('explosiveShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function lavaBoltCompleted() {
+		combat.txDamageMob([{
+			key: 'lavaBolt',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function trueshotArrow(index, data) {
-		console.info('trueshotArrow', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function thunderclap(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, thunderclapCompleted)
 	}
-	function spreadShot(index, data) {
-		console.info('spreadShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function thunderclapCompleted() {
+		let tgt = my.target
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .1, () => {
+					damages = []
+					dam = {
+						key: 'thunderclap',
+						index: tgt,
+						spellType: spell.data.spellType,
+						damageType: spell.data.damageType,
+						...stats.spellDamage(),
+					}
+					if (i === 2) {
+						dam.buffs = [{
+							i: tgt, // target
+							row: my.row, // this identifies unique buff state/icon
+							key: 'stun', // this sets the flag,
+							duration: 1,
+						}]
+					}
+					damages.push(dam)
+					combat.txDamageMob(damages)
+				})
+			}(i)
+		}
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
-	function bladeStorm(index, data) {
-		console.info('bladeStorm', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function frozenOrb(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, frozenOrbCompleted)
 	}
-	function suppressingVolley(index, data) {
-		console.info('suppressingVolley', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function frozenOrbCompleted() {
+		let originalTarget = my.target
+		for (var i=0; i<15; i++) {
+			!function(i) {
+				let splashIndex = _.random(-2, 2)
+				let tgt = battle.getSplashTarget(splashIndex, originalTarget)
+				if (mob.isAlive(tgt)) {
+					delayedCall(i * .1, () => {
+						combat.txDamageMob([{
+							key: 'frozenOrb',
+							index: tgt,
+							spellType: spell.data.spellType,
+							damageType: spell.data.damageType,
+							...stats.spellDamage(),
+							buffs: [{
+								i: tgt, // target
+								row: my.row, // this identifies unique buff state/icon
+								key: 'chill', // this sets the flag,
+								duration: 7,
+							}]
+						}])
+					})
+				}
+			}(i)
+		}
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
-	function ignite(index, data) {
-		console.info('ignite', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function staticStorm(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, staticStormCompleted)
 	}
-	function shockNova(index, data) {
-		console.info('shockNova', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function staticStormCompleted() {
+		combat.txDamageMob([{
+			key: 'staticStorm',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function faerieFlame(index, data) {
-		console.info('faerieFlame', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function fireWall(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, fireWallCompleted)
 	}
-	function fungalGrowth(index, data) {
-		console.info('fungalGrowth', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function fireWallCompleted() {
+		combat.txDamageMob([{
+			key: 'fireWall',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function shimmeringOrb(index, data) {
-		console.info('shimmeringOrb', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function glacialSpike(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, glacialSpikeCompleted)
 	}
-	function spiritOfTheHunter(index, data) {
-		console.info('spiritOfTheHunter', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function glacialSpikeCompleted() {
+		combat.txDamageMob([{
+			key: 'glacialSpike',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function primordialSludge(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, primordialSludgeCompleted)
+	}
+	function primordialSludgeCompleted() {
+		combat.txDamageMob([{
+			key: 'primordialSludge',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function arclight(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, arclightCompleted)
+	}
+	function arclightCompleted() {
+		combat.txDamageMob([{
+			key: 'arclight',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function primevalWithering(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, primevalWitheringCompleted)
+	}
+	function primevalWitheringCompleted() {
+		combat.txDamageMob([{
+			key: 'primevalWithering',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function lavaShield(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, lavaShieldCompleted)
+	}
+	function lavaShieldCompleted() {
+		combat.txDamageMob([{
+			key: 'lavaShield',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function lucidEnergy(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, lucidEnergyCompleted)
+	}
+	function lucidEnergyCompleted() {
+		combat.txDamageMob([{
+			key: 'lucidEnergy',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function etherealFocus(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, etherealFocusCompleted)
+	}
+	function etherealFocusCompleted() {
+		combat.txDamageMob([{
+			key: 'etherealFocus',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 
 }($, _, TweenMax);

@@ -60,7 +60,7 @@ var friend;
 		}
 	}
 	function listReceived(data) {
-		warn('listReceived', data);
+		console.warn('listReceived', data);
 		socket.publish('name' + data.name, {
 			name: my.name,
 			level: my.level,
@@ -71,7 +71,7 @@ var friend;
 		})
 	}
 	function presenceReceived(data) {
-		warn('presenceReceived', data);
+		console.warn('presenceReceived', data);
 		var el = getElementById('friend-list-' + friend.listId + '-' + data.name);
 		el.className = 'chat-whisper'
 		el.innerHTML = '[' +

@@ -72,7 +72,7 @@ var mobEffects;
 	function stagger(i) {
 		console.info('mobEffects STAGGERED!', i)
 		timers.mobAttack[i].kill()
-		timers.mobAttack[i] = delayedCall(mob.mobAttackSpeed(i), mob.attack, [i])
+		timers.mobAttack[i] = delayedCall(mob.getMobAttackSpeed(i), mob.attack, [i])
 		mob.hit(i, true, combat.MAX_DAMAGE)
 	}
 	function chill(i, duration) {
@@ -110,8 +110,6 @@ var mobEffects;
 				onCompleteParams: [i],
 				ease: Linear.easeNone,
 			})
-			/*mob.setTimeScaleSpeed(i)
-			mob.setFilter(i)*/
 		}
 		else {
 			console.warn('mobEffects chillDuration SKIPPED!', duration, timers.mobEffects[i].chillDuration)

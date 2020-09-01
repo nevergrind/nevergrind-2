@@ -62,7 +62,8 @@ var spell;
 	function shieldsActive() {
 		// buffs that help you ignore knockback
 		isShieldActive = false
-		if (my.buffFlags.guardianAngel) isShieldActive = true
+		if (my.buffFlags.guardianAngel ||
+			my.buffFlags.sereneSigil) isShieldActive = true
 		return isShieldActive
 	}
 	function knockback() {

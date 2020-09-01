@@ -1638,7 +1638,7 @@ var loot = {};
 		items[item.dragType][item.dragSlot] = item.dropData
 		bar.updateItemSwapDOM()
 		resetDrop()
-		warn('lastDragEvent', item.lastDragEvent)
+		console.warn('lastDragEvent', item.lastDragEvent)
 		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
 		else tooltip.handleItemEnter(item.lastDropEvent)
 	}
@@ -1928,7 +1928,7 @@ var loot = {};
 		return false // context disabled
 	}
 	function useItem(type, index) {
-		warn('useItem', index, type, items[type][index])
+		console.warn('useItem', index, type, items[type][index])
 		item.dropData = {}
 		if (items[type][index].name) {
 			item.dragData = items[type][index]
@@ -1967,7 +1967,7 @@ var loot = {};
 		}
 	}
 	function preIdentifyItem() {
-		warn('preIdentifyItem', item.dragType, item.dragSlot, item.dragData)
+		console.warn('preIdentifyItem', item.dragType, item.dragSlot, item.dragData)
 		if (!item.dragData.row) {
 			resetDrop()
 			return
@@ -1995,7 +1995,7 @@ var loot = {};
 		if (typeof itemSlot === 'undefined') {
 			itemSlot = getFirstUnidentifiedItemSlot()
 		}
-		warn('identify item!', itemSlot)
+		console.warn('identify item!', itemSlot)
 		if (itemSlot === -1) {
 			chat.log('You have no items that need to be identified.', 'chat-warning')
 			resetDrop()

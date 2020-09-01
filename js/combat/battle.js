@@ -162,8 +162,8 @@ var battle;
 		return gold
 	}
 	function drawExpBar(duration, dur) {
-		duration = duration ?? .3
-		dur = dur ?? duration * 1.5
+		duration = typeof duration === 'number' ? duration : .3
+		dur = typeof dur === 'number' ? dur : duration * 1.5
 		if (!cache.expBar) cache.expBar = querySelector('#exp-bar')
 		TweenMax.to(cache.expBar, duration, {
 			x: getExpBarRatio() + '%',
@@ -268,7 +268,7 @@ var battle;
 		if (typeof data === 'object' &&
 			typeof data.config === 'object' &&
 			data.config.length) {
-			warn('p->goBattle data in from goBattle', data.config)
+			console.warn('p->goBattle data in from goBattle', data.config)
 			setupMobs(data.config)
 		}
 		else setupMobs()
@@ -722,7 +722,7 @@ var battle;
 	}
 
 	function html() {
-		//info('target:', my.target)
+		// console.info('target:', my.target)
 		var s =
 			'<img id="battle-bg" src="'+ mission.getZoneImg() +'">' +
 			'<img id="battle-fg" src="images/battle/tendolin-hollow-2-fg.png" class="no-pointer">';

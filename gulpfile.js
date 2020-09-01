@@ -11,6 +11,9 @@ var rename = require('gulp-rename');
 var imagemin = require('imagemin');
 var imageminPngquant = require('imagemin-pngquant');
 var imageResize = require('gulp-image-resize');
+var exec = require('child_process').exec;
+var run = require('gulp-run-command').default
+var { spawn } = require('child_process');
 // variables
 const buildNg2Tasks = ['minify-css', 'minify-ng2-js', 'clean-ng2'];
 //const buildNg2Tasks = ['minify-css', 'minify-ng2-js'];
@@ -26,6 +29,26 @@ gulp.task('build-ng2-sdk', buildNg2Tasks, function() { buildNg2(true); });
 gulp.task('rename', renameExe);
 gulp.task('default', defaultTask);
 gulp.task('resize-sprite', resizeSprite);
+gulp.task('bin', (cb) => {
+	// run('./build-ng2/nwjc.exe ./build-ng2/js/nevergrind-online.min.js ngo.bin');
+	// del([ './build-ng2/js/nevergrind-online.min.js']);
+	exec('cd /c/xampp/htdocs/ng2/build-ng2')
+	console.info("Printing working directory:")
+	exec('pwd')
+
+	exec('C:\/xampp\/htdocs\/ng2\/build-ng2\/nwjc C:\/xampp\/htdocs\/ng2\/build-ng2\/js/nevergrind-online.min.js C:\/xampp\/htdocs\/ng2\/build-ng2\/ngo.bin', function (error, stdout, stderr) {
+	  if (error) {
+		console.log(error.stack);
+		console.log('Error code: '+error.code);
+		console.log('Signal received: '+error.signal);
+	  }
+	  console.log('Child Process STDOUT: '+stdout);
+	  console.log('Child Process STDERR: '+stderr);
+	});
+});
+
+function createBin() {
+}
 
 
 const jsFiles = [
@@ -124,9 +147,7 @@ const jsFiles = [
 	'core/init',
 	'core/loading',
 	'build/endWrap',
-].map(function(file) {
-	return './js/' + file + '.js';
-});
+].map((file) => './js/' + file + '.js');
 
 //////////////////////////////////////////////
 function minifyCss() {
@@ -146,7 +167,6 @@ function minifyJs() {
 	return gulp.src(jsFiles)
 		.pipe(concat('nevergrind-online.js'))
 		.pipe(gulp.dest('./js'))
-		//.pipe(stripDebug()) // watch out for this for nwjs - can't see console statements
 		//.pipe(uglify()) // needs update?
 		.pipe(rename('nevergrind-online.min.js'))
 		.pipe(gulp.dest('./js'));
@@ -263,6 +283,7 @@ function buildNg2(isSdk) {
 	gulp.src([
 		'./mobs/**/*'
 	]).pipe(gulp.dest('./build-ng2/mobs'));
+
 }
 function defaultTask() {
 	gulp.run('minify-css', 'minify-ng2-js');
@@ -274,7 +295,20 @@ function renameExe() {
 	gulp.src("./build-ng2/" + from)
 		.pipe(clean())
 		.pipe(rename(to))
-		.pipe(gulp.dest("./build-ng2"));
+		.pipe(gulp.dest("./build-ng2"))
+		.on('end', createBinFile)
+}
+function createBinFile() {
+	console.info('Creating bin file...')
+	const path = 'C:/xampp/htdocs/ng2/build-ng2/'
+	exec(path + 'nwjc '+ path +'js/nevergrind-online.min.js '+ path +'ngo.bin', (error, stdout, stderr) => {
+		console.info('bin file created!')
+		del([
+			'./build-ng2/nwjc.exe',
+			'./build-ng2/js/nevergrind-online.min.js'
+		]);
+		console.info('Deleted javascript source code!')
+	});
 }
 function resizeSprite() {
 	// add minify-png pipe

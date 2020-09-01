@@ -318,7 +318,7 @@ var guild;
 	}
 	function setGuildData(data) {
 		my.guild = data.guild;
-		warn('setGuildData', data);
+		console.warn('setGuildData', data);
 	}
 
 })($);

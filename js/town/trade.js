@@ -43,7 +43,7 @@ var trade;
 		.on('click', '#trade-cancel', tradeCancelled)
 	///////////////////////////////////////////
 	function droppedItem() {
-		warn('trade dropToOtherSlots ', item.dropType, ' is client side only. Skipping update-item.php')
+		console.warn('trade dropToOtherSlots ', item.dropType, ' is client side only. Skipping update-item.php')
 
 		console.info('trade drag', item.dragType, item.dragSlot, item.dragData)
 
@@ -60,7 +60,7 @@ var trade;
 		items[item.dragType][item.dragSlot].isTrading = true
 		bar.updateItemSwapDOM()
 		item.resetDrop()
-		warn('lastDragEvent', item.lastDragEvent)
+		console.warn('lastDragEvent', item.lastDragEvent)
 		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
 		else tooltip.handleItemEnter(item.lastDropEvent)
 	}
@@ -73,7 +73,7 @@ var trade;
 		socket.publish('name' + trade.data.name, tradeData);
 	}
 	function updateToItem(obj) {
-		warn('tradeTo', obj)
+		console.warn('tradeTo', obj)
 		items.tradeTo[obj.slot] = obj.data.tradeTo
 		bar.updateItemSlotDOM('tradeTo', obj.slot)
 		querySelector('#tradeTo-name-' + obj.slot).innerHTML = item.getItemNameString(obj.data.tradeTo, obj.data.tradeTo.baseName, true)
@@ -127,9 +127,9 @@ var trade;
 			console.info('countToItems', countToItems())
 			console.info('countFromItems', countFromItems())
 			slots = availableInvSlots()
-			warn('///////////////////////////// availableInvSlots', slots)
-			warn('compare 1', countToItems(), '>', slots.length, '?')
-			warn('compare 2', countFromItems(), '>', trade.data.availableSlots.length, '?')
+			console.warn('///////////////////////////// availableInvSlots', slots)
+			console.warn('compare 1', countToItems(), '>', slots.length, '?')
+			console.warn('compare 2', countFromItems(), '>', trade.data.availableSlots.length, '?')
 
 			if (countToItems() > slots.length) {
 				msg = my.name + ' does not have enough inventory space to facilitate this trade.'
@@ -208,7 +208,7 @@ var trade;
 	function tradeCompleted() {
 		ng.lock(true)
 		if (trade.initiator) {
-			warn("Initiating trade as " + my.name)
+			console.warn("Initiating trade as " + my.name)
 			chat.log('Trade processing... please wait.')
 			socket.publish('name' + trade.data.name, {
 				action: 'trade-processing',
@@ -228,9 +228,9 @@ var trade;
 		var slotsFrom = availableInvSlots()
 		var slotsTo = data.availableSlots
 		// double check count is good
-		warn('///////////////////////////// availableInvSlots', slots)
-		warn('compare 1', countToItems(), '>', slotsFrom.length, '?')
-		warn('compare 2', countFromItems(), '>', slotsTo.length, '?')
+		console.warn('///////////////////////////// availableInvSlots', slots)
+		console.warn('compare 1', countToItems(), '>', slotsFrom.length, '?')
+		console.warn('compare 2', countFromItems(), '>', slotsTo.length, '?')
 		if (countToItems() > slotsFrom.length) {
 			msg = my.name + ' does not have enough inventory space to facilitate this trade.'
 			chat.log(msg, 'chat-warning')
@@ -263,7 +263,7 @@ var trade;
 			//TODO: when done load inventory and broadcast to load inventory
 
 			$.post(app.url + 'item/trade-item.php', postData).done(() => {
-				warn('trade done my gold:', fromGold)
+				console.warn('trade done my gold:', fromGold)
 				town.setMyGold(fromGold)
 				if (trade.data.goldTotal !== toGold) {
 					socket.publish('name' + trade.data.name, {
@@ -277,7 +277,7 @@ var trade;
 				chat.log('Trade completed! Notifying ' + trade.data.name + '.')
 				$.get(app.url + 'item/get-inventory.php').done(finishTrade)
 			}).fail(data => {
-				warn('fail', data)
+				console.warn('fail', data)
 			})
 		}
 	}

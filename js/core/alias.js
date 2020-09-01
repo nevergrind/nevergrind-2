@@ -14,8 +14,3 @@ const round = Math.round
 const PI = Math.PI
 const parse = JSON.parse
 const stringify = JSON.stringify
-
-const log = console.log
-const info = console.info
-const warn = console.warn
-const trace = console.trace

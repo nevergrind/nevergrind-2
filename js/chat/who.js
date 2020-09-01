@@ -43,7 +43,7 @@ var who;
 		);
 	}
 	function allRequest(data) {
-		warn('allRequest', data);
+		console.warn('allRequest', data);
 		socket.publish('name' + data.name, {
 			name: my.name,
 			level: my.level,
@@ -55,7 +55,7 @@ var who;
 	}
 	function presenceReceived(data) {
 		who.results++;
-		warn('presenceReceived', who.results, data);
+		console.warn('presenceReceived', who.results, data);
 		if (who.results < who.maxResults) {
 			chat.log(
 				'<div class="chat-whisper">[' +
@@ -148,7 +148,7 @@ var who;
 		);
 	}
 	function byFilterRequest(data) {
-		warn('byFilterRequest', data);
+		console.warn('byFilterRequest', data);
 		if (matchesFilters(data)) {
 			socket.publish('name' + data.name, {
 				name: my.name,
@@ -162,7 +162,7 @@ var who;
 	}
 	function byFilterReceived(data) {
 		who.results++;
-		warn('byFilterReceived', who.results, data);
+		console.warn('byFilterReceived', who.results, data);
 		if (who.results < who.maxResults) {
 			chat.log(
 				'<div class="chat-whisper">[' +

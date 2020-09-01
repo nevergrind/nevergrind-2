@@ -129,7 +129,7 @@
 		key = e.key;
 
 		ng.lastKey = key;
-		// info('key: ', key)
+		// console.info('key: ', key)
 		// trying to bind a new hotkey
 		if (bar.hotkeyId) {
 			if (bar.hotkeyWhitelist.includes(key)) {

@@ -138,7 +138,7 @@
 	function hauntingVisionCompleted() {
 		splashIndex = -1
 		damages = []
-		for (var i=0; i<3; i++) {
+		for (i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
 			damages.push({
 				key: 'hauntingVision',
@@ -168,7 +168,7 @@
 	function icingDeathCompleted() {
 		splashIndex = -1
 		damages = []
-		for (var i=0; i<3; i++) {
+		for (i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
 			damages.push({
 				key: 'icingDeath',

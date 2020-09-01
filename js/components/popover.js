@@ -101,7 +101,7 @@ var popover;
 		width = parseInt(style.width, 10)
 		popoverHalfWidth = (padding + width) / 2
 
-		// info('posX', my.mouse.x, popoverHalfWidth)
+		// console.info('posX', my.mouse.x, popoverHalfWidth)
 		if (my.mouse.x < popoverHalfWidth + 10) {
 			my.mouse.x = popoverHalfWidth + 10
 		}

@@ -215,7 +215,7 @@ var town;
 			filter: 'brightness(1)',
 			onComplete: ng.unlock
 		})
-		// warn('town.socketReady!')
+		// console.warn('town.socketReady!')
 	}
 
 	function initItemData(obj, type) {
@@ -235,7 +235,7 @@ var town;
 			potionItems = []
 			storeItems = []
 			scrollItems = []
-			//console.info('itemTypesForSale', itemTypesForSale[type])
+			// console.info('itemTypesForSale', itemTypesForSale[type])
 			if (type === 'apothecary') {
 				potLevel = ~~(my.level / 8)
 				if (potLevel > 4) potLevel = 4
@@ -262,7 +262,7 @@ var town;
 					itemSlot: itemTypesForSale[type][itemIndex],
 					armorTypes: armorTypesByStore[type]
 				})
-				//console.info('item', storeItems[i])
+				// console.info('item', storeItems[i])
 			}
 			storeItems = _.sortBy(storeItems, ['itemType'])
 			storeItems = [

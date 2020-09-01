@@ -213,7 +213,7 @@ var expanse;
 	}
 
 	function animateBuildings() {
-		// warn('animateBuildings')
+		// console.warn('animateBuildings')
 		if (expanse.phase === 'morning') {
 			expanse.tweens.townWrap = TweenMax.to('#town-building-wrap', phaseDuration * .2, {
 				startAt: {

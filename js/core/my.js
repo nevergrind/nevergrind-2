@@ -180,7 +180,7 @@ var my;
 		}
 	}
 	function initSkills() {
-		warn('initSkills', my.skills)
+		console.warn('initSkills', my.skills)
 		if (my.skills === void 0) {
 			my.skills = [0,0,0,0,0,0,0,0,0,0,0,0]
 			saveCharacterData()

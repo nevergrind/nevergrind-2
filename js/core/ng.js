@@ -2,6 +2,7 @@
 var ng;
 (function($, TweenMax, SplitText, undefined) {
 	ng = {
+		noop,
 		flashNgoLogo,
 		getExitTime,
 		getDefaultOptions,
@@ -314,6 +315,9 @@ var ng;
 		.on('click', '#title-select-down', decrementCharacter)
 	///////////////////////////////
 	function init() {
+		if (app.isApp) {
+			console.debug = console.log = console.warn = console.info = ng.noop
+		}
 		$.ajaxSetup({
 			type: 'POST',
 			timeout: 4000
@@ -814,4 +818,6 @@ var ng;
 		return article
 
 	}
+	// do nothing!
+	function noop() {}
 })($, TweenMax, SplitText);

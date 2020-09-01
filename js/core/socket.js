@@ -40,7 +40,7 @@ var socket;
 			len = broadcasts.length
 			secs = (Date.now() - broadcasts[0]) / 1000
 			socket.msgPerSec = (len / secs).toFixed(1)
-			// info('msgPerSec', socket.msgPerSec)
+			// console.info('msgPerSec', socket.msgPerSec)
 
 			// name channels are always exclusionary broadcasts
 			if (topic.startsWith('name')) exclude = true

@@ -118,7 +118,7 @@ var academy;
 	function getAllSkillRowHtml() {
 		html = ''
 		for (i=0; i<academy.TOTAL_SKILLS; i++) {
-			//warn('row', i)
+			// console.warn('row', i)
 			html += '<div id="academy-skill-'+ i +'" class="academy-row stag-blue">' +
 				getSkillRowHtml(i) +
 			'</div>'
