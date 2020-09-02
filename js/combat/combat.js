@@ -485,7 +485,7 @@ var combat;
 	]
 	function txDotMob(damages) {
 		// only checks dodge?
-		console.info('txDotMob 1', damages)
+		// console.info('txDotMob 1', damages)
 		damages = damages.map(processDamagesMob)
 		damageArr = []
 		len = damages.length
@@ -495,6 +495,7 @@ var combat;
 				damageArr.push(damages[i])
 			}
 		}
+		// console.info('txDotMob 2', damages)
 		// optionally adds buffs key if it exists
 		if (damageArr.length) {
 			damageArr = damageArr.map(dam => _.pick(dam, dotKeys))
@@ -743,7 +744,10 @@ var combat;
 	function rxDamageHero(data) {
 		// mob is hitting me
 		damages = data.d
-		processDamageToMe(data.i, damages)
+		if (damages[0].isParalyzed) {
+			chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', 'chat-warning')
+		}
+		else processDamageToMe(data.i, damages)
 		console.info('rxDamageHero: ', damages.length, data)
 	}
 	function processDamageToMe(index, damages) {

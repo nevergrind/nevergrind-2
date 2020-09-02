@@ -3,6 +3,7 @@ var mob;
 	mob = {
 		getMobResist,
 		isAlive,
+		isParalyzed,
 		getRandomMobKey,
 		init,
 		// configs, resets (active animations) and idles mobs in one call for start of combat
@@ -443,14 +444,14 @@ var mob;
 		chill: (i) => {
 			return { pixi: {
 				...filter.stasis(i),
-				colorize: '0af',
-				colorizeAmount: .6,
+				colorize: '#0ff',
+				colorizeAmount: .5,
 			}}
 		},
 		default: (i) => {
 			return { pixi: {
 				...filter.stasis(i),
-				colorize: 'aqua',
+				colorize: '#0ff',
 				colorizeAmount: 0,
 			}}
 		}
@@ -458,12 +459,14 @@ var mob;
 	function setFilter(i) {
 		if (timers.mobEffects[i].freezeDuration) {
 			TweenMax.to(mobs[i].sprite, .5, filter.freeze(i))
+			console.info('setFilter FREEZE')
 		}
 		else if (timers.mobEffects[i].chillDuration) {
 			TweenMax.to(mobs[i].sprite, .5, filter.chill(i))
+			console.info('setFilter CHILL')
 		}
 		else {
-			console.info('mobEffects setting to default', timers.mobEffects[i].stasisDuration, filter.default(i))
+			console.info('setFilter mobEffects setting to default', timers.mobEffects[i].stasisDuration, filter.default(i))
 			TweenMax.to(mobs[i].sprite, .5, filter.default(i))
 		}
 	}
@@ -473,6 +476,7 @@ var mob;
 		// things that modify mob speed
 		if (mobs[i].buffFlags.chill) mobSpeed += .2
 		if (mobs[i].buffFlags.shiftingEther) mobSpeed += .3
+		if (mobs[i].buffFlags.primordialSludge) mobSpeed += .2
 		// constraints
 		if (mobSpeed > 2) mobSpeed = 2
 		else if (mobSpeed < .5) mobSpeed = .5
@@ -481,6 +485,12 @@ var mob;
 	}
 	function isAlive(i) {
 		return mobs[i].name && mobs[i].hp > 0
+	}
+
+	function isParalyzed(i) {
+		return !!(
+			mobs[i].buffFlags.arclight
+		)
 	}
 	function hit(i, bypass, damage) {
 		if (ng.view !== 'battle') return
@@ -559,6 +569,7 @@ var mob;
 		}
 	}
 
+	const paralyzeRate = .3
 	function attack(i) {
 		timers.mobAttack[i].kill()
 		if (!mobs[i].name) return
@@ -570,9 +581,17 @@ var mob;
 				if (mobRow > -1) {
 					// party.getIndexByRow(mostHatedRow)
 					//console.info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
-					mobDamages = [getMobDamage(i, mobRow)]
-					if (Math.random() * 100 < mobs[i].doubleAttack) {
-						mobDamages.push(getMobDamage(i, mobRow))
+					if (mob.isParalyzed(i) && rand() < paralyzeRate) {
+						mobDamages = [{
+							row: mobRow,
+							isParalyzed: true,
+						}]
+					}
+					else {
+						mobDamages = [getMobDamage(i, mobRow)]
+						if (Math.random() * 100 < mobs[i].doubleAttack) {
+							mobDamages.push(getMobDamage(i, mobRow))
+						}
 					}
 					combat.txDamageHero(i, mobDamages)
 				}
@@ -586,11 +605,8 @@ var mob;
 		let tgt = party.presence.findIndex(p => p.row === row)
 		if (tgt > -1) animateMobTarget(i, tgt)
 		setTimeScaleSpeed(i)
-		// animate
-		if (mobs[i].isAnimationActive) return
-
-		// console.info('animateAttack', party.isSomeoneAlive())
 		if (isSomeoneAlive) {
+			mobs[i].animation.pause()
 			mobs[i].isAnimationActive = true
 			// var attackType = isSecondary ? 'secondary' : 'primary'
 			var attackType = 'primary'
@@ -598,7 +614,6 @@ var mob;
 			if (!mobs[i].enableSecondary) {
 				attackType = 'primary'
 			}
-
 			mobs[i].animation = TweenMax.to(mobs[i], speed, {
 				startAt: {
 					frame: frame[attackType].start
@@ -907,10 +922,13 @@ var mob;
 		}
 	}
 	function isPoisoned(mob) {
-		return Boolean(mob.buffFlags.engulfingDarkness ||
+		return Boolean(
+			mob.buffFlags.engulfingDarkness ||
 			mob.buffFlags.toxicSpores ||
 			mob.buffFlags.subversion ||
-			mob.buffFlags.affliction)
+			mob.buffFlags.primordialSludge ||
+			mob.buffFlags.affliction
+		)
 	}
 	function processMobResourceTick(mob, index) {
 		if (mob.name &&
@@ -987,7 +1005,7 @@ var mob;
 			if (mobs[d.index].buffFlags.mindBlitzEffect) resist += .3
 		}
 		else if (d.damageType === 'lightning') {
-
+			if (mobs[d.index].buffFlags.staticStorm) resist += .25
 		}
 		else if (d.damageType === 'fire') {
 
@@ -1003,7 +1021,7 @@ var mob;
 		resist -= resistPenalty
 		if (resist < .25) resist = .25
 		else if (resist > 2) resist = 2 // cannot lower resists beyond -100%
-		// console.info('getMobResist after', d.index, d.damageType, resist)
+		console.info('getMobResist after', d.index, d.damageType, resist)
 		return resist
 	}
 
