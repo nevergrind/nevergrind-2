@@ -613,7 +613,7 @@ var stats = {};
 	function autoAttackDamage(getNonCrit) {
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[12] === OBJECT && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[12] === TYPE.OBJECT && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[12].minDamage) {
 			min = items.eq[12].minDamage
@@ -663,7 +663,7 @@ var stats = {};
 		// normalized damage for skills
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[12] === OBJECT && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[12] === TYPE.OBJECT && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		 // get normalized DPS value for min/max
 		if (weaponSkill !== 'Hand-to-Hand') {
@@ -729,7 +729,7 @@ var stats = {};
 		if (!my.dualWield) return failedWeaponDamage
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[13] === OBJECT && items.eq[13].name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[13] === TYPE.OBJECT && items.eq[13].name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[13].minDamage) {
 			min = items.eq[13].minDamage
@@ -1099,10 +1099,14 @@ var stats = {};
 		if (my.mp > my.mpMax) my.set('mp', my.mpMax)
 		if (my.sp > my.spMax) my.set('sp', my.spMax)
 	}
+
+	const hpBase = 80
+	const mpBase = 60
+	const spBase = 40
 	function hpMax(fresh) {
 		value = ~~(
 			((stats.sta() * hpTier[my.job]) * (my.level / 50) +
-				(my.level * (hpTier[my.job] * 2.5) + 20)) * hpPercentBonus()
+				(my.level * (hpTier[my.job] * 2.5) + hpBase)) * hpPercentBonus()
 			+ getEqTotal('hp')
 		)
 		if (my.buffFlags.sealOfRedemption) {
@@ -1117,7 +1121,7 @@ var stats = {};
 		if (fresh || typeof stats.cache.hpRegen === 'undefined') {
 			stats.cache.mpMax = ~~(
 				((stats.intel() * mpTier[my.job]) * (my.level / 50) +
-					(my.level * (mpTier[my.job] * 2.5) + 12)) * mpPercentBonus()
+					(my.level * (mpTier[my.job] * 2.5) + mpBase)) * mpPercentBonus()
 				+ getEqTotal('mp')
 			)
 		}
@@ -1127,7 +1131,7 @@ var stats = {};
 	function spMax(fresh) {
 		return ~~(
 			((stats.cha() * spTier[my.job]) * (my.level / 50) +
-				(my.level * (spTier[my.job] * 2.5) + 8)) +
+				(my.level * (spTier[my.job] * 2.5) + spBase)) +
 			getEqTotal('sp')
 		)
 	}

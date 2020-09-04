@@ -149,6 +149,7 @@ var ng;
 			'High Elf': {
 				'attrs': [10,13,18,14,20,19,16],
 				'jobs': [
+					CLASS.BARD,
 					CLASS.CLERIC,
 					CLASS.ENCHANTER,
 					CLASS.TEMPLAR,
@@ -744,7 +745,7 @@ var ng;
 				row: ng.config.selectedRowIndex
 			})
 		}
-		return typeof index === NUMBER ? index : 0
+		return typeof index === TYPE.NUMBER ? index : 0
 	}
 	function displayCharacter(r) {
 		characterData = r

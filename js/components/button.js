@@ -112,7 +112,7 @@ var button;
 
 		name = _.camelCase(skills[my.job][index].name)
 		// console.info('triggerSkill', name)
-		if (typeof skill[my.job][name] === FUNCTION) {
+		if (typeof skill[my.job][name] === TYPE.FUNCTION) {
 			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {
@@ -287,7 +287,7 @@ var button;
 	}
 	function getAttackSpeed(slot) {
 		// weapon or punch speed?
-		if (typeof items.eq[slot] === OBJECT) speed = items.eq[slot].speed
+		if (typeof items.eq[slot] === TYPE.OBJECT) speed = items.eq[slot].speed
 		else speed = button.autoAttackSpeed
 		speedHaste = 1
 		// buffs
@@ -309,7 +309,7 @@ var button;
 		/*if (o.type === 'singleGlobal') {
 
 		}*/
-		if (typeof o.index === NUMBER) {
+		if (typeof o.index === TYPE.NUMBER) {
 			// skill
 			TweenMax.set(o.el, {
 				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'

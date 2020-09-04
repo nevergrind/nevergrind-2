@@ -527,7 +527,7 @@ var mob;
 			val = mobs[slot].hate[row]
 			index = party.getIndexByRow(row)
 			// console.info(row, index, val)
-			if (typeof party.presence[index] === OBJECT &&
+			if (typeof party.presence[index] === TYPE.OBJECT &&
 				party.presence[index].hp > 0) {
 				if (mostHatedValue === null) {
 					// first one is always added
@@ -973,7 +973,7 @@ var mob;
 	function killAttacks(continueIdling) {
 		mobs.forEach((m, i) => {
 			timers.mobAttack[i].kill()
-			!continueIdling && typeof mobs[i].animation === OBJECT && mobs[i].animation.pause()
+			!continueIdling && typeof mobs[i].animation === TYPE.OBJECT && mobs[i].animation.pause()
 
 		})
 	}

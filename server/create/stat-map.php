@@ -101,6 +101,7 @@ $statMap = [
 	'High Elf' => [
 		'attrs' => [10,13,18,14,20,19,16],
 		'jobs' => [
+			'Bard',
 			'Cleric',
 			'Enchanter',
 			'Templar',

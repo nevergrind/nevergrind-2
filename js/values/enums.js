@@ -1,13 +1,9 @@
-// primitives
-const OBJECT = 'object'
-const STRING = 'string'
-const NUMBER = 'number'
-const FUNCTION = 'function'
-
-const ZERO = 0
-const ONE = 1
-
-// objects
+const TYPE = Object.freeze({
+	OBJECT: 'object',
+	STRING: 'string',
+	NUMBER: 'number',
+	FUNCTION: 'function',
+})
 const CSS = Object.freeze({
 	DISPLAY_BLOCK: { display: 'block' },
 	DISPLAY_NONE: { display: 'none' },

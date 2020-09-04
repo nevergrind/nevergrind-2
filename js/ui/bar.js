@@ -451,7 +451,7 @@ var bar;
 		})
 		querySelector('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
 		if (type === 'hp' &&
-			typeof data === OBJECT &&
+			typeof data === TYPE.OBJECT &&
 			(!my.targetIsMob && my.target === data.row) ||
 			(my.targetIsMob && my.target === data.row)
 		) {

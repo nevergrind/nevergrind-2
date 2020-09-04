@@ -77,7 +77,6 @@ var battle;
 	let cache = {}
 	let battleSceneInitialized = false
 	const flashDuration = 10
-	const maxHeroLevel = 50
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	let battleLayerInitialized = false
 
@@ -121,8 +120,8 @@ var battle;
 	}
 	function addExp(exp) {
 		leveled = false // to determine UI updates
-		if (my.exp + exp > battle.expThreshold[maxHeroLevel]) {
-			exp = battle.expThreshold[maxHeroLevel] - my.exp
+		if (my.exp + exp > battle.expThreshold[MaxHeroLevel]) {
+			exp = battle.expThreshold[MaxHeroLevel] - my.exp
 		}
 		my.exp += exp
 		if (exp) {
@@ -162,8 +161,8 @@ var battle;
 		return gold
 	}
 	function drawExpBar(duration, dur) {
-		duration = typeof duration === NUMBER ? duration : .3
-		dur = typeof dur === NUMBER ? dur : duration * 1.5
+		duration = typeof duration === TYPE.NUMBER ? duration : .3
+		dur = typeof dur === TYPE.NUMBER ? dur : duration * 1.5
 		if (!cache.expBar) cache.expBar = querySelector('#exp-bar')
 		TweenMax.to(cache.expBar, duration, {
 			x: getExpBarRatio() + '%',
@@ -265,8 +264,8 @@ var battle;
 
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
-		if (typeof data === OBJECT &&
-			typeof data.config === OBJECT &&
+		if (typeof data === TYPE.OBJECT &&
+			typeof data.config === TYPE.OBJECT &&
 			data.config.length) {
 			// console.warn('p->goBattle data in from goBattle', data.config)
 			setupMobs(data.config)
@@ -305,7 +304,7 @@ var battle;
 		querySelector('#scene-battle').appendChild(battle.layer.view)
 	}
 	function setupMobs(config) {
-		if (typeof config === OBJECT) {
+		if (typeof config === TYPE.OBJECT) {
 			// followers
 			config.forEach((mobData, index) => {
 				if (mobData.name) {
@@ -445,9 +444,9 @@ var battle;
 	}
 	function mobBuffTimerExists(i, key) {
 		// kill existing buff timer for player
-		return typeof typeof mobs[i] === OBJECT &&
-			typeof mobs[i].buffs[key] === OBJECT &&
-			typeof mobs[i].buffs[key].timer === OBJECT
+		return typeof typeof mobs[i] === TYPE.OBJECT &&
+			typeof mobs[i].buffs[key] === TYPE.OBJECT &&
+			typeof mobs[i].buffs[key].timer === TYPE.OBJECT
 	}
 	function processBuffs(arrayOfBuffs) {
 		let updateTargetBuffs = false
@@ -505,9 +504,9 @@ var battle;
 		let tgt = my.target
 		// kill previous
 		for (key in battle.buffIconTimers) {
-			if (typeof battle.buffIconTimers[key] === OBJECT) {
+			if (typeof battle.buffIconTimers[key] === TYPE.OBJECT) {
 				battle.buffIconTimers[key].kill()
-				if (typeof battle.buffIconTimers[key + '-remove'] === OBJECT) {
+				if (typeof battle.buffIconTimers[key + '-remove'] === TYPE.OBJECT) {
 					battle.buffIconTimers[key + '-remove'].kill()
 				}
 			}
@@ -545,9 +544,9 @@ var battle;
 	}
 	function removeTargetBuff(key) {
 		// console.info('removeTargetBuff startBuffTimers', key)
-		if (typeof battle.buffIconTimers[key] === OBJECT) {
+		if (typeof battle.buffIconTimers[key] === TYPE.OBJECT) {
 			battle.buffIconTimers[key].kill()
-			if (typeof battle.buffIconTimers[key + '-remove'] === OBJECT) {
+			if (typeof battle.buffIconTimers[key + '-remove'] === TYPE.OBJECT) {
 				battle.buffIconTimers[key + '-remove'].kill()
 			}
 		}
@@ -572,7 +571,7 @@ var battle;
 
 		if (buffs[key].duration > 0) {
 			// kill if exists
-			if (my.buffIconTimers[keyRow] === OBJECT) my.buffIconTimers[keyRow].kill()
+			if (my.buffIconTimers[keyRow] === TYPE.OBJECT) my.buffIconTimers[keyRow].kill()
 			// start timer
 			if (buffs[key].duration < flashDuration) flashMyBuff(key, keyRow)
 			else {
@@ -629,9 +628,9 @@ var battle;
 		// console.info('removeMyBuff', key, keyRow)
 		if (typeof keyRow === 'undefined') keyRow = key
 		// only when it has DURATION
-		if (typeof my.buffIconTimers[keyRow] === OBJECT) {
+		if (typeof my.buffIconTimers[keyRow] === TYPE.OBJECT) {
 			my.buffIconTimers[keyRow].kill()
-			if (typeof my.buffIconTimers[keyRow + '-remove'] === OBJECT) {
+			if (typeof my.buffIconTimers[keyRow + '-remove'] === TYPE.OBJECT) {
 				my.buffIconTimers[keyRow + '-remove'].kill()
 			}
 		}
@@ -642,10 +641,10 @@ var battle;
 		/**
 		 * Used for pre-emptive removal before the timer is done
 		 */
-		if (typeof my.buffs[key] === OBJECT) {
+		if (typeof my.buffs[key] === TYPE.OBJECT) {
 			if (my.buffs[key].level) my.buffs[key].level = 0
 			if (my.buffs[key].duration) {
-				if (typeof my.buffs[key].timer === OBJECT) {
+				if (typeof my.buffs[key].timer === TYPE.OBJECT) {
 					my.buffs[key].timer.kill()
 				}
 				my.buffs[key].duration = 0
@@ -673,7 +672,7 @@ var battle;
 	}
 	function killMyBuffTimers() {
 		for (key in my.buffIconTimers) {
-			if (my.buffIconTimers[key] === OBJECT) {
+			if (my.buffIconTimers[key] === TYPE.OBJECT) {
 				my.buffIconTimers[key].kill()
 				my.buffIconTimers[key + 'remove'].kill()
 			}
@@ -697,7 +696,7 @@ var battle;
 					mobs[i].buffs[key].timer.kill() // tweens duration
 					mobs[i].buffs[key].duration = 0 // set duration to 0 so flags update
 					//if (typeof mobs[i].buffs[key].dotTicks ===)
-					if (typeof mobs[i].buffs[key].dotTicks === OBJECT) {
+					if (typeof mobs[i].buffs[key].dotTicks === TYPE.OBJECT) {
 						mobs[i].buffs[key].dotTicks.kill()
 					}
 				}
@@ -714,9 +713,9 @@ var battle;
 		if (!mob.initialized) return
 		// mob buff icon flash/remove timers
 		for (key in battle.buffIconTimers) {
-			if (typeof battle.buffIconTimers[key] === OBJECT) {
+			if (typeof battle.buffIconTimers[key] === TYPE.OBJECT) {
 				battle.buffIconTimers[key].kill()
-				if (typeof battle.buffIconTimers[key + '-remove'] === OBJECT) {
+				if (typeof battle.buffIconTimers[key + '-remove'] === TYPE.OBJECT) {
 					battle.buffIconTimers[key + '-remove'].kill()
 				}
 			}

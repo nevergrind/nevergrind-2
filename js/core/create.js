@@ -334,7 +334,7 @@ var create;
 		// gender and race
 		var v = 15
 		var {gender, race} = obj
-		if (typeof gender === NUMBER) gender = gender ? 'Female' : 'Male' // normalize to string
+		if (typeof gender === TYPE.NUMBER) gender = gender ? 'Female' : 'Male' // normalize to string
 
 		// console.info('obj gender', gender, race)
 		if (type === 'resistBlood'){

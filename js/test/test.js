@@ -94,7 +94,7 @@ var test;
 		socket.subscribe('test', testRx);
 		//////////////////////////
 		function testRx(arr, obj) {
-			arr = typeof arr[0] === OBJECT ?
+			arr = typeof arr[0] === TYPE.OBJECT ?
 				arr[0] : obj;
 			if (arr.loop === 0) {
 				// console.info('socketRx first data test received', arr.loop);

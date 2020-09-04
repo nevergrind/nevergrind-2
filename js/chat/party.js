@@ -186,7 +186,7 @@ var party;
 	 * @param checkLeader
 	 */
 	function removePartyMember(player, checkLeader = true) {
-		if (typeof player === OBJECT) {
+		if (typeof player === TYPE.OBJECT) {
 			index = _.findIndex(party.presence, { row: player.row });
 			// console.warn('removing party member: index', index, 'row', player.row)
 			_.pullAt(party.presence, [ index ])

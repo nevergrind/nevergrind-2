@@ -9,7 +9,7 @@ var router;
 	///////////////////////////////////////////////////////
 	function normalizeInput(arr, obj) {
 		socket.received++
-		return typeof arr[0] === OBJECT ?
+		return typeof arr[0] === TYPE.OBJECT ?
 			arr[0] : obj;
 	}
 	function toTown(data, r) {
