@@ -91,7 +91,7 @@ var game;
 		// check disconnect
 		diff = time - heartbeat.receiveTime;
 		if (diff > game.heartbeatDifference) {
-			console.warn('something wrong with the socket... please investigate...');
+			// console.warn('something wrong with the socket... please investigate...');
 			ng.disconnect();
 		}
 		else {
@@ -109,7 +109,7 @@ var game;
 			}
 			// party traffic
 			updateParty()
-			//console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
+			// console.info("%c heartbeatSend:", "background: #1e1", diff + 'ms');
 
 			heartbeat.sendTime = time;
 		}
@@ -132,7 +132,7 @@ var game;
 			level: my.level,
 			job: my.job,
 			name: my.name,
-			isLeader: typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true
+			isLeader: typeof party.presence[0] === OBJECT ? party.presence[0].isLeader : true
 		}
 		partyData = {
 			...obj,
@@ -157,8 +157,8 @@ var game;
 	}
 	function heartbeatReceived(data) {
 		/*if (data.name === my.name) {
-			//console.info("%c town heartbeatReceived: ", "background: #025", data.name, data);
-			console.info('socket rx', socket.published, socket.received)
+			// console.info("%c town heartbeatReceived: ", "background: #025", data.name, data);
+			// console.info('socket rx', socket.published, socket.received)
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
 			bar.updatePing(ping);
@@ -166,7 +166,7 @@ var game;
 		upsertRoom(data)
 	}
 	function heartbeatReceivedParty(data) {
-		//console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #048", data.name, data);
+		// console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #048", data.name, data);
 		if (data.name === my.name) {
 			heartbeat.receiveTime = Date.now();
 			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
@@ -180,7 +180,7 @@ var game;
 		});
 	}
 	function upsertRoom(player) {
-		console.info('upsertRoom', player)
+		// console.info('upsertRoom', player)
 		time = Date.now();
 		index = _.findIndex(chat.presence, { row: player.row });
 		if (index >= 0) {
@@ -189,7 +189,7 @@ var game;
 		}
 		else {
 			// add
-			console.warn('adding player', player);
+			// console.warn('adding player', player);
 			chat.presence.push({
 				row: player.row,
 				job: player.job,
@@ -217,7 +217,7 @@ var game;
 		})
 	}
 	function removePlayer(player) {
-		console.info('removing player: ', player.row);
+		// console.info('removing player: ', player.row);
 		index = _.findIndex(chat.presence, { row: player.row });
 		_.pullAt(chat.presence, [ index ]);
 		el = getElementById('chat-player-' + player.row);

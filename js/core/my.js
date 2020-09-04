@@ -84,7 +84,7 @@ var my;
 			party.presence[0][key] = my[key] += val
 		}
 		else {
-			if (typeof party.presence[0] === 'object') party.presence[0][key] = val
+			if (typeof party.presence[0] === OBJECT) party.presence[0][key] = val
 			my[key] = val
 		}
 	}
@@ -130,7 +130,7 @@ var my;
 	}
 	function partyTarget(index) {
 		if (timers.castBar < 1) return
-		if (typeof party.presence[index] === 'object' &&
+		if (typeof party.presence[index] === OBJECT &&
 			party.presence[index].row >= 0) {
 			my.targetIsMob = false
 			if (my.target === party.presence[index].row) my.target = -1
@@ -180,7 +180,7 @@ var my;
 		}
 	}
 	function initSkills() {
-		console.warn('initSkills', my.skills)
+		// console.warn('initSkills', my.skills)
 		if (my.skills === void 0) {
 			my.skills = [0,0,0,0,0,0,0,0,0,0,0,0]
 			saveCharacterData()

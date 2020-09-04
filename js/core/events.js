@@ -191,7 +191,7 @@
 						var z = $("#chat-input");
 						var text = z.val();
 						!text && chat.dom.chatInput.focus();
-						console.warn('canceling', key)
+						// console.warn('canceling', key)
 						return;
 					}
 				}*/

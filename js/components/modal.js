@@ -33,11 +33,11 @@ var modal;
 		var camelKey = _.camelCase(e.key);
 		var html = '<div class="stag-blue">'+
 					// header
-					(typeof modal[camelKey].header === 'function' ?
+					(typeof modal[camelKey].header === FUNCTION ?
 						modal[camelKey].header() : '') +
 					modal[camelKey].body() +
 					// footer
-					(typeof modal[camelKey].footer === 'function' ?
+					(typeof modal[camelKey].footer === FUNCTION ?
 						modal[camelKey].footer() : defaultFooter(e)) +
 				'</div>';
 		modal.wrap.innerHTML = html;

@@ -23,7 +23,7 @@ var login;
 			login.focusInput = false;
 		}).on('keydown', function(e){
 			// hit enter
-			console.info(e, e.keyCode);
+			// console.info(e, e.keyCode);
 			if(e.keyCode === 13){
 				login.authenticate();
 			}
@@ -144,7 +144,7 @@ var login;
 		$.post(app.url + 'account/authenticate.php', {
 			account: account
 		}).done(function(data){
-			console.info('data', data.success, data.account);
+			// console.info('data', data.success, data.account);
 			if (data.success){
 				location.reload();
 			}

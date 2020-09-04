@@ -35,13 +35,13 @@ var context;
 	}
 
 	function contextTrade() {
-		console.warn('contextTrade', context.player)
+		// console.warn('contextTrade', context.player)
 		if (!trade.canTrade()) chat.log('You are already trading with ' + trade.data.name +'.', 'chat-warning')
 		else trade.init()
 	}
 
 	function handleContextClick() {
-		console.info('context-items clicked: ', this.id);
+		// console.info('context-items clicked: ', this.id);
 		id = this.id
 		if (id === 'context-invite') context.contextInvite()
 		else if (id === 'context-trade') context.contextTrade()
@@ -101,7 +101,7 @@ var context;
 	}
 	function setPartyMenuHtml() {
 		if (!context.player.name) return;
-		console.info('setPartyMenuHtml', context.player.name);
+		// console.info('setPartyMenuHtml', context.player.name);
 
 		var z = ' class="context-items"',
 			s = '';

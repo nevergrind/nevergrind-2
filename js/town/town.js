@@ -117,13 +117,11 @@ var town;
 				town.isInitialized[key] = false
 			}
 			chat.sizeLarge();
-			TweenMax.set('#button-wrap', {
-				display: 'none'
-			})
+			TweenMax.set('#button-wrap', CSS.DISPLAY_NONE)
 			$.post(app.url + 'character/load-character.php', {
 				row: create.selected
 			}).done(function(data) {
-				console.info('load-character: ', data)
+				// console.info('load-character: ', data)
 				// my processing
 				Object.assign(my, _.omit(data.characterData, ['data']))
 				data.characterData.data = JSON.parse(data.characterData.data)
@@ -273,7 +271,7 @@ var town;
 			/*potionItems = potionItems.concat(scrollItems)
 			storeItems = potionItems.concat(potionItems)*/
 
-			console.info('storeItems', storeItems)
+			// console.info('storeItems', storeItems)
 
 			// sorted
 			for (i=0; i<storeItems.length; i++) {
@@ -327,7 +325,7 @@ var town;
 	}
 
 	function processBank(data) {
-		console.info('bank data', data)
+		// console.info('bank data', data)
 		ng.bankSlots = data.bankSlots
 		for (var i=0; i<ng.bankSlots; i++) {
 			items.bank[i] = {}
@@ -591,7 +589,7 @@ var town;
 		});
 	}
 	function buyItem() {
-		console.warn('buyItem', item.dragType, item.dragSlot, item.dragData.name)
+		// console.warn('buyItem', item.dragType, item.dragSlot, item.dragData.name)
 		if (town.openVariousWindow === 'Academy') {
 			academy.trainSkill()
 		}
@@ -606,7 +604,7 @@ var town;
 		}
 	}
 	function sellItem() {
-		console.warn('sellItem', item.dragType, item.dragSlot, item.dragData.name)
+		// console.warn('sellItem', item.dragType, item.dragSlot, item.dragData.name)
 		if (!item.dragData.name) {
 			ng.splitText('various-description', 'Select an item to sell first!')
 		}
@@ -628,7 +626,7 @@ var town;
 	}
 	function setStoreGold(newV) {
 		if (!item.lastDragEvent.ctrlKey) {
-			console.info('animating to:', newV)
+			// console.info('animating to:', newV)
 			obj = {
 				value: _.clone(item.goldValue)
 			}

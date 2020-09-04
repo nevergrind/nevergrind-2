@@ -221,8 +221,8 @@ var chat;
 		])
 		context.player.name = name
 		context.player.row = row * 1
-		console.info(this)
-		console.info(event)
+		// console.info(this)
+		// console.info(event)
 		context.setChatMenuHtml()
 	}
 	function log(msg, className) {
@@ -312,7 +312,7 @@ var chat;
 				if (ng.ignore.includes(chat.modeName)) {
 					console.log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', 'chat-warning');
 				}
-				console.info('@ send', msg)
+				// console.info('@ send', msg)
 				socket.publish('name' + _.toLower(chat.modeName), {
 					job: my.job,
 					name: my.name,
@@ -334,7 +334,7 @@ var chat;
 			if (msg) {
 				var o = chat.getMsgObject(msg);
 				if (o.msg[0] !== '/') {
-					console.info(o)
+					// console.info(o)
 					if (!my.guild.id && o.category.startsWith('guild')) {
 						console.log("You are not in a guild.", 'chat-warning')
 					}
@@ -474,7 +474,7 @@ var chat;
 		}
 	}
 	function reply() {
-		console.info('chat.lastWhisper.name', chat.lastWhisper.name);
+		// console.info('chat.lastWhisper.name', chat.lastWhisper.name);
 		if (chat.lastWhisper.name) {
 			var o = {
 				mode: '@',
@@ -531,7 +531,7 @@ var chat;
 	}
 	function joinChangeCallback(data) {
 		publishRemove();
-		console.info("You have changed channel to: ", data.channel);
+		// console.info("You have changed channel to: ", data.channel);
 		// unsub prior channel
 		my.channel && socket.unsubscribe(chat.getChannel())
 		// set new channel data
@@ -566,9 +566,7 @@ var chat;
 			y: 0,
 			left: '0%'
 		})
-		TweenMax.set('#chat-present-wrap', {
-			display: 'none'
-		})
+		TweenMax.set('#chat-present-wrap', CSS.DISPLAY_NONE)
 	}
 	function sizeLarge() {
 		TweenMax.set('#chat-present-wrap', {

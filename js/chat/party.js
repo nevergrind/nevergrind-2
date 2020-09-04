@@ -76,7 +76,7 @@ var party;
 			socket.subscribe('party' + row, route);
 		}
 		catch (err) {
-			console.info('socket.listen ', err);
+			// console.info('socket.listen ', err);
 		}
 	}
 	function route(data, obj) {
@@ -111,7 +111,7 @@ var party;
 		index = _.findIndex(party.presence, { row: data.row })
 		player = party.presence[index]
 		if (index >= 0) {
-			console.info('upsertPartyResource', data)
+			// console.info('upsertPartyResource', data)
 			for (var key in data) {
 				if (resourceKeys.includes(key)) {
 					player[key] = data[key]
@@ -144,7 +144,7 @@ var party;
 		else {
 			// not found - add!
 			if (party.presence.length < party.maxPlayers) {
-				console.warn('adding party member', party.presence.length, data);
+				// console.warn('adding party member', party.presence.length, data);
 				party.presence.push({
 					time: time,
 					hp: data.hp,
@@ -186,17 +186,17 @@ var party;
 	 * @param checkLeader
 	 */
 	function removePartyMember(player, checkLeader = true) {
-		if (typeof player === 'object') {
+		if (typeof player === OBJECT) {
 			index = _.findIndex(party.presence, { row: player.row });
-			console.warn('removing party member: index', index, 'row', player.row)
+			// console.warn('removing party member: index', index, 'row', player.row)
 			_.pullAt(party.presence, [ index ])
 			bar.dom[player.row] = undefined
 			$('#bar-player-wrap-' + player.row).remove()
 			// elect new leader - only possible if timed out
-			console.info('checkLeader', checkLeader)
+			// console.info('checkLeader', checkLeader)
 			if (checkLeader) {
-				console.info('electLeader', player.isLeader, party.presence.length)
-				console.info('party', _.cloneDeep(party.presence))
+				// console.info('electLeader', player.isLeader, party.presence.length)
+				// console.info('party', _.cloneDeep(party.presence))
 				if (player.isLeader && party.hasMoreThanOnePlayer()) {
 					electLeader()
 				}
@@ -228,7 +228,7 @@ var party;
 		else {
 			if (name) {
 				chat.log('Sent party invite to '+ name +'.', 'chat-warning');
-				console.info('name', name);
+				// console.info('name', name);
 				socket.publish('name' + name, {
 					action: 'party-invite',
 					row: my.partyId,
@@ -248,7 +248,7 @@ var party;
 	 */
 	function inviteAccepted(data) {
 		// clicked CONFIRM - request join ack
-		console.info('party.inviteAccepted: ', data);
+		// console.info('party.inviteAccepted: ', data);
 		socket.publish('party' + data.row, {
 			route: 'p->inviteAccepted',
 			name: my.name.toLowerCase(),
@@ -259,14 +259,14 @@ var party;
 	 * @param data
 	 */
 	function joinAck(data) {
-		console.warn('joinAck', data);
-		console.info(party.presence.length, party.presence[0].isLeader);
+		// console.warn('joinAck', data);
+		// console.info(party.presence.length, party.presence[0].isLeader);
 		if (party.presence.length < party.maxPlayers && party.presence[0].isLeader) {
 			socket.publish('name' + data.name, {
 				action: 'party-confirmed',
 				row: my.partyId
 			});
-			console.warn('length: ', party.presence.length)
+			// console.warn('length: ', party.presence.length)
 			party.presence.length === 1 && getElementById('bar-name-' + my.row).classList.add('chat-gold');
 		}
 	}
@@ -275,7 +275,7 @@ var party;
 	 * @param data
 	 */
 	function joinConfirmed(data) {
-		console.warn('joinConfirmed', data);
+		// console.warn('joinConfirmed', data);
 		my.isLeader = party.presence[0].isLeader = false;
 		my.partyId = data.row;
 		party.listen(data.row);
@@ -292,7 +292,7 @@ var party;
 	 * @param data
 	 */
 	function notifyJoin(data) {
-		console.info('party.notifyJoin ', data);
+		// console.info('party.notifyJoin ', data);
 		chat.log(data.msg, 'chat-warning');
 		// refresh party bars
 		socket.publish('party' + my.partyId, {
@@ -300,7 +300,7 @@ var party;
 		});
 	}
 	function boot(name, bypass) {
-		console.info('/boot ', name, bypass);
+		// console.info('/boot ', name, bypass);
 		if (ng.view === 'battle') {
 			chat.log("You cannot boot party members during battle!", 'chat-warning');
 		}
@@ -321,7 +321,7 @@ var party;
 		}
 	}
 	function bootReceived(data) {
-		console.warn('party.bootReceived ', data);
+		// console.warn('party.bootReceived ', data);
 		if (data.name === my.name) {
 			var i = party.maxPlayers - 1;
 			for (; i > 0; i--) {
@@ -366,7 +366,7 @@ var party;
 	}
 	function disbandReceived(data) {
 		if (data.name !== my.name) {
-			console.warn('disbandReceived', data);
+			// console.warn('disbandReceived', data);
 			var index = _.findIndex(party.presence, { name: data.name });
 			chat.log(data.name + " has disbanded the party.", 'chat-warning');
 			removePartyMember(party.presence[index]);
@@ -375,22 +375,22 @@ var party;
 	function electLeader() {
 		var player = _.minBy(party.presence, 'row');
 		var index;
-		console.warn("Electing a new leader!", player);
+		// console.warn("Electing a new leader!", player);
 		if (player.name === my.name) {
 			index = 0;
 			my.isLeader = party.presence[index].isLeader = true;
 			game.updateParty();
-			console.warn("New leader!", player.name);
+			// console.warn("New leader!", player.name);
 		}
 		else {
 			index = _.findIndex(party.presence, { row: player.row });
 			party.presence[index].isLeader = true;
 		}
-		console.warn("LEADER INDEX: ", index, player.row);
+		// console.warn("LEADER INDEX: ", index, player.row);
 		getElementById('bar-name-' + player.row).classList.add('chat-gold');
 	}
 	function promote(name) {
-		console.info('/promote ', name);
+		// console.info('/promote ', name);
 		// must be leader or bypass by auto-election when leader leaves
 		var id = _.findIndex(party.presence, { name: name });
 
@@ -415,14 +415,14 @@ var party;
 		var index = _.findIndex(party.presence, { name: data.name })
 		if (index >= 0) {
 			chat.log(data.name + " has been promoted to party leader.", 'chat-warning')
-			console.warn('index', index)
+			// console.warn('index', index)
 			party.presence[index].isLeader = true
 			if (!index) {
-				console.warn('Look at me. I am the leader now')
+				// console.warn('Look at me. I am the leader now')
 				my.isLeader = true
 			}
 			var oldLeader = _.findIndex(party.presence, { row: data.leaderRow })
-			console.warn('oldLeader', oldLeader)
+			// console.warn('oldLeader', oldLeader)
 			getElementById('bar-name-' + party.presence[index].row).classList.add('chat-gold')
 			getElementById('bar-name-' + party.presence[oldLeader].row).classList.remove('chat-gold')
 		}

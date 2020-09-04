@@ -249,7 +249,7 @@
 			cannotResist: true,
 			...hit,
 		})
-		console.info('drainSoul', hit)
+		// console.info('drainSoul', hit)
 		combat.txDamageMob(damages)
 		combat.txHotHero([{
 			index: my.row,

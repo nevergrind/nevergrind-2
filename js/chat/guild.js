@@ -39,7 +39,7 @@ var guild;
 	/////////////////////////////////////////////
 	function listen() {
 		// subscribe to test guild for now
-		console.info('my.guild', my.guild);
+		// console.info('my.guild', my.guild);
 		if (my.guild.id) {
 			my.guild.motd && chat.log('Guild Message of the day: ' + my.guild.motd, 'chat-guild');
 			socket.subscribe('guild' + my.guild.id, guild.route);
@@ -48,7 +48,7 @@ var guild;
 	function route(data, obj) {
 		data = router.normalizeInput(data, obj);
 		if (!my.guild.name) return;
-		console.info('rx ', data);
+		// console.info('rx ', data);
 		if (data.route === 'chat->log') {
 			router.toTown(data, data.route);
 		}
@@ -68,16 +68,16 @@ var guild;
 		return guild ? (' &lt;' + guild + '&gt;') : '';
 	}
 	function create() {
-		console.info('guild create')
+		// console.info('guild create')
 		if (ng.locked) return;
 		var name = $("#guild-input").val().replace(/ +/g, " ").trim();
-		console.info("Name: ", name);
+		// console.info("Name: ", name);
 		ng.lock();
 		$.post(app.url + 'guild/create.php', {
 			// replace
 			name: name.replace(/ +/g, " ").trim()
 		}).done(function(data) {
-			console.info('create', data.guild);
+			// console.info('create', data.guild);
 			guild.setGuildData(data);
 			chat.log('Valeska says, "By the powers vested in me, I hereby declare you supreme sovereign leader of a new guild: ' + data.guild.name +'."');
 			ng.msg('You created a new guild: ' + data.guild.name, 5)
@@ -87,7 +87,7 @@ var guild;
 			town.updateVariousDOM();
 			guild.getMembers();
 		}).fail(function(data){
-			console.info(data);
+			// console.info(data);
 			$("#guild-input").focus();
 			ng.msg(data.responseText);
 		}).always(function(){
@@ -139,11 +139,11 @@ var guild;
 	}
 	function disband() {
 		if (!my.guild.id) return;
-		console.info("Quitting guild!");
+		// console.info("Quitting guild!");
 		var o = my.guild;
 		$.get(app.url + 'guild/disband.php').done(function(data){
 			my.guild = guild.Guild(); // nice!
-			console.info("guild.disband() response ", data);
+			// console.info("guild.disband() response ", data);
 			chat.log("You have disbanded the guild: "+ o.name, 'chat-warning');
 			socket.unsubscribe('guild'+ o.id);
 		}).fail(function(data){
@@ -167,7 +167,7 @@ var guild;
 	}
 	function wasBooted(data) {
 		if (!my.guild.id) return;
-		console.info("Booting! ", data);
+		// console.info("Booting! ", data);
 		chat.log(data.msg, 'chat-warning');
 		if (data.name === my.name) {
 			$.post(app.url + 'guild/disband.php', {
@@ -224,7 +224,7 @@ var guild;
 			$.post(app.url + 'guild/leader.php', {
 				name: _.capitalize(name)
 			}).done(function (data) {
-				console.info('leader: ', data);
+				// console.info('leader: ', data);
 				my.guild.rank = 1;
 				updateSession(data, true);
 				// nothing
@@ -240,7 +240,7 @@ var guild;
 	function updateSession(data, bypass) {
 		if (data.name === my.name || bypass) {
 			$.get(app.url + 'guild/update-session.php').done(function (data) {
-				console.info('update-session: ', data);
+				// console.info('update-session: ', data);
 				guild.setGuildData(data);
 				// nothing
 			}).fail(function (data) {
@@ -282,7 +282,7 @@ var guild;
 		throttleTime = throttleTime || 0
 		ng.lock(1)
 		$.get(app.url + 'guild/get-member-list.php').done(data => {
-			console.info(data);
+			// console.info(data);
 			delayedCall(throttleTime, () => {
 				setGuildList(data)
 			});
@@ -318,7 +318,7 @@ var guild;
 	}
 	function setGuildData(data) {
 		my.guild = data.guild;
-		console.warn('setGuildData', data);
+		// console.warn('setGuildData', data);
 	}
 
 })($);

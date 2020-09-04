@@ -7,6 +7,7 @@ var test;
 			room: chatRoom,
 			log: chatLog
 		},
+		disableConsole,
 		getHate,
 		send,
 		orcs,
@@ -93,16 +94,16 @@ var test;
 		socket.subscribe('test', testRx);
 		//////////////////////////
 		function testRx(arr, obj) {
-			arr = typeof arr[0] === 'object' ?
+			arr = typeof arr[0] === OBJECT ?
 				arr[0] : obj;
 			if (arr.loop === 0) {
-				console.info('socketRx first data test received', arr.loop);
+				// console.info('socketRx first data test received', arr.loop);
 				start = Date.now();
 			}
 			if (arr.isLastSend) {
 				end = Date.now();
-				console.warn('socketRx Send Total time: ', end - sendStart, 'ms');
-				console.warn('socketRx Rx Total time: ', end - start, 'ms');
+				// console.warn('socketRx Send Total time: ', end - sendStart, 'ms');
+				// console.warn('socketRx Rx Total time: ', end - start, 'ms');
 			}
 		}
 	}
@@ -331,8 +332,8 @@ var test;
 			height: 1080,
 			backgroundColor: '#0000'
 		});
-		console.info('textPix', pixApp)
-		console.info('view', pixApp.view)
+		// console.info('textPix', pixApp)
+		// console.info('view', pixApp.view)
 		pixApp.view.style.position = 'absolute'
 		pixApp.view.style.zIndex = 3
 		//var renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
@@ -364,9 +365,9 @@ var test;
 			height: 1080,
 			transparent: true
 		});
-		console.info('textPix', pixApp)
-		console.info('view', pixApp.view)
-		console.info('screen', pixApp.screen)
+		// console.info('textPix', pixApp)
+		// console.info('view', pixApp.view)
+		// console.info('screen', pixApp.screen)
 		pixApp.view.style.position = 'absolute'
 		pixApp.view.style.zIndex = 3
 		document.body.appendChild(pixApp.view)
@@ -394,9 +395,9 @@ var test;
 			height: 517,
 			transparent: true
 		});
-		console.info('textPix', test.pix)
-		console.info('view', test.pix.view)
-		console.info('screen', test.pix.screen)
+		// console.info('textPix', test.pix)
+		// console.info('view', test.pix.view)
+		// console.info('screen', test.pix.screen)
 		// style
 		test.pix.view.id = 'test-pixi'
 		test.pix.view.style.position = 'absolute'
@@ -431,7 +432,7 @@ var test;
 		// wider than default ratio
 		width = window.innerHeight * ratio;
 		height = window.innerHeight;
-		console.info('pixiResize', width, height)
+		// console.info('pixiResize', width, height)
 		test.pix.view.style.width = window.innerWidth + 'px';
 		test.pix.view.style.height = ~~(517 / innerHeightMax * window.innerHeight) + 'px';
 	}
@@ -440,7 +441,7 @@ var test;
 		width = window.innerHeight * ratio;
 		height = window.innerHeight;
 
-		console.info('pixiResize', width, height)
+		// console.info('pixiResize', width, height)
 		pixApp.view.style.width = width + 'px';
 		pixApp.view.style.height = height + 'px';
 	}
@@ -513,13 +514,16 @@ var test;
 			el.texture = test.textures[~~o.frame]
 		}
 		function onMobClick(e) {
-			console.info('click!', e)
+			// console.info('click!', e)
 		}
 	}
 
 	function getHate() {
 		for (var i=0; i<mob.max; i++) {
-			console.info('hate:', i, mobs[i].hate)
+			// console.info('hate:', i, mobs[i].hate)
 		}
+	}
+	function disableConsole() {
+		console.debug = console.log = console.warn = console.info = ng.noop
 	}
 })(Linear, TweenMax, TimelineMax, PIXI, $);

@@ -13,13 +13,13 @@ var connection = new autobahn.Connection({
 	realm: 'realm1'
 });
 connection.onopen = onOpen;
-console.info('connection instantiated...');
+// console.info('connection instantiated...');
 connection.open();
 //////////////////////////////////////
 function onOpen(session) {
 	var start;
 	var end;
-	console.warn("Connection successful!", session);
+	// console.warn("Connection successful!", session);
 
 	session.subscribe('test', testPush);
 	function testPush(arr) {
@@ -30,8 +30,8 @@ function onOpen(session) {
 			end = Date.now();
 			var time = arr[0].time * 1000;
 			var total = end - start;
-			console.info(arr[0], time);
-			console.warn('total time: ', total);
+			// console.info(arr[0], time);
+			// console.warn('total time: ', total);
 			var el = createElement('div');
 			el.innerHTML = 'Timestamp: ' + time + ' - Total client time (first to last): ' + total;
 			document.body.appendChild(el);

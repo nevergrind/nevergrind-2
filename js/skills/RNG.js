@@ -18,7 +18,7 @@
 	let damages = []
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
-		console.info('crossSlash', index)
+		// console.info('crossSlash', index)
 		// check constraints
 		config = {
 			...skills.getDefaults(index),

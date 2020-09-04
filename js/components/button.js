@@ -1,6 +1,8 @@
 var button;
 !function(TweenMax, $, _, Linear, Power4, undefined) {
 	button = {
+		pauseAutoAttack,
+		resumeAutoAttack,
 		startSwing,
 		setAll,
 		hide,
@@ -25,8 +27,6 @@ var button;
 	const globalCooldownDur = 2.5
 	let globalHaste = 1
 	let damages
-	const displayBlock = { display: 'block' }
-	const displayFlex = { display: 'flex' }
 	const globalHasteCap = .4
 	/////////////////////////////
 
@@ -45,7 +45,7 @@ var button;
 	function processButtonTimers(index, skillData) {
 		let el = querySelector('#skill-timer-' + index + '-rotate')
 		// processButtonTimers
-		TweenMax.set(el, displayBlock)
+		TweenMax.set(el, CSS.DISPLAY_BLOCK)
 		let args = {
 			el: el,
 			index: index,
@@ -85,7 +85,7 @@ var button;
 			}
 		})
 		selector = selector.join(', ')
-		TweenMax.set(selector, displayBlock)
+		TweenMax.set(selector, CSS.DISPLAY_BLOCK)
 		let args = {
 			el: selector,
 			key: 'globalCooldown',
@@ -111,8 +111,8 @@ var button;
 		if (my.hp <= 0) return
 
 		name = _.camelCase(skills[my.job][index].name)
-		console.info('triggerSkill', name)
-		if (typeof skill[my.job][name] === 'function') {
+		// console.info('triggerSkill', name)
+		if (typeof skill[my.job][name] === FUNCTION) {
 			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {
@@ -182,7 +182,7 @@ var button;
 		startSwing('primaryAttack')
 	}
 	function secondaryAttack() {
-		console.warn('secondaryAttack')
+		// console.warn('secondaryAttack')
 		if (ng.view !== 'battle' ||
 			!my.isAutoAttacking ||
 			timers.secondaryAttack < 1 ||
@@ -225,6 +225,9 @@ var button;
 			!my.targetIsMob ||
 			my.buffFlags.frozenBarrier
 	}
+
+	const CALL = 'Call'
+	const CYCLE = 'Cycle'
 	function startSwing(key) {
 		timers[key] = 0
 		let slot, el
@@ -238,12 +241,12 @@ var button;
 		}
 
 		if (timers.castBar < 1) {
-			timers[key + 'Call'].kill()
-			timers[key + 'Call'] = delayedCall(mySwingSpeed, button[key])
+			timers[key + CALL].kill()
+			timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
 			return
 		}
 
-		TweenMax.set(el, { display: 'block' })
+		TweenMax.set(el, CSS.DISPLAY_BLOCK)
 		let o = {
 			el: el,
 			key: key,
@@ -261,17 +264,30 @@ var button;
 		to.startAt[key] = 0
 		to[key] = 1
 		mySwingSpeed = getAttackSpeed(slot)
-		TweenMax.to(timers, mySwingSpeed, to)
-		console.info('startSwing', key, timers[key])
-		timers[key + 'Call'].kill()
-		timers[key + 'Call'] = delayedCall(mySwingSpeed, button[key])
+
+		timers[key + CYCLE] = TweenMax.to(timers, mySwingSpeed, to)
+		// console.info('startSwing', key, timers[key])
+		timers[key + CALL].kill()
+		timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
+	}
+	function pauseAutoAttack() {
+		timers['primaryAttack' + CYCLE].pause()
+		timers['secondaryAttack' + CYCLE].pause()
+		timers['primaryAttack' + CALL].pause()
+		timers['secondaryAttack' + CALL].pause()
+	}
+	function resumeAutoAttack() {
+		timers['primaryAttack' + CYCLE].resume()
+		timers['secondaryAttack' + CYCLE].resume()
+		timers['primaryAttack' + CALL].resume()
+		timers['secondaryAttack' + CALL].resume()
 	}
 	function getPunchDps(min, max) {
 		return (((min + max) / 2) / button.autoAttackSpeed)
 	}
 	function getAttackSpeed(slot) {
 		// weapon or punch speed?
-		if (typeof items.eq[slot] === 'object') speed = items.eq[slot].speed
+		if (typeof items.eq[slot] === OBJECT) speed = items.eq[slot].speed
 		else speed = button.autoAttackSpeed
 		speedHaste = 1
 		// buffs
@@ -293,7 +309,7 @@ var button;
 		/*if (o.type === 'singleGlobal') {
 
 		}*/
-		if (typeof o.index === 'number') {
+		if (typeof o.index === NUMBER) {
 			// skill
 			TweenMax.set(o.el, {
 				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
@@ -311,8 +327,8 @@ var button;
 		if (checkGlobalInProgress &&
 			timers.globalCooldown < 1) {
 			let duration = globalCooldownDur - (timers.globalCooldown * globalCooldownDur)
-			console.info('handleButtonComplete', o.el, duration)
-			TweenMax.set(o.el, displayBlock)
+			// console.info('handleButtonComplete', o.el, duration)
+			TweenMax.set(o.el, CSS.DISPLAY_BLOCK)
 			let newTimer = {
 				globalCooldown: 1
 			}
@@ -332,7 +348,7 @@ var button;
 			})
 		}
 		else {
-			console.info('handleButtonComplete FLASH', o.el)
+			// console.info('handleButtonComplete FLASH', o.el)
 			// button flash
 			TweenMax.to(o.el, .5, {
 				startAt: {
@@ -365,7 +381,7 @@ var button;
 	}
 	function setAll() {
 		TweenMax.set('#button-wrap', {
-			startAt: displayFlex,
+			startAt: CSS.DISPLAY_FLEX,
 		})
 		if (!button.initialized) {
 			var s = '';
@@ -412,8 +428,6 @@ var button;
 		})
 	}
 	function hide() {
-		TweenMax.set('#button-wrap', {
-			display: 'none'
-		});
+		TweenMax.set('#button-wrap', CSS.DISPLAY_NONE);
 	}
 }(TweenMax, $, _, Linear, Power4);

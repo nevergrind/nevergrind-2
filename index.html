@@ -27,8 +27,8 @@ app.socketUrl = app.isApp ?
 	'ws://34.220.110.228:9090/' :
 	'ws://127.0.0.1:9090'
 !function(d){
-	var css = app.isApp ? ['ng2'] : ['main'];
-	var suffix = app.isApp ? '.min.css' : '.css';
+	const css = app.isApp ? ['ng2'] : ['main'];
+	const suffix = app.isApp ? '.min.css' : '.css';
 	for (var i=0, len = css.length; i<len; i++) {
 		var link = d.createElement('link');
 		link.href = 'css/' + css[i] + suffix + '?v='+ app.version;
@@ -510,40 +510,28 @@ app.socketUrl = app.isApp ?
 <!-- hidden layer -->
 <audio id="bgmusic" loop preload="none"></audio>
 
-<script src="js/libs/jquery.min.js"></script>
-<script src="js/libs/lodash.min.js"></script>
-<!--<script src="js/libs/font-awesome-kit.js"></script>-->
-<!--<script src="js/libs/font-awesome-kit.js"></script>-->
-
-<script src="js/libs/pixi.min.js"></script>
-<script src="js/libs/gsap/TweenMax2.min.js"></script>
-<!--<script src="js/libs/gsap/TweenMax3.min.js"></script>-->
-<script src="js/libs/gsap/PixiPlugin-v2.min.js"></script>
-<!--<script src="js/libs/gsap/PixiPlugin-v3.min.js"></script>-->
-
-<script src="js/libs/gsap/SplitText.min.js"></script>
-<script src="js/libs/gsap/Draggable.min.js"></script>
-<script src="js/libs/gsap/ThrowPropsPlugin.min.js"></script>
-<script src="js/libs/autobahn-2.min.js"></script>
-<!--<script src="js/libs/gsap/ThrowPropsPlugin.min.js"></script>-->
-<!--<script src="js/libs/gsap/DrawSVGPlugin.min.js"></script>-->
-<!--<script src="js/libs/gsap/EaselPlugin.min.js"></script>-->
-
-<!--script src="https://cdn.babylonjs.com/babylon.js"></script>
-<script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
-<script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
-<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-<script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
-<script src="https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
-<script src="https://cdn.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
-<script src="https://cdn.babylonjs.com/serializers/babylonjs.serializers.min.js"></script-->
-
 
 <script>
 ((d) => {
-	let script
 	if (!app.isApp){
-		let files = [
+		const files = [
+			// lib files
+			'libs/jquery.min',
+			'libs/lodash.min',
+			'libs/pixi.min',
+			'libs/gsap/TweenMax2.min',
+			// gsap/TweenMax3.min
+			'libs/gsap/PixiPlugin-v2.min',
+			// gsap/PixiPlugin-v3.min
+			'libs/gsap/SplitText.min',
+			'libs/gsap/Draggable.min',
+			'libs/gsap/ThrowPropsPlugin.min',
+			'libs/autobahn-2.min',
+			// libs/gsap/ThrowPropsPlugin.min
+			// libs/gsap/DrawSVGPlugin.min
+			// libs/gsap/EaselPlugin.min
+			// app files
+			'enum/enums',
 			'core/alias',
 			'core/login',
 			'core/create',
@@ -640,7 +628,7 @@ app.socketUrl = app.isApp ?
 			'core/loading',
 		]
 		files.forEach((file) => {
-			script = d.createElement('script')
+			const script = d.createElement('script')
 			script.src = 'js/' + file + '.js?v=' + app.version
 			d.write(script.outerHTML)
 		})

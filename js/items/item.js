@@ -897,7 +897,7 @@ var loot = {};
 		// unique bonuses are halved
 		var uniqueRand = randBase + (bonus * .5)
 
-		//console.info('getRarity', rand);
+		// console.info('getRarity', rand);
 		if (uniqueRand >= 97) {
 			resp = 'unique'
 		}
@@ -930,7 +930,7 @@ var loot = {};
 		}
 		handleDragStart()
 		var drop = item.getItem(config)
-		console.info('getLoot', drop)
+		// console.info('getLoot', drop)
 		$.post(app.url + 'item/loot-item.php', {
 			slot: slot,
 			name: drop.name,
@@ -963,11 +963,11 @@ var loot = {};
 		item.config = config
 		rarity = item.config.rarity || getRarity(item.config.bonus)
 		// set item type (normal, magic, etc)
-		//console.info('getRarity', rarity)
+		// console.info('getRarity', rarity)
 		keys = Object.keys(loot)
 		// get possible slotTypes (helms, chests) based on rarity
 		filteredKeys = _.filter(keys, filterKeys)
-		//console.info('filteredKeys', filteredKeys)
+		// console.info('filteredKeys', filteredKeys)
 
 		if (item.config.itemSlot && filteredKeys.includes(item.config.itemSlot)) {
 			itemSlot = item.config.itemSlot
@@ -978,7 +978,7 @@ var loot = {};
 		}
 		// clone item and then figure out what to grab
 		itemObj = _.cloneDeep(loot[itemSlot])
-		//console.info('itemObj', rarity, itemObj)
+		// console.info('itemObj', rarity, itemObj)
 		if (!itemObj.normal[0].imgIndex) {
 			// enrich with imgIndex data with natural index - a default for latter imgIndex function
 			filteredItems = _.each(itemObj.normal, enrichImgIndex)
@@ -990,7 +990,7 @@ var loot = {};
 		// filter by armor type if passed in config
 		if (item.config.armorTypes) {
 			filteredItems = _.filter(filteredItems, filterByArmorType)
-		 	//console.warn('filteredItems after', _.cloneDeep(filteredItems))
+		 	// console.warn('filteredItems after', _.cloneDeep(filteredItems))
 		}
 		var filteredItemsLen = filteredItems.length
 
@@ -998,13 +998,13 @@ var loot = {};
 		if (item.config.itemName) {
 			// specific item
 			filteredItemsIndex = _.findIndex(filteredItems, item => item.name === item.config.itemName)
-			//console.warn('filteredItemsIndex', filteredItemsIndex)
+			// console.warn('filteredItemsIndex', filteredItemsIndex)
 		}
 		else {
 			// random item of type
 			filteredItemsIndex = _.random(0, filteredItemsLen - 1)
 		}
-		//console.info('picked item: ', filteredItems[filteredItemsIndex])
+		// console.info('picked item: ', filteredItems[filteredItemsIndex])
 		// combine itemSlot base props with base item
 		drop = {
 			...itemObj.base,
@@ -1024,7 +1024,7 @@ var loot = {};
 		// magic
 		if (rarity === 'unique') {
 			len = getUniqueItemCount(drop);
-			console.info('getUniqueItemCount', len);
+			// console.info('getUniqueItemCount', len);
 			if (len) {
 				processUniqueDrop(drop)
 			}
@@ -1041,7 +1041,7 @@ var loot = {};
 			prefixKeys = Object.keys(itemObj.prefix)
 			suffixKeys = Object.keys(itemObj.suffix)
 
-			//console.info('rarity', rarity)
+			// console.info('rarity', rarity)
 			if (rarity === 'magic') processMagicDrop(drop)
 			else if (rarity === 'rare') processRareDrop(drop)
 			// post-process item
@@ -1091,9 +1091,9 @@ var loot = {};
 		else return 'rare'
 	}
 	function processMagicDrop(drop) {
-		/*console.info('magic drop', drop, config)
-		console.info('prefixKeys', prefixKeys)
-		console.info('suffixKeys', suffixKeys)*/
+		/*// console.info('magic drop', drop, config)
+		// console.info('prefixKeys', prefixKeys)
+		// console.info('suffixKeys', suffixKeys)*/
 		// get prefix and suffix
 		prefix = prefixKeys[_.random(0, prefixKeys.length - 1)]
 		suffix = suffixKeys[_.random(0, suffixKeys.length - 1)]
@@ -1105,18 +1105,18 @@ var loot = {};
 		itemTypeMultiplier = getMultiplierByTypeAndProp(drop.itemType)
 		//TODO: unlock props by treasure class? Need data object for it
 		//TODO: Add rare props - refactor for easy code reuse
-		//console.warn('config', item.config.mobLevel)
-		//console.info('itemObj', itemObj)
+		// console.warn('config', item.config.mobLevel)
+		// console.info('itemObj', itemObj)
 		tc = getTreasureClass(item.config.mobLevel)
 		// set prefix and bound check
 		prefixMax = setMaxPropValue(itemObj.prefix, prefix, tc)
 		// set suffix and bound check
 		suffixMax = setMaxPropValue(itemObj.suffix, suffix, tc)
-		/*console.info('infos', item.config.mobLevel, tc, prefix, prefixMax, suffix, suffixMax)
-		console.warn('max ', prefixMax, suffixMax)*/
+		/*// console.info('infos', item.config.mobLevel, tc, prefix, prefixMax, suffix, suffixMax)
+		// console.warn('max ', prefixMax, suffixMax)*/
 
 		getPrefixSuffixComboType = _.random(1, 100)
-		//console.info('prefix', prefix)
+		// console.info('prefix', prefix)
 		if (getPrefixSuffixComboType <= 50) {
 			prefixVal = _.random(minValue[prefix], prefixMax);
 			prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
@@ -1192,7 +1192,7 @@ var loot = {};
 	}
 
 	function deleteWeaponSpecificProps(itemType) {
-		//console.warn('deleteWeaponSpecificProps', itemType, itemObj.prefix)
+		// console.warn('deleteWeaponSpecificProps', itemType, itemObj.prefix)
 		deletedProps = []
 		if (itemType === 'oneHandSlashers') {
 			deletedProps = [
@@ -1281,7 +1281,7 @@ var loot = {};
 			uniqueItem = _.cloneDeep(possibleItems[0])
 		}
 		processUniqueProps(uniqueItem, drop)
-		//console.warn('uniqueItem drop', drop)
+		// console.warn('uniqueItem drop', drop)
 	}
 	function processOdds(item, index) {
 		// default to equal chance dropping for all unique items in this item type
@@ -1395,8 +1395,8 @@ var loot = {};
 		_.pull(rareKeys, key)
 	}
 	function setMaxPropValue(obj, key, tc) {
-		//console.info('set max', obj)
-		//console.info('setMaxPropValue', obj[key], key, tc)
+		// console.info('set max', obj)
+		// console.info('setMaxPropValue', obj[key], key, tc)
 		var val = (obj[key] * (tc / MAX_TREASURE_CLASS)) - minValue[key]
 		if (val < minValue[key]) val = minValue[key]
 		return _.round(val)
@@ -1415,7 +1415,7 @@ var loot = {};
 		for (prop in props) {
 			newProps = []
 			val = props[prop]
-			//console.info('processProp', prop, val)
+			// console.info('processProp', prop, val)
 			if (prop === 'resists') {
 				newProps = [
 					'resistBlood',
@@ -1539,11 +1539,11 @@ var loot = {};
 			return
 		}
 
-		//console.info('toggleDrag', type, index)
+		// console.info('toggleDrag', type, index)
 		if (item.isDragging) {
 			if (!myItemTypes.includes(item.dragType)) {
 				// I don't own this item
-				console.warn('isDragging a ', item.dragType, type)
+				// console.warn('isDragging a ', item.dragType, type)
 				if (myItemTypes.includes(type)) {
 					// dropped to store slot
 					ng.msg('You must purchase that item before putting it in your inventory!', 4)
@@ -1611,7 +1611,7 @@ var loot = {};
 			item.lastDragEvent = event
 			tooltip.handleItemLeave(event)
 			item.dragEqType = event.currentTarget.dataset.eqType
-			console.info('dragEQ dragEqType', event.currentTarget.dataset)
+			// console.info('dragEQ dragEqType', event.currentTarget.dataset)
 			// drag
 			item.dropData = {}
 			if (items[type][index].name) {
@@ -1628,7 +1628,7 @@ var loot = {};
 
 				showCursorImg(type, index)
 			}
-			console.warn("drag row data: ", type, index, item.dragData.row)
+			// console.warn("drag row data: ", type, index, item.dragData.row)
 			if (item.dragData.name) item.isDragging = true
 			else resetDrop()
 		}
@@ -1638,7 +1638,7 @@ var loot = {};
 		items[item.dragType][item.dragSlot] = item.dropData
 		bar.updateItemSwapDOM()
 		resetDrop()
-		console.warn('lastDragEvent', item.lastDragEvent)
+		// console.warn('lastDragEvent', item.lastDragEvent)
 		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
 		else tooltip.handleItemEnter(item.lastDropEvent)
 	}
@@ -1661,18 +1661,18 @@ var loot = {};
 	}
 	function itemSwapValid(drag, drop) {
 		var resp = false;
-		console.info('dragEqType', item.dragEqType)
-		console.info('dropEqType', item.dropEqType)
-		console.info('drag', item.dragData)
-		console.info('drop', item.dropData)
+		// console.info('dragEqType', item.dragEqType)
+		// console.info('dropEqType', item.dropEqType)
+		// console.info('drag', item.dragData)
+		// console.info('drop', item.dropData)
 
 		if (item.dragType !== 'eq' && item.dropType !== 'eq') {
 			resp = true
-			console.info('no equipment items - all good!')
+			// console.info('no equipment items - all good!')
 		}
 		else {
-			console.warn('drag 1 itemType', drag.itemType, 'to slot', item.dropEqType)
-			console.warn('drag 2 itemType', drop.itemType, 'to slot', item.dragEqType)
+			// console.warn('drag 1 itemType', drag.itemType, 'to slot', item.dropEqType)
+			// console.warn('drag 2 itemType', drop.itemType, 'to slot', item.dragEqType)
 
 			if (eqDropValid(drag, item.dropEqType, drag.itemLevel, drag.unidentified) &&
 				eqDropValid(drop, item.dragEqType, drop.itemLevel, drop.unidentified)) {
@@ -1688,7 +1688,7 @@ var loot = {};
 			chat.log('You cannot equip unidentified items! Try buying an Identify Scroll from the merchant.', 'chat-warning')
 			return false
 		}
-		console.info('itemLevel', my.level, itemLevel)
+		// console.info('itemLevel', my.level, itemLevel)
 		if (my.level < itemLevel) {
 			chat.log('Your level is not high enough to equip this item!', 'chat-warning')
 			return false
@@ -1731,7 +1731,7 @@ var loot = {};
 			}
 		}
 
-		console.info('eqDropValid', eqType, _item.itemType)
+		// console.info('eqDropValid', eqType, _item.itemType)
 		if (eqType === 'secondary' &&
 			item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
 			chat.log('You cannot equip a shield while wielding a two-hand weapon!', 'chat-warning')
@@ -1778,7 +1778,7 @@ var loot = {};
 		item.identifyItemMode = false
 		item.isContextClick = false;
 		$('#temp-dnd-link').remove()
-		console.info('handleDropAlways')
+		// console.info('handleDropAlways')
 	}
 
 	function getDragItemName() {
@@ -1792,7 +1792,7 @@ var loot = {};
 			resetDrop()
 			return
 		}
-		//console.info('dropItem', event)
+		// console.info('dropItem', event)
 		if (event.ctrlKey || ng.config.fastDestroy) destroy()
 		else if (item.dragType && item.dragSlot >= 0) {
 			toast.destroyItem({
@@ -1803,7 +1803,7 @@ var loot = {};
 		}
 	}
 	function processNewItemToInv(obj) {
-		console.info('processNewItemToInv', obj)
+		// console.info('processNewItemToInv', obj)
 		items.inv[obj.slot] = {
 			...obj.itemData,
 			row: obj.row * 1
@@ -1821,7 +1821,7 @@ var loot = {};
 			return
 		}
 		handleDragStart()
-		console.info('item.buy', item.dragData)
+		// console.info('item.buy', item.dragData)
 		$.post(app.url + 'item/buy-item.php', {
 			gold: my.gold - item.goldValue,
 			slot: buyItemSlot,
@@ -1855,8 +1855,8 @@ var loot = {};
 			resetDrop()
 			return
 		}
-		console.warn('sell start', item.dragData.row, item.dragType)
-		console.info('item.dragType', item.dragType, item.dragSlot)
+		// console.warn('sell start', item.dragData.row, item.dragType)
+		// console.info('item.dragType', item.dragType, item.dragSlot)
 		handleDragStart()
 		$.post(app.url + 'item/sell-item.php', {
 			row: item.dragData.row,
@@ -1871,7 +1871,7 @@ var loot = {};
 			resetDrop()
 			return
 		}
-		console.warn('destroy start', item.dragData.row, item.dragType)
+		// console.warn('destroy start', item.dragData.row, item.dragType)
 		handleDragStart()
 		$.post(app.url + 'item/destroy-item.php', {
 			row: item.dragData.row,
@@ -1913,7 +1913,7 @@ var loot = {};
 			item.isContextClick = true
 			toggleDrag(event)
 			if (item.dragData.name) {
-				console.info(item.dragData, item.dragType, item.dragSlot)
+				// console.info(item.dragData, item.dragType, item.dragSlot)
 				toggleDrag({
 					currentTarget: {
 						dataset: {
@@ -1928,14 +1928,14 @@ var loot = {};
 		return false // context disabled
 	}
 	function useItem(type, index) {
-		console.warn('useItem', index, type, items[type][index])
+		// console.warn('useItem', index, type, items[type][index])
 		item.dropData = {}
 		if (items[type][index].name) {
 			item.dragData = items[type][index]
 			item.dragSlot = index
 			item.dragType = type
 
-			console.info('dragData', item.dragData)
+			// console.info('dragData', item.dragData)
 			if (item.dragData.itemType === 'potion') {
 				handleDragStart()
 				$.post(app.url + 'item/destroy-item.php', {
@@ -1967,7 +1967,7 @@ var loot = {};
 		}
 	}
 	function preIdentifyItem() {
-		console.warn('preIdentifyItem', item.dragType, item.dragSlot, item.dragData)
+		// console.warn('preIdentifyItem', item.dragType, item.dragSlot, item.dragData)
 		if (!item.dragData.row) {
 			resetDrop()
 			return
@@ -1995,7 +1995,7 @@ var loot = {};
 		if (typeof itemSlot === 'undefined') {
 			itemSlot = getFirstUnidentifiedItemSlot()
 		}
-		console.warn('identify item!', itemSlot)
+		// console.warn('identify item!', itemSlot)
 		if (itemSlot === -1) {
 			chat.log('You have no items that need to be identified.', 'chat-warning')
 			resetDrop()
@@ -2012,7 +2012,7 @@ var loot = {};
 				data: JSON.stringify(_.omit(newItem, ['name'])),
 				scrollRow: items[scrollType][scrollIndex].row,
 			}).done(resp => {
-				console.info('okokokok', resp)
+				// console.info('okokokok', resp)
 				items[scrollType][scrollIndex] = {}
 				items[itemType][itemSlot].unidentified = false
 				bar.updateItemSlotDOM(scrollType, scrollIndex)
@@ -2028,7 +2028,7 @@ var loot = {};
 	}
 
 	function handleUseSuccess() {
-		console.info('handleUseSuccess', item.dragData.itemType)
+		// console.info('handleUseSuccess', item.dragData.itemType)
 		if (item.dragData.itemType === 'potion') {
 			expendPotion(item.dragData.itemSubType, item.dragData.imgIndex)
 		}
@@ -2055,7 +2055,7 @@ var loot = {};
 		if (my.hp > 0 && amount > 0) {
 			my[type] += amount
 			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
-			bar.updateBar(type)
+			bar.updateBar(type, my)
 		}
 	}
 	function getEqIndexByType(drag) {
@@ -2065,7 +2065,7 @@ var loot = {};
 			!items.eq[3].name) {
 			eqIndex = 3
 		}
-		console.info('getEqIndexByType eqIndex', eqIndex)
+		// console.info('getEqIndexByType eqIndex', eqIndex)
 		return eqIndex
 	}
 	function getItemValueHtml(item, isSelling) {
@@ -2076,8 +2076,8 @@ var loot = {};
 		value = 1
 		if (!item.cost) {
 			for (key in item) {
-				if (typeof item[key] === 'number' &&
-					typeof saleValues[key] === 'number') {
+				if (typeof item[key] === NUMBER &&
+					typeof saleValues[key] === NUMBER) {
 					var val = item[key] * (saleValues[key] * (selling ? 1 : 16))
 					value += val
 				}
@@ -2119,9 +2119,9 @@ var loot = {};
 		return _.clone(identifyScroll)
 	}
 
-	const wearsLeather = ['BRD', 'CLR', 'CRU', 'SHD', 'WAR', 'RNG', 'ROG', 'SHM', 'DRU', 'MNK', 'TMP']
-	const wearsMail = ['BRD', 'CLR', 'CRU', 'SHD', 'WAR', 'RNG', 'SHM']
-	const wearsPlate = ['BRD', 'CLR', 'CRU', 'SHD', 'WAR']
+	const wearsLeather = [JOB.BARD, JOB.CLERIC, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.WARRIOR, 'RNG', JOB.ROGUE, JOB.SHAMAN, JOB.DRUID, JOB.MONK, JOB.TEMPLAR]
+	const wearsMail = [JOB.BARD, JOB.CLERIC, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.WARRIOR, 'RNG', JOB.SHAMAN]
+	const wearsPlate = [JOB.BARD, JOB.CLERIC, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.WARRIOR]
 	function canEquipArmor(armorType) {
 		if (armorType === void 0) return true
 		if (armorType === 'cloth') return true

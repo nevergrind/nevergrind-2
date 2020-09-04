@@ -67,7 +67,7 @@ var mission;
 				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">' +
 					getMissionRowHtml(zone) +
 				'</div>';
-				console.info('zone', zone);
+				// console.info('zone', zone);
 			}
 		})
 		questHtml += '</div></div>'
@@ -96,10 +96,10 @@ var mission;
 		var id = this.dataset.id * 1
 		var questId = this.dataset.quest * 1
 		if (id && party.presence[0].isLeader) {
-			console.info("QUEST SELECTED: ", id, questId, title)
+			// console.info("QUEST SELECTED: ", id, questId, title)
 			mission.id = id
 			mission.questId = questId
-			console.info("zone name: ", zones[mission.id].name)
+			// console.info("zone name: ", zones[mission.id].name)
 			var png = getZoneImg()
 			querySelector('#mission-preview').src = png
 			$("#mission-title").html(quests[mission.questId].title);
@@ -115,13 +115,13 @@ var mission;
 
 	function toggleZone() {
 		that = $(this)
-		console.info('toggleZone', this.dataset.id)
+		// console.info('toggleZone', this.dataset.id)
 		var zoneId = this.dataset.id * 1
 		var index = zones.findIndex(zone => zone.id === zoneId);
 		var zone = zones[index];
 
-		console.info('JSON ', _.cloneDeep(zone));
-		console.info(index, "isOpen: ", zone.isOpen, zone);
+		// console.info('JSON ', _.cloneDeep(zone));
+		// console.info(index, "isOpen: ", zone.isOpen, zone);
 
 		if (zone.isOpen) {
 			// close menu
@@ -161,7 +161,7 @@ var mission;
 	}
 
 	function abandonReceived(data) {
-		console.info('abandonReceived', data)
+		// console.info('abandonReceived', data)
 		chat.log(data.msg, 'chat-warning')
 		ng.msg(data.popupMsg, 4)
 		mission.abort()
@@ -204,13 +204,13 @@ var mission;
 				id: mission.id,
 				questId: mission.questId,
 			}
-			console.info('embark isLeader!', data)
+			// console.info('embark isLeader!', data)
 			socket.publish('party' + my.partyId, data)
 		}
 	}
 
 	function embarkReceived(data) {
-		console.info("MISSION UPDATE! ", data)
+		// console.info("MISSION UPDATE! ", data)
 		mission.inProgress = true
 		mission.id = data.id
 		mission.questId = data.questId

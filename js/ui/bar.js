@@ -235,19 +235,19 @@ var bar;
 	}
 
 	function setDefaultInvWeaponImage() {
-		if (my.jobLong === 'Ranger') {
+		if (my.jobLong === CLASS.RANGER) {
 			bar.defaultImage[12] = 'bows0'
 		}
-		else if (my.jobLong === 'Warrior' ||
-			my.jobLong === 'Crusader' ||
-			my.jobLong === 'Shadow Knight') {
+		else if (my.jobLong === CLASS.WARRIOR ||
+			my.jobLong === CLASS.CRUSADER ||
+			my.jobLong === CLASS.SHADOW_KNIGHT) {
 			bar.defaultImage[12] = 'oneHandSlashers0'
 		}
-		else if (my.jobLong === 'Rogue' ||
-			my.jobLong === 'Warlock' ||
-			my.jobLong === 'Enchanter' ||
-			my.jobLong === 'Templar' ||
-			my.jobLong === 'Wizard') {
+		else if (my.jobLong === CLASS.ROGUE ||
+			my.jobLong === CLASS.WARLOCK ||
+			my.jobLong === CLASS.ENCHANTER ||
+			my.jobLong === CLASS.TEMPLAR ||
+			my.jobLong === CLASS.WIZARD) {
 			bar.defaultImage[12] = 'piercers0'
 		}
 	}
@@ -388,9 +388,9 @@ var bar;
 	function updateItemSwapDOM() {
 		item.dragType && bar.updateItemSlotDOM(item.dragType, item.dragSlot)
 		item.dropType && bar.updateItemSlotDOM(item.dropType, item.dropSlot)
-		console.info('//////////// updateItemSwapDOM', item.dropType, item.dragType)
+		// console.info('//////////// updateItemSwapDOM', item.dropType, item.dragType)
 		if ([item.dropType, item.dragType].includes('eq')) {
-			console.info('update char stats')
+			// console.info('update char stats')
 			stats.cache = {}
 			updateCharStatPanels()
 			game.updateParty()
@@ -398,7 +398,7 @@ var bar;
 	}
 
 	function updateItemSlotDOM(type, slot) {
-		console.warn('trade updateItemSlotDOM', '#'+ type +'-slot-' + slot, type, slot)
+		// console.warn('trade updateItemSlotDOM', '#'+ type +'-slot-' + slot, type, slot)
 		el = querySelector('#'+ type +'-slot-' + slot)
 		if (el !== null) {
 			el.className = getInvItemClass(type, slot)
@@ -434,9 +434,9 @@ var bar;
 		updateAllMyBars()
 	}
 	function updateAllMyBars() {
-		updateBar('hp')
-		updateBar('mp')
-		updateBar('sp')
+		updateBar('hp', my)
+		updateBar('mp', my)
+		updateBar('sp', my)
 	}
 	function getRatio(type, data) {
 		data = data || my
@@ -445,16 +445,16 @@ var bar;
 		return ratio * 100
 	}
 	function updateBar(type, data) {
-		data = data || my
-		// console.warn('updateBar', type, data.row)
 		percent = getRatio(type, data)
 		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
 			x: '-' + percent + '%'
 		})
 		querySelector('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
 		if (type === 'hp' &&
-			!my.targetIsMob &&
-			my.target === data.row) {
+			typeof data === OBJECT &&
+			(!my.targetIsMob && my.target === data.row) ||
+			(my.targetIsMob && my.target === data.row)
+		) {
 			mob.drawTargetBar(percent)
 		}
 	}
@@ -624,7 +624,7 @@ var bar;
 
 	function setWindowSize(event) {
 		id = event.currentTarget.dataset.id
-		console.info('setWindowSize', id)
+		// console.info('setWindowSize', id)
 		if (app.isApp) {
 			var gui = require('nw.gui');
 			var win = gui.Window.get();
@@ -712,10 +712,10 @@ var bar;
 	}
 
 	function setHotkey(key, e) {
-		console.info('setHotkey', e)
+		// console.info('setHotkey', e)
 		if (_.values(ng.config.hotkey).includes(key)) {
 			var camelKey = _.findKey(ng.config.hotkey, hotkey => hotkey === key)
-			console.info('keys: ', bar.hotkeyId, camelKey)
+			// console.info('keys: ', bar.hotkeyId, camelKey)
 			if (_.camelCase(bar.hotkeyId) === camelKey) stopListeningForHotkey()
 			else ng.msg('This key is already assigned: ' + _.startCase(camelKey))
 		}
@@ -779,7 +779,7 @@ var bar;
 	}
 
 	function toggleShowNetwork() {
-		console.warn('toggleShowNetwork')
+		// console.warn('toggleShowNetwork')
 		ng.config.showNetwork = !ng.config.showNetwork
 		this.textContent = ng.config.showNetwork ? 'On' : 'Off'
 		updateDynamicStyles()
@@ -991,7 +991,7 @@ var bar;
 	}
 
 	function getPropSkillHtml(prop) {
-		console.info('prop', prop, my[prop])
+		// console.info('prop', prop, my[prop])
 		if (!skills[prop][my.job].level) return ''
 		// dynamic cap for current race/job/level
 		max = stats.getPropMax(prop)

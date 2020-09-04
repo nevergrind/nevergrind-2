@@ -26,7 +26,7 @@ var academy;
 		.on('click', '#train-buy', handleTrainBuy)
 	///////////////////////////////////////////
 	function handleTrainBuy() {
-		console.info('handleTrainBuy', selected)
+		// console.info('handleTrainBuy', selected)
 		if (!selected.cost) {
 			ng.splitText('various-description', 'Please clarify which skill you would like to train.')
 			return
@@ -68,7 +68,7 @@ var academy;
 		}
 		selected.cost = trainCosts[selected.rank]
 
-		console.info('selected', selected)
+		// console.info('selected', selected)
 
 		for (el of querySelectorAll('.academy-train')) {
 			el.classList.remove('active')

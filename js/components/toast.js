@@ -29,7 +29,7 @@ var toast;
 		}
 		else {
 			// received toast request - display toast & start timer
-			console.info('prompt.add', data)
+			// console.info('prompt.add', data)
 			var el = createElement('div')
 			el.id = 'toast-wrap'
 			el.className = 'stag-blue text-shadow no-select'
@@ -40,7 +40,7 @@ var toast;
 			if (data.action === 'trade-request') {
 				trade.timer = delayedCall(toast.expired, trade.tradeExpired, [ data.name ])
 				if (!ng.isApp) {
-					console.info('toast data', _.cloneDeep(toast.data))
+					// console.info('toast data', _.cloneDeep(toast.data))
 					setTimeout(toast.accept, 100)
 				}
 			}
@@ -71,7 +71,7 @@ var toast;
 	}
 	function accept() {
 		// join party by player id?
-		console.info('accept: ', toast.data)
+		// console.info('accept: ', toast.data)
 
 		if (toast.data.action === 'trade-request') {
 			// 2nd player confirms
@@ -85,7 +85,7 @@ var toast;
 		}
 	}
 	function decline() {
-		console.info('decline: ', toast.data)
+		// console.info('decline: ', toast.data)
 		chat.log('You declined ' + toast.data.name + '\'s request.')
 		trade.data = {}
 		trade.timer.kill()
@@ -105,7 +105,7 @@ var toast;
 		if (destroyData.accept === 'destroy-item') hideDestroyToast()
 	}
 	function destroyItem(data) {
-		console.info('destroyItem', destroyData)
+		// console.info('destroyItem', destroyData)
 		if (!destroyData.msg) {
 			el = createElement('div')
 			el.id = 'toast-destroy-wrap'

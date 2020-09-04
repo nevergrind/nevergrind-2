@@ -45,7 +45,7 @@ var spell;
 	}
 	function channelSuccessful() {
 		spellType = skills[my.job][spell.index].spellType
-		//console.info('channelSuccessful', spellType)
+		// console.info('channelSuccessful', spellType)
 		if (!spellType) return true
 		success = .6 - ((fizzleMaxed[my.skills[spell.index]] - my[spellType]) / 100)
 		if (my.buffFlags.manaShell) success += .1
@@ -55,7 +55,7 @@ var spell;
 		else if (success < 0) success = 0 // at worst 0% chance requires 60+ diff
 
 		let resp = rand() < success
-		console.info('channelSuccessful success 2', resp, success)
+		// console.info('channelSuccessful success 2', resp, success)
 		// HIGHER success value is better
 		return resp
 	}
@@ -71,7 +71,7 @@ var spell;
 			app.isApp && // knockback only happens in real app for testing purposes
 			!shieldsActive() &&
 			!channelSuccessful()) {
-			//console.info('channelSuccessful knockback', success)
+			// console.info('channelSuccessful knockback', success)
 			spell.timer.kill()
 			castPenalty = .5 / spell.castTime
 			timers.castBar -= castPenalty
@@ -91,14 +91,25 @@ var spell;
 		}
 	}
 
+	let castHaste = 1
+	function getCastSpeed() {
+		castHaste = 1
+		if (my.buffFlags.celestialFrenzy) castHaste -= .15
+		if (castHaste < .5) castHaste = .5
+		else if (castHaste > 2) castHaste = 2
+		// console.info('getCastSpeed', spell.castTime * castHaste)
+		return spell.castTime * castHaste
+	}
+
 	function startCasting(index, data, callbackFn) {
+		button.pauseAutoAttack()
 		spell.callbackFn = callbackFn
 		spell.index = index
 		spell.data = data
 		spell.castTime = data.castTime
 		castBarWrap.style.opacity = 1
 		TweenMax.set(castBar, { x: '-100%' })
-		spell.timer = TweenMax.to(timers, spell.castTime, {
+		spell.timer = TweenMax.to(timers, getCastSpeed(), {
 			startAt: { castBar: 0 },
 			castBar: 1,
 			onUpdate: updateSpellBar,
@@ -113,10 +124,10 @@ var spell;
 	function spellFizzleChance() {
 		spellType = skills[my.job][spell.index].spellType
 		chance = .08 + ((fizzleMaxed[my.skills[spell.index]] - my[spellType]) / 100)
-		console.info('chance', chance)
+		// console.info('chance', chance)
 		if (chance < .05) chance = .05
 		else if (chance > .8) chance = .8
-		console.info('chance after', chance)
+		// console.info('chance after', chance)
 		return rand() < chance
 	}
 	function checkSpellFizzle() {
@@ -139,12 +150,13 @@ var spell;
 	}
 	function spellComplete(callbackFn) {
 		stopCasting()
-		//console.info('complete spell cast:', spell.data.name)
-		//console.warn('calling:', functionName)
+		// console.info('complete spell cast:', spell.data.name)
+		// console.warn('calling:', functionName)
 		// functionName = _.camelCase(spell.data.name + 'Completed')
 		expendSpellResources()
 		callbackFn()
 		combat.levelSkillCheck(spell.data.spellType)
+		button.resumeAutoAttack()
 	}
 	function expendSpellResources(fizzlePenalty) {
 		fizzlePenalty = fizzlePenalty ? .1 : 1
@@ -154,18 +166,19 @@ var spell;
 			mpCost = ~~(spell.config.mpCost * fizzlePenalty)
 			if (mpCost < 1) mpCost = 1
 			my.mp -= mpCost
-			bar.updateBar('mp')
+			bar.updateBar('mp', my)
 		}
 		if (spell.config.spCost) {
 			spCost = ~~(spell.config.spCost * fizzlePenalty)
 			if (spCost < 1) spCost = 1
 			my.sp -= spCost
-			bar.updateBar('sp')
+			bar.updateBar('sp', my)
 		}
 	}
 	function stopCasting() {
 		timers.castBar = 1
 		castBarWrap.style.opacity = 0
+		button.resumeAutoAttack()
 	}
 	// defaults for combat DD on mob
 	function getDefaults(skillIndex, data) {
@@ -178,8 +191,8 @@ var spell;
 			target: my.target,
 			targetName: getTargetName(),
 			oocEnabled: false,
-			mpCost: typeof data.mp === 'function' ? data.mp(my.skills[skillIndex]) : 0,
-			spCost: typeof data.sp === 'function' ? data.sp(my.skills[skillIndex]) : 0,
+			mpCost: typeof data.mp === FUNCTION ? data.mp(my.skills[skillIndex]) : 0,
+			spCost: typeof data.sp === FUNCTION ? data.sp(my.skills[skillIndex]) : 0,
 			name: data.name,
 		}
 	}

@@ -77,18 +77,18 @@ var stats = {};
 		resistSilence,
 	}
 	// jobs grouped by things for include checks
-	var offensiveJobs = ['SHD', 'MNK', 'ROG', 'RNG']
-	var defensiveJobs = ['WAR', 'CRU', 'SHD']
-	var averagePunchJobs = ['WAR', 'CRU', 'SHD', 'ROG', 'RNG', 'BRD']
-	var wisCasterJobs = ['DRU', 'CLR', 'SHM']
-	var intCasterJobs = ['WLK', 'ENC', 'TMP', 'WIZ']
-	var allCasterJobs = ['CLR', 'DRU', 'SHM', 'BRD', 'WLK', 'ENC', 'TMP', 'WIZ']
-	var hybridJobs = ['CRU', 'SHD', 'RNG']
-	var twoHandBluntAverageJobs = ['WAR', 'CRU', 'SHD', 'CLR', 'DRU', 'SHM', 'WLK', 'ENC', 'TMP', 'WIZ']
-	var tankJobs = ['WAR', 'CRU', 'SHD']
-	var averageArcherJobs = ['WAR', 'CRU', 'SHD', 'ROG', 'BRD']
-	var averagePiercingJobs = ['WAR', 'BRD', 'SHM', 'WLK', 'ENC', 'TMP', 'WIZ']
-	var averageOneHandSlashJobs = ['WAR', 'CRU', 'SHD', 'BRD', 'DRU']
+	var offensiveJobs = [JOB.SHADOW_KNIGHT, JOB.MONK, JOB.ROGUE, 'RNG']
+	var defensiveJobs = [JOB.WARRIOR, JOB.CRUSADER, JOB.SHADOW_KNIGHT]
+	var averagePunchJobs = [JOB.WARRIOR, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.ROGUE, 'RNG', JOB.BARD]
+	var wisCasterJobs = [JOB.DRUID, JOB.CLERIC, JOB.SHAMAN]
+	var intCasterJobs = [JOB.WARLOCK, JOB.ENCHANTER, JOB.TEMPLAR, JOB.WIZARD]
+	var allCasterJobs = [JOB.CLERIC, JOB.DRUID, JOB.SHAMAN, JOB.BARD, JOB.WARLOCK, JOB.ENCHANTER, JOB.TEMPLAR, JOB.WIZARD]
+	var hybridJobs = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, 'RNG']
+	var twoHandBluntAverageJobs = [JOB.WARRIOR, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.CLERIC, JOB.DRUID, JOB.SHAMAN, JOB.WARLOCK, JOB.ENCHANTER, JOB.TEMPLAR, JOB.WIZARD]
+	var tankJobs = [JOB.WARRIOR, JOB.CRUSADER, JOB.SHADOW_KNIGHT]
+	var averageArcherJobs = [JOB.WARRIOR, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.ROGUE, JOB.BARD]
+	var averagePiercingJobs = [JOB.WARRIOR, JOB.BARD, JOB.SHAMAN, JOB.WARLOCK, JOB.ENCHANTER, JOB.TEMPLAR, JOB.WIZARD]
+	var averageOneHandSlashJobs = [JOB.WARRIOR, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.BARD, JOB.DRUID]
 	let isCrit = false
 	let chance, weaponSkill, enhanceDamage, addedDamage
 	let resistPercent
@@ -114,72 +114,78 @@ var stats = {};
 		isCrit: false
 	}
 	const hpTier = {
-		'WAR': 10,
-		'CRU': 9,
-		'SHD': 9,
-		'MNK': 7,
-		'ROG': 7,
-		'RNG': 7,
-		'BRD': 7,
-		'DRU': 7,
-		'CLR': 7,
-		'SHM': 7,
-		'WLK': 6,
-		'ENC': 6,
-		'TMP': 6,
-		'WIZ': 6,
+		WAR: 10,
+		CRU: 9,
+		SHD: 9,
+		MNK: 7,
+		ROG: 7,
+		RNG: 7,
+		BRD: 7,
+		DRU: 7,
+		CLR: 7,
+		SHM: 7,
+		WLK: 6,
+		ENC: 6,
+		TMP: 6,
+		WIZ: 6,
 	}
 	const mpTier = {
-		'WAR': 2,
-		'CRU': 3,
-		'SHD': 3,
-		'MNK': 2,
-		'ROG': 2,
-		'RNG': 3,
-		'BRD': 3,
-		'DRU': 4,
-		'CLR': 4,
-		'SHM': 4,
-		'WLK': 5,
-		'ENC': 5,
-		'TMP': 5,
-		'WIZ': 5,
+		WAR: 2,
+		CRU: 3,
+		SHD: 3,
+		MNK: 2,
+		ROG: 2,
+		RNG: 3,
+		BRD: 3,
+		DRU: 4,
+		CLR: 4,
+		SHM: 4,
+		WLK: 5,
+		ENC: 5,
+		TMP: 5,
+		WIZ: 5,
 	}
 	const spTier = {
-		'WAR': 2,
-		'CRU': 3,
-		'SHD': 3,
-		'MNK': 2,
-		'ROG': 2,
-		'RNG': 3,
-		'BRD': 4,
-		'DRU': 5,
-		'CLR': 5,
-		'SHM': 5,
-		'WLK': 3,
-		'ENC': 5,
-		'TMP': 3,
-		'WIZ': 3,
+		WAR: 2,
+		CRU: 3,
+		SHD: 3,
+		MNK: 2,
+		ROG: 2,
+		RNG: 3,
+		BRD: 4,
+		DRU: 5,
+		CLR: 5,
+		SHM: 5,
+		WLK: 3,
+		ENC: 5,
+		TMP: 3,
+		WIZ: 3,
 	}
 
 	function str(fresh) {
 		if (fresh || typeof stats.cache.str === 'undefined') {
 			stats.cache.str = my.str + create.raceAttrs[my.race][0] + create.jobAttrs[my.jobLong][0] + getEqTotal('str') + getEqTotal('allStats')
-			if (my.buffFlags.borealTalisman) stats.cache.str += buffs.borealTalisman.str[my.buffs.borealTalisman.level]
+			if (my.buffFlags.borealTalisman) {
+				stats.cache.str += buffs.borealTalisman.str[my.buffs.borealTalisman.level]
+			}
 		}
 		return stats.cache.str
 	}
 	function sta(fresh) {
 		if (fresh || typeof stats.cache.sta === 'undefined') {
 			stats.cache.sta = my.sta + create.raceAttrs[my.race][1] + create.jobAttrs[my.jobLong][1] + getEqTotal('sta') + getEqTotal('allStats')
-			if (my.buffFlags.borealTalisman) stats.cache.sta += buffs.borealTalisman.sta[my.buffs.borealTalisman.level]
+			if (my.buffFlags.borealTalisman) {
+				stats.cache.sta += buffs.borealTalisman.sta[my.buffs.borealTalisman.level]
+			}
 		}
 		return stats.cache.sta
 	}
 	function agi(fresh) {
 		if (fresh || typeof stats.cache.agi === 'undefined') {
 			stats.cache.agi = my.agi + create.raceAttrs[my.race][2] + create.jobAttrs[my.jobLong][2] + getEqTotal('agi') + getEqTotal('allStats')
-			if (my.buffFlags.augmentation) stats.cache.agi += buffs.augmentation.stats[my.buffs.augmentation.level]
+			if (my.buffFlags.augmentation) {
+				stats.cache.agi += buffs.augmentation.stats[my.buffs.augmentation.level]
+			}
 
 			if (fresh) {
 				dodgeChance(true)
@@ -191,7 +197,9 @@ var stats = {};
 	function dex(fresh) {
 		if (fresh || typeof stats.cache.dex === 'undefined') {
 			stats.cache.dex = my.dex + create.raceAttrs[my.race][3] + create.jobAttrs[my.jobLong][3] + getEqTotal('dex') + getEqTotal('allStats')
-			if (my.buffFlags.augmentation) stats.cache.dex += buffs.augmentation.stats[my.buffs.augmentation.level]
+			if (my.buffFlags.augmentation) {
+				stats.cache.dex += buffs.augmentation.stats[my.buffs.augmentation.level]
+			}
 
 			if (fresh) {
 				parryChance(true)
@@ -210,18 +218,23 @@ var stats = {};
 	function intel(fresh) {
 		if (fresh || typeof stats.cache.intel === 'undefined') {
 			stats.cache.intel = my.intel + create.raceAttrs[my.race][5] + create.jobAttrs[my.jobLong][5] + getEqTotal('intel') + getEqTotal('allStats')
-			if (my.buffFlags.clarity) stats.cache.intel += buffs.clarity.stats[my.buffs.clarity.level]
-
-			if (fresh) {
-				mpMax(true)
+			if (my.buffFlags.clarity) {
+				stats.cache.intel += buffs.clarity.intel[my.buffs.clarity.level]
 			}
+			mpMax(true)
 		}
 		return stats.cache.intel
 	}
 	function cha(fresh) {
 		if (fresh || typeof stats.cache.cha === 'undefined') {
 			stats.cache.cha = my.cha + create.raceAttrs[my.race][6] + create.jobAttrs[my.jobLong][6] + getEqTotal('cha') + getEqTotal('allStats')
-			if (my.buffFlags.vampiricAllure) stats.cache.cha += buffs.vampiricAllure.cha[my.buffs.vampiricAllure.level]
+			if (my.buffFlags.vampiricAllure) {
+				stats.cache.cha += buffs.vampiricAllure.cha[my.buffs.vampiricAllure.level]
+			}
+			if (my.buffFlags.conviction) {
+				stats.cache.cha += buffs.conviction.cha[my.buffs.conviction.level]
+			}
+			spMax(true)
 		}
 		return stats.cache.cha
 	}
@@ -277,7 +290,7 @@ var stats = {};
 		totalAttack = ~~totalAttack
 
 		return totalAttack
-		//else atk += (handToHand() * (my.job === 'MNK' ? 2.66 : .33))
+		//else atk += (handToHand() * (my.job === JOB.MONK ? 2.66 : .33))
 	}
 	function offense(fresh) {
 		if (fresh || typeof stats.cache.offense === 'undefined') {
@@ -413,7 +426,7 @@ var stats = {};
 		if (fresh || typeof stats.cache.addPoison === 'undefined') {
 			stats.cache.addPoison = getEqTotal('addPoison')
 			if (my.buffFlags.profaneSpirit) {
-				stats.cache.addPoison = buffs.profaneSpirit.addPoison[my.buffs.profaneSpirit.level]
+				stats.cache.addPoison += buffs.profaneSpirit.addPoison[my.buffs.profaneSpirit.level]
 			}
 		}
 		return stats.cache.addPoison
@@ -428,7 +441,7 @@ var stats = {};
 		if (fresh || typeof stats.cache.addLightning === 'undefined') {
 			stats.cache.addLightning = getEqTotal('addLightning')
 			if (my.buffFlags.phaseBlade) {
-				stats.cache.addLightning = buffs.phaseBlade.addLightning[my.buffs.phaseBlade.level]
+				stats.cache.addLightning += buffs.phaseBlade.addLightning[my.buffs.phaseBlade.level]
 			}
 		}
 		return stats.cache.addLightning
@@ -436,6 +449,9 @@ var stats = {};
 	function addFire(fresh) {
 		if (fresh || typeof stats.cache.addFire === 'undefined') {
 			stats.cache.addFire = getEqTotal('addFire')
+			if (my.buffFlags.moltenAegis) {
+				stats.cache.addFire += buffs.moltenAegis.addFire[my.buffs.moltenAegis.level]
+			}
 		}
 		return stats.cache.addFire
 	}
@@ -484,6 +500,9 @@ var stats = {};
 	function addSpellAll(fresh) {
 		if (fresh || typeof stats.cache.addSpellAll === 'undefined') {
 			stats.cache.addSpellAll = getEqTotal('addSpellAll')
+			if (my.buffFlags.celestialFrenzy) {
+				stats.cache.addSpellAll += buffs.celestialFrenzy.addSpellAll[my.buffs.celestialFrenzy.level]
+			}
 		}
 		return stats.cache.addSpellAll
 	}
@@ -549,7 +568,7 @@ var stats = {};
 		if (my.buffFlags.lichForm) {
 			if (spell.data.damageType === 'poison' || spell.data.damageType === 'blood') {
 				enhanceDamage = buffs.lichForm.enhancePnB[my.buffs.lichForm.level]
-				console.info('lichForm', buffs.lichForm.enhancePnB[my.buffs.lichForm.level])
+				// console.info('lichForm', buffs.lichForm.enhancePnB[my.buffs.lichForm.level])
 			}
 		}
 
@@ -563,7 +582,9 @@ var stats = {};
 		else if (spell.data.damageType === 'ice') addedDamage = addSpellIce()
 		addedDamage += addSpellAll()
 
-		if (my.buffFlags.mirrorImage) addedDamage += my.buffs.mirrorImage.damage
+		if (my.buffFlags.mirrorImage) {
+			addedDamage += my.buffs.mirrorImage.damage
+		}
 
 		max += addedDamage
 		min = max * spell.data.spellVariance
@@ -592,7 +613,7 @@ var stats = {};
 	function autoAttackDamage(getNonCrit) {
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[12] === OBJECT && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[12].minDamage) {
 			min = items.eq[12].minDamage
@@ -600,7 +621,7 @@ var stats = {};
 		}
 		else {
 			h2h = handToHand()
-			if (my.job === 'MNK') {
+			if (my.job === JOB.MONK) {
 				max = 4 + (h2h / 2) // 125
 				min = 1 + (h2h / 8) // 31.25 about 26 dps at 250
 			}
@@ -642,7 +663,7 @@ var stats = {};
 		// normalized damage for skills
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[12] === OBJECT && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		 // get normalized DPS value for min/max
 		if (weaponSkill !== 'Hand-to-Hand') {
@@ -659,7 +680,7 @@ var stats = {};
 		}
 		else {
 			h2h = handToHand()
-			if (my.job === 'MNK') {
+			if (my.job === JOB.MONK) {
 				max = 4 + (h2h / 2) // 125
 				min = 1 + (h2h / 8) // 31.25 about 26 dps at 250
 				dps = button.getPunchDps(min, max)
@@ -708,7 +729,7 @@ var stats = {};
 		if (!my.dualWield) return failedWeaponDamage
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[13] === 'object' && items.eq[13].name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[13] === OBJECT && items.eq[13].name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[13].minDamage) {
 			min = items.eq[13].minDamage
@@ -716,7 +737,7 @@ var stats = {};
 		}
 		else {
 			h2h = handToHand()
-			if (my.job === 'MNK') {
+			if (my.job === JOB.MONK) {
 				min = 1 + (h2h / 12)
 				max = 4 + (h2h / 4.5)
 			}
@@ -831,14 +852,21 @@ var stats = {};
 		if (fresh || typeof stats.cache.resistFire === 'undefined') {
 			stats.cache.resistFire = getStatTotal('resistFire') + getEqTotal('resistAll')
 			stats.cache.resistFire += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
+			if (my.buffFlags.moltenAegis) {
+				stats.cache.resistFire += buffs.moltenAegis.resistFire[my.buffs.moltenAegis.level]
+			}
 		}
 		return stats.cache.resistFire
 	}
 	function resistIce(fresh) {
 		if (fresh || typeof stats.cache.resistIce === 'undefined') {
 			stats.cache.resistIce = getStatTotal('resistIce') + getEqTotal('resistAll')
-			stats.cache.resistIce += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
-			if (my.buffFlags.borealTalisman) stats.cache.resistIce += buffs.borealTalisman.resistIce[my.buffs.borealTalisman.level]
+			if (my.buffFlags.manaShell) {
+				stats.cache.resistIce += buffs.manaShell.resistAll[my.buffs.manaShell.level]
+			}
+			if (my.buffFlags.borealTalisman) {
+				stats.cache.resistIce += buffs.borealTalisman.resistIce[my.buffs.borealTalisman.level]
+			}
 		}
 		return stats.cache.resistIce
 	}
@@ -900,7 +928,7 @@ var stats = {};
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
 		if (my.job === 'RNG') return base + my.level * 5
-		else if (my.job === 'ROG') return base + _.min([my.level * 5, 240])
+		else if (my.job === JOB.ROGUE) return base + _.min([my.level * 5, 240])
 		else if (averageOneHandSlashJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
@@ -908,16 +936,16 @@ var stats = {};
 		if (my.race === 'Barbarian') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
-		if (my.job === 'MNK') return base + my.level * 5
+		if (my.job === JOB.MONK) return base + my.level * 5
 		else if (my.job === 'RNG') return base + _.min([my.level * 5, 240])
-		else if (my.job === 'ROG') return base + _.min([my.level * 5, 225])
+		else if (my.job === JOB.ROGUE) return base + _.min([my.level * 5, 225])
 		else return base + my.level * 4
 	}
 	function piercingMax(fresh) {
 		if (my.race === 'Halfling') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
-		if (my.job === 'ROG') return base + my.level * 5
+		if (my.job === JOB.ROGUE) return base + my.level * 5
 		else if (my.job === 'RNG') return base + _.min([my.level * 5, 240])
 		else if (averagePiercingJobs.includes(my.job)) return base + my.level * 4
 		else return 0
@@ -930,7 +958,7 @@ var stats = {};
 	}
 	function handToHandMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
-		if (my.job === 'MNK') return base + my.level * 5
+		if (my.job === JOB.MONK) return base + my.level * 5
 		else if (averagePunchJobs.includes(my.job)) return base + my.level * 2
 		else return my.level
 	}
@@ -946,21 +974,21 @@ var stats = {};
 		if (my.race === 'Barbarian' || my.race === 'Orc') base = 10
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
-		if (my.job === 'MNK') return base + my.level * 5
+		if (my.job === JOB.MONK) return base + my.level * 5
 		else if (my.job === 'RNG') return base + _.min([my.level * 5, 225])
 		else if (twoHandBluntAverageJobs.includes(my.job)) return base + my.level * 4
 		else return 0
 	}
 	function dualWieldMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
-		if (my.job === 'MNK' ||
-			my.job === 'ROG' && my.level >= 13 ||
+		if (my.job === JOB.MONK ||
+			my.job === JOB.ROGUE && my.level >= 13 ||
 			my.job === 'RNG' && my.level >= 17) {
 			return base + my.level * 5
 		}
 		else if (
-			my.job === 'WAR' && my.level >= 13 ||
-			my.job === 'BRD' && my.level >= 17) {
+			my.job === JOB.WARRIOR && my.level >= 13 ||
+			my.job === JOB.BARD && my.level >= 17) {
 			return base + my.level * 4
 		}
 		else return 0
@@ -968,14 +996,14 @@ var stats = {};
 	function doubleAttackMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (
-			my.job === 'CRU' && my.level >= 20 ||
-			my.job === 'SHD' && my.level >= 20 ||
-			my.job === 'MNK' && my.level >= 15 ||
-			my.job === 'ROG' && my.level >= 16 ||
+			my.job === JOB.CRUSADER && my.level >= 20 ||
+			my.job === JOB.SHADOW_KNIGHT && my.level >= 20 ||
+			my.job === JOB.MONK && my.level >= 15 ||
+			my.job === JOB.ROGUE && my.level >= 16 ||
 			my.job === 'RNG' && my.level >= 20) {
 			return base + my.level * 5
 		}
-		else if (my.job === 'WAR' && my.level >= 15) return base + my.level * 4
+		else if (my.job === JOB.WARRIOR && my.level >= 15) return base + my.level * 4
 		else return 0
 	}
 	function dodgeMax(fresh) {
@@ -983,15 +1011,15 @@ var stats = {};
 		else if (my.race === 'Half Elf') base = 5
 		else base = 0
 		if (
-			(my.job === 'ROG' && my.level >= 4) ||
-			(my.job === 'BRD' && my.level >= 10)) {
+			(my.job === JOB.ROGUE && my.level >= 4) ||
+			(my.job === JOB.BARD && my.level >= 10)) {
 			return base + my.level * 4
 		}
 		else if (
-			(my.job === 'WAR' && my.level >= 6) ||
-			(my.job === 'CRU' && my.level >= 10) ||
-			(my.job === 'SHD' && my.level >= 10) ||
-			(my.job === 'MNK') ||
+			(my.job === JOB.WARRIOR && my.level >= 6) ||
+			(my.job === JOB.CRUSADER && my.level >= 10) ||
+			(my.job === JOB.SHADOW_KNIGHT && my.level >= 10) ||
+			(my.job === JOB.MONK) ||
 			(my.job === 'RNG' && my.level >= 8)) {
 			return base + my.level * 3
 		}
@@ -1005,18 +1033,18 @@ var stats = {};
 	function parryMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (
-			(my.job === 'WAR' && my.level >= 10) ||
-			(my.job === 'CRU' && my.level >= 17)) {
+			(my.job === JOB.WARRIOR && my.level >= 10) ||
+			(my.job === JOB.CRUSADER && my.level >= 17)) {
 			return base + my.level * 5
 		}
 		else if (
-			(my.job === 'SHD' && my.level >= 17) ||
+			(my.job === JOB.SHADOW_KNIGHT && my.level >= 17) ||
 			(my.job === 'RNG' && my.level >= 18)) {
 			return base + my.level * 4
 		}
 		else if (
-			(my.job === 'MNK' && my.level >= 12) ||
-			(my.job === 'ROG' && my.level >= 12)) {
+			(my.job === JOB.MONK && my.level >= 12) ||
+			(my.job === JOB.ROGUE && my.level >= 12)) {
 			return base + my.level * 3
 		}
 		else return 0
@@ -1024,17 +1052,17 @@ var stats = {};
 	function riposteMax(fresh) {
 		base = my.race === 'Half Elf' ? 5 : 0
 		if (
-			(my.job === 'WAR' && my.level >= 25) ||
-			(my.job === 'SHD' && my.level >= 30)) {
+			(my.job === JOB.WARRIOR && my.level >= 25) ||
+			(my.job === JOB.SHADOW_KNIGHT && my.level >= 30)) {
 			return base + my.level * 5
 		}
 		else if (
-			(my.job === 'CRU' && my.level >= 30) ||
-			(my.job === 'MNK' && my.level >= 35)) {
+			(my.job === JOB.CRUSADER && my.level >= 30) ||
+			(my.job === JOB.MONK && my.level >= 35)) {
 			return base + my.level * 4
 		}
 		else if (
-			(my.job === 'ROG' && my.level >= 30) ||
+			(my.job === JOB.ROGUE && my.level >= 30) ||
 			(my.job === 'RNG' && my.level >= 35)) {
 			return base + my.level * 3
 		}
@@ -1077,8 +1105,12 @@ var stats = {};
 				(my.level * (hpTier[my.job] * 2.5) + 20)) * hpPercentBonus()
 			+ getEqTotal('hp')
 		)
-		if (my.buffFlags.sealOfRedemption) value += (my.buffs.sealOfRedemption.damage)
-		if (my.buffFlags.zealousResolve) value += (my.buffs.zealousResolve.damage)
+		if (my.buffFlags.sealOfRedemption) {
+			value += (my.buffs.sealOfRedemption.damage)
+		}
+		if (my.buffFlags.zealousResolve) {
+			value += (my.buffs.zealousResolve.damage)
+		}
 		return value
 	}
 	function mpMax(fresh) {
@@ -1138,6 +1170,9 @@ var stats = {};
 	function spRegen(fresh) {
 		if (fresh || typeof stats.cache.spRegen === 'undefined') {
 			stats.cache.spRegen = ~~(baseSpRegen() + getEqTotal('spRegen'))
+			if (my.buffFlags.conviction) {
+				stats.cache.mpRegen += buffs.conviction.spRegen[my.buffs.conviction.level]
+			}
 		}
 		return stats.cache.spRegen
 	}
@@ -1160,28 +1195,36 @@ var stats = {};
 	function phyMit(fresh) {
 		if (fresh || typeof stats.cache.phyMit === 'undefined') {
 			stats.cache.phyMit = getEqTotal('phyMit')
-			if (my.buffFlags.bulwark) stats.cache.phyMit += buffs.bulwark.mitigation[my.buffs.bulwark.level]
+			if (my.buffFlags.bulwark) {
+				stats.cache.phyMit += buffs.bulwark.mitigation[my.buffs.bulwark.level]
+			}
 		}
 		return stats.cache.phyMit
 	}
 	function magMit(fresh) {
 		if (fresh || typeof stats.cache.magMit === 'undefined') {
 			stats.cache.magMit = getEqTotal('magMit')
-			if (my.buffFlags.bulwark) stats.cache.magMit += buffs.bulwark.mitigation[my.buffs.bulwark.level]
+			if (my.buffFlags.bulwark) {
+				stats.cache.magMit += buffs.bulwark.mitigation[my.buffs.bulwark.level]
+			}
 		}
 		return stats.cache.magMit
 	}
 	function leech(fresh) {
 		if (fresh || typeof stats.cache.leech === 'undefined') {
 			stats.cache.leech = getEqTotal('leech')
-			if (my.buffFlags.vampiricAllure) stats.cache.leech += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]
+			if (my.buffFlags.vampiricAllure) {
+				stats.cache.leech += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]
+			}
 		}
 		return stats.cache.leech
 	}
 	function wraith(fresh) {
 		if (fresh || typeof stats.cache.wraith === 'undefined') {
 			stats.cache.wraith = getEqTotal('wraith')
-			if (my.buffFlags.vampiricAllure) stats.cache.wraith += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]
+			if (my.buffFlags.vampiricAllure) {
+				stats.cache.wraith += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]
+			}
 		}
 		return stats.cache.wraith
 	}
@@ -1209,7 +1252,9 @@ var stats = {};
 		resistStatusVal = getEqTotal('resistParalyze')
 		if (fresh || typeof stats.cache.resistParalyze === 'undefined') {
 			stats.cache.resistParalyze = getEqTotal('resistParalyze')
-			if (stats.cache.resistParalyze > 50) stats.cache.resistParalyze = 50
+			if (stats.cache.resistParalyze > 50) {
+				stats.cache.resistParalyze = 50
+			}
 		}
 		return stats.cache.resistParalyze
 	}
@@ -1220,7 +1265,9 @@ var stats = {};
 			if (my.buffFlags.intrepidShout) {
 				stats.cache.resistFear += buffs.intrepidShout.base + (buffs.intrepidShout.fearPerLevel * my.buffs.intrepidShout.level)
 			}
-			if (stats.cache.resistFear > 50) stats.cache.resistFear = 50
+			if (stats.cache.resistFear > 50) {
+				stats.cache.resistFear = 50
+			}
 		}
 		return stats.cache.resistFear
 	}
@@ -1228,7 +1275,9 @@ var stats = {};
 		// can't do anything
 		if (fresh || typeof stats.cache.resistStun === 'undefined') {
 			stats.cache.resistStun = getEqTotal('resistStun')
-			if (stats.cache.resistStun > 50) stats.cache.resistStun = 50
+			if (stats.cache.resistStun > 50) {
+				stats.cache.resistStun = 50
+			}
 		}
 		return stats.cache.resistStun
 	}
@@ -1236,8 +1285,12 @@ var stats = {};
 		// cannot cast spells
 		if (fresh || typeof stats.cache.resistSilence === 'undefined') {
 			stats.cache.resistSilence = getEqTotal('resistSilence')
-			stats.cache.resistSilence += my.buffFlags.manaShell ? buffs.manaShell.silence[my.buffs.manaShell.level] : 0
-			if (stats.cache.resistSilence > 50) stats.cache.resistSilence = 50
+			if (my.buffFlags.manaShell) {
+				stats.cache.resistSilence += buffs.manaShell.silence[my.buffs.manaShell.level]
+			}
+			if (stats.cache.resistSilence > 50) {
+				stats.cache.resistSilence = 50
+			}
 		}
 		return stats.cache.resistSilence
 	}

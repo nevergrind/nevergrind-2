@@ -50,157 +50,157 @@ var ng;
 		statMap: {
 			// job bonuses
 			'jobs': {
-				'Bard': [0,2,2,2,0,0,4],
-				'Cleric': [0,2,2,0,4,2,0],
-				'Druid': [0,2,2,0,4,2,0],
-				'Enchanter': [0,0,0,0,2,4,4],
-				'Templar': [0,2,0,0,4,4,0],
-				'Monk': [4,2,2,2,0,0,0],
-				'Warlock': [0,2,0,0,4,4,0],
-				'Crusader': [2,4,0,2,2,0,0],
-				'Ranger': [2,2,2,2,2,0,0],
-				'Rogue': [4,0,4,2,0,0,0],
+				Bard: [0,2,2,2,0,0,4],
+				Cleric: [0,2,2,0,4,2,0],
+				Druid: [0,2,2,0,4,2,0],
+				Enchanter: [0,0,0,0,2,4,4],
+				Templar: [0,2,0,0,4,4,0],
+				Monk: [4,2,2,2,0,0,0],
+				Warlock: [0,2,0,0,4,4,0],
+				Crusader: [2,4,0,2,2,0,0],
+				Ranger: [2,2,2,2,2,0,0],
+				Rogue: [4,0,4,2,0,0,0],
 				'Shadow Knight': [4,2,0,2,0,2,0],
-				'Shaman': [0,2,2,0,4,2,0],
-				'Warrior': [4,4,0,2,0,0,0],
-				'Wizard': [0,2,0,0,4,4,0]
+				Shaman: [0,2,2,0,4,2,0],
+				Warrior: [4,4,0,2,0,0,0],
+				Wizard: [0,2,0,0,4,4,0]
 			},
 			// race base values and possible classes
 			'Barbarian': {
 				'attrs': [22,20,17,14,14,11,10],
 				'jobs': [
-					'Monk',
-					'Rogue',
-					'Shaman',
-					'Warrior'
+					CLASS.MONK,
+					CLASS.ROGUE,
+					CLASS.SHAMAN,
+					CLASS.WARRIOR
 				]
 			},
 			'Dark Elf': {
 				'attrs': [11,13,19,15,17,21,11],
 				'jobs': [
-					'Cleric',
-					'Enchanter',
-					'Templar',
-					'Warlock',
-					'Ranger',
-					'Rogue',
-					'Shadow Knight',
-					'Warrior',
-					'Wizard'
+					CLASS.CLERIC,
+					CLASS.ENCHANTER,
+					CLASS.TEMPLAR,
+					CLASS.WARLOCK,
+					CLASS.RANGER,
+					CLASS.ROGUE,
+					CLASS.SHADOW_KNIGHT,
+					CLASS.WARRIOR,
+					CLASS.WIZARD
 				]
 			},
 			'Dwarf': {
 				'attrs': [19,19,14,19,17,11,9],
 				'jobs': [
-					'Cleric',
-					'Crusader',
-					'Rogue',
-					'Warrior'
+					CLASS.CLERIC,
+					CLASS.CRUSADER,
+					CLASS.ROGUE,
+					CLASS.WARRIOR
 				]
 			},
 			'Seraph': {
 				'attrs': [11,14,14,14,17,23,14],
 				'jobs': [
-					'Cleric',
-					'Enchanter',
-					'Templar',
-					'Warlock',
-					'Crusader',
-					'Shadow Knight',
-					'Wizard'
+					CLASS.CLERIC,
+					CLASS.ENCHANTER,
+					CLASS.TEMPLAR,
+					CLASS.WARLOCK,
+					CLASS.CRUSADER,
+					CLASS.SHADOW_KNIGHT,
+					CLASS.WIZARD
 				]
 			},
 			'Gnome': {
 				'attrs': [11,14,18,18,13,21,11],
 				'jobs': [
-					'Cleric',
-					'Enchanter',
-					'Templar',
-					'Warlock',
-					'Rogue',
-					'Shadow Knight',
-					'Warrior',
-					'Wizard'
+					CLASS.CLERIC,
+					CLASS.ENCHANTER,
+					CLASS.TEMPLAR,
+					CLASS.WARLOCK,
+					CLASS.ROGUE,
+					CLASS.SHADOW_KNIGHT,
+					CLASS.WARRIOR,
+					CLASS.WIZARD
 				]
 			},
 			'Half Elf': {
 				'attrs': [14,14,19,18,11,15,15],
 				'jobs': [
-					'Bard',
-					'Druid',
-					'Monk',
-					'Crusader',
-					'Ranger',
-					'Rogue',
-					'Warrior'
+					CLASS.BARD,
+					CLASS.DRUID,
+					CLASS.MONK,
+					CLASS.CRUSADER,
+					CLASS.RANGER,
+					CLASS.ROGUE,
+					CLASS.WARRIOR
 				]
 			},
 			'Halfling': {
 				'attrs': [14,15,20,19,16,9,9],
 				'jobs': [
-					'Cleric',
-					'Druid',
-					'Monk',
-					'Ranger',
-					'Rogue',
-					'Warrior'
+					CLASS.CLERIC,
+					CLASS.DRUID,
+					CLASS.MONK,
+					CLASS.RANGER,
+					CLASS.ROGUE,
+					CLASS.WARRIOR
 				]
 			},
 			'High Elf': {
 				'attrs': [10,13,18,14,20,19,16],
 				'jobs': [
-					'Cleric',
-					'Enchanter',
-					'Templar',
-					'Crusader',
-					'Wizard'
+					CLASS.CLERIC,
+					CLASS.ENCHANTER,
+					CLASS.TEMPLAR,
+					CLASS.CRUSADER,
+					CLASS.WIZARD
 				]
 			},
 			'Human': {
 				'attrs': [15,15,15,15,15,15,15],
 				'jobs': [
-					'Bard',
-					'Cleric',
-					'Druid',
-					'Enchanter',
-					'Templar',
-					'Monk',
-					'Warlock',
-					'Crusader',
-					'Ranger',
-					'Rogue',
-					'Shadow Knight',
-					'Shaman',
-					'Warrior',
-					'Wizard'
+					CLASS.BARD,
+					CLASS.CLERIC,
+					CLASS.DRUID,
+					CLASS.ENCHANTER,
+					CLASS.TEMPLAR,
+					CLASS.MONK,
+					CLASS.WARLOCK,
+					CLASS.CRUSADER,
+					CLASS.RANGER,
+					CLASS.ROGUE,
+					CLASS.SHADOW_KNIGHT,
+					CLASS.SHAMAN,
+					CLASS.WARRIOR,
+					CLASS.WIZARD
 				]
 			},
 			'Orc': {
 				'attrs': [27,22,13,14,13,11,8],
 				'jobs': [
-					'Monk',
-					'Shadow Knight',
-					'Shaman',
-					'Warrior'
+					CLASS.MONK,
+					CLASS.SHADOW_KNIGHT,
+					CLASS.SHAMAN,
+					CLASS.WARRIOR
 				]
 			},
 			'Troll': {
 				'attrs': [22,24,18,15,11,9,6],
 				'jobs': [
-					'Rogue',
-					'Shadow Knight',
-					'Shaman',
-					'Warrior'
+					CLASS.ROGUE,
+					CLASS.SHADOW_KNIGHT,
+					CLASS.SHAMAN,
+					CLASS.WARRIOR
 				]
 			},
 			'Wood Elf': {
 				'attrs': [13,13,20,16,15,15,15],
 				'jobs': [
-					'Bard',
-					'Druid',
-					'Ranger',
-					'Rogue',
-					'Warrior'
+					CLASS.BARD,
+					CLASS.DRUID,
+					CLASS.RANGER,
+					CLASS.ROGUE,
+					CLASS.WARRIOR
 				]
 			}
 		},
@@ -250,52 +250,52 @@ var ng;
 			'Wood Elf'
 		],
 		jobs: [
-			'Bard',
-			'Cleric',
-			'Druid',
-			'Enchanter',
-			'Templar',
-			'Monk',
-			'Warlock',
-			'Crusader',
-			'Ranger',
-			'Rogue',
-			'Shadow Knight',
-			'Shaman',
-			'Warrior',
-			'Wizard'
+			CLASS.BARD,
+			CLASS.CLERIC,
+			CLASS.DRUID,
+			CLASS.ENCHANTER,
+			CLASS.TEMPLAR,
+			CLASS.MONK,
+			CLASS.WARLOCK,
+			CLASS.CRUSADER,
+			CLASS.RANGER,
+			CLASS.ROGUE,
+			CLASS.SHADOW_KNIGHT,
+			CLASS.SHAMAN,
+			CLASS.WARRIOR,
+			CLASS.WIZARD
 		],
 		jobShort: {
-			Bard: 'BRD',
-			Cleric: 'CLR',
-			Druid: 'DRU',
-			Enchanter: 'ENC',
-			Templar: 'TMP',
-			Monk: 'MNK',
-			Warlock: 'WLK',
-			Crusader: 'CRU',
+			Bard: JOB.BARD,
+			Cleric: JOB.CLERIC,
+			Druid: JOB.DRUID,
+			Enchanter: JOB.ENCHANTER,
+			Templar: JOB.TEMPLAR,
+			Monk: JOB.MONK,
+			Warlock: JOB.WARLOCK,
+			Crusader: JOB.CRUSADER,
 			Ranger: 'RNG',
-			Rogue: 'ROG',
-			'Shadow Knight': 'SHD',
-			Shaman: 'SHM',
-			Warrior: 'WAR',
-			Wizard: 'WIZ'
+			Rogue: JOB.ROGUE,
+			'Shadow Knight': JOB.SHADOW_KNIGHT,
+			Shaman: JOB.SHAMAN,
+			Warrior: JOB.WARRIOR,
+			Wizard: JOB.WIZARD
 		},
 		jobLong: {
-			BRD: 'Bard',
-			CLR: 'Cleric',
-			DRU: 'Druid',
-			ENC: 'Enchanter',
-			TMP: 'Templar',
-			MNK: 'Monk',
-			WLK: 'Warlock',
-			CRU: 'Crusader',
-			RNG: 'Ranger',
-			ROG: 'Rogue',
-			SHD: 'Shadow Knight',
-			SHM: 'Shaman',
-			WAR: 'Warrior',
-			WIZ: 'Wizard'
+			BRD: CLASS.BARD,
+			CLR: CLASS.CLERIC,
+			DRU: CLASS.DRUID,
+			ENC: CLASS.ENCHANTER,
+			TMP: CLASS.TEMPLAR,
+			MNK: CLASS.MONK,
+			WLK: CLASS.WARLOCK,
+			CRU: CLASS.CRUSADER,
+			RNG: CLASS.RANGER,
+			ROG: CLASS.ROGUE,
+			SHD: CLASS.SHADOW_KNIGHT,
+			SHM: CLASS.SHAMAN,
+			WAR: CLASS.WARRIOR,
+			WIZ: CLASS.WIZARD
 		},
 	}
 	var msgTimer = delayedCall(0, '')
@@ -479,7 +479,7 @@ var ng;
 			bonuses.push(bonusPerPt.toFixed(2));
 			bonusPerPt = (maxBonus - damBonus) * multiplier;
 		}
-		console.warn('bonuses: ', bonuses.join(', '));
+		// console.warn('bonuses: ', bonuses.join(', '));
 		return floor(damBonus); // 92% damage bonus for 255 strength
 	}
 	function dimRetSkill(val) {
@@ -490,7 +490,7 @@ var ng;
 
 		while (val-- > 0) {
 			skillBonus += bonusPerPoint;
-			console.warn(++i, +bonusPerPoint.toFixed(2), 'total: ', _.round(skillBonus));
+			// console.warn(++i, +bonusPerPoint.toFixed(2), 'total: ', _.round(skillBonus));
 			bonusPerPoint = bonusPerPoint * multiplier;
 		}
 		return round(skillBonus); // 92% damage bonus for 255 strength
@@ -563,7 +563,7 @@ var ng;
 				create.form = create.getEmptyForm();
 				create.setRandomGender()
 				create.setRandomRace()
-				console.info('form', create.form)
+				// console.info('form', create.form)
 				create.setFace()
 				TweenMax.to('#scene-title-create-character', .6, {
 					startAt: {
@@ -596,7 +596,7 @@ var ng;
 
 					steam.screenName = details.screenName
 					steam.steamId = details.steamId
-					console.info('steam', steam)
+					// console.info('steam', steam)
 					greenworks.getAuthSessionTicket(function (data) {
 						steam.handle = data.handle;
 						steam.ticket = data.ticket.toString('hex')
@@ -611,7 +611,7 @@ var ng;
 							handleInitGame(data)
 							ng.unlock()
 						}).fail(function (data) {
-							console.warn(data.responseText)
+							// console.warn(data.responseText)
 							data.responseText && ng.msg(data.responseText, 12)
 						});
 					});
@@ -631,7 +631,7 @@ var ng;
 					handleInitGame(data)
 					ng.unlock()
 				}).fail(function (data) {
-					console.warn(data.responseText)
+					// console.warn(data.responseText)
 					data.responseText && ng.msg(data.responseText, 12)
 				})
 			}
@@ -658,7 +658,7 @@ var ng;
 	function handleInitGame(r) {
 		/*
 		$.get('https://nevergrind.com/php/nwjs.php').done((data) => {
-			console.info('nwjs.php data', JSON.parse(data))
+			// console.info('nwjs.php data', JSON.parse(data))
 		})
 		*/
 		bar.updateDynamicStyles()
@@ -700,7 +700,7 @@ var ng;
 				alpha: 0
 			}, .05);
 		}
-		console.info('init-game', r)
+		// console.info('init-game', r)
 
 
 		if (r.id) {
@@ -744,7 +744,7 @@ var ng;
 				row: ng.config.selectedRowIndex
 			})
 		}
-		return typeof index === 'number' ? index : 0
+		return typeof index === NUMBER ? index : 0
 	}
 	function displayCharacter(r) {
 		characterData = r
@@ -782,7 +782,6 @@ var ng;
 		}
 		getElementById('ch-card-wrap').innerHTML = s;
 		audio.save()
-
 	}
 	function incrementCharacter() {
 		ng.selectIndex++

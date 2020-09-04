@@ -96,6 +96,6 @@ var dungeon;
 		return '<img id="dungeon-bg" class="wh-100" src="images/dungeon/1.jpg">'
 	}
 	function enterCombat() {
-		console.info("ENTERING COMBAT")
+		// console.info("ENTERING COMBAT")
 	}
 })(TweenMax, $, _);

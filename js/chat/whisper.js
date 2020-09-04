@@ -17,11 +17,11 @@ var whisper;
 			router.party(data, data.route)
 		}
 		else if (r === 'send') {
-			console.info('Sent whisper: ', data)
+			// console.info('Sent whisper: ', data)
 			// report message
 			router.toTown(data, data.route)
 			chat.lastWhisper.name = data.name
-			console.info('data send', data)
+			// console.info('data send', data)
 			// callback to sender
 			socket.publish('name' + _.toLower(data.name), {
 				job: my.job,
@@ -40,7 +40,7 @@ var whisper;
 					name: data.name
 				}
 			}
-			console.info('data receive', _.cloneDeep(data))
+			// console.info('data receive', _.cloneDeep(data))
 			data.msg = 'To ' + chat.getPrefix(data) + ': ' + data.msg;
 			// router.toTown(data, 'chat->log');
 			chat.log(data.msg, data.class)
@@ -48,7 +48,7 @@ var whisper;
 		// guild invite
 		else if (r === 'guild-invite') {
 			if (!my.guild.id) {
-				console.info("guild invite received! ", data);
+				// console.info("guild invite received! ", data);
 				toast.add(data);
 			}
 			else {

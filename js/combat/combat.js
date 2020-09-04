@@ -20,7 +20,7 @@ var combat;
 		levelSkillCheck,
 		skillLevelChance,
 		endCombat,
-		updateHeroResource,
+		updateMyResource,
 		txHotHero,
 		rxHotHero,
 		txBuffHero,
@@ -188,7 +188,7 @@ var combat;
 			d.damage = 0
 			return d
 		}
-		//console.info('asdfasdf', d)
+		// console.info('asdfasdf', d)
 
 		if (d.damageType === 'physical') {
 			// check for things that immediately set to 0
@@ -304,7 +304,7 @@ var combat;
 		}
 
 		if (mobs[d.index].buffFlags.stasisField) {
-			console.info('stasisField', buffs.stasisField.pveMitigationRatio)
+			// console.info('stasisField', buffs.stasisField.pveMitigationRatio)
 			d.damage *= buffs.stasisField.pveMitigationRatio
 		}
 		// final sanity checks
@@ -321,7 +321,7 @@ var combat;
 		totalAddedDamage += stats.addLightning() * mobs[index].resist.lightning
 		totalAddedDamage += stats.addFire() * mobs[index].resist.fire
 		totalAddedDamage += stats.addIce() * mobs[index].resist.ice
-		console.info('getAddedDamage 3', index, totalAddedDamage)
+		// console.info('getAddedDamage 3', index, totalAddedDamage)
 		return totalAddedDamage
 	}
 	function toggleAutoAttack() {
@@ -362,8 +362,8 @@ var combat;
 	}
 
 	function updateMobHp(o) {
-		console.info('updateMobHp updateHate obj', _.clone(o))
-		if (typeof buffs[o.key] === 'object') {
+		// console.info('updateMobHp updateHate obj', _.clone(o))
+		if (typeof buffs[o.key] === OBJECT) {
 			if (buffs[o.key].hate === undefined) o.hate = 1
 			else o.hate = buffs[o.key].hate
 		}
@@ -381,7 +381,7 @@ var combat;
 		mob.updateHate(o)
 		mob.drawMobBar(o.index)
 		if (mobs[o.index].hp <= 0) {
-			console.warn('mob is dead!')
+			// console.warn('mob is dead!')
 			mob.death(o.index)
 			my.fixTarget()
 			if (isBattleOver()) {
@@ -391,12 +391,12 @@ var combat;
 			}
 		}
 		processEffects(o)
-		if (o.key && typeof animateSkill[key] === 'function') {
+		if (o.key && typeof animateSkill[key] === FUNCTION) {
 
 		}
 	}
 	function processEffects(o) {
-		if (typeof o.effects === 'object') {
+		if (typeof o.effects === OBJECT) {
 			// console.info('processEffects')
 			// non-duration effects that are not buffs, but apply instantly
 			if (o.effects.stagger) mobEffects.stagger(o.index)
@@ -406,16 +406,19 @@ var combat;
 		leechValue = processHeal(leechValue)
 		leechHp += leechValue
 		if (leechHp >= 1) {
-			updateHeroResource('hp', ~~leechHp)
+			updateMyResource('hp', ~~leechHp)
 			leechHp = leechHp % 1
 		}
 	}
 	function processWraith(wraithValue) {
 		wraithMp += wraithValue
 		if (wraithMp >= 1) {
-			updateHeroResource('mp', ~~wraithMp)
+			updateMyResource('mp', ~~wraithMp)
 			wraithMp = wraithMp % 1
 		}
+	}
+	function filterImpossibleMobTargets(m) {
+		return m.index >=0 && m.index < mob.max && mob.isAlive(m.index)
 	}
 	const damageKeys = [
 		'damage',
@@ -425,8 +428,8 @@ var combat;
 		'effects'
 	]
 	function txDamageMob(damages) {
-		damages = damages.map(processDamagesMob)
-		console.warn('txDamageMob', damages)
+		damages = damages.filter(filterImpossibleMobTargets).map(processDamagesMob)
+		// console.warn('txDamageMob', damages)
 		damageArr = []
 		buffArr = []
 		len = damages.length
@@ -435,7 +438,7 @@ var combat;
 			if (damages[i].damage > 0 || damages[i].isBuff) {
 				myDamage += damages[i].damage
 				damages[i].row = my.row
-				if (typeof damages[i].buffs === 'object') {
+				if (typeof damages[i].buffs === OBJECT) {
 					// buffs only get added if it hits
 					damages[i].buffs.forEach(buff => buffArr.push(buff))
 				}
@@ -473,7 +476,7 @@ var combat;
 			}
 		}
 		// buffs
-		if (typeof data.buffs === 'object') {
+		if (typeof data.buffs === OBJECT) {
 			data.buffs.forEach(buff => buffArr.push(buff))
 		}
 		buffArr.length && battle.processBuffs(buffArr)
@@ -486,7 +489,8 @@ var combat;
 	function txDotMob(damages) {
 		// only checks dodge?
 		// console.info('txDotMob 1', damages)
-		damages = damages.map(processDamagesMob)
+		damages = damages.filter(filterImpossibleMobTargets).map(processDamagesMob)
+		// console.info('txDotMob 2', damages)
 		damageArr = []
 		len = damages.length
 		for (i=0; i<len; i++) {
@@ -517,16 +521,18 @@ var combat;
 			let rowKey = data.key +'-'+ data.row
 			if (my.row === data.row) {
 				// kill buffs
-				if (typeof mobs[damages[i].index].buffs[rowKey] === 'object') {
-					if (typeof mobs[damages[i].index].buffs[rowKey].timer === 'object') {
+				// console.info('rxDotMob', damages[i].index)
+				if (typeof mobs[damages[i].index] === OBJECT &&
+					typeof mobs[damages[i].index].buffs[rowKey] === OBJECT) {
+					if (typeof mobs[damages[i].index].buffs[rowKey].timer === OBJECT) {
 						mobs[damages[i].index].buffs[rowKey].timer.kill()
 					}
-					if (typeof mobs[damages[i].index].buffs[rowKey].dotTicks === 'object') {
+					if (typeof mobs[damages[i].index].buffs[rowKey].dotTicks === OBJECT) {
 						mobs[damages[i].index].buffs[rowKey].dotTicks.kill()
 					}
 				}
-				console.info('rxDotMob data', data)
-				console.info('rxDotMob duration', damages[i])
+				// console.info('rxDotMob data', data)
+				// console.info('rxDotMob duration', damages[i])
 
 				battle.processBuffs([{
 					i: damages[i].index,
@@ -545,8 +551,8 @@ var combat;
 				})
 			}
 			else {
-				if (typeof mobs[damages[i].index].buffs[rowKey] === 'object') {
-					if (typeof mobs[damages[i].index].buffs[rowKey].timer === 'object') {
+				if (typeof mobs[damages[i].index].buffs[rowKey] === OBJECT) {
+					if (typeof mobs[damages[i].index].buffs[rowKey].timer === OBJECT) {
 						mobs[damages[i].index].buffs[rowKey].timer.kill()
 					}
 				}
@@ -581,12 +587,12 @@ var combat;
 	}
 
 	function selfDied() {
-		console.warn('You died!')
+		// console.warn('You died!')
 		// subtract XP
 		if (!ng.isApp) {
 			// really just for testing
 			my.set('hp', 0)
-			bar.updateBar('hp')
+			bar.updateBar('hp', my)
 		}
 		timers.clearMy()
 		autoAttackDisable()
@@ -606,12 +612,12 @@ var combat;
 		}
 	}
 	// damage hero functions
-	function updateHeroResource(type, addValue, bypassDeath) {
+	function updateMyResource(type, addValue, bypassDeath) {
 		/**
 		 * when hero's hp, mp, sp increments or decrements
 		 */
 		if (my.hp <= 0 && !bypassDeath) {
-			console.warn('updateHeroResource you are dead - no action taken')
+			// console.warn('updateMyResource you are dead - no action taken')
 			return
 		}
 		if (type === 'hp') {
@@ -629,7 +635,7 @@ var combat;
 				else my.set('hp', my.hpMax) // testing
 			}
 		}
-		bar.updateBar(type)
+		bar.updateBar(type, my)
 	}
 	function processDamagesHero(index, d) {
 		if (my.hp <= 0) {
@@ -716,12 +722,12 @@ var combat;
 			d.damage -= stats.magMit()
 
 			// my magic resists
-			console.info(d.damageType, index)
+			// console.info(d.damageType, index)
 			d.damage *= stats.getResistPercent(d.damageType)
 		}
 
 		if (mobs[index].buffFlags.stasisField) {
-			console.info('stasisField', buffs.stasisField.pvpMitigation[skill.ENC.getHighestStasis(index)])
+			// console.info('stasisField', buffs.stasisField.pvpMitigation[skill.ENC.getHighestStasis(index)])
 			d.damage -= buffs.stasisField.pvpMitigation[skill.ENC.getHighestStasis(index)]
 		}
 		// final sanity checks
@@ -748,19 +754,19 @@ var combat;
 			chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', 'chat-warning')
 		}
 		else processDamageToMe(data.i, damages)
-		console.info('rxDamageHero: ', damages.length, data)
+		// console.info('rxDamageHero: ', damages.length, data)
 	}
 	function processDamageToMe(index, damages) {
 		if (damages.findIndex(dam => dam.row === my.row) >= 0) {
 			// something hit me - single or double hit
-			console.info('processDamageToMe', damages[0].damage)
+			// console.info('processDamageToMe', damages[0].damage)
 			damages = damages.map(dam => processDamagesHero(index, dam))
 			len = damages.length
 			totalDamage = 0
 			for (i=0; i<len; i++) {
 				if (damages[i].damage > 0) {
 					totalDamage += damages[i].damage
-					updateHeroResource('hp', -damages[i].damage)
+					updateMyResource('hp', -damages[i].damage)
 					if (damages[i].isPiercing) {
 						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
 					}
@@ -782,12 +788,12 @@ var combat;
 				// damageTakenToMana vulpineMp
 				vulpineMp += totalDamage * (stats.damageTakenToMana() / resourceLeechDivider)
 				if (vulpineMp >= 1) {
-					updateHeroResource('mp', ~~vulpineMp)
+					updateMyResource('mp', ~~vulpineMp)
 					vulpineMp = vulpineMp % 1
 				}
 				vulpineSp += totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider)
 				if (vulpineSp >= 1) {
-					updateHeroResource('sp', ~~vulpineSp)
+					updateMyResource('sp', ~~vulpineSp)
 					vulpineSp = vulpineSp % 1
 				}
 			}
@@ -798,7 +804,7 @@ var combat;
 		}
 		// animate
 		damages.forEach(dam => {
-			console.info('processDamageToMe', index, dam.row)
+			// console.info('processDamageToMe', index, dam.row)
 			mob.animateAttack(index, dam.row)
 		})
 	}
@@ -846,7 +852,7 @@ var combat;
 	function txHotHero(data) {
 		// damages is an object with indices that point to player row (target)
 		data = data.map(heal => _.pick(heal, healKeys))
-		console.info('txHotHero', data)
+		// console.info('txHotHero', data)
 		socket.publish('party' + my.partyId, {
 			route: 'p->heal',
 			row: my.row,
@@ -854,7 +860,7 @@ var combat;
 		})
 	}
 	function rxHotHero(data) {
-		console.info('rxHotHero: ', data)
+		// console.info('rxHotHero: ', data)
 		data.heals.forEach(heal => {
 			if (typeof buffs[heal.key] && buffs[heal.key].duration > 0) hotToMe(data.row, heal)
 			else healToMe(data.row, heal)
@@ -867,13 +873,13 @@ var combat;
 	}
 	function healToMe(row, heal) {
 		hate = 0
-		console.info('healToMe rxHotHero', _.clone(heal))
-		hate += heal.damage * (typeof buffs[heal.key].hate === 'number' ? buffs[heal.key].hate : 1)
+		// console.info('healToMe rxHotHero', _.clone(heal))
+		hate += heal.damage * (typeof buffs[heal.key].hate === NUMBER ? buffs[heal.key].hate : 1)
 		if (my.row === heal.index) {
 			// healing ME
 			healAmount = processHeal(heal.damage)
 			chat.log(buffs[heal.key].msg(heal), 'chat-heal')
-			updateHeroResource('hp', healAmount)
+			updateMyResource('hp', healAmount)
 			// let everyone know I got the heal
 			game.txPartyResources({
 				hp: my.hp,
@@ -888,15 +894,15 @@ var combat;
 		}
 	}
 	function hotToMe(row, heal) {
-		console.info('hotToMe rxHotHero', row, heal)
+		// console.info('hotToMe rxHotHero', row, heal)
 		hate = 0
-		hate += heal.damage * (typeof buffs[heal.key].hate === 'number' ? buffs[heal.key].hate : 1)
+		hate += heal.damage * (typeof buffs[heal.key].hate === NUMBER ? buffs[heal.key].hate : 1)
 		if (my.row === heal.index) {
 			// HoT
 			let keyRow = heal.key + '-' + heal.index
 			// cancel/overwrite existing buff timer data keyRow: duration, function
-			if (typeof my.buffs[keyRow] === 'object' &&
-				typeof my.buffs[keyRow].timer === 'object') {
+			if (typeof my.buffs[keyRow] === OBJECT &&
+				typeof my.buffs[keyRow].timer === OBJECT) {
 				my.buffs[keyRow].timer.kill()
 				my.buffs[keyRow].hotTicks.kill()
 				battle.removeBuff(heal.key, keyRow)
@@ -939,12 +945,12 @@ var combat;
 		if (!app.isApp) {
 			chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', 'chat-heal')
 		}
-		updateHeroResource('hp', healAmount)
+		updateMyResource('hp', healAmount)
 	}
 
 	// buff hero
 	function txBuffHero(data) {
-		console.info('txBuffHero', data)
+		// console.info('txBuffHero', data)
 		data = data.map(buff => _.pick(buff, ['damage', 'index', 'key', 'level']))
 		socket.publish('party' + my.partyId, {
 			route: 'p->buff',
@@ -953,14 +959,14 @@ var combat;
 		})
 	}
 	function rxBuffHero(data) {
-		console.info('rxBuffHero: ', data)
+		// console.info('rxBuffHero: ', data)
 		processBuffToMe(data)
 	}
 	function processBuffToMe(data) {
 		hate = 0
 		console.info('processBuffToMe', data)
 		data.buffs.forEach(buff => {
-			console.info('updateHate', _.clone(buff))
+			// console.info('updateHate', _.clone(buff))
 			if (buffs[buff.key].hate) {
 				hate += ~~(buff.damage * buffs[buff.key].hate)
 			}
@@ -969,7 +975,7 @@ var combat;
 			if (my.row === buff.index) {
 				let key = buff.key
 				// check level of buff - cancel if lower
-				if (typeof my.buffs[key] === 'object') {
+				if (typeof my.buffs[key] === OBJECT) {
 					if (buff.level < my.buffs[key].level) {
 						// buff is lower level -
 						if (//no timer but has damage
@@ -983,7 +989,7 @@ var combat;
 					}
 
 					// cancel/overwrite existing buff timer data keyRow: duration, function
-					if (typeof my.buffs[key].timer === 'object') {
+					if (typeof my.buffs[key].timer === OBJECT) {
 						my.buffs[key].timer.kill()
 					}
 				}
@@ -1003,7 +1009,7 @@ var combat;
 				// not timer based - my.buffFlags[key] must be set to false via depletion
 				if (buffs[buff.key].duration > 0) {
 					// timer based
-					console.warn('adding buff - dur:', buffs[buff.key].duration)
+					// console.warn('adding buff - dur:', buffs[buff.key].duration)
 					my.buffs[key].duration = buffs[buff.key].duration
 					my.buffs[key].timer = TweenMax.to(my.buffs[key], my.buffs[key].duration, {
 						duration: 0,
@@ -1014,7 +1020,7 @@ var combat;
 				}
 				my.buffFlags[key] = true
 				battle.addMyBuff(buff.key, key)
-				processStatBuffsToMe(key)
+				processStatBuffsToMe(key, data.row)
 			}
 		})
 		if (~~hate > 0) {
@@ -1025,8 +1031,8 @@ var combat;
 		}
 	}
 
-	function processStatBuffsToMe(key) {
-		console.info('processStatBuffsToMe key!', key)
+	function processStatBuffsToMe(key, buffedByRow) {
+		// console.info('processStatBuffsToMe key!', key)
 		if (key === 'spiritOfTheHunter') {
 			cacheBustAttack()
 			updateCharStatColTwo()
@@ -1035,13 +1041,13 @@ var combat;
 			stats.resistBlood(true)
 			bar.updateAllResistsDOM()
 			my.set('hpMax', stats.hpMax())
-			bar.updateBar('hp')
+			bar.updateBar('hp', my)
 			txHpChange()
 		}
 		else if (key === 'zealousResolve') {
 			cacheBustArmor()
 			my.set('hpMax', stats.hpMax())
-			bar.updateBar('hp')
+			bar.updateBar('hp', my)
 			txHpChange()
 		}
 		else if (key === 'bulwark') {
@@ -1074,7 +1080,7 @@ var combat;
 			cacheBustAttack()
 			stats.hpRegen(true)
 			my.set('hpMax', stats.hpMax())
-			bar.updateBar('hp')
+			bar.updateBar('hp', my)
 			txHpChange()
 		}
 		else if (key === 'vampiricAllure') {
@@ -1088,7 +1094,7 @@ var combat;
 			stats.str(true)
 			stats.sta(true)
 			my.set('hpMax', stats.hpMax())
-			bar.updateBar('hp')
+			bar.updateBar('hp', my)
 			txHpChange()
 			cacheBustAttack()
 			bar.updateAllResistsDOM()
@@ -1115,8 +1121,22 @@ var combat;
 			stats.intel(true)
 			updateCharStatColTwo()
 			my.set('mpMax', stats.mpMax())
-			bar.updateBar('mp')
+			bar.updateBar('mp', my)
 			txMpChange()
+		}
+		else if (key === 'conviction') {
+			stats.cha(true)
+			updateCharStatColTwo()
+			my.set('spMax', stats.spMax())
+			bar.updateBar('sp', my)
+			txSpChange()
+		}
+		else if (key === 'celestialFrenzy') {
+			stats.cha(true)
+			updateCharStatColTwo()
+			my.set('spMax', stats.spMax())
+			bar.updateBar('sp', my)
+			txSpChange()
 		}
 		////////////////////////////////
 		function cacheBustAttack() {
@@ -1142,7 +1162,7 @@ var combat;
 	}
 
 	function txHpChange() {
-		console.info('processStatBuffsToMe tx!', key)
+		// console.info('processStatBuffsToMe tx!', key)
 		game.txPartyResources({
 			hp: my.hp,
 			hpMax: my.hpMax,
@@ -1150,14 +1170,14 @@ var combat;
 	}
 
 	function txMpChange() {
-		console.info('processStatBuffsToMe tx!', key)
+		// console.info('processStatBuffsToMe tx!', key)
 		game.txPartyResources({
 			mp: my.mp,
 			mpMax: my.mpMax,
 		})
 	}
 	function txSpChange() {
-		console.info('processStatBuffsToMe tx!', key)
+		// console.info('processStatBuffsToMe tx!', key)
 		game.txPartyResources({
 			sp: my.sp,
 			spMax: my.spMax,
@@ -1202,7 +1222,7 @@ var combat;
 		if (my.hp <= 0) return
 		if (my.targetIsMob) targetChangedToMob()
 		else targetChangedToPlayer()
-		console.info('targetChanged my.target =>', my.target, my.targetIsMob)
+		// console.info('targetChanged my.target =>', my.target, my.targetIsMob)
 		battle.updateTarget(true)
 	}
 	function targetChangedToPlayer() {
@@ -1271,7 +1291,7 @@ var combat;
 	function buffMitigatesDamage(d, key) {
 		let val = buffs[key].mitigation[my.buffs[key].level]
 		d.damage -= val
-		console.info('buffMitigatesDamage remaining', my.buffs[key].damage)
+		// console.info('buffMitigatesDamage remaining', my.buffs[key].damage)
 		my.buffs[key].damage -= val
 		if (my.buffs[key].damage <= 0) {
 			my.buffs[key].damage = 0

@@ -43,11 +43,11 @@ var trade;
 		.on('click', '#trade-cancel', tradeCancelled)
 	///////////////////////////////////////////
 	function droppedItem() {
-		console.warn('trade dropToOtherSlots ', item.dropType, ' is client side only. Skipping update-item.php')
+		// console.warn('trade dropToOtherSlots ', item.dropType, ' is client side only. Skipping update-item.php')
 
-		console.info('trade drag', item.dragType, item.dragSlot, item.dragData)
+		// console.info('trade drag', item.dragType, item.dragSlot, item.dragData)
 
-		console.info('trade drop', item.dropType, item.dropSlot, item.dropData)
+		// console.info('trade drop', item.dropType, item.dropSlot, item.dropData)
 		querySelector('#' + item.dropType + '-name-' + item.dropSlot).innerHTML = item.getItemNameString(item.dragData, item.dragData.baseName, true)
 		// broadcast to tradeFrom
 
@@ -60,7 +60,7 @@ var trade;
 		items[item.dragType][item.dragSlot].isTrading = true
 		bar.updateItemSwapDOM()
 		item.resetDrop()
-		console.warn('lastDragEvent', item.lastDragEvent)
+		// console.warn('lastDragEvent', item.lastDragEvent)
 		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
 		else tooltip.handleItemEnter(item.lastDropEvent)
 	}
@@ -73,13 +73,13 @@ var trade;
 		socket.publish('name' + trade.data.name, tradeData);
 	}
 	function updateToItem(obj) {
-		console.warn('tradeTo', obj)
+		// console.warn('tradeTo', obj)
 		items.tradeTo[obj.slot] = obj.data.tradeTo
 		bar.updateItemSlotDOM('tradeTo', obj.slot)
 		querySelector('#tradeTo-name-' + obj.slot).innerHTML = item.getItemNameString(obj.data.tradeTo, obj.data.tradeTo.baseName, true)
 	}
 	function rxTradeUpdate(obj) {
-		console.info('trade rxTradeUpdate', obj.data)
+		// console.info('trade rxTradeUpdate', obj.data)
 		if (trade.data.name) {
 			for (key in obj.data) {
 				if (key === 'tradeTo') {
@@ -110,9 +110,9 @@ var trade;
 		el.classList.remove('no-pointer')
 	}
 	function tradeConfirm() {
-		console.info('tradeConfirm tradeTo', items.tradeTo)
-		console.info('tradeConfirm tradeFrom', items.tradeFrom)
-		console.info('valid?', isTradeValid())
+		// console.info('tradeConfirm tradeTo', items.tradeTo)
+		// console.info('tradeConfirm tradeFrom', items.tradeFrom)
+		// console.info('valid?', isTradeValid())
 		if (my.gold - trade.gold + trade.data.gold > trade.MAX_GOLD) {
 			ng.msg('This trade would put you over the gold limit! It is illegal to have that much gold!')
 			return
@@ -122,14 +122,14 @@ var trade;
 			confirmed: true,
 		})
 		if (trade.confirmed && trade.data.confirmed) {
-			console.info('availableInvSlots', availableInvSlots())
-			console.info('trade.data.availableSlots', trade.data.availableSlots)
-			console.info('countToItems', countToItems())
-			console.info('countFromItems', countFromItems())
+			// console.info('availableInvSlots', availableInvSlots())
+			// console.info('trade.data.availableSlots', trade.data.availableSlots)
+			// console.info('countToItems', countToItems())
+			// console.info('countFromItems', countFromItems())
 			slots = availableInvSlots()
-			console.warn('///////////////////////////// availableInvSlots', slots)
-			console.warn('compare 1', countToItems(), '>', slots.length, '?')
-			console.warn('compare 2', countFromItems(), '>', trade.data.availableSlots.length, '?')
+			// console.warn('///////////////////////////// availableInvSlots', slots)
+			// console.warn('compare 1', countToItems(), '>', slots.length, '?')
+			// console.warn('compare 2', countFromItems(), '>', trade.data.availableSlots.length, '?')
 
 			if (countToItems() > slots.length) {
 				msg = my.name + ' does not have enough inventory space to facilitate this trade.'
@@ -161,7 +161,7 @@ var trade;
 		el = $(this)
 		val = el.val() * 1
 		max = maxGoldSend()
-		console.info('val', val)
+		// console.info('val', val)
 		if (val < 0) {
 			val = 0
 			el.val(val)
@@ -174,7 +174,7 @@ var trade;
 		}
 		if (val > my.gold) val = my.gold
 		trade.gold = val
-		console.info('final val', val)
+		// console.info('final val', val)
 		tradeChanged()
 
 		updateTrade({
@@ -208,7 +208,7 @@ var trade;
 	function tradeCompleted() {
 		ng.lock(true)
 		if (trade.initiator) {
-			console.warn("Initiating trade as " + my.name)
+			// console.warn("Initiating trade as " + my.name)
 			chat.log('Trade processing... please wait.')
 			socket.publish('name' + trade.data.name, {
 				action: 'trade-processing',
@@ -228,9 +228,9 @@ var trade;
 		var slotsFrom = availableInvSlots()
 		var slotsTo = data.availableSlots
 		// double check count is good
-		console.warn('///////////////////////////// availableInvSlots', slots)
-		console.warn('compare 1', countToItems(), '>', slotsFrom.length, '?')
-		console.warn('compare 2', countFromItems(), '>', slotsTo.length, '?')
+		// console.warn('///////////////////////////// availableInvSlots', slots)
+		// console.warn('compare 1', countToItems(), '>', slotsFrom.length, '?')
+		// console.warn('compare 2', countFromItems(), '>', slotsTo.length, '?')
 		if (countToItems() > slotsFrom.length) {
 			msg = my.name + ' does not have enough inventory space to facilitate this trade.'
 			chat.log(msg, 'chat-warning')
@@ -242,14 +242,14 @@ var trade;
 			txCloseTradeWindow(msg)
 		}
 		else {
-			console.info('tradeCompleted gold', trade.gold)
-			console.info('tradeCompleted gold 2', trade.data.gold)
+			// console.info('tradeCompleted gold', trade.gold)
+			// console.info('tradeCompleted gold 2', trade.data.gold)
 
-			console.info('tradeCompleted tradeFrom', items.tradeFrom)
-			console.info('trade rxSlotsAndSend slotsFrom', slotsFrom)
+			// console.info('tradeCompleted tradeFrom', items.tradeFrom)
+			// console.info('trade rxSlotsAndSend slotsFrom', slotsFrom)
 
-			console.info('tradeCompleted tradeTo', items.tradeTo)
-			console.info('trade rxSlotsAndSend slotsTo', slotsTo)
+			// console.info('tradeCompleted tradeTo', items.tradeTo)
+			// console.info('trade rxSlotsAndSend slotsTo', slotsTo)
 			//TODO: build object that has item1, slot1 etc and new owner id (row)
 			var postData = {
 				fromGold: fromGold,
@@ -259,11 +259,11 @@ var trade;
 				tradeTo: convertItemsForDb(items.tradeTo, slotsFrom),
 			}
 
-			console.info('trade postData', postData)
+			// console.info('trade postData', postData)
 			//TODO: when done load inventory and broadcast to load inventory
 
 			$.post(app.url + 'item/trade-item.php', postData).done(() => {
-				console.warn('trade done my gold:', fromGold)
+				// console.warn('trade done my gold:', fromGold)
 				town.setMyGold(fromGold)
 				if (trade.data.goldTotal !== toGold) {
 					socket.publish('name' + trade.data.name, {
@@ -277,17 +277,17 @@ var trade;
 				chat.log('Trade completed! Notifying ' + trade.data.name + '.')
 				$.get(app.url + 'item/get-inventory.php').done(finishTrade)
 			}).fail(data => {
-				console.warn('fail', data)
+				// console.warn('fail', data)
 			})
 		}
 	}
 	function rxUpdateInventory() {
-		console.info('trade-update-gold rxUpdateInventory')
+		// console.info('trade-update-gold rxUpdateInventory')
 		$.get(app.url + 'item/get-inventory.php').done(finishTrade)
 	}
 	function finishTrade(data) {
 		closeTradeWindow()
-		console.info('get-inventorry', data)
+		// console.info('get-inventorry', data)
 		town.initItemData(data.inv, 'inv')
 		bar.updateInventoryDOM()
 		ng.unlock()
@@ -306,7 +306,7 @@ var trade;
 		})
 	}
 	function rxUpdateGold(data) {
-		console.info('trade rxUpdateGold gold set to ', data.gold)
+		// console.info('trade rxUpdateGold gold set to ', data.gold)
 		town.setMyGold(data.gold)
 		closeTradeWindow()
 	}
@@ -327,7 +327,7 @@ var trade;
 		trade.timer = delayedCall(toast.expired, tradeExpired, [trade.data.name])
 	}
 	function handleRequest(data) {
-		console.info('trade handleRequest', data)
+		// console.info('trade handleRequest', data)
 		if (toast.data.action || trade.data.name) {
 			socket.publish('name' + data.name, {
 				action: 'trade-reject-busy',
@@ -433,10 +433,10 @@ var trade;
 				}
 			}
 		})
-		console.info('openTradeWindow', trade.data)
+		// console.info('openTradeWindow', trade.data)
 	}
 	function txCloseTradeWindow(msg) {
-		console.info('trade txCloseTradeWindow', 'name' + trade.data.name)
+		// console.info('trade txCloseTradeWindow', 'name' + trade.data.name)
 		socket.publish('name' + trade.data.name, {
 			action: 'trade-close-received',
 			msg: msg
@@ -444,7 +444,7 @@ var trade;
 		closeTradeWindow()
 	}
 	function rxTradeClosedReceived(data) {
-		console.info('trade tradeClosedReceived')
+		// console.info('trade tradeClosedReceived')
 		msg = data.msg || trade.data.name + ' closed the chat window.'
 		if (trade.data.name) {
 			chat.log(msg, 'chat-warning')
@@ -463,13 +463,13 @@ var trade;
 	}
 
 	function rejectTradeBusy(data) {
-		console.info('rejectTradeBusy', data)
+		// console.info('rejectTradeBusy', data)
 		trade.data = {}
 		trade.timer.kill()
 		chat.log(data.name + ' is busy right now.')
 	}
 	function declineTrade(data) {
-		console.info('sendDecline', data)
+		// console.info('sendDecline', data)
 		trade.timer.kill()
 		trade.data = {}
 		chat.log(data.name + ' rejected your trade request.')

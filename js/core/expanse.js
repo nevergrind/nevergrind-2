@@ -34,8 +34,8 @@ var expanse;
 	}
 
 	function startSkyPhase() {
-		console.warn('//////////////////////////////////////////////////////')
-		console.warn('startSkyPhase', expanse.phase)
+		// console.warn('//////////////////////////////////////////////////////')
+		// console.warn('startSkyPhase', expanse.phase)
 		initPixiElements()
 		animateSky()
 		animateBuildings()

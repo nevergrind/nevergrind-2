@@ -5,21 +5,21 @@ var tavern;
 		activeTab: 'tavern-missions',
 		html: '',
 		leaders: {
-			'ALL': void 0,
-			'WAR': void 0,
-			'CRU': void 0,
-			'SHD': void 0,
-			'MNK': void 0,
-			'ROG': void 0,
-			'RNG': void 0,
-			'BRD': void 0,
-			'DRU': void 0,
-			'CLR': void 0,
-			'SHM': void 0,
-			'WLK': void 0,
-			'ENC': void 0,
-			'TMP': void 0,
-			'WIZ': void 0,
+			ALL: void 0,
+			WAR: void 0,
+			CRU: void 0,
+			SHD: void 0,
+			MNK: void 0,
+			ROG: void 0,
+			RNG: void 0,
+			BRD: void 0,
+			DRU: void 0,
+			CLR: void 0,
+			SHM: void 0,
+			WLK: void 0,
+			ENC: void 0,
+			TMP: void 0,
+			WIZ: void 0,
 		},
 		getBodyHtml,
 		init,
@@ -146,7 +146,7 @@ var tavern;
 	function handleClickTips(event) {
 		key = _.camelCase(_.pick(event.currentTarget.dataset, ['id']).id)
 		setDescriptionStyle()
-		typeof tips[key] === 'string' && ng.splitText('various-description', tips[key])
+		typeof tips[key] === STRING && ng.splitText('various-description', tips[key])
 	}
 	function setDescriptionStyle() {
 		querySelector('#various-description').scrollTop = 0
@@ -219,7 +219,7 @@ var tavern;
 	function leaderboardBodyHtml(data) {
 		tavern.html = ''
 		index = 1
-		console.info('data', data)
+		// console.info('data', data)
 		if (data === void 0) {
 			tavern.html = '<tr><td colspan="5">Loading...</td></tr>'
 		}
@@ -271,7 +271,7 @@ var tavern;
 		}
 	}
 	function setLeaderboardData(data) {
-		console.info('getLeaders', data)
+		// console.info('getLeaders', data)
 		tavern.leaders[selectedLeaderboard] = data.leaderboard
 		querySelector('#tavern-leaderboard-body').innerHTML = leaderboardBodyHtml(data.leaderboard)
 	}

@@ -24,16 +24,16 @@ var socket;
 	////////////////////////////////////////
 	function subscribe(topic, callback) {
 		topic = _.toLower(topic)
-		if (typeof socket.subs[topic] !== 'object' ||
+		if (typeof socket.subs[topic] !== OBJECT ||
 			!socket.subs[topic].active) {
-			//console.info("subscribing:", topic, callback.name);
+			// console.info("subscribing:", topic, callback.name);
 			socket.session.subscribe(topic, callback).then(registerSubscription);
 		}
 	}
 	function publish(topic, obj, exclude) {
 		topic = _.toLower(topic)
-		//console.info('publishing: ', topic, obj);
-		if (typeof socket.session === 'object') {
+		// console.info('publishing: ', topic, obj);
+		if (typeof socket.session === OBJECT) {
 			socket.published++
 			broadcasts.push(Date.now())
 			while (broadcasts.length > 100) broadcasts.shift()
@@ -55,18 +55,18 @@ var socket;
 	}
 
 	function registerSubscription(sub) {
-		//console.info('registerSubscription', sub);
+		// console.info('registerSubscription', sub);
 		socket.subs[sub.topic] = sub;
 	}
 	function unsubscribe(channel) {
 		channel = _.toLower(channel);
-		if (typeof socket.subs[channel] === 'object') {
+		if (typeof socket.subs[channel] === OBJECT) {
 			try {
-				console.warn('Trying to unsubscribe from:', channel);
+				// console.warn('Trying to unsubscribe from:', channel);
 				socket.session.unsubscribe(socket.subs[channel]);
 			}
 			catch(err) {
-				console.warn('Could not unsubscribe: ', err);
+				// console.warn('Could not unsubscribe: ', err);
 			}
 		}
 	}
@@ -101,7 +101,7 @@ var socket;
 		router.toTown(data, data.route);
 	}
 	function connectionSuccess(session) {
-		console.warn("Connection successful!", session);
+		// console.warn("Connection successful!", session);
 		socket.session = session;
 		if (!socket.enabled) town.socketReady()
 		socket.enabled = true;

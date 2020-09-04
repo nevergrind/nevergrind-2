@@ -60,7 +60,7 @@ var friend;
 		}
 	}
 	function listReceived(data) {
-		console.warn('listReceived', data);
+		// console.warn('listReceived', data);
 		socket.publish('name' + data.name, {
 			name: my.name,
 			level: my.level,
@@ -71,7 +71,7 @@ var friend;
 		})
 	}
 	function presenceReceived(data) {
-		console.warn('presenceReceived', data);
+		// console.warn('presenceReceived', data);
 		var el = getElementById('friend-list-' + friend.listId + '-' + data.name);
 		el.className = 'chat-whisper'
 		el.innerHTML = '[' +
@@ -79,7 +79,7 @@ var friend;
 			')' + guild.format(data.guild)
 	}
 	function add(name) {
-		console.info(name, my.name)
+		// console.info(name, my.name)
 		if (ng.friends.includes(name)) {
 			chat.log(o + " is already your friend.", 'chat-warning');
 		}

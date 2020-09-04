@@ -265,8 +265,8 @@
 			repeat: 8,
 			onRepeat: () => {
 				if (my.hp > 0) {
-					combat.updateHeroResource('hp', val)
-					combat.updateHeroResource('mp', val)
+					combat.updateMyResource('hp', val)
+					combat.updateMyResource('mp', val)
 				}
 			},
 		})

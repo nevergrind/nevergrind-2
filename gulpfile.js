@@ -29,30 +29,24 @@ gulp.task('build-ng2-sdk', buildNg2Tasks, function() { buildNg2(true); });
 gulp.task('rename', renameExe);
 gulp.task('default', defaultTask);
 gulp.task('resize-sprite', resizeSprite);
-gulp.task('bin', (cb) => {
-	// run('./build-ng2/nwjc.exe ./build-ng2/js/nevergrind-online.min.js ngo.bin');
-	// del([ './build-ng2/js/nevergrind-online.min.js']);
-	exec('cd /c/xampp/htdocs/ng2/build-ng2')
-	console.info("Printing working directory:")
-	exec('pwd')
-
-	exec('C:\/xampp\/htdocs\/ng2\/build-ng2\/nwjc C:\/xampp\/htdocs\/ng2\/build-ng2\/js/nevergrind-online.min.js C:\/xampp\/htdocs\/ng2\/build-ng2\/ngo.bin', function (error, stdout, stderr) {
-	  if (error) {
-		console.log(error.stack);
-		console.log('Error code: '+error.code);
-		console.log('Signal received: '+error.signal);
-	  }
-	  console.log('Child Process STDOUT: '+stdout);
-	  console.log('Child Process STDERR: '+stderr);
-	});
-});
-
-function createBin() {
-}
-
 
 const jsFiles = [
+	'libs/jquery.min',
+	'libs/lodash.min',
+	'libs/pixi.min',
+	'libs/gsap/TweenMax2.min',
+	// gsap/TweenMax3.min
+	'libs/gsap/PixiPlugin-v2.min',
+	// gsap/PixiPlugin-v3.min
+	'libs/gsap/SplitText.min',
+	'libs/gsap/Draggable.min',
+	'libs/gsap/ThrowPropsPlugin.min',
+	'libs/autobahn-2.min',
+	// libs/gsap/ThrowPropsPlugin.min
+	// libs/gsap/DrawSVGPlugin.min
+	// libs/gsap/EaselPlugin.min
 	'build/beginWrap',
+	'enum/enums',
 	'core/alias',
 	'core/login',
 	'core/create',
@@ -182,7 +176,7 @@ function minifyPng() {
 			speed: 1
 		})]
 	}).then(function(){
-		console.info("Images minified with quant: " + img)
+		// console.info("Images minified with quant: " + img)
 	});
 }
 function resizePng() {
@@ -208,12 +202,12 @@ function resizePng() {
 				speed: 1
 			})]
 		}).then(function(){
-			console.info("Images minified with quant: " + img)
+			// console.info("Images minified with quant: " + img)
 		});
 	});
 }
 function cleanNg2() {
-	console.info("Cleaning out ng2 build directory...");
+	// console.info("Cleaning out ng2 build directory...");
 	// we don't want to clean this file though so we negate the pattern
 	// here we use a globbing pattern to match everything inside the `mobile` folder
 	return del([ './build-ng2/**/*']);
@@ -235,7 +229,7 @@ function buildNg2(isSdk) {
 	// greenworks & steam libs
 	gulp.src(['./lib/*']).pipe(gulp.dest('./build-ng2/lib'));
 	// js
-	console.info("Copying javascript...");
+	// console.info("Copying javascript...");
 	gulp.src([
 		'./js/libs/**/*'
 	]).pipe(gulp.dest('./build-ng2/js/libs'));
@@ -244,7 +238,7 @@ function buildNg2(isSdk) {
 	]).pipe(gulp.dest('./build-ng2/js'));
 
 	// css
-	console.info("Copying css...");
+	// console.info("Copying css...");
 	gulp.src([
 		'./css/cursor/*',
 	]).pipe(gulp.dest('./build-ng2/css/cursor'));
@@ -264,7 +258,7 @@ function buildNg2(isSdk) {
 	]).pipe(gulp.dest('./build-ng2/fonts'));
 
 	// sound & music
-	console.info("Copying sound and music...");
+	// console.info("Copying sound and music...");
 	gulp.src([
 		'./sound/*'
 	]).pipe(gulp.dest('./build-ng2/sound'));
@@ -272,13 +266,13 @@ function buildNg2(isSdk) {
 		'./music/*'
 	]).pipe(gulp.dest('./build-ng2/music'));
 
-	console.info("Copying images...");
+	// console.info("Copying images...");
 	// images
 	gulp.src([
 		'./images/**/*'
 	]).pipe(gulp.dest('./build-ng2/images'));
 
-	console.info("Copying mobs...");
+	// console.info("Copying mobs...");
 	// mobs
 	gulp.src([
 		'./mobs/**/*'
@@ -289,8 +283,8 @@ function defaultTask() {
 	gulp.run('minify-css', 'minify-ng2-js');
 }
 function renameExe() {
-	var from = 'nw.exe';
-	var to = 'nevergrind-online.exe';
+	const from = 'nw.exe';
+	const to = 'nevergrind-online.exe';
 	console.log('renaming from ' + from + ' to ' + to);
 	gulp.src("./build-ng2/" + from)
 		.pipe(clean())
@@ -299,15 +293,17 @@ function renameExe() {
 		.on('end', createBinFile)
 }
 function createBinFile() {
-	console.info('Creating bin file...')
+	// console.info('Creating bin file...')
 	const path = 'C:/xampp/htdocs/ng2/build-ng2/'
-	exec(path + 'nwjc '+ path +'js/nevergrind-online.min.js '+ path +'ngo.bin', (error, stdout, stderr) => {
-		console.info('bin file created!')
+	const fullPath = path +'nwjc '+ path +'js/nevergrind-online.min.js '+ path +'ngo.bin'
+	exec(fullPath, (error, stdout, stderr) => {
+		// console.info('bin file created!')
 		del([
+			'./build-ng2/js/**/*',
 			'./build-ng2/nwjc.exe',
 			'./build-ng2/js/nevergrind-online.min.js'
 		]);
-		console.info('Deleted javascript source code!')
+		// console.info('Deleted javascript source code!')
 	});
 }
 function resizeSprite() {
@@ -337,7 +333,7 @@ function resizeSprite() {
 				speed: 1
 			})]
 		}).then(function(){
-			console.info("Spritemap minified with quant: " + img)
+			// console.info("Spritemap minified with quant: " + img)
 		});
 	});
 }

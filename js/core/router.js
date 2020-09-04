@@ -9,7 +9,7 @@ var router;
 	///////////////////////////////////////////////////////
 	function normalizeInput(arr, obj) {
 		socket.received++
-		return typeof arr[0] === 'object' ?
+		return typeof arr[0] === OBJECT ?
 			arr[0] : obj;
 	}
 	function toTown(data, r) {
@@ -17,7 +17,7 @@ var router;
 			game.heartbeatReceived(data)
 		}
 		else if (r === 'chat->log') {
-			console.info('chat->log', data)
+			// console.info('chat->log', data)
 			if (data.class === 'chat-emote') {
 				chat.log(data.name + ' ' + data.msg, data.class)
 			}
@@ -25,11 +25,11 @@ var router;
 				chat.log(chat.prepare(data), data.class)
 			}
 			else if (!ng.ignore.includes(data.name)) {
-				console.warn('MADE IT', data)
+				// console.warn('MADE IT', data)
 				chat.log(chat.prepare(data), data.class)
 			}
 			else {
-				console.warn("Message from " + data.name + " has been ignored.")
+				// console.warn("Message from " + data.name + " has been ignored.")
 			}
 		}
 		else if (r === 'chat->add') {

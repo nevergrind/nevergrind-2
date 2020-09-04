@@ -29,7 +29,7 @@ let skill = {};
 		// process skill data
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === 'object' && items.eq[13].itemType === 'shields') enhancedDamage += .5
+		if (typeof items.eq[13] === OBJECT && items.eq[13].itemType === 'shields') enhancedDamage += .5
 		damages = []
 		damages.push({
 			...stats.damage(),
@@ -37,7 +37,7 @@ let skill = {};
 			index: tgt,
 			enhancedDamage: enhancedDamage,
 		})
-		console.info('shieldBash', damages)
+		// console.info('shieldBash', damages)
 		combat.txDamageMob(damages)
 
 		// animate timers
@@ -155,7 +155,7 @@ let skill = {};
 		button.triggerGlobalCooldown()
 	}
 	function shockwave(index, data) {
-		console.info('crossSlash', index)
+		// console.info('crossSlash', index)
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
@@ -167,7 +167,7 @@ let skill = {};
 
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === 'object' && items.eq[13].itemType === 'shields') enhancedDamage += .2
+		if (typeof items.eq[13] === OBJECT && items.eq[13].itemType === 'shields') enhancedDamage += .2
 		damages = []
 		for (var i = 0; i<=4; i++) {
 			if (mobs[i].hp) {
@@ -283,7 +283,7 @@ let skill = {};
 		button.triggerGlobalCooldown()
 	}
 	function bulwark(index, data) {
-		console.info('bulwark', data)
+		// console.info('bulwark', data)
 		config = {
 			...skills.getDefaults(index),
 			spCost: data.sp(my.skills[index]),

@@ -38,7 +38,7 @@ var audio;
 	function init(){
 		var config = localStorage.getItem('config');
 
-		if (typeof config !== 'string') {
+		if (typeof config !== STRING) {
 			// is null - inits to default ng.config
 			audio.save()
 		}
@@ -54,7 +54,7 @@ var audio;
 			}
 		}
 
-		console.info("Loaded config...", ng.config)
+		// console.info("Loaded config...", ng.config)
 		//audio.playMusic("WaitingBetweenWorlds")
 	}
 	function save() {
@@ -94,7 +94,7 @@ var audio;
 		var sfx = new Audio("sound/" + sfx + ".mp3")
 		sfx.volume = ng.config.soundVolume / 100
 		sfx.play()
-		console.info('playSound', sfx)
+		// console.info('playSound', sfx)
 	}
 	function setMusicVolume(val) {
 		if (ng.config.musicVolume){
@@ -133,7 +133,7 @@ var audio;
 		dom.bgmusic.onended = function(){
 			audio.gameMusicPlayNext();
 		}
-		console.info("PLAYING: ", nowPlaying);
+		// console.info("PLAYING: ", nowPlaying);
 	}
 	function fade() {
 		var x = {

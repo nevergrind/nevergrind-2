@@ -131,7 +131,7 @@ var create;
 		}
 	}
 	function selectGender() {
-		console.info(this);
+		// console.info(this);
 		var gender = $(this).data('gender');
 		$(".select-gender").removeClass('active');
 		$('#' + gender).addClass('active');
@@ -273,7 +273,7 @@ var create;
 		$.post(app.url + 'create/delete-character.php', {
 			row: create.selected
 		}).done(function(r){
-			console.info('Deleted character: ', r);
+			// console.info('Deleted character: ', r);
 			ng.msg(create.name + ' has been deleted!');
 			modal.hide();
 			ng.initGame();
@@ -334,9 +334,9 @@ var create;
 		// gender and race
 		var v = 15
 		var {gender, race} = obj
-		if (typeof gender === 'number') gender = gender ? 'Female' : 'Male' // normalize to string
+		if (typeof gender === NUMBER) gender = gender ? 'Female' : 'Male' // normalize to string
 
-		console.info('obj gender', gender, race)
+		// console.info('obj gender', gender, race)
 		if (type === 'resistBlood'){
 			if (gender === 'Female'){
 				v += 5;
@@ -410,26 +410,26 @@ var create;
 				v += 7;
 			}
 			// class
-			if (f.job === 'Shadow Knight' ||
-				f.job === 'Shaman' ||
-				f.job === 'Wizard' ||
-				f.job === 'Cleric'){
+			if (f.job === CLASS.SHADOW_KNIGHT ||
+				f.job === CLASS.SHAMAN ||
+				f.job === CLASS.WIZARD ||
+				f.job === CLASS.CLERIC){
 				v += 5;
 			}
-			else if (f.job === 'Druid' ||
-				f.job === 'Enchanter' ||
-				f.job === 'Crusader' ||
-				f.job === 'Warrior'){
+			else if (f.job === CLASS.DRUID ||
+				f.job === CLASS.ENCHANTER ||
+				f.job === CLASS.CRUSADER ||
+				f.job === CLASS.WARRIOR){
 				v += 10;
 			}
-			else if (f.job === 'Monk'){
+			else if (f.job === CLASS.MONK){
 				v += 20;
 			}
-			else if (f.job === 'Bard' ||
-				f.job === 'Ranger'){
+			else if (f.job === CLASS.BARD ||
+				f.job === CLASS.RANGER){
 				v += 30;
 			}
-			else if (f.job === 'Rogue'){
+			else if (f.job === CLASS.ROGUE){
 				v += 50;
 			}
 		}
@@ -448,24 +448,24 @@ var create;
 				v += 7;
 			}
 			// class
-			if (f.job === 'Templar' ||
-				f.job === 'Warlock' ||
-				f.job === 'Crusader' ||
-				f.job === 'Shaman'){
+			if (f.job === CLASS.TEMPLAR ||
+				f.job === CLASS.WARLOCK ||
+				f.job === CLASS.CRUSADER ||
+				f.job === CLASS.SHAMAN){
 				v += 5;
 			}
-			else if (f.job === 'Enchanter' ||
-				f.job === 'Monk' ||
-				f.job === 'Warrior' ||
-				f.job === 'Shadow Knight'){
+			else if (f.job === CLASS.ENCHANTER ||
+				f.job === CLASS.MONK ||
+				f.job === CLASS.WARRIOR ||
+				f.job === CLASS.SHADOW_KNIGHT){
 				v += 10;
 			}
-			else if (f.job === 'Bard' ||
-				f.job === 'Druid'){
+			else if (f.job === CLASS.BARD ||
+				f.job === CLASS.DRUID){
 				v += 20;
 			}
-			else if (f.job === 'Rogue' ||
-				f.job === 'Ranger'){
+			else if (f.job === CLASS.ROGUE ||
+				f.job === CLASS.RANGER){
 				v += 30;
 			}
 		}
@@ -484,26 +484,26 @@ var create;
 				v += 5;
 			}
 			// class
-			if (f.job === 'Cleric' ||
-				f.job === 'Shadow Knight' ||
-				f.job === 'Warrior' ||
-				f.job === 'Wizard'){
+			if (f.job === CLASS.CLERIC ||
+				f.job === CLASS.SHADOW_KNIGHT ||
+				f.job === CLASS.WARRIOR ||
+				f.job === CLASS.WIZARD){
 				v += 5;
 			}
-			else if (f.job === 'Enchanter' ||
-				f.job === 'Crusader' ||
-				f.job === 'Shaman'){
+			else if (f.job === CLASS.ENCHANTER ||
+				f.job === CLASS.CRUSADER ||
+				f.job === CLASS.SHAMAN){
 				v += 10;
 			}
-			else if (f.job === 'Bard' ||
-				f.job === 'Monk'){
+			else if (f.job === CLASS.BARD ||
+				f.job === CLASS.MONK){
 				v += 20;
 			}
-			else if (f.job === 'Rogue' ||
-				f.job === 'Druid'){
+			else if (f.job === CLASS.ROGUE ||
+				f.job === CLASS.DRUID){
 				v += 25;
 			}
-			else if (f.job === 'Ranger'){
+			else if (f.job === CLASS.RANGER){
 				v += 50;
 			}
 		}
@@ -522,30 +522,30 @@ var create;
 				v += 5;
 			}
 			// class
-			if (f.job === 'Templar' ||
-				f.job === 'Warlock' ||
-				f.job === 'Shaman'){
+			if (f.job === CLASS.TEMPLAR ||
+				f.job === CLASS.WARLOCK ||
+				f.job === CLASS.SHAMAN){
 				v += 5;
 			}
-			else if (f.job === 'Enchanter' ||
-				f.job === 'Rogue' ||
-				f.job === 'Shadow Knight' ||
-				f.job === 'Crusader'){
+			else if (f.job === CLASS.ENCHANTER ||
+				f.job === CLASS.ROGUE ||
+				f.job === CLASS.SHADOW_KNIGHT ||
+				f.job === CLASS.CRUSADER){
 				v += 10;
 			}
-			else if (f.job === 'Druid'){
+			else if (f.job === CLASS.DRUID){
 				v += 15;
 			}
-			else if (f.job === 'Bard'){
+			else if (f.job === CLASS.BARD){
 				v += 20;
 			}
-			else if (f.job === 'Ranger'){
+			else if (f.job === CLASS.RANGER){
 				v += 30;
 			}
-			else if (f.job === 'Warrior'){
+			else if (f.job === CLASS.WARRIOR){
 				v += 40;
 			}
-			else if (f.job === 'Monk'){
+			else if (f.job === CLASS.MONK){
 				v += 50;
 			}
 		}

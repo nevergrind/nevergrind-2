@@ -138,7 +138,7 @@ var mob;
 	}
 	function addHateHeal(data) {
 		if (ng.view === 'battle') {
-			//console.info('updateHate addHateHeal', data)
+			// console.info('updateHate addHateHeal', data)
 			for (i=0; i<mob.max; i++) {
 				// applied to all mobs
 				updateHate({
@@ -152,7 +152,7 @@ var mob;
 	}
 	function updateHate(o) {
 		if (mobs[o.index].name && mobs[o.index].hp > 0) {
-			console.info('updateHate mob', o.index, o.damage, ~~(o.hate * o.damage), o.key)
+			// console.info('updateHate mob', o.index, o.damage, ~~(o.hate * o.damage), o.key)
 			mobs[o.index].hate[o.row] += ~~(o.hate * o.damage)
 			if (mobs[o.index].hate[o.row] < 0) mobs[o.index].hate[o.row] = 0
 		}
@@ -218,7 +218,7 @@ var mob;
 				}
 			}
 		})
-		console.info('configMobType results', results)
+		// console.info('configMobType results', results)
 		index = _.random(0, results.length - 1)
 		return {
 			...mobBaseConfig,
@@ -255,14 +255,14 @@ var mob;
 				gold: getMobGold(mobConfig)
 			}
 			modifyMobStatsByClass(mobConfig)
-			console.info('mobConfig omit some props?', mobConfig)
+			// console.info('mobConfig omit some props?', mobConfig)
 
 			mob.txData[i] = _.omit(mobConfig, [
 				'maxLevel',
 				'minLevel',
 			])
 		}
-		console.info('p->goBattle', mobConfig)
+		// console.info('p->goBattle', mobConfig)
 		cache.preloadMob(mobConfig.img)
 		// combine/assign image object props to mobs[index]
 		mobs[i] = {
@@ -377,11 +377,10 @@ var mob;
 	}
 	function drawMobBar(index, drawInstant) {
 		percent = bar.getRatio('hp', mobs[index])
-		// console.info('drawMobBar', index, percent)
 		TweenMax.to('#mob-health-' + index, drawInstant ? 0 : .15, {
 			x: '-' + percent + '%'
 		})
-		if (index === my.target) drawTargetBar(percent, drawInstant)
+		if (my.targetIsMob && index === my.target) drawTargetBar(percent, drawInstant)
 	}
 	function drawTargetBar(percent, drawInstant) {
 		el = querySelector('#mob-target-percent')
@@ -459,14 +458,14 @@ var mob;
 	function setFilter(i) {
 		if (timers.mobEffects[i].freezeDuration) {
 			TweenMax.to(mobs[i].sprite, .5, filter.freeze(i))
-			console.info('setFilter FREEZE')
+			// console.info('setFilter FREEZE')
 		}
 		else if (timers.mobEffects[i].chillDuration) {
 			TweenMax.to(mobs[i].sprite, .5, filter.chill(i))
-			console.info('setFilter CHILL')
+			// console.info('setFilter CHILL')
 		}
 		else {
-			console.info('setFilter mobEffects setting to default', timers.mobEffects[i].stasisDuration, filter.default(i))
+			// console.info('setFilter mobEffects setting to default', timers.mobEffects[i].stasisDuration, filter.default(i))
 			TweenMax.to(mobs[i].sprite, .5, filter.default(i))
 		}
 	}
@@ -480,7 +479,7 @@ var mob;
 		// constraints
 		if (mobSpeed > 2) mobSpeed = 2
 		else if (mobSpeed < .5) mobSpeed = .5
-		console.info('mobSpeed', mobSpeed)
+		// console.info('mobSpeed', mobSpeed)
 		return mobs[i].speed * mobSpeed
 	}
 	function isAlive(i) {
@@ -528,7 +527,7 @@ var mob;
 			val = mobs[slot].hate[row]
 			index = party.getIndexByRow(row)
 			// console.info(row, index, val)
-			if (typeof party.presence[index] === 'object' &&
+			if (typeof party.presence[index] === OBJECT &&
 				party.presence[index].hp > 0) {
 				if (mostHatedValue === null) {
 					// first one is always added
@@ -580,7 +579,7 @@ var mob;
 				mobRow = getMobTargetRow(i)
 				if (mobRow > -1) {
 					// party.getIndexByRow(mostHatedRow)
-					//console.info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
+					// console.info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
 					if (mob.isParalyzed(i) && rand() < paralyzeRate) {
 						mobDamages = [{
 							row: mobRow,
@@ -715,15 +714,15 @@ var mob;
 		})
 		hpKillVal = stats.hpKill()
 		if (hpKillVal) {
-			combat.updateHeroResource('hp', hpKillVal)
+			combat.updateMyResource('hp', hpKillVal)
 		}
 		mpKillVal = stats.mpKill()
 		if (mpKillVal) {
-			combat.updateHeroResource('mp', mpKillVal)
+			combat.updateMyResource('mp', mpKillVal)
 		}
 		spKillVal = stats.spKill()
 		if (spKillVal) {
-			combat.updateHeroResource('sp', spKillVal)
+			combat.updateMyResource('sp', spKillVal)
 		}
 		mob.earnedGold += battle.addGold(mobs[i].gold)
 		mob.earnedExp += battle.addExp(mobs[i].exp)
@@ -733,7 +732,7 @@ var mob;
 		return config.level * val / mob.maxLevel
 	}
 	function modifyMobStatsByClass(config) {
-		//if (typeof config.job === 'undefined') config.job = 'WAR'
+		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR
 		// base resources
 		config.hp = ~~((25 + ((config.level - 1) * 220) * config.hp) * party.presence.length)
 		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)
@@ -744,7 +743,7 @@ var mob;
 		config.riposte = 0
 		config.doubleAttack = 0
 		// class modifications
-		if (config.job === 'WAR') {
+		if (config.job === JOB.WARRIOR) {
 			config.hp = ~~(config.hp * 1.2)
 			config.attack = ~~(config.attack * 1.1)
 			if (config.level >= 6) config.dodge = setMobSkill(config, 7.5)
@@ -757,7 +756,7 @@ var mob;
 				'Enrage',
 			];
 		}
-		else if (config.job === 'CRU') {
+		else if (config.job === JOB.CRUSADER) {
 			config.hp = ~~(config.hp * 1.1)
 			config.attack = ~~(config.attack * 1.1);
 			if (config.level >= 10) config.dodge = setMobSkill(config, 7.5)
@@ -771,7 +770,7 @@ var mob;
 				'Divine Barrier',
 			];
 		}
-		else if (config.job === 'SHD') {
+		else if (config.job === JOB.SHADOW_KNIGHT) {
 			config.hp = ~~(config.hp * 1.2)
 			config.attack = ~~(config.attack * 1.1);
 			if (config.level >= 10) config.dodge = setMobSkill(config, 7.5)
@@ -785,7 +784,7 @@ var mob;
 				'Venom Bolt',
 			];
 		}
-		else if (config.job === 'MNK') {
+		else if (config.job === JOB.MONK) {
 			config.attack = ~~(config.attack * 1.15);
 			config.dodge = setMobSkill(config, 7.5)
 			if (config.level >= 12) config.parry = setMobSkill(config, 7.5)
@@ -796,7 +795,7 @@ var mob;
 				'Dragon Punch',
 			];
 		}
-		else if (config.job === 'ROG') {
+		else if (config.job === JOB.ROGUE) {
 			config.attack = ~~(config.attack * 1.15);
 			if (config.level >= 4) config.dodge = setMobSkill(config, 10)
 			if (config.level >= 17) config.parry = setMobSkill(config, 7.5)
@@ -820,7 +819,7 @@ var mob;
 				'Charged Bolts',
 			];
 		}
-		else if (config.job === 'BRD') {
+		else if (config.job === JOB.BARD) {
 			config.attack = ~~(config.attack * 1.05);
 			if (config.level >= 10) config.dodge = setMobSkill(config, 10)
 			if (config.level >= 17) config.doubleAttack = setMobSkill(config, 12)
@@ -835,7 +834,7 @@ var mob;
 				'Hymn of Soothing', // regen hp, mp
 			];
 		}
-		else if (config.job === 'DRU') {
+		else if (config.job === JOB.DRUID) {
 			if (config.level >= 15) config.dodge = setMobSkill(config, 5)
 			config.skills = [
 				'Regrowth',
@@ -844,7 +843,7 @@ var mob;
 				'Drifting Death',
 			];
 		}
-		else if (config.job === 'CLR') {
+		else if (config.job === JOB.CLERIC) {
 			if (config.level >= 15) config.dodge = setMobSkill(config, 5)
 			config.skills = [
 				'Holy Light',
@@ -852,7 +851,7 @@ var mob;
 				'Imbued Force'
 			];
 		}
-		else if (config.job === 'SHM') {
+		else if (config.job === JOB.SHAMAN) {
 			config.attack = ~~(config.attack * 1.05);
 			if (config.level >= 15) config.dodge = setMobSkill(config, 5)
 			config.skills = [
@@ -863,7 +862,7 @@ var mob;
 				'Slumber',
 			];
 		}
-		else if (config.job === 'WLK') {
+		else if (config.job === JOB.WARLOCK) {
 			config.hp = ~~(config.hp * .9)
 			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
@@ -873,7 +872,7 @@ var mob;
 				'Venom Bolt',
 			];
 		}
-		else if (config.job === 'ENC') {
+		else if (config.job === JOB.ENCHANTER) {
 			config.hp = ~~(config.hp * .9)
 			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
@@ -884,7 +883,7 @@ var mob;
 				'Glacial Enchant',
 			];
 		}
-		else if (config.job === 'TMP') {
+		else if (config.job === JOB.TEMPLAR) {
 			config.hp = ~~(config.hp * .9)
 			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
@@ -893,7 +892,7 @@ var mob;
 				'Psionic Storm',
 			];
 		}
-		else if (config.job === 'WIZ') {
+		else if (config.job === JOB.WIZARD) {
 			config.hp = ~~(config.hp * .9)
 			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
 			config.skills = [
@@ -952,7 +951,7 @@ var mob;
 				spTick = mob.spMax - mob.sp
 			}
 			mobs[index].sp += spTick
-			console.info('sending hpTick:', hpTick)
+			// console.info('sending hpTick:', hpTick)
 			tickData.push({
 				i: index,
 				h: hpTick,
@@ -968,13 +967,13 @@ var mob;
 			mobs[tick.i].mp += tick.m
 			mobs[tick.i].sp += tick.s
 			drawMobBar(tick.i)
-			console.info('resource tick B', tick)
+			// console.info('resource tick B', tick)
 		})
 	}
 	function killAttacks(continueIdling) {
 		mobs.forEach((m, i) => {
 			timers.mobAttack[i].kill()
-			!continueIdling && typeof mobs[i].animation === 'object' && mobs[i].animation.pause()
+			!continueIdling && typeof mobs[i].animation === OBJECT && mobs[i].animation.pause()
 
 		})
 	}
@@ -1006,12 +1005,13 @@ var mob;
 		}
 		else if (d.damageType === 'lightning') {
 			if (mobs[d.index].buffFlags.staticStorm) resist += .25
+			if (mobs[d.index].buffFlags.primevalWithering) resist += .2
 		}
 		else if (d.damageType === 'fire') {
-
+			if (mobs[d.index].buffFlags.primevalWithering) resist += .2
 		}
 		else if (d.damageType === 'ice') {
-
+			if (mobs[d.index].buffFlags.primevalWithering) resist += .2
 		}
 		resistPenalty = 0
 		if (mobs[d.index].level > my.level) {
@@ -1021,7 +1021,7 @@ var mob;
 		resist -= resistPenalty
 		if (resist < .25) resist = .25
 		else if (resist > 2) resist = 2 // cannot lower resists beyond -100%
-		console.info('getMobResist after', d.index, d.damageType, resist)
+		// console.info('getMobResist after', d.index, d.damageType, resist)
 		return resist
 	}
 

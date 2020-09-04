@@ -91,7 +91,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Sacred Revelation',
 			img: 3,
 			hate: 1.6,
-			job: 'CLR',
+			job: JOB.CLERIC,
 			duration: 3,
 		},
 		holySanctuary: { hate: -2.5 },
@@ -100,7 +100,7 @@ let buffs; // buff data for use with skill/spells/icons
 		circleOfPrayer: {
 			name: 'Circle of Prayer',
 			img: 9,
-			job: 'CLR',
+			job: JOB.CLERIC,
 			duration: 0,
 			hate: 6,
 			msg: (buff) => 'Circle of Prayer heals you for ' + buff.damage + ' health.',
@@ -108,7 +108,7 @@ let buffs; // buff data for use with skill/spells/icons
 		bindingGrace: {
 			name: 'Binding Grace',
 			img: 6,
-			job: 'CLR',
+			job: JOB.CLERIC,
 			duration: 0,
 			hate: 3.2,
 			msg: (buff) => 'Binding Grace heals you for ' + buff.damage + ' health.',
@@ -116,7 +116,7 @@ let buffs; // buff data for use with skill/spells/icons
 		guardianAngel: {
 			name: 'Guardian Angel',
 			img: 7,
-			job: 'CLR',
+			job: JOB.CLERIC,
 			duration: 30,
 			hate: 2.5,
 			msg: () => 'A guardian angel\'s wings surround you.',
@@ -125,7 +125,7 @@ let buffs; // buff data for use with skill/spells/icons
 		divineLight: {
 			name: 'Divine Light',
 			img: 8,
-			job: 'CLR',
+			job: JOB.CLERIC,
 			duration: 0,
 			hate: 4,
 			msg: (buff) => 'Divine Light heals you for ' + buff.damage + ' health.',
@@ -133,7 +133,7 @@ let buffs; // buff data for use with skill/spells/icons
 		sealOfRedemption: {
 			name: 'Seal of Redemption',
 			img: 10,
-			job: 'CLR',
+			job: JOB.CLERIC,
 			duration: 720,
 			base: 4,
 			bloodPerLevel: 3,
@@ -143,7 +143,7 @@ let buffs; // buff data for use with skill/spells/icons
 		zealousResolve: {
 			name: 'Zealous Resolve',
 			img: 11,
-			job: 'CLR',
+			job: JOB.CLERIC,
 			duration: 720,
 			armorRatio: .25, // % of health buff
 			msg: () => 'Your spirit ignites with zealous resolve.',
@@ -153,7 +153,7 @@ let buffs; // buff data for use with skill/spells/icons
 		rupture: {
 			name: 'Rupture',
 			img: 1,
-			job: 'WAR',
+			job: JOB.WARRIOR,
 			ticks: 8,
 			interval: 3,
 			hate: 1.2,
@@ -168,7 +168,7 @@ let buffs; // buff data for use with skill/spells/icons
 		frenzy: {
 			name: 'Frenzy',
 			img: 6,
-			job: 'WAR',
+			job: JOB.WARRIOR,
 			duration: 20,
 			hate: 0,
 			haste: [0, .15, .17, .2, .22, .24, .26, .28],
@@ -178,7 +178,7 @@ let buffs; // buff data for use with skill/spells/icons
 		jumpStrike: {
 			name: 'Jump Strike',
 			img: 7,
-			job: 'WAR',
+			job: JOB.WARRIOR,
 			duration: 1.5,
 			hate: 1.5,
 			msg: () => '',
@@ -188,7 +188,7 @@ let buffs; // buff data for use with skill/spells/icons
 		bulwark: {
 			name: 'Bulwark',
 			img: 9,
-			job: 'WAR',
+			job: JOB.WARRIOR,
 			duration: 8,
 			hate: 0,
 			mitigation: [0, 7, 13, 19, 25, 31, 37, 43],
@@ -198,7 +198,7 @@ let buffs; // buff data for use with skill/spells/icons
 		intrepidShout: {
 			name: 'Intrepid Shout',
 			img: 10,
-			job: 'WAR',
+			job: JOB.WARRIOR,
 			duration: 240,
 			hate: 0,
 			armor: [0, 25, 50, 75, 100, 125, 150, 175],
@@ -220,7 +220,7 @@ let buffs; // buff data for use with skill/spells/icons
 		meteorStrike: {
 			name: 'Meteor Strike',
 			img: 7,
-			job: 'WIZ',
+			job: JOB.WIZARD,
 			hate: .8,
 			ticks: 12,
 			interval: .5,
@@ -231,7 +231,7 @@ let buffs; // buff data for use with skill/spells/icons
 		frozenBarrier: {
 			name: 'Frozen Barrier',
 			img: 8,
-			job: 'WIZ',
+			job: JOB.WIZARD,
 			duration: 8,
 			msg: () => 'You are encased in a frozen barrier.',
 			fadeMsg: 'The barrier fades.',
@@ -247,7 +247,7 @@ let buffs; // buff data for use with skill/spells/icons
 		manaShell: {
 			name: 'Mana Shell',
 			img: 10,
-			job: 'WIZ',
+			job: JOB.WIZARD,
 			duration: 720,
 			hate: 0,
 			silence: [0, 3, 5, 7, 9, 11, 13, 15],
@@ -265,7 +265,7 @@ let buffs; // buff data for use with skill/spells/icons
 		toxicSpores: {
 			name: 'Toxic Spores',
 			hate: .7,
-			job: 'DRU',
+			job: JOB.DRUID,
 			img: 4,
 			ticks: 10,
 			interval: 3,
@@ -276,7 +276,7 @@ let buffs; // buff data for use with skill/spells/icons
 		moltenBoulder: {
 			name: 'Molten Boulder Strike',
 			hate: 1.2,
-			job: 'DRU',
+			job: JOB.DRUID,
 			img: 5,
 			ticks: 4,
 			interval: 3,
@@ -289,14 +289,14 @@ let buffs; // buff data for use with skill/spells/icons
 		naturesTouch: {
 			name: 'Nature\'s Touch',
 			img: 8,
-			job: 'DRU',
+			job: JOB.DRUID,
 			hate: 4.5,
 			msg: (buff) => 'Nature\'s Touch heals you for ' + buff.damage + ' health.',
 		},
 		naturesTouchHot: {
 			name: 'Nature\'s Touch',
 			img: 8,
-			job: 'DRU',
+			job: JOB.DRUID,
 			ticks: 3,
 			interval: 3,
 			duration: 9,
@@ -306,7 +306,7 @@ let buffs; // buff data for use with skill/spells/icons
 		mossBreath: {
 			name: 'Moss Breath',
 			img: 9,
-			job: 'DRU',
+			job: JOB.DRUID,
 			ticks: 7,
 			interval: 3,
 			duration: 21,
@@ -316,7 +316,7 @@ let buffs; // buff data for use with skill/spells/icons
 		synthesize: {
 			name: 'Synthesize',
 			img: 10,
-			job: 'DRU',
+			job: JOB.DRUID,
 			ticks: 84,
 			interval: 5,
 			duration: 420,
@@ -327,7 +327,7 @@ let buffs; // buff data for use with skill/spells/icons
 		branchSpirit: {
 			name: 'Branch Spirit',
 			img: 11,
-			job: 'DRU',
+			job: JOB.DRUID,
 			duration: 900,
 			armorRatio: .15, // % of health buff
 			attackRatio: .2,
@@ -340,7 +340,7 @@ let buffs; // buff data for use with skill/spells/icons
 		scourge: {
 			name: 'Scourge',
 			img: 2,
-			job: 'SHM',
+			job: JOB.SHAMAN,
 			hate: .8,
 			ticks: 6,
 			interval: 3,
@@ -351,7 +351,7 @@ let buffs; // buff data for use with skill/spells/icons
 		vampiricGaze: {
 			name: 'Vampiric Gaze',
 			img: 4,
-			job: 'SHM',
+			job: JOB.SHAMAN,
 			hate: .7,
 			ticks: 15,
 			interval: 3,
@@ -362,7 +362,7 @@ let buffs; // buff data for use with skill/spells/icons
 		affliction: {
 			name: 'Affliction',
 			img: 6,
-			job: 'SHM',
+			job: JOB.SHAMAN,
 			hate: .7,
 			ticks: 12,
 			interval: 3,
@@ -372,7 +372,7 @@ let buffs; // buff data for use with skill/spells/icons
 		devouringSwarm: {
 			name: 'Devouring Swarm',
 			img: 7,
-			job: 'SHM',
+			job: JOB.SHAMAN,
 			hate: 1.25,
 			ticks: 10,
 			interval: 3,
@@ -383,14 +383,14 @@ let buffs; // buff data for use with skill/spells/icons
 		rejuvinate: {
 			name: 'Rejuvinate',
 			img: 8,
-			job: 'SHM',
+			job: JOB.SHAMAN,
 			hate: 4.8,
 			msg: (buff) => 'Rejuvinate heals you for ' + buff.damage + ' health.',
 		},
 		rejuvinateHot: {
 			name: 'Rejuvinate',
 			img: 8,
-			job: 'SHM',
+			job: JOB.SHAMAN,
 			ticks: 2,
 			interval: 3,
 			duration: 6,
@@ -400,7 +400,7 @@ let buffs; // buff data for use with skill/spells/icons
 		mysticalGlow: {
 			name: 'Mystical Glow',
 			img: 9,
-			job: 'SHM',
+			job: JOB.SHAMAN,
 			ticks: 8,
 			interval: 3,
 			duration: 24,
@@ -410,7 +410,7 @@ let buffs; // buff data for use with skill/spells/icons
 		vampiricAllure: {
 			name: 'Vampiric Allure',
 			img: 10,
-			job: 'SHM',
+			job: JOB.SHAMAN,
 			duration: 720,
 			leech: [0, 2, 3, 4, 5, 6, 7, 8],
 			cha: [0, 10, 14, 18, 22, 26, 30, 35],
@@ -420,7 +420,7 @@ let buffs; // buff data for use with skill/spells/icons
 		borealTalisman: {
 			name: 'Boreal Talisman',
 			img: 11,
-			job: 'SHM',
+			job: JOB.SHAMAN,
 			duration: 900,
 			str: [0, 8, 12, 16, 20, 24, 28, 32],
 			sta: [0, 15, 20, 25, 30, 35, 40, 45],
@@ -432,7 +432,7 @@ let buffs; // buff data for use with skill/spells/icons
 		explosivePlague: {
 			name: 'Explosive Plague',
 			img: 1,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			hate: .7,
 			ticks: 15,
 			interval: 3,
@@ -442,7 +442,7 @@ let buffs; // buff data for use with skill/spells/icons
 		bloodFire: {
 			name: 'Blood Fire',
 			img: 2,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			hate: .8,
 			ticks: 12,
 			interval: 3,
@@ -452,7 +452,7 @@ let buffs; // buff data for use with skill/spells/icons
 		demonicPact: {
 			name: 'Demonic Pact',
 			img: 3,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			hate: .8,
 			ticks: 20,
 			interval: 3,
@@ -463,7 +463,7 @@ let buffs; // buff data for use with skill/spells/icons
 		hauntingVision: {
 			name: 'Haunting Vision',
 			img: 4,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			hate: 1.5,
 			ticks: 5,
 			interval: 3,
@@ -473,25 +473,25 @@ let buffs; // buff data for use with skill/spells/icons
 		icingDeath: {
 			name: 'Icing Death',
 			img: 5,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			hate: -1,
 			damageType: 'ice',
 		},
 		curseOfShadows: {
 			name: 'Curse of Shadows',
 			img: 6,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			hate: 1,
-			ticks: 14,
+			ticks: 20,
 			interval: 3,
-			duration: 42,
+			duration: 60,
 			damageType: 'arcane',
 		},
 		panicStrike: { hate: 1.5 },
 		drainSoul: {
 			name: 'Drain Soul',
 			img: 8,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			hate: 1.2,
 			damageType: 'arcane',
 			msg: (buff) => 'Drain Soul heals you for ' + buff.damage + ' health.',
@@ -499,7 +499,7 @@ let buffs; // buff data for use with skill/spells/icons
 		lichForm: {
 			name: 'Lich Form',
 			img: 9,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			duration: 720,
 			hpRegen: [0, 2, 5, 9, 12, 15, 19, 22],
 			mpRegen: [0, 4, 10, 16, 22, 28, 34, 40],
@@ -511,7 +511,7 @@ let buffs; // buff data for use with skill/spells/icons
 		engulfingDarkness: {
 			name: 'Engulfing Darkness',
 			img: 10,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			hate: -2,
 			ticks: 10,
 			interval: 3,
@@ -521,7 +521,7 @@ let buffs; // buff data for use with skill/spells/icons
 		profaneSpirit: {
 			name: 'Profane Spirit',
 			img: 11,
-			job: 'WLK',
+			job: JOB.WARLOCK,
 			duration: 900,
 			addPoison: [0, 2, 3, 4, 5, 6, 7, 8],
 			resistPoison: [0, 4, 7, 10, 13, 16, 19, 22],
@@ -532,7 +532,7 @@ let buffs; // buff data for use with skill/spells/icons
 		staticSuffocation: {
 			name: 'Static Suffocation',
 			img: 1,
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			hate: 1.2,
 			ticks: 9,
 			interval: 3,
@@ -542,14 +542,14 @@ let buffs; // buff data for use with skill/spells/icons
 		mindBlitz: { hate: 1.25 },
 		mindBlitzEffect: {
 			name: 'Debased Mind',
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			img: 2,
 			duration: 45,
 		},
 		subversion: {
 			name: 'Subversion',
 			img: 3,
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			hate: .9,
 			ticks: 11,
 			interval: 3,
@@ -560,7 +560,7 @@ let buffs; // buff data for use with skill/spells/icons
 		phaseBlade: {
 			name: 'Phase Blade',
 			img: 5,
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			duration: 300,
 			addLightning: [0, 3, 6, 9, 12, 15, 18, 21],
 			resistLightning: [0, 3, 5, 7, 9, 11, 13, 15],
@@ -570,7 +570,7 @@ let buffs; // buff data for use with skill/spells/icons
 		stasisField: {
 			name: 'Stasis Field',
 			img: 6,
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			hate: 0,
 			ticks: 1,
 			interval: 30,
@@ -582,7 +582,7 @@ let buffs; // buff data for use with skill/spells/icons
 		shiftingEther: {
 			name: 'Shifting Ether',
 			img: 7,
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			hate: 1.5,
 			ticks: 15,
 			interval: 3,
@@ -592,7 +592,7 @@ let buffs; // buff data for use with skill/spells/icons
 		sereneSigil: {
 			name: 'Serene Sigil',
 			img: 8,
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			mitigation: [0, 4, 7, 13, 16, 22, 27, 34],
 			msg: () => 'A serene sigil flashes before your eyes.',
 			fadeMsg: 'The serene sigil fades.'
@@ -600,7 +600,7 @@ let buffs; // buff data for use with skill/spells/icons
 		augmentation: {
 			name: 'Augmentation',
 			img: 9,
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			stats: [0, 6, 9, 11, 13, 15, 17, 20],
 			haste: [0, .1, .115, .13, .145, .16, .18, .2],
 			duration: 480,
@@ -610,10 +610,10 @@ let buffs; // buff data for use with skill/spells/icons
 		clarity: {
 			name: 'Clarity',
 			img: 10,
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			hate: 0,
 			mpRegen: [0, 2, 4, 6, 9, 11, 13, 15],
-			stats: [0, 10, 13, 16, 20, 23, 26, 30],
+			intel: [0, 10, 13, 16, 20, 23, 26, 30],
 			duration: 720,
 			msg: () => 'A sense of clarity pervades your mind.',
 			fadeMsg: 'Your clarity fades.'
@@ -621,7 +621,7 @@ let buffs; // buff data for use with skill/spells/icons
 		enthrall: {
 			name: 'Enthrall',
 			img: 11,
-			job: 'ENC',
+			job: JOB.ENCHANTER,
 			hate: -.5,
 			ticks: 1,
 			interval: 30,
@@ -635,7 +635,14 @@ let buffs; // buff data for use with skill/spells/icons
 		staticStorm: {
 			name: 'Static Storm',
 			img: 3,
-			job: 'TMP',
+			job: JOB.TEMPLAR,
+			hate: 1.2,
+			damageType: 'lightning',
+		},
+		staticStormDebuff: {
+			name: 'Static Storm',
+			img: 3,
+			job: JOB.TEMPLAR,
 			hate: 1.2,
 			ticks: 1,
 			interval: 60,
@@ -648,7 +655,7 @@ let buffs; // buff data for use with skill/spells/icons
 		primordialSludge: {
 			name: 'Primordial Sludge',
 			img: 6,
-			job: 'TMP',
+			job: JOB.TEMPLAR,
 			hate: 1.5,
 			ticks: 15,
 			interval: 3,
@@ -658,17 +665,53 @@ let buffs; // buff data for use with skill/spells/icons
 		arclight: {
 			name: 'Arclight',
 			img: 7,
-			job: 'TMP',
+			job: JOB.TEMPLAR,
 			hate: 1.5,
 			ticks: 10,
 			interval: 3,
 			duration: 30,
 			damageType: 'lightning',
 		},
-		primevalWithering: { hate: 1 },
-		lavaShield: { hate: 1 },
-		lucidEnergy: { hate: 1 },
-		etherealFocus: { hate: 1 },
+		primevalWithering: {
+			name: 'Primeval Withering',
+			img: 8,
+			job: JOB.TEMPLAR,
+			hate: 1.5,
+			ticks: 30,
+			interval: 3,
+			duration: 90,
+			damageType: 'arcane',
+		},
+		moltenAegis: {
+			name: 'Molten Aegis',
+			img: 9,
+			job: JOB.TEMPLAR,
+			duration: 420,
+			addFire: [0, 2, 4, 6, 8, 10, 12, 15],
+			resistFire: [0, 3, 6, 9, 12, 16, 20, 24],
+			msg: () => 'Your weapons shimmer with molten energy.',
+			fadeMsg: 'Your molten shimmer fades.'
+		},
+		conviction: {
+			name: 'Lucid Energy',
+			img: 10,
+			job: JOB.TEMPLAR,
+			spRegen: [0, 2, 3, 5, 7, 9, 10, 12],
+			cha: [0, 12, 17, 22, 26, 30, 35, 40],
+			duration: 720,
+			msg: () => 'Spiritual insight gives you a charismatic aura.',
+			fadeMsg: 'Your charismatic aura fades.'
+		},
+		celestialFrenzy: {
+			name: 'Celestial Frenzy',
+			img: 11,
+			job: JOB.TEMPLAR,
+			addSpellAll: [0, 2, 3, 4, 6, 7, 8, 10],
+			castingHaste: [0, 12, 17, 22, 26, 30, 35, 40],
+			duration: 900,
+			msg: () => 'Spiritual insight gives you a charismatic aura.',
+			fadeMsg: 'Your charismatic aura fades.'
+		},
 	}
 	///////////////////////////////////////////
 

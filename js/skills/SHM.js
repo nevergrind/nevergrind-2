@@ -218,7 +218,7 @@
 	}
 	function devouringSwarmHeal(data) {
 		// console.info('devouringSwarmHeal', ~~(data.damage * buffs.devouringSwarm.healRatio), data)
-		combat.updateHeroResource('hp', ~~(data.damage * buffs.devouringSwarm.healRatio))
+		combat.updateMyResource('hp', ~~(data.damage * buffs.devouringSwarm.healRatio))
 	}
 	function rejuvinate(index, data) {
 		if (timers.castBar < 1) return

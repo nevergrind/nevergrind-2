@@ -9,9 +9,9 @@
 		primordialSludge,
 		arclight,
 		primevalWithering,
-		lavaShield,
-		lucidEnergy,
-		etherealFocus,
+		moltenAegis,
+		conviction,
+		celestialFrenzy,
 	}
 	///////////////////////////////////////////
 	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam
@@ -85,29 +85,27 @@
 				let splashIndex
 				if (i <= 4) {
 					// guarantee at least one hit per 5x
-					splashIndex = _.random(0, firstTargets.length)
+					splashIndex = _.random(0, firstTargets.length - 1)
 					splashIndex = firstTargets.splice(splashIndex, 1)
 					splashIndex = splashIndex[0]
 				}
 				else splashIndex = _.random(-2, 2)
 				let tgt = battle.getSplashTarget(splashIndex, originalTarget)
-				if (mob.isAlive(tgt)) {
-					delayedCall(i * .1, () => {
-						combat.txDamageMob([{
-							key: 'frozenOrb',
-							index: tgt,
-							spellType: spell.data.spellType,
-							damageType: spell.data.damageType,
-							...stats.spellDamage(),
-							buffs: [{
-								i: tgt, // target
-								row: my.row, // this identifies unique buff state/icon
-								key: 'chill', // this sets the flag,
-								duration: 7,
-							}]
-						}])
-					})
-				}
+				delayedCall(i * .1, () => {
+					combat.txDamageMob([{
+						key: 'frozenOrb',
+						index: tgt,
+						spellType: spell.data.spellType,
+						damageType: spell.data.damageType,
+						...stats.spellDamage(),
+						buffs: [{
+							i: tgt, // target
+							row: my.row, // this identifies unique buff state/icon
+							key: 'chill', // this sets the flag,
+							duration: 7,
+						}]
+					}])
+				})
 			}(i)
 		}
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -142,7 +140,7 @@
 		for (i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
 			damages.push({
-				key: 'staticStorm',
+				key: 'staticStormDebuff',
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
@@ -275,63 +273,79 @@
 		spell.startCasting(index, data, primevalWitheringCompleted)
 	}
 	function primevalWitheringCompleted() {
-		combat.txDamageMob([{
+		damages = []
+		damages.push({
 			key: 'primevalWithering',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			damageType: 'arcane',
+			...stats.spellDamage(false, true)
+		})
+		combat.txDotMob(damages)
 	}
-	function lavaShield(index, data) {
+	function moltenAegis(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, lavaShieldCompleted)
+		spell.startCasting(index, data, moltenAegisCompleted)
 	}
-	function lavaShieldCompleted() {
-		combat.txDamageMob([{
-			key: 'lavaShield',
+	function moltenAegisCompleted() {
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			key: 'moltenAegis',
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+		})
+		combat.txBuffHero(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
-	function lucidEnergy(index, data) {
+	function conviction(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, lucidEnergyCompleted)
+		spell.startCasting(index, data, convictionCompleted)
 	}
-	function lucidEnergyCompleted() {
-		combat.txDamageMob([{
-			key: 'lucidEnergy',
+	function convictionCompleted() {
+		combat.txBuffHero([{
+			key: 'conviction',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			level: my.skills[spell.config.skillIndex],
+			damage: 0
 		}])
 	}
-	function etherealFocus(index, data) {
+	function celestialFrenzy(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, etherealFocusCompleted)
+		spell.startCasting(index, data, celestialFrenzyCompleted)
 	}
-	function etherealFocusCompleted() {
-		combat.txDamageMob([{
-			key: 'etherealFocus',
+	function celestialFrenzyCompleted() {
+		combat.txBuffHero([{
+			key: 'celestialFrenzy',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			level: my.skills[spell.config.skillIndex],
+			damage: 0
 		}])
 	}
 

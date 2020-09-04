@@ -18,6 +18,8 @@ var timers;
 		mobStasisTimer: [],
 		// mobEffects
 		mobEffects: [],
+		primaryAttackCycle: delayedCall(0, ''),
+		secondaryAttackCycle: delayedCall(0, ''),
 		primaryAttackCall: delayedCall(0, ''),
 		secondaryAttackCall: delayedCall(0, ''),
 		frozenBarrier: delayedCall(0, ''),
