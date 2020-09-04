@@ -138,7 +138,7 @@ var my;
 			combat.targetChanged()
 		}
 		else {
-			chat.log('Target failed! Player not found.', 'chat-warning')
+			chat.log('Target failed! Player not found.', CSS.CHAT_WARNING)
 		}
 	}
 	function getResistObject() {

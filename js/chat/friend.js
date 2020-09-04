@@ -55,8 +55,8 @@ var friend;
 			chat.log(str)
 		}
 		else {
-			chat.log("<div>You don't have any friends!</div>", 'chat-warning');
-			chat.log("<div class='chat-emote'>Use /friend add [name] to add a new friend.</div>", 'chat-warning');
+			chat.log("<div>You don't have any friends!</div>", CSS.CHAT_WARNING);
+			chat.log("<div class='chat-emote'>Use /friend add [name] to add a new friend.</div>", CSS.CHAT_WARNING);
 		}
 	}
 	function listReceived(data) {
@@ -81,23 +81,23 @@ var friend;
 	function add(name) {
 		// console.info(name, my.name)
 		if (ng.friends.includes(name)) {
-			chat.log(o + " is already your friend.", 'chat-warning');
+			chat.log(o + " is already your friend.", CSS.CHAT_WARNING);
 		}
 		else if (name === my.name) {
-			chat.log("You can't be your own friend!", 'chat-warning');
+			chat.log("You can't be your own friend!", CSS.CHAT_WARNING);
 		}
 		else if (name.length < 2) {
-			chat.log("Names must be at least two characters long.", 'chat-warning');
+			chat.log("Names must be at least two characters long.", CSS.CHAT_WARNING);
 		}
 		else {
 			$.post(app.url + 'chat/friend-add.php', {
 				friend: name
 			}).done(function(data){
 				if (data.error) {
-					chat.log(data.error, 'chat-warning');
+					chat.log(data.error, CSS.CHAT_WARNING);
 				}
 				else {
-					chat.log('You have added ' + name + ' to your friend list.', 'chat-warning');
+					chat.log('You have added ' + name + ' to your friend list.', CSS.CHAT_WARNING);
 					socket.subscribe('friend' + name, friend.notify);
 					socket.publish('name' + name, {
 						name: my.name,
@@ -117,10 +117,10 @@ var friend;
 				friend: name
 			}).done(function(data){
 				if (data.error) {
-					chat.log(data.error, 'chat-warning');
+					chat.log(data.error, CSS.CHAT_WARNING);
 				}
 				else {
-					chat.log('You have removed ' + name + ' from your friend list.', 'chat-warning');
+					chat.log('You have removed ' + name + ' from your friend list.', CSS.CHAT_WARNING);
 					while (ng.friends.includes(name)) {
 						var index = ng.friends.indexOf(name);
 						ng.friends.splice(index, 1);
@@ -133,10 +133,10 @@ var friend;
 	function notify(data, obj) {
 		data = router.normalizeInput(data, obj);
 		if (data.route === 'on') {
-			chat.log(data.name + ' has come online.', 'chat-warning');
+			chat.log(data.name + ' has come online.', CSS.CHAT_WARNING);
 		}
 		else {
-			chat.log(data.name + ' has gone offline.', 'chat-warning');
+			chat.log(data.name + ' has gone offline.', CSS.CHAT_WARNING);
 		}
 	}
 })();

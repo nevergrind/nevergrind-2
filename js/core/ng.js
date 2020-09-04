@@ -799,10 +799,10 @@ var ng;
 		updateCharacterCard()
 	}
 	function toPercentWidth(pixels) {
-		return pixels / 1920 * 100
+		return pixels / MaxWidth * 100
 	}
 	function toPercentHeight(pixels) {
-		return pixels / 1080 * 100
+		return pixels / MaxHeight * 100
 	}
 	function html(id, html) {
 		el = querySelector(id)

@@ -140,7 +140,7 @@
 			level: my.skills[spell.index],
 			...stats.spellDamage(false, true)
 		})
-		// console.info('vampiricGaze', damages[0])
+		// console.info('vampiricGaze', damages[Zero])
 		combat.txDotMob(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
 	}

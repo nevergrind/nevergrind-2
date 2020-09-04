@@ -1502,7 +1502,7 @@ var loot = {};
 
 	function toggleDrag(event) {
 		if (ng.view === 'battle') {
-			chat.log('You cannot adjust your equipment or inventory while in combat!', 'chat-warning')
+			chat.log('You cannot adjust your equipment or inventory while in combat!', CSS.CHAT_WARNING)
 			return
 		}
 		if (item.awaitingDrop) return
@@ -1510,17 +1510,17 @@ var loot = {};
 		var type = event.currentTarget.dataset.type
 		if (trade.data.name) {
 			if (type === 'eq') {
-				if (item.isDragging) chat.log('It would be unseemly to change your clothes while trading.', 'chat-warning')
-				else chat.log('You cannot trade items you are wearing!', 'chat-warning')
+				if (item.isDragging) chat.log('It would be unseemly to change your clothes while trading.', CSS.CHAT_WARNING)
+				else chat.log('You cannot trade items you are wearing!', CSS.CHAT_WARNING)
 				return
 			}
 			if (type === 'tradeTo') {
-				chat.log('You cannot drop items to ' + trade.data.name + '\'s trade slots!', 'chat-warning')
+				chat.log('You cannot drop items to ' + trade.data.name + '\'s trade slots!', CSS.CHAT_WARNING)
 				return
 			}
 			if (type === 'tradeFrom' && items[type][index].name) {
-				if (item.isIdentifyMode) chat.log('You cannot identify items in the trade window.', 'chat-warning')
-				else chat.log('You cannot drag items out of the trade window.', 'chat-warning')
+				if (item.isIdentifyMode) chat.log('You cannot identify items in the trade window.', CSS.CHAT_WARNING)
+				else chat.log('You cannot drag items out of the trade window.', CSS.CHAT_WARNING)
 				return
 			}
 		}
@@ -1528,7 +1528,7 @@ var loot = {};
 		if (item.isIdentifyMode) {
 			if (type === 'inv' || type === 'bank') {
 				if (!items[type][index].unidentified) {
-					chat.log('That item does not need to be identified.', 'chat-warning')
+					chat.log('That item does not need to be identified.', CSS.CHAT_WARNING)
 					toggleIdentifyMode()
 				}
 				else {
@@ -1685,17 +1685,17 @@ var loot = {};
 
 	function eqDropValid(_item, eqType, itemLevel, unidentified) {
 		if (unidentified) {
-			chat.log('You cannot equip unidentified items! Try buying an Identify Scroll from the merchant.', 'chat-warning')
+			chat.log('You cannot equip unidentified items! Try buying an Identify Scroll from the merchant.', CSS.CHAT_WARNING)
 			return false
 		}
 		// console.info('itemLevel', my.level, itemLevel)
 		if (my.level < itemLevel) {
-			chat.log('Your level is not high enough to equip this item!', 'chat-warning')
+			chat.log('Your level is not high enough to equip this item!', CSS.CHAT_WARNING)
 			return false
 		}
 		// armor checks
 		if (!item.canEquipArmor(_item.armorType)) {
-			chat.log('You cannot equip '+ _item.armorType + ' armor!', 'chat-warning')
+			chat.log('You cannot equip '+ _item.armorType + ' armor!', CSS.CHAT_WARNING)
 			return false
 		}
 		// weapon checks
@@ -1708,7 +1708,7 @@ var loot = {};
 				_item.itemType === 'twoHandBlunts' && !stats.twoHandBlunt() ||
 				_item.itemType === 'piercing' && !stats.piercing() ||
 				_item.itemType === 'bows' && !stats.archery()) {
-				chat.log('You cannot equip this type of weapon!', 'chat-warning')
+				chat.log('You cannot equip this type of weapon!', CSS.CHAT_WARNING)
 				return false
 			}
 		}
@@ -1717,7 +1717,7 @@ var loot = {};
 			item.offhandWeaponTypes.includes(_item.itemType)) {
 			// off-hand weapon check
 			if (!stats.dualWield()) {
-				chat.log('You cannot dual wield!', 'chat-warning')
+				chat.log('You cannot dual wield!', CSS.CHAT_WARNING)
 				return false
 			}
 		}
@@ -1726,7 +1726,7 @@ var loot = {};
 			item.twoHandWeaponTypes.includes(_item.itemType)) {
 			// two-hand constraint checks (no off-hand)
 			if (items.eq[13].name) {
-				chat.log('You cannot equip a two-hand weapon while dual wielding!', 'chat-warning')
+				chat.log('You cannot equip a two-hand weapon while dual wielding!', CSS.CHAT_WARNING)
 				return false
 			}
 		}
@@ -1734,7 +1734,7 @@ var loot = {};
 		// console.info('eqDropValid', eqType, _item.itemType)
 		if (eqType === 'secondary' &&
 			item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
-			chat.log('You cannot equip a shield while wielding a two-hand weapon!', 'chat-warning')
+			chat.log('You cannot equip a shield while wielding a two-hand weapon!', CSS.CHAT_WARNING)
 			return false
 		}
 
@@ -1974,7 +1974,7 @@ var loot = {};
 		}
 		if (typeof item.dragData.unidentified === 'undefined' ||
 			item.dragData.unidentified === false) {
-			chat.log('That item\'s properties are already known.', 'chat-warning')
+			chat.log('That item\'s properties are already known.', CSS.CHAT_WARNING)
 			resetDrop()
 			return
 		}
@@ -1985,7 +1985,7 @@ var loot = {};
 		}
 		var index = items.inv.findIndex(slot => slot.name === 'Identification Scroll')
 		if (index === -1) {
-			chat.log('You must have an Identification Scroll in your inventory.', 'chat-warning')
+			chat.log('You must have an Identification Scroll in your inventory.', CSS.CHAT_WARNING)
 			resetDrop()
 			return
 		}
@@ -1997,7 +1997,7 @@ var loot = {};
 		}
 		// console.warn('identify item!', itemSlot)
 		if (itemSlot === -1) {
-			chat.log('You have no items that need to be identified.', 'chat-warning')
+			chat.log('You have no items that need to be identified.', CSS.CHAT_WARNING)
 			resetDrop()
 			return
 		}

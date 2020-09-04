@@ -91,8 +91,8 @@ var bar;
 	let percent = 0
 	var pingColors = [
 		'',
-		'chat-warning',
-		'chat-alert'
+		CSS.CHAT_WARNING,
+		CSS.CHAT_ALERT
 	];
 	var skillDescriptions = {
 		offense: 'Offense boosts attack power with all melee weapons. A strong offense helps assure that your weapons strike with precision and power regardless weapon type.',
@@ -490,7 +490,7 @@ var bar;
 
 	function handleDragSfx() {
 		val = this.x
-		if (val > 1080) val = 1080
+		if (val > MaxHeight) val = MaxHeight
 		if (val < 0) val = 0
 		val = ~~(val / 54 * 5)
 		ng.config.soundVolume = val
@@ -515,7 +515,7 @@ var bar;
 			onThrowComplete: handleDragSfx,
 			bounds: {
 				minRotation: 0,
-				maxRotation: 1080
+				maxRotation: MaxHeight
 			}
 		})
 		el = Draggable.get('#options-knob-sfx')
@@ -535,7 +535,7 @@ var bar;
 			onThrowComplete: handleDragMusic,
 			bounds: {
 				minRotation: 0,
-				maxRotation: 1080
+				maxRotation: MaxHeight
 			}
 		})
 		el = Draggable.get('#options-knob-music')
@@ -547,7 +547,7 @@ var bar;
 
 	function handleDragMusic() {
 		val = this.x
-		if (val > 1080) val = 1080
+		if (val > MaxHeight) val = MaxHeight
 		if (val < 0) val = 0
 		val = ~~(val / 54 * 5)
 		ng.config.musicVolume = val
@@ -635,7 +635,7 @@ var bar;
 				}
 				else if (id === '1920x1080') {
 					win.isFullscreen && win.leaveFullscreen();
-					win.resizeTo(1920, 1080);
+					win.resizeTo(MaxWidth, MaxHeight);
 					win.maximize();
 				}
 				else if (id === '1600x900') {
@@ -730,13 +730,13 @@ var bar;
 		bar.hotkeyId = this.dataset.id
 		bar.hotkeyElement = this;
 		querySelectorAll('.options-hotkey').forEach(el => {
-			el.classList.remove('active')
+			el.classList.remove(CSS.ACTIVE)
 		})
-		this.classList.add('active')
+		this.classList.add(CSS.ACTIVE)
 	}
 	function stopListeningForHotkey() {
 		bar.hotkeyId = ''
-		bar.hotkeyElement.classList.remove('active')
+		bar.hotkeyElement.classList.remove(CSS.ACTIVE)
 	}
 
 	function getOptionsUiHtml() {
@@ -982,7 +982,7 @@ var bar;
 		});
 	}
 	function linkdead(data) {
-		chat.log(data.name + ' has gone linkdead.', 'chat-warning');
+		chat.log(data.name + ' has gone linkdead.', CSS.CHAT_WARNING);
 	}
 
 	function getSkillDescription(event) {

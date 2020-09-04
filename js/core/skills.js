@@ -2185,7 +2185,7 @@ var skills;
 		// console.info('notReady', config)
 		// some active spells disable casting
 		if (cannotCast()) {
-			chat.log('You cannot cast any spells!', 'chat-warning')
+			chat.log('You cannot cast any spells!', CSS.CHAT_WARNING)
 			return true
 		}
 		// targeting
@@ -2195,17 +2195,17 @@ var skills;
 		else {
 			if (config.isMob) {
 				if (!my.targetIsMob) {
-					chat.log('You must target a mob with this skill.', 'chat-warning')
+					chat.log('You must target a mob with this skill.', CSS.CHAT_WARNING)
 					return true
 				}
 			}
 			else {
 				if (my.targetIsMob) {
-					chat.log('You must target a player with this skill.', 'chat-warning')
+					chat.log('You must target a player with this skill.', CSS.CHAT_WARNING)
 					return true
 				}
 				if (config.targetOther && my.target === my.row) {
-					chat.log('You must target a party member with this skill.', 'chat-warning')
+					chat.log('You must target a party member with this skill.', CSS.CHAT_WARNING)
 					return true
 				}
 			}
@@ -2215,34 +2215,34 @@ var skills;
 					my.partyTarget(0)
 				}
 				if (my.target === -1) {
-					chat.log('There are no valid targets for this skill.', 'chat-warning')
+					chat.log('There are no valid targets for this skill.', CSS.CHAT_WARNING)
 					return true
 				}
 			}
 			if (my.target === -1) {
-				chat.log('You must select a target to use this skill.', 'chat-warning')
+				chat.log('You must select a target to use this skill.', CSS.CHAT_WARNING)
 				return true
 			}
 		}
 
 		if (!config.oocEnabled &&
 			ng.view !== 'battle') {
-			chat.log('You cannot use this skill out of combat.', 'chat-warning')
+			chat.log('You cannot use this skill out of combat.', CSS.CHAT_WARNING)
 			return true
 		}
 		if (config.requiresFrontRow && my.target > 4) {
-			chat.log('This skill can only target the front row!', 'chat-warning')
+			chat.log('This skill can only target the front row!', CSS.CHAT_WARNING)
 			return true
 		}
 		if (config.mpCost) {
 			if (config.mpCost > my.mp) {
-				chat.log('Not enough mana for ' + config.name + '!', 'chat-warning')
+				chat.log('Not enough mana for ' + config.name + '!', CSS.CHAT_WARNING)
 				return true
 			}
 		}
 		if (config.spCost) {
 			if (config.spCost > my.sp) {
-				chat.log('Not enough spirit for ' + config.name + '!', 'chat-warning')
+				chat.log('Not enough spirit for ' + config.name + '!', CSS.CHAT_WARNING)
 				return true
 			}
 		}

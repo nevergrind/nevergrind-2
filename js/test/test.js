@@ -45,19 +45,17 @@ var test;
 		textures: [],
 	}
 
-	var c;
-	var i;
-	var e;
-	var z;
-	var start;
-	var end;
-	var filters;
+	var c
+	var i
+	var e
+	var z
+	var start
+	var end
+	var filters
 	var pixApp
 	var width
 	var height
-	const innerWidthMax = 1920
-	const innerHeightMax = 1080
-	const ratio = innerWidthMax / innerHeightMax
+	const ratio = MaxWidth / MaxHeight
 	///////////////////////////////////
 	function battle() {
 		/**
@@ -328,15 +326,15 @@ var test;
 	}
 	function pixi() {
 		pixApp = new PIXI.Application({
-			width: 1920,
-			height: 1080,
+			width: MaxWidth,
+			height: MaxHeight,
 			backgroundColor: '#0000'
 		});
 		// console.info('textPix', pixApp)
 		// console.info('view', pixApp.view)
 		pixApp.view.style.position = 'absolute'
 		pixApp.view.style.zIndex = 3
-		//var renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
+		//var renderer = PIXI.autoDetectRenderer(size[Zero], size[1], null);
 		document.body.appendChild(pixApp.view);
 
 		// create a new Sprite from an image path
@@ -361,8 +359,8 @@ var test;
 	}
 	function pixiRenderer() {
 		pixApp = new PIXI.Application({
-			width: 1920,
-			height: 1080,
+			width: MaxWidth,
+			height: MaxHeight,
 			transparent: true
 		});
 		// console.info('textPix', pixApp)
@@ -391,7 +389,7 @@ var test;
 	function pixiClouds() {
 		var dur = 555;
 		test.pix = new PIXI.Application({
-			width: 1920,
+			width: MaxWidth,
 			height: 517,
 			transparent: true
 		});
@@ -413,12 +411,12 @@ var test;
 		test.pix.stage.addChild(cloud);
 
 		TweenMax.to(cloud, dur / 2, {
-			x: -1920,
+			x: -MaxWidth,
 			ease: Linear.easeNone,
 			onComplete: function() {
 				TweenMax.to(cloud, dur, {
-					startAt: { x: 1920 },
-					x: -1920,
+					startAt: { x: MaxWidth },
+					x: -MaxWidth,
 					ease: Linear.easeNone,
 					repeat: -1
 				})
@@ -434,7 +432,7 @@ var test;
 		height = window.innerHeight;
 		// console.info('pixiResize', width, height)
 		test.pix.view.style.width = window.innerWidth + 'px';
-		test.pix.view.style.height = ~~(517 / innerHeightMax * window.innerHeight) + 'px';
+		test.pix.view.style.height = ~~(517 / MaxHeight * window.innerHeight) + 'px';
 	}
 	function pixiResize() {
 		// wider than default ratio
@@ -473,8 +471,8 @@ var test;
 		const hoverIcon = "url('css/cursor/pointer.png'), auto"
 		if (!test.mob) {
 			test.mob = new PIXI.Application({
-				width: 1920,
-				height: 1080,
+				width: MaxWidth,
+				height: MaxHeight,
 				transparent: true
 			});
 			test.mob.view.style.position = 'absolute'
@@ -490,8 +488,8 @@ var test;
 		querySelector('body').appendChild(test.mob.view)
 
 		let mobSprite = PIXI.Sprite.from('mobs/'+ mobName +'/1.png')
-		let x = _.random(-480, 1920 - 960)
-		let y = _.random(-400, 1080 - 800)
+		let x = _.random(-480, MaxWidth - 960)
+		let y = _.random(-400, MaxHeight - 800)
 		mobSprite.x = x
 		mobSprite.y = y
 		mobSprite.interactive = true

@@ -340,7 +340,7 @@ var town;
 	}
 
 	function openVarious(event) {
-		if (trade.data.name) chat.log('You are currently trading with ' + trade.data.name + '.', 'chat-warning')
+		if (trade.data.name) chat.log('You are currently trading with ' + trade.data.name + '.', CSS.CHAT_WARNING)
 		else openVariousConfirmed(event)
 	}
 	function openVariousConfirmed(event) {

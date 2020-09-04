@@ -81,7 +81,7 @@ var guild;
 			guild.setGuildData(data);
 			chat.log('Valeska says, "By the powers vested in me, I hereby declare you supreme sovereign leader of a new guild: ' + data.guild.name +'."');
 			ng.msg('You created a new guild: ' + data.guild.name, 5)
-			chat.log('Type /help to view guild commands', 'chat-warning');
+			chat.log('Type /help to view guild commands', CSS.CHAT_WARNING);
 			guild.listen();
 			// redraw the #various-wrap with new option
 			town.updateVariousDOM();
@@ -96,17 +96,17 @@ var guild;
 	}
 	function invite(name) {
 		if (my.name === name) {
-			chat.log("You can't invite yourself to a guild. Go to the Guild Hall to create a guild.", 'chat-warning');
+			chat.log("You can't invite yourself to a guild. Go to the Guild Hall to create a guild.", CSS.CHAT_WARNING);
 		}
 		else if (!my.guild.id) {
-			chat.log("You're not in a guild.", 'chat-warning');
+			chat.log("You're not in a guild.", CSS.CHAT_WARNING);
 		}
 		else if (my.guild.rank > 1) {
-			chat.log("Only the guild leader or officers may send guild invites.", 'chat-warning');
+			chat.log("Only the guild leader or officers may send guild invites.", CSS.CHAT_WARNING);
 		}
 		else {
 			if (name) {
-				chat.log('Sent guild invite to '+ name +'.', 'chat-warning');
+				chat.log('Sent guild invite to '+ name +'.', CSS.CHAT_WARNING);
 				socket.publish('name' + name, {
 					row: my.guild.id,
 					msg: my.name + ' has invited you to join the guild: ' + my.guild.name.split(' ').join('&nbsp;'),
@@ -116,7 +116,7 @@ var guild;
 				})
 			}
 			else {
-				chat.log("Syntax: /invite [player_name]", 'chat-warning')
+				chat.log("Syntax: /invite [player_name]", CSS.CHAT_WARNING)
 			}
 		}
 	}
@@ -128,14 +128,14 @@ var guild;
 			guildId: z.row
 		}).done(function(data){
 			guild.setGuildData(data);
-			chat.log('You have joined the guild: '+ data.guild.name, 'chat-warning')
+			chat.log('You have joined the guild: '+ data.guild.name, CSS.CHAT_WARNING)
 			delayedCall(.5, guild.listen)
 		}).fail(function(data){
-			chat.log(data.responseText, 'chat-warning')
+			chat.log(data.responseText, CSS.CHAT_WARNING)
 		});
 	}
 	function hasJoined(z) {
-		chat.log(z.msg, 'chat-warning');
+		chat.log(z.msg, CSS.CHAT_WARNING);
 	}
 	function disband() {
 		if (!my.guild.id) return;
@@ -144,31 +144,31 @@ var guild;
 		$.get(app.url + 'guild/disband.php').done(function(data){
 			my.guild = guild.Guild(); // nice!
 			// console.info("guild.disband() response ", data);
-			chat.log("You have disbanded the guild: "+ o.name, 'chat-warning');
+			chat.log("You have disbanded the guild: "+ o.name, CSS.CHAT_WARNING);
 			socket.unsubscribe('guild'+ o.id);
 		}).fail(function(data){
-			chat.log(data.responseText, 'chat-warning');
+			chat.log(data.responseText, CSS.CHAT_WARNING);
 		});
 	}
 	function hasDisbanded(r) {
-		chat.log(r.msg, 'chat-warning')
+		chat.log(r.msg, CSS.CHAT_WARNING)
 	}
 	function boot(name) {
 		if (my.guild.rank > 1) {
-			chat.log("Only the guild leader or officers can boot people from the guild", 'chat-warning');
+			chat.log("Only the guild leader or officers can boot people from the guild", CSS.CHAT_WARNING);
 		}
 		else {
 			$.post(app.url + 'guild/boot.php', {
 				name: _.capitalize(name)
 			}).fail(function (data) {
-				chat.log(data.responseText, 'chat-warning');
+				chat.log(data.responseText, CSS.CHAT_WARNING);
 			});
 		}
 	}
 	function wasBooted(data) {
 		if (!my.guild.id) return;
 		// console.info("Booting! ", data);
-		chat.log(data.msg, 'chat-warning');
+		chat.log(data.msg, CSS.CHAT_WARNING);
 		if (data.name === my.name) {
 			$.post(app.url + 'guild/disband.php', {
 				action: 'boot'
@@ -176,49 +176,49 @@ var guild;
 				socket.unsubscribe('guild'+ my.guild.id);
 				my.guild = guild.Guild(); // nice!
 			}).fail(function(data){
-				chat.log(data.responseText, 'chat-warning');
+				chat.log(data.responseText, CSS.CHAT_WARNING);
 			});
 		}
 	}
 	function promote(name) {
 		if (my.guild.rank > 1) {
-			chat.log("Only the guild leader or officers can promote members.", 'chat-warning');
+			chat.log("Only the guild leader or officers can promote members.", CSS.CHAT_WARNING);
 		}
 		else {
 			$.post(app.url + 'guild/promote.php', {
 				name: _.capitalize(name)
 			}).fail(function (data) {
-				chat.log(data.responseText, 'chat-warning');
+				chat.log(data.responseText, CSS.CHAT_WARNING);
 			});
 		}
 	}
 	function wasPromoted(data) {
 		if (!my.guild.id) return;
-		chat.log(data.msg, 'chat-warning');
+		chat.log(data.msg, CSS.CHAT_WARNING);
 		updateSession(data);
 	}
 	function demote(name) {
 		if (my.guild.rank > 0) {
-			chat.log("Only the guild leader can demote members.", 'chat-warning');
+			chat.log("Only the guild leader can demote members.", CSS.CHAT_WARNING);
 		}
 		else {
 			$.post(app.url + 'guild/demote.php', {
 				name: _.capitalize(name)
 			}).fail(data => {
-				chat.log(data.responseText, 'chat-warning');
+				chat.log(data.responseText, CSS.CHAT_WARNING);
 			});
 		}
 	}
 	function demoteReceived(data) {
-		chat.log(data.msg, 'chat-warning');
+		chat.log(data.msg, CSS.CHAT_WARNING);
 		updateSession(data);
 	}
 	function leader(name) {
 		if (my.guild.rank > 0) {
-			chat.log("Only the guild leader can assign a new leader.", 'chat-warning');
+			chat.log("Only the guild leader can assign a new leader.", CSS.CHAT_WARNING);
 		}
 		if (my.name === name) {
-			chat.log("You're already the guild leader!", 'chat-warning');
+			chat.log("You're already the guild leader!", CSS.CHAT_WARNING);
 		}
 		else {
 			$.post(app.url + 'guild/leader.php', {
@@ -229,12 +229,12 @@ var guild;
 				updateSession(data, true);
 				// nothing
 			}).fail(function (data) {
-				chat.log(data.responseText, 'chat-warning');
+				chat.log(data.responseText, CSS.CHAT_WARNING);
 			});
 		}
 	}
 	function wasLeader(data) {
-		chat.log(data.msg, 'chat-warning');
+		chat.log(data.msg, CSS.CHAT_WARNING);
 		updateSession(data);
 	}
 	function updateSession(data, bypass) {
@@ -244,7 +244,7 @@ var guild;
 				guild.setGuildData(data);
 				// nothing
 			}).fail(function (data) {
-				chat.log(data.responseText, 'chat-warning');
+				chat.log(data.responseText, CSS.CHAT_WARNING);
 			});
 		}
 	}
@@ -258,7 +258,7 @@ var guild;
 		$.post(app.url + 'guild/motd.php', {
 			msg: msg
 		}).fail(function (data) {
-			chat.log(data.responseText, 'chat-warning');
+			chat.log(data.responseText, CSS.CHAT_WARNING);
 		});
 	}
 	function zmqMotd(data) {
@@ -288,7 +288,7 @@ var guild;
 			});
 			// nothing
 		}).fail(data => {
-			chat.log(data.responseText, 'chat-warning');
+			chat.log(data.responseText, CSS.CHAT_WARNING);
 		}).always(() => {
 			delayedCall(throttleTime, ng.unlock);
 		});

@@ -334,14 +334,14 @@ var combat;
 		my.isAutoAttacking = true
 		button.primaryAttack()
 		button.secondaryAttack()
-		el = querySelector('#main-attack-wrap')
-		el.classList.remove('active')
-		el.classList.add('active')
+		el = querySelector(SELECTOR.MAIN_ATTACK_WRAP)
+		el.classList.remove(CSS.ACTIVE)
+		el.classList.add(CSS.ACTIVE)
 	}
 	function autoAttackDisable() {
 		my.isAutoAttacking = false
-		el = querySelector('#main-attack-wrap')
-		el.classList.remove('active')
+		el = querySelector(SELECTOR.MAIN_ATTACK_WRAP)
+		el.classList.remove(CSS.ACTIVE)
 	}
 	function endCombat() {
 		mob.killAttacks(true)
@@ -751,7 +751,7 @@ var combat;
 		// mob is hitting me
 		damages = data.d
 		if (damages[0].isParalyzed) {
-			chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', 'chat-warning')
+			chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', CSS.CHAT_WARNING)
 		}
 		else processDamageToMe(data.i, damages)
 		// console.info('rxDamageHero: ', damages.length, data)
@@ -759,7 +759,7 @@ var combat;
 	function processDamageToMe(index, damages) {
 		if (damages.findIndex(dam => dam.row === my.row) >= 0) {
 			// something hit me - single or double hit
-			// console.info('processDamageToMe', damages[0].damage)
+			// console.info('processDamageToMe', damages[Zero].damage)
 			damages = damages.map(dam => processDamagesHero(index, dam))
 			len = damages.length
 			totalDamage = 0
@@ -768,14 +768,14 @@ var combat;
 					totalDamage += damages[i].damage
 					updateMyResource('hp', -damages[i].damage)
 					if (damages[i].isPiercing) {
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', 'chat-alert')
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', CSS.CHAT_ALERT)
 					}
 					else {
 						blockMsg = ''
 						if (damages[i].blocked) {
 							blockMsg = ' ('+ damages[i].blocked +' blocked)'
 						}
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, 'chat-alert')
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, CSS.CHAT_ALERT)
 					}
 					if (damages[i].damageType === 'physical') {
 						spell.knockback()
@@ -814,7 +814,7 @@ var combat;
 		basicText.id = 'text-' + combat.textId++
 		mobs[index].hitCount++
 		basicText.x = mob.centerX[index]
-		basicText.y = expanse.maxHeight - mob.bottomY[index] - mobs[index].clickAliveH * mobs[2].size + ((mobs[index].hitCount % 5) * 20)
+		basicText.y = MaxHeight - mob.bottomY[index] - mobs[index].clickAliveH * mobs[2].size + ((mobs[index].hitCount % 5) * 20)
 		// console.info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
 		TweenMax.to(basicText, textDuration * .6, {
@@ -983,7 +983,7 @@ var combat;
 							// timer-based active
 							my.buffs[key].duration > 0) {
 							// duration not defined or still active
-							chat.log(buffs[buff.key].name + ' failed to take hold.', 'chat-warning')
+							chat.log(buffs[buff.key].name + ' failed to take hold.', CSS.CHAT_WARNING)
 							return
 						}
 					}
@@ -1193,8 +1193,8 @@ var combat;
 		if (battleTextInitialized) return
 		battleTextInitialized = true
 		combat.text = new PIXI.Application({
-			width: 1920,
-			height: 1080,
+			width: MaxWidth,
+			height: MaxHeight,
 			transparent: true
 		});
 		// style
@@ -1207,7 +1207,7 @@ var combat;
 	}
 	function updateCombatTextLayer() {
 		w = window.innerWidth
-		h = ~~(combat.text.screen.height / expanse.maxHeight * window.innerHeight)
+		h = ~~(combat.text.screen.height / MaxHeight * window.innerHeight)
 		combat.text.view.style.width = w + 'px';
 		combat.text.view.style.height = h + 'px';
 

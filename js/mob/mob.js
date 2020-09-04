@@ -303,7 +303,7 @@ var mob;
 		let height = ~~(m.size * (images.height))
 		let x = mob.centerX[i]
 		// botttom - row offset - image size offset for transparency at bottom - more size offset?
-		let y = 1080 - mob.bottomY[i] - (images.yFloor * m.size) + sizeOffset(m.size)
+		let y = MaxHeight - mob.bottomY[i] - (images.yFloor * m.size) + sizeOffset(m.size)
 		// mob sprite
 		m.sprite = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
 		m.sprite.anchor.set(.5, 1)
@@ -339,8 +339,8 @@ var mob;
 		//TODO: change to percentages and use shadowBottom
 		let el = querySelector('#mob-shadow-' + i)
 		el.style.display = 'block'
-        el.style.width = (m.shadowWidth * m.size) * 100 / 1920 + '%'
-        el.style.height = (m.shadowHeight * m.size) * 100 / 1080 + '%'
+        el.style.width = (m.shadowWidth * m.size) * 100 / MaxWidth + '%'
+        el.style.height = (m.shadowHeight * m.size) * 100 / MaxHeight + '%'
         el.style.bottom = '0%'
 
 		TweenMax.set(querySelector('#mob-details-' + i), {

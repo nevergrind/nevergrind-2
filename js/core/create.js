@@ -115,26 +115,26 @@ var create;
 	function selectRace() {
 		var race = $(this).text();
 		if (race === create.form.race) return
-		$('.select-race').removeClass('active');
-		$(this).addClass('active');
+		$('.select-race').removeClass(CSS.ACTIVE);
+		$(this).addClass(CSS.ACTIVE);
 		create.setRandomClass(race);
 		create.set('race', race);
 		setFace()
 	}
 	function selectClass() {
-		if (!$(this).get(0).className.includes('disabled')){
+		if (!$(this).get(0).className.includes(CSS.DISABLED)){
 			var job = $(this).text();
 			if (job === create.form.job) return
-			$('.select-class').removeClass('active');
-			$(this).addClass('active');
+			$('.select-class').removeClass(CSS.ACTIVE);
+			$(this).addClass(CSS.ACTIVE);
 			create.set('job', job)
 		}
 	}
 	function selectGender() {
 		// console.info(this);
 		var gender = $(this).data('gender');
-		$(".select-gender").removeClass('active');
-		$('#' + gender).addClass('active');
+		$(".select-gender").removeClass(CSS.ACTIVE);
+		$('#' + gender).addClass(CSS.ACTIVE);
 		create.set('gender', gender);
 		setFace()
 	}
@@ -317,7 +317,7 @@ var create;
 				raceAttr[i] += v;
 			});
 			// set initial attr values
-			$(".create-attr-value").removeClass('active');
+			$(".create-attr-value").removeClass(CSS.ACTIVE);
 			ng.attrs.forEach(function(v, i){
 				var e = getElementById('create-points-' + v);
 				e.innerHTML = create.form[v] = create.base[v] = raceAttr[i];
@@ -573,7 +573,7 @@ var create;
 				ids += ', ';
 			}
 		});
-		$(ids).removeClass('disabled');
+		$(ids).removeClass(CSS.DISABLED);
 		// add active to selection
 		var e = $(".select-class:not(.disabled)"),
 			len = e.length;

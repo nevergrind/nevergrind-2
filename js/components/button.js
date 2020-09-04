@@ -116,7 +116,7 @@ var button;
 			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {
-			chat.log('This skill is not defined:' + name, 'chat-warning')
+			chat.log('This skill is not defined:' + name, CSS.CHAT_WARNING)
 		}
 	}
 	function handleSkillButtonClick() {

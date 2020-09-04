@@ -195,7 +195,7 @@
 						dots[0].damage *= .5
 						combat.txDotMob(dots)
 					}
-					// console.info('moltenBoulder', i, 'target', tgt, damages[0].damage)
+					// console.info('moltenBoulder', i, 'target', tgt, damages[Zero].damage)
 					combat.txDamageMob(damages)
 				})
 			})

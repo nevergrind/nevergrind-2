@@ -16,13 +16,11 @@ var expanse;
 		tweens: {},
 		initialized: false,
 		aspectRatio: 0,
-		maxWidth: 1920,
-		maxHeight: 1080,
 	}
 
 	var cloudSpeed = 777
 	const phaseDuration = 2000 // 20 minutes?
-	expanse.aspectRatio = expanse.maxWidth / expanse.maxHeight
+	expanse.aspectRatio = MaxWidth / MaxHeight
 	determineStartingPhase()
 	//////////////////////////////
 
@@ -94,7 +92,7 @@ var expanse;
 			*/
 
 			expanse.sky = new PIXI.Application({
-				width: 1920,
+				width: MaxWidth,
 				height: 517,
 				transparent: true
 			});
@@ -294,10 +292,10 @@ var expanse;
 		if (expanse.phase === 'morning') {
 			expanse.tweens.sunPosition = TweenMax.to(expanse.sun, phaseDuration, {
 				startAt: {
-					x: expanse.maxWidth * .65,
-					y: expanse.maxWidth * .5,
+					x: MaxWidth * .65,
+					y: MaxWidth * .5,
 				},
-				y: expanse.maxWidth * -.8,
+				y: MaxWidth * -.8,
 				ease: Power2.easeOut,
 				onComplete: triggerNextPhase
 			})
@@ -324,16 +322,16 @@ var expanse;
 		else if (expanse.phase === 'evening') {
 			// do nothing basically
 			TweenMax.set(expanse.sun, {
-				x: expanse.maxWidth * .65,
-				y: expanse.maxWidth * -.8,
+				x: MaxWidth * .65,
+				y: MaxWidth * -.8,
 			})
 			expanse.tweens.sunPosition = delayedCall(phaseDuration, triggerNextPhase)
 		}
 		else if (expanse.phase === 'night') {
 			// do nothing basically
 			TweenMax.set(expanse.sun, {
-				x: expanse.maxWidth * .65,
-				y: expanse.maxWidth * -.8,
+				x: MaxWidth * .65,
+				y: MaxWidth * -.8,
 			})
 			expanse.tweens.sunPosition = delayedCall(phaseDuration, triggerNextPhase)
 		}
@@ -343,25 +341,25 @@ var expanse;
 		TweenMax.set(expanse.moon, { pixi: { brightness: 1.25 }})
 		if (expanse.phase === 'morning') {
 			TweenMax.set(expanse.moon, {
-				x: expanse.maxWidth * .65,
-				y: expanse.maxWidth * -.8,
+				x: MaxWidth * .65,
+				y: MaxWidth * -.8,
 			})
 		}
 		else if (expanse.phase === 'evening') {
 			TweenMax.set(expanse.moon, {
-				x: expanse.maxWidth * .65,
-				y: expanse.maxWidth * -.8,
+				x: MaxWidth * .65,
+				y: MaxWidth * -.8,
 			})
 		}
 		else if (expanse.phase === 'night') {
 			expanse.tweens.moonPosition = TweenMax.to(expanse.moon, phaseDuration, {
 				delay: phaseDuration * .25,
-				y: expanse.maxWidth * -.8,
+				y: MaxWidth * -.8,
 				ease: Power2.easeOut,
 			})
 			TweenMax.set(expanse.moon, {
-				x: expanse.maxWidth * .65,
-				y: expanse.maxWidth * .5,
+				x: MaxWidth * .65,
+				y: MaxWidth * .5,
 				pixi: {
 					brightness: 1.25,
 					scale: 1.3,
@@ -382,14 +380,14 @@ var expanse;
 
 	function animateClouds() {
 		expanse.cloud1.x = 0
-		expanse.cloud2.x = 1920
+		expanse.cloud2.x = MaxWidth
 		expanse.tweens.cloud1 = TweenMax.to(expanse.cloud1, cloudSpeed / 2, {
-			x: -1920,
+			x: -MaxWidth,
 			ease: Linear.easeNone,
 			onComplete: function() {
 				TweenMax.to(expanse.cloud1, cloudSpeed, {
-					startAt: { x: 1920 },
-					x: -1920,
+					startAt: { x: MaxWidth },
+					x: -MaxWidth,
 					ease: Linear.easeNone,
 					repeat: -1
 				})
@@ -397,7 +395,7 @@ var expanse;
 		})
 
 		expanse.tweens.cloud2 = TweenMax.to(expanse.cloud2, cloudSpeed, {
-			x: -1920,
+			x: -MaxWidth,
 			ease: Linear.easeNone,
 			repeat: -1
 		})
@@ -452,7 +450,7 @@ var expanse;
 
 	function pixiResizeSky() {
 		expanse.sky.view.style.width = window.innerWidth + 'px';
-		expanse.sky.view.style.height = ~~(expanse.sky.screen.height / expanse.maxHeight * window.innerHeight) + 'px';
+		expanse.sky.view.style.height = ~~(expanse.sky.screen.height / MaxHeight * window.innerHeight) + 'px';
 	}
 	function resizeAll() {
 		pixiResizeSky()

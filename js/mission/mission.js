@@ -143,13 +143,13 @@ var mission;
 	function abandon() {
 		// clicked flag
 		if (!mission.inProgress) {
-			chat.log("You have not started a mission!", 'chat-warning');
+			chat.log("You have not started a mission!", CSS.CHAT_WARNING);
 		}
 		else if (!party.presence[0].isLeader) {
-			chat.log("Only party leaders can abandon missions, but you can /disband the party to quit.", 'chat-warning');
+			chat.log("Only party leaders can abandon missions, but you can /disband the party to quit.", CSS.CHAT_WARNING);
 		}
 		else if (ng.view !== 'dungeon') {
-			chat.log("You cannot abandon missions while in combat!", 'chat-warning');
+			chat.log("You cannot abandon missions while in combat!", CSS.CHAT_WARNING);
 		}
 		else {
 			socket.publish('party' + my.partyId, {
@@ -162,7 +162,7 @@ var mission;
 
 	function abandonReceived(data) {
 		// console.info('abandonReceived', data)
-		chat.log(data.msg, 'chat-warning')
+		chat.log(data.msg, CSS.CHAT_WARNING)
 		ng.msg(data.popupMsg, 4)
 		mission.abort()
 	}
@@ -170,7 +170,7 @@ var mission;
 		if (ng.view === 'dungeon') {
 			mission.inProgress = false
 			button.hide()
-			chat.log('Returning to town...', 'chat-warning')
+			chat.log('Returning to town...', CSS.CHAT_WARNING)
 			ng.lock(1)
 
 			// init client and transition back to town
@@ -216,7 +216,7 @@ var mission;
 		mission.questId = data.questId
 		town.closeVarious()
 
-		chat.log('Now departing for ' + zones[mission.id].name + '!', 'chat-warning')
+		chat.log('Now departing for ' + zones[mission.id].name + '!', CSS.CHAT_WARNING)
 		ng.lock(1)
 		TweenMax.to('#sky-wrap', 3, {
 			delay: 1,

@@ -5,6 +5,10 @@ const TYPE = Object.freeze({
 	FUNCTION: 'function',
 })
 const CSS = Object.freeze({
+	ACTIVE: 'active',
+	DISABLED: 'disabled',
+	CHAT_WARNING: 'chat-warning',
+	CHAT_ALERT: 'chat-alert',
 	DISPLAY_BLOCK: { display: 'block' },
 	DISPLAY_NONE: { display: 'none' },
 	DISPLAY_FLEX: { display: 'flex' },
@@ -40,4 +44,7 @@ const CLASS = Object.freeze({
 	WARLOCK: 'Warlock',
 	WARRIOR: 'Warrior',
 	WIZARD: 'Wizard',
+})
+const SELECTOR = Object.freeze({
+	MAIN_ATTACK_WRAP: '#main-attack-wrap',
 })

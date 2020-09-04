@@ -100,7 +100,7 @@ mobs.images = {
 		imgH: 1200,
 		imgCy: 420,
 		width: 1170,
-		height: 1080,
+		height: MaxHeight,
 		yFloor: -135,
 		yoyo: false,
 		cache: [],
@@ -820,7 +820,7 @@ mobs.images = {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 300,
-		width: 1080,
+		width: MaxHeight,
 		height: 900,
 		yFloor: -20,
 		yoyo: true,
@@ -1297,8 +1297,8 @@ mobs.images = {
 		enableSpecial: true
 	},
 	/*'cyclops': {
-		imgW: 1000,
-		imgH: 1000,
+		imgW: Thousand,
+		imgH: Thousand,
 		imgCy: 135,
 		width: 600,
 		height: 600,
