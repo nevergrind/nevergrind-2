@@ -14,33 +14,6 @@ var my;
 		initSkills,
 		getMyData,
 		saveCharacterData,
-		dataProps: [
-			'str',
-			'sta',
-			'agi',
-			'dex',
-			'wis',
-			'intel',
-			'cha',
-			'offense',
-			'defense',
-			'oneHandSlash',
-			'twoHandSlash',
-			'oneHandBlunt',
-			'twoHandBlunt',
-			'piercing',
-			'archery',
-			'handToHand',
-			'dodge',
-			'parry',
-			'riposte',
-			'dualWield',
-			'doubleAttack',
-			'alteration',
-			'conjuration',
-			'evocation',
-			'skills',
-		],
 		skills: void 0,
 		mouse: {
 			x: 0,
@@ -193,6 +166,6 @@ var my;
 		})
 	}
 	function getMyData() {
-		return _.pick(my, my.dataProps)
+		return _.pick(my, KEYS.MY_PROPS)
 	}
 }($, _, TweenMax);

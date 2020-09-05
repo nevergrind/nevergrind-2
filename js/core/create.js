@@ -608,9 +608,7 @@ var create;
 		setFace()
 	}
 	function setFace() {
-		var obj = _.pick(create.form, [
-			'gender', 'race', 'face'
-		])
+		var obj = _.pick(create.form, KEYS.SET_FACE)
 		obj.gender = obj.gender === 'Male' ? 0 : 1
 		getElementById('create-portrait').src = my.getAvatarUrl(obj)
 	}

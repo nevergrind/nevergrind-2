@@ -18,6 +18,7 @@ var socket;
 
 	let len, secs
 
+	const realm = 'realm1'
 	let broadcasts = []
 	const excludeObj = { exclude_me: true }
 	const includeObj = { exclude_me: false }
@@ -91,7 +92,7 @@ var socket;
 	function init() {
 		socket.connection = new autobahn.Connection({
 			url: app.socketUrl,
-			realm: 'realm1'
+			realm: realm
 		});
 		socket.connection.onopen = connectionSuccess;
 		socket.connection.open();

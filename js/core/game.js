@@ -36,18 +36,6 @@ var game;
 		interval: 5,
 		activate,
 	}
-	const partyProps = [
-		'name',
-		'hp',
-		'hpMax',
-		'mp',
-		'mpMax',
-		'sp',
-		'spMax',
-		'job',
-		'partyId',
-		'avatar'
-	]
 	const scenes = ['#scene-town', '#scene-dungeon', '#scene-battle']
 	const filterBrightnessDark = { filter: 'brightness(0)' }
 	var played = {
@@ -136,7 +124,7 @@ var game;
 		}
 		partyData = {
 			...obj,
-			..._.pick(my, partyProps)
+			..._.pick(my, KEYS.PARTY_PROPS)
 		}
 		socket.publish('party' + my.partyId, partyData)
 	}

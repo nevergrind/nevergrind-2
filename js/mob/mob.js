@@ -257,10 +257,7 @@ var mob;
 			modifyMobStatsByClass(mobConfig)
 			// console.info('mobConfig omit some props?', mobConfig)
 
-			mob.txData[i] = _.omit(mobConfig, [
-				'maxLevel',
-				'minLevel',
-			])
+			mob.txData[i] = _.omit(mobConfig, KEYS.MOB_OMIT)
 		}
 		// console.info('p->goBattle', mobConfig)
 		cache.preloadMob(mobConfig.img)

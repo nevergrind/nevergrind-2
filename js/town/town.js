@@ -123,7 +123,7 @@ var town;
 			}).done(function(data) {
 				// console.info('load-character: ', data)
 				// my processing
-				Object.assign(my, _.omit(data.characterData, ['data']))
+				Object.assign(my, _.omit(data.characterData, KEYS.DATA))
 				data.characterData.data = JSON.parse(data.characterData.data)
 				for (key in data.characterData.data) {
 					my[key] = data.characterData.data[key]

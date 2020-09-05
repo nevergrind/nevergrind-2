@@ -934,7 +934,7 @@ var loot = {};
 		$.post(app.url + 'item/loot-item.php', {
 			slot: slot,
 			name: drop.name,
-			data: JSON.stringify(_.omit(drop, ['name'])),
+			data: JSON.stringify(_.omit(drop, KEYS.NAME)),
 		}).done(data => {
 			processNewItemToInv({
 				slot: slot,
@@ -1826,7 +1826,7 @@ var loot = {};
 			gold: my.gold - item.goldValue,
 			slot: buyItemSlot,
 			name: item.dragData.name,
-			data: JSON.stringify(_.omit(item.dragData, ['name'])),
+			data: JSON.stringify(_.omit(item.dragData, KEYS.NAME)),
 		}).done(data => {
 			querySelector('#various-description').innerHTML = 'Thank you for buying ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!'
 			processNewItemToInv({
@@ -1902,9 +1902,7 @@ var loot = {};
 	}
 	function handleItemSlotContextClick(event) {
 		if (item.awaitingDrop || item.isDragging) return false
-		var {index, type} = _.pick(event.currentTarget.dataset, [
-			'index', 'type'
-		])
+		var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
 		if (items[type][index].use) {
 			useItem(type, index)
 		}
@@ -2009,7 +2007,7 @@ var loot = {};
 			ng.lock(true)
 			$.post(app.url + 'item/update-item-data.php', {
 				itemRow: items[itemType][itemSlot].row,
-				data: JSON.stringify(_.omit(newItem, ['name'])),
+				data: JSON.stringify(_.omit(newItem, KEYS.NAME)),
 				scrollRow: items[scrollType][scrollIndex].row,
 			}).done(resp => {
 				// console.info('okokokok', resp)

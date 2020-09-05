@@ -420,13 +420,6 @@ var combat;
 	function filterImpossibleMobTargets(m) {
 		return m.index >=0 && m.index < mob.max && mob.isAlive(m.index)
 	}
-	const damageKeys = [
-		'damage',
-		'key',
-		'index',
-		'row',
-		'effects'
-	]
 	function txDamageMob(damages) {
 		damages = damages.filter(filterImpossibleMobTargets).map(processDamagesMob)
 		// console.warn('txDamageMob', damages)
@@ -456,7 +449,7 @@ var combat;
 		if (damageArr.length) {
 			let damageData = {
 				route: 'p->damage',
-				damages: damageArr.map(dam => _.pick(dam, damageKeys))
+				damages: damageArr.map(dam => _.pick(dam, KEYS.DAMAGE_MOB))
 			}
 			// optionally adds buffs key if it exists
 			if (buffArr.length) damageData.buffs = buffArr
@@ -481,11 +474,7 @@ var combat;
 		}
 		buffArr.length && battle.processBuffs(buffArr)
 	}
-	const dotKeys = [
-		'damage',
-		'index',
-		'level',
-	]
+
 	function txDotMob(damages) {
 		// only checks dodge?
 		// console.info('txDotMob 1', damages)
@@ -502,7 +491,7 @@ var combat;
 		// console.info('txDotMob 2', damages)
 		// optionally adds buffs key if it exists
 		if (damageArr.length) {
-			damageArr = damageArr.map(dam => _.pick(dam, dotKeys))
+			damageArr = damageArr.map(dam => _.pick(dam, KEYS.DOT_MOB))
 			let dotData = {
 				route: 'p->dot',
 				key: damages[0].key,
@@ -848,10 +837,9 @@ var combat;
 		}
 	}
 
-	const healKeys = ['damage', 'index', 'key']
 	function txHotHero(data) {
 		// damages is an object with indices that point to player row (target)
-		data = data.map(heal => _.pick(heal, healKeys))
+		data = data.map(heal => _.pick(heal, KEYS.HEAL_HERO))
 		// console.info('txHotHero', data)
 		socket.publish('party' + my.partyId, {
 			route: 'p->heal',
@@ -951,7 +939,7 @@ var combat;
 	// buff hero
 	function txBuffHero(data) {
 		// console.info('txBuffHero', data)
-		data = data.map(buff => _.pick(buff, ['damage', 'index', 'key', 'level']))
+		data = data.map(buff => _.pick(buff, KEYS.BUFF_HERO))
 		socket.publish('party' + my.partyId, {
 			route: 'p->buff',
 			row: my.row,

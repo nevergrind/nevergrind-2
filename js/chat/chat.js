@@ -216,9 +216,7 @@ var chat;
 		chat.isClicked = false;
 	}
 	function handlePlayerClick(event) {
-		var {row, name} = _.pick(event.currentTarget.dataset, [
-			'row', 'name'
-		])
+		var {row, name} = _.pick(event.currentTarget.dataset, KEYS.PLAYER_CLICK)
 		context.player.name = name
 		context.player.row = row * 1
 		// console.info(this)

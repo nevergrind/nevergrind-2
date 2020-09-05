@@ -63,8 +63,8 @@ var academy;
 	}
 	function handleRankClick(e) {
 		selected = {
-			index: _.pick(e.currentTarget.dataset, 'index').index,
-			rank: _.pick(e.currentTarget.dataset, 'rank').rank * 1,
+			index: _.pick(e.currentTarget.dataset, KEYS.INDEX).index,
+			rank: _.pick(e.currentTarget.dataset, KEYS.RANK).rank * 1,
 		}
 		selected.cost = trainCosts[selected.rank]
 

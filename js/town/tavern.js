@@ -144,7 +144,7 @@ var tavern;
 	}
 
 	function handleClickTips(event) {
-		key = _.camelCase(_.pick(event.currentTarget.dataset, ['id']).id)
+		key = _.camelCase(_.pick(event.currentTarget.dataset, KEYS.ID).id)
 		setDescriptionStyle()
 		typeof tips[key] === TYPE.STRING && ng.splitText('various-description', tips[key])
 	}

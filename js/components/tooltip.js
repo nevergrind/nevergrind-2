@@ -359,9 +359,7 @@ var tooltip;
 		tooltipEl.innerHTML = ''
 	}
 	function handleItemEnter(event) {
-		var {index, type} = _.pick(event.currentTarget.dataset, [
-			'index', 'type'
-		])
+		var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
 		tooltip.lastHoveredType = type
 		tooltip[type].isHovering = true
 		if (items[type][index].name) {
@@ -369,9 +367,7 @@ var tooltip;
 		}
 	}
 	function handleItemLeave(event) {
-		var {index, type} = _.pick(event.currentTarget.dataset, [
-			'index', 'type'
-		])
+		var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
 		tooltip[type].isHovering = false
 		tooltip.hide()
 	}
