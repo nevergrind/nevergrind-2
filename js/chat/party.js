@@ -279,7 +279,8 @@ var party;
 		my.isLeader = party.presence[0].isLeader = false;
 		my.partyId = data.row;
 		party.listen(data.row);
-		chat.log("You have joined the party.", CSS.CHAT_WARNING);
+		chat.log("You have joined the party.", CSS.CHAT_WARNING)
+		query.resetCache()
 		delayedCall(.1, () => {
 			socket.publish('party' + my.partyId, {
 				msg: my.name + ' has joined the party.',

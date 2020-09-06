@@ -45,6 +45,7 @@ var button;
 	function processButtonTimers(index, skillData) {
 		let el = querySelector('#skill-timer-' + index + '-rotate')
 		// processButtonTimers
+		console.info('processButtonTimers', index, skillData)
 		TweenMax.set(el, CSS.DISPLAY_BLOCK)
 		let args = {
 			el: el,
@@ -150,7 +151,7 @@ var button;
 			}
 		}
 
-		if (typeof index === 'undefined') {
+		if (typeof index === Undefined) {
 			// ripostes target index - makes it possible to riposte while targeting party
 			my.fixTarget()
 			if (my.target === -1) return
@@ -221,7 +222,7 @@ var button;
 		startSwing('secondaryAttack')
 	}
 	function cannotAutoAttack() {
-		return timers.castBar < 1 ||
+		return (my.job !== 'BRD' && timers.castBar < 1) ||
 			!my.targetIsMob ||
 			my.buffFlags.frozenBarrier
 	}
@@ -240,7 +241,7 @@ var button;
 			el = querySelector('#skill-timer-secondary-rotate')
 		}
 
-		if (timers.castBar < 1) {
+		if (my.job !== 'BRD' && timers.castBar < 1) {
 			timers[key + CALL].kill()
 			timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
 			return
@@ -271,10 +272,12 @@ var button;
 		timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
 	}
 	function pauseAutoAttack() {
-		timers['primaryAttack' + CYCLE].pause()
-		timers['secondaryAttack' + CYCLE].pause()
-		timers['primaryAttack' + CALL].pause()
-		timers['secondaryAttack' + CALL].pause()
+		if (my.job !== 'BRD') {
+			timers['primaryAttack' + CYCLE].pause()
+			timers['secondaryAttack' + CYCLE].pause()
+			timers['primaryAttack' + CALL].pause()
+			timers['secondaryAttack' + CALL].pause()
+		}
 	}
 	function resumeAutoAttack() {
 		timers['primaryAttack' + CYCLE].resume()
@@ -306,9 +309,6 @@ var button;
 	}
 
 	function handleButtonUpdate(o) {
-		/*if (o.type === 'singleGlobal') {
-
-		}*/
 		if (typeof o.index === TYPE.NUMBER) {
 			// skill
 			TweenMax.set(o.el, {

@@ -252,7 +252,7 @@ var tavern;
 		}
 		this.classList.add(CSS.ACTIVE)
 		selectedLeaderboard = this.id
-		if (typeof tavern.leaders[selectedLeaderboard] === 'undefined') {
+		if (typeof tavern.leaders[selectedLeaderboard] === Undefined) {
 			getLeaders(selectedLeaderboard)
 		}
 		else querySelector('#tavern-leaderboard-body').innerHTML = leaderboardBodyHtml(tavern.leaders[selectedLeaderboard])

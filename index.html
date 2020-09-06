@@ -464,10 +464,12 @@ app.socketUrl = app.isApp ?
 </div>
 <div id="cast-bar-wrap" class="flex-column no-pointer">
 	<div id="cast-bar-base" class="flex-column flex-max stag-blue">
-		<div>CASTING</div>
-		<div id="cast-bar-bg">
-			<div id="cast-bar"></div>
-			<div class="mob-health-grid"></div>
+		<div id="cast-bar-flex">
+			<img id="cast-bar-icon" />
+			<div id="cast-bar-parent">
+				<div id="cast-bar"></div>
+				<div id="cast-bar-name" class="text-shadow3"></div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -482,7 +484,23 @@ app.socketUrl = app.isApp ?
 </div>
 <div id="chat-wrap" class="text-shadow"></div>
 <div id="button-wrap" class="no-select text-shadow"></div>
-<div id="mob-target-wrap" class="text-shadow3"></div>
+<div id="mob-target-wrap" class="text-shadow3">
+	<div id="mob-target-name" class=""></div>
+	<div id="mob-target-bar-wrap">
+		<div id="mob-target-hp-wrap">
+			<div id="mob-target-hp"></div>
+			<div class="mob-health-grid"></div>
+		</div>
+		<img id="mob-target-hp-plate" class="mob-plate-" src="images/ui/bar-normal.png">
+	</div>
+	<!--<div id="mob-target-level"></div>-->
+	<div id="mob-target-percent">0%</div>
+	<div id="mob-target-details">
+		<div id="mob-target-traits"></div>
+		<div id="mob-target-buffs"></div>
+	</div>
+</div>
+
 <div id="mybuff-wrap" class="no-select"></div>
 
 <!-- tooltips, popovers, context menus things -->
@@ -533,6 +551,7 @@ app.socketUrl = app.isApp ?
 			// app files
 			'values/constants',
 			'values/enums',
+			'util/query',
 			'core/alias',
 			'core/login',
 			'core/create',

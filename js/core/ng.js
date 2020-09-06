@@ -762,7 +762,7 @@ var ng;
 					'<img class="title-select-chevron" src="images/ui/chevron-left.png">' +
 				'</div>' +
 				'<div id="selected-ch-card" data-row="'+ d.row +'" data-name="'+ d.name +'" class="ch-card center select-player-card text-center">' +
-					'<img class="avatar-title" src="'+ url +'" style="padding:0 .5rem">' +
+					'<img class="avatar-title" src="'+ url +'" style="padding: 0 .5rem 0 0">' +
 					'<div class="flex-column flex-max" style="padding: .2rem .5rem; justify-content: space-around">' +
 						'<div class="ch-card-name">'+ _.capitalize(d.name) +'</div>' +
 						'<div class="ch-card-level">Level '+ d.level +'</div>' +

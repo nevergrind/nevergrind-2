@@ -4,11 +4,17 @@ const TYPE = Object.freeze({
 	NUMBER: 'number',
 	FUNCTION: 'function',
 })
+const CHAT = Object.freeze({
+	SAY: { mode: '/say' },
+	PARTY: { mode: '/party' },
+})
 const CSS = Object.freeze({
 	ACTIVE: 'active',
 	DISABLED: 'disabled',
 	CHAT_WARNING: 'chat-warning',
 	CHAT_ALERT: 'chat-alert',
+	CASTBAR_ZERO: { castBar: 0 },
+	X_ZERO: { x: '-100%' },
 	DISPLAY_BLOCK: { display: 'block' },
 	DISPLAY_NONE: { display: 'none' },
 	DISPLAY_FLEX: { display: 'flex' },
@@ -44,9 +50,6 @@ const CLASS = Object.freeze({
 	WARLOCK: 'Warlock',
 	WARRIOR: 'Warrior',
 	WIZARD: 'Wizard',
-})
-const SELECTOR = Object.freeze({
-	MAIN_ATTACK_WRAP: '#main-attack-wrap',
 })
 const KEYS = Object.freeze({
 	DATA: ['data'],

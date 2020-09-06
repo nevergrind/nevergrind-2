@@ -374,15 +374,14 @@ var mob;
 	}
 	function drawMobBar(index, drawInstant) {
 		percent = bar.getRatio('hp', mobs[index])
-		TweenMax.to('#mob-health-' + index, drawInstant ? 0 : .15, {
+		TweenMax.to(query.el('#mob-health-' + index), drawInstant ? 0 : .15, {
 			x: '-' + percent + '%'
 		})
 		if (my.targetIsMob && index === my.target) drawTargetBar(percent, drawInstant)
 	}
 	function drawTargetBar(percent, drawInstant) {
-		el = querySelector('#mob-target-percent')
-		if (el !== null) el.innerHTML = ceil(100 - percent) + '%'
-		TweenMax.to('#mob-target-hp', drawInstant ? 0 : .15, {
+		query.el('#mob-target-percent').innerHTML = ceil(100 - percent) + '%'
+		TweenMax.to(query.el('#mob-target-hp'), drawInstant ? 0 : .15, {
 			x: '-' + percent + '%'
 		})
 	}
@@ -491,7 +490,7 @@ var mob;
 	function hit(i, bypass, damage) {
 		if (ng.view !== 'battle') return
 		setTimeScaleSpeed(i)
-		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return;
+		if (typeof bypass === Undefined && mobs[i].isAnimationActive) return;
 
 		if (!timers.mobEffects[i].freezeDuration &&
 			damage > (2 + (mobs[i].level * .75))) {
@@ -729,7 +728,7 @@ var mob;
 		return config.level * val / mob.maxLevel
 	}
 	function modifyMobStatsByClass(config) {
-		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR
+		//if (typeof config.job === Undefined) config.job = JOB.WARRIOR
 		// base resources
 		config.hp = ~~((25 + ((config.level - 1) * 220) * config.hp) * party.presence.length)
 		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)

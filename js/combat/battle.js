@@ -51,7 +51,6 @@ var battle;
 		addMyBuff,
 		removeMyBuffIcon,
 		removeMyBuffFlag,
-		setTargetHtml,
 		hideTarget,
 		showTarget,
 		killAllBattleTimers,
@@ -67,14 +66,12 @@ var battle;
 		subtractExpPenalty,
 		getDeathPenaltyRatio,
 	}
-	var mobTargetWrap = querySelector('#mob-target-wrap')
 	let index, buffHtml, traitHtml, buffEl, key, keyRow, el, i
 	let tgt = {}
 	let ratio = 0
 	let mobBuffData = {}
 	let leveled = false
 	let penalty = 0
-	let cache = {}
 	let battleSceneInitialized = false
 	const flashDuration = 10
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
@@ -163,11 +160,10 @@ var battle;
 	function drawExpBar(duration, dur) {
 		duration = typeof duration === TYPE.NUMBER ? duration : .3
 		dur = typeof dur === TYPE.NUMBER ? dur : duration * 1.5
-		if (!cache.expBar) cache.expBar = querySelector('#exp-bar')
-		TweenMax.to(cache.expBar, duration, {
+		TweenMax.to(query.el('#exp-bar'), duration, {
 			x: getExpBarRatio() + '%',
 		})
-		TweenMax.to(cache.expBar, dur, {
+		TweenMax.to(query.el('#exp-bar'), dur, {
 			startAt: { filter: 'saturate(2) brightness(2)' },
 			filter: 'saturate(1) brightness(1)',
 			repeat: 1,
@@ -226,7 +222,7 @@ var battle;
 		mob.init()
 		game.sceneCleanup('scene-battle')
 		if (chat.modeCommand === '/say') {
-			chat.modeChange({ mode: '/party' })
+			chat.modeChange(CHAT.PARTY)
 		}
 
 		querySelector('#town-footer-wrap').style.display = 'none'
@@ -362,14 +358,11 @@ var battle;
 			}
 		})
 	}
-	function setTargetHtml(html) {
-		mobTargetWrap.innerHTML = html
-	}
 	function showTarget() {
-		mobTargetWrap.style.display = 'flex'
+		query.el('#mob-target-wrap').style.display = 'flex'
 	}
 	function hideTarget() {
-		mobTargetWrap.style.display = 'none'
+		query.el('#mob-target-wrap').style.display = 'none'
 	}
 	let targetHtml = ''
 	function updateTarget(drawInstant) {
@@ -395,27 +388,19 @@ var battle;
 				}
 
 			}
-			targetHtml = '<div id="mob-target-name" class="' + tgt.class + '">' + tgt.name + '</div>' +
-				'<div id="mob-target-bar-wrap">' +
-				'<div id="mob-target-hp-wrap">' +
-				'<div id="mob-target-hp"></div>' +
-				'<div class="mob-health-grid"></div>' +
-				'</div>' +
-				'<img id="mob-target-hp-plate" class="mob-plate-' + tgt.type + '" src="images/ui/bar-' + tgt.type + '.png">' +
-				'</div>' +
-				//'<div id="mob-target-level">'+ mobs[my.target].level +'</div>' +
-				'<div id="mob-target-percent">' + tgt.hp + '%</div>' +
-				'<div id="mob-target-details">' +
-				'<div id="mob-target-traits">' + tgt.traits + '</div>' +
-				'<div id="mob-target-buffs">' + tgt.buffs + '</div>' +
-			'</div>'
+			query.el('#mob-target-name').className = tgt.class
+			query.el('#mob-target-name').textContent = tgt.name
+			query.el('#mob-target-hp-plate').className = 'mob-plate-' + tgt.type
+			query.el('#mob-target-hp-plate').src = 'images/ui/bar-' + tgt.type + '.png'
+			query.el('#mob-target-percent').textContent = tgt.hp + '%'
+			query.el('#mob-target-traits').innerHTML = tgt.traits
+			query.el('#mob-target-buffs').innerHTML = tgt.buffs
 			showTarget()
-			// console.info('updateTarget', my.target)
 		}
 		else {
 			hideTarget()
 		}
-		setTargetHtml(targetHtml)
+
 		if (my.targetIsMob) {
 			startBuffTimers()
 			mob.drawMobBar(my.target, drawInstant)
@@ -560,7 +545,7 @@ var battle;
 	///////////////////////// myBuffs
 	function addMyBuff(key, keyRow) {
 		// buffs that can only be active once
-		if (typeof keyRow === 'undefined') keyRow = key
+		if (typeof keyRow === Undefined) keyRow = key
 		// console.info('addMyBuff', key, keyRow)
 
 		el = createElement('div')
@@ -626,7 +611,7 @@ var battle;
 		 * Buff naturally times out via duration
 		 */
 		// console.info('removeMyBuff', key, keyRow)
-		if (typeof keyRow === 'undefined') keyRow = key
+		if (typeof keyRow === Undefined) keyRow = key
 		// only when it has DURATION
 		if (typeof my.buffIconTimers[keyRow] === TYPE.OBJECT) {
 			my.buffIconTimers[keyRow].kill()

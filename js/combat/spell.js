@@ -106,11 +106,12 @@ var spell;
 		spell.callbackFn = callbackFn
 		spell.index = index
 		spell.data = data
+		// console.info('startCasting', spell.data)
 		spell.castTime = data.castTime
 		castBarWrap.style.opacity = 1
-		TweenMax.set(castBar, { x: '-100%' })
+		TweenMax.set(castBar, CSS.X_ZERO)
 		spell.timer = TweenMax.to(timers, getCastSpeed(), {
-			startAt: { castBar: 0 },
+			startAt: CSS.CASTBAR_ZERO,
 			castBar: 1,
 			onUpdate: updateSpellBar,
 			ease: Power0.easeIn,
@@ -120,6 +121,9 @@ var spell;
 		if (!spell.config.cannotFizzle || !ng.isApp) {
 			checkSpellFizzle()
 		}
+
+		query.el('#cast-bar-icon').src = 'images/skills/'+ my.job +'/'+ spell.index +'.png'
+		query.el('#cast-bar-name').textContent = spell.data.name
 	}
 	function spellFizzleChance() {
 		spellType = skills[my.job][spell.index].spellType

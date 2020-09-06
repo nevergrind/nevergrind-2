@@ -1,92 +1,240 @@
 !function($, _, TweenMax, undefined) {
 	skill.BRD = {
-		crossSlash,
-		explosiveShot,
-		trueshotArrow,
-		spreadShot,
-		bladeStorm,
-		suppressingVolley,
-		ignite,
-		shockNova,
-		faerieFlame,
-		fungalGrowth,
-		shimmeringOrb,
-		spiritOfTheHunter,
+		bellow,
+		sonicBoom,
+		euphonicDirge,
+		subvertedSymphony,
+		crashingChords,
+		battleHymn,
+		victoryJaunt,
+		shackleChords,
+		litanyOfLife,
+		melodyOfMana,
+		righteousRhapsody,
+		chromaticSonnet,
 	}
 	///////////////////////////////////////////
-	let arr, damage, damages, enhancedDamage
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam
 	///////////////////////////////////////////
-	function crossSlash(index, data) {
-		// console.info('crossSlash', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function bellow(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, bellowCompleted)
 	}
-
-	function explosiveShot(index, data) {
-		// console.info('explosiveShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function bellowCompleted() {
+		damages = [{
+			key: 'bellow',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}]
+		if (rand() > .75) {
+			damages[0].effects = { stagger: true }
+		}
+		combat.txDamageMob(damages)
 	}
-	function trueshotArrow(index, data) {
-		// console.info('trueshotArrow', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function sonicBoom(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, sonicBoomCompleted)
 	}
-	function spreadShot(index, data) {
-		// console.info('spreadShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function sonicBoomCompleted() {
+		splashIndex = -1
+		damages = []
+		for (i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			damages.push({
+				key: 'sonicBoom',
+				index: tgt,
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage(),
+				buffs: [{
+					i: tgt, // target
+					row: my.row, // this identifies unique buff state/icon
+					key: 'stun', // this sets the flag,
+					duration: 3,
+				}],
+			})
+		}
+		combat.txDamageMob(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
-	function bladeStorm(index, data) {
-		// console.info('bladeStorm', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function euphonicDirge(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, euphonicDirgeCompleted)
 	}
-	function suppressingVolley(index, data) {
-		// console.info('suppressingVolley', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function euphonicDirgeCompleted() {
+		combat.txDamageMob([{
+			key: 'euphonicDirge',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function ignite(index, data) {
-		// console.info('ignite', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function subvertedSymphony(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, subvertedSymphonyCompleted)
 	}
-	function shockNova(index, data) {
-		// console.info('shockNova', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function subvertedSymphonyCompleted() {
+		combat.txDamageMob([{
+			key: 'subvertedSymphony',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function faerieFlame(index, data) {
-		// console.info('faerieFlame', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function crashingChords(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, crashingChordsCompleted)
 	}
-	function fungalGrowth(index, data) {
-		// console.info('fungalGrowth', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function crashingChordsCompleted() {
+		combat.txDamageMob([{
+			key: 'crashingChords',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
-	function shimmeringOrb(index, data) {
-		// console.info('shimmeringOrb', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function battleHymn(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, battleHymnCompleted)
 	}
-	function spiritOfTheHunter(index, data) {
-		// console.info('spiritOfTheHunter', index)
-		// check constraints
-		// process skill data
-		// animate timers
+	function battleHymnCompleted() {
+		combat.txDamageMob([{
+			key: 'battleHymn',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function victoryJaunt(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, victoryJauntCompleted)
+	}
+	function victoryJauntCompleted() {
+		combat.txDamageMob([{
+			key: 'victoryJaunt',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function shackleChords(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, shackleChordsCompleted)
+	}
+	function shackleChordsCompleted() {
+		combat.txDamageMob([{
+			key: 'shackleChords',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function litanyOfLife(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, litanyOfLifeCompleted)
+	}
+	function litanyOfLifeCompleted() {
+		combat.txDamageMob([{
+			key: 'litanyOfLife',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function melodyOfMana(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, melodyOfManaCompleted)
+	}
+	function melodyOfManaCompleted() {
+		combat.txDamageMob([{
+			key: 'melodyOfMana',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function righteousRhapsody(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, righteousRhapsodyCompleted)
+	}
+	function righteousRhapsodyCompleted() {
+		combat.txDamageMob([{
+			key: 'righteousRhapsody',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
+	}
+	function chromaticSonnet(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, chromaticSonnetCompleted)
+	}
+	function chromaticSonnetCompleted() {
+		combat.txDamageMob([{
+			key: 'chromaticSonnet',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 }($, _, TweenMax);

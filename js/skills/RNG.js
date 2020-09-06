@@ -201,7 +201,7 @@
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(spell.config)) return
+		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, igniteCompleted)
 	}
 	function igniteCompleted() {
@@ -225,7 +225,7 @@
 			...spell.getDefaults(index, data),
 			anyTarget: true,
 		}
-		if (skills.notReady(spell.config)) return
+		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, shockNovaCompleted)
 	}
 	function shockNovaCompleted() {
@@ -243,13 +243,14 @@
 			}
 		}
 		combat.txDamageMob(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function faerieFlame(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(spell.config)) return
+		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, faerieFlameCompleted)
 	}
 	function faerieFlameCompleted() {

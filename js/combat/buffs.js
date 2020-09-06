@@ -712,6 +712,18 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'Spiritual insight gives you a charismatic aura.',
 			fadeMsg: 'Your charismatic aura fades.'
 		},
+		bellow: { hate: 1.25 },
+		sonicBoom: { hate: 1.5 },
+		euphonicDirge: { hate: 1 },
+		subvertedSymphony: { hate: 1 },
+		crashingChords: { hate: 1 },
+		battleHymn: { hate: 1 },
+		victoryJaunt: { hate: 1 },
+		shackleChords: { hate: 1 },
+		litanyOfLife: { hate: 1 },
+		melodyOfMana: { hate: 1 },
+		righteousRhapsody: { hate: 1 },
+		chromaticSonnet: { hate: 1 },
 	}
 	///////////////////////////////////////////
 

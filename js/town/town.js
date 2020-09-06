@@ -137,7 +137,7 @@ var town;
 				initItemData(data.inv, 'inv')
 				initItemData(data.eq, 'eq')
 
-				if (typeof my.handToHand === 'undefined') {
+				if (typeof my.handToHand === Undefined) {
 					my.handToHand = 1
 					my.saveCharacterData()
 				}

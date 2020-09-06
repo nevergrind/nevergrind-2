@@ -184,7 +184,7 @@ var combat;
 		else return my.target >= 0
 	}
 	function processDamagesMob(d) {
-		if (typeof mobs[d.index] === 'undefined' || !mobs[d.index].name || my.hp <= 0) {
+		if (typeof mobs[d.index] === Undefined || !mobs[d.index].name || my.hp <= 0) {
 			d.damage = 0
 			return d
 		}
@@ -334,13 +334,13 @@ var combat;
 		my.isAutoAttacking = true
 		button.primaryAttack()
 		button.secondaryAttack()
-		el = querySelector(SELECTOR.MAIN_ATTACK_WRAP)
+		el = querySelector('#main-attack-wrap')
 		el.classList.remove(CSS.ACTIVE)
 		el.classList.add(CSS.ACTIVE)
 	}
 	function autoAttackDisable() {
 		my.isAutoAttacking = false
-		el = querySelector(SELECTOR.MAIN_ATTACK_WRAP)
+		el = querySelector('#main-attack-wrap')
 		el.classList.remove(CSS.ACTIVE)
 	}
 	function endCombat() {
@@ -967,7 +967,7 @@ var combat;
 					if (buff.level < my.buffs[key].level) {
 						// buff is lower level -
 						if (//no timer but has damage
-							typeof my.buffs[key].duration === 'undefined' && my.buffs[key].damage > 0 ||
+							typeof my.buffs[key].duration === Undefined && my.buffs[key].damage > 0 ||
 							// timer-based active
 							my.buffs[key].duration > 0) {
 							// duration not defined or still active

@@ -1970,7 +1970,7 @@ var loot = {};
 			resetDrop()
 			return
 		}
-		if (typeof item.dragData.unidentified === 'undefined' ||
+		if (typeof item.dragData.unidentified === Undefined ||
 			item.dragData.unidentified === false) {
 			chat.log('That item\'s properties are already known.', CSS.CHAT_WARNING)
 			resetDrop()
@@ -1990,7 +1990,7 @@ var loot = {};
 		identifyItem(index, 'inv', item.dragSlot, item.dragType)
 	}
 	function identifyItem(scrollIndex, scrollType, itemSlot, itemType) {
-		if (typeof itemSlot === 'undefined') {
+		if (typeof itemSlot === Undefined) {
 			itemSlot = getFirstUnidentifiedItemSlot()
 		}
 		// console.warn('identify item!', itemSlot)

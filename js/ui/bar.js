@@ -446,10 +446,10 @@ var bar;
 	}
 	function updateBar(type, data) {
 		percent = getRatio(type, data)
-		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
+		TweenMax.to(query.el('#bar-' + type + '-fg-' + data.row), .1, {
 			x: '-' + percent + '%'
 		})
-		querySelector('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
+		query.el('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
 		if (type === 'hp' &&
 			typeof data === TYPE.OBJECT &&
 			(!my.targetIsMob && my.target === data.row) ||
@@ -831,7 +831,7 @@ var bar;
 	}
 
 	function addPlayer(player, index) {
-		if (typeof bar.dom[index] === 'undefined') {
+		if (typeof bar.dom[index] === Undefined) {
 			var el = createElement('div');
 			el.id = 'bar-player-wrap-' + index;
 			el.className = 'bar-player-wrap';

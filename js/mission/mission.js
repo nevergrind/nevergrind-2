@@ -186,9 +186,7 @@ var mission;
 					game.getPresence()
 					delayedCall(.5, function() {
 						game.updateChat()
-						chat.modeChange({
-							mode: '/say'
-						})
+						chat.modeChange(CHAT.SAY)
 					})
 					ng.unlock()
 				}

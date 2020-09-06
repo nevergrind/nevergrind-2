@@ -69,7 +69,7 @@ var trade;
 			action: 'trade-update',
 			data: data
 		}
-		if (typeof slot !== 'undefined') tradeData.slot = slot
+		if (typeof slot !== Undefined) tradeData.slot = slot
 		socket.publish('name' + trade.data.name, tradeData);
 	}
 	function updateToItem(obj) {

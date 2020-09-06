@@ -35,9 +35,7 @@ var dungeon;
 		my.channel = ''
 		// force change to party chat if in town chat
 		if (chat.modeCommand === '/say') {
-			chat.modeChange({
-				mode: '/party'
-			})
+			chat.modeChange(CHAT.PARTY)
 		}
 		chat.sizeSmall()
 		ng.setScene('dungeon')
