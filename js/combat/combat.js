@@ -257,6 +257,7 @@ var combat;
 			// higher REDUCES armor
 			if (mobs[d.index].buffFlags.igniteArmor) mobArmor += .15
 			if (mobs[d.index].buffFlags.bloodFire) mobArmor += .1
+			if (mobs[d.index].buffFlags.subvertedSymphony) mobArmor += .12
 
 			if (mobArmor > 1) mobArmor = 1
 			// console.info('mobArmor', d.index, mobArmor)
@@ -428,7 +429,8 @@ var combat;
 		len = damages.length
 		myDamage = 0
 		for (i=0; i<len; i++) {
-			if (damages[i].damage > 0 || damages[i].isBuff) {
+			if (damages[i].damage > 0 ||
+				typeof buffs[damages[i].key] === TYPE.OBJECT && buffs[damages[i].key].isDebuff) {
 				myDamage += damages[i].damage
 				damages[i].row = my.row
 				if (typeof damages[i].buffs === TYPE.OBJECT) {
@@ -798,6 +800,7 @@ var combat;
 		})
 	}
 	function popupDamage(index, damage, isCrit) {
+		if (damage <= 0) return
 		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)
 		basicText.anchor.set(0.5)
 		basicText.id = 'text-' + combat.textId++
@@ -1033,7 +1036,8 @@ var combat;
 			txHpChange()
 		}
 		else if (key === 'zealousResolve') {
-			cacheBustArmor()
+			stats.armor(true)
+			updateCharStatColOne()
 			my.set('hpMax', stats.hpMax())
 			bar.updateBar('hp', my)
 			txHpChange()
@@ -1043,7 +1047,8 @@ var combat;
 			stats.magMit(true)
 		}
 		else if (key === 'intrepidShout') {
-			cacheBustArmor()
+			stats.armor(true)
+			updateCharStatColOne()
 			stats.resistFear(true)
 		}
 		else if (key === 'frozenBarrier') {
@@ -1064,8 +1069,10 @@ var combat;
 			bar.updateAllResistsDOM()
 		}
 		else if (key === 'branchSpirit') {
-			cacheBustArmor()
+			stats.armor(true)
+			updateCharStatColOne()
 			cacheBustAttack()
+			updateCharStatColTwo()
 			stats.hpRegen(true)
 			my.set('hpMax', stats.hpMax())
 			bar.updateBar('hp', my)
@@ -1085,10 +1092,14 @@ var combat;
 			bar.updateBar('hp', my)
 			txHpChange()
 			cacheBustAttack()
+			updateCharStatColTwo()
 			bar.updateAllResistsDOM()
 			updateCharStatColOne()
 		}
-		else if (key === 'lichForm') cacheBustArmor()
+		else if (key === 'lichForm') {
+			stats.armor(true)
+			updateCharStatColOne()
+		}
 		else if (key === 'profaneSpirit') {
 			stats.resistPoison(true)
 			stats.addPoison(true)
@@ -1126,16 +1137,26 @@ var combat;
 			bar.updateBar('sp', my)
 			txSpChange()
 		}
+		else if (key === 'battleHymn') {
+			stats.str(true)
+			stats.dex(true)
+			updateCharStatColOne()
+			cacheBustAttack()
+			updateCharStatColTwo()
+		}
+		else if (key === 'militantCadence') {
+			my.set('hpMax', stats.hpMax(true))
+			bar.updateBar('hp', my)
+			my.set('mpMax', stats.mpMax(true))
+			bar.updateBar('mp', my)
+			my.set('spMax', stats.spMax(true))
+			bar.updateBar('sp', my)
+			txAllChange()
+		}
 		////////////////////////////////
 		function cacheBustAttack() {
 			stats.offense(true)
 			stats.attack(void 0, true)
-			updateCharStatColTwo()
-		}
-		function cacheBustArmor() {
-			// utility function that busts armor cache and updates DOM
-			stats.armor(true)
-			updateCharStatColOne()
 		}
 		function updateCharStatColOne() {
 			if (bar.windowsOpen.character && bar.activeTab === 'character') {
@@ -1167,6 +1188,17 @@ var combat;
 	function txSpChange() {
 		// console.info('processStatBuffsToMe tx!', key)
 		game.txPartyResources({
+			sp: my.sp,
+			spMax: my.spMax,
+		})
+	}
+	function txAllChange() {
+		// console.info('processStatBuffsToMe tx!', key)
+		game.txPartyResources({
+			hp: my.hp,
+			hpMax: my.hpMax,
+			mp: my.mp,
+			mpMax: my.mpMax,
 			sp: my.sp,
 			spMax: my.spMax,
 		})

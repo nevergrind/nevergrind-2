@@ -29,7 +29,7 @@ function error_process(err, error_callback) {
 
 greenworks.ugcGetItems = function(options, ugc_matching_type, ugc_query_type,
     success_callback, error_callback) {
-  if (typeof options !== 'object') {
+  if (typeof options !== TYPE.OBJECT) {
     error_callback = success_callback;
     success_callback = ugc_query_type;
     ugc_query_type = ugc_matching_type;
@@ -45,7 +45,7 @@ greenworks.ugcGetItems = function(options, ugc_matching_type, ugc_query_type,
 
 greenworks.ugcGetUserItems = function(options, ugc_matching_type,
     ugc_list_sort_order, ugc_list, success_callback, error_callback) {
-  if (typeof options !== 'object') {
+  if (typeof options !== TYPE.OBJECT) {
     error_callback = success_callback;
     success_callback = ugc_list;
     ugc_list = ugc_list_sort_order;
@@ -62,7 +62,7 @@ greenworks.ugcGetUserItems = function(options, ugc_matching_type,
 
 greenworks.ugcSynchronizeItems = function (options, sync_dir, success_callback,
     error_callback) {
-  if (typeof options !== 'object') {
+  if (typeof options !== TYPE.OBJECT) {
     error_callback = success_callback;
     success_callback = sync_dir;
     sync_dir = options;
@@ -77,7 +77,7 @@ greenworks.ugcSynchronizeItems = function (options, sync_dir, success_callback,
 
 greenworks.publishWorkshopFile = function(options, file_path, image_path, title,
     description, success_callback, error_callback) {
-  if (typeof options !== 'object') {
+  if (typeof options !== TYPE.OBJECT) {
     error_callback = success_callback;
     success_callback = description;
     description = title;
@@ -96,7 +96,7 @@ greenworks.publishWorkshopFile = function(options, file_path, image_path, title,
 greenworks.updatePublishedWorkshopFile = function(options,
     published_file_handle, file_path, image_path, title, description,
     success_callback, error_callback) {
-  if (typeof options !== 'object') {
+  if (typeof options !== TYPE.OBJECT) {
     error_callback = success_callback;
     success_callback = description;
     description = title;

@@ -467,6 +467,7 @@ var battle;
 				else if (buff.key === 'freeze') mobEffects.freeze(buff.i, buff.duration)
 				else if (buff.key === 'chill') mobEffects.chill(buff.i, buff.duration)
 				else if (buff.key === 'fear') mobEffects.fear(buff.i, buff.duration)
+				else if (buff.key === 'paralyze') mobEffects.paralyze(buff.i, buff.duration)
 				else if (buff.key === 'stasisField') mobEffects.stasis(buff.i, buff.duration)
 			}
 		})
@@ -719,11 +720,11 @@ var battle;
 				'<div id="mob-details-' +i+ '" class="mob-details" index="' + i + '">' +
 					'<div id="mob-name-' +i+ '" class="mob-name text-shadow3"></div>' +
 					'<div class="flex-center">'+
-						'<img id="mob-target-avatar-' +i+ '" class="mob-target-avatar" src="'+ my.avatar +'">' +
 						'<div id="mob-bar-' +i+ '" class="mob-bar">' +
 							'<div id="mob-health-' +i+ '" class="mob-health"></div>' +
 							'<div class="mob-health-grid"></div>' +
 						'</div>' +
+						'<img id="mob-target-avatar-' +i+ '" class="mob-target-avatar" src="'+ my.avatar +'">' +
 					'</div>' +
 				'</div>' +
 				'<div id="mob-shadow-' +i+ '" class="mob-shadow"></div>' +

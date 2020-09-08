@@ -66,7 +66,7 @@
 				key: 'explosiveShot',
 				index: tgt,
 				enhancedDamage: enhancedDamage,
-				damageType: 'fire',
+				damageType: spell.data.damageType,
 			})
 		}
 		combat.txDamageMob(damages)

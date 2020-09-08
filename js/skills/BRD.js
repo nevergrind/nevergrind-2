@@ -6,8 +6,8 @@
 		subvertedSymphony,
 		crashingChords,
 		battleHymn,
-		victoryJaunt,
-		shackleChords,
+		militantCadence,
+		requiemOfRestraint,
 		litanyOfLife,
 		melodyOfMana,
 		righteousRhapsody,
@@ -76,13 +76,19 @@
 		spell.startCasting(index, data, euphonicDirgeCompleted)
 	}
 	function euphonicDirgeCompleted() {
-		combat.txDamageMob([{
-			key: 'euphonicDirge',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		splashIndex = -1
+		damages = []
+		for (i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			damages.push({
+				key: 'euphonicDirge',
+				index: tgt,
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage(false, true)
+			})
+		}
+		combat.txDotMob(damages)
 	}
 	function subvertedSymphony(index, data) {
 		if (timers.castBar < 1) return
@@ -93,13 +99,19 @@
 		spell.startCasting(index, data, subvertedSymphonyCompleted)
 	}
 	function subvertedSymphonyCompleted() {
-		combat.txDamageMob([{
-			key: 'subvertedSymphony',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		splashIndex = -1
+		damages = []
+		for (i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			damages.push({
+				key: 'subvertedSymphony',
+				index: tgt,
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage(false, true)
+			})
+		}
+		combat.txDotMob(damages)
 	}
 	function crashingChords(index, data) {
 		if (timers.castBar < 1) return
@@ -115,58 +127,80 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(),
+			buffs: [{
+				i: spell.config.target,
+				row: my.row, // this identifies unique buff state/icon
+				key: 'paralyze', // this sets the flag,
+				duration: 12,
+			}]
 		}])
+
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function battleHymn(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, battleHymnCompleted)
 	}
 	function battleHymnCompleted() {
-		combat.txDamageMob([{
-			key: 'battleHymn',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		damages = []
+		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		party.presence.forEach(p => {
+			damages.push({
+				index: p.row,
+				key: 'battleHymn',
+				spellType: spell.data.spellType,
+				level: my.skills[spell.config.skillIndex],
+				...hit
+			})
+		})
+		combat.txBuffHero(damages)
 	}
-	function victoryJaunt(index, data) {
+	function militantCadence(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, militantCadenceCompleted)
+	}
+	function militantCadenceCompleted() {
+		damages = []
+		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		party.presence.forEach(p => {
+			damages.push({
+				index: p.row,
+				key: 'militantCadence',
+				spellType: spell.data.spellType,
+				level: my.skills[spell.config.skillIndex],
+				...hit
+			})
+		})
+		combat.txBuffHero(damages)
+	}
+	function requiemOfRestraint(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, victoryJauntCompleted)
+		spell.startCasting(index, data, requiemOfRestraintCompleted)
 	}
-	function victoryJauntCompleted() {
-		combat.txDamageMob([{
-			key: 'victoryJaunt',
+	function requiemOfRestraintCompleted() {
+		combat.txDotMob([{
+			key: 'requiemOfRestraint',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
-	}
-	function shackleChords(index, data) {
-		if (timers.castBar < 1) return
-		spell.config = {
-			...spell.getDefaults(index, data),
-		}
-		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, shackleChordsCompleted)
-	}
-	function shackleChordsCompleted() {
-		combat.txDamageMob([{
-			key: 'shackleChords',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(),
 		}])
 	}
 	function litanyOfLife(index, data) {

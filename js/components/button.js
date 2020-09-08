@@ -21,13 +21,9 @@ var button;
 		autoAttackSpeed: 3,
 	}
 	var name, hit
-	let speed = 0
-	let speedHaste = 1
 	let mySwingSpeed = 0
 	const globalCooldownDur = 2.5
-	let globalHaste = 1
 	let damages
-	const globalHasteCap = .4
 	/////////////////////////////
 
 	function init() {
@@ -45,7 +41,7 @@ var button;
 	function processButtonTimers(index, skillData) {
 		let el = querySelector('#skill-timer-' + index + '-rotate')
 		// processButtonTimers
-		console.info('processButtonTimers', index, skillData)
+		// console.info('processButtonTimers', index, skillData)
 		TweenMax.set(el, CSS.DISPLAY_BLOCK)
 		let args = {
 			el: el,
@@ -92,12 +88,8 @@ var button;
 			key: 'globalCooldown',
 		}
 		// haste
-		globalHaste = 1
-		if (my.buffFlags.frenzy) globalHaste -= buffs.frenzy.haste[my.buffs.frenzy.level]
-		if (my.buffFlags.augmentation) globalHaste -= buffs.augmentation.haste[my.buffs.augmentation.level]
-		if (globalHaste < globalHasteCap) globalHaste = globalHasteCap
 
-		TweenMax.to(timers, globalCooldownDur * globalHaste, {
+		TweenMax.to(timers, globalCooldownDur * stats.getSkillSpeed(), {
 			globalCooldown: 1,
 			onStart: handleButtonStart,
 			onStartParams: [ args ],
@@ -264,7 +256,7 @@ var button;
 		to.startAt = {}
 		to.startAt[key] = 0
 		to[key] = 1
-		mySwingSpeed = getAttackSpeed(slot)
+		mySwingSpeed = stats.getAttackSpeed(slot)
 
 		timers[key + CYCLE] = TweenMax.to(timers, mySwingSpeed, to)
 		// console.info('startSwing', key, timers[key])
@@ -287,18 +279,6 @@ var button;
 	}
 	function getPunchDps(min, max) {
 		return (((min + max) / 2) / button.autoAttackSpeed)
-	}
-	function getAttackSpeed(slot) {
-		// weapon or punch speed?
-		if (typeof items.eq[slot] === TYPE.OBJECT) speed = items.eq[slot].speed
-		else speed = button.autoAttackSpeed
-		speedHaste = 1
-		// buffs
-		if (my.buffFlags.spiritOfTheHunter) speedHaste -= .2
-		// debuffs
-		if (speedHaste < .25) speedHaste = .25
-		else if (speedHaste > 2) speedHaste = 2
-		return speed * speedHaste
 	}
 	function handleButtonStart(o) {
 		TweenMax.set(o.el, {

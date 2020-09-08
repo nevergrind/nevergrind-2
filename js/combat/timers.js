@@ -40,6 +40,7 @@ var timers;
 		freezeDuration: 0,
 		chillDuration: 0,
 		fearDuration: 0,
+		paralyzeDuration: 0,
 		stasisDuration: 0,
 	}
 	///////////////////////////////////////////

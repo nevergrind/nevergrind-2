@@ -138,7 +138,7 @@
 			key: 'toxicSpores',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: 'poison',
+			damageType: spell.data.damageType,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
@@ -189,7 +189,7 @@
 						dots.push({
 							key: 'moltenBoulder',
 							index: tgt,
-							damageType: 'fire',
+							damageType: spell.data.damageType,
 							...stats.spellDamage(false, true)
 						})
 						dots[0].damage *= .5
@@ -250,7 +250,7 @@
 			key: 'tornado',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: 'ice',
+			damageType: spell.data.damageType,
 			buffs: [{
 				i: spell.config.target,
 				row: my.row, // this identifies unique buff state/icon

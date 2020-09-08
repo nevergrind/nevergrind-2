@@ -3,7 +3,6 @@ var mob;
 	mob = {
 		getMobResist,
 		isAlive,
-		isParalyzed,
 		getRandomMobKey,
 		init,
 		// configs, resets (active animations) and idles mobs in one call for start of combat
@@ -472,6 +471,7 @@ var mob;
 		if (mobs[i].buffFlags.chill) mobSpeed += .2
 		if (mobs[i].buffFlags.shiftingEther) mobSpeed += .3
 		if (mobs[i].buffFlags.primordialSludge) mobSpeed += .2
+		if (mobs[i].buffFlags.requiemOfRestraint) mobSpeed += .2
 		// constraints
 		if (mobSpeed > 2) mobSpeed = 2
 		else if (mobSpeed < .5) mobSpeed = .5
@@ -480,12 +480,6 @@ var mob;
 	}
 	function isAlive(i) {
 		return mobs[i].name && mobs[i].hp > 0
-	}
-
-	function isParalyzed(i) {
-		return !!(
-			mobs[i].buffFlags.arclight
-		)
 	}
 	function hit(i, bypass, damage) {
 		if (ng.view !== 'battle') return
@@ -564,7 +558,6 @@ var mob;
 		}
 	}
 
-	const paralyzeRate = .3
 	function attack(i) {
 		timers.mobAttack[i].kill()
 		if (!mobs[i].name) return
@@ -576,7 +569,8 @@ var mob;
 				if (mobRow > -1) {
 					// party.getIndexByRow(mostHatedRow)
 					// console.info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
-					if (mob.isParalyzed(i) && rand() < paralyzeRate) {
+					if (timers.mobEffects[i].paralyzeDuration > 0 &&
+						rand() < ParalyzeRate) {
 						mobDamages = [{
 							row: mobRow,
 							isParalyzed: true,
@@ -903,68 +897,51 @@ var mob;
 
 	function resourceTick() {
 		//TODO: This code works, but I think it will create unnecessary network strain... explore later?
-		if (mob.enableMobHeartbeat &&
-			my.isLeader &&
-			party.hasMoreThanOnePlayer()) {
+		if (mob.enableMobHeartbeat && my.isLeader) {
 			tickData = []
 			mobs.forEach(processMobResourceTick)
 			if (tickData.length) {
 				socket.publish('party' + my.partyId, {
 					route: 'p->mobTick',
 					d: tickData
-				}, true)
+				})
+			}
+		}
+		//////////////////////////////
+		function processMobResourceTick(mob, index) {
+			if (isAlive(index) &&
+				timers.mobEffects[index].freezeDuration === 0 &&
+				!isPoisoned(index)) {
+				// hp
+				hpTick = mob.level
+				if (mob.hp + hpTick > mob.hpMax) {
+					hpTick = mob.hpMax - mob.hp
+				}
+				// console.info('sending hpTick:', hpTick)
+				tickData.push({
+					i: index,
+					h: hpTick,
+				})
 			}
 		}
 	}
-	function isPoisoned(mob) {
+	function isPoisoned(index) {
 		return Boolean(
-			mob.buffFlags.engulfingDarkness ||
-			mob.buffFlags.toxicSpores ||
-			mob.buffFlags.subversion ||
-			mob.buffFlags.primordialSludge ||
-			mob.buffFlags.affliction
+			mobs[index].buffFlags.engulfingDarkness ||
+			mobs[index].buffFlags.toxicSpores ||
+			mobs[index].buffFlags.subversion ||
+			mobs[index].buffFlags.primordialSludge ||
+			mobs[index].buffFlags.euphonicDirge ||
+			mobs[index].buffFlags.affliction
 		)
 	}
-	function processMobResourceTick(mob, index) {
-		if (mob.name &&
-			timers.mobEffects[index].freezeDuration === 0 &&
-			!isPoisoned(mobs[index])) {
-			// hp
-			hpTick = mob.level
-			if (mob.hp + hpTick > mob.hpMax) {
-				hpTick = mob.hpMax - mob.hp
-			}
-			mobs[index].hp += hpTick
-			// mp
-			mpTick = 1
-			if (mob.mp + mpTick > mob.mpMax) {
-				mpTick = mob.mpMax - mob.mp
-			}
-			mobs[index].mp += mpTick
-			// sp
-			spTick = 1
-			if (mob.sp + spTick > mob.spMax) {
-				spTick = mob.spMax - mob.sp
-			}
-			mobs[index].sp += spTick
-			// console.info('sending hpTick:', hpTick)
-			tickData.push({
-				i: index,
-				h: hpTick,
-				m: mpTick,
-				s: spTick,
-			})
-			drawMobBar(index)
-		}
-	}
 	function rxMobResourceTick(data) {
-		data.d.forEach(tick => {
+		data.d.forEach(processTick)
+		//////////////////
+		function processTick(tick) {
 			mobs[tick.i].hp += tick.h
-			mobs[tick.i].mp += tick.m
-			mobs[tick.i].sp += tick.s
 			drawMobBar(tick.i)
-			// console.info('resource tick B', tick)
-		})
+		}
 	}
 	function killAttacks(continueIdling) {
 		mobs.forEach((m, i) => {

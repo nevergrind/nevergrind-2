@@ -7,6 +7,7 @@ var mobEffects;
 		chill,
 		fear,
 		stasis,
+		paralyze,
 	}
 	///////////////////////////////////////////
 	function stasis(i, duration) {
@@ -37,9 +38,6 @@ var mobEffects;
 				onCompleteParams: [i],
 				ease: Linear.easeNone,
 			})
-		}
-		else {
-			// console.warn('mobEffects Stun SKIPPED!', duration, timers.mobEffects[i].stunDuration)
 		}
 		mob.hit(i, true, combat.MAX_DAMAGE)
 	}
@@ -77,10 +75,9 @@ var mobEffects;
 	}
 	function chill(i, duration) {
 		if (duration > timers.mobEffects[i].chillDuration) {
-			// console.info('mobEffects STUNNED!', i)
+			// console.info('mobEffects chill!', i)
 			timers.mobChillTimer[i].kill()
 			timers.mobEffects[i].chillDuration = duration
-			// timers.mobStunDuration
 			timers.mobChillTimer[i] = TweenMax.to(timers.mobEffects[i], duration, {
 				chillDuration: 0,
 				onComplete: chillComplete,
@@ -89,9 +86,6 @@ var mobEffects;
 			})
 			mob.setTimeScaleSpeed(i)
 			mob.setFilter(i)
-		}
-		else {
-			// console.warn('mobEffects chillDuration SKIPPED!', duration, timers.mobEffects[i].chillDuration)
 		}
 	}
 	function chillComplete(i) {
@@ -103,16 +97,21 @@ var mobEffects;
 			// console.info('mobEffects FEARED!', i)
 			timers.mobFearTimer[i].kill()
 			timers.mobEffects[i].fearDuration = duration
-			// timers.mobStunDuration
 			timers.mobFearTimer[i] = TweenMax.to(timers.mobEffects[i], duration, {
 				fearDuration: 0,
-				onComplete: chillComplete,
-				onCompleteParams: [i],
 				ease: Linear.easeNone,
 			})
 		}
-		else {
-			// console.warn('mobEffects chillDuration SKIPPED!', duration, timers.mobEffects[i].chillDuration)
+	}
+	function paralyze(i, duration) {
+		if (duration > timers.mobEffects[i].paralyzeDuration) {
+			// console.info('mobEffects PARALYZED!', i)
+			timers.mobFearTimer[i].kill()
+			timers.mobEffects[i].paralyzeDuration = duration
+			timers.mobFearTimer[i] = TweenMax.to(timers.mobEffects[i], duration, {
+				paralyzeDuration: 0,
+				ease: Linear.easeNone,
+			})
 		}
 	}
 }($, _, TweenMax, Linear);

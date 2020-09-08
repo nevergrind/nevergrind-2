@@ -66,7 +66,7 @@
 			key: 'staticSuffocation',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: 'lightning',
+			damageType: spell.data.damageType,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
@@ -110,7 +110,7 @@
 				key: 'subversion',
 				index: tgt,
 				spellType: spell.data.spellType,
-				damageType: 'poison',
+				damageType: spell.data.damageType,
 				...stats.spellDamage(false, true)
 			})
 		}
@@ -222,7 +222,7 @@
 			key: 'shiftingEther',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: 'arcane',
+			damageType: spell.data.damageType,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)

@@ -225,7 +225,7 @@
 					damages.push({
 						key: 'meteorStrike',
 						index: tgt,
-						damageType: 'fire',
+						damageType: spell.data.damageType,
 						...stats.spellDamage(false, true)
 					})
 					damages[i].damage = round(damages[i].damage * .35)

@@ -92,7 +92,7 @@
 			key: 'bloodFire',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: 'blood',
+			damageType: spell.data.damageType,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
@@ -340,7 +340,7 @@
 					key: 'profaneSpiritExplosion',
 					index: i,
 					spellType: '',
-					damageType: 'poison',
+					damageType: spell.data.damageType,
 					...stats.spellDamage()
 				})
 			}

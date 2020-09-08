@@ -91,16 +91,6 @@ var spell;
 		}
 	}
 
-	let castHaste = 1
-	function getCastSpeed() {
-		castHaste = 1
-		if (my.buffFlags.celestialFrenzy) castHaste -= .15
-		if (castHaste < .5) castHaste = .5
-		else if (castHaste > 2) castHaste = 2
-		// console.info('getCastSpeed', spell.castTime * castHaste)
-		return spell.castTime * castHaste
-	}
-
 	function startCasting(index, data, callbackFn) {
 		button.pauseAutoAttack()
 		spell.callbackFn = callbackFn
@@ -110,7 +100,7 @@ var spell;
 		spell.castTime = data.castTime
 		castBarWrap.style.opacity = 1
 		TweenMax.set(castBar, CSS.X_ZERO)
-		spell.timer = TweenMax.to(timers, getCastSpeed(), {
+		spell.timer = TweenMax.to(timers, stats.getCastingSpeed(), {
 			startAt: CSS.CASTBAR_ZERO,
 			castBar: 1,
 			onUpdate: updateSpellBar,

@@ -75,6 +75,9 @@ var stats = {};
 		resistFear,
 		resistStun,
 		resistSilence,
+		getAttackSpeed,
+		getSkillSpeed,
+		getCastingSpeed,
 	}
 	// jobs grouped by things for include checks
 	var offensiveJobs = [JOB.SHADOW_KNIGHT, JOB.MONK, JOB.ROGUE, 'RNG']
@@ -96,6 +99,10 @@ var stats = {};
 	let vulpineSp = 0
 	let resistStatusVal = 0
 	let value = 0
+	let speed = 0
+	let speedHaste = 1
+	let skillHaste = 1
+	let castHaste = 1
 	var val, base, i, len, type, min, max, totalAttack, h2h, atk, stat, dps
 
 	const failedWeaponDamage = {
@@ -168,6 +175,9 @@ var stats = {};
 			if (my.buffFlags.borealTalisman) {
 				stats.cache.str += buffs.borealTalisman.str[my.buffs.borealTalisman.level]
 			}
+			if (my.buffFlags.battleHymn) {
+				stats.cache.str += buffs.battleHymn.str[my.buffs.battleHymn.level]
+			}
 		}
 		return stats.cache.str
 	}
@@ -184,7 +194,7 @@ var stats = {};
 		if (fresh || typeof stats.cache.agi === Undefined) {
 			stats.cache.agi = my.agi + create.raceAttrs[my.race][2] + create.jobAttrs[my.jobLong][2] + getEqTotal('agi') + getEqTotal('allStats')
 			if (my.buffFlags.augmentation) {
-				stats.cache.agi += buffs.augmentation.stats[my.buffs.augmentation.level]
+				stats.cache.agi += buffs.augmentation.agi[my.buffs.augmentation.level]
 			}
 
 			if (fresh) {
@@ -198,7 +208,10 @@ var stats = {};
 		if (fresh || typeof stats.cache.dex === Undefined) {
 			stats.cache.dex = my.dex + create.raceAttrs[my.race][3] + create.jobAttrs[my.jobLong][3] + getEqTotal('dex') + getEqTotal('allStats')
 			if (my.buffFlags.augmentation) {
-				stats.cache.dex += buffs.augmentation.stats[my.buffs.augmentation.level]
+				stats.cache.dex += buffs.augmentation.dex[my.buffs.augmentation.level]
+			}
+			if (my.buffFlags.battleHymn) {
+				stats.cache.dex += buffs.battleHymn.dex[my.buffs.battleHymn.level]
 			}
 
 			if (fresh) {
@@ -814,9 +827,9 @@ var stats = {};
 		if (fresh || typeof stats.cache.resistBlood === Undefined) {
 			stats.cache.resistBlood = getStatTotal('resistBlood') + getEqTotal('resistAll')
 			if (my.buffFlags.sealOfRedemption) {
-				stats.cache.resistBlood += (buffs.sealOfRedemption.base + (my.buffs.sealOfRedemption.level * buffs.sealOfRedemption.bloodPerLevel))
+				stats.cache.resistBlood += buffs.sealOfRedemption.resistBlood[my.buffs.sealOfRedemption.level]
 			}
-			stats.cache.resistBlood += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
+			stats.cache.resistBlood += my.buffFlags.manaShell ? buffs.manaShell.resistBlood[my.buffs.manaShell.level] : 0
 			stats.cache.resistBlood = round(stats.cache.resistBlood)
 		}
 		return stats.cache.resistBlood
@@ -824,7 +837,8 @@ var stats = {};
 	function resistPoison(fresh) {
 		if (fresh || typeof stats.cache.resistPoison === Undefined) {
 			stats.cache.resistPoison = getStatTotal('resistPoison') + getEqTotal('resistAll')
-			stats.cache.resistPoison += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
+			stats.cache.resistPoison += my.buffFlags.manaShell ?
+				buffs.manaShell.resistPoison[my.buffs.manaShell.level] : 0
 			if (my.buffFlags.profaneSpirit) {
 				stats.cache.resistPoison += buffs.profaneSpirit.resistPoison[my.buffs.profaneSpirit.level]
 			}
@@ -834,14 +848,14 @@ var stats = {};
 	function resistArcane(fresh) {
 		if (fresh || typeof stats.cache.resistArcane === Undefined) {
 			stats.cache.resistArcane = getStatTotal('resistArcane') + getEqTotal('resistAll')
-			stats.cache.resistArcane += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
+			stats.cache.resistArcane += my.buffFlags.manaShell ? buffs.manaShell.resistArcane[my.buffs.manaShell.level] : 0
 		}
 		return stats.cache.resistArcane
 	}
 	function resistLightning(fresh) {
 		if (fresh || typeof stats.cache.resistLightning === Undefined) {
 			stats.cache.resistLightning = getStatTotal('resistLightning') + getEqTotal('resistAll')
-			stats.cache.resistLightning += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
+			stats.cache.resistLightning += my.buffFlags.manaShell ? buffs.manaShell.resistLightning[my.buffs.manaShell.level] : 0
 			if (my.buffFlags.phaseBlade) {
 				stats.cache.resistLightning += buffs.phaseBlade.resistLightning[my.buffs.phaseBlade.level]
 			}
@@ -851,7 +865,7 @@ var stats = {};
 	function resistFire(fresh) {
 		if (fresh || typeof stats.cache.resistFire === Undefined) {
 			stats.cache.resistFire = getStatTotal('resistFire') + getEqTotal('resistAll')
-			stats.cache.resistFire += my.buffFlags.manaShell ? buffs.manaShell.resistAll[my.buffs.manaShell.level] : 0
+			stats.cache.resistFire += my.buffFlags.manaShell ? buffs.manaShell.resistFire[my.buffs.manaShell.level] : 0
 			if (my.buffFlags.moltenAegis) {
 				stats.cache.resistFire += buffs.moltenAegis.resistFire[my.buffs.moltenAegis.level]
 			}
@@ -862,7 +876,7 @@ var stats = {};
 		if (fresh || typeof stats.cache.resistIce === Undefined) {
 			stats.cache.resistIce = getStatTotal('resistIce') + getEqTotal('resistAll')
 			if (my.buffFlags.manaShell) {
-				stats.cache.resistIce += buffs.manaShell.resistAll[my.buffs.manaShell.level]
+				stats.cache.resistIce += buffs.manaShell.resistIce[my.buffs.manaShell.level]
 			}
 			if (my.buffFlags.borealTalisman) {
 				stats.cache.resistIce += buffs.borealTalisman.resistIce[my.buffs.borealTalisman.level]
@@ -1100,40 +1114,70 @@ var stats = {};
 		if (my.sp > my.spMax) my.set('sp', my.spMax)
 	}
 
+	let baseResource = 0
 	const hpBase = 80
 	const mpBase = 60
 	const spBase = 40
 	function hpMax(fresh) {
-		value = ~~(
-			((stats.sta() * hpTier[my.job]) * (my.level / 50) +
-				(my.level * (hpTier[my.job] * 2.5) + hpBase)) * hpPercentBonus()
-			+ getEqTotal('hp')
-		)
-		if (my.buffFlags.sealOfRedemption) {
-			value += (my.buffs.sealOfRedemption.damage)
-		}
-		if (my.buffFlags.zealousResolve) {
-			value += (my.buffs.zealousResolve.damage)
+		if (fresh || typeof stats.cache.hpMax === Undefined) {
+			baseResource = (
+				hpBase + stats.sta() * hpTier[my.job]) * (my.level / 50) +
+				(my.level * (hpTier[my.job] * 2.5)
+			)
+			value = ~~(baseResource * hpPercentBonus() + getEqTotal('hp'))
+			if (my.buffFlags.sealOfRedemption) {
+				value += (my.buffs.sealOfRedemption.damage)
+			}
+			if (my.buffFlags.zealousResolve) {
+				value += (my.buffs.zealousResolve.damage)
+			}
 		}
 		return value
+		////////////////////////////////
+		function hpPercentBonus() {
+			let bonus = 1 + (getStatTotal('increaseHpPercent') / 100)
+			if (my.buffFlags.militantCadence) {
+				bonus += buffs.militantCadence.hpPercent[my.buffs.militantCadence.level]
+			}
+			return bonus
+		}
 	}
+	let percentBonus = 0
 	function mpMax(fresh) {
-		if (fresh || typeof stats.cache.hpRegen === Undefined) {
-			stats.cache.mpMax = ~~(
-				((stats.intel() * mpTier[my.job]) * (my.level / 50) +
-					(my.level * (mpTier[my.job] * 2.5) + mpBase)) * mpPercentBonus()
-				+ getEqTotal('mp')
+		if (fresh || typeof stats.cache.mpMax === Undefined) {
+			baseResource = (
+				mpBase + (stats.intel() * mpTier[my.job]) * (my.level / 50) +
+				(my.level * (mpTier[my.job] * 2.5))
 			)
+			stats.cache.mpMax = ~~(baseResource * mpPercentBonus() + getEqTotal('mp'))
 		}
 		return stats.cache.mpMax
+		////////////////////////////////
+		function mpPercentBonus() {
+			let bonus = 1 + (getStatTotal('increaseMpPercent') / 100)
+			if (my.buffFlags.militantCadence) {
+				bonus += buffs.militantCadence.mpPercent[my.buffs.militantCadence.level]
+			}
+			return bonus
+		}
 	}
-
 	function spMax(fresh) {
-		return ~~(
-			((stats.cha() * spTier[my.job]) * (my.level / 50) +
-				(my.level * (spTier[my.job] * 2.5) + spBase)) +
-			getEqTotal('sp')
-		)
+		if (fresh || typeof stats.cache.spMax === Undefined) {
+			baseResource = (
+				(spBase + (stats.cha() * spTier[my.job]) * (my.level / 50) +
+				(my.level * (spTier[my.job] * 2.5)))
+			)
+			stats.cache.spMax = ~~(baseResource * spPercentBonus() + getEqTotal('sp'))
+		}
+		return stats.cache.spMax
+		////////////////////////////////
+		function spPercentBonus() {
+			let bonus = 1 + (getStatTotal('increaseSpPercent') / 100)
+			if (my.buffFlags.militantCadence) {
+				bonus += buffs.militantCadence.spPercent[my.buffs.militantCadence.level]
+			}
+			return bonus
+		}
 	}
 	// troll 9, normal 5
 	function baseHpRegen(fresh) {
@@ -1179,13 +1223,6 @@ var stats = {};
 			}
 		}
 		return stats.cache.spRegen
-	}
-
-	function hpPercentBonus(fresh) {
-		return 1 + (getStatTotal('increaseHpPercent') / 100);
-	}
-	function mpPercentBonus(fresh) {
-		return 1 + (getStatTotal('increaseMpPercent') / 100);
 	}
 	function someIgnoreTargetArmor(fresh) {
 		return items.eq.some(eq => eq.ignoreTargetArmor)
@@ -1267,7 +1304,7 @@ var stats = {};
 		if (fresh || typeof stats.cache.resistFear === Undefined) {
 			stats.cache.resistFear = getEqTotal('resistFear')
 			if (my.buffFlags.intrepidShout) {
-				stats.cache.resistFear += buffs.intrepidShout.base + (buffs.intrepidShout.fearPerLevel * my.buffs.intrepidShout.level)
+				stats.cache.resistFear += buffs.intrepidShout.resistFear[my.buffs.intrepidShout.level]
 			}
 			if (stats.cache.resistFear > 50) {
 				stats.cache.resistFear = 50
@@ -1297,5 +1334,36 @@ var stats = {};
 			}
 		}
 		return stats.cache.resistSilence
+	}
+
+	function getAttackSpeed(slot) {
+		// weapon or punch speed?
+		if (typeof items.eq[slot] === TYPE.OBJECT) speed = items.eq[slot].speed
+		else speed = button.autoAttackSpeed
+		speedHaste = 1
+		// buffs
+		if (my.buffFlags.spiritOfTheHunter) speedHaste -= buffs.spiritOfTheHunter.haste
+		if (my.buffFlags.battleHymn) speedHaste -= buffs.battleHymn.attackHaste
+		// debuffs
+		if (speedHaste < .25) speedHaste = .25
+		else if (speedHaste > 2) speedHaste = 2
+		return speed * speedHaste
+	}
+	function getSkillSpeed() {
+		skillHaste = 1
+		if (my.buffFlags.frenzy) skillHaste -= buffs.frenzy.haste[my.buffs.frenzy.level]
+		if (my.buffFlags.augmentation) skillHaste -= buffs.augmentation.haste[my.buffs.augmentation.level]
+		if (skillHaste < .5) skillHaste = .5
+		else if (skillHaste > 2) skillHaste = 2
+		return skillHaste
+	}
+
+	function getCastingSpeed() {
+		castHaste = 1
+		if (my.buffFlags.celestialFrenzy) castHaste -= .15
+		if (castHaste < .5) castHaste = .5
+		else if (castHaste > 2) castHaste = 2
+		// console.info('getCastSpeed', spell.castTime * castHaste)
+		return spell.castTime * castHaste
 	}
 })($, TweenMax, _);

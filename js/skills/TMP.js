@@ -239,7 +239,7 @@
 			key: 'primordialSludge',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: 'poison',
+			damageType: spell.data.damageType,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
@@ -258,10 +258,25 @@
 			key: 'arclight',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: 'lightning',
-			...stats.spellDamage(false, true)
+			damageType: spell.data.damageType,
+			...stats.spellDamage(false, true),
 		})
 		combat.txDotMob(damages)
+
+		combat.txDamageMob([{
+			key: 'arclightDebuff',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			damage: 0,
+			buffs: [{
+				i: spell.config.target,
+				row: my.row, // this identifies unique buff state/icon
+				key: 'paralyze', // this sets the flag,
+				duration: buffs.arclightDebuff.duration,
+			}]
+		}])
+
 		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function primevalWithering(index, data) {
@@ -278,7 +293,7 @@
 			key: 'primevalWithering',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: 'arcane',
+			damageType: spell.data.damageType,
 			...stats.spellDamage(false, true)
 		})
 		combat.txDotMob(damages)
