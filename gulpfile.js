@@ -22,10 +22,8 @@ gulp.task('minify-png', minifyPng);
 gulp.task('resize-png', resizePng);
 gulp.task('clean-ng2', [], cleanNg2);
 // need build-ng2-sdk task for testing
-gulp.task('build-ng2-0-33-3', buildNg2Tasks, () => buildNg2(false, false))
-gulp.task('build-ng2-0-33-3-sdk', buildNg2Tasks, () => buildNg2(true, false))
-gulp.task('build-ng2-latest', buildNg2Tasks, () => buildNg2(false, true))
-gulp.task('build-ng2-latest-sdk', buildNg2Tasks, () => buildNg2(true, true))
+gulp.task('build-ng2', buildNg2Tasks, () => buildNg2(false, false))
+gulp.task('build-ng2-sdk', buildNg2Tasks, () => buildNg2(true, false))
 gulp.task('rename', renameExe);
 gulp.task('default', defaultTask);
 gulp.task('resize-sprite', resizeSprite);
@@ -217,17 +215,15 @@ function cleanNg2() {
 		read: false
 	}).pipe(clean());*/
 }
-function buildNg2(isSdk, isLatest) {
-	let nwjsVersion = isLatest ? 'latest' : '0-33-3'
-	let greenworksVersion = isLatest ? 'greenworks-latest' : 'greenworks-0-33-3'
+function buildNg2(isSdk) {
 	let sdk = isSdk ? '-sdk' : ''
 	// move app files
 	gulp.src([
 		'./index.html',
 		'./package.json',
-		'./'+ greenworksVersion +'.js',
+		'./greenworks.js',
 		'./steam_appid.txt',
-		'./nwjs-'+ nwjsVersion + sdk + '/**/*'
+		'./nwjs'+ sdk + '/**/*ge'
 	]).pipe(gulp.dest('./build-ng2'))
 		.on('end', renameExe);
 

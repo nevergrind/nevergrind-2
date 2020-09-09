@@ -23,6 +23,5 @@
 		// error
 		exit("Character data not found!");
 	}
-	$r['file'] = 'delete-character.php';
 	$r['row'] = $f['row'];
 	echo json_encode($r);
