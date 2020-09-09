@@ -142,12 +142,12 @@ var zones = [{},
 		missions: [1,2,3,4,5],
 		mobs: [
 			'lizardman',
-			'dragonkin',
+			MOB_TYPE.DRAGONKIN,
 			'crocodile',
 			'stone golem',
 			'iron golem',
 			'griffon',
-			'giant',
+			MOB_TYPE.GIANT,
 		]
 	},
 	{
@@ -162,7 +162,7 @@ var zones = [{},
 			'gargoyle',
 			'werewolf',
 			'ghoul',
-			'giant',
+			MOB_TYPE.GIANT,
 			'zombie',
 		]
 	},

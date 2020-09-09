@@ -374,7 +374,7 @@ var bar;
 			querySelector('#bar-character-stats').innerHTML = getCharacterStatsHtml()
 			querySelector('#bar-character-stats').style.display = 'flex'
 			if (bar.activeTab === 'passiveSkills') {
-				ng.splitText('inv-skill-description', skillDescriptions['offense']);
+				ng.splitText('inv-skill-description', skillDescriptions[PROP.OFFENSE]);
 			}
 			updateAllMyBars()
 		}
@@ -391,7 +391,7 @@ var bar;
 		// console.info('//////////// updateItemSwapDOM', item.dropType, item.dragType)
 		if ([item.dropType, item.dragType].includes('eq')) {
 			// console.info('update char stats')
-			stats.cache = {}
+			stats.memo = {}
 			updateCharStatPanels()
 			game.updateParty()
 		}
@@ -434,9 +434,9 @@ var bar;
 		updateAllMyBars()
 	}
 	function updateAllMyBars() {
-		updateBar('hp', my)
-		updateBar('mp', my)
-		updateBar('sp', my)
+		updateBar(PROP.HP, my)
+		updateBar(PROP.MP, my)
+		updateBar(PROP.SP, my)
 	}
 	function getRatio(type, data) {
 		data = data || my
@@ -450,7 +450,7 @@ var bar;
 			x: '-' + percent + '%'
 		})
 		query.el('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
-		if (type === 'hp' &&
+		if (type === PROP.HP &&
 			typeof data === TYPE.OBJECT &&
 			(!my.targetIsMob && my.target === data.row) ||
 			(my.targetIsMob && my.target === data.row)
@@ -459,7 +459,7 @@ var bar;
 		}
 	}
 	function getMaxType(type, data) {
-		return (type === 'hp' ? data.hpMax : type === 'mp' ? data.mpMax : data.spMax)
+		return (type === PROP.HP ? data.hpMax : type === PROP.MP ? data.mpMax : data.spMax)
 	}
 
 	function toggleOptions() {
@@ -909,15 +909,15 @@ var bar;
 
 		player.hp = data.hp;
 		player.hpMax = data.hpMax;
-		updateBar('hp', data)
+		updateBar(PROP.HP, data)
 
 		player.mp = data.mp;
 		player.mpMax = data.mpMax;
-		updateBar('mp', data)
+		updateBar(PROP.MP, data)
 
 		player.sp = data.sp;
 		player.spMax = data.spMax;
-		updateBar('sp', data)
+		updateBar(PROP.SP, data)
 
 		if (data.isLeader !== player.isLeader) {
 			player.isLeader = data.isLeader;

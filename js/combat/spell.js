@@ -160,13 +160,13 @@ var spell;
 			mpCost = ~~(spell.config.mpCost * fizzlePenalty)
 			if (mpCost < 1) mpCost = 1
 			my.mp -= mpCost
-			bar.updateBar('mp', my)
+			bar.updateBar(PROP.MP, my)
 		}
 		if (spell.config.spCost) {
 			spCost = ~~(spell.config.spCost * fizzlePenalty)
 			if (spCost < 1) spCost = 1
 			my.sp -= spCost
-			bar.updateBar('sp', my)
+			bar.updateBar(PROP.SP, my)
 		}
 	}
 	function stopCasting() {

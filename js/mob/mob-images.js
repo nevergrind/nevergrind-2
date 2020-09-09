@@ -1104,7 +1104,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'giant': {
+	[MOB_TYPE.GIANT]: {
 		imgW: 1400,
 		imgH: 1200,
 		imgCy: 480,

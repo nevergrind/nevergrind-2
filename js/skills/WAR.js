@@ -54,7 +54,7 @@ let skill = {};
 			index: my.target,
 			isRanged: true,
 			isPiercing: true,
-			damageType: 'blood',
+			damageType: DAMAGE_TYPE.BLOOD,
 			...stats.damage(false, false, true)
 		}]
 		// defaults to max instead of large melee weapon range
@@ -356,7 +356,7 @@ let skill = {};
 					duration: 2,
 				}],
 				enhancedDamage: enhancedDamage,
-				damageType: 'arcane',
+				damageType: DAMAGE_TYPE.ARCANE,
 			})
 		}
 		combat.txDamageMob(damages)

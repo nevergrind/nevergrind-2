@@ -109,7 +109,7 @@ var expanse;
 			expanse.sun.anchor.set(.5)
 			expanse.sky.stage.addChild(expanse.sun)
 
-			TweenMax.set(expanse.sun, { pixi: { brightness: 1.2 }})
+			TweenMax.set(expanse.sun, { pixi: { brightness: 1 }})
 			/*TweenMax.to(expanse.sun, 1/60, {
 				rotation: 360,
 				repeat: -1,

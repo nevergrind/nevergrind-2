@@ -39,26 +39,26 @@ var loot = {};
 			tradeTo: 4,
 		},
 		allProps: [
-			'offense',
-			'defense',
-			'oneHandSlash',
-			'oneHandBlunt',
-			'piercing',
-			'archery',
-			'handToHand',
-			'twoHandSlash',
-			'twoHandBlunt',
-			'dualWield',
-			'doubleAttack',
-			'dodge',
-			'parry',
-			'riposte',
-			'alteration',
-			'conjuration',
-			'evocation',
+			PROP.OFFENSE,
+			PROP.DEFENSE,
+			PROP.ONE_HAND_SLASH,
+			PROP.ONE_HAND_BLUNT,
+			PROP.PIERCING,
+			PROP.ARCHERY,
+			PROP.HAND_TO_HAND,
+			PROP.TWO_HAND_SLASH,
+			PROP.TWO_HAND_BLUNT,
+			PROP.DUAL_WIELD,
+			PROP.DOUBLE_ATTACK,
+			PROP.DODGE,
+			PROP.PARRY,
+			PROP.RIPOSTE,
+			PROP.ALTERATION,
+			PROP.CONJURATION,
+			PROP.EVOCATION,
 		],
 		specialPropLabels: {
-			oneHandSlash: 'One-hand Slash',
+			oneHandSlash: LABEL.ONE_HAND_SLASH,
 			oneHandBlunt: 'One-hand Blunt',
 			handToHand: 'Hand-to-hand',
 			twoHandSlash: 'Two-hand Slash',
@@ -137,7 +137,7 @@ var loot = {};
 				name: 'Minor Health Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'hp',
+				itemSubType: PROP.HP,
 				potionResource: 'health',
 				imgIndex: 0,
 				cost: 10
@@ -145,7 +145,7 @@ var loot = {};
 				name: 'Light Health Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'hp',
+				itemSubType: PROP.HP,
 				potionResource: 'health',
 				imgIndex: 1,
 				cost: 20
@@ -153,7 +153,7 @@ var loot = {};
 				name: 'Health Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'hp',
+				itemSubType: PROP.HP,
 				potionResource: 'health',
 				imgIndex: 2,
 				cost: 40
@@ -161,7 +161,7 @@ var loot = {};
 				name: 'Major Health Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'hp',
+				itemSubType: PROP.HP,
 				potionResource: 'health',
 				imgIndex: 3,
 				cost: 80
@@ -169,7 +169,7 @@ var loot = {};
 				name: 'Greater Health Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'hp',
+				itemSubType: PROP.HP,
 				potionResource: 'health',
 				imgIndex: 4,
 				cost: 160
@@ -177,7 +177,7 @@ var loot = {};
 				name: 'Super Health Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'hp',
+				itemSubType: PROP.HP,
 				potionResource: 'health',
 				imgIndex: 5,
 				cost: 320
@@ -187,7 +187,7 @@ var loot = {};
 				name: 'Minor Mana Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'mp',
+				itemSubType: PROP.MP,
 				potionResource: 'mana',
 				imgIndex: 0,
 				cost: 10
@@ -195,7 +195,7 @@ var loot = {};
 				name: 'Light Mana Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'mp',
+				itemSubType: PROP.MP,
 				potionResource: 'mana',
 				imgIndex: 1,
 				cost: 20
@@ -203,7 +203,7 @@ var loot = {};
 				name: 'Mana Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'mp',
+				itemSubType: PROP.MP,
 				potionResource: 'mana',
 				imgIndex: 2,
 				cost: 40
@@ -211,7 +211,7 @@ var loot = {};
 				name: 'Major Mana Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'mp',
+				itemSubType: PROP.MP,
 				potionResource: 'mana',
 				imgIndex: 3,
 				cost: 80
@@ -219,7 +219,7 @@ var loot = {};
 				name: 'Greater Mana Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'mp',
+				itemSubType: PROP.MP,
 				potionResource: 'mana',
 				imgIndex: 4,
 				cost: 160
@@ -227,7 +227,7 @@ var loot = {};
 				name: 'Super Mana Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'mp',
+				itemSubType: PROP.MP,
 				potionResource: 'mana',
 				imgIndex: 5,
 				cost: 320
@@ -237,7 +237,7 @@ var loot = {};
 				name: 'Minor Spirit Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'sp',
+				itemSubType: PROP.SP,
 				potionResource: 'spirit',
 				imgIndex: 0,
 				cost: 10
@@ -246,7 +246,7 @@ var loot = {};
 				use: true,
 				description: '',
 				itemType: 'potion',
-				itemSubType: 'sp',
+				itemSubType: PROP.SP,
 				potionResource: 'spirit',
 				imgIndex: 1,
 				cost: 20
@@ -254,7 +254,7 @@ var loot = {};
 				name: 'Spirit Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'sp',
+				itemSubType: PROP.SP,
 				potionResource: 'spirit',
 				imgIndex: 2,
 				cost: 40
@@ -262,7 +262,7 @@ var loot = {};
 				name: 'Major Spirit Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'sp',
+				itemSubType: PROP.SP,
 				potionResource: 'spirit',
 				imgIndex: 3,
 				cost: 80
@@ -270,7 +270,7 @@ var loot = {};
 				name: 'Greater Spirit Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'sp',
+				itemSubType: PROP.SP,
 				potionResource: 'spirit',
 				imgIndex: 4,
 				cost: 160
@@ -278,7 +278,7 @@ var loot = {};
 				name: 'Super Spirit Potion',
 				use: true,
 				itemType: 'potion',
-				itemSubType: 'sp',
+				itemSubType: PROP.SP,
 				potionResource: 'spirit',
 				imgIndex: 5,
 				cost: 320
@@ -758,25 +758,25 @@ var loot = {};
 			else if (val <= 6 * multi) { return 'of the Locust' }
 			else { return 'of the Lamprey' }
 		},
-		wraith: function(val, multi) {
+		wraith: (val, multi) => {
 			if (val <= 4 * multi) { return 'of the Bat' }
 			else if (val <= 6 * multi) { return 'of the Wraith' }
 			else { return 'of the Vampire' }
 		},
-		haste: function(val) {
+		haste: (val) => {
 			if (val <= 10) { return 'of Readiness' }
 			else if (val <= 20) { return 'of Swiftness' }
 			else if (val <= 30) { return 'of Speed' }
 			else { return 'of Haste' }
 		},
-		increasedBlock: function(val) {
+		increasedBlock: (val) => {
 			if (val <= 4) { return 'of the Bastion' }
 			else if (val <= 8) { return 'of the Redoubt' }
 			else if (val <= 12) { return 'of the Fortress' }
 			else if (val <= 16) { return 'of the Rampart' }
 			else { return 'of the Bulwark' }
 		},
-		ease: function(val) {
+		ease: (val) => {
 			if (val <= 1) return 'of Ease'
 			if (val <= 2) return 'of Simplicity'
 		}
@@ -1163,8 +1163,8 @@ var loot = {};
 	}
 	function postProcessDrop(drop) {
 		// some props require further processing
-		if (drop.haste) {
-			newSpeed = (drop.speed - (drop.speed * (drop.haste / 100))).toFixed(1)
+		if (drop[PROP.HASTE]) {
+			newSpeed = (drop.speed - (drop.speed * (drop[PROP.HASTE] / 100))).toFixed(1)
 			// console.warn('new speed:', drop.speed, newSpeed)
 			drop.speed = newSpeed * 1
 		}
@@ -1196,62 +1196,62 @@ var loot = {};
 		deletedProps = []
 		if (itemType === 'oneHandSlashers') {
 			deletedProps = [
-				'oneHandBlunt',
-				'piercing',
-				'archery',
-				'handToHand',
-				'twoHandSlash',
-				'twoHandBlunt',
+				PROP.ONE_HAND_BLUNT,
+				PROP.PIERCING,
+				PROP.ARCHERY,
+				PROP.HAND_TO_HAND,
+				PROP.TWO_HAND_SLASH,
+				PROP.TWO_HAND_BLUNT,
 			]
 		}
 		else if (itemType === 'oneHandBlunts' || itemType === 'focus') {
 			deletedProps = [
-				'oneHandSlash',
-				'piercing',
-				'archery',
-				'handToHand',
-				'twoHandSlash',
-				'twoHandBlunt',
+				PROP.ONE_HAND_SLASH,
+				PROP.PIERCING,
+				PROP.ARCHERY,
+				PROP.HAND_TO_HAND,
+				PROP.TWO_HAND_SLASH,
+				PROP.TWO_HAND_BLUNT,
 			]
 		}
 		else if (itemType === 'piercers') {
 			deletedProps = [
-				'oneHandSlash',
-				'oneHandBlunt',
-				'archery',
-				'handToHand',
-				'twoHandSlash',
-				'twoHandBlunt',
+				PROP.ONE_HAND_SLASH,
+				PROP.ONE_HAND_BLUNT,
+				PROP.ARCHERY,
+				PROP.HAND_TO_HAND,
+				PROP.TWO_HAND_SLASH,
+				PROP.TWO_HAND_BLUNT,
 			]
 		}
 		else if (itemType === 'twoHandSlashers') {
 			deletedProps = [
-				'oneHandSlash',
-				'oneHandBlunt',
-				'piercing',
-				'archery',
-				'handToHand',
-				'twoHandBlunt',
+				PROP.ONE_HAND_SLASH,
+				PROP.ONE_HAND_BLUNT,
+				PROP.PIERCING,
+				PROP.ARCHERY,
+				PROP.HAND_TO_HAND,
+				PROP.TWO_HAND_BLUNT,
 			]
 		}
 		else if (itemType === 'twoHandBlunts' || itemType === 'staves') {
 			deletedProps = [
-				'oneHandSlash',
-				'oneHandBlunt',
-				'piercing',
-				'archery',
-				'handToHand',
-				'twoHandSlash',
+				PROP.ONE_HAND_SLASH,
+				PROP.ONE_HAND_BLUNT,
+				PROP.PIERCING,
+				PROP.ARCHERY,
+				PROP.HAND_TO_HAND,
+				PROP.TWO_HAND_SLASH,
 			]
 		}
 		else if (itemType === 'bows') {
 			deletedProps = [
-				'oneHandSlash',
-				'oneHandBlunt',
-				'piercing',
-				'handToHand',
-				'twoHandSlash',
-				'twoHandBlunt',
+				PROP.ONE_HAND_SLASH,
+				PROP.ONE_HAND_BLUNT,
+				PROP.PIERCING,
+				PROP.HAND_TO_HAND,
+				PROP.TWO_HAND_SLASH,
+				PROP.TWO_HAND_BLUNT,
 			]
 		}
 		deletedProps.forEach(deleteItemProp)
@@ -1332,64 +1332,64 @@ var loot = {};
 	function stripRareKeys(rareKeys, key) {
 		// if this prop exists, these other props cannot exist
 		// resists
-		if (key === 'resistBlood') _.pull(rareKeys, 'resistPoison', 'resistAll')
-		if (key === 'resistPoison') _.pull(rareKeys, 'resistBlood', 'resistAll')
-		if (key === 'resistArcane') _.pull(rareKeys, 'resistLightning', 'resistAll')
-		if (key === 'resistLightning') _.pull(rareKeys, 'resistArcane', 'resistAll')
-		if (key === 'resistFire') _.pull(rareKeys, 'resistIce', 'resistAll')
-		if (key === 'resistIce') _.pull(rareKeys, 'resistFire', 'resistAll')
-		if (key === 'resistAll') _.pull(rareKeys, 'resistBlood', 'resistPoison', 'resistArcane', 'resistLightning', 'resistFire', 'resistIce')
+		if (key === PROP.RESIST_BLOOD) _.pull(rareKeys, PROP.RESIST_POISON, PROP.RESIST_ALL)
+		if (key === PROP.RESIST_POISON) _.pull(rareKeys, PROP.RESIST_BLOOD, PROP.RESIST_ALL)
+		if (key === PROP.RESIST_ARCANE) _.pull(rareKeys, PROP.RESIST_LIGHTNING, PROP.RESIST_ALL)
+		if (key === PROP.RESIST_LIGHTNING) _.pull(rareKeys, PROP.RESIST_ARCANE, PROP.RESIST_ALL)
+		if (key === PROP.RESIST_FIRE) _.pull(rareKeys, PROP.RESIST_ICE, PROP.RESIST_ALL)
+		if (key === PROP.RESIST_ICE) _.pull(rareKeys, PROP.RESIST_FIRE, PROP.RESIST_ALL)
+		if (key === PROP.RESIST_ALL) _.pull(rareKeys, PROP.RESIST_BLOOD, PROP.RESIST_POISON, PROP.RESIST_ARCANE, PROP.RESIST_LIGHTNING, PROP.RESIST_FIRE, PROP.RESIST_ICE)
 
 		// spell power
-		if (key === 'addSpellBlood') _.pull(rareKeys, 'addSpellPoison', 'addSpellAll')
-		if (key === 'addSpellPoison') _.pull(rareKeys, 'addSpellBlood', 'addSpellAll')
-		if (key === 'addSpellArcane') _.pull(rareKeys, 'addSpellLightning', 'addSpellAll')
-		if (key === 'addSpellLightning') _.pull(rareKeys, 'addSpellArcane', 'addSpellAll')
-		if (key === 'addSpellFire') _.pull(rareKeys, 'addSpellIce', 'addSpellAll')
-		if (key === 'addSpellIce') _.pull(rareKeys, 'addSpellFire', 'addSpellAll')
-		if (key === 'addSpellAll') _.pull(rareKeys, 'addSpellBlood', 'addSpellPoison', 'addSpellArcane', 'addSpellLightning', 'addSpellFire', 'addSpellIce')
+		if (key === PROP.ADD_SPELL_BLOOD) _.pull(rareKeys, PROP.ADD_SPELL_POISON, PROP.ADD_SPELL_ALL)
+		if (key === PROP.ADD_SPELL_POISON) _.pull(rareKeys, PROP.ADD_SPELL_BLOOD, PROP.ADD_SPELL_ALL)
+		if (key === PROP.ADD_SPELL_ARCANE) _.pull(rareKeys, PROP.ADD_SPELL_LIGHTNING, PROP.ADD_SPELL_ALL)
+		if (key === PROP.ADD_SPELL_LIGHTNING) _.pull(rareKeys, PROP.ADD_SPELL_ARCANE, PROP.ADD_SPELL_ALL)
+		if (key === PROP.ADD_SPELL_FIRE) _.pull(rareKeys, PROP.ADD_SPELL_ICE, PROP.ADD_SPELL_ALL)
+		if (key === PROP.ADD_SPELL_ICE) _.pull(rareKeys, PROP.ADD_SPELL_FIRE, PROP.ADD_SPELL_ALL)
+		if (key === PROP.ADD_SPELL_ALL) _.pull(rareKeys, PROP.ADD_SPELL_BLOOD, PROP.ADD_SPELL_POISON, PROP.ADD_SPELL_ARCANE, PROP.ADD_SPELL_LIGHTNING, PROP.ADD_SPELL_FIRE, PROP.ADD_SPELL_ICE)
 
 		// skills
-		if (key === 'attack' ||
-			key === 'offense' ||
-			key === 'defense' ||
-			key === 'oneHandSlash' ||
-			key === 'oneHandBlunt' ||
-			key === 'piercing' ||
-			key === 'archery' ||
-			key === 'handToHand' ||
-			key === 'twoHandSlash' ||
-			key === 'twoHandBlunt' ||
-			key === 'dodge' ||
-			key === 'parry' ||
-			key === 'riposte' ||
-			key === 'alteration' ||
-			key === 'conjuration' ||
-			key === 'evocation'
+		if (key === PROP.ATTACK ||
+			key === PROP.OFFENSE ||
+			key === PROP.DEFENSE ||
+			key === PROP.ONE_HAND_SLASH ||
+			key === PROP.ONE_HAND_BLUNT ||
+			key === PROP.PIERCING ||
+			key === PROP.ARCHERY ||
+			key === PROP.HAND_TO_HAND ||
+			key === PROP.TWO_HAND_SLASH ||
+			key === PROP.TWO_HAND_BLUNT ||
+			key === PROP.DODGE ||
+			key === PROP.PARRY ||
+			key === PROP.RIPOSTE ||
+			key === PROP.ALTERATION ||
+			key === PROP.CONJURATION ||
+			key === PROP.EVOCATION
 		) {
-			_.pull(rareKeys, 'allSkills')
+			_.pull(rareKeys, PROP.ALL_SKILLS)
 		}
-		if (key === 'allSkills') _.pull(rareKeys, 'attack', 'offense', 'defense', 'oneHandSlash', 'oneHandBlunt', 'piercing', 'archery', 'handToHand', 'twoHandSlash', 'twoHandBlunt', 'dodge', 'parry', 'riposte', 'alteration', 'conjuration', 'evocation')
+		if (key === PROP.ALL_SKILLS) _.pull(rareKeys, PROP.ATTACK, PROP.OFFENSE, PROP.DEFENSE, PROP.ONE_HAND_SLASH, PROP.ONE_HAND_BLUNT, PROP.PIERCING, PROP.ARCHERY, PROP.HAND_TO_HAND, PROP.TWO_HAND_SLASH, PROP.TWO_HAND_BLUNT, PROP.DODGE, PROP.PARRY, PROP.RIPOSTE, PROP.ALTERATION, PROP.CONJURATION, PROP.EVOCATION)
 
 		// attributes
-		if (key === 'str' ||
-			key === 'sta' ||
-			key === 'agi' ||
-			key === 'dex' ||
-			key === 'wis' ||
-			key === 'intel' ||
-			key === 'cha') {
-			_.pull(rareKeys, 'allStats')
+		if (key === PROP.STR ||
+			key === PROP.STA ||
+			key === PROP.AGI ||
+			key === PROP.DEX ||
+			key === PROP.WIS ||
+			key === PROP.INTEL ||
+			key === PROP.CHA) {
+			_.pull(rareKeys, PROP.ALL_STATS)
 		}
-		if (key === 'allStats') _.pull(rareKeys, 'str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha')
+		if (key === PROP.ALL_STATS) _.pull(rareKeys, PROP.STR, PROP.STA, PROP.AGI, PROP.DEX, PROP.WIS, PROP.INTEL, PROP.CHA)
 
 		// added magic melee damage
-		if (key === 'addIce') _.pull(rareKeys, 'addFire')
-		if (key === 'addFire') _.pull(rareKeys, 'addIce')
-		if (key === 'addBlood') _.pull(rareKeys, 'addPoison')
-		if (key === 'addPoison') _.pull(rareKeys, 'addBlood')
-		if (key === 'addArcane') _.pull(rareKeys, 'addLightning')
-		if (key === 'addLightning') _.pull(rareKeys, 'addArcane')
+		if (key === PROP.ADD_ICE) _.pull(rareKeys, PROP.ADD_FIRE)
+		if (key === PROP.ADD_FIRE) _.pull(rareKeys, PROP.ADD_ICE)
+		if (key === PROP.ADD_BLOOD) _.pull(rareKeys, PROP.ADD_POISON)
+		if (key === PROP.ADD_POISON) _.pull(rareKeys, PROP.ADD_BLOOD)
+		if (key === PROP.ADD_ARCANE) _.pull(rareKeys, PROP.ADD_LIGHTNING)
+		if (key === PROP.ADD_LIGHTNING) _.pull(rareKeys, PROP.ADD_ARCANE)
 
 		// always pull out prop key
 		_.pull(rareKeys, key)
@@ -1418,12 +1418,12 @@ var loot = {};
 			// console.info('processProp', prop, val)
 			if (prop === 'resists') {
 				newProps = [
-					'resistBlood',
-					'resistPoison',
-					'resistArcane',
-					'resistLightning',
-					'resistFire',
-					'resistIce',
+					PROP.RESIST_BLOOD,
+					PROP.RESIST_POISON,
+					PROP.RESIST_ARCANE,
+					PROP.RESIST_LIGHTNING,
+					PROP.RESIST_FIRE,
+					PROP.RESIST_ICE
 				]
 			}
 			else if (prop === 'skills') {
@@ -1431,54 +1431,54 @@ var loot = {};
 			}
 			else if (prop === 'spellPower') {
 				newProps = [
-					'addSpellBlood',
-					'addSpellPoison',
-					'addSpellArcane',
-					'addSpellLightning',
-					'addSpellFire',
-					'addSpellIce',
+					PROP.ADD_SPELL_BLOOD,
+					PROP.ADD_SPELL_POISON,
+					PROP.ADD_SPELL_ARCANE,
+					PROP.ADD_SPELL_LIGHTNING,
+					PROP.ADD_SPELL_FIRE,
+					PROP.ADD_SPELL_ICE,
 				]
 			}
 			else if (prop === 'castingSkills') {
 				newProps = [
-					'alteration',
-					'conjuration',
-					'evocation',
+					PROP.ALTERATION,
+					PROP.CONJURATION,
+					PROP.EVOCATION,
 				]
 			}
 			else if (prop === 'stats') {
 				newProps = [
-					'str',
-					'sta',
-					'agi',
-					'dex',
-					'wis',
-					'intel',
-					'cha',
+					PROP.STR,
+					PROP.STA,
+					PROP.AGI,
+					PROP.DEX,
+					PROP.WIS,
+					PROP.INTEL,
+					PROP.CHA,
 				]
 			}
 			else if (prop === 'points') {
 				newProps = [
-					'hp',
-					'mp',
-					'sp',
+					PROP.HP,
+					PROP.MP,
+					PROP.SP,
 				]
 			}
 			else if (prop === 'regen') {
 				newProps = [
-					'hpRegen',
-					'mpRegen',
-					'spRegen',
+					PROP.HP_REGEN,
+					PROP.MP_REGEN,
+					PROP.SP_REGEN,
 				]
 			}
 			else if (prop === 'addDamage') {
 				newProps = [
-					'addBlood',
-					'addPoison',
-					'addArcane',
-					'addLightning',
-					'addFire',
-					'addIce',
+					PROP.ADD_BLOOD,
+					PROP.ADD_POISON,
+					PROP.ADD_ARCANE,
+					PROP.ADD_LIGHTNING,
+					PROP.ADD_FIRE,
+					PROP.ADD_ICE,
 				]
 			}
 			if (newProps.length) {
@@ -1706,7 +1706,7 @@ var loot = {};
 				_item.itemType === 'oneHandBlunts' && !stats.oneHandBlunt() ||
 				_item.itemType === 'twoHandSlashers' && !stats.twoHandSlash() ||
 				_item.itemType === 'twoHandBlunts' && !stats.twoHandBlunt() ||
-				_item.itemType === 'piercing' && !stats.piercing() ||
+				_item.itemType === PROP.PIERCING && !stats.piercing() ||
 				_item.itemType === 'bows' && !stats.archery()) {
 				chat.log('You cannot equip this type of weapon!', CSS.CHAT_WARNING)
 				return false
@@ -2101,10 +2101,10 @@ var loot = {};
 			else if (item.itemType === 'staves' ||
 				item.itemType === 'piercers' ||
 				item.itemType === 'bows' ||
-				item.itemType === 'oneHandSlash' ||
-				item.itemType === 'twoHandSlash' ||
-				item.itemType === 'oneHandBlunt' ||
-				item.itemType === 'twoHandBlunt') {
+				item.itemType === PROP.ONE_HAND_SLASH ||
+				item.itemType === PROP.TWO_HAND_SLASH ||
+				item.itemType === PROP.ONE_HAND_BLUNT ||
+				item.itemType === PROP.TWO_HAND_BLUNT) {
 				value *= 2.3
 			}
 		}
@@ -2117,8 +2117,8 @@ var loot = {};
 		return _.clone(identifyScroll)
 	}
 
-	const wearsLeather = [JOB.BARD, JOB.CLERIC, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.WARRIOR, 'RNG', JOB.ROGUE, JOB.SHAMAN, JOB.DRUID, JOB.MONK, JOB.TEMPLAR]
-	const wearsMail = [JOB.BARD, JOB.CLERIC, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.WARRIOR, 'RNG', JOB.SHAMAN]
+	const wearsLeather = [JOB.BARD, JOB.CLERIC, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.WARRIOR, JOB.RANGER, JOB.ROGUE, JOB.SHAMAN, JOB.DRUID, JOB.MONK, JOB.TEMPLAR]
+	const wearsMail = [JOB.BARD, JOB.CLERIC, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.WARRIOR, JOB.RANGER, JOB.SHAMAN]
 	const wearsPlate = [JOB.BARD, JOB.CLERIC, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.WARRIOR]
 	function canEquipArmor(armorType) {
 		if (armorType === void 0) return true

@@ -1,6 +1,7 @@
 var battle;
 (function(TweenMax, $, _, PIXI, Linear, undefined) {
 	battle = {
+		lastBuffAlreadyActive: false,
 		buffIconTimers: {},
 		expThreshold: [0,
 			0, 100, 220, 365, 540, 750, 1000, 1295, 1640, 2040,
@@ -129,6 +130,7 @@ var battle;
 			mob.leveledUp = leveled = true
 			my.level++
 			chat.log('You have reached level ' + my.level + '!', 'chat-level')
+			stats.memo = {}
 			audio.playSound('levelup')
 		}
 		if (leveled) {
@@ -372,7 +374,7 @@ var battle;
 					class: combat.considerClass[combat.getDiffIndex(mobs[my.target].level)],
 					name: mobs[my.target].name,
 					type: mobs[my.target].type,
-					hp: ceil(100 - bar.getRatio('hp', mobs[my.target])),
+					hp: ceil(100 - bar.getRatio(PROP.HP, mobs[my.target])),
 					traits: getMobTargetTraitsHtml(),
 					buffs: getMobTargetBuffsHtml(),
 				}
@@ -382,7 +384,7 @@ var battle;
 					class: 'con-white',
 					name: party.getNameByRow(my.target),
 					type: 'normal',
-					hp: ceil(100 - bar.getRatio('hp', party.presence[party.getIndexByRow(my.target)])),
+					hp: ceil(100 - bar.getRatio(PROP.HP, party.presence[party.getIndexByRow(my.target)])),
 					traits: 'Player',
 					buffs: '',
 				}
@@ -597,8 +599,12 @@ var battle;
 		}
 		if (!buffStillActive) {
 			my.buffFlags[keyRow] = false
-			if (startedActive && buffs[getBuffKey(keyRow)].fadeMsg) {
-				chat.log(buffs[getBuffKey(keyRow)].fadeMsg, 'chat-heal')
+			if (startedActive &&
+				buffs[getBuffKey(keyRow)].fadeMsg) {
+				if (!battle.lastBuffAlreadyActive) {
+					// suppresses remove message in cases where buff is being refreshed
+					chat.log(buffs[getBuffKey(keyRow)].fadeMsg, CSS.CHAT_HEAL)
+				}
 				combat.processStatBuffsToMe(getBuffKey(keyRow))
 			}
 		}
@@ -623,6 +629,7 @@ var battle;
 		buffEl = querySelector('#mybuff-' + keyRow)
 		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
 	}
+
 	function removeBuff(key, keyRow) {
 		/**
 		 * Used for pre-emptive removal before the timer is done
@@ -640,6 +647,7 @@ var battle;
 		removeMyBuffFlag(key)
 		removeMyBuffIcon(key, keyRow)
 	}
+
 	function removeAllBuffs() {
 		for (var key in my.buffFlags) {
 			if (my.buffs[key].duration > 0) {

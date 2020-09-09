@@ -134,7 +134,9 @@ var academy;
 			'</div>' +
 			// row 2
 			'<div class="flex-column flex-max" style="margin-left: .5rem; justify-content: center">' +
-				'<div class="academy-skill-name">'+ skillData.name +'</div>'
+				'<div class="academy-skill-name'+
+					(my.skills[i] === 0 ? ' con-grey' : '')
+				+'">'+ skillData.name +'</div>'
 				if (my.skills[i] > 0) {
 					row += '<div class="academy-skill-rank">Current Rank: '+ my.skills[i] +'</div>'
 				}

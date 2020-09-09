@@ -149,14 +149,14 @@ var town;
 					/*my.hp = 1
 					my.mp = 1
 					my.sp = 1*/
-					my.set('hp', my.hpMax)
-					my.set('mp', my.mpMax)
-					my.set('sp', my.spMax)
+					my.set(PROP.HP, my.hpMax)
+					my.set(PROP.MP, my.mpMax)
+					my.set(PROP.SP, my.spMax)
 				}
 				else {
-					my.set('hp', my.hpMax)
-					my.set('mp', my.mpMax)
-					my.set('sp', my.spMax)
+					my.set(PROP.HP, my.hpMax)
+					my.set(PROP.MP, my.mpMax)
+					my.set(PROP.SP, my.spMax)
 				}
 
 				// init party member values
@@ -238,13 +238,13 @@ var town;
 				potLevel = ~~(my.level / 8)
 				if (potLevel > 4) potLevel = 4
 				for (i = 0; i<2; i++) {
-					potionItems.push(item.getPotion(potLevel + i, 'hp'))
+					potionItems.push(item.getPotion(potLevel + i, PROP.HP))
 				}
 				for (i = 0; i<2; i++) {
-					potionItems.push(item.getPotion(potLevel + i, 'mp'))
+					potionItems.push(item.getPotion(potLevel + i, PROP.MP))
 				}
 				for (i = 0; i<2; i++) {
-					potionItems.push(item.getPotion(potLevel + i, 'sp'))
+					potionItems.push(item.getPotion(potLevel + i, PROP.SP))
 				}
 				scrollItems.push(item.getIdentifyScroll())
 			}

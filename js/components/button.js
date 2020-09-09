@@ -161,7 +161,7 @@ var button;
 		// double attack?
 		if (!isPiercing &&
 			my.level >= skills.doubleAttack[my.job].level) {
-			combat.levelSkillCheck('doubleAttack')
+			combat.levelSkillCheck(PROP.DOUBLE_ATTACK)
 			if (Math.random() < successfulDoubleAttack()) {
 				hit = stats.autoAttackDamage()
 				damages.push({
@@ -189,7 +189,7 @@ var button;
 		if (my.target === -1) return
 
 		if (my.level >= skills.dualWield[my.job].level) {
-			combat.levelSkillCheck('dualWield')
+			combat.levelSkillCheck(PROP.DUAL_WIELD)
 			if (successfulDualWield()) {
 				hit = stats.offhandDamage()
 				damages = []

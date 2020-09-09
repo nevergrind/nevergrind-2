@@ -7,14 +7,16 @@
 		crashingChords,
 		battleHymn,
 		militantCadence,
-		requiemOfRestraint,
+		consonantChain,
 		litanyOfLife,
 		melodyOfMana,
 		righteousRhapsody,
-		chromaticSonnet,
+		getMaxRighteousRhapsody,
+		chromaticSonata,
 	}
 	///////////////////////////////////////////
-	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
+	let maxRighteousRhapsody
 	///////////////////////////////////////////
 	function bellow(index, data) {
 		if (timers.castBar < 1) return
@@ -186,17 +188,17 @@
 		})
 		combat.txBuffHero(damages)
 	}
-	function requiemOfRestraint(index, data) {
+	function consonantChain(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, requiemOfRestraintCompleted)
+		spell.startCasting(index, data, consonantChainCompleted)
 	}
-	function requiemOfRestraintCompleted() {
+	function consonantChainCompleted() {
 		combat.txDotMob([{
-			key: 'requiemOfRestraint',
+			key: 'consonantChain',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
@@ -207,68 +209,105 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, litanyOfLifeCompleted)
 	}
 	function litanyOfLifeCompleted() {
-		combat.txDamageMob([{
-			key: 'litanyOfLife',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		damages = []
+		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		party.presence.forEach(p => {
+			damages.push({
+				index: p.row,
+				key: 'litanyOfLife',
+				spellType: spell.data.spellType,
+				level: my.skills[spell.config.skillIndex],
+				...hit
+			})
+		})
+		combat.txBuffHero(damages)
 	}
 	function melodyOfMana(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, melodyOfManaCompleted)
 	}
 	function melodyOfManaCompleted() {
-		combat.txDamageMob([{
-			key: 'melodyOfMana',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		damages = []
+		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		party.presence.forEach(p => {
+			damages.push({
+				index: p.row,
+				key: 'melodyOfMana',
+				spellType: spell.data.spellType,
+				level: my.skills[spell.config.skillIndex],
+				...hit
+			})
+		})
+		combat.txBuffHero(damages)
 	}
 	function righteousRhapsody(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, righteousRhapsodyCompleted)
 	}
 	function righteousRhapsodyCompleted() {
-		combat.txDamageMob([{
-			key: 'righteousRhapsody',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		damages = []
+		mobs.forEach(m => {
+			damages.push({
+				index: m.index,
+				key: 'righteousRhapsody',
+				spellType: spell.data.spellType,
+				level: my.skills[spell.config.skillIndex],
+				damage: 0,
+			})
+		})
+		combat.txDotMob(damages)
 	}
-	function chromaticSonnet(index, data) {
+	function getMaxRighteousRhapsody(index) {
+		maxRighteousRhapsody = 0
+		for (key in mobs[index].buffs) {
+			if (mobs[index].buffs[key].key === 'righteousRhapsody' &&
+				mobs[index].buffs[key].duration > 0 && // must be active
+				mobs[index].buffs[key].level > maxRighteousRhapsody) {
+				maxRighteousRhapsody = mobs[index].buffs[key].level
+			}
+		}
+		return maxRighteousRhapsody
+	}
+	function chromaticSonata(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, chromaticSonnetCompleted)
+		spell.startCasting(index, data, chromaticSonataCompleted)
 	}
-	function chromaticSonnetCompleted() {
-		combat.txDamageMob([{
-			key: 'chromaticSonnet',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+	function chromaticSonataCompleted() {
+		damages = []
+		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		party.presence.forEach(p => {
+			damages.push({
+				index: p.row,
+				key: 'chromaticSonata',
+				spellType: spell.data.spellType,
+				level: my.skills[spell.config.skillIndex],
+				...hit
+			})
+		})
+		combat.txBuffHero(damages)
 	}
 }($, _, TweenMax);

@@ -143,6 +143,7 @@ html {
 	margin: 0;
 	height: 100%;
 	background: #000;
+	cursor: url('cursor/normal.png'), auto;
 }
 
 @media only screen and (width: 1280px) and (height: 720px) { html { font-size: 14px }}
@@ -174,7 +175,6 @@ html {
 	max-height: 2160px;
 	margin: 0;
 	overflow: hidden;
-	cursor: url('cursor/normal.png'), auto;
 }
 canvas {
 	min-width: 1280px;
@@ -475,7 +475,6 @@ tbody { border: 0 }
 	left: 0;
 	width: 100%;
 	height: 100%;
-	overflow: hidden;
 	z-index: 1;
 }
 
@@ -639,14 +638,11 @@ tbody { border: 0 }
 .mob-bar {
 	position: relative;
 	width: 10rem;
-	height: .8rem;
+	height: .25rem;
+	box-shadow: 0 0 5px #fff4;
 	border: 1px solid #000;
-	border-left: none;
-	left: 0;
-	right: 0;
-	margin: 0 auto;
 	overflow: hidden;
-	border-radius: 0 5px 5px 0;
+	border-radius: 5px;
 	background: linear-gradient(to top, #222, #444, #444, #222);
 }
 .mob-health {
@@ -691,10 +687,10 @@ tbody { border: 0 }
 }
 .mob-name {
 	display: flex;
-	font: 1.2rem Play;
+	font: 1rem Play;
 	text-align: center;
 	white-space: nowrap;
-	margin-left: 1rem;
+	margin-right: 1.125rem;
 	flex-wrap: nowrap;
 	justify-content: center;
 }
@@ -702,7 +698,8 @@ tbody { border: 0 }
 	width: 1rem;
 	height: 1rem;
 	background: #e11;
-	border-radius: 0 3px 3px 0;
+	border-radius: 4px;
+	margin-left: .25rem;
 	border: 1px solid #000;
 }
 .mob-alive {
@@ -1599,7 +1596,6 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 #mission-embark {
 }
 .disabled {
-	cursor: default;
 	pointer-events: none;
 	filter: brightness(.2);
 }
@@ -1609,7 +1605,6 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 
 /* dungeon */
-
 #button-wrap {
 	position: fixed;
 	display: none;
@@ -3397,13 +3392,13 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	font-size: .9rem;
 }
 #mob-target-wrap {
+	display: none;
 	position: absolute;
 	left: 0;
 	right: 0;
 	margin: 0 auto;
 	font-size: 1.2rem;
 	font-family: Play;
-	display: flex;
 	flex-direction: column;
 	width: 22.5rem;
 	text-align: center;
@@ -3467,21 +3462,20 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	margin-right: .25rem;
 }
 #cast-bar-wrap {
+	position: fixed;
 	opacity: 0;
-	position: absolute;
 	bottom: 16%;
 	left: 0;
 	right: 0;
 	margin: 0 auto;
-	font-family: Cinzel, serif;
+	font-family: Play;
 	font-size: .8rem;
-	letter-spacing: .1rem;
 	background: linear-gradient(135deg, #aef, #05b, #048, #05b, #aef);
 	padding: .1rem;
-	width: 7.5rem;
+	width: 10rem;
 	text-align: center;
 	border-radius: 5px;
-	border: 1px solid #1a1a1a;
+	border: 1px solid #0a0a0a;
 	transition: opacity .1s linear;
 	z-index: 1;
 }
@@ -3489,20 +3483,46 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	border: 1px solid #000;
 	border-radius: 5px;
 }
-#cast-bar-bg {
-	position: relative;
-	margin: .2rem;
-	border: 2px ridge #1a1a1a;
-	border-radius: 8px;
-	overflow: hidden;
+#cast-bar-flex {
+	display: flex;
+	height: 1rem;
+	border: 1px solid #0a0a0a;
 	background: linear-gradient(to top, #222, #444, #444, #222);
+	margin: .1rem;
+}
+#cast-bar-parent {
+	display: flex;
+	overflow: hidden;
+	position: relative;
+	border-radius: 0 4px 4px 0;
+	flex: 1;
+}
+#cast-bar-name {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+#cast-bar-icon {
+	position: relative;
+	height: 1rem;
+	width: 1rem;
+	border-right: 1px solid #0a0a0a;
 }
 #cast-bar {
-	height: .5rem;
+	position: relative;
 	width: 100%;
 	transform: translate(-50%);
-	background: linear-gradient(to top, #606, #d0d, #d0d, #606);
+	/*background: linear-gradient(to top, #606, #d0d, #d0d, #606);*/
+	background: linear-gradient(to top, #840, #b60, #b60, #840);
 	animation: repeat-cast-bar .6s ease-out infinite;
+}
+#cast-bar-glow {
+	position: absolute;
+	width: .5rem;
+	height: 1rem;
+	top: 0;
+	right: -.25rem;
 }
 #bar-all-player-wrap .player-targeted {
 	outline: .1rem ridge #5fd;

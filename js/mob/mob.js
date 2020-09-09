@@ -372,7 +372,7 @@ var mob;
 		el.style.display = m.hp ? 'none' : 'block'
 	}
 	function drawMobBar(index, drawInstant) {
-		percent = bar.getRatio('hp', mobs[index])
+		percent = bar.getRatio(PROP.HP, mobs[index])
 		TweenMax.to(query.el('#mob-health-' + index), drawInstant ? 0 : .15, {
 			x: '-' + percent + '%'
 		})
@@ -471,7 +471,7 @@ var mob;
 		if (mobs[i].buffFlags.chill) mobSpeed += .2
 		if (mobs[i].buffFlags.shiftingEther) mobSpeed += .3
 		if (mobs[i].buffFlags.primordialSludge) mobSpeed += .2
-		if (mobs[i].buffFlags.requiemOfRestraint) mobSpeed += .2
+		if (mobs[i].buffFlags.consonantChain) mobSpeed += .2
 		// constraints
 		if (mobSpeed > 2) mobSpeed = 2
 		else if (mobSpeed < .5) mobSpeed = .5
@@ -554,7 +554,7 @@ var mob;
 			row: row,
 			damage: _.random(ceil(mobs[i].level * .33), mobs[i].attack),
 			isPiercing: isPiercing,
-			damageType: 'physical'
+			damageType: DAMAGE_TYPE.PHYSICAL
 		}
 	}
 
@@ -704,15 +704,15 @@ var mob;
 		})
 		hpKillVal = stats.hpKill()
 		if (hpKillVal) {
-			combat.updateMyResource('hp', hpKillVal)
+			combat.updateMyResource(PROP.HP, hpKillVal)
 		}
 		mpKillVal = stats.mpKill()
 		if (mpKillVal) {
-			combat.updateMyResource('mp', mpKillVal)
+			combat.updateMyResource(PROP.MP, mpKillVal)
 		}
 		spKillVal = stats.spKill()
 		if (spKillVal) {
-			combat.updateMyResource('sp', spKillVal)
+			combat.updateMyResource(PROP.SP, spKillVal)
 		}
 		mob.earnedGold += battle.addGold(mobs[i].gold)
 		mob.earnedExp += battle.addExp(mobs[i].exp)
@@ -796,7 +796,7 @@ var mob;
 				'Widow Strike'
 			];
 		}
-		else if (config.job === 'RNG') {
+		else if (config.job === JOB.RANGER) {
 			config.attack = ~~(config.attack * 1.15);
 			if (config.level >= 8) config.dodge = setMobSkill(config, 7.5)
 			if (config.level >= 18) config.parry = setMobSkill(config, 10)
@@ -965,35 +965,43 @@ var mob;
 	}
 	function getMobResist(d) {
 		resist = mobs[d.index].resist[d.damageType]
-		// console.info('getMobResist b4', d.index, d.damageType, resist)
-		if (d.damageType === 'blood') {
-			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
+		if (typeof resist === Undefined) resist = 1
+		else {
+			// console.info('getMobResist b4', d.index, d.damageType, resist)
+			if (d.damageType === DAMAGE_TYPE.BLOOD) {
+				if (mobs[d.index].buffFlags.curseOfShadows) resist += buffs.curseOfShadows.reduceBloodResist
+			}
+			else if (d.damageType === DAMAGE_TYPE.POISON) {
+				if (mobs[d.index].buffFlags.curseOfShadows) resist += buffs.curseOfShadows.reducePoisonResist
+			}
+			else if (d.damageType === DAMAGE_TYPE.ARCANE) {
+				if (mobs[d.index].buffFlags.curseOfShadows) resist += buffs.curseOfShadows.reduceArcaneResist
+				if (mobs[d.index].buffFlags.mindBlitzEffect) resist += buffs.mindBlitzEffect.reduceArcaneResist
+			}
+			else if (d.damageType === DAMAGE_TYPE.LIGHTNING) {
+				if (mobs[d.index].buffFlags.staticStorm) resist += buffs.staticStorm.reduceLightningResist
+				if (mobs[d.index].buffFlags.primevalWithering) resist += buffs.primevalWithering.reduceLightningResist
+			}
+			else if (d.damageType === DAMAGE_TYPE.FIRE) {
+				if (mobs[d.index].buffFlags.primevalWithering) resist += buffs.primevalWithering.reduceFireResist
+			}
+			else if (d.damageType === DAMAGE_TYPE.ICE) {
+				if (mobs[d.index].buffFlags.primevalWithering) resist += buffs.primevalWithering.reduceIceResist
+			}
+			if (mobs[d.index].buffFlags.righteousRhapsody) {
+				resist += buffs.righteousRhapsody.reduceAllResists[skill.BRD.getMaxRighteousRhapsody(d.index)]
+			}
+
+			resistPenalty = 0
+			if (mobs[d.index].level > my.level) {
+				// 20% when 3 levels higher
+				resistPenalty = Math.pow(mobs[d.index].level - my.level + 1, 2.16) / 100
+			}
+			resist -= resistPenalty
+
+			if (resist < .25) resist = .25
+			else if (resist > 2) resist = 2 // cannot lower resists beyond -100%
 		}
-		else if (d.damageType === 'poison') {
-			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
-		}
-		else if (d.damageType === 'arcane') {
-			if (mobs[d.index].buffFlags.curseOfShadows) resist += .2
-			if (mobs[d.index].buffFlags.mindBlitzEffect) resist += .3
-		}
-		else if (d.damageType === 'lightning') {
-			if (mobs[d.index].buffFlags.staticStorm) resist += .25
-			if (mobs[d.index].buffFlags.primevalWithering) resist += .2
-		}
-		else if (d.damageType === 'fire') {
-			if (mobs[d.index].buffFlags.primevalWithering) resist += .2
-		}
-		else if (d.damageType === 'ice') {
-			if (mobs[d.index].buffFlags.primevalWithering) resist += .2
-		}
-		resistPenalty = 0
-		if (mobs[d.index].level > my.level) {
-			// 20% when 3 levels higher
-			resistPenalty = Math.pow(mobs[d.index].level - my.level + 1, 2.16) / 100
-		}
-		resist -= resistPenalty
-		if (resist < .25) resist = .25
-		else if (resist > 2) resist = 2 // cannot lower resists beyond -100%
 		// console.info('getMobResist after', d.index, d.damageType, resist)
 		return resist
 	}

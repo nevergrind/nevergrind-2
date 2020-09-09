@@ -68,7 +68,7 @@ var tooltip;
 				getGenericPercentStatHtml(obj.enhancedArmor, 'Enhanced Armor') +
 				getGenericPercentStatHtml(obj.enhancedDamage, 'Enhanced Damage') +
 				// ias
-				getGenericPercentStatHtml(obj.haste, 'Increased Attack Speed') +
+				getGenericPercentStatHtml(obj[PROP.HASTE], 'Increased Attack Speed') +
 				// plus all
 				getGenericStatHtml(obj.allSkills, 'All Skills') +
 				getGenericStatHtml(obj.allStats, 'All Stats') +
@@ -82,6 +82,7 @@ var tooltip;
 				getGenericStatHtml(obj.resistLightning, 'Resist Lightning') +
 				getGenericStatHtml(obj.resistFire, 'Resist Fire') +
 				getGenericStatHtml(obj.resistIce, 'Resist Ice') +
+				getGenericStatHtml(obj.resistPhysical, 'Resist Physical') +
 				// spell power
 				getGenericStatHtml(obj.addSpellBlood, 'Blood Spell Power') +
 				getGenericStatHtml(obj.addSpellPoison, 'Poison Spell Power') +
@@ -94,7 +95,7 @@ var tooltip;
 				// skills
 				getGenericStatHtml(obj.offense, 'Offense') +
 				getGenericStatHtml(obj.defense, 'Defense') +
-				getGenericStatHtml(obj.oneHandSlash, 'One-hand Slash') +
+				getGenericStatHtml(obj.oneHandSlash, LABEL.ONE_HAND_SLASH) +
 				getGenericStatHtml(obj.oneHandBlunt, 'One-hand Blunt') +
 				getGenericStatHtml(obj.piercing, 'Piercing') +
 				getGenericStatHtml(obj.archery, 'Archery') +
@@ -109,7 +110,7 @@ var tooltip;
 				getGenericStatHtml(obj.evocation, 'Evocation') +
 				getGenericStatHtml(obj.crit, 'Critical Hit') +
 				// attrs
-				getGenericStatHtml(obj.str, 'Strength') +
+				getGenericStatHtml(obj.str, LABEL.STR) +
 				getGenericStatHtml(obj.sta, 'Stamina') +
 				getGenericStatHtml(obj.agi, 'Agility') +
 				getGenericStatHtml(obj.dex, 'Dexterity') +
@@ -260,7 +261,7 @@ var tooltip;
 		var str =  _.capitalize(slots[0]);
 		if (slots[1] === 'secondary') {
 			prefix = 'Slots: '
-			if (stats.getPropMax('dualWield')) {
+			if (stats.getPropMax(PROP.DUAL_WIELD)) {
 				str += ' ' + _.capitalize(slots[1])
 			}
 			else {
@@ -291,7 +292,7 @@ var tooltip;
 		}
 	}
 	function canEquipWeapon(weaponSkill) {
-		if (weaponSkill === 'One-hand Slash') {
+		if (weaponSkill === LABEL.ONE_HAND_SLASH) {
 			if (my.oneHandSlash) return true
 			else return false
 		}

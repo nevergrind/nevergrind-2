@@ -48,7 +48,7 @@ var combat;
 			'wolf': 'Beasts',
 			'rat': 'Beasts',
 			'snake': 'Beasts',
-			'dragonkin': 'Dragonkin',
+			[MOB_TYPE.DRAGONKIN]: 'Dragonkin',
 			'lizardman': 'Humanoids',
 			'dragon': 'Dragonkin',
 			'dragon-fire': 'Dragonkin',
@@ -85,7 +85,7 @@ var combat;
 			'lioness': 'Beasts',
 			'bear': 'Beasts',
 			'toadlok': 'Humanoids',
-			'giant': 'Giants',
+			[MOB_TYPE.GIANT]: 'Giants',
 			'ice-giant': 'Giants',
 			'fire-giant': 'Giants',
 			'spectre': 'Undead',
@@ -117,23 +117,23 @@ var combat;
 		strokeThickness: 3,
 	}
 	const addedDamageTypes = [{
-		add: 'addBlood',
-		resist: 'blood',
+		add: PROP.ADD_BLOOD,
+		resist: DAMAGE_TYPE.BLOOD,
 	}, {
-		add: 'addPoison',
-		resist: 'poison',
+		add: PROP.ADD_POISON,
+		resist: DAMAGE_TYPE.POISON,
 	}, {
-		add: 'addArcane',
-		resist: 'arcane',
+		add: PROP.ADD_ARCANE,
+		resist: DAMAGE_TYPE.ARCANE,
 	}, {
-		add: 'addLightning',
-		resist: 'lightning',
+		add: PROP.ADD_LIGHTNING,
+		resist: DAMAGE_TYPE.LIGHTNING,
 	}, {
-		add: 'addFire',
-		resist: 'fire',
+		add: PROP.ADD_FIRE,
+		resist: DAMAGE_TYPE.FIRE,
 	}, {
-		add: 'addIce',
-		resist: 'ice',
+		add: PROP.ADD_ICE,
+		resist: DAMAGE_TYPE.ICE,
 	}]
 	const resourceLeechDivider = 1000
 	let chance = 0
@@ -150,6 +150,7 @@ var combat;
 	let hate = 0
 	let healAmount = 0
 	let enhanceHeal = 0
+	let enhanceDamageToMobType = 0
 
 	///////////////////////////////////////////
 	function levelSkillCheck(name) {
@@ -159,7 +160,7 @@ var combat;
 				my[name] < stats.getPropMax(name)) { //TODO: Dynamic max
 				if (rand() < skillLevelChance(name)) {
 					my[name]++
-					stats.cache = {}
+					stats.memo = {}
 					chat.log('You got better at ' +skills.getName(name) + '! (' + my[name] + ')', 'chat-skill')
 					if (bar.windowsOpen.character) {
 						if (bar.activeTab === 'character') {
@@ -190,7 +191,7 @@ var combat;
 		}
 		// console.info('asdfasdf', d)
 
-		if (d.damageType === 'physical') {
+		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// check for things that immediately set to 0
 			if (rand() < stats.missChance(d.index, d.weaponSkill)) {
 				// chat.log('Your attack misses ' + ng.getArticle(d.index) + ' ' + mobs[d.index].name + '!')
@@ -219,22 +220,9 @@ var combat;
 				}
 			}
 			// enhancedDamage
-			d.enhancedDamage += stats.enhanceDamageToMobType(combat.mobType[mobs[d.index].img])
-			if (mobs[d.index].mobType === 'undead' || mobs[d.index].mobType === 'humanoid') {
-				if (d.weaponSkill === 'One-hand Blunt' || d.weaponSkill === 'Two-hand Blunt') {
-					d.enhancedDamage += .25
-				}
-			}
-			else if (mobs[d.index].mobType === 'beast') {
-				if (d.weaponSkill === 'One-hand Slash' || d.weaponSkill === 'Two-hand Slash') {
-					d.enhancedDamage += .25
-				}
-			}
-			else if (mobs[d.index].mobType === 'mystical') {
-				if (d.weaponSkill === 'Piercing') {
-					d.enhancedDamage += .25
-				}
-			}
+
+			// mob type bonuses
+			d.enhancedDamage += getEnhancedDamageByMobType(d)
 			if (mobs[d.index].buffFlags.demonicPact) d.enhancedDamage += .15
 
 			// console.info('d.enhancedDamage', d.enhancedDamage)
@@ -244,10 +232,10 @@ var combat;
 
 			// modify mob armor for self
 			if (mobs[d.index].armor < 1) {
-				if (stats.someIgnoreTargetArmor()) {
+				if (stats.ignoreTargetArmor()) {
 					mobs[d.index].armor = 1
 				}
-				if (stats.someReduceTargetArmor()) {
+				if (stats.reduceTargetArmor()) {
 					mobs[d.index].armor += .001
 				}
 			}
@@ -281,12 +269,12 @@ var combat;
 				// small boost to make it slightly stronger at lower levels
 				processLeech(skill.SHM.getMaxVampiricGaze(d.index) + .5)
 			}
-			combat.levelSkillCheck('offense')
+			combat.levelSkillCheck(PROP.OFFENSE)
 		}
 		else {
 			// mob magic resists
 			d.enhancedDamage = 1
-			if (mobs[d.index].mobType === 'undead') {
+			if (mobs[d.index].mobType === MOB_TYPE.UNDEAD) {
 				if (d.isBlighted) {
 					d.enhancedDamage += .5
 				}
@@ -294,7 +282,7 @@ var combat;
 					d.enhancedDamage += .5
 				}
 			}
-			else if (mobs[d.index].mobType === 'demon') {
+			else if (mobs[d.index].mobType === MOB_TYPE.DEMON) {
 				if (d.isBlighted) {
 					d.enhancedDamage += .5
 				}
@@ -313,6 +301,47 @@ var combat;
 		else if (d.damage < 1) d.damage = 1
 		else d.damage = round(d.damage)
 		return d
+	}
+
+	function getEnhancedDamageByMobType(d) {
+		enhanceDamageToMobType = 0
+		if (mobs[d.index].mobType === MOB_TYPE.HUMANOID) {
+			if (d.weaponSkill === 'One-hand Blunt' ||
+				d.weaponSkill === 'Two-hand Blunt') {
+				enhanceDamageToMobType += .25
+			}
+			enhanceDamageToMobType += stats.enhancedDamageToHumanoids()
+		}
+		else if (mobs[d.index].mobType === MOB_TYPE.DEMON) {
+			enhanceDamageToMobType += stats.enhancedDamageToDemons()
+		}
+		else if (mobs[d.index].mobType === MOB_TYPE.BEAST) {
+			if (d.weaponSkill === LABEL.ONE_HAND_SLASH ||
+				d.weaponSkill === 'Two-hand Slash') {
+				enhanceDamageToMobType += .25
+			}
+			enhanceDamageToMobType += stats.enhancedDamageToBeasts()
+		}
+		else if (mobs[d.index].mobType === MOB_TYPE.DRAGONKIN) {
+			enhanceDamageToMobType += stats.enhancedDamageToDragonkin()
+		}
+		else if (mobs[d.index].mobType === MOB_TYPE.MYSTICAL) {
+			if (d.weaponSkill === 'Piercing') {
+				enhanceDamageToMobType += .25
+			}
+			enhanceDamageToMobType += stats.enhancedDamageToMystical()
+		}
+		else if (mobs[d.index].mobType === MOB_TYPE.UNDEAD) {
+			if (d.weaponSkill === 'One-hand Blunt' ||
+				d.weaponSkill === 'Two-hand Blunt') {
+				enhanceDamageToMobType += .25
+			}
+			enhanceDamageToMobType += stats.enhancedDamageToUndead()
+		}
+		else if (mobs[d.index].mobType === MOB_TYPE.GIANT) {
+			enhanceDamageToMobType += stats.enhancedDamageToGiants()
+		}
+		return enhanceDamageToMobType
 	}
 	function getAddedDamage(index) {
 		totalAddedDamage = 0
@@ -407,14 +436,14 @@ var combat;
 		leechValue = processHeal(leechValue)
 		leechHp += leechValue
 		if (leechHp >= 1) {
-			updateMyResource('hp', ~~leechHp)
+			updateMyResource(PROP.HP, ~~leechHp)
 			leechHp = leechHp % 1
 		}
 	}
 	function processWraith(wraithValue) {
 		wraithMp += wraithValue
 		if (wraithMp >= 1) {
-			updateMyResource('mp', ~~wraithMp)
+			updateMyResource(PROP.MP, ~~wraithMp)
 			wraithMp = wraithMp % 1
 		}
 	}
@@ -511,7 +540,8 @@ var combat;
 		for (i=0; i<len; i++) {
 			let rowKey = data.key +'-'+ data.row
 			if (my.row === data.row) {
-				// kill buffs
+				// dot was cast by me, so we must kill our own buffs
+				// if (buff.level < my.buffs[key].level) {
 				// console.info('rxDotMob', damages[i].index)
 				if (typeof mobs[damages[i].index] === TYPE.OBJECT &&
 					typeof mobs[damages[i].index].buffs[rowKey] === TYPE.OBJECT) {
@@ -542,6 +572,7 @@ var combat;
 				})
 			}
 			else {
+				// dot was cast by someone else
 				if (typeof mobs[damages[i].index].buffs[rowKey] === TYPE.OBJECT) {
 					if (typeof mobs[damages[i].index].buffs[rowKey].timer === TYPE.OBJECT) {
 						mobs[damages[i].index].buffs[rowKey].timer.kill()
@@ -582,8 +613,8 @@ var combat;
 		// subtract XP
 		if (!ng.isApp) {
 			// really just for testing
-			my.set('hp', 0)
-			bar.updateBar('hp', my)
+			my.set(PROP.HP, 0)
+			bar.updateBar(PROP.HP, my)
 		}
 		timers.clearMy()
 		autoAttackDisable()
@@ -611,7 +642,7 @@ var combat;
 			// console.warn('updateMyResource you are dead - no action taken')
 			return
 		}
-		if (type === 'hp') {
+		if (type === PROP.HP) {
 			if (my.hp + addValue <= 0) triggerOnMyDeath()
 		}
 		my.set(type, addValue, true)
@@ -619,11 +650,11 @@ var combat;
 		if (my[type] < 0) my.set(type, 0)
 		else if (my[type] > my[type + 'Max']) my.set(type, my[type + 'Max'])
 		// special cases
-		if (type === 'hp') {
+		if (type === PROP.HP) {
 			if (my.hp <= 0) {
 				// death
 				if (ng.isApp) selfDied()
-				else my.set('hp', my.hpMax) // testing
+				else my.set(PROP.HP, my.hpMax) // testing
 			}
 		}
 		bar.updateBar(type, my)
@@ -651,7 +682,7 @@ var combat;
 		// dodge
 		if (skills.dodge[my.job].level &&
 			my.level >= skills.dodge[my.job].level) {
-			combat.levelSkillCheck('dodge')
+			combat.levelSkillCheck(PROP.DODGE)
 			if (!d.isPiercing &&
 				rand() < stats.dodgeChance()) {
 				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you dodged!')
@@ -660,11 +691,11 @@ var combat;
 			}
 		}
 		// console.info('processDamages', d)
-		if (d.damageType === 'physical') {
+		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// riposte
 			if (skills.riposte[my.job].level &&
 				my.level >= skills.riposte[my.job].level) {
-				combat.levelSkillCheck('riposte')
+				combat.levelSkillCheck(PROP.RIPOSTE)
 				if (!d.isPiercing &&
 					rand() < stats.riposteChance()) {
 					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you riposted!')
@@ -676,7 +707,7 @@ var combat;
 			// parry
 			if (skills.parry[my.job].level &&
 				my.level >= skills.parry[my.job].level) {
-				combat.levelSkillCheck('parry')
+				combat.levelSkillCheck(PROP.PARRY)
 				if (!d.isPiercing &&
 					rand() < stats.parryChance()) {
 					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you parried!')
@@ -704,7 +735,10 @@ var combat;
 			}
 			if (mobs[index].buffFlags.suppressingVolley) amountReduced -= .5
 			if (amountReduced < .25) amountReduced = .25
+			// armor, shield, debuff reduction
 			d.damage *= amountReduced
+			// magic prop reduction
+			d.damage *= stats.resistPhysical()
 		}
 		else {
 			// magMit
@@ -726,7 +760,7 @@ var combat;
 		// shield damage
 		if (my.buffFlags.guardianAngel) reduceMagicShieldDamage(d, 'guardianAngel')
 		if (my.buffFlags.mirrorImage) reduceMagicShieldDamage(d, 'mirrorImage')
-		combat.levelSkillCheck('defense')
+		combat.levelSkillCheck(PROP.DEFENSE)
 		return d
 	}
 	function txDamageHero(index, damages) {
@@ -757,7 +791,7 @@ var combat;
 			for (i=0; i<len; i++) {
 				if (damages[i].damage > 0) {
 					totalDamage += damages[i].damage
-					updateMyResource('hp', -damages[i].damage)
+					updateMyResource(PROP.HP, -damages[i].damage)
 					if (damages[i].isPiercing) {
 						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', CSS.CHAT_ALERT)
 					}
@@ -768,7 +802,7 @@ var combat;
 						}
 						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, CSS.CHAT_ALERT)
 					}
-					if (damages[i].damageType === 'physical') {
+					if (damages[i].damageType === DAMAGE_TYPE.PHYSICAL) {
 						spell.knockback()
 					}
 					// console.info('tx processHit: ', damages[i].damage)
@@ -779,12 +813,12 @@ var combat;
 				// damageTakenToMana vulpineMp
 				vulpineMp += totalDamage * (stats.damageTakenToMana() / resourceLeechDivider)
 				if (vulpineMp >= 1) {
-					updateMyResource('mp', ~~vulpineMp)
+					updateMyResource(PROP.MP, ~~vulpineMp)
 					vulpineMp = vulpineMp % 1
 				}
 				vulpineSp += totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider)
 				if (vulpineSp >= 1) {
-					updateMyResource('sp', ~~vulpineSp)
+					updateMyResource(PROP.SP, ~~vulpineSp)
 					vulpineSp = vulpineSp % 1
 				}
 			}
@@ -869,8 +903,8 @@ var combat;
 		if (my.row === heal.index) {
 			// healing ME
 			healAmount = processHeal(heal.damage)
-			chat.log(buffs[heal.key].msg(heal), 'chat-heal')
-			updateMyResource('hp', healAmount)
+			chat.log(buffs[heal.key].msg(heal), CSS.CHAT_HEAL)
+			updateMyResource(PROP.HP, healAmount)
 			// let everyone know I got the heal
 			game.txPartyResources({
 				hp: my.hp,
@@ -922,7 +956,7 @@ var combat;
 				onRepeatParams: [heal, healAmount],
 			})
 			battle.addMyBuff(heal.key, keyRow)
-			chat.log(buffs[heal.key].msg(heal), 'chat-heal')
+			chat.log(buffs[heal.key].msg(heal), CSS.CHAT_HEAL)
 		}
 		if (~~hate > 0) {
 			mob.addHateHeal({
@@ -934,9 +968,9 @@ var combat;
 	function onHotTick(buff, healAmount) {
 		healAmount = processHeal(healAmount)
 		if (!app.isApp) {
-			chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', 'chat-heal')
+			chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CSS.CHAT_HEAL)
 		}
-		updateMyResource('hp', healAmount)
+		updateMyResource(PROP.HP, healAmount)
 	}
 
 	// buff hero
@@ -955,7 +989,7 @@ var combat;
 	}
 	function processBuffToMe(data) {
 		hate = 0
-		console.info('processBuffToMe', data)
+		// console.info('processBuffToMe', data)
 		data.buffs.forEach(buff => {
 			// console.info('updateHate', _.clone(buff))
 			if (buffs[buff.key].hate) {
@@ -984,8 +1018,8 @@ var combat;
 						my.buffs[key].timer.kill()
 					}
 				}
-
-				chat.log(buffs[buff.key].msg(), 'chat-heal')
+				battle.lastBuffAlreadyActive = my.buffFlags[key]
+				chat.log(buffs[key].msg(), CSS.CHAT_HEAL)
 				battle.removeBuff(key)
 				// setup buff timer data
 				my.buffs[key] = {
@@ -1031,15 +1065,15 @@ var combat;
 		else if (key === 'sealOfRedemption') {
 			stats.resistBlood(true)
 			bar.updateAllResistsDOM()
-			my.set('hpMax', stats.hpMax())
-			bar.updateBar('hp', my)
+			my.set(PROP.HP_MAX, stats.hpMax())
+			bar.updateBar(PROP.HP, my)
 			txHpChange()
 		}
 		else if (key === 'zealousResolve') {
 			stats.armor(true)
 			updateCharStatColOne()
-			my.set('hpMax', stats.hpMax())
-			bar.updateBar('hp', my)
+			my.set(PROP.HP_MAX, stats.hpMax())
+			bar.updateBar(PROP.HP, my)
 			txHpChange()
 		}
 		else if (key === 'bulwark') {
@@ -1059,14 +1093,7 @@ var combat;
 			}
 		}
 		else if (key === 'manaShell') {
-			stats.resistSilence(true)
-			stats.resistBlood(true)
-			stats.resistPoison(true)
-			stats.resistArcane(true)
-			stats.resistLightning(true)
-			stats.resistFire(true)
-			stats.resistIce(true)
-			bar.updateAllResistsDOM()
+			updateAllResists()
 		}
 		else if (key === 'branchSpirit') {
 			stats.armor(true)
@@ -1074,8 +1101,8 @@ var combat;
 			cacheBustAttack()
 			updateCharStatColTwo()
 			stats.hpRegen(true)
-			my.set('hpMax', stats.hpMax())
-			bar.updateBar('hp', my)
+			my.set(PROP.HP_MAX, stats.hpMax())
+			bar.updateBar(PROP.HP, my)
 			txHpChange()
 		}
 		else if (key === 'vampiricAllure') {
@@ -1088,8 +1115,8 @@ var combat;
 			stats.resistIce(true)
 			stats.str(true)
 			stats.sta(true)
-			my.set('hpMax', stats.hpMax())
-			bar.updateBar('hp', my)
+			my.set(PROP.HP_MAX, stats.hpMax())
+			bar.updateBar(PROP.HP, my)
 			txHpChange()
 			cacheBustAttack()
 			updateCharStatColTwo()
@@ -1119,22 +1146,22 @@ var combat;
 		else if (key === 'clarity') {
 			stats.intel(true)
 			updateCharStatColTwo()
-			my.set('mpMax', stats.mpMax())
-			bar.updateBar('mp', my)
+			my.set(PROP.MP_MAX, stats.mpMax())
+			bar.updateBar(PROP.MP, my)
 			txMpChange()
 		}
 		else if (key === 'conviction') {
 			stats.cha(true)
 			updateCharStatColTwo()
-			my.set('spMax', stats.spMax())
-			bar.updateBar('sp', my)
+			my.set(PROP.SP_MAX, stats.spMax())
+			bar.updateBar(PROP.SP, my)
 			txSpChange()
 		}
 		else if (key === 'celestialFrenzy') {
 			stats.cha(true)
 			updateCharStatColTwo()
-			my.set('spMax', stats.spMax())
-			bar.updateBar('sp', my)
+			my.set(PROP.SP_MAX, stats.spMax())
+			bar.updateBar(PROP.SP, my)
 			txSpChange()
 		}
 		else if (key === 'battleHymn') {
@@ -1145,15 +1172,36 @@ var combat;
 			updateCharStatColTwo()
 		}
 		else if (key === 'militantCadence') {
-			my.set('hpMax', stats.hpMax(true))
-			bar.updateBar('hp', my)
-			my.set('mpMax', stats.mpMax(true))
-			bar.updateBar('mp', my)
-			my.set('spMax', stats.spMax(true))
-			bar.updateBar('sp', my)
+			my.set(PROP.HP_MAX, stats.hpMax(true))
+			bar.updateBar(PROP.HP, my)
+			my.set(PROP.MP_MAX, stats.mpMax(true))
+			bar.updateBar(PROP.MP, my)
+			my.set(PROP.SP_MAX, stats.spMax(true))
+			bar.updateBar(PROP.SP, my)
 			txAllChange()
 		}
+		else if (key === 'litanyOfLife') {
+			stats.hpRegen(true)
+		}
+		else if (key === 'melodyOfMana') {
+			stats.mpRegen(true)
+		}
+		else if (key === 'chromaticSonata') {
+			stats.armor(true)
+			updateCharStatColOne()
+			updateAllResists()
+		}
 		////////////////////////////////
+		function updateAllResists() {
+			stats.resistSilence(true)
+			stats.resistBlood(true)
+			stats.resistPoison(true)
+			stats.resistArcane(true)
+			stats.resistLightning(true)
+			stats.resistFire(true)
+			stats.resistIce(true)
+			bar.updateAllResistsDOM()
+		}
 		function cacheBustAttack() {
 			stats.offense(true)
 			stats.attack(void 0, true)

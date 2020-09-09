@@ -49,35 +49,35 @@ var ng;
 		responsiveRatio: 1,
 		statMap: {
 			// job bonuses
-			'jobs': {
-				Bard: [0,2,2,2,0,0,4],
-				Cleric: [0,2,2,0,4,2,0],
-				Druid: [0,2,2,0,4,2,0],
-				Enchanter: [0,0,0,0,2,4,4],
-				Templar: [0,2,0,0,4,4,0],
-				Monk: [4,2,2,2,0,0,0],
-				Warlock: [0,2,0,0,4,4,0],
-				Crusader: [2,4,0,2,2,0,0],
-				Ranger: [2,2,2,2,2,0,0],
-				Rogue: [4,0,4,2,0,0,0],
-				'Shadow Knight': [4,2,0,2,0,2,0],
-				Shaman: [0,2,2,0,4,2,0],
-				Warrior: [4,4,0,2,0,0,0],
-				Wizard: [0,2,0,0,4,4,0]
+			jobs: {
+				[CLASS.BARD]: [0,2,2,2,0,0,4],
+				[CLASS.CLERIC]: [0,2,2,0,4,2,0],
+				[CLASS.DRUID]: [0,2,2,0,4,2,0],
+				[CLASS.ENCHANTER]: [0,0,0,0,2,4,4],
+				[CLASS.TEMPLAR]: [0,2,0,0,4,4,0],
+				[CLASS.MONK]: [4,2,2,2,0,0,0],
+				[CLASS.WARLOCK]: [0,2,0,0,4,4,0],
+				[CLASS.CRUSADER]: [2,4,0,2,2,0,0],
+				[CLASS.RANGER]: [2,2,2,2,2,0,0],
+				[CLASS.ROGUE]: [4,0,4,2,0,0,0],
+				[CLASS.SHADOW_KNIGHT]: [4,2,0,2,0,2,0],
+				[CLASS.SHAMAN]: [0,2,2,0,4,2,0],
+				[CLASS.WARRIOR]: [4,4,0,2,0,0,0],
+				[CLASS.WIZARD]: [0,2,0,0,4,4,0]
 			},
 			// race base values and possible classes
-			'Barbarian': {
+			[RACE.BARBARIAN]: {
 				'attrs': [22,20,17,14,14,11,10],
-				'jobs': [
+				jobs: [
 					CLASS.MONK,
 					CLASS.ROGUE,
 					CLASS.SHAMAN,
 					CLASS.WARRIOR
 				]
 			},
-			'Dark Elf': {
+			[RACE.DARK_ELF]: {
 				'attrs': [11,13,19,15,17,21,11],
-				'jobs': [
+				jobs: [
 					CLASS.CLERIC,
 					CLASS.ENCHANTER,
 					CLASS.TEMPLAR,
@@ -89,18 +89,18 @@ var ng;
 					CLASS.WIZARD
 				]
 			},
-			'Dwarf': {
+			[RACE.DWARF]: {
 				'attrs': [19,19,14,19,17,11,9],
-				'jobs': [
+				jobs: [
 					CLASS.CLERIC,
 					CLASS.CRUSADER,
 					CLASS.ROGUE,
 					CLASS.WARRIOR
 				]
 			},
-			'Seraph': {
+			[RACE.SERAPH]: {
 				'attrs': [11,14,14,14,17,23,14],
-				'jobs': [
+				jobs: [
 					CLASS.CLERIC,
 					CLASS.ENCHANTER,
 					CLASS.TEMPLAR,
@@ -110,9 +110,9 @@ var ng;
 					CLASS.WIZARD
 				]
 			},
-			'Gnome': {
+			[RACE.GNOME]: {
 				'attrs': [11,14,18,18,13,21,11],
-				'jobs': [
+				jobs: [
 					CLASS.CLERIC,
 					CLASS.ENCHANTER,
 					CLASS.TEMPLAR,
@@ -123,9 +123,9 @@ var ng;
 					CLASS.WIZARD
 				]
 			},
-			'Half Elf': {
+			[RACE.HALF_ELF]: {
 				'attrs': [14,14,19,18,11,15,15],
-				'jobs': [
+				jobs: [
 					CLASS.BARD,
 					CLASS.DRUID,
 					CLASS.MONK,
@@ -135,9 +135,9 @@ var ng;
 					CLASS.WARRIOR
 				]
 			},
-			'Halfling': {
+			[RACE.HALFLING]: {
 				'attrs': [14,15,20,19,16,9,9],
-				'jobs': [
+				jobs: [
 					CLASS.CLERIC,
 					CLASS.DRUID,
 					CLASS.MONK,
@@ -146,9 +146,9 @@ var ng;
 					CLASS.WARRIOR
 				]
 			},
-			'High Elf': {
+			[RACE.HIGH_ELF]: {
 				'attrs': [10,13,18,14,20,19,16],
-				'jobs': [
+				jobs: [
 					CLASS.BARD,
 					CLASS.CLERIC,
 					CLASS.ENCHANTER,
@@ -157,9 +157,9 @@ var ng;
 					CLASS.WIZARD
 				]
 			},
-			'Human': {
+			[RACE.HUMAN]: {
 				'attrs': [15,15,15,15,15,15,15],
-				'jobs': [
+				jobs: [
 					CLASS.BARD,
 					CLASS.CLERIC,
 					CLASS.DRUID,
@@ -176,27 +176,27 @@ var ng;
 					CLASS.WIZARD
 				]
 			},
-			'Orc': {
+			[RACE.ORC]: {
 				'attrs': [27,22,13,14,13,11,8],
-				'jobs': [
+				jobs: [
 					CLASS.MONK,
 					CLASS.SHADOW_KNIGHT,
 					CLASS.SHAMAN,
 					CLASS.WARRIOR
 				]
 			},
-			'Troll': {
+			[RACE.TROLL]: {
 				'attrs': [22,24,18,15,11,9,6],
-				'jobs': [
+				jobs: [
 					CLASS.ROGUE,
 					CLASS.SHADOW_KNIGHT,
 					CLASS.SHAMAN,
 					CLASS.WARRIOR
 				]
 			},
-			'Wood Elf': {
+			[RACE.WOOD_ELF]: {
 				'attrs': [13,13,20,16,15,15,15],
-				'jobs': [
+				jobs: [
 					CLASS.BARD,
 					CLASS.DRUID,
 					CLASS.RANGER,
@@ -209,8 +209,8 @@ var ng;
 		resizeTimer: new delayedCall(0, ''),
 		loadMsg:
 			"<div id='load-msg' class='text-shadow text-center now-loading'>Loading</div>",
-		attrs: ['str', 'sta', 'agi', 'dex', 'wis', 'intel', 'cha'],
-		resists: ['resistBlood', 'resistPoison', 'resistArcane', 'resistLightning', 'resistFire', 'resistIce'],
+		attrs: [PROP.STR, PROP.STA, PROP.AGI, PROP.DEX, PROP.WIS, PROP.INTEL, PROP.CHA],
+		resists: [PROP.RESIST_BLOOD, PROP.RESIST_POISON, PROP.RESIST_ARCANE, PROP.RESIST_LIGHTNING, PROP.RESIST_FIRE, PROP.RESIST_ICE],
 		dungeon: ['traps', 'treasure', 'scout', 'pulling'],
 		gameDuration: 0,
 		delay: .5,
@@ -237,18 +237,18 @@ var ng;
 		maxLevel: 50,
 		levels: [],
 		races: [
-			'Barbarian',
-			'Dark Elf',
-			'Dwarf',
-			'Gnome',
-			'Half Elf',
-			'Halfling',
-			'High Elf',
-			'Human',
-			'Orc',
-			'Seraph',
-			'Troll',
-			'Wood Elf'
+			RACE.BARBARIAN,
+			RACE.DARK_ELF,
+			RACE.DWARF,
+			RACE.GNOME,
+			RACE.HALF_ELF,
+			RACE.HALFLING,
+			RACE.HIGH_ELF,
+			RACE.HUMAN,
+			RACE.ORC,
+			RACE.SERAPH,
+			RACE.TROLL,
+			RACE.WOOD_ELF
 		],
 		jobs: [
 			CLASS.BARD,
@@ -267,20 +267,20 @@ var ng;
 			CLASS.WIZARD
 		],
 		jobShort: {
-			Bard: JOB.BARD,
-			Cleric: JOB.CLERIC,
-			Druid: JOB.DRUID,
-			Enchanter: JOB.ENCHANTER,
-			Templar: JOB.TEMPLAR,
-			Monk: JOB.MONK,
-			Warlock: JOB.WARLOCK,
-			Crusader: JOB.CRUSADER,
-			Ranger: 'RNG',
-			Rogue: JOB.ROGUE,
-			'Shadow Knight': JOB.SHADOW_KNIGHT,
-			Shaman: JOB.SHAMAN,
-			Warrior: JOB.WARRIOR,
-			Wizard: JOB.WIZARD
+			[CLASS.BARD]: JOB.BARD,
+			[CLASS.CLERIC]: JOB.CLERIC,
+			[CLASS.DRUID]: JOB.DRUID,
+			[CLASS.ENCHANTER]: JOB.ENCHANTER,
+			[CLASS.TEMPLAR]: JOB.TEMPLAR,
+			[CLASS.MONK]: JOB.MONK,
+			[CLASS.WARLOCK]: JOB.WARLOCK,
+			[CLASS.CRUSADER]: JOB.CRUSADER,
+			[CLASS.RANGER]: JOB.RANGER,
+			[CLASS.ROGUE]: JOB.ROGUE,
+			[CLASS.SHADOW_KNIGHT]: JOB.SHADOW_KNIGHT,
+			[CLASS.SHAMAN]: JOB.SHAMAN,
+			[CLASS.WARRIOR]: JOB.WARRIOR,
+			[CLASS.WIZARD]: JOB.WIZARD
 		},
 		jobLong: {
 			BRD: CLASS.BARD,

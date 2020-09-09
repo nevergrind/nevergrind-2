@@ -1,7 +1,7 @@
 loot.oneHandSlashers = {
 	base: {
 		slots: ['primary', 'secondary'],
-		weaponSkill: 'One-hand Slash',
+		weaponSkill: LABEL.ONE_HAND_SLASH,
 	},
 	normal: [
 		{

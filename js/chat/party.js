@@ -44,7 +44,7 @@ var party;
 	var updateHp = false
 	var updateMp = false
 	var updateSp = false
-	const resourceKeys = ['hp', 'mp', 'sp', 'hpMax', 'mpMax', 'spMax']
+	const resourceKeys = [PROP.HP, PROP.MP, PROP.SP, PROP.HP_MAX, PROP.MP_MAX, PROP.SP_MAX]
 	//////////////////////////////////////
 	function isSomeoneAlive() {
 		return party.presence.some(member => member.hp > 0) || my.hp > 0
@@ -89,19 +89,19 @@ var party;
 			data.hpMax !== player.hpMax) {
 			player.hp = data.hp;
 			player.hpMax = data.hpMax;
-			bar.updateBar('hp', data)
+			bar.updateBar(PROP.HP, data)
 		}
 		if (data.mp !== player.mp ||
 			data.mpMax !== player.mpMax) {
 			player.mp = data.mp;
 			player.mpMax = data.mpMax;
-			bar.updateBar('mp', data)
+			bar.updateBar(PROP.MP, data)
 		}
 		if (data.sp !== player.sp ||
 			data.spMax !== player.spMax) {
 			player.sp = data.sp;
 			player.spMax = data.spMax;
-			bar.updateBar('sp', data)
+			bar.updateBar(PROP.SP, data)
 		}
 	}
 	function upsertPartyResource(data) {
@@ -115,14 +115,14 @@ var party;
 			for (var key in data) {
 				if (resourceKeys.includes(key)) {
 					player[key] = data[key]
-					if (key === 'hp') updateHp = true
-					if (key === 'mp') updateMp = true
-					if (key === 'sp') updateSp = true
+					if (key === PROP.HP) updateHp = true
+					if (key === PROP.MP) updateMp = true
+					if (key === PROP.SP) updateSp = true
 				}
 			}
-			updateHp && bar.updateBar('hp', data)
-			updateMp && bar.updateBar('mp', data)
-			updateSp && bar.updateBar('sp', data)
+			updateHp && bar.updateBar(PROP.HP, data)
+			updateMp && bar.updateBar(PROP.MP, data)
+			updateSp && bar.updateBar(PROP.SP, data)
 		}
 	}
 	function upsertParty(data) {

@@ -86,9 +86,9 @@ var game;
 			// insert regen tick logic here
 
 			if (ng.view === 'battle' || ng.view === 'town') {
-				my.resourceTick('hp')
-				my.resourceTick('mp')
-				my.resourceTick('sp')
+				my.resourceTick(PROP.HP)
+				my.resourceTick(PROP.MP)
+				my.resourceTick(PROP.SP)
 				mob.resourceTick()
 			}
 
