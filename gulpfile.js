@@ -2,7 +2,7 @@
 var gulp = require('gulp');
 // var minifyHTML = require('gulp-minify-html'); // Minify HTML
 var clean = require('gulp-rimraf'); // delete folder contents
-var del = require('del'); // new clean
+var del = require('del'); // new delete
 var cleanCSS = require('gulp-clean-css'); // Minify the CSS
 var stripDebug = require('gulp-strip-debug'); // Remove debugging stuffs
 var concat = require('gulp-concat'); // Join all JS files together to save space
@@ -12,8 +12,6 @@ var imagemin = require('imagemin');
 var imageminPngquant = require('imagemin-pngquant');
 var imageResize = require('gulp-image-resize');
 var exec = require('child_process').exec;
-var run = require('gulp-run-command').default
-var { spawn } = require('child_process');
 // variables
 const buildNg2Tasks = ['minify-css', 'minify-ng2-js', 'clean-ng2'];
 //const buildNg2Tasks = ['minify-css', 'minify-ng2-js'];
@@ -24,8 +22,10 @@ gulp.task('minify-png', minifyPng);
 gulp.task('resize-png', resizePng);
 gulp.task('clean-ng2', [], cleanNg2);
 // need build-ng2-sdk task for testing
-gulp.task('build-ng2', buildNg2Tasks, function() { buildNg2(false); });
-gulp.task('build-ng2-sdk', buildNg2Tasks, function() { buildNg2(true); });
+gulp.task('build-ng2-0-33-3', buildNg2Tasks, () => buildNg2(false, false))
+gulp.task('build-ng2-0-33-3-sdk', buildNg2Tasks, () => buildNg2(true, false))
+gulp.task('build-ng2-latest', buildNg2Tasks, () => buildNg2(false, true))
+gulp.task('build-ng2-latest-sdk', buildNg2Tasks, () => buildNg2(true, true))
 gulp.task('rename', renameExe);
 gulp.task('default', defaultTask);
 gulp.task('resize-sprite', resizeSprite);
@@ -217,14 +217,17 @@ function cleanNg2() {
 		read: false
 	}).pipe(clean());*/
 }
-function buildNg2(isSdk) {
+function buildNg2(isSdk, isLatest) {
+	let nwjsVersion = isLatest ? 'latest' : '0-33-3'
+	let greenworksVersion = isLatest ? 'greenworks-latest' : 'greenworks-0-33-3'
+	let sdk = isSdk ? '-sdk' : ''
 	// move app files
 	gulp.src([
 		'./index.html',
 		'./package.json',
-		'./greenworks.js',
+		'./'+ greenworksVersion +'.js',
 		'./steam_appid.txt',
-		(isSdk ? './nwjs-sdk/**/*' : './nwjs/**/*')
+		'./nwjs-'+ nwjsVersion + sdk + '/**/*'
 	]).pipe(gulp.dest('./build-ng2'))
 		.on('end', renameExe);
 
@@ -295,17 +298,20 @@ function renameExe() {
 		.on('end', createBinFile)
 }
 function createBinFile() {
-	// console.info('Creating bin file...')
+	console.info('Creating bin file...')
 	const path = 'C:/xampp/htdocs/ng2/build-ng2/'
 	const fullPath = path +'nwjc '+ path +'js/nevergrind-online.min.js '+ path +'ngo.bin'
 	exec(fullPath, (error, stdout, stderr) => {
-		// console.info('bin file created!')
+		console.info('bin file created!')
+		console.info('Deleting old data...!')
+		// force allows deleting outside of current working directory
 		del([
 			'./build-ng2/js/**/*',
 			'./build-ng2/nwjc.exe',
-			'./build-ng2/js/nevergrind-online.min.js'
-		]);
-		// console.info('Deleted javascript source code!')
+			'./build-ng2/js/nevergrind-online.min.js',
+			'C:/Users/maelf/AppData/Local/nevergrind-online/**/*'
+		], { force: true })
+		// delete old local build folder in user folder (gets rid of old nw.js data)
 	});
 }
 function resizeSprite() {

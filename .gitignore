@@ -4,6 +4,8 @@ ng2.min.css
 docs/ng2.xlsx
 v8.log
 /build-ng2
+/nwjs*
+/steamworks*
 /images
 /mobs
 /mobs-archive
