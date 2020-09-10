@@ -43,7 +43,6 @@
 		}
 		combat.txDamageMob(damages)
 		// animate timers
-		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 
@@ -53,6 +52,8 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
@@ -81,6 +82,7 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -106,6 +108,8 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
 		// select targets
 		let targets = [my.target]
 		mobs.forEach((mob, index) => {
@@ -139,6 +143,8 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		let tgt = my.target
@@ -168,6 +174,7 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]

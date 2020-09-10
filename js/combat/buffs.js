@@ -42,6 +42,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Suppressing Volley',
 			img: 5,
 			job: JOB.RANGER,
+			reducePhysical: .25,
 			hate: -1.5,
 			duration: 9,
 		},

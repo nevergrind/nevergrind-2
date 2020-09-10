@@ -3,9 +3,9 @@ var gulp = require('gulp');
 // var minifyHTML = require('gulp-minify-html'); // Minify HTML
 var clean = require('gulp-rimraf'); // delete folder contents
 var del = require('del'); // new delete
-var cleanCSS = require('gulp-clean-css'); // Minify the CSS
+var minifyCSS = require('gulp-clean-css'); // Minify the CSS
 var stripDebug = require('gulp-strip-debug'); // Remove debugging stuffs
-var concat = require('gulp-concat'); // Join all JS files together to save space
+var concat = require('gulp-concat'); // Join all files together to save space
 var uglify = require('gulp-uglify'); // Minify JavaScript
 var rename = require('gulp-rename');
 var imagemin = require('imagemin');
@@ -22,8 +22,8 @@ gulp.task('minify-png', minifyPng);
 gulp.task('resize-png', resizePng);
 gulp.task('clean-ng2', [], cleanNg2);
 // need build-ng2-sdk task for testing
-gulp.task('build-ng2', buildNg2Tasks, () => buildNg2(false, false))
-gulp.task('build-ng2-sdk', buildNg2Tasks, () => buildNg2(true, false))
+gulp.task('build-ng2', buildNg2Tasks, () => buildNg2(false))
+gulp.task('build-ng2-sdk', buildNg2Tasks, () => buildNg2(true))
 gulp.task('rename', renameExe);
 gulp.task('default', defaultTask);
 gulp.task('resize-sprite', resizeSprite);
@@ -141,28 +141,24 @@ const jsFiles = [
 	'core/init',
 	'core/loading',
 	'build/endWrap',
-].map((file) => './js/' + file + '.js');
+].map((file) => './js/' + file + '.js')
+const cssFiles = ['main'].map((file) => './css/' + file + '.css')
 
 //////////////////////////////////////////////
 function minifyCss() {
-	var css = [
-		'main',
-	].map(function(file) {
-		return './css/' + file + '.css';
-	});
-	gulp.src(css)
-		.pipe(concat('ng2.css'))
+	gulp.src(cssFiles)
+		.pipe(concat('ngo.css'))
 		.pipe(gulp.dest('./css'))
-		.pipe(cleanCSS())
-		.pipe(rename('ng2.min.css'))
-		.pipe(gulp.dest('./css'));
+		.pipe(minifyCSS())
+		.pipe(rename('ngo.min.css'))
+		.pipe(gulp.dest('./css'))
 }
 function minifyJs() {
 	return gulp.src(jsFiles)
-		.pipe(concat('nevergrind-online.js'))
+		.pipe(concat('ngo.js'))
 		.pipe(gulp.dest('./js'))
 		//.pipe(uglify()) // needs update?
-		.pipe(rename('nevergrind-online.min.js'))
+		.pipe(rename('ngo.min.js'))
 		.pipe(gulp.dest('./js'));
 }
 function minifyPng() {
@@ -207,86 +203,60 @@ function resizePng() {
 	});
 }
 function cleanNg2() {
-	// console.info("Cleaning out ng2 build directory...");
-	// we don't want to clean this file though so we negate the pattern
-	// here we use a globbing pattern to match everything inside the `mobile` folder
+	console.info("Cleaning out ng2 build directory...");
 	return del([ './build-ng2/**/*']);
-	/*return gulp.src("./build-ng2/!*", {
-		read: false
-	}).pipe(clean());*/
 }
 function buildNg2(isSdk) {
 	let sdk = isSdk ? '-sdk' : ''
 	// move app files
+	console.info("Copying core files...")
 	gulp.src([
 		'./index.html',
 		'./package.json',
 		'./greenworks.js',
 		'./steam_appid.txt',
-		'./nwjs'+ sdk + '/**/*ge'
+		'./nwjs'+ sdk + '/**/*'
 	]).pipe(gulp.dest('./build-ng2'))
-		.on('end', renameExe);
+		.on('end', renameExe)
 
 	// greenworks & steam libs
-	gulp.src(['./lib/*']).pipe(gulp.dest('./build-ng2/lib'));
+	gulp.src(['./lib/*']).pipe(gulp.dest('./build-ng2/lib'))
 	// js
-	// console.info("Copying javascript...");
-	gulp.src([
-		'./js/libs/**/*'
-	]).pipe(gulp.dest('./build-ng2/js/libs'));
-	gulp.src([
-		'./js/nevergrind-online.min.js'
-	]).pipe(gulp.dest('./build-ng2/js'));
+	console.info("Copying javascript...")
+	gulp.src(['./js/ngo.min.js']).pipe(gulp.dest('./build-ng2/js'))
 
 	// css
-	// console.info("Copying css...");
-	gulp.src([
-		'./css/cursor/*',
-	]).pipe(gulp.dest('./build-ng2/css/cursor'));
-	gulp.src([
-		'./css/fonts/*',
-	]).pipe(gulp.dest('./build-ng2/css/fonts'));
-	gulp.src([
-		'./css/libs/*',
-	]).pipe(gulp.dest('./build-ng2/css/libs'));
-	gulp.src([
-		'./css/ng2.min.css'
-	]).pipe(gulp.dest('./build-ng2/css'));
+	console.info("Copying css...");
+	gulp.src(['./css/cursor/*']).pipe(gulp.dest('./build-ng2/css/cursor'));
+	gulp.src(['./css/fonts/*']).pipe(gulp.dest('./build-ng2/css/fonts'));
+	gulp.src(['./css/libs/*']).pipe(gulp.dest('./build-ng2/css/libs'));
+	gulp.src(['./css/ngo.min.css']).pipe(gulp.dest('./build-ng2/css'));
 
 	// fonts
-	gulp.src([
-		'./fonts/*'
-	]).pipe(gulp.dest('./build-ng2/fonts'));
+	console.info("Copying fonts...")
+	gulp.src(['./fonts/*']).pipe(gulp.dest('./build-ng2/fonts'));
 
 	// sound & music
 	// console.info("Copying sound and music...");
-	gulp.src([
-		'./sound/*'
-	]).pipe(gulp.dest('./build-ng2/sound'));
-	gulp.src([
-		'./music/*'
-	]).pipe(gulp.dest('./build-ng2/music'));
+	gulp.src(['./sound/*']).pipe(gulp.dest('./build-ng2/sound'));
+	gulp.src(['./music/*']).pipe(gulp.dest('./build-ng2/music'));
 
-	// console.info("Copying images...");
+	console.info("Copying images...");
 	// images
-	gulp.src([
-		'./images/**/*'
-	]).pipe(gulp.dest('./build-ng2/images'));
+	gulp.src(['./images/**/*']).pipe(gulp.dest('./build-ng2/images'));
 
-	// console.info("Copying mobs...");
+	console.info("Copying mobs...");
 	// mobs
-	gulp.src([
-		'./mobs/**/*'
-	]).pipe(gulp.dest('./build-ng2/mobs'));
+	gulp.src(['./mobs/**/*']).pipe(gulp.dest('./build-ng2/mobs'));
 
 }
 function defaultTask() {
 	gulp.run('minify-css', 'minify-ng2-js');
 }
 function renameExe() {
-	const from = 'nw.exe';
-	const to = 'nevergrind-online.exe';
-	console.log('renaming from ' + from + ' to ' + to);
+	const from = 'nw.exe'
+	const to = 'nevergrind-online.exe'
+	console.log('renaming from ' + from + ' to ' + to)
 	gulp.src("./build-ng2/" + from)
 		.pipe(clean())
 		.pipe(rename(to))
@@ -296,16 +266,18 @@ function renameExe() {
 function createBinFile() {
 	console.info('Creating bin file...')
 	const path = 'C:/xampp/htdocs/ng2/build-ng2/'
-	const fullPath = path +'nwjc '+ path +'js/nevergrind-online.min.js '+ path +'ngo.bin'
+	const fullPath = 'C:/xampp/htdocs/ng2/nwjs-sdk/nwjc '+ path +'js/ngo.min.js '+ path +'ngo.bin'
 	exec(fullPath, (error, stdout, stderr) => {
 		console.info('bin file created!')
 		console.info('Deleting old data...!')
 		// force allows deleting outside of current working directory
 		del([
-			'./build-ng2/js/**/*',
-			'./build-ng2/nwjc.exe',
-			'./build-ng2/js/nevergrind-online.min.js',
-			'C:/Users/maelf/AppData/Local/nevergrind-online/**/*'
+			'./css/ngo.css',
+			'./css/ngo.min.css',
+			'./js/ngo.js',
+			'./js/ngo.min.js',
+			'./build-ng2/js',
+			'C:/Users/maelf/AppData/Local/nevergrind-online'
 		], { force: true })
 		// delete old local build folder in user folder (gets rid of old nw.js data)
 	});

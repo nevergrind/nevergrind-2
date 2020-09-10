@@ -29,7 +29,8 @@ let skill = {};
 		// process skill data
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT && items.eq[13].itemType === 'shields') enhancedDamage += .5
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
 		damages = []
 		damages.push({
 			...stats.damage(),
@@ -48,6 +49,7 @@ let skill = {};
 			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config, data)) return
+		spell.expendMana(data, index)
 
 		damages = [{
 			key: 'rupture',
@@ -70,6 +72,7 @@ let skill = {};
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
@@ -98,6 +101,7 @@ let skill = {};
 			requiresFrontRow: true,
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target

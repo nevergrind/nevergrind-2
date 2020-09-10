@@ -291,18 +291,21 @@ var skills;
 			}, {
 				name: 'Rupture',
 				img: 'WAR-2',
+				mp: level => spellValues.ruptureMana[level],
 				enhancedDamage: [0, 4.2, 4.6, 5, 5.4, 5.8, 6.2, 6.6],
 				cooldownTime: 0,
 				description: 'Bleeds single target for % weapon damage over 24 seconds - all hits on this target receives damage bonus % - Ranged - Piercing',
 			}, {
 				name: 'Whirlwind',
 				img: 'WAR-3',
+				mp: level => spellValues.whirlwindMana[level],
 				enhancedDamage: [0, .33, .37, .41, .45, .49, .53, .57],
 				cooldownTime: 15,
 				description: 'Hit cone of targets (max 5) for % of weapon damage',
 			}, {
 				name: 'Pummel',
 				img: 'WAR-4',
+				mp: level => spellValues.pummelMana[level],
 				enhancedDamage: [0, .66, .75, .84, .93, 1.02, 1.11, 1.2],
 				cooldownTime: 30,
 				description: 'Pummel: Single-target piercing stun, large hate - front row only',
@@ -386,7 +389,7 @@ var skills;
 				cooldownTime: 30,
 				description: 'Hits for % damage - Hits harder when health is lower',
 			}, {
-				name: 'Conviction',
+				name: 'Holy Shock',
 				img: 'CRU-4',
 				enhancedDamage: [0, .66, .75, .84, .93, 1.02, 1.11, 1.2],
 				cooldownTime: 30,
@@ -581,38 +584,43 @@ var skills;
 				name: 'Cross Slash',
 				img: 'RNG-1',
 				enhancedDamage: [0, .55, .65, .75, .85, .95, 1.05, 1.15],
-				cooldownTime: 10,
+				cooldownTime: 0,
 				description: 'Hits 3 front row targets for % damage',
 			}, {
 				name: 'Explosive Shot',
 				img: 'RNG-2',
+				mp: level => spellValues.explosiveShotMana[level],
 				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
 				cooldownTime: 20,
 				description: 'Launch an explosive fire arrow at 3x targets',
 			}, {
 				name: 'Trueshot Strike',
 				img: 'RNG-3',
+				mp: level => spellValues.trueshotStrikeMana[level],
 				enhancedDamage: [0, 1.6, 1.75, 1.9, 2.05, 2.2, 2.35, 2.5],
 				cooldownTime: 30,
 				description: 'Powerful single strike on single target (cannot dodge, parry, riposte)',
 			}, {
 				name: 'Spread Shot',
 				img: 'RNG-4',
+				mp: level => spellValues.spreadShotMana[level],
 				enhancedDamage: [0, .33, .39, .45, .51, .57, .63, .69],
 				cooldownTime: 24,
 				description: 'Hits up to 5x targets for % damage. Hits the front row first.',
 			}, {
 				name: 'Blade Storm',
 				img: 'RNG-5',
+				mp: level => spellValues.bladeStormMana[level],
 				enhancedDamage: [0, .3, .34, .38, .42, .46, .5, .54],
 				cooldownTime: 16,
 				description: 'Unleash a piercing five-hit combo on your target for % damage - Final blow hits for quad damage',
 			}, {
 				name: 'Suppressing Volley',
 				img: 'RNG-6',
+				mp: level => spellValues.suppressingVolleyMana[level],
 				enhancedDamage: [0, .45, .5, 55, .6, .65, .7, .75],
 				cooldownTime: 36,
-				description: 'Hits 3x targets - Reduces your threat and mobs\' physical damage by 50% for 9 seconds',
+				description: 'Hits 3x targets - Reduces your threat and mobs\' physical damage by 25% for 9 seconds',
 			}, {
 				name: 'Ignite',
 				img: 'RNG-7',
@@ -638,7 +646,7 @@ var skills;
 			}, {
 				name: 'Faerie Flame',
 				img: 'RNG-9',
-				mp: level => spellValues.faerieFlameMana[level],
+				sp: level => spellValues.faerieFlameMana[level],
 				spellDamage: level => spellValues.faerieFlame[level] + (my.level * 3),
 				spellVariance: .85,
 				spellType: PROP.CONJURATION,
@@ -1951,6 +1959,25 @@ var skills;
 	// DIRECT DAMAGE 2-4 m/d
 	// AE DAMAGE 1.5-3 m/d
 	const spellValues = {
+		// CRU
+		// RNG
+		explosiveShotMana: getManaTier(.8),
+		trueshotStrikeMana: getManaTier(1.2),
+		spreadShotMana: getManaTier(.8),
+		bladeStormMana: getManaTier(1),
+		suppressingVolleyMana: getManaTier(1.3),
+		igniteMana: getManaTier(1.1),
+		ignite: [0, 15, 37, 88, 156, 231, 298, 347],
+		shockNovaMana: getManaTier(1.3),
+		shockNova: [0, 9, 20, 47, 81, 123, 152, 179],
+		faerieFlameMana: getManaTier(1.6),
+		faerieFlame: [0, 19, 49, 117, 207, 307, 396, 461],
+		fungalGrowthMana: getManaTier(1.2),
+		fungalGrowth: [0, 21, 42, 95, 172, 255, 318, 382],
+		shimmeringOrbMana: getManaTier(1.7),
+		shimmeringOrb: [0, 33, 67, 152, 275, 408, 508, 611],
+		spiritOfTheHunterMana: getManaTier(2.5),
+		spiritOfTheHunter: [0, 4, 8, 13, 19, 26, 34, 45],
 		// BRD
 		bellowMana: getManaTier(1),
 		bellow: [0, 15, 38, 91, 163, 240, 310, 362],
@@ -2127,6 +2154,9 @@ var skills;
 		deepFreezeMana: getManaTier(1.6),
 		deepFreeze: [0, 26, 65, 156, 280, 413, 533, 621],
 		// WAR
+		ruptureMana: getManaTier(.9),
+		whirlwindMana: getManaTier(1.3),
+		pummelMana: getManaTier(.7),
 		doubleThrowMana: getManaTier(.8),
 		shockwaveMana: getManaTier(1.2),
 		frenzyMana: getManaTier(1.15),
@@ -2161,6 +2191,11 @@ var skills;
 		zealousResolveMana: getManaTier(2.9),
 		zealousResolve: [0, 10, 24, 60, 110, 164, 211, 246],
 		// RNG
+		explosiveShotMana: getManaTier(.8),
+		trueshotStrikeMana: getManaTier(1.2),
+		spreadShotMana: getManaTier(.8),
+		bladeStormMana: getManaTier(1),
+		suppressingVolleyMana: getManaTier(1.3),
 		igniteMana: getManaTier(1.1),
 		ignite: [0, 15, 37, 88, 156, 231, 298, 347],
 		shockNovaMana: getManaTier(1.3),

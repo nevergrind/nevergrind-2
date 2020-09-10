@@ -1,93 +1,319 @@
 !function($, _, TweenMax, undefined) {
 	skill.CRU = {
-		crossSlash,
-		explosiveShot,
-		trueshotArrow,
-		spreadShot,
-		bladeStorm,
-		suppressingVolley,
-		ignite,
-		shockNova,
-		faerieFlame,
-		fungalGrowth,
-		shimmeringOrb,
-		spiritOfTheHunter,
+		zealousSlam,
+		rebuke,
+		vengeance,
+		holyShock,
+		sealOfDamnation,
+		holyWrath,
+		divineJudgment,
+		blessedHammer,
+		sealOfRedemption,
+		divineGrace,
+		benevolence,
+		jubilee,
 	}
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
 	///////////////////////////////////////////
-	let arr, damage, damages, enhancedDamage
-	///////////////////////////////////////////
-	function crossSlash(index, data) {
-		// console.info('crossSlash', index)
+	function zealousSlam(index, data) {
 		// check constraints
-		// process skill data
-		// animate timers
-	}
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
 
-	function explosiveShot(index, data) {
-		// console.info('explosiveShot', index)
-		// check constraints
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function trueshotArrow(index, data) {
-		// console.info('trueshotArrow', index)
+	function rebuke(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function spreadShot(index, data) {
-		// console.info('spreadShot', index)
+	function vengeance(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function bladeStorm(index, data) {
-		// console.info('bladeStorm', index)
+	function holyShock(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function suppressingVolley(index, data) {
-		// console.info('suppressingVolley', index)
+	function sealOfDamnation(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function ignite(index, data) {
-		// console.info('ignite', index)
+	function holyWrath(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function shockNova(index, data) {
-		// console.info('shockNova', index)
+	function divineJudgment(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function faerieFlame(index, data) {
-		// console.info('faerieFlame', index)
+	function blessedHammer(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function fungalGrowth(index, data) {
-		// console.info('fungalGrowth', index)
+	function sealOfRedemption(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function shimmeringOrb(index, data) {
-		// console.info('shimmeringOrb', index)
+	function divineGrace(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
 	}
-	function spiritOfTheHunter(index, data) {
-		// console.info('spiritOfTheHunter', index)
+	function benevolence(index, data) {
 		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
 		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
 		// animate timers
+		button.triggerGlobalCooldown()
+	}
+	function jubilee(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index),
+		}
+		if (skills.notReady(config)) return
+
+		// process skill data
+		let tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (typeof items.eq[13] === TYPE.OBJECT &&
+			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		damages = []
+		damages.push({
+			...stats.damage(),
+			key: 'shieldBash',
+			index: tgt,
+			enhancedDamage: enhancedDamage,
+		})
+		// console.info('shieldBash', damages)
+		combat.txDamageMob(damages)
+
+		// animate timers
+		button.triggerGlobalCooldown()
 	}
 
 }($, _, TweenMax);

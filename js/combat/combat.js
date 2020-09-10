@@ -733,7 +733,7 @@ var combat;
 				d.blocked = round(d.damage * .25)
 				if (d.blocked < 0) d.blocked = 0
 			}
-			if (mobs[index].buffFlags.suppressingVolley) amountReduced -= .5
+			if (mobs[index].buffFlags.suppressingVolley) amountReduced -= buffs.suppressingVolley.reducePhysical
 			if (amountReduced < .25) amountReduced = .25
 			// armor, shield, debuff reduction
 			d.damage *= amountReduced

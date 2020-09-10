@@ -1501,7 +1501,7 @@ var stats = {};
 		else speed = button.autoAttackSpeed
 		speedHaste = 1
 		// buffs
-		if (my.buffFlags.spiritOfTheHunter) speedHaste -= buffs.spiritOfTheHunter.haste
+		if (my.buffFlags.spiritOfTheHunter) speedHaste -= buffs.spiritOfTheHunter.attackHaste
 		if (my.buffFlags.battleHymn) speedHaste -= buffs.battleHymn.attackHaste
 		// debuffs
 		if (speedHaste < .25) speedHaste = .25
@@ -1510,8 +1510,8 @@ var stats = {};
 	}
 	function getSkillSpeed() {
 		skillHaste = 1
-		if (my.buffFlags.frenzy) skillHaste -= buffs.frenzy.haste[my.buffs.frenzy.level]
-		if (my.buffFlags.augmentation) skillHaste -= buffs.augmentation.haste[my.buffs.augmentation.level]
+		if (my.buffFlags.frenzy) skillHaste -= buffs.frenzy.skillHaste[my.buffs.frenzy.level]
+		if (my.buffFlags.augmentation) skillHaste -= buffs.augmentation.skillHaste[my.buffs.augmentation.level]
 		if (skillHaste < .5) skillHaste = .5
 		else if (skillHaste > 2) skillHaste = 2
 		return skillHaste
