@@ -585,7 +585,8 @@ var town;
 		TweenMax.to('#town-wrap, #sky-wrap', o.duration, {
 			scale: o.scale,
 			x: o.x,
-			y: o.y
+			y: o.y,
+			ease: Power1.easeInOut,
 		});
 	}
 	function buyItem() {

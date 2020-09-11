@@ -150,7 +150,7 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'Your spirit ignites with zealous resolve.',
 			fadeMsg: 'Your zealous resolve fades.'
 		},
-		shieldBash: { hate: 1.2 },
+		shieldBash: { hate: .5 },
 		rupture: {
 			name: 'Rupture',
 			img: 1,
@@ -831,6 +831,19 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'A chromatic sonata shields you from magic.',
 			fadeMsg: 'The chromatic sonata fades.',
 		},
+		zealousSlam: { hate: 1.25 },
+		rebuke: { hate: 1.3 },
+		vengeance: { hate: .8 },
+		consecrate: { hate: 1 },
+		sealOfDamnation: { hate: 1 },
+		holyWrath: { hate: 1 },
+		divineJudgment: { hate: 1 },
+		blessedHammer: { hate: 1 },
+		sanctuary: { hate: 1 },
+		divineGrace: { hate: 1 },
+		benevolence: { hate: 1 },
+		jubilee: { hate: 1 },
+
 	}
 	///////////////////////////////////////////
 

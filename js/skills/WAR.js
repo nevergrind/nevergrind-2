@@ -25,6 +25,7 @@ let skill = {};
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -37,6 +38,7 @@ let skill = {};
 			key: 'shieldBash',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
+			hitBonus: data.hitBonus[my.skills[index]],
 		})
 		// console.info('shieldBash', damages)
 		combat.txDamageMob(damages)
@@ -86,6 +88,7 @@ let skill = {};
 				key: 'whirlwind',
 				index: tgt,
 				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
 			})
 		}
 		combat.txDamageMob(damages)
@@ -98,7 +101,7 @@ let skill = {};
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
-			requiresFrontRow: true,
+			requiresFrontRow: data.requiresFrontRow,
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -119,6 +122,7 @@ let skill = {};
 				duration: 3,
 			}],
 			enhancedDamage: enhancedDamage,
+			hitBonus: data.hitBonus[my.skills[index]],
 		})
 		combat.txDamageMob(damages)
 
@@ -147,6 +151,7 @@ let skill = {};
 				isRanged: true,
 				effects: { stagger: true },
 				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
 			})
 			if (battle.targetIsBackRow(tgt)) {
 				damages[i].damage *= 2
@@ -180,9 +185,10 @@ let skill = {};
 					...hit,
 					key: 'shockwave',
 					index: i,
-					requiresFrontRow: true,
+					requiresFrontRow: data.requiresFrontRow,
 					effects: { stagger: true },
 					enhancedDamage: enhancedDamage,
+					hitBonus: data.hitBonus[my.skills[index]],
 				})
 			}
 		}
@@ -244,6 +250,7 @@ let skill = {};
 				...hit,
 				index: tgt,
 				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
 			})
 			combat.txDamageMob(damages)
 		})
@@ -278,6 +285,7 @@ let skill = {};
 				effects: { stagger: true },
 				isRanged: true,
 				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
 			})
 		})
 		combat.txDamageMob(damages)
@@ -348,19 +356,18 @@ let skill = {};
 		let tgt
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.damage(tgt)
 			damages.push({
-				...hit,
+				...stats.damage(),
 				key: 'furiousCleave',
 				index: tgt,
+				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
 				buffs: [{
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'stun', // this sets the flag,
 					duration: 2,
 				}],
-				enhancedDamage: enhancedDamage,
-				damageType: DAMAGE_TYPE.ARCANE,
 			})
 		}
 		combat.txDamageMob(damages)

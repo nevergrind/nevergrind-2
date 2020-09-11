@@ -185,7 +185,9 @@ var combat;
 		else return my.target >= 0
 	}
 	function processDamagesMob(d) {
-		if (typeof mobs[d.index] === Undefined || !mobs[d.index].name || my.hp <= 0) {
+		if (typeof mobs[d.index] === Undefined ||
+			!mobs[d.index].name
+			|| my.hp <= 0) {
 			d.damage = 0
 			return d
 		}
@@ -193,7 +195,7 @@ var combat;
 
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// check for things that immediately set to 0
-			if (rand() < stats.missChance(d.index, d.weaponSkill)) {
+			if (rand() < stats.missChance(d.index, d.weaponSkill, d.hitBonus)) {
 				// chat.log('Your attack misses ' + ng.getArticle(d.index) + ' ' + mobs[d.index].name + '!')
 				d.damage = 0
 				combat.popupDamage(d.index, 'MISS!')
@@ -220,15 +222,14 @@ var combat;
 				}
 			}
 			// enhancedDamage
-
 			// mob type bonuses
 			d.enhancedDamage += getEnhancedDamageByMobType(d)
 			if (mobs[d.index].buffFlags.demonicPact) d.enhancedDamage += .15
 
 			// console.info('d.enhancedDamage', d.enhancedDamage)
+			d.damage *= d.enhancedDamage
 
 			// reduce enhancedDamage
-			d.damage *= d.enhancedDamage
 
 			// modify mob armor for self
 			if (mobs[d.index].armor < 1) {
@@ -273,7 +274,7 @@ var combat;
 		}
 		else {
 			// mob magic resists
-			d.enhancedDamage = 1
+			if (!d.enhancedDamage) d.enhancedDamage = 1
 			if (mobs[d.index].mobType === MOB_TYPE.UNDEAD) {
 				if (d.isBlighted) {
 					d.enhancedDamage += .5
@@ -451,8 +452,8 @@ var combat;
 		return m.index >=0 && m.index < mob.max && mob.isAlive(m.index)
 	}
 	function txDamageMob(damages) {
+		// console.info('txDamageMob', damages)
 		damages = damages.filter(filterImpossibleMobTargets).map(processDamagesMob)
-		// console.warn('txDamageMob', damages)
 		damageArr = []
 		buffArr = []
 		len = damages.length

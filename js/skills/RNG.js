@@ -14,7 +14,7 @@
 		shimmeringOrb,
 		spiritOfTheHunter,
 	}
-	let enhancedDamage, hit, config
+	let enhancedDamage, hit, config, tgt
 	let damages = []
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
@@ -25,6 +25,8 @@
 			requiresFrontRow: true,
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
@@ -37,7 +39,8 @@
 					key: 'crossSlash',
 					index: i,
 					enhancedDamage: enhancedDamage,
-					requiresFrontRow: true,
+					hitBonus: data.hitBonus[my.skills[index]],
+					requiresFrontRow: data.requiresFrontRow,
 				})
 			}
 		}
@@ -67,6 +70,7 @@
 				key: 'explosiveShot',
 				index: tgt,
 				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
 				damageType: spell.data.damageType,
 			})
 		}
@@ -95,6 +99,7 @@
 			index: tgt,
 			isPiercing: true,
 			enhancedDamage: enhancedDamage,
+			hitBonus: data.hitBonus[my.skills[index]],
 		})
 		combat.txDamageMob(damages)
 
@@ -129,6 +134,7 @@
 				key: 'spreadShot',
 				index: target,
 				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
 			})
 		})
 		combat.txDamageMob(damages)
@@ -160,6 +166,7 @@
 				index: tgt,
 				isPiercing: true,
 				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
 			})
 		}
 		combat.txDamageMob(damages)
@@ -189,6 +196,7 @@
 				index: tgt,
 				key: 'suppressingVolley',
 				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
 				buffs: [{
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon

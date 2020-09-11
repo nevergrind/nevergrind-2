@@ -378,16 +378,17 @@ var stats = {};
 		}
 		return stats.memo.doubleAttack
 	}
-	function missChance(index, weaponSkill) {
+	function missChance(index, weaponSkill, hitBonus = 0) {
 		chance = .2
 		// 24 is about how much attack you get per level (21.6?)
 		chance += ((mobs[index].level * 24) - stats.attack(weaponSkill)) / 2400
 		if (my.level < mobs[index].level) {
 			chance += ((mobs[index].level - my.level) / 40)
 		}
-		// console.info('stats.missChance before', weaponSkill, chance)
+		// console.info('stats.missChance before',  chance, hitBonus)
+		if (hitBonus !== 0) chance -= (hitBonus / 100)
 		if (mobs[index].buffFlags.faerieFlame) chance -= .12
-		// console.info('stats.missChance after', weaponSkill, chance)
+		// console.info('stats.missChance after', chance)
 		// limit check
 		if (chance > .5) chance = .5
 		else if (chance < .05) chance = .05
@@ -1202,19 +1203,19 @@ var stats = {};
 	const spBase = 40
 	function hpMax(fresh) {
 		if (fresh || typeof stats.memo.hpMax === Undefined) {
-			baseResource = (
-				hpBase + stats.sta() * hpTier[my.job]) * (my.level / 50) +
+			baseResource = hpBase + (
+				stats.sta() * hpTier[my.job]) * (my.level / 50) +
 				(my.level * (hpTier[my.job] * 2.5)
 			)
-			value = ~~(baseResource * hpPercentBonus() + getEqTotal(PROP.HP))
+			stats.memo.hpMax = ~~(baseResource * hpPercentBonus() + getEqTotal(PROP.HP))
 			if (my.buffFlags.sealOfRedemption) {
-				value += (my.buffs.sealOfRedemption.damage)
+				stats.memo.hpMax += (my.buffs.sealOfRedemption.damage)
 			}
 			if (my.buffFlags.zealousResolve) {
-				value += (my.buffs.zealousResolve.damage)
+				stats.memo.hpMax += (my.buffs.zealousResolve.damage)
 			}
 		}
-		return value
+		return stats.memo.hpMax
 		////////////////////////////////
 		function hpPercentBonus() {
 			let bonus = 1 + (getStatTotal(PROP.INCREASE_HP_PERCENT) / 100)
@@ -1227,8 +1228,8 @@ var stats = {};
 	let percentBonus = 0
 	function mpMax(fresh) {
 		if (fresh || typeof stats.memo.mpMax === Undefined) {
-			baseResource = (
-				mpBase + (stats.intel() * mpTier[my.job]) * (my.level / 50) +
+			baseResource = mpBase + (
+				(stats.intel() * mpTier[my.job]) * (my.level / 50) +
 				(my.level * (mpTier[my.job] * 2.5))
 			)
 			stats.memo.mpMax = ~~(baseResource * mpPercentBonus() + getEqTotal(PROP.MP))
@@ -1245,8 +1246,8 @@ var stats = {};
 	}
 	function spMax(fresh) {
 		if (fresh || typeof stats.memo.spMax === Undefined) {
-			baseResource = (
-				(spBase + (stats.cha() * spTier[my.job]) * (my.level / 50) +
+			baseResource = (spBase +
+				((stats.cha() * spTier[my.job]) * (my.level / 50) +
 				(my.level * (spTier[my.job] * 2.5)))
 			)
 			stats.memo.spMax = ~~(baseResource * spPercentBonus() + getEqTotal(PROP.SP))

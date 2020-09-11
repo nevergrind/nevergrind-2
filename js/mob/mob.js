@@ -177,6 +177,7 @@ var mob;
 				buffFlags: {},
 				box: {},
 				dom: {},
+				target: my.row,
 			}
 			querySelector('#mob-wrap-' + i).style.display = 'none'
 		}
@@ -592,7 +593,7 @@ var mob;
 	function animateAttack(i, row) {
 		isSomeoneAlive = party.isSomeoneAlive()
 		let tgt = party.presence.findIndex(p => p.row === row)
-		if (tgt > -1) animateMobTarget(i, tgt)
+		if (tgt > -1) animateMobTarget(i, tgt, row)
 		setTimeScaleSpeed(i)
 		if (isSomeoneAlive) {
 			mobs[i].animation.pause()
@@ -623,7 +624,8 @@ var mob;
 			el.style.background = party.color[0]
 		})
 	}
-	function animateMobTarget(i, tgt) {
+	function animateMobTarget(i, tgt, row) {
+		mobs[i].target = row
 		el = querySelector('#mob-target-avatar-' + i)
 		el.src = party.presence[tgt].avatar
 		el.style.background = party.color[tgt]

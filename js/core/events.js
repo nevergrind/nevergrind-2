@@ -189,8 +189,8 @@
 				/*if (ng.view !== 'title' && chat.typingKeys.includes(key)) {
 					if (!chat.hasFocus && !guild.hasFocus && chat.focusKeys.includes(key)) {
 						var z = $("#chat-input");
-						var text = z.val();
-						!text && chat.dom.chatInput.focus();
+						var txt = z.val();
+						!txt && chat.dom.chatInput.focus();
 						// console.warn('canceling', key)
 						return;
 					}

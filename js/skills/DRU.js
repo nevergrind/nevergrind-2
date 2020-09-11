@@ -147,7 +147,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			requiresFrontRow: true,
+			requiresFrontRow: data.requiresFrontRow,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, moltenBoulderCompleted)

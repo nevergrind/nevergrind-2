@@ -34,6 +34,7 @@ var ng;
 		initialized: false,
 		config: {
 			display: 'Full Screen',
+			lang: 'English',
 			musicVolume: 100,
 			soundVolume: 100,
 			fastDestroy: false,
@@ -336,6 +337,7 @@ var ng;
 	function getDefaultOptions() {
 		return {
 			display: 'Full Screen',
+			lang: 'English',
 			musicVolume: 100,
 			soundVolume: 100,
 			fastDestroy: false,

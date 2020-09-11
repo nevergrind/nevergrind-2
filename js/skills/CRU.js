@@ -3,12 +3,12 @@
 		zealousSlam,
 		rebuke,
 		vengeance,
-		holyShock,
+		consecrate,
 		sealOfDamnation,
 		holyWrath,
 		divineJudgment,
 		blessedHammer,
-		sealOfRedemption,
+		sanctuary,
 		divineGrace,
 		benevolence,
 		jubilee,
@@ -21,22 +21,22 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
 		damages = []
-		damages.push({
+		hit = {
 			...stats.damage(),
-			key: 'shieldBash',
+			key: 'zealousSlam',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
+			hitBonus: data.hitBonus[my.skills[index]],
+		}
+		if (rand() > .9) hit.effects = { stagger: true }
+		damages.push(hit)
 		combat.txDamageMob(damages)
-
 		// animate timers
 		button.triggerGlobalCooldown()
 	}
@@ -46,56 +46,63 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
-		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
 		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
+		splashIndex = -1
+		for (var i=0; i<3; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			hit = stats.damage(tgt)
+			damages.push({
+				...hit,
+				key: 'rebuke',
+				index: tgt,
+				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
+				effects: { stagger: true },
+			})
+		}
 		combat.txDamageMob(damages)
-
-		// animate timers
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function vengeance(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
+			requiresFrontRow: true,
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		if (mobs[tgt].target === my.row) {
+			enhancedDamage += .25
+		}
 		damages = []
 		damages.push({
 			...stats.damage(),
-			key: 'shieldBash',
+			key: 'vengeance',
 			index: tgt,
+			requiresFrontRow: data.requiresFrontRow,
 			enhancedDamage: enhancedDamage,
+			hitBonus: data.hitBonus[my.skills[index]],
 		})
-		// console.info('shieldBash', damages)
 		combat.txDamageMob(damages)
-
-		// animate timers
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function holyShock(index, data) {
+	function consecrate(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -108,6 +115,7 @@
 			key: 'shieldBash',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
+			hitBonus: data.hitBonus[my.skills[index]],
 		})
 		// console.info('shieldBash', damages)
 		combat.txDamageMob(damages)
@@ -121,6 +129,7 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -146,6 +155,7 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -171,6 +181,7 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -196,6 +207,7 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -215,12 +227,13 @@
 		// animate timers
 		button.triggerGlobalCooldown()
 	}
-	function sealOfRedemption(index, data) {
+	function sanctuary(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendSpirit(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -246,6 +259,7 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendSpirit(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -271,6 +285,7 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendSpirit(data, index)
 
 		// process skill data
 		let tgt = my.target
@@ -296,6 +311,7 @@
 			...skills.getDefaults(index),
 		}
 		if (skills.notReady(config)) return
+		spell.expendSpirit(data, index)
 
 		// process skill data
 		let tgt = my.target
