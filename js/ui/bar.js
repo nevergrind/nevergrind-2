@@ -70,23 +70,6 @@ var bar;
 		optionSelected: 'General',
 		activeTab: 'character',
 	};
-
-	const defaultBg = {
-		WAR: 9,
-		CRU: 10,
-		SHD: 4,
-		MNK: 22,
-		ROG: 2,
-		RNG: 5,
-		BRD: 17,
-		DRU: 19,
-		CLR: 11,
-		SHM: 13,
-		WLK: 18,
-		ENC: 1,
-		TMP: 3,
-		WIZ: 24,
-	}
 	let ratio = 0
 	let percent = 0
 	var pingColors = [
@@ -1043,8 +1026,8 @@ var bar;
 			html += '</div>' +
 			'<div id="inv-column-avatar" class="bg-dark-' + my.job + '">'+
 				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
-					'<img class="inv-avatar-bg" src="images/avatar-bg/'+ defaultBg[my.job] +'.png">' +
-					'<img id="inv-avatar-bg2" class="inv-avatar-bg" src="images/avatar-bg/'+ defaultBg[my.job] +'.png">' +
+					'<img class="inv-avatar-bg" src="images/avatar-bg/'+ AVATAR_BG[my.job] +'.png">' +
+					'<img id="inv-avatar-bg2" class="inv-avatar-bg" src="images/avatar-bg/'+ AVATAR_BG[my.job] +'.png">' +
 					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 					'<div id="inv-resist-wrap" class="text-shadow3">'+
 						'<div id="inv-resist-blood" class="inv-resist-icon popover-icons">' + + stats.resistBlood() + '</div>' +

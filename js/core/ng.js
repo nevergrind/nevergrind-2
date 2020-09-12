@@ -1,6 +1,6 @@
 // ng.js
 var ng;
-(function($, TweenMax, SplitText, undefined) {
+!function($, TweenMax, SplitText, _, undefined) {
 	ng = {
 		noop,
 		flashNgoLogo,
@@ -685,7 +685,7 @@ var ng;
 				startAt: { opacity: 0, },
 				delay: .6,
 				opacity: 1,
-				x: '-50%',
+				x: '50%',
 				scale: 1,
 				ease: Power1.easeOut,
 			})
@@ -822,4 +822,4 @@ var ng;
 	}
 	// do nothing!
 	function noop() {}
-})($, TweenMax, SplitText);
+}($, TweenMax, SplitText, _)

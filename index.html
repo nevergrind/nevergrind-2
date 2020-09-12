@@ -64,39 +64,38 @@ app.socketUrl = app.isApp ?
 	<!-- sky canvas goes here -->
 </div>
 <div id="scene-title" class="scene no-select">
-	<div id="ng2-logo-wrap">
+	<div id="scene-title-landing">
 		<img id="ng2-bg" src="images/title/title-merged.png" class="wh-100">
 		<img id="ngo-logo" class="ngo-logos" src="images/title/nevergrind-online-logo-2.png">
 		<img id="ngo-logo-fg" class="ngo-logos" src="images/title/nevergrind-online-logo-2.png">
 		<img id="title-gwen" src="images/title/gwendolyn.png">
+
+		<div id="scene-title-select-character" class="flex-column title-cc-wrap">
+
+			<!-- well top -->
+			<div id="title-well-top" class="title-ch-well text-center">
+				<script>
+					if (!app.isApp) {
+						document.write('<a id="logout" class="ng-btn title-btn-margin pointer">Loading...</a>')
+					}
+				</script>
+				<a id="go-create-character" class="ng-btn title-btn-margin no-select">Create</a>
+				<a id="delete-character" class="ng-btn title-btn-margin">Delete</a>
+			</div>
+			<!-- char cards -->
+			<div id="ch-card-wrap" class="text-shadow"></div>
+			<!-- well bottom -->
+			<div id="title-well-bottom" class="title-ch-well text-center">
+				<a id="enter-world"
+				   class="ng-btn title-btn-margin">
+					Enter World
+				</a>
+			</div>
+		</div>
 		<script>
 			document.write('<div id="version" class="text-shadow">Version ' + app.version + '</div>')
 		</script>
 	</div>
-
-	<div id="scene-title-select-character" class="flex-column title-cc-wrap">
-
-		<!-- well top -->
-		<div id="title-well-top" class="title-ch-well text-center">
-			<script>
-				if (!app.isApp) {
-					document.write('<a id="logout" class="ng-btn title-btn-margin pointer">Loading...</a>')
-				}
-			</script>
-			<a id="go-create-character" class="ng-btn title-btn-margin no-select">Create</a>
-			<a id="delete-character" class="ng-btn title-btn-margin">Delete</a>
-		</div>
-		<!-- char cards -->
-		<div id="ch-card-wrap" class="text-shadow"></div>
-		<!-- well bottom -->
-		<div id="title-well-bottom" class="title-ch-well text-center">
-			<a id="enter-world"
-			   class="ng-btn title-btn-margin">
-				Enter World
-			</a>
-		</div>
-
-	</div> <!-- end scene-title-select-character -->
 
 	<div id="scene-title-create-character" class="flex-column title-cc-wrap none text-shadow">
 		<div class="flex title-menu-row stag-blue pad-4">
@@ -179,7 +178,8 @@ app.socketUrl = app.isApp ?
 							</div>
 						</div>
 						<div class="flex-column">
-							<div class="flex flex-center" style="position: relative">
+							<div class="flex flex-center" style="position: relative; overflow: hidden; background: #001">
+								<img id="create-portrait-bg">
 								<img id="create-portrait">
 								<img id="portrait-down"
 								   style="left: -.5rem" src="images/ui/chevron-left.png"

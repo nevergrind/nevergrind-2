@@ -132,7 +132,7 @@ var test;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
-		var e2 = getElementById('ng2-logo-wrap');
+		var e2 = getElementById('scene-title-landing');
 		for (i=0; i<max; i++){
 			e = createElement('img');
 			e.id = 'mob' + i;
@@ -241,7 +241,7 @@ var test;
 		$("#title-container-wrap").css('display', 'none')
 		$('#scene-title-select-character, .test-orcs').remove()
 
-		var e2 = getElementById('ng2-logo-wrap');
+		var e2 = getElementById('scene-title-landing');
 		for (i=0; i<max; i++){
 			e = createElement('img');
 			e.id = 'mob' + i;
@@ -259,7 +259,7 @@ var test;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
-		var e2 = getElementById('ng2-logo-wrap');
+		var e2 = getElementById('scene-title-landing');
 		for (i=0; i<max; i++){
 			e = createElement('img');
 			e.id = 'mob' + i;
@@ -277,7 +277,7 @@ var test;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
-		var e2 = getElementById('ng2-logo-wrap');
+		var e2 = getElementById('scene-title-landing');
 		for (i=0; i<max; i++){
 			e = createElement('img');
 			e.id = 'mob' + i;
@@ -303,7 +303,7 @@ var test;
 		$("#title-container-wrap").css('display', 'none');
 		$('#scene-title-select-character, .test-orcs').remove();
 
-		var e2 = getElementById('ng2-logo-wrap');
+		var e2 = getElementById('scene-title-landing');
 		for (i=0; i<max; i++){
 			e = createElement('img');
 			e.id = 'mob' + i;

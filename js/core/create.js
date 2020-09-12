@@ -128,6 +128,7 @@ var create;
 			$('.select-class').removeClass(CSS.ACTIVE);
 			$(this).addClass(CSS.ACTIVE);
 			create.set('job', job)
+			setAvatarBg()
 		}
 	}
 	function selectGender() {
@@ -611,6 +612,24 @@ var create;
 		var obj = _.pick(create.form, KEYS.SET_FACE)
 		obj.gender = obj.gender === 'Male' ? 0 : 1
 		getElementById('create-portrait').src = my.getAvatarUrl(obj)
+	}
+	function setAvatarBg() {
+		query.el('#create-portrait-bg').src = 'images/avatar-bg/' + AVATAR_BG[ng.toJobShort(create.form.job)] + '.png'
+		TweenMax.to('#create-portrait-bg', .5, {
+			startAt: { opacity: .3, filter: '' },
+			overwrite: 1,
+			opacity: 1,
+			ease: Power2.easeIn,
+			onComplete: function() {
+				TweenMax.to(this.target, .25, {
+					startAt: { filter: 'blur(0px) saturate(1) brightness(1)' },
+					filter: 'blur(1.5px) saturate(1.5) brightness(1.1)',
+					repeat: 1,
+					yoyo: true,
+					ease: Power1.easeIn,
+				})
+			}
+		})
 	}
 	// private /////////////////////////////////////////////////
 	function getCleanName(name) {

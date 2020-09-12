@@ -179,6 +179,22 @@ const MOB_TYPE = Object.freeze({
 	UNDEAD: 'undead',
 	GIANT: 'giant',
 })
+const AVATAR_BG = Object.freeze({
+	WAR: 9,
+	CRU: 10,
+	SHD: 4,
+	MNK: 22,
+	ROG: 2,
+	RNG: 5,
+	BRD: 17,
+	DRU: 19,
+	CLR: 11,
+	SHM: 13,
+	WLK: 18,
+	ENC: 1,
+	TMP: 3,
+	WIZ: 24,
+})
 const KEYS = Object.freeze({
 	DATA: ['data'],
 	NAME: ['name'],
@@ -232,4 +248,13 @@ const KEYS = Object.freeze({
 		'evocation',
 		'skills',
 	],
+})
+// animations
+const ANIMATE_CANDLE = RoughEase.ease.config({
+	template: Power0.easeOut,
+	strength: 3,
+	points: 50,
+	taper: 'both',
+	randomize: true,
+	clamp: true
 })
