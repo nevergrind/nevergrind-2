@@ -42,9 +42,10 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Suppressing Volley',
 			img: 5,
 			job: JOB.RANGER,
-			reducePhysical: .25,
+			reduceHitRate: [0, .02, .03, .04, .05, .06],
+			stacks: 5,
 			hate: -1.5,
-			duration: 9,
+			duration: 21,
 		},
 		igniteArmor: {
 			name: 'Ignite Armor',

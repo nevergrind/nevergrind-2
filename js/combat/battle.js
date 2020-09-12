@@ -74,6 +74,8 @@ var battle;
 	let leveled = false
 	let penalty = 0
 	let battleSceneInitialized = false
+	let buffImage = ''
+	let mobStackCount = 0
 	const flashDuration = 10
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	let battleLayerInitialized = false
@@ -422,7 +424,13 @@ var battle;
 		buffHtml = ''
 		for (key in mobs[my.target].buffs) {
 			mobBuffData = mobs[my.target].buffs[key]
-			buffHtml += '<img id="buff-'+ key + '" class="target-buff popover-icons" src="images/skills/' + buffs[mobBuffData.key].job + '/' + buffs[mobBuffData.key].img + '.png">'
+			buffImage = 'url(images/skills/' + buffs[mobBuffData.key].job + '/' + buffs[mobBuffData.key].img + '.png)'
+			mobStackCount = buffs[mobBuffData.key].stacks ?
+				mobBuffData.stacks : ''
+			buffHtml += '<div id="buff-'+ key + '" class="target-buff popover-icons" style="background-image: '+
+				buffImage +
+			'">'+ mobStackCount + '</div'
+			// el.style.backgroundImage = 'url(images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png)'
 		}
 		return buffHtml
 	}
@@ -447,11 +455,14 @@ var battle;
 			if (mobBuffTimerExists(buff.i, buffKeyRow)) {
 				mobs[buff.i].buffs[buffKeyRow].timer.kill()
 			}
+
 			mobs[buff.i].buffs[buffKeyRow] = {
 				row: buff.row,
 				key: buff.key,
 				level: buff.level,
 				duration: duration,
+				stacks: typeof mobs[buff.i].buffs[buffKeyRow] === 'object' ?
+					mobs[buff.i].buffs[buffKeyRow].stacks : void 0
 			}
 			// animate the actual duration down to 0
 			mobs[buff.i].buffs[buffKeyRow].timer = TweenMax.to(mobs[buff.i].buffs[buffKeyRow], duration, {
@@ -462,7 +473,19 @@ var battle;
 			})
 			mobs[buff.i].buffFlags[buff.key] = true
 			// status effects
-			// console.info('processBuffs', buff)
+			console.info('processBuffs', buff)
+			if (buffs[buff.key].stacks) {
+				if (typeof mobs[buff.i].buffs[buffKeyRow].stacks === 'number') {
+					if (mobs[buff.i].buffs[buffKeyRow].stacks < buffs[buff.key].stacks) {
+						mobs[buff.i].buffs[buffKeyRow].stacks++
+					}
+				}
+				else {
+					mobs[buff.i].buffs[buffKeyRow].stacks = 1
+				}
+				// mobs[buff.i].buffs[buffKeyRow] = mobs[buff.i].buffs[buff.key].stacks
+				console.info('stac', mobs[buff.i].buffs[buffKeyRow].stacks)
+			}
 			if (buff.duration) {
 				// console.warn('processBuffs effect found', buff.i, buff.key, buff.duration)
 				if (buff.key === 'stun') mobEffects.stun(buff.i, buff.duration)
@@ -484,8 +507,17 @@ var battle;
 				mobs[i].buffs[keyRow].duration > 0) {
 				buffStillActive = true
 			}
+
+			if (buffs[buffKey].stacks) {
+				if (typeof mobs[i].buffs[keyRow].stacks === 'number') {
+					if (mobs[i].buffs[keyRow].duration === 0) {
+						mobs[i].buffs[keyRow].stacks = 0
+					}
+				}
+			}
 		}
 		if (!buffStillActive) mobs[i].buffFlags[buffKey] = false
+
 	}
 	function startBuffTimers() {
 		if (my.target < 0) return
@@ -551,18 +583,26 @@ var battle;
 		if (typeof keyRow === 'undefined') keyRow = key
 		// console.info('addMyBuff', key, keyRow)
 
-		el = createElement('div')
-		el.id = 'mybuff-' + keyRow
-		el.className = 'buff-icons popover-icons text-shadow3'
-		el.style.backgroundImage = 'url(images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png)'
-		if (buffs[key].stacks) {
+		console.info('stack count', my.buffs[key].stacks)
+		if (buffs[key].stacks === void 0 ||
+			my.buffs[key].stacks === 1) {
+			console.info('ADDING BUFF')
+			el = createElement('div')
+			el.id = 'mybuff-' + keyRow
+			el.className = 'buff-icons popover-icons text-shadow3'
+			el.style.backgroundImage = 'url(images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png)'
 			el.textContent = my.buffs[key].stacks
+			query.el('#mybuff-wrap').appendChild(el)
 		}
-		querySelector('#mybuff-wrap').appendChild(el)
+		else {
+			console.info('UPDATING BUFF')
+			querySelector('#mybuff-' + keyRow).textContent = my.buffs[key].stacks
+		}
 
 		if (buffs[key].duration > 0) {
-			// kill if exists
-			if (my.buffIconTimers[keyRow] === TYPE.OBJECT) my.buffIconTimers[keyRow].kill()
+			if (typeof my.buffIconTimers[keyRow] === TYPE.OBJECT) {
+				my.buffIconTimers[keyRow].kill()
+			}
 			// start timer
 			if (buffs[key].duration < flashDuration) flashMyBuff(key, keyRow)
 			else {

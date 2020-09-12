@@ -1244,7 +1244,7 @@ background-clip: content-box;
 	height: 2.4rem;
 	border: 1px solid #0a0a0a;
 	background-size: 100% 100%;
-	line-height: 1;
+	line-height: 1.1;
 }
 
 .bar-avatar {
@@ -3584,8 +3584,14 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	align-self: center;
 }
 .target-buff {
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	font-size: .75rem;
+	line-height: 1;
 	width: 1.2rem;
 	height: 1.2rem;
+	background-size: 1.2rem 1.2rem;
 	border: 1px solid #0a0a0a;
 }
 

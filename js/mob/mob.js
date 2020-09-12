@@ -952,13 +952,16 @@ var mob;
 
 		})
 	}
-	function missChance(level) {
+	function missChance(index) {
 		chance = .2
-		if (my.level > level) {
-			chance += ((my.level - level) / 150)
+		if (my.level > mobs[index].level) {
+			chance += ((my.level - mobs[index].level) / 150)
 		}
-		else if (my.level < level) {
-			chance -= ((level - my.level) / 25)
+		else if (my.level < mobs[index].level) {
+			chance -= ((mobs[index].level - my.level) / 25)
+		}
+		if (mobs[index].buffFlags.suppressingVolley) {
+			chance += buffs.suppressingVolley.reduceHitRate[skill.RNG.getHighestSuppressingVolleyStack(index)]
 		}
 		if (chance > .5) chance = .5
 		else if (chance < .05) chance = .05

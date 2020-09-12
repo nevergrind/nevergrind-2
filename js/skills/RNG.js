@@ -6,6 +6,7 @@
 		spreadShot,
 		bladeStorm,
 		suppressingVolley,
+		getHighestSuppressingVolleyStack,
 		ignite,
 		igniteCompleted,
 		shockNova,
@@ -14,7 +15,7 @@
 		shimmeringOrb,
 		spiritOfTheHunter,
 	}
-	let enhancedDamage, hit, config, tgt
+	let enhancedDamage, hit, config, tgt, maxSuppressingVolleyStack, key
 	let damages = []
 	///////////////////////////////////////////
 	function crossSlash(index, data) {
@@ -209,6 +210,18 @@
 		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 		// special effects
+	}
+	function getHighestSuppressingVolleyStack(index) {
+		maxSuppressingVolleyStack = 0
+		for (key in mobs[index].buffs) {
+			if (mobs[index].buffs[key].key === 'suppressingVolley' &&
+				mobs[index].buffs[key].duration > 0 && // must be active
+				mobs[index].buffs[key].stacks > maxSuppressingVolleyStack) {
+				maxSuppressingVolleyStack = mobs[index].buffs[key].stacks
+			}
+		}
+		return maxSuppressingVolleyStack
+
 	}
 	function ignite(index, data) {
 		if (timers.castBar < 1) return

@@ -493,7 +493,6 @@ var combat;
 	function rxDamageMob(data) {
 		// damages
 		len = data.damages.length
-		buffArr = []
 		for (i=0; i<len; i++) {
 			// console.info('txDamageMob : ', data.damages[i])
 			updateMobHp(data.damages[i])
@@ -503,9 +502,10 @@ var combat;
 		}
 		// buffs
 		if (typeof data.buffs === TYPE.OBJECT) {
+			buffArr = []
 			data.buffs.forEach(buff => buffArr.push(buff))
+			buffArr.length && battle.processBuffs(buffArr)
 		}
-		buffArr.length && battle.processBuffs(buffArr)
 	}
 
 	function txDotMob(damages) {
@@ -675,7 +675,7 @@ var combat;
 			return d
 		}
 		// check miss
-		if (rand() < mob.missChance(mobs[index].level)) {
+		if (rand() < mob.missChance(index)) {
 			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but misses!')
 			d.damage = 0
 			return d
@@ -735,7 +735,6 @@ var combat;
 				d.blocked = round(d.damage * .25)
 				if (d.blocked < 0) d.blocked = 0
 			}
-			if (mobs[index].buffFlags.suppressingVolley) amountReduced -= buffs.suppressingVolley.reducePhysical
 			if (amountReduced < .25) amountReduced = .25
 			// armor, shield, debuff reduction
 			d.damage *= amountReduced
@@ -1000,7 +999,8 @@ var combat;
 
 			if (my.row === buff.index) {
 				let key = buff.key
-				let previousStack = typeof my.buffs[key] === 'object' ? my.buffs[key].stacks : void 0
+				let previousStack = typeof my.buffs[key] === 'object' ?
+						my.buffs[key].stacks : void 0
 				// check level of buff - cancel if lower
 				if (typeof my.buffs[key] === TYPE.OBJECT) {
 					if (buff.level < my.buffs[key].level) {
@@ -1022,20 +1022,20 @@ var combat;
 				}
 				battle.lastBuffAlreadyActive = my.buffFlags[key]
 				chat.log(buffs[key].msg(), CHAT.HEAL)
-				battle.removeBuff(key)
+				if (buffs[key].stacks === void 0) {
+					battle.removeBuff(key)
+				}
 				// setup buff timer data
 				my.buffs[key] = {
 					row: buff.index,
 					key: buff.key,
+					stacks: previousStack
 				}
 				// optional keys
 				if (buff.level) my.buffs[key].level = buff.level
 				// sets shield type damage absorption shimmeringOrb, guardianAngel, sereneSigil etc
 				if (buff.damage) my.buffs[key].damage = buff.damage
 				if (buffs[key].stacks) {
-					if (typeof previousStack === 'number') {
-						my.buffs[key].stacks = previousStack
-					}
 					if (typeof my.buffs[key].stacks === 'number') {
 						if (my.buffs[key].stacks < buffs[key].stacks) {
 							my.buffs[key].stacks++

@@ -650,8 +650,8 @@ var skills;
 				mp: level => spellValues.suppressingVolleyMana[level],
 				enhancedDamage: [0, .45, .5, 55, .6, .65, .7, .75],
 				hitBonus: [0, -1.5, -1, -.5, 0, .5, 1, 1.5],
-				cooldownTime: 36,
-				description: 'Hits 3x targets - Reduces your threat and mobs\' physical damage by 25% for 9 seconds',
+				cooldownTime: 12,
+				description: 'Hits 3x targets - Reduces threat and debuffs target hit chance for 21 seconds - stacks up to 5x for greater affect.',
 			}, {
 				name: 'Ignite',
 				img: 'RNG-7',
