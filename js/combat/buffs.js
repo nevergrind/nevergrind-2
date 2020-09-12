@@ -834,7 +834,16 @@ let buffs; // buff data for use with skill/spells/icons
 		zealousSlam: { hate: 1.25 },
 		rebuke: { hate: 1.3 },
 		vengeance: { hate: .8 },
-		consecrate: { hate: 1 },
+		consecrate: {
+			name: 'Consecrate',
+			img: 3,
+			job: JOB.CRUSADER,
+			hate: 1.5,
+			duration: 30,
+			stacks: 5,
+			msg: () => 'Holy light consecrates the ground you stand on.',
+			fadeMsg: 'The consecration fades.'
+		},
 		sealOfDamnation: { hate: 1 },
 		holyWrath: { hate: 1 },
 		divineJudgment: { hate: 1 },

@@ -221,13 +221,13 @@ var party;
 	 * @param name
 	 */
 	function invite(name) {
-		if (my.name === name) chat.log("You can't invite yourself to a party.", CSS.CHAT_WARNING)
-		else if (!party.presence[0].isLeader) chat.log("Only the party leader may send invites.", CSS.CHAT_WARNING)
-		else if (mission.inProgress) chat.log("You cannot invite adventurers to the party after starting the mission.", CSS.CHAT_WARNING)
-		else if (ng.view !== 'town') chat.log("You cannot invite adventurers from the depths of a dungeon.", CSS.CHAT_WARNING)
+		if (my.name === name) chat.log("You can't invite yourself to a party.", CHAT.WARNING)
+		else if (!party.presence[0].isLeader) chat.log("Only the party leader may send invites.", CHAT.WARNING)
+		else if (mission.inProgress) chat.log("You cannot invite adventurers to the party after starting the mission.", CHAT.WARNING)
+		else if (ng.view !== 'town') chat.log("You cannot invite adventurers from the depths of a dungeon.", CHAT.WARNING)
 		else {
 			if (name) {
-				chat.log('Sent party invite to '+ name +'.', CSS.CHAT_WARNING);
+				chat.log('Sent party invite to '+ name +'.', CHAT.WARNING);
 				// console.info('name', name);
 				socket.publish('name' + name, {
 					action: 'party-invite',
@@ -237,7 +237,7 @@ var party;
 				});
 			}
 			else {
-				chat.log("Syntax: /invite Bob", CSS.CHAT_WARNING);
+				chat.log("Syntax: /invite Bob", CHAT.WARNING);
 			}
 		}
 	}
@@ -279,7 +279,7 @@ var party;
 		my.isLeader = party.presence[0].isLeader = false;
 		my.partyId = data.row;
 		party.listen(data.row);
-		chat.log("You have joined the party.", CSS.CHAT_WARNING)
+		chat.log("You have joined the party.", CHAT.WARNING)
 		query.resetCache()
 		delayedCall(.1, () => {
 			socket.publish('party' + my.partyId, {
@@ -294,7 +294,7 @@ var party;
 	 */
 	function notifyJoin(data) {
 		// console.info('party.notifyJoin ', data);
-		chat.log(data.msg, CSS.CHAT_WARNING);
+		chat.log(data.msg, CHAT.WARNING);
 		// refresh party bars
 		socket.publish('party' + my.partyId, {
 			route: 'p->getPresence',
@@ -303,7 +303,7 @@ var party;
 	function boot(name, bypass) {
 		// console.info('/boot ', name, bypass);
 		if (ng.view === 'battle') {
-			chat.log("You cannot boot party members during battle!", CSS.CHAT_WARNING);
+			chat.log("You cannot boot party members during battle!", CHAT.WARNING);
 		}
 		else {
 			if (my.name === name) {
@@ -329,20 +329,20 @@ var party;
 				removePartyMember(party.presence[i], i === 1);
 			}
 			party.listen(party.getUniquePartyChannel());
-			chat.log(data.leader + " has booted you from the party!", CSS.CHAT_WARNING);
+			chat.log(data.leader + " has booted you from the party!", CHAT.WARNING);
 		}
 		else {
 			var index = _.findIndex(party.presence, { name: data.name });
 			removePartyMember(party.presence[index]);
-			chat.log(data.name + " has been booted from the party.", CSS.CHAT_WARNING);
+			chat.log(data.name + " has been booted from the party.", CHAT.WARNING);
 		}
 	}
 	function disband() {
 		if (party.presence.length === 1) {
-			chat.log('You are not in a party. Try to abandon the mission instead.', CSS.CHAT_WARNING);
+			chat.log('You are not in a party. Try to abandon the mission instead.', CHAT.WARNING);
 		}
 		else if (ng.view === 'battle') {
-			chat.log("You cannot disband the party during battle!", CSS.CHAT_WARNING);
+			chat.log("You cannot disband the party during battle!", CHAT.WARNING);
 		}
 		else {
 			if (party.hasMoreThanOnePlayer()) {
@@ -360,7 +360,7 @@ var party;
 				}
 				party.listen(party.getUniquePartyChannel(true));
 			}
-			chat.log('Mission abandoned!', CSS.CHAT_WARNING);
+			chat.log('Mission abandoned!', CHAT.WARNING);
 			mission.abort();
 			mission.resetLocalQuestData();
 		}
@@ -369,7 +369,7 @@ var party;
 		if (data.name !== my.name) {
 			// console.warn('disbandReceived', data);
 			var index = _.findIndex(party.presence, { name: data.name });
-			chat.log(data.name + " has disbanded the party.", CSS.CHAT_WARNING);
+			chat.log(data.name + " has disbanded the party.", CHAT.WARNING);
 			removePartyMember(party.presence[index]);
 		}
 	}
@@ -415,7 +415,7 @@ var party;
 	function promoteReceived(data) {
 		var index = _.findIndex(party.presence, { name: data.name })
 		if (index >= 0) {
-			chat.log(data.name + " has been promoted to party leader.", CSS.CHAT_WARNING)
+			chat.log(data.name + " has been promoted to party leader.", CHAT.WARNING)
 			// console.warn('index', index)
 			party.presence[index].isLeader = true
 			if (!index) {

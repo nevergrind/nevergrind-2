@@ -39,7 +39,7 @@ var who;
 		title = 'Total players in Vandamor';
 		chat.log(chat.divider +
 			'<div>' + title + ': <span id="who-all-'+ who.listId + '">0</span></div>',
-			CSS.CHAT_WARNING
+			CHAT.WARNING
 		);
 	}
 	function allRequest(data) {
@@ -144,7 +144,7 @@ var who;
 		title = 'Checking players by filter:';
 		chat.log(chat.divider +
 			'<div>' + title + ' <span id="who-all-'+ who.listId + '">0</span></div>',
-			CSS.CHAT_WARNING
+			CHAT.WARNING
 		);
 	}
 	function byFilterRequest(data) {

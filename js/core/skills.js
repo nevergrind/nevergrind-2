@@ -414,7 +414,7 @@ var skills;
 				enhancedDamage: [0, .66, .75, .84, .93, 1.02, 1.11, 1.2],
 				hitBonus: [0, 4, 4.5, 5, 5.5, 6, 6.5, 7],
 				cooldownTime: 10,
-				description: 'Hits for % damage - boosts stack of conviction up to 5x which gives resist all bonus',
+				description: 'Hits target for % damage - AE blasts for 50% 5x arcane damage and self-boosts all resists +5 * level',
 			}, {
 				name: 'Seal of Damnation',
 				img: 'CRU-5',
@@ -2279,7 +2279,7 @@ var skills;
 		// console.info('notReady', config)
 		// some active spells disable casting
 		if (cannotCast()) {
-			chat.log('You cannot cast any spells!', CSS.CHAT_WARNING)
+			chat.log('You cannot cast any spells!', CHAT.WARNING)
 			return true
 		}
 		// targeting
@@ -2289,17 +2289,17 @@ var skills;
 		else {
 			if (config.isMob) {
 				if (!my.targetIsMob) {
-					chat.log('You must target a mob with this skill.', CSS.CHAT_WARNING)
+					chat.log('You must target a mob with this skill.', CHAT.WARNING)
 					return true
 				}
 			}
 			else {
 				if (my.targetIsMob) {
-					chat.log('You must target a player with this skill.', CSS.CHAT_WARNING)
+					chat.log('You must target a player with this skill.', CHAT.WARNING)
 					return true
 				}
 				if (config.targetOther && my.target === my.row) {
-					chat.log('You must target a party member with this skill.', CSS.CHAT_WARNING)
+					chat.log('You must target a party member with this skill.', CHAT.WARNING)
 					return true
 				}
 			}
@@ -2309,34 +2309,34 @@ var skills;
 					my.partyTarget(0)
 				}
 				if (my.target === -1) {
-					chat.log('There are no valid targets for this skill.', CSS.CHAT_WARNING)
+					chat.log('There are no valid targets for this skill.', CHAT.WARNING)
 					return true
 				}
 			}
 			if (my.target === -1) {
-				chat.log('You must select a target to use this skill.', CSS.CHAT_WARNING)
+				chat.log('You must select a target to use this skill.', CHAT.WARNING)
 				return true
 			}
 		}
 
 		if (!config.oocEnabled &&
 			ng.view !== 'battle') {
-			chat.log('You cannot use this skill out of combat.', CSS.CHAT_WARNING)
+			chat.log('You cannot use this skill out of combat.', CHAT.WARNING)
 			return true
 		}
 		if (config.requiresFrontRow && my.target > 4) {
-			chat.log('This skill can only target the front row!', CSS.CHAT_WARNING)
+			chat.log('This skill can only target the front row!', CHAT.WARNING)
 			return true
 		}
 		if (config.mpCost) {
 			if (config.mpCost > my.mp) {
-				chat.log('Not enough mana for ' + config.name + '!', CSS.CHAT_WARNING)
+				chat.log('Not enough mana for ' + config.name + '!', CHAT.WARNING)
 				return true
 			}
 		}
 		if (config.spCost) {
 			if (config.spCost > my.sp) {
-				chat.log('Not enough spirit for ' + config.name + '!', CSS.CHAT_WARNING)
+				chat.log('Not enough spirit for ' + config.name + '!', CHAT.WARNING)
 				return true
 			}
 		}

@@ -129,7 +129,7 @@ var town;
 				initItemData(data.inv, 'inv')
 				initItemData(data.eq, 'eq')
 
-				if (typeof my.handToHand === Undefined) {
+				if (typeof my.handToHand === 'undefined') {
 					my.handToHand = 1
 					my.saveCharacterData()
 				}
@@ -332,7 +332,7 @@ var town;
 	}
 
 	function openVarious(event) {
-		if (trade.data.name) chat.log('You are currently trading with ' + trade.data.name + '.', CSS.CHAT_WARNING)
+		if (trade.data.name) chat.log('You are currently trading with ' + trade.data.name + '.', CHAT.WARNING)
 		else openVariousConfirmed(event)
 	}
 	function openVariousConfirmed(event) {

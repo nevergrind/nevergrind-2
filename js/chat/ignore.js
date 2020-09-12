@@ -19,15 +19,15 @@ var ignore;
 			chat.log(s);
 		}
 		else {
-			chat.log("Nobody is on your ignore list yet.", CSS.CHAT_WARNING);
-			chat.log("<div class='chat-emote'>Use /ignore add [name] to ignore a player.</div>", CSS.CHAT_WARNING);
+			chat.log("Nobody is on your ignore list yet.", CHAT.WARNING);
+			chat.log("<div class='chat-emote'>Use /ignore add [name] to ignore a player.</div>", CHAT.WARNING);
 		}
 	}
 	function add(o) {
 		if (o !== my.name) {
 			ng.ignore.push(o);
 			localStorage.setItem('ignore', JSON.stringify(ng.ignore));
-			chat.log('You have added ' + o + ' to your ignore list.', CSS.CHAT_WARNING);
+			chat.log('You have added ' + o + ' to your ignore list.', CHAT.WARNING);
 		}
 	}
 	function remove(o) {
@@ -36,6 +36,6 @@ var ignore;
 			ng.ignore.splice(index, 1);
 		}
 		localStorage.setItem('ignore', JSON.stringify(ng.ignore));
-		chat.log('You have removed ' + o + ' from your ignore list.', CSS.CHAT_WARNING);
+		chat.log('You have removed ' + o + ' from your ignore list.', CHAT.WARNING);
 	}
 })();

@@ -109,7 +109,7 @@ var button;
 			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {
-			chat.log('This skill is not defined:' + name, CSS.CHAT_WARNING)
+			chat.log('This skill is not defined:' + name, CHAT.WARNING)
 		}
 	}
 	function handleSkillButtonClick() {
@@ -143,7 +143,7 @@ var button;
 			}
 		}
 
-		if (typeof index === Undefined) {
+		if (typeof index === 'undefined') {
 			// ripostes target index - makes it possible to riposte while targeting party
 			my.fixTarget()
 			if (my.target === -1) return

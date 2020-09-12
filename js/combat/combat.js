@@ -185,7 +185,7 @@ var combat;
 		else return my.target >= 0
 	}
 	function processDamagesMob(d) {
-		if (typeof mobs[d.index] === Undefined ||
+		if (typeof mobs[d.index] === 'undefined' ||
 			!mobs[d.index].name
 			|| my.hp <= 0) {
 			d.damage = 0
@@ -297,6 +297,7 @@ var combat;
 			// console.info('stasisField', buffs.stasisField.pveMitigationRatio)
 			d.damage *= buffs.stasisField.pveMitigationRatio
 		}
+		// console.info('combat', d)
 		// final sanity checks
 		if (d.damage <= 0) d.damage = 0
 		else if (d.damage < 1) d.damage = 1
@@ -777,7 +778,7 @@ var combat;
 		// mob is hitting me
 		damages = data.d
 		if (damages[0].isParalyzed) {
-			chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', CSS.CHAT_WARNING)
+			chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', CHAT.WARNING)
 		}
 		else processDamageToMe(data.i, damages)
 		// console.info('rxDamageHero: ', damages.length, data)
@@ -794,14 +795,14 @@ var combat;
 					totalDamage += damages[i].damage
 					updateMyResource(PROP.HP, -damages[i].damage)
 					if (damages[i].isPiercing) {
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', CSS.CHAT_ALERT)
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', CHAT.ALERT)
 					}
 					else {
 						blockMsg = ''
 						if (damages[i].blocked) {
 							blockMsg = ' ('+ damages[i].blocked +' blocked)'
 						}
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, CSS.CHAT_ALERT)
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, CHAT.ALERT)
 					}
 					if (damages[i].damageType === DAMAGE_TYPE.PHYSICAL) {
 						spell.knockback()
@@ -904,7 +905,7 @@ var combat;
 		if (my.row === heal.index) {
 			// healing ME
 			healAmount = processHeal(heal.damage)
-			chat.log(buffs[heal.key].msg(heal), CSS.CHAT_HEAL)
+			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
 			updateMyResource(PROP.HP, healAmount)
 			// let everyone know I got the heal
 			game.txPartyResources({
@@ -957,7 +958,7 @@ var combat;
 				onRepeatParams: [heal, healAmount],
 			})
 			battle.addMyBuff(heal.key, keyRow)
-			chat.log(buffs[heal.key].msg(heal), CSS.CHAT_HEAL)
+			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
 		}
 		if (~~hate > 0) {
 			mob.addHateHeal({
@@ -969,7 +970,7 @@ var combat;
 	function onHotTick(buff, healAmount) {
 		healAmount = processHeal(healAmount)
 		if (!app.isApp) {
-			chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CSS.CHAT_HEAL)
+			chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CHAT.HEAL)
 		}
 		updateMyResource(PROP.HP, healAmount)
 	}
@@ -992,7 +993,6 @@ var combat;
 		hate = 0
 		// console.info('processBuffToMe', data)
 		data.buffs.forEach(buff => {
-			// console.info('updateHate', _.clone(buff))
 			if (buffs[buff.key].hate) {
 				hate += ~~(buff.damage * buffs[buff.key].hate)
 			}
@@ -1000,16 +1000,17 @@ var combat;
 
 			if (my.row === buff.index) {
 				let key = buff.key
+				let previousStack = typeof my.buffs[key] === 'object' ? my.buffs[key].stacks : void 0
 				// check level of buff - cancel if lower
 				if (typeof my.buffs[key] === TYPE.OBJECT) {
 					if (buff.level < my.buffs[key].level) {
 						// buff is lower level -
 						if (//no timer but has damage
-							typeof my.buffs[key].duration === Undefined && my.buffs[key].damage > 0 ||
+							typeof my.buffs[key].duration === 'undefined' && my.buffs[key].damage > 0 ||
 							// timer-based active
 							my.buffs[key].duration > 0) {
 							// duration not defined or still active
-							chat.log(buffs[buff.key].name + ' failed to take hold.', CSS.CHAT_WARNING)
+							chat.log(buffs[buff.key].name + ' failed to take hold.', CHAT.WARNING)
 							return
 						}
 					}
@@ -1020,7 +1021,7 @@ var combat;
 					}
 				}
 				battle.lastBuffAlreadyActive = my.buffFlags[key]
-				chat.log(buffs[key].msg(), CSS.CHAT_HEAL)
+				chat.log(buffs[key].msg(), CHAT.HEAL)
 				battle.removeBuff(key)
 				// setup buff timer data
 				my.buffs[key] = {
@@ -1031,6 +1032,17 @@ var combat;
 				if (buff.level) my.buffs[key].level = buff.level
 				// sets shield type damage absorption shimmeringOrb, guardianAngel, sereneSigil etc
 				if (buff.damage) my.buffs[key].damage = buff.damage
+				if (buffs[key].stacks) {
+					if (typeof previousStack === 'number') {
+						my.buffs[key].stacks = previousStack
+					}
+					if (typeof my.buffs[key].stacks === 'number') {
+						if (my.buffs[key].stacks < buffs[key].stacks) {
+							my.buffs[key].stacks++
+						}
+					}
+					else my.buffs[key].stacks = 1
+				}
 
 				// not timer based - my.buffFlags[key] must be set to false via depletion
 				if (buffs[buff.key].duration > 0) {
@@ -1190,6 +1202,9 @@ var combat;
 		else if (key === 'chromaticSonata') {
 			stats.armor(true)
 			updateCharStatColOne()
+			updateAllResists()
+		}
+		else if (key === 'consecrate') {
 			updateAllResists()
 		}
 		////////////////////////////////

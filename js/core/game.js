@@ -315,7 +315,7 @@ var game;
 		$.post(app.url + 'chat/played.php', {
 			minutes: getCachedMinutes()
 		}).done(function(r) {
-			chat.log("Character created: " + toCreateString(r.created), CSS.CHAT_WARNING)
+			chat.log("Character created: " + toCreateString(r.created), CHAT.WARNING)
 			chat.log("Total character playtime: " + toPlaytime(r.playtime), 'chat-whisper')
 			localStorage.setItem(game.storageId, 0)
 		});

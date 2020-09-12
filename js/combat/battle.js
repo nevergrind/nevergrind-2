@@ -548,13 +548,16 @@ var battle;
 	///////////////////////// myBuffs
 	function addMyBuff(key, keyRow) {
 		// buffs that can only be active once
-		if (typeof keyRow === Undefined) keyRow = key
+		if (typeof keyRow === 'undefined') keyRow = key
 		// console.info('addMyBuff', key, keyRow)
 
 		el = createElement('div')
 		el.id = 'mybuff-' + keyRow
 		el.className = 'buff-icons popover-icons text-shadow3'
 		el.style.backgroundImage = 'url(images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png)'
+		if (buffs[key].stacks) {
+			el.textContent = my.buffs[key].stacks
+		}
 		querySelector('#mybuff-wrap').appendChild(el)
 
 		if (buffs[key].duration > 0) {
@@ -588,7 +591,7 @@ var battle;
 		/**
 		 * Buff naturally times out via duration
 		 */
-		// console.info('removeMyBuffFlag', keyRow)
+		console.info('removeMyBuffFlag', keyRow)
 		var startedActive = my.buffFlags[keyRow]
 		var buffStillActive = false
 		for (var k in my.buffs) {
@@ -603,7 +606,7 @@ var battle;
 				buffs[getBuffKey(keyRow)].fadeMsg) {
 				if (!battle.lastBuffAlreadyActive) {
 					// suppresses remove message in cases where buff is being refreshed
-					chat.log(buffs[getBuffKey(keyRow)].fadeMsg, CSS.CHAT_HEAL)
+					chat.log(buffs[getBuffKey(keyRow)].fadeMsg, CHAT.HEAL)
 				}
 				combat.processStatBuffsToMe(getBuffKey(keyRow))
 			}
@@ -618,7 +621,7 @@ var battle;
 		 * Buff naturally times out via duration
 		 */
 		// console.info('removeMyBuff', key, keyRow)
-		if (typeof keyRow === Undefined) keyRow = key
+		if (typeof keyRow === 'undefined') keyRow = key
 		// only when it has DURATION
 		if (typeof my.buffIconTimers[keyRow] === TYPE.OBJECT) {
 			my.buffIconTimers[keyRow].kill()
@@ -626,13 +629,17 @@ var battle;
 				my.buffIconTimers[keyRow + '-remove'].kill()
 			}
 		}
+		if (typeof my.buffs[key] === 'object'
+			&& buffs[key].stacks) {
+			my.buffs[key].stacks = 0
+		}
 		buffEl = querySelector('#mybuff-' + keyRow)
 		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
 	}
 
 	function removeBuff(key, keyRow) {
 		/**
-		 * Used for pre-emptive removal before the timer is done
+		 * removes flag and icon - Used for pre-emptive removal before the timer is done
 		 */
 		if (typeof my.buffs[key] === TYPE.OBJECT) {
 			if (my.buffs[key].level) my.buffs[key].level = 0

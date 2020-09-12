@@ -69,7 +69,7 @@ var trade;
 			action: 'trade-update',
 			data: data
 		}
-		if (typeof slot !== Undefined) tradeData.slot = slot
+		if (typeof slot !== void 0) tradeData.slot = slot
 		socket.publish('name' + trade.data.name, tradeData);
 	}
 	function updateToItem(obj) {
@@ -133,13 +133,13 @@ var trade;
 
 			if (countToItems() > slots.length) {
 				msg = my.name + ' does not have enough inventory space to facilitate this trade.'
-				chat.log(msg, CSS.CHAT_WARNING)
+				chat.log(msg, CHAT.WARNING)
 				txCloseTradeWindow(msg)
 			}
 			else if (countFromItems() > trade.data.availableSlots.length) {
 				// sending items > available slots (+trading)
 				msg = trade.data.name + ' does not have enough inventory space to facilitate this trade.'
-				chat.log(msg, CSS.CHAT_WARNING)
+				chat.log(msg, CHAT.WARNING)
 				txCloseTradeWindow(msg)
 			}
 			else tradeCompleted()
@@ -233,12 +233,12 @@ var trade;
 		// console.warn('compare 2', countFromItems(), '>', slotsTo.length, '?')
 		if (countToItems() > slotsFrom.length) {
 			msg = my.name + ' does not have enough inventory space to facilitate this trade.'
-			chat.log(msg, CSS.CHAT_WARNING)
+			chat.log(msg, CHAT.WARNING)
 			txCloseTradeWindow(msg)
 		}
 		else if (countFromItems() > slotsTo.length) {
 			msg = trade.data.name + ' does not have enough inventory space to facilitate this trade.'
-			chat.log(msg, CSS.CHAT_WARNING)
+			chat.log(msg, CHAT.WARNING)
 			txCloseTradeWindow(msg)
 		}
 		else {
@@ -313,7 +313,7 @@ var trade;
 	function init() {
 		// 1st player initiates trade with 2nd
 		trade.data = _.cloneDeep(context.player)
-		chat.log('Sent trade request to '+ context.player.name +'.', CSS.CHAT_WARNING)
+		chat.log('Sent trade request to '+ context.player.name +'.', CHAT.WARNING)
 		socket.publish('name' + context.player.name, {
 			action: 'trade-request',
 			row: my.row,
@@ -336,7 +336,7 @@ var trade;
 		}
 		else {
 			data.msg = data.name + ' has requested a trade.'
-			chat.log(data.msg, CSS.CHAT_WARNING)
+			chat.log(data.msg, CHAT.WARNING)
 			// check if busy with windows, check if in town, check no mission, has a party request toast
 			toast.add(data)
 		}
@@ -409,7 +409,7 @@ var trade;
 		return trade.MAX_GOLD - trade.data.goldTotal + trade.data.gold
 	}
 	function tradeExpired(name) {
-		chat.log('Your trade request with ' + name + ' expired.', CSS.CHAT_WARNING)
+		chat.log('Your trade request with ' + name + ' expired.', CHAT.WARNING)
 		trade.data = {}
 	}
 	function initTradeActions(msg, data) {
@@ -447,7 +447,7 @@ var trade;
 		// console.info('trade tradeClosedReceived')
 		msg = data.msg || trade.data.name + ' closed the chat window.'
 		if (trade.data.name) {
-			chat.log(msg, CSS.CHAT_WARNING)
+			chat.log(msg, CHAT.WARNING)
 			closeTradeWindow()
 		}
 	}

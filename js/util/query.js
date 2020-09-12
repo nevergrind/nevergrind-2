@@ -9,14 +9,14 @@ var query;
 	let e
 	///////////////////////////////////////////
 	function el(selector) {
-		if (typeof query.cache[selector] === Undefined) {
+		if (typeof query.cache[selector] === 'undefined') {
 			query.cache[selector] = querySelector(selector)
 		}
 		return query.cache[selector]
 	}
 
 	function all(selector) {
-		if (typeof query.cache[selector] === Undefined) {
+		if (typeof query.cache[selector] === 'undefined') {
 			query.cache[selector] = querySelectorAll(selector)
 		}
 		return query.cache[selector]

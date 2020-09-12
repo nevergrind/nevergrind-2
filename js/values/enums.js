@@ -4,16 +4,16 @@ const TYPE = Object.freeze({
 	NUMBER: 'number',
 	FUNCTION: 'function',
 })
-const CHAT = Object.freeze({
+const CHAT = Object.freeze( {
 	SAY: { mode: '/say' },
 	PARTY: { mode: '/party' },
+	WARNING: 'chat-warning',
+	ALERT: 'chat-alert',
+	HEAL: 'chat-heal',
 })
 const CSS = Object.freeze({
 	ACTIVE: 'active',
 	DISABLED: 'disabled',
-	CHAT_WARNING: 'chat-warning',
-	CHAT_ALERT: 'chat-alert',
-	CHAT_HEAL: 'chat-heal',
 	CASTBAR_ZERO: { castBar: 0 },
 	X_ZERO: { x: '-100%' },
 	DISPLAY_BLOCK: { display: 'block' },

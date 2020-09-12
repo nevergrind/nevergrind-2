@@ -485,7 +485,7 @@ var mob;
 	function hit(i, bypass, damage) {
 		if (ng.view !== 'battle') return
 		setTimeScaleSpeed(i)
-		if (typeof bypass === Undefined && mobs[i].isAnimationActive) return;
+		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return;
 
 		if (!timers.mobEffects[i].freezeDuration &&
 			damage > (2 + (mobs[i].level * .75))) {
@@ -724,7 +724,7 @@ var mob;
 		return config.level * val / mob.maxLevel
 	}
 	function modifyMobStatsByClass(config) {
-		//if (typeof config.job === Undefined) config.job = JOB.WARRIOR
+		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR
 		// base resources
 		config.hp = ~~((25 + ((config.level - 1) * 220) * config.hp) * party.presence.length)
 		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)
@@ -967,7 +967,7 @@ var mob;
 	}
 	function getMobResist(d) {
 		resist = mobs[d.index].resist[d.damageType]
-		if (typeof resist === Undefined) resist = 1
+		if (typeof resist === 'undefined') resist = 1
 		else {
 			// console.info('getMobResist b4', d.index, d.damageType, resist)
 			if (d.damageType === DAMAGE_TYPE.BLOOD) {

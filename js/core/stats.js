@@ -174,7 +174,7 @@ var stats = {};
 	}
 
 	function str(fresh) {
-		if (fresh || typeof stats.memo.str === Undefined) {
+		if (fresh || typeof stats.memo.str === 'undefined') {
 			stats.memo.str = my.str + create.raceAttrs[my.race][0] + create.jobAttrs[my.jobLong][0] + getEqTotal(PROP.STR) + getEqTotal(PROP.ALL_STATS)
 			if (my.buffFlags.borealTalisman) {
 				stats.memo.str += buffs.borealTalisman.str[my.buffs.borealTalisman.level]
@@ -186,7 +186,7 @@ var stats = {};
 		return stats.memo.str
 	}
 	function sta(fresh) {
-		if (fresh || typeof stats.memo.sta === Undefined) {
+		if (fresh || typeof stats.memo.sta === 'undefined') {
 			stats.memo.sta = my.sta + create.raceAttrs[my.race][1] + create.jobAttrs[my.jobLong][1] + getEqTotal(PROP.STA) + getEqTotal(PROP.ALL_STATS)
 			if (my.buffFlags.borealTalisman) {
 				stats.memo.sta += buffs.borealTalisman.sta[my.buffs.borealTalisman.level]
@@ -195,7 +195,7 @@ var stats = {};
 		return stats.memo.sta
 	}
 	function agi(fresh) {
-		if (fresh || typeof stats.memo.agi === Undefined) {
+		if (fresh || typeof stats.memo.agi === 'undefined') {
 			stats.memo.agi = my.agi + create.raceAttrs[my.race][2] + create.jobAttrs[my.jobLong][2] + getEqTotal(PROP.AGI) + getEqTotal(PROP.ALL_STATS)
 			if (my.buffFlags.augmentation) {
 				stats.memo.agi += buffs.augmentation.agi[my.buffs.augmentation.level]
@@ -209,7 +209,7 @@ var stats = {};
 		return stats.memo.agi
 	}
 	function dex(fresh) {
-		if (fresh || typeof stats.memo.dex === Undefined) {
+		if (fresh || typeof stats.memo.dex === 'undefined') {
 			stats.memo.dex = my.dex + create.raceAttrs[my.race][3] + create.jobAttrs[my.jobLong][3] + getEqTotal(PROP.DEX) + getEqTotal(PROP.ALL_STATS)
 			if (my.buffFlags.augmentation) {
 				stats.memo.dex += buffs.augmentation.dex[my.buffs.augmentation.level]
@@ -227,13 +227,13 @@ var stats = {};
 		return stats.memo.dex
 	}
 	function wis(fresh) {
-		if (fresh || typeof stats.memo.wis === Undefined) {
+		if (fresh || typeof stats.memo.wis === 'undefined') {
 			stats.memo.wis = my.wis + create.raceAttrs[my.race][4] + create.jobAttrs[my.jobLong][4] + getEqTotal(PROP.WIS) + getEqTotal(PROP.ALL_STATS)
 		}
 		return stats.memo.wis
 	}
 	function intel(fresh) {
-		if (fresh || typeof stats.memo.intel === Undefined) {
+		if (fresh || typeof stats.memo.intel === 'undefined') {
 			stats.memo.intel = my.intel + create.raceAttrs[my.race][5] + create.jobAttrs[my.jobLong][5] + getEqTotal(PROP.INTEL) + getEqTotal(PROP.ALL_STATS)
 			if (my.buffFlags.clarity) {
 				stats.memo.intel += buffs.clarity.intel[my.buffs.clarity.level]
@@ -243,7 +243,7 @@ var stats = {};
 		return stats.memo.intel
 	}
 	function cha(fresh) {
-		if (fresh || typeof stats.memo.cha === Undefined) {
+		if (fresh || typeof stats.memo.cha === 'undefined') {
 			stats.memo.cha = my.cha + create.raceAttrs[my.race][6] + create.jobAttrs[my.jobLong][6] + getEqTotal(PROP.CHA) + getEqTotal(PROP.ALL_STATS)
 			if (my.buffFlags.vampiricAllure) {
 				stats.memo.cha += buffs.vampiricAllure.cha[my.buffs.vampiricAllure.level]
@@ -256,7 +256,7 @@ var stats = {};
 		return stats.memo.cha
 	}
 	function armor(fresh) {
-		if (fresh || typeof stats.memo.armor === Undefined) {
+		if (fresh || typeof stats.memo.armor === 'undefined') {
 			stats.memo.armor = ((agi() * .66) +(defense() * 3.3)) + getEqTotal('armor')
 			if (my.buffFlags.zealousResolve) {
 				stats.memo.armor += (my.buffs.zealousResolve.damage * buffs.zealousResolve.armorRatio)
@@ -284,7 +284,7 @@ var stats = {};
 
 	function attack(type, fresh) {
 		type = type || items.eq[12].weaponSkill
-		if (fresh || typeof stats.memo.attack === Undefined) {
+		if (fresh || typeof stats.memo.attack === 'undefined') {
 			stats.memo.attack = getEqTotal(PROP.ATTACK) + (str() * .35)
 			// console.info('stats.missChance', type, ~~stats.memo.attack)
 			// buffs
@@ -313,67 +313,67 @@ var stats = {};
 		//else atk += (handToHand() * (my.job === JOB.MONK ? 2.66 : .33))
 	}
 	function offense(fresh) {
-		if (fresh || typeof stats.memo.offense === Undefined) {
+		if (fresh || typeof stats.memo.offense === 'undefined') {
 			stats.memo.offense = getStatTotal(PROP.OFFENSE) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.offense
 	}
 	function defense(fresh) {
-		if (fresh || typeof stats.memo.defense === Undefined) {
+		if (fresh || typeof stats.memo.defense === 'undefined') {
 			stats.memo.defense = getStatTotal(PROP.DEFENSE) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.defense
 	}
 	function oneHandSlash(fresh) {
-		if (fresh || typeof stats.memo.oneHandSlash === Undefined) {
+		if (fresh || typeof stats.memo.oneHandSlash === 'undefined') {
 			stats.memo.oneHandSlash = getStatTotal(PROP.ONE_HAND_SLASH) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.oneHandSlash
 	}
 	function oneHandBlunt(fresh) {
-		if (fresh || typeof stats.memo.oneHandBlunt === Undefined) {
+		if (fresh || typeof stats.memo.oneHandBlunt === 'undefined') {
 			stats.memo.oneHandBlunt = getStatTotal(PROP.ONE_HAND_BLUNT) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.oneHandBlunt
 	}
 	function piercing(fresh) {
-		if (fresh || typeof stats.memo.piercing === Undefined) {
+		if (fresh || typeof stats.memo.piercing === 'undefined') {
 			stats.memo.piercing = getStatTotal(PROP.PIERCING) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.piercing
 	}
 	function twoHandSlash(fresh) {
-		if (fresh || typeof stats.memo.twoHandSlash === Undefined) {
+		if (fresh || typeof stats.memo.twoHandSlash === 'undefined') {
 			stats.memo.twoHandSlash = getStatTotal(PROP.TWO_HAND_SLASH) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.twoHandSlash
 	}
 	function twoHandBlunt(fresh) {
-		if (fresh || typeof stats.memo.twoHandBlunt === Undefined) {
+		if (fresh || typeof stats.memo.twoHandBlunt === 'undefined') {
 			stats.memo.twoHandBlunt = getStatTotal(PROP.TWO_HAND_BLUNT) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.twoHandBlunt
 	}
 	function handToHand(fresh) {
-		if (fresh || typeof stats.memo.handToHand === Undefined) {
+		if (fresh || typeof stats.memo.handToHand === 'undefined') {
 			stats.memo.handToHand = getStatTotal(PROP.HAND_TO_HAND) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.handToHand
 	}
 	function archery(fresh) {
-		if (fresh || typeof stats.memo.archery === Undefined) {
+		if (fresh || typeof stats.memo.archery === 'undefined') {
 			stats.memo.archery = getStatTotal(PROP.ARCHERY) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.archery
 	}
 	function dualWield(fresh) {
-		if (fresh || typeof stats.memo.dualWield === Undefined) {
+		if (fresh || typeof stats.memo.dualWield === 'undefined') {
 			stats.memo.dualWield = getStatTotal(PROP.DUAL_WIELD) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.dualWield
 	}
 	function doubleAttack(fresh) {
-		if (fresh || typeof stats.memo.doubleAttack === Undefined) {
+		if (fresh || typeof stats.memo.doubleAttack === 'undefined') {
 			stats.memo.doubleAttack = getStatTotal(PROP.DOUBLE_ATTACK) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.doubleAttack
@@ -396,55 +396,55 @@ var stats = {};
 
 	}
 	function dodge(fresh) {
-		if (fresh || typeof stats.memo.dodge === Undefined) {
+		if (fresh || typeof stats.memo.dodge === 'undefined') {
 			stats.memo.dodge = getStatTotal(PROP.DODGE) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.dodge
 	}
 	function parry(fresh) {
-		if (fresh || typeof stats.memo.parry === Undefined) {
+		if (fresh || typeof stats.memo.parry === 'undefined') {
 			stats.memo.parry = getStatTotal(PROP.PARRY) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.parry
 	}
 	function riposte(fresh) {
-		if (fresh || typeof stats.memo.riposte === Undefined) {
+		if (fresh || typeof stats.memo.riposte === 'undefined') {
 			stats.memo.riposte = getStatTotal(PROP.RIPOSTE) + getEqTotal(PROP.ALL_SKILLS)
 		}
 		return stats.memo.riposte
 	}
 	function dodgeChance(fresh) {
-		if (fresh || typeof stats.memo.dodgeChance === Undefined) {
+		if (fresh || typeof stats.memo.dodgeChance === 'undefined') {
 			stats.memo.dodgeChance = dodge() / 2500 + (agi() / 2000)
 		}
 		return stats.memo.dodgeChance
 	}
 	function parryChance(fresh) {
-		if (fresh || typeof stats.memo.parryChance === Undefined) {
+		if (fresh || typeof stats.memo.parryChance === 'undefined') {
 			stats.memo.parryChance = parry() / 2500 + (dex() / 2000)
 		}
 		return stats.memo.parryChance
 	}
 	function riposteChance(fresh) {
-		if (fresh || typeof stats.memo.riposteChance === Undefined) {
+		if (fresh || typeof stats.memo.riposteChance === 'undefined') {
 			stats.memo.riposteChance = riposte() / 2500 + (dex() / 2000)
 		}
 		return stats.memo.riposteChance
 	}
 	function critChance(fresh) {
-		if (fresh || typeof stats.memo.crit === Undefined) {
+		if (fresh || typeof stats.memo.crit === 'undefined') {
 			stats.memo.crit = ( (dex() / 75) + ng.dimRetCrit(getEqTotal(PROP.CRIT)) ) / 100
 		}
 		return stats.memo.crit
 	}
 	function addBlood(fresh) {
-		if (fresh || typeof stats.memo.addBlood === Undefined) {
+		if (fresh || typeof stats.memo.addBlood === 'undefined') {
 			stats.memo.addBlood = getEqTotal(PROP.ADD_BLOOD)
 		}
 		return stats.memo.addBlood
 	}
 	function addPoison(fresh) {
-		if (fresh || typeof stats.memo.addPoison === Undefined) {
+		if (fresh || typeof stats.memo.addPoison === 'undefined') {
 			stats.memo.addPoison = getEqTotal(PROP.ADD_POISON)
 			if (my.buffFlags.profaneSpirit) {
 				stats.memo.addPoison += buffs.profaneSpirit.addPoison[my.buffs.profaneSpirit.level]
@@ -453,13 +453,13 @@ var stats = {};
 		return stats.memo.addPoison
 	}
 	function addArcane(fresh) {
-		if (fresh || typeof stats.memo.addArcane === Undefined) {
+		if (fresh || typeof stats.memo.addArcane === 'undefined') {
 			stats.memo.addArcane = getEqTotal(PROP.ADD_ARCANE)
 		}
 		return stats.memo.addArcane
 	}
 	function addLightning(fresh) {
-		if (fresh || typeof stats.memo.addLightning === Undefined) {
+		if (fresh || typeof stats.memo.addLightning === 'undefined') {
 			stats.memo.addLightning = getEqTotal(PROP.ADD_LIGHTNING)
 			if (my.buffFlags.phaseBlade) {
 				stats.memo.addLightning += buffs.phaseBlade.addLightning[my.buffs.phaseBlade.level]
@@ -468,7 +468,7 @@ var stats = {};
 		return stats.memo.addLightning
 	}
 	function addFire(fresh) {
-		if (fresh || typeof stats.memo.addFire === Undefined) {
+		if (fresh || typeof stats.memo.addFire === 'undefined') {
 			stats.memo.addFire = getEqTotal(PROP.ADD_FIRE)
 			if (my.buffFlags.moltenAegis) {
 				stats.memo.addFire += buffs.moltenAegis.addFire[my.buffs.moltenAegis.level]
@@ -477,49 +477,49 @@ var stats = {};
 		return stats.memo.addFire
 	}
 	function addIce(fresh) {
-		if (fresh || typeof stats.memo.addIce === Undefined) {
+		if (fresh || typeof stats.memo.addIce === 'undefined') {
 			stats.memo.addIce = getEqTotal(PROP.ADD_ICE)
 		}
 		return stats.memo.addIce
 	}
 	function addSpellBlood(fresh) {
-		if (fresh || typeof stats.memo.addSpellBlood === Undefined) {
+		if (fresh || typeof stats.memo.addSpellBlood === 'undefined') {
 			stats.memo.addSpellBlood = getEqTotal(PROP.ADD_SPELL_BLOOD)
 		}
 		return stats.memo.addSpellBlood
 	}
 	function addSpellPoison(fresh) {
-		if (fresh || typeof stats.memo.addSpellPoison === Undefined) {
+		if (fresh || typeof stats.memo.addSpellPoison === 'undefined') {
 			stats.memo.addSpellPoison = getEqTotal(PROP.ADD_SPELL_POISON)
 		}
 		return stats.memo.addSpellPoison
 	}
 	function addSpellArcane(fresh) {
-		if (fresh || typeof stats.memo.addSpellArcane === Undefined) {
+		if (fresh || typeof stats.memo.addSpellArcane === 'undefined') {
 			stats.memo.addSpellArcane = getEqTotal(PROP.ADD_SPELL_ARCANE)
 		}
 		return stats.memo.addSpellArcane
 	}
 	function addSpellLightning(fresh) {
-		if (fresh || typeof stats.memo.addSpellLightning === Undefined) {
+		if (fresh || typeof stats.memo.addSpellLightning === 'undefined') {
 			stats.memo.addSpellLightning = getEqTotal(PROP.ADD_SPELL_LIGHTNING)
 		}
 		return stats.memo.addSpellLightning
 	}
 	function addSpellFire(fresh) {
-		if (fresh || typeof stats.memo.addSpellFire === Undefined) {
+		if (fresh || typeof stats.memo.addSpellFire === 'undefined') {
 			stats.memo.addSpellFire = getEqTotal(PROP.ADD_SPELL_FIRE)
 		}
 		return stats.memo.addSpellFire
 	}
 	function addSpellIce(fresh) {
-		if (fresh || typeof stats.memo.addSpellIce === Undefined) {
+		if (fresh || typeof stats.memo.addSpellIce === 'undefined') {
 			stats.memo.addSpellIce = getEqTotal(PROP.ADD_SPELL_ICE)
 		}
 		return stats.memo.addSpellIce
 	}
 	function addSpellAll(fresh) {
-		if (fresh || typeof stats.memo.addSpellAll === Undefined) {
+		if (fresh || typeof stats.memo.addSpellAll === 'undefined') {
 			stats.memo.addSpellAll = getEqTotal(PROP.ADD_SPELL_ALL)
 			if (my.buffFlags.celestialFrenzy) {
 				stats.memo.addSpellAll += buffs.celestialFrenzy.addSpellAll[my.buffs.celestialFrenzy.level]
@@ -528,43 +528,43 @@ var stats = {};
 		return stats.memo.addSpellAll
 	}
 	function enhanceBlood(fresh) {
-		if (fresh || typeof stats.memo.addSpellIce === Undefined) {
+		if (fresh || typeof stats.memo.addSpellIce === 'undefined') {
 			stats.memo.enhanceBlood = getEqTotal(PROP.ENHANCE_BLOOD)
 		}
 		return stats.memo.enhanceBlood
 	}
 	function enhancePoison(fresh) {
-		if (fresh || typeof stats.memo.addSpellIce === Undefined) {
+		if (fresh || typeof stats.memo.addSpellIce === 'undefined') {
 			stats.memo.enhancePoison = getEqTotal(PROP.ENHANCE_POISON)
 		}
 		return stats.memo.enhancePoison
 	}
 	function enhanceArcane(fresh) {
-		if (fresh || typeof stats.memo.enhanceArcane === Undefined) {
+		if (fresh || typeof stats.memo.enhanceArcane === 'undefined') {
 			stats.memo.enhanceArcane = getEqTotal(PROP.ENHANCE_ARCANE)
 		}
 		return stats.memo.enhanceArcane
 	}
 	function enhanceLightning(fresh) {
-		if (fresh || typeof stats.memo.enhanceLightning === Undefined) {
+		if (fresh || typeof stats.memo.enhanceLightning === 'undefined') {
 			stats.memo.enhanceLightning = getEqTotal(PROP.ENHANCE_LIGHTNING)
 		}
 		return stats.memo.enhanceLightning
 	}
 	function enhanceFire(fresh) {
-		if (fresh || typeof stats.memo.enhanceFire === Undefined) {
+		if (fresh || typeof stats.memo.enhanceFire === 'undefined') {
 			stats.memo.enhanceFire = getEqTotal(PROP.ENHANCE_FIRE)
 		}
 		return stats.memo.enhanceFire
 	}
 	function enhanceIce(fresh) {
-		if (fresh || typeof stats.memo.enhanceIce === Undefined) {
+		if (fresh || typeof stats.memo.enhanceIce === 'undefined') {
 			stats.memo.enhanceIce = getEqTotal(PROP.ENHANCE_ICE)
 		}
 		return stats.memo.enhanceIce
 	}
 	function enhanceAll(fresh) {
-		if (fresh || typeof stats.memo.enhanceAll === Undefined) {
+		if (fresh || typeof stats.memo.enhanceAll === 'undefined') {
 			stats.memo.enhanceAll = getEqTotal(PROP.ENHANCE_ALL)
 		}
 		return stats.memo.enhanceAll
@@ -654,7 +654,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		if (typeof getNonCrit === Undefined) {
+		if (typeof getNonCrit === 'undefined') {
 			isCrit = stats.critChance() > rand()
 
 			if (isCrit) {
@@ -820,14 +820,15 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
+
 	function getResistPercent(type) {
 		resistPercent = 1
-		if (type === DAMAGE_TYPE.BLOOD) resistPercent = 1 - (resistBlood() / 400)
-		else if (type === DAMAGE_TYPE.POISON) resistPercent = 1 - (resistPoison() / 400)
-		else if (type === DAMAGE_TYPE.ARCANE) resistPercent = 1 - (resistArcane() / 400)
-		else if (type === DAMAGE_TYPE.LIGHTNING) resistPercent = 1 - (resistLightning() / 400)
-		else if (type === DAMAGE_TYPE.FIRE) resistPercent = 1 - (resistFire() / 400)
-		else if (type === DAMAGE_TYPE.ICE) resistPercent = 1 - (resistIce() / 400)
+		if (type === DAMAGE_TYPE.BLOOD) resistPercent = 1 - (resistBlood() / ResistCap)
+		else if (type === DAMAGE_TYPE.POISON) resistPercent = 1 - (resistPoison() / ResistCap)
+		else if (type === DAMAGE_TYPE.ARCANE) resistPercent = 1 - (resistArcane() / ResistCap)
+		else if (type === DAMAGE_TYPE.LIGHTNING) resistPercent = 1 - (resistLightning() / ResistCap)
+		else if (type === DAMAGE_TYPE.FIRE) resistPercent = 1 - (resistFire() / ResistCap)
+		else if (type === DAMAGE_TYPE.ICE) resistPercent = 1 - (resistIce() / ResistCap)
 		if (resistPercent < .25) resistPercent = .25
 		return resistPercent
 	}
@@ -839,10 +840,13 @@ var stats = {};
 		if (my.buffFlags.chromaticSonata) {
 			value += buffs.chromaticSonata.resistAll[my.buffs.chromaticSonata.level]
 		}
+		if (my.buffFlags.consecrate) {
+			value += my.buffs.consecrate.stacks * my.buffs.consecrate.level
+		}
 		return value
 	}
 	function resistBlood(fresh) {
-		if (fresh || typeof stats.memo.resistBlood === Undefined) {
+		if (fresh || typeof stats.memo.resistBlood === 'undefined') {
 			stats.memo.resistBlood = getStatTotal(PROP.RESIST_BLOOD) + getEqTotal(PROP.RESIST_ALL) + resistAll()
 			if (my.buffFlags.sealOfRedemption) {
 				stats.memo.resistBlood += buffs.sealOfRedemption.resistBlood[my.buffs.sealOfRedemption.level]
@@ -852,7 +856,7 @@ var stats = {};
 		return stats.memo.resistBlood
 	}
 	function resistPoison(fresh) {
-		if (fresh || typeof stats.memo.resistPoison === Undefined) {
+		if (fresh || typeof stats.memo.resistPoison === 'undefined') {
 			stats.memo.resistPoison = getStatTotal(PROP.RESIST_POISON) + getEqTotal(PROP.RESIST_ALL) + resistAll()
 			if (my.buffFlags.profaneSpirit) {
 				stats.memo.resistPoison += buffs.profaneSpirit.resistPoison[my.buffs.profaneSpirit.level]
@@ -861,13 +865,13 @@ var stats = {};
 		return stats.memo.resistPoison
 	}
 	function resistArcane(fresh) {
-		if (fresh || typeof stats.memo.resistArcane === Undefined) {
+		if (fresh || typeof stats.memo.resistArcane === 'undefined') {
 			stats.memo.resistArcane = getStatTotal(PROP.RESIST_ARCANE) + getEqTotal(PROP.RESIST_ALL) + resistAll()
 		}
 		return stats.memo.resistArcane
 	}
 	function resistLightning(fresh) {
-		if (fresh || typeof stats.memo.resistLightning === Undefined) {
+		if (fresh || typeof stats.memo.resistLightning === 'undefined') {
 			stats.memo.resistLightning = getStatTotal(PROP.RESIST_LIGHTNING) + getEqTotal(PROP.RESIST_ALL) + resistAll()
 			if (my.buffFlags.phaseBlade) {
 				stats.memo.resistLightning += buffs.phaseBlade.resistLightning[my.buffs.phaseBlade.level]
@@ -876,7 +880,7 @@ var stats = {};
 		return stats.memo.resistLightning
 	}
 	function resistFire(fresh) {
-		if (fresh || typeof stats.memo.resistFire === Undefined) {
+		if (fresh || typeof stats.memo.resistFire === 'undefined') {
 			stats.memo.resistFire = getStatTotal(PROP.RESIST_FIRE) + getEqTotal(PROP.RESIST_ALL) + resistAll()
 			if (my.buffFlags.moltenAegis) {
 				stats.memo.resistFire += buffs.moltenAegis.resistFire[my.buffs.moltenAegis.level]
@@ -885,7 +889,7 @@ var stats = {};
 		return stats.memo.resistFire
 	}
 	function resistIce(fresh) {
-		if (fresh || typeof stats.memo.resistIce === Undefined) {
+		if (fresh || typeof stats.memo.resistIce === 'undefined') {
 			stats.memo.resistIce = getStatTotal(PROP.RESIST_ICE) + getEqTotal(PROP.RESIST_ALL) + resistAll()
 			if (my.buffFlags.borealTalisman) {
 				stats.memo.resistIce += buffs.borealTalisman.resistIce[my.buffs.borealTalisman.level]
@@ -894,7 +898,7 @@ var stats = {};
 		return stats.memo.resistIce
 	}
 	function resistPhysical(fresh) {
-		if (fresh || typeof stats.memo.resistPhysical === Undefined) {
+		if (fresh || typeof stats.memo.resistPhysical === 'undefined') {
 			stats.memo.resistPhysical = 1 - (getEqTotal(PROP.RESIST_PHYSICAL) / 400)
 			if (stats.memo.resistPhysical < .5) stats.memo.resistPhysical = .5
 		}
@@ -940,7 +944,7 @@ var stats = {};
 		return resp
 	}
 	function offenseMax(fresh) {
-		if (fresh || typeof stats.memo.offenseMax === Undefined) {
+		if (fresh || typeof stats.memo.offenseMax === 'undefined') {
 			if (my.race === RACE.HALFLING) base = 10
 			else if (my.race === RACE.HALF_ELF) base = 5
 			else base = 0
@@ -951,7 +955,7 @@ var stats = {};
 		return stats.memo.offenseMax
 	}
 	function defenseMax(fresh) {
-		if (fresh || typeof stats.memo.defenseMax === Undefined) {
+		if (fresh || typeof stats.memo.defenseMax === 'undefined') {
 			base = my.race === RACE.DWARF ? 5 : 0
 			if (defensiveJobs.includes(my.job)) stats.memo.defenseMax = base + my.level * 5
 			else if (intCasterJobs.includes(my.job)) stats.memo.defenseMax = base + my.level * 3
@@ -960,7 +964,7 @@ var stats = {};
 		return stats.memo.defenseMax
 	}
 	function oneHandSlashMax(fresh) {
-		if (fresh || typeof stats.memo.oneHandSlashMax === Undefined) {
+		if (fresh || typeof stats.memo.oneHandSlashMax === 'undefined') {
 			if (my.race === RACE.HUMAN) base = 10
 			else if (my.race === RACE.HALF_ELF) base = 5
 			else base = 0
@@ -973,7 +977,7 @@ var stats = {};
 
 	}
 	function oneHandBluntMax(fresh) {
-		if (fresh || typeof stats.memo.oneHandBluntMax === Undefined) {
+		if (fresh || typeof stats.memo.oneHandBluntMax === 'undefined') {
 			if (my.race === RACE.BARBARIAN) base = 10
 			else if (my.race === RACE.HALF_ELF) base = 5
 			else base = 0
@@ -986,7 +990,7 @@ var stats = {};
 
 	}
 	function piercingMax(fresh) {
-		if (fresh || typeof stats.memo.piercingMax === Undefined) {
+		if (fresh || typeof stats.memo.piercingMax === 'undefined') {
 			if (my.race === RACE.HALFLING) base = 10
 			else if (my.race === RACE.HALF_ELF) base = 5
 			else base = 0
@@ -999,7 +1003,7 @@ var stats = {};
 
 	}
 	function archeryMax(fresh) {
-		if (fresh || typeof stats.memo.archeryMax === Undefined) {
+		if (fresh || typeof stats.memo.archeryMax === 'undefined') {
 			base = my.race === RACE.HALF_ELF ? 5 : 0
 			if (my.job === JOB.RANGER) stats.memo.archeryMax = base + my.level * 5
 			else if (averageArcherJobs.includes(my.job)) stats.memo.archeryMax = base + my.level * 2
@@ -1008,7 +1012,7 @@ var stats = {};
 		return stats.memo.archeryMax
 	}
 	function handToHandMax(fresh) {
-		if (fresh || typeof stats.memo.handToHandMax === Undefined) {
+		if (fresh || typeof stats.memo.handToHandMax === 'undefined') {
 			base = my.race === RACE.HALF_ELF ? 5 : 0
 			if (my.job === JOB.MONK) stats.memo.handToHandMax = base + my.level * 5
 			else if (averagePunchJobs.includes(my.job)) stats.memo.handToHandMax = base + my.level * 2
@@ -1017,7 +1021,7 @@ var stats = {};
 		return stats.memo.handToHandMax
 	}
 	function twoHandSlashMax(fresh) {
-		if (fresh || typeof stats.memo.twoHandSlashMax === Undefined) {
+		if (fresh || typeof stats.memo.twoHandSlashMax === 'undefined') {
 			if (my.race === RACE.HUMAN || my.race === RACE.ORC) base = 10
 			else if (my.race === RACE.HALF_ELF) base = 5
 			else base = 0
@@ -1032,7 +1036,7 @@ var stats = {};
 		return stats.memo.twoHandSlashMax
 	}
 	function twoHandBluntMax(fresh) {
-		if (fresh || typeof stats.memo.twoHandBluntMax === Undefined) {
+		if (fresh || typeof stats.memo.twoHandBluntMax === 'undefined') {
 			if (my.race === RACE.BARBARIAN || my.race === RACE.ORC) base = 10
 			else if (my.race === RACE.HALF_ELF) base = 5
 			else base = 0
@@ -1050,7 +1054,7 @@ var stats = {};
 		return stats.memo.twoHandBluntMax
 	}
 	function dualWieldMax(fresh) {
-		if (fresh || typeof stats.memo.dualWieldMax === Undefined) {
+		if (fresh || typeof stats.memo.dualWieldMax === 'undefined') {
 			base = my.race === RACE.HALF_ELF ? 5 : 0
 			if (my.job === JOB.MONK ||
 				my.job === JOB.ROGUE && my.level >= 13 ||
@@ -1067,7 +1071,7 @@ var stats = {};
 		return stats.memo.dualWieldMax
 	}
 	function doubleAttackMax(fresh) {
-		if (fresh || typeof stats.memo.doubleAttackMax === Undefined) {
+		if (fresh || typeof stats.memo.doubleAttackMax === 'undefined') {
 			base = my.race === RACE.HALF_ELF ? 5 : 0
 			if (
 				my.job === JOB.CRUSADER && my.level >= 20 ||
@@ -1085,7 +1089,7 @@ var stats = {};
 		return stats.memo.doubleAttackMax
 	}
 	function dodgeMax(fresh) {
-		if (fresh || typeof stats.memo.dodgeMax === Undefined) {
+		if (fresh || typeof stats.memo.dodgeMax === 'undefined') {
 			if (my.race === RACE.HALFLING) base = 10
 			else if (my.race === RACE.HALF_ELF) base = 5
 			else base = 0
@@ -1113,7 +1117,7 @@ var stats = {};
 
 	}
 	function parryMax(fresh) {
-		if (fresh || typeof stats.memo.parryMax === Undefined) {
+		if (fresh || typeof stats.memo.parryMax === 'undefined') {
 			base = my.race === RACE.HALF_ELF ? 5 : 0
 			if (
 				(my.job === JOB.WARRIOR && my.level >= 10) ||
@@ -1135,7 +1139,7 @@ var stats = {};
 		return stats.memo.parryMax
 	}
 	function riposteMax(fresh) {
-		if (fresh || typeof stats.memo.riposteMax === Undefined) {
+		if (fresh || typeof stats.memo.riposteMax === 'undefined') {
 			base = my.race === RACE.HALF_ELF ? 5 : 0
 			if (
 				(my.job === JOB.WARRIOR && my.level >= 25) ||
@@ -1157,7 +1161,7 @@ var stats = {};
 		return stats.memo.riposteMax
 	}
 	function alterationMax(fresh) {
-		if (fresh || typeof stats.memo.alterationMax === Undefined) {
+		if (fresh || typeof stats.memo.alterationMax === 'undefined') {
 			base = my.race === RACE.DWARF || my.race === RACE.SERAPH ? 5 : 0
 			if (allCasterJobs.includes(my.job)) stats.memo.alterationMax = base + my.level * 5
 			else if (hybridJobs.includes(my.job)) stats.memo.alterationMax = base + my.level * 5
@@ -1166,7 +1170,7 @@ var stats = {};
 		return stats.memo.alterationMax
 	}
 	function evocationMax(fresh) {
-		if (fresh || typeof stats.memo.evocationMax === Undefined) {
+		if (fresh || typeof stats.memo.evocationMax === 'undefined') {
 			if (my.race === RACE.HIGH_ELF) base = 10
 			else if (my.race === RACE.SERAPH) base = 5
 			else base = 0
@@ -1177,7 +1181,7 @@ var stats = {};
 		return stats.memo.evocationMax
 	}
 	function conjurationMax(fresh) {
-		if (fresh || typeof stats.memo.conjurationMax === Undefined) {
+		if (fresh || typeof stats.memo.conjurationMax === 'undefined') {
 			if (my.race === RACE.TROLL) base = 10
 			else if (my.race === RACE.SERAPH) base = 5
 			else base = 0
@@ -1202,7 +1206,7 @@ var stats = {};
 	const mpBase = 60
 	const spBase = 40
 	function hpMax(fresh) {
-		if (fresh || typeof stats.memo.hpMax === Undefined) {
+		if (fresh || typeof stats.memo.hpMax === 'undefined') {
 			baseResource = hpBase + (
 				stats.sta() * hpTier[my.job]) * (my.level / 50) +
 				(my.level * (hpTier[my.job] * 2.5)
@@ -1227,7 +1231,7 @@ var stats = {};
 	}
 	let percentBonus = 0
 	function mpMax(fresh) {
-		if (fresh || typeof stats.memo.mpMax === Undefined) {
+		if (fresh || typeof stats.memo.mpMax === 'undefined') {
 			baseResource = mpBase + (
 				(stats.intel() * mpTier[my.job]) * (my.level / 50) +
 				(my.level * (mpTier[my.job] * 2.5))
@@ -1245,7 +1249,7 @@ var stats = {};
 		}
 	}
 	function spMax(fresh) {
-		if (fresh || typeof stats.memo.spMax === Undefined) {
+		if (fresh || typeof stats.memo.spMax === 'undefined') {
 			baseResource = (spBase +
 				((stats.cha() * spTier[my.job]) * (my.level / 50) +
 				(my.level * (spTier[my.job] * 2.5)))
@@ -1264,7 +1268,7 @@ var stats = {};
 	}
 	// troll 9, normal 5
 	function baseHpRegen(fresh) {
-		if (fresh || typeof stats.memo.baseHpRegen === Undefined) {
+		if (fresh || typeof stats.memo.baseHpRegen === 'undefined') {
 			stats.memo.baseHpRegen = (my.race === RACE.TROLL ? 3 : 1) +
 				(my.level * (my.race === RACE.TROLL ? .12 : .08))
 		}
@@ -1272,7 +1276,7 @@ var stats = {};
 	}
 	// high elf 16, normal 10
 	function baseMpRegen(fresh) {
-		if (fresh || typeof stats.memo.baseMpRegen === Undefined) {
+		if (fresh || typeof stats.memo.baseMpRegen === 'undefined') {
 			stats.memo.baseMpRegen = (my.race === RACE.HIGH_ELF ? 4 : 2) +
 				(my.level * (my.race === RACE.HIGH_ELF ? .24 : .16))
 		}
@@ -1280,14 +1284,14 @@ var stats = {};
 	}
 	// human 16, normal 10
 	function baseSpRegen(fresh) {
-		if (fresh || typeof stats.memo.baseSpRegen === Undefined) {
+		if (fresh || typeof stats.memo.baseSpRegen === 'undefined') {
 			stats.memo.baseSpRegen = (my.race === RACE.HUMAN ? 4 : 2) +
 				(my.level * (my.race === RACE.HUMAN ? .24 : .16))
 		}
 		return stats.memo.baseSpRegen
 	}
 	function hpRegen(fresh) {
-		if (fresh || typeof stats.memo.hpRegen === Undefined) {
+		if (fresh || typeof stats.memo.hpRegen === 'undefined') {
 			stats.memo.hpRegen = ~~(baseHpRegen() + getEqTotal(PROP.HP_REGEN))
 			if (my.buffFlags.branchSpirit) {
 				stats.memo.hpRegen += buffs.branchSpirit.hpRegen[my.buffs.branchSpirit.level]
@@ -1303,7 +1307,7 @@ var stats = {};
 		return stats.memo.hpRegen
 	}
 	function mpRegen(fresh) {
-		if (fresh || typeof stats.memo.mpRegen === Undefined) {
+		if (fresh || typeof stats.memo.mpRegen === 'undefined') {
 			stats.memo.mpRegen = ~~(baseMpRegen() + getEqTotal(PROP.MP_REGEN))
 			if (my.buffFlags.lichForm) {
 				stats.memo.mpRegen += buffs.lichForm.mpRegen[my.buffs.lichForm.level]
@@ -1319,7 +1323,7 @@ var stats = {};
 		return stats.memo.mpRegen
 	}
 	function spRegen(fresh) {
-		if (fresh || typeof stats.memo.spRegen === Undefined) {
+		if (fresh || typeof stats.memo.spRegen === 'undefined') {
 			stats.memo.spRegen = ~~(baseSpRegen() + getEqTotal(PROP.SP_REGEN))
 			if (my.buffFlags.conviction) {
 				stats.memo.mpRegen += buffs.conviction.spRegen[my.buffs.conviction.level]
@@ -1328,61 +1332,61 @@ var stats = {};
 		return stats.memo.spRegen
 	}
 	function ignoreTargetArmor(fresh) {
-		if (fresh || typeof stats.memo.ignoreTargetArmor === Undefined) {
+		if (fresh || typeof stats.memo.ignoreTargetArmor === 'undefined') {
 			stats.memo.ignoreTargetArmor = items.eq.some(eq => eq.ignoreTargetArmor)
 		}
 		return stats.memo.ignoreTargetArmor
 	}
 	function reduceTargetArmor(fresh) {
-		if (fresh || typeof stats.memo.reduceTargetArmor === Undefined) {
+		if (fresh || typeof stats.memo.reduceTargetArmor === 'undefined') {
 			stats.memo.reduceTargetArmor = items.eq.some(eq => eq.reduceTargetArmor)
 		}
 		return stats.memo.reduceTargetArmor
 	}
 	function enhancedDamageToHumanoids(fresh) {
-		if (fresh || typeof stats.memo.enhancedDamageToHumanoids === Undefined) {
+		if (fresh || typeof stats.memo.enhancedDamageToHumanoids === 'undefined') {
 			stats.memo.enhancedDamageToHumanoids = getEqTotal(PROP.ENHANCED_DAMAGE_TO_HUMANOIDS) / 100
 		}
 		return stats.memo.enhancedDamageToHumanoids
 	}
 	function enhancedDamageToBeasts(fresh) {
-		if (fresh || typeof stats.memo.enhancedDamageToBeasts === Undefined) {
+		if (fresh || typeof stats.memo.enhancedDamageToBeasts === 'undefined') {
 			stats.memo.enhancedDamageToBeasts = getEqTotal(PROP.ENHANCED_DAMAGE_TO_BEASTS) / 100
 		}
 		return stats.memo.enhancedDamageToBeasts
 	}
 	function enhancedDamageToUndead(fresh) {
-		if (fresh || typeof stats.memo.enhancedDamageToUndead === Undefined) {
+		if (fresh || typeof stats.memo.enhancedDamageToUndead === 'undefined') {
 			stats.memo.enhancedDamageToUndead = getEqTotal(PROP.ENHANCED_DAMAGE_TO_UNDEAD) / 100
 		}
 		return stats.memo.enhancedDamageToUndead
 	}
 	function enhancedDamageToDemons(fresh) {
-		if (fresh || typeof stats.memo.enhancedDamageToDemons === Undefined) {
+		if (fresh || typeof stats.memo.enhancedDamageToDemons === 'undefined') {
 			stats.memo.enhancedDamageToDemons = getEqTotal(PROP.ENHANCED_DAMAGE_TO_DEMONS) / 100
 		}
 		return stats.memo.enhancedDamageToDemons
 	}
 	function enhancedDamageToDragonkin(fresh) {
-		if (fresh || typeof stats.memo.enhancedDamageToDragonkin === Undefined) {
+		if (fresh || typeof stats.memo.enhancedDamageToDragonkin === 'undefined') {
 			stats.memo.enhancedDamageToDragonkin = getEqTotal(PROP.ENHANCED_DAMAGE_TO_DRAGONKIN) / 100
 		}
 		return stats.memo.enhancedDamageToDragonkin
 	}
 	function enhancedDamageToMystical(fresh) {
-		if (fresh || typeof stats.memo.enhancedDamageToMystical === Undefined) {
+		if (fresh || typeof stats.memo.enhancedDamageToMystical === 'undefined') {
 			stats.memo.enhancedDamageToMystical = getEqTotal(PROP.ENHANCED_DAMAGE_TO_MYSTICAL) / 100
 		}
 		return stats.memo.enhancedDamageToMystical
 	}
 	function enhancedDamageToGiants(fresh) {
-		if (fresh || typeof stats.memo.enhancedDamageToGiants === Undefined) {
+		if (fresh || typeof stats.memo.enhancedDamageToGiants === 'undefined') {
 			stats.memo.enhancedDamageToGiants = getEqTotal(PROP.ENHANCED_DAMAGE_TO_GIANTS) / 100
 		}
 		return stats.memo.enhancedDamageToGiants
 	}
 	function phyMit(fresh) {
-		if (fresh || typeof stats.memo.phyMit === Undefined) {
+		if (fresh || typeof stats.memo.phyMit === 'undefined') {
 			stats.memo.phyMit = getEqTotal(PROP.PHY_MIT)
 			if (my.buffFlags.bulwark) {
 				stats.memo.phyMit += buffs.bulwark.mitigation[my.buffs.bulwark.level]
@@ -1391,7 +1395,7 @@ var stats = {};
 		return stats.memo.phyMit
 	}
 	function magMit(fresh) {
-		if (fresh || typeof stats.memo.magMit === Undefined) {
+		if (fresh || typeof stats.memo.magMit === 'undefined') {
 			stats.memo.magMit = getEqTotal(PROP.MAG_MIT)
 			if (my.buffFlags.bulwark) {
 				stats.memo.magMit += buffs.bulwark.mitigation[my.buffs.bulwark.level]
@@ -1400,7 +1404,7 @@ var stats = {};
 		return stats.memo.magMit
 	}
 	function leech(fresh) {
-		if (fresh || typeof stats.memo.leech === Undefined) {
+		if (fresh || typeof stats.memo.leech === 'undefined') {
 			stats.memo.leech = getEqTotal(PROP.LEECH)
 			if (my.buffFlags.vampiricAllure) {
 				stats.memo.leech += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]
@@ -1409,7 +1413,7 @@ var stats = {};
 		return stats.memo.leech
 	}
 	function wraith(fresh) {
-		if (fresh || typeof stats.memo.wraith === Undefined) {
+		if (fresh || typeof stats.memo.wraith === 'undefined') {
 			stats.memo.wraith = getEqTotal(PROP.WRAITH)
 			if (my.buffFlags.vampiricAllure) {
 				stats.memo.wraith += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]
@@ -1418,40 +1422,40 @@ var stats = {};
 		return stats.memo.wraith
 	}
 	function damageTakenToMana(fresh) {
-		if (fresh || typeof stats.memo.damageTakenToMana === Undefined) {
+		if (fresh || typeof stats.memo.damageTakenToMana === 'undefined') {
 			stats.memo.damageTakenToMana = getEqTotal(PROP.DAMAGE_TAKEN_TO_MANA)
 			if (stats.memo.damageTakenToMana > 50) stats.memo.damageTakenToMana = 50
 		}
 		return stats.memo.damageTakenToMana
 	}
 	function damageTakenToSpirit(fresh) {
-		if (fresh || typeof stats.memo.damageTakenToSpirit === Undefined) {
+		if (fresh || typeof stats.memo.damageTakenToSpirit === 'undefined') {
 			stats.memo.damageTakenToSpirit = getEqTotal(PROP.DAMAGE_TAKEN_TO_SPIRIT)
 			if (stats.memo.damageTakenToSpirit > 50) stats.memo.damageTakenToSpirit = 50
 		}
 		return stats.memo.damageTakenToSpirit
 	}
 	function hpKill(fresh) {
-		if (fresh || typeof stats.memo.hpKill === Undefined) {
+		if (fresh || typeof stats.memo.hpKill === 'undefined') {
 			stats.memo.hpKill = getEqTotal(PROP.HP_KILL)
 		}
 		return stats.memo.hpKill
 	}
 	function mpKill(fresh) {
-		if (fresh || typeof stats.memo.mpKill === Undefined) {
+		if (fresh || typeof stats.memo.mpKill === 'undefined') {
 			stats.memo.mpKill = getEqTotal(PROP.MP_KILL)
 		}
 		return stats.memo.mpKill
 	}
 	function spKill(fresh) {
-		if (fresh || typeof stats.memo.spKill === Undefined) {
+		if (fresh || typeof stats.memo.spKill === 'undefined') {
 			stats.memo.spKill = getEqTotal(PROP.SP_KILL)
 		}
 		return stats.memo.spKill
 	}
 	function resistParalyze(fresh) {
 		// cannot change targets or use melee skills? (auto attack works)
-		if (fresh || typeof stats.memo.resistParalyze === Undefined) {
+		if (fresh || typeof stats.memo.resistParalyze === 'undefined') {
 			stats.memo.resistParalyze = getEqTotal(PROP.RESIST_PARALYZE)
 			if (stats.memo.resistParalyze > 50) {
 				stats.memo.resistParalyze = 50
@@ -1461,7 +1465,7 @@ var stats = {};
 	}
 	function resistFear(fresh) {
 		// all skill/spell damage output halved
-		if (fresh || typeof stats.memo.resistFear === Undefined) {
+		if (fresh || typeof stats.memo.resistFear === 'undefined') {
 			stats.memo.resistFear = getEqTotal(PROP.RESIST_FEAR)
 			if (my.buffFlags.intrepidShout) {
 				stats.memo.resistFear += buffs.intrepidShout.resistFear[my.buffs.intrepidShout.level]
@@ -1474,7 +1478,7 @@ var stats = {};
 	}
 	function resistStun(fresh) {
 		// can't do anything
-		if (fresh || typeof stats.memo.resistStun === Undefined) {
+		if (fresh || typeof stats.memo.resistStun === 'undefined') {
 			stats.memo.resistStun = getEqTotal(PROP.RESIST_STUN)
 			if (stats.memo.resistStun > 50) {
 				stats.memo.resistStun = 50
@@ -1484,7 +1488,7 @@ var stats = {};
 	}
 	function resistSilence(fresh) {
 		// cannot cast spells
-		if (fresh || typeof stats.memo.resistSilence === Undefined) {
+		if (fresh || typeof stats.memo.resistSilence === 'undefined') {
 			stats.memo.resistSilence = getEqTotal(PROP.RESIST_SILENCE)
 			if (my.buffFlags.manaShell) {
 				stats.memo.resistSilence += buffs.manaShell.silence[my.buffs.manaShell.level]

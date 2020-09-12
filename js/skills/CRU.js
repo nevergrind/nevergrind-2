@@ -105,23 +105,35 @@
 		spell.expendMana(data, index)
 
 		// process skill data
-		let tgt = my.target
+		let originalTarget = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
 		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-			hitBonus: data.hitBonus[my.skills[index]],
-		})
-		// console.info('shieldBash', damages)
+		let splashIndex = -2
+		for (i=0; i<5; i++) {
+			tgt = battle.getSplashTarget(splashIndex++)
+			hit = stats.damage()
+			if (originalTarget !== tgt) hit.damage *= .5
+			damages.push({
+				...hit,
+				key: 'consecrate',
+				index: tgt,
+				damageType: originalTarget === tgt ? DAMAGE_TYPE.PHYSICAL : DAMAGE_TYPE.ARCANE,
+				enhancedDamage: enhancedDamage,
+				hitBonus: data.hitBonus[my.skills[index]],
+			})
+		}
 		combat.txDamageMob(damages)
-
-		// animate timers
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
+
+		combat.txBuffHero([{
+			key: 'consecrate',
+			index: my.row,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			level: my.skills[index],
+			damage: 0
+		}])
 	}
 	function sealOfDamnation(index, data) {
 		// check constraints

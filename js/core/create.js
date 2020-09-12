@@ -611,7 +611,23 @@ var create;
 	function setFace() {
 		var obj = _.pick(create.form, KEYS.SET_FACE)
 		obj.gender = obj.gender === 'Male' ? 0 : 1
-		getElementById('create-portrait').src = my.getAvatarUrl(obj)
+		query.el('#create-portrait').src = my.getAvatarUrl(obj)
+		TweenMax.to('#create-portrait', .3, {
+			startAt: {
+				filter: 'brightness(0) contrast(1)',
+				scale: 1.015,
+			},
+			overwrite: 1,
+			scale: 1.007,
+			filter: 'brightness(2) contrast(2)',
+			ease: Power2.easeIn,
+			onComplete: function() {
+				TweenMax.to(this.target, .3, {
+					filter: 'brightness(1) contrast(1)',
+					scale: 1,
+				})
+			}
+		})
 	}
 	function setAvatarBg() {
 		query.el('#create-portrait-bg').src = 'images/avatar-bg/' + AVATAR_BG[ng.toJobShort(create.form.job)] + '.png'
@@ -622,8 +638,8 @@ var create;
 			ease: Power2.easeIn,
 			onComplete: function() {
 				TweenMax.to(this.target, .25, {
-					startAt: { filter: 'blur(0px) saturate(1) brightness(1)' },
-					filter: 'blur(1.5px) saturate(1.5) brightness(1.1)',
+					startAt: { filter: 'blur(0px) saturate(1) brightness(1) contrast(1)' },
+					filter: 'blur(1.5px) saturate(1.5) brightness(1.1) contrast(2)',
 					repeat: 1,
 					yoyo: true,
 					ease: Power1.easeIn,

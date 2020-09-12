@@ -432,7 +432,7 @@ var ng;
 			scale: 1,
 		})
 		if (d === 0) return
-		if (d === void 0 || d < 1 ){ d = 1 }
+		if (d === 'undefined' || d < 1 ){ d = 1 }
 		msgTimer.kill()
 		msgTimer = delayedCall(d, msgComplete)
 	}
@@ -528,7 +528,6 @@ var ng;
 	}
 	function goCreateCharacter() {
 		ng.lock(1);
-		var z = '#scene-title-select-character';
 		var prom = 0;
 		// hide
 		TweenMax.to('#scene-title-select-character', .6, {
@@ -697,8 +696,8 @@ var ng;
 				ease: Power1.easeOut,
 				onComplete: flashNgoLogo
 			})
-			TweenMax.staggerTo(new SplitText(querySelector('#version')).chars, .5, {
-				delay: 2,
+			TweenMax.staggerTo(new SplitText(query.el('#version')).chars, .5, {
+				delay: 5,
 				rotationY: 90,
 				alpha: 0
 			}, .05);

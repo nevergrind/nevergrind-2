@@ -125,7 +125,7 @@ var chat;
 		mode = mode.replace(/^\s+/g, '');
 
 		if (mode === '/say' && !my.channel) {
-			console.log("You cannot communicate in town while in a dungeon", CSS.CHAT_WARNING);
+			console.log("You cannot communicate in town while in a dungeon", CHAT.WARNING);
 			delayedCall(0, function() {
 				// wipe input after keyup to get rid of /say
 				$("#chat-input").val('');
@@ -308,7 +308,7 @@ var chat;
 			// whisper
 			if (my.name !== chat.modeName) {
 				if (ng.ignore.includes(chat.modeName)) {
-					console.log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', CSS.CHAT_WARNING);
+					console.log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', CHAT.WARNING);
 				}
 				// console.info('@ send', msg)
 				socket.publish('name' + _.toLower(chat.modeName), {
@@ -322,11 +322,11 @@ var chat;
 				})
 			}
 			else {
-				chat.log('Your grip of sanity weakens as you begin to whisper to yourself...', CSS.CHAT_WARNING)
+				chat.log('Your grip of sanity weakens as you begin to whisper to yourself...', CHAT.WARNING)
 			}
 		}
 		else if (msgLower.startsWith('/')) {
-			chat.log('Command not found. Try /h or /help to check the list of valid commands.', CSS.CHAT_WARNING)
+			chat.log('Command not found. Try /h or /help to check the list of valid commands.', CHAT.WARNING)
 		}
 		else {
 			if (msg) {
@@ -334,11 +334,11 @@ var chat;
 				if (o.msg[0] !== '/') {
 					// console.info(o)
 					if (!my.guild.id && o.category.startsWith('guild')) {
-						console.log("You are not in a guild.", CSS.CHAT_WARNING)
+						console.log("You are not in a guild.", CHAT.WARNING)
 					}
 					else {
 						if (o.category === 'ng2') {
-							console.log("You cannot communicate in town while in a dungeon", CSS.CHAT_WARNING)
+							console.log("You cannot communicate in town while in a dungeon", CHAT.WARNING)
 						}
 						else {
 							socket.publish(_.toLower(o.category), {
@@ -440,7 +440,7 @@ var chat;
 		}
 		else {
 			if (ng.view !== 'title') {
-				console.log('Camping...', CSS.CHAT_WARNING);
+				console.log('Camping...', CHAT.WARNING);
 			}
 			// from town
 			if (ng.view === 'town') {

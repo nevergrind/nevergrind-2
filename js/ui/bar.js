@@ -74,8 +74,8 @@ var bar;
 	let percent = 0
 	var pingColors = [
 		'',
-		CSS.CHAT_WARNING,
-		CSS.CHAT_ALERT
+		CHAT.WARNING,
+		CHAT.ALERT
 	];
 	var skillDescriptions = {
 		offense: 'Offense boosts attack power with all melee weapons. A strong offense helps assure that your weapons strike with precision and power regardless weapon type.',
@@ -814,7 +814,7 @@ var bar;
 	}
 
 	function addPlayer(player, index) {
-		if (typeof bar.dom[index] === Undefined) {
+		if (typeof bar.dom[index] === 'undefined') {
 			var el = createElement('div');
 			el.id = 'bar-player-wrap-' + index;
 			el.className = 'bar-player-wrap';
@@ -965,7 +965,7 @@ var bar;
 		});
 	}
 	function linkdead(data) {
-		chat.log(data.name + ' has gone linkdead.', CSS.CHAT_WARNING);
+		chat.log(data.name + ' has gone linkdead.', CHAT.WARNING);
 	}
 
 	function getSkillDescription(event) {

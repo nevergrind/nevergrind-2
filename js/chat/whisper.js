@@ -59,7 +59,7 @@ var whisper;
 			}
 		}
 		else if (r === 'guild-invite-reject') {
-			chat.log(data.name + ' is already in a guild!', CSS.CHAT_WARNING);
+			chat.log(data.name + ' is already in a guild!', CHAT.WARNING);
 		}
 		// party invite
 		else if (r === 'party-invite') {
@@ -73,14 +73,14 @@ var whisper;
 				})
 			}
 		}
-		else if (r === 'toast-busy') chat.log(data.name + ' is busy right now.', CSS.CHAT_WARNING)
-		else if (r === 'party-invite-reject') chat.log(data.name + ' is already in a party!', CSS.CHAT_WARNING)
+		else if (r === 'toast-busy') chat.log(data.name + ' is busy right now.', CHAT.WARNING)
+		else if (r === 'party-invite-reject') chat.log(data.name + ' is already in a party!', CHAT.WARNING)
 		else if (r === 'party-confirmed') party.joinConfirmed(data)
-		else if (r === 'party-accept') chat.log(data.name + " has joined the party.", CSS.CHAT_WARNING)
-		else if (r === 'party-invite-decline') chat.log(data.name + " has declined to join the party.", CSS.CHAT_WARNING)
-		else if (r === 'guild-invite-decline') chat.log(data.name + " has declined to join the guild.", CSS.CHAT_WARNING)
+		else if (r === 'party-accept') chat.log(data.name + " has joined the party.", CHAT.WARNING)
+		else if (r === 'party-invite-decline') chat.log(data.name + " has declined to join the party.", CHAT.WARNING)
+		else if (r === 'guild-invite-decline') chat.log(data.name + " has declined to join the guild.", CHAT.WARNING)
 		else if (r === 'friend>addedMe') {
-			chat.log(data.name + " has added you to "+ (my.gender === 'M' ? 'his' : 'her') +" friend list.", CSS.CHAT_WARNING);
+			chat.log(data.name + " has added you to "+ (my.gender === 'M' ? 'his' : 'her') +" friend list.", CHAT.WARNING);
 		}
 		else if (r === 'friend->getPresence') friend.listReceived(data)
 		else if (r === 'friend->sendPresence') friend.presenceReceived(data)

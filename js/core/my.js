@@ -62,7 +62,7 @@ var my;
 		}
 	}
 	function fixTarget() {
-		if (typeof mobs[my.target] === Undefined || !mobs[my.target].name) {
+		if (typeof mobs[my.target] === 'undefined' || !mobs[my.target].name) {
 			tabTarget({ shiftKey: false })
 		}
 	}
@@ -76,7 +76,7 @@ var my;
 	function tabTarget(event, tries) {
 		if (ng.view !== 'battle' || timers.castBar < 1 || my.hp <= 0) return
 
-		if (typeof tries === Undefined) tries = 0
+		if (typeof tries === 'undefined') tries = 0
 		if (my.target >= mob.max) {
 			// out of range - from player to mob target
 			if (event.shiftKey) my.target = tabOrder[0]
@@ -111,7 +111,7 @@ var my;
 			combat.targetChanged()
 		}
 		else {
-			chat.log('Target failed! Player not found.', CSS.CHAT_WARNING)
+			chat.log('Target failed! Player not found.', CHAT.WARNING)
 		}
 	}
 	function getResistObject() {
