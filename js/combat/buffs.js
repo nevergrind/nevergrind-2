@@ -845,7 +845,15 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'Holy light consecrates the ground you stand on.',
 			fadeMsg: 'The consecration fades.'
 		},
-		sealOfDamnation: { hate: 1 },
+		sealOfDamnation: {
+			name: 'Seal of Damnation',
+			img: 4,
+			job: JOB.CRUSADER,
+			reduceHitRate: .05,
+			reduceDamage: .05,
+			hate: 1.2,
+			duration: 40,
+		},
 		holyWrath: { hate: 1 },
 		divineJudgment: { hate: 1 },
 		blessedHammer: { hate: 1 },

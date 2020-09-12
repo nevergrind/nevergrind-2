@@ -963,6 +963,9 @@ var mob;
 		if (mobs[index].buffFlags.suppressingVolley) {
 			chance += buffs.suppressingVolley.reduceHitRate[skill.RNG.getHighestSuppressingVolleyStack(index)]
 		}
+		if (mobs[index].buffFlags.sealOfDamnation) {
+			chance += buffs.sealOfDamnation.reduceHitRate
+		}
 		if (chance > .5) chance = .5
 		else if (chance < .05) chance = .05
 		// console.info('missChance', level, chance)

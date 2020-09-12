@@ -136,212 +136,153 @@
 		}])
 	}
 	function sealOfDamnation(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
-		spell.expendMana(data, index)
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
-		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
-		combat.txDamageMob(damages)
-
-		// animate timers
-		button.triggerGlobalCooldown()
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, sealOfDamnationCompleted)
+	}
+	function sealOfDamnationCompleted() {
+		combat.txDamageMob([{
+			key: 'sealOfDamnation',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage(),
+			buffs: [{
+				i: spell.config.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'sealOfDamnation', // this sets the flag
+			}],
+		}])
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function holyWrath(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
-		spell.expendMana(data, index)
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
-		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
-		combat.txDamageMob(damages)
-
-		// animate timers
-		button.triggerGlobalCooldown()
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, holyWrathCompleted)
+	}
+	function holyWrathCompleted() {
+		combat.txDamageMob([{
+			key: 'holyWrath',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			buffs: [{
+				i: spell.config.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'stun', // this sets the flag,
+				duration: spell.data.stunDuration,
+			}],
+			...stats.spellDamage()
+		}])
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function divineJudgment(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
-		spell.expendMana(data, index)
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
-		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
-		combat.txDamageMob(damages)
-
-		// animate timers
-		button.triggerGlobalCooldown()
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, divineJudgmentCompleted)
+	}
+	function divineJudgmentCompleted() {
+		combat.txDamageMob([{
+			key: 'divineJudgment',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 	function blessedHammer(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
-		spell.expendMana(data, index)
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
-		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
-		combat.txDamageMob(damages)
-
-		// animate timers
-		button.triggerGlobalCooldown()
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, blessedHammerCompleted)
+	}
+	function blessedHammerCompleted() {
+		combat.txDamageMob([{
+			key: 'blessedHammer',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 	function sanctuary(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
-		spell.expendSpirit(data, index)
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
-		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
-		combat.txDamageMob(damages)
-
-		// animate timers
-		button.triggerGlobalCooldown()
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, sanctuaryCompleted)
+	}
+	function sanctuaryCompleted() {
+		combat.txDamageMob([{
+			key: 'sanctuary',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 	function divineGrace(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
-		spell.expendSpirit(data, index)
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
-		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
-		combat.txDamageMob(damages)
-
-		// animate timers
-		button.triggerGlobalCooldown()
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, divineGraceCompleted)
+	}
+	function divineGraceCompleted() {
+		combat.txDamageMob([{
+			key: 'divineGrace',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 	function benevolence(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
-		spell.expendSpirit(data, index)
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
-		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
-		combat.txDamageMob(damages)
-
-		// animate timers
-		button.triggerGlobalCooldown()
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, benevolenceCompleted)
+	}
+	function benevolenceCompleted() {
+		combat.txDamageMob([{
+			key: 'benevolence',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 	function jubilee(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
-		spell.expendSpirit(data, index)
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
-		damages = []
-		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
-			index: tgt,
-			enhancedDamage: enhancedDamage,
-		})
-		// console.info('shieldBash', damages)
-		combat.txDamageMob(damages)
-
-		// animate timers
-		button.triggerGlobalCooldown()
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, jubileeCompleted)
+	}
+	function jubileeCompleted() {
+		combat.txDamageMob([{
+			key: 'jubilee',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage()
+		}])
 	}
 
 }($, _, TweenMax);

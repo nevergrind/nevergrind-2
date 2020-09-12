@@ -473,7 +473,7 @@ var battle;
 			})
 			mobs[buff.i].buffFlags[buff.key] = true
 			// status effects
-			console.info('processBuffs', buff)
+			// console.info('processBuffs', buff)
 			if (buffs[buff.key].stacks) {
 				if (typeof mobs[buff.i].buffs[buffKeyRow].stacks === 'number') {
 					if (mobs[buff.i].buffs[buffKeyRow].stacks < buffs[buff.key].stacks) {

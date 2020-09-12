@@ -735,6 +735,9 @@ var combat;
 				d.blocked = round(d.damage * .25)
 				if (d.blocked < 0) d.blocked = 0
 			}
+			if (mobs[index].buffFlags.sealOfDamnation) amountReduced -= buffs.sealOfDamnation.reduceDamage
+			// console.info('reduce', amountReduced)
+
 			if (amountReduced < .25) amountReduced = .25
 			// armor, shield, debuff reduction
 			d.damage *= amountReduced
