@@ -429,7 +429,7 @@ var bar;
 	}
 	function updateBar(type, data) {
 		percent = getRatio(type, data)
-		TweenMax.to(query.el('#bar-' + type + '-fg-' + data.row), .1, {
+		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
 			x: '-' + percent + '%'
 		})
 		query.el('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)

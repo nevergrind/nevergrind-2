@@ -17,6 +17,8 @@ var mob;
 		drawTargetBar,
 		resourceTick,
 		rxMobResourceTick,
+		resetHate,
+		resetAllHate,
 		updateHate,
 		// animations
 		resetIdle,
@@ -146,6 +148,18 @@ var mob;
 					damage: data.hate,
 					hate: 1,
 				})
+			}
+		}
+	}
+	function resetHate(i) {
+		for (var key in mobs[i].hate) {
+			mobs[i].hate[key] = 0
+		}
+	}
+	function resetAllHate() {
+		for (i=0; i<mob.max; i++) {
+			for (var key in mobs[i].hate) {
+				mobs[i].hate[key] = 0
 			}
 		}
 	}

@@ -8,7 +8,7 @@
 		holyWrath,
 		divineJudgment,
 		blessedHammer,
-		sanctuary,
+		sealOfSanctuary,
 		divineGrace,
 		benevolence,
 		jubilee,
@@ -196,93 +196,145 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
+			isBlighted: true,
 			...stats.spellDamage()
 		}])
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function blessedHammer(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, blessedHammerCompleted)
 	}
 	function blessedHammerCompleted() {
-		combat.txDamageMob([{
-			key: 'blessedHammer',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		let spellType = spell.data.spellType
+		let damageType = spell.data.damageType
+		let targetPattern = [0, 1, 2, -2, -1]
+		let targets = []
+		for (var i=0; i<5; i++) {
+			targets.push(battle.getSplashTarget(targetPattern[i]))
+		}
+		targets.forEach((tgt, i) => {
+			delayedCall(i * .2, () => {
+				damages = []
+				hit = {
+					key: 'blessedHammer',
+					index: tgt,
+					spellType: spellType,
+					damageType: damageType,
+					...stats.spellDamage(),
+				}
+				if (rand() > .5) {
+					hit.effects = { stagger: true }
+				}
+				damages.push(hit)
+				combat.txDamageMob(damages)
+			})
+		})
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
-	function sanctuary(index, data) {
+	function sealOfSanctuary(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			oocEnabled: true,
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, sanctuaryCompleted)
+		spell.startCasting(index, data, sealOfSanctuaryCompleted)
 	}
-	function sanctuaryCompleted() {
-		combat.txDamageMob([{
-			key: 'sanctuary',
-			index: spell.config.target,
+	function sealOfSanctuaryCompleted() {
+		combat.txBuffHero([{
+			key: 'sealOfSanctuary',
+			index: my.row,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			level: my.skills[spell.config.skillIndex],
+			damage: 0
 		}])
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function divineGrace(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, divineGraceCompleted)
 	}
 	function divineGraceCompleted() {
-		combat.txDamageMob([{
-			key: 'divineGrace',
+		damages = []
+		damages.push({
 			index: spell.config.target,
+			name: spell.config.targetName,
+			key: 'divineGrace',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
-		}])
+		})
+		combat.txHotHero(damages)
 	}
 	function benevolence(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			oocEnabled: true,
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, benevolenceCompleted)
 	}
 	function benevolenceCompleted() {
-		combat.txDamageMob([{
-			key: 'benevolence',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		damages = []
+		party.presence.forEach(p => {
+			damages.push({
+				index: p.row,
+				name: p.name,
+				key: 'benevolence',
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage()
+			})
+		})
+		combat.txHotHero(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function jubilee(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, jubileeCompleted)
 	}
 	function jubileeCompleted() {
-		combat.txDamageMob([{
-			key: 'jubilee',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		}])
+		damages = []
+		for (var i=0; i<mob.max; i++) {
+			if (mob.isAlive(i)) {
+				hit = {
+					index: i,
+					key: 'jubilee',
+					spellType: spell.data.spellType,
+					damageType: spell.data.damageType,
+					isMob: spell.config.isMob,
+					...stats.spellDamage()
+				}
+				if (rand() > .5) {
+					hit.effects = { stagger: true }
+				}
+				damages.push(hit)
+			}
+		}
+		combat.txDamageMob(damages)
+		spell.triggerCooldown(spell.config.skillIndex)
 	}
 
 }($, _, TweenMax);

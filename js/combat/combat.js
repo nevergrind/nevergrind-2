@@ -195,6 +195,10 @@ var combat;
 
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// check for things that immediately set to 0
+			if (d.requiresFrontRow && !battle.targetIsFrontRow(d.index)) {
+				d.damage = 0
+				return d
+			}
 			if (rand() < stats.missChance(d.index, d.weaponSkill, d.hitBonus)) {
 				// chat.log('Your attack misses ' + ng.getArticle(d.index) + ' ' + mobs[d.index].name + '!')
 				d.damage = 0
@@ -253,15 +257,15 @@ var combat;
 			d.damage *= mobArmor
 
 			// damage penalties
-			if (d.requiresFrontRow && !battle.targetIsFrontRow(d.index)) {
-				d.damage = 0
-			}
 			if (!d.isRanged &&
 				d.index > 4) {
 				// physical on back row
 				if (!mobs[d.index].buffFlags.engulfingDarkness) {
 					d.damage *= .5
 				}
+			}
+			if (my.buffFlags.sealOfSanctuary) {
+				d.damage *= buffs.sealOfSanctuary.reducedDamage[my.buffs.sealOfSanctuary.level]
 			}
 			// +add spell damage
 			d.damage += getAddedDamage(d.index)
@@ -500,6 +504,11 @@ var combat;
 				if (data.damages[i].key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(data.damages[i])
 			}
 		}
+		/*
+		if (typeof data.damages === 'object') {
+			mob.resetAllHate()
+		}
+		*/
 		// buffs
 		if (typeof data.buffs === TYPE.OBJECT) {
 			buffArr = []
@@ -669,7 +678,8 @@ var combat;
 		// check for things that immediately set to 0
 		// check invulnerable
 		if (my.buffFlags.frozenBarrier ||
-			my.buffFlags.jumpStrike) {
+			my.buffFlags.jumpStrike ||
+			my.buffFlags.sealOfSanctuary) {
 			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you are invulnerable!')
 			d.damage = 0
 			return d

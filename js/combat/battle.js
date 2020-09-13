@@ -586,7 +586,7 @@ var battle;
 		console.info('stack count', my.buffs[key].stacks)
 		if (buffs[key].stacks === void 0 ||
 			my.buffs[key].stacks === 1) {
-			console.info('ADDING BUFF')
+			// console.info('ADDING BUFF')
 			el = createElement('div')
 			el.id = 'mybuff-' + keyRow
 			el.className = 'buff-icons popover-icons text-shadow3'
@@ -595,13 +595,17 @@ var battle;
 			query.el('#mybuff-wrap').appendChild(el)
 		}
 		else {
-			console.info('UPDATING BUFF')
+			// console.info('UPDATING BUFF')
 			querySelector('#mybuff-' + keyRow).textContent = my.buffs[key].stacks
+			TweenMax.set(querySelector('#mybuff-' + keyRow), {
+				opacity: 1
+			})
 		}
 
 		if (buffs[key].duration > 0) {
 			if (typeof my.buffIconTimers[keyRow] === TYPE.OBJECT) {
 				my.buffIconTimers[keyRow].kill()
+				my.buffIconTimers[keyRow + '-remove'].kill()
 			}
 			// start timer
 			if (buffs[key].duration < flashDuration) flashMyBuff(key, keyRow)

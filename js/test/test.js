@@ -95,7 +95,7 @@ var test;
 			arr = typeof arr[0] === TYPE.OBJECT ?
 				arr[0] : obj;
 			if (arr.loop === 0) {
-				// console.info('socketRx first data test received', arr.loop);
+				console.info('socketRx first data test received', arr.loop);
 				start = Date.now();
 			}
 			if (arr.isLastSend) {
@@ -393,9 +393,9 @@ var test;
 			height: 517,
 			transparent: true
 		});
-		// console.info('textPix', test.pix)
-		// console.info('view', test.pix.view)
-		// console.info('screen', test.pix.screen)
+		console.info('textPix', test.pix)
+		console.info('view', test.pix.view)
+		console.info('screen', test.pix.screen)
 		// style
 		test.pix.view.id = 'test-pixi'
 		test.pix.view.style.position = 'absolute'
@@ -430,7 +430,7 @@ var test;
 		// wider than default ratio
 		width = window.innerHeight * ratio;
 		height = window.innerHeight;
-		// console.info('pixiResize', width, height)
+		console.info('pixiResize', width, height)
 		test.pix.view.style.width = window.innerWidth + 'px';
 		test.pix.view.style.height = ~~(517 / MaxHeight * window.innerHeight) + 'px';
 	}
@@ -439,7 +439,7 @@ var test;
 		width = window.innerHeight * ratio;
 		height = window.innerHeight;
 
-		// console.info('pixiResize', width, height)
+		console.info('pixiResize', width, height)
 		pixApp.view.style.width = width + 'px';
 		pixApp.view.style.height = height + 'px';
 	}
@@ -512,13 +512,13 @@ var test;
 			el.texture = test.textures[~~o.frame]
 		}
 		function onMobClick(e) {
-			// console.info('click!', e)
+			console.info('click!', e)
 		}
 	}
 
 	function getHate() {
 		for (var i=0; i<mob.max; i++) {
-			// console.info('hate:', i, mobs[i].hate)
+			console.info('hate:', i, mobs[i].hate)
 		}
 	}
 	function disableConsole() {

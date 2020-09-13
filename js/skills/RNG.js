@@ -262,6 +262,7 @@
 			if (mobs[i].hp > 0) {
 				damages.push({
 					index: i,
+					key: 'shockNova',
 					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
 					isMob: spell.config.isMob,
