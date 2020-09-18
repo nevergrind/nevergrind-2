@@ -40,7 +40,7 @@ var stats = {};
 		riposte,
 		spellDamage,
 		autoAttackDamage,
-		damage,
+		skillDamage,
 		offhandDamage,
 		rangedDamage,
 		getResistPercent,
@@ -93,7 +93,6 @@ var stats = {};
 	const wisCasterJobs = [JOB.DRUID, JOB.CLERIC, JOB.SHAMAN]
 	const intCasterJobs = [JOB.WARLOCK, JOB.ENCHANTER, JOB.TEMPLAR, JOB.WIZARD]
 	const allCasterJobs = [JOB.CLERIC, JOB.DRUID, JOB.SHAMAN, JOB.BARD, JOB.WARLOCK, JOB.ENCHANTER, JOB.TEMPLAR, JOB.WIZARD]
-	const hybridJobs = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER]
 	const twoHandBluntAverageJobs = [JOB.WARRIOR, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.CLERIC, JOB.DRUID, JOB.SHAMAN, JOB.WARLOCK, JOB.ENCHANTER, JOB.TEMPLAR, JOB.WIZARD]
 	const tankJobs = [JOB.WARRIOR, JOB.CRUSADER, JOB.SHADOW_KNIGHT]
 	const averageArcherJobs = [JOB.WARRIOR, JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.ROGUE, JOB.BARD]
@@ -680,7 +679,7 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
-	function damage(skipSkillChecks, forceCrit, getNonCrit) {
+	function skillDamage(critMod = 0, skipSkillChecks) {
 		// normalized damage for skills
 		min = 1
 		max = 1
@@ -719,8 +718,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		if (getNonCrit) isCrit = false
-		else isCrit = forceCrit || stats.critChance() > rand()
+		isCrit = ((critMod / 100) + stats.critChance()) > rand()
 
 		if (isCrit) {
 			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
@@ -788,7 +786,7 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
-	function rangedDamage() {
+	function rangedDamage(critMod = 0) {
 		min = 1
 		max = 1
 		atk = attack('Archery')
@@ -801,7 +799,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = stats.critChance() > rand()
+		isCrit = ((critMod / 100) + stats.critChance()) > rand()
 		if (isCrit) {
 			min *= 2
 			max *= 2
@@ -1164,7 +1162,7 @@ var stats = {};
 		if (fresh || typeof stats.memo.alterationMax === 'undefined') {
 			base = my.race === RACE.DWARF || my.race === RACE.SERAPH ? 5 : 0
 			if (allCasterJobs.includes(my.job)) stats.memo.alterationMax = base + my.level * 5
-			else if (hybridJobs.includes(my.job)) stats.memo.alterationMax = base + my.level * 5
+			else if (HybridJobs.includes(my.job)) stats.memo.alterationMax = base + my.level * 5
 			else stats.memo.alterationMax = 0
 		}
 		return stats.memo.alterationMax
@@ -1175,7 +1173,7 @@ var stats = {};
 			else if (my.race === RACE.SERAPH) base = 5
 			else base = 0
 			if (allCasterJobs.includes(my.job)) stats.memo.evocationMax = base + my.level * 5
-			else if (hybridJobs.includes(my.job)) stats.memo.evocationMax = base + my.level * 5
+			else if (HybridJobs.includes(my.job)) stats.memo.evocationMax = base + my.level * 5
 			else stats.memo.evocationMax = 0
 		}
 		return stats.memo.evocationMax
@@ -1186,7 +1184,7 @@ var stats = {};
 			else if (my.race === RACE.SERAPH) base = 5
 			else base = 0
 			if (allCasterJobs.includes(my.job)) stats.memo.conjurationMax = base + my.level * 5
-			else if (hybridJobs.includes(my.job)) stats.memo.conjurationMax = base + my.level * 5
+			else if (HybridJobs.includes(my.job)) stats.memo.conjurationMax = base + my.level * 5
 			else stats.memo.conjurationMax = 0
 		}
 		return stats.memo.conjurationMax

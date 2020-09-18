@@ -2,9 +2,10 @@
 	skill.SHD = {
 		shadowBreak,
 		deathStrike,
+		deathStrikeHeal,
 		crescentCleave,
 		doomThrust,
-		brainHew,
+		astralBlade,
 		ravagingPlague,
 		decayingDoom,
 		bloodTerror,
@@ -18,7 +19,7 @@
 	function shadowBreak(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -29,67 +30,30 @@
 		if (my.shieldIsEquipped()) enhancedDamage += .5
 		damages = []
 		damages.push({
-			...stats.damage(),
-			key: 'shieldBash',
+			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			key: 'shadowBreak',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
 		})
-		// console.info('shieldBash', damages)
 		combat.txDamageMob(damages)
-
-		// animate timers
 		button.triggerGlobalCooldown()
 	}
 	function deathStrike(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
 
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		damages = []
-		splashIndex = -1
-		for (var i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.damage(tgt)
-			damages.push({
-				...hit,
-				key: 'deathStrike',
-				index: tgt,
-				enhancedDamage: enhancedDamage,
-				hitBonus: data.hitBonus[my.skills[index]],
-				effects: { stagger: true },
-			})
-		}
-		combat.txDamageMob(damages)
-		spell.triggerCooldown(index, data)
-		button.triggerGlobalCooldown()
-	}
-	function crescentCleave(index, data) {
-		// check constraints
-		config = {
-			...skills.getDefaults(index),
-			requiresFrontRow: true,
-		}
-		if (skills.notReady(config)) return
-		spell.expendMana(data, index)
-
-		// process skill data
-		let tgt = my.target
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (mobs[tgt].target === my.row) {
-			enhancedDamage += .25
-		}
 		damages = []
 		damages.push({
-			...stats.damage(),
-			key: 'crescentCleave',
-			index: tgt,
-			requiresFrontRow: data.requiresFrontRow,
+			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			key: 'deathStrike',
+			index: my.target,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
 		})
@@ -97,56 +61,83 @@
 		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function doomThrust(index, data) {
+	function deathStrikeHeal(hit) {
+		combat.txHotHero([{
+			index: my.row,
+			key: 'deathStrike',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			damage: Math.max(1, round(hit.damage * .2))
+		}])
+	}
+	function crescentCleave(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
 
-		// process skill data
-		let originalTarget = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		let splashIndex = -2
-		for (i=0; i<5; i++) {
+		splashIndex = -1
+		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.damage()
-			if (originalTarget !== tgt) hit.damage *= .5
 			damages.push({
-				...hit,
-				key: 'doomThrust',
+				...stats.skillDamage(data.critBonus[my.skills[index]]),
+				key: 'crescentCleave',
 				index: tgt,
-				damageType: originalTarget === tgt ? DAMAGE_TYPE.PHYSICAL : DAMAGE_TYPE.ARCANE,
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})
 		}
 		combat.txDamageMob(damages)
 		spell.triggerCooldown(index, data)
-		button.triggerGlobalCooldown()
-
-		combat.txBuffHero([{
-			key: 'doomThrust',
-			index: my.row,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			level: my.skills[index],
-			damage: 0
-		}])
 	}
-	function brainHew(index, data) {
+	function doomThrust(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+			isRanged: true,
+		}
+		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
+		// process skill data
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		damages.push({
+			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			key: 'doomThrust',
+			index: my.target,
+			enhancedDamage: enhancedDamage,
+			hitBonus: data.hitBonus[my.skills[index]],
+		})
+		combat.txDamageMob(damages)
+		spell.triggerCooldown(index, data)
+		button.triggerGlobalCooldown()
+		// dot
+		damages = []
+		hit = stats.skillDamage(-100)
+		damages.push({
+			key: 'doomThrust',
+			index: my.target,
+			damageType: DAMAGE_TYPE.BLOOD,
+			damage: round(hit.damage * 1.5)
+		})
+		combat.txDotMob(damages)
+	}
+	function astralBlade(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, brainHewCompleted)
+		spell.startCasting(index, data, astralBladeCompleted)
 	}
-	function brainHewCompleted() {
+	function astralBladeCompleted() {
 		combat.txDamageMob([{
-			key: 'brainHew',
+			key: 'astralBlade',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,

@@ -23,6 +23,7 @@ var button;
 	var name, hit
 	let mySwingSpeed = 0
 	const globalCooldownDur = 2.5
+	const HybridAutoAttackers = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER, JOB.BARD]
 	let damages
 	/////////////////////////////
 
@@ -214,7 +215,7 @@ var button;
 		startSwing('secondaryAttack')
 	}
 	function cannotAutoAttack() {
-		return (my.job !== 'BRD' && timers.castBar < 1) ||
+		return (!HybridAutoAttackers.includes(my.job) && timers.castBar < 1) ||
 			!my.targetIsMob ||
 			my.buffFlags.frozenBarrier
 	}
@@ -233,7 +234,7 @@ var button;
 			el = querySelector('#skill-timer-secondary-rotate')
 		}
 
-		if (my.job !== 'BRD' && timers.castBar < 1) {
+		if (!HybridAutoAttackers.includes(my.job) && timers.castBar < 1) {
 			timers[key + CALL].kill()
 			timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
 			return
@@ -264,7 +265,7 @@ var button;
 		timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
 	}
 	function pauseAutoAttack() {
-		if (my.job !== 'BRD') {
+		if (!HybridAutoAttackers.includes(my.job)) {
 			timers['primaryAttack' + CYCLE].pause()
 			timers['secondaryAttack' + CYCLE].pause()
 			timers['primaryAttack' + CALL].pause()

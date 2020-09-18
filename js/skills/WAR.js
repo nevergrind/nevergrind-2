@@ -22,7 +22,7 @@ let skill = {};
 	function shieldBash(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -33,7 +33,7 @@ let skill = {};
 		if (my.shieldIsEquipped()) enhancedDamage += .5
 		damages = []
 		damages.push({
-			...stats.damage(),
+			...stats.skillDamage(data.critBonus[my.skills[index]]),
 			key: 'shieldBash',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
@@ -58,7 +58,7 @@ let skill = {};
 			isRanged: true,
 			isPiercing: true,
 			damageType: DAMAGE_TYPE.BLOOD,
-			...stats.damage(false, false, true)
+			...stats.skillDamage(-100, false)
 		}]
 		// defaults to max instead of large melee weapon range
 		damages[0].damage = damages[0].max
@@ -70,7 +70,7 @@ let skill = {};
 	function whirlwind(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -81,7 +81,7 @@ let skill = {};
 		let tgt
 		for (var i=0; i<5; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.damage()
+			hit = stats.skillDamage(data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'whirlwind',
@@ -99,7 +99,7 @@ let skill = {};
 	function pummel(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 			requiresFrontRow: data.requiresFrontRow,
 		}
 		if (skills.notReady(config)) return
@@ -110,7 +110,7 @@ let skill = {};
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		damages.push({
-			...stats.damage(),
+			...stats.skillDamage(data.critBonus[my.skills[index]]),
 			key: 'pummel',
 			index: tgt,
 			isPiercing: true,
@@ -132,8 +132,7 @@ let skill = {};
 	function doubleThrow(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
-			mpCost: data.mp(my.skills[index]),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -144,7 +143,7 @@ let skill = {};
 		damages = []
 		for (var i=0; i<2; i++) {
 			damages.push({
-				...stats.damage(),
+				...stats.skillDamage(data.critBonus[my.skills[index]]),
 				key: 'doubleThrow',
 				index: tgt,
 				isRanged: true,
@@ -166,8 +165,7 @@ let skill = {};
 		// console.info('crossSlash', index)
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
-			mpCost: data.mp(my.skills[index]),
+			...skills.getDefaults(index, data),
 			anyTarget: true,
 		}
 		if (skills.notReady(config)) return
@@ -179,7 +177,7 @@ let skill = {};
 		damages = []
 		for (var i = 0; i<=4; i++) {
 			if (mobs[i].hp) {
-				hit = stats.damage()
+				hit = stats.skillDamage(data.critBonus[my.skills[index]])
 				damages.push({
 					...hit,
 					key: 'shockwave',
@@ -198,8 +196,7 @@ let skill = {};
 	}
 	function frenzy(index, data) {
 		config = {
-			...skills.getDefaults(index),
-			mpCost: data.mp(my.skills[index]),
+			...skills.getDefaults(index, data),
 			anyTarget: true,
 			oocEnabled: true,
 		}
@@ -221,9 +218,8 @@ let skill = {};
 	function jumpStrike(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 			isPiercing: true,
-			mpCost: data.mp(my.skills[index])
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -244,7 +240,7 @@ let skill = {};
 			let tgt = my.target
 			enhancedDamage = data.enhancedDamage[my.skills[index]]
 			damages = []
-			hit = stats.damage()
+			hit = stats.skillDamage(data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				index: tgt,
@@ -261,8 +257,7 @@ let skill = {};
 	function primalStomp(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
-			spCost: data.sp(my.skills[index])
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendSpirit(data, index)
@@ -276,7 +271,7 @@ let skill = {};
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		targets.forEach(target => {
-			hit = stats.damage()
+			hit = stats.skillDamage(data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'primalStomp',
@@ -296,8 +291,7 @@ let skill = {};
 	function bulwark(index, data) {
 		// console.info('bulwark', data)
 		config = {
-			...skills.getDefaults(index),
-			spCost: data.sp(my.skills[index]),
+			...skills.getDefaults(index, data),
 			anyTarget: true,
 			oocEnabled: true,
 		}
@@ -318,8 +312,7 @@ let skill = {};
 	function intrepidShout(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
-			spCost: data.sp(my.skills[index]),
+			...skills.getDefaults(index, data),
 			anyTarget: true,
 			oocEnabled: true,
 		}
@@ -343,8 +336,7 @@ let skill = {};
 	function furiousCleave(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
-			spCost: data.sp(my.skills[index]),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendSpirit(data, index)
@@ -356,7 +348,7 @@ let skill = {};
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
 			damages.push({
-				...stats.damage(),
+				...stats.skillDamage(data.critBonus[my.skills[index]]),
 				key: 'furiousCleave',
 				index: tgt,
 				enhancedDamage: enhancedDamage,

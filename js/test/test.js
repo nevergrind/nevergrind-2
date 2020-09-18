@@ -1,12 +1,7 @@
 var test;
 (function(Linear, TweenMax, TimelineMax, PIXI, $, undefined) {
 	test = {
-		pix: {},
-		chat: {
-			id: 999999999,
-			room: chatRoom,
-			log: chatLog
-		},
+		getWeapon,
 		disableConsole,
 		getHate,
 		send,
@@ -42,6 +37,12 @@ var test;
 		pixi,
 		mobImage,
 		mobPix,
+		pix: {},
+		chat: {
+			id: 999999999,
+			room: chatRoom,
+			log: chatLog
+		},
 		textures: [],
 	}
 
@@ -523,5 +524,13 @@ var test;
 	}
 	function disableConsole() {
 		console.debug = console.log = console.warn = console.info = ng.noop
+	}
+	function getWeapon(itemSlot = 'twoHandBlunts') {
+		return item.getLoot({
+			store: true,
+			rarity: 'unique',
+			mobLevel: 50,
+			itemSlot: itemSlot,
+		})
 	}
 })(Linear, TweenMax, TimelineMax, PIXI, $);

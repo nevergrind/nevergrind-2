@@ -149,8 +149,19 @@ var my;
 	function resourceTick(type) {
 		// hpRegen mpRegen spRegen
 		if (my.hp > 0 && !my.buffFlags.frozen) {
-			my[type] += stats[type + 'Regen']()
-			if (my[type] > my[type + 'Max']) my[type] = my[type + 'Max']
+			if (type === PROP.HP) {
+				my.hp += stats.hpRegen()
+				if (my.hp > my.hpMax) my.hp = my.hpMax
+			}
+			else if (type === PROP.MP) {
+				my.mp += stats.mpRegen()
+				if (my.mp > my.mpMax) my.mp = my.mpMax
+			}
+			else if (type === PROP.SP) {
+				my.sp += stats.spRegen()
+				if (my.sp > my.spMax) my.sp = my.spMax
+			}
+
 		}
 	}
 	function initSkills() {

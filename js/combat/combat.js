@@ -243,6 +243,9 @@ var combat;
 				if (stats.reduceTargetArmor()) {
 					mobs[d.index].armor += .001
 				}
+				if (d.key === 'shadowBreak') {
+					mobs[d.index].armor += .01
+				}
 			}
 			if (mobs[d.index].armor > 1) mobs[d.index].armor = 1
 			// modify mob armor for all (buffs)
@@ -400,7 +403,7 @@ var combat;
 	function updateMobHp(o) {
 		// console.info('updateMobHp updateHate obj', _.clone(o))
 		if (typeof buffs[o.key] === 'object') {
-			if (buffs[o.key].hate === undefined) o.hate = 1
+			if (typeof buffs[o.key].hate === 'undefined') o.hate = 1
 			else o.hate = buffs[o.key].hate
 		}
 		else {
@@ -456,6 +459,7 @@ var combat;
 	function filterImpossibleMobTargets(m) {
 		return m.index >=0 && m.index < mob.max && mob.isAlive(m.index)
 	}
+	let damageData
 	function txDamageMob(damages) {
 		// console.info('txDamageMob', damages)
 		damages = damages.filter(filterImpossibleMobTargets).map(processDamagesMob)
@@ -484,7 +488,7 @@ var combat;
 			}
 		}
 		if (damageArr.length) {
-			let damageData = {
+			damageData = {
 				route: 'p->damage',
 				damages: damageArr.map(dam => _.pick(dam, KEYS.DAMAGE_MOB))
 			}
@@ -492,6 +496,13 @@ var combat;
 			if (buffArr.length) damageData.buffs = buffArr
 			// console.info('txDamageMob: ', _.cloneDeep(damageData))
 			socket.publish('party' + my.partyId, damageData)
+
+			if (damageData.damages[0].key === 'devouringSwarm') {
+				skill.SHM.devouringSwarmHeal(damageData.damages[0])
+			}
+			else if (damageData.damages[0].key === 'deathStrike') {
+				skill.SHD.deathStrikeHeal(damageData.damages[0])
+			}
 		}
 	}
 	function rxDamageMob(data) {
@@ -500,9 +511,6 @@ var combat;
 		for (i=0; i<len; i++) {
 			// console.info('txDamageMob : ', data.damages[i])
 			updateMobHp(data.damages[i])
-			if (my.row === data.damages[i].row) {
-				if (data.damages[i].key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(data.damages[i])
-			}
 		}
 		/*
 		if (typeof data.damages === 'object') {

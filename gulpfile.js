@@ -44,8 +44,8 @@ const jsFiles = [
 	// libs/gsap/DrawSVGPlugin.min
 	// libs/gsap/EaselPlugin.min
 	'build/beginWrap',
-	'values/constants',
 	'values/enums',
+	'values/constants',
 	'util/util',
 	'util/query',
 	'core/alias',

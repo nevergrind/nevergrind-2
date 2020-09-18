@@ -412,7 +412,7 @@ var mob;
 	}
 
 	function idle(i) {
-		if (ng.view !== 'battle') return
+		if (ng.view !== 'battle' || mobs[i].isDead) return
 		mobs[i].animation = TweenMax.to(mobs[i], mobs[i].frameSpeed * frame.idle.diff * 2, {
 			startAt: {
 				frame: frame.idle.start
@@ -497,7 +497,7 @@ var mob;
 		return mobs[i].name && mobs[i].hp > 0
 	}
 	function hit(i, bypass, damage) {
-		if (ng.view !== 'battle') return
+		if (ng.view !== 'battle' || mobs[i].isDead) return
 		setTimeScaleSpeed(i)
 		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return;
 
@@ -575,7 +575,7 @@ var mob;
 
 	function attack(i) {
 		timers.mobAttack[i].kill()
-		if (!mobs[i].name) return
+		if (!mobs[i].name || mobs[i].isDead) return
 
 		if (party.presence[0].isLeader) {
 			// only party leader should trigger attacks
@@ -605,6 +605,7 @@ var mob;
 		timers.mobAttack[i] = delayedCall(getMobAttackSpeed(i), mob.attack, [i])
 	}
 	function animateAttack(i, row) {
+		if (mobs[i].isDead) return
 		isSomeoneAlive = party.isSomeoneAlive()
 		let tgt = party.presence.findIndex(p => p.row === row)
 		if (tgt > -1) animateMobTarget(i, tgt, row)
@@ -646,6 +647,7 @@ var mob;
 	}
 
 	function special(i) {
+		if (mobs[i].isDead) return
 		if (mobs[i].isAnimationActive) return
 		if (party.isSomeoneAlive()) {
 			setTimeScaleSpeed(i)
@@ -952,9 +954,9 @@ var mob;
 		)
 	}
 	function rxMobResourceTick(data) {
-		data.d.forEach(processTick)
+		data.d.forEach(getMobRegen)
 		//////////////////
-		function processTick(tick) {
+		function getMobRegen(tick) {
 			mobs[tick.i].hp += tick.h
 			drawMobBar(tick.i)
 		}

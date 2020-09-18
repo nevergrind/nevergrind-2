@@ -173,22 +173,6 @@ const MOB_TYPE = Object.freeze({
 	UNDEAD: 'undead',
 	GIANT: 'giant',
 })
-const AVATAR_BG = Object.freeze({
-	[JOB.WARRIOR]: 9,
-	[JOB.CRUSADER]: 10,
-	[JOB.SHADOW_KNIGHT]: 4,
-	[JOB.MONK]: 7,
-	[JOB.ROGUE]: 2,
-	[JOB.RANGER]: 5,
-	[JOB.BARD]: 17,
-	[JOB.DRUID]: 19,
-	[JOB.CLERIC]: 22,
-	[JOB.SHAMAN]: 13,
-	[JOB.WARLOCK]: 18,
-	[JOB.ENCHANTER]: 1,
-	[JOB.TEMPLAR]: 3,
-	[JOB.WIZARD]: 24,
-})
 const KEYS = Object.freeze({
 	DATA: ['data'],
 	NAME: ['name'],

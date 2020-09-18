@@ -18,7 +18,7 @@
 	function zealousSlam(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -28,7 +28,7 @@
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		hit = {
-			...stats.damage(),
+			...stats.skillDamage(data.critBonus[my.skills[index]]),
 			key: 'zealousSlam',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
@@ -43,7 +43,7 @@
 	function rebuke(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -54,7 +54,7 @@
 		splashIndex = -1
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.damage(tgt)
+			hit = stats.skillDamage(data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'rebuke',
@@ -71,7 +71,7 @@
 	function vengeance(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 			requiresFrontRow: true,
 		}
 		if (skills.notReady(config)) return
@@ -85,7 +85,7 @@
 		}
 		damages = []
 		damages.push({
-			...stats.damage(),
+			...stats.skillDamage(data.critBonus[my.skills[index]]),
 			key: 'vengeance',
 			index: tgt,
 			requiresFrontRow: data.requiresFrontRow,
@@ -99,7 +99,7 @@
 	function consecrate(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -111,7 +111,7 @@
 		let splashIndex = -2
 		for (i=0; i<5; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.damage()
+			hit = stats.skillDamage(data.critBonus[my.skills[index]])
 			if (originalTarget !== tgt) hit.damage *= .5
 			damages.push({
 				...hit,

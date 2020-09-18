@@ -22,7 +22,7 @@
 		// console.info('crossSlash', index)
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 			requiresFrontRow: true,
 		}
 		if (skills.notReady(config)) return
@@ -34,7 +34,7 @@
 
 		for (var i = my.target - 1; i<=my.target+1; i++) {
 			if (i <= 4) {
-				hit = stats.damage()
+				hit = stats.skillDamage(data.critBonus[my.skills[index]])
 				damages.push({
 					...hit,
 					key: 'crossSlash',
@@ -53,7 +53,7 @@
 	function explosiveShot(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -65,7 +65,7 @@
 		let tgt
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.rangedDamage(tgt)
+			hit = stats.rangedDamage(data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'explosiveShot',
@@ -84,7 +84,7 @@
 	function trueshotStrike(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -93,7 +93,7 @@
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.rangedDamage(tgt)
+		hit = stats.rangedDamage(data.critBonus[my.skills[index]])
 		damages.push({
 			...hit,
 			key: 'trueshotStrike',
@@ -111,7 +111,7 @@
 	function spreadShot(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -129,7 +129,7 @@
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		targets.forEach(target => {
-			hit = stats.rangedDamage(target)
+			hit = stats.rangedDamage(data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'spreadShot',
@@ -147,7 +147,7 @@
 	function bladeStorm(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -159,7 +159,7 @@
 		damages = []
 		for (var i=0; i<hits; i++) {
 			let finalBlow = i === hits - 1
-			hit = stats.damage(false, finalBlow)
+			hit = stats.skillDamage(finalBlow ? 100 : data.critBonus[my.skills[index]], false)
 			hit.damage = finalBlow ? hit.damage * 4 : hit.damage
 			damages.push({
 				...hit,
@@ -179,7 +179,7 @@
 	function suppressingVolley(index, data) {
 		// check constraints
 		config = {
-			...skills.getDefaults(index),
+			...skills.getDefaults(index, data),
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -191,7 +191,7 @@
 		let tgt
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.rangedDamage(tgt)
+			hit = stats.rangedDamage(data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				index: tgt,
