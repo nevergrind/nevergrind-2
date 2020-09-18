@@ -6,7 +6,6 @@ var query;
 		all,
 		resetCache,
 	}
-	let e
 	///////////////////////////////////////////
 	function el(selector) {
 		if (typeof query.cache[selector] === 'undefined') {
@@ -25,6 +24,4 @@ var query;
 	function resetCache() {
 		query.cache = {}
 	}
-
-
 }($, _, TweenMax, document);

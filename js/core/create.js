@@ -1,5 +1,5 @@
 var create;
-(function($, TweenMax, _, undefined) {
+(function($, TweenMax, _, Power1, Power2, undefined) {
 	create = {
 		events,
 		deleteCharacter,
@@ -335,7 +335,7 @@ var create;
 		// gender and race
 		var v = 15
 		var {gender, race} = obj
-		if (typeof gender === TYPE.NUMBER) gender = gender ? 'Female' : 'Male' // normalize to string
+		if (typeof gender === 'number') gender = gender ? 'Female' : 'Male' // normalize to string
 
 		// console.info('obj gender', gender, race)
 		if (type === PROP.RESIST_BLOOD){
@@ -612,14 +612,14 @@ var create;
 		var obj = _.pick(create.form, KEYS.SET_FACE)
 		obj.gender = obj.gender === 'Male' ? 0 : 1
 		query.el('#create-portrait').src = my.getAvatarUrl(obj)
-		TweenMax.to('#create-portrait', .3, {
+		TweenMax.to('#create-portrait', .25, {
 			startAt: {
-				filter: 'brightness(0) contrast(1)',
+				filter: 'brightness(.5) contrast(3)',
 				scale: 1.015,
 			},
 			overwrite: 1,
-			scale: 1.007,
-			filter: 'brightness(2) contrast(2)',
+			scale: 1.01,
+			filter: 'brightness(2) contrast(3)',
 			ease: Power2.easeIn,
 			onComplete: function() {
 				TweenMax.to(this.target, .3, {
@@ -630,25 +630,24 @@ var create;
 		})
 	}
 	function setAvatarBg() {
-		query.el('#create-portrait-bg').src = 'images/avatar-bg/' + AVATAR_BG[ng.toJobShort(create.form.job)] + '.png'
-		TweenMax.to('#create-portrait-bg', .5, {
+		query.el('#create-portrait-bg').src = 'images/avatar-bg/' + ng.toJobShort(create.form.job) + '.png'
+		TweenMax.to('#create-portrait-bg', .3, {
 			startAt: { opacity: .3, filter: '' },
 			overwrite: 1,
 			opacity: 1,
-			ease: Power2.easeIn,
+			ease: Power1.easeIn,
 			onComplete: function() {
-				TweenMax.to(this.target, .25, {
-					startAt: { filter: 'blur(0px) saturate(1) brightness(1) contrast(1)' },
-					filter: 'blur(1.5px) saturate(1.5) brightness(1.1) contrast(2)',
-					repeat: 1,
+				TweenMax.to(this.target, 3, {
+					startAt: { filter: 'saturate(1.2) brightness(1.1) contrast(1)' },
+					filter: 'saturate(1.5) brightness(1.25) contrast(2.5)',
+					repeat: -1,
 					yoyo: true,
 					ease: Power1.easeIn,
 				})
 			}
 		})
 	}
-	// private /////////////////////////////////////////////////
 	function getCleanName(name) {
 		return _.capitalize(_.map(name, char => create.whitelist.includes(char) ? char : '').join(''));
 	}
-})($, TweenMax, _);
+})($, TweenMax, _, Power1, Power2);

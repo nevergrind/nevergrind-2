@@ -46,6 +46,7 @@ const jsFiles = [
 	'build/beginWrap',
 	'values/constants',
 	'values/enums',
+	'util/util',
 	'util/query',
 	'core/alias',
 	'core/login',

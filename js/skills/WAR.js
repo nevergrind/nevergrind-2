@@ -30,8 +30,7 @@ let skill = {};
 		// process skill data
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT &&
-			items.eq[13].itemType === 'shields') enhancedDamage += .5
+		if (my.shieldIsEquipped()) enhancedDamage += .5
 		damages = []
 		damages.push({
 			...stats.damage(),
@@ -176,7 +175,7 @@ let skill = {};
 
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (typeof items.eq[13] === TYPE.OBJECT && items.eq[13].itemType === 'shields') enhancedDamage += .2
+		if (my.shieldIsEquipped()) enhancedDamage += .2
 		damages = []
 		for (var i = 0; i<=4; i++) {
 			if (mobs[i].hp) {

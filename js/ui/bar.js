@@ -434,7 +434,7 @@ var bar;
 		})
 		query.el('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
 		if (type === PROP.HP &&
-			typeof data === TYPE.OBJECT &&
+			typeof data === 'object' &&
 			(!my.targetIsMob && my.target === data.row) ||
 			(my.targetIsMob && my.target === data.row)
 		) {
@@ -1026,8 +1026,8 @@ var bar;
 			html += '</div>' +
 			'<div id="inv-column-avatar" class="bg-dark-' + my.job + '">'+
 				'<div id="inv-avatar-wrap" class="bg-' + my.job + '">' +
-					'<img class="inv-avatar-bg" src="images/avatar-bg/'+ AVATAR_BG[my.job] +'.png">' +
-					'<img id="inv-avatar-bg2" class="inv-avatar-bg" src="images/avatar-bg/'+ AVATAR_BG[my.job] +'.png">' +
+					'<img class="inv-avatar-bg" src="images/avatar-bg/'+ my.job +'.png">' +
+					// '<img id="inv-avatar-bg2" class="inv-avatar-bg" src="images/avatar-bg/'+ my.job +'.png">' +
 					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 					'<div id="inv-resist-wrap" class="text-shadow3">'+
 						'<div id="inv-resist-blood" class="inv-resist-icon popover-icons">' + + stats.resistBlood() + '</div>' +
@@ -1078,7 +1078,7 @@ var bar;
 		'</div>'
 	}
 	function charStatColTwoHtml() {
-		let hit = stats.autoAttackDamage()
+		let hit = stats.autoAttackDamage( true)
 		// let hit = stats.damage(true, false, true)
 		return '<div class="flex space-between">' +
 			'<div style="color: gold">Attack:</div><div>'+ stats.attack() +'</div>' +

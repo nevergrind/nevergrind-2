@@ -373,7 +373,7 @@ var tooltip;
 		tooltip.hide()
 	}
 	function conditionalHide() {
-		if (typeof tooltip[tooltip.lastHoveredType] === TYPE.OBJECT &&
+		if (typeof tooltip[tooltip.lastHoveredType] === 'object' &&
 			tooltip[tooltip.lastHoveredType].isHovering) {
 			tooltip.hide()
 			tooltip[tooltip.lastHoveredType].isHovering = false

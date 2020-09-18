@@ -14,6 +14,7 @@ var my;
 		initSkills,
 		getMyData,
 		saveCharacterData,
+		shieldIsEquipped,
 		skills: void 0,
 		mouse: {
 			x: 0,
@@ -57,7 +58,7 @@ var my;
 			party.presence[0][key] = my[key] += val
 		}
 		else {
-			if (typeof party.presence[0] === TYPE.OBJECT) party.presence[0][key] = val
+			if (typeof party.presence[0] === 'object') party.presence[0][key] = val
 			my[key] = val
 		}
 	}
@@ -103,7 +104,7 @@ var my;
 	}
 	function partyTarget(index) {
 		if (timers.castBar < 1) return
-		if (typeof party.presence[index] === TYPE.OBJECT &&
+		if (typeof party.presence[index] === 'object' &&
 			party.presence[index].row >= 0) {
 			my.targetIsMob = false
 			if (my.target === party.presence[index].row) my.target = -1
@@ -167,5 +168,8 @@ var my;
 	}
 	function getMyData() {
 		return _.pick(my, KEYS.MY_PROPS)
+	}
+	function shieldIsEquipped() {
+		return typeof items.eq[13] === 'object' && items.eq[13].itemType === 'shields'
 	}
 }($, _, TweenMax);

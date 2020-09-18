@@ -631,10 +631,10 @@ var stats = {};
 			isCrit: isCrit,
 		}
 	}
-	function autoAttackDamage(getNonCrit) {
+	function autoAttackDamage(skipSkillCheck) {
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[12] === TYPE.OBJECT && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[12].minDamage) {
 			min = items.eq[12].minDamage
@@ -654,22 +654,22 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		if (typeof getNonCrit === 'undefined') {
-			isCrit = stats.critChance() > rand()
+		isCrit = stats.critChance() > rand()
 
-			if (isCrit) {
-				if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
-					min *= 2
-					max *= 2
-				}
-				else {
-					min *= 1.5
-					max *= 1.5
-				}
+		if (isCrit) {
+			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
+				min *= 2
+				max *= 2
+			}
+			else {
+				min *= 1.5
+				max *= 1.5
 			}
 		}
 
-		combat.levelSkillCheck(weaponSkill)
+		if (!skipSkillCheck) {
+			combat.levelSkillCheck(weaponSkill)
+		}
 		return {
 			min: min,
 			max: max,
@@ -684,7 +684,7 @@ var stats = {};
 		// normalized damage for skills
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[12] === TYPE.OBJECT && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		 // get normalized DPS value for min/max
 		if (weaponSkill !== 'Hand-to-Hand') {
@@ -750,7 +750,7 @@ var stats = {};
 		if (!my.dualWield) return failedWeaponDamage
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[13] === TYPE.OBJECT && items.eq[13].name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[13] === 'object' && items.eq[13].name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
 		atk = attack(weaponSkill)
 		if (items.eq[13].minDamage) {
 			min = items.eq[13].minDamage
@@ -1502,7 +1502,7 @@ var stats = {};
 
 	function getAttackSpeed(slot) {
 		// weapon or punch speed?
-		if (typeof items.eq[slot] === TYPE.OBJECT) speed = items.eq[slot].speed
+		if (typeof items.eq[slot] === 'object') speed = items.eq[slot].speed
 		else speed = button.autoAttackSpeed
 		speedHaste = 1
 		// buffs

@@ -105,7 +105,7 @@ var button;
 
 		name = _.camelCase(skills[my.job][index].name)
 		// console.info('triggerSkill', name)
-		if (typeof skill[my.job][name] === TYPE.FUNCTION) {
+		if (typeof skill[my.job][name] === 'function') {
 			skill[my.job][name](index, skills[my.job][index])
 		}
 		else {
@@ -289,7 +289,7 @@ var button;
 	}
 
 	function handleButtonUpdate(o) {
-		if (typeof o.index === TYPE.NUMBER) {
+		if (typeof o.index === 'number') {
 			// skill
 			TweenMax.set(o.el, {
 				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'

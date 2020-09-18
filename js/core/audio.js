@@ -38,7 +38,7 @@ var audio;
 	function init(){
 		var config = localStorage.getItem('config');
 
-		if (typeof config !== TYPE.STRING) {
+		if (typeof config !== 'string') {
 			// is null - inits to default ng.config
 			audio.save()
 		}

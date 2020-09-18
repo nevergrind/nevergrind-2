@@ -185,8 +185,8 @@ var spell;
 			target: my.target,
 			targetName: getTargetName(),
 			oocEnabled: false,
-			mpCost: typeof data.mp === TYPE.FUNCTION ? data.mp(my.skills[skillIndex]) : 0,
-			spCost: typeof data.sp === TYPE.FUNCTION ? data.sp(my.skills[skillIndex]) : 0,
+			mpCost: typeof data.mp === 'function' ? data.mp(my.skills[skillIndex]) : 0,
+			spCost: typeof data.sp === 'function' ? data.sp(my.skills[skillIndex]) : 0,
 			name: data.name,
 		}
 	}

@@ -1,9 +1,3 @@
-const TYPE = Object.freeze({
-	OBJECT: 'object',
-	STRING: 'string',
-	NUMBER: 'number',
-	FUNCTION: 'function',
-})
 const CHAT = Object.freeze( {
 	SAY: { mode: '/say' },
 	PARTY: { mode: '/party' },
@@ -180,20 +174,20 @@ const MOB_TYPE = Object.freeze({
 	GIANT: 'giant',
 })
 const AVATAR_BG = Object.freeze({
-	WAR: 9,
-	CRU: 10,
-	SHD: 4,
-	MNK: 22,
-	ROG: 2,
-	RNG: 5,
-	BRD: 17,
-	DRU: 19,
-	CLR: 11,
-	SHM: 13,
-	WLK: 18,
-	ENC: 1,
-	TMP: 3,
-	WIZ: 24,
+	[JOB.WARRIOR]: 9,
+	[JOB.CRUSADER]: 10,
+	[JOB.SHADOW_KNIGHT]: 4,
+	[JOB.MONK]: 7,
+	[JOB.ROGUE]: 2,
+	[JOB.RANGER]: 5,
+	[JOB.BARD]: 17,
+	[JOB.DRUID]: 19,
+	[JOB.CLERIC]: 22,
+	[JOB.SHAMAN]: 13,
+	[JOB.WARLOCK]: 18,
+	[JOB.ENCHANTER]: 1,
+	[JOB.TEMPLAR]: 3,
+	[JOB.WIZARD]: 24,
 })
 const KEYS = Object.freeze({
 	DATA: ['data'],

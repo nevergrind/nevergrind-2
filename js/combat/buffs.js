@@ -884,7 +884,22 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: (buff) => 'Benevolence heals you for ' + buff.damage + ' health.',
 		},
 		jubilee: { hate: 2.5 },
+		// SHD
+		shadowBreak: { hate: 1 },
+		deathStrike: { hate: 1 },
+		crescentCleave: { hate: 1 },
+		doomThrust: { hate: 1 },
+		brainHew: { hate: 1 },
+		ravagingPlague: { hate: 1 },
+		decayingDoom: { hate: 1 },
+		bloodTerror: { hate: 1 },
+		lifeTap: { hate: 1 },
+		vampiricLust: { hate: 1 },
+		bloodFeast: { hate: 1 },
+		markOfRemphanCompleted: { hate: 1 },
+		// MNK
 
+		// ROG
 	}
 	///////////////////////////////////////////
 

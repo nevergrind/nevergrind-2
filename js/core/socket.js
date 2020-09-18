@@ -25,7 +25,7 @@ var socket;
 	////////////////////////////////////////
 	function subscribe(topic, callback) {
 		topic = _.toLower(topic)
-		if (typeof socket.subs[topic] !== TYPE.OBJECT ||
+		if (typeof socket.subs[topic] !== 'object' ||
 			!socket.subs[topic].active) {
 			// console.info("subscribing:", topic, callback.name);
 			socket.session.subscribe(topic, callback).then(registerSubscription);
@@ -34,7 +34,7 @@ var socket;
 	function publish(topic, obj, exclude) {
 		topic = _.toLower(topic)
 		// console.info('publishing: ', topic, obj);
-		if (typeof socket.session === TYPE.OBJECT) {
+		if (typeof socket.session === 'object') {
 			socket.published++
 			broadcasts.push(Date.now())
 			while (broadcasts.length > 100) broadcasts.shift()
@@ -61,7 +61,7 @@ var socket;
 	}
 	function unsubscribe(channel) {
 		channel = _.toLower(channel);
-		if (typeof socket.subs[channel] === TYPE.OBJECT) {
+		if (typeof socket.subs[channel] === 'object') {
 			try {
 				// console.warn('Trying to unsubscribe from:', channel);
 				socket.session.unsubscribe(socket.subs[channel]);

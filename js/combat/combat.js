@@ -399,7 +399,7 @@ var combat;
 
 	function updateMobHp(o) {
 		// console.info('updateMobHp updateHate obj', _.clone(o))
-		if (typeof buffs[o.key] === TYPE.OBJECT) {
+		if (typeof buffs[o.key] === 'object') {
 			if (buffs[o.key].hate === undefined) o.hate = 1
 			else o.hate = buffs[o.key].hate
 		}
@@ -427,12 +427,12 @@ var combat;
 			}
 		}
 		processEffects(o)
-		if (o.key && typeof animateSkill[key] === TYPE.FUNCTION) {
+		if (o.key && typeof animateSkill[key] === 'function') {
 
 		}
 	}
 	function processEffects(o) {
-		if (typeof o.effects === TYPE.OBJECT) {
+		if (typeof o.effects === 'object') {
 			// console.info('processEffects')
 			// non-duration effects that are not buffs, but apply instantly
 			if (o.effects.stagger) mobEffects.stagger(o.index)
@@ -465,10 +465,10 @@ var combat;
 		myDamage = 0
 		for (i=0; i<len; i++) {
 			if (damages[i].damage > 0 ||
-				typeof buffs[damages[i].key] === TYPE.OBJECT && buffs[damages[i].key].isDebuff) {
+				typeof buffs[damages[i].key] === 'object' && buffs[damages[i].key].isDebuff) {
 				myDamage += damages[i].damage
 				damages[i].row = my.row
-				if (typeof damages[i].buffs === TYPE.OBJECT) {
+				if (typeof damages[i].buffs === 'object') {
 					// buffs only get added if it hits
 					damages[i].buffs.forEach(buff => buffArr.push(buff))
 				}
@@ -510,7 +510,7 @@ var combat;
 		}
 		*/
 		// buffs
-		if (typeof data.buffs === TYPE.OBJECT) {
+		if (typeof data.buffs === 'object') {
 			buffArr = []
 			data.buffs.forEach(buff => buffArr.push(buff))
 			buffArr.length && battle.processBuffs(buffArr)
@@ -554,12 +554,12 @@ var combat;
 				// dot was cast by me, so we must kill our own buffs
 				// if (buff.level < my.buffs[key].level) {
 				// console.info('rxDotMob', damages[i].index)
-				if (typeof mobs[damages[i].index] === TYPE.OBJECT &&
-					typeof mobs[damages[i].index].buffs[rowKey] === TYPE.OBJECT) {
-					if (typeof mobs[damages[i].index].buffs[rowKey].timer === TYPE.OBJECT) {
+				if (typeof mobs[damages[i].index] === 'object' &&
+					typeof mobs[damages[i].index].buffs[rowKey] === 'object') {
+					if (typeof mobs[damages[i].index].buffs[rowKey].timer === 'object') {
 						mobs[damages[i].index].buffs[rowKey].timer.kill()
 					}
-					if (typeof mobs[damages[i].index].buffs[rowKey].dotTicks === TYPE.OBJECT) {
+					if (typeof mobs[damages[i].index].buffs[rowKey].dotTicks === 'object') {
 						mobs[damages[i].index].buffs[rowKey].dotTicks.kill()
 					}
 				}
@@ -584,8 +584,8 @@ var combat;
 			}
 			else {
 				// dot was cast by someone else
-				if (typeof mobs[damages[i].index].buffs[rowKey] === TYPE.OBJECT) {
-					if (typeof mobs[damages[i].index].buffs[rowKey].timer === TYPE.OBJECT) {
+				if (typeof mobs[damages[i].index].buffs[rowKey] === 'object') {
+					if (typeof mobs[damages[i].index].buffs[rowKey].timer === 'object') {
 						mobs[damages[i].index].buffs[rowKey].timer.kill()
 					}
 				}
@@ -913,7 +913,7 @@ var combat;
 	function healToMe(row, heal) {
 		hate = 0
 		// console.info('healToMe rxHotHero', _.clone(heal))
-		hate += heal.damage * (typeof buffs[heal.key].hate === TYPE.NUMBER ? buffs[heal.key].hate : 1)
+		hate += heal.damage * (typeof buffs[heal.key].hate === 'number' ? buffs[heal.key].hate : 1)
 		if (my.row === heal.index) {
 			// healing ME
 			healAmount = processHeal(heal.damage)
@@ -935,13 +935,13 @@ var combat;
 	function hotToMe(row, heal) {
 		// console.info('hotToMe rxHotHero', row, heal)
 		hate = 0
-		hate += heal.damage * (typeof buffs[heal.key].hate === TYPE.NUMBER ? buffs[heal.key].hate : 1)
+		hate += heal.damage * (typeof buffs[heal.key].hate === 'number' ? buffs[heal.key].hate : 1)
 		if (my.row === heal.index) {
 			// HoT
 			let keyRow = heal.key + '-' + heal.index
 			// cancel/overwrite existing buff timer data keyRow: duration, function
-			if (typeof my.buffs[keyRow] === TYPE.OBJECT &&
-				typeof my.buffs[keyRow].timer === TYPE.OBJECT) {
+			if (typeof my.buffs[keyRow] === 'object' &&
+				typeof my.buffs[keyRow].timer === 'object') {
 				my.buffs[keyRow].timer.kill()
 				my.buffs[keyRow].hotTicks.kill()
 				battle.removeBuff(heal.key, keyRow)
@@ -1015,7 +1015,7 @@ var combat;
 				let previousStack = typeof my.buffs[key] === 'object' ?
 						my.buffs[key].stacks : void 0
 				// check level of buff - cancel if lower
-				if (typeof my.buffs[key] === TYPE.OBJECT) {
+				if (typeof my.buffs[key] === 'object') {
 					if (buff.level < my.buffs[key].level) {
 						// buff is lower level -
 						if (//no timer but has damage
@@ -1029,7 +1029,7 @@ var combat;
 					}
 
 					// cancel/overwrite existing buff timer data keyRow: duration, function
-					if (typeof my.buffs[key].timer === TYPE.OBJECT) {
+					if (typeof my.buffs[key].timer === 'object') {
 						my.buffs[key].timer.kill()
 					}
 				}

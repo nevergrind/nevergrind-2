@@ -120,7 +120,7 @@ var game;
 			level: my.level,
 			job: my.job,
 			name: my.name,
-			isLeader: typeof party.presence[0] === TYPE.OBJECT ? party.presence[0].isLeader : true
+			isLeader: typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true
 		}
 		partyData = {
 			...obj,

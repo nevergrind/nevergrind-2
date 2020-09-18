@@ -2075,8 +2075,8 @@ var loot = {};
 		value = 1
 		if (!item.cost) {
 			for (key in item) {
-				if (typeof item[key] === TYPE.NUMBER &&
-					typeof saleValues[key] === TYPE.NUMBER) {
+				if (typeof item[key] === 'number' &&
+					typeof saleValues[key] === 'number') {
 					var val = item[key] * (saleValues[key] * (selling ? 1 : 16))
 					value += val
 				}
