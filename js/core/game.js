@@ -191,7 +191,7 @@ var game;
 				'<span data-row="'+ player.row +'" data-name="'+ player.name +'" class="chat-player">' +
 					'['+ player.level +':<span class="chat-'+ player.job +'">'+ player.name +'</span>]' +
 				'</span>';
-			chat.dom.chatRoom.appendChild(el);
+			query.el('#chat-room').appendChild(el);
 		}
 		auditRoom(time);
 		chat.setHeader();

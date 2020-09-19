@@ -78,14 +78,14 @@ var audio;
 		});*/
 	}
 	function playMusic(track) {
-		dom.bgmusic.src = ''
-		dom.bgmusic.volume = ng.config.musicVolume / 100
-		dom.bgmusic.src = "music/" + track + ".mp3"
+		query.el('#bgmusic').src = ''
+		query.el('#bgmusic').volume = ng.config.musicVolume / 100
+		query.el('#bgmusic').src = "music/" + track + ".mp3"
 
 		// var promise = new Audio("music/" + track + ".mp3")
-		var promise = dom.bgmusic.play()
+		var promise = query.el('#bgmusic').play()
 
-		//var promise = dom.bgmusic.play()
+		//var promise = query.el('#bgmusic').play()
 		if (promise !== undefined) {
 			promise.then(_ => {})
 		}
@@ -105,7 +105,7 @@ var audio;
 			// start playing music
 			audio.musicStart();
 		}
-		dom.bgmusic.volume = val / 100;
+		query.el('#bgmusic').volume = val / 100;
 		ng.config.musicVolume = val;
 		audio.save();
 	}
@@ -114,12 +114,12 @@ var audio;
 		audio.save();
 	}
 	function pause() {
-		dom.bgmusic.pause();
+		query.el('#bgmusic').pause();
 	}
 	function gameMusicInit() {
 		if (ng.config.musicVolume){
 			audio.pause();
-			dom.bgmusic.loop = false;
+			query.el('#bgmusic').loop = false;
 			audio.gameMusicPlayNext();
 		}
 	}
@@ -127,10 +127,10 @@ var audio;
 		// FIX IT SO IT USES BGAUDIO
 		audio.totalTracks = audio.tracks.length;
 		var nowPlaying = audio.tracks[++audio.trackIndex % audio.totalTracks];
-		dom.bgmusic.pause();
-		dom.bgmusic.src = "music/" + nowPlaying +".mp3";
-		dom.bgmusic.volume = ng.config.musicVolume / 100;
-		dom.bgmusic.onended = function(){
+		query.el('#bgmusic').pause();
+		query.el('#bgmusic').src = "music/" + nowPlaying +".mp3";
+		query.el('#bgmusic').volume = ng.config.musicVolume / 100;
+		query.el('#bgmusic').onended = function(){
 			audio.gameMusicPlayNext();
 		}
 		// console.info("PLAYING: ", nowPlaying);
@@ -143,7 +143,7 @@ var audio;
 			vol: 0,
 			ease: Linear.easeNone,
 			onUpdate: function(){
-				dom.bgmusic.volume = x.vol;
+				query.el('#bgmusic').volume = x.vol;
 			}
 		});
 	}

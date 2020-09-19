@@ -90,7 +90,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -138,7 +138,7 @@
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
 			level: my.skills[spell.index],
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		// console.info('vampiricGaze', damages[Zero])
 		combat.txDotMob(damages)
@@ -192,7 +192,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -211,7 +211,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -241,7 +241,7 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
 		})
-		hit = stats.spellDamage(false, true)
+		hit = stats.spellDamage(-100)
 		damages.push({
 			index: spell.config.target,
 			key: 'rejuvinateHot',
@@ -268,7 +268,7 @@
 			key: 'mysticalGlow',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true) // force crit, get non-crit,
+			...stats.spellDamage(-100)
 		}])
 	}
 	function mysticalGlowActive() {
@@ -299,7 +299,7 @@
 			key: 'vampiricAllure',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 	}
@@ -321,7 +321,7 @@
 			key: 'borealTalisman',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 	}

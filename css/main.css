@@ -1162,7 +1162,8 @@ background-clip: content-box;
 	justify-content: space-between;
 	font-size: .675rem;
 	color: #0a0;
-	line-height: 1.2;
+	line-height: 1;
+	margin-bottom: .15rem;
 }
 
 #bar-main-menu {
@@ -1911,9 +1912,12 @@ background-repeat: no-repeat;
  */
 #title-gwen {
 	position: absolute;
-	height: 100vh;
+	height: auto;
+	width: auto;
+	max-height: 100%;
+	max-width: 60%;
 	bottom: -13vh;
-	left: 0;
+	left: 2%;
 	opacity: 0;
 	transform: translate(-5%, 0%);
 	filter: brightness(0);

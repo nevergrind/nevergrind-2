@@ -226,7 +226,7 @@
 						key: 'meteorStrike',
 						index: tgt,
 						damageType: spell.data.damageType,
-						...stats.spellDamage(false, true)
+						...stats.spellDamage(-100)
 					})
 					damages[i].damage = round(damages[i].damage * .35)
 					if (damages[i].damage < 1) damages[i].damage = 1
@@ -253,7 +253,7 @@
 			key: 'frozenBarrier',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -288,7 +288,7 @@
 			key: 'mirrorImage',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)

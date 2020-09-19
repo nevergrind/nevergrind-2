@@ -240,7 +240,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -259,7 +259,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true),
+			...stats.spellDamage(-100),
 		})
 		combat.txDotMob(damages)
 
@@ -294,7 +294,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -316,7 +316,7 @@
 			key: 'moltenAegis',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)

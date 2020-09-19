@@ -425,9 +425,9 @@ var ng;
 	}
 
 	function msg(msg, d) {
-		dom.msg.innerHTML = msg;
-		TweenMax.killTweensOf(dom.msg)
-		TweenMax.set(dom.msg, {
+		query.el('#msg').innerHTML = msg;
+		TweenMax.killTweensOf(query.el('#msg'))
+		TweenMax.set(query.el('#msg'), {
 			overwrite: 1,
 			scale: 1,
 		})
@@ -437,7 +437,7 @@ var ng;
 		msgTimer = delayedCall(d, msgComplete)
 	}
 	function msgComplete() {
-		TweenMax.to(dom.msg, .2, {
+		TweenMax.to(query.el('#msg'), .2, {
 			scale: 0,
 			ease: Power2.easeOut
 		})

@@ -123,7 +123,7 @@
 			key: 'doomThrust',
 			index: my.target,
 			damageType: DAMAGE_TYPE.BLOOD,
-			damage: round(hit.damage * 1.5)
+			damage: round(hit.damage * data.dotModifier)
 		})
 		combat.txDotMob(damages)
 	}
@@ -136,18 +136,32 @@
 		spell.startCasting(index, data, astralBladeCompleted)
 	}
 	function astralBladeCompleted() {
-		combat.txDamageMob([{
-			key: 'astralBlade',
-			index: spell.config.target,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage(),
-			buffs: [{
-				i: spell.config.target, // target
-				row: my.row, // this identifies unique buff state/icon
-				key: 'sealOfDamnation', // this sets the flag
-			}],
-		}])
+		let originalTarget = my.target
+		let firstTargets = [-2, -1, 0, 1, 2]
+		for (var i=0; i<12; i++) {
+			!function(i) {
+				let splashIndex
+				if (i <= 4) {
+					// guarantee at least one hit per 5x
+					splashIndex = _.random(0, firstTargets.length - 1)
+					splashIndex = firstTargets.splice(splashIndex, 1)
+					splashIndex = splashIndex[0]
+				}
+				else {
+					splashIndex = _.random(-2, 2)
+				}
+				let tgt = battle.getSplashTarget(splashIndex, originalTarget)
+				delayedCall(i * .1, () => {
+					combat.txDamageMob([{
+						key: 'astralBlade',
+						index: tgt,
+						spellType: spell.data.spellType,
+						damageType: spell.data.damageType,
+						...stats.spellDamage(),
+					}])
+				})
+			}(i)
+		}
 		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function ravagingPlague(index, data) {
@@ -159,20 +173,26 @@
 		spell.startCasting(index, data, ravagingPlagueCompleted)
 	}
 	function ravagingPlagueCompleted() {
+		// dd
 		combat.txDamageMob([{
 			key: 'ravagingPlague',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			buffs: [{
-				i: spell.config.target, // target
-				row: my.row, // this identifies unique buff state/icon
-				key: 'stun', // this sets the flag,
-				duration: spell.data.stunDuration,
-			}],
 			...stats.spellDamage()
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		// dot
+		damages = []
+		hit = stats.spellDamage(-100)
+		hit.damage *= 2
+		damages.push({
+			key: 'ravagingPlague',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...hit
+		})
+		combat.txDotMob(damages)
 	}
 	function decayingDoom(index, data) {
 		if (timers.castBar < 1) return
@@ -183,15 +203,26 @@
 		spell.startCasting(index, data, decayingDoomCompleted)
 	}
 	function decayingDoomCompleted() {
+		// dd
 		combat.txDamageMob([{
 			key: 'decayingDoom',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			isBlighted: true,
 			...stats.spellDamage()
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		// dot
+		damages = []
+		hit = stats.spellDamage(-100)
+		hit.damage *= 2
+		damages.push({
+			key: 'decayingDoom',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...hit
+		})
+		combat.txDotMob(damages)
 	}
 	function bloodTerror(index, data) {
 		if (timers.castBar < 1) return
@@ -203,30 +234,30 @@
 		spell.startCasting(index, data, bloodTerrorCompleted)
 	}
 	function bloodTerrorCompleted() {
-		let spellType = spell.data.spellType
-		let damageType = spell.data.damageType
-		let targetPattern = [0, 1, 2, -2, -1]
-		let targets = []
-		for (var i=0; i<5; i++) {
-			targets.push(battle.getSplashTarget(targetPattern[i]))
-		}
-		targets.forEach((tgt, i) => {
-			delayedCall(i * .2, () => {
-				damages = []
-				hit = {
-					key: 'bloodTerror',
-					index: tgt,
-					spellType: spellType,
-					damageType: damageType,
-					...stats.spellDamage(),
-				}
-				if (rand() > .5) {
-					hit.effects = { stagger: true }
-				}
-				damages.push(hit)
-				combat.txDamageMob(damages)
-			})
+		damages = []
+		damages.push({
+			key: 'bloodTerror',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage(-100),
 		})
+		combat.txDotMob(damages)
+		// fear effect
+		damages.push({
+			key: 'bloodTerror',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			damage: 0,
+			buffs: [{
+				i: spell.config.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'fear', // this sets the flag,
+				duration: 12,
+			}],
+		})
+		combat.txDamageMob(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function lifeTap(index, data) {

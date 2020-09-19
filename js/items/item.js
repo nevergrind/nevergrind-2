@@ -1645,9 +1645,9 @@ var loot = {};
 
 	function showCursorImg(type, index) {
 		updateCursorImgPosition()
-		dom.itemTooltipCursorImg.style.visibility = 'visible'
-		dom.itemTooltipCursorImg.src = bar.getItemSlotImage(type, index)
-		TweenMax.to(dom.itemTooltipCursorImg, .5, {
+		query.el('#item-tooltip-cursor-img').style.visibility = 'visible'
+		query.el('#item-tooltip-cursor-img').src = bar.getItemSlotImage(type, index)
+		TweenMax.to(query.el('#item-tooltip-cursor-img'), .5, {
 			startAt: {
 				filter: 'saturate(3) brightness(3)',
 			},
@@ -1656,7 +1656,7 @@ var loot = {};
 	}
 
 	function updateCursorImgPosition() {
-		dom.itemTooltipCursorImg.style.transform =
+		query.el('#item-tooltip-cursor-img').style.transform =
 			'translate('+ (my.mouse.x - (32 * ng.responsiveRatio)) +'px, '+ (my.mouse.y - (28 * ng.responsiveRatio)) +'px)'
 	}
 	function itemSwapValid(drag, drop) {
@@ -1755,7 +1755,7 @@ var loot = {};
 		item.dropSlot = -1
 		item.dragEqType = ''
 		item.dropEqType = ''
-		dom.itemTooltipCursorImg.style.visibility = 'hidden'
+		query.el('#item-tooltip-cursor-img').style.visibility = 'hidden'
 		item.isIdentifyMode && toggleIdentifyMode()
 	}
 	function handleDropFail(r) {

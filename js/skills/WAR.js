@@ -52,20 +52,31 @@ let skill = {};
 		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
-		damages = [{
+		// process skill data
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		damages = []
+		damages.push({
+			...stats.skillDamage(data.critBonus[my.skills[index]]),
 			key: 'rupture',
 			index: my.target,
 			isRanged: true,
 			isPiercing: true,
-			damageType: DAMAGE_TYPE.BLOOD,
-			...stats.skillDamage(-100, false)
-		}]
-		// defaults to max instead of large melee weapon range
-		damages[0].damage = damages[0].max
-		damages[0].damage = (damages[0].damage * data.enhancedDamage[my.skills[index]]) + my.level
-
-		combat.txDotMob(damages)
+			enhancedDamage: enhancedDamage,
+			hitBonus: data.hitBonus[my.skills[index]],
+		})
+		combat.txDamageMob(damages)
+		spell.triggerCooldown(index, data)
 		button.triggerGlobalCooldown()
+		// dot
+		damages = []
+		hit = stats.skillDamage(-100)
+		damages.push({
+			key: 'rupture',
+			index: my.target,
+			damageType: DAMAGE_TYPE.BLOOD,
+			damage: round(hit.damage * data.dotModifier)
+		})
+		combat.txDotMob(damages)
 	}
 	function whirlwind(index, data) {
 		// check constraints

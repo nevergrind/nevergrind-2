@@ -87,7 +87,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(false, true)
+				...stats.spellDamage(-100)
 			})
 		}
 		combat.txDotMob(damages)
@@ -110,7 +110,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(false, true)
+				...stats.spellDamage(-100)
 			})
 		}
 		combat.txDotMob(damages)
@@ -152,7 +152,7 @@
 	}
 	function battleHymnCompleted() {
 		damages = []
-		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		hit = stats.spellDamage(-100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
@@ -176,7 +176,7 @@
 	}
 	function militantCadenceCompleted() {
 		damages = []
-		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		hit = stats.spellDamage(-100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
@@ -217,7 +217,7 @@
 	}
 	function litanyOfLifeCompleted() {
 		damages = []
-		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		hit = stats.spellDamage(-100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
@@ -241,7 +241,7 @@
 	}
 	function melodyOfManaCompleted() {
 		damages = []
-		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		hit = stats.spellDamage(-100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
@@ -298,7 +298,7 @@
 	}
 	function chromaticSonataCompleted() {
 		damages = []
-		hit = stats.spellDamage(false, true) // forceCrit, getNonCrit
+		hit = stats.spellDamage(-100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,

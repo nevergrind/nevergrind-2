@@ -38,6 +38,8 @@ var mob;
 		hideMobTargets,
 		setFilter,
 		setTimeScaleSpeed,
+		isParalyzed,
+		isFeared,
 		isPoisoned,
 		txData: [],
 		enableMobHeartbeat: true,
@@ -584,8 +586,7 @@ var mob;
 				if (mobRow > -1) {
 					// party.getIndexByRow(mostHatedRow)
 					// console.info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
-					if (timers.mobEffects[i].paralyzeDuration > 0 &&
-						rand() < ParalyzeRate) {
+					if (mob.isParalyzed(i) && rand() < ParalyzeRate) {
 						mobDamages = [{
 							row: mobRow,
 							isParalyzed: true,
@@ -943,6 +944,12 @@ var mob;
 			}
 		}
 	}
+	function isParalyzed(index) {
+		return timers.mobEffects[index].paralyzeDuration > 0
+	}
+	function isFeared(index) {
+		return timers.mobEffects[index].fearDuration > 0
+	}
 	function isPoisoned(index) {
 		return Boolean(
 			mobs[index].buffFlags.engulfingDarkness ||
@@ -950,6 +957,7 @@ var mob;
 			mobs[index].buffFlags.subversion ||
 			mobs[index].buffFlags.primordialSludge ||
 			mobs[index].buffFlags.euphonicDirge ||
+			mobs[index].buffFlags.ravagingPlague ||
 			mobs[index].buffFlags.affliction
 		)
 	}

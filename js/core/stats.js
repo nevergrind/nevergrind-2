@@ -568,7 +568,7 @@ var stats = {};
 		}
 		return stats.memo.enhanceAll
 	}
-	function spellDamage(forceCrit, getNonCrit) {
+	function spellDamage(critMod = 0) {
 		max = spell.data.spellDamage(my.skills[spell.index])
 		// console.info('spellDamage 1', max)
 		// enhance by type % and ALL%
@@ -610,8 +610,7 @@ var stats = {};
 		min = max * spell.data.spellVariance
 		// console.info('spellDamage 2', min, max)
 		// crit?
-		if (getNonCrit) isCrit = false
-		else isCrit = forceCrit || stats.critChance() > rand()
+		isCrit = ((critMod / 100) + stats.critChance()) > rand()
 
 		if (isCrit) {
 			min *= 1.5

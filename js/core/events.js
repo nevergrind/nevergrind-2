@@ -190,7 +190,7 @@
 					if (!chat.hasFocus && !guild.hasFocus && chat.focusKeys.includes(key)) {
 						var z = $("#chat-input");
 						var txt = z.val();
-						!txt && chat.dom.chatInput.focus();
+						!txt && query.el('#chat-input').focus();
 						// console.warn('canceling', key)
 						return;
 					}
@@ -207,7 +207,7 @@
 						// chat focus history nav up
 						if (chat.history[chat.historyIndex - 1] !== undefined) {
 							var o = chat.history[--chat.historyIndex];
-							chat.dom.chatInput.value = o.msg;
+							query.el('#chat-input').value = o.msg;
 							chat.modeChange(o);
 						}
 					}
@@ -219,7 +219,7 @@
 						}
 						else if (chat.history[chat.historyIndex + 1] !== undefined) {
 							var o = chat.history[++chat.historyIndex];
-							chat.dom.chatInput.value = o.msg;
+							query.el('#chat-input').value = o.msg;
 							chat.modeChange(o);
 						}
 					}
@@ -240,7 +240,7 @@
 					// town specific
 					if (!chat.hasFocus) {
 						// if no aside, focus on chat input first
-						chat.focusKeys.includes(key) && chat.dom.chatInput.focus();
+						chat.focusKeys.includes(key) && query.el('#chat-input').focus();
 
 						if (guild.hasFocus && key === 'Enter') {
 							guild.create();
@@ -250,7 +250,7 @@
 				else {
 					// dungeon & combat specific
 					if (!chat.hasFocus) {
-						if (chat.focusKeys.includes(key)) chat.dom.chatInput.focus()
+						if (chat.focusKeys.includes(key)) query.el('#chat-input').focus()
 						else if (key === ' ') spell.cancelSpell()
 						else if (key === 'F1') my.partyTarget(0)
 						else if (key === 'F2') my.partyTarget(1)

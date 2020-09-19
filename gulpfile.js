@@ -55,7 +55,6 @@ const jsFiles = [
 	'core/expanse',
 	'core/pix',
 	'core/my',
-	'core/dom',
 	'core/audio',
 	'core/game',
 	'core/title',

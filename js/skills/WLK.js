@@ -51,7 +51,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -93,7 +93,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -122,7 +122,7 @@
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
 			level: my.skills[spell.index],
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -240,7 +240,7 @@
 	}
 	function drainSoulCompleted() {
 		damages = []
-		hit = stats.spellDamage(false, true)
+		hit = stats.spellDamage(-100)
 		damages.push({
 			key: 'drainSoul',
 			index: spell.config.target,
@@ -297,7 +297,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -320,7 +320,7 @@
 			key: 'profaneSpirit',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 	}

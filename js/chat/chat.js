@@ -13,7 +13,6 @@ var chat;
 		lastWhisper: {
 			name: ''
 		},
-		dom: {},
 		historyIndex: 0,
 		history: [],
 		divider: '<div class="chat-help">======================================</div>',
@@ -121,14 +120,15 @@ var chat;
 	}
 	function modeChange(h) {
 		// only trim leading spaces
-		var mode = h === void 0 ? (chat.dom.chatInput.value + ng.lastKey) : h.mode;
+		var mode = h === void 0 ? (query.el('#chat-input').value + ng.lastKey) : h.mode;
+		// replace all spaces?
 		mode = mode.replace(/^\s+/g, '');
 
 		if (mode === '/say' && !my.channel) {
-			console.log("You cannot communicate in town while in a dungeon", CHAT.WARNING);
+			console.warn("You cannot communicate to town while in a dungeon", CHAT.WARNING);
 			delayedCall(0, function() {
 				// wipe input after keyup to get rid of /say
-				$("#chat-input").val('');
+				query.el('#chat-input').value = ''
 			});
 			return false;
 		}
@@ -137,7 +137,7 @@ var chat;
 			chat.modeCommand = mode;
 			chat.modeSet(mode);
 			if (!h) {
-				chat.dom.chatInput.value = '';
+				query.el('#chat-input').value = '';
 			}
 			return true;
 		}
@@ -157,7 +157,7 @@ var chat;
 			chat.modeName = name;
 			chat.modeSet(chat.modeCommand);
 			if (!h) {
-				chat.dom.chatInput.value = '';
+				query.el('#chat-input').value = '';
 			}
 			return true;
 		}
@@ -166,21 +166,22 @@ var chat;
 		}
 	}
 	function modeSet(mode) {
+		chat.modeCommand = mode
 		if (mode === '/say') {
-			chat.dom.chatInputMode.className = 'chat-pink';
-			chat.dom.chatModeMsg.textContent = 'To ' + my.channel + ':';
+			query.el('#chat-input-mode').className = 'chat-pink'
+			query.el('#chat-mode-msg').textContent = 'To ' + my.channel + ':'
 		}
 		else if (mode === '/party') {
-			chat.dom.chatInputMode.className = 'chat-party';
-			chat.dom.chatModeMsg.textContent = 'To party:';
+			query.el('#chat-input-mode').className = 'chat-party'
+			query.el('#chat-mode-msg').textContent = 'To party:'
 		}
 		else if (mode === '/guild') {
-			chat.dom.chatInputMode.className = 'chat-guild';
-			chat.dom.chatModeMsg.textContent = 'To guild:';
+			query.el('#chat-input-mode').className = 'chat-guild'
+			query.el('#chat-mode-msg').textContent = 'To guild:'
 		}
 		else if (mode === '@') {
-			chat.dom.chatInputMode.className = 'chat-whisper';
-			chat.dom.chatModeMsg.textContent = 'To '+ chat.modeName +':';
+			query.el('#chat-input-mode').className = 'chat-whisper'
+			query.el('#chat-mode-msg').textContent = 'To '+ chat.modeName +':'
 		}
 	}
 	function init() {
@@ -200,13 +201,6 @@ var chat;
 
 			$("#chat-room")
 				.on('click contextmenu', '.chat-player', handlePlayerClick);
-			// dom cache
-			chat.dom.chatRoom = getElementById('chat-room');
-			chat.dom.chatHeader = getElementById('chat-header');
-			chat.dom.chatLog = getElementById('chat-log');
-			chat.dom.chatInput = getElementById('chat-input');
-			chat.dom.chatInputMode = getElementById('chat-input-mode');
-			chat.dom.chatModeMsg = getElementById('chat-mode-msg');
 		}
 	}
 	function handleMousedownChatLog() {
@@ -226,15 +220,15 @@ var chat;
 	function log(msg, className) {
 		// report to chat-log
 		if (msg){
-			while (chat.dom.chatLog.childElementCount >= 500) {
-				chat.dom.chatLog.removeChild(chat.dom.chatLog.firstChild)
+			while (query.el('#chat-log').childElementCount >= 500) {
+				query.el('#chat-log').removeChild(query.el('#chat-log').firstChild)
 			}
 			var el = createElement('div')
 			if (className){
 				el.className = className
 			}
 			el.innerHTML = msg
-			chat.dom.chatLog.appendChild(el)
+			query.el('#chat-log').appendChild(el)
 			chat.scrollBottom()
 		}
 	}
@@ -267,7 +261,7 @@ var chat;
 		else log(helpHtml)
 	}
 	function sendMsg(input) {
-		var msg = input || chat.dom.chatInput.value.trim(),
+		var msg = input || query.el('#chat-input').value.trim(),
 			msgLower = msg.toLowerCase();
 
 		// bypass via ENTER or chat has focus
@@ -412,10 +406,10 @@ var chat;
 		return o;
 	}
 	function clearInput() {
-		chat.dom.chatInput.value = '';
+		query.el('#chat-input').value = '';
 	}
 	function clearChatLog() {
-		chat.dom.chatLog.innerHTML = '';
+		query.el('#chat-log').innerHTML = '';
 	}
 	function emote(msg) {
 		var a = msg.split(' ');
@@ -479,20 +473,20 @@ var chat;
 				name: chat.lastWhisper.name
 			}
 			chat.modeChange(o);
-			chat.dom.chatInput.focus();
+			query.el('#chat-input').focus();
 		}
 	}
 	function scrollBottom() {
 		if (!chat.isClicked && chat.initialized){
-			chat.dom.chatLog.scrollTop = chat.dom.chatLog.scrollHeight;
+			query.el('#chat-log').scrollTop = query.el('#chat-log').scrollHeight;
 		}
 	}
 	function clearLog() {
-		chat.dom.chatLog.innerHTML = '';
+		query.el('#chat-log').innerHTML = '';
 	}
 	function setHeader() {
 		// or chat.presence.length ?
-		chat.dom.chatHeader.innerHTML =
+		query.el('#chat-header').innerHTML =
 			'<span class="ellipsis">' + my.channel + '</span>' + '<span id="chat-header-count">&thinsp;(' + chat.presence.length + ')</span>';
 	}
 	function joinParse(msg) {

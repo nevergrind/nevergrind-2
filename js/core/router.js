@@ -64,13 +64,13 @@ var router;
 		else if (r === 'p->heal') combat.rxHotHero(data)
 		else if (r === 'p->buff') combat.rxBuffHero(data)
 	}
-	function toGuild(data, r) {
-		if (r === 'guild->hasJoined') guild.hasJoined(data)
-		else if (r === 'guild->quit') guild.hasDisbanded(data)
-		else if (r === 'guild->boot') guild.wasBooted(data)
-		else if (r === 'guild->promote') guild.wasPromoted(data)
-		else if (r === 'guild->demoteReceived') guild.demoteReceived(data)
-		else if (r === 'guild->leader') guild.wasLeader(data)
-		else if (r === 'guild->motd') guild.zmqMotd(data)
+	function toGuild(data, route) {
+if (route === 'guild->hasJoined') guild.hasJoined(data)
+else if (route === 'guild->quit') guild.hasDisbanded(data)
+else if (route === 'guild->boot') guild.wasBooted(data)
+else if (route === 'guild->promote') guild.wasPromoted(data)
+else if (route === 'guild->demoteReceived') guild.demoteReceived(data)
+else if (route === 'guild->leader') guild.wasLeader(data)
+else if (route === 'guild->motd') guild.zmqMotd(data)
 	}
 })();

@@ -468,7 +468,7 @@ var bar;
 		//audio.playSound('flshhit2')
 	}
 	function handleDragMusicEnd() {
-		dom.bgmusic.volume = ng.config.musicVolume / 100;
+		query.el('#bgmusic').volume = ng.config.musicVolume / 100;
 	}
 
 	function handleDragSfx() {
@@ -597,7 +597,7 @@ var bar;
 		ng.config = ng.getDefaultOptions()
 		updateOptionsDOM()
 		audio.save()
-		dom.bgmusic.volume = ng.config.musicVolume / 100
+		query.el('#bgmusic').volume = ng.config.musicVolume / 100
 		setWindowSize({
 			currentTarget: {
 				dataset: { id: ng.config.display }
@@ -941,9 +941,9 @@ var bar;
 		bar.averagePing = ~~_.meanBy(game.pingHistory, val => val);
 		// dom
 		bar.dom.lag.innerHTML =
-			'<span class="popover-icons" id="bar-msg-sec" class="'+ getPingColor(ping) +'">' + (socket.msgPerSec) + ' m/s</span>' +
-			'<span class="popover-icons" id="bar-average-ping" class="'+ getPingColor(ping) +')">' + ping +
-				' ('+ bar.averagePing + ') ms</span>'
+			'<span class="popover-icons" id="bar-msg-sec" class="'+ getPingColor(ping) +'">' + (socket.msgPerSec) + ' pkt/sec</span>' +
+			'<span class="popover-icons" id="bar-average-ping" class="'+ getPingColor(ping) +')">Ping: ' + ping +
+				' Avg: '+ bar.averagePing + '</span>'
 		/*
 		game.pingHistory.push(ping);
 		if (game.pingHistory.length > 20) {

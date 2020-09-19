@@ -137,7 +137,8 @@ var combat;
 	}]
 	const resourceLeechDivider = 1000
 	let chance = 0
-	let addedDamage
+	let addedDamage = 0
+	let amountReduced = 0
 	let totalAddedDamage = 0
 	let totalDamage = 0
 	let myDamage = 0
@@ -246,14 +247,16 @@ var combat;
 				if (d.key === 'shadowBreak') {
 					mobs[d.index].armor += .01
 				}
+				if (mobs[d.index].armor > 1) mobs[d.index].armor = 1
 			}
 			if (mobs[d.index].armor > 1) mobs[d.index].armor = 1
 			// modify mob armor for all (buffs)
 			mobArmor = mobs[d.index].armor
 			// higher REDUCES armor
-			if (mobs[d.index].buffFlags.igniteArmor) mobArmor += .15
-			if (mobs[d.index].buffFlags.bloodFire) mobArmor += .1
-			if (mobs[d.index].buffFlags.subvertedSymphony) mobArmor += .12
+			if (mobs[d.index].buffFlags.igniteArmor) mobArmor += buffs.igniteArmor.debuffArmor
+			if (mobs[d.index].buffFlags.bloodFire) mobArmor += buffs.bloodFire.debuffArmor
+			if (mobs[d.index].buffFlags.subvertedSymphony) mobArmor += buffs.subvertedSymphony.debuffArmor
+			if (mobs[d.index].buffFlags.decayingDoom) mobArmor += buffs.decayingDoom.debuffArmor
 
 			if (mobArmor > 1) mobArmor = 1
 			// console.info('mobArmor', d.index, mobArmor)
@@ -745,7 +748,7 @@ var combat;
 			// enhancedDamage ?
 
 			// shield block? maxes 75% reduction of damage; skips armor
-			let amountReduced = 1 - stats.armorReductionRatio()
+			amountReduced = 1 - stats.armorReductionRatio()
 
 			if (items.eq[13].blockRate &&
 				rand() * 100 < items.eq[13].blockRate) {
@@ -755,6 +758,7 @@ var combat;
 			}
 			if (mobs[index].buffFlags.sealOfDamnation) amountReduced -= buffs.sealOfDamnation.reduceDamage
 			// console.info('reduce', amountReduced)
+			if (mob.isFeared(index)) amountReduced -= .5
 
 			if (amountReduced < .25) amountReduced = .25
 			// armor, shield, debuff reduction
@@ -767,6 +771,11 @@ var combat;
 			if (my.buffFlags.shimmeringOrb) buffMitigatesDamage(d, 'shimmeringOrb')
 			if (my.buffFlags.sereneSigil) buffMitigatesDamage(d, 'sereneSigil')
 			d.damage -= stats.magMit()
+
+			amountReduced = 1
+			if (mob.isFeared(index)) amountReduced -= .5
+			if (amountReduced < .25) amountReduced = .25
+			d.damage *= amountReduced
 
 			// my magic resists
 			// console.info(d.damageType, index)

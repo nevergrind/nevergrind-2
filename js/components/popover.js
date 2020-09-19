@@ -37,7 +37,7 @@ var popover;
 			'inv-resist-fire': 'Resist Fire',
 			'inv-resist-ice': 'Resist Ice',
 			'bar-msg-sec': 'Messages Sent Per Second',
-			'bar-average-ping': 'Last Ping (Average)',
+			'bar-average-ping': 'Last and Average Ping',
 			'bar-camp': 'Camp and Exit',
 			'bar-stats': '['+ _.capitalize(ng.config.hotkey.characterStats) +'] Character Sheet',
 			'bar-inventory': '['+ _.capitalize(ng.config.hotkey.inventory) +'] Inventory',

@@ -139,7 +139,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -190,7 +190,7 @@
 							key: 'moltenBoulder',
 							index: tgt,
 							damageType: spell.data.damageType,
-							...stats.spellDamage(false, true)
+							...stats.spellDamage(-100)
 						})
 						dots[0].damage *= .5
 						combat.txDotMob(dots)
@@ -283,7 +283,7 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage()
 		})
-		hit = stats.spellDamage(false, true)
+		hit = stats.spellDamage(-100)
 		damages.push({
 			index: spell.config.target,
 			key: 'naturesTouchHot',
@@ -335,7 +335,7 @@
 			key: 'synthesize',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(false, true)
+			...stats.spellDamage(-100)
 		})
 		combat.txHotHero(damages)
 	}
@@ -357,7 +357,7 @@
 			key: 'branchSpirit',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 	}

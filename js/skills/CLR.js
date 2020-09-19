@@ -210,7 +210,7 @@
 			key: 'guardianAngel',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -280,7 +280,7 @@
 			key: 'sealOfRedemption',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 	}
@@ -302,7 +302,7 @@
 			key: 'zealousResolve',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(false, true) // forceCrit, getNonCrit
+			...stats.spellDamage(-100)
 		})
 		combat.txBuffHero(damages)
 	}

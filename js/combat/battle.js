@@ -398,7 +398,7 @@ var battle;
 			query.el('#mob-target-hp-plate').src = 'images/ui/bar-' + tgt.type + '.png'
 			query.el('#mob-target-percent').textContent = tgt.hp + '%'
 			query.el('#mob-target-traits').innerHTML = tgt.traits
-			query.el('#mob-target-buffs').innerHTML = tgt.buffs
+			querySelector('#mob-target-buffs').innerHTML = tgt.buffs
 			showTarget()
 		}
 		else {
@@ -429,9 +429,9 @@ var battle;
 				mobBuffData.stacks : ''
 			buffHtml += '<div id="buff-'+ key + '" class="target-buff popover-icons" style="background-image: '+
 				buffImage +
-			'">'+ mobStackCount + '</div'
-			// el.style.backgroundImage = 'url(images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png)'
+			'">'+ mobStackCount + '</div>'
 		}
+		// console.info('buffHtml', buffHtml)
 		return buffHtml
 	}
 	function updateMobTargetBuffs() {
