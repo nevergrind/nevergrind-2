@@ -28,7 +28,7 @@
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		hit = {
-			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 			key: 'zealousSlam',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
@@ -54,7 +54,7 @@
 		splashIndex = -1
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.skillDamage(data.critBonus[my.skills[index]])
+			hit = stats.skillDamage(tgt, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'rebuke',
@@ -85,7 +85,7 @@
 		}
 		damages = []
 		damages.push({
-			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 			key: 'vengeance',
 			index: tgt,
 			requiresFrontRow: data.requiresFrontRow,
@@ -111,7 +111,7 @@
 		let splashIndex = -2
 		for (i=0; i<5; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.skillDamage(data.critBonus[my.skills[index]])
+			hit = stats.skillDamage(tgt, data.critBonus[my.skills[index]])
 			if (originalTarget !== tgt) hit.damage *= .5
 			damages.push({
 				...hit,
@@ -149,7 +149,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(),
+			...stats.spellDamage(spell.config.target),
 			buffs: [{
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
@@ -178,7 +178,7 @@
 				key: 'stun', // this sets the flag,
 				duration: spell.data.stunDuration,
 			}],
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		spell.triggerCooldown(spell.config.skillIndex)
 	}
@@ -197,7 +197,7 @@
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			isBlighted: true,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		spell.triggerCooldown(spell.config.skillIndex)
 	}
@@ -226,7 +226,7 @@
 					index: tgt,
 					spellType: spellType,
 					damageType: damageType,
-					...stats.spellDamage(),
+					...stats.spellDamage(tgt),
 				}
 				if (rand() > .5) {
 					hit.effects = { stagger: true }
@@ -277,7 +277,7 @@
 			key: 'divineGrace',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		})
 		combat.txHotHero(damages)
 	}
@@ -300,7 +300,7 @@
 				key: 'benevolence',
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage()
+				...stats.spellDamage(p.row)
 			})
 		})
 		combat.txHotHero(damages)
@@ -325,7 +325,7 @@
 					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
 					isMob: spell.config.isMob,
-					...stats.spellDamage()
+					...stats.spellDamage(i)
 				}
 				if (rand() > .5) {
 					hit.effects = { stagger: true }

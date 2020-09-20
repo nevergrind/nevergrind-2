@@ -10,9 +10,11 @@
 		decayingDoom,
 		bloodTerror,
 		lifeTap,
-		vampiricLust,
-		bloodFeast,
+		vampiricFeast,
+		sanguineHarvest,
+		procSanguineHarvest,
 		markOfRemphan,
+		getHighestMarkOfRemphan,
 	}
 	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
 	///////////////////////////////////////////
@@ -30,7 +32,7 @@
 		if (my.shieldIsEquipped()) enhancedDamage += .5
 		damages = []
 		damages.push({
-			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 			key: 'shadowBreak',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
@@ -51,7 +53,7 @@
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		damages.push({
-			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'deathStrike',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
@@ -84,7 +86,7 @@
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
 			damages.push({
-				...stats.skillDamage(data.critBonus[my.skills[index]]),
+				...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 				key: 'crescentCleave',
 				index: tgt,
 				enhancedDamage: enhancedDamage,
@@ -107,7 +109,7 @@
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		damages.push({
-			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'doomThrust',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
@@ -118,7 +120,7 @@
 		button.triggerGlobalCooldown()
 		// dot
 		damages = []
-		hit = stats.skillDamage(-100)
+		hit = stats.skillDamage(my.target, -100)
 		damages.push({
 			key: 'doomThrust',
 			index: my.target,
@@ -157,7 +159,7 @@
 						index: tgt,
 						spellType: spell.data.spellType,
 						damageType: spell.data.damageType,
-						...stats.spellDamage(),
+						...stats.spellDamage(tgt),
 					}])
 				})
 			}(i)
@@ -179,11 +181,11 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		// dot
 		damages = []
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(spell.config.target, -100)
 		hit.damage *= 2
 		damages.push({
 			key: 'ravagingPlague',
@@ -209,11 +211,11 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		// dot
 		damages = []
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(spell.config.target, -100)
 		hit.damage *= 2
 		damages.push({
 			key: 'decayingDoom',
@@ -228,23 +230,20 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, bloodTerrorCompleted)
 	}
 	function bloodTerrorCompleted() {
-		damages = []
-		damages.push({
+		combat.txDotMob([{
 			key: 'bloodTerror',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100),
-		})
-		combat.txDotMob(damages)
-		// fear effect
-		damages.push({
+			...stats.spellDamage(spell.config.target, -100),
+		}])
+
+		combat.txDamageMob([{
 			key: 'bloodTerror',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
@@ -256,32 +255,76 @@
 				key: 'fear', // this sets the flag,
 				duration: 12,
 			}],
-		})
-		combat.txDamageMob(damages)
+		}])
 		spell.triggerCooldown(spell.config.skillIndex)
 	}
 	function lifeTap(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			oocEnabled: true,
-			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, lifeTapCompleted)
 	}
 	function lifeTapCompleted() {
-		combat.txBuffHero([{
+		damages = []
+		hit = stats.spellDamage(spell.config.target, -100)
+		damages.push({
 			key: 'lifeTap',
-			index: my.row,
+			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			level: my.skills[spell.config.skillIndex],
-			damage: 0
+			cannotResist: true,
+			...hit,
+		})
+		// console.info('drainSoul', hit)
+		combat.txDamageMob(damages)
+		combat.txHotHero([{
+			index: my.row,
+			key: 'lifeTap',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...hit
 		}])
 		spell.triggerCooldown(spell.config.skillIndex)
 	}
-	function vampiricLust(index, data) {
+	function vampiricFeast(index, data) {
+		if (timers.castBar < 1) return
+		spell.config = {
+			...spell.getDefaults(index, data),
+			anyTarget: true,
+		}
+		if (skills.notReady(spell.config, data)) return
+		spell.startCasting(index, data, vampiricFeastCompleted)
+	}
+	function vampiricFeastCompleted() {
+		damages = []
+		let heals = []
+		for (let i = 0; i<mob.max; i++) {
+			if (mob.isAlive(i)) {
+				hit = stats.spellDamage(i, -100)
+				damages.push({
+					key: 'vampiricFeast',
+					index: i,
+					spellType: spell.data.spellType,
+					damageType: spell.data.damageType,
+					cannotResist: true,
+					...hit,
+				})
+				heals.push({
+					index: my.row,
+					key: 'vampiricFeast',
+					spellType: spell.data.spellType,
+					damageType: spell.data.damageType,
+					...hit
+				})
+			}
+		}
+		combat.txDamageMob(damages)
+		combat.txHotHero(heals)
+		spell.triggerCooldown(spell.config.skillIndex)
+	}
+	function sanguineHarvest(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
@@ -290,44 +333,35 @@
 			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, vampiricLustCompleted)
+		spell.startCasting(index, data, sanguineHarvestCompleted)
 	}
-	function vampiricLustCompleted() {
+	function sanguineHarvestCompleted() {
 		damages = []
 		damages.push({
 			index: spell.config.target,
-			name: spell.config.targetName,
-			key: 'vampiricLust',
+			key: 'sanguineHarvest',
+			spellType: spell.data.spellType,
+			level: my.skills[spell.config.skillIndex],
+			...stats.spellDamage(spell.config.target, -100),
+		})
+		combat.txBuffHero(damages)
+	}
+	function procSanguineHarvest(index) {
+		combat.txDamageMob([{
+			key: 'sanguineHarvestProc',
+			index: index,
+			spellType: PROP.EVOCATION,
+			damageType: DAMAGE_TYPE.ARCANE,
+			cannotResist: true,
+			damage: buffs.sanguineHarvest.lifeTap[my.buffs.sanguineHarvest.level],
+		}])
+		combat.txHotHero([{
+			index: my.row,
+			key: 'sanguineHarvestProc',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
-		})
-		combat.txHotHero(damages)
-	}
-	function bloodFeast(index, data) {
-		if (timers.castBar < 1) return
-		spell.config = {
-			...spell.getDefaults(index, data),
-			oocEnabled: true,
-			anyTarget: true,
-		}
-		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, bloodFeastCompleted)
-	}
-	function bloodFeastCompleted() {
-		damages = []
-		party.presence.forEach(p => {
-			damages.push({
-				index: p.row,
-				name: p.name,
-				key: 'bloodFeast',
-				spellType: spell.data.spellType,
-				damageType: spell.data.damageType,
-				...stats.spellDamage()
-			})
-		})
-		combat.txHotHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+			damage: buffs.sanguineHarvest.lifeTap[my.buffs.sanguineHarvest.level]
+		}])
 	}
 	function markOfRemphan(index, data) {
 		if (timers.castBar < 1) return
@@ -339,24 +373,33 @@
 		spell.startCasting(index, data, markOfRemphanCompleted)
 	}
 	function markOfRemphanCompleted() {
-		damages = []
-		for (var i=0; i<mob.max; i++) {
-			if (mob.isAlive(i)) {
-				hit = {
-					index: i,
-					key: 'markOfRemphan',
-					spellType: spell.data.spellType,
-					damageType: spell.data.damageType,
-					isMob: spell.config.isMob,
-					...stats.spellDamage()
-				}
-				if (rand() > .5) {
-					hit.effects = { stagger: true }
-				}
-				damages.push(hit)
+		combat.txDotMob([{
+			key: 'markOfRemphan',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			level: my.skills[spell.config.skillIndex],
+			damage: 0,
+		}])
+
+		combat.txDamageMob([{
+			key: 'markOfRemphan',
+			index: spell.config.target,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage(spell.config.target),
+		}])
+	}
+	let maxRemphan = 0
+	function getHighestMarkOfRemphan(index) {
+		maxRemphan = 0
+		for (key in mobs[index].buffs) {
+			if (mobs[index].buffs[key].key === 'markOfRemphan' &&
+				mobs[index].buffs[key].duration > 0 &&
+				mobs[index].buffs[key].level > maxRemphan) {
+				maxRemphan = mobs[index].buffs[key].level
 			}
 		}
-		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		return maxRemphan
 	}
 }($, _, TweenMax);

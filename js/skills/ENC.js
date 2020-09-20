@@ -32,7 +32,7 @@
 		spell.startCasting(index, data, gravityFluxCompleted)
 	}
 	function gravityFluxCompleted() {
-		hit = stats.spellDamage()
+		hit = stats.spellDamage(spell.config.target)
 		hit.damage = hit.damage * sizeDamageBonus(spell.config.target)
 		combat.txDamageMob([{
 			key: 'gravityFlux',
@@ -58,7 +58,7 @@
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			effects: { stagger: true },
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		// dot
 		damages = []
@@ -67,7 +67,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -85,7 +85,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(),
+			...stats.spellDamage(spell.config.target),
 			buffs: [{
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
@@ -111,7 +111,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(-100)
+				...stats.spellDamage(tgt, -100)
 			})
 		}
 		combat.txDotMob(damages)
@@ -140,7 +140,7 @@
 						key: 'stun', // this sets the flag,
 						duration: 4,
 					}],
-					...stats.spellDamage()
+					...stats.spellDamage(i)
 				})
 			}
 		}
@@ -224,7 +224,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -246,7 +246,7 @@
 			key: 'sereneSigil',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -313,7 +313,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 			})
 		}
 		combat.txDamageMob(damages)

@@ -32,7 +32,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}]
 		if (rand() > .75) {
 			damages[0].effects = { stagger: true }
@@ -57,7 +57,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 				buffs: [{
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
@@ -87,7 +87,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(-100)
+				...stats.spellDamage(tgt, -100)
 			})
 		}
 		combat.txDotMob(damages)
@@ -110,7 +110,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(-100)
+				...stats.spellDamage(tgt, -100)
 			})
 		}
 		combat.txDotMob(damages)
@@ -129,7 +129,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(),
+			...stats.spellDamage(spell.config.target),
 			buffs: [{
 				i: spell.config.target,
 				row: my.row, // this identifies unique buff state/icon
@@ -152,7 +152,7 @@
 	}
 	function battleHymnCompleted() {
 		damages = []
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
@@ -176,7 +176,7 @@
 	}
 	function militantCadenceCompleted() {
 		damages = []
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
@@ -202,7 +202,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(),
+			...stats.spellDamage(spell.config.target),
 		}])
 	}
 	function litanyOfLife(index, data) {
@@ -217,7 +217,7 @@
 	}
 	function litanyOfLifeCompleted() {
 		damages = []
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
@@ -241,7 +241,7 @@
 	}
 	function melodyOfManaCompleted() {
 		damages = []
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
@@ -298,7 +298,7 @@
 	}
 	function chromaticSonataCompleted() {
 		damages = []
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,

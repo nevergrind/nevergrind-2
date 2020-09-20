@@ -33,7 +33,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 	}
 	function explosivePlague(index, data) {
@@ -51,7 +51,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -84,7 +84,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		// dot
 		damages = []
@@ -93,7 +93,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -112,7 +112,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		// dot
 		damages = []
@@ -122,7 +122,7 @@
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
 			level: my.skills[spell.index],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -145,7 +145,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 				buffs: [{
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
@@ -175,7 +175,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 				buffs: [{
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
@@ -201,7 +201,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(),
+			...stats.spellDamage(spell.config.target),
 		}])
 	}
 	function panicStrike(index, data) {
@@ -219,7 +219,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(),
+			...stats.spellDamage(spell.config.target),
 			buffs: [{
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
@@ -240,7 +240,7 @@
 	}
 	function drainSoulCompleted() {
 		damages = []
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(spell.config.target, -100)
 		damages.push({
 			key: 'drainSoul',
 			index: spell.config.target,
@@ -297,7 +297,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -320,7 +320,7 @@
 			key: 'profaneSpirit',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 	}
@@ -341,7 +341,7 @@
 					index: i,
 					spellType: '',
 					damageType: spell.data.damageType,
-					...stats.spellDamage()
+					...stats.spellDamage(i)
 				})
 			}
 		}

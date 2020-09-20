@@ -462,6 +462,15 @@ var combat;
 	function filterImpossibleMobTargets(m) {
 		return m.index >=0 && m.index < mob.max && mob.isAlive(m.index)
 	}
+	function triggerProc(damageType, index) {
+		// console.info('triggerProc', damageType, DAMAGE_TYPE.PHYSICAL)
+		if (damageType === DAMAGE_TYPE.PHYSICAL) {
+			if (my.buffFlags.sanguineHarvest &&
+				rand() < buffs.sanguineHarvest.procRate) {
+				skill.SHD.procSanguineHarvest(index)
+			}
+		}
+	}
 	let damageData
 	function txDamageMob(damages) {
 		// console.info('txDamageMob', damages)
@@ -507,6 +516,9 @@ var combat;
 				skill.SHD.deathStrikeHeal(damageData.damages[0])
 			}
 		}
+		damageArr.forEach(d => {
+			triggerProc(d.damageType, d.index)
+		})
 	}
 	function rxDamageMob(data) {
 		// damages
@@ -1236,6 +1248,9 @@ var combat;
 		}
 		else if (key === 'consecrate') {
 			updateAllResists()
+		}
+		else if (key === 'sanguineHarvest') {
+			stats.hpKill(true)
 		}
 		////////////////////////////////
 		function updateAllResists() {

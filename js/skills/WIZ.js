@@ -31,7 +31,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 	}
 	function iceBolt(index, data) {
@@ -44,7 +44,6 @@
 	}
 	function iceBoltCompleted() {
 		combat.txDamageMob([{
-			...stats.spellDamage(),
 			key: 'iceBolt',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
@@ -55,6 +54,7 @@
 				key: 'chill', // this sets the flag,
 				duration: 16,
 			}],
+			...stats.spellDamage(spell.config.target),
 		}])
 	}
 	function lightningBolt(index, data) {
@@ -71,7 +71,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 	}
 	function magicMissiles(index, data) {
@@ -94,7 +94,7 @@
 						index: tgt,
 						spellType: spellType,
 						damageType: damageType,
-						...stats.spellDamage()
+						...stats.spellDamage(tgt)
 					}])
 				})
 			}(i)
@@ -118,7 +118,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 			})
 		}
 		combat.txDamageMob(damages)
@@ -153,7 +153,7 @@
 						index: tgt,
 						spellType: spellType,
 						damageType: damageType,
-						...stats.spellDamage()
+						...stats.spellDamage(tgt)
 					}])
 				})
 			}(tgt, i)
@@ -187,7 +187,7 @@
 						key: 'chill', // this sets the flag,
 						duration: 8,
 					}],
-					...stats.spellDamage()
+					...stats.spellDamage(i)
 				})
 			}
 		}
@@ -214,7 +214,7 @@
 					index: tgt,
 					spellType: spellType,
 					damageType: damageType,
-					...stats.spellDamage()
+					...stats.spellDamage(tgt)
 				})
 				combat.txDamageMob(damages)
 				// AE DoT damage
@@ -226,7 +226,7 @@
 						key: 'meteorStrike',
 						index: tgt,
 						damageType: spell.data.damageType,
-						...stats.spellDamage(-100)
+						...stats.spellDamage(tgt, -100)
 					})
 					damages[i].damage = round(damages[i].damage * .35)
 					if (damages[i].damage < 1) damages[i].damage = 1
@@ -253,7 +253,7 @@
 			key: 'frozenBarrier',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -288,7 +288,7 @@
 			key: 'mirrorImage',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -335,7 +335,7 @@
 				key: 'freeze', // this sets the flag,
 				duration: 5,
 			}],
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		spell.triggerCooldown(spell.config.skillIndex)
 	}

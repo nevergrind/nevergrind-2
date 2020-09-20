@@ -30,7 +30,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 	}
 	function fissure(index, data) {
@@ -49,12 +49,13 @@
 					let splashIndex = -1
 					let damages = []
 					for (i=0; i<3; i++) {
+						let tgt = battle.getSplashTarget(splashIndex++, originalTarget)
 						damages.push({
 							key: 'fissure',
-							index: battle.getSplashTarget(splashIndex++, originalTarget),
+							index: tgt,
 							spellType: spell.data.spellType,
 							damageType: spell.data.damageType,
-							...stats.spellDamage(),
+							...stats.spellDamage(tgt),
 						})
 					}
 					combat.txDamageMob(damages)
@@ -81,7 +82,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 			})
 		}
 		combat.txDamageMob(damages)
@@ -115,7 +116,7 @@
 								key: 'chill', // this sets the flag,
 								duration: 2.5,
 							}],
-							...stats.spellDamage(),
+							...stats.spellDamage(tgt),
 						})
 					}
 					combat.txDamageMob(damages)
@@ -139,7 +140,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -178,7 +179,7 @@
 						index: tgt,
 						spellType: spellType,
 						damageType: damageType,
-						...stats.spellDamage()
+						...stats.spellDamage(tgt)
 					})
 					if (i + 1 < len) {
 						damages[0].damage *= .3
@@ -190,7 +191,7 @@
 							key: 'moltenBoulder',
 							index: tgt,
 							damageType: spell.data.damageType,
-							...stats.spellDamage(-100)
+							...stats.spellDamage(tgt, -100)
 						})
 						dots[0].damage *= .5
 						combat.txDotMob(dots)
@@ -221,7 +222,7 @@
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
 				effects: { stagger: true },
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 			})
 		}
 		combat.txDamageMob(damages)
@@ -244,7 +245,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		})
 		damages.push({
 			key: 'tornado',
@@ -257,7 +258,7 @@
 				key: 'chill', // this sets the flag,
 				duration: 30,
 			}],
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		})
 		combat.txDamageMob(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -281,9 +282,9 @@
 			key: 'naturesTouch',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		})
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(spell.config.target, -100)
 		damages.push({
 			index: spell.config.target,
 			key: 'naturesTouchHot',
@@ -313,7 +314,7 @@
 				key: 'mossBreath',
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage()
+				...stats.spellDamage(p.row)
 			})
 		})
 		combat.txHotHero(damages)
@@ -335,7 +336,7 @@
 			key: 'synthesize',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txHotHero(damages)
 	}
@@ -357,7 +358,7 @@
 			key: 'branchSpirit',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 	}

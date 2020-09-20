@@ -1078,7 +1078,7 @@ var bar;
 		'</div>'
 	}
 	function charStatColTwoHtml() {
-		let hit = stats.autoAttackDamage( 0, true)
+		let hit = stats.autoAttackDamage(0, 0, true)
 		return '<div class="flex space-between">' +
 			'<div style="color: gold">Attack:</div><div>'+ stats.attack() +'</div>' +
 		'</div>' +

@@ -1,93 +1,270 @@
 !function($, _, TweenMax, undefined) {
 	skill.MNK = {
-		crossSlash,
-		explosiveShot,
-		trueshotArrow,
-		spreadShot,
-		bladeStorm,
-		suppressingVolley,
-		ignite,
-		shockNova,
-		faerieFlame,
-		fungalGrowth,
-		shimmeringOrb,
-		spiritOfTheHunter,
+		tigerStrike,
+		hyperStrike,
+		mimeStrike,
+		craneKick,
+		chakraBlast,
+		hadoken,
+		hurricaneKicks,
+		dragonPunch,
+		viperStrike,
+		palmStrike,
+		sacrifice,
+		spiritBarrier,
 	}
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
 	///////////////////////////////////////////
-	let arr, damage, damages, enhancedDamage
-	///////////////////////////////////////////
-	function crossSlash(index, data) {
-		// console.info('crossSlash', index)
+	function tigerStrike(index, data) {
 		// check constraints
-		// process skill data
-		// animate timers
-	}
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
-	function explosiveShot(index, data) {
-		// console.info('explosiveShot', index)
-		// check constraints
 		// process skill data
-		// animate timers
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'tigerStrike',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
 	}
-	function trueshotArrow(index, data) {
-		// console.info('trueshotArrow', index)
+	function hyperStrike(index, data) {
 		// check constraints
-		// process skill data
-		// animate timers
-	}
-	function spreadShot(index, data) {
-		// console.info('spreadShot', index)
-		// check constraints
-		// process skill data
-		// animate timers
-	}
-	function bladeStorm(index, data) {
-		// console.info('bladeStorm', index)
-		// check constraints
-		// process skill data
-		// animate timers
-	}
-	function suppressingVolley(index, data) {
-		// console.info('suppressingVolley', index)
-		// check constraints
-		// process skill data
-		// animate timers
-	}
-	function ignite(index, data) {
-		// console.info('ignite', index)
-		// check constraints
-		// process skill data
-		// animate timers
-	}
-	function shockNova(index, data) {
-		// console.info('shockNova', index)
-		// check constraints
-		// process skill data
-		// animate timers
-	}
-	function faerieFlame(index, data) {
-		// console.info('faerieFlame', index)
-		// check constraints
-		// process skill data
-		// animate timers
-	}
-	function fungalGrowth(index, data) {
-		// console.info('fungalGrowth', index)
-		// check constraints
-		// process skill data
-		// animate timers
-	}
-	function shimmeringOrb(index, data) {
-		// console.info('shimmeringOrb', index)
-		// check constraints
-		// process skill data
-		// animate timers
-	}
-	function spiritOfTheHunter(index, data) {
-		// console.info('spiritOfTheHunter', index)
-		// check constraints
-		// process skill data
-		// animate timers
-	}
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
 
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'hyperStrike',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function mimeStrike(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'mimeStrike',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function craneKick(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'craneKick',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function chakraBlast(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'chakraBlast',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function hadoken(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'hadoken',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function hurricaneKicks(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'hurricaneKicks',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function dragonPunch(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendMana(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'dragonPunch',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function viperStrike(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendSpirit(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'viperStrike',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function palmStrike(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendSpirit(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'palmStrike',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function sacrifice(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendSpirit(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'sacrifice',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
+	function spiritBarrier(index, data) {
+		// check constraints
+		config = {
+			...skills.getDefaults(index, data),
+		}
+		if (skills.notReady(config)) return
+		spell.expendSpirit(data, index)
+
+		// process skill data
+		tgt = my.target
+		damages = []
+		damages.push({
+			key: 'spiritBarrier',
+			index: tgt,
+			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			hitBonus: data.hitBonus[my.skills[index]],
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+		})
+		combat.txDamageMob(damages)
+		button.triggerGlobalCooldown()
+	}
 }($, _, TweenMax);

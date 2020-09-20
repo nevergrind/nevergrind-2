@@ -40,7 +40,7 @@
 				key: 'chill', // this sets the flag,
 				duration: 5,
 			}],
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 	}
 	function poisonNova(index, data) {
@@ -60,7 +60,7 @@
 					index: i,
 					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
-					...stats.spellDamage()
+					...stats.spellDamage(i)
 				})
 			}
 		}
@@ -81,7 +81,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		// AE DoT damage
 		damages = []
@@ -90,7 +90,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -108,7 +108,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 	}
 	function vampiricGaze(index, data) {
@@ -138,7 +138,7 @@
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
 			level: my.skills[spell.index],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		// console.info('vampiricGaze', damages[Zero])
 		combat.txDotMob(damages)
@@ -165,7 +165,7 @@
 				index: tgt,
 				spellType: spellType,
 				damageType: damageType,
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 				buffs: [{
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
@@ -192,7 +192,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -211,7 +211,7 @@
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -239,9 +239,9 @@
 			key: 'rejuvinate',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		})
-		hit = stats.spellDamage(-100)
+		hit = stats.spellDamage(spell.config.target, -100)
 		damages.push({
 			index: spell.config.target,
 			key: 'rejuvinateHot',
@@ -268,7 +268,7 @@
 			key: 'mysticalGlow',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		}])
 	}
 	function mysticalGlowActive() {
@@ -299,7 +299,7 @@
 			key: 'vampiricAllure',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 	}
@@ -321,7 +321,7 @@
 			key: 'borealTalisman',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 	}

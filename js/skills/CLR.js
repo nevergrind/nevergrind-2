@@ -31,7 +31,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 	}
 
@@ -49,7 +49,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(),
+			...stats.spellDamage(spell.config.target),
 			isBlighted: true,
 		}])
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -73,7 +73,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 				isBlighted: true,
 			})
 		}
@@ -105,7 +105,7 @@
 					key: 'stun', // this sets the flag,
 					duration: 3,
 				}],
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 			})
 		}
 		combat.txDamageMob(damages)
@@ -123,7 +123,7 @@
 	function holySanctuaryCompleted() {
 		damages = []
 		for (var i=0; i<mob.max; i++) {
-			hit = stats.spellDamage()
+			hit = stats.spellDamage(i)
 			damages.push({
 				index: i,
 				key: 'holySanctuary',
@@ -155,7 +155,7 @@
 				key: 'stun', // this sets the flag,
 				duration: 5,
 			}],
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 		spell.triggerCooldown(spell.config.skillIndex)
 	}
@@ -179,7 +179,7 @@
 			key: 'bindingGrace',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(my.row)
 		})
 		damages.push({
 			index: spell.config.target,
@@ -187,7 +187,7 @@
 			key: 'bindingGrace',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		})
 		combat.txHotHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -210,7 +210,7 @@
 			key: 'guardianAngel',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -234,7 +234,7 @@
 			key: 'divineLight',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		})
 		combat.txHotHero(damages)
 	}
@@ -257,7 +257,7 @@
 				key: 'circleOfPrayer',
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage()
+				...stats.spellDamage(p.row)
 			})
 		})
 		combat.txHotHero(damages)
@@ -280,7 +280,7 @@
 			key: 'sealOfRedemption',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 	}
@@ -302,7 +302,7 @@
 			key: 'zealousResolve',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 	}

@@ -33,7 +33,7 @@ let skill = {};
 		if (my.shieldIsEquipped()) enhancedDamage += .5
 		damages = []
 		damages.push({
-			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 			key: 'shieldBash',
 			index: tgt,
 			enhancedDamage: enhancedDamage,
@@ -56,7 +56,7 @@ let skill = {};
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		damages.push({
-			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'rupture',
 			index: my.target,
 			isRanged: true,
@@ -69,7 +69,7 @@ let skill = {};
 		button.triggerGlobalCooldown()
 		// dot
 		damages = []
-		hit = stats.skillDamage(-100)
+		hit = stats.skillDamage(my.target, -100)
 		damages.push({
 			key: 'rupture',
 			index: my.target,
@@ -92,7 +92,7 @@ let skill = {};
 		let tgt
 		for (var i=0; i<5; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.skillDamage(data.critBonus[my.skills[index]])
+			hit = stats.skillDamage(tgt, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'whirlwind',
@@ -121,7 +121,7 @@ let skill = {};
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		damages.push({
-			...stats.skillDamage(data.critBonus[my.skills[index]]),
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 			key: 'pummel',
 			index: tgt,
 			isPiercing: true,
@@ -154,7 +154,7 @@ let skill = {};
 		damages = []
 		for (var i=0; i<2; i++) {
 			damages.push({
-				...stats.skillDamage(data.critBonus[my.skills[index]]),
+				...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 				key: 'doubleThrow',
 				index: tgt,
 				isRanged: true,
@@ -188,7 +188,7 @@ let skill = {};
 		damages = []
 		for (var i = 0; i<=4; i++) {
 			if (mobs[i].hp) {
-				hit = stats.skillDamage(data.critBonus[my.skills[index]])
+				hit = stats.skillDamage(i, data.critBonus[my.skills[index]])
 				damages.push({
 					...hit,
 					key: 'shockwave',
@@ -251,7 +251,7 @@ let skill = {};
 			let tgt = my.target
 			enhancedDamage = data.enhancedDamage[my.skills[index]]
 			damages = []
-			hit = stats.skillDamage(data.critBonus[my.skills[index]])
+			hit = stats.skillDamage(tgt, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				index: tgt,
@@ -282,7 +282,7 @@ let skill = {};
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		targets.forEach(target => {
-			hit = stats.skillDamage(data.critBonus[my.skills[index]])
+			hit = stats.skillDamage(target, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'primalStomp',
@@ -359,7 +359,7 @@ let skill = {};
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
 			damages.push({
-				...stats.skillDamage(data.critBonus[my.skills[index]]),
+				...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 				key: 'furiousCleave',
 				index: tgt,
 				enhancedDamage: enhancedDamage,

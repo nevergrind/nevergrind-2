@@ -34,7 +34,7 @@
 
 		for (var i = my.target - 1; i<=my.target+1; i++) {
 			if (i <= 4) {
-				hit = stats.skillDamage(data.critBonus[my.skills[index]])
+				hit = stats.skillDamage(i, data.critBonus[my.skills[index]])
 				damages.push({
 					...hit,
 					key: 'crossSlash',
@@ -65,7 +65,7 @@
 		let tgt
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.rangedDamage(data.critBonus[my.skills[index]])
+			hit = stats.rangedDamage(tgt, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'explosiveShot',
@@ -93,7 +93,7 @@
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = stats.rangedDamage(data.critBonus[my.skills[index]])
+		hit = stats.rangedDamage(tgt, data.critBonus[my.skills[index]])
 		damages.push({
 			...hit,
 			key: 'trueshotStrike',
@@ -129,7 +129,7 @@
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		targets.forEach(target => {
-			hit = stats.rangedDamage(data.critBonus[my.skills[index]])
+			hit = stats.rangedDamage(target, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'spreadShot',
@@ -159,7 +159,7 @@
 		damages = []
 		for (var i=0; i<hits; i++) {
 			let finalBlow = i === hits - 1
-			hit = stats.skillDamage(finalBlow ? 100 : data.critBonus[my.skills[index]], false)
+			hit = stats.skillDamage(tgt, finalBlow ? 100 : data.critBonus[my.skills[index]], false)
 			hit.damage = finalBlow ? hit.damage * 4 : hit.damage
 			damages.push({
 				...hit,
@@ -191,7 +191,7 @@
 		let tgt
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++)
-			hit = stats.rangedDamage(data.critBonus[my.skills[index]])
+			hit = stats.rangedDamage(tgt, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				index: tgt,
@@ -243,7 +243,7 @@
 				row: my.row, // this identifies unique buff state/icon
 				key: 'igniteArmor', // this sets the flag
 			}],
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		})
 		combat.txDamageMob(damages)
 	}
@@ -267,7 +267,7 @@
 					damageType: spell.data.damageType,
 					isMob: spell.config.isMob,
 					effects: { stagger: true },
-					...stats.spellDamage()
+					...stats.spellDamage(i)
 				})
 			}
 		}
@@ -293,7 +293,7 @@
 				row: my.row, // this identifies unique buff state/icon
 				key: 'faerieFlame', // this sets the flag
 			}],
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		})
 		combat.txDamageMob(damages)
 	}
@@ -314,7 +314,7 @@
 			key: 'fungalGrowth',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		}])
 	}
 	function shimmeringOrb(index, data) {
@@ -335,7 +335,7 @@
 			key: 'shimmeringOrb',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)
@@ -359,7 +359,7 @@
 			key: 'spiritOfTheHunter',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)

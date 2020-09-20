@@ -1686,8 +1686,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	padding: 0;
 	border: .1rem outset #0a0a0a;
 	background: #0008;
+	filter: brightness(.25) grayscale(1);
 }
-.skill-disabled * { visibility: hidden }
 .skill-img {
 	position: relative;
 	z-index: 1;

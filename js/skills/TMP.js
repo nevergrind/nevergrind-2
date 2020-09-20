@@ -30,7 +30,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage()
+			...stats.spellDamage(spell.config.target)
 		}])
 	}
 	function thunderclap(index, data) {
@@ -52,7 +52,7 @@
 						index: tgt,
 						spellType: spell.data.spellType,
 						damageType: spell.data.damageType,
-						...stats.spellDamage(),
+						...stats.spellDamage(tgt),
 					}
 					if (i === 2) {
 						dam.buffs = [{
@@ -97,7 +97,7 @@
 						index: tgt,
 						spellType: spell.data.spellType,
 						damageType: spell.data.damageType,
-						...stats.spellDamage(),
+						...stats.spellDamage(tgt),
 						buffs: [{
 							i: tgt, // target
 							row: my.row, // this identifies unique buff state/icon
@@ -129,7 +129,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage(),
+				...stats.spellDamage(tgt),
 				effects: { stagger: true },
 			})
 		}
@@ -176,7 +176,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				...stats.spellDamage()
+				...stats.spellDamage(tgt)
 			})
 		})
 		combat.txDamageMob(damages)
@@ -197,7 +197,7 @@
 		damages = []
 		for (var i=0; i<5; i++) {
 			let tgt = battle.getSplashTarget(splashIndex++, originalTarget)
-			hit = stats.spellDamage()
+			hit = stats.spellDamage(tgt)
 			if (tgt !== originalTarget) hit.damage *= .5
 			let buffs = [{
 				i: tgt, // target
@@ -240,7 +240,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -259,7 +259,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100),
+			...stats.spellDamage(spell.config.target, -100),
 		})
 		combat.txDotMob(damages)
 
@@ -294,7 +294,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
 	}
@@ -316,7 +316,7 @@
 			key: 'moltenAegis',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(-100)
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
 		spell.triggerCooldown(spell.config.skillIndex)

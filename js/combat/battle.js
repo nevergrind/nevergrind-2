@@ -583,7 +583,7 @@ var battle;
 		if (typeof keyRow === 'undefined') keyRow = key
 		// console.info('addMyBuff', key, keyRow)
 
-		console.info('stack count', my.buffs[key].stacks)
+		// console.info('stack count', my.buffs[key].stacks)
 		if (buffs[key].stacks === void 0 ||
 			my.buffs[key].stacks === 1) {
 			// console.info('ADDING BUFF')
@@ -635,7 +635,7 @@ var battle;
 		/**
 		 * Buff naturally times out via duration
 		 */
-		console.info('removeMyBuffFlag', keyRow)
+		// console.info('removeMyBuffFlag', keyRow)
 		var startedActive = my.buffFlags[keyRow]
 		var buffStillActive = false
 		for (var k in my.buffs) {

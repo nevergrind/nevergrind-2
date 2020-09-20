@@ -386,7 +386,12 @@ var stats = {};
 		}
 		// console.info('stats.missChance before',  chance, hitBonus)
 		if (hitBonus !== 0) chance -= (hitBonus / 100)
-		if (mobs[index].buffFlags.faerieFlame) chance -= .12
+		if (mobs[index].buffFlags.markOfRemphan) {
+			chance -= buffs.markOfRemphan.hitBonus[skill.SHD.getHighestMarkOfRemphan(index)]
+		}
+		if (mobs[index].buffFlags.faerieFlame) {
+			chance -= buffs.faerieFlame.hitBonus
+		}
 		// console.info('stats.missChance after', chance)
 		// limit check
 		if (chance > .5) chance = .5
@@ -568,7 +573,15 @@ var stats = {};
 		}
 		return stats.memo.enhanceAll
 	}
-	function spellDamage(critMod = 0) {
+	let critBuffBonus = 0
+	function critFromBuffBonus(index) {
+		critBuffBonus = 0
+		if (mobs[index].buffFlags.markOfRemphan) {
+			critBuffBonus += buffs.markOfRemphan.critBonus[skill.SHD.getHighestMarkOfRemphan(index)]
+		}
+		return critBuffBonus
+	}
+	function spellDamage(index = 0, critMod = 0) {
 		max = spell.data.spellDamage(my.skills[spell.index])
 		// console.info('spellDamage 1', max)
 		// enhance by type % and ALL%
@@ -610,7 +623,7 @@ var stats = {};
 		min = max * spell.data.spellVariance
 		// console.info('spellDamage 2', min, max)
 		// crit?
-		isCrit = ((critMod / 100) + stats.critChance()) > rand()
+		isCrit = ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
 
 		if (isCrit) {
 			min *= 1.5
@@ -629,7 +642,7 @@ var stats = {};
 			isCrit: isCrit,
 		}
 	}
-	function autoAttackDamage(skipSkillCheck) {
+	function autoAttackDamage(index = 0, skipSkillCheck) {
 		min = 1
 		max = 1
 		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
@@ -652,7 +665,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = stats.critChance() > rand()
+		isCrit = (critFromBuffBonus(index) + stats.critChance()) > rand()
 
 		if (isCrit) {
 			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
@@ -678,7 +691,7 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
-	function skillDamage(critMod = 0, skipSkillChecks) {
+	function skillDamage(index = 0, critMod = 0, skipSkillChecks) {
 		// normalized damage for skills
 		min = 1
 		max = 1
@@ -717,7 +730,8 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = ((critMod / 100) + stats.critChance()) > rand()
+		isCrit = ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
+		// console.info('critChance', ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()))
 
 		if (isCrit) {
 			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
@@ -743,7 +757,7 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
-	function offhandDamage() {
+	function offhandDamage(index = 0) {
 		if (!my.dualWield) return failedWeaponDamage
 		min = 1
 		max = 1
@@ -767,7 +781,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = stats.critChance() > rand()
+		isCrit = (critFromBuffBonus(index) + stats.critChance()) > rand()
 		if (isCrit) {
 			min *= 1.5
 			max *= 1.5
@@ -785,7 +799,7 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
-	function rangedDamage(critMod = 0) {
+	function rangedDamage(index = 0, critMod = 0) {
 		min = 1
 		max = 1
 		atk = attack('Archery')
@@ -798,7 +812,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = ((critMod / 100) + stats.critChance()) > rand()
+		isCrit = ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
 		if (isCrit) {
 			min *= 2
 			max *= 2
@@ -1435,6 +1449,9 @@ var stats = {};
 	function hpKill(fresh) {
 		if (fresh || typeof stats.memo.hpKill === 'undefined') {
 			stats.memo.hpKill = getEqTotal(PROP.HP_KILL)
+			if (my.buffFlags.sanguineHarvest) {
+				stats.memo.hpKill += buffs.sanguineHarvest.hpKill[my.buffs.sanguineHarvest.level]
+			}
 		}
 		return stats.memo.hpKill
 	}

@@ -152,7 +152,7 @@ var button;
 		}
 
 		damages = []
-		hit = stats.autoAttackDamage()
+		hit = stats.autoAttackDamage(index)
 		damages.push({
 			key: 'autoAttack',
 			index: index,
@@ -164,7 +164,7 @@ var button;
 			my.level >= skills.doubleAttack[my.job].level) {
 			combat.levelSkillCheck(PROP.DOUBLE_ATTACK)
 			if (Math.random() < successfulDoubleAttack()) {
-				hit = stats.autoAttackDamage()
+				hit = stats.autoAttackDamage(index)
 				damages.push({
 					key: 'autoAttack',
 					index: index,
@@ -192,7 +192,7 @@ var button;
 		if (my.level >= skills.dualWield[my.job].level) {
 			combat.levelSkillCheck(PROP.DUAL_WIELD)
 			if (successfulDualWield()) {
-				hit = stats.offhandDamage()
+				hit = stats.offhandDamage(my.target)
 				damages = []
 				damages.push({
 					key: 'autoAttack',
@@ -201,7 +201,7 @@ var button;
 				})
 				if (my.level >= skills.doubleAttack[my.job].level) {
 					if (Math.random() < successfulDoubleAttack()) {
-						hit = stats.offhandDamage()
+						hit = stats.offhandDamage(my.target)
 						damages.push({
 							key: 'autoAttack',
 							index: my.target,
