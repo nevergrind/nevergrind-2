@@ -95,7 +95,7 @@ var combat;
 			'scorpion': 'Beasts',
 		},
 	}
-	var el, w, h, i, len, damageArr, hit, damages, buffArr, index, hotData, buffData, key, resist, resistPenalty
+	var el, w, h, i, len, damageArr, hit, damages, procDamage, procHit, buffArr, index, hotData, buffData, key, resist, resistPenalty
 	let txHpUpdate = false
 	let battleTextInitialized = false
 	const textDuration = 1
@@ -462,14 +462,55 @@ var combat;
 	function filterImpossibleMobTargets(m) {
 		return m.index >=0 && m.index < mob.max && mob.isAlive(m.index)
 	}
-	function triggerProc(damageType, index) {
-		// console.info('triggerProc', damageType, DAMAGE_TYPE.PHYSICAL)
+
+	/**
+	 * weapon procs and skill procs
+	 * @param damageType
+	 * @param index
+	 * @param key
+	 */
+	function triggerProc(damageType, index, key) {
 		if (damageType === DAMAGE_TYPE.PHYSICAL) {
 			if (my.buffFlags.sanguineHarvest &&
 				rand() < buffs.sanguineHarvest.procRate) {
 				skill.SHD.procSanguineHarvest(index)
 			}
 		}
+		if (key === 'tigerStrike') {
+			procDamage = []
+			procHit = stats.skillDamage(my.target, -100)
+			procDamage.push({
+				key: 'tigerStrike',
+				index: index,
+				damageType: DAMAGE_TYPE.BLOOD,
+				damage: round(procHit.damage * buffs.tigerStrike.dotModifier)
+			})
+			combat.txDotMob(procDamage)
+
+		}
+		else if (key === 'rupture') {
+			procDamage = []
+			hit = stats.skillDamage(my.target, -100)
+			procDamage.push({
+				key: 'rupture',
+				index: index,
+				damageType: DAMAGE_TYPE.BLOOD,
+				damage: round(hit.damage * buffs.rupture.dotModifier)
+			})
+			combat.txDotMob(procDamage)
+		}
+		else if (key === 'doomThrust') {
+			procDamage = []
+			hit = stats.skillDamage(my.target, -100)
+			procDamage.push({
+				key: 'doomThrust',
+				index: index,
+				damageType: DAMAGE_TYPE.BLOOD,
+				damage: round(hit.damage * buffs.doomThrust.dotModifier)
+			})
+			combat.txDotMob(procDamage)
+		}
+		// console.info('triggerProc', index, key)
 	}
 	let damageData
 	function txDamageMob(damages) {
@@ -517,7 +558,7 @@ var combat;
 			}
 		}
 		damageArr.forEach(d => {
-			triggerProc(d.damageType, d.index)
+			triggerProc(d.damageType, d.index, d.key)
 		})
 	}
 	function rxDamageMob(data) {

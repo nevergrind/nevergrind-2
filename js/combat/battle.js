@@ -484,7 +484,7 @@ var battle;
 					mobs[buff.i].buffs[buffKeyRow].stacks = 1
 				}
 				// mobs[buff.i].buffs[buffKeyRow] = mobs[buff.i].buffs[buff.key].stacks
-				console.info('stac', mobs[buff.i].buffs[buffKeyRow].stacks)
+				// console.info('stac', mobs[buff.i].buffs[buffKeyRow].stacks)
 			}
 			if (buff.duration) {
 				// console.warn('processBuffs effect found', buff.i, buff.key, buff.duration)
@@ -605,7 +605,9 @@ var battle;
 		if (buffs[key].duration > 0) {
 			if (typeof my.buffIconTimers[keyRow] === 'object') {
 				my.buffIconTimers[keyRow].kill()
-				my.buffIconTimers[keyRow + '-remove'].kill()
+				if (typeof my.buffIconTimers[keyRow + '-remove'] === 'object') {
+					my.buffIconTimers[keyRow + '-remove'].kill()
+				}
 			}
 			// start timer
 			if (buffs[key].duration < flashDuration) flashMyBuff(key, keyRow)

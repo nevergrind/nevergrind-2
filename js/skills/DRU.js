@@ -62,7 +62,7 @@
 				})
 			}(j)
 		}
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function lightningBlast(index, data) {
 		if (timers.castBar < 1) return
@@ -86,7 +86,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function blizzard(index, data) {
 		if (timers.castBar < 1) return
@@ -123,7 +123,7 @@
 				})
 			}(j)
 		}
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function toxicSpores(index, data) {
 		if (timers.castBar < 1) return
@@ -201,7 +201,7 @@
 				})
 			})
 		})
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function barbedThicket(index, data) {
 		if (timers.castBar < 1) return
@@ -226,7 +226,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function tornado(index, data) {
 		if (timers.castBar < 1) return
@@ -261,7 +261,7 @@
 			...stats.spellDamage(spell.config.target)
 		})
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function naturesTouch(index, data) {
 		if (timers.castBar < 1) return

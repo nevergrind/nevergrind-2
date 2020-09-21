@@ -122,7 +122,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function chainLightning(index, data) {
 		if (timers.castBar < 1) return
@@ -162,7 +162,7 @@
 			if (increment) tgt++
 			else tgt--
 		}
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function frostNova(index, data) {
 		if (timers.castBar < 1) return
@@ -192,7 +192,7 @@
 			}
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function meteor(index, data) {
 		if (timers.castBar < 1) return
@@ -234,7 +234,7 @@
 				combat.txDotMob(damages)
 			}
 		})
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function frozenBarrier(index, data) {
 		if (timers.castBar < 1) return
@@ -256,7 +256,7 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function frozenBarrierEffect() {
 		let val = round(my.buffs.frozenBarrier.damage / 8)
@@ -291,7 +291,7 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function manaShell(index, data) {
 		if (timers.castBar < 1) return
@@ -337,7 +337,7 @@
 			}],
 			...stats.spellDamage(spell.config.target)
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 
 }($, _, TweenMax);

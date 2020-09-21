@@ -39,9 +39,9 @@ var stats = {};
 		parry,
 		riposte,
 		spellDamage,
-		autoAttackDamage,
+		primaryAutoAttackDamage,
 		skillDamage,
-		offhandDamage,
+		secondaryAutoAttackDamage,
 		rangedDamage,
 		getResistPercent,
 		resistBlood,
@@ -108,7 +108,7 @@ var stats = {};
 	let castHaste = 1
 	let val, base, i, len, type, min, max, totalAttack, h2h, atk, stat, dps
 
-	const failedWeaponDamage = {
+	const FailedWeaponDamage = {
 		min: 0,
 		max: 0,
 		damage: 0,
@@ -304,7 +304,7 @@ var stats = {};
 		else if (type === 'Two-hand Slash') totalAttack += (twoHandSlash() * 2.66)
 		else if (type === 'Two-hand Blunt') totalAttack += (twoHandBlunt() * 2.66)
 		else if (type === 'Archery') totalAttack += (archery() * 2.66)
-		else if (type === 'Hand-to-Hand') totalAttack += (handToHand() * 2.66)
+		else if (type === LABEL.HAND_TO_HAND) totalAttack += (handToHand() * 2.66)
 
 		totalAttack = ~~totalAttack
 
@@ -581,6 +581,11 @@ var stats = {};
 		}
 		return critBuffBonus
 	}
+	function getWeaponSkill(slot) {
+		return my.isPunching(slot)
+			? LABEL.HAND_TO_HAND
+			: items.eq[slot].weaponSkill
+	}
 	function spellDamage(index = 0, critMod = 0) {
 		max = spell.data.spellDamage(my.skills[spell.index])
 		// console.info('spellDamage 1', max)
@@ -642,63 +647,14 @@ var stats = {};
 			isCrit: isCrit,
 		}
 	}
-	function autoAttackDamage(index = 0, skipSkillCheck) {
-		min = 1
-		max = 1
-		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
-		atk = attack(weaponSkill)
-		if (items.eq[12].minDamage) {
-			min = items.eq[12].minDamage
-			max = items.eq[12].maxDamage
-		}
-		else {
-			h2h = handToHand()
-			if (my.job === JOB.MONK) {
-				max = 4 + (h2h / 2) // 125
-				min = 1 + (h2h / 8) // 31.25 about 26 dps at 250
-			}
-			else {
-				min = 1 + (h2h / 16)
-				max = 2 + (h2h / 9)
-			}
-		}
-		min = min * (1 + (atk * .002))
-		max = max * (1 + (atk * .002))
-
-		isCrit = (critFromBuffBonus(index) + stats.critChance()) > rand()
-
-		if (isCrit) {
-			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
-				min *= 2
-				max *= 2
-			}
-			else {
-				min *= 1.5
-				max *= 1.5
-			}
-		}
-
-		if (!skipSkillCheck) {
-			combat.levelSkillCheck(weaponSkill)
-		}
-		return {
-			min: min,
-			max: max,
-			damage: _.random(min, max),
-			isCrit: isCrit,
-			enhancedDamage: 1,
-			weaponSkill: weaponSkill,
-			damageType: DAMAGE_TYPE.PHYSICAL,
-		}
-	}
 	function skillDamage(index = 0, critMod = 0, skipSkillChecks) {
 		// normalized damage for skills
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : LABEL.HAND_TO_HAND
 		atk = attack(weaponSkill)
 		 // get normalized DPS value for min/max
-		if (weaponSkill !== 'Hand-to-Hand') {
+		if (weaponSkill !== LABEL.HAND_TO_HAND) {
 			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
 				dps = tooltip.getDps(items.eq[12])
 				max = dps * 1.5
@@ -757,26 +713,75 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
-	function offhandDamage(index = 0) {
-		if (!my.dualWield) return failedWeaponDamage
+	function primaryAutoAttackDamage(index = 0, skipSkillCheck) {
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[13] === 'object' && items.eq[13].name ? items.eq[13].weaponSkill : 'Hand-to-Hand'
+		weaponSkill = getWeaponSkill(12)
 		atk = attack(weaponSkill)
-		if (items.eq[13].minDamage) {
-			min = items.eq[13].minDamage
-			max = items.eq[13].maxDamage
-		}
-		else {
-			h2h = handToHand()
+		if (weaponSkill === LABEL.HAND_TO_HAND) {
 			if (my.job === JOB.MONK) {
-				min = 1 + (h2h / 12)
-				max = 4 + (h2h / 4.5)
+				max = 4 + (handToHand() / 2) // 125
+				min = 1 + (handToHand() / 8) // 31.25 about 26 dps at 250
 			}
 			else {
-				min = 1 + (h2h / 16)
-				max = 2 + (h2h / 9)
+				min = 1 + (handToHand() / 16)
+				max = 2 + (handToHand() / 9)
 			}
+		}
+		else {
+			min = items.eq[12].minDamage
+			max = items.eq[12].maxDamage
+		}
+		min = min * (1 + (atk * .002))
+		max = max * (1 + (atk * .002))
+
+		isCrit = (critFromBuffBonus(index) + stats.critChance()) > rand()
+
+		if (isCrit) {
+			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
+				min *= 2
+				max *= 2
+			}
+			else {
+				min *= 1.5
+				max *= 1.5
+			}
+		}
+
+		if (!skipSkillCheck) {
+			combat.levelSkillCheck(weaponSkill)
+		}
+
+		return {
+			min: min,
+			max: max,
+			damage: _.random(min, max),
+			isCrit: isCrit,
+			enhancedDamage: 1,
+			weaponSkill: weaponSkill,
+			damageType: DAMAGE_TYPE.PHYSICAL,
+		}
+	}
+	function secondaryAutoAttackDamage(index = 0) {
+		return
+		if (!my.dualWield) return FailedWeaponDamage
+		min = 1
+		max = 1
+		weaponSkill = getWeaponSkill(13)
+		atk = attack(weaponSkill)
+		if (weaponSkill === LABEL.HAND_TO_HAND) {
+			if (my.job === JOB.MONK) {
+				min = 1 + (handToHand() / 12)
+				max = 4 + (handToHand() / 4.5)
+			}
+			else {
+				min = 1 + (handToHand() / 16)
+				max = 2 + (handToHand() / 9)
+			}
+		}
+		else {
+			min = items.eq[13].minDamage
+			max = items.eq[13].maxDamage
 		}
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
@@ -1516,8 +1521,9 @@ var stats = {};
 
 	function getAttackSpeed(slot) {
 		// weapon or punch speed?
-		if (typeof items.eq[slot] === 'object') speed = items.eq[slot].speed
-		else speed = button.autoAttackSpeed
+		speed = my.isPunching(slot)
+			? button.autoAttackSpeed
+			: items.eq[slot].speed
 		speedHaste = 1
 		// buffs
 		if (my.buffFlags.spiritOfTheHunter) speedHaste -= buffs.spiritOfTheHunter.attackHaste
@@ -1531,6 +1537,8 @@ var stats = {};
 		skillHaste = 1
 		if (my.buffFlags.frenzy) skillHaste -= buffs.frenzy.skillHaste[my.buffs.frenzy.level]
 		if (my.buffFlags.augmentation) skillHaste -= buffs.augmentation.skillHaste[my.buffs.augmentation.level]
+		if (my.buffFlags.hyperStrike) skillHaste -= buffs.hyperStrike.skillHaste[my.buffs.hyperStrike.stacks]
+		// console.info('getSkillSpeed', skillHaste)
 		if (skillHaste < .5) skillHaste = .5
 		else if (skillHaste > 2) skillHaste = 2
 		return skillHaste

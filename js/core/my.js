@@ -2,6 +2,7 @@ var my;
 !function($, _, TweenMax, undefined) {
 	my = {
 		//hud,
+		isPunching,
 		set,
 		getResistObject,
 		getPartyNames,
@@ -53,6 +54,9 @@ var my;
 	const tabOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	let index
 	////////////////////////////////////
+	function isPunching(slot) {
+		return !(typeof items.eq[slot] === 'object' && items.eq[slot].name)
+	}
 	function set(key, val, increment) {
 		if (increment) {
 			party.presence[0][key] = my[key] += val

@@ -154,6 +154,7 @@ const PROP = Object.freeze({
 const LABEL = Object.freeze({
 	STR: 'Strength',
 	ONE_HAND_SLASH: 'One-hand Slash',
+	HAND_TO_HAND: 'Hand-to-Hand',
 })
 const DAMAGE_TYPE = Object.freeze({
 	PHYSICAL: 'physical',

@@ -14,7 +14,7 @@ var button;
 		primaryAttack,
 		secondaryAttack,
 		triggerSkill,
-		processButtonTimers,
+		processSkillTimers,
 		init,
 		getPunchDps,
 		initialized: false,
@@ -22,9 +22,10 @@ var button;
 	}
 	var name, hit
 	let mySwingSpeed = 0
-	const globalCooldownDur = 2.5
+	const GlobalCooldownDuration = 2.5
 	const HybridAutoAttackers = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER, JOB.BARD]
 	let damages
+	let flashTween = delayedCall(0, '')
 	/////////////////////////////
 
 	function init() {
@@ -39,16 +40,17 @@ var button;
 	}
 
 	//////////////////////////////////
-	function processButtonTimers(index, skillData) {
+	function processSkillTimers(index, skillData) {
 		let el = querySelector('#skill-timer-' + index + '-rotate')
-		// processButtonTimers
-		// console.info('processButtonTimers', index, skillData)
+		// processSkillTimers
+		// console.info('processSkillTimers', index, skillData)
 		TweenMax.set(el, CSS.DISPLAY_BLOCK)
 		let args = {
 			el: el,
 			index: index,
 		}
 		let timerObj = {
+			startAt: { [index]: 0 },
 			onStart: handleButtonStart,
 			onStartParams: [ args ],
 			onUpdate: handleButtonUpdate,
@@ -57,49 +59,54 @@ var button;
 			onCompleteParams: [ args, true ],
 			ease: Linear.easeNone
 		}
-		timerObj[index] = 1
-
+		timerObj[index] = .999 // because it may be interrupted by a global upon recovery
+		// rotation animation
+		timers.skillCooldowns[index] = 0
+		timers.skillCooldownTimers[index].kill()
+		timers.skillCooldownTimers[index] = TweenMax.to(timers.skillCooldowns, skillData.cooldownTime, timerObj)
+		// number countdown
 		let textEl = querySelector('#skill-timer-' + index)
+		textEl.innerHTML = getSkillTimeString(skillData.cooldownTime)
 		let textObj = {
 			el: textEl,
 			remaining: skillData.cooldownTime
 		}
 
-		textEl.innerHTML = getSkillTimeString(skillData.cooldownTime)
 		TweenMax.to(textObj, 1, {
 			repeat: skillData.cooldownTime,
 			onRepeat: button.updateSkillTime,
 			onRepeatParams: [ textObj ]
 		})
-		TweenMax.to(timers.skillCooldowns, skillData.cooldownTime, timerObj)
 	}
 
 	function triggerGlobalCooldown() {
-		timers.globalCooldown = 0
-		let selector = []
-		timers.skillCooldowns.forEach((skill, index) => {
-			if (skill === 1) {
-				selector.push('#skill-timer-'+ index +'-rotate')
+		// delayedCall(0, () => {
+			timers.globalCooldown = 0
+			let selector = []
+			timers.skillCooldowns.forEach((skill, index) => {
+				if (skill === 1) {
+					selector.push('#skill-timer-'+ index +'-rotate')
+				}
+			})
+			selector = selector.join(', ')
+			TweenMax.set(selector, CSS.DISPLAY_BLOCK)
+			let args = {
+				el: selector,
+				key: 'globalCooldown',
 			}
-		})
-		selector = selector.join(', ')
-		TweenMax.set(selector, CSS.DISPLAY_BLOCK)
-		let args = {
-			el: selector,
-			key: 'globalCooldown',
-		}
-		// haste
+			// haste
 
-		TweenMax.to(timers, globalCooldownDur * stats.getSkillSpeed(), {
-			globalCooldown: 1,
-			onStart: handleButtonStart,
-			onStartParams: [ args ],
-			onUpdate: handleButtonUpdate,
-			onUpdateParams: [ args ],
-			onComplete: handleButtonComplete,
-			onCompleteParams: [ args ],
-			ease: Linear.easeNone
-		})
+			TweenMax.to(timers, GlobalCooldownDuration * stats.getSkillSpeed(), {
+				globalCooldown: 1,
+				onStart: handleButtonStart,
+				onStartParams: [ args ],
+				onUpdate: handleButtonUpdate,
+				onUpdateParams: [ args ],
+				onComplete: handleButtonComplete,
+				onCompleteParams: [ args ],
+				ease: Linear.easeNone
+			})
+		// })
 	}
 	function triggerSkill(index) {
 		if (my.hp <= 0) return
@@ -152,7 +159,7 @@ var button;
 		}
 
 		damages = []
-		hit = stats.autoAttackDamage(index)
+		hit = stats.primaryAutoAttackDamage(index)
 		damages.push({
 			key: 'autoAttack',
 			index: index,
@@ -164,7 +171,7 @@ var button;
 			my.level >= skills.doubleAttack[my.job].level) {
 			combat.levelSkillCheck(PROP.DOUBLE_ATTACK)
 			if (Math.random() < successfulDoubleAttack()) {
-				hit = stats.autoAttackDamage(index)
+				hit = stats.primaryAutoAttackDamage(index)
 				damages.push({
 					key: 'autoAttack',
 					index: index,
@@ -192,7 +199,7 @@ var button;
 		if (my.level >= skills.dualWield[my.job].level) {
 			combat.levelSkillCheck(PROP.DUAL_WIELD)
 			if (successfulDualWield()) {
-				hit = stats.offhandDamage(my.target)
+				hit = stats.secondaryAutoAttackDamage(my.target)
 				damages = []
 				damages.push({
 					key: 'autoAttack',
@@ -201,7 +208,7 @@ var button;
 				})
 				if (my.level >= skills.doubleAttack[my.job].level) {
 					if (Math.random() < successfulDoubleAttack()) {
-						hit = stats.offhandDamage(my.target)
+						hit = stats.secondaryAutoAttackDamage(my.target)
 						damages.push({
 							key: 'autoAttack',
 							index: my.target,
@@ -227,11 +234,11 @@ var button;
 		let slot, el
 		if (key === 'primaryAttack') {
 			slot = 12
-			el = querySelector('#skill-timer-primary-rotate')
+			el = '#skill-timer-primary-rotate'
 		}
 		else {
 			slot = 13
-			el = querySelector('#skill-timer-secondary-rotate')
+			el = '#skill-timer-secondary-rotate'
 		}
 
 		if (!HybridAutoAttackers.includes(my.job) && timers.castBar < 1) {
@@ -246,6 +253,7 @@ var button;
 			key: key,
 		}
 		let to = {
+			startAt: { [key]: 0 },
 			onStart: handleButtonStart,
 			onStartParams: [ o ],
 			onUpdate: handleButtonUpdate,
@@ -283,31 +291,33 @@ var button;
 	}
 	function handleButtonStart(o) {
 		TweenMax.set(o.el, {
+			background: '',
 			scale: 1,
 			opacity: 1,
-			overwrite: true,
+			overwrite: 1,
 		})
 	}
 
 	function handleButtonUpdate(o) {
-		if (typeof o.index === 'number') {
-			// skill
-			TweenMax.set(o.el, {
-				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
-			})
-		}
-		else {
+		if (o.key === 'globalCooldown') {
 			// global
 			TweenMax.set(o.el, {
+				opacity: 1,
 				background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000d ' + timers[o.key] + 'turn)'
 			})
 		}
+		else {
+			// skill
+			TweenMax.set(o.el, {
+				opacity: 1,
+				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
+			})
+		}
 	}
-	const flashGradient = 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)'
+	const FlashGradient = 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)'
 	function handleButtonComplete(o, checkGlobalInProgress) {
-		if (checkGlobalInProgress &&
-			timers.globalCooldown < 1) {
-			let duration = globalCooldownDur - (timers.globalCooldown * globalCooldownDur)
+		if (checkGlobalInProgress && timers.globalCooldown < 1) {
+			let duration = GlobalCooldownDuration - (timers.globalCooldown * GlobalCooldownDuration)
 			// console.info('handleButtonComplete', o.el, duration)
 			TweenMax.set(o.el, CSS.DISPLAY_BLOCK)
 			let newTimer = {
@@ -315,6 +325,7 @@ var button;
 			}
 			let args = {
 				el: o.el,
+				index: o.index,
 				key: 'globalCooldown',
 			}
 			TweenMax.to(newTimer, duration, {
@@ -335,11 +346,15 @@ var button;
 				startAt: {
 					scale: 1,
 					opacity: 1,
-					background: flashGradient,
+					background: FlashGradient,
 				},
 				scale: .75,
 				opacity: 0,
 			})
+			if (typeof o.index === 'number') {
+				// complete reset in actuality to avoid collision with globalCooldown
+				timers.skillCooldowns[o.index] = 1
+			}
 		}
 	}
 	function updateSkillTime(obj) {
@@ -369,7 +384,7 @@ var button;
 			// base attack buttons
 			s += '<div id="main-attack-wrap">' +
 				'<div class="skill-btn">' +
-					'<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="'+ bar.getItemSlotImage('eq', 12) +'">' +
+					'<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="images/items/autoAttack.png">' +
 					'<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>' +
 				'</div>'
 				if (isOffhandingWeapon()) {

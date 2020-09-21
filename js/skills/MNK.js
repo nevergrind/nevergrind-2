@@ -14,25 +14,27 @@
 		spiritBarrier,
 	}
 	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
+	let mimeStatus = false
 	///////////////////////////////////////////
 	function tigerStrike(index, data) {
-		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// process skill data
-		tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		damages.push({
+		hit = {
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'tigerStrike',
-			index: tgt,
-			enhancedDamage: data.enhancedDamage[my.skills[index]],
+			index: my.target,
+			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
-		})
+		}
+		damages.push(hit)
+		mimeStatus && mimeStrikeHit(hit)
 		combat.txDamageMob(damages)
 		button.triggerGlobalCooldown()
 	}
@@ -45,17 +47,32 @@
 		spell.expendMana(data, index)
 
 		// process skill data
-		tgt = my.target
 		damages = []
-		damages.push({
+		hit = {
 			key: 'hyperStrike',
-			index: tgt,
+			index: my.target,
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
-		})
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
+		}
+		damages.push(hit)
+		mimeStatus && mimeStrikeHit(hit)
 		combat.txDamageMob(damages)
+
+		combat.txBuffHero([{
+			key: 'hyperStrike',
+			index: my.row,
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			level: my.skills[index],
+			damage: 0
+		}])
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
+	}
+	function mimeStrikeHit(hit) {
+		damages.push(hit)
+		mimeStatus = false
 	}
 	function mimeStrike(index, data) {
 		// check constraints
@@ -66,17 +83,20 @@
 		spell.expendMana(data, index)
 
 		// process skill data
-		tgt = my.target
+		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		damages.push({
-			key: 'mimeStrike',
-			index: tgt,
-			enhancedDamage: data.enhancedDamage[my.skills[index]],
+		hit = {
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
+			key: 'tigerStrike',
+			index: my.target,
+			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
-		})
+		}
+		damages.push(hit)
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
+		mimeStatus = true
 	}
 	function craneKick(index, data) {
 		// check constraints
@@ -87,16 +107,24 @@
 		spell.expendMana(data, index)
 
 		// process skill data
-		tgt = my.target
 		damages = []
-		damages.push({
+		hit = {
 			key: 'craneKick',
-			index: tgt,
+			index: my.target,
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
-		})
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
+			buffs: [{
+				i: my.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'stun', // this sets the flag,
+				duration: buffs.craneKick.stunDuration,
+			}],
+		}
+		damages.push(hit)
+		mimeStatus && mimeStrikeHit(hit)
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function chakraBlast(index, data) {

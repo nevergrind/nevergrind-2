@@ -65,7 +65,7 @@
 			}
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function scourge(index, data) {
 		if (timers.castBar < 1) return
@@ -142,7 +142,7 @@
 		})
 		// console.info('vampiricGaze', damages[Zero])
 		combat.txDotMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function glacialShard(index, data) {
 		if (timers.castBar < 1) return
@@ -175,7 +175,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function affliction(index, data) {
 		if (timers.castBar < 1) return
@@ -214,7 +214,7 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function devouringSwarmHeal(data) {
 		// console.info('devouringSwarmHeal', ~~(data.damage * buffs.devouringSwarm.healRatio), data)

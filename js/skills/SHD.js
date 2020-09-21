@@ -60,7 +60,7 @@
 			hitBonus: data.hitBonus[my.skills[index]],
 		})
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function deathStrikeHeal(hit) {
@@ -94,7 +94,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 	}
 	function doomThrust(index, data) {
 		// check constraints
@@ -116,18 +116,8 @@
 			hitBonus: data.hitBonus[my.skills[index]],
 		})
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
-		// dot
-		damages = []
-		hit = stats.skillDamage(my.target, -100)
-		damages.push({
-			key: 'doomThrust',
-			index: my.target,
-			damageType: DAMAGE_TYPE.BLOOD,
-			damage: round(hit.damage * data.dotModifier)
-		})
-		combat.txDotMob(damages)
 	}
 	function astralBlade(index, data) {
 		if (timers.castBar < 1) return
@@ -164,7 +154,7 @@
 				})
 			}(i)
 		}
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function ravagingPlague(index, data) {
 		if (timers.castBar < 1) return
@@ -256,7 +246,7 @@
 				duration: 12,
 			}],
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function lifeTap(index, data) {
 		if (timers.castBar < 1) return
@@ -286,7 +276,7 @@
 			damageType: spell.data.damageType,
 			...hit
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function vampiricFeast(index, data) {
 		if (timers.castBar < 1) return
@@ -322,7 +312,7 @@
 		}
 		combat.txDamageMob(damages)
 		combat.txHotHero(heals)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function sanguineHarvest(index, data) {
 		if (timers.castBar < 1) return

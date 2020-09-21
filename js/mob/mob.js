@@ -1,10 +1,12 @@
 var mob;
+let mobs = [];
 (function(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2, undefined) {
 	mob = {
 		getMobResist,
 		isAlive,
 		getRandomMobKey,
 		init,
+		initMobData,
 		// configs, resets (active animations) and idles mobs in one call for start of combat
 		setMob,
 		// size only
@@ -134,6 +136,7 @@ var mob;
 	let resist = 0
 	let resistPenalty = 0
 
+
 	//////////////////////////////////////////////////
 	function getRandomMobKey() {
 		var i = ~~(rand() * mob.imageKeysLen)
@@ -177,6 +180,12 @@ var mob;
 		mob.imageKeysLen = mob.imageKeys.length
 		battle.show()
 		// init mob/dom connections
+		initMobData()
+		for (var i=0; i<mob.max; i++) {
+			querySelector('#mob-wrap-' + i).style.display = 'none'
+		}
+	}
+	function initMobData() {
 		for (var i=0; i<mob.max; i++){
 			mobs[i] = {
 				hp: 0,
@@ -195,7 +204,6 @@ var mob;
 				dom: {},
 				target: my.row,
 			}
-			querySelector('#mob-wrap-' + i).style.display = 'none'
 		}
 	}
 	function configMobType(config) {

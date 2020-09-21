@@ -67,7 +67,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function euphonicDirge(index, data) {
 		if (timers.castBar < 1) return
@@ -138,7 +138,7 @@
 			}]
 		}])
 
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function battleHymn(index, data) {
 		if (timers.castBar < 1) return

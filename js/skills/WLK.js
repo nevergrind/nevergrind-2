@@ -125,7 +125,7 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function hauntingVision(index, data) {
 		if (timers.castBar < 1) return
@@ -155,7 +155,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function icingDeath(index, data) {
 		if (timers.castBar < 1) return
@@ -185,7 +185,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function curseOfShadows(index, data) {
 		if (timers.castBar < 1) return
@@ -228,7 +228,7 @@
 			}],
 		})
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function drainSoul(index, data) {
 		if (timers.castBar < 1) return
@@ -258,7 +258,7 @@
 			damageType: spell.data.damageType,
 			...hit
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function lichForm(index, data) {
 		if (timers.castBar < 1) return
@@ -280,7 +280,7 @@
 			damage: 0,
 		})
 		combat.txBuffHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function engulfingDarkness(index, data) {
 		if (timers.castBar < 1) return
@@ -300,7 +300,7 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txDotMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function profaneSpirit(index, data) {
 		if (timers.castBar < 1) return

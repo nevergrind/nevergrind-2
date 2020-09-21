@@ -145,7 +145,7 @@
 			}
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function phaseBlade(index, data) {
 		if (timers.castBar < 1) return
@@ -168,7 +168,7 @@
 			damage: 0
 		})
 		combat.txBuffHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function stasisField(index, data) {
 		if (timers.castBar < 1) return
@@ -195,7 +195,7 @@
 			}],
 		})
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	let maxStasis = 0
 	function getHighestStasis(index) {
@@ -249,7 +249,7 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function augmentation(index, data) {
 		if (timers.castBar < 1) return

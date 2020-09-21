@@ -15,7 +15,7 @@ var spell;
 		expendSpellResources,
 		expendMana,
 		expendSpirit,
-		triggerCooldown,
+		triggerSkillCooldown,
 	}
 	let castBarWrap = querySelector('#cast-bar-wrap')
 	let castBar = querySelector('#cast-bar')
@@ -204,8 +204,9 @@ var spell;
 		spell.config.spCost = data.sp(my.skills[index])
 		expendSpellResources()
 	}
-	function triggerCooldown(index, data) {
+	function triggerSkillCooldown(index, data) {
 		timers.skillCooldowns[index] = 0
-		button.processButtonTimers(index, data || skills.lastData)
+		timers.skillCooldownTimers[index].kill()
+		button.processSkillTimers(index, data || skills.lastData)
 	}
 }($, _, TweenMax, Power0);

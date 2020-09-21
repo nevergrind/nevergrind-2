@@ -1,7 +1,7 @@
 var test;
 (function(Linear, TweenMax, TimelineMax, PIXI, $, undefined) {
 	test = {
-		getWeapon,
+		getTestLootItemWeapon,
 		disableConsole,
 		getHate,
 		send,
@@ -525,7 +525,7 @@ var test;
 	function disableConsole() {
 		console.debug = console.log = console.warn = console.info = ng.noop
 	}
-	function getWeapon(itemSlot = 'twoHandBlunts') {
+	function getTestLootItemWeapon(itemSlot = 'oneHandBlunts') {
 		return item.getLoot({
 			store: true,
 			rarity: 'unique',

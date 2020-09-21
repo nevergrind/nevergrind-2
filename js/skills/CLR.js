@@ -52,7 +52,7 @@
 			...stats.spellDamage(spell.config.target),
 			isBlighted: true,
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function condemnation(index, data) {
 		if (timers.castBar < 1) return
@@ -78,7 +78,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function sacredRevelation(index, data) {
 		if (timers.castBar < 1) return
@@ -109,7 +109,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function holySanctuary(index, data) {
 		if (timers.castBar < 1) return
@@ -133,7 +133,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function forceOfGlory(index, data) {
 		if (timers.castBar < 1) return
@@ -157,7 +157,7 @@
 			}],
 			...stats.spellDamage(spell.config.target)
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function bindingGrace(index, data) {
 		if (timers.castBar < 1) return
@@ -190,7 +190,7 @@
 			...stats.spellDamage(spell.config.target)
 		})
 		combat.txHotHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function guardianAngel(index, data) {
 		if (timers.castBar < 1) return
@@ -213,7 +213,7 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function divineLight(index, data) {
 		if (timers.castBar < 1) return

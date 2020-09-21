@@ -65,7 +65,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function vengeance(index, data) {
@@ -93,7 +93,7 @@
 			hitBonus: data.hitBonus[my.skills[index]],
 		})
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function consecrate(index, data) {
@@ -123,7 +123,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 
 		combat.txBuffHero([{
@@ -156,7 +156,7 @@
 				key: 'sealOfDamnation', // this sets the flag
 			}],
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function holyWrath(index, data) {
 		if (timers.castBar < 1) return
@@ -180,7 +180,7 @@
 			}],
 			...stats.spellDamage(spell.config.target)
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function divineJudgment(index, data) {
 		if (timers.castBar < 1) return
@@ -199,7 +199,7 @@
 			isBlighted: true,
 			...stats.spellDamage(spell.config.target)
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function blessedHammer(index, data) {
 		if (timers.castBar < 1) return
@@ -235,7 +235,7 @@
 				combat.txDamageMob(damages)
 			})
 		})
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function sealOfSanctuary(index, data) {
 		if (timers.castBar < 1) return
@@ -256,7 +256,7 @@
 			level: my.skills[spell.config.skillIndex],
 			damage: 0
 		}])
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function divineGrace(index, data) {
 		if (timers.castBar < 1) return
@@ -304,7 +304,7 @@
 			})
 		})
 		combat.txHotHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function jubilee(index, data) {
 		if (timers.castBar < 1) return
@@ -334,7 +334,7 @@
 			}
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 
 }($, _, TweenMax);

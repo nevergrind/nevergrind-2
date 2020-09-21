@@ -85,7 +85,6 @@ const jsFiles = [
 	'combat/buffs',
 	'combat/timers',
 	'mob/mob',
-	'mob/mobs',
 	'mob/mob-types',
 	'mob/mob-images',
 	'mob/mob-data',

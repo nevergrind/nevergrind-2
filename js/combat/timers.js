@@ -9,6 +9,7 @@ var timers;
 		globalCooldown: 1,
 		castBar: 1,
 		skillCooldowns: [],
+		skillCooldownTimers: [],
 		// mobTimerKeys
 		mobAttack: [],
 		mobStunTimer: [],
@@ -48,6 +49,7 @@ var timers;
 		for (var i=0; i<12; i++) {
 			// skill cooldowns
 			timers.skillCooldowns[i] = 1
+			timers.skillCooldownTimers[i] = delayedCall(0, '')
 		}
 		for (var i=0; i<mob.max; i++) {
 			// skill cooldowns

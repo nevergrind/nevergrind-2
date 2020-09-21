@@ -67,7 +67,7 @@
 				})
 			}(i)
 		}
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function frozenOrb(index, data) {
 		if (timers.castBar < 1) return
@@ -108,7 +108,7 @@
 				})
 			}(i)
 		}
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function staticStorm(index, data) {
 		if (timers.castBar < 1) return
@@ -148,7 +148,7 @@
 			})
 		}
 		combat.txDotMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function fireWall(index, data) {
 		if (timers.castBar < 1) return
@@ -166,7 +166,7 @@
 				delayedCall(1 + (i * 1), fireWallBurn, [targets])
 			}(i)
 		}
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function fireWallBurn(targets) {
 		let damages = []
@@ -223,7 +223,7 @@
 			})
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function primordialSludge(index, data) {
 		if (timers.castBar < 1) return
@@ -277,7 +277,7 @@
 			}]
 		}])
 
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function primevalWithering(index, data) {
 		if (timers.castBar < 1) return
@@ -319,7 +319,7 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function conviction(index, data) {
 		if (timers.castBar < 1) return

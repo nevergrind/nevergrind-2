@@ -78,7 +78,7 @@
 		combat.txDamageMob(damages)
 
 		// animate timers
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function trueshotStrike(index, data) {
@@ -105,7 +105,7 @@
 		combat.txDamageMob(damages)
 
 		// animate timers
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function spreadShot(index, data) {
@@ -141,7 +141,7 @@
 		combat.txDamageMob(damages)
 
 		// animate timers
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function bladeStorm(index, data) {
@@ -173,7 +173,7 @@
 		combat.txDamageMob(damages)
 
 		// animate timers
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function suppressingVolley(index, data) {
@@ -207,7 +207,7 @@
 		}
 		combat.txDamageMob(damages)
 		// animate timers
-		spell.triggerCooldown(index, data)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 		// special effects
 	}
@@ -272,7 +272,7 @@
 			}
 		}
 		combat.txDamageMob(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function faerieFlame(index, data) {
 		if (timers.castBar < 1) return
@@ -338,7 +338,7 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 
 	function spiritOfTheHunter(index, data) {
@@ -362,6 +362,6 @@
 			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txBuffHero(damages)
-		spell.triggerCooldown(spell.config.skillIndex)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 }($, _, TweenMax, Linear);
