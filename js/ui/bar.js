@@ -713,13 +713,13 @@ var bar;
 		bar.hotkeyId = this.dataset.id
 		bar.hotkeyElement = this;
 		querySelectorAll('.options-hotkey').forEach(el => {
-			el.classList.remove(CSS.ACTIVE)
+			el.classList.remove('active')
 		})
-		this.classList.add(CSS.ACTIVE)
+		this.classList.add('active')
 	}
 	function stopListeningForHotkey() {
 		bar.hotkeyId = ''
-		bar.hotkeyElement.classList.remove(CSS.ACTIVE)
+		bar.hotkeyElement.classList.remove('active')
 	}
 
 	function getOptionsUiHtml() {

@@ -161,8 +161,7 @@ function minifyJs() {
 		.pipe(gulp.dest('./js'));
 }
 function minifyPng() {
-	var img = 'dragon-fire';
-	var source = 'mobs';
+	var img = 'dragon-fire'
 	return imagemin(['./mobs/'+ img +'/*'], './mobs/'+ img +'/', {
 		use: [imageminPngquant({
 			floyd: 1,
@@ -171,13 +170,14 @@ function minifyPng() {
 			speed: 1
 		})]
 	}).then(function(){
-		// console.info("Images minified with quant: " + img)
+		console.info("Images minified with quant: " + img)
 	});
 }
 function resizePng() {
-	// add minify-png pipe
-	var img = 'toadlok';
-	var promise = new Promise(function(resolve) {
+	// Resize images - set width and height
+	// optimize via quant
+	var img = 'toadlok'
+	var promise = new Promise((resolve) => {
 		gulp.src('./mobs-huge/' + img + '/*')
 			.pipe(imageResize({
 				imageMagick: true,
@@ -185,7 +185,7 @@ function resizePng() {
 				height: 1500
 			}))
 			.pipe(gulp.dest('./mobs/' + img + '/'))
-			.on('end', resolve);
+			.on('end', resolve)
 	});
 
 	promise.then(function(data){
@@ -197,7 +197,7 @@ function resizePng() {
 				speed: 1
 			})]
 		}).then(function(){
-			// console.info("Images minified with quant: " + img)
+			console.info("Images minified with quant: " + img)
 		});
 	});
 }

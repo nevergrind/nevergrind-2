@@ -1023,7 +1023,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 1.5,
 			stunDuration: 3,
 		},
-		chakraBlast: { hate: 1 },
+		chakraBlast: { hate: .8 },
 		hadoken: { hate: 1 },
 		hurricaneKicks: { hate: 1 },
 		dragonPunch: { hate: 1 },

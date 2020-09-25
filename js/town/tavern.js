@@ -113,9 +113,9 @@ var tavern;
 	function handleClickTab() {
 		if (this.id === tavern.activeTab) return;
 		for (el of querySelectorAll('.tavern-tabs')) {
-			el.classList.remove(CSS.ACTIVE)
+			el.classList.remove('active')
 		}
-		this.classList.add(CSS.ACTIVE)
+		this.classList.add('active')
 		tavern.activeTab = this.id
 		avatar = ''
 
@@ -248,9 +248,9 @@ var tavern;
 	}
 	function handleClickJob() {
 		for (el of querySelectorAll('.tavern-jobs')) {
-			el.classList.remove(CSS.ACTIVE)
+			el.classList.remove('active')
 		}
-		this.classList.add(CSS.ACTIVE)
+		this.classList.add('active')
 		selectedLeaderboard = this.id
 		if (typeof tavern.leaders[selectedLeaderboard] === 'undefined') {
 			getLeaders(selectedLeaderboard)

@@ -6,8 +6,6 @@ const CHAT = Object.freeze( {
 	HEAL: 'chat-heal',
 })
 const CSS = Object.freeze({
-	ACTIVE: 'active',
-	DISABLED: 'disabled',
 	CASTBAR_ZERO: { castBar: 0 },
 	X_ZERO: { x: '-100%' },
 	DISPLAY_BLOCK: { display: 'block' },

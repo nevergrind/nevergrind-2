@@ -201,7 +201,6 @@ var combat;
 				return d
 			}
 			if (rand() < stats.missChance(d.index, d.weaponSkill, d.hitBonus)) {
-				// chat.log('Your attack misses ' + ng.getArticle(d.index) + ' ' + mobs[d.index].name + '!')
 				d.damage = 0
 				combat.popupDamage(d.index, 'MISS!')
 				return d
@@ -377,13 +376,13 @@ var combat;
 		button.primaryAttack()
 		button.secondaryAttack()
 		el = querySelector('#main-attack-wrap')
-		el.classList.remove(CSS.ACTIVE)
-		el.classList.add(CSS.ACTIVE)
+		el.classList.remove('active')
+		el.classList.add('active')
 	}
 	function autoAttackDisable() {
 		my.isAutoAttacking = false
 		el = querySelector('#main-attack-wrap')
-		el.classList.remove(CSS.ACTIVE)
+		el.classList.remove('active')
 	}
 	function endCombat() {
 		mob.killAttacks(true)
@@ -514,7 +513,7 @@ var combat;
 	}
 	let damageData
 	function txDamageMob(damages) {
-		// console.info('txDamageMob', damages)
+		console.info('txDamageMob', damages)
 		damages = damages.filter(filterImpossibleMobTargets).map(processDamagesMob)
 		damageArr = []
 		buffArr = []

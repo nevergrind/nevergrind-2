@@ -115,18 +115,18 @@ var create;
 	function selectRace() {
 		var race = $(this).text();
 		if (race === create.form.race) return
-		$('.select-race').removeClass(CSS.ACTIVE);
-		$(this).addClass(CSS.ACTIVE);
+		$('.select-race').removeClass('active');
+		$(this).addClass('active');
 		create.setRandomClass(race);
 		create.set('race', race);
 		setFace()
 	}
 	function selectClass() {
-		if (!$(this).get(0).className.includes(CSS.DISABLED)){
+		if (!$(this).get(0).className.includes('disabled')){
 			var job = $(this).text();
 			if (job === create.form.job) return
-			$('.select-class').removeClass(CSS.ACTIVE);
-			$(this).addClass(CSS.ACTIVE);
+			$('.select-class').removeClass('active');
+			$(this).addClass('active');
 			create.set('job', job)
 			setAvatarBg()
 		}
@@ -134,8 +134,8 @@ var create;
 	function selectGender() {
 		// console.info(this);
 		var gender = $(this).data('gender');
-		$(".select-gender").removeClass(CSS.ACTIVE);
-		$('#' + gender).addClass(CSS.ACTIVE);
+		$(".select-gender").removeClass('active');
+		$('#' + gender).addClass('active');
 		create.set('gender', gender);
 		setFace()
 	}
@@ -189,9 +189,9 @@ var create;
 					webkitMaskPositionX: '-40rem',
 				});
 				TweenMax.to('#title-gwen', .6, {
-					startAt: { x: -20, filter: 'brightness(10)' },
+					startAt: { x: -20, filter: 'brightness(10) contrast(5)' },
 					x: 0,
-					filter: 'brightness(1)',
+					filter: 'brightness(1) contrast(1)',
 					opacity: 1,
 					onComplete: ng.flashNgoLogo,
 				})
@@ -201,20 +201,20 @@ var create;
 					opacity: 1
 				})
 				TweenMax.to('#ngo-logo', .6, {
-					startAt: { filter: 'brightness(10)' },
-					filter: 'brightness(1)',
+					startAt: { filter: 'brightness(10) contrast(5)' },
+					filter: 'brightness(1) contrast(1)',
 				})
 			}
 		});
 		TweenMax.to('#title-gwen', .6, {
-			startAt: { x: 0, filter: 'brightness(1)' },
+			startAt: { x: 0, filter: 'brightness(1) contrast(1)' },
 			x: -20,
-			filter: 'brightness(10)',
+			filter: 'brightness(10) contrast(5)',
 			opacity: 0
 		})
 		TweenMax.to('#ngo-logo', .6, {
-			startAt: { filter: 'brightness(1)' },
-			filter: 'brightness(10)',
+			startAt: { filter: 'brightness(1) contrast(1)' },
+			filter: 'brightness(10) contrast(5)',
 		})
 		TweenMax.to('.ngo-logos', .6, {
 			startAt: { y: 0, },
@@ -318,7 +318,7 @@ var create;
 				raceAttr[i] += v;
 			});
 			// set initial attr values
-			$(".create-attr-value").removeClass(CSS.ACTIVE);
+			$(".create-attr-value").removeClass('active');
 			ng.attrs.forEach(function(v, i){
 				var e = getElementById('create-points-' + v);
 				e.innerHTML = create.form[v] = create.base[v] = raceAttr[i];
@@ -574,7 +574,7 @@ var create;
 				ids += ', ';
 			}
 		});
-		$(ids).removeClass(CSS.DISABLED);
+		$(ids).removeClass('disabled');
 		// add active to selection
 		var e = $(".select-class:not(.disabled)"),
 			len = e.length;

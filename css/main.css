@@ -1975,12 +1975,10 @@ background-repeat: no-repeat;
 #title-well-bottom {
 	border: .1rem solid #000;
 	border-top: none;
-	border-radius: 0 0 6px 6px;
 }
 #title-well-top {
 	border: .1rem solid #000;
 	border-bottom: none;
-	border-radius: 6px 6px 0 0;
 }
 #title-select-down { border-left: none }
 #title-select-up { border-right: none }
@@ -2215,7 +2213,7 @@ background-repeat: no-repeat;
 	position: fixed;
 	top: 25%;
 	width: 16rem;
-	max-height: 30rem;
+	max-height: 28rem;
 	overflow: hidden;
 	z-index: 100;
 	margin: 0 auto;

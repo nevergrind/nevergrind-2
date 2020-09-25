@@ -203,13 +203,13 @@ var tooltip;
 		return stat ? '<div class="item-magic">' + label + ' ' + stat + '</div>' : ''
 	}
 	function getGenericStatHtml(stat, label) {
-		return stat ? '<div class="item-magic">+' + stat + ' ' + label + '</div>' : ''
+		return stat ? `<div class="item-magic">+${stat} ${label}</div>` : ''
 	}
 	function getBlockChance(stat) {
-		return stat ? '<div>Chance to Block: <span class="item-magic">' + stat + '%</span></div>' : ''
+		return stat ? `<div>Chance to Block: <span class="item-magic">${stat}%</span></div>` : ''
 	}
 	function getGenericPercentStatHtml(stat, label) {
-		return stat ? '<div class="item-magic">+' + stat + '% ' + label + '</div>' : ''
+		return stat ? `<div class="item-magic">+${stat}% ${label}</div>` : ''
 	}
 	function getItemUse(obj) {
 		useHtml = ''

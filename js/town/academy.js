@@ -71,9 +71,9 @@ var academy;
 		// console.info('selected', selected)
 
 		for (el of querySelectorAll('.academy-train')) {
-			el.classList.remove(CSS.ACTIVE)
+			el.classList.remove('active')
 		}
-		this.classList.add(CSS.ACTIVE)
+		this.classList.add('active')
 		if (hasLevelRequired(selected.rank)) {
 			ng.splitText('various-description', 'Training '+ skills.skillNames[selected.index] +' to Rank '+ selected.rank +' will cost '+ selected.cost +' gold. Would you like to complete this training?')
 		}

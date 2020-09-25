@@ -536,14 +536,14 @@ var ng;
 			onComplete: allDone
 		});
 		TweenMax.to('#title-gwen', .6, {
-			startAt: { x: 0, filter: 'brightness(1)' },
+			startAt: { x: 0, filter: 'brightness(1) contrast(1)' },
 			x: -20,
-			filter: 'brightness(10)',
+			filter: 'brightness(10) contrast(5)',
 			opacity: 0
 		})
 		TweenMax.to('#ngo-logo', .6, {
-			startAt: { filter: 'brightness(1)' },
-			filter: 'brightness(10)',
+			startAt: { filter: 'brightness(1) contrast(1)' },
+			filter: 'brightness(10) contrast(5)',
 		})
 		TweenMax.to('.ngo-logos', .6, {
 			startAt: { y: 0, },
@@ -667,17 +667,17 @@ var ng;
 		if (!ng.initialized) {
 			ng.initialized = true
 			TweenMax.to('#title-gwen', .6, {
-				startAt: { filter: 'brightness(10) saturate(2)' },
+				startAt: { filter: 'brightness(10) contrast(5)' },
 				delay: .6,
 				x: 0,
-				filter: 'brightness(1) saturate(1)',
+				filter: 'brightness(1) contrast(1)',
 				opacity: 1,
 				ease: Power1.easeOut,
 			})
 			TweenMax.to('#ngo-logo', .6, {
-				startAt: { filter: 'brightness(10)' },
+				startAt: { filter: 'brightness(10) contrast(5)' },
 				delay: .6,
-				filter: 'brightness(1)',
+				filter: 'brightness(1) contrast(1)',
 				ease: Power1.easeOut,
 			})
 			TweenMax.to('.ngo-logos', .6, {

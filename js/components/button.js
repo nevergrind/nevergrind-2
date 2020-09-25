@@ -20,12 +20,11 @@ var button;
 		initialized: false,
 		autoAttackSpeed: 3,
 	}
-	var name, hit
+	let name, hit
 	let mySwingSpeed = 0
 	const GlobalCooldownDuration = 2.5
 	const HybridAutoAttackers = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER, JOB.BARD]
 	let damages
-	let flashTween = delayedCall(0, '')
 	/////////////////////////////
 
 	function init() {
@@ -314,21 +313,28 @@ var button;
 			})
 		}
 	}
-	const FlashGradient = 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)'
+
+	const GlobalStart = { globalCooldown: 1 }
+	const ButtonFlash = {
+		startAt: {
+			scale: 1,
+			opacity: 1,
+			background: 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)',
+		},
+		scale: .75,
+		opacity: 0,
+	}
 	function handleButtonComplete(o, checkGlobalInProgress) {
 		if (checkGlobalInProgress && timers.globalCooldown < 1) {
 			let duration = GlobalCooldownDuration - (timers.globalCooldown * GlobalCooldownDuration)
 			// console.info('handleButtonComplete', o.el, duration)
 			TweenMax.set(o.el, CSS.DISPLAY_BLOCK)
-			let newTimer = {
-				globalCooldown: 1
-			}
 			let args = {
 				el: o.el,
 				index: o.index,
 				key: 'globalCooldown',
 			}
-			TweenMax.to(newTimer, duration, {
+			TweenMax.to(GlobalStart, duration, {
 				globalCooldown: 1,
 				onStart: handleButtonStart,
 				onStartParams: [ args ],
@@ -342,15 +348,7 @@ var button;
 		else {
 			// console.info('handleButtonComplete FLASH', o.el)
 			// button flash
-			TweenMax.to(o.el, .5, {
-				startAt: {
-					scale: 1,
-					opacity: 1,
-					background: FlashGradient,
-				},
-				scale: .75,
-				opacity: 0,
-			})
+			TweenMax.to(o.el, .5, ButtonFlash)
 			if (typeof o.index === 'number') {
 				// complete reset in actuality to avoid collision with globalCooldown
 				timers.skillCooldowns[o.index] = 1
@@ -367,49 +365,43 @@ var button;
 		})*/
 	}
 	function getSkillTimeString(time) {
-		if (time >= 100) {
-			return (~~(time / 60)) + 'm'
-		}
-		else {
-			return !time ? '' : time
-		}
+		if (time >= 100) return (~~(time / 60)) + 'm'
+		else return !time ? '' : time
 
 	}
 	function setAll() {
-		TweenMax.set('#button-wrap', {
-			startAt: CSS.DISPLAY_FLEX,
-		})
+		TweenMax.set('#button-wrap', CSS.DISPLAY_FLEX)
 		if (!button.initialized) {
 			var s = '';
 			// base attack buttons
-			s += '<div id="main-attack-wrap">' +
-				'<div class="skill-btn">' +
-					'<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="images/items/autoAttack.png">' +
-					'<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>' +
-				'</div>'
+			s += `<div id="main-attack-wrap">
+				<div class="skill-btn">
+					<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="images/items/autoAttack.png">
+					<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>
+				</div>`
 				if (isOffhandingWeapon()) {
-					s += '<div class="skill-btn">' +
-						'<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="'+ bar.getItemSlotImage('eq', 13) +'">' +
-						'<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>' +
-					'</div>'
+					s += `<div class="skill-btn">
+						<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 13)}">
+						<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>
+					</div>`
 				}
-			s += '</div>' +
-			'<div id="skill-col">' +
-				'<div id="exp-bar-wrap">' +
-					'<div id="exp-bar"></div>' +
-					'<div id="exp-bar-grid"></div>' +
-				'</div>' +
-				'<div id="skill-btn-wrap">'
+			s += `</div>
+			<div id="skill-col">
+				<div id="exp-bar-wrap">
+					<div id="exp-bar"></div>
+					<div id="exp-bar-grid"></div>
+				</div>
+				<div id="skill-btn-wrap">`
 			// skill buttons
 			for (var i=0; i<12; i++) {
-				s += '<div id="skill-btn-'+ i +'" class="skill-btn job-skill-btn" data-index="'+ i +'">' +
-					'<img id="skill-'+ i +'" class="skill-img popover-icons" src="images/skills/'+ my.job +'/'+ i +'.png">' +
-					'<div id="skill-timer-'+ i +'-rotate" class="skill-timer-rotate"></div>' +
-					'<div id="skill-timer-'+ i +'" class="skill-timer"></div>' +
-				'</div>'
+				s += `<div id="skill-btn-${i}" class="skill-btn job-skill-btn" data-index="${i}">
+					<img id="skill-${i}" class="skill-img popover-icons" src="images/skills/${my.job}/${i}.png">
+					<div id="skill-timer-${i}-rotate" class="skill-timer-rotate"></div>
+					<div id="skill-timer-${i}" class="skill-timer"></div>
+				</div>`
 			}
-			s += '</div>' +
-			'</div>'
+			s += `</div>
+			</div>`
 
 			querySelector('#button-wrap').innerHTML = s;
 			button.initialized = true
