@@ -78,10 +78,9 @@ var my;
 		if (!mobs[my.target].name) fixTarget()
 		else combat.targetChanged()
 	}
-	function tabTarget(event, tries) {
+	function tabTarget(event, tries = 0) {
 		if (ng.view !== 'battle' || timers.castBar < 1 || my.hp <= 0) return
 
-		if (typeof tries === 'undefined') tries = 0
 		if (my.target >= mob.max) {
 			// out of range - from player to mob target
 			if (event.shiftKey) my.target = tabOrder[0]

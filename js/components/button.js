@@ -95,7 +95,7 @@ var button;
 			}
 			// haste
 
-			TweenMax.to(timers, GlobalCooldownDuration * stats.getSkillSpeed(), {
+			TweenMax.to(timers, getCooldownSpeed(), {
 				globalCooldown: 1,
 				onStart: handleButtonStart,
 				onStartParams: [ args ],
@@ -107,6 +107,9 @@ var button;
 			})
 		// })
 	}
+	function getCooldownSpeed() {
+		return GlobalCooldownDuration * stats.getSkillSpeed()
+	}
 	function triggerSkill(index) {
 		if (my.hp <= 0) return
 
@@ -114,6 +117,10 @@ var button;
 		// console.info('triggerSkill', name)
 		if (typeof skill[my.job][name] === 'function') {
 			skill[my.job][name](index, skills[my.job][index])
+			if (!my.isAutoAttacking && name !== 'feignDeath') {
+				combat.autoAttackEnable()
+			}
+
 		}
 		else {
 			chat.log('This skill is not defined:' + name, CHAT.WARNING)
@@ -298,23 +305,26 @@ var button;
 	}
 
 	function handleButtonUpdate(o) {
-		if (o.key === 'globalCooldown') {
+		if (o.key === 'globalCooldown' ||
+			o.key === 'primaryAttack' ||
+			o.key === 'secondaryAttack') {
 			// global
 			TweenMax.set(o.el, {
+				overwrite: 1,
 				opacity: 1,
 				background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000d ' + timers[o.key] + 'turn)'
 			})
 		}
 		else {
-			// skill
+			// skill number
 			TweenMax.set(o.el, {
+				overwrite: 1,
 				opacity: 1,
 				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
 			})
 		}
 	}
 
-	const GlobalStart = { globalCooldown: 1 }
 	const ButtonFlash = {
 		startAt: {
 			scale: 1,
@@ -326,15 +336,16 @@ var button;
 	}
 	function handleButtonComplete(o, checkGlobalInProgress) {
 		if (checkGlobalInProgress && timers.globalCooldown < 1) {
-			let duration = GlobalCooldownDuration - (timers.globalCooldown * GlobalCooldownDuration)
-			// console.info('handleButtonComplete', o.el, duration)
+			let duration = getCooldownSpeed() - (timers.globalCooldown * getCooldownSpeed())
 			TweenMax.set(o.el, CSS.DISPLAY_BLOCK)
 			let args = {
 				el: o.el,
 				index: o.index,
 				key: 'globalCooldown',
 			}
+			const GlobalStart = { globalCooldown: 0 }
 			TweenMax.to(GlobalStart, duration, {
+				overwrite: 1,
 				globalCooldown: 1,
 				onStart: handleButtonStart,
 				onStartParams: [ args ],
@@ -346,7 +357,6 @@ var button;
 			})
 		}
 		else {
-			// console.info('handleButtonComplete FLASH', o.el)
 			// button flash
 			TweenMax.to(o.el, .5, ButtonFlash)
 			if (typeof o.index === 'number') {

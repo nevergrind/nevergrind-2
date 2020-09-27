@@ -243,7 +243,7 @@ let buffs; // buff data for use with skill/spells/icons
 		mirrorImage: {
 			name: 'Mirror Images',
 			img: 9,
-			job: 'Wiz',
+			job: JOB.WIZARD,
 			hate: 1,
 			msg: () => 'Your mirror form materializes from the void.',
 			msgAbsorb: 'Your mirror image shields you from harm.'
@@ -408,6 +408,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 8,
 			interval: 3,
 			duration: 24,
+			enhanceHealing: .2,
 			hate: 3,
 			msg: () => 'A mystical glow begins to heal your wounds.',
 		},
@@ -1018,19 +1019,66 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'Resonant vibrations accelerate your body.',
 			fadeMsg: 'The vibrations fade.'
 		},
-		mimeStrike: { hate: .7 },
+		mimeStrike: {
+			name: 'Mime Strike',
+			img: 2,
+			job: JOB.MONK,
+			hate: .7,
+			duration: 0,
+			msg: () => 'A kindred spirit appears to do your bidding.',
+		},
 		craneKick: {
 			hate: 1.5,
 			stunDuration: 3,
 		},
 		chakraBlast: { hate: .8 },
 		hadoken: { hate: 1 },
-		hurricaneKicks: { hate: 1 },
+		hurricaneKicks: { hate: .8 },
 		dragonPunch: { hate: 1 },
-		viperStrike: { hate: 1 },
-		palmStrike: { hate: 1 },
-		sacrifice: { hate: 1 },
-		spiritBarrier: { hate: 1 },
+		viperStrike: {
+			name: 'Viper Strike',
+			img: 8,
+			job: JOB.MONK,
+			hate: .7,
+			stacks: 5,
+			ticks: 1,
+			interval: 20,
+			duration: 20,
+			leech: [0, 1, 2, 4, 6, 8, 10, 12],
+			multiplier: [0, 1, 2, 3, 4, 5],
+			msg: () => 'A serpentine aura pervades your spirit.',
+			fadeMsg: 'The serpentine aura fades.'
+		},
+		viperStrikeHeal: {
+			name: 'Viper Strike',
+			img: 8,
+			job: JOB.MONK,
+			duration: 0,
+			hate: 1,
+			msg: (buff) => 'Viper Strike heals you for ' + buff.damage + ' health.',
+		},
+		palmStrike: { hate: 1.3 },
+		feignDeath: {
+			name: 'Feign Death',
+			img: 10,
+			job: JOB.MONK,
+			duration: 0,
+			enhancedDamage: [0, .7, .85, 1, 1.15, 1.3, 1.45, 1.6],
+			damageReduced: [0, .4, .45, .5, .55, .6, .65, .7],
+			msg: () => 'You fall to the ground.',
+			msgAbsorb: 'Your fallen state dulls the pain.'
+		},
+		spiritBarrier: {
+			name: 'Spirit Barrier',
+			img: 11,
+			job: JOB.MONK,
+			enhanceHealing: .25,
+			addHealPower: [0, 1, 1, 2, 2, 3, 3, 4],
+			resistAll: [0, 20, 30, 40, 50, 60, 70, 80],
+			duration: 90,
+			msg: () => 'Chromatic energy protects you from harm.',
+			fadeMsg: 'The chromatic barrier fades.'
+		},
 		// ROG
 	}
 	///////////////////////////////////////////

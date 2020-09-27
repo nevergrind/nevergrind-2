@@ -368,7 +368,7 @@ var battle;
 	function hideTarget() {
 		query.el('#mob-target-wrap').style.display = 'none'
 	}
-	let targetHtml = ''
+
 	function updateTarget(drawInstant) {
 		if (combat.isValidTarget()) {
 			if (my.targetIsMob) {

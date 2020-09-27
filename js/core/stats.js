@@ -576,7 +576,8 @@ var stats = {};
 	let critBuffBonus = 0
 	function critFromBuffBonus(index) {
 		critBuffBonus = 0
-		if (mobs[index].buffFlags.markOfRemphan) {
+		if (mob.isAlive(index) &&
+			mobs[index].buffFlags.markOfRemphan) {
 			critBuffBonus += buffs.markOfRemphan.critBonus[skill.SHD.getHighestMarkOfRemphan(index)]
 		}
 		return critBuffBonus
@@ -858,6 +859,9 @@ var stats = {};
 		}
 		if (my.buffFlags.consecrate) {
 			value += my.buffs.consecrate.stacks * my.buffs.consecrate.level
+		}
+		if (my.buffFlags.spiritBarrier) {
+			value += buffs.spiritBarrier.resistAll[my.buffs.spiritBarrier.level]
 		}
 		return value
 	}

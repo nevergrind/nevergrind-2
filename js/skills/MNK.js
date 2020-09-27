@@ -2,19 +2,22 @@
 	skill.MNK = {
 		tigerStrike,
 		hyperStrike,
+		hyperStrikeHit,
 		mimeStrike,
+		mimeStrikeHit,
 		craneKick,
 		chakraBlast,
 		hadoken,
 		hurricaneKicks,
 		dragonPunch,
 		viperStrike,
+		viperStrikeHit,
+		viperStrikeHeal,
 		palmStrike,
-		sacrifice,
+		feignDeath,
 		spiritBarrier,
 	}
 	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
-	let mimeStatus = false
 	///////////////////////////////////////////
 	function tigerStrike(index, data) {
 		config = {
@@ -34,7 +37,8 @@
 			hitBonus: data.hitBonus[my.skills[index]],
 		}
 		damages.push(hit)
-		if (mimeStatus) damages = mimeStrikeHit(damages)
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
+
 		combat.txDamageMob(damages)
 		button.triggerGlobalCooldown()
 	}
@@ -56,22 +60,26 @@
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 		}
 		damages.push(hit)
-		if (mimeStatus) damages = mimeStrikeHit(damages)
-		combat.txDamageMob(damages)
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
 
-		combat.txBuffHero([{
-			key: 'hyperStrike',
-			index: my.row,
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			level: my.skills[index],
-			damage: 0
-		}])
+		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
+	function hyperStrikeHit(damages) {
+		let d = []
+		damages.forEach(damage => {
+			d.push({
+				key: 'hyperStrike',
+				index: my.row,
+				level: my.skills[damage.index],
+				damage: 0
+			})
+		})
+		combat.txBuffHero(d)
+	}
 	function mimeStrikeHit(dam) {
-		mimeStatus = false
+		battle.removeBuff('mimeStrike')
 		return dam.concat(dam)
 	}
 	function mimeStrike(index, data) {
@@ -87,16 +95,24 @@
 		damages = []
 		hit = {
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
-			key: 'tigerStrike',
+			key: 'mimeStrike',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
 		}
 		damages.push(hit)
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
+
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
-		mimeStatus = true
+
+		combat.txBuffHero([{
+			key: 'mimeStrike',
+			index: my.row,
+			level: my.skills[index],
+			damage: 0
+		}])
 	}
 	function craneKick(index, data) {
 		// check constraints
@@ -122,7 +138,8 @@
 			}],
 		}
 		damages.push(hit)
-		if (mimeStatus) damages = mimeStrikeHit(damages)
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
+
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
@@ -148,7 +165,7 @@
 			}
 			damages.push(hit)
 		})
-		if (mimeStatus) damages = mimeStrikeHit(damages)
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
@@ -172,8 +189,9 @@
 			enhancedDamage: enhancedDamage,
 		}
 		damages.push(hit)
-		if (mimeStatus) damages = mimeStrikeHit(damages)
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
 		combat.txDamageMob(damages)
+
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
@@ -199,16 +217,18 @@
 		let enhancedDamage = data.enhancedDamage[my.skills[index]]
 		for (var j=0; j<3; j++) {
 			let tgt = battle.getSplashTarget(splashIndex++, originalTarget)
-			let hit = stats.skillDamage(tgt, data.critBonus[my.skills[index]])
-			damages.push({
-				...hit,
-				key: 'hurricaneKicks',
-				index: tgt,
-				enhancedDamage: enhancedDamage,
-				hitBonus: data.hitBonus[my.skills[index]],
-			})
+			if (mob.isAlive(tgt)) {
+				let hit = stats.skillDamage(tgt, data.critBonus[my.skills[index]])
+				damages.push({
+					...hit,
+					key: 'hurricaneKicks',
+					index: tgt,
+					enhancedDamage: enhancedDamage,
+					hitBonus: data.hitBonus[my.skills[index]],
+				})
+			}
 		}
-		if (mimeStatus) damages = mimeStrikeHit(damages)
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
 		combat.txDamageMob(damages)
 	}
 	function dragonPunch(index, data) {
@@ -235,7 +255,7 @@
 			else hit.effects = { stagger: true }
 			damages.push(hit)
 		}
-		if (mimeStatus) damages = mimeStrikeHit(damages)
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
@@ -249,17 +269,42 @@
 		spell.expendSpirit(data, index)
 
 		// process skill data
-		tgt = my.target
 		damages = []
-		damages.push({
+		hit = {
 			key: 'viperStrike',
-			index: tgt,
+			index: my.target,
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
-		})
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
+		}
+		damages.push(hit)
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
 		combat.txDamageMob(damages)
+
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
+	}
+	function viperStrikeHit(damages) {
+		console.info('damages', damages)
+		let d = []
+		damages.forEach(damage => {
+			d.push({
+				key: 'viperStrike',
+				index: my.row,
+				level: my.skills[damage.index],
+				damage: 0
+			})
+		})
+		combat.txBuffHero(d)
+	}
+	function viperStrikeHeal() {
+		combat.txHotHero([{
+			index: my.row,
+			key: 'viperStrikeHeal',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			damage: (buffs.viperStrike.leech[my.buffs.viperStrike.level] * my.buffs.viperStrike.stacks)
+		}])
 	}
 	function palmStrike(index, data) {
 		// check constraints
@@ -278,50 +323,59 @@
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
 			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+			buffs: [{
+				i: tgt,
+				row: my.row, // this identifies unique buff state/icon
+				key: 'paralyze', // this sets the flag,
+				duration: buffs.arclightDebuff.duration,
+			}]
 		})
+		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function sacrifice(index, data) {
+	function feignDeath(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
 		}
 		if (skills.notReady(config)) return
 		spell.expendSpirit(data, index)
 
 		// process skill data
-		tgt = my.target
-		damages = []
-		damages.push({
-			key: 'sacrifice',
-			index: tgt,
-			enhancedDamage: data.enhancedDamage[my.skills[index]],
-			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
-		})
-		combat.txDamageMob(damages)
+		combat.txBuffHero([{
+			index: my.row,
+			key: 'feignDeath',
+			level: my.skills[index],
+			damage: 0
+		}])
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
+
+		combat.autoAttackDisable()
 	}
 	function spiritBarrier(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(config)) return
 		spell.expendSpirit(data, index)
 
 		// process skill data
-		tgt = my.target
-		damages = []
-		damages.push({
+		combat.txBuffHero([{
 			key: 'spiritBarrier',
-			index: tgt,
-			enhancedDamage: data.enhancedDamage[my.skills[index]],
-			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
-		})
-		combat.txDamageMob(damages)
+			index: my.target,
+			level: my.skills[index],
+			damage: 0
+		}])
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 }($, _, TweenMax);

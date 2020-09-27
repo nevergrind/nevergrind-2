@@ -11,6 +11,7 @@ var combat;
 		txDamageMob,
 		isValidTarget,
 		getDiffIndex,
+		autoAttackEnable,
 		autoAttackDisable,
 		processDamagesHero,
 		txDamageHero,
@@ -193,7 +194,7 @@ var combat;
 			return d
 		}
 		// console.info('asdfasdf', d)
-
+		// console.info('damageType', d.damageType)
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// check for things that immediately set to 0
 			if (d.requiresFrontRow && !battle.targetIsFrontRow(d.index)) {
@@ -229,6 +230,9 @@ var combat;
 			// mob type bonuses
 			d.enhancedDamage += getEnhancedDamageByMobType(d)
 			if (mobs[d.index].buffFlags.demonicPact) d.enhancedDamage += .15
+			if (my.buffFlags.feignDeath) {
+				d.enhancedDamage += buffs.feignDeath.enhancedDamage[my.buffs.feignDeath.level]
+			}
 
 			// console.info('d.enhancedDamage', d.enhancedDamage)
 			d.damage *= d.enhancedDamage
@@ -555,10 +559,20 @@ var combat;
 			else if (damageData.damages[0].key === 'deathStrike') {
 				skill.SHD.deathStrikeHeal(damageData.damages[0])
 			}
+			else if (damageData.damages[0].key === 'hyperStrike') {
+				skill.MNK.hyperStrikeHit(damageData.damages)
+			}
+			else if (damageData.damages[0].key === 'viperStrike') {
+				skill.MNK.viperStrikeHit(damageData.damages)
+			}
 		}
 		damageArr.forEach(d => {
 			triggerProc(d.damageType, d.index, d.key)
 		})
+
+		if (my.buffFlags.feignDeath) {
+			battle.removeBuff('feignDeath')
+		}
 	}
 	function rxDamageMob(data) {
 		// damages
@@ -755,7 +769,8 @@ var combat;
 		}
 		// console.info('processDamagesHero', index, d)
 		// dodge
-		if (skills.dodge[my.job].level &&
+		if (!my.buffFlags.feignDeath &&
+			skills.dodge[my.job].level &&
 			my.level >= skills.dodge[my.job].level) {
 			combat.levelSkillCheck(PROP.DODGE)
 			if (!d.isPiercing &&
@@ -768,7 +783,8 @@ var combat;
 		// console.info('processDamages', d)
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// riposte
-			if (skills.riposte[my.job].level &&
+			if (!my.buffFlags.feignDeath &&
+				skills.riposte[my.job].level &&
 				my.level >= skills.riposte[my.job].level) {
 				combat.levelSkillCheck(PROP.RIPOSTE)
 				if (!d.isPiercing &&
@@ -780,7 +796,8 @@ var combat;
 				}
 			}
 			// parry
-			if (skills.parry[my.job].level &&
+			if (!my.buffFlags.feignDeath &&
+				skills.parry[my.job].level &&
 				my.level >= skills.parry[my.job].level) {
 				combat.levelSkillCheck(PROP.PARRY)
 				if (!d.isPiercing &&
@@ -802,13 +819,17 @@ var combat;
 			// shield block? maxes 75% reduction of damage; skips armor
 			amountReduced = 1 - stats.armorReductionRatio()
 
-			if (items.eq[13].blockRate &&
+			if (!my.buffFlags.feignDeath &&
+				items.eq[13].blockRate &&
 				rand() * 100 < items.eq[13].blockRate) {
 				amountReduced -= .25
 				d.blocked = round(d.damage * .25)
 				if (d.blocked < 0) d.blocked = 0
 			}
 			if (mobs[index].buffFlags.sealOfDamnation) amountReduced -= buffs.sealOfDamnation.reduceDamage
+			if (my.buffFlags.feignDeath) {
+				amountReduced -= buffs.feignDeath.damageReduced[my.buffs.feignDeath.level]
+			}
 			// console.info('reduce', amountReduced)
 			if (mob.isFeared(index)) amountReduced -= .5
 
@@ -822,6 +843,7 @@ var combat;
 			// magMit
 			if (my.buffFlags.shimmeringOrb) buffMitigatesDamage(d, 'shimmeringOrb')
 			if (my.buffFlags.sereneSigil) buffMitigatesDamage(d, 'sereneSigil')
+			if (my.buffFlags.spiritBarrier) buffMitigatesDamage(d, 'spiritBarrier')
 			d.damage -= stats.magMit()
 
 			amountReduced = 1
@@ -974,10 +996,17 @@ var combat;
 			else healToMe(data.row, heal)
 		})
 	}
+	let addHealPower = 0
 	function processHeal(value) {
 		enhanceHeal = 1
-		if (skill.SHM.mysticalGlowActive()) enhanceHeal += .2
-		return round(value * enhanceHeal)
+		addHealPower = 0
+		if (skill.SHM.mysticalGlowActive()) enhanceHeal += buffs.mysticalGlow.enhanceHealing
+		if (my.buffFlags.spiritBarrier) {
+			enhanceHeal += buffs.spiritBarrier.enhanceHealing
+			addHealPower += buffs.spiritBarrier.addHealPower[my.buffs.spiritBarrier.level]
+		}
+		// console.info('enhanceHealing', enhanceHeal, addHealPower)
+		return round((value * enhanceHeal) + addHealPower)
 	}
 	function healToMe(row, heal) {
 		hate = 0
@@ -985,9 +1014,9 @@ var combat;
 		hate += heal.damage * (typeof buffs[heal.key].hate === 'number' ? buffs[heal.key].hate : 1)
 		if (my.row === heal.index) {
 			// healing ME
-			healAmount = processHeal(heal.damage)
+			heal.damage = processHeal(heal.damage)
 			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
-			updateMyResource(PROP.HP, healAmount)
+			updateMyResource(PROP.HP, heal.damage)
 			// let everyone know I got the heal
 			game.txPartyResources({
 				hp: my.hp,
@@ -1049,10 +1078,10 @@ var combat;
 		}
 	}
 	function onHotTick(buff, healAmount) {
+		console.info('healAmount b4', healAmount)
 		healAmount = processHeal(healAmount)
-		if (!app.isApp) {
-			chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CHAT.HEAL)
-		}
+		console.info('healAmount b5', healAmount)
+		chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CHAT.HEAL)
 		updateMyResource(PROP.HP, healAmount)
 	}
 
@@ -1142,6 +1171,7 @@ var combat;
 				battle.addMyBuff(buff.key, key)
 				processStatBuffsToMe(key, data.row)
 			}
+			if (buff.key === 'feignDeath') mob.feignHate(data.row)
 		})
 		if (~~hate > 0) {
 			mob.addHateHeal({
@@ -1292,6 +1322,12 @@ var combat;
 		else if (key === 'sanguineHarvest') {
 			stats.hpKill(true)
 		}
+		else if (key === 'viperStrike') {
+			my.buffFlags.viperStrike && skill.MNK.viperStrikeHeal()
+		}
+		else if (key === 'spiritBarrier') {
+			updateAllResists()
+		}
 		////////////////////////////////
 		function updateAllResists() {
 			stats.resistSilence(true)
@@ -1393,36 +1429,37 @@ var combat;
 		else targetChangedToPlayer()
 		// console.info('targetChanged my.target =>', my.target, my.targetIsMob)
 		battle.updateTarget(true)
-	}
-	function targetChangedToPlayer() {
-		// remove mob targeting
-		index = 0
-		for (el of querySelectorAll('.mob-details')) {
-			if (index++ !== my.hoverTarget) el.classList.remove('targeted', 'block-imp')
+		////////////////////////////////////////
+		function targetChangedToPlayer() {
+			// remove mob targeting
+			index = 0
+			for (el of querySelectorAll('.mob-details')) {
+				if (index++ !== my.hoverTarget) el.classList.remove('targeted', 'block-imp')
+			}
+			// remove player
+			for (el of querySelectorAll('.player-targeted')) {
+				el.classList.remove('player-targeted')
+			}
+			if (my.target === -1) {
+				battle.hideTarget()
+			}
+			else {
+				el = querySelector('#bar-player-wrap-' + my.target)
+				el.classList.add('player-targeted')
+			}
 		}
-		// remove player
-		for (el of querySelectorAll('.player-targeted')) {
-			el.classList.remove('player-targeted')
-		}
-		if (my.target === -1) {
-			battle.hideTarget()
-		}
-		else {
-			el = querySelector('#bar-player-wrap-' + my.target)
-			el.classList.add('player-targeted')
-		}
-	}
-	function targetChangedToMob() {
-		index = 0
-		for (el of querySelectorAll('.mob-details')) {
-			if (index++ !== my.hoverTarget) el.classList.remove('targeted', 'block-imp')
-			else el.classList.remove('targeted')
-		}
-		for (el of querySelectorAll('.player-targeted')) {
-			el.classList.remove('player-targeted')
-		}
-		if (combat.isValidTarget()){
-			querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
+		function targetChangedToMob() {
+			index = 0
+			for (el of querySelectorAll('.mob-details')) {
+				if (index++ !== my.hoverTarget) el.classList.remove('targeted', 'block-imp')
+				else el.classList.remove('targeted')
+			}
+			for (el of querySelectorAll('.player-targeted')) {
+				el.classList.remove('player-targeted')
+			}
+			if (combat.isValidTarget()){
+				querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
+			}
 		}
 	}
 	function getDiffIndex(level) {

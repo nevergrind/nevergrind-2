@@ -21,6 +21,7 @@ let mobs = [];
 		rxMobResourceTick,
 		resetHate,
 		resetAllHate,
+		feignHate,
 		updateHate,
 		// animations
 		resetIdle,
@@ -166,6 +167,11 @@ let mobs = [];
 			for (var key in mobs[i].hate) {
 				mobs[i].hate[key] = 0
 			}
+		}
+	}
+	function feignHate(row) {
+		for (i=0; i<mob.max; i++) {
+			mobs[i].hate[row] = ~~(mobs[i].hate[row] * .5)
 		}
 	}
 	function updateHate(o) {
@@ -401,11 +407,12 @@ let mobs = [];
 		TweenMax.to(query.el('#mob-health-' + index), drawInstant ? 0 : .15, {
 			x: '-' + percent + '%'
 		})
-		if (my.targetIsMob && index === my.target) drawTargetBar(percent, drawInstant)
+		if (my.targetIsMob && index === my.target) drawTargetBar(percent, drawInstant, index)
 	}
-	function drawTargetBar(percent, drawInstant) {
-		query.el('#mob-target-percent').innerHTML = ceil(100 - percent) + '%'
-		TweenMax.to(query.el('#mob-target-hp'), drawInstant ? 0 : .15, {
+	function drawTargetBar(percent, drawInstant, index) {
+		querySelector('#mob-target-percent').innerHTML = ceil(100 - percent) + '%'
+		TweenMax.to('#mob-target-hp', drawInstant ? 0 : .15, {
+			overwrite: 1,
 			x: '-' + percent + '%'
 		})
 	}
@@ -504,7 +511,7 @@ let mobs = [];
 		return mobs[i].speed * mobSpeed
 	}
 	function isAlive(i) {
-		return mobs[i].name && mobs[i].hp > 0
+		return i >= 0 && i< mob.max && mobs[i].name && mobs[i].hp > 0
 	}
 	function hit(i, bypass, damage) {
 		if (ng.view !== 'battle' || mobs[i].isDead) return

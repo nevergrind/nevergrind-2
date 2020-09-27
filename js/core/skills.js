@@ -1,6 +1,10 @@
 var skills;
 !function($, _, TweenMax, Object, undefined) {
+	let skillValues = []
+	let lvl = 0
+	const MaxSkillLevel = 7
 	const NoDamage = [0,0,0,0,0,0,0,0]
+
 	skills = {
 		init,
 		getName,
@@ -839,43 +843,40 @@ var skills;
 				enhancedDamage: [0, .8, .9, 1, 1.1, 1.2, 1.3, 1.4],
 				critBonus: [0, 3.5, 4, 4.5, 5, 5.5, 6, 6.5],
 				cooldownTime: 16,
-				description: 'Hits front row target 3x for % fire damage - stagger',
+				description: 'Hits front row target 3x for % fire damage - Effect: Stagger',
 			}, {
 				name: 'Viper Strike',
 				img: 'MNK-9',
 				sp: level => spellValues.viperStrikeMana[level],
-				enhancedDamage: [0, .66, .75, .84, .93, 1.02, 1.11, 1.2],
-				hitBonus: [0, 1, 1.5, 2, 2.5, 3, 3.5, 4],
-				critBonus: [0, 0, 0, 0, 0, 0, 0, 0],
-				cooldownTime: 30,
-				description: 'Strike for % damage and leech extra health - +1 Chi',
+				enhancedDamage: getSkillValues(.42, .08),
+				hitBonus: getSkillValues(9, .5),
+				critBonus: getSkillValues(-6, .5),
+				cooldownTime: 9,
+				description: 'Strike for % damage and leech health - Stacks up to 5x',
 			}, {
 				name: 'Palm Strike',
 				img: 'MNK-10',
 				sp: level => spellValues.palmStrikeMana[level],
-				enhancedDamage: [0, .66, .75, .84, .93, 1.02, 1.11, 1.2],
-				hitBonus: [0, 1, 1.5, 2, 2.5, 3, 3.5, 4],
-				critBonus: [0, 0, 0, 0, 0, 0, 0, 0],
+				enhancedDamage: getSkillValues(.95, .09),
+				hitBonus: getSkillValues(2, .5),
+				critBonus: getSkillValues(4, .5),
 				cooldownTime: 30,
-				description: 'Delivers a powerful blow for % damage - Stuns for 2 seconds -2 chi',
+				description: 'Delivers a powerful blow that paralyzes your target for 10 seconds',
 			}, {
-				name: 'Sacrifice',
+				name: 'Feign Death',
 				img: 'MNK-11',
-				sp: level => spellValues.sacrificeMana[level],
-				enhancedDamage: [0, .66, .75, .84, .93, 1.02, 1.11, 1.2],
-				hitBonus: [0, 1, 1.5, 2, 2.5, 3, 3.5, 4],
-				critBonus: [0, 0, 0, 0, 0, 0, 0, 0],
-				cooldownTime: 30,
-				description: 'Reduces threat with all targets -1 chi',
+				sp: level => spellValues.feignDeathMana[level],
+				enhancedDamage: getSkillValues(.5, .1),
+				hitBonus: NoDamage,
+				critBonus: NoDamage,
+				cooldownTime: 45,
+				description: 'Feign your death to reduce your enmity with all targets - Effect: All damage is reduced and your next strike receives a damage bonus.',
 			}, {
 				name: 'Spirit Barrier',
 				img: 'MNK-12',
 				sp: level => spellValues.spiritBarrierMana[level],
-				enhancedDamage: [0, .66, .75, .84, .93, 1.02, 1.11, 1.2],
-				hitBonus: [0, 1, 1.5, 2, 2.5, 3, 3.5, 4],
-				critBonus: [0, 0, 0, 0, 0, 0, 0, 0],
-				cooldownTime: 30,
-				description: 'Protect yourself in a spirit barrier that reduces all damage by 50% for x seconds -3 chi',
+				cooldownTime: 20,
+				description: 'Bless target with a spirit barrier that enhances all healing and boosts all resists by X for x seconds.',
 			},
 		],
 		ROG: [
@@ -2102,10 +2103,10 @@ var skills;
 		hadokenMana: getManaTier(1.3),
 		hurricaneKicksMana: getManaTier(1.2),
 		dragonPunchMana: getManaTier(1.5),
-		viperStrikeMana: getManaTier(.9),
-		palmStrikeMana: getManaTier(.9),
-		sacrificeMana: getManaTier(.9),
-		spiritBarrierMana: getManaTier(.9),
+		viperStrikeMana: getManaTier(.8),
+		palmStrikeMana: getManaTier(1.4),
+		feignDeathMana: getManaTier(1.2),
+		spiritBarrierMana: getManaTier(1.5),
 		// SHD
 		shadowBreakMana: getManaTier(.9),
 		deathStrikeMana: getManaTier(1),
@@ -2484,5 +2485,14 @@ var skills;
 		// SUCCESS: set last data used for spell completed reference
 		skills.lastData = spellData
 		return false
+	}
+
+	function getSkillValues(start, increment) {
+		skillValues = [0, start]
+		for (lvl=2; lvl<=MaxSkillLevel; lvl++) {
+			start = +((start + increment).toFixed(2))
+			skillValues.push(start)
+		}
+		return skillValues
 	}
 }($, _, TweenMax, Object);
