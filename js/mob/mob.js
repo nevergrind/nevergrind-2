@@ -164,14 +164,18 @@ let mobs = [];
 	}
 	function resetAllHate() {
 		for (i=0; i<mob.max; i++) {
-			for (var key in mobs[i].hate) {
-				mobs[i].hate[key] = 0
+			if (mob.isAlive(i)) {
+				for (var key in mobs[i].hate) {
+					mobs[i].hate[key] = 0
+				}
 			}
 		}
 	}
 	function feignHate(row) {
 		for (i=0; i<mob.max; i++) {
-			mobs[i].hate[row] = ~~(mobs[i].hate[row] * .5)
+			if (mob.isAlive(i)) {
+				mobs[i].hate[row] = ~~(mobs[i].hate[row] * .5)
+			}
 		}
 	}
 	function updateHate(o) {

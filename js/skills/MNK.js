@@ -14,7 +14,7 @@
 		viperStrikeHit,
 		viperStrikeHeal,
 		palmStrike,
-		feignDeath,
+		innerPeace,
 		spiritBarrier,
 	}
 	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
@@ -335,7 +335,7 @@
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function feignDeath(index, data) {
+	function innerPeace(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
@@ -348,12 +348,12 @@
 		// process skill data
 		combat.txBuffHero([{
 			index: my.row,
-			key: 'feignDeath',
+			key: 'innerPeace',
 			level: my.skills[index],
 			damage: 0
 		}])
 		spell.triggerSkillCooldown(index, data)
-		button.triggerGlobalCooldown()
+		// button.triggerGlobalCooldown()
 
 		combat.autoAttackDisable()
 	}

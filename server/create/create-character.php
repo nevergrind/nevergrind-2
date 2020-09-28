@@ -155,17 +155,16 @@
 		$f['job'] === 'Crusader' ||
 		$f['job'] === 'Druid' ||
 		$f['job'] === 'Cleric' ||
-		$f['job'] === 'Shaman'
-	) {
+		$f['job'] === 'Shaman') {
 		$data = json_encode('{"slots":["primary","secondary"],"weaponSkill":"One-hand Blunt","minDamage":1,"maxDamage":5,"speed":3.2,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"oneHandBlunts"}');
 		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Club", '. $data .')';
 	}
 	else if (
+		$f['job'] === 'Rogue' ||
 		$f['job'] === 'Warlock' ||
 		$f['job'] === 'Enchanter' ||
 		$f['job'] === 'Templar' ||
-		$f['job'] === 'Wizard'
-	) {
+		$f['job'] === 'Wizard') {
 		$data = json_encode('{"slots":["primary","secondary"],"weaponSkill":"Piercing","minDamage":1,"maxDamage":3,"speed":2.2,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"piercers"}');
 		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Dagger", '. $data .')';
 	}

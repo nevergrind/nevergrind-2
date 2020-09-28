@@ -1058,15 +1058,15 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: (buff) => 'Viper Strike heals you for ' + buff.damage + ' health.',
 		},
 		palmStrike: { hate: 1.3 },
-		feignDeath: {
-			name: 'Feign Death',
+		innerPeace: {
+			name: 'Inner Peace',
 			img: 10,
 			job: JOB.MONK,
 			duration: 0,
 			enhancedDamage: [0, .7, .85, 1, 1.15, 1.3, 1.45, 1.6],
 			damageReduced: [0, .4, .45, .5, .55, .6, .65, .7],
-			msg: () => 'You fall to the ground.',
-			msgAbsorb: 'Your fallen state dulls the pain.'
+			msg: () => 'You halt all attacks and search for inner peace.',
+			msgReduced: 'Your transcendant state dulls the pain.'
 		},
 		spiritBarrier: {
 			name: 'Spirit Barrier',
@@ -1080,6 +1080,18 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: 'The chromatic barrier fades.'
 		},
 		// ROG
+		shadowStrike: { hate: .2 },
+		sonicStrike: { hate: 1 },
+		fadedStrike: { hate: 1 },
+		manicStrike: { hate: 1 },
+		lacerate: { hate: 1 },
+		backstab: { hate: 1 },
+		widowStrike: { hate: 1 },
+		staggerShot: { hate: 1 },
+		evade: { hate: 1 },
+		flashPowder: { hate: 1 },
+		talisman: { hate: 1 },
+		prowl: { hate: 1 },
 	}
 	///////////////////////////////////////////
 

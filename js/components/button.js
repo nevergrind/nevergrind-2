@@ -117,7 +117,7 @@ var button;
 		// console.info('triggerSkill', name)
 		if (typeof skill[my.job][name] === 'function') {
 			skill[my.job][name](index, skills[my.job][index])
-			if (!my.isAutoAttacking && name !== 'feignDeath') {
+			if (!my.isAutoAttacking && name !== 'innerPeace') {
 				combat.autoAttackEnable()
 			}
 

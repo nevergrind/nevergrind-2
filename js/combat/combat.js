@@ -230,8 +230,8 @@ var combat;
 			// mob type bonuses
 			d.enhancedDamage += getEnhancedDamageByMobType(d)
 			if (mobs[d.index].buffFlags.demonicPact) d.enhancedDamage += .15
-			if (my.buffFlags.feignDeath) {
-				d.enhancedDamage += buffs.feignDeath.enhancedDamage[my.buffs.feignDeath.level]
+			if (my.buffFlags.innerPeace) {
+				d.enhancedDamage += buffs.innerPeace.enhancedDamage[my.buffs.innerPeace.level]
 			}
 
 			// console.info('d.enhancedDamage', d.enhancedDamage)
@@ -565,13 +565,16 @@ var combat;
 			else if (damageData.damages[0].key === 'viperStrike') {
 				skill.MNK.viperStrikeHit(damageData.damages)
 			}
+			else if (damageData.damages[0].key === 'sonicStrike') {
+				skill.ROG.sonicStrikeHit(damageData.damages[0])
+			}
 		}
 		damageArr.forEach(d => {
 			triggerProc(d.damageType, d.index, d.key)
 		})
 
-		if (my.buffFlags.feignDeath) {
-			battle.removeBuff('feignDeath')
+		if (my.buffFlags.innerPeace) {
+			battle.removeBuff('innerPeace')
 		}
 	}
 	function rxDamageMob(data) {
@@ -769,7 +772,7 @@ var combat;
 		}
 		// console.info('processDamagesHero', index, d)
 		// dodge
-		if (!my.buffFlags.feignDeath &&
+		if (!my.buffFlags.innerPeace &&
 			skills.dodge[my.job].level &&
 			my.level >= skills.dodge[my.job].level) {
 			combat.levelSkillCheck(PROP.DODGE)
@@ -783,7 +786,7 @@ var combat;
 		// console.info('processDamages', d)
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// riposte
-			if (!my.buffFlags.feignDeath &&
+			if (!my.buffFlags.innerPeace &&
 				skills.riposte[my.job].level &&
 				my.level >= skills.riposte[my.job].level) {
 				combat.levelSkillCheck(PROP.RIPOSTE)
@@ -796,7 +799,7 @@ var combat;
 				}
 			}
 			// parry
-			if (!my.buffFlags.feignDeath &&
+			if (!my.buffFlags.innerPeace &&
 				skills.parry[my.job].level &&
 				my.level >= skills.parry[my.job].level) {
 				combat.levelSkillCheck(PROP.PARRY)
@@ -819,7 +822,7 @@ var combat;
 			// shield block? maxes 75% reduction of damage; skips armor
 			amountReduced = 1 - stats.armorReductionRatio()
 
-			if (!my.buffFlags.feignDeath &&
+			if (!my.buffFlags.innerPeace &&
 				items.eq[13].blockRate &&
 				rand() * 100 < items.eq[13].blockRate) {
 				amountReduced -= .25
@@ -827,8 +830,9 @@ var combat;
 				if (d.blocked < 0) d.blocked = 0
 			}
 			if (mobs[index].buffFlags.sealOfDamnation) amountReduced -= buffs.sealOfDamnation.reduceDamage
-			if (my.buffFlags.feignDeath) {
-				amountReduced -= buffs.feignDeath.damageReduced[my.buffs.feignDeath.level]
+			if (my.buffFlags.innerPeace) {
+				amountReduced -= buffs.innerPeace.damageReduced[my.buffs.innerPeace.level]
+				chat.log(buffs.innerPeace.msgReduced, CHAT.HEAL)
 			}
 			// console.info('reduce', amountReduced)
 			if (mob.isFeared(index)) amountReduced -= .5
@@ -1171,7 +1175,7 @@ var combat;
 				battle.addMyBuff(buff.key, key)
 				processStatBuffsToMe(key, data.row)
 			}
-			if (buff.key === 'feignDeath') mob.feignHate(data.row)
+			if (buff.key === 'innerPeace') mob.feignHate(data.row)
 		})
 		if (~~hate > 0) {
 			mob.addHateHeal({
