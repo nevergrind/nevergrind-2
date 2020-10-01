@@ -1,6 +1,10 @@
 var combat;
 !function($, _, TweenMax, PIXI, Math, Power1, Power3, Linear, undefined) {
 	combat = {
+		txHpChange,
+		txMpChange,
+		txSpChange,
+		txAllChange,
 		getAddedDamage,
 		rxDamageMob,
 		popupDamage,
@@ -513,6 +517,17 @@ var combat;
 			})
 			combat.txDotMob(procDamage)
 		}
+		else if (key === 'lacerate') {
+			procDamage = []
+			hit = stats.skillDamage(my.target, -100)
+			procDamage.push({
+				key: 'lacerate',
+				index: index,
+				damageType: DAMAGE_TYPE.BLOOD,
+				damage: round(hit.damage * buffs.lacerate.dotModifier)
+			})
+			combat.txDotMob(procDamage)
+		}
 		// console.info('triggerProc', index, key)
 	}
 	let damageData
@@ -567,6 +582,12 @@ var combat;
 			}
 			else if (damageData.damages[0].key === 'sonicStrike') {
 				skill.ROG.sonicStrikeHit(damageData.damages[0])
+			}
+			else if (damageData.damages[0].key === 'fadedStrike') {
+				skill.ROG.fadedStrikeHit(damageData.damages[0])
+			}
+			else if (damageData.damages[0].key === 'risingFuror') {
+				skill.ROG.risingFurorHit(damageData.damages[0])
 			}
 		}
 		damageArr.forEach(d => {
@@ -1331,6 +1352,14 @@ var combat;
 		}
 		else if (key === 'spiritBarrier') {
 			updateAllResists()
+		}
+		else if (key === 'fadedStrike') {
+			updateAllResists()
+			stats.dodge(true)
+			stats.dodgeChance(true)
+		}
+		else if (key === 'risingFuror') {
+			// nothing required
 		}
 		////////////////////////////////
 		function updateAllResists() {

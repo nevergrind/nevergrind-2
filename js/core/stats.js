@@ -863,6 +863,9 @@ var stats = {};
 		if (my.buffFlags.spiritBarrier) {
 			value += buffs.spiritBarrier.resistAll[my.buffs.spiritBarrier.level]
 		}
+		if (my.buffFlags.fadedStrike) {
+			value += ~~(buffs.fadedStrike.resistAll[my.buffs.fadedStrike.level] * buffs.fadedStrike.resistAllRatioByStack[my.buffs.fadedStrike.stacks])
+		}
 		return value
 	}
 	function resistBlood(fresh) {
@@ -1532,6 +1535,9 @@ var stats = {};
 		// buffs
 		if (my.buffFlags.spiritOfTheHunter) speedHaste -= buffs.spiritOfTheHunter.attackHaste
 		if (my.buffFlags.battleHymn) speedHaste -= buffs.battleHymn.attackHaste
+		if (my.buffFlags.risingFuror) {
+			speedHaste -= buffs.risingFuror.attackHaste[my.buffs.risingFuror.stacks]
+		}
 		// debuffs
 		if (speedHaste < .25) speedHaste = .25
 		else if (speedHaste > 2) speedHaste = 2

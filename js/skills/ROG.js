@@ -4,7 +4,9 @@
 		sonicStrike,
 		sonicStrikeHit,
 		fadedStrike,
-		manicStrike,
+		fadedStrikeHit,
+		risingFuror,
+		risingFurorHit,
 		lacerate,
 		backstab,
 		widowStrike,
@@ -95,13 +97,32 @@
 			index: my.target,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
+			buffs: [{
+				i: my.target,
+				row: my.row, // this identifies unique buff state/icon
+				key: 'chill', // this sets the flag,
+				duration: 7,
+			}],
 		}
 		damages.push(hit)
 
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function manicStrike(index, data) {
+	function fadedStrikeHit(damage) {
+		let d = []
+		damages.forEach(damage => {
+			d.push({
+				key: 'fadedStrike',
+				index: my.row,
+				level: my.skills[damage.index],
+				damage: 0
+			})
+		})
+		combat.txBuffHero(d)
+	}
+	function risingFuror(index, data) {
 		config = {
 			...skills.getDefaults(index, data),
 		}
@@ -113,7 +134,7 @@
 		damages = []
 		hit = {
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
-			key: 'manicStrike',
+			key: 'risingFuror',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
@@ -121,7 +142,20 @@
 		damages.push(hit)
 
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
+	}
+	function risingFurorHit(damage) {
+		let d = []
+		damages.forEach(damage => {
+			d.push({
+				key: 'risingFuror',
+				index: my.row,
+				level: my.skills[damage.index],
+				damage: 0
+			})
+		})
+		combat.txBuffHero(d)
 	}
 	function lacerate(index, data) {
 		config = {
@@ -133,16 +167,15 @@
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = {
+		damages.push({
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'lacerate',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
-		}
-		damages.push(hit)
-
+		})
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function backstab(index, data) {
@@ -160,11 +193,13 @@
 			key: 'backstab',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
+			isRanged: true,
+			isPiercing: true,
 			hitBonus: data.hitBonus[my.skills[index]],
 		}
 		damages.push(hit)
-
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function widowStrike(index, data) {

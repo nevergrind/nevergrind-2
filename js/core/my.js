@@ -164,7 +164,6 @@ var my;
 				my.sp += stats.spRegen()
 				if (my.sp > my.spMax) my.sp = my.spMax
 			}
-
 		}
 	}
 	function initSkills() {
