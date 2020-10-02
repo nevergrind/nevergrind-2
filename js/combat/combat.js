@@ -105,7 +105,7 @@ var combat;
 	let battleTextInitialized = false
 	const textDuration = 1
 	const textDistanceY = 150
-	const textDistanceX = 150
+	const textDistanceX = 200
 	const combatTextRegularStyle = {
 		fontFamily: 'Play',
 		fontSize: 36,
@@ -487,7 +487,7 @@ var combat;
 			procDamage = []
 			procHit = stats.skillDamage(my.target, -100)
 			procDamage.push({
-				key: 'tigerStrike',
+				key: 'tigerStrikeDot',
 				index: index,
 				damageType: DAMAGE_TYPE.BLOOD,
 				damage: round(procHit.damage * buffs.tigerStrike.dotModifier)
@@ -499,7 +499,7 @@ var combat;
 			procDamage = []
 			hit = stats.skillDamage(my.target, -100)
 			procDamage.push({
-				key: 'rupture',
+				key: 'ruptureDot',
 				index: index,
 				damageType: DAMAGE_TYPE.BLOOD,
 				damage: round(hit.damage * buffs.rupture.dotModifier)
@@ -510,7 +510,7 @@ var combat;
 			procDamage = []
 			hit = stats.skillDamage(my.target, -100)
 			procDamage.push({
-				key: 'doomThrust',
+				key: 'doomThrustDot',
 				index: index,
 				damageType: DAMAGE_TYPE.BLOOD,
 				damage: round(hit.damage * buffs.doomThrust.dotModifier)
@@ -521,10 +521,21 @@ var combat;
 			procDamage = []
 			hit = stats.skillDamage(my.target, -100)
 			procDamage.push({
-				key: 'lacerate',
+				key: 'lacerateDot',
 				index: index,
 				damageType: DAMAGE_TYPE.BLOOD,
 				damage: round(hit.damage * buffs.lacerate.dotModifier)
+			})
+			combat.txDotMob(procDamage)
+		}
+		else if (key === 'widowStrike') {
+			procDamage = []
+			hit = stats.skillDamage(my.target, -100)
+			procDamage.push({
+				key: 'widowStrikeDot',
+				index: index,
+				damageType: DAMAGE_TYPE.POISON,
+				damage: round(hit.damage * buffs.widowStrike.dotModifier)
 			})
 			combat.txDotMob(procDamage)
 		}
@@ -589,6 +600,9 @@ var combat;
 			else if (damageData.damages[0].key === 'risingFuror') {
 				skill.ROG.risingFurorHit(damageData.damages[0])
 			}
+			else if (damageData.damages[0].key === 'mirageStrike') {
+				skill.ROG.mirageStrikeHit(damageData.damages[0])
+			}
 		}
 		damageArr.forEach(d => {
 			triggerProc(d.damageType, d.index, d.key)
@@ -631,7 +645,7 @@ var combat;
 				damageArr.push(damages[i])
 			}
 		}
-		// console.info('txDotMob 2', damages)
+		// console.info('txDotMob 1.5', damages)
 		// optionally adds buffs key if it exists
 		if (damageArr.length) {
 			damageArr = damageArr.map(dam => _.pick(dam, KEYS.DOT_MOB))
@@ -676,8 +690,8 @@ var combat;
 
 				let damPerTick = round(damages[i].damage / buffs[data.key].ticks)
 				// interval only exists on caster's client - broadcasts on tick
-				mobs[damages[i].index].buffs[rowKey].dotTicks = TweenMax.to({},
-					buffs[data.key].interval, {
+				// console.info('buffs', buffs[data.key], damPerTick)
+				mobs[damages[i].index].buffs[rowKey].dotTicks = TweenMax.to('', buffs[data.key].interval, {
 					repeat: buffs[data.key].ticks,
 					onRepeat: onDotTick,
 					onRepeatParams: [damages[i].index, data.key, damPerTick],
@@ -692,6 +706,7 @@ var combat;
 				}
 				battle.processBuffs([{
 					i: damages[i].index,
+					level: damages[i].level, // needed???
 					row: data.row,
 					key: data.key,
 				}])
@@ -706,7 +721,7 @@ var combat;
 			damageType: buffs[key].damageType,
 			isDot: true,
 			isPiercing: true,
-			isDebuff: Boolean(buffs[key].isDebuff),
+			isDebuff: !!(buffs[key].isDebuff),
 			damage: damage,
 		}])
 		for (var k in mobs[index].buffs) {
@@ -831,6 +846,12 @@ var combat;
 					button.startSwing('primaryAttack')
 					return d
 				}
+			}
+
+			if (my.buffs.mirageStrike && my.buffs.mirageStrike.stacks) {
+				skill.ROG.updateMirageStrikeBuff()
+				d.damage = 0
+				return d
 			}
 
 			// phyMit
@@ -964,7 +985,7 @@ var combat;
 		})
 	}
 	function popupDamage(index, damage, isCrit) {
-		if (damage <= 0) return
+		if (typeof damage === 'number' && damage <= 0) return
 		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)
 		basicText.anchor.set(0.5)
 		basicText.id = 'text-' + combat.textId++
@@ -983,8 +1004,8 @@ var combat;
 			pixi: { scale: 1 },
 		})
 		TweenMax.to(basicText, textDuration, {
-			startAt: { pixi: { brightness: isCrit ? 5 : 12, saturate: isCrit ? 5 : 12 }},
-			pixi: { brightness: 1, saturate: 1 },
+			startAt: { pixi: { brightness: 3, contrast: 3 }},
+			pixi: { brightness: .75, contrast: .75 },
 		})
 
 		x = _.random(-textDistanceX, textDistanceX)

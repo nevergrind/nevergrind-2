@@ -420,6 +420,9 @@ var stats = {};
 	function dodgeChance(fresh) {
 		if (fresh || typeof stats.memo.dodgeChance === 'undefined') {
 			stats.memo.dodgeChance = dodge() / 2500 + (agi() / 2000)
+			if (my.buffFlags.fadedStrike) {
+				stats.memo.dodgeChance += (buffs.fadedStrike.dodgeChance[my.buffs.fadedStrike.level] * buffs.fadedStrike.ratioByStack[my.buffs.fadedStrike.stacks])
+			}
 		}
 		return stats.memo.dodgeChance
 	}
@@ -864,7 +867,7 @@ var stats = {};
 			value += buffs.spiritBarrier.resistAll[my.buffs.spiritBarrier.level]
 		}
 		if (my.buffFlags.fadedStrike) {
-			value += ~~(buffs.fadedStrike.resistAll[my.buffs.fadedStrike.level] * buffs.fadedStrike.resistAllRatioByStack[my.buffs.fadedStrike.stacks])
+			value += ~~(buffs.fadedStrike.resistAll[my.buffs.fadedStrike.level] * buffs.fadedStrike.ratioByStack[my.buffs.fadedStrike.stacks])
 		}
 		return value
 	}

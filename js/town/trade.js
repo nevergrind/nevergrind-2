@@ -403,7 +403,7 @@ var trade;
 		return count
 	}
 	function isTradeValid() {
-		return Boolean(trade.gold || trade.data.gold || totalItems('tradeTo') || totalItems('tradeFrom'))
+		return !!(trade.gold || trade.data.gold || totalItems('tradeTo') || totalItems('tradeFrom'))
 	}
 	function maxGoldSend() {
 		return trade.MAX_GOLD - trade.data.goldTotal + trade.data.gold

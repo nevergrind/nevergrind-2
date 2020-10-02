@@ -10,13 +10,15 @@
 		lacerate,
 		backstab,
 		widowStrike,
-		staggerShot,
-		evade,
+		dazzleThrust,
+		mirageStrike,
+		mirageStrikeHit,
+		updateMirageStrikeBuff,
 		flashPowder,
 		talisman,
 		prowl,
 	}
-	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key, el
 	///////////////////////////////////////////
 	function shadowStrike(index, data) {
 		config = {
@@ -212,19 +214,18 @@
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = {
+		damages.push({
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'widowStrike',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
-		}
-		damages.push(hit)
-
+		})
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function staggerShot(index, data) {
+	function dazzleThrust(index, data) {
 		config = {
 			...skills.getDefaults(index, data),
 		}
@@ -234,19 +235,24 @@
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = {
+		damages.push({
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
-			key: 'staggerShot',
+			key: 'dazzleThrust',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
-		}
-		damages.push(hit)
-
+			buffs: [{
+				i: my.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				key: 'stun', // this sets the flag,
+				duration: buffs.dazzleThrust.stunDuration,
+			}],
+		})
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function evade(index, data) {
+	function mirageStrike(index, data) {
 		config = {
 			...skills.getDefaults(index, data),
 		}
@@ -256,17 +262,39 @@
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		hit = {
+		damages.push({
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
-			key: 'evade',
+			key: 'mirageStrike',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
-		}
-		damages.push(hit)
-
+		})
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
+	}
+	function mirageStrikeHit(damage) {
+		let d = []
+		damages.forEach(damage => {
+			d.push({
+				key: 'mirageStrike',
+				index: my.row,
+				level: my.skills[damage.index],
+				damage: 0
+			})
+		})
+		combat.txBuffHero(d)
+	}
+	function updateMirageStrikeBuff() {
+		my.buffs.mirageStrike.stacks--
+		if (my.buffs.mirageStrike.stacks) {
+			el = querySelector('#mybuff-mirageStrike')
+			if (!!el) el.textContent = my.buffs.mirageStrike.stacks
+			chat.log(buffs.mirageStrike.fadeMsg, CHAT.HEAL)
+		}
+		else {
+			battle.removeBuff('mirageStrike')
+		}
 	}
 	function flashPowder(index, data) {
 		config = {

@@ -970,13 +970,14 @@ let mobs = [];
 		return timers.mobEffects[index].fearDuration > 0
 	}
 	function isPoisoned(index) {
-		return Boolean(
+		return !!(
 			mobs[index].buffFlags.engulfingDarkness ||
 			mobs[index].buffFlags.toxicSpores ||
 			mobs[index].buffFlags.subversion ||
 			mobs[index].buffFlags.primordialSludge ||
 			mobs[index].buffFlags.euphonicDirge ||
 			mobs[index].buffFlags.ravagingPlague ||
+			mobs[index].buffFlags.widowStrike ||
 			mobs[index].buffFlags.affliction
 		)
 	}
