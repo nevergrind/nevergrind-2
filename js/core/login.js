@@ -17,7 +17,7 @@ var login;
 	//////////////////////////////
 	function init() {
 		// events
-		$(".loginInputs").on('focus', function() {
+		$(".loginInputs").on(ITEM_TYPE.FOCUS, function() {
 			login.focusInput = true;
 		}).on('blur', function() {
 			login.focusInput = false;

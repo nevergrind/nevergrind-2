@@ -402,18 +402,21 @@ var stats = {};
 	function dodge(fresh) {
 		if (fresh || typeof stats.memo.dodge === 'undefined') {
 			stats.memo.dodge = getStatTotal(PROP.DODGE) + getEqTotal(PROP.ALL_SKILLS)
+			if (fresh) stats.dodgeChance(true)
 		}
 		return stats.memo.dodge
 	}
 	function parry(fresh) {
 		if (fresh || typeof stats.memo.parry === 'undefined') {
 			stats.memo.parry = getStatTotal(PROP.PARRY) + getEqTotal(PROP.ALL_SKILLS)
+			if (fresh) stats.parryChance(true)
 		}
 		return stats.memo.parry
 	}
 	function riposte(fresh) {
 		if (fresh || typeof stats.memo.riposte === 'undefined') {
 			stats.memo.riposte = getStatTotal(PROP.RIPOSTE) + getEqTotal(PROP.ALL_SKILLS)
+			if (fresh) stats.riposteChance(true)
 		}
 		return stats.memo.riposte
 	}
@@ -812,7 +815,7 @@ var stats = {};
 		min = 1
 		max = 1
 		atk = attack('Archery')
-		if (!my.archery || items.eq[14].itemType !== 'bows') return failedRangeDamage
+		if (!my.archery || items.eq[14].itemType !== ITEM_TYPE.BOWS) return failedRangeDamage
 
 		dps = tooltip.getDps(items.eq[14])
 		max = dps * 1.5

@@ -14,7 +14,7 @@
 		$(window)
 			.on('resize', resize)
 			.on('load', windowResized)
-			.on('focus', focus)
+			.on(ITEM_TYPE.FOCUS, focus)
 			.on('contextmenu', handleContextMenu)
 			.focus(windowResized)
 
@@ -36,7 +36,7 @@
 		// delegated events
 		$('body')
 			.on('dragstart', 'img', dragStart)
-			.on('focus', 'input', chatInputFocus)
+			.on(ITEM_TYPE.FOCUS, 'input', chatInputFocus)
 			.on('blur', 'input', chatInputBlur)
 			.on('click', '.close-menu', bar.handleCloseMenu)
 			.on('mouseenter', '.item-slot', tooltip.handleItemEnter)

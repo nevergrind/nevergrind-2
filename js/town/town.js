@@ -45,36 +45,36 @@ var town;
 		'Blacksmith',
 	]
 	const hasArmorType = [
-			'helms',
-			'shoulders',
-			'chests',
-			'bracers',
-			'gloves',
-			'belts',
-			'legs',
-			'boots'
+			ITEM_TYPE.HELMS,
+			ITEM_TYPE.SHOULDERS,
+			ITEM_TYPE.CHESTS,
+			ITEM_TYPE.BRACERS,
+			ITEM_TYPE.GLOVES,
+			ITEM_TYPE.BELTS,
+			ITEM_TYPE.LEGS,
+			ITEM_TYPE.BOOTS
 	]
 	const itemTypesForSale = {
 		// plate & mail
 		blacksmith: [
 			...hasArmorType,
-			'shields',
-			'oneHandBlunts',
-			'twoHandBlunts',
-			'oneHandSlashers',
-			'twoHandSlashers',
-			'bows',
-			'piercers',
+			ITEM_TYPE.SHIELDS,
+			ITEM_TYPE.ONE_HAND_BLUNTS,
+			ITEM_TYPE.TWO_HAND_BLUNTS,
+			ITEM_TYPE.ONE_HAND_SLASHERS,
+			ITEM_TYPE.TWO_HAND_SLASHERS,
+			ITEM_TYPE.BOWS,
+			ITEM_TYPE.PIERCERS,
 		],
 		// cloth
 		apothecary: [
 			...hasArmorType,
-			'amulets',
-			'rings',
-			'charms',
-			'focus',
-			'staves',
-			'cloaks',
+			ITEM_TYPE.AMULETS,
+			ITEM_TYPE.RINGS,
+			ITEM_TYPE.CHARMS,
+			ITEM_TYPE.FOCUS,
+			ITEM_TYPE.STAVES,
+			ITEM_TYPE.CLOAKS,
 		]
 	}
 	const armorTypesByStore = {

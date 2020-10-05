@@ -1,6 +1,6 @@
 loot.legs = {
 	base: {
-		slots: ['legs'],
+		slots: [ITEM_TYPE.LEGS],
 		armorType: 'cloth',
 	},
 	normal: [

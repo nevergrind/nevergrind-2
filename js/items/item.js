@@ -78,25 +78,25 @@ var loot = {};
 		dropEqType: '',
 		isContextClick: false,
 		eqSlots: {
-			helms: ['helms', void 0],
-			amulets: ['amulets', void 0],
-			ring1: ['rings', void 0],
-			ring2: ['rings', void 0],
-			shoulders: ['shoulders', void 0],
-			cloaks: ['cloaks', void 0],
-			chests: ['chests', void 0],
-			bracers: ['bracers', void 0],
-			gloves: ['gloves', void 0],
-			belts: ['belts', void 0],
-			legs: ['legs', void 0],
-			boots: ['boots', void 0],
-			primary: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'twoHandBlunts', 'twoHandSlashers', 'staves', void 0],
-			secondary: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'shields', void 0],
-			charms: ['charms', 'bows', void 0],
+			helms: [ITEM_TYPE.HELMS, void 0],
+			amulets: [ITEM_TYPE.AMULETS, void 0],
+			ring1: [ITEM_TYPE.RINGS, void 0],
+			ring2: [ITEM_TYPE.RINGS, void 0],
+			shoulders: [ITEM_TYPE.SHOULDERS, void 0],
+			cloaks: [ITEM_TYPE.CLOAKS, void 0],
+			chests: [ITEM_TYPE.CHESTS, void 0],
+			bracers: [ITEM_TYPE.BRACERS, void 0],
+			gloves: [ITEM_TYPE.GLOVES, void 0],
+			belts: [ITEM_TYPE.BELTS, void 0],
+			legs: [ITEM_TYPE.LEGS, void 0],
+			boots: [ITEM_TYPE.BOOTS, void 0],
+			primary: [ITEM_TYPE.ONE_HAND_BLUNTS, ITEM_TYPE.ONE_HAND_SLASHERS, ITEM_TYPE.PIERCERS, ITEM_TYPE.FOCUS, ITEM_TYPE.TWO_HAND_BLUNTS, ITEM_TYPE.TWO_HAND_SLASHERS, ITEM_TYPE.STAVES, void 0],
+			secondary: [ITEM_TYPE.ONE_HAND_BLUNTS, ITEM_TYPE.ONE_HAND_SLASHERS, ITEM_TYPE.PIERCERS, ITEM_TYPE.FOCUS, ITEM_TYPE.SHIELDS, void 0],
+			charms: [ITEM_TYPE.CHARMS, ITEM_TYPE.BOWS, void 0],
 		},
-		allWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus', 'twoHandBlunts', 'twoHandSlashers', 'staves'],
-		offhandWeaponTypes: ['oneHandBlunts', 'oneHandSlashers', 'piercers', 'focus'],
-		twoHandWeaponTypes: ['twoHandBlunts', 'twoHandSlashers', 'staves'],
+		allWeaponTypes: [ITEM_TYPE.ONE_HAND_BLUNTS, ITEM_TYPE.ONE_HAND_SLASHERS, ITEM_TYPE.PIERCERS, ITEM_TYPE.FOCUS, ITEM_TYPE.TWO_HAND_BLUNTS, ITEM_TYPE.TWO_HAND_SLASHERS, ITEM_TYPE.STAVES],
+		offhandWeaponTypes: [ITEM_TYPE.ONE_HAND_BLUNTS, ITEM_TYPE.ONE_HAND_SLASHERS, ITEM_TYPE.PIERCERS, ITEM_TYPE.FOCUS],
+		twoHandWeaponTypes: [ITEM_TYPE.TWO_HAND_BLUNTS, ITEM_TYPE.TWO_HAND_SLASHERS, ITEM_TYPE.STAVES],
 	}
 
 	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val, potionValue
@@ -384,56 +384,56 @@ var loot = {};
 		blockRate: .3,
 	}
 	const slotRequiresMagic = [
-		'rings',
-		'amulets',
-		'charms',
+		ITEM_TYPE.RINGS,
+		ITEM_TYPE.AMULETS,
+		ITEM_TYPE.CHARMS,
 	]
 	const myItemTypes = ['eq', 'inv', 'bank']
 	const equipmentSlotIndex = {
-		'amulets': 1,
-		'belts': 9,
-		'boots': 11,
-		'bows': 14,
-		'bracers': 7,
-		'charms': 14,
-		'chests': 6,
-		'cloaks': 5,
-		'focus': 12,
-		'gloves': 8,
-		'helms': 0,
-		'legs': 10,
-		'oneHandBlunts': 12,
-		'oneHandSlashers': 12,
-		'piercers': 12,
-		'rings': 2,
-		'shields': 13,
-		'shoulders': 4,
-		'staves': 12,
-		'twoHandBlunts': 12,
-		'twoHandSlashers': 12,
+		[ITEM_TYPE.AMULETS]: 1,
+		[ITEM_TYPE.BELTS]: 9,
+		[ITEM_TYPE.BOOTS]: 11,
+		[ITEM_TYPE.BOWS]: 14,
+		[ITEM_TYPE.BRACERS]: 7,
+		[ITEM_TYPE.CHARMS]: 14,
+		[ITEM_TYPE.CHESTS]: 6,
+		[ITEM_TYPE.CLOAKS]: 5,
+		[ITEM_TYPE.FOCUS]: 12,
+		[ITEM_TYPE.GLOVES]: 8,
+		[ITEM_TYPE.HELMS]: 0,
+		[ITEM_TYPE.LEGS]: 10,
+		[ITEM_TYPE.ONE_HAND_BLUNTS]: 12,
+		[ITEM_TYPE.ONE_HAND_SLASHERS]: 12,
+		[ITEM_TYPE.PIERCERS]: 12,
+		[ITEM_TYPE.RINGS]: 2,
+		[ITEM_TYPE.SHIELDS]: 13,
+		[ITEM_TYPE.SHOULDERS]: 4,
+		[ITEM_TYPE.STAVES]: 12,
+		[ITEM_TYPE.TWO_HAND_BLUNTS]: 12,
+		[ITEM_TYPE.TWO_HAND_SLASHERS]: 12,
 	}
 	const equipmentEqTypeIndex = {
-		'amulets': 'amulets',
-		'belts': 'belts',
-		'boots': 'boots',
-		'bows': 'charms',
-		'bracers': 'bracers',
-		'charms': 'charms',
-		'chests': 'chests',
-		'cloaks': 'cloaks',
-		'focus': 'primary',
-		'gloves': 'gloves',
-		'helms': 'helms',
-		'legs': 'legs',
-		'oneHandBlunts': 'primary',
-		'oneHandSlashers': 'primary',
-		'piercers': 'primary',
-		'rings': 'ring1',
-		'shields': 'secondary',
-		'shoulders': 'shoulders',
-		'staves': 'primary',
-		'twoHandBlunts': 'primary',
-		'twoHandSlashers': 'primary',
+		[ITEM_TYPE.AMULETS]: ITEM_TYPE.AMULETS,
+		[ITEM_TYPE.BELTS]: ITEM_TYPE.BELTS,
+		[ITEM_TYPE.BOOTS]: ITEM_TYPE.BOOTS,
+		[ITEM_TYPE.BOWS]: ITEM_TYPE.CHARMS,
+		[ITEM_TYPE.BRACERS]: ITEM_TYPE.BRACERS,
+		[ITEM_TYPE.CHARMS]: ITEM_TYPE.CHARMS,
+		[ITEM_TYPE.CHESTS]: ITEM_TYPE.CHESTS,
+		[ITEM_TYPE.CLOAKS]: ITEM_TYPE.CLOAKS,
+		[ITEM_TYPE.FOCUS]: 'primary',
+		[ITEM_TYPE.GLOVES]: ITEM_TYPE.GLOVES,
+		[ITEM_TYPE.HELMS]: ITEM_TYPE.HELMS,
+		[ITEM_TYPE.LEGS]: ITEM_TYPE.LEGS,
+		[ITEM_TYPE.ONE_HAND_BLUNTS]: 'primary',
+		[ITEM_TYPE.ONE_HAND_SLASHERS]: 'primary',
+		[ITEM_TYPE.PIERCERS]: 'primary',
+		[ITEM_TYPE.RINGS]: 'ring1',
+		[ITEM_TYPE.SHIELDS]: 'secondary',
+		[ITEM_TYPE.SHOULDERS]: ITEM_TYPE.SHOULDERS,
+		[ITEM_TYPE.STAVES]: 'primary',
+		[ITEM_TYPE.TWO_HAND_BLUNTS]: 'primary',
+		[ITEM_TYPE.TWO_HAND_SLASHERS]: 'primary',
 	}
 	item.eqSlotKeys = Object.keys(item.eqSlots)
 	var prefixNames = {
@@ -1194,7 +1194,7 @@ var loot = {};
 	function deleteWeaponSpecificProps(itemType) {
 		// console.warn('deleteWeaponSpecificProps', itemType, itemObj.prefix)
 		deletedProps = []
-		if (itemType === 'oneHandSlashers') {
+		if (itemType === ITEM_TYPE.ONE_HAND_SLASHERS) {
 			deletedProps = [
 				PROP.ONE_HAND_BLUNT,
 				PROP.PIERCING,
@@ -1204,7 +1204,7 @@ var loot = {};
 				PROP.TWO_HAND_BLUNT,
 			]
 		}
-		else if (itemType === 'oneHandBlunts' || itemType === 'focus') {
+		else if (itemType === ITEM_TYPE.ONE_HAND_BLUNTS || itemType === ITEM_TYPE.FOCUS) {
 			deletedProps = [
 				PROP.ONE_HAND_SLASH,
 				PROP.PIERCING,
@@ -1214,7 +1214,7 @@ var loot = {};
 				PROP.TWO_HAND_BLUNT,
 			]
 		}
-		else if (itemType === 'piercers') {
+		else if (itemType === ITEM_TYPE.PIERCERS) {
 			deletedProps = [
 				PROP.ONE_HAND_SLASH,
 				PROP.ONE_HAND_BLUNT,
@@ -1224,7 +1224,7 @@ var loot = {};
 				PROP.TWO_HAND_BLUNT,
 			]
 		}
-		else if (itemType === 'twoHandSlashers') {
+		else if (itemType === ITEM_TYPE.TWO_HAND_SLASHERS) {
 			deletedProps = [
 				PROP.ONE_HAND_SLASH,
 				PROP.ONE_HAND_BLUNT,
@@ -1234,7 +1234,7 @@ var loot = {};
 				PROP.TWO_HAND_BLUNT,
 			]
 		}
-		else if (itemType === 'twoHandBlunts' || itemType === 'staves') {
+		else if (itemType === ITEM_TYPE.TWO_HAND_BLUNTS || itemType === ITEM_TYPE.STAVES) {
 			deletedProps = [
 				PROP.ONE_HAND_SLASH,
 				PROP.ONE_HAND_BLUNT,
@@ -1244,7 +1244,7 @@ var loot = {};
 				PROP.TWO_HAND_SLASH,
 			]
 		}
-		else if (itemType === 'bows') {
+		else if (itemType === ITEM_TYPE.BOWS) {
 			deletedProps = [
 				PROP.ONE_HAND_SLASH,
 				PROP.ONE_HAND_BLUNT,
@@ -1260,10 +1260,10 @@ var loot = {};
 		delete itemObj.prefix[prop]
 	}
 	function getMultiplierByTypeAndProp(itemType) {
-		return (itemType === 'twoHandSlashers' ||
-			itemType === 'twoHandBlunts' ||
-			itemType === 'staves' ||
-			itemType === 'bows') ? 2 : 1
+		return (itemType === ITEM_TYPE.TWO_HAND_SLASHERS ||
+			itemType === ITEM_TYPE.TWO_HAND_BLUNTS ||
+			itemType === ITEM_TYPE.STAVES ||
+			itemType === ITEM_TYPE.BOWS) ? 2 : 1
 	}
 	function processUniqueDrop(drop) {
 		// select one if more than one exists
@@ -1311,9 +1311,9 @@ var loot = {};
 		else return 0
 	}
 	function setItemImageIcon() {
-		if (itemSlot === 'amulets') drop.imgIndex = _.random(0, 7)
-		else if (itemSlot === 'rings') drop.imgIndex = _.random(0, 7)
-		else if (itemSlot === 'charms') drop.imgIndex = _.random(0, 7)
+		if (itemSlot === ITEM_TYPE.AMULETS) drop.imgIndex = _.random(0, 7)
+		else if (itemSlot === ITEM_TYPE.RINGS) drop.imgIndex = _.random(0, 7)
+		else if (itemSlot === ITEM_TYPE.CHARMS) drop.imgIndex = _.random(0, 7)
 		else drop.imgIndex = drop.imgIndex
 	}
 	function filterByArmorType(drop) {
@@ -1638,6 +1638,7 @@ var loot = {};
 		items[item.dragType][item.dragSlot] = item.dropData
 		bar.updateItemSwapDOM()
 		resetDrop()
+		button.updateWeaponPanel()
 		// console.warn('lastDragEvent', item.lastDragEvent)
 		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
 		else tooltip.handleItemEnter(item.lastDropEvent)
@@ -1702,12 +1703,12 @@ var loot = {};
 		if (eqType === 'primary' || eqType === 'secondary' &&
 			item.allWeaponTypes.includes(_item.itemType)) {
 			// check character can equip a weapon
-			if (_item.itemType === 'oneHandSlashers' && !stats.oneHandSlash() ||
-				_item.itemType === 'oneHandBlunts' && !stats.oneHandBlunt() ||
-				_item.itemType === 'twoHandSlashers' && !stats.twoHandSlash() ||
-				_item.itemType === 'twoHandBlunts' && !stats.twoHandBlunt() ||
-				_item.itemType === PROP.PIERCING && !stats.piercing() ||
-				_item.itemType === 'bows' && !stats.archery()) {
+			if (_item.itemType === ITEM_TYPE.ONE_HAND_SLASHERS && !stats.getPropMax(PROP.ONE_HAND_SLASH) ||
+				_item.itemType === ITEM_TYPE.ONE_HAND_BLUNTS && !stats.getPropMax(PROP.ONE_HAND_BLUNT) ||
+				_item.itemType === ITEM_TYPE.TWO_HAND_SLASHERS && !stats.getPropMax(PROP.TWO_HAND_SLASH) ||
+				_item.itemType === ITEM_TYPE.TWO_HAND_BLUNTS && !stats.getPropMax(PROP.TWO_HAND_BLUNT) ||
+				_item.itemType === ITEM_TYPE.PIERCING && !stats.getPropMax(PROP.PIERCING) ||
+				_item.itemType === ITEM_TYPE.BOWS && !stats.getPropMax(PROP.ARCHERY)) {
 				chat.log('You cannot equip this type of weapon!', CHAT.WARNING)
 				return false
 			}
@@ -1716,7 +1717,7 @@ var loot = {};
 		if (eqType === 'secondary' &&
 			item.offhandWeaponTypes.includes(_item.itemType)) {
 			// off-hand weapon check
-			if (!stats.dualWield()) {
+			if (!stats.getPropMax(PROP.DUAL_WIELD)) {
 				chat.log('You cannot dual wield!', CHAT.WARNING)
 				return false
 			}
@@ -2092,16 +2093,16 @@ var loot = {};
 		}
 		if (!selling) {
 			// conditional purchase increases by itemType
-			if (item.itemType === 'rings' ||
-				item.itemType === 'amulets' ||
-				item.itemType === 'focus' ||
-				item.itemType === 'shields' ||
-				item.itemType === 'charms') {
+			if (item.itemType === ITEM_TYPE.RINGS ||
+				item.itemType === ITEM_TYPE.AMULETS ||
+				item.itemType === ITEM_TYPE.FOCUS ||
+				item.itemType === ITEM_TYPE.SHIELDS ||
+				item.itemType === ITEM_TYPE.CHARMS) {
 				value *= 1.5
 			}
-			else if (item.itemType === 'staves' ||
-				item.itemType === 'piercers' ||
-				item.itemType === 'bows' ||
+			else if (item.itemType === ITEM_TYPE.STAVES ||
+				item.itemType === ITEM_TYPE.PIERCERS ||
+				item.itemType === ITEM_TYPE.BOWS ||
 				item.itemType === PROP.ONE_HAND_SLASH ||
 				item.itemType === PROP.TWO_HAND_SLASH ||
 				item.itemType === PROP.ONE_HAND_BLUNT ||

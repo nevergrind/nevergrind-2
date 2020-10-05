@@ -7,6 +7,7 @@ var button;
 		setAll,
 		hide,
 		triggerGlobalCooldown,
+		updateWeaponPanel,
 		handleButtonStart,
 		handleButtonUpdate,
 		handleButtonComplete,
@@ -79,33 +80,31 @@ var button;
 	}
 
 	function triggerGlobalCooldown() {
-		// delayedCall(0, () => {
-			timers.globalCooldown = 0
-			let selector = []
-			timers.skillCooldowns.forEach((skill, index) => {
-				if (skill === 1) {
-					selector.push('#skill-timer-'+ index +'-rotate')
-				}
-			})
-			selector = selector.join(', ')
-			TweenMax.set(selector, CSS.DISPLAY_BLOCK)
-			let args = {
-				el: selector,
-				key: 'globalCooldown',
+		timers.globalCooldown = 0
+		let selector = []
+		timers.skillCooldowns.forEach((skill, index) => {
+			if (skill === 1) {
+				selector.push('#skill-timer-'+ index +'-rotate')
 			}
-			// haste
+		})
+		selector = selector.join(', ')
+		TweenMax.set(selector, CSS.DISPLAY_BLOCK)
+		let args = {
+			el: selector,
+			key: 'globalCooldown',
+		}
+		// haste
 
-			TweenMax.to(timers, getCooldownSpeed(), {
-				globalCooldown: 1,
-				onStart: handleButtonStart,
-				onStartParams: [ args ],
-				onUpdate: handleButtonUpdate,
-				onUpdateParams: [ args ],
-				onComplete: handleButtonComplete,
-				onCompleteParams: [ args ],
-				ease: Linear.easeNone
-			})
-		// })
+		TweenMax.to(timers, getCooldownSpeed(), {
+			globalCooldown: 1,
+			onStart: handleButtonStart,
+			onStartParams: [ args ],
+			onUpdate: handleButtonUpdate,
+			onUpdateParams: [ args ],
+			onComplete: handleButtonComplete,
+			onCompleteParams: [ args ],
+			ease: Linear.easeNone
+		})
 	}
 	function getCooldownSpeed() {
 		return GlobalCooldownDuration * stats.getSkillSpeed()
@@ -379,23 +378,36 @@ var button;
 		else return !time ? '' : time
 
 	}
+	function getWeaponButtonHtml() {
+		return `
+		<div class="skill-btn">
+			<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 12)}">
+			<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>
+		</div>
+		${getOffhandWeaponHtml()}`
+		///////////////////////////
+		function getOffhandWeaponHtml() {
+			return isOffhandingWeapon()
+				? `<div class="skill-btn">
+						<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 13)}">
+						<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>
+					</div>`
+				: ``
+
+		}
+	}
+	function updateWeaponPanel() {
+		let el = querySelector('#main-attack-wrap')
+		if (!!el) el.innerHTML = getWeaponButtonHtml()
+	}
 	function setAll() {
 		TweenMax.set('#button-wrap', CSS.DISPLAY_FLEX)
 		if (!button.initialized) {
 			var s = '';
 			// base attack buttons
 			s += `<div id="main-attack-wrap">
-				<div class="skill-btn">
-					<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="images/items/autoAttack.png">
-					<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>
-				</div>`
-				if (isOffhandingWeapon()) {
-					s += `<div class="skill-btn">
-						<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 13)}">
-						<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>
-					</div>`
-				}
-			s += `</div>
+				${getWeaponButtonHtml()}
+			</div>
 			<div id="skill-col">
 				<div id="exp-bar-wrap">
 					<div id="exp-bar"></div>

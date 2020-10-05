@@ -1377,7 +1377,6 @@ var combat;
 		else if (key === 'fadedStrike') {
 			updateAllResists()
 			stats.dodge(true)
-			stats.dodgeChance(true)
 		}
 		else if (key === 'risingFuror') {
 			// nothing required

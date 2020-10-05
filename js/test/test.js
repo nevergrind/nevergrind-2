@@ -189,7 +189,7 @@ var test;
 	 */
 	function getItem(level = 50, rarity = undefined, itemSlot = '', itemName = '') {
 		if (itemName) { level = 50 } // because it needs to select any item
-		if (itemSlot === 'rings' || itemSlot === 'amulets' && rarity === 'normal') {
+		if (itemSlot === ITEM_TYPE.RINGS || itemSlot === ITEM_TYPE.AMULETS && rarity === 'normal') {
 			rarity = 'magic'
 		}
 		rarity = rarity || item.getRarity();
@@ -525,7 +525,7 @@ var test;
 	function disableConsole() {
 		console.debug = console.log = console.warn = console.info = ng.noop
 	}
-	function getTestLootItemWeapon(itemSlot = 'oneHandBlunts') {
+	function getTestLootItemWeapon(itemSlot = ITEM_TYPE.ONE_HAND_BLUNTS) {
 		return item.getLoot({
 			store: true,
 			rarity: 'unique',

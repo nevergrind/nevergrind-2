@@ -58,6 +58,29 @@ const CLASS = Object.freeze({
 	WARRIOR: 'Warrior',
 	WIZARD: 'Wizard',
 })
+const ITEM_TYPE = Object.freeze({
+	ONE_HAND_SLASHERS: 'oneHandSlashers',
+	ONE_HAND_BLUNTS: 'oneHandBlunts',
+	TWO_HAND_SLASHERS: 'twoHandSlashers',
+	TWO_HAND_BLUNTS: 'twoHandBlunts',
+	BOWS: 'bows',
+	PIERCERS: 'piercers',
+	FOCUS: 'focus',
+	SHIELDS: 'shields',
+	AMULETS: 'amulets',
+	BELTS: 'belts',
+	BOOTS: 'boots',
+	BRACERS: 'bracers',
+	CHARMS: 'charms',
+	CHESTS: 'chests',
+	CLOAKS: 'cloaks',
+	GLOVES: 'gloves',
+	HELMS: 'helms',
+	LEGS: 'legs',
+	RINGS: 'rings',
+	SHOULDERS: 'shoulders',
+	STAVES: 'staves'
+})
 const PROP = Object.freeze({
 	RESIST_BLOOD: 'resistBlood',
 	RESIST_POISON: 'resistPoison',

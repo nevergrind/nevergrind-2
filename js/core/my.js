@@ -183,6 +183,6 @@ var my;
 		return _.pick(my, KEYS.MY_PROPS)
 	}
 	function shieldIsEquipped() {
-		return typeof items.eq[13] === 'object' && items.eq[13].itemType === 'shields'
+		return typeof items.eq[13] === 'object' && items.eq[13].itemType === ITEM_TYPE.SHIELDS
 	}
 }($, _, TweenMax);
