@@ -211,19 +211,19 @@ var combat;
 				return d
 			}
 			if (!d.isPiercing) {
-				if (rand() * 100 < mobs[d.index].dodge) {
+				if (rand() * 100 < mob.dodgeChance(d.index)) {
 					d.damage = 0
 					combat.popupDamage(d.index, 'DODGE!')
 					return d
 				}
 				else if (timers.castBar < 1) {
-					if (rand() * 100 < mobs[d.index].riposte) {
+					if (rand() * 100 < mob.riposteChance(d.index)) {
 						d.damage = 0
 						combat.txDamageHero(d.index, [ mob.getMobDamage(d.index, my.row, true) ])
 						combat.popupDamage(d.index, 'RIPOSTE!')
 						return d
 					}
-					else if (rand() * 100 < mobs[d.index].parry) {
+					else if (rand() * 100 < mob.parryChance(d.index)) {
 						d.damage = 0
 						combat.popupDamage(d.index, 'PARRY!')
 						return d
@@ -237,8 +237,11 @@ var combat;
 			if (my.buffFlags.innerPeace) {
 				d.enhancedDamage += buffs.innerPeace.enhancedDamage[my.buffs.innerPeace.level]
 			}
+			if (my.buffFlags.prowl) {
+				d.enhancedDamage += buffs.prowl.enhancedDamage[my.buffs.prowl.level]
+			}
 
-			// console.info('d.enhancedDamage', d.enhancedDamage)
+			console.info('d.enhancedDamage', d.enhancedDamage)
 			d.damage *= d.enhancedDamage
 
 			// reduce enhancedDamage
@@ -543,7 +546,7 @@ var combat;
 	}
 	let damageData
 	function txDamageMob(damages) {
-		console.info('txDamageMob', damages)
+		console.info('txDamageMob', damages, damages[0].damage)
 		damages = damages.filter(filterImpossibleMobTargets).map(processDamagesMob)
 		damageArr = []
 		buffArr = []
@@ -878,6 +881,7 @@ var combat;
 			}
 			// console.info('reduce', amountReduced)
 			if (mob.isFeared(index)) amountReduced -= .5
+			if (my.buffFlags.prowl) amountReduced -= .5
 
 			if (amountReduced < .25) amountReduced = .25
 			// armor, shield, debuff reduction
@@ -1230,7 +1234,7 @@ var combat;
 	function processStatBuffsToMe(key, buffedByRow) {
 		// console.info('processStatBuffsToMe key!', key)
 		if (key === 'spiritOfTheHunter') {
-			cacheBustAttack()
+			bustAttack()
 			updateCharStatColTwo()
 		}
 		else if (key === 'sealOfRedemption') {
@@ -1269,7 +1273,7 @@ var combat;
 		else if (key === 'branchSpirit') {
 			stats.armor(true)
 			updateCharStatColOne()
-			cacheBustAttack()
+			bustAttack()
 			updateCharStatColTwo()
 			stats.hpRegen(true)
 			my.set(PROP.HP_MAX, stats.hpMax())
@@ -1284,12 +1288,9 @@ var combat;
 		}
 		else if (key === 'borealTalisman') {
 			stats.resistIce(true)
-			stats.str(true)
-			stats.sta(true)
-			my.set(PROP.HP_MAX, stats.hpMax())
-			bar.updateBar(PROP.HP, my)
+			bustSta()
 			txHpChange()
-			cacheBustAttack()
+			bustAttack()
 			updateCharStatColTwo()
 			bar.updateAllResistsDOM()
 			updateCharStatColOne()
@@ -1310,8 +1311,8 @@ var combat;
 			bar.updateAllResistsDOM()
 		}
 		else if (key === 'augmentation') {
-			stats.agi(true)
-			stats.dex(true)
+			bustAgi()
+			bustDex()
 			updateCharStatColOne()
 		}
 		else if (key === 'clarity') {
@@ -1336,10 +1337,9 @@ var combat;
 			txSpChange()
 		}
 		else if (key === 'battleHymn') {
-			stats.str(true)
-			stats.dex(true)
+			bustDex()
 			updateCharStatColOne()
-			cacheBustAttack()
+			bustAttack()
 			updateCharStatColTwo()
 		}
 		else if (key === 'militantCadence') {
@@ -1381,6 +1381,13 @@ var combat;
 		else if (key === 'risingFuror') {
 			// nothing required
 		}
+		else if (key === 'talismanOfTreachery') {
+			bustAgi()
+			stats.addPoison(true)
+			bustAttack()
+			updateCharStatColOne()
+			updateCharStatColTwo()
+		}
 		////////////////////////////////
 		function updateAllResists() {
 			stats.resistSilence(true)
@@ -1392,9 +1399,30 @@ var combat;
 			stats.resistIce(true)
 			bar.updateAllResistsDOM()
 		}
-		function cacheBustAttack() {
+		function bustAttack() {
+			stats.str(true)
 			stats.offense(true)
 			stats.attack(void 0, true)
+		}
+		function bustStr() {
+			stats.str(true)
+			stats.attack(void 0, true)
+		}
+		function bustSta() {
+			stats.sta(true)
+			my.set(PROP.HP_MAX, stats.hpMax())
+			bar.updateBar(PROP.HP, my)
+		}
+		function bustAgi() {
+			stats.agi(true)
+			stats.armor(true)
+			stats.dodgeChance(true)
+		}
+		function bustDex() {
+			stats.dex(true)
+			stats.parryChance(true)
+			stats.riposteChance(true)
+			stats.critChance(true)
 		}
 		function updateCharStatColOne() {
 			if (bar.windowsOpen.character && bar.activeTab === 'character') {

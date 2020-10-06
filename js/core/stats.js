@@ -199,6 +199,9 @@ var stats = {};
 			if (my.buffFlags.augmentation) {
 				stats.memo.agi += buffs.augmentation.agi[my.buffs.augmentation.level]
 			}
+			if (my.buffFlags.talismanOfTreachery) {
+				stats.memo.agi += buffs.talismanOfTreachery.agi[my.buffs.talismanOfTreachery.level]
+			}
 
 			if (fresh) {
 				dodgeChance(true)
@@ -289,6 +292,9 @@ var stats = {};
 			// buffs
 			if (my.buffFlags.spiritOfTheHunter) {
 				stats.memo.attack += buffs.spiritOfTheHunter.attackBonus[my.buffs.spiritOfTheHunter.level]
+			}
+			if (my.buffFlags.talismanOfTreachery) {
+				stats.memo.attack += buffs.talismanOfTreachery.attackBonus[my.buffs.talismanOfTreachery.level]
 			}
 			if (my.buffFlags.branchSpirit) {
 				stats.memo.attack += (my.buffs.branchSpirit.damage * buffs.branchSpirit.attackRatio)
@@ -458,6 +464,9 @@ var stats = {};
 			stats.memo.addPoison = getEqTotal(PROP.ADD_POISON)
 			if (my.buffFlags.profaneSpirit) {
 				stats.memo.addPoison += buffs.profaneSpirit.addPoison[my.buffs.profaneSpirit.level]
+			}
+			if (my.buffFlags.talismanOfTreachery) {
+				stats.memo.addPoison += buffs.talismanOfTreachery.addPoison[my.buffs.talismanOfTreachery.level]
 			}
 		}
 		return stats.memo.addPoison
@@ -770,7 +779,6 @@ var stats = {};
 		}
 	}
 	function secondaryAutoAttackDamage(index = 0) {
-		return
 		if (!my.dualWield) return FailedWeaponDamage
 		min = 1
 		max = 1
@@ -1502,6 +1510,9 @@ var stats = {};
 			if (my.buffFlags.intrepidShout) {
 				stats.memo.resistFear += buffs.intrepidShout.resistFear[my.buffs.intrepidShout.level]
 			}
+			if (my.buffFlags.prowl) {
+				stats.memo.resistFear += buffs.prowl.resistFear[my.buffs.prowl.level]
+			}
 			if (stats.memo.resistFear > 50) {
 				stats.memo.resistFear = 50
 			}
@@ -1544,6 +1555,7 @@ var stats = {};
 		if (my.buffFlags.risingFuror) {
 			speedHaste -= buffs.risingFuror.attackHaste[my.buffs.risingFuror.stacks]
 		}
+		if (my.buffFlags.prowl) speedHaste += buffs.prowl.attackHaste
 		// debuffs
 		if (speedHaste < .25) speedHaste = .25
 		else if (speedHaste > 2) speedHaste = 2

@@ -34,6 +34,9 @@ let mobs = [];
 		getMobAttackSpeed,
 		killAttacks,
 		missChance,
+		dodgeChance,
+		parryChance,
+		riposteChance,
 		getMobDamage,
 		updateMobName,
 		isAnyMobAlive,
@@ -1013,6 +1016,24 @@ let mobs = [];
 		if (chance > .5) chance = .5
 		else if (chance < .05) chance = .05
 		// console.info('missChance', level, chance)
+		return chance
+	}
+	function dodgeChance(index) {
+		chance = mobs[index].dodge
+		// console.info('dodgeChance 1', chance)
+		if (mobs[index].buffFlags.flashStrike) chance -= buffs.flashStrike.debuffDodge[skill.ROG.getHighestFlashPowder(index)]
+		if (chance < 0) chance = 0
+		// console.info('dodgeChance 2', chance)
+		return chance
+	}
+	function parryChance(index) {
+		chance = mobs[index].parry
+		if (chance < 0) chance = 0
+		return chance
+	}
+	function riposteChance(index) {
+		chance = mobs[index].riposte
+		if (chance < 0) chance = 0
 		return chance
 	}
 	function getMobResist(d) {

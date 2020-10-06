@@ -14,11 +14,12 @@
 		mirageStrike,
 		mirageStrikeHit,
 		updateMirageStrikeBuff,
-		flashPowder,
-		talisman,
+		flashStrike,
+		getHighestFlashPowder,
+		talismanOfTreachery,
 		prowl,
 	}
-	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key, el
+	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key, el, maxFlashPowder
 	///////////////////////////////////////////
 	function shadowStrike(index, data) {
 		config = {
@@ -274,16 +275,12 @@
 		button.triggerGlobalCooldown()
 	}
 	function mirageStrikeHit(damage) {
-		let d = []
-		damages.forEach(damage => {
-			d.push({
-				key: 'mirageStrike',
-				index: my.row,
-				level: my.skills[damage.index],
-				damage: 0
-			})
-		})
-		combat.txBuffHero(d)
+		combat.txBuffHero([{
+			key: 'mirageStrike',
+			index: my.row,
+			level: my.skills[damage.index],
+			damage: 0
+		}])
 	}
 	function updateMirageStrikeBuff() {
 		my.buffs.mirageStrike.stacks--
@@ -296,7 +293,7 @@
 			battle.removeBuff('mirageStrike')
 		}
 	}
-	function flashPowder(index, data) {
+	function flashStrike(index, data) {
 		config = {
 			...skills.getDefaults(index, data),
 		}
@@ -308,59 +305,74 @@
 		damages = []
 		hit = {
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
-			key: 'flashPowder',
+			key: 'flashStrike',
 			index: my.target,
+			isRanged: true,
+			isPiercing: true,
 			enhancedDamage: enhancedDamage,
+			damageType: DAMAGE_TYPE.FIRE,
 			hitBonus: data.hitBonus[my.skills[index]],
+			buffs: [{
+				i: my.target, // target
+				row: my.row, // this identifies unique buff state/icon
+				level: my.skills[index],
+				key: 'flashStrike', // this sets the flag
+			}],
 		}
 		damages.push(hit)
 
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function talisman(index, data) {
+	function getHighestFlashPowder(index) {
+		maxFlashPowder = 0
+		for (key in mobs[index].buffs) {
+			if (mobs[index].buffs[key].key === 'flashStrike' &&
+				mobs[index].buffs[key].duration > 0 && // must be active
+				mobs[index].buffs[key].level > maxFlashPowder) {
+				maxFlashPowder = mobs[index].buffs[key].level
+			}
+		}
+		return maxFlashPowder
+	}
+	function talismanOfTreachery(index, data) {
 		config = {
 			...skills.getDefaults(index, data),
+			fixTarget: false,
+			isMob: false,
+			oocEnabled: true,
 		}
 		if (skills.notReady(config, data)) return
 		spell.expendSpirit(data, index)
 
 		// process skill data
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		damages = []
-		hit = {
-			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
-			key: 'talisman',
+		combat.txBuffHero([{
+			key: 'talismanOfTreachery',
 			index: my.target,
-			enhancedDamage: enhancedDamage,
-			hitBonus: data.hitBonus[my.skills[index]],
-		}
-		damages.push(hit)
-
-		combat.txDamageMob(damages)
+			level: my.skills[index],
+			damage: 0
+		}])
+		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
 	function prowl(index, data) {
 		config = {
 			...skills.getDefaults(index, data),
+			anyTarget: true,
+			oocEnabled: true,
 		}
 		if (skills.notReady(config, data)) return
 		spell.expendSpirit(data, index)
 
 		// process skill data
-		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		damages = []
-		hit = {
-			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
+		combat.txBuffHero([{
+			index: my.row,
 			key: 'prowl',
-			index: my.target,
-			enhancedDamage: enhancedDamage,
-			hitBonus: data.hitBonus[my.skills[index]],
-		}
-		damages.push(hit)
-
-		combat.txDamageMob(damages)
-		button.triggerGlobalCooldown()
+			level: my.skills[index],
+			damage: 0
+		}])
+		spell.triggerSkillCooldown(index, data)
 	}
 
 }($, _, TweenMax);

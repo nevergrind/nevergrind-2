@@ -1206,9 +1206,38 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'A mirage emerges from the shadows.',
 			fadeMsg: 'Your mirage absorbs a blow!',
 		},
-		flashPowder: { hate: 1 },
-		talisman: { hate: 1 },
-		prowl: { hate: 1 },
+		flashStrike: {
+			name: 'Flash Strike',
+			img: 9,
+			job: JOB.ROGUE,
+			debuffDodge: [0, 2, 2.7, 3.4, 4.1, 4.8, 5.5, 6.2],
+			hate: -2,
+			duration: 60,
+		},
+		talismanOfTreachery: {
+			name: 'Talisman of Treachery',
+			img: 10,
+			job: JOB.ROGUE,
+			agi: [0, 8, 12, 16, 20, 24, 28],
+			addPoison: [0, 2, 3, 5, 7, 9, 11, 13],
+			attackBonus: [0, 3, 7, 11, 17, 25, 33, 40],
+			duration: 300,
+			msg: () => 'A treacherous talisman guides your weapons.',
+			fadeMsg: 'The treacherous talisman fades.'
+		},
+		prowl: {
+			name: 'Prowl',
+			img: 11,
+			job: JOB.ROGUE,
+			duration: 20,
+			hate: 0,
+			attackHaste: 1,
+			resistPhysical: .5,
+			resistFear: [0, 7, 9, 12, 15, 18, 21, 25],
+			enhancedDamage: [0, .25, .3, .35, .4, .45, .5],
+			msg: () => 'You prowl into the shadows.',
+			fadeMsg: 'You emerge from the shadows.'
+		},
 	}
 	///////////////////////////////////////////
 

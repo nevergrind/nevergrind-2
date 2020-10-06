@@ -429,20 +429,33 @@ var bar;
 	}
 	function updateBar(type, data) {
 		percent = getRatio(type, data)
-		TweenMax.to(querySelector('#bar-' + type + '-fg-' + data.row), .1, {
-			x: '-' + percent + '%'
-		})
-		query.el('#bar-' + type + '-text-' + data.row).textContent = ~~data[type] + '/' + getMaxType(type, data)
-		if (type === PROP.HP &&
-			typeof data === 'object' &&
-			(!my.targetIsMob && my.target === data.row) ||
-			(my.targetIsMob && my.target === data.row)
-		) {
-			mob.drawTargetBar(percent)
+		if (type === PROP.HP) {
+			TweenMax.to(querySelector('#bar-hp-fg-' + data.row), .1, { x: '-' + percent + '%' })
+			query.el('#bar-hp-text-' + data.row).textContent = ~~data.hp + '/' + data.hpMax
+
+			if (type === PROP.HP &&
+				typeof data === 'object' &&
+				(!my.targetIsMob && my.target === data.row) ||
+				(my.targetIsMob && my.target === data.row)
+			) {
+				mob.drawTargetBar(percent)
+			}
+		}
+		else if (type === PROP.MP) {
+			TweenMax.to(querySelector('#bar-mp-fg-' + data.row), .1, { x: '-' + percent + '%' })
+			query.el('#bar-mp-text-' + data.row).textContent = ~~data.mp + '/' + data.mpMax
+		}
+		else if (type === PROP.SP) {
+			TweenMax.to(querySelector('#bar-sp-fg-' + data.row), .1, { x: '-' + percent + '%' })
+			query.el('#bar-sp-text-' + data.row).textContent = ~~data.sp + '/' + data.spMax
 		}
 	}
 	function getMaxType(type, data) {
-		return (type === PROP.HP ? data.hpMax : type === PROP.MP ? data.mpMax : data.spMax)
+		return (type === PROP.HP
+			? data.hpMax
+			: type === PROP.MP
+				? data.mpMax
+				: data.spMax)
 	}
 
 	function toggleOptions() {

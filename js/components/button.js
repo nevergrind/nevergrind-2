@@ -26,6 +26,7 @@ var button;
 	const GlobalCooldownDuration = 2.5
 	const HybridAutoAttackers = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER, JOB.BARD]
 	let damages
+	let skillCooldownSpeed = 0
 	/////////////////////////////
 
 	function init() {
