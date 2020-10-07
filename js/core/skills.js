@@ -861,15 +861,15 @@ var skills;
 				hitBonus: getSkillValues(2, .5),
 				critBonus: getSkillValues(4, .5),
 				cooldownTime: 30,
-				description: 'Delivers a powerful blow that paralyzes your target for 10 seconds',
+				description: 'Delivers a powerful blow that staggers and paralyzes your target for 10 seconds',
 			}, {
-				name: 'Inner Peace',
+				name: 'Inner Sanctum',
 				img: 'MNK-11',
-				sp: level => spellValues.innerPeaceMana[level],
+				sp: level => spellValues.innerSanctumMana[level],
 				enhancedDamage: getSkillValues(.5, .1),
 				hitBonus: NoDamage,
 				critBonus: NoDamage,
-				cooldownTime: 45,
+				cooldownTime: 35,
 				description: 'Halts all attacks to meditate - Effect: While active all damage is reduced. Focus your energy into your next attack which receives a damage bonus.',
 			}, {
 				name: 'Spirit Barrier',
@@ -2120,7 +2120,7 @@ var skills;
 		dragonPunchMana: getManaTier(1.5),
 		viperStrikeMana: getManaTier(.8),
 		palmStrikeMana: getManaTier(1.4),
-		innerPeaceMana: getManaTier(1.2),
+		innerSanctumMana: getManaTier(1.2),
 		spiritBarrierMana: getManaTier(1.5),
 		// SHD
 		shadowBreakMana: getManaTier(.9),

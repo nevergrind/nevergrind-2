@@ -234,8 +234,8 @@ var combat;
 			// mob type bonuses
 			d.enhancedDamage += getEnhancedDamageByMobType(d)
 			if (mobs[d.index].buffFlags.demonicPact) d.enhancedDamage += .15
-			if (my.buffFlags.innerPeace) {
-				d.enhancedDamage += buffs.innerPeace.enhancedDamage[my.buffs.innerPeace.level]
+			if (my.buffFlags.innerSanctum) {
+				d.enhancedDamage += buffs.innerSanctum.enhancedDamage[my.buffs.innerSanctum.level]
 			}
 			if (my.buffFlags.prowl) {
 				d.enhancedDamage += buffs.prowl.enhancedDamage[my.buffs.prowl.level]
@@ -611,8 +611,8 @@ var combat;
 			triggerProc(d.damageType, d.index, d.key)
 		})
 
-		if (my.buffFlags.innerPeace) {
-			battle.removeBuff('innerPeace')
+		if (my.buffFlags.innerSanctum) {
+			battle.removeBuff('innerSanctum')
 		}
 	}
 	function rxDamageMob(data) {
@@ -811,7 +811,7 @@ var combat;
 		}
 		// console.info('processDamagesHero', index, d)
 		// dodge
-		if (!my.buffFlags.innerPeace &&
+		if (!my.buffFlags.innerSanctum &&
 			skills.dodge[my.job].level &&
 			my.level >= skills.dodge[my.job].level) {
 			combat.levelSkillCheck(PROP.DODGE)
@@ -825,7 +825,7 @@ var combat;
 		// console.info('processDamages', d)
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// riposte
-			if (!my.buffFlags.innerPeace &&
+			if (!my.buffFlags.innerSanctum &&
 				skills.riposte[my.job].level &&
 				my.level >= skills.riposte[my.job].level) {
 				combat.levelSkillCheck(PROP.RIPOSTE)
@@ -838,7 +838,7 @@ var combat;
 				}
 			}
 			// parry
-			if (!my.buffFlags.innerPeace &&
+			if (!my.buffFlags.innerSanctum &&
 				skills.parry[my.job].level &&
 				my.level >= skills.parry[my.job].level) {
 				combat.levelSkillCheck(PROP.PARRY)
@@ -867,7 +867,7 @@ var combat;
 			// shield block? maxes 75% reduction of damage; skips armor
 			amountReduced = 1 - stats.armorReductionRatio()
 
-			if (!my.buffFlags.innerPeace &&
+			if (!my.buffFlags.innerSanctum &&
 				items.eq[13].blockRate &&
 				rand() * 100 < items.eq[13].blockRate) {
 				amountReduced -= .25
@@ -875,9 +875,9 @@ var combat;
 				if (d.blocked < 0) d.blocked = 0
 			}
 			if (mobs[index].buffFlags.sealOfDamnation) amountReduced -= buffs.sealOfDamnation.reduceDamage
-			if (my.buffFlags.innerPeace) {
-				amountReduced -= buffs.innerPeace.damageReduced[my.buffs.innerPeace.level]
-				chat.log(buffs.innerPeace.msgReduced, CHAT.HEAL)
+			if (my.buffFlags.innerSanctum) {
+				amountReduced -= buffs.innerSanctum.damageReduced[my.buffs.innerSanctum.level]
+				chat.log(buffs.innerSanctum.msgReduced, CHAT.HEAL)
 			}
 			// console.info('reduce', amountReduced)
 			if (mob.isFeared(index)) amountReduced -= .5
@@ -1221,7 +1221,7 @@ var combat;
 				battle.addMyBuff(buff.key, key)
 				processStatBuffsToMe(key, data.row)
 			}
-			if (buff.key === 'innerPeace') mob.feignHate(data.row)
+			if (buff.key === 'innerSanctum') mob.feignHate(data.row)
 		})
 		if (~~hate > 0) {
 			mob.addHateHeal({

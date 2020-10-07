@@ -14,7 +14,7 @@
 		viperStrikeHit,
 		viperStrikeHeal,
 		palmStrike,
-		innerPeace,
+		innerSanctum,
 		spiritBarrier,
 	}
 	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
@@ -323,6 +323,7 @@
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
 			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
+			effects: { stagger: true },
 			buffs: [{
 				i: tgt,
 				row: my.row, // this identifies unique buff state/icon
@@ -335,7 +336,7 @@
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function innerPeace(index, data) {
+	function innerSanctum(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
@@ -348,7 +349,7 @@
 		// process skill data
 		combat.txBuffHero([{
 			index: my.row,
-			key: 'innerPeace',
+			key: 'innerSanctum',
 			level: my.skills[index],
 			damage: 0
 		}])

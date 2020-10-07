@@ -1093,8 +1093,8 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: (buff) => 'Viper Strike heals you for ' + buff.damage + ' health.',
 		},
 		palmStrike: { hate: 1.3 },
-		innerPeace: {
-			name: 'Inner Peace',
+		innerSanctum: {
+			name: 'Inner Sanctum',
 			img: 10,
 			job: JOB.MONK,
 			duration: 0,
