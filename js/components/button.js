@@ -38,6 +38,7 @@ var button;
 
 	function isOffhandingWeapon() {
 		return item.offhandWeaponTypes.includes(items.eq[13].itemType)
+			|| (my.level >= skills.dualWield[my.job].level && !items.eq[13].name) // punching
 	}
 
 	//////////////////////////////////
@@ -133,8 +134,15 @@ var button;
 	function successfulDoubleAttack() {
 		return my.doubleAttack / 600
 	}
-	function successfulDualWield() {
-		return my.dualWield / 350
+
+	let autoSlot = 0
+	function getAutoAttackKey(isPrimary) {
+		autoSlot = isPrimary ? 12 : 13
+		return 'autoAttack'
+			+ (typeof items.eq[autoSlot].weaponSkill === 'undefined'
+				? 'Hand-to-hand'
+				: items.eq[autoSlot].weaponSkill)
+			+ (isPrimary ? '' : 'Secondary')
 	}
 	function primaryAttack(isPiercing, index) {
 		// piercing is a riposte
@@ -167,7 +175,7 @@ var button;
 		damages = []
 		hit = stats.primaryAutoAttackDamage(index)
 		damages.push({
-			key: 'autoAttack',
+			key: getAutoAttackKey(true),
 			index: index,
 			isPiercing: isPiercing,
 			...hit
@@ -179,7 +187,7 @@ var button;
 			if (Math.random() < successfulDoubleAttack()) {
 				hit = stats.primaryAutoAttackDamage(index)
 				damages.push({
-					key: 'autoAttack',
+					key: getAutoAttackKey(true),
 					index: index,
 					...hit
 				})
@@ -188,6 +196,8 @@ var button;
 		combat.txDamageMob(damages)
 		startSwing('primaryAttack')
 	}
+
+	let dualWieldChance = 0
 	function secondaryAttack() {
 		// console.warn('secondaryAttack')
 		if (ng.view !== 'battle' ||
@@ -204,11 +214,11 @@ var button;
 
 		if (my.level >= skills.dualWield[my.job].level) {
 			combat.levelSkillCheck(PROP.DUAL_WIELD)
-			if (successfulDualWield()) {
+			if (Math.random() < successfulDualWield()) {
 				hit = stats.secondaryAutoAttackDamage(my.target)
 				damages = []
 				damages.push({
-					key: 'autoAttack',
+					key: getAutoAttackKey(false),
 					index: my.target,
 					...hit
 				})
@@ -216,7 +226,7 @@ var button;
 					if (Math.random() < successfulDoubleAttack()) {
 						hit = stats.secondaryAutoAttackDamage(my.target)
 						damages.push({
-							key: 'autoAttack',
+							key: getAutoAttackKey(false),
 							index: my.target,
 							...hit
 						})
@@ -226,6 +236,10 @@ var button;
 			}
 		}
 		startSwing('secondaryAttack')
+		///////////////////////////
+		function successfulDualWield() {
+			return my.dualWield / 350
+		}
 	}
 	function cannotAutoAttack() {
 		return (!HybridAutoAttackers.includes(my.job) && timers.castBar < 1) ||
@@ -382,7 +396,7 @@ var button;
 	function getWeaponButtonHtml() {
 		return `
 		<div class="skill-btn">
-			<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 12)}">
+			<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 12, true)}">
 			<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>
 		</div>
 		${getOffhandWeaponHtml()}`
@@ -390,7 +404,7 @@ var button;
 		function getOffhandWeaponHtml() {
 			return isOffhandingWeapon()
 				? `<div class="skill-btn">
-						<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 13)}">
+						<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 13, true)}">
 						<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>
 					</div>`
 				: ``

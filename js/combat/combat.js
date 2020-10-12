@@ -241,7 +241,7 @@ var combat;
 				d.enhancedDamage += buffs.prowl.enhancedDamage[my.buffs.prowl.level]
 			}
 
-			console.info('d.enhancedDamage', d.enhancedDamage)
+			// console.info('d.enhancedDamage', d.enhancedDamage)
 			d.damage *= d.enhancedDamage
 
 			// reduce enhancedDamage
@@ -442,10 +442,16 @@ var combat;
 				delayedCall(5, dungeon.go, [true])
 			}
 		}
-		processEffects(o)
-		if (o.key && typeof animateSkill[key] === 'function') {
-
+		// console.info('object', o)
+		if (o.key) {
+			if (typeof ask[o.key] === 'function') {
+				ask[o.key](o)
+			}
+			else if (o.key.startsWith('autoAttack')) {
+				ask.autoAttack(o)
+			}
 		}
+		processEffects(o)
 	}
 	function processEffects(o) {
 		if (typeof o.effects === 'object') {
@@ -546,7 +552,7 @@ var combat;
 	}
 	let damageData
 	function txDamageMob(damages) {
-		console.info('txDamageMob', damages, damages[0].damage)
+		// console.info('txDamageMob', damages, damages[0].damage)
 		damages = damages.filter(filterImpossibleMobTargets).map(processDamagesMob)
 		damageArr = []
 		buffArr = []
@@ -995,7 +1001,7 @@ var combat;
 		basicText.id = 'text-' + combat.textId++
 		mobs[index].hitCount++
 		basicText.x = mob.centerX[index]
-		basicText.y = MaxHeight - mob.bottomY[index] - mobs[index].clickAliveH * mobs[2].size + ((mobs[index].hitCount % 5) * 20)
+		basicText.y = ask.centerY(index) + ((mobs[index].hitCount % 5) * 20)
 		// console.info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
 		TweenMax.to(basicText, textDuration * .6, {
@@ -1026,6 +1032,10 @@ var combat;
 				onCompleteParams: [ basicText.id ],
 				ease: Power1.easeIn
 			})
+		}
+		function removeText(id) {
+			el = pix.getId(combat.text, id)
+			combat.text.stage.removeChild(el)
 		}
 	}
 
@@ -1499,10 +1509,6 @@ var combat;
 
 		battle.layer.view.style.width = w + 'px';
 		battle.layer.view.style.height = h + 'px';
-	}
-	function removeText(id) {
-		el = pix.getId(combat.text, id)
-		combat.text.stage.removeChild(el)
 	}
 	function targetChanged() {
 		if (my.hp <= 0) return

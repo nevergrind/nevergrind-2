@@ -319,25 +319,15 @@ let mobs = [];
 		resetIdle(i, true)
 		idle(i)
 	}
-	function sizeOffset(size) {
-		val = 0
-		if (size >= 1) val = 16
-		else if (size > .9) val = 12
-		else if (size > .8) val = 8
-		else if (size > .7) val = 4
-		else val = 0
-		return val
-	}
 	function sizeMob(i) {
 		var m = mobs[i]
 		if (!m.img) return
 		// set dom
-		let images = mobs.images[m.img]
-		let width = ~~(m.size * (images.width))
-		let height = ~~(m.size * (images.height))
+		let width = ~~(m.size * (mobs.images[m.img].width))
+		let height = ~~(m.size * (mobs.images[m.img].height))
 		let x = mob.centerX[i]
 		// botttom - row offset - image size offset for transparency at bottom - more size offset?
-		let y = MaxHeight - mob.bottomY[i] - (images.yFloor * m.size) + sizeOffset(m.size)
+		let y = ask.bottomY(i)
 		// mob sprite
 		m.sprite = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
 		m.sprite.anchor.set(.5, 1)

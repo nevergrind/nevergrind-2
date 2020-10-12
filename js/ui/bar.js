@@ -218,10 +218,8 @@ var bar;
 	}
 
 	function setDefaultInvWeaponImage() {
-		if (my.jobLong === CLASS.RANGER) {
-			bar.defaultImage[12] = 'bows0'
-		}
-		else if (my.jobLong === CLASS.WARRIOR ||
+		if (my.jobLong === CLASS.WARRIOR ||
+			my.jobLong === CLASS.RANGER ||
 			my.jobLong === CLASS.CRUSADER ||
 			my.jobLong === CLASS.SHADOW_KNIGHT) {
 			bar.defaultImage[12] = 'oneHandSlashers0'
@@ -240,12 +238,20 @@ var bar;
 			'<img id="' + type + '-slot-img-'+ i +'" data-index="'+ i +
 			'" data-type="'+ type +
 			'" '+ (type === 'eq' ? ' data-eq-type="' + item.eqSlotKeys[i] +'"' : '') +
-			' src="'+ getItemSlotImage(type, i) +'" class="item-slot item-slot-'+ type +'">' +
+			' src="'+ bar.getItemSlotImage(type, i) +'" class="item-slot item-slot-'+ type +'">' +
 		'</div>';
 	}
 
-	function getItemSlotImage(type, slot) {
-		resp = type === 'eq' ? bar.defaultImage[slot] : 'blank-item'
+	function getItemSlotImage(type, slot, showH2h) {
+		if (type === 'eq') {
+			resp = bar.defaultImage[slot]
+			if (showH2h && !items.eq[12].name) {
+				resp = 'Hand-to-hand'
+			}
+		}
+		else {
+			resp = 'blank-item'
+		}
 		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'itemType')) {
 			resp = getItemIconFileNameByObj(items[type][slot])
 		}
@@ -385,7 +391,7 @@ var bar;
 		el = querySelector('#'+ type +'-slot-' + slot)
 		if (el !== null) {
 			el.className = getInvItemClass(type, slot)
-			querySelector('#'+ type +'-slot-img-' + slot).src = getItemSlotImage(type, slot)
+			querySelector('#'+ type +'-slot-img-' + slot).src = bar.getItemSlotImage(type, slot)
 		}
 	}
 

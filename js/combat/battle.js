@@ -133,6 +133,7 @@ var battle;
 			my.level++
 			chat.log('You have reached level ' + my.level + '!', 'chat-level')
 			stats.memo = {}
+			button.updateWeaponPanel() // could be dual wielding now
 			audio.playSound('levelup')
 		}
 		if (leveled) {
