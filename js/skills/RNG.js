@@ -7,8 +7,8 @@
 		bladeStorm,
 		suppressingVolley,
 		getHighestSuppressingVolleyStack,
-		ignite,
-		igniteCompleted,
+		burningEmbers,
+		burningEmbersCompleted,
 		shockNova,
 		faerieFlame,
 		fungalGrowth,
@@ -223,25 +223,26 @@
 		return maxSuppressingVolleyStack
 
 	}
-	function ignite(index, data) {
+	function burningEmbers(index, data) {
 		if (timers.castBar < 1) return
 		// check constraints
 		spell.config = {
 			...spell.getDefaults(index, data),
 		}
 		if (skills.notReady(spell.config, data)) return
-		spell.startCasting(index, data, igniteCompleted)
+		spell.startCasting(index, data, burningEmbersCompleted)
 	}
-	function igniteCompleted() {
+	function burningEmbersCompleted() {
 		damages = []
 		damages.push({
 			index: spell.config.target,
+			key: 'burningEmbers',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			buffs: [{
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
-				key: 'igniteArmor', // this sets the flag
+				key: 'burningEmbers', // this sets the flag
 			}],
 			...stats.spellDamage(spell.config.target)
 		})
@@ -286,6 +287,7 @@
 		damages = []
 		damages.push({
 			index: spell.config.target,
+			key: 'faerieFlame',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			buffs: [{

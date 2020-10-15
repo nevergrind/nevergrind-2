@@ -836,7 +836,7 @@ let mobs = [];
 			config.skills = [
 				'Light Healing',
 				'Faerie Flame',
-				'Ignite',
+				'Burning Embers',
 				'Charged Bolts',
 			];
 		}

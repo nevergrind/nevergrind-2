@@ -2,6 +2,7 @@ var dungeon;
 (function(TweenMax, $, _, undefined) {
 	dungeon = {
 		initialized: 0,
+		layer: {},
 		go,
 		init,
 		html,
@@ -85,6 +86,18 @@ var dungeon;
 		}
 		else {
 			dungeon.initialized = true
+			// dungeon layer for ooc buffs
+			dungeon.layer = new PIXI.Application({
+				width: MaxWidth,
+				height: MaxHeight,
+				transparent: true
+			});
+			dungeon.layer.stage.sortableChildren = true
+			dungeon.layer.view.id = 'dungeon-layer'
+			dungeon.layer.view.style.pointerEvents = 'none'
+			dungeon.layer.view.style.position = 'absolute'
+			dungeon.layer.view.style.zIndex = 1
+			querySelector('#scene-dungeon').appendChild(dungeon.layer.view)
 		}
 		button.setAll()
 		getElementById('scene-dungeon').innerHTML = dungeon.html()

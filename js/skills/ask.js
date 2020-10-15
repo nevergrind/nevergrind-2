@@ -3,17 +3,60 @@ var ask;
 	ask = {
 		askId: 0,
 		getAskImg,
+		addChild,
 		removeImg,
+		removeDungeonImg,
+		removeBattleImg,
 		sizeOffset,
 		bottomY,
 		centerY,
 		autoAttack,
-		crossSlash,
+		explosion,
 	}
 	let val, el
+	const explosionDefaults = {
+		targetMob: true,
+		sizeStart: 80,
+		sizeEnd: 400,
+		duration: .8,
+		contrastStart: 1.5,
+		contrastEnd: 1,
+		brightnessStart: 1.5,
+		brightnessEnd: 1.5,
+		ease: Power4.easeOut,
+	}
 	///////////////////////////////////////////
-	function crossSlash(index) {
-		console.info('crossSlash', index)
+	function addChild(img) {
+		if (ng.view === 'battle') battle.layer.stage.addChild(img)
+		else dungeon.layer.stage.addChild(img)
+	}
+	function explosion(o, config = {}) {
+		config = {
+			...explosionDefaults,
+			...config
+		}
+		const img = ask.getAskImg(o, config)
+		ask.addChild(img)
+		img.width = config.sizeStart
+		img.height = config.sizeStart
+
+		TweenMax.to(img, config.duration, {
+			startAt: { pixi: {
+				contrast: config.contrastStart,
+				brightness: config.brightnessStart,
+			}},
+			rotation: PI,
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			alpha: 0,
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			ease: config.ease,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ img.id ]
+		})
 	}
 	function sizeOffset(size) {
 		val = 0
@@ -33,18 +76,24 @@ var ask;
 	function centerY(index) {
 		return ask.bottomY(index) - (mobs[index].clickAliveH * mobs[index].size)
 	}
-	function getAskImg(index, name) {
-		const img = PIXI.Sprite.from(`images/ask/${name}.png`)
+	function getAskImg(o, config = { targetMob: true }) {
+		const img = PIXI.Sprite.from(`images/ask/${o.key}.png`)
 		img.id = 'ask-' + ask.askId++
 		img.anchor.set(.5)
-		img.x = mob.centerX[index]
-		img.y = ask.centerY(index)
+		if (config.targetMob) {
+			img.x = mob.centerX[o.index]
+			img.y = ask.centerY(o.index)
+		}
+		else {
+			img.x = 960
+			img.y = 800
+		}
 		img.zIndex = 200
 		return img
 	}
 	function autoAttack(o) {
 		const isPrimary = !o.key.includes('Secondary')
-		const img = ask.getAskImg(o.index, o.key)
+		const img = ask.getAskImg(o)
 		img.width = 0
 		img.height = 0
 		
@@ -55,8 +104,7 @@ var ask;
 			autoAttackPunch(img)
 		}
 		else {
-			img.x = mob.centerX[o.index]
-			img.y = ask.centerY(o.index)
+			img.y = ask.centerY(o.index) + _.random(-25, 50)
 			if (o.key.includes('Piercing')) autoAttackPierce(isPrimary, img)
 			else autoAttackSlash(isPrimary, img)
 		}
@@ -75,7 +123,7 @@ var ask;
 			TweenMax.to(img, .2, {
 				pixi: { width: 0, height: 0 },
 				ease: Power2.easeOut,
-				onComplete: ask.removeImg,
+				onComplete: ask.removeImg(),
 				onCompleteParams: [ img.id ]
 			})
 		}
@@ -114,7 +162,7 @@ var ask;
 			TweenMax.to(img, .2, {
 				pixi: { width: 0, height: 0 },
 				ease: Power2.easeOut,
-				onComplete: ask.removeImg,
+				onComplete: ask.removeImg(),
 				onCompleteParams: [ img.id ]
 			})
 		}
@@ -147,13 +195,22 @@ var ask;
 					pixi: { width: 75, height: 75 },
 					rotation: .5 * PI,
 					ease: Power1.easeIn,
-					onComplete: ask.removeImg,
+					onComplete: ask.removeImg(),
 					onCompleteParams: [ img.id ]
 				})
 			}
 		})
 	}
-	function removeImg(askId) {
+	function removeImg() {
+		return ng.view === 'battle' ? removeBattleImg : removeDungeonImg
+	}
+	function removeDungeonImg(askId) {
+		console.info('removeDungeonImg', askId)
+		el = pix.getId(dungeon.layer, askId)
+		dungeon.layer.stage.removeChild(el)
+	}
+	function removeBattleImg(askId) {
+		console.info('removeBattleImg', askId)
 		el = pix.getId(battle.layer, askId)
 		battle.layer.stage.removeChild(el)
 	}

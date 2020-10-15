@@ -32,6 +32,7 @@ const jsFiles = [
 	'libs/jquery.min',
 	'libs/lodash.min',
 	'libs/pixi.min',
+	'libs/pixi-filters.min',
 	'libs/gsap/TweenMax2.min',
 	// gsap/TweenMax3.min
 	'libs/gsap/PixiPlugin-v2.min',

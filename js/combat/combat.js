@@ -263,7 +263,7 @@ var combat;
 			// modify mob armor for all (buffs)
 			mobArmor = mobs[d.index].armor
 			// higher REDUCES armor
-			if (mobs[d.index].buffFlags.igniteArmor) mobArmor += buffs.igniteArmor.debuffArmor
+			if (mobs[d.index].buffFlags.burningEmbers) mobArmor += buffs.burningEmbers.debuffArmor
 			if (mobs[d.index].buffFlags.bloodFire) mobArmor += buffs.bloodFire.debuffArmor
 			if (mobs[d.index].buffFlags.subvertedSymphony) mobArmor += buffs.subvertedSymphony.debuffArmor
 			if (mobs[d.index].buffFlags.decayingDoom) mobArmor += buffs.decayingDoom.debuffArmor
@@ -479,12 +479,17 @@ var combat;
 		return m.index >=0 && m.index < mob.max && mob.isAlive(m.index)
 	}
 
-	/**
-	 * weapon procs and skill procs
-	 * @param damageType
-	 * @param index
-	 * @param key
-	 */
+	function triggerEffect(key, damages) {
+		if (key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(damages[0])
+		else if (key === 'deathStrike') skill.SHD.deathStrikeHeal(damages[0])
+		else if (key === 'hyperStrike') skill.MNK.hyperStrikeHit(damages)
+		else if (key === 'viperStrike') skill.MNK.viperStrikeHit(damages)
+		else if (key === 'sonicStrike') skill.ROG.sonicStrikeHit(damages[0])
+		else if (key === 'fadedStrike') skill.ROG.fadedStrikeHit(damages[0])
+		else if (key === 'risingFuror') skill.ROG.risingFurorHit(damages[0])
+		else if (key === 'mirageStrike') skill.ROG.mirageStrikeHit(damages[0])
+	}
+
 	function triggerProc(damageType, index, key) {
 		if (damageType === DAMAGE_TYPE.PHYSICAL) {
 			if (my.buffFlags.sanguineHarvest &&
@@ -588,34 +593,11 @@ var combat;
 			// console.info('txDamageMob: ', _.cloneDeep(damageData))
 			socket.publish('party' + my.partyId, damageData)
 
-			if (damageData.damages[0].key === 'devouringSwarm') {
-				skill.SHM.devouringSwarmHeal(damageData.damages[0])
-			}
-			else if (damageData.damages[0].key === 'deathStrike') {
-				skill.SHD.deathStrikeHeal(damageData.damages[0])
-			}
-			else if (damageData.damages[0].key === 'hyperStrike') {
-				skill.MNK.hyperStrikeHit(damageData.damages)
-			}
-			else if (damageData.damages[0].key === 'viperStrike') {
-				skill.MNK.viperStrikeHit(damageData.damages)
-			}
-			else if (damageData.damages[0].key === 'sonicStrike') {
-				skill.ROG.sonicStrikeHit(damageData.damages[0])
-			}
-			else if (damageData.damages[0].key === 'fadedStrike') {
-				skill.ROG.fadedStrikeHit(damageData.damages[0])
-			}
-			else if (damageData.damages[0].key === 'risingFuror') {
-				skill.ROG.risingFurorHit(damageData.damages[0])
-			}
-			else if (damageData.damages[0].key === 'mirageStrike') {
-				skill.ROG.mirageStrikeHit(damageData.damages[0])
-			}
+			triggerEffect(damageData.damages[0].key, damageData.damages)
+			damageArr.forEach(d => {
+				triggerProc(d.damageType, d.index, d.key)
+			})
 		}
-		damageArr.forEach(d => {
-			triggerProc(d.damageType, d.index, d.key)
-		})
 
 		if (my.buffFlags.innerSanctum) {
 			battle.removeBuff('innerSanctum')
@@ -1082,6 +1064,11 @@ var combat;
 				hp: my.hp,
 				hpMax: my.hpMax,
 			})
+			if (heal.key) {
+				if (typeof ask[heal.key] === 'function') {
+					ask[heal.key](heal)
+				}
+			}
 		}
 		if (~~hate > 0) {
 			mob.addHateHeal({
@@ -1129,6 +1116,11 @@ var combat;
 			})
 			battle.addMyBuff(heal.key, keyRow)
 			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
+			if (heal.key) {
+				if (typeof ask[heal.key] === 'function') {
+					ask[heal.key](heal)
+				}
+			}
 		}
 		if (~~hate > 0) {
 			mob.addHateHeal({
@@ -1138,9 +1130,9 @@ var combat;
 		}
 	}
 	function onHotTick(buff, healAmount) {
-		console.info('healAmount b4', healAmount)
+		// console.info('healAmount b4', healAmount)
 		healAmount = processHeal(healAmount)
-		console.info('healAmount b5', healAmount)
+		// console.info('healAmount b5', healAmount)
 		chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CHAT.HEAL)
 		updateMyResource(PROP.HP, healAmount)
 	}
@@ -1230,6 +1222,11 @@ var combat;
 				my.buffFlags[key] = true
 				battle.addMyBuff(buff.key, key)
 				processStatBuffsToMe(key, data.row)
+				if (buff.key) {
+					if (typeof ask[buff.key] === 'function') {
+						ask[buff.key](buff)
+					}
+				}
 			}
 			if (buff.key === 'innerSanctum') mob.feignHate(data.row)
 		})

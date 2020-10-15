@@ -4,7 +4,6 @@
 		hyperStrike,
 		hyperStrikeHit,
 		mimeStrike,
-		mimeStrikeHit,
 		craneKick,
 		chakraBlast,
 		hadoken,

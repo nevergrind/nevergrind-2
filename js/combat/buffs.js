@@ -47,8 +47,8 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: -1.5,
 			duration: 21,
 		},
-		igniteArmor: {
-			name: 'Ignite Armor',
+		burningEmbers: {
+			name: 'Burning Embers',
 			img: 6,
 			job: JOB.RANGER,
 			debuffArmor: .15,

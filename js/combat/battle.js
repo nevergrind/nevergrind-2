@@ -303,6 +303,7 @@ var battle;
 		battle.layer.view.style.position = 'absolute'
 		battle.layer.view.style.zIndex = 1
 		querySelector('#scene-battle').appendChild(battle.layer.view)
+
 	}
 	function setupMobs(config) {
 		if (typeof config === 'object') {
@@ -592,7 +593,9 @@ var battle;
 			el.id = 'mybuff-' + keyRow
 			el.className = 'buff-icons popover-icons text-shadow3'
 			el.style.backgroundImage = 'url(images/skills/' + buffs[key].job + '/' + buffs[key].img + '.png)'
-			el.textContent = my.buffs[key].stacks
+			if (buffs[key].stacks !== void 0) {
+				el.textContent = my.buffs[key].stacks
+			}
 			query.el('#mybuff-wrap').appendChild(el)
 		}
 		else {

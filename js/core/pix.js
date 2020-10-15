@@ -15,11 +15,54 @@ var pix
 	 * TweenLite.to(image, 1, {pixi:{contrast:3}});
 	 * TweenLite.to(image, 1, {pixi:{blur:20}});
 	 * TweenLite.to(image, 1, {pixi:{colorMatrixFilter:null, blur:0}}); (reset)
+	 * TweenLite.to(image, 1, {pixi:{tint:'#f00'}});
 	 * @param el
 	 * @param id
 	 * @returns {*|Mixed}
 	 */
 	/*
+	mobs[2].sprite.filters = [
+		new PIXI.filters.GlowFilter({
+			distance: 15,
+			outerStrength: 2,
+			color: 0x00ff00,
+			knockout: true
+		})
+	]
+	mobs[2].sprite.filters = [ new PIXI.filters.AdvancedBloomFilter() ]
+	mobs[2].sprite.filters = [new PIXI.filters.AsciiFilter(2)]
+	mobs[2].sprite.filters = [new PIXI.filters.BevelFilter()]
+	mobs[2].sprite.filters = [new PIXI.filters.BlurFilter()]
+	mobs[2].sprite.filters = [new PIXI.filters.BulgePinchFilter()]
+	mobs[2].sprite.filters = [new PIXI.filters.GlitchFilter({
+		slices: 15,
+		offset: 10,
+		direction: 0,
+		fillMode: 2,
+		average: true,
+		red: [-10, 10],
+		green: [-10, 10],
+		blue: [-10, -10],
+		seed: 0.5
+	})]
+	mobs[2].sprite.filters = [new PIXI.filters.GlowFilter({
+		innerStrength: 15,
+		outerStrength: 15
+	})]
+	mobs[2].sprite.filters = [new PIXI.filters.OutlineFilter(1)]
+	mobs[2].sprite.filters = [new PIXI.filters.ReflectionFilter()]
+	mobs[2].sprite.filters = [new PIXI.filters.ZoomBlurFilter(
+		.1,
+		[mobs[2].sprite._width * .5, mobs[2].sprite._height * .5],
+		0,
+		200
+	)]
+
+
+	mobs[2].sprite.filters = [new PIXI.filters.GlowFilter({ distance: 15, outerStrength: 2 })];
+	mobs[2].sprite.filters = [new PIXI.filters.NoiseFilter(.5)]
+
+	mobs[2].sprite.filters = [noiseFilter]
 	var filter = new PIXI.filters.ColorMatrixFilter();
 	filter.sepia();
 	TweenMax.to(image, 2, { pixi: { colorMatrixFilter: filter } });
