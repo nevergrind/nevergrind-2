@@ -1063,6 +1063,7 @@
       "resolved": "https://registry.npmjs.org/path-root-regex/-/path-root-regex-0.1.2.tgz",
       "version": "0.1.2"
     },
+    "pixi-projection": "0.3.5",
     "preserve": {
       "integrity": "sha1-gV7R9uvGWSb4ZbMQwHE7yzMVzks=",
       "resolved": "https://registry.npmjs.org/preserve/-/preserve-0.2.0.tgz",

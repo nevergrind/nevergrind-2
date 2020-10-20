@@ -82,25 +82,29 @@ var dungeon;
 			});
 		}
 		if (dungeon.initialized) {
-			getElementById('scene-dungeon').style.display = 'block'
+			querySelector('#scene-dungeon').style.display = 'block'
 		}
 		else {
 			dungeon.initialized = true
+			querySelector('#scene-dungeon').innerHTML = dungeon.html()
 			// dungeon layer for ooc buffs
 			dungeon.layer = new PIXI.Application({
 				width: MaxWidth,
 				height: MaxHeight,
+				// backgroundColor: 0x103322
 				transparent: true
 			});
 			dungeon.layer.stage.sortableChildren = true
 			dungeon.layer.view.id = 'dungeon-layer'
 			dungeon.layer.view.style.pointerEvents = 'none'
 			dungeon.layer.view.style.position = 'absolute'
+			dungeon.layer.view.style.top = '0px';
+			dungeon.layer.view.style.left = '0px';
 			dungeon.layer.view.style.zIndex = 1
 			querySelector('#scene-dungeon').appendChild(dungeon.layer.view)
+			combat.updateCanvasLayer()
 		}
 		button.setAll()
-		getElementById('scene-dungeon').innerHTML = dungeon.html()
 		chat.scrollBottom()
 	}
 	function html() {

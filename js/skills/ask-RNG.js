@@ -16,28 +16,10 @@
 	}
 	///////////////////////////////////////////
 
-	const crossSlashWidth = 300
 	function crossSlash(o) {
-		const img = ask.getAskImg(o)
-		battle.layer.stage.addChild(img)
-		img.width = 0
-		img.height = 0
-		img.x = mob.centerX[o.index] + (crossSlashWidth * .5)
-		img.anchor.set(1, .5)
-
-		TweenMax.to(img, .2, {
-			pixi: { width: crossSlashWidth, height: crossSlashWidth },
-			ease: Power2.easeIn,
-			onComplete: () => {
-				img.anchor.set(0, .5)
-				img.x -= crossSlashWidth
-				TweenMax.to(img, .2, {
-					pixi: { width: 0, height: 0 },
-					ease: Power2.easeOut,
-					onComplete: ask.removeImg(),
-					onCompleteParams: [ img.id ]
-				})
-			}
+		ask.pierce(o, {
+			size: 300,
+			duration: .25,
 		})
 	}
 
@@ -70,7 +52,12 @@
 
 		for (var i=0; i<5; i++) {
 			!function(i) {
-				const img = ask.getAskImg(o)
+				ask.slash(o, {
+					duration: .25,
+					size: 200,
+					yAdjust: (i * 50) - 100
+				})
+				/*const img = ask.getImg(o)
 				battle.layer.stage.addChild(img)
 				img.width = 0
 				img.height = 0
@@ -80,20 +67,22 @@
 				img.y -= bladeStormSize * .5
 
 				TweenMax.to(img, .15, {
-					pixi: { width: bladeStormSize, height: bladeStormSize },
+					width: bladeStormSize,
+					height: bladeStormSize,
 					ease: Power2.easeIn,
 					onComplete: () => {
 						img.anchor.set(0, 1)
 						img.x -= bladeStormSize
 						img.y += bladeStormSize
 						TweenMax.to(img, .15, {
-							pixi: { width: 0, height: 0 },
+							width: 0,
+							height: 0,
 							ease: Power2.easeOut,
 							onComplete: ask.removeImg(),
 							onCompleteParams: [ img.id ]
 						})
 					}
-				})
+				})*/
 			}(i)
 		}
 	}
@@ -114,8 +103,8 @@
 
 	function shockNova(o) {
 		// nova
-		ask.explosion(o, {
-			duration: 1.2
+		ask.nova(o, {
+			loops: 3,
 		})
 	}
 	function faerieFlame(o) {

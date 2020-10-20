@@ -220,9 +220,11 @@ var game;
 				querySelector(v).style.filter = 'brightness(0)'
 			}
 			else {
-				if (v === '#scene-town' && currentScene !== 'town') {
+				// not the new scene
+				/*if (v === '#scene-town' &&
+					currentScene !== 'town') {
 					querySelector(v).innerHTML = ''
-				}
+				}*/
 			}
 		})
 	}

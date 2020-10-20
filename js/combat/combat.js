@@ -10,7 +10,7 @@ var combat;
 		popupDamage,
 		targetChanged,
 		initCombatTextLayer,
-		updateCombatTextLayer,
+		updateCanvasLayer,
 		toggleAutoAttack,
 		txDamageMob,
 		isValidTarget,
@@ -1496,16 +1496,25 @@ var combat;
 		combat.text.view.style.zIndex = 2
 		combat.text.view.style.pointerEvents = 'none'
 		querySelector('#scene-battle').appendChild(combat.text.view)
-		updateCombatTextLayer()
+		updateCanvasLayer()
 	}
-	function updateCombatTextLayer() {
+	function updateCanvasLayer() {
 		w = window.innerWidth
-		h = ~~(combat.text.screen.height / MaxHeight * window.innerHeight)
-		combat.text.view.style.width = w + 'px';
-		combat.text.view.style.height = h + 'px';
+		if (combat.text !== void 0) {
+			h = ~~(combat.text.screen.height / MaxHeight * window.innerHeight)
+			combat.text.view.style.width = w + 'px'
+			combat.text.view.style.height = h + 'px'
 
-		battle.layer.view.style.width = w + 'px';
-		battle.layer.view.style.height = h + 'px';
+			battle.layer.view.style.width = w + 'px'
+			battle.layer.view.style.height = h + 'px'
+		}
+		if (dungeon.layer.view !== void 0) {
+			h = ~~(dungeon.layer.screen.height / MaxHeight * window.innerHeight)
+			dungeon.layer.view.style.width = w + 'px'
+			dungeon.layer.view.style.height = h + 'px'
+		}
+
+
 	}
 	function targetChanged() {
 		if (my.hp <= 0) return

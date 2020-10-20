@@ -355,12 +355,12 @@ let mobs = [];
 				alpha: .2
 			}
 		})*/
-		setClickBox(m, i)
+		mob.setClickBox(m, i)
 		//m.sprite.hitArea = new PIXI.Rectangle(c.x, c.y, c.w, c.h)
 		battle.layer.stage.addChild(m.sprite)
 
 		// shadow
-		//TODO: change to percentages and use shadowBottom
+		//TODO: how the fuck does this work?
 		let el = querySelector('#mob-shadow-' + i)
 		el.style.display = 'block'
         el.style.width = (m.shadowWidth * m.size) * 100 / MaxWidth + '%'

@@ -454,8 +454,6 @@ var expanse;
 	}
 	function resizeAll() {
 		pixiResizeSky()
-		if (ng.view === 'battle') {
-			combat.updateCombatTextLayer()
-		}
+		combat.updateCanvasLayer()
 	}
 }(TweenMax, Power2, Expo, Linear, PIXI);

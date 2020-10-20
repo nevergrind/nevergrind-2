@@ -1,6 +1,7 @@
 var test;
 (function(Linear, TweenMax, TimelineMax, PIXI, $, undefined) {
 	test = {
+		projectionTest,
 		getTestLootItemWeapon,
 		disableConsole,
 		getHate,
@@ -532,5 +533,19 @@ var test;
 			mobLevel: 50,
 			itemSlot: itemSlot,
 		})
+	}
+	function projectionTest(empty = false) {
+		if (empty) dungeon.layer.removeChildren()
+		var container = new PIXI.projection.Container2d();
+		container.position.set(dungeon.layer.screen.width / 2, dungeon.layer.screen.height);
+		var surface = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/bg_plane.jpg'));
+		surface.anchor.set(0.5, 1.0)
+		// surface.scale.y = -1; //sorry, have to do that to make a correct projection
+		surface.width = dungeon.layer.screen.width
+		surface.height = dungeon.layer.screen.height
+		surface.x = surface.width * .5
+		surface.y = surface.height
+		container.addChild(surface)
+		dungeon.layer.stage.addChild(container)
 	}
 })(Linear, TweenMax, TimelineMax, PIXI, $);
