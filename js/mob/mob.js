@@ -710,6 +710,8 @@ let mobs = [];
 			onUpdateParams: [mobs[i].index],
 		})
 		setTimeScaleSpeed(i)
+		var filter = new PIXI.filters.ColorMatrixFilter()
+		filter.sepia()
 		TweenMax.to([mobs[i].sprite, mobs[i].shadow], 3, {
 			startAt: {
 				alpha: 1,
@@ -718,10 +720,11 @@ let mobs = [];
 					brightness: 2,
 				}
 			},
-			alpha: 0,
 			pixi: {
+				colorMatrixFilter: filter,
 				saturate: 1,
-				brightness: 0,
+				contrast: 2,
+				brightness: .2,
 			},
 			ease: Power2.easeIn
 		})

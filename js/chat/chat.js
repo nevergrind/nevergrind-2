@@ -126,7 +126,7 @@ var chat;
 
 		if (mode === '/say' && !my.channel) {
 			console.warn("You cannot communicate to town while in a dungeon", CHAT.WARNING);
-			delayedCall(0, function() {
+			delayedCall(0, () => {
 				// wipe input after keyup to get rid of /say
 				query.el('#chat-input').value = ''
 			});

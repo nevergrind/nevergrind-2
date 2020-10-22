@@ -4,6 +4,7 @@ var util;
 		toRadiansSin,
 		toRadiansCos,
 		toDegrees,
+		rotation,
 	}
 	const radianValue = Math.PI / 180
 	const degreeValue = 180 / Math.PI
@@ -16,5 +17,8 @@ var util;
 	}
 	function toDegrees(radians) {
 		return radians * degreeValue
+	}
+	function rotation(angle) {
+		return (angle / 180) * PI
 	}
 }($, _, TweenMax, document, Math);

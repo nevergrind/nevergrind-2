@@ -352,7 +352,7 @@ var test;
 		pixApp.stage.addChild(orc);
 
 		TweenMax.to(orc, 1, {
-			rotation: 2 * PI,
+			rotation: util.rotation(360),
 			repeat: -1,
 			ease: Linear.easeNone
 		})
@@ -381,7 +381,7 @@ var test;
 		pixApp.stage.addChild(orc);
 
 		TweenMax.to(orc, 1, {
-			rotation: 2 * PI,
+			rotation: util.rotation(360),
 			repeat: -1,
 			ease: Linear.easeNone
 		})

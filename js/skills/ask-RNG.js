@@ -47,42 +47,17 @@
 		})
 	}
 
-	const bladeStormSize = 200
 	function bladeStorm(o) {
 
 		for (var i=0; i<5; i++) {
 			!function(i) {
-				ask.slash(o, {
-					duration: .25,
-					size: 200,
-					yAdjust: (i * 50) - 100
+				delayedCall(i * .05, () => {
+					ask.slash(o, {
+						duration: .25,
+						size: 200,
+						yAdjust: (i * 50) - 100
+					})
 				})
-				/*const img = ask.getImg(o)
-				battle.layer.stage.addChild(img)
-				img.width = 0
-				img.height = 0
-				img.anchor.set(1, 0)
-				img.y += (i * 50) - 100
-				img.x += bladeStormSize * .5
-				img.y -= bladeStormSize * .5
-
-				TweenMax.to(img, .15, {
-					width: bladeStormSize,
-					height: bladeStormSize,
-					ease: Power2.easeIn,
-					onComplete: () => {
-						img.anchor.set(0, 1)
-						img.x -= bladeStormSize
-						img.y += bladeStormSize
-						TweenMax.to(img, .15, {
-							width: 0,
-							height: 0,
-							ease: Power2.easeOut,
-							onComplete: ask.removeImg(),
-							onCompleteParams: [ img.id ]
-						})
-					}
-				})*/
 			}(i)
 		}
 	}
@@ -104,7 +79,18 @@
 	function shockNova(o) {
 		// nova
 		ask.nova(o, {
+			position: 'center',
+			rotation: util.rotation(45),
+			width: 400,
 			loops: 3,
+			zIndex: 200,
+		})
+		ask.nova(o, {
+			position: 'center',
+			rotation: util.rotation(135),
+			loops: 3,
+			width: 400,
+			zIndex: 200,
 		})
 	}
 	function faerieFlame(o) {

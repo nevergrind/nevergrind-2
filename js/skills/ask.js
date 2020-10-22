@@ -13,12 +13,31 @@ var ask;
 		centerY,
 		shadowY,
 		autoAttack,
-		explosion,
-		nova,
-		slash,
-		pierce,
+		// base effects:
+		/**
+		 * h2h, 1hs, 2hs, 1hb, 2hb, pierce
+		*/
+		// skill effects:
+		explosion, // single frame outward from center
+		nova, // frame outward (ground and center) can rotate
+		slash, // auto slash single frame
+		pierce, // horizontal slash single frame
+		castCircle, // cast finished
+		castRunes, // rotating runes
+		castEnergyLines,
+		// buffCircle
+		// buffRunes (3 circles that rotate opposite directions)
+		// buffDoneImage (rotate, layer other images on it)
 	}
 	let val, el
+	const fadeIn = {
+		startAt: { alpha: 0 },
+		alpha: 1
+	}
+	const fadeOut = {
+		startAt: { alpha: 1 },
+		alpha: 0
+	}
 	const explosionDefaults = {
 		targetMob: true,
 		sizeStart: 80,
@@ -26,11 +45,14 @@ var ask;
 		duration: .8,
 		contrastStart: 1.5,
 		brightnessStart: 1.5,
+		rotation: 0,
 		contrastEnd: 1,
 		brightnessEnd: 1,
 		ease: Power4.easeOut,
 	}
 	const novaDefaults = {
+		targetMob: true,
+		position: 'bottom',
 		loops: 5,
 		interval: .033,
 		duration: 1,
@@ -38,6 +60,9 @@ var ask;
 		brightnessStart: 2,
 		contrastEnd: 1,
 		brightnessEnd: 1,
+		width: 'auto',
+		rotation: 0,
+		zIndex: 30,
 		ease: Power4.easeOut,
 	}
 	const slashDefaults = {
@@ -55,7 +80,106 @@ var ask;
 		easeStart: Power2.easeIn,
 		easeEnd: Power2.easeOut,
 	}
+	const castCircleDefaults = {
+		isPrimary: true,
+		sizeStart: 400,
+		sizeEnd: 100,
+		rotation: 360,
+		duration: .5,
+		removeDelay: .3,
+		ease: Power2.easeOut,
+	}
+	const castRunesDefaults = {
+		isPrimary: true,
+		size: 400,
+		rotationStart: 0,
+		rotation: 90,
+		duration: 1,
+		ease: Power0.easeOut,
+	}
+	const energyLinesDefaults = {
+		isPrimary: true,
+		loops: 10,
+		interval: .1,
+		size: 300,
+		duration: 1,
+		ease: Power2.easeOut,
+	}
 	///////////////////////////////////////////
+	// ask.castEnergyLines({ index: 2, key: 'castEnergyLines' }, {})
+	function castEnergyLines(o, config) {
+		config = {
+			...energyLinesDefaults,
+			...config
+		}
+		for (var i=0; i<config.loops; i++) {
+			!function(i) {
+				delayedCall(i * config.interval, () => {
+					const img = ask.getImg(o)
+					ask.addChild(img)
+					TweenMax.to(img, config.duration, {
+						startAt: {
+							width: config.size,
+							height: config.size,
+							rotation: util.rotation(i * 30)
+						},
+						width: 0,
+						height: 0,
+						ease: config.ease,
+						onComplete: () => {
+							delayedCall(config.removeDelay, ask.removeImg(), [img.id])
+						},
+					})
+				})
+			}(i)
+		}
+	}
+	// ask.castRunes({ index: 2, key: 'castRunes' }, {})
+	function castRunes(o, config) {
+		config = {
+			...castRunesDefaults,
+			...config
+		}
+		const img = ask.getImg(o)
+		ask.addChild(img)
+		TweenMax.to(img, .2, fadeIn)
+		TweenMax.to(img, config.duration - .2, fadeOut)
+		TweenMax.to(img, config.duration, {
+			startAt: {
+				width: config.size,
+				height: config.size,
+				rotationStart: util.rotation(config.rotationStart)
+			},
+			rotation: '+=' + util.rotation(config.rotation),
+			ease: config.ease,
+			onComplete: () => {
+				delayedCall(config.removeDelay, ask.removeImg(), [img.id])
+			},
+		})
+	}
+	function castCircle(o, config) {
+		config = {
+			...castCircleDefaults,
+			...config
+		}
+		const img = ask.getImg(o)
+		ask.addChild(img)
+		TweenMax.to(img, config.duration, {
+			startAt: {
+				pixi: { contrast: 2, brightness: 2, },
+				width: config.sizeStart,
+				height: config.sizeStart,
+			},
+			pixi: { contrast: 1, brightness: 1, },
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			rotation: util.rotation(config.rotation),
+			ease: config.ease,
+			onComplete: () => {
+				delayedCall(config.removeDelay, ask.removeImg(), [img.id])
+			},
+		})
+	}
 	function pierce(o, config) {
 		config = {
 			...pierceDefaults,
@@ -155,32 +279,34 @@ var ask;
 		}
 		for (var i=0; i<config.loops; i++) {
 			!function(i) {
-				delayedCall(config.interval * i, () => {
-					const img = ask.getNova(o, config)
-					ask.addChild(img)
-					TweenMax.to(img, config.duration, {
-						startAt: { pixi: {
-								contrast: config.contrastStart,
-								brightness: config.brightnessStart,
-							},
-							width: 0,
-							height: 0,
-							alpha: 1,
-						},
-						pixi: {
-							contrast: config.contrastEnd,
-							brightness: config.brightnessEnd,
-						},
-						alpha: 0,
-						width: mobs[o.index].width,
-						height: mobs[o.index].width * .15,
-						ease: config.ease,
-						onComplete: ask.removeImg(),
-						onCompleteParams: [ img.id ]
-					})
-				})
+				delayedCall(config.interval * i, novaExplode, [o, config])
 			}(i)
 		}
+	}
+	function novaExplode(o, config) {
+		const img = ask.getNova(o, config)
+		ask.addChild(img)
+		TweenMax.to(img, config.duration, {
+			startAt: { pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+				rotation: config.rotation,
+				width: 0,
+				height: 0,
+				alpha: 1,
+			},
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			alpha: 0,
+			width: config.width === 'auto' ? mobs[o.index].width : config.width,
+			height: mobs[o.index].width * .15,
+			ease: config.ease,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ img.id ]
+		})
 	}
 	function explosion(o, config = {}) {
 		config = {
@@ -197,7 +323,7 @@ var ask;
 				contrast: config.contrastStart,
 				brightness: config.brightnessStart,
 			}},
-			rotation: PI,
+			rotation: util.rotation(config.rotation),
 			width: config.sizeEnd,
 			height: config.sizeEnd,
 			alpha: 0,
@@ -252,22 +378,34 @@ var ask;
 			img.y = ask.centerY(o.index)
 		}
 		else {
-			img.x = 960
-			img.y = 800
+			positionToPlayer(o, img)
 		}
-		img.zIndex = 200
+		img.zIndex = config.zIndex || 200
 		return img
 	}
-	// image @ feet of target
-	function getNova(o, config = {}) {
+	// image @ feet of target (or center!)
+	function getNova(o, config = { targetMob: true }) {
 		const img = PIXI.Sprite.from(`images/ask/${o.key}.png`)
 		img.id = 'ask-' + ask.askId++
 		img.anchor.set(.5)
 		// bottom center of mob's feet
-		img.x = mob.centerX[o.index]
-		img.y = ask.shadowY(o.index)
-		img.zIndex = 30
+		if (config.targetMob) {
+			img.x = mob.centerX[o.index]
+			if (config.position === 'bottom') img.y = ask.shadowY(o.index)
+			else {
+				// if not on ground (behind) this will need a zIndex so it appears in front
+				img.y = ask.centerY(o.index)
+			}
+		}
+		else {
+			positionToPlayer(o, img)
+		}
+		img.zIndex = config.zIndex
 		return img
+	}
+	function positionToPlayer(o, img) {
+		img.x = 960
+		img.y = 800
 	}
 	function autoAttack(o) {
 		const isPrimary = !o.key.includes('Secondary')
@@ -373,13 +511,13 @@ var ask;
 		TweenMax.to(img, .1, {
 			width: 150,
 			height: 150,
-			rotation: .25 * PI,
+			rotation: util.rotation(45),
 			ease: Power1.easeOut,
 			onComplete: () => {
 				TweenMax.to(img, .1, {
 					width: 75,
 					height: 75,
-					rotation: .5 * PI,
+					rotation: util.rotation(90),
 					ease: Power1.easeIn,
 					onComplete: ask.removeImg(),
 					onCompleteParams: [ img.id ]
@@ -388,7 +526,7 @@ var ask;
 		})
 	}
 	function removeImg() {
-		return ng.view === 'battle' ? removeBattleImg : removeDungeonImg
+		return ng.view === 'battle' ? ask.removeBattleImg : ask.removeDungeonImg
 	}
 	function removeDungeonImg(askId) {
 		el = pix.getId(dungeon.layer, askId)

@@ -48,31 +48,37 @@
 	}
 	function circleOfPrayer(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function guardianAngel(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function divineLight(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function bindingGrace(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function sealOfRedemption(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function zealousResolve(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
