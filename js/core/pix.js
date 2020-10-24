@@ -1,5 +1,5 @@
 var pix
-!function(PIXI, _, $, Linear, Power1, Power2, Power3, Power4, window, TweenMax, Expo, undefined) {
+!function(PIXI, _, $, Linear, Power1, Power2, Power3, Power4, TweenMax, Expo, undefined) {
 	pix = {
 		sky: {},
 		getId,
@@ -122,4 +122,4 @@ var pix
 			id: id
 		})
 	}
-}(PIXI, _, $, Linear, Power1, Power2, Power3, Power4, window, TweenMax, Expo);
+}(PIXI, _, $, Linear, Power1, Power2, Power3, Power4, TweenMax, Expo);

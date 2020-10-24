@@ -2023,6 +2023,7 @@ background-repeat: no-repeat;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
+	line-height: 1.2;
 }
 .select-create-wrap {
 	text-transform: uppercase;

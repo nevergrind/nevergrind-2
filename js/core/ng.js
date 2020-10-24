@@ -766,7 +766,7 @@ var ng;
 				'</div>' +
 				'<div id="selected-ch-card" data-row="'+ d.row +'" data-name="'+ d.name +'" class="ch-card center select-player-card text-center">' +
 					'<img class="avatar-title" src="'+ url +'" style="padding: 0 .5rem 0 0">' +
-					'<div class="flex-column flex-max" style="line-height: 1.25; padding: .2rem .5rem; justify-content: space-around">' +
+					'<div class="flex-column flex-max" style="line-height: 1.2; padding: .2rem .5rem; justify-content: space-around">' +
 						'<div class="ch-card-name">'+ _.capitalize(d.name) +'</div>' +
 						'<div class="ch-card-level">Level '+ d.level +'</div>' +
 						'<div class="ch-card-details">'+ ng.toJobLong(d.job) +'</div>' +

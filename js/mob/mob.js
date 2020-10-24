@@ -1,6 +1,6 @@
 var mob;
 let mobs = [];
-(function(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2, undefined) {
+(function(TweenMax, $, _, Object, Linear,  PIXI, Sine, Power2, undefined) {
 	mob = {
 		getMobResist,
 		isAlive,
@@ -314,7 +314,8 @@ let mobs = [];
 		})
 
 		// delete mobs[i].cache;
-		querySelector('#mob-wrap-' + i).style.display = 'block'
+		TweenMax.set(querySelector('#mob-wrap-' + i), { display: 'block' })
+		TweenMax.set(querySelector('#mob-details-' + i), { opacity: 1 })
 		sizeMob(i)
 		resetIdle(i, true)
 		idle(i)
@@ -700,9 +701,7 @@ let mobs = [];
 			ease: Power4.easeIn
 		});
 		mobs[i].animation = TweenMax.to(mobs[i], speed, {
-			startAt: {
-				frame: frame.death.start
-			},
+			startAt: { frame: frame.death.start },
 			overwrite: 1,
 			frame: frame.death.end,
 			ease: Linear.easeNone,
@@ -728,14 +727,7 @@ let mobs = [];
 			},
 			ease: Power2.easeIn
 		})
-		TweenMax.to(querySelector('#mob-details-' + i), speed / 2, {
-			opacity: 0
-		})
-		TweenMax.to(querySelector('#mob-wrap-' + i), speed + 2, {
-			startAt: { filter: 'opacity(1) brightness(3)'},
-			filter: 'opacity(0) brightness(0)',
-			ease: Linear.easeIn,
-		})
+		TweenMax.to(querySelector('#mob-details-' + i), speed / 2, { opacity: 0 })
 		hpKillVal = stats.hpKill()
 		if (hpKillVal) {
 			combat.updateMyResource(PROP.HP, hpKillVal)
@@ -1072,4 +1064,4 @@ let mobs = [];
 		return resist
 	}
 
-})(TweenMax, $, _, Object, Linear, window, PIXI, Sine, Power2);
+})(TweenMax, $, _, Object, Linear, PIXI, Sine, Power2);

@@ -36,9 +36,12 @@ var button;
 			.on('click', '#skill-secondary-attack-btn', combat.toggleAutoAttack)
 	}
 
-	function isOffhandingWeapon() {
+	function canOffhandWeapon() {
 		return item.offhandWeaponTypes.includes(items.eq[13].itemType)
-			|| (my.level >= skills.dualWield[my.job].level && !items.eq[13].name) // punching
+			|| (my.level >= skills.dualWield[my.job].level
+				&& !items.eq[13].name
+				&& items.eq[12].weaponSkill !== 'Two-hand Slash'
+				&& items.eq[12].weaponSkill !== 'Two-hand Blunt') // punching
 	}
 
 	//////////////////////////////////
@@ -197,14 +200,12 @@ var button;
 		startSwing('primaryAttack')
 	}
 
-	let dualWieldChance = 0
 	function secondaryAttack() {
-		// console.warn('secondaryAttack')
 		if (ng.view !== 'battle' ||
 			!my.isAutoAttacking ||
 			timers.secondaryAttack < 1 ||
 			my.hp <= 0 ||
-			!isOffhandingWeapon()) return
+			!canOffhandWeapon()) return
 
 		if (cannotAutoAttack()) {
 			if (my.isAutoAttacking) timers['secondaryAttackCall'] = delayedCall(.1, secondaryAttack)
@@ -402,7 +403,7 @@ var button;
 		${getOffhandWeaponHtml()}`
 		///////////////////////////
 		function getOffhandWeaponHtml() {
-			return isOffhandingWeapon()
+			return canOffhandWeapon()
 				? `<div class="skill-btn">
 						<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 13, true)}">
 						<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>

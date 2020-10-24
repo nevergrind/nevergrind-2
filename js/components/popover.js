@@ -1,5 +1,5 @@
 var popover;
-(function($, parseInt, getComputedStyle, TweenMax, window, undefined) {
+(function($, parseInt, getComputedStyle, TweenMax,  undefined) {
 	var mainMenuPopovers = {}
 
 	popover = {
@@ -119,4 +119,4 @@ var popover;
 		yAdjust = isMenuAbove ? 15 : (y + 25) * -1
 		return my.mouse.y + yAdjust
 	}
-})($, parseInt, getComputedStyle, TweenMax, window);
+})($, parseInt, getComputedStyle, TweenMax);
