@@ -245,13 +245,19 @@ var bar;
 	function getItemSlotImage(type, slot, showH2h) {
 		if (type === 'eq') {
 			resp = bar.defaultImage[slot]
-			if (showH2h && !items.eq[12].name) {
-				resp = 'Hand-to-hand'
+			if (showH2h) {
+				if (slot === 12) {
+					if (!items.eq[12].name) resp = 'Hand-to-hand'
+				}
+				else if (slot === 13) {
+					if (!items.eq[13].name) resp = 'Hand-to-hand'
+				}
 			}
 		}
 		else {
 			resp = 'blank-item'
 		}
+		// if an item exists it always returns that
 		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'itemType')) {
 			resp = getItemIconFileNameByObj(items[type][slot])
 		}

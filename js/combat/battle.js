@@ -83,6 +83,12 @@ var battle;
 	init()
 
 	//////////////////////////////////////
+	function init() {
+		$('#scene-battle')
+			.on('click', '.mob-alive, .mob-details', handleMobClick)
+			.on('mouseenter', '.mob-alive, .mob-details', handleMobEnter)
+			.on('mouseleave', '.mob-alive, .mob-details', handleMobLeave)
+	}
 	function getDeathPenaltyRatio() {
 		ratio = 0
 		if (my.level >= 5) ratio = my.level / 150 // 20% @ level 30
@@ -189,14 +195,7 @@ var battle;
 	}
 	function getRandomTarget() {
 		let aliveMobs = getAllAliveMobs()
-		let len = aliveMobs.length
-		return _.random(0, len - 1)
-	}
-	function init() {
-		$('#scene-battle')
-			.on('click', '.mob-alive, .mob-details', handleMobClick)
-			.on('mouseenter', '.mob-alive, .mob-details', handleMobEnter)
-			.on('mouseleave', '.mob-alive, .mob-details', handleMobLeave)
+		return aliveMobs[_.random(0, aliveMobs.length - 1)]
 	}
 	function targetIsFrontRow(tgt) {
 		tgt = tgt || my.target
@@ -535,18 +534,20 @@ var battle;
 		}
 		battle.buffIconTimers = {}
 		// start current
-		for (key in mobs[my.target].buffs) {
-			if (mobs[tgt].buffs[key].duration < flashDuration) {
-				flashTargetBuff(key, tgt)
+		if (mobs[my.target] !== void 0) {
+			for (key in mobs[my.target].buffs) {
+				if (mobs[tgt].buffs[key].duration < flashDuration) {
+					flashTargetBuff(key, tgt)
+				}
+				else {
+					// console.info('flashTargetBuff startBuffTimers', key, tgt, mobs[tgt].buffs[key].duration)
+					battle.buffIconTimers[key] = delayedCall(
+						mobs[tgt].buffs[key].duration - flashDuration,
+						flashTargetBuff, [key, tgt]
+					)
+				}
+				// console.info('startBuffTimers key', key, mobs[my.target].buffs[key].duration)
 			}
-			else {
-				// console.info('flashTargetBuff startBuffTimers', key, tgt, mobs[tgt].buffs[key].duration)
-				battle.buffIconTimers[key] = delayedCall(
-					mobs[tgt].buffs[key].duration - flashDuration,
-					flashTargetBuff, [key, tgt]
-				)
-			}
-			// console.info('startBuffTimers key', key, mobs[my.target].buffs[key].duration)
 		}
 	}
 	function flashTargetBuff(key, tgt) {

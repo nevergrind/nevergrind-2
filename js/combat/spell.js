@@ -17,10 +17,7 @@ var spell;
 		expendSpirit,
 		triggerSkillCooldown,
 	}
-	let castBarWrap = querySelector('#cast-bar-wrap')
-	let castBar = querySelector('#cast-bar')
 	let ratio
-	let functionName
 	let castPenalty = 0
 	let castProgress = 0
 	let mpCost = 0
@@ -79,7 +76,7 @@ var spell;
 			/////////////////////////
 			castProgress = (1 - (timers.castBar / 1)) * spell.castTime
 			// console.info('knockback', castProgress, spell.castTime)
-			TweenMax.set(castBar, { x: '-' + spellRatio() + '%' })
+			TweenMax.set(querySelector('#cast-bar'), { x: '-' + spellRatio() + '%' })
 			spell.timer = TweenMax.to(timers, castProgress, {
 				startAt: { castBar: timers.castBar },
 				castBar: 1,
@@ -98,8 +95,8 @@ var spell;
 		spell.data = data
 		// console.info('startCasting', spell.data)
 		spell.castTime = data.castTime
-		castBarWrap.style.opacity = 1
-		TweenMax.set(castBar, CSS.X_ZERO)
+		querySelector('#cast-bar-wrap').style.opacity = 1
+		TweenMax.set(querySelector('#cast-bar'), CSS.X_ZERO)
 		spell.timer = TweenMax.to(timers, stats.getCastingSpeed(), {
 			startAt: CSS.CASTBAR_ZERO,
 			castBar: 1,
@@ -114,6 +111,22 @@ var spell;
 
 		query.el('#cast-bar-icon').src = 'images/skills/'+ my.job +'/'+ spell.index +'.png'
 		query.el('#cast-bar-name').textContent = spell.data.name
+
+		if (spell.data.spellType === 'evocation') {
+			ask.castEvocation({
+				key: ask.getCastingKey(spell.data)
+			})
+		}
+		else if (spell.data.spellType === 'alteration') {
+			ask.castAlteration({
+				key: ask.getCastingKey(spell.data)
+			})
+		}
+		else {
+			ask.castConjuration({
+				key: ask.getCastingKey(spell.data)
+			})
+		}
 	}
 	function spellFizzleChance() {
 		spellType = skills[my.job][spell.index].spellType
@@ -133,7 +146,7 @@ var spell;
 		cancelSpell()
 	}
 	function updateSpellBar() {
-		TweenMax.set(castBar, {
+		TweenMax.set(querySelector('#cast-bar'), {
 			x: '-' + spellRatio() + '%'
 		})
 	}
@@ -171,8 +184,9 @@ var spell;
 	}
 	function stopCasting() {
 		timers.castBar = 1
-		castBarWrap.style.opacity = 0
+		querySelector('#cast-bar-wrap').style.opacity = 0
 		button.resumeAutoAttack()
+		ask.killCastingTweens()
 	}
 	// defaults for combat DD on mob
 	function getDefaults(skillIndex, data) {

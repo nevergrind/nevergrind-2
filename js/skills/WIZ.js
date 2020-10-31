@@ -261,7 +261,7 @@
 	function frozenBarrierEffect() {
 		let val = round(my.buffs.frozenBarrier.damage / 8)
 		timers.frozenBarrier.kill()
-		timers.frozenBarrier = TweenMax.to({}, 1, {
+		timers.frozenBarrier = TweenMax.to(EmptyObject, 1, {
 			repeat: 8,
 			onRepeat: () => {
 				if (my.hp > 0) {

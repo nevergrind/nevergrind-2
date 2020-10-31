@@ -227,7 +227,7 @@ let skill = {};
 		// buff
 		combat.txBuffHero([{
 			index: my.row,
-			key: 'jumpStrike',
+			key: 'jumpStrikeBuff',
 			spellType: '',
 			level: my.skills[my.skills[index]],
 			damage: 0,
@@ -244,6 +244,7 @@ let skill = {};
 			damages.push({
 				...hit,
 				index: tgt,
+				key: 'jumpStrike',
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})

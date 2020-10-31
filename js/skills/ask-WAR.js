@@ -48,6 +48,7 @@
 	}
 	function frenzy(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
@@ -63,11 +64,13 @@
 	}
 	function bulwark(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function intrepidShout(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}

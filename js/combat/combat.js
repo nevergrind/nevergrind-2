@@ -443,14 +443,7 @@ var combat;
 			}
 		}
 		// console.info('object', o)
-		if (o.key) {
-			if (typeof ask[o.key] === 'function') {
-				ask[o.key](o)
-			}
-			else if (o.key.startsWith('autoAttack')) {
-				ask.autoAttack(o)
-			}
-		}
+		ask.processAnimations(o, true)
 		processEffects(o)
 	}
 	function processEffects(o) {
@@ -491,6 +484,8 @@ var combat;
 	}
 
 	function triggerProc(damageType, index, key) {
+		// extra procs that happen for certain skills
+		// must hit in order to trigger DoTs, buffs, etc
 		if (damageType === DAMAGE_TYPE.PHYSICAL) {
 			if (my.buffFlags.sanguineHarvest &&
 				rand() < buffs.sanguineHarvest.procRate) {
@@ -553,7 +548,6 @@ var combat;
 			})
 			combat.txDotMob(procDamage)
 		}
-		// console.info('triggerProc', index, key)
 	}
 	let damageData
 	function txDamageMob(damages) {
@@ -702,6 +696,10 @@ var combat;
 					key: data.key,
 				}])
 			}
+			ask.processAnimations({
+				index: damages[i]. index,
+				key: data.key,
+			})
 		}
 	}
 	function onDotTick(index, key, damage) {
@@ -1064,11 +1062,7 @@ var combat;
 				hp: my.hp,
 				hpMax: my.hpMax,
 			})
-			if (heal.key) {
-				if (typeof ask[heal.key] === 'function') {
-					ask[heal.key](heal)
-				}
-			}
+			ask.processAnimations(heal)
 		}
 		if (~~hate > 0) {
 			mob.addHateHeal({
@@ -1109,18 +1103,14 @@ var combat;
 			healAmount = Math.round(heal.damage / buffs[heal.key].ticks)
 			// long-term heals synthesize, etc
 			if (buffs[heal.key].addPerTick) healAmount += buffs[heal.key].addPerTick
-			my.buffs[keyRow].hotTicks = TweenMax.to({}, buffs[heal.key].interval, {
+			my.buffs[keyRow].hotTicks = TweenMax.to(EmptyObject, buffs[heal.key].interval, {
 				repeat: buffs[heal.key].ticks,
 				onRepeat: onHotTick,
 				onRepeatParams: [heal, healAmount],
 			})
 			battle.addMyBuff(heal.key, keyRow)
 			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
-			if (heal.key) {
-				if (typeof ask[heal.key] === 'function') {
-					ask[heal.key](heal)
-				}
-			}
+			ask.processAnimations(heal)
 		}
 		if (~~hate > 0) {
 			mob.addHateHeal({
@@ -1222,11 +1212,7 @@ var combat;
 				my.buffFlags[key] = true
 				battle.addMyBuff(buff.key, key)
 				processStatBuffsToMe(key, data.row)
-				if (buff.key) {
-					if (typeof ask[buff.key] === 'function') {
-						ask[buff.key](buff)
-					}
-				}
+				ask.processAnimations(buff)
 			}
 			if (buff.key === 'innerSanctum') mob.feignHate(data.row)
 		})

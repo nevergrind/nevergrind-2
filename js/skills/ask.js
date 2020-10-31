@@ -2,6 +2,8 @@ var ask;
 !function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, undefined) {
 	ask = {
 		askId: 0,
+		castingTweens: [],
+		castingImgIds: [],
 		getImg,
 		getNova,
 		addChild,
@@ -13,6 +15,7 @@ var ask;
 		centerY,
 		shadowY,
 		autoAttack,
+		processAnimations,
 		// base effects:
 		/**
 		 * h2h, 1hs, 2hs, 1hb, 2hb, pierce
@@ -22,12 +25,15 @@ var ask;
 		nova, // frame outward (ground and center) can rotate
 		slash, // auto slash single frame
 		pierce, // horizontal slash single frame
-		castCircle, // cast finished
-		castRunes, // rotating runes
-		castEnergyLines,
+		castConjuration,
+		castAlteration,
+		castEvocation,
+		lightColumn,
 		// buffCircle
 		// buffRunes (3 circles that rotate opposite directions)
 		// buffDoneImage (rotate, layer other images on it)
+		killCastingTweens,
+		getCastingKey,
 	}
 	let val, el
 	const fadeIn = {
@@ -80,24 +86,31 @@ var ask;
 		easeStart: Power2.easeIn,
 		easeEnd: Power2.easeOut,
 	}
-	const castCircleDefaults = {
+	const castConjurationDefaults = {
 		isPrimary: true,
-		sizeStart: 400,
-		sizeEnd: 100,
+		sizeStart: 250,
+		sizeEnd: 200,
 		rotation: 360,
 		duration: .5,
-		removeDelay: .3,
-		ease: Power2.easeOut,
-	}
-	const castRunesDefaults = {
-		isPrimary: true,
-		size: 400,
-		rotationStart: 0,
-		rotation: 90,
-		duration: 1,
+		removeDelay: 0,
 		ease: Power0.easeOut,
 	}
-	const energyLinesDefaults = {
+	const castAlterationDefaults = {
+		isPrimary: true,
+		sizeStart: 300,
+		sizeEnd: 200,
+		duration: .5,
+		removeDelay: 0,
+		interval: .1,
+		ease: Power0.easeOut,
+	}
+	const castEvocationDefaults = {
+		interval: .1,
+		size: 300,
+		duration: .5,
+		ease: Back.easeInOut,
+	}
+	const lightColumnDefaults = {
 		isPrimary: true,
 		loops: 10,
 		interval: .1,
@@ -106,79 +119,187 @@ var ask;
 		ease: Power2.easeOut,
 	}
 	///////////////////////////////////////////
-	// ask.castEnergyLines({ index: 2, key: 'castEnergyLines' }, {})
-	function castEnergyLines(o, config) {
+	function lightColumn(o, config = {}) {
 		config = {
-			...energyLinesDefaults,
-			...config
-		}
-		for (var i=0; i<config.loops; i++) {
-			!function(i) {
-				delayedCall(i * config.interval, () => {
-					const img = ask.getImg(o)
-					ask.addChild(img)
-					TweenMax.to(img, config.duration, {
-						startAt: {
-							width: config.size,
-							height: config.size,
-							rotation: util.rotation(i * 30)
-						},
-						width: 0,
-						height: 0,
-						ease: config.ease,
-						onComplete: () => {
-							delayedCall(config.removeDelay, ask.removeImg(), [img.id])
-						},
-					})
-				})
-			}(i)
-		}
-	}
-	// ask.castRunes({ index: 2, key: 'castRunes' }, {})
-	function castRunes(o, config) {
-		config = {
-			...castRunesDefaults,
+			...lightColumnDefaults,
 			...config
 		}
 		const img = ask.getImg(o)
 		ask.addChild(img)
-		TweenMax.to(img, .2, fadeIn)
-		TweenMax.to(img, config.duration - .2, fadeOut)
-		TweenMax.to(img, config.duration, {
-			startAt: {
-				width: config.size,
-				height: config.size,
-				rotationStart: util.rotation(config.rotationStart)
-			},
-			rotation: '+=' + util.rotation(config.rotation),
-			ease: config.ease,
-			onComplete: () => {
-				delayedCall(config.removeDelay, ask.removeImg(), [img.id])
-			},
+	}
+	function killCastingTweens() {
+		ask.castingTweens.forEach(t => {
+			t.kill()
 		})
+		ask.castingImgIds.forEach(t => {
+			ask.removeImg()(t)
+		})
+		ask.castingTweens = []
+		ask.castingImgIds = []
 	}
-	function castCircle(o, config) {
+
+	function castEvocation(o, config = {}) {
+		let rotation = 0
 		config = {
-			...castCircleDefaults,
+			...castEvocationDefaults,
 			...config
 		}
-		const img = ask.getImg(o)
+		ask.castingTweens.push(TweenMax.to(EmptyObject, config.interval, {
+			repeat: -1,
+			onRepeat: drawEvocationLines,
+		}))
+		//////////////////////////////////////
+		function drawEvocationLines() {
+			const img = ask.getImg(o, { targetMob: false })
+			ask.castingImgIds.push(img.id)
+			img.width = config.size
+			img.height = config.size
+			TweenMax.set(img, {
+				pixi: { contrast: 1.15, brightness: 1.15 }
+			})
+			img.rotation = util.rotation(rotation)
+			ask.addChild(img)
+			rotation += 30
+			ask.castingTweens.push(TweenMax.to(img, config.duration, {
+				pixi: { contrast: 0, brightness: 1 },
+				width: 0,
+				height: 0,
+				ease: config.ease,
+				onComplete: ask.removeImg(),
+				onCompleteParams: [img.id]
+			}))
+		}
+	}
+	function castAlteration(o, config) {
+		ask.killCastingTweens()
+		config = {
+			...castAlterationDefaults,
+			...config
+		}
+		// rotate1
+		const img = ask.getImg(o, { targetMob: false })
+		ask.castingImgIds.push(img.id)
+		img.width = config.sizeStart
+		img.height = config.sizeStart
 		ask.addChild(img)
-		TweenMax.to(img, config.duration, {
-			startAt: {
-				pixi: { contrast: 2, brightness: 2, },
-				width: config.sizeStart,
-				height: config.sizeStart,
-			},
-			pixi: { contrast: 1, brightness: 1, },
+		ask.castingTweens.push(TweenMax.to(img, config.duration, {
+			pixi: { contrast: 2, brightness: 2, },
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			yoyo: true,
+			repeat: -1,
+			ease: config.ease,
+		}))
+		ask.castingTweens.push(TweenMax.to(img, config.duration, {
+			rotation: util.rotation(360),
+			repeat: -1,
+			ease: config.ease,
+		}))
+
+		ask.castingTweens.push(TweenMax.to(EmptyObject, config.interval, {
+			repeat: -1,
+			onRepeat: drawAlterationLines,
+		}))
+		let rotation = 0
+		//////////////////////////////////////
+		function drawAlterationLines() {
+			const z = ask.getImg(o, { targetMob: false })
+			ask.castingImgIds.push(z.id)
+			TweenMax.set(z, {
+				pixi: {
+					contrast: img._gsColorMatrixFilter.brightness,
+					brightness: img._gsColorMatrixFilter.brightness
+				},
+				width: img._width,
+				height: img._width,
+			})
+			z.rotation = util.rotation(rotation)
+			ask.addChild(z)
+			rotation += 30
+			ask.castingTweens.push(TweenMax.to(z, config.duration, {
+				pixi: { contrast: 0, brightness: 0 },
+				width: 0,
+				height: 0,
+				onComplete: ask.removeImg(),
+				onCompleteParams: [z.id]
+			}))
+		}
+	}
+	function castConjuration(o, config) {
+		ask.killCastingTweens()
+		config = {
+			...castConjurationDefaults,
+			...config
+		}
+		const img = ask.getImg(o, { targetMob: false })
+		ask.castingImgIds.push(img.id)
+		img.width = config.sizeStart
+		img.height = config.sizeStart
+		ask.addChild(img)
+		ask.castingTweens.push(TweenMax.to(img, config.duration, {
+			pixi: { contrast: 2, brightness: 2, },
 			width: config.sizeEnd,
 			height: config.sizeEnd,
 			rotation: util.rotation(config.rotation),
+			repeat: -1,
+			yoyo: true,
 			ease: config.ease,
-			onComplete: () => {
-				delayedCall(config.removeDelay, ask.removeImg(), [img.id])
-			},
+		}))
+		// img 2
+		const img2 = ask.getImg(o, {
+			targetMob: false
 		})
+		ask.castingImgIds.push(img2.id)
+		img2.width = config.sizeStart
+		img2.height = config.sizeStart
+		TweenMax.set(img2, {
+			pixi: { contrast: 2, brightness: 2, },
+		})
+		ask.addChild(img2)
+		ask.castingTweens.push(TweenMax.to(img2, config.duration, {
+			pixi: { contrast: 1, brightness: 1, },
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			rotation: util.rotation(-config.rotation),
+			repeat: -1,
+			yoyo: true,
+			ease: config.ease,
+		}))
+		TweenMax.to([img, img2], spell.data.castTime * .2, {
+			startAt: { alpha: 0 },
+			alpha: 1,
+			ease: Power0.easeIn
+		})
+
+		ask.castingTweens.push(TweenMax.to(EmptyObject, .1, {
+			repeat: -1,
+			onRepeat: drawConjurationLines,
+		}))
+		//////////////////////////////////////
+		function drawConjurationLines() {
+			const z = ask.getImg(o, { targetMob: false })
+			ask.castingImgIds.push(z.id)
+			TweenMax.set(z, {
+				pixi: {
+					contrast: img._gsColorMatrixFilter.brightness,
+					brightness: img._gsColorMatrixFilter.brightness
+				},
+				alpha: .1,
+				width: img._width,
+				height: img._height,
+				zIndex: img._zIndex - 1
+			})
+			ask.addChild(z)
+			ask.castingTweens.push(TweenMax.to(z, config.duration, {
+				width: img._width * 1.5,
+				height: img._height * 1.5,
+				alpha: 0,
+				rotation: util.rotation(Math.random() > .5 ? config.rotation : -config.rotation),
+				ease: config.ease,
+				onComplete: ask.removeImg(),
+				onCompleteParams: [z.id]
+			}))
+		}
 	}
 	function pierce(o, config) {
 		config = {
@@ -404,7 +525,7 @@ var ask;
 	}
 	function positionToPlayer(o, img) {
 		img.x = 960
-		img.y = 800
+		img.y = 850
 	}
 	function autoAttack(o) {
 		const isPrimary = !o.key.includes('Secondary')
@@ -425,6 +546,7 @@ var ask;
 			else autoAttackSlash(isPrimary, img, o.key.includes('Two-hand') ? 256 : 200)
 		}
 	}
+	// old function that used frames
 	function autoAttackBlunt(o, isPrimary) {
 		const bluntFrames = [
 			'autoAttackOne-hand Blunt-1',
@@ -565,23 +687,23 @@ var ask;
 	}
 	// autoAttackPiercing
 	function autoAttackPunch(img) {
-		TweenMax.to(img, .125, {
-			startAt: { width: 0, height: 0 },
+		TweenMax.to(img, .25, {
+			startAt: { width: 0, height: 0, },
 			width: 150,
 			height: 150,
-			rotation: util.rotation(45),
 			ease: Power1.easeOut,
-			onComplete: () => {
-				TweenMax.to(img, .125, {
-					startAt: { rotation: util.rotation(_.random(0, 270)) },
-					width: 75,
-					height: 75,
-					rotation: '+=' + util.rotation(90),
-					ease: Power1.easeIn,
-					onComplete: ask.removeImg(),
-					onCompleteParams: [ img.id ]
-				})
-			}
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ img.id ]
+		})
+		TweenMax.to(img, .25, {
+			startAt: { rotation: util.rotation(_.random(0, 360)) },
+			rotation: '+=' + util.rotation(45),
+			ease: Power0.easeIn,
+		})
+		TweenMax.to(img, .25, {
+			startAt: { alpha: 1 },
+			alpha: 0,
+			ease: Power3.easeIn,
 		})
 	}
 	function removeImg() {
@@ -594,5 +716,23 @@ var ask;
 	function removeBattleImg(askId) {
 		el = pix.getId(battle.layer, askId)
 		battle.layer.stage.removeChild(el)
+	}
+	function processAnimations(o, checkAutoAttacks = false) {
+		if (o.key) {
+			// console.info('processAnimations', o.key, o)
+			if (!o.isDot
+				&& typeof ask[o.key] === 'function') {
+				ask[o.key](o)
+			}
+			else if (checkAutoAttacks && o.key.startsWith('autoAttack')) {
+				ask.autoAttack(o)
+			}
+		}
+	}
+	let askSpellImg = ''
+	function getCastingKey(data) {
+		if (data.spellType && data.damageType) askSpellImg = 'cast-' + data.spellType + '-' + data.damageType
+		else askSpellImg = 'cast-default'
+		return askSpellImg
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);

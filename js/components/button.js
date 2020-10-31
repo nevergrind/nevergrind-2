@@ -38,7 +38,8 @@ var button;
 
 	function canOffhandWeapon() {
 		return item.offhandWeaponTypes.includes(items.eq[13].itemType)
-			|| (my.level >= skills.dualWield[my.job].level
+			|| (skills.dualWield[my.job].level
+				&& my.level >= skills.dualWield[my.job].level
 				&& !items.eq[13].name
 				&& items.eq[12].weaponSkill !== 'Two-hand Slash'
 				&& items.eq[12].weaponSkill !== 'Two-hand Blunt') // punching
@@ -439,7 +440,23 @@ var button;
 				</div>`
 			}
 			s += `</div>
-			</div>`
+			</div>
+			<div id="status-panel-wrap">
+				<div id="cast-bar-wrap" class="flex-column no-pointer">
+					<div id="cast-bar-base" class="flex-column flex-max stag-blue">
+						<div id="cast-bar-flex">
+							<img id="cast-bar-icon" />
+							<div id="cast-bar-parent">
+								<div id="cast-bar">
+									<img id="cast-bar-glow" src="images/ui/cast-bar-glow.png">
+								</div>
+								<div id="cast-bar-name" class="text-shadow3"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			`
 
 			querySelector('#button-wrap').innerHTML = s;
 			button.initialized = true

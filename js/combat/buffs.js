@@ -192,7 +192,7 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'You unleash your wrath in a crazed frenzy!',
 			fadeMsg: 'Your frenzy fades.'
 		},
-		jumpStrike: {
+		jumpStrikeBuff: {
 			name: 'Jump Strike',
 			img: 7,
 			job: JOB.WARRIOR,

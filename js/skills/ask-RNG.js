@@ -48,7 +48,6 @@
 	}
 
 	function bladeStorm(o) {
-
 		for (var i=0; i<5; i++) {
 			!function(i) {
 				delayedCall(i * .05, () => {
