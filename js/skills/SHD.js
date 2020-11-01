@@ -66,7 +66,7 @@
 	function deathStrikeHeal(hit) {
 		combat.txHotHero([{
 			index: my.row,
-			key: 'deathStrike',
+			key: 'deathStrikeHeal',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			damage: Math.max(1, round(hit.damage * .2))
@@ -271,7 +271,7 @@
 		combat.txDamageMob(damages)
 		combat.txHotHero([{
 			index: my.row,
-			key: 'lifeTap',
+			key: 'lifeTapHeal',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...hit
@@ -303,7 +303,7 @@
 				})
 				heals.push({
 					index: my.row,
-					key: 'vampiricFeast',
+					key: 'vampiricFeastHeal',
 					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
 					...hit
@@ -347,7 +347,7 @@
 		}])
 		combat.txHotHero([{
 			index: my.row,
-			key: 'sanguineHarvestProc',
+			key: 'sanguineHarvestHeal',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			damage: buffs.sanguineHarvest.lifeTap[my.buffs.sanguineHarvest.level]
@@ -357,7 +357,6 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			anyTarget: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, markOfRemphanCompleted)

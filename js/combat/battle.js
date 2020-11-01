@@ -432,7 +432,6 @@ var battle;
 				buffImage +
 			'">'+ mobStackCount + '</div>'
 		}
-		// console.info('buffHtml', buffHtml)
 		return buffHtml
 	}
 	function updateMobTargetBuffs() {
@@ -457,6 +456,12 @@ var battle;
 				mobs[buff.i].buffs[buffKeyRow].timer.kill()
 			}
 
+			if (typeof mobs[buff.i].buffs[buffKeyRow] === 'object'
+				&& mobs[buff.i].buffs[buffKeyRow].duration === 0) {
+				// this should force re-order to end of the object
+				// this makes new debuffs appear at the end
+				delete mobs[buff.i].buffs[buffKeyRow]
+			}
 			mobs[buff.i].buffs[buffKeyRow] = {
 				row: buff.row,
 				key: buff.key,

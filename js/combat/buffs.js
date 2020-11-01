@@ -394,7 +394,17 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 3,
 			duration: 30,
 			damageType: DAMAGE_TYPE.ARCANE,
-			healRatio: .5
+			healRatio: .5,
+		},
+		devouringSwarmHeal: {
+			name: 'Devouring Swarm',
+			img: 7,
+			job: JOB.SHAMAN,
+			hate: 1.25,
+			spellType: PROP.CONJURATION,
+			damageType: DAMAGE_TYPE.ARCANE,
+			healRatio: .5,
+			msg: (buff) => 'Devouring Swarm heals you for ' + buff.damage + ' health.',
 		},
 		rejuvinate: {
 			name: 'Rejuvinate',
@@ -912,6 +922,14 @@ let buffs; // buff data for use with skill/spells/icons
 			damageType: DAMAGE_TYPE.ARCANE,
 			msg: (buff) => 'Death Strike heals you for ' + buff.damage + ' health.',
 		},
+		deathStrikeHeal: {
+			name: 'Death Strike',
+			img: 2,
+			job: JOB.SHADOW_KNIGHT,
+			hate: 1.25,
+			damageType: DAMAGE_TYPE.ARCANE,
+			msg: (buff) => 'Death Strike heals you for ' + buff.damage + ' health.',
+		},
 		crescentCleave: { hate: 1.5 },
 		doomThrust: {
 			name: 'Doom Thrust',
@@ -976,7 +994,23 @@ let buffs; // buff data for use with skill/spells/icons
 			damageType: DAMAGE_TYPE.ARCANE,
 			msg: (buff) => 'Life Tap heals you for ' + buff.damage + ' health.',
 		},
+		lifeTapHeal: {
+			name: 'Life Tap',
+			img: 8,
+			job: JOB.SHADOW_KNIGHT,
+			hate: 1.3,
+			damageType: DAMAGE_TYPE.ARCANE,
+			msg: (buff) => 'Life Tap heals you for ' + buff.damage + ' health.',
+		},
 		vampiricFeast: {
+			name: 'Vampiric Feast',
+			img: 9,
+			job: JOB.SHADOW_KNIGHT,
+			hate: 3.5,
+			damageType: DAMAGE_TYPE.ARCANE,
+			msg: (buff) => 'Vampiric Feast heals you for ' + buff.damage + ' health.',
+		},
+		vampiricFeastHeal: {
 			name: 'Vampiric Feast',
 			img: 9,
 			job: JOB.SHADOW_KNIGHT,
@@ -997,6 +1031,14 @@ let buffs; // buff data for use with skill/spells/icons
 		},
 		sanguineHarvestProc: {
 			name: 'Sanguine Harvest Proc',
+			img: 10,
+			job: JOB.SHADOW_KNIGHT,
+			hate: 1,
+			damageType: DAMAGE_TYPE.ARCANE,
+			msg: (buff) => 'Sanguine Harvest heals you for ' + buff.damage + ' health.',
+		},
+		sanguineHarvestHeal: {
+			name: 'Sanguine Harvest Heal',
 			img: 10,
 			job: JOB.SHADOW_KNIGHT,
 			hate: 1,
@@ -1054,6 +1096,19 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'Resonant vibrations accelerate your body.',
 			fadeMsg: 'The vibrations fade.'
 		},
+		hyperStrikeBuff: {
+			name: 'Hyper Strike',
+			img: 1,
+			job: JOB.MONK,
+			hate: .5,
+			stacks: 5,
+			ticks: 1,
+			interval: 20,
+			duration: 20,
+			skillHaste: [0, .08, .12, .16, .2, .24],
+			msg: () => 'Resonant vibrations accelerate your body.',
+			fadeMsg: 'The vibrations fade.'
+		},
 		mimeStrike: {
 			name: 'Mime Strike',
 			img: 2,
@@ -1071,6 +1126,20 @@ let buffs; // buff data for use with skill/spells/icons
 		hurricaneKicks: { hate: .8 },
 		dragonPunch: { hate: 1 },
 		viperStrike: {
+			name: 'Viper Strike',
+			img: 8,
+			job: JOB.MONK,
+			hate: .7,
+			stacks: 5,
+			ticks: 1,
+			interval: 20,
+			duration: 20,
+			leech: [0, 1, 2, 4, 6, 8, 10, 12],
+			multiplier: [0, 1, 2, 3, 4, 5],
+			msg: () => 'A serpentine aura pervades your spirit.',
+			fadeMsg: 'The serpentine aura fades.'
+		},
+		viperStrikeBuff: {
 			name: 'Viper Strike',
 			img: 8,
 			job: JOB.MONK,

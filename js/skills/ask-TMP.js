@@ -63,16 +63,19 @@
 	}
 	function moltenAegis(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function conviction(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function celestialFrenzy(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}

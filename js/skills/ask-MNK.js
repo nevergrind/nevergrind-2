@@ -3,7 +3,7 @@
 		...ask,
 		tigerStrike,
 		hyperStrike,
-		// hyperStrikeHit,
+		hyperStrikeBuff,
 		mimeStrike,
 		craneKick,
 		chakraBlast,
@@ -11,8 +11,8 @@
 		hurricaneKicks,
 		dragonPunch,
 		viperStrike,
-		// viperStrikeHit,
-		// viperStrikeHeal,
+		viperStrikeBuff,
+		viperStrikeHeal,
 		palmStrike,
 		innerSanctum,
 		spiritBarrier,
@@ -29,8 +29,15 @@
 			duration: 1.2
 		})
 	}
+	function hyperStrikeBuff(o) {
+		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
 	function mimeStrike(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
@@ -64,6 +71,18 @@
 			duration: 1.2
 		})
 	}
+	function viperStrikeBuff(o) {
+		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
+	function viperStrikeHeal(o) {
+		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
 	function palmStrike(o) {
 		ask.explosion(o, {
 			duration: 1.2
@@ -71,11 +90,13 @@
 	}
 	function innerSanctum(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function spiritBarrier(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}

@@ -58,16 +58,19 @@
 	}
 	function frozenBarrier(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function mirrorImage(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function manaShell(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}

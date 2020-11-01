@@ -217,8 +217,15 @@
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function devouringSwarmHeal(data) {
-		// console.info('devouringSwarmHeal', ~~(data.damage * buffs.devouringSwarm.healRatio), data)
-		combat.updateMyResource(PROP.HP, ~~(data.damage * buffs.devouringSwarm.healRatio))
+		// combat.updateMyResource(PROP.HP, ~~(data.damage * buffs.devouringSwarm.healRatio))
+		console.info('tx devouringSwarmHeal', data)
+		combat.txHotHero([{
+			index: my.row,
+			key: 'devouringSwarmHeal',
+			spellType: buffs[data.key].spellType,
+			damageType: buffs[data.key].damageType,
+			damage: ~~(data.damage * buffs.devouringSwarm.healRatio)
+		}])
 	}
 	function rejuvinate(index, data) {
 		if (timers.castBar < 1) return

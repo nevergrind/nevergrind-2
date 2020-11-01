@@ -3,7 +3,7 @@
 		...ask,
 		shadowBreak,
 		deathStrike,
-		// deathStrikeHeal,
+		deathStrikeHeal,
 		crescentCleave,
 		doomThrust,
 		astralBlade,
@@ -11,9 +11,12 @@
 		decayingDoom,
 		bloodTerror,
 		lifeTap,
+		lifeTapHeal,
 		vampiricFeast,
+		vampiricFeastHeal,
 		sanguineHarvest,
-		// procSanguineHarvest,
+		sanguineHarvestProc,
+		sanguineHarvestHeal,
 		markOfRemphan,
 	}
 	///////////////////////////////////////////
@@ -25,6 +28,12 @@
 	}
 	function deathStrike(o) {
 		ask.explosion(o, {
+			duration: 1.2
+		})
+	}
+	function deathStrikeHeal(o) {
+		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
@@ -63,13 +72,37 @@
 			duration: 1.2
 		})
 	}
+	function lifeTapHeal(o) {
+		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
 	function vampiricFeast(o) {
 		ask.explosion(o, {
 			duration: 1.2
 		})
 	}
+	function vampiricFeastHeal(o) {
+		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
 	function sanguineHarvest(o) {
 		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
+	function sanguineHarvestProc(o) {
+		ask.explosion(o, {
+			duration: 1.2
+		})
+	}
+	function sanguineHarvestHeal(o) {
+		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}

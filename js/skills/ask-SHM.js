@@ -58,21 +58,25 @@
 	}
 	function rejuvinate(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function mysticalGlow(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function vampiricAllure(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function borealTalisman(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}

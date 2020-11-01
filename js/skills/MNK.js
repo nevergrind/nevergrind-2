@@ -16,7 +16,7 @@
 		innerSanctum,
 		spiritBarrier,
 	}
-	let enhancedDamage, hit, config, i, splashIndex, tgt, damages = [], dam, key
+	let enhancedDamage, hit, config, tgt, damages = []
 	///////////////////////////////////////////
 	function tigerStrike(index, data) {
 		config = {
@@ -69,7 +69,7 @@
 		let d = []
 		damages.forEach(damage => {
 			d.push({
-				key: 'hyperStrike',
+				key: 'hyperStrikeBuff',
 				index: my.row,
 				level: my.skills[damage.index],
 				damage: 0
@@ -284,11 +284,10 @@
 		button.triggerGlobalCooldown()
 	}
 	function viperStrikeHit(damages) {
-		console.info('damages', damages)
 		let d = []
 		damages.forEach(damage => {
 			d.push({
-				key: 'viperStrike',
+				key: 'viperStrikeBuff',
 				index: my.row,
 				level: my.skills[damage.index],
 				damage: 0
@@ -302,7 +301,7 @@
 			key: 'viperStrikeHeal',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			damage: (buffs.viperStrike.leech[my.buffs.viperStrike.level] * my.buffs.viperStrike.stacks)
+			damage: (buffs.viperStrikeBuff.leech[my.buffs.viperStrikeBuff.level] * my.buffs.viperStrikeBuff.stacks)
 		}])
 	}
 	function palmStrike(index, data) {

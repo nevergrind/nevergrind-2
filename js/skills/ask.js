@@ -284,7 +284,7 @@ var ask;
 					contrast: img._gsColorMatrixFilter.brightness,
 					brightness: img._gsColorMatrixFilter.brightness
 				},
-				alpha: .1,
+				alpha: .2,
 				width: img._width,
 				height: img._height,
 				zIndex: img._zIndex - 1
@@ -719,7 +719,6 @@ var ask;
 	}
 	function processAnimations(o, checkAutoAttacks = false) {
 		if (o.key) {
-			// console.info('processAnimations', o.key, o)
 			if (!o.isDot
 				&& typeof ask[o.key] === 'function') {
 				ask[o.key](o)

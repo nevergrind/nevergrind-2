@@ -473,6 +473,7 @@ var combat;
 	}
 
 	function triggerEffect(key, damages) {
+		console.info('triggerEffect', key, damages)
 		if (key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(damages[0])
 		else if (key === 'deathStrike') skill.SHD.deathStrikeHeal(damages[0])
 		else if (key === 'hyperStrike') skill.MNK.hyperStrikeHit(damages)
@@ -1030,9 +1031,9 @@ var combat;
 		})
 	}
 	function rxHotHero(data) {
-		// console.info('rxHotHero: ', data)
+		console.info('rxHotHero: ', data)
 		data.heals.forEach(heal => {
-			if (typeof buffs[heal.key] && buffs[heal.key].duration > 0) hotToMe(data.row, heal)
+			if (typeof buffs[heal.key] === 'object' && buffs[heal.key].duration > 0) hotToMe(data.row, heal)
 			else healToMe(data.row, heal)
 		})
 	}
@@ -1055,13 +1056,16 @@ var combat;
 		if (my.row === heal.index) {
 			// healing ME
 			heal.damage = processHeal(heal.damage)
-			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
-			updateMyResource(PROP.HP, heal.damage)
-			// let everyone know I got the heal
-			game.txPartyResources({
-				hp: my.hp,
-				hpMax: my.hpMax,
-			})
+			console.info('insta heal!', heal.damage)
+			if (heal.damage > 0) {
+				chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
+				updateMyResource(PROP.HP, heal.damage)
+				// let everyone know I got the heal
+				game.txPartyResources({
+					hp: my.hp,
+					hpMax: my.hpMax,
+				})
+			}
 			ask.processAnimations(heal)
 		}
 		if (~~hate > 0) {
@@ -1109,6 +1113,7 @@ var combat;
 				onRepeatParams: [heal, healAmount],
 			})
 			battle.addMyBuff(heal.key, keyRow)
+			console.info('dot heal!', heal.damage)
 			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
 			ask.processAnimations(heal)
 		}
@@ -1361,8 +1366,8 @@ var combat;
 		else if (key === 'sanguineHarvest') {
 			stats.hpKill(true)
 		}
-		else if (key === 'viperStrike') {
-			my.buffFlags.viperStrike && skill.MNK.viperStrikeHeal()
+		else if (key === 'viperStrikeBuff') {
+			my.buffFlags.viperStrikeBuff && skill.MNK.viperStrikeHeal()
 		}
 		else if (key === 'spiritBarrier') {
 			updateAllResists()
