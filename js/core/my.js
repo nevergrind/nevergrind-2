@@ -67,7 +67,7 @@ var my;
 		}
 	}
 	function fixTarget() {
-		if (typeof mobs[my.target] === 'undefined' || !mobs[my.target].name) {
+		if (typeof mobs[my.target] === 'undefined' || !mob.isAlive(my.target)) {
 			tabTarget({ shiftKey: false })
 		}
 	}

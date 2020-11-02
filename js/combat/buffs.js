@@ -527,6 +527,14 @@ let buffs; // buff data for use with skill/spells/icons
 			damageType: DAMAGE_TYPE.ARCANE,
 			msg: (buff) => 'Drain Soul heals you for ' + buff.damage + ' health.',
 		},
+		drainSoulHeal: {
+			name: 'Drain Soul',
+			img: 8,
+			job: JOB.WARLOCK,
+			hate: 1.2,
+			damageType: DAMAGE_TYPE.ARCANE,
+			msg: (buff) => 'Drain Soul heals you for ' + buff.damage + ' health.',
+		},
 		lichForm: {
 			name: 'Lich Form',
 			img: 9,
@@ -556,6 +564,13 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 900,
 			addPoison: [0, 2, 3, 4, 5, 6, 7, 8],
 			resistPoison: [0, 16, 28, 40, 52, 64, 76, 88],
+			msg: () => 'A profane aura imbues your spirit.',
+			fadeMsg: 'The profane aura fades.'
+		},
+		profaneSpiritExplosion: {
+			name: 'Profane Spirit Explosion',
+			img: 11,
+			job: JOB.WARLOCK,
 			msg: () => 'A profane aura imbues your spirit.',
 			fadeMsg: 'The profane aura fades.'
 		},
@@ -607,6 +622,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 1,
 			interval: 30,
 			duration: 30,
+			isDebuff: true,
 			damageType: DAMAGE_TYPE.ARCANE,
 			pveMitigationRatio: .1,
 			pvpMitigation: [0, 7, 15, 25, 38, 45, 57, 60],
@@ -864,6 +880,16 @@ let buffs; // buff data for use with skill/spells/icons
 		rebuke: { hate: 1.3 },
 		vengeance: { hate: .8 },
 		consecrate: {
+			name: 'Consecrate',
+			img: 3,
+			job: JOB.CRUSADER,
+			hate: 2,
+			duration: 30,
+			stacks: 5,
+			msg: () => 'Holy light consecrates the ground you stand on.',
+			fadeMsg: 'The consecration fades.'
+		},
+		consecrateBuff: {
 			name: 'Consecrate',
 			img: 3,
 			job: JOB.CRUSADER,
@@ -1201,7 +1227,35 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'Your silhouette is obscured by a frost rift.',
 			fadeMsg: 'Your silhouette sharpens into view.'
 		},
+		fadedStrikeBuff: {
+			name: 'Faded Strike',
+			img: 2,
+			job: JOB.ROGUE,
+			hate: -.5,
+			stacks: 5,
+			ticks: 1,
+			interval: 30,
+			duration: 45,
+			resistAll: [0, 12, 20, 28, 36, 44, 52, 60],
+			ratioByStack: [0, .2, .4, .6, .8, 1],
+			dodgeChance: [0, .03, .038, .046, .054, .062, .07, .077],
+			msg: () => 'Your silhouette is obscured by a frost rift.',
+			fadeMsg: 'Your silhouette sharpens into view.'
+		},
 		risingFuror: {
+			name: 'Rising Furor',
+			img: 3,
+			job: JOB.ROGUE,
+			hate: .8,
+			stacks: 5,
+			ticks: 1,
+			interval: 30,
+			duration: 30,
+			attackHaste: [0, .1, .15, .2, .25, .3],
+			msg: () => 'A surging furor courses through your veins.',
+			fadeMsg: 'The furor fades.'
+		},
+		risingFurorBuff: {
 			name: 'Rising Furor',
 			img: 3,
 			job: JOB.ROGUE,
@@ -1264,6 +1318,18 @@ let buffs; // buff data for use with skill/spells/icons
 			stunDuration: 5,
 		},
 		mirageStrike: {
+			name: 'Mirage Strike',
+			img: 8,
+			job: JOB.ROGUE,
+			hate: 1,
+			stacks: 5,
+			ticks: 1,
+			interval: 120,
+			duration: 120,
+			msg: () => 'A mirage emerges from the shadows.',
+			fadeMsg: 'Your mirage absorbs a blow!',
+		},
+		mirageStrikeBuff: {
 			name: 'Mirage Strike',
 			img: 8,
 			job: JOB.ROGUE,

@@ -2399,7 +2399,7 @@ background-repeat: no-repeat;
 	background: radial-gradient(closest-corner at 50% 50%, rgba(128, 160, 255, .3), rgba(0, 8, 24, 1));
 }
 #tooltip-name-bg {
-	width: 100%;
+	flex: 1;
 	border: 1px solid #048;
 	padding: .1rem .3rem;
 	background-image: linear-gradient(to top,
@@ -3606,3 +3606,9 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	background-size: 1.2rem 1.2rem;
 	border: 1px solid #0a0a0a;
 }
+.damage-blood { color: #b11 }
+.damage-poison { color: #0e0 }
+.damage-arcane { color: #ff8 }
+.damage-lightning { color: #aef }
+.damage-fire { color: #f40 }
+.damage-ice { color: #27d }

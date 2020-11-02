@@ -175,7 +175,7 @@
 	function frostNovaCompleted() {
 		damages = []
 		for (i=0; i<mob.max; i++) {
-			if (mobs[i].hp >= 0) {
+			if (mob.isAlive(i)) {
 				damages.push({
 					key: 'frostNova',
 					index: i,
@@ -207,7 +207,7 @@
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
 		delayedCall(2, () => {
-			if (mobs[tgt].hp >= 0) {
+			if (mob.isAlive(tgt)) {
 				let damages = []
 				damages.push({
 					key: 'meteor',

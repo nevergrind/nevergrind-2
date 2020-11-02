@@ -127,7 +127,7 @@
 		button.triggerGlobalCooldown()
 
 		combat.txBuffHero([{
-			key: 'consecrate',
+			key: 'consecrateBuff',
 			index: my.row,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,

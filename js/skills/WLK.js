@@ -253,7 +253,7 @@
 		combat.txDamageMob(damages)
 		combat.txHotHero([{
 			index: my.row,
-			key: 'drainSoul',
+			key: 'drainSoulHeal',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...hit
@@ -324,22 +324,16 @@
 		})
 		combat.txBuffHero(damages)
 	}
-	function profaneSpiritExplosion(index, data) {
-		spell.cancelSpell()
-		spell.config = {
-			...spell.getDefaults(index, data),
-			anyTarget: true,
-		}
-		spell.startCasting(index, data, profaneSpiritExplosionCompleted)
-	}
-	function profaneSpiritExplosionCompleted() {
+	function profaneSpiritExplosion() {
+		spell.index = 11
+		spell.data = skills.WLK[12]
 		damages = []
 		for (i=0; i<mob.max; i++) {
-			if (mobs[i].hp >= 0) {
+			if (mob.isAlive(i)) {
 				damages.push({
 					key: 'profaneSpiritExplosion',
 					index: i,
-					spellType: '',
+					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
 					...stats.spellDamage(i)
 				})

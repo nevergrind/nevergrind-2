@@ -54,7 +54,7 @@
 	function poisonNovaCompleted() {
 		damages = []
 		for (i=0; i<mob.max; i++) {
-			if (mobs[i].hp >= 0) {
+			if (mob.isAlive(i)) {
 				damages.push({
 					key: 'poisonNova',
 					index: i,

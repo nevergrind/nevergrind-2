@@ -152,14 +152,13 @@
 	}
 	function battleHymnCompleted() {
 		damages = []
-		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
 				key: 'battleHymn',
 				spellType: spell.data.spellType,
 				level: my.skills[spell.config.skillIndex],
-				...hit
+				...stats.spellDamage(p.row, -100)
 			})
 		})
 		combat.txBuffHero(damages)
@@ -176,14 +175,13 @@
 	}
 	function militantCadenceCompleted() {
 		damages = []
-		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
 				key: 'militantCadence',
 				spellType: spell.data.spellType,
 				level: my.skills[spell.config.skillIndex],
-				...hit
+				...stats.spellDamage(p.row, -100)
 			})
 		})
 		combat.txBuffHero(damages)
@@ -217,14 +215,13 @@
 	}
 	function litanyOfLifeCompleted() {
 		damages = []
-		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
 				key: 'litanyOfLife',
 				spellType: spell.data.spellType,
 				level: my.skills[spell.config.skillIndex],
-				...hit
+				...stats.spellDamage(p.row, -100)
 			})
 		})
 		combat.txBuffHero(damages)
@@ -241,14 +238,13 @@
 	}
 	function melodyOfManaCompleted() {
 		damages = []
-		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
 				key: 'melodyOfMana',
 				spellType: spell.data.spellType,
 				level: my.skills[spell.config.skillIndex],
-				...hit
+				...stats.spellDamage(p.row, -100)
 			})
 		})
 		combat.txBuffHero(damages)
@@ -298,14 +294,13 @@
 	}
 	function chromaticSonataCompleted() {
 		damages = []
-		hit = stats.spellDamage(p.row, -100)
 		party.presence.forEach(p => {
 			damages.push({
 				index: p.row,
 				key: 'chromaticSonata',
 				spellType: spell.data.spellType,
 				level: my.skills[spell.config.skillIndex],
-				...hit
+				...stats.spellDamage(p.row, -100)
 			})
 		})
 		combat.txBuffHero(damages)

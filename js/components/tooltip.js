@@ -17,8 +17,8 @@ var tooltip;
 		goldValue: 1,
 		hide,
 		show,
-		handleItemEnter,
-		handleItemLeave,
+		handleEnter,
+		handleLeave,
 		conditionalHide,
 		getDps,
 	};
@@ -27,13 +27,14 @@ var tooltip;
 	}
 	var tooltipEl = getElementById('tooltip-wrap')
 	var useHtml = ''
+	let hit
+	const divider = '<hr class="fancy-hr" style="margin: .2rem 0">'
 	//////////////////////////////////////////////////
 	function getItemHtml(obj, type) {
 		var html = ''
-		var divider = '<hr class="fancy-hr" style="margin: .2rem 0">'
 		var statHtml = ''
 		html +=
-			'<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">' +
+		'<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">' +
 			'<div class="flex" style="border: .1rem ridge #013; margin-bottom: .1rem">' +
 				'<div id="tooltip-item-img-bg">' +
 					'<img id="tooltip-item-img" src="images/items/'+ bar.getItemIconFileNameByObj(obj) + '.png">' +
@@ -57,7 +58,7 @@ var tooltip;
 				getRequiredItemProficiency(obj) +
 				getItemSlot(obj.slots) +
 				(obj.itemLevel > 1 ? getRequiredLevelHtml(obj.itemLevel) : '') +
-			'</div>';
+			'</div>'
 
 
 			statHtml += '<div style="padding: .2rem">' +
@@ -229,7 +230,7 @@ var tooltip;
 	}
 	function getWeaponDamageHtml(obj) {
 		if (obj.weaponSkill) {
-			var dps = getDps(obj).toFixed(1);
+			var dps = getDps(obj).toFixed(1)
 			return '<div>Damage: '+ obj.minDamage + '&thinsp;–&thinsp;' + obj.maxDamage +'</div>' +
 				'<div>Speed: ' + (obj.speed % 1 === 0 ? obj.speed + '.0' : obj.speed) +'</div>' +
 				'<div>Damage Per Second: ' + dps + '</div>'
@@ -258,7 +259,7 @@ var tooltip;
 	function getItemSlot(slots) {
 		if (!slots) return ''
 		var prefix = 'Slot: '
-		var str =  _.capitalize(slots[0]);
+		var str =  _.capitalize(slots[0])
 		if (slots[1] === 'secondary') {
 			prefix = 'Slots: '
 			if (stats.getPropMax(PROP.DUAL_WIELD)) {
@@ -292,32 +293,16 @@ var tooltip;
 		}
 	}
 	function canEquipWeapon(weaponSkill) {
-		if (weaponSkill === LABEL.ONE_HAND_SLASH) {
-			if (my.oneHandSlash) return true
-			else return false
+		if (weaponSkill === LABEL.ONE_HAND_SLASH && my.oneHandSlash
+			|| weaponSkill === 'One-hand Blunt' && my.oneHandBlunt
+			|| weaponSkill === 'Piercing' && my.piercing
+			|| weaponSkill === 'Two-hand Slash' && my.twoHandSlash
+			|| weaponSkill === 'Two-hand Blunt' && my.twoHandBlunt
+			|| weaponSkill === 'Archery' && my.archery) {
+			return true
 		}
-		else if (weaponSkill === 'One-hand Blunt') {
-			if (my.oneHandBlunt) return true
-			else return false
-		}
-		else if (weaponSkill === 'Piercing') {
-			if (my.piercing) return true
-			else return false
-		}
-		else if (weaponSkill === 'Two-hand Slash') {
-			if (my.twoHandSlash) return true
-			else return false
-		}
-		else if (weaponSkill === 'Two-hand Blunt') {
-			if (my.twoHandBlunt) return true
-			else return false
-		}
-		else if (weaponSkill === 'Archery') {
-			if (my.archery) return true
-			else return false
-		}
+		return false
 	}
-
 	function show(obj, slotElement, type) {
 		if (!_.size(obj)) return
 		tooltipEl.innerHTML = getItemHtml(obj, type)
@@ -330,19 +315,24 @@ var tooltip;
 				// keep from going off the bottom of the screen
 				y -= (50 - diff)
 			}
-			tooltipEl.style.top = y + 'px'
 			// x position
+			tooltipEl.style.top = y + 'px'
 			tooltipEl.style.left = slotElement.x + (68 * ng.responsiveRatio) + 'px'
+			tooltipEl.style.bottom = 'auto'
+			tooltipEl.style.right = 'auto'
 			tooltipEl.style.transform = 'translate(0%, 0%)'
 			/* code for left side
 			tooltipEl.style.left = slotElement.x + 'px'
 			tooltipEl.style.transform = 'translate(-100%, 0%)'
 			 */
 		}
+		setTooltipVisible(.2)
+	}
+	function setTooltipVisible(duration) {
 		tooltip.isOpen = 1
 		tooltipEl.style.visibility = 'visible'
 		tooltip.openDate = Date.now()
-		TweenMax.to(tooltipEl, .2, {
+		TweenMax.to(tooltipEl, duration, {
 			overwrite: 1,
 			opacity: 1,
 		})
@@ -359,18 +349,119 @@ var tooltip;
 		tooltip.isOpen = 0
 		tooltipEl.innerHTML = ''
 	}
-	function handleItemEnter(event) {
-		var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
-		tooltip.lastHoveredType = type
-		tooltip[type].isHovering = true
-		if (items[type][index].name) {
-			tooltip.show(items[type][index], querySelector('#' + type + '-slot-img-' + index), type)
+	let skillHtml = ''
+	function getSkillHtml(config) {
+		console.info('getSkillHtml', config)
+		let rank = my.skills[config.index]
+		skillHtml = `
+		<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">
+			<div id="tooltip-name-bg" class="flex-column flex-center align-center">
+				<div id="tooltip-name" class="text-center" style="font-size: 1.125rem">${config.name}</div>
+			</div>
+			<div id="tooltip-item-stat-wrap" class="text-center" style="border: .1rem ridge #013">
+				<div style="padding: .2rem">`
+				if (rank >= 1) {
+					if (typeof config.mp === 'function') {
+						skillHtml += `<div style="color: #3bf">Mana Cost: ${config.mp(rank)}</div>`
+					}
+					else if (typeof config.sp === 'function') {
+						skillHtml += `<div style="color: #2c2">Spirit Cost: ${config.sp(rank)}</div>`
+					}
+					if (config.castTime) {
+						skillHtml += `<div>Cast Time: ${ng.toMinSecs(config.castTime)}</div>`
+					}
+					if (config.cooldownTime) {
+						skillHtml += `<div>Cooldown: ${ng.toMinSecs(config.cooldownTime)}</div>`
+					}
+					if (config.enhancedDamage && config.enhancedDamage[rank]) {
+						skillHtml += `<div>Enhanced Damage: ${ng.toPercent(config.enhancedDamage[rank])}%</div>`
+					}
+					if (config.hitBonus && config.hitBonus[rank]) {
+						skillHtml += `<div>Hit Bonus: ${config.hitBonus[rank]}%</div>`
+					}
+					if (config.critBonus && config.critBonus[rank]) {
+						skillHtml += `<div>Crit Bonus: ${config.critBonus[rank]}%</div>`
+					}
+					if (config.duration) {
+						skillHtml += `<div>Duration: ${ng.toMinSecs(config.duration)}</div>`
+					}
+					if (config.spellType) {
+						skillHtml += `<div>Spell Type: ${_.capitalize(config.spellType)}</div>`
+					}
+					if (config.damageType) {
+						skillHtml += `<div class="damage-${config.damageType}">Damage Type: ${_.capitalize(config.damageType)}</div>`
+					}
+					if (config.hate) {
+						skillHtml += `<div>Threat: ${ng.toPercent(config.hate)}%</div>`
+					}
+					if (config.requiresFrontRow) {
+						skillHtml += `<div class="chat-warning">Requires Front Row Target</div>`
+					}
+					skillHtml += divider
+				}
+				skillHtml += `<div style="color: gold">${config.description}</div>
+				</div>
+			</div>
+		</div>
+		`
+		return skillHtml
+	}
+	function showSkill(config) {
+		console.info('showSkill', config)
+		tooltipEl.innerHTML = getSkillHtml(config)
+		tooltipEl.style.bottom = '.5rem'
+		tooltipEl.style.right = '.5rem'
+		// x position
+		tooltipEl.style.top = 'auto'
+		tooltipEl.style.left = 'auto'
+		tooltipEl.style.transform = 'translate(0%, 0%)'
+		setTooltipVisible(.5)
+	}
+	function handleEnter(event) {
+		console.info('handleEnter', event.currentTarget.id)
+		if (event.currentTarget.id === ('skill-primary-attack-btn')) {
+			hit = stats.primaryAutoAttackDamage(0, true)
+			showSkill({
+				name: 'Primary Attack',
+				description: 'Attack with your primary weapon for '+ round(hit.min) +' to '+ round(hit.max)+' damage.'
+			})
+		}
+		else if (event.currentTarget.id === ('skill-secondary-attack-btn')) {
+			hit = stats.secondaryAutoAttackDamage(0, true)
+			showSkill({
+				name: 'Secondary Attack',
+				description: 'Attack with your secondary weapon for '+ round(hit.min) +' to '+ round(hit.max)+' damage. Dual wield must pass a skill check in order to work.'
+			})
+		}
+		else if (event.currentTarget.id.startsWith('skill')) {
+			var index = _.last(event.currentTarget.id.split('-'))
+			var skillData = skills[my.job][index]
+			var buffData = buffs[_.camelCase(skills[my.job][index].name)]
+			showSkill({
+				index: index,
+				...skillData,
+				...buffData,
+			})
+		}
+		else {
+			// item slots
+			var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
+			tooltip.lastHoveredType = type
+			tooltip[type].isHovering = true
+			if (items[type][index].name) {
+				tooltip.show(items[type][index], querySelector('#' + type + '-slot-img-' + index), type)
+			}
 		}
 	}
-	function handleItemLeave(event) {
-		var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
-		tooltip[type].isHovering = false
-		tooltip.hide()
+	function handleLeave(event) {
+		if (event.currentTarget.id.startsWith('skill')) {
+			tooltip.hide()
+		}
+		else {
+			var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
+			tooltip[type].isHovering = false
+			tooltip.hide()
+		}
 	}
 	function conditionalHide() {
 		if (typeof tooltip[tooltip.lastHoveredType] === 'object' &&

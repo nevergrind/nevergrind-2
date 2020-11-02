@@ -4,6 +4,7 @@ var test;
 		projectionTest,
 		getTestLootItemWeapon,
 		disableConsole,
+		disableEvents,
 		getHate,
 		send,
 		orcs,
@@ -392,7 +393,7 @@ var test;
 		var dur = 555;
 		test.pix = new PIXI.Application({
 			width: MaxWidth,
-			height: 517,
+			height: MaxHeight,
 			transparent: true
 		});
 		console.info('textPix', test.pix)
@@ -525,6 +526,11 @@ var test;
 	}
 	function disableConsole() {
 		console.debug = console.log = console.warn = console.info = ng.noop
+	}
+	function disableEvents(delay) {
+		delayedCall(delay, () => {
+			$(document).add('*').off()
+		})
 	}
 	function getTestLootItemWeapon(itemSlot = ITEM_TYPE.ONE_HAND_BLUNTS) {
 		return item.getLoot({

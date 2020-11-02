@@ -125,7 +125,6 @@ var button;
 			if (!my.isAutoAttacking && name !== 'innerSanctum') {
 				combat.autoAttackEnable()
 			}
-
 		}
 		else {
 			chat.log('This skill is not defined:' + name, CHAT.WARNING)
@@ -398,7 +397,7 @@ var button;
 	function getWeaponButtonHtml() {
 		return `
 		<div class="skill-btn">
-			<img id="skill-primary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 12, true)}">
+			<img id="skill-primary-attack-btn" class="skill-img skill-btn-tooltip" src="${bar.getItemSlotImage('eq', 12, true)}">
 			<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>
 		</div>
 		${getOffhandWeaponHtml()}`
@@ -406,7 +405,7 @@ var button;
 		function getOffhandWeaponHtml() {
 			return canOffhandWeapon()
 				? `<div class="skill-btn">
-						<img id="skill-secondary-attack-btn" class="skill-img popover-icons" src="${bar.getItemSlotImage('eq', 13, true)}">
+						<img id="skill-secondary-attack-btn" class="skill-img skill-btn-tooltip" src="${bar.getItemSlotImage('eq', 13, true)}">
 						<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>
 					</div>`
 				: ``
@@ -433,8 +432,8 @@ var button;
 				<div id="skill-btn-wrap">`
 			// skill buttons
 			for (var i=0; i<12; i++) {
-				s += `<div id="skill-btn-${i}" class="skill-btn job-skill-btn" data-index="${i}">
-					<img id="skill-${i}" class="skill-img popover-icons" src="images/skills/${my.job}/${i}.png">
+				s += `<div id="skill-btn-${i}" class="skill-btn job-skill-btn skill-btn-tooltip" data-index="${i}">
+					<img id="skill-${i}" class="skill-img" src="images/skills/${my.job}/${i}.png">
 					<div id="skill-timer-${i}-rotate" class="skill-timer-rotate"></div>
 					<div id="skill-timer-${i}" class="skill-timer"></div>
 				</div>`

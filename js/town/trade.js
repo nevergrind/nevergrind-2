@@ -61,8 +61,8 @@ var trade;
 		bar.updateItemSwapDOM()
 		item.resetDrop()
 		// console.warn('lastDragEvent', item.lastDragEvent)
-		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
-		else tooltip.handleItemEnter(item.lastDropEvent)
+		if (item.isContextClick) tooltip.handleEnter(item.lastDragEvent)
+		else tooltip.handleEnter(item.lastDropEvent)
 	}
 	function updateTrade(data, slot) {
 		tradeData = {

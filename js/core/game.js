@@ -25,6 +25,7 @@ var game;
 		updateChat,
 		updateParty,
 		txPartyResources,
+		toPlaytime,
 	};
 	/** private */
 	var pingStart = 0;
@@ -318,7 +319,7 @@ var game;
 			minutes: getCachedMinutes()
 		}).done(function(r) {
 			chat.log("Character created: " + toCreateString(r.created), CHAT.WARNING)
-			chat.log("Total character playtime: " + toPlaytime(r.playtime), 'chat-whisper')
+			chat.log("Total character playtime: " + game.toPlaytime(r.playtime), 'chat-whisper')
 			localStorage.setItem(game.storageId, 0)
 		});
 	}

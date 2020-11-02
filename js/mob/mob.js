@@ -182,7 +182,7 @@ let mobs = [];
 		}
 	}
 	function updateHate(o) {
-		if (mobs[o.index].name && mobs[o.index].hp > 0) {
+		if (mob.isAlive(o.index)) {
 			// console.info('updateHate mob', o.index, o.damage, ~~(o.hate * o.damage), o.key)
 			mobs[o.index].hate[o.row] += ~~(o.hate * o.damage)
 			if (mobs[o.index].hate[o.row] < 0) mobs[o.index].hate[o.row] = 0
@@ -509,7 +509,7 @@ let mobs = [];
 		return mobs[i].speed * mobSpeed
 	}
 	function isAlive(i) {
-		return i >= 0 && i< mob.max && mobs[i].name && mobs[i].hp > 0
+		return i >= 0 && i < mob.max && mobs[i].name && mobs[i].hp > 0
 	}
 	function hit(i, bypass, damage) {
 		if (ng.view !== 'battle' || mobs[i].isDead) return

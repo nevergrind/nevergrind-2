@@ -11,10 +11,11 @@
 		curseOfShadows,
 		panicStrike,
 		drainSoul,
+		drainSoulHeal,
 		lichForm,
 		engulfingDarkness,
 		profaneSpirit,
-		// profaneSpiritExplosion,
+		profaneSpiritExplosion,
 	}
 	///////////////////////////////////////////
 
@@ -63,8 +64,15 @@
 			duration: 1.2
 		})
 	}
+	function drainSoulHeal(o) {
+		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
 	function lichForm(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
@@ -74,6 +82,12 @@
 		})
 	}
 	function profaneSpirit(o) {
+		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
+	function profaneSpiritExplosion(o) {
 		ask.explosion(o, {
 			duration: 1.2
 		})

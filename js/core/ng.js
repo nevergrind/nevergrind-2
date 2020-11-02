@@ -25,6 +25,8 @@ var ng;
 		toJobShort,
 		disconnect,
 		goCreateCharacter,
+		toMinSecs,
+		toPercent,
 		toPercentWidth,
 		toPercentHeight,
 		html,
@@ -364,7 +366,7 @@ var ng;
 	function disconnect(msg) {
 		ng.view = 'disconnected';
 		// turn off all events
-		$(document).add('*').off();
+		$(document).add('*').off()
 		$("main > *").css('display', 'none');
 		var e = getElementById('scene-error')
 		e.style.display = 'block'
@@ -800,6 +802,21 @@ var ng;
 			ng.selectIndex = characterData.length - 1
 		}
 		updateCharacterCard()
+	}
+	function toMinSecs(seconds) {
+		let m = ~~(seconds / 60)
+		let minMsg = m === 0
+			? ''
+			: m === 1 ? '1 minute' : m + ' minutes'
+		let s = seconds % 60
+		if (m >= 1 && s !== 0) minMsg += ', '
+		let secMsg = s === 0
+			? ''
+			: s === 1 ? '1 second': s + ' seconds'
+		return minMsg + secMsg
+	}
+	function toPercent(decimal) {
+		return ~~(decimal * 100)
 	}
 	function toPercentWidth(pixels) {
 		return pixels / MaxWidth * 100

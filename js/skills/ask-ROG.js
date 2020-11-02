@@ -3,17 +3,17 @@
 		...ask,
 		shadowStrike,
 		sonicStrike,
-		// sonicStrikeHit,
+		sonicStrikeNova,
 		fadedStrike,
-		// fadedStrikeHit,
+		fadedStrikeBuff,
 		risingFuror,
-		// risingFurorHit,
+		risingFurorBuff,
 		lacerate,
 		backstab,
 		widowStrike,
 		dazzleThrust,
 		mirageStrike,
-		// mirageStrikeHit,
+		mirageStrikeBuff,
 		flashStrike,
 		talismanOfTreachery,
 		prowl,
@@ -30,13 +30,30 @@
 			duration: 1.2
 		})
 	}
+	function sonicStrikeNova(o) {
+		ask.explosion(o, {
+			duration: 1.2
+		})
+	}
 	function fadedStrike(o) {
 		ask.explosion(o, {
 			duration: 1.2
 		})
 	}
+	function fadedStrikeBuff(o) {
+		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
 	function risingFuror(o) {
 		ask.explosion(o, {
+			duration: 1.2
+		})
+	}
+	function risingFurorBuff(o) {
+		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
@@ -65,6 +82,12 @@
 			duration: 1.2
 		})
 	}
+	function mirageStrikeBuff(o) {
+		ask.explosion(o, {
+			targetMob: false,
+			duration: 1.2
+		})
+	}
 	function flashStrike(o) {
 		ask.explosion(o, {
 			duration: 1.2
@@ -72,11 +95,13 @@
 	}
 	function talismanOfTreachery(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}
 	function prowl(o) {
 		ask.explosion(o, {
+			targetMob: false,
 			duration: 1.2
 		})
 	}

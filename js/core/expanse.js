@@ -93,7 +93,7 @@ var expanse;
 
 			expanse.sky = new PIXI.Application({
 				width: MaxWidth,
-				height: 517,
+				height: MaxHeight,
 				transparent: true
 			});
 			// style

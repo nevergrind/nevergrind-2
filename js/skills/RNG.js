@@ -260,7 +260,7 @@
 	function shockNovaCompleted() {
 		damages = []
 		for (var i=0; i<mob.max; i++) {
-			if (mobs[i].hp > 0) {
+			if (mob.isAlive(i)) {
 				damages.push({
 					index: i,
 					key: 'shockNova',

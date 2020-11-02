@@ -434,6 +434,10 @@ var combat;
 		mob.drawMobBar(o.index)
 		if (mobs[o.index].hp <= 0) {
 			// console.warn('mob is dead!')
+			if (timers.castBar < 1
+				&& my.target === o.index) {
+				spell.cancelSpell()
+			}
 			mob.death(o.index)
 			my.fixTarget()
 			if (isBattleOver()) {
@@ -473,7 +477,7 @@ var combat;
 	}
 
 	function triggerEffect(key, damages) {
-		console.info('triggerEffect', key, damages)
+		// console.info('triggerEffect', key, damages)
 		if (key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(damages[0])
 		else if (key === 'deathStrike') skill.SHD.deathStrikeHeal(damages[0])
 		else if (key === 'hyperStrike') skill.MNK.hyperStrikeHit(damages)
@@ -611,6 +615,7 @@ var combat;
 		}
 		*/
 		// buffs
+		// console.info('bufffffs::::', data.buffs)
 		if (typeof data.buffs === 'object') {
 			buffArr = []
 			data.buffs.forEach(buff => buffArr.push(buff))
@@ -746,8 +751,8 @@ var combat;
 	function triggerOnMyDeath() {
 		// on death - must be done before health is subtracted
 		if (my.buffFlags.profaneSpirit) {
-			skill.WLK.profaneSpiritExplosion(12, skills[my.job][12])
 			battle.removeBuff('profaneSpirit')
+			skill.WLK.profaneSpiritExplosion()
 		}
 	}
 	// damage hero functions
@@ -934,18 +939,20 @@ var combat;
 				if (damages[i].damage > 0) {
 					totalDamage += damages[i].damage
 					updateMyResource(PROP.HP, -damages[i].damage)
-					if (damages[i].isPiercing) {
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', CHAT.ALERT)
-					}
-					else {
-						blockMsg = ''
-						if (damages[i].blocked) {
-							blockMsg = ' ('+ damages[i].blocked +' blocked)'
+					if (typeof damages[i] === 'object') {
+						if (damages[i].isPiercing) {
+							chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', CHAT.ALERT)
 						}
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, CHAT.ALERT)
-					}
-					if (damages[i].damageType === DAMAGE_TYPE.PHYSICAL) {
-						spell.knockback()
+						else {
+							blockMsg = ''
+							if (damages[i].blocked) {
+								blockMsg = ' ('+ damages[i].blocked +' blocked)'
+							}
+							chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, CHAT.ALERT)
+						}
+						if (damages[i].damageType === DAMAGE_TYPE.PHYSICAL) {
+							spell.knockback()
+						}
 					}
 					// console.info('tx processHit: ', damages[i].damage)
 				}

@@ -604,7 +604,6 @@ var stats = {};
 	}
 	function spellDamage(index = 0, critMod = 0) {
 		max = spell.data.spellDamage(my.skills[spell.index])
-		// console.info('spellDamage 1', max)
 		// enhance by type % and ALL%
 		if (spell.data.damageType === DAMAGE_TYPE.BLOOD) enhanceDamage = enhanceBlood()
 		else if (spell.data.damageType === DAMAGE_TYPE.POISON) enhanceDamage = enhancePoison()
@@ -729,7 +728,7 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
-	function primaryAutoAttackDamage(index = 0, skipSkillCheck) {
+	function primaryAutoAttackDamage(index = 0, skipSkillCheck = false) {
 		min = 1
 		max = 1
 		weaponSkill = getWeaponSkill(12)
@@ -778,7 +777,7 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
-	function secondaryAutoAttackDamage(index = 0) {
+	function secondaryAutoAttackDamage(index = 0, skipSkillCheck = false) {
 		if (!my.dualWield) return FailedWeaponDamage
 		min = 1
 		max = 1
@@ -807,8 +806,10 @@ var stats = {};
 			max *= 1.5
 		}
 
-		combat.levelSkillCheck(weaponSkill)
-		combat.levelSkillCheck(PROP.DUAL_WIELD)
+		if (!skipSkillCheck) {
+			combat.levelSkillCheck(weaponSkill)
+			combat.levelSkillCheck(PROP.DUAL_WIELD)
+		}
 		return {
 			min: min,
 			max: max,

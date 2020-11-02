@@ -115,13 +115,12 @@
 	}
 	function fadedStrikeHit(damage) {
 		let d = []
-		damages.forEach(damage => {
-			d.push({
-				key: 'fadedStrike',
-				index: my.row,
-				level: my.skills[damage.index],
-				damage: 0
-			})
+		console.info('faded', damage)
+		d.push({
+			key: 'fadedStrikeBuff',
+			index: my.row,
+			level: my.skills[damage.index],
+			damage: 0
 		})
 		combat.txBuffHero(d)
 	}
@@ -150,13 +149,11 @@
 	}
 	function risingFurorHit(damage) {
 		let d = []
-		damages.forEach(damage => {
-			d.push({
-				key: 'risingFuror',
-				index: my.row,
-				level: my.skills[damage.index],
-				damage: 0
-			})
+		d.push({
+			key: 'risingFurorBuff',
+			index: my.row,
+			level: my.skills[damage.index],
+			damage: 0
 		})
 		combat.txBuffHero(d)
 	}
@@ -276,7 +273,7 @@
 	}
 	function mirageStrikeHit(damage) {
 		combat.txBuffHero([{
-			key: 'mirageStrike',
+			key: 'mirageStrikeBuff',
 			index: my.row,
 			level: my.skills[damage.index],
 			damage: 0

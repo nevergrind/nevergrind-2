@@ -1558,7 +1558,7 @@ var loot = {};
 				// check for same item
 				resetDrop()
 				toast.hideDestroyToast()
-				tooltip.handleItemEnter(event)
+				tooltip.handleEnter(event)
 				return
 			}
 			item.dropData = items[type][index]
@@ -1609,7 +1609,7 @@ var loot = {};
 		}
 		else {
 			item.lastDragEvent = event
-			tooltip.handleItemLeave(event)
+			tooltip.handleLeave(event)
 			item.dragEqType = event.currentTarget.dataset.eqType
 			// console.info('dragEQ dragEqType', event.currentTarget.dataset)
 			// drag
@@ -1640,8 +1640,8 @@ var loot = {};
 		resetDrop()
 		button.updateWeaponPanel()
 		// console.warn('lastDragEvent', item.lastDragEvent)
-		if (item.isContextClick) tooltip.handleItemEnter(item.lastDragEvent)
-		else tooltip.handleItemEnter(item.lastDropEvent)
+		if (item.isContextClick) tooltip.handleEnter(item.lastDragEvent)
+		else tooltip.handleEnter(item.lastDropEvent)
 	}
 
 	function showCursorImg(type, index) {
