@@ -62,7 +62,7 @@
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'stun', // this sets the flag,
-					duration: 3,
+					duration: buffs.sonicBoom.stunDuration,
 				}],
 			})
 		}
@@ -134,7 +134,7 @@
 				i: spell.config.target,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'paralyze', // this sets the flag,
-				duration: 12,
+				duration: buffs.crashingChords.paralyzeDuration,
 			}]
 		}])
 

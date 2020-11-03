@@ -59,8 +59,8 @@ let skill = {};
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'rupture',
 			index: my.target,
-			isRanged: true,
-			isPiercing: true,
+			isRanged: data.isRanged,
+			isPiercing: data.isPiercing,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
 		})
@@ -113,12 +113,12 @@ let skill = {};
 			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 			key: 'pummel',
 			index: tgt,
-			isPiercing: true,
+			isPiercing: data.isPiercing,
 			buffs: [{
 				i: tgt, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'stun', // this sets the flag,
-				duration: 3,
+				duration: buffs.pummel.stunDuration,
 			}],
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
@@ -146,8 +146,8 @@ let skill = {};
 				...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 				key: 'doubleThrow',
 				index: tgt,
-				isRanged: true,
-				effects: { stagger: true },
+				isRanged: data.isRanged,
+				effects: { stagger: spell.data.staggers },
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})
@@ -183,7 +183,7 @@ let skill = {};
 					key: 'shockwave',
 					index: i,
 					requiresFrontRow: data.requiresFrontRow,
-					effects: { stagger: true },
+					effects: { stagger: spell.data.staggers },
 					enhancedDamage: enhancedDamage,
 					hitBonus: data.hitBonus[my.skills[index]],
 				})
@@ -219,7 +219,6 @@ let skill = {};
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
-			isPiercing: true,
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -246,6 +245,7 @@ let skill = {};
 				index: tgt,
 				key: 'jumpStrike',
 				enhancedDamage: enhancedDamage,
+				isPiercing: data.isPiercing,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})
 			combat.txDamageMob(damages)
@@ -277,8 +277,8 @@ let skill = {};
 				...hit,
 				key: 'primalStomp',
 				index: target,
-				effects: { stagger: true },
-				isRanged: true,
+				effects: { stagger: spell.data.staggers },
+				isRanged: data.isRanged,
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})
@@ -358,7 +358,7 @@ let skill = {};
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'stun', // this sets the flag,
-					duration: 2,
+					duration: buffs.furiousCleave.stunDuration,
 				}],
 			})
 		}

@@ -185,6 +185,7 @@
 			key: 'hadoken',
 			index: my.target,
 			damageType: DAMAGE_TYPE.ARCANE,
+			isRanged: data.isRanged,
 			enhancedDamage: enhancedDamage,
 		}
 		damages.push(hit)
@@ -321,12 +322,12 @@
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
 			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
-			effects: { stagger: true },
+			effects: { stagger: spell.data.staggers },
 			buffs: [{
 				i: tgt,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'paralyze', // this sets the flag,
-				duration: buffs.arclightDebuff.duration,
+				duration: buffs.palmStrike.paralyzeDuration,
 			}]
 		})
 		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)

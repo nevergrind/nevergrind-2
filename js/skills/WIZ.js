@@ -52,7 +52,7 @@
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'chill', // this sets the flag,
-				duration: 16,
+				duration: buffs.iceBolt.chillDuration,
 			}],
 			...stats.spellDamage(spell.config.target),
 		}])
@@ -185,7 +185,7 @@
 						i: i, // target
 						row: my.row, // this identifies unique buff state/icon
 						key: 'chill', // this sets the flag,
-						duration: 8,
+						duration: buffs.frostNova.chillDuration,
 					}],
 					...stats.spellDamage(i)
 				})
@@ -333,7 +333,7 @@
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'freeze', // this sets the flag,
-				duration: 5,
+				duration: buffs.deepFreeze.freezeDuration,
 			}],
 			...stats.spellDamage(spell.config.target)
 		}])

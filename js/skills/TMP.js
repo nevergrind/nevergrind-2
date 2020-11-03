@@ -59,7 +59,7 @@
 							i: tgt, // target
 							row: my.row, // this identifies unique buff state/icon
 							key: 'stun', // this sets the flag,
-							duration: 1,
+							duration: buffs.thunderclap.stunDuration,
 						}]
 					}
 					damages.push(dam)
@@ -102,7 +102,7 @@
 							i: tgt, // target
 							row: my.row, // this identifies unique buff state/icon
 							key: 'chill', // this sets the flag,
-							duration: 7,
+							duration: buffs.frozenOrb.chillDuration,
 						}]
 					}])
 				})
@@ -130,7 +130,7 @@
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
 				...stats.spellDamage(tgt),
-				effects: { stagger: true },
+				effects: { stagger: spell.data.staggers },
 			})
 		}
 		combat.txDamageMob(damages)
@@ -199,18 +199,18 @@
 			let tgt = battle.getSplashTarget(splashIndex++, originalTarget)
 			hit = stats.spellDamage(tgt)
 			if (tgt !== originalTarget) hit.damage *= .5
-			let buffs = [{
+			let bf = [{
 				i: tgt, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'chill', // this sets the flag,
-				duration: 12,
+				duration: buffs.glacialSpike.chillDuration,
 			}]
 			if (tgt === originalTarget) {
-				buffs.push({
+				bf.push({
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'freeze', // this sets the flag,
-					duration: 4,
+					duration: buffs.glacialSpike.freezeDuration,
 				})
 			}
 			damages.push({
@@ -219,7 +219,7 @@
 				spellType: spellType,
 				damageType: damageType,
 				...hit,
-				buffs: buffs,
+				buffs: bf,
 			})
 		}
 		combat.txDamageMob(damages)
@@ -273,7 +273,7 @@
 				i: spell.config.target,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'paralyze', // this sets the flag,
-				duration: buffs.arclightDebuff.duration,
+				duration: buffs.arclight.paralyzeDuration,
 			}]
 		}])
 

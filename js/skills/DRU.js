@@ -114,7 +114,7 @@
 								i: tgt,
 								row: my.row, // this identifies unique buff state/icon
 								key: 'chill', // this sets the flag,
-								duration: 2.5,
+								duration: buffs.blizzard.chillDuration,
 							}],
 							...stats.spellDamage(tgt),
 						})
@@ -221,7 +221,7 @@
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
-				effects: { stagger: true },
+				effects: { stagger: spell.data.staggers },
 				...stats.spellDamage(tgt),
 			})
 		}
@@ -256,7 +256,7 @@
 				i: spell.config.target,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'chill', // this sets the flag,
-				duration: 30,
+				duration: buffs.tornado.chillDuration,
 			}],
 			...stats.spellDamage(spell.config.target)
 		})

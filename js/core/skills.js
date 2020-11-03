@@ -304,6 +304,8 @@ var skills;
 				hitBonus: getSkillValues(5.5, .5),
 				critBonus: getSkillValues(-.5, .5),
 				cooldownTime: 0,
+				isRanged: true,
+				isPiercing: true,
 				description: 'Bleeds single target for % weapon damage over 24 seconds - all hits on this target receives damage bonus % - Ranged - Piercing',
 			}, {
 				name: 'Whirlwind',
@@ -322,6 +324,7 @@ var skills;
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(2.5, .5),
 				requiresFrontRow: true,
+				isPiercing: true,
 				cooldownTime: 30,
 				description: 'Pummel: Single-target piercing stun, large hate - front row only',
 			}, {
@@ -332,6 +335,8 @@ var skills;
 				hitBonus: getSkillValues(5.5, .5),
 				critBonus: getSkillValues(4, .5),
 				cooldownTime: 20,
+				isRanged: true,
+				staggers: true,
 				description: 'Ranged arcane attack that double-strikes for % damage and interrupts; bonus damage to back row',
 			}, {
 				name: 'Shockwave',
@@ -341,6 +346,7 @@ var skills;
 				hitBonus: getSkillValues(-1, .5),
 				critBonus: getSkillValues(-7, .5),
 				requiresFrontRow: true,
+				staggers: true,
 				cooldownTime: 25,
 				description: 'Hit all front row targets; bonus 20% damage with shield equipped, staggers',
 			}, {
@@ -359,6 +365,7 @@ var skills;
 				hitBonus: getSkillValues(2.5, .5),
 				critBonus: getSkillValues(2.5, .5),
 				cooldownTime: 24,
+				isPiercing: true,
 				description: 'Leaping strike that makes warrior invincible while in the air - Pierces defenses',
 			}, {
 				name: 'Primal Stomp',
@@ -368,6 +375,8 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(-5, .5),
 				cooldownTime: 16,
+				isRanged: true,
+				staggers: true,
 				description: 'stagger all targets - small damage and high threat - Ranged',
 			}, {
 				name: 'Bulwark',
@@ -405,6 +414,7 @@ var skills;
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(-1, .5),
 				cooldownTime: 30,
+				isRanged: true,
 				description: 'Bash your target - Effect: 10% chance to stagger.',
 			}, {
 				name: 'Rebuke',
@@ -414,6 +424,7 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 15,
+				staggers: true,
 				description: 'Hits 3x targets - hits for x damage Effect: staggers',
 			}, {
 				name: 'Vengeance',
@@ -455,7 +466,6 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 30,
-				stunDuration: 5,
 				description: 'Hits target for % damage and stuns for x seconds',
 			}, {
 				name: 'Divine Judgment',
@@ -467,6 +477,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 5,
+				isBlighted: true,
 				description: 'Strikes for X arcane damage - Effect: Blighted - 50% bonus to undead, demons.',
 			}, {
 				name: 'Blessed Hammer',
@@ -478,6 +489,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 7,
+				isBlighted: true,
 				description: 'Strikes 5x targets for arcane damage.',
 			}, {
 				name: 'Seal of Sanctuary',
@@ -561,6 +573,8 @@ var skills;
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(-2, .5),
 				cooldownTime: 10,
+				isRanged: true,
+				isPiercing: true,
 				description: 'Ranged melee strike - Effect: Target bleeds',
 			}, {
 				name: 'Astral Blade',
@@ -671,6 +685,7 @@ var skills;
 				hitBonus: getSkillValues(-5, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 20,
+				isRanged: true,
 				description: 'Launch an explosive fire arrow at 3x targets',
 			}, {
 				name: 'Trueshot Strike',
@@ -680,6 +695,7 @@ var skills;
 				hitBonus: getSkillValues(7, .5),
 				critBonus: getSkillValues(6.5, .5),
 				cooldownTime: 30,
+				isRanged: true,
 				description: 'Powerful single strike on single target (cannot dodge, parry, riposte)',
 			}, {
 				name: 'Spread Shot',
@@ -689,6 +705,7 @@ var skills;
 				hitBonus: getSkillValues(-7, .5),
 				critBonus: getSkillValues(-3.5, .5),
 				cooldownTime: 24,
+				isRanged: true,
 				description: 'Hits up to 5x targets for % damage. Hits the front row first.',
 			}, {
 				name: 'Blade Storm',
@@ -698,6 +715,7 @@ var skills;
 				hitBonus: getSkillValues(1.5, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 16,
+				isPiercing: true,
 				description: 'Unleash a piercing five-hit combo on your target for % damage - Final blow hits for quad damage',
 			}, {
 				name: 'Suppressing Volley',
@@ -707,6 +725,7 @@ var skills;
 				hitBonus: getSkillValues(-1.5, .5),
 				critBonus: getSkillValues(-1.5, .5),
 				cooldownTime: 12,
+				isRanged: true,
 				description: 'Hits 3x targets - Reduces threat and debuffs target hit chance for 21 seconds - stacks up to 5x for greater affect.',
 			}, {
 				name: 'Burning Embers',
@@ -729,6 +748,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 2,
 				cooldownTime: 12,
+				staggers: true,
 				description: 'Hits all targets for X lightning damage. stagger all targets.',
 			}, {
 				name: 'Faerie Flame',
@@ -810,6 +830,7 @@ var skills;
 				hitBonus: getSkillValues(-4, .5),
 				critBonus: getSkillValues(3.5, .5),
 				cooldownTime: 30,
+				stuns: 3,
 				description: 'Strikes target for % damage - Stuns for 3 seconds',
 			}, {
 				name: 'Chakra Blast',
@@ -826,6 +847,7 @@ var skills;
 				enhancedDamage: getSkillValues(.88, .09),
 				critBonus: getSkillValues(2, .5),
 				cooldownTime: 12,
+				isRanged: true,
 				description: 'Fireball attack that hits for x % arcane damage',
 			}, {
 				name: 'Hurricane Kicks',
@@ -862,6 +884,7 @@ var skills;
 				hitBonus: getSkillValues(2, .5),
 				critBonus: getSkillValues(4, .5),
 				cooldownTime: 30,
+				staggers: true,
 				description: 'Delivers a powerful blow that staggers and paralyzes your target for 10 seconds',
 			}, {
 				name: 'Inner Sanctum',
@@ -897,6 +920,7 @@ var skills;
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(7.5, .5),
 				cooldownTime: 15,
+				staggers: true,
 				description: 'Strike target for X% damage and release a nova that hits 3x targets for % arcane damage - Effect: Staggers',
 			}, {
 				name: 'Faded Strike',
@@ -933,6 +957,8 @@ var skills;
 				hitBonus: getSkillValues(-4.5, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 16,
+				isRanged: true,
+				isPiercing: true,
 				description: 'Strike single target from behind for X% damage - Effect: Ranged & Piercing',
 			}, {
 				name: 'Widow Strike',
@@ -969,6 +995,8 @@ var skills;
 				hitBonus: getSkillValues(9, .5),
 				critBonus: getSkillValues(3, .5),
 				cooldownTime: 10,
+				isRanged: true,
+				isPiercing: true,
 				description: 'Apply explosive flash powder to your weapon and strike for X fire damage - Effect: reduces threat and target\'s dodge for X seconds - Ranged & Piercing',
 			}, {
 				name: 'Talisman of Treachery',
@@ -1068,6 +1096,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2,
 				cooldownTime: 15,
+				staggers: true,
 				description: 'Hits 3x targets for X arcane damage - Reduces threat & Staggers.',
 			}, {
 				name: 'Tornado',
@@ -1148,6 +1177,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 2,
 				cooldownTime: 6,
+				isBlighted: true,
 				description: 'Single-target arcane damage - +50% damage to undead and demons.',
 			}, {
 				name: 'Condemnation',
@@ -1159,6 +1189,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 12,
+				isBlighted: true,
+				staggers: true,
 				description: 'Hit 3x targets arcane damage - +50% damage to undead, demons.',
 			}, {
 				name: 'Sacred Revelation',
@@ -1697,6 +1729,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 0,
+				staggers: true,
 				description: 'Hits for X lightning damage does X lightning damage over X seconds Effect: Staggers target.',
 			}, {
 				name: 'Mind Blitz',
@@ -1854,6 +1887,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3.5,
 				cooldownTime: 0,
+				staggers: true,
 				description: 'hits 3x targets for X lightning damage: Effect: staggers and lowers lightning resistance for X seconds.',
 			}, {
 				name: 'Fire Wall',

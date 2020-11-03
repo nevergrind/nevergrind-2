@@ -210,13 +210,13 @@ var combat;
 				combat.popupDamage(d.index, 'MISS!')
 				return d
 			}
+			if (rand() * 100 < mob.dodgeChance(d.index)) {
+				d.damage = 0
+				combat.popupDamage(d.index, 'DODGE!')
+				return d
+			}
 			if (!d.isPiercing) {
-				if (rand() * 100 < mob.dodgeChance(d.index)) {
-					d.damage = 0
-					combat.popupDamage(d.index, 'DODGE!')
-					return d
-				}
-				else if (timers.castBar < 1) {
+				if (timers.castBar < 1) {
 					if (rand() * 100 < mob.riposteChance(d.index)) {
 						d.damage = 0
 						combat.txDamageHero(d.index, [ mob.getMobDamage(d.index, my.row, true) ])

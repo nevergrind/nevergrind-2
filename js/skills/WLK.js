@@ -150,7 +150,7 @@
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'fear', // this sets the flag,
-					duration: 12,
+					duration: buffs.hauntingVision.fearDuration,
 				}],
 			})
 		}
@@ -180,7 +180,7 @@
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'chill', // this sets the flag,
-					duration: 6,
+					duration: buffs.icingDeath.chillDuration,
 				}],
 			})
 		}
@@ -224,7 +224,7 @@
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'fear', // this sets the flag,
-				duration: 25,
+				duration: buffs.panicStrike.fearDuration,
 			}],
 		})
 		combat.txDamageMob(damages)

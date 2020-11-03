@@ -78,7 +78,7 @@
 				index: tgt,
 				enhancedDamage: skills.ROG[2].enhancedDamage[my.skills[damage.index]],
 				damageType: DAMAGE_TYPE.ARCANE,
-				effects: { stagger: true },
+				effects: { stagger: spell.data.staggers },
 				...hit,
 			})
 		}
@@ -104,7 +104,7 @@
 				i: my.target,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'chill', // this sets the flag,
-				duration: 7,
+				duration: buffs.fadedStrike.chillDuration,
 			}],
 		}
 		damages.push(hit)
@@ -193,8 +193,8 @@
 			key: 'backstab',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
-			isRanged: true,
-			isPiercing: true,
+			isRanged: data.isRanged,
+			isPiercing: data.isPiercing,
 			hitBonus: data.hitBonus[my.skills[index]],
 		}
 		damages.push(hit)
@@ -304,8 +304,8 @@
 			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'flashStrike',
 			index: my.target,
-			isRanged: true,
-			isPiercing: true,
+			isRanged: data.isRanged,
+			isPiercing: data.isPiercing,
 			enhancedDamage: enhancedDamage,
 			damageType: DAMAGE_TYPE.FIRE,
 			hitBonus: data.hitBonus[my.skills[index]],

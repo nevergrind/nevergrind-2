@@ -97,10 +97,13 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 3,
 			hate: 1.6,
 			job: JOB.CLERIC,
-			duration: 3,
+			stunDuration: 3,
 		},
 		holySanctuary: { hate: -2.5 },
-		forceOfGlory: { hate: 3 },
+		forceOfGlory: {
+			hate: 3,
+			stunDuration: 3,
+		},
 		// instant heals
 		circleOfPrayer: {
 			name: 'Circle of Prayer',
@@ -179,7 +182,10 @@ let buffs; // buff data for use with skill/spells/icons
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		whirlwind: { hate: 1 },
-		pummel: { hate: 2.5 },
+		pummel: {
+			hate: 2.5,
+			stunDuration: 3,
+		},
 		doubleThrow: { hate: .8 },
 		shockwave: { hate: .8 },
 		frenzy: {
@@ -223,15 +229,24 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'An intrepid shout makes you feel dauntless!',
 			fadeMsg: 'The intrepid shout fades.'
 		},
-		furiousCleave: { hate: 1.5 },
+		furiousCleave: {
+			hate: 1.5,
+			stunDuration: 2,
+		},
 		// wiz
 		fireBolt: { hate: 1 },
-		iceBolt: { hate: -.5 },
+		iceBolt: {
+			hate: -.5,
+			chillDuration: 16,
+		},
 		lightningBolt: { hate: .7 },
 		magicMissiles: { hate: 1.2 },
 		fireball: { hate: .75 },
 		chainLightning: { hate: .5 },
-		frostNova: { hate: -2 },
+		frostNova: {
+			hate: -2,
+			chillDuration: 8,
+		},
 		meteor: { hate: 2 },
 		meteorStrike: {
 			name: 'Meteor Strike',
@@ -272,12 +287,18 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'You are protected by a mana shell.',
 			fadeMsg: 'The mana shell fades.'
 		},
-		deepFreeze: { hate: -1, },
+		deepFreeze: {
+			hate: -1,
+			freezeDuration: 5,
+		},
 		// dru
 		starfire: { hate: 1 },
 		fissure: { hate: .75 },
 		lightningBlast: { hate: .5 },
-		blizzard: { hate: -.5 },
+		blizzard: {
+			hate: -.5,
+			chillDuration: 3,
+		},
 		toxicSpores: {
 			name: 'Toxic Spores',
 			hate: .7,
@@ -301,7 +322,10 @@ let buffs; // buff data for use with skill/spells/icons
 			damageType: DAMAGE_TYPE.FIRE,
 		},
 		barbedThicket: { hate: -.5 },
-		tornado: { hate: .5 },
+		tornado: {
+			hate: .5,
+			chillDuration: 30,
+		},
 		naturesTouch: {
 			name: 'Nature\'s Touch',
 			img: 8,
@@ -351,7 +375,10 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'A branch spirit rests in your heart.',
 			fadeMsg: 'Your branch spirit fades.'
 		},
-		frostRift: { hate: -.25 },
+		frostRift: {
+			hate: -.25,
+			chillDuration: 5,
+		},
 		poisonNova: { hate: .7 },
 		scourge: {
 			name: 'Scourge',
@@ -374,7 +401,10 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 45,
 			damageType: DAMAGE_TYPE.ARCANE,
 		},
-		glacialShard: { hate: -1 },
+		glacialShard: {
+			hate: -1,
+			freezeDuration: 3,
+		},
 		affliction: {
 			name: 'Affliction',
 			img: 6,
@@ -496,6 +526,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 5,
 			interval: 3,
 			duration: 15,
+			fearDuration: 15,
 			damageType: DAMAGE_TYPE.ARCANE,
 		},
 		icingDeath: {
@@ -503,6 +534,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 5,
 			job: JOB.WARLOCK,
 			hate: -1,
+			chillDuration: 6,
 			damageType: DAMAGE_TYPE.ICE,
 		},
 		curseOfShadows: {
@@ -518,7 +550,10 @@ let buffs; // buff data for use with skill/spells/icons
 			reduceArcaneResist: .2,
 			damageType: DAMAGE_TYPE.ARCANE,
 		},
-		panicStrike: { hate: 1.5 },
+		panicStrike: {
+			hate: 1.5,
+			fearDuration: 25,
+		},
 		drainSoul: {
 			name: 'Drain Soul',
 			img: 8,
@@ -603,7 +638,10 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 33,
 			damageType: DAMAGE_TYPE.POISON,
 		},
-		colorShift: { hate: -2},
+		colorShift: {
+			hate: -2,
+			stunDuration: 4,
+		},
 		phaseBlade: {
 			name: 'Phase Blade',
 			img: 5,
@@ -679,8 +717,14 @@ let buffs; // buff data for use with skill/spells/icons
 			damageType: DAMAGE_TYPE.ARCANE,
 		},
 		lavaBolt: { hate: 1 },
-		thunderclap: { hate: 1.2 },
-		frozenOrb: { hate: -.5 },
+		thunderclap: {
+			hate: 1.2,
+			stunDuration: 1,
+		},
+		frozenOrb: {
+			hate: -.5,
+			chillDuration: 7,
+		},
 		staticStorm: {
 			name: 'Static Storm',
 			img: 3,
@@ -701,7 +745,11 @@ let buffs; // buff data for use with skill/spells/icons
 			isDebuff: true,
 		},
 		fireWall: { hate: 1 },
-		glacialSpike: { hate: -.5 },
+		glacialSpike: {
+			hate: -.5,
+			chillDuration: 12,
+			freezeDuration: 4,
+		},
 		primordialSludge: {
 			name: 'Primordial Sludge',
 			img: 6,
@@ -720,6 +768,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 10,
 			interval: 3,
 			duration: 30,
+			paralyzeDuration: 15,
 			damageType: DAMAGE_TYPE.LIGHTNING,
 		},
 		arclightDebuff: {
@@ -775,7 +824,10 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: 'Your charismatic aura fades.'
 		},
 		bellow: { hate: 1.25 },
-		sonicBoom: { hate: 1.5 },
+		sonicBoom: {
+			hate: 1.5,
+			stunDuration: 3,
+		},
 		euphonicDirge: {
 			name: 'Euphonic Dirge',
 			img: 2,
@@ -797,7 +849,10 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 30,
 			damageType: DAMAGE_TYPE.FIRE,
 		},
-		crashingChords: { hate: 1 },
+		crashingChords: {
+			hate: 1,
+			paralyzeDuration: 12,
+		},
 		battleHymn: {
 			name: 'Battle Hymn',
 			img: 5,
@@ -908,7 +963,10 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 1.2,
 			duration: 40,
 		},
-		holyWrath: { hate: 1.5 },
+		holyWrath: {
+			hate: 1.5,
+			stunDuration: 5,
+		},
 		divineJudgment: { hate: 1.25 },
 		blessedHammer: { hate: 1.5 },
 		sealOfSanctuary: {
@@ -1009,6 +1067,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 12,
 			interval: 1,
 			duration: 12,
+			fearDuration: 12,
 			isDebuff: true,
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
@@ -1187,7 +1246,10 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 1,
 			msg: (buff) => 'Viper Strike heals you for ' + buff.damage + ' health.',
 		},
-		palmStrike: { hate: 1.3 },
+		palmStrike: {
+			hate: 1.3,
+			paralyzeDuration: 10,
+		},
 		innerSanctum: {
 			name: 'Inner Sanctum',
 			img: 10,
@@ -1221,6 +1283,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 1,
 			interval: 30,
 			duration: 45,
+			chillDuration: 7,
 			resistAll: [0, 12, 20, 28, 36, 44, 52, 60],
 			ratioByStack: [0, .2, .4, .6, .8, 1],
 			dodgeChance: [0, .03, .038, .046, .054, .062, .07, .077],

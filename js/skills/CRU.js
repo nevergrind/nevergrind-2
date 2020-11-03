@@ -31,6 +31,7 @@
 			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 			key: 'zealousSlam',
 			index: tgt,
+			isRanged: data.isRanged,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
 		}
@@ -61,7 +62,7 @@
 				index: tgt,
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
-				effects: { stagger: true },
+				effects: { stagger: spell.data.staggers },
 			})
 		}
 		combat.txDamageMob(damages)
@@ -72,7 +73,7 @@
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
-			requiresFrontRow: true,
+			requiresFrontRow: data.requiresFrontRow,
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -176,7 +177,7 @@
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'stun', // this sets the flag,
-				duration: spell.data.stunDuration,
+				duration: spell.holyWrath.stun,
 			}],
 			...stats.spellDamage(spell.config.target)
 		}])
@@ -196,7 +197,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			isBlighted: true,
+			isBlighted: spell.data.isBlighted,
 			...stats.spellDamage(spell.config.target)
 		}])
 		spell.triggerSkillCooldown(spell.config.skillIndex)
@@ -213,6 +214,7 @@
 	function blessedHammerCompleted() {
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
+		let isBlighted = spell.data.isBlighted
 		let targetPattern = [0, 1, 2, -2, -1]
 		let targets = []
 		for (var i=0; i<5; i++) {
@@ -226,6 +228,7 @@
 					index: tgt,
 					spellType: spellType,
 					damageType: damageType,
+					isBlighted: isBlighted,
 					...stats.spellDamage(tgt),
 				}
 				if (rand() > .5) {

@@ -100,7 +100,6 @@
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
-			isRanged: true,
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -113,6 +112,7 @@
 			key: 'doomThrust',
 			index: my.target,
 			enhancedDamage: enhancedDamage,
+			isRanged: data.isRanged,
 			hitBonus: data.hitBonus[my.skills[index]],
 		})
 		combat.txDamageMob(damages)
@@ -243,7 +243,7 @@
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'fear', // this sets the flag,
-				duration: 12,
+				duration: buffs.bloodTerror.fearDuration,
 			}],
 		}])
 		spell.triggerSkillCooldown(spell.config.skillIndex)

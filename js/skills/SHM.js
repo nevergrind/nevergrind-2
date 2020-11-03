@@ -38,7 +38,7 @@
 				i: spell.config.target,
 				row: my.row, // this identifies unique buff state/icon
 				key: 'chill', // this sets the flag,
-				duration: 5,
+				duration: buffs.frostRift.chillDuration,
 			}],
 			...stats.spellDamage(spell.config.target)
 		}])
@@ -170,7 +170,7 @@
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'freeze', // this sets the flag,
-					duration: 3,
+					duration: buffs.glacialShard.freezeDuration,
 				}],
 			})
 		}

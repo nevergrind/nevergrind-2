@@ -349,6 +349,11 @@ var tooltip;
 		tooltip.isOpen = 0
 		tooltipEl.innerHTML = ''
 	}
+	function buffDuration(seconds) {
+		if (seconds === 1) return seconds + ' second'
+		else return seconds + ' seconds'
+
+	}
 	let skillHtml = ''
 	function getSkillHtml(config) {
 		console.info('getSkillHtml', config)
@@ -397,6 +402,33 @@ var tooltip;
 					if (config.requiresFrontRow) {
 						skillHtml += `<div class="chat-warning">Requires Front Row Target</div>`
 					}
+					if (config.staggers) {
+						skillHtml += `<div class="chat-warning">Staggers Target</div>`
+					}
+					if (config.stunDuration) {
+						skillHtml += `<div class="chat-warning">Stuns target for ${buffDuration(config.stunDuration)}</div>`
+					}
+					if (config.chillDuration) {
+						skillHtml += `<div class="chat-warning">Chills target for ${buffDuration(config.chillDuration)}</div>`
+					}
+					if (config.freezeDuration) {
+						skillHtml += `<div class="chat-warning">Freezes target for ${buffDuration(config.freezeDuration)}</div>`
+					}
+					if (config.paralyzeDuration) {
+						skillHtml += `<div class="chat-warning">Paralyzes target for ${buffDuration(config.paralyzeDuration)}</div>`
+					}
+					if (config.fearDuration) {
+						skillHtml += `<div class="chat-warning">Fears target for ${buffDuration(config.fearDuration)}</div>`
+					}
+					if (config.isRanged) {
+						skillHtml += `<div class="chat-warning">Ranged: Full damage to back row</div>`
+					}
+					if (config.isPiercing) {
+						skillHtml += `<div class="chat-warning">Piercing: Cannot be parried or riposted</div>`
+					}
+					if (config.isBlighted) {
+						skillHtml += `<div class="chat-warning">Blighted: 50% enhanced damage to undead and demons</div>`
+					}
 					skillHtml += divider
 				}
 				skillHtml += `<div style="color: gold">${config.description}</div>
@@ -407,7 +439,6 @@ var tooltip;
 		return skillHtml
 	}
 	function showSkill(config) {
-		console.info('showSkill', config)
 		tooltipEl.innerHTML = getSkillHtml(config)
 		tooltipEl.style.bottom = '.5rem'
 		tooltipEl.style.right = '.5rem'
@@ -418,7 +449,6 @@ var tooltip;
 		setTooltipVisible(.5)
 	}
 	function handleEnter(event) {
-		console.info('handleEnter', event.currentTarget.id)
 		if (event.currentTarget.id === ('skill-primary-attack-btn')) {
 			hit = stats.primaryAutoAttackDamage(0, true)
 			showSkill({

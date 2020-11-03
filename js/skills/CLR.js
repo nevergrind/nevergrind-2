@@ -50,7 +50,7 @@
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...stats.spellDamage(spell.config.target),
-			isBlighted: true,
+			isBlighted: spell.data.isBlighted,
 		}])
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
@@ -74,7 +74,7 @@
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
 				...stats.spellDamage(tgt),
-				isBlighted: true,
+				isBlighted: spell.data.isBlighted,
 			})
 		}
 		combat.txDamageMob(damages)
@@ -103,7 +103,7 @@
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'stun', // this sets the flag,
-					duration: 3,
+					duration: buffs.sacredRevelation.stunDuration,
 				}],
 				...stats.spellDamage(tgt),
 			})
@@ -153,7 +153,7 @@
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'stun', // this sets the flag,
-				duration: 5,
+				duration: buffs.forceOfGlory.stunDuration,
 			}],
 			...stats.spellDamage(spell.config.target)
 		}])

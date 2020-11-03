@@ -23,7 +23,7 @@
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
-			requiresFrontRow: true,
+			requiresFrontRow: data.requiresFrontRow,
 		}
 		if (skills.notReady(config)) return
 		spell.expendMana(data, index)
@@ -98,7 +98,7 @@
 			...hit,
 			key: 'trueshotStrike',
 			index: tgt,
-			isPiercing: true,
+			isPiercing: data.isPiercing,
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
 		})
@@ -165,7 +165,7 @@
 				...hit,
 				key: 'bladeStorm',
 				index: tgt,
-				isPiercing: true,
+				isPiercing: data.isPiercing,
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})
@@ -267,7 +267,7 @@
 					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
 					isMob: spell.config.isMob,
-					effects: { stagger: true },
+					effects: { stagger: spell.data.staggers },
 					...stats.spellDamage(i)
 				})
 			}

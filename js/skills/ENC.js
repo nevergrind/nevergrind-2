@@ -57,7 +57,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			effects: { stagger: true },
+			effects: { stagger: spell.data.staggers },
 			...stats.spellDamage(spell.config.target)
 		}])
 		// dot
@@ -138,7 +138,7 @@
 						i: i, // target
 						row: my.row, // this identifies unique buff state/icon
 						key: 'stun', // this sets the flag,
-						duration: 4,
+						duration: buffs.colorShift.stunDuration,
 					}],
 					...stats.spellDamage(i)
 				})
