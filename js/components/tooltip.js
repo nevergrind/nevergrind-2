@@ -356,8 +356,8 @@ var tooltip;
 	}
 	let skillHtml = ''
 	function getSkillHtml(config) {
-		console.info('getSkillHtml', config)
 		let rank = my.skills[config.index]
+		console.info('getSkillHtml config', config)
 		skillHtml = `
 		<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">
 			<div id="tooltip-name-bg" class="flex-column flex-center align-center">
@@ -420,6 +420,9 @@ var tooltip;
 					if (config.fearDuration) {
 						skillHtml += `<div class="chat-warning">Fears target for ${buffDuration(config.fearDuration)}</div>`
 					}
+					if (config.slowPercent) {
+						skillHtml += `<div class="chat-warning">Slows target ${ng.toPercent(config.slowPercent)}%</div>`
+					}
 					if (config.isRanged) {
 						skillHtml += `<div class="chat-warning">Ranged: Full damage to back row</div>`
 					}
@@ -430,7 +433,31 @@ var tooltip;
 						skillHtml += `<div class="chat-warning">Blighted: 50% enhanced damage to undead and demons</div>`
 					}
 					skillHtml += divider
+					// hit damage
+					hit = {}
+					if (config.enhancedDamage) {
+						// TODO: Something off here with physical damage calc
+						if (config.isRangedDamage) {
+							hit = stats.rangedDamage(-1, -100, true)
+						}
+						else {
+							hit = stats.skillDamage(-1, -100, true)
+						}
+						if (hit.min) {
+							hit.min *= config.enhancedDamage[rank]
+							hit.max *= config.enhancedDamage[rank]
+						}
+					}
+					else if (config.spellDamage) {
+						hit = stats.spellDamage(-1, -100, config)
+					}
+					console.info('hit', hit)
+					if (hit.min) {
+						config.damageString = _.max([1, round(hit.min)]) +'-'+ _.max([1, round(hit.max)])
+						skillHtml += `<div>Damage: ${config.damageString}</div>`
+					}
 				}
+				console.info('hit:', config.damageString, hit)
 				skillHtml += `<div style="color: gold">${config.description}</div>
 				</div>
 			</div>

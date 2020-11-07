@@ -686,6 +686,7 @@ var skills;
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 20,
 				isRanged: true,
+				isRangedDamage: true,
 				description: 'Launch an explosive fire arrow at 3x targets',
 			}, {
 				name: 'Trueshot Strike',
@@ -696,6 +697,7 @@ var skills;
 				critBonus: getSkillValues(6.5, .5),
 				cooldownTime: 30,
 				isRanged: true,
+				isRangedDamage: true,
 				description: 'Powerful single strike on single target (cannot dodge, parry, riposte)',
 			}, {
 				name: 'Spread Shot',
@@ -706,6 +708,7 @@ var skills;
 				critBonus: getSkillValues(-3.5, .5),
 				cooldownTime: 24,
 				isRanged: true,
+				isRangedDamage: true,
 				description: 'Hits up to 5x targets for % damage. Hits the front row first.',
 			}, {
 				name: 'Blade Storm',
@@ -726,6 +729,7 @@ var skills;
 				critBonus: getSkillValues(-1.5, .5),
 				cooldownTime: 12,
 				isRanged: true,
+				isRangedDamage: true,
 				description: 'Hits 3x targets - Reduces threat and debuffs target hit chance for 21 seconds - stacks up to 5x for greater affect.',
 			}, {
 				name: 'Burning Embers',

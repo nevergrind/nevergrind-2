@@ -17,19 +17,41 @@
 	///////////////////////////////////////////
 
 	function crossSlash(o) {
-		ask.pierce(o, {
-			size: 300,
-			duration: .25,
+		ask.slash(o, {
+			duration: .2,
+			size: 250,
+		})
+		delayedCall(.1, () => {
+			ask.starburst(_.clone(o))
 		})
 	}
 
 	function explosiveShot(o) {
+		ask.sunburst(_.clone(o), {
+			duration: 1,
+			frameDuration: .25,
+			sizeEnd: 450
+		})
+		o.endFrame = 1
 		ask.explosion(o, {
 			duration: 1.25,
-			sizeStart: 60,
-			sizeEnd: 300,
 			contrastStart: 2,
 			brightnessStart: 2,
+			sizeStart: 0,
+			sizeEnd: 325,
+			rotation: -90,
+			frameDuration: .5,
+			frameEase: Power2.easeInOut,
+		})
+		ask.explosion(o, {
+			duration: 1.25,
+			contrastStart: 2,
+			brightnessStart: 2,
+			sizeStart: 0,
+			sizeEnd: 325,
+			rotation: 90,
+			frameDuration: .3,
+			frameEase: Power2.easeInOut,
 		})
 	}
 
@@ -39,11 +61,19 @@
 			contrastStart: 2,
 			brightnessStart: 2,
 		})
+		delayedCall(.1, () => {
+			ask.moonburst(_.clone(o), {
+				sizeEnd: 350
+			})
+		})
 	}
 
 	function spreadShot(o) {
 		ask.explosion(o, {
 			duration: 1.2
+		})
+		delayedCall(.1, () => {
+			ask.moonburst(_.clone(o))
 		})
 	}
 
@@ -69,9 +99,36 @@
 
 	function burningEmbers(o) {
 		// add particles explosion
+		o.endFrame = 2
 		ask.explosion(o, {
-			duration: 1.5,
+			contrastStart: 4,
+			brightnessStart: 12,
+			duration: 1,
+			frameDuration: .33,
+			frameEase: Power2.easeInOut,
+			startSize: 0,
+			sizeEnd: 500,
+			ease: Power4.easeOut,
+		})
+		ask.explosion(o, {
+			contrastStart: 3,
+			brightnessStart: 6,
+			duration: 1,
+			frameDuration: .33,
+			frameEase: Power2.easeInOut,
+			startSize: 0,
 			sizeEnd: 400,
+			ease: Power4.easeOut,
+		})
+		ask.explosion(o, {
+			contrastStart: 2,
+			brightnessStart: 4,
+			duration: 1,
+			frameDuration: .33,
+			frameEase: Power2.easeInOut,
+			startSize: 0,
+			sizeEnd: 250,
+			ease: Power4.easeOut,
 		})
 	}
 
@@ -94,24 +151,95 @@
 	}
 	function faerieFlame(o) {
 		// explosion + particles fall
-		ask.explosion(o, {
-			duration: 1.2
+		o.endFrame = 2
+		ask.flameRip(o, {
+			duration: .75,
+			frameDuration: .3,
+			sizeStart: 50,
+			sizeEnd: 200,
+			yoyo: true,
+			yStart: ask.shadowY(o.index),
+			anchorY: .845, // 433/512
+			ease: Power4.easeOut,
 		})
 	}
 	function fungalGrowth(o) {
 		// flash of light animates down over target
+		o.endFrame = 2
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 5,
+			contrastStart: 2,
+			brightnessStart: 3,
+			duration: 1,
+			frameDuration: .33,
+			frameEase: Power3.easeOut,
+			rotation: 180,
+			startSize: 0,
 			sizeEnd: 500,
+			ease: Power3.easeOut,
+		})
+		ask.explosion(o, {
+			targetMob: false,
+			contrastStart: 2,
+			brightnessStart: 3,
+			duration: 1,
+			frameDuration: .33,
+			frameEase: Power3.easeOut,
+			rotation: -180,
+			startSize: 0,
+			sizeEnd: 500,
+			ease: Power3.easeOut,
+		})
+		ask.explosion(o, {
+			targetMob: false,
+			contrastStart: 4,
+			brightnessStart: 8,
+			duration: 1,
+			frameDuration: .33,
+			frameEase: Power3.easeOut,
+			rotation: 90,
+			startSize: 0,
+			sizeEnd: 250,
+			ease: Power3.easeOut,
+		})
+		ask.explosion(o, {
+			targetMob: false,
+			contrastStart: 4,
+			brightnessStart: 8,
+			duration: 1,
+			frameDuration: .33,
+			frameEase: Power3.easeOut,
+			rotation: -90,
+			startSize: 0,
+			sizeEnd: 250,
+			ease: Power3.easeOut,
 		})
 	}
 	function shimmeringOrb(o) {
 		// buff received - filter on icon?
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 5,
-			sizeEnd: 500,
+			contrastStart: 3,
+			brightnessStart: 3,
+			duration: 1.5,
+			rotation: 135,
+			startSize: 200,
+			sizeEnd: 300,
+			startAlpha: .6,
+			alpha: 0,
+			ease: Power2.easeOut,
+		})
+		ask.explosion(o, {
+			targetMob: false,
+			contrastStart: 3,
+			brightnessStart: 3,
+			duration: 1.5,
+			rotation: -135,
+			startSize: 200,
+			sizeEnd: 300,
+			startAlpha: .6,
+			alpha: 0,
+			ease: Power2.easeOut,
 		})
 	}
 	function spiritOfTheHunter(o) {

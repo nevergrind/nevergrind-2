@@ -602,24 +602,25 @@ var stats = {};
 			? LABEL.HAND_TO_HAND
 			: items.eq[slot].weaponSkill
 	}
-	function spellDamage(index = 0, critMod = 0) {
-		max = spell.data.spellDamage(my.skills[spell.index])
+	function spellDamage(index = 0, critMod = 0, config) {
+		if (!config) config = { ...spell.data }
+		max = config.spellDamage(my.skills[config.index])
 		// enhance by type % and ALL%
-		if (spell.data.damageType === DAMAGE_TYPE.BLOOD) enhanceDamage = enhanceBlood()
-		else if (spell.data.damageType === DAMAGE_TYPE.POISON) enhanceDamage = enhancePoison()
-		else if (spell.data.damageType === DAMAGE_TYPE.ARCANE) enhanceDamage = enhanceArcane()
-		else if (spell.data.damageType === DAMAGE_TYPE.LIGHTNING) enhanceDamage = enhanceLightning()
-		else if (spell.data.damageType === DAMAGE_TYPE.FIRE) enhanceDamage = enhanceFire()
-		else if (spell.data.damageType === DAMAGE_TYPE.ICE) enhanceDamage = enhanceIce()
+		if (config.damageType === DAMAGE_TYPE.BLOOD) enhanceDamage = enhanceBlood()
+		else if (config.damageType === DAMAGE_TYPE.POISON) enhanceDamage = enhancePoison()
+		else if (config.damageType === DAMAGE_TYPE.ARCANE) enhanceDamage = enhanceArcane()
+		else if (config.damageType === DAMAGE_TYPE.LIGHTNING) enhanceDamage = enhanceLightning()
+		else if (config.damageType === DAMAGE_TYPE.FIRE) enhanceDamage = enhanceFire()
+		else if (config.damageType === DAMAGE_TYPE.ICE) enhanceDamage = enhanceIce()
 		enhanceDamage += enhanceAll()
 
 		// wis boosts conjuration
-		if (my[spell.data.spellType] === PROP.CONJURATION) enhanceDamage += (stats.wis() / 15)
-		else if (my[spell.data.spellType] === PROP.EVOCATION) enhanceDamage += (stats.intel() / 15)
-		else if (my[spell.data.spellType] === PROP.ALTERATION) enhanceDamage += (stats.cha() / 15)
+		if (my[config.spellType] === PROP.CONJURATION) enhanceDamage += (stats.wis() / 15)
+		else if (my[config.spellType] === PROP.EVOCATION) enhanceDamage += (stats.intel() / 15)
+		else if (my[config.spellType] === PROP.ALTERATION) enhanceDamage += (stats.cha() / 15)
 
 		if (my.buffFlags.lichForm) {
-			if (spell.data.damageType === DAMAGE_TYPE.POISON || spell.data.damageType === DAMAGE_TYPE.BLOOD) {
+			if (config.damageType === DAMAGE_TYPE.POISON || config.damageType === DAMAGE_TYPE.BLOOD) {
 				enhanceDamage = buffs.lichForm.enhancePnB[my.buffs.lichForm.level]
 				// console.info('lichForm', buffs.lichForm.enhancePnB[my.buffs.lichForm.level])
 			}
@@ -627,12 +628,12 @@ var stats = {};
 
 		max = max * (1 + (enhanceDamage / 100))
 		// add spell damage by type and ALL
-		if (spell.data.damageType === DAMAGE_TYPE.BLOOD) addedDamage = addSpellBlood()
-		else if (spell.data.damageType === DAMAGE_TYPE.POISON) addedDamage = addSpellPoison()
-		else if (spell.data.damageType === DAMAGE_TYPE.ARCANE) addedDamage = addSpellArcane()
-		else if (spell.data.damageType === DAMAGE_TYPE.LIGHTNING) addedDamage = addSpellLightning()
-		else if (spell.data.damageType === DAMAGE_TYPE.FIRE) addedDamage = addSpellFire()
-		else if (spell.data.damageType === DAMAGE_TYPE.ICE) addedDamage = addSpellIce()
+		if (config.damageType === DAMAGE_TYPE.BLOOD) addedDamage = addSpellBlood()
+		else if (config.damageType === DAMAGE_TYPE.POISON) addedDamage = addSpellPoison()
+		else if (config.damageType === DAMAGE_TYPE.ARCANE) addedDamage = addSpellArcane()
+		else if (config.damageType === DAMAGE_TYPE.LIGHTNING) addedDamage = addSpellLightning()
+		else if (config.damageType === DAMAGE_TYPE.FIRE) addedDamage = addSpellFire()
+		else if (config.damageType === DAMAGE_TYPE.ICE) addedDamage = addSpellIce()
 		addedDamage += addSpellAll()
 
 		if (my.buffFlags.mirrorImage) {
@@ -640,10 +641,10 @@ var stats = {};
 		}
 
 		max += addedDamage
-		min = max * spell.data.spellVariance
+		min = max * config.spellVariance
 		// console.info('spellDamage 2', min, max)
 		// crit?
-		isCrit = ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
+		isCrit = mob.isAlive(index) && ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
 
 		if (isCrit) {
 			min *= 1.5
@@ -662,7 +663,7 @@ var stats = {};
 			isCrit: isCrit,
 		}
 	}
-	function skillDamage(index = 0, critMod = 0, skipSkillChecks) {
+	function skillDamage(index = 0, critMod = 0, skipSkillChecks = false) {
 		// normalized damage for skills
 		min = 1
 		max = 1
@@ -701,7 +702,7 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
+		isCrit = mob.isAlive(index) && ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
 		// console.info('critChance', ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()))
 
 		if (isCrit) {
@@ -820,7 +821,7 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
-	function rangedDamage(index = 0, critMod = 0) {
+	function rangedDamage(index = 0, critMod = 0, skipSkillCheck = false) {
 		min = 1
 		max = 1
 		atk = attack('Archery')
@@ -833,13 +834,13 @@ var stats = {};
 		min = min * (1 + (atk * .002))
 		max = max * (1 + (atk * .002))
 
-		isCrit = ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
+		isCrit = mob.isAlive(index) && ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
 		if (isCrit) {
 			min *= 2
 			max *= 2
 		}
 
-		combat.levelSkillCheck('Archery')
+		if (!skipSkillCheck) combat.levelSkillCheck('Archery')
 		return {
 			min: min,
 			max: max,

@@ -26,6 +26,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Chilled',
 			img: 4,
 			job: 'misc',
+			slowPercent: .2,
 		},
 		freeze: {
 			name: 'Frozen',
@@ -673,6 +674,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 15,
 			interval: 3,
 			duration: 45,
+			slowPercent: .3,
 			damageType: DAMAGE_TYPE.ARCANE,
 		},
 		sereneSigil: {
@@ -758,6 +760,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 15,
 			interval: 3,
 			duration: 45,
+			slowPercent: .2,
 			damageType: DAMAGE_TYPE.POISON,
 		},
 		arclight: {
@@ -885,6 +888,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 10,
 			interval: 3,
 			duration: 30,
+			slowPercent: .2,
 			damageType: DAMAGE_TYPE.ARCANE,
 		},
 		litanyOfLife: {

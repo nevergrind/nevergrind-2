@@ -498,10 +498,10 @@ let mobs = [];
 		// default speed for this mob
 		mobSpeed = mobs[i].speedMod
 		// things that modify mob speed
-		if (mobs[i].buffFlags.chill) mobSpeed += .2
-		if (mobs[i].buffFlags.shiftingEther) mobSpeed += .3
-		if (mobs[i].buffFlags.primordialSludge) mobSpeed += .2
-		if (mobs[i].buffFlags.consonantChain) mobSpeed += .2
+		if (mobs[i].buffFlags.chill) mobSpeed += buffs.chill.slowPercent
+		if (mobs[i].buffFlags.shiftingEther) mobSpeed += buffs.shiftingEther.slowPercent
+		if (mobs[i].buffFlags.primordialSludge) mobSpeed += buffs.primordialSludge.slowPercent
+		if (mobs[i].buffFlags.consonantChain) mobSpeed += buffs.consonantChain.slowPercent
 		// constraints
 		if (mobSpeed > 2) mobSpeed = 2
 		else if (mobSpeed < .5) mobSpeed = .5

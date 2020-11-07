@@ -1,5 +1,5 @@
 var ask;
-!function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, undefined) {
+!function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase, undefined) {
 	ask = {
 		askId: 0,
 		castingTweens: [],
@@ -20,7 +20,12 @@ var ask;
 		/**
 		 * h2h, 1hs, 2hs, 1hb, 2hb, pierce
 		*/
-		// skill effects:
+		// skill effects
+		flameRip,
+		groundExplosion,
+		moonburst,
+		starburst,
+		sunburst,
 		explosion, // single frame outward from center
 		nova, // frame outward (ground and center) can rotate
 		slash, // auto slash single frame
@@ -34,6 +39,8 @@ var ask;
 		// buffDoneImage (rotate, layer other images on it)
 		killCastingTweens,
 		getCastingKey,
+		animateFrames,
+		setFrame,
 	}
 	let val, el
 	const fadeIn = {
@@ -44,6 +51,74 @@ var ask;
 		startAt: { alpha: 1 },
 		alpha: 0
 	}
+	const moonburstDefaults = {
+		targetMob: true,
+		sizeStart: 50,
+		sizeEnd: 250,
+		duration: .8,
+		frameDuration: .2,
+		contrastStart: 2,
+		brightnessStart: 2,
+		contrastEnd: 1,
+		brightnessEnd: 1,
+		rotation: -135,
+		alpha: 0,
+		ease: Power2.easeOut,
+	}
+	const sunburstDefaults = {
+		targetMob: true,
+		sizeStart: 100,
+		sizeEnd: 400,
+		duration: .6,
+		frameDuration: .15,
+		contrastStart: 2,
+		brightnessStart: 2,
+		contrastEnd: 1,
+		brightnessEnd: 1,
+		rotation: 180,
+		alpha: 0,
+		ease: Power4.easeOut,
+	}
+	const starburstDefaults = {
+		targetMob: true,
+		sizeStart: 50,
+		sizeEnd: 200,
+		duration: .48,
+		frameDuration: .15,
+		contrastStart: 2,
+		brightnessStart: 2,
+		contrastEnd: 1,
+		brightnessEnd: 1,
+		rotation: 90,
+		alpha: 0,
+		ease: Power4.easeOut,
+	}
+	const flameRipDefaults = {
+		targetMob: true,
+		sizeStart: 250,
+		sizeEnd: 300,
+		duration: .6,
+		contrastStart: 2,
+		brightnessStart: 2,
+		contrastEnd: 1,
+		brightnessEnd: 1,
+		yStart: 1,
+		yEnd: 1,
+		ease: Power2.easeOut,
+	}
+	const groundExplosionDefaults = {
+		targetMob: true,
+		sizeStart: 0,
+		sizeEnd: 400,
+		duration: 1,
+		contrastStart: 1,
+		brightnessStart: 1,
+		contrastEnd: 2,
+		brightnessEnd: 2,
+		alpha: 0,
+		anchorY: 1,
+		ease: Power2.easeOut,
+	}
 	const explosionDefaults = {
 		targetMob: true,
 		sizeStart: 80,
@@ -51,9 +126,11 @@ var ask;
 		duration: .8,
 		contrastStart: 1.5,
 		brightnessStart: 1.5,
-		rotation: 0,
 		contrastEnd: 1,
 		brightnessEnd: 1,
+		rotation: 0,
+		startAlpha: 1,
+		alpha: 0,
 		ease: Power4.easeOut,
 	}
 	const novaDefaults = {
@@ -324,7 +401,7 @@ var ask;
 			else setSecondaryMid()
 			TweenMax.to(img, config.duration, {
 				width: 0,
-				height: 0,
+				height: config.size,
 				ease: config.easeEnd,
 				onComplete: ask.removeImg(),
 				onCompleteParams: [ img.id ]
@@ -429,33 +506,240 @@ var ask;
 			onCompleteParams: [ img.id ]
 		})
 	}
+	function moonburst(o, config = {}) {
+		config = {
+			...moonburstDefaults,
+			...config,
+		}
+		o.endFrame = 2
+		o.key = 'moonburst'
+		const img = ask.getImg(o, config)
+		ask.addChild(img)
+		img.width = config.sizeStart
+		img.height = config.sizeStart
+		TweenMax.to(img, config.duration, {
+			startAt: {
+				pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+			},
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			alpha: config.alpha,
+			ease: 1,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ img.id ]
+		})
+		animateFrames(o, config, img)
+		return img
+	}
+	function sunburst(o, config = {}) {
+		config = {
+			...sunburstDefaults,
+			...config,
+		}
+		o.endFrame = 2
+		o.key = 'sunburst'
+		const img = ask.getImg(o, config)
+		ask.addChild(img)
+		img.width = config.sizeStart
+		img.height = config.sizeStart
+		TweenMax.to(img, config.duration, {
+			startAt: {
+				pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+			},
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			alpha: config.alpha,
+			ease: 1,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ img.id ]
+		})
+		animateFrames(o, config, img)
+		return img
+	}
+	function starburst(o, config = {}) {
+		config = {
+			...starburstDefaults,
+			...config,
+		}
+		o.endFrame = 2
+		o.key = 'starburst'
+		const img = ask.getImg(o, config)
+		ask.addChild(img)
+		img.width = config.sizeStart
+		img.height = config.sizeStart
+		TweenMax.to(img, config.duration, {
+			startAt: {
+				pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+			},
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			rotation: util.rotation(config.rotation),
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			alpha: config.alpha,
+			ease: config.ease,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ img.id ]
+		})
+		animateFrames(o, config, img)
+		return img
+	}
+	function flameRip(o, config = {}) {
+		config = {
+			...flameRipDefaults,
+			...config,
+		}
+		const img = ask.getImg(o, config)
+		img.y = config.yStart
+		img.width = config.sizeStart
+		img.height = config.sizeStart
+		img.anchor.set(.5, config.anchorY)
+		ask.addChild(img)
+
+		TweenMax.to(img, config.duration, {
+			startAt: {
+				pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+			},
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			y: '+=' + (config.yEnd || config.yStart),
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			ease: config.ease,
+			yoyo: true,
+			repeat: 1,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ img.id ]
+		})
+		TweenMax.to(img, config.duration * .5, {
+			delay: config.duration * .5,
+			alpha: 0,
+			ease: config.ease,
+		})
+		animateFrames(o, config, img)
+	}
+	function groundExplosion(o, config = {}) {
+		config = {
+			...groundExplosionDefaults,
+			...config,
+		}
+		const img = ask.getImg(o, config)
+		img.y = ask.shadowY(o.index)
+		img.anchor.set(.5, config.anchorY)
+		ask.addChild(img)
+		img.width = config.sizeStart
+		img.height = config.sizeStart
+
+		TweenMax.to(img, config.duration * .5, {
+			startAt: {
+				pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+			},
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			yoyo: true,
+			repeat: 1,
+			ease: config.ease,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ img.id ]
+		})
+		TweenMax.to(img, config.duration * .5, {
+			delay: config.duration * .5,
+			alpha: 0,
+			ease: config.ease,
+		})
+		TweenMax.to(img, config.duration * .2, {
+			delay: config.duration * .8,
+			alpha: 0,
+			ease: config.ease,
+		})
+
+		animateFrames(o, config, img)
+	}
 	function explosion(o, config = {}) {
 		config = {
 			...explosionDefaults,
-			...config
+			...config,
 		}
 		const img = ask.getImg(o, config)
 		ask.addChild(img)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
-
 		TweenMax.to(img, config.duration, {
-			startAt: { pixi: {
-				contrast: config.contrastStart,
-				brightness: config.brightnessStart,
-			}},
-			rotation: util.rotation(config.rotation),
-			width: config.sizeEnd,
-			height: config.sizeEnd,
-			alpha: 0,
+			startAt: {
+				pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+				alpha: config.startAlpha
+			},
 			pixi: {
 				contrast: config.contrastEnd,
 				brightness: config.brightnessEnd,
 			},
+			rotation: util.rotation(config.rotation),
+			width: config.sizeEnd,
+			height: config.sizeEnd,
+			alpha: config.alpha,
 			ease: config.ease,
 			onComplete: ask.removeImg(),
 			onCompleteParams: [ img.id ]
 		})
+		animateFrames(o, config, img)
+		return img
+	}
+	function animateFrames(o, config, img) {
+		if (o.endFrame) {
+			let state = {
+				image: o.key,
+				lastFrame: 0,
+				frame: 0
+			}
+			TweenMax.to(state, config.frameDuration, {
+				frame: o.endFrame + .99,
+				ease: o.frameEase || Power0.easeInOut,
+				onUpdate: setFrame,
+				onUpdateParams: [img, state],
+			})
+		}
+	}
+	function setFrame(img, state) {
+		// console.info('setFrame', state.frame)
+		if (state.frame >= state.lastFrame + 1) {
+			state.lastFrame = ~~state.frame
+			console.info('setFrame', state.lastFrame)
+			img.texture = PIXI.Texture.from('images/ask/'+ state.image + state.lastFrame +'.png')
+		}
 	}
 	function addChild(img) {
 		if (ng.view === 'battle') {
@@ -730,8 +1014,9 @@ var ask;
 	}
 	let askSpellImg = ''
 	function getCastingKey(data) {
-		if (data.spellType && data.damageType) askSpellImg = 'cast-' + data.spellType + '-' + data.damageType
+		if (!data.damageType) data.damageType = 'arcane'
+		if (data.spellType) askSpellImg = 'cast-' + data.spellType + '-' + data.damageType
 		else askSpellImg = 'cast-default'
 		return askSpellImg
 	}
-}($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);
+}($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase);
