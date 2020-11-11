@@ -1,5 +1,5 @@
 var ask;
-!function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase, undefined) {
+!function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase, Expo, Sine, Circ, undefined) {
 	ask = {
 		askId: 0,
 		castingTweens: [],
@@ -14,6 +14,8 @@ var ask;
 		bottomY,
 		centerY,
 		shadowY,
+		getPlayerBottom,
+		getPlayerCenter,
 		autoAttack,
 		processAnimations,
 		// base effects:
@@ -21,6 +23,9 @@ var ask;
 		 * h2h, 1hs, 2hs, 1hb, 2hb, pierce
 		*/
 		// skill effects
+		particleCircle,
+		particleGroup,
+		particleSmall,
 		flameRip,
 		groundExplosion,
 		moonburst,
@@ -51,47 +56,97 @@ var ask;
 		startAt: { alpha: 1 },
 		alpha: 0
 	}
+	const particleSmallDefaults = {
+		targetMob: true,
+		loops: 1,
+		interval: .0166,
+		saturationStart: 1.5,
+		saturationEnd: 1,
+		brightnessStart: 2,
+		brightnessEnd: 1,
+		xRange: 0,
+		yRange: 0,
+		xRangeRatio: .5,
+		sizeStart: 64,
+		sizeEnd: 64,
+		duration: .7,
+		alpha: 0,
+		ease: Sine.easeIn,
+	}
+	const particleGroupDefaults = {
+		targetMob: true,
+		loops: 1,
+		interval: .0166,
+		saturationStart: 1.5,
+		saturationEnd: 1,
+		brightnessStart: 2,
+		brightnessEnd: 1,
+		xRange: 0,
+		yRange: 0,
+		sizeStart: 128,
+		sizeEnd: 128,
+		duration: .7,
+		alpha: 0,
+		ease: Circ.easeIn,
+	}
+	const particleCircleDefaults = {
+		targetMob: true,
+		sizeStart: 0,
+		sizeEnd: 350,
+		duration: .33,
+		saturationStart: 3,
+		saturationEnd: 1,
+		brightnessStart: 3,
+		brightnessEnd: 1,
+		rotation: 0,
+		alpha: 1,
+		ease: Power1.easeOut,
+	}
 	const moonburstDefaults = {
 		targetMob: true,
+		yStart: undefined,
 		sizeStart: 50,
 		sizeEnd: 250,
-		duration: .8,
-		frameDuration: .2,
 		contrastStart: 2,
 		brightnessStart: 2,
 		contrastEnd: 1,
 		brightnessEnd: 1,
 		rotation: -135,
 		alpha: 0,
+		duration: .8,
+		frameDuration: .2,
+		frameEase: Power0.easeOut,
 		ease: Power2.easeOut,
 	}
 	const sunburstDefaults = {
 		targetMob: true,
 		sizeStart: 100,
 		sizeEnd: 400,
-		duration: .6,
-		frameDuration: .15,
 		contrastStart: 2,
 		brightnessStart: 2,
 		contrastEnd: 1,
 		brightnessEnd: 1,
 		rotation: 180,
 		alpha: 0,
+		duration: .6,
+		frameDuration: .15,
+		frameEase: Power0.easeOut,
 		ease: Power4.easeOut,
 	}
 	const starburstDefaults = {
 		targetMob: true,
 		sizeStart: 50,
-		sizeEnd: 200,
-		duration: .48,
-		frameDuration: .15,
+		sizeEnd: 150,
 		contrastStart: 2,
 		brightnessStart: 2,
 		contrastEnd: 1,
 		brightnessEnd: 1,
 		rotation: 90,
 		alpha: 0,
-		ease: Power4.easeOut,
+		duration: .2,
+		frameDuration: .2,
+		frameEase: Sine.easeIn,
+		ease: Sine.easeOut,
 	}
 	const flameRipDefaults = {
 		targetMob: true,
@@ -115,7 +170,8 @@ var ask;
 		brightnessStart: 1,
 		contrastEnd: 2,
 		brightnessEnd: 2,
-		alpha: 0,
+		yoyo: true,
+		alpha: 1,
 		anchorY: 1,
 		ease: Power2.easeOut,
 	}
@@ -124,6 +180,7 @@ var ask;
 		sizeStart: 80,
 		sizeEnd: 400,
 		duration: .8,
+		yStart: undefined,
 		contrastStart: 1.5,
 		brightnessStart: 1.5,
 		contrastEnd: 1,
@@ -384,9 +441,9 @@ var ask;
 			...config
 		}
 		const img = ask.getImg(o)
-		ask.addChild(img)
 		img.width = 0
 		img.height = 0
+		ask.addChild(img)
 		if (config.isPrimary) setPrimaryStart()
 		else setSecondaryStart()
 		TweenMax.to(img, config.duration, {
@@ -430,9 +487,9 @@ var ask;
 			...config
 		}
 		const img = ask.getImg(o)
-		ask.addChild(img)
 		img.width = 0
 		img.height = 0
+		ask.addChild(img)
 		if (config.isPrimary) {
 			img.anchor.set(1, 0)
 			img.x += config.size * .5
@@ -480,31 +537,164 @@ var ask;
 				delayedCall(config.interval * i, novaExplode, [o, config])
 			}(i)
 		}
+		/////////////////////////////////////
+		function novaExplode(o, config) {
+			const img = ask.getNova(o, config)
+			ask.addChild(img)
+			TweenMax.to(img, config.duration, {
+				startAt: { pixi: {
+						contrast: config.contrastStart,
+						brightness: config.brightnessStart,
+					},
+					rotation: config.rotation,
+					width: 0,
+					height: 0,
+					alpha: 1,
+				},
+				pixi: {
+					contrast: config.contrastEnd,
+					brightness: config.brightnessEnd,
+				},
+				alpha: 0,
+				width: config.width === 'auto' ? mobs[o.index].width : config.width,
+				height: mobs[o.index].width * .15,
+				ease: config.ease,
+				onComplete: ask.removeImg(),
+				onCompleteParams: [ img.id ]
+			})
+		}
 	}
-	function novaExplode(o, config) {
-		const img = ask.getNova(o, config)
+	function particleSmall(o, config = {}) {
+		config = {
+			...particleSmallDefaults,
+			...config,
+		}
+		if (!o.key) o.key = 'particle-small-default'
+		for (var i=0; i<config.loops; i++) {
+			!function(i) {
+				delayedCall(config.interval * i, () => {
+					const img = ask.getImg(o, config)
+					img.width = config.sizeStart
+					img.height = config.sizeStart
+					img.scale.x *= Math.random() > .5 ? 1 : -1
+					let xRangeEnd = img.x
+					if (config.xRange) {
+						xRangeEnd =_.random(-config.xRange, config.xRange)
+						img.x += xRangeEnd
+					}
+					if (config.yRange) img.y += _.random(-config.yRange, config.yRange)
+					ask.addChild(img)
+					TweenMax.to(img, config.duration, {
+						startAt: {
+							pixi: {
+								saturation: config.saturationStart,
+								brightness: config.brightnessStart,
+							}
+						},
+						pixi: {
+							saturation: config.saturationEnd,
+							brightness: config.brightnessEnd,
+						},
+						y: config.yEnd ? ('+=' + config.yEnd) : (ask.shadowY(o.index, config.targetMob)),
+						width: config.sizeEnd,
+						height: config.sizeEnd,
+						ease: config.ease,
+						onComplete: ask.removeImg(),
+						onCompleteParams: [ img.id ]
+					})
+					TweenMax.to(img, config.duration, {
+						x: '+=' + (xRangeEnd * config.xRangeRatio),
+						ease: Sine.easeOut,
+					})
+					delayedImgFade(img, config)
+				})
+			}(i)
+		}
+	}
+	function particleGroup(o, config = {}) {
+		config = {
+			...particleGroupDefaults,
+			...config,
+		}
+		if (!o.key) o.key = 'particle-group-default'
+		for (var i=0; i<config.loops; i++) {
+			!function(i) {
+				delayedCall(config.interval * i, () => {
+					const img = ask.getImg(o, config)
+					img.width = config.sizeStart
+					img.height = config.sizeStart
+					img.scale.x *= Math.random() > .5 ? 1 : -1
+					if (config.xRange) img.x += _.random(-config.xRange, config.xRange)
+					if (config.yRange) img.y += _.random(-config.yRange, config.yRange)
+					ask.addChild(img)
+					TweenMax.to(img, config.duration, {
+						startAt: {
+							pixi: {
+								saturation: config.saturationStart,
+								brightness: config.brightnessStart,
+							}
+						},
+						pixi: {
+							saturation: config.saturationEnd,
+							brightness: config.brightnessEnd,
+						},
+						y: config.yEnd ? ('+=' + config.yEnd) : (ask.shadowY(o.index, config.targetMob)),
+						width: config.sizeEnd,
+						height: config.sizeEnd,
+						ease: config.ease,
+						onComplete: ask.removeImg(),
+						onCompleteParams: [ img.id ]
+					})
+					delayedImgFade(img, config)
+				})
+			}(i)
+		}
+	}
+	function particleCircle(o, config = {}) {
+		config = {
+			...particleCircleDefaults,
+			...config,
+		}
+		if (!o.key) o.key = 'particle-circle-default'
+		const img = ask.getImg(o, config)
+		img.width = config.sizeStart
+		img.height = config.sizeStart
 		ask.addChild(img)
 		TweenMax.to(img, config.duration, {
-			startAt: { pixi: {
-					contrast: config.contrastStart,
+			/*startAt: {
+				pixi: {
+					saturation: config.saturationStart,
 					brightness: config.brightnessStart,
-				},
-				rotation: config.rotation,
-				width: 0,
-				height: 0,
-				alpha: 1,
+				}
 			},
 			pixi: {
-				contrast: config.contrastEnd,
+				saturation: config.saturationEnd,
 				brightness: config.brightnessEnd,
-			},
-			alpha: 0,
-			width: config.width === 'auto' ? mobs[o.index].width : config.width,
-			height: mobs[o.index].width * .15,
+			},*/
+			width: config.sizeEnd,
+			height: config.sizeEnd,
 			ease: config.ease,
 			onComplete: ask.removeImg(),
 			onCompleteParams: [ img.id ]
 		})
+		if (config.rotation !== 0) {
+			TweenMax.to(img, config.duration, {
+				rotation: util.rotation(config.rotation),
+				ease: Power0.easeOut,
+			})
+		}
+		delayedImgFade(img, config)
+		return img
+	}
+	function delayedImgFade(img, config) {
+		if (config.alpha < 1) {
+			delayedCall(config.duration * .66, () => {
+				TweenMax.to(img, config.duration * .33, {
+					alpha: 0,
+					ease: Power0.easeOut,
+				})
+			})
+		}
 	}
 	function moonburst(o, config = {}) {
 		config = {
@@ -514,9 +704,10 @@ var ask;
 		o.endFrame = 2
 		o.key = 'moonburst'
 		const img = ask.getImg(o, config)
-		ask.addChild(img)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
+		if (config.yStart) img.y = config.yStart
+		ask.addChild(img)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -531,7 +722,7 @@ var ask;
 			width: config.sizeEnd,
 			height: config.sizeEnd,
 			alpha: config.alpha,
-			ease: 1,
+			ease: config.ease,
 			onComplete: ask.removeImg(),
 			onCompleteParams: [ img.id ]
 		})
@@ -546,9 +737,9 @@ var ask;
 		o.endFrame = 2
 		o.key = 'sunburst'
 		const img = ask.getImg(o, config)
-		ask.addChild(img)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
+		ask.addChild(img)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -578,9 +769,9 @@ var ask;
 		o.endFrame = 2
 		o.key = 'starburst'
 		const img = ask.getImg(o, config)
-		ask.addChild(img)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
+		ask.addChild(img)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -595,11 +786,12 @@ var ask;
 			rotation: util.rotation(config.rotation),
 			width: config.sizeEnd,
 			height: config.sizeEnd,
-			alpha: config.alpha,
+			// alpha: config.alpha,
 			ease: config.ease,
 			onComplete: ask.removeImg(),
 			onCompleteParams: [ img.id ]
 		})
+		// delayedImgFade(img, config)
 		animateFrames(o, config, img)
 		return img
 	}
@@ -643,18 +835,19 @@ var ask;
 		animateFrames(o, config, img)
 	}
 	function groundExplosion(o, config = {}) {
+		// Guardian Heroes style explosion from shadow up - yoyos back down
 		config = {
 			...groundExplosionDefaults,
 			...config,
 		}
 		const img = ask.getImg(o, config)
-		img.y = ask.shadowY(o.index)
+		img.y = config.yStart || ask.shadowY(o.index, config.targetMob)
 		img.anchor.set(.5, config.anchorY)
-		ask.addChild(img)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
+		ask.addChild(img)
 
-		TweenMax.to(img, config.duration * .5, {
+		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
 					contrast: config.contrastStart,
@@ -667,21 +860,12 @@ var ask;
 			},
 			width: config.sizeEnd,
 			height: config.sizeEnd,
-			yoyo: true,
-			repeat: 1,
+			yoyo: config.yoyo,
+			alpha: config.alpha,
+			repeat: config.yoyo ? 1 : 0,
 			ease: config.ease,
 			onComplete: ask.removeImg(),
 			onCompleteParams: [ img.id ]
-		})
-		TweenMax.to(img, config.duration * .5, {
-			delay: config.duration * .5,
-			alpha: 0,
-			ease: config.ease,
-		})
-		TweenMax.to(img, config.duration * .2, {
-			delay: config.duration * .8,
-			alpha: 0,
-			ease: config.ease,
 		})
 
 		animateFrames(o, config, img)
@@ -692,9 +876,10 @@ var ask;
 			...config,
 		}
 		const img = ask.getImg(o, config)
-		ask.addChild(img)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
+		if (config.yStart) img.y = config.yStart
+		ask.addChild(img)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -715,6 +900,7 @@ var ask;
 			onComplete: ask.removeImg(),
 			onCompleteParams: [ img.id ]
 		})
+
 		animateFrames(o, config, img)
 		return img
 	}
@@ -725,19 +911,19 @@ var ask;
 				lastFrame: 0,
 				frame: 0
 			}
+			console.info('animateFrames', config)
 			TweenMax.to(state, config.frameDuration, {
 				frame: o.endFrame + .99,
-				ease: o.frameEase || Power0.easeInOut,
+				ease: config.frameEase || Power0.easeOut,
 				onUpdate: setFrame,
 				onUpdateParams: [img, state],
 			})
 		}
 	}
 	function setFrame(img, state) {
-		// console.info('setFrame', state.frame)
 		if (state.frame >= state.lastFrame + 1) {
 			state.lastFrame = ~~state.frame
-			console.info('setFrame', state.lastFrame)
+			console.info('setFrame', state.lastFrame, Date.now())
 			img.texture = PIXI.Texture.from('images/ask/'+ state.image + state.lastFrame +'.png')
 		}
 	}
@@ -758,33 +944,74 @@ var ask;
 		else val = 0
 		return val
 	}
-	function bottomY(index) {
-		return MaxHeight
-			- mob.bottomY[index]
-			+ (mobs.images[mobs[index].img].yPadding * mobs[index].size)
-			+ ask.sizeOffset(mobs[index].size)
+	function bottomY(index, targetMob) {
+		if (targetMob) {
+			return MaxHeight
+				- mob.bottomY[index]
+				+ (mobs.images[mobs[index].img].yPadding * mobs[index].size)
+				+ ask.sizeOffset(mobs[index].size)
+		}
+		else {
+			// player target
+			return ask.getPlayerBottom().y
+		}
 	}
-	function shadowY(index) {
+	function shadowY(index, targetMob) {
 		// cringe bottom % from CSS
-		return index <= 4
-			? MaxHeight - (MaxHeight * .2037) - (mobs[index].shadowHeight * .5)
-			: MaxHeight - (MaxHeight * .2963) - (mobs[index].shadowHeight * .5)
+		if (targetMob) {
+			return index <= 4
+				? MaxHeight - (MaxHeight * .2037) - (mobs[index].shadowHeight * .5)
+				: MaxHeight - (MaxHeight * .2963) - (mobs[index].shadowHeight * .5)
+		}
+		else {
+			// player target
+			return ask.getPlayerBottom().y
+		}
 	}
-	function centerY(index) {
-		return ask.bottomY(index) - (mobs[index].clickAliveH * mobs[index].size)
+	function centerY(index, targetMob) {
+		if (targetMob) {
+			return ask.bottomY(index, true) - (mobs[index].clickAliveH * mobs[index].size)
+		}
+		else {
+			// player target
+			return ask.getPlayerCenter().y
+		}
 	}
+	function getPlayerCenter(index) {
+		// possibly expand to multiple party members later
+		return {
+			x: 960,
+			y: 850
+		}
+	}
+	function getPlayerBottom() {
+		const pos = getPlayerCenter()
+		return {
+			x: pos.x + 150,
+			y: pos.y + 150,
+		}
+	}
+	function positionImgToPlayer(o, img) {
+		const pos = getPlayerCenter()
+		img.x = pos.x
+		img.y = pos.y
+	}
+
+	const DEFAULT_MOB_LAYER = 200
+	const DEFAULT_PLAYER_LAYER = 300
 	function getImg(o, config = { targetMob: true }) {
 		const img = PIXI.Sprite.from(`images/ask/${o.key}.png`)
 		img.id = 'ask-' + ask.askId++
 		img.anchor.set(.5)
 		if (config.targetMob) {
 			img.x = mob.centerX[o.index]
-			img.y = ask.centerY(o.index)
+			img.y = ask.centerY(o.index, true)
+			img.zIndex = config.zIndex || DEFAULT_MOB_LAYER
 		}
 		else {
-			positionToPlayer(o, img)
+			positionImgToPlayer(o, img)
+			img.zIndex = config.zIndex || DEFAULT_PLAYER_LAYER
 		}
-		img.zIndex = config.zIndex || 200
 		return img
 	}
 	// image @ feet of target (or center!)
@@ -795,92 +1022,62 @@ var ask;
 		// bottom center of mob's feet
 		if (config.targetMob) {
 			img.x = mob.centerX[o.index]
-			if (config.position === 'bottom') img.y = ask.shadowY(o.index)
+			if (config.position === 'bottom') img.y = ask.shadowY(o.index, config.targetMob)
 			else {
 				// if not on ground (behind) this will need a zIndex so it appears in front
-				img.y = ask.centerY(o.index)
+				img.y = ask.centerY(o.index, true)
 			}
 		}
 		else {
-			positionToPlayer(o, img)
+			positionImgToPlayer(o, img)
 		}
 		img.zIndex = config.zIndex
 		return img
-	}
-	function positionToPlayer(o, img) {
-		img.x = 960
-		img.y = 850
 	}
 	function autoAttack(o) {
 		const isPrimary = !o.key.includes('Secondary')
 		// scale animations
 		const img = ask.getImg(o)
+		// console.info('key', o.key)
 		img.width = 0
 		img.height = 0
 
 		ask.addChild(img)
 		if (o.key.includes('Hand-to-hand')) {
 			img.x = mob.centerX[o.index] + _.random(-50, 50)
-			img.y = ask.centerY(o.index) + _.random(-50, 50)
+			img.y = ask.centerY(o.index, true) + _.random(-50, 50)
 			autoAttackPunch(img)
 		}
 		else {
-			img.y = ask.centerY(o.index) + _.random(-25, 50)
-			if (o.key.includes('Piercing')) autoAttackPierce(isPrimary, img)
-			else autoAttackSlash(isPrimary, img, o.key.includes('Two-hand') ? 256 : 200)
+			img.y = ask.centerY(o.index, true) + _.random(-25, 50)
+			if (o.key.includes('Piercing')) {
+				autoAttackPierce(isPrimary, img)
+			}
+			else if (o.key.includes('-hand Blunt')) {
+				autoAttackBlunt(o, img, o.key.includes('Two-hand') ? 256 : 200)
+			}
+			else {
+				autoAttackSlash(isPrimary, img, o.key.includes('Two-hand') ? 256 : 200)
+			}
 		}
 	}
 	// old function that used frames
-	function autoAttackBlunt(o, isPrimary) {
-		const bluntFrames = [
-			'autoAttackOne-hand Blunt-1',
-			'autoAttackOne-hand Blunt-2',
-			'autoAttackOne-hand Blunt-3',
-		]
-		const bluntFramesSecondary = [
-			'autoAttackOne-hand BluntSecondary-1',
-			'autoAttackOne-hand BluntSecondary-2',
-			'autoAttackOne-hand BluntSecondary-3',
-		]
-		const twoBluntFrames = [
-			'autoAttackTwo-hand Blunt-1',
-			'autoAttackTwo-hand Blunt-2',
-			'autoAttackTwo-hand Blunt-3',
-		]
-		let img
-		let arr
-		if (o.key.includes('autoAttackOne-hand Blunt')) {
-			arr = isPrimary ? bluntFrames : bluntFramesSecondary
-			img = ask.getImg({
-				index: o.index,
-				key: arr[0]
-			})
-		}
-		else {
-			arr = twoBluntFrames
-			img = ask.getImg({
-				index: o.index,
-				key: arr[0]
-			})
-		}
-		ask.addChild(img)
-		TweenMax.to(img, .125, {
-			width: 256,
-			height: 256,
-			onComplete: () => {
-				img.texture = PIXI.Texture.from('images/ask/' + arr[1] + '.png')
-				delayedCall(.125, () => {
-					img.texture = PIXI.Texture.from('images/ask/' + arr[2] + '.png')
-					delayedCall(.125, () => {
-						ask.removeImg()(img.id)
-					})
-				})
-			}
+	function autoAttackBlunt(o, img, size) {
+		img.anchor.set(.5, 0)
+		img.width = size
+		img.x += _.random(-25, 25)
+		img.y -= size * .5
+		let duration = size === 256 ? .25 : .2
+		TweenMax.to(img, duration, {
+			height: size,
+			ease: Power2.easeIn,
+			onComplete: finishBlunt
 		})
 		/////////////////////////////
-		function finishSlash() {
-			TweenMax.to(img, .2, {
-				width: 0,
+		function finishBlunt() {
+			img.anchor.set(.5, 1)
+			img.y += size
+			TweenMax.to(img, duration, {
 				height: 0,
 				ease: Power2.easeOut,
 				onComplete: ask.removeImg(),
@@ -1019,4 +1216,4 @@ var ask;
 		else askSpellImg = 'cast-default'
 		return askSpellImg
 	}
-}($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase);
+}($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase, Expo, Sine, Circ);

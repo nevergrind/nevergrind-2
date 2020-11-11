@@ -328,7 +328,7 @@ let mobs = [];
 		let height = ~~(m.size * (mobs.images[m.img].height))
 		let x = mob.centerX[i]
 		// botttom - row offset - image size offset for transparency at bottom - more size offset?
-		let y = ask.bottomY(i)
+		let y = ask.bottomY(i, true)
 		// mob sprite
 		m.sprite = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
 		m.sprite.anchor.set(.5, 1)

@@ -989,7 +989,7 @@ var combat;
 		basicText.id = 'text-' + combat.textId++
 		mobs[index].hitCount++
 		basicText.x = mob.centerX[index]
-		basicText.y = ask.centerY(index) + ((mobs[index].hitCount % 5) * 20)
+		basicText.y = ask.centerY(index, true) + ((mobs[index].hitCount % 5) * 20)
 		// console.info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
 		TweenMax.to(basicText, textDuration * .6, {
