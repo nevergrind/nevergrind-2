@@ -13,7 +13,7 @@
 		viperStrikeHit,
 		viperStrikeHeal,
 		palmStrike,
-		innerSanctum,
+		mendingAura,
 		spiritBarrier,
 	}
 	let enhancedDamage, hit, config, tgt, damages = []
@@ -300,8 +300,8 @@
 		combat.txHotHero([{
 			index: my.row,
 			key: 'viperStrikeHeal',
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
+			spellType: PROP.ALTERATION,
+			damageType: DAMAGE_TYPE.ARCANE,
 			damage: (buffs.viperStrikeBuff.leech[my.buffs.viperStrikeBuff.level] * my.buffs.viperStrikeBuff.stacks)
 		}])
 	}
@@ -335,7 +335,7 @@
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
-	function innerSanctum(index, data) {
+	function mendingAura(index, data) {
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
@@ -346,16 +346,22 @@
 		spell.expendSpirit(data, index)
 
 		// process skill data
-		combat.txBuffHero([{
+		/*combat.txBuffHero([{
 			index: my.row,
-			key: 'innerSanctum',
+			key: 'mendingAura',
 			level: my.skills[index],
 			damage: 0
+		}])*/
+		spell.data = skills.MNK[10]
+		combat.txHotHero([{
+			index: my.row,
+			key: 'mendingAura',
+			spellType: PROP.ALTERATION,
+			damageType: DAMAGE_TYPE.ARCANE,
+			...stats.spellDamage(my.row, -100)
 		}])
 		spell.triggerSkillCooldown(index, data)
-		// button.triggerGlobalCooldown()
-
-		combat.autoAttackDisable()
+		button.triggerGlobalCooldown()
 	}
 	function spiritBarrier(index, data) {
 		// check constraints

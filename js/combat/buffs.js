@@ -807,7 +807,7 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: 'Your molten shimmer fades.'
 		},
 		conviction: {
-			name: 'Lucid Energy',
+			name: 'Conviction',
 			img: 10,
 			job: JOB.TEMPLAR,
 			spRegen: [0, 2, 3, 5, 7, 9, 10, 12],
@@ -1007,7 +1007,6 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 2,
 			job: JOB.SHADOW_KNIGHT,
 			hate: 1.25,
-			damageType: DAMAGE_TYPE.ARCANE,
 			msg: (buff) => 'Death Strike heals you for ' + buff.damage + ' health.',
 		},
 		deathStrikeHeal: {
@@ -1254,14 +1253,16 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 1.3,
 			paralyzeDuration: 10,
 		},
-		innerSanctum: {
-			name: 'Inner Sanctum',
+		mendingAura: {
+			name: 'Mending Aura',
 			img: 10,
 			job: JOB.MONK,
-			duration: 0,
-			enhancedDamage: [0, .7, .85, 1, 1.15, 1.3, 1.45, 1.6],
 			damageReduced: [0, .4, .45, .5, .55, .6, .65, .7],
-			msg: () => 'You halt all attacks and search for inner peace.',
+			ticks: 8,
+			interval: 3,
+			duration: 24,
+			hate: 0,
+			msg: () => 'Transcendant spiritual clarity soothes your soul.',
 			msgReduced: 'Your transcendant state dulls the pain.'
 		},
 		spiritBarrier: {

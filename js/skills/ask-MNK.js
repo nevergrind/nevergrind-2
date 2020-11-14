@@ -14,7 +14,7 @@
 		viperStrikeBuff,
 		viperStrikeHeal,
 		palmStrike,
-		innerSanctum,
+		mendingAura,
 		spiritBarrier,
 	}
 	///////////////////////////////////////////
@@ -88,7 +88,7 @@
 			duration: 1.2
 		})
 	}
-	function innerSanctum(o) {
+	function mendingAura(o) {
 		ask.explosion(o, {
 			targetMob: false,
 			duration: 1.2

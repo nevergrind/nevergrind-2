@@ -554,4 +554,13 @@ var test;
 		container.addChild(surface)
 		dungeon.layer.stage.addChild(container)
 	}
+	/*
+	random test code that should be documented somewhere
+	TweenMax.set(mobs[3].sprite, {
+		pixi: { scaleX: -1 },
+		ease: Power0.easeOut,
+		yoyo: true,
+		repeat: -1
+	})
+	 */
 })(Linear, TweenMax, TimelineMax, PIXI, $);

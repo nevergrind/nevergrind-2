@@ -606,6 +606,7 @@ var stats = {};
 		if (!config) config = { ...spell.data }
 		max = config.spellDamage(my.skills[config.index])
 		// enhance by type % and ALL%
+		enhanceDamage = 0
 		if (config.damageType === DAMAGE_TYPE.BLOOD) enhanceDamage = enhanceBlood()
 		else if (config.damageType === DAMAGE_TYPE.POISON) enhanceDamage = enhancePoison()
 		else if (config.damageType === DAMAGE_TYPE.ARCANE) enhanceDamage = enhanceArcane()
@@ -628,6 +629,7 @@ var stats = {};
 
 		max = max * (1 + (enhanceDamage / 100))
 		// add spell damage by type and ALL
+		addedDamage = 0
 		if (config.damageType === DAMAGE_TYPE.BLOOD) addedDamage = addSpellBlood()
 		else if (config.damageType === DAMAGE_TYPE.POISON) addedDamage = addSpellPoison()
 		else if (config.damageType === DAMAGE_TYPE.ARCANE) addedDamage = addSpellArcane()

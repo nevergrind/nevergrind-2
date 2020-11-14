@@ -234,9 +234,6 @@ var combat;
 			// mob type bonuses
 			d.enhancedDamage += getEnhancedDamageByMobType(d)
 			if (mobs[d.index].buffFlags.demonicPact) d.enhancedDamage += .15
-			if (my.buffFlags.innerSanctum) {
-				d.enhancedDamage += buffs.innerSanctum.enhancedDamage[my.buffs.innerSanctum.level]
-			}
 			if (my.buffFlags.prowl) {
 				d.enhancedDamage += buffs.prowl.enhancedDamage[my.buffs.prowl.level]
 			}
@@ -597,10 +594,6 @@ var combat;
 				triggerProc(d.damageType, d.index, d.key)
 			})
 		}
-
-		if (my.buffFlags.innerSanctum) {
-			battle.removeBuff('innerSanctum')
-		}
 	}
 	function rxDamageMob(data) {
 		// damages
@@ -803,7 +796,7 @@ var combat;
 		}
 		// console.info('processDamagesHero', index, d)
 		// dodge
-		if (!my.buffFlags.innerSanctum &&
+		if (!my.buffFlags.mendingAura &&
 			skills.dodge[my.job].level &&
 			my.level >= skills.dodge[my.job].level) {
 			combat.levelSkillCheck(PROP.DODGE)
@@ -817,7 +810,7 @@ var combat;
 		// console.info('processDamages', d)
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// riposte
-			if (!my.buffFlags.innerSanctum &&
+			if (!my.buffFlags.mendingAura &&
 				skills.riposte[my.job].level &&
 				my.level >= skills.riposte[my.job].level) {
 				combat.levelSkillCheck(PROP.RIPOSTE)
@@ -830,7 +823,7 @@ var combat;
 				}
 			}
 			// parry
-			if (!my.buffFlags.innerSanctum &&
+			if (!my.buffFlags.mendingAura &&
 				skills.parry[my.job].level &&
 				my.level >= skills.parry[my.job].level) {
 				combat.levelSkillCheck(PROP.PARRY)
@@ -859,7 +852,7 @@ var combat;
 			// shield block? maxes 75% reduction of damage; skips armor
 			amountReduced = 1 - stats.armorReductionRatio()
 
-			if (!my.buffFlags.innerSanctum &&
+			if (!my.buffFlags.mendingAura &&
 				items.eq[13].blockRate &&
 				rand() * 100 < items.eq[13].blockRate) {
 				amountReduced -= .25
@@ -867,9 +860,9 @@ var combat;
 				if (d.blocked < 0) d.blocked = 0
 			}
 			if (mobs[index].buffFlags.sealOfDamnation) amountReduced -= buffs.sealOfDamnation.reduceDamage
-			if (my.buffFlags.innerSanctum) {
-				amountReduced -= buffs.innerSanctum.damageReduced[my.buffs.innerSanctum.level]
-				chat.log(buffs.innerSanctum.msgReduced, CHAT.HEAL)
+			if (my.buffFlags.mendingAura) {
+				amountReduced -= buffs.mendingAura.damageReduced[my.buffs.mendingAura.level]
+				chat.log(buffs.mendingAura.msgReduced, CHAT.HEAL)
 			}
 			// console.info('reduce', amountReduced)
 			if (mob.isFeared(index)) amountReduced -= .5
@@ -982,6 +975,15 @@ var combat;
 			mob.animateAttack(index, dam.row)
 		})
 	}
+
+	const TextFoo = {
+		startAt: { pixi: {scale: 2}},
+		pixi: { scale: 1 },
+	}
+	const TextBar = {
+		startAt: { pixi: { brightness: 3, contrast: 3 }},
+		pixi: { brightness: .75, contrast: .75 },
+	}
 	function popupDamage(index, damage, isCrit) {
 		if (typeof damage === 'number' && damage <= 0) return
 		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)
@@ -997,14 +999,8 @@ var combat;
 			onComplete: popupDamageFade,
 			ease: Power3.easeOut
 		})
-		TweenMax.to(basicText, textDuration * .5, {
-			startAt: { pixi: {scale: 2}},
-			pixi: { scale: 1 },
-		})
-		TweenMax.to(basicText, textDuration, {
-			startAt: { pixi: { brightness: 3, contrast: 3 }},
-			pixi: { brightness: .75, contrast: .75 },
-		})
+		TweenMax.to(basicText, textDuration * .5, TextFoo)
+		TweenMax.to(basicText, textDuration, TextBar)
 
 		x = _.random(-textDistanceX, textDistanceX)
 		TweenMax.to(basicText, textDuration, {
@@ -1038,11 +1034,15 @@ var combat;
 		})
 	}
 	function rxHotHero(data) {
-		console.info('rxHotHero: ', data)
+		// console.info('rxHotHero: ', data)
 		data.heals.forEach(heal => {
 			if (typeof buffs[heal.key] === 'object' && buffs[heal.key].duration > 0) hotToMe(data.row, heal)
 			else healToMe(data.row, heal)
 		})
+		if (data.heals[0].key === 'mendingAura') {
+			console.info('mendingAura!', data)
+			mob.feignHate(data.row)
+		}
 	}
 	let addHealPower = 0
 	function processHeal(value) {
@@ -1075,7 +1075,7 @@ var combat;
 			}
 			ask.processAnimations(heal)
 		}
-		if (~~hate > 0) {
+		if (~~hate !== 0) {
 			mob.addHateHeal({
 				row: row,
 				hate: ~~hate
@@ -1083,7 +1083,6 @@ var combat;
 		}
 	}
 	function hotToMe(row, heal) {
-		// console.info('hotToMe rxHotHero', row, heal)
 		hate = 0
 		hate += heal.damage * (typeof buffs[heal.key].hate === 'number' ? buffs[heal.key].hate : 1)
 		if (my.row === heal.index) {
@@ -1124,7 +1123,8 @@ var combat;
 			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
 			ask.processAnimations(heal)
 		}
-		if (~~hate > 0) {
+		console.info('hotToMe rxHotHero', row, hate)
+		if (~~hate !== 0) {
 			mob.addHateHeal({
 				row: row,
 				hate: ~~hate
@@ -1226,7 +1226,6 @@ var combat;
 				processStatBuffsToMe(key, data.row)
 				ask.processAnimations(buff)
 			}
-			if (buff.key === 'innerSanctum') mob.feignHate(data.row)
 		})
 		if (~~hate > 0) {
 			mob.addHateHeal({

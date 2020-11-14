@@ -394,7 +394,7 @@ var tooltip;
 						skillHtml += `<div>Spell Type: ${_.capitalize(config.spellType)}</div>`
 					}
 					if (config.damageType) {
-						skillHtml += `<div class="damage-${config.damageType}">Damage Type: ${_.capitalize(config.damageType)}</div>`
+						skillHtml += `<div class="damage-${config.damageType}">Element: ${_.capitalize(config.damageType)}</div>`
 					}
 					if (config.hate) {
 						skillHtml += `<div>Threat: ${ng.toPercent(config.hate)}%</div>`
