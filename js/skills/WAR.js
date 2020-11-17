@@ -140,6 +140,7 @@ let skill = {};
 		// process skill data
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
+		if (battle.targetIsBackRow(tgt)) enhancedDamage += .8
 		damages = []
 		for (var i=0; i<2; i++) {
 			damages.push({
@@ -151,9 +152,6 @@ let skill = {};
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})
-			if (battle.targetIsBackRow(tgt)) {
-				damages[i].damage *= 2
-			}
 		}
 		combat.txDamageMob(damages)
 

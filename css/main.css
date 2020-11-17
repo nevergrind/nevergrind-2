@@ -1023,14 +1023,13 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-spell { color: dodgerblue; }
 .chat-heal { color: aqua }
 .chat-buff { color: royalblue; }
-
 .chat-help-header {
 	color: #ffff1a;
 	background: rgba(255, 255, 32, .2);
 }
-
 .chat-alert,
 .chat-danger { color: #f22; }
+.chat-pink { color: #f55; }
 .chat-broadcast { color: #f80; }
 .chat-exp { color: gold; }
 .chat-join { cursor: url('cursor/pointer.png'), pointer; }

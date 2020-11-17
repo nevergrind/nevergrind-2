@@ -51,13 +51,18 @@ let buffs; // buff data for use with skill/spells/icons
 		burningEmbers: {
 			name: 'Burning Embers',
 			img: 6,
+			hate: 1,
 			job: JOB.RANGER,
 			debuffArmor: .15,
 			duration: 15,
 		},
+		shockNova: {
+			hate: 1,
+		},
 		faerieFlame: {
 			name: 'Faerie Flame',
 			img: 8,
+			hate: 1,
 			hitBonus: .12,
 			job: JOB.RANGER,
 			duration: 45,
@@ -70,6 +75,7 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 3,
 			duration: 30,
 			hate: 3,
+			isHeal: true,
 			msg: () => 'Regenerative spores begin to heal your wounds.',
 		},
 		shimmeringOrb: {
@@ -77,6 +83,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 10,
 			job: JOB.RANGER,
 			mitigation: [0, 2, 4, 7, 9, 12, 15, 19],
+			isBuff: true,
 			msg: () => 'A luminescent aura wraps you in a protective shell.',
 			fadeMsg: 'The luminescent aura fades.'
 		},
@@ -87,6 +94,7 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 300,
 			attackBonus: [0, 4, 8, 13, 19, 26, 34, 45],
 			attackHaste: .2,
+			isBuff: true,
 			msg: () => 'A brief lupine energy courses through your spirit.',
 			fadeMsg: 'Your lupine aura fades.'
 		},
@@ -112,6 +120,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.CLERIC,
 			duration: 0,
 			hate: 6,
+			isHeal: true,
 			msg: (buff) => 'Circle of Prayer heals you for ' + buff.damage + ' health.',
 		},
 		bindingGrace: {
@@ -120,6 +129,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.CLERIC,
 			duration: 0,
 			hate: 3.2,
+			isHeal: true,
 			msg: (buff) => 'Binding Grace heals you for ' + buff.damage + ' health.',
 		},
 		guardianAngel: {
@@ -128,6 +138,8 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.CLERIC,
 			duration: 30,
 			hate: 2.5,
+			resistFear: 25,
+			isShield: true,
 			msg: () => 'A guardian angel\'s wings surround you.',
 			msgAbsorb: 'Your guardian angel protects you from harm.'
 		},
@@ -168,6 +180,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 1.2,
 			duration: 24,
 			spellType: '',
+			bonusDamage: .05,
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		ruptureDot: {
@@ -273,6 +286,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 9,
 			job: JOB.WIZARD,
 			hate: 1,
+			isShield: true,
 			msg: () => 'Your mirror form materializes from the void.',
 			msgAbsorb: 'Your mirror image shields you from harm.'
 		},
@@ -332,6 +346,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 8,
 			job: JOB.DRUID,
 			hate: 4.5,
+			isHeal: true,
 			msg: (buff) => 'Nature\'s Touch heals you for ' + buff.damage + ' health.',
 		},
 		naturesTouchHot: {
@@ -342,6 +357,7 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 3,
 			duration: 9,
 			hate: 3,
+			isHeal: true,
 			msg: () => 'Nature\'s Touch starts healing your wounds.',
 		},
 		mossBreath: {
@@ -352,6 +368,7 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 3,
 			duration: 21,
 			hate: 4.8,
+			isHeal: true,
 			msg: () => 'Moss Breath starts healing your wounds.',
 		},
 		synthesize: {
@@ -363,6 +380,7 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 420,
 			hate: 2.5,
 			addPerTick: 1,
+			isHeal: true,
 			msg: () => 'Synthesize starts healing your wounds.',
 		},
 		branchSpirit: {
@@ -442,6 +460,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 8,
 			job: JOB.SHAMAN,
 			hate: 4.8,
+			isHeal: true,
 			msg: (buff) => 'Rejuvinate heals you for ' + buff.damage + ' health.',
 		},
 		rejuvinateHot: {
@@ -452,6 +471,7 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 3,
 			duration: 6,
 			hate: 3.5,
+			isHeal: true,
 			msg: () => 'Rejuvinate starts healing your wounds.',
 		},
 		mysticalGlow: {
@@ -463,6 +483,7 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 24,
 			enhanceHealing: .2,
 			hate: 3,
+			isHeal: true,
 			msg: () => 'A mystical glow begins to heal your wounds.',
 		},
 		vampiricAllure: {
@@ -516,6 +537,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 20,
 			interval: 3,
 			duration: 60,
+			bonusDamage: .15,
 			lowerResists: [0, .12, .15, .18, .21, .24, .27, .3],
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
@@ -898,6 +920,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 1,
 			hpRegen: [0, 2, 4, 6, 9, 12, 15, 18],
 			duration: 30,
+			isHeal: true,
 			msg: () => 'A litany of life heals your wounds.',
 			fadeMsg: 'The litany fades.',
 		},
@@ -989,6 +1012,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.CRUSADER,
 			duration: 0,
 			hate: 5,
+			isHeal: true,
 			msg: (buff) => 'Divine Grace heals you for ' + buff.damage + ' health.',
 		},
 		benevolence: {
@@ -997,6 +1021,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.CLERIC,
 			duration: 0,
 			hate: 8,
+			isHeal: true,
 			msg: (buff) => 'Benevolence heals you for ' + buff.damage + ' health.',
 		},
 		jubilee: { hate: 2.5 },
@@ -1262,6 +1287,7 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 3,
 			duration: 24,
 			hate: 0,
+			isHeal: true,
 			msg: () => 'Transcendant spiritual clarity soothes your soul.',
 			msgReduced: 'Your transcendant state dulls the pain.'
 		},
@@ -1437,7 +1463,7 @@ let buffs; // buff data for use with skill/spells/icons
 			attackHaste: 1,
 			resistPhysical: .5,
 			resistFear: [0, 7, 9, 12, 15, 18, 21, 25],
-			enhancedDamage: [0, .25, .3, .35, .4, .45, .5],
+			bonusDamage: [0, .25, .3, .35, .4, .45, .5],
 			msg: () => 'You prowl into the shadows.',
 			fadeMsg: 'You emerge from the shadows.'
 		},

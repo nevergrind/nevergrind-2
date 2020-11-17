@@ -352,13 +352,15 @@
 			level: my.skills[index],
 			damage: 0
 		}])*/
+		hit = stats.spellDamage(my.row, -100)
+		console.info('hit', _.clone(hit))
 		spell.data = skills.MNK[10]
 		combat.txHotHero([{
 			index: my.row,
 			key: 'mendingAura',
 			spellType: PROP.ALTERATION,
 			damageType: DAMAGE_TYPE.ARCANE,
-			...stats.spellDamage(my.row, -100)
+			...dam
 		}])
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()

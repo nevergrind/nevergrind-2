@@ -199,6 +199,8 @@ var combat;
 		}
 		// console.info('asdfasdf', d)
 		// console.info('damageType', d.damageType)
+
+		// MAGIC cannot miss, dodge, etc
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// check for things that immediately set to 0
 			if (d.requiresFrontRow && !battle.targetIsFrontRow(d.index)) {
@@ -230,16 +232,21 @@ var combat;
 					}
 				}
 			}
-			// enhancedDamage
 			// mob type bonuses
 			d.enhancedDamage += getEnhancedDamageByMobType(d)
-			if (mobs[d.index].buffFlags.demonicPact) d.enhancedDamage += .15
+			// enhancedDamage
+			if (mobs[d.index].buffFlags.demonicPact) {
+				d.enhancedDamage += buffs.demonicPact.bonusDamage
+			}
+			if (mobs[d.index].buffFlags.rupture) {
+				d.enhancedDamage += buffs.rupture.bonusDamage
+			}
 			if (my.buffFlags.prowl) {
-				d.enhancedDamage += buffs.prowl.enhancedDamage[my.buffs.prowl.level]
+				d.enhancedDamage += buffs.prowl.bonusDamage[my.buffs.prowl.level]
 			}
 
-			// console.info('d.enhancedDamage', d.enhancedDamage)
 			d.damage *= d.enhancedDamage
+			// console.warn('d.damage', d.key, d.damage)
 
 			// reduce enhancedDamage
 
@@ -306,6 +313,7 @@ var combat;
 				}
 			}
 			d.damage *= d.enhancedDamage
+			console.warn('d.damage MAGIC', d.key, d.damage)
 			if (!d.cannotResist) d.damage *= mob.getMobResist(d)
 
 		}
@@ -325,36 +333,36 @@ var combat;
 	function getEnhancedDamageByMobType(d) {
 		enhanceDamageToMobType = 0
 		if (mobs[d.index].mobType === MOB_TYPE.HUMANOID) {
-			if (d.weaponSkill === 'One-hand Blunt' ||
+			/*if (d.weaponSkill === 'One-hand Blunt' ||
 				d.weaponSkill === 'Two-hand Blunt') {
 				enhanceDamageToMobType += .25
-			}
+			}*/
 			enhanceDamageToMobType += stats.enhancedDamageToHumanoids()
 		}
 		else if (mobs[d.index].mobType === MOB_TYPE.DEMON) {
 			enhanceDamageToMobType += stats.enhancedDamageToDemons()
 		}
 		else if (mobs[d.index].mobType === MOB_TYPE.BEAST) {
-			if (d.weaponSkill === LABEL.ONE_HAND_SLASH ||
+			/*if (d.weaponSkill === LABEL.ONE_HAND_SLASH ||
 				d.weaponSkill === 'Two-hand Slash') {
 				enhanceDamageToMobType += .25
-			}
+			}*/
 			enhanceDamageToMobType += stats.enhancedDamageToBeasts()
 		}
 		else if (mobs[d.index].mobType === MOB_TYPE.DRAGONKIN) {
 			enhanceDamageToMobType += stats.enhancedDamageToDragonkin()
 		}
 		else if (mobs[d.index].mobType === MOB_TYPE.MYSTICAL) {
-			if (d.weaponSkill === 'Piercing') {
+			/*if (d.weaponSkill === 'Piercing') {
 				enhanceDamageToMobType += .25
-			}
+			}*/
 			enhanceDamageToMobType += stats.enhancedDamageToMystical()
 		}
 		else if (mobs[d.index].mobType === MOB_TYPE.UNDEAD) {
-			if (d.weaponSkill === 'One-hand Blunt' ||
+			/*if (d.weaponSkill === 'One-hand Blunt' ||
 				d.weaponSkill === 'Two-hand Blunt') {
 				enhanceDamageToMobType += .25
-			}
+			}*/
 			enhanceDamageToMobType += stats.enhancedDamageToUndead()
 		}
 		else if (mobs[d.index].mobType === MOB_TYPE.GIANT) {
@@ -1040,7 +1048,6 @@ var combat;
 			else healToMe(data.row, heal)
 		})
 		if (data.heals[0].key === 'mendingAura') {
-			console.info('mendingAura!', data)
 			mob.feignHate(data.row)
 		}
 	}
@@ -1258,6 +1265,9 @@ var combat;
 		else if (key === 'bulwark') {
 			stats.phyMit(true)
 			stats.magMit(true)
+		}
+		else if (key === 'guardianAngel') {
+			stats.resistFear(true)
 		}
 		else if (key === 'intrepidShout') {
 			stats.armor(true)

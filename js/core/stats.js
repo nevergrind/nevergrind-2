@@ -655,12 +655,10 @@ var stats = {};
 
 		if (min < 1) min = 1
 		if (max < 1) max = 1
-		min = ~~min
-		max = ~~max
 
 		return {
-			min: min,
-			max: max,
+			min: ~~min,
+			max: ~~max,
 			damage: _.random(min, max),
 			isCrit: isCrit,
 		}
@@ -669,17 +667,17 @@ var stats = {};
 		// normalized damage for skills
 		min = 1
 		max = 1
-		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ? items.eq[12].weaponSkill : LABEL.HAND_TO_HAND
+		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ?
+			items.eq[12].weaponSkill : LABEL.HAND_TO_HAND
 		atk = attack(weaponSkill)
 		 // get normalized DPS value for min/max
 		if (weaponSkill !== LABEL.HAND_TO_HAND) {
+			dps = tooltip.getDps(items.eq[12])
 			if (item.twoHandWeaponTypes.includes(items.eq[12].itemType)) {
-				dps = tooltip.getDps(items.eq[12])
 				max = dps * 1.5
 				min = max * .8
 			}
 			else {
-				dps = tooltip.getDps(items.eq[12])
 				max = dps * 2
 				min = max * .88
 			}
@@ -1516,6 +1514,9 @@ var stats = {};
 			}
 			if (my.buffFlags.prowl) {
 				stats.memo.resistFear += buffs.prowl.resistFear[my.buffs.prowl.level]
+			}
+			if (my.buffFlags.guardianAngel) {
+				stats.memo.resistFear += buffs.guardianAngel.resistFear
 			}
 			if (stats.memo.resistFear > 50) {
 				stats.memo.resistFear = 50

@@ -372,6 +372,9 @@ var tooltip;
 					else if (typeof config.sp === 'function') {
 						skillHtml += `<div style="color: #2c2">Spirit Cost: ${config.sp(rank)}</div>`
 					}
+					if (typeof config.hate === 'number' && config.hate !== 0) {
+						skillHtml += `<div class="chat-warning">Threat: ${ng.toPercent(config.hate)}%</div>`
+					}
 					if (config.castTime) {
 						skillHtml += `<div>Cast Time: ${ng.toMinSecs(config.castTime)}</div>`
 					}
@@ -382,10 +385,10 @@ var tooltip;
 						skillHtml += `<div>Enhanced Damage: ${ng.toPercent(config.enhancedDamage[rank])}%</div>`
 					}
 					if (config.hitBonus && config.hitBonus[rank]) {
-						skillHtml += `<div>Hit Bonus: ${config.hitBonus[rank]}%</div>`
+						skillHtml += `<div>Hit Modifier: ${config.hitBonus[rank]}%</div>`
 					}
 					if (config.critBonus && config.critBonus[rank]) {
-						skillHtml += `<div>Crit Bonus: ${config.critBonus[rank]}%</div>`
+						skillHtml += `<div>Crit Modifier: ${config.critBonus[rank]}%</div>`
 					}
 					if (config.duration) {
 						skillHtml += `<div>Duration: ${ng.toMinSecs(config.duration)}</div>`
@@ -395,9 +398,6 @@ var tooltip;
 					}
 					if (config.damageType) {
 						skillHtml += `<div class="damage-${config.damageType}">Element: ${_.capitalize(config.damageType)}</div>`
-					}
-					if (config.hate) {
-						skillHtml += `<div>Threat: ${ng.toPercent(config.hate)}%</div>`
 					}
 					if (config.requiresFrontRow) {
 						skillHtml += `<div class="chat-warning">Requires Front Row Target</div>`
@@ -430,7 +430,28 @@ var tooltip;
 						skillHtml += `<div class="chat-warning">Piercing: Cannot be parried or riposted</div>`
 					}
 					if (config.isBlighted) {
-						skillHtml += `<div class="chat-warning">Blighted: 50% enhanced damage to undead and demons</div>`
+						skillHtml += `<div class="chat-warning">Blighted: +50% damage to demons and undead</div>`
+					}
+					if (config.attackHaste) {
+						skillHtml += `<div class="chat-warning">
+							Attack Haste: ${ng.toPercent(
+						Array.isArray(config.attackHaste) ? config.attackHaste[rank] : config.attackHaste
+							)}%
+						</div>`
+					}
+					if (config.skillHaste) {
+						skillHtml += `<div class="chat-warning">
+							Skill Haste: ${ng.toPercent(
+								Array.isArray(config.skillHaste) ? config.skillHaste[rank] : config.skillHaste
+							)}%
+						</div>`
+					}
+					if (config.castingHaste) {
+						skillHtml += `<div class="chat-warning">
+							Casting Haste: ${ng.toPercent(
+								Array.isArray(config.castingHaste) ? config.castingHaste[rank] : config.castingHaste
+							)}%
+						</div>`
 					}
 					skillHtml += divider
 					// hit damage
@@ -446,15 +467,23 @@ var tooltip;
 						if (hit.min) {
 							hit.min *= config.enhancedDamage[rank]
 							hit.max *= config.enhancedDamage[rank]
+							console.info('hit', hit.min, hit.max)
 						}
 					}
-					else if (config.spellDamage) {
+					else if (typeof config.spellDamage === 'function' &&
+						config.spellDamage(1) > 0) {
 						hit = stats.spellDamage(-1, -100, config)
 					}
-					console.info('hit', hit)
 					if (hit.min) {
-						config.damageString = _.max([1, round(hit.min)]) +'-'+ _.max([1, round(hit.max)])
-						skillHtml += `<div>Damage: ${config.damageString}</div>`
+						if (config.isBuff) {
+
+						}
+						else {
+							config.damageString = _.max([1, round(hit.min)]) +'-'+ _.max([1, round(hit.max)])
+							skillHtml += `<div>
+								${config.isHeal ? `Heal` : config.isShield ? `Shield` : `Damage`}: ${config.damageString}
+							</div>`
+						}
 					}
 				}
 				console.info('hit:', config.damageString, hit)
@@ -480,14 +509,14 @@ var tooltip;
 			hit = stats.primaryAutoAttackDamage(0, true)
 			showSkill({
 				name: 'Primary Attack',
-				description: 'Attack with your primary weapon for '+ round(hit.min) +' to '+ round(hit.max)+' damage.'
+				description: '<div style="color: #fff">Damage: '+ round(hit.min) +' to '+ round(hit.max) +'</div><div>Attack with your primary weapon.</div>'
 			})
 		}
 		else if (event.currentTarget.id === ('skill-secondary-attack-btn')) {
 			hit = stats.secondaryAutoAttackDamage(0, true)
 			showSkill({
 				name: 'Secondary Attack',
-				description: 'Attack with your secondary weapon for '+ round(hit.min) +' to '+ round(hit.max)+' damage. Dual wield must pass a skill check in order to work.'
+				description: '<div style="color: #fff">Damage: '+ round(hit.min) +' to '+ round(hit.max)+ '</div><div>Attack with your secondary weapon. The dual wield skill makes this work more often.</div>'
 			})
 		}
 		else if (event.currentTarget.id.startsWith('skill')) {

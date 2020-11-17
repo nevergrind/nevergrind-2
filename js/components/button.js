@@ -151,8 +151,7 @@ var button;
 	function primaryAttack(isPiercing, index) {
 		// piercing is a riposte
 		if (isPiercing) {
-			if (ng.view !== 'battle' ||
-			my.hp <= 0) return
+			if (ng.view !== 'battle' || my.hp <= 0) return
 		}
 		else {
 			if (ng.view !== 'battle' ||

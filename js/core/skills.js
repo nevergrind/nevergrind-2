@@ -295,7 +295,7 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 0,
-				description: 'Bash your target +50% damage bonus with shields equipped',
+				description: 'Bash your target with both hands. If a shield is equipped there is a 50% damage bonus.',
 			}, {
 				name: 'Rupture',
 				img: 'WAR-2',
@@ -306,7 +306,7 @@ var skills;
 				cooldownTime: 0,
 				isRanged: true,
 				isPiercing: true,
-				description: 'Bleeds single target for % weapon damage over 24 seconds - all hits on this target receives damage bonus % - Ranged - Piercing',
+				description: 'A vicious slash that causes your target to bleed over time. While active physical damage on receives a 5% damage bonus.',
 			}, {
 				name: 'Whirlwind',
 				img: 'WAR-3',
@@ -315,7 +315,7 @@ var skills;
 				hitBonus: getSkillValues(-4.5, .5),
 				critBonus: getSkillValues(-2, .5),
 				cooldownTime: 15,
-				description: 'Hit cone of targets (max 5) for % of weapon damage',
+				description: 'Swing your weapons wildly, hitting up to five targets.',
 			}, {
 				name: 'Pummel',
 				img: 'WAR-4',
@@ -326,7 +326,7 @@ var skills;
 				requiresFrontRow: true,
 				isPiercing: true,
 				cooldownTime: 30,
-				description: 'Pummel: Single-target piercing stun, large hate - front row only',
+				description: 'A powerful, high-threat attack that stuns a front-row target.',
 			}, {
 				name: 'Double Throw',
 				img: 'WAR-5',
@@ -337,7 +337,7 @@ var skills;
 				cooldownTime: 20,
 				isRanged: true,
 				staggers: true,
-				description: 'Ranged arcane attack that double-strikes for % damage and interrupts; bonus damage to back row',
+				description: 'A ranged attack that hits twice and staggers your target. If your target is in the back row, there is an 80% damage bonus.',
 			}, {
 				name: 'Shockwave',
 				img: 'WAR-6',
@@ -348,7 +348,7 @@ var skills;
 				requiresFrontRow: true,
 				staggers: true,
 				cooldownTime: 25,
-				description: 'Hit all front row targets; bonus 20% damage with shield equipped, staggers',
+				description: 'Unleash a shockwave that hits and staggers all targets in the front row. If a shield is equipped there is a 20% damage bonus.',
 			}, {
 				name: 'Frenzy',
 				img: 'WAR-7',
@@ -356,7 +356,7 @@ var skills;
 				castTime: 0,
 				cooldownTime: 60,
 				damageType: '',
-				description: 'Reduce global skill cooldown time by X for x seconds',
+				description: 'Channel your wrath into a frenzy, boosting your skill haste for a short duration.',
 			}, {
 				name: 'Jump Strike',
 				img: 'WAR-8',
@@ -366,7 +366,7 @@ var skills;
 				critBonus: getSkillValues(2.5, .5),
 				cooldownTime: 24,
 				isPiercing: true,
-				description: 'Leaping strike that makes warrior invincible while in the air - Pierces defenses',
+				description: 'Leaping strike that makes you completely invincible while in the air.',
 			}, {
 				name: 'Primal Stomp',
 				img: 'WAR-9',
@@ -377,7 +377,7 @@ var skills;
 				cooldownTime: 16,
 				isRanged: true,
 				staggers: true,
-				description: 'stagger all targets - small damage and high threat - Ranged',
+				description: 'Unleash a mighty stomp that staggers and damages all targets.',
 			}, {
 				name: 'Bulwark',
 				img: 'WAR-10',
@@ -386,14 +386,14 @@ var skills;
 				castTime: 0,
 				damageType: '',
 				cooldownTime: 60,
-				description: 'Defensive shield skill - boost all damage reduction for X seconds',
+				description: 'Protect yourself with a magical bulwark that offers superior damage reduction for a short duration.',
 			}, {
 				name: 'Intrepid Shout',
 				img: 'WAR-11',
 				sp: level => spellValues.intrepidShoutMana[level],
 				enhancedDamage: AllZeroes,
 				cooldownTime: 0,
-				description: 'Boost allies armor and fear resist for x seconds',
+				description: 'Boost all allies armor and fear resistance.',
 			}, {
 				name: 'Furious Cleave',
 				img: 'WAR-12',
@@ -402,7 +402,7 @@ var skills;
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(4, .5),
 				cooldownTime: 16,
-				description: 'Swing wildly hitting 3 targets for % damage - Stuns briefly',
+				description: 'Swing with a mighty cleave that hits three targets and stuns them briefly.',
 			},
 		],
 		CRU: [
@@ -676,7 +676,7 @@ var skills;
 				critBonus: getSkillValues(1, .5),
 				requiresFrontRow: true,
 				cooldownTime: 0,
-				description: 'Hits 3 front row targets for % damage',
+				description: 'Melee up to three front-row targets with a horizontal slice.',
 			}, {
 				name: 'Explosive Shot',
 				img: 'RNG-2',
@@ -687,7 +687,7 @@ var skills;
 				cooldownTime: 20,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Launch an explosive fire arrow at 3x targets',
+				description: 'Launch an explosive fire arrow that bursts into flames hitting three targets.',
 			}, {
 				name: 'Trueshot Strike',
 				img: 'RNG-3',
@@ -696,9 +696,10 @@ var skills;
 				hitBonus: getSkillValues(7, .5),
 				critBonus: getSkillValues(6.5, .5),
 				cooldownTime: 30,
+				isPiercing: true,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Powerful single strike on single target (cannot dodge, parry, riposte)',
+				description: 'Fire an accurate, powerful arrow at a single target',
 			}, {
 				name: 'Spread Shot',
 				img: 'RNG-4',
@@ -709,17 +710,16 @@ var skills;
 				cooldownTime: 24,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Hits up to 5x targets for % damage. Hits the front row first.',
+				description: 'Launch up to five arrows at different targets. Targeting prioritizes the front row.',
 			}, {
 				name: 'Blade Storm',
 				img: 'RNG-5',
 				mp: level => spellValues.bladeStormMana[level],
-				enhancedDamage: getSkillValues(.3, .04),
+				enhancedDamage: getSkillValues(.36, .05),
 				hitBonus: getSkillValues(1.5, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 16,
-				isPiercing: true,
-				description: 'Unleash a piercing five-hit combo on your target for % damage - Final blow hits for quad damage',
+				description: 'Unleash a rapid flurry of melee attacks that hit a single target five times.',
 			}, {
 				name: 'Suppressing Volley',
 				img: 'RNG-6',
@@ -730,7 +730,7 @@ var skills;
 				cooldownTime: 12,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Hits 3x targets - Reduces threat and debuffs target hit chance for 21 seconds - stacks up to 5x for greater affect.',
+				description: 'Launch sedative arrows that hits three targets and reduces your threat. Debuffs each target\'s hit chance, up to five stacks, for 21 seconds.',
 			}, {
 				name: 'Burning Embers',
 				img: 'RNG-7',
@@ -741,7 +741,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Ignites the target for X damage. Reduces armor by 15% for 15 seconds',
+				description: 'Direct fire damage bursts on your target and burns for extra damage over time. Reduces your target\'s armor by 15% while active.',
 			}, {
 				name: 'Shock Nova',
 				img: 'RNG-8',
@@ -753,7 +753,7 @@ var skills;
 				castTime: 2,
 				cooldownTime: 12,
 				staggers: true,
-				description: 'Hits all targets for X lightning damage. stagger all targets.',
+				description: 'A burst of static energy zaps all targets with lightning damage and staggers all targets.',
 			}, {
 				name: 'Faerie Flame',
 				img: 'RNG-9',
@@ -764,7 +764,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Mark a target - Direct fire damage and reduces miss chance by 15% for 45 seconds',
+				description: 'Blast your target with direct fire damage. The fire faeries illuminate your targets\' silhouette, increasing all allies\' hit chance by 15% while active.',
 			}, {
 				name: 'Fungal Growth',
 				img: 'RNG-10',
@@ -775,7 +775,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2,
 				cooldownTime: 0,
-				description: 'Restores x health over time for 30 seconds',
+				description: 'Fungal spores restore your target\'s health over time.',
 			}, {
 				name: 'Shimmering Orb',
 				img: 'RNG-11',
@@ -785,7 +785,7 @@ var skills;
 				spellType: PROP.CONJURATION,
 				castTime: 4,
 				cooldownTime: 5,
-				description: 'Conjure a shimmering orb that shields your target. Reduces damage received by X per hit. Absorbs a total of X damage.',
+				description: 'Buff your target with a shimmering orb that mitigates all damage on your target until the shield is depleted.',
 			}, {
 				name: 'Spirit of the Hunter',
 				img: 'RNG-12',
@@ -795,7 +795,7 @@ var skills;
 				spellType: PROP.ALTERATION,
 				castTime: 3.5,
 				cooldownTime: 15,
-				description: 'Boost your attack by X by X and receive 20% attack haste for X seconds.',
+				description: 'Buff your target\'s attack power and attack haste.',
 			},
 		],
 		MNK: [
@@ -1177,7 +1177,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Smite your target for X arcane damage.',
+				description: 'Direct arcane damage on your target.',
 			}, {
 				name: 'Deliverance',
 				img: 'CLR-2',
@@ -1189,7 +1189,7 @@ var skills;
 				castTime: 2,
 				cooldownTime: 6,
 				isBlighted: true,
-				description: 'Single-target arcane damage - +50% damage to undead and demons.',
+				description: 'Direct fire damage on your target that does bonus damage to demons and undead.',
 			}, {
 				name: 'Condemnation',
 				img: 'CLR-3',
@@ -1202,7 +1202,7 @@ var skills;
 				cooldownTime: 12,
 				isBlighted: true,
 				staggers: true,
-				description: 'Hit 3x targets arcane damage - +50% damage to undead, demons.',
+				description: 'Strike three targets with direct arcane damage that staggers and does bonus damage to demons and undead.',
 			}, {
 				name: 'Sacred Revelation',
 				img: 'CLR-4',
@@ -1213,7 +1213,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 1.5,
 				cooldownTime: 30,
-				description: 'Hits 3x targets for X arcane damage and stuns them for 3 seconds.',
+				description: 'Blast three targets with direct arcane damage and briefly stun them.',
 			}, {
 				name: 'Holy Sanctuary',
 				img: 'CLR-5',
@@ -1224,7 +1224,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 1.5,
 				cooldownTime: 24,
-				description: 'Blast all targets with arcane damage and reduce threat by X.',
+				description: 'Blast all targets with arcane damage and reduce your threat.',
 			}, {
 				name: 'Force of Glory',
 				img: 'CLR-6',
@@ -1235,7 +1235,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 1.5,
 				cooldownTime: 60,
-				description: 'Powerful Strike a single target with X arcane damage - Stuns for 5 seconds.',
+				description: 'Strike your target with direct arcane damage and a powerful stun effect.',
 			}, {
 				name: 'Binding Grace',
 				img: 'CLR-7',
@@ -1246,7 +1246,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 8,
-				description: 'Caster and target are healed for X damage.',
+				description: 'Heal your target and yourself at the same time. You must target an ally to begin casting.',
 			}, {
 				name: 'Guardian Angel',
 				img: 'CLR-8',
@@ -1257,7 +1257,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 1.5,
 				cooldownTime: 15,
-				description: 'Protect target with a holy shield that absorbs X damage - cannot be feared while effect is active.',
+				description: 'Protect your target with a holy shield that absorbs damage. Buffs fear resistance while active.',
 			}, {
 				name: 'Divine Light',
 				img: 'CLR-9',
@@ -1268,7 +1268,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Heal target for X health.',
+				description: 'Restore your target\'s health with a splash of divine light.',
 			}, {
 				name: 'Circle of Prayer',
 				img: 'CLR-10',
@@ -1279,7 +1279,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Heals all party members for X health.',
+				description: 'Join hands and restore health to all allies with a solemn prayer.',
 			}, {
 				name: 'Seal of Redemption',
 				img: 'CLR-11',
@@ -1290,7 +1290,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 5,
 				cooldownTime: 0,
-				description: 'Buffs target with +HP and + X Blood resist for X ticks.',
+				description: 'Buff your target\'s health and blood magic resistance.',
 			}, {
 				name: 'Zealous Resolve',
 				img: 'CLR-12',
@@ -1301,7 +1301,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4.5,
 				cooldownTime: 0,
-				description: 'Imbues target with +HP +AC for X ticks.',
+				description: 'Buff your target\'s health and armor.',
 			},
 		],
 		SHM: [
@@ -1796,7 +1796,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 60,
-				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
+				description: 'Hits target for X arcane damage Effect: Reduces armor by X.',
 			}, {
 				name: 'Shifting Ether',
 				img: 'ENC-8',
