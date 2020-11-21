@@ -349,11 +349,7 @@ var tooltip;
 		tooltip.isOpen = 0
 		tooltipEl.innerHTML = ''
 	}
-	function buffDuration(seconds) {
-		if (seconds === 1) return seconds + ' second'
-		else return seconds + ' seconds'
 
-	}
 	let skillHtml = ''
 	function getSkillHtml(config) {
 		let rank = my.skills[config.index]
@@ -405,20 +401,24 @@ var tooltip;
 					if (config.staggers) {
 						skillHtml += `<div class="chat-warning">Staggers Target</div>`
 					}
+					if (config.damageReduced) {
+						console.info('DR:', config)
+						skillHtml += `<div class="chat-warning">Physical Damage Reduced: ${ng.toPercent(config.damageReduced[rank])}%</div>`
+					}
 					if (config.stunDuration) {
-						skillHtml += `<div class="chat-warning">Stuns target for ${buffDuration(config.stunDuration)}</div>`
+						skillHtml += `<div class="chat-warning">Stuns target for ${ng.toMinSecs(config.stunDuration)}</div>`
 					}
 					if (config.chillDuration) {
-						skillHtml += `<div class="chat-warning">Chills target for ${buffDuration(config.chillDuration)}</div>`
+						skillHtml += `<div class="chat-warning">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>`
 					}
 					if (config.freezeDuration) {
-						skillHtml += `<div class="chat-warning">Freezes target for ${buffDuration(config.freezeDuration)}</div>`
+						skillHtml += `<div class="chat-warning">Freezes target for ${ng.toMinSecs(config.freezeDuration)}</div>`
 					}
 					if (config.paralyzeDuration) {
-						skillHtml += `<div class="chat-warning">Paralyzes target for ${buffDuration(config.paralyzeDuration)}</div>`
+						skillHtml += `<div class="chat-warning">Paralyzes target for ${ng.toMinSecs(config.paralyzeDuration)}</div>`
 					}
 					if (config.fearDuration) {
-						skillHtml += `<div class="chat-warning">Fears target for ${buffDuration(config.fearDuration)}</div>`
+						skillHtml += `<div class="chat-warning">Fears target for ${ng.toMinSecs(config.fearDuration)}</div>`
 					}
 					if (config.slowPercent) {
 						skillHtml += `<div class="chat-warning">Slows target ${ng.toPercent(config.slowPercent)}%</div>`

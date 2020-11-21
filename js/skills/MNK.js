@@ -14,6 +14,7 @@
 		viperStrikeHeal,
 		palmStrike,
 		mendingAura,
+		isMendingAuraActive,
 		spiritBarrier,
 	}
 	let enhancedDamage, hit, config, tgt, damages = []
@@ -252,7 +253,7 @@
 				enhancedDamage: enhancedDamage,
 			}
 			if (i < 2) hit.damage *= .33
-			else hit.effects = { stagger: true }
+			else hit.effects = { stagger: data.staggers }
 			damages.push(hit)
 		}
 		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
@@ -344,20 +345,29 @@
 		}
 		if (skills.notReady(config)) return
 		spell.expendSpirit(data, index)
+		spell.data = data
+		spell.config = {
+			...spell.getDefaults(index, data),
+		}
 
 		// process skill data
 		hit = stats.spellDamage(my.row, -100)
 		console.info('hit', _.clone(hit))
-		spell.data = skills.MNK[10]
+		spell.data = skills.MNK[index]
 		combat.txHotHero([{
 			index: my.row,
 			key: 'mendingAura',
+			level: my.skills[index],
 			spellType: PROP.ALTERATION,
 			damageType: DAMAGE_TYPE.ARCANE,
-			...dam
+			...hit
 		}])
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
+	}
+	function isMendingAuraActive() {
+		return typeof my.buffs['mendingAura-' + my.row] === 'object' &&
+			my.buffs['mendingAura-' + my.row].duration > 0
 	}
 	function spiritBarrier(index, data) {
 		// check constraints

@@ -807,7 +807,7 @@ var skills;
 				hitBonus: getSkillValues(.5, .5),
 				critBonus: getSkillValues(-4, .5),
 				cooldownTime: 0,
-				description: 'Strike for % damage - Bleeds target for X damage',
+				description: 'Strike your target with direct physical damage. Your target bleeds for additional damage over time for ' + ng.toMinSecs(buffs.tigerStrikeDot.duration),
 			}, {
 				name: 'Hyper Strike',
 				img: 'MNK-2',
@@ -816,7 +816,7 @@ var skills;
 				hitBonus: getSkillValues(3, .5),
 				critBonus: getSkillValues(-8, .5),
 				cooldownTime: 7,
-				description: 'Strike for % damage - Effect: Stacks skill haste up to 5',
+				description: 'Strike your target with direct physical damage. Buffs your skill haste and stacks up to five times for greater effect.',
 			}, {
 				name: 'Mime Strike',
 				img: 'MNK-3',
@@ -825,7 +825,7 @@ var skills;
 				hitBonus: getSkillValues(6, .5),
 				critBonus: getSkillValues(-2, .5),
 				cooldownTime: 20,
-				description: 'Hit for % damage - Next attack hits twice',
+				description: 'Strike your target with direct physical damage. Your next attack will strike twice.',
 			}, {
 				name: 'Crane Kick',
 				img: 'MNK-4',
@@ -835,7 +835,7 @@ var skills;
 				critBonus: getSkillValues(3.5, .5),
 				cooldownTime: 30,
 				stuns: 3,
-				description: 'Strikes target for % damage - Stuns for 3 seconds',
+				description: 'Strikes your target with a crane kick. Stuns your target for ' + ng.toMinSecs(buffs.craneKick.stunDuration),
 			}, {
 				name: 'Chakra Blast',
 				img: 'MNK-5',
@@ -844,7 +844,7 @@ var skills;
 				critBonus: getSkillValues(6.5, .5),
 				cooldownTime: 21,
 				damageType: DAMAGE_TYPE.ARCANE,
-				description: 'Explode and hit all targets for X arcane damage',
+				description: 'Focus and explode with arcane energy hitting all targets for direct arcane damage.',
 			}, {
 				name: 'Hadoken',
 				img: 'MNK-6',
@@ -853,8 +853,8 @@ var skills;
 				critBonus: getSkillValues(2, .5),
 				cooldownTime: 12,
 				isRanged: true,
-				damageType: DAMAGE_TYPE.ARCANE,
-				description: 'Fireball attack that hits for x % arcane damage',
+				damageType: DAMAGE_TYPE.FIRE,
+				description: 'Shoot a fireball at your target that hits for direct fire damage.',
 			}, {
 				name: 'Hurricane Kicks',
 				img: 'MNK-7',
@@ -863,7 +863,7 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(-2, .5),
 				cooldownTime: 24,
-				description: 'Hurricane hicks hit 3x targets three times',
+				description: 'Kick up to three targets three times inflicting direct physical damage at intervals.',
 			}, {
 				name: 'Dragon Punch',
 				img: 'MNK-8',
@@ -873,7 +873,8 @@ var skills;
 				critBonus: getSkillValues(3.5, .5),
 				cooldownTime: 16,
 				damageType: DAMAGE_TYPE.FIRE,
-				description: 'Hits front row target 3x for % fire damage - Effect: Stagger',
+				staggers: true,
+				description: 'Unleash a flaming uppercut on a front-row target hitting three times for direct fire damage.',
 			}, {
 				name: 'Viper Strike',
 				img: 'MNK-9',
@@ -882,7 +883,7 @@ var skills;
 				hitBonus: getSkillValues(9, .5),
 				critBonus: getSkillValues(-6, .5),
 				cooldownTime: 9,
-				description: 'Strike for % damage and leech health - Stacks up to 5x',
+				description: 'Strike for direct physical damage. Leeches health and stacks up to five times for greater effect.',
 			}, {
 				name: 'Palm Strike',
 				img: 'MNK-10',
@@ -892,7 +893,7 @@ var skills;
 				critBonus: getSkillValues(4, .5),
 				cooldownTime: 30,
 				staggers: true,
-				description: 'Delivers a powerful blow that staggers and paralyzes your target for 10 seconds',
+				description: 'Delivers a powerful palm strike for direct physical damage. Staggers and paralyzes your target for ' + ng.toMinSecs(buffs.palmStrike.paralyzeDuration) + '.',
 			}, {
 				name: 'Mending Aura',
 				img: 'MNK-11',
@@ -905,13 +906,13 @@ var skills;
 				hitBonus: AllZeroes,
 				critBonus: AllZeroes,
 				cooldownTime: 35,
-				description: 'Heal your wounds over time and reduce your threat - Effect: While active all damage received is reduced.',
+				description: 'Summon your spiritual energy to mend your wounds over ' + ng.toMinSecs(buffs.mendingAura.duration) + '.<br><br>Reduces your threat to all mobs and reduces all physical damage to you while active.',
 			}, {
 				name: 'Spirit Barrier',
 				img: 'MNK-12',
 				sp: level => spellValues.spiritBarrierMana[level],
 				cooldownTime: 20,
-				description: 'Bless target with a spirit barrier that enhances all healing and boosts all resists by X for x seconds.',
+				description: 'Buffs your target with a spiritual barrier.<br>Enhances the power of all heals and boosts all resists for '+ ng.toMinSecs(buffs.spiritBarrier.duration) +'.',
 			},
 		],
 		ROG: [

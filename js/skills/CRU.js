@@ -35,7 +35,7 @@
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
 		}
-		if (rand() > .9) hit.effects = { stagger: true }
+		if (rand() > .9) hit.effects = { stagger: data.staggers }
 		damages.push(hit)
 		combat.txDamageMob(damages)
 		// animate timers
@@ -232,7 +232,7 @@
 					...stats.spellDamage(tgt),
 				}
 				if (rand() > .5) {
-					hit.effects = { stagger: true }
+					hit.effects = { stagger: spell.data.staggers }
 				}
 				damages.push(hit)
 				combat.txDamageMob(damages)
@@ -331,7 +331,7 @@
 					...stats.spellDamage(i)
 				}
 				if (rand() > .5) {
-					hit.effects = { stagger: true }
+					hit.effects = { stagger: spell.data.staggers }
 				}
 				damages.push(hit)
 			}

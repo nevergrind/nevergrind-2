@@ -35,7 +35,7 @@
 			...stats.spellDamage(spell.config.target)
 		}]
 		if (rand() > .75) {
-			damages[0].effects = { stagger: true }
+			damages[0].effects = { stagger: spell.data.staggers }
 		}
 		combat.txDamageMob(damages)
 	}

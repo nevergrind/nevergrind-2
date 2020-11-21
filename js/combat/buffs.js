@@ -1249,7 +1249,9 @@ let buffs; // buff data for use with skill/spells/icons
 		chakraBlast: { hate: .8 },
 		hadoken: { hate: 1 },
 		hurricaneKicks: { hate: .8 },
-		dragonPunch: { hate: 1 },
+		dragonPunch: {
+			hate: 1,
+		},
 		viperStrike: {
 			name: 'Viper Strike',
 			img: 8,

@@ -103,9 +103,9 @@ var combat;
 	var el, w, h, i, len, damageArr, hit, damages, procDamage, procHit, buffArr, index, hotData, buffData, key, resist, resistPenalty
 	let txHpUpdate = false
 	let battleTextInitialized = false
-	const textDuration = 1
-	const textDistanceY = 150
-	const textDistanceX = 200
+	const TextDuration = 1
+	const TextDistanceX = 200
+	const TextDistanceY = 150
 	const combatTextRegularStyle = {
 		fontFamily: 'Play',
 		fontSize: 36,
@@ -437,7 +437,7 @@ var combat;
 
 		// alive
 		mob.hit(o.index, false, o.damage)
-		popupDamage(o.index, o.damage, o.isCrit)
+		combat.popupDamage(o.index, o.damage, o)
 		mob.updateHate(o)
 		mob.drawMobBar(o.index)
 		if (mobs[o.index].hp <= 0) {
@@ -807,8 +807,7 @@ var combat;
 		}
 		// console.info('processDamagesHero', index, d)
 		// dodge
-		if (!my.buffFlags.mendingAura &&
-			skills.dodge[my.job].level &&
+		if (skills.dodge[my.job].level &&
 			my.level >= skills.dodge[my.job].level) {
 			combat.levelSkillCheck(PROP.DODGE)
 			if (!d.isPiercing &&
@@ -821,8 +820,7 @@ var combat;
 		// console.info('processDamages', d)
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// riposte
-			if (!my.buffFlags.mendingAura &&
-				skills.riposte[my.job].level &&
+			if (skills.riposte[my.job].level &&
 				my.level >= skills.riposte[my.job].level) {
 				combat.levelSkillCheck(PROP.RIPOSTE)
 				if (!d.isPiercing &&
@@ -834,8 +832,7 @@ var combat;
 				}
 			}
 			// parry
-			if (!my.buffFlags.mendingAura &&
-				skills.parry[my.job].level &&
+			if (skills.parry[my.job].level &&
 				my.level >= skills.parry[my.job].level) {
 				combat.levelSkillCheck(PROP.PARRY)
 				if (!d.isPiercing &&
@@ -863,22 +860,21 @@ var combat;
 			// shield block? maxes 75% reduction of damage; skips armor
 			amountReduced = 1 - stats.armorReductionRatio()
 
-			if (!my.buffFlags.mendingAura &&
-				items.eq[13].blockRate &&
+			if (items.eq[13].blockRate &&
 				rand() * 100 < items.eq[13].blockRate) {
 				amountReduced -= .25
 				d.blocked = round(d.damage * .25)
 				if (d.blocked < 0) d.blocked = 0
 			}
 			if (mobs[index].buffFlags.sealOfDamnation) amountReduced -= buffs.sealOfDamnation.reduceDamage
-			if (my.buffFlags.mendingAura) {
-				amountReduced -= buffs.mendingAura.damageReduced[my.buffs.mendingAura.level]
+			if (skill.MNK.isMendingAuraActive()) {
+				amountReduced -= buffs.mendingAura.damageReduced[my.buffs['mendingAura-' + my.row].level]
 				chat.log(buffs.mendingAura.msgReduced, CHAT.HEAL)
 			}
-			// console.info('reduce', amountReduced)
 			if (mob.isFeared(index)) amountReduced -= .5
 			if (my.buffFlags.prowl) amountReduced -= .5
 
+			// console.info('reduce', amountReduced)
 			if (amountReduced < .25) amountReduced = .25
 			// armor, shield, debuff reduction
 			d.damage *= amountReduced
@@ -903,7 +899,6 @@ var combat;
 		}
 
 		if (mobs[index].buffFlags.stasisField) {
-			// console.info('stasisField', buffs.stasisField.pvpMitigation[skill.ENC.getHighestStasis(index)])
 			d.damage -= buffs.stasisField.pvpMitigation[skill.ENC.getHighestStasis(index)]
 		}
 		// final sanity checks
@@ -995,9 +990,9 @@ var combat;
 		startAt: { pixi: { brightness: 3, contrast: 3 }},
 		pixi: { brightness: .75, contrast: .75 },
 	}
-	function popupDamage(index, damage, isCrit) {
+	function popupDamage(index, damage, o = {}) {
 		if (typeof damage === 'number' && damage <= 0) return
-		const basicText = new PIXI.Text(damage + '', isCrit ? combatTextCritStyle : combatTextRegularStyle)
+		const basicText = new PIXI.Text(damage + '', o.isCrit ? combatTextCritStyle : combatTextRegularStyle)
 		basicText.anchor.set(0.5)
 		basicText.id = 'text-' + combat.textId++
 		mobs[index].hitCount++
@@ -1005,23 +1000,32 @@ var combat;
 		basicText.y = ask.centerY(index, true) + ((mobs[index].hitCount % 5) * 20)
 		// console.info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
-		TweenMax.to(basicText, textDuration * .6, {
-			y: '-=' + textDistanceY + '',
-			onComplete: popupDamageFade,
-			ease: Power3.easeOut
-		})
-		TweenMax.to(basicText, textDuration * .5, TextFoo)
-		TweenMax.to(basicText, textDuration, TextBar)
-
-		x = _.random(-textDistanceX, textDistanceX)
-		TweenMax.to(basicText, textDuration, {
-			x: x < 0 ? '-=' + (x * -1) : '+=' + x,
-			ease: Linear.easeOut
-		})
+		if (o.isDot) {
+			TweenMax.to(basicText, TextDuration, {
+				y: '-=' + TextDistanceY * 1.5 + '',
+				ease: Power2.easeOut,
+				onComplete: removeText,
+				onCompleteParams: [ basicText.id ],
+			})
+		}
+		else {
+			TweenMax.to(basicText, TextDuration * .6, {
+				y: '-=' + TextDistanceY + '',
+				onComplete: popupDamageFade,
+				ease: Power3.easeOut
+			})
+			x = _.random(-TextDistanceX, TextDistanceX)
+			TweenMax.to(basicText, TextDuration, {
+				x: x < 0 ? '-=' + (x * -1) : '+=' + x,
+				ease: Linear.easeOut
+			})
+		}
+		TweenMax.to(basicText, TextDuration * .5, TextFoo)
+		TweenMax.to(basicText, TextDuration, TextBar)
 		/////////////////////////
 		function popupDamageFade() {
-			TweenMax.to(basicText, textDuration * .4, {
-				y: '+=' + textDistanceY * .5 + '',
+			TweenMax.to(basicText, TextDuration * .4, {
+				y: '+=' + TextDistanceY * .5 + '',
 				alpha: 0,
 				onComplete: removeText,
 				onCompleteParams: [ basicText.id ],
@@ -1051,6 +1055,7 @@ var combat;
 			else healToMe(data.row, heal)
 		})
 		if (data.heals[0].key === 'mendingAura') {
+			// process hate reduction on all clients for player data.row
 			mob.feignHate(data.row)
 		}
 	}
@@ -1109,6 +1114,7 @@ var combat;
 			my.buffs[keyRow] = {
 				row: heal.index,
 				key: heal.key,
+				level: heal.level,
 				duration: buffs[heal.key].duration,
 			}
 			my.buffs[keyRow].timer = TweenMax.to(
