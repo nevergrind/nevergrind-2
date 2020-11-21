@@ -346,12 +346,6 @@
 		spell.expendSpirit(data, index)
 
 		// process skill data
-		/*combat.txBuffHero([{
-			index: my.row,
-			key: 'mendingAura',
-			level: my.skills[index],
-			damage: 0
-		}])*/
 		hit = stats.spellDamage(my.row, -100)
 		console.info('hit', _.clone(hit))
 		spell.data = skills.MNK[10]

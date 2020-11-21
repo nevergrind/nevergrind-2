@@ -326,6 +326,17 @@ let buffs; // buff data for use with skill/spells/icons
 			damageType: DAMAGE_TYPE.POISON,
 		},
 		moltenBoulder: {
+			name: 'Molten Boulder',
+			hate: 1.2,
+			job: JOB.DRUID,
+			img: 5,
+			ticks: 4,
+			interval: 3,
+			duration: 12,
+			spellType: PROP.CONJURATION,
+			damageType: DAMAGE_TYPE.FIRE,
+		},
+		moltenBoulderStrike: {
 			name: 'Molten Boulder Strike',
 			hate: 1.2,
 			job: JOB.DRUID,
@@ -379,7 +390,7 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 5,
 			duration: 420,
 			hate: 2.5,
-			addPerTick: 1,
+			minimumValue: 1,
 			isHeal: true,
 			msg: () => 'Synthesize starts healing your wounds.',
 		},
@@ -390,6 +401,7 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 900,
 			armorRatio: .15, // % of health buff
 			attackRatio: .2,
+			bonusDamage: .25,
 			hpRegen: [0, 1, 1, 2, 2, 3, 3, 4],
 			msg: () => 'A branch spirit rests in your heart.',
 			fadeMsg: 'Your branch spirit fades.'

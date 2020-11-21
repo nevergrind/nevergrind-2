@@ -241,6 +241,9 @@ var combat;
 			if (mobs[d.index].buffFlags.rupture) {
 				d.enhancedDamage += buffs.rupture.bonusDamage
 			}
+			if (my.buffFlags.branchSpirit) {
+				d.enhancedDamage += buffs.branchSpirit.bonusDamage
+			}
 			if (my.buffFlags.prowl) {
 				d.enhancedDamage += buffs.prowl.bonusDamage[my.buffs.prowl.level]
 			}
@@ -1119,7 +1122,7 @@ var combat;
 			my.buffFlags[keyRow] = true
 			healAmount = Math.round(heal.damage / buffs[heal.key].ticks)
 			// long-term heals synthesize, etc
-			if (buffs[heal.key].addPerTick) healAmount += buffs[heal.key].addPerTick
+			if (buffs[heal.key].minimumValue) healAmount = _.max([buffs[heal.key].minimumValue, healAmount])
 			my.buffs[keyRow].hotTicks = TweenMax.to(EmptyObject, buffs[heal.key].interval, {
 				repeat: buffs[heal.key].ticks,
 				onRepeat: onHotTick,

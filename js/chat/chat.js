@@ -20,8 +20,12 @@ var chat;
 		presence: [],
 		modeTypes: [
 			'/say',
+			'/s ',
+			'/town', // alias for say
 			'/party',
-			'/guild'
+			'/p ', // alias
+			'/guild',
+			'/g ', // alias
 		],
 		modeCommand: '/say',
 		modeName: '',
@@ -58,10 +62,11 @@ var chat;
 	/** private */
 	const helpArr = [
 		'<div class="chat-help-header">General Chat Channels:</div>',
-		'<div data-id="general chat" class="chat-help">/say : Say a message in your current chat channel : /say hail</div>',
+		'<div data-id="general chat" class="chat-help">/say or /s : Say a message in your current town channel : /say hail</div>',
+		'<div data-id="general town chat" class="chat-help">/town : An alias for /say : /town hail</div>',
 		'<div data-id="general chat private whisper send receive" class="chat-help">@ : Send a private message by name : @bob hi</div>',
 		'<div class="chat-help-header">Guild Commands</div>',
-		'<div data-id="organize clan" class="chat-help">/guild : Message your guild : /guild hail</div>',
+		'<div data-id="organize clan" class="chat-help">/guild or /g: Message your guild : /guild hail</div>',
 		'<div data-id="guild" class="chat-help">/ginvite: Invite a player to your guild: /ginvite Bob</div>',
 		'<div data-id="guild boot" class="chat-help">/gpromote: Promote a member to Officer: /gpromote Bob</div>',
 		'<div data-id="guild fire" class="chat-help">/gdemote: Demote an officer to a member: /gdemote Bob</div>',
@@ -70,7 +75,7 @@ var chat;
 		'<div data-id="guild" class="chat-help">/motd: Set a new message of the day: /motd message</div>',
 		'<div data-id="guild" class="chat-help">/gquit: Leave your guild: /gquit</div>',
 		'<div class="chat-help-header">Party Commands</div>',
-		'<div data-id="group" class="chat-help">/party : Message your party : /party hail</div>',
+		'<div data-id="group" class="chat-help">/party or /p : Message your party : /party hail</div>',
 		'<div data-id="party group" class="chat-help">/invite: Invite a player to your party : /invite Bob</div>',
 		'<div data-id="party group" class="chat-help">/disband: Leave your party</div>',
 		'<div data-id="party group" class="chat-help">/promote: Promote a player in your party to leader : /promote Bob</div>',
@@ -166,6 +171,9 @@ var chat;
 		}
 	}
 	function modeSet(mode) {
+		if (mode === '/town' || mode === '/s ') mode = '/say'
+		else if (mode === '/p ') mode = '/party'
+		else if (mode === '/g ') mode = '/guild'
 		chat.modeCommand = mode
 		if (mode === '/say') {
 			query.el('#chat-input-mode').className = 'chat-pink'
@@ -302,7 +310,7 @@ var chat;
 			// whisper
 			if (my.name !== chat.modeName) {
 				if (ng.ignore.includes(chat.modeName)) {
-					console.log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring him.', CHAT.WARNING);
+					console.log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring them.', CHAT.WARNING);
 				}
 				// console.info('@ send', msg)
 				socket.publish('name' + _.toLower(chat.modeName), {
@@ -316,7 +324,7 @@ var chat;
 				})
 			}
 			else {
-				chat.log('Your grip of sanity weakens as you begin to whisper to yourself...', CHAT.WARNING)
+				chat.log('You feel your grip on sanity weaken. Was I just whispering to myself?', CHAT.WARNING)
 			}
 		}
 		else if (msgLower.startsWith('/')) {
@@ -328,11 +336,11 @@ var chat;
 				if (o.msg[0] !== '/') {
 					// console.info(o)
 					if (!my.guild.id && o.category.startsWith('guild')) {
-						console.log("You are not in a guild.", CHAT.WARNING)
+						chat.log('You are not in a guild. You can create one at the Guild Hall in town.', CHAT.WARNING)
 					}
 					else {
 						if (o.category === 'ng2') {
-							console.log("You cannot communicate in town while in a dungeon", CHAT.WARNING)
+							chat.log('You cannot communicate to town while in a dungeon.', CHAT.WARNING)
 						}
 						else {
 							socket.publish(_.toLower(o.category), {

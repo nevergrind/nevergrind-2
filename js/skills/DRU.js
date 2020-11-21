@@ -45,7 +45,7 @@
 		let originalTarget = my.target
 		for (var j=0; j<5; j++) {
 			!function(j) {
-				delayedCall(j + 1, () => {
+				delayedCall((j + 1) * 1.5, () => {
 					let splashIndex = -1
 					let damages = []
 					for (i=0; i<3; i++) {
@@ -188,9 +188,9 @@
 						// add 50% damage via dot to final target
 						let dots = []
 						dots.push({
-							key: 'moltenBoulder',
+							key: 'moltenBoulderStrike',
 							index: tgt,
-							damageType: spell.data.damageType,
+							damageType: damageType,
 							...stats.spellDamage(tgt, -100)
 						})
 						dots[0].damage *= .5
@@ -251,7 +251,7 @@
 			key: 'tornado',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
+			damageType: DAMAGE_TYPE.ICE,
 			buffs: [{
 				i: spell.config.target,
 				row: my.row, // this identifies unique buff state/icon
@@ -345,8 +345,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
-			isMob: false,
+			anyTarget: true,
 			oocEnabled: true,
 		}
 		if (skills.notReady(spell.config, data)) return
@@ -355,7 +354,7 @@
 	function branchSpiritCompleted() {
 		damages = []
 		damages.push({
-			index: spell.config.target,
+			index: my.row,
 			key: 'branchSpirit',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],

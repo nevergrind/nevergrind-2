@@ -295,7 +295,7 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 0,
-				description: 'Bash your target with both hands. If a shield is equipped there is a 50% damage bonus.',
+				description: 'Bash your target with both hands.<br><br>If a shield is equipped there is a 50% damage bonus.',
 			}, {
 				name: 'Rupture',
 				img: 'WAR-2',
@@ -306,7 +306,7 @@ var skills;
 				cooldownTime: 0,
 				isRanged: true,
 				isPiercing: true,
-				description: 'A vicious slash that causes your target to bleed over time. While active physical damage on receives a 5% damage bonus.',
+				description: 'A vicious slash that causes your target to bleed over time.<br><br>While active all physical damage receives a 5% damage bonus.',
 			}, {
 				name: 'Whirlwind',
 				img: 'WAR-3',
@@ -337,7 +337,7 @@ var skills;
 				cooldownTime: 20,
 				isRanged: true,
 				staggers: true,
-				description: 'A ranged attack that hits twice and staggers your target. If your target is in the back row, there is an 80% damage bonus.',
+				description: 'A ranged attack that hits twice and staggers your target.<br><br>If your target is in the back row, there is an 80% damage bonus.',
 			}, {
 				name: 'Shockwave',
 				img: 'WAR-6',
@@ -348,7 +348,7 @@ var skills;
 				requiresFrontRow: true,
 				staggers: true,
 				cooldownTime: 25,
-				description: 'Unleash a shockwave that hits and staggers all targets in the front row. If a shield is equipped there is a 20% damage bonus.',
+				description: 'Unleash a shockwave that hits and staggers all targets in the front row.<br><br>If a shield is equipped there is a 20% damage bonus.',
 			}, {
 				name: 'Frenzy',
 				img: 'WAR-7',
@@ -730,7 +730,7 @@ var skills;
 				cooldownTime: 12,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Launch sedative arrows that hits three targets and reduces your threat. Debuffs each target\'s hit chance, up to five stacks, for 21 seconds.',
+				description: 'Launch sedative arrows that hits three targets and reduces your threat.<br><br>Debuffs each target\'s hit chance, up to five stacks, for 21 seconds.',
 			}, {
 				name: 'Burning Embers',
 				img: 'RNG-7',
@@ -741,7 +741,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Direct fire damage bursts on your target and burns for extra damage over time. Reduces your target\'s armor by 15% while active.',
+				description: 'Direct fire damage bursts on your target and burns for extra damage over time.<br><br>Reduces your target\'s armor by 15% while active.',
 			}, {
 				name: 'Shock Nova',
 				img: 'RNG-8',
@@ -764,7 +764,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Blast your target with direct fire damage. The fire faeries illuminate your targets\' silhouette, increasing all allies\' hit chance by 15% while active.',
+				description: 'Blast your target with direct fire damage.<br><br>The fire faeries illuminate your targets\' silhouette, increasing all allies\' hit chance by 15% while active.',
 			}, {
 				name: 'Fungal Growth',
 				img: 'RNG-10',
@@ -1040,7 +1040,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Hits target for X fire damage.',
+				description: 'Blast your target with direct fire damage.',
 			}, {
 				name: 'Fissure',
 				img: 'DRU-2',
@@ -1051,7 +1051,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 4,
 				cooldownTime: 12,
-				description: 'Lava erupts from the ground and hits 3 targets for fire damage.',
+				description: 'Lava erupts from the ground and hits up to three targets five times with direct fire damage at intervals over 8 seconds.',
 			}, {
 				name: 'Lightning Blast',
 				img: 'DRU-3',
@@ -1062,7 +1062,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 5,
-				description: 'Hits 3x targets for X lightning damage.',
+				description: 'Hits up to three targets with direct lightning damage.',
 			}, {
 				name: 'Blizzard',
 				img: 'DRU-4',
@@ -1073,7 +1073,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 5,
 				cooldownTime: 30,
-				description: 'An ice storm hits random targets over 8 seconds for X damage.',
+				description: 'An ice storm blasts up to three targets five times with direct ice damage at intervals over 8 seconds.',
 			}, {
 				name: 'Toxic Spores',
 				img: 'DRU-5',
@@ -1084,7 +1084,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Hits a single target for X poison damage over 30 seconds.',
+				description: 'Blast a single target with toxic sports that do poison damage over '+ ng.toMinSecs(buffs.toxicSpores.duration) +'.',
 			}, {
 				name: 'Molten Boulder',
 				img: 'DRU-6',
@@ -1096,7 +1096,7 @@ var skills;
 				requiresFrontRow: true,
 				castTime: 4.5,
 				cooldownTime: 20,
-				description: 'Hits front row targets for X fire damage - adds X fire damage over 12 seconds.',
+				description: 'Summon a molten boulder that crushes front-row targets with direct fire damage. Smolders for additional fire damage over time for '+ ng.toMinSecs(buffs.moltenBoulder.duration) +'.',
 			}, {
 				name: 'Barbed Thicket',
 				img: 'DRU-7',
@@ -1108,7 +1108,7 @@ var skills;
 				castTime: 2,
 				cooldownTime: 15,
 				staggers: true,
-				description: 'Hits 3x targets for X arcane damage - Reduces threat & Staggers.',
+				description: 'Hits up to three targets for with direct arcane damage. Reduces threat and staggers each target.',
 			}, {
 				name: 'Tornado',
 				img: 'DRU-8',
@@ -1119,7 +1119,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 9,
-				description: 'Hits a random target for twice arcane and cold damage - chills target for X seconds.',
+				description: 'Hits a random target with direct arcane and cold damage. Chills your target for '+ ng.toMinSecs(buffs.tornado.chillDuration) +'.',
 			}, {
 				name: 'Nature\'s Touch',
 				img: 'DRU-9',
@@ -1130,7 +1130,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Heal target for X health + X per tick for 3 ticks.',
+				description: 'Heal your target\'s health and restore additional health over '+ ng.toMinSecs(buffs.naturesTouchHot.duration) +'.',
 			}, {
 				name: 'Moss Breath',
 				img: 'DRU-10',
@@ -1141,7 +1141,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Heal target over time for X health for 7 ticks.',
+				description: 'Restore health on your target over time for '+ ng.toMinSecs(buffs.mossBreath.duration) +'.',
 			}, {
 				name: 'Synthesize',
 				img: 'DRU-11',
@@ -1152,7 +1152,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 5,
 				cooldownTime: 0,
-				description: 'Long-term buff/heal that heals a target for X health for X ticks.',
+				description: 'Buff your target\'s health regeneration ' + ng.toMinSecs(buffs.synthesize.duration) + '.',
 			}, {
 				name: 'Branch Spirit',
 				img: 'DRU-12',
@@ -1163,7 +1163,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Infuse yourself with nature\'s wrath. Buffs your hp regen, armor, and melee strikes hit twice.',
+				description: 'Infuse yourself with nature\'s wrath.<br><br>Buffs your physical damage by 25%.<br>Buffs your health regeneration, attack, and armor.',
 			},
 		],
 		CLR: [
