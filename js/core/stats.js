@@ -719,6 +719,7 @@ var stats = {};
 		if (!skipSkillChecks) {
 			combat.levelSkillCheck(weaponSkill)
 		}
+		// console.warn('min max', min, max, skillDamageReturned)
 		return {
 			min: min,
 			max: max,

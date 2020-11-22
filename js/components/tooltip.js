@@ -353,7 +353,8 @@ var tooltip;
 	let skillHtml = ''
 	function getSkillHtml(config) {
 		let rank = my.skills[config.index]
-		console.info('getSkillHtml config', config)
+		let minRank = rank > 0 ? rank : 1
+		// console.info('getSkillHtml config', config)
 		skillHtml = `
 		<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">
 			<div id="tooltip-name-bg" class="flex-column flex-center align-center">
@@ -361,132 +362,133 @@ var tooltip;
 			</div>
 			<div id="tooltip-item-stat-wrap" class="text-center" style="border: .1rem ridge #013">
 				<div style="padding: .2rem">`
-				if (rank >= 1) {
-					if (typeof config.mp === 'function') {
-						skillHtml += `<div style="color: #3bf">Mana Cost: ${config.mp(rank)}</div>`
+				skillHtml += `<div class="${rank === 0 ? 'chat-danger' : ''}">Current Rank: ${rank}</div>`
+				if (typeof config.mp === 'function') {
+					skillHtml += `<div style="color: #3bf">Mana Cost: ${config.mp(minRank)}</div>`
+				}
+				else if (typeof config.sp === 'function') {
+					skillHtml += `<div style="color: #2c2">Spirit Cost: ${config.sp(minRank)}</div>`
+				}
+				if (typeof config.hate === 'number' && config.hate !== 0) {
+					skillHtml += `<div class="chat-warning">Threat: ${ng.toPercent(config.hate)}%</div>`
+				}
+				if (config.castTime) {
+					skillHtml += `<div>Cast Time: ${ng.toMinSecs(config.castTime)}</div>`
+				}
+				if (config.cooldownTime) {
+					skillHtml += `<div>Cooldown: ${ng.toMinSecs(config.cooldownTime)}</div>`
+				}
+				if (config.enhancedDamage && config.enhancedDamage[minRank]) {
+					skillHtml += `<div>Enhanced Damage: ${ng.toPercent(config.enhancedDamage[minRank])}%</div>`
+				}
+				if (config.hitBonus && config.hitBonus[minRank]) {
+					skillHtml += `<div>Hit Modifier: ${config.hitBonus[minRank]}%</div>`
+				}
+				if (config.critBonus && config.critBonus[minRank]) {
+					skillHtml += `<div>Crit Modifier: ${config.critBonus[minRank]}%</div>`
+				}
+				if (config.duration) {
+					skillHtml += `<div>Duration: ${ng.toMinSecs(config.duration)}</div>`
+				}
+				if (config.spellType) {
+					skillHtml += `<div>Spell Type: ${_.capitalize(config.spellType)}</div>`
+				}
+				if (config.damageType) {
+					skillHtml += `<div class="damage-${config.damageType}">Element: ${_.capitalize(config.damageType)}</div>`
+				}
+				if (config.requiresFrontRow) {
+					skillHtml += `<div class="chat-warning">Requires Front Row Target</div>`
+				}
+				if (config.staggers) {
+					skillHtml += `<div class="chat-warning">Staggers Target</div>`
+				}
+				if (config.damageReduced) {
+					skillHtml += `<div class="chat-warning">Physical Damage Reduced: ${ng.toPercent(config.damageReduced[minRank])}%</div>`
+				}
+				if (config.stunDuration) {
+					skillHtml += `<div class="chat-warning">Stuns target for ${ng.toMinSecs(config.stunDuration)}</div>`
+				}
+				if (config.chillDuration) {
+					skillHtml += `<div class="chat-warning">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>`
+				}
+				if (config.freezeDuration) {
+					skillHtml += `<div class="chat-warning">Freezes target for ${ng.toMinSecs(config.freezeDuration)}</div>`
+				}
+				if (config.paralyzeDuration) {
+					skillHtml += `<div class="chat-warning">Paralyzes target for ${ng.toMinSecs(config.paralyzeDuration)}</div>`
+				}
+				if (config.fearDuration) {
+					skillHtml += `<div class="chat-warning">Fears target for ${ng.toMinSecs(config.fearDuration)}</div>`
+				}
+				if (config.slowPercent) {
+					skillHtml += `<div class="chat-warning">Slows target ${ng.toPercent(config.slowPercent)}%</div>`
+				}
+				if (config.isRanged) {
+					skillHtml += `<div class="chat-warning">Ranged: Full damage to back row</div>`
+				}
+				if (config.isPiercing) {
+					skillHtml += `<div class="chat-warning">Piercing: Cannot be parried or riposted</div>`
+				}
+				if (config.isBlighted) {
+					skillHtml += `<div class="chat-warning">Blighted: +50% damage to demons and undead</div>`
+				}
+				if (config.attackHaste) {
+					skillHtml += `<div class="chat-warning">
+						Attack Haste: ${ng.toPercent(
+					Array.isArray(config.attackHaste) ? config.attackHaste[minRank] : config.attackHaste
+						)}%
+					</div>`
+				}
+				if (config.skillHaste) {
+					skillHtml += `<div class="chat-warning">
+						Skill Haste: ${ng.toPercent(
+							Array.isArray(config.skillHaste) ? config.skillHaste[minRank] : config.skillHaste
+						)}%
+					</div>`
+				}
+				if (config.castingHaste) {
+					skillHtml += `<div class="chat-warning">
+						Casting Haste: ${ng.toPercent(
+							Array.isArray(config.castingHaste) ? config.castingHaste[minRank] : config.castingHaste
+						)}%
+					</div>`
+				}
+				skillHtml += divider
+				// hit damage
+				hit = {}
+				if (Array.isArray(config.hitBonus) &&
+					config.hitBonus.some(v => v !== 0)) {
+					console.info('is ranged or skill', config)
+					// TODO: Something off here with physical damage calc
+					if (config.isRangedDamage) {
+						hit = stats.rangedDamage(-1, -100, true)
 					}
-					else if (typeof config.sp === 'function') {
-						skillHtml += `<div style="color: #2c2">Spirit Cost: ${config.sp(rank)}</div>`
-					}
-					if (typeof config.hate === 'number' && config.hate !== 0) {
-						skillHtml += `<div class="chat-warning">Threat: ${ng.toPercent(config.hate)}%</div>`
-					}
-					if (config.castTime) {
-						skillHtml += `<div>Cast Time: ${ng.toMinSecs(config.castTime)}</div>`
-					}
-					if (config.cooldownTime) {
-						skillHtml += `<div>Cooldown: ${ng.toMinSecs(config.cooldownTime)}</div>`
-					}
-					if (config.enhancedDamage && config.enhancedDamage[rank]) {
-						skillHtml += `<div>Enhanced Damage: ${ng.toPercent(config.enhancedDamage[rank])}%</div>`
-					}
-					if (config.hitBonus && config.hitBonus[rank]) {
-						skillHtml += `<div>Hit Modifier: ${config.hitBonus[rank]}%</div>`
-					}
-					if (config.critBonus && config.critBonus[rank]) {
-						skillHtml += `<div>Crit Modifier: ${config.critBonus[rank]}%</div>`
-					}
-					if (config.duration) {
-						skillHtml += `<div>Duration: ${ng.toMinSecs(config.duration)}</div>`
-					}
-					if (config.spellType) {
-						skillHtml += `<div>Spell Type: ${_.capitalize(config.spellType)}</div>`
-					}
-					if (config.damageType) {
-						skillHtml += `<div class="damage-${config.damageType}">Element: ${_.capitalize(config.damageType)}</div>`
-					}
-					if (config.requiresFrontRow) {
-						skillHtml += `<div class="chat-warning">Requires Front Row Target</div>`
-					}
-					if (config.staggers) {
-						skillHtml += `<div class="chat-warning">Staggers Target</div>`
-					}
-					if (config.damageReduced) {
-						console.info('DR:', config)
-						skillHtml += `<div class="chat-warning">Physical Damage Reduced: ${ng.toPercent(config.damageReduced[rank])}%</div>`
-					}
-					if (config.stunDuration) {
-						skillHtml += `<div class="chat-warning">Stuns target for ${ng.toMinSecs(config.stunDuration)}</div>`
-					}
-					if (config.chillDuration) {
-						skillHtml += `<div class="chat-warning">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>`
-					}
-					if (config.freezeDuration) {
-						skillHtml += `<div class="chat-warning">Freezes target for ${ng.toMinSecs(config.freezeDuration)}</div>`
-					}
-					if (config.paralyzeDuration) {
-						skillHtml += `<div class="chat-warning">Paralyzes target for ${ng.toMinSecs(config.paralyzeDuration)}</div>`
-					}
-					if (config.fearDuration) {
-						skillHtml += `<div class="chat-warning">Fears target for ${ng.toMinSecs(config.fearDuration)}</div>`
-					}
-					if (config.slowPercent) {
-						skillHtml += `<div class="chat-warning">Slows target ${ng.toPercent(config.slowPercent)}%</div>`
-					}
-					if (config.isRanged) {
-						skillHtml += `<div class="chat-warning">Ranged: Full damage to back row</div>`
-					}
-					if (config.isPiercing) {
-						skillHtml += `<div class="chat-warning">Piercing: Cannot be parried or riposted</div>`
-					}
-					if (config.isBlighted) {
-						skillHtml += `<div class="chat-warning">Blighted: +50% damage to demons and undead</div>`
-					}
-					if (config.attackHaste) {
-						skillHtml += `<div class="chat-warning">
-							Attack Haste: ${ng.toPercent(
-						Array.isArray(config.attackHaste) ? config.attackHaste[rank] : config.attackHaste
-							)}%
-						</div>`
-					}
-					if (config.skillHaste) {
-						skillHtml += `<div class="chat-warning">
-							Skill Haste: ${ng.toPercent(
-								Array.isArray(config.skillHaste) ? config.skillHaste[rank] : config.skillHaste
-							)}%
-						</div>`
-					}
-					if (config.castingHaste) {
-						skillHtml += `<div class="chat-warning">
-							Casting Haste: ${ng.toPercent(
-								Array.isArray(config.castingHaste) ? config.castingHaste[rank] : config.castingHaste
-							)}%
-						</div>`
-					}
-					skillHtml += divider
-					// hit damage
-					hit = {}
-					if (config.enhancedDamage) {
-						// TODO: Something off here with physical damage calc
-						if (config.isRangedDamage) {
-							hit = stats.rangedDamage(-1, -100, true)
-						}
-						else {
-							hit = stats.skillDamage(-1, -100, true)
-						}
-						if (hit.min) {
-							hit.min *= config.enhancedDamage[rank]
-							hit.max *= config.enhancedDamage[rank]
-							console.info('hit', hit.min, hit.max)
-						}
-					}
-					else if (typeof config.spellDamage === 'function' &&
-						config.spellDamage(1) > 0) {
-						hit = stats.spellDamage(-1, -100, config)
+					else {
+						hit = stats.skillDamage(-1, -100, true)
 					}
 					if (hit.min) {
-						if (config.isBuff) {
-
-						}
-						else {
-							config.damageString = _.max([1, round(hit.min)]) +'-'+ _.max([1, round(hit.max)])
-							skillHtml += `<div>
-								${config.isHeal ? `Heal` : config.isShield ? `Shield` : `Damage`}: ${config.damageString}
-							</div>`
-						}
+						hit.min *= config.enhancedDamage[minRank]
+						hit.max *= config.enhancedDamage[minRank]
 					}
 				}
-				console.info('hit:', config.damageString, hit)
+				else if (typeof config.spellDamage === 'function' &&
+					config.spellDamage(1) > 0) {
+					hit = stats.spellDamage(-1, -100, config)
+				}
+				else {
+					console.info('no damage found', config)
+				}
+				if (hit.min) {
+					if (config.isBuff) {
+
+					}
+					else {
+						config.damageString = _.max([1, round(hit.min)]) +'-'+ _.max([1, round(hit.max)])
+						skillHtml += `<div>
+							${config.isHeal ? `Heal` : config.isShield ? `Shield` : `Damage`}: ${config.damageString}
+						</div>`
+					}
+				}
 				skillHtml += `<div style="color: gold">${config.description}</div>
 				</div>
 			</div>
@@ -519,7 +521,7 @@ var tooltip;
 				description: '<div style="color: #fff">Damage: '+ round(hit.min) +' to '+ round(hit.max)+ '</div><div>Attack with your secondary weapon. The dual wield skill makes this work more often.</div>'
 			})
 		}
-		else if (event.currentTarget.id.startsWith('skill')) {
+		else if (event.currentTarget.id.startsWith('skill') || event.currentTarget.id.startsWith('academy')) {
 			var index = _.last(event.currentTarget.id.split('-'))
 			var skillData = skills[my.job][index]
 			var buffData = buffs[_.camelCase(skills[my.job][index].name)]
@@ -540,7 +542,7 @@ var tooltip;
 		}
 	}
 	function handleLeave(event) {
-		if (event.currentTarget.id.startsWith('skill')) {
+		if (event.currentTarget.id.startsWith('skill') || event.currentTarget.id.startsWith('academy')) {
 			tooltip.hide()
 		}
 		else {

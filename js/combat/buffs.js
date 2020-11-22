@@ -278,6 +278,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 8,
 			job: JOB.WIZARD,
 			duration: 8,
+			isBuff: true,
 			msg: () => 'You are encased in a frozen barrier.',
 			fadeMsg: 'The barrier fades.',
 		},
@@ -287,6 +288,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.WIZARD,
 			hate: 1,
 			isShield: true,
+			isBuff: true,
 			msg: () => 'Your mirror form materializes from the void.',
 			msgAbsorb: 'Your mirror image shields you from harm.'
 		},
@@ -299,12 +301,14 @@ let buffs; // buff data for use with skill/spells/icons
 			silence: [0, 3, 5, 7, 9, 11, 13, 15],
 			resistAll: [0, 10, 15, 20, 25, 30, 35, 40],
 			knockback: 10,
+			isBuff: true,
 			msg: () => 'You are protected by a mana shell.',
 			fadeMsg: 'The mana shell fades.'
 		},
 		deepFreeze: {
 			hate: -1,
 			freezeDuration: 5,
+			isBuff: true,
 		},
 		// dru
 		starfire: { hate: 1 },

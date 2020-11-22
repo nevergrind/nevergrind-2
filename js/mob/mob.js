@@ -148,7 +148,7 @@ let mobs = [];
 	}
 	function addHateHeal(data) {
 		if (ng.view === 'battle') {
-			console.info('updateHate addHateHeal', data)
+			// console.info('updateHate addHateHeal', data)
 			for (i=0; i<mob.max; i++) {
 				// applied to all mobs
 				updateHate({

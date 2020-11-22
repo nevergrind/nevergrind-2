@@ -841,6 +841,7 @@ var skills;
 				img: 'MNK-5',
 				mp: level => spellValues.chakraBlastMana[level],
 				enhancedDamage: getSkillValues(.36, .04),
+				hitBonus: getSkillValues(-5.5, .5),
 				critBonus: getSkillValues(6.5, .5),
 				cooldownTime: 21,
 				damageType: DAMAGE_TYPE.ARCANE,
@@ -1097,7 +1098,7 @@ var skills;
 				requiresFrontRow: true,
 				castTime: 4.5,
 				cooldownTime: 20,
-				description: 'Summon a molten boulder that crushes front-row targets with direct fire damage. Smolders for additional fire damage over time for '+ ng.toMinSecs(buffs.moltenBoulder.duration) +'.',
+				description: 'Summon a molten boulder that crushes through the front row to your target with direct fire damage. Smolders for additional fire damage over time for '+ ng.toMinSecs(buffs.moltenBoulder.duration) +'.',
 			}, {
 				name: 'Barbed Thicket',
 				img: 'DRU-7',
@@ -2002,7 +2003,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Hits target for X fire damage Effect: Reduces armor by X.',
+				description: 'Blast your target with direct fire damage.',
 			}, {
 				name: 'Ice Bolt',
 				img: 'WIZ-2',
@@ -2013,7 +2014,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Hits target for X ice damage Effect: Slows by 20% for X seconds. Reduces hate',
+				description: 'Blast your target with direct ice damage. Reduces threat and chills your target for '+ ng.toMinSecs(buffs.iceBolt.chillDuration) +'.',
 			}, {
 				name: 'Lightning Bolt',
 				img: 'WIZ-3',
@@ -2024,7 +2025,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Hits target for X lightning damage.',
+				description: 'Strike your target with direct lightning damage.',
 			}, {
 				name: 'Magic Missiles',
 				img: 'WIZ-4',
@@ -2035,7 +2036,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Hits single target 3 times for X arcane damage - Piercing',
+				description: 'Strike your target with three staggered bolts that do direct arcane damage.',
 			}, {
 				name: 'Fireball',
 				img: 'WIZ-5',
@@ -2046,7 +2047,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 4,
 				cooldownTime: 10,
-				description: 'Hits 3x targets for X fire damage.',
+				description: 'Explodes and hits up to three targets with direct fire damage.',
 			}, {
 				name: 'Chain Lightning',
 				img: 'WIZ-6',
@@ -2057,7 +2058,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3.5,
 				cooldownTime: 12,
-				description: 'Hits 3 targets in succession for X lightning damage - Each hit does less damage.',
+				description: 'A lightning bolt crackles through a row to your target with direct lightning damage.',
 			}, {
 				name: 'Frost Nova',
 				img: 'WIZ-7',
@@ -2068,7 +2069,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 2,
 				cooldownTime: 30,
-				description: 'Hits all targets for X ice damage and reduces hate.',
+				description: 'Hits all targets with a chilling nova that inflicts direct ice damage and reduces threat.',
 			}, {
 				name: 'Meteor',
 				img: 'WIZ-8',
@@ -2079,7 +2080,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 5,
 				cooldownTime: 45,
-				description: 'Hits target for X fire damage plus 5x splash fire damage over 6 seconds - High hate - Piercing.',
+				description: 'Hits up to five targets with direct fire damage. Burning flames in the meteor\'s wake cause additional direct fire damage at intervals over '+ ng.toMinSecs(buffs.meteorStrike.duration) +'.',
 			}, {
 				name: 'Frozen Barrier',
 				img: 'WIZ-9',
@@ -2090,7 +2091,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 1.5,
 				cooldownTime: 90,
-				description: 'Shield yourself in ice: Recover X health and X mana every second.',
+				description: 'Protect yourself in a frozen barrier that makes you invincible for '+ ng.toMinSecs(buffs.frozenBarrier.duration) +'. Recover health and mana at intervals until the effect fades.',
 			}, {
 				name: 'Mirror Image',
 				img: 'WIZ-10',
@@ -2101,7 +2102,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 60,
-				description: 'create an illusion of yourself that mirrors your spellcasting: absorbs X damage; mirror image shield power is added to each spell\'s damage.',
+				description: 'Summon an illusion that protects you and adds damage to all magic spells. The illusion\'s health determines how much damage is added to your magic. All damage received weakens its health.',
 			}, {
 				name: 'Mana Shell',
 				img: 'WIZ-11',
@@ -2112,7 +2113,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 5,
 				cooldownTime: 0,
-				description: 'Buff target\'s ability to channel spells, resist all, silence resist.',
+				description: 'Buffs all spell resistances, your silence resistance, and your ability to channel spells successfully.',
 			}, {
 				name: 'Deep Freeze',
 				img: 'WIZ-12',
@@ -2123,7 +2124,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 3,
 				cooldownTime: 30,
-				description: 'Hit a single target for X ice damage - X ice damage plus stun for X seconds - Reduces hate.',
+				description: 'Strike a single target with direct ice damage that reduces threat and freezes your target for '+ ng.toMinSecs(buffs.deepFreeze.freezeDuration) +'.',
 			},
 		],
 	}

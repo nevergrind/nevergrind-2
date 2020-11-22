@@ -197,7 +197,6 @@ var combat;
 			d.damage = 0
 			return d
 		}
-		// console.info('asdfasdf', d)
 		// console.info('damageType', d.damageType)
 
 		// MAGIC cannot miss, dodge, etc
@@ -316,7 +315,6 @@ var combat;
 				}
 			}
 			d.damage *= d.enhancedDamage
-			console.warn('d.damage MAGIC', d.key, d.damage)
 			if (!d.cannotResist) d.damage *= mob.getMobResist(d)
 
 		}

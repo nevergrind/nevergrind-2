@@ -353,7 +353,7 @@ mob.type = {
 	},
 	orc: {
 		hp: 1,
-		armor: .8,
+		armor: 1, // TODO: Change this to .8 when done with tooltips
 		mobType: MOB_TYPE.HUMANOID,
 		resist: {
 			blood: 1,

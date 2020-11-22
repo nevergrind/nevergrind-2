@@ -53,11 +53,11 @@
 		// process skill data
 		damages = []
 		hit = {
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'hyperStrike',
 			index: my.target,
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 		}
 		damages.push(hit)
 		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
@@ -125,11 +125,11 @@
 		// process skill data
 		damages = []
 		hit = {
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'craneKick',
 			index: my.target,
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			buffs: [{
 				i: my.target, // target
 				row: my.row, // this identifies unique buff state/icon
@@ -160,6 +160,7 @@
 				...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 				key: 'chakraBlast',
 				index: tgt,
+				hitBonus: data.hitBonus[my.skills[index]],
 				damageType: DAMAGE_TYPE.ARCANE,
 				enhancedDamage: enhancedDamage,
 			}
@@ -272,11 +273,11 @@
 		// process skill data
 		damages = []
 		hit = {
+			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 			key: 'viperStrike',
 			index: my.target,
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(my.target, data.critBonus[my.skills[index]]),
 		}
 		damages.push(hit)
 		if (my.buffFlags.mimeStrike) damages = mimeStrikeHit(damages)
@@ -318,11 +319,11 @@
 		tgt = my.target
 		damages = []
 		damages.push({
+			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 			key: 'palmStrike',
 			index: tgt,
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
-			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 			effects: { stagger: spell.data.staggers },
 			buffs: [{
 				i: tgt,
