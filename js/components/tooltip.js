@@ -408,11 +408,11 @@ var tooltip;
 				if (config.stunDuration) {
 					skillHtml += `<div class="chat-warning">Stuns target for ${ng.toMinSecs(config.stunDuration)}</div>`
 				}
-				if (config.chillDuration) {
-					skillHtml += `<div class="chat-warning">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>`
-				}
 				if (config.freezeDuration) {
 					skillHtml += `<div class="chat-warning">Freezes target for ${ng.toMinSecs(config.freezeDuration)}</div>`
+				}
+				if (config.chillDuration) {
+					skillHtml += `<div class="chat-warning">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>`
 				}
 				if (config.paralyzeDuration) {
 					skillHtml += `<div class="chat-warning">Paralyzes target for ${ng.toMinSecs(config.paralyzeDuration)}</div>`

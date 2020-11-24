@@ -1867,7 +1867,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Hits target for X fire damage per hit.',
+				description: 'Blast your target with direct fire damage.',
 			}, {
 				name: 'Thunderclap',
 				img: 'TMP-2',
@@ -1878,7 +1878,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 4,
-				description: 'Hits single target 3x for X lightning damage: Effect: stun for 1 sec.',
+				description: 'Hits your target with three successive zaps of direct lightning damage.',
 			}, {
 				name: 'Frozen Orb',
 				img: 'TMP-3',
@@ -1889,7 +1889,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 16,
-				description: 'hits (5x) of targets for X cold damage per hit (15): Effect: chill targets X% for 7 seconds.',
+				description: 'An area effect spell that strikes up to five targets with direct cold damage at intervals.',
 			}, {
 				name: 'Static Storm',
 				img: 'TMP-4',
@@ -1901,7 +1901,7 @@ var skills;
 				castTime: 3.5,
 				cooldownTime: 0,
 				staggers: true,
-				description: 'hits 3x targets for X lightning damage: Effect: staggers and lowers lightning resistance for X seconds.',
+				description: 'Blast up to three targets with direct lightning damage.<br><br>Debuffs each target\'s lightning resistance by '+ ng.toPercent(buffs.staticStormDebuff.reduceLightningResist) +'% for '+ ng.toMinSecs(buffs.staticStormDebuff.duration) +'.',
 			}, {
 				name: 'Fire Wall',
 				img: 'TMP-5',
@@ -1912,7 +1912,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 4.5,
 				cooldownTime: 24,
-				description: 'Hits row for X fire damage.',
+				description: 'Hits all front- or back-row targets with direct fire damage over time at intervals.',
 			}, {
 				name: 'Glacial Spike',
 				img: 'TMP-6',
@@ -1923,7 +1923,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 30,
-				description: 'Freeze target for X cold damage (4 sec) + splashes 5x for 1/2 damage + chill effect (12 sec).',
+				description: 'Freeze your target for '+ buffs.glacialSpike.freezeDuration +' seconds and inflict direct cold damage. Splash damage hits nearby targets for half damage and chills them for '+ buffs.glacialSpike.chillDuration +' seconds.',
 			}, {
 				name: 'Primordial Sludge',
 				img: 'TMP-7',
@@ -1934,7 +1934,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Hits target for X poison damage for X seconds Effect: Tainted Sludged slows attack speed by 20% for X seconds.',
+				description: 'Hits your target and does poison damage over time for '+ buffs.primordialSludge.duration +' seconds. While active slows your target\'s attack speed.',
 			}, {
 				name: 'Arclight',
 				img: 'TMP-8',
@@ -1945,7 +1945,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 15,
-				description: 'Hits target for X lightning damage over X seconds Effect: target is paralyzed for 15 seconds.',
+				description: 'Hits your target and does lightning damage over time for '+ buffs.arclight.duration +' seconds. Paralyzes the target for '+ buffs.arclightDebuff.duration +' seconds.',
 			}, {
 				name: 'Primeval Withering',
 				img: 'TMP-9',
@@ -1956,7 +1956,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Hits target for X arcane damage over X seconds - Effect: debuffs LR, FR, CR over X seconds.',
+				description: 'Hits your target and does arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists while active.',
 			}, {
 				name: 'Molten Aegis',
 				img: 'TMP-10',
@@ -1967,7 +1967,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Boost fire resistance by X, adds X fire damage to spells, melee.',
+				description: 'Buffs fire resistance and adds fire damage to melee attacks for '+ ng.toMinSecs(buffs.moltenAegis.duration) +'.',
 			}, {
 				name: 'Conviction',
 				img: 'TMP-11',
@@ -1978,7 +1978,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Single target buffs spirit regen by X and charisma by X for X seconds.',
+				description: 'Single target buff that boosts spirit regen and charisma for '+ ng.toMinSecs(buffs.conviction.duration) +'.',
 			}, {
 				name: 'Celestial Frenzy',
 				img: 'TMP-12',
@@ -1989,7 +1989,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Buffs all spell power by X and casting speed by X for X seconds.',
+				description: 'Buffs target\'s casting speed and all spell power for '+ ng.toMinSecs(buffs.celestialFrenzy.duration) +'.',
 			},
 		],
 		WIZ: [

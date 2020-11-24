@@ -781,6 +781,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 1,
 			interval: 60,
 			duration: 60,
+			reduceLightningResist: .25,
 			damageType: DAMAGE_TYPE.LIGHTNING,
 			isDebuff: true,
 		},
