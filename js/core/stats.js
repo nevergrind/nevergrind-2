@@ -393,10 +393,10 @@ var stats = {};
 		// console.info('stats.missChance before',  chance, hitBonus)
 		if (hitBonus !== 0) chance -= (hitBonus / 100)
 		if (mobs[index].buffFlags.markOfRemphan) {
-			chance -= buffs.markOfRemphan.hitBonus[skill.SHD.getHighestMarkOfRemphan(index)]
+			chance -= buffs.markOfRemphan.buffHitBonus[skill.SHD.getHighestMarkOfRemphan(index)]
 		}
 		if (mobs[index].buffFlags.faerieFlame) {
-			chance -= buffs.faerieFlame.hitBonus
+			chance -= buffs.faerieFlame.buffHitBonus
 		}
 		// console.info('stats.missChance after', chance)
 		// limit check
@@ -593,7 +593,7 @@ var stats = {};
 		critBuffBonus = 0
 		if (mob.isAlive(index) &&
 			mobs[index].buffFlags.markOfRemphan) {
-			critBuffBonus += buffs.markOfRemphan.critBonus[skill.SHD.getHighestMarkOfRemphan(index)]
+			critBuffBonus += buffs.markOfRemphan.buffCritBonus[skill.SHD.getHighestMarkOfRemphan(index)]
 		}
 		return critBuffBonus
 	}

@@ -246,7 +246,7 @@
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			cannotResist: true,
+			cannotResist: spell.data.cannotResist,
 			...hit,
 		})
 		// console.info('drainSoul', hit)

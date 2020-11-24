@@ -372,12 +372,6 @@ var tooltip;
 				if (typeof config.hate === 'number' && config.hate !== 0) {
 					skillHtml += `<div class="chat-warning">Threat: ${ng.toPercent(config.hate)}%</div>`
 				}
-				if (config.castTime) {
-					skillHtml += `<div>Cast Time: ${ng.toMinSecs(config.castTime)}</div>`
-				}
-				if (config.cooldownTime) {
-					skillHtml += `<div>Cooldown: ${ng.toMinSecs(config.cooldownTime)}</div>`
-				}
 				if (config.enhancedDamage && config.enhancedDamage[minRank]) {
 					skillHtml += `<div>Enhanced Damage: ${ng.toPercent(config.enhancedDamage[minRank])}%</div>`
 				}
@@ -386,6 +380,12 @@ var tooltip;
 				}
 				if (config.critBonus && config.critBonus[minRank]) {
 					skillHtml += `<div>Crit Modifier: ${config.critBonus[minRank]}%</div>`
+				}
+				if (config.castTime) {
+					skillHtml += `<div>Cast Time: ${ng.toMinSecs(config.castTime)}</div>`
+				}
+				if (config.cooldownTime) {
+					skillHtml += `<div>Cooldown: ${ng.toMinSecs(config.cooldownTime)}</div>`
 				}
 				if (config.duration) {
 					skillHtml += `<div>Duration: ${ng.toMinSecs(config.duration)}</div>`
@@ -402,6 +402,9 @@ var tooltip;
 				if (config.staggers) {
 					skillHtml += `<div class="chat-warning">Staggers Target</div>`
 				}
+				if (config.cannotResist) {
+					skillHtml += `<div class="chat-warning">Cannot Be Resisted</div>`
+				}
 				if (config.damageReduced) {
 					skillHtml += `<div class="chat-warning">Physical Damage Reduced: ${ng.toPercent(config.damageReduced[minRank])}%</div>`
 				}
@@ -409,16 +412,27 @@ var tooltip;
 					skillHtml += `<div class="chat-warning">Stuns target for ${ng.toMinSecs(config.stunDuration)}</div>`
 				}
 				if (config.freezeDuration) {
-					skillHtml += `<div class="chat-warning">Freezes target for ${ng.toMinSecs(config.freezeDuration)}</div>`
+					skillHtml += `
+						<div class="chat-warning">Freezes target for ${ng.toMinSecs(config.freezeDuration)}</div>
+					`
 				}
 				if (config.chillDuration) {
-					skillHtml += `<div class="chat-warning">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>`
+					skillHtml += `
+						<div class="chat-warning">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>
+						<div class="chat-warning">Chilled targets attack 20% slower.</div>
+					`
 				}
 				if (config.paralyzeDuration) {
-					skillHtml += `<div class="chat-warning">Paralyzes target for ${ng.toMinSecs(config.paralyzeDuration)}</div>`
+					skillHtml += `
+						<div class="chat-warning">Paralyzes target for ${ng.toMinSecs(config.paralyzeDuration)}</div>
+						<div class="chat-warning">Paralyzed targets fail 50% of their attacks.</div>
+					`
 				}
 				if (config.fearDuration) {
-					skillHtml += `<div class="chat-warning">Fears target for ${ng.toMinSecs(config.fearDuration)}</div>`
+					skillHtml += `
+						<div class="chat-warning">Fears target for ${ng.toMinSecs(config.fearDuration)}</div>
+						<div class="chat-warning">Feared targets have a 50% damage penalty.</div>
+					`
 				}
 				if (config.slowPercent) {
 					skillHtml += `<div class="chat-warning">Slows target ${ng.toPercent(config.slowPercent)}%</div>`
