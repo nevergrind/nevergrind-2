@@ -419,19 +419,19 @@ var tooltip;
 				if (config.chillDuration) {
 					skillHtml += `
 						<div class="chat-warning">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>
-						<div class="chat-warning">Chilled targets attack 20% slower.</div>
+						<div class="chat-warning">Chilled targets attack 20% slower</div>
 					`
 				}
 				if (config.paralyzeDuration) {
 					skillHtml += `
 						<div class="chat-warning">Paralyzes target for ${ng.toMinSecs(config.paralyzeDuration)}</div>
-						<div class="chat-warning">Paralyzed targets fail 50% of their attacks.</div>
+						<div class="chat-warning">Paralyzed targets fail 50% of their attacks</div>
 					`
 				}
 				if (config.fearDuration) {
 					skillHtml += `
 						<div class="chat-warning">Fears target for ${ng.toMinSecs(config.fearDuration)}</div>
-						<div class="chat-warning">Feared targets have a 50% damage penalty.</div>
+						<div class="chat-warning">Feared targets have a 50% damage penalty</div>
 					`
 				}
 				if (config.slowPercent) {
@@ -445,6 +445,12 @@ var tooltip;
 				}
 				if (config.isBlighted) {
 					skillHtml += `<div class="chat-warning">Blighted: +50% damage to demons and undead</div>`
+				}
+				if (config.enhancePnB) {
+					skillHtml += `
+						<div class="chat-warning">Enhance Poison Damage by ${buffs.lichForm.enhancePnB[rank]}%</div>
+						<div class="chat-warning">Enhance Blood Damage by ${buffs.lichForm.enhancePnB[rank]}%</div>
+					`
 				}
 				if (config.attackHaste) {
 					skillHtml += `<div class="chat-warning">
@@ -486,17 +492,17 @@ var tooltip;
 					}
 				}
 				else if (typeof config.spellDamage === 'function' &&
-					config.spellDamage(1) > 0) {
+					config.castTime > 0 &&
+					!config.isBuff) {
+					console.info('config', config)
 					hit = stats.spellDamage(-1, -100, config)
+					console.info('spell damage', hit)
 				}
 				else {
 					console.info('no damage found', config)
 				}
 				if (hit.min) {
-					if (config.isBuff) {
-
-					}
-					else {
+					if (!config.isBuff) {
 						config.damageString = _.max([1, round(hit.min)]) +'-'+ _.max([1, round(hit.max)])
 						skillHtml += `<div>
 							${config.isHeal ? `Heal` : config.isShield ? `Shield` : `Damage`}: ${config.damageString}

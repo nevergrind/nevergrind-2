@@ -547,13 +547,13 @@ var stats = {};
 		return stats.memo.addSpellAll
 	}
 	function enhanceBlood(fresh) {
-		if (fresh || typeof stats.memo.addSpellIce === 'undefined') {
+		if (fresh || typeof stats.memo.enhanceBlood === 'undefined') {
 			stats.memo.enhanceBlood = getEqTotal(PROP.ENHANCE_BLOOD)
 		}
 		return stats.memo.enhanceBlood
 	}
 	function enhancePoison(fresh) {
-		if (fresh || typeof stats.memo.addSpellIce === 'undefined') {
+		if (fresh || typeof stats.memo.enhancePoison === 'undefined') {
 			stats.memo.enhancePoison = getEqTotal(PROP.ENHANCE_POISON)
 		}
 		return stats.memo.enhancePoison
@@ -605,6 +605,7 @@ var stats = {};
 	function spellDamage(index = 0, critMod = 0, config) {
 		if (!config) config = { ...spell.data }
 		max = config.spellDamage(my.skills[config.index])
+		console.info('config max', max)
 		// enhance by type % and ALL%
 		enhanceDamage = 0
 		if (config.damageType === DAMAGE_TYPE.BLOOD) enhanceDamage = enhanceBlood()
@@ -652,10 +653,12 @@ var stats = {};
 			min *= 1.5
 			max *= 1.5
 		}
+		console.info('config max', min, max)
 
 		if (min < 1) min = 1
 		if (max < 1) max = 1
 
+		console.info('config max', min, max)
 		return {
 			min: ~~min,
 			max: ~~max,

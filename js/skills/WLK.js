@@ -64,7 +64,7 @@
 				key: 'explosivePlagueExplosion',
 				index: tgt,
 				damageType: spell.data.damageType,
-				damage: damage * 4,
+				damage: damage * buffs.explosivePlague.explosionTickDamage,
 			})
 		}
 		combat.txDamageMob(damages)

@@ -619,7 +619,7 @@ var skills;
 				damageType: DAMAGE_TYPE.BLOOD,
 				castTime: 3.5,
 				cooldownTime: 30,
-				description: 'Hits your target and deals blood damage over time for '+ ng.toMinSecs(buffs.bloodTerror.duration) +'. Fears your target while active.',
+				description: 'Deals blood damage over time for '+ ng.toMinSecs(buffs.bloodTerror.duration) +'. Fears your target while active.',
 			}, {
 				name: 'Life Tap',
 				img: 'SHD-9',
@@ -631,7 +631,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 30,
 				cannotResist: true,
-				description: 'Strike a single target for direct arcane damage<br>Drain all damage to yourself as health.',
+				description: 'Strike your target with direct arcane damage. Drain all damage to yourself as health.',
 			}, {
 				name: 'Vampiric Feast',
 				img: 'SHD-10',
@@ -702,7 +702,7 @@ var skills;
 				isPiercing: true,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Fire an accurate, powerful arrow at a single target',
+				description: 'Fire an accurate, powerful arrow at your target',
 			}, {
 				name: 'Spread Shot',
 				img: 'RNG-4',
@@ -722,7 +722,7 @@ var skills;
 				hitBonus: getSkillValues(1.5, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 16,
-				description: 'Unleash a rapid flurry of melee attacks that hit a single target five times.',
+				description: 'Unleash a rapid flurry of melee attacks that hit your target five times.',
 			}, {
 				name: 'Suppressing Volley',
 				img: 'RNG-6',
@@ -927,7 +927,7 @@ var skills;
 				enhancedDamage: getSkillValues(.73, .09),
 				hitBonus: getSkillValues(5.5, .5),
 				critBonus: getSkillValues(-2, .5),
-				description: 'Reliable low-enmity strike on a single target for X% damage',
+				description: 'Reliable low-enmity strike on your target for X% damage',
 			}, {
 				name: 'Sonic Strike',
 				img: 'ROG-2',
@@ -946,7 +946,7 @@ var skills;
 				hitBonus: getSkillValues(7, .5),
 				critBonus: getSkillValues(-1, .5),
 				cooldownTime: 10,
-				description: 'Strike a single target and add +1 stack (max 5) to Fade (+x% resist all) - Effect: chill',
+				description: 'Strike your target and add +1 stack (max 5) to Fade (+x% resist all) - Effect: chill',
 			}, {
 				name: 'Rising Furor',
 				img: 'ROG-4',
@@ -955,7 +955,7 @@ var skills;
 				hitBonus: getSkillValues(4.5, .5),
 				critBonus: getSkillValues(1, .5),
 				cooldownTime: 8,
-				description: 'Strike a single target - add +1 stack (max 5) to attack haste (X% haste)',
+				description: 'Strike your target - add +1 stack (max 5) to attack haste (X% haste)',
 			}, {
 				name: 'Lacerate',
 				img: 'ROG-5',
@@ -1089,7 +1089,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Blast a single target with toxic sports that do poison damage over '+ ng.toMinSecs(buffs.toxicSpores.duration) +'.',
+				description: 'Blast your target with toxic sports that do poison damage over '+ ng.toMinSecs(buffs.toxicSpores.duration) +'.',
 			}, {
 				name: 'Molten Boulder',
 				img: 'DRU-6',
@@ -1135,7 +1135,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Heal your target\'s health and restore additional health over '+ ng.toMinSecs(buffs.naturesTouchHot.duration) +'.',
+				description: 'Heal your target\'s health and restore an additional '+ ng.toPercent(buffs.naturesTouchHot.tickPercent) +'% health over '+ ng.toMinSecs(buffs.naturesTouchHot.duration) +'.',
 			}, {
 				name: 'Moss Breath',
 				img: 'DRU-10',
@@ -1320,7 +1320,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Strike single target for X ice damage - chills target.',
+				description: 'Strike your target with direct ice damage.',
 			}, {
 				name: 'Poison Nova',
 				img: 'SHM-2',
@@ -1331,7 +1331,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 4,
 				cooldownTime: 8,
-				description: 'Hit all targets for X poison damage.',
+				description: 'Blast all targets with a poison nova that hits for direct poison damage.',
 			}, {
 				name: 'Scourge',
 				img: 'SHM-3',
@@ -1342,7 +1342,7 @@ var skills;
 				damageType: DAMAGE_TYPE.BLOOD,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Strikes target for X blood damage - 6 ticks for X blood damage.',
+				description: 'Deals blood damage over time for '+ ng.toMinSecs(buffs.scourge.duration) +'.',
 			}, {
 				name: 'Poison Bolt',
 				img: 'SHM-4',
@@ -1353,7 +1353,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Strike single target for X poison damage.',
+				description: 'Launch a single bolt at your target dealing direct poison damage.',
 			}, {
 				name: 'Vampiric Gaze',
 				img: 'SHM-5',
@@ -1364,7 +1364,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 15,
-				description: 'Curse a single target hits for X over 60 sec - all targets are healed when they melee the target for X health.',
+				description: 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.vampiricGaze.duration) +'. While active all melee attacks on the affected target will leech additional health.',
 			}, {
 				name: 'Glacial Shard',
 				img: 'SHM-6',
@@ -1375,7 +1375,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 3,
 				cooldownTime: 24,
-				description: 'Strike 3x targets for X ice damage - freezes targets.',
+				description: 'Strike up to three targets with direct ice damage.',
 			}, {
 				name: 'Affliction',
 				img: 'SHM-7',
@@ -1386,7 +1386,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Poison a single target for X poison damage over 36 seconds.',
+				description: 'Deals poison damage over time for '+ ng.toMinSecs(buffs.affliction.duration) +'.',
 			}, {
 				name: 'Devouring Swarm',
 				img: 'SHM-8',
@@ -1397,7 +1397,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 45,
-				description: 'Plagues single target with X arcane damage over 30 seconds - heals with each tick.',
+				description: 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.devouringSwarm.duration) +'. Each tick heals you for '+ ng.toPercent(buffs.devouringSwarmHeal.healRatio) +'% of damage dealt.',
 			}, {
 				name: 'Rejuvinate',
 				img: 'SHM-9',
@@ -1408,7 +1408,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Heal target for X health + X health over 9 seconds.',
+				description: 'Restores your target\'s health and restores an additional '+ ng.toPercent(buffs.rejuvinateHot.tickPercent) +'% health over '+ ng.toMinSecs(buffs.rejuvinateHot.duration) +'.',
 			}, {
 				name: 'Mystical Glow',
 				img: 'SHM-10',
@@ -1419,7 +1419,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Heal a single target for X health over 10 ticks - Boosts all heal by 20%',
+				description: 'Restores your target\'s health over time for '+ ng.toMinSecs(buffs.mysticalGlow.duration) +'. While active boosts all heals by '+ ng.toPercent(buffs.mysticalGlow.enhanceHealing) +'%',
 			}, {
 				name: 'Vampiric Allure',
 				img: 'SHM-11',
@@ -1430,7 +1430,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4.5,
 				cooldownTime: 0,
-				description: 'Buffs single ally - boost leech, wraith, cha stats by X for X seconds.',
+				description: 'Buffs your ally\'s life leech and charisma for '+ ng.toMinSecs(buffs.vampiricAllure.duration) + '.',
 			}, {
 				name: 'Boreal Talisman',
 				img: 'SHM-12',
@@ -1441,7 +1441,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Buff single ally - improve stamina and ice resistance by X for X seconds.',
+				description: 'Buff an ally\'s strength, stamina, and ice resistance for '+ ng.toMinSecs(buffs.borealTalisman.duration) +'.',
 			},
 		],
 		BRD: [
@@ -1583,14 +1583,14 @@ var skills;
 			{
 				name: 'Venom Bolt',
 				img: 'WLK-1',
-				mp: level => spellValues.starfireMana[level],
-				spellDamage: level => spellValues.starfire[level] + (my.level),
+				mp: level => spellValues.venomBoltMana[level],
+				spellDamage: level => spellValues.venomBolt[level] + (my.level),
 				spellVariance: .89,
 				spellType: PROP.EVOCATION,
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Single target poison damage.',
+				description: 'Launch a venom bolt at your target dealing direct poison damage.',
 			}, {
 				name: 'Explosive Plague',
 				img: 'WLK-2',
@@ -1601,7 +1601,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Hit target - on end it explodes 5x poison damage',
+				description: `Deals poison damage over time for ${ng.toMinSecs(buffs.explosivePlague.duration)}. If your target is still alive when it expires, it explodes for ${ng.toPercent( buffs.explosivePlague.explosionTickDamage / buffs.explosivePlague.ticks)}% poison damage hitting up to five targets.`,
 			}, {
 				name: 'Blood Fire',
 				img: 'WLK-3',
@@ -1612,7 +1612,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Scorch your target for X fire damage and additional blood damage over time - Effect: Reduces armor by X.',
+				description: 'Scorch your target with direct fire damage and deal an additional 100% fire damage over time for '+ ng.toMinSecs(buffs.bloodFire.duration) +'.<br>Debuffs target\'s armor by '+ ng.toPercent(buffs.bloodFire.debuffArmor) +'%.',
 			}, {
 				name: 'Demonic Pact',
 				img: 'WLK-4',
@@ -1623,7 +1623,7 @@ var skills;
 				damageType: DAMAGE_TYPE.BLOOD,
 				castTime: 4.5,
 				cooldownTime: 15,
-				description: 'Hits target for X blood damage - small blood damage over X seconds - boosts physical damage by 15%',
+				description: 'Strike your target with direct blood damage and deal an additional 100% blood damage over time for '+ ng.toMinSecs(buffs.demonicPact.duration) +'. Buffs all physical damage on your target by '+ ng.toPercent(buffs.demonicPact.bonusDamage) +'%',
 			}, {
 				name: 'Haunting Vision',
 				img: 'WLK-5',
@@ -1634,7 +1634,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 40,
-				description: 'Strike 3x targets for X arcane damage: Fear for 15 seconds.',
+				description: 'Strike up to three targets with direct arcane damage. Fears all targets for '+ ng.toMinSecs(buffs.hauntingVision.fearDuration) +'.',
 			}, {
 				name: 'Icing Death',
 				img: 'WLK-6',
@@ -1645,7 +1645,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 15,
-				description: 'Hits 3x targets for X ice damage - 50% bonus vs undead - Effect: chills 6 sec.',
+				description: 'Strikes up to three targets with direct ice damage that chills each target.<br>50% bonus vs undead.',
 			}, {
 				name: 'Curse of Shadows',
 				img: 'WLK-7',
@@ -1656,7 +1656,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Curse single target hits for X arcane damage over X seconds: effect: reduce BPA resists.',
+				description: 'Deal arcane damage over time for '+ ng.toMinSecs(buffs.curseOfShadows.duration) +'. Debuffs your target\'s blood, poison, and arcane resistance by '+ ng.toPercent(buffs.curseOfShadows.reduceBloodResist) +'% while active.',
 			}, {
 				name: 'Panic Strike',
 				img: 'WLK-8',
@@ -1667,7 +1667,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 15,
-				description: 'Hits for X arcane damage - fears target for 25 seconds.',
+				description: 'Blast your target with direct arcane damage. Fears your target for '+ ng.toMinSecs(buffs.panicStrike.fearDuration) +'.',
 			}, {
 				name: 'Drain Soul',
 				img: 'WLK-9',
@@ -1679,7 +1679,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 8,
 				cannotResist: true,
-				description: 'Strike a single target for direct arcane damage<br>Drain all damage to yourself as health.',
+				description: 'Strike your target with direct arcane damage. Drain all damage to yourself as health.',
 			}, {
 				name: 'Lich Form',
 				img: 'WLK-10',
@@ -1689,7 +1689,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 5,
 				cooldownTime: 0,
-				description: 'Lich Form - -HP regen, +MP regen, Armor +X, P%, B%.',
+				isBuff: true,
+				description: 'Transform into a lich. Reduces health regeneration, but buffs your mana regeneration, armor, poison spell damage, and blood spell damage.',
 			}, {
 				name: 'Engulfing Darkness',
 				img: 'WLK-11',
@@ -1700,7 +1701,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
 				cooldownTime: 45,
-				description: 'Hits target for X poison damage over X seconds; Effect: Nullifies ranged defenses - Reduces hate - Halts regen',
+				description: 'Deals poison damage over time for '+ ng.toMinSecs(buffs.engulfingDarkness.duration) +'. Reduces threat and nullifies a back-row target\'s ranged defensive bonus against melee attacks while active.',
 			}, {
 				name: 'Profane Spirit',
 				img: 'WLK-12',
@@ -1710,7 +1711,8 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Imbued allied target with + X poison damage, and poison resistance for X ticks: on death target explodes for X poison damage.',
+				isBuff: true,
+				description: 'Buff an ally\'s melee attacks with added poison damage and buff their poison resistance for '+ ng.toMinSecs(buffs.profaneSpirit.duration) +'.<br><br>If your ally dies while the buff is active, a large explosion will hit all mobs with direct poison damage.',
 			}, {
 				name: 'Profane Spirit Explosion',
 				img: 'WLK-12',
@@ -1938,7 +1940,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Hits your target and does poison damage over time for '+ buffs.primordialSludge.duration +' seconds. While active slows your target\'s attack speed.',
+				description: 'Deals poison damage over time for '+ buffs.primordialSludge.duration +' seconds. While active slows your target\'s attack speed.',
 			}, {
 				name: 'Arclight',
 				img: 'TMP-8',
@@ -1949,7 +1951,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 15,
-				description: 'Hits your target and does lightning damage over time for '+ buffs.arclight.duration +' seconds. Paralyzes the target for '+ buffs.arclightDebuff.duration +' seconds.',
+				description: 'Deals lightning damage over time for '+ buffs.arclight.duration +' seconds. Paralyzes the target for '+ buffs.arclightDebuff.duration +' seconds.',
 			}, {
 				name: 'Primeval Withering',
 				img: 'TMP-9',
@@ -1960,7 +1962,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Hits your target and does arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists while active.',
+				description: 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists while active.',
 			}, {
 				name: 'Molten Aegis',
 				img: 'TMP-10',
@@ -2128,7 +2130,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 3,
 				cooldownTime: 30,
-				description: 'Strike a single target with direct ice damage that reduces threat and freezes your target for '+ ng.toMinSecs(buffs.deepFreeze.freezeDuration) +'.',
+				description: 'Strike your target with direct ice damage that reduces threat and freezes your target for '+ ng.toMinSecs(buffs.deepFreeze.freezeDuration) +'.',
 			},
 		],
 	}

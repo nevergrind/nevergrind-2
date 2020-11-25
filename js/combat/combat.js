@@ -294,7 +294,7 @@ var combat;
 			// effects
 			if (mobs[d.index].buffFlags.vampiricGaze) {
 				// small boost to make it slightly stronger at lower levels
-				processLeech(skill.SHM.getMaxVampiricGaze(d.index) + .5)
+				processLeech(skill.SHM.getMaxVampiricGaze(d.index))
 			}
 			combat.levelSkillCheck(PROP.OFFENSE)
 		}
@@ -467,6 +467,7 @@ var combat;
 		leechValue = processHeal(leechValue)
 		leechHp += leechValue
 		if (leechHp >= 1) {
+			console.info('processLeech', leechHp)
 			updateMyResource(PROP.HP, ~~leechHp)
 			leechHp = leechHp % 1
 		}

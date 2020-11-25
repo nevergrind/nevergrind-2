@@ -64,6 +64,7 @@
 				})
 			}
 		}
+		console.info('nova', damages)
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
@@ -125,7 +126,7 @@
 			if (mobs[index].buffs[key].key === 'vampiricGaze' &&
 				mobs[index].buffs[key].duration > 0 && // must be active
 				mobs[index].buffs[key].level > maxGaze) {
-				maxGaze = mobs[index].buffs[key].level
+				maxGaze = buffs.vampiricGaze.hpLeech[mobs[index].buffs[key].level]
 			}
 		}
 		return maxGaze
@@ -254,7 +255,7 @@
 			key: 'rejuvinateHot',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			damage: ~~(hit.damage * .33),
+			damage: ~~(hit.damage * buffs.rejuvinateHot.tickPercent),
 		})
 		combat.txHotHero(damages)
 	}

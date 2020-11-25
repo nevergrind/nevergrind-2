@@ -290,7 +290,7 @@
 			key: 'naturesTouchHot',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			damage: ~~(hit.damage * .5),
+			damage: ~~(hit.damage * buffs.naturesTouchHot.tickPercent),
 		})
 		combat.txHotHero(damages)
 	}

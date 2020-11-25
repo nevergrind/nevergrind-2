@@ -373,6 +373,7 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 9,
 			hate: 3,
 			isHeal: true,
+			tickPercent: .5,
 			msg: () => 'Nature\'s Touch starts healing your wounds.',
 		},
 		mossBreath: {
@@ -434,6 +435,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 15,
 			interval: 3,
 			duration: 45,
+			hpLeech: [0, 1.3, 1.9, 2.5, 3.1, 3.7, 4.3, 4.9],
 			damageType: DAMAGE_TYPE.ARCANE,
 		},
 		glacialShard: {
@@ -488,6 +490,7 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 6,
 			hate: 3.5,
 			isHeal: true,
+			tickPercent: .33,
 			msg: () => 'Rejuvinate starts healing your wounds.',
 		},
 		mysticalGlow: {
@@ -532,6 +535,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 15,
 			interval: 3,
 			duration: 45,
+			explosionTickDamage: 5,
 			damageType: DAMAGE_TYPE.POISON,
 		},
 		bloodFire: {
@@ -554,7 +558,6 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 3,
 			duration: 60,
 			bonusDamage: .15,
-			lowerResists: [0, .12, .15, .18, .21, .24, .27, .3],
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		hauntingVision: {
