@@ -69,7 +69,7 @@ var button;
 		// rotation animation
 		timers.skillCooldowns[index] = 0
 		timers.skillCooldownTimers[index].kill()
-		if (!app.isApp) skillData.cooldownTime = 1
+		if (!app.isApp && skillData.cooldownTime > 0) skillData.cooldownTime = 3
 		timers.skillCooldownTimers[index] = TweenMax.to(timers.skillCooldowns, skillData.cooldownTime, timerObj)
 		// number countdown
 		let textEl = querySelector('#skill-timer-' + index)

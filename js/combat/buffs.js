@@ -156,6 +156,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 10,
 			job: JOB.CLERIC,
 			duration: 720,
+			hpMax: [0, 45, 90, 135, 180, 225, 270, 315],
 			resistBlood: [0, 16, 28, 40, 52, 64, 76, 88],
 			msg: () => 'Your forehead is emblazoned with a crimson seal.',
 			fadeMsg: 'Your crimson seal fades.'
@@ -165,7 +166,8 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 11,
 			job: JOB.CLERIC,
 			duration: 720,
-			armorRatio: .25, // % of health buff
+			hpMax: [0, 25, 50, 75, 100, 125, 150, 175],
+			armor: [0, 30, 60, 90, 120, 150, 180, 210],
 			msg: () => 'Your spirit ignites with zealous resolve.',
 			fadeMsg: 'Your zealous resolve fades.'
 		},
@@ -404,7 +406,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 11,
 			job: JOB.DRUID,
 			duration: 900,
-			armorRatio: .15, // % of health buff
+			armor: [0, 20, 40, 60, 80, 100, 120, 140],
 			attackRatio: .2,
 			bonusDamage: .25,
 			hpRegen: [0, 1, 1, 2, 2, 3, 3, 4],
@@ -705,7 +707,7 @@ let buffs; // buff data for use with skill/spells/icons
 			isDebuff: true,
 			damageType: DAMAGE_TYPE.ARCANE,
 			pveMitigationRatio: .1,
-			pvpMitigation: [0, 7, 15, 25, 38, 45, 57, 60],
+			evpMitigation: [0, 7, 15, 25, 34, 42, 51, 60],
 		},
 		shiftingEther: {
 			name: 'Shifting Ether',
@@ -757,6 +759,7 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 30,
 			duration: 30,
 			isDebuff: true,
+			slowPercent: .15,
 			damageType: DAMAGE_TYPE.ARCANE,
 		},
 		lavaBolt: { hate: 1 },
@@ -939,7 +942,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.BARD,
 			hate: 1,
 			hpRegen: [0, 2, 4, 6, 9, 12, 15, 18],
-			duration: 30,
+			duration: 45,
 			isHeal: true,
 			msg: () => 'A litany of life heals your wounds.',
 			fadeMsg: 'The litany fades.',

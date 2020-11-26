@@ -1013,7 +1013,6 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-help { color: #ccc; }
 .chat-whisper { color: #c8f; }
 .chat-party { color: #8ef; }
-.chat-skill { color: #18f; }
 .chat-ooc { color: #090; }
 .chat-guild { color: #0f0; }
 .chat-alert, .chat-warning { color: yellow; }
@@ -1023,6 +1022,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 .chat-spell { color: dodgerblue; }
 .chat-heal { color: aqua }
 .chat-buff { color: royalblue; }
+.chat-skill { color: #18f; }
 .chat-help-header {
 	color: #ffff1a;
 	background: rgba(255, 255, 32, .2);

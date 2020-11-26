@@ -500,6 +500,7 @@ let mobs = [];
 		// things that modify mob speed
 		if (mobs[i].buffFlags.chill) mobSpeed += buffs.chill.slowPercent
 		if (mobs[i].buffFlags.shiftingEther) mobSpeed += buffs.shiftingEther.slowPercent
+		if (mobs[i].buffFlags.enthrall) mobSpeed += buffs.enthrall.slowPercent
 		if (mobs[i].buffFlags.primordialSludge) mobSpeed += buffs.primordialSludge.slowPercent
 		if (mobs[i].buffFlags.consonantChain) mobSpeed += buffs.consonantChain.slowPercent
 		// constraints

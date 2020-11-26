@@ -898,7 +898,7 @@ var combat;
 		}
 
 		if (mobs[index].buffFlags.stasisField) {
-			d.damage -= buffs.stasisField.pvpMitigation[skill.ENC.getHighestStasis(index)]
+			d.damage -= buffs.stasisField.evpMitigation[skill.ENC.getHighestStasis(index)]
 		}
 		// final sanity checks
 		d.damage = d.damage < 1 ? 1 : round(d.damage)

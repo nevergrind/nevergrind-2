@@ -393,7 +393,7 @@ var skills;
 				sp: level => spellValues.intrepidShoutMana[level],
 				enhancedDamage: AllZeroes,
 				cooldownTime: 0,
-				description: 'Boost all allies armor and fear resistance.',
+				description: 'Boost all allies armor and fear resistance for '+ ng.toMinSecs(buffs.intrepidShout.duration) +'.',
 			}, {
 				name: 'Furious Cleave',
 				img: 'WAR-12',
@@ -1295,6 +1295,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 5,
 				cooldownTime: 0,
+				isBuff: true,
 				description: 'Buff your target\'s health and blood magic resistance.',
 			}, {
 				name: 'Zealous Resolve',
@@ -1306,6 +1307,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4.5,
 				cooldownTime: 0,
+				isBuff: true,
 				description: 'Buff your target\'s health and armor.',
 			},
 		],
@@ -1455,7 +1457,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Single target burst of arcane energy for X damage - Effect: 25% chance to stagger.',
+				description: 'Single target burst of direct arcane energy. Bellow has a 25% chance to stagger.',
 			}, {
 				name: 'Sonic Boom',
 				img: 'BRD-2',
@@ -1466,7 +1468,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 16,
-				description: 'Hits 3x targets for X arcane damage - stun for 3 seconds.',
+				description: 'Blasts up to three targets with direct arcane damage.',
 			}, {
 				name: 'Euphonic Dirge',
 				img: 'BRD-3',
@@ -1477,7 +1479,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Hits 3x targets for X poison damage - + X poison damage over 21 seconds.',
+				description: 'Deals poison damage over time on up to three targets for '+ ng.toMinSecs(buffs.euphonicDirge.duration) +'.',
 			}, {
 				name: 'Subverted Symphony',
 				img: 'BRD-4',
@@ -1488,7 +1490,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Hits 3x targets with X fire damage - lowers armor by X for X seconds.',
+				description: 'Deals fire damage over time on up to three targets for '+ ng.toMinSecs(buffs.subvertedSymphony.duration) +'. Lowers each target\'s armor by '+ ng.toPercent(buffs.subvertedSymphony.debuffArmor) +'% while active.',
 			}, {
 				name: 'Crashing Chords',
 				img: 'BRD-5',
@@ -1499,7 +1501,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3,
 				cooldownTime: 30,
-				description: 'Hits single target for X lightning damage - effect: Paralyze target for X seconds.',
+				description: 'Strike your target with direct lightning damage. Paralyzes your target for '+ ng.toMinSecs(buffs.crashingChords.paralyzeDuration) +'.',
 			}, {
 				name: 'Battle Hymn',
 				img: 'BRD-6',
@@ -1510,7 +1512,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Boost the strength and dexterity of all allies by X for X ticks.',
+				isBuff: true,
+				description: 'Boost the strength, dexterity, and attack haste of all allies for '+ ng.toMinSecs(buffs.battleHymn.duration) +'.',
 			}, {
 				name: 'Militant Cadence',
 				img: 'BRD-7',
@@ -1521,7 +1524,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Infuse your body with energy - Boost max hp, mp, and sp by X% for X ticks.',
+				isBuff: true,
+				description: 'Bolster all allies maximum health, mana, and spirit for '+ ng.toMinSecs(buffs.militantCadence.duration) +'.',
 			}, {
 				name: 'Consonant Chain',
 				img: 'BRD-8',
@@ -1532,7 +1536,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Blast target for X arcane damage over X seconds, Effect: slows target.',
+				description: 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.consonantChain.duration) +'. Slows your target\'s attack speed while active.',
 			}, {
 				name: 'Litany of Life',
 				img: 'BRD-9',
@@ -1543,7 +1547,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Boost health regeneration of all allies by X for X ticks.',
+				description: 'Boosts the health regeneration of all allies for '+ ng.toMinSecs(buffs.litanyOfLife.duration) +'.',
 			}, {
 				name: 'Melody of Mana',
 				img: 'BRD-10',
@@ -1554,7 +1558,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Boost casting haste and mana regeneration of all allies by X for X ticks.',
+				isBuff: true,
+				description: 'Boosts the mana regeneration and casting haste of all allies for '+ ng.toMinSecs(buffs.melodyOfMana.duration) +'.',
 			}, {
 				name: 'Righteous Rhapsody',
 				img: 'BRD-11',
@@ -1565,7 +1570,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Reduce resists of all mobs by X for X seconds.',
+				isBuff: true,
+				description: 'Reduce all resists of all mobs for '+ ng.toMinSecs(buffs.righteousRhapsody.duration) +'.',
 			}, {
 				name: 'Chromatic Sonata',
 				img: 'BRD-12',
@@ -1576,7 +1582,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Buff armor and resistance of all allies by X for X ticks.',
+				isBuff: true,
+				description: 'Buff armor and all resists of all allies for '+ ng.toMinSecs(buffs.chromaticSonata.duration) +'.',
 			},
 		],
 		WLK: [
@@ -1737,7 +1744,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Hits target for X arcane damage + damage based on weight.',
+				description: 'Strike your target with direct arcane damage. Receives bonus damage based on target\'s weight.',
 			}, {
 				name: 'Static Suffocation',
 				img: 'ENC-2',
@@ -1749,7 +1756,7 @@ var skills;
 				castTime: 4,
 				cooldownTime: 0,
 				staggers: true,
-				description: 'Hits for X lightning damage does X lightning damage over X seconds Effect: Staggers target.',
+				description: 'Suffocate your target dealing lightning damage over time for '+ ng.toMinSecs(buffs.staticSuffocation.duration) +'.',
 			}, {
 				name: 'Mind Blitz',
 				img: 'ENC-3',
@@ -1760,7 +1767,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Hits target for X lightning damage. Effect: Debased Mind - Reduce arcane resistance for X seconds.',
+				description: 'Strike your target with direct lightning damage. Bebuffs your target with Debased Mind, which reduces arcane resistance by '+ ng.toPercent(buffs.mindBlitzEffect.reduceArcaneResist) +'% for '+ ng.toMinSecs(buffs.mindBlitzEffect.duration) +'.',
 			}, {
 				name: 'Subversion',
 				img: 'ENC-4',
@@ -1771,7 +1778,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Hits 3x target for X poison damage over X seconds.',
+				description: 'Subversive thoughts poison up to three targets dealing poison damage over '+ ng.toMinSecs(buffs.subversion.duration) +'.',
 			}, {
 				name: 'Color Shift',
 				img: 'ENC-5',
@@ -1782,7 +1789,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2,
 				cooldownTime: 30,
-				description: 'Hits all targets with a nova of X arcane damage - stuns all targets for X seconds - reduces hate.',
+				description: 'Blast all targets with a nova of direct arcane damage. Reduces hate and stuns all targets for '+ ng.toMinSecs(buffs.colorShift.stunDuration) +'.',
 			}, {
 				name: 'Phase Blade',
 				img: 'ENC-6',
@@ -1790,10 +1797,11 @@ var skills;
 				spellDamage: level => spellValues.phaseBlade[level] + (my.level * .5),
 				spellVariance: 1,
 				spellType: PROP.EVOCATION,
-				damageType: DAMAGE_TYPE.ARCANE,
+				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3,
 				cooldownTime: 180,
-				description: 'Imbues target\'s weapon with arcane energy Effect: adds X arcane damage per hit.',
+				isBuff: true,
+				description: 'Buff your target with crackling energy that buffs their lightning resistance and adds lightning damage to all melee attacks.',
 			}, {
 				name: 'Stasis Field',
 				img: 'ENC-7',
@@ -1804,7 +1812,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 60,
-				description: 'Hits target for X arcane damage Effect: Reduces armor by X.',
+				isBuff: true,
+				description: 'Seal your target in a stasis field. All damage from and to your target is heavily reduced for '+ ng.toMinSecs(buffs.stasisField.duration) +'.',
 			}, {
 				name: 'Shifting Ether',
 				img: 'ENC-8',
@@ -1815,7 +1824,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Hits target for X arcane damage over X seconds: Effect: slows attacks by 30%.',
+				description: 'Tangle your target in strands of ether that deal arcane damage over time for '+ ng.toMinSecs(buffs.shiftingEther.duration) +'. Slows your target\'s attack speed by '+ ng.toPercent(buffs.shiftingEther.slowPercent) +'%.',
 			}, {
 				name: 'Serene Sigil',
 				img: 'ENC-9',
@@ -1826,7 +1835,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4.5,
 				cooldownTime: 0,
-				description: 'Single target spell barrier buff: buffs shield hp by X health - Immune to knockback.',
+				isShield: true,
+				description: 'Buffs you with a magical shield that absorb damage. It reduces damage per hit from all attacks until the shield is depleted. While active you are immune to spell channeling knockback.',
 			}, {
 				name: 'Augmentation',
 				img: 'ENC-10',
@@ -1837,7 +1847,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4.5,
 				cooldownTime: 0,
-				description: 'Buff target\'s haste and dodge by X for X minutes.',
+				isBuff: true,
+				description: 'Buffs your target\'s agility, dexterity, and skill haste for '+ ng.toMinSecs(buffs.augmentation.duration) +'.',
 			}, {
 				name: 'Clarity',
 				img: 'ENC-11',
@@ -1848,7 +1859,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Buff target\'s mana regeneration and intelligence for X ticks.',
+				isBuff: true,
+				description: 'Buff your target\'s mana regeneration and intelligence for '+ ng.toMinSecs(buffs.clarity.duration) +'.',
 			}, {
 				name: 'Enthrall',
 				img: 'ENC-12',
@@ -1858,8 +1870,8 @@ var skills;
 				spellType: PROP.ALTERATION,
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
-				cooldownTime: 0,
-				description: 'Blast 3x with pillars of light for X arcane damage + X arcane damage: Effect: target spell power reduced by x% - Reduces hate.',
+				cooldownTime: 12,
+				description: 'Blast three targets with pillars of light that deal direct arcane damage. Reduces threat and slows each target\'s attack speed by '+ ng.toPercent(buffs.enthrall.slowPercent) +'% while active.',
 			},
 		],
 		TMP: [

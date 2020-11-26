@@ -17,12 +17,6 @@
 	///////////////////////////////////////////
 	let enhancedDamage, hit, config, i, key, splashIndex, tgt, damages = [], bonus
 	///////////////////////////////////////////
-	function sizeDamageBonus(index) {
-		bonus = 1 + ((mobs[index].sprite.width + mobs[index].sprite.height - 750) / 5000)
- 		if (bonus > 1.5) bonus = 1.5
-		else if (bonus < 1) bonus = 1
-		return bonus
-	}
 	function gravityFlux(index, data) {
 		if (timers.castBar < 1) return
 		spell.config = {
@@ -41,6 +35,13 @@
 			damageType: spell.data.damageType,
 			...hit
 		}])
+		///////////////////////////
+		function sizeDamageBonus(index) {
+			bonus = 1 + ((mobs[index].sprite.width + mobs[index].sprite.height - 750) / 5000)
+			if (bonus > 1.5) bonus = 1.5
+			else if (bonus < 1) bonus = 1
+			return bonus
+		}
 	}
 	function staticSuffocation(index, data) {
 		if (timers.castBar < 1) return
@@ -331,5 +332,6 @@
 			})
 		}
 		combat.txDotMob(damages)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 }($, _, TweenMax);

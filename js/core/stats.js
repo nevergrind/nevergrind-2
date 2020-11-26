@@ -261,13 +261,13 @@ var stats = {};
 		if (fresh || typeof stats.memo.armor === 'undefined') {
 			stats.memo.armor = ((agi() * .66) +(defense() * 3.3)) + getEqTotal('armor')
 			if (my.buffFlags.zealousResolve) {
-				stats.memo.armor += (my.buffs.zealousResolve.damage * buffs.zealousResolve.armorRatio)
+				stats.memo.armor += buffs.zealousResolve.armor[my.buffs.zealousResolve.level]
 			}
 			if (my.buffFlags.intrepidShout) {
 				stats.memo.armor += buffs.intrepidShout.armor[my.buffs.intrepidShout.level]
 			}
 			if (my.buffFlags.branchSpirit) {
-				stats.memo.armor += (my.buffs.branchSpirit.damage * buffs.branchSpirit.armorRatio)
+				stats.memo.armor += buffs.branchSpirit.armor[my.buffs.branchSpirit.level]
 			}
 			if (my.buffFlags.lichForm) {
 				stats.memo.armor += buffs.lichForm.armor[my.buffs.lichForm.level]
@@ -605,9 +605,9 @@ var stats = {};
 	function spellDamage(index = 0, critMod = 0, config) {
 		if (!config) config = { ...spell.data }
 		max = config.spellDamage(my.skills[config.index])
-		console.info('config max', max)
 		// enhance by type % and ALL%
 		enhanceDamage = 0
+		console.info('dam x', max)
 		if (config.damageType === DAMAGE_TYPE.BLOOD) enhanceDamage = enhanceBlood()
 		else if (config.damageType === DAMAGE_TYPE.POISON) enhanceDamage = enhancePoison()
 		else if (config.damageType === DAMAGE_TYPE.ARCANE) enhanceDamage = enhanceArcane()
@@ -639,6 +639,7 @@ var stats = {};
 		else if (config.damageType === DAMAGE_TYPE.ICE) addedDamage = addSpellIce()
 		addedDamage += addSpellAll()
 
+		console.info('dam z', min, max)
 		if (my.buffFlags.mirrorImage) {
 			addedDamage += my.buffs.mirrorImage.damage
 		}
@@ -653,12 +654,11 @@ var stats = {};
 			min *= 1.5
 			max *= 1.5
 		}
-		console.info('config max', min, max)
 
 		if (min < 1) min = 1
 		if (max < 1) max = 1
 
-		console.info('config max', min, max)
+		console.info('dam c', min, max)
 		return {
 			min: ~~min,
 			max: ~~max,
@@ -1256,10 +1256,10 @@ var stats = {};
 			)
 			stats.memo.hpMax = ~~(baseResource * hpPercentBonus() + getEqTotal(PROP.HP))
 			if (my.buffFlags.sealOfRedemption) {
-				stats.memo.hpMax += (my.buffs.sealOfRedemption.damage)
+				stats.memo.hpMax += buffs.sealOfRedemption.hpMax[my.buffs.sealOfRedemption.level]
 			}
 			if (my.buffFlags.zealousResolve) {
-				stats.memo.hpMax += (my.buffs.zealousResolve.damage)
+				stats.memo.hpMax += buffs.zealousResolve.hpMax[my.buffs.zealousResolve.level]
 			}
 		}
 		return stats.memo.hpMax
@@ -1588,7 +1588,7 @@ var stats = {};
 		if (castHaste < .5) castHaste = .5
 		else if (castHaste > 2) castHaste = 2
 		// console.info('getCastingSpeed', spell.castTime * castHaste)
-		if (!ng.isApp) spell.castTime = .5
+		if (!ng.isApp) spell.castTime = 1
 		return spell.castTime * castHaste
 	}
 })($, TweenMax, _);
