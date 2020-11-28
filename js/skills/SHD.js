@@ -5,6 +5,7 @@
 		deathStrikeHeal,
 		crescentCleave,
 		doomThrust,
+		doomThrustDot,
 		astralBlade,
 		ravagingPlague,
 		decayingDoom,
@@ -118,6 +119,14 @@
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
+	}
+	function doomThrustDot(hit) {
+		combat.txDotMob([{
+			key: 'doomThrustDot',
+			index: hit.index,
+			damageType: buffs.doomThrustDot.damageType,
+			damage: round(hit.damage * buffs.doomThrustDot.dotModifier)
+		}])
 	}
 	function astralBlade(index, data) {
 		if (timers.castBar < 1) return

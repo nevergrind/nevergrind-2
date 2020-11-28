@@ -3,6 +3,7 @@ let skill = {};
 	skill.WAR = {
 		shieldBash,
 		rupture,
+		ruptureDot,
 		whirlwind,
 		pummel,
 		doubleThrow,
@@ -66,6 +67,14 @@ let skill = {};
 		})
 		combat.txDamageMob(damages)
 		button.triggerGlobalCooldown()
+	}
+	function ruptureDot(hit) {
+		combat.txDotMob([{
+			key: 'ruptureDot',
+			index: hit.index,
+			damageType: buffs.ruptureDot.damageType,
+			damage: round(hit.damage * buffs.ruptureDot.dotModifier)
+		}])
 	}
 	function whirlwind(index, data) {
 		// check constraints

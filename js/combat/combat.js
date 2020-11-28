@@ -237,8 +237,8 @@ var combat;
 			if (mobs[d.index].buffFlags.demonicPact) {
 				d.enhancedDamage += buffs.demonicPact.bonusDamage
 			}
-			if (mobs[d.index].buffFlags.rupture) {
-				d.enhancedDamage += buffs.rupture.bonusDamage
+			if (mobs[d.index].buffFlags.ruptureDot) {
+				d.enhancedDamage += buffs.ruptureDot.bonusDamage
 			}
 			if (my.buffFlags.branchSpirit) {
 				d.enhancedDamage += buffs.branchSpirit.bonusDamage
@@ -246,9 +246,9 @@ var combat;
 			if (my.buffFlags.prowl) {
 				d.enhancedDamage += buffs.prowl.bonusDamage[my.buffs.prowl.level]
 			}
-
+			// console.warn('d.damage enhancedDamage 1', d.damage)
 			d.damage *= d.enhancedDamage
-			// console.warn('d.damage', d.key, d.damage)
+			// console.warn('d.damage enhancedDamage 2', d.damage)
 
 			// reduce enhancedDamage
 
@@ -277,6 +277,7 @@ var combat;
 			if (mobArmor > 1) mobArmor = 1
 			// console.info('mobArmor', d.index, mobArmor)
 			d.damage *= mobArmor
+			// console.warn('d.damage enhancedDamage 3', d.damage)
 
 			// damage penalties
 			if (!d.isRanged &&
@@ -291,6 +292,7 @@ var combat;
 			}
 			// +add spell damage
 			d.damage += getAddedDamage(d.index)
+			// console.warn('d.damage enhancedDamage 4', d.damage)
 			// effects
 			if (mobs[d.index].buffFlags.vampiricGaze) {
 				// small boost to make it slightly stronger at lower levels
@@ -328,6 +330,7 @@ var combat;
 		if (d.damage <= 0) d.damage = 0
 		else if (d.damage < 1) d.damage = 1
 		else d.damage = round(d.damage)
+		// console.warn('d.damage enhancedDamage 5', d.damage)
 		return d
 	}
 
@@ -467,7 +470,7 @@ var combat;
 		leechValue = processHeal(leechValue)
 		leechHp += leechValue
 		if (leechHp >= 1) {
-			console.info('processLeech', leechHp)
+			// console.info('processLeech', leechHp)
 			updateMyResource(PROP.HP, ~~leechHp)
 			leechHp = leechHp % 1
 		}
@@ -484,15 +487,23 @@ var combat;
 	}
 
 	function triggerEffect(key, damages) {
-		// console.info('triggerEffect', key, damages)
+		// console.info('triggerEffect', damages[0]);
+		// heals
 		if (key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(damages[0])
 		else if (key === 'deathStrike') skill.SHD.deathStrikeHeal(damages[0])
+		// buffs
 		else if (key === 'hyperStrike') skill.MNK.hyperStrikeHit(damages)
 		else if (key === 'viperStrike') skill.MNK.viperStrikeHit(damages)
 		else if (key === 'sonicStrike') skill.ROG.sonicStrikeHit(damages[0])
 		else if (key === 'fadedStrike') skill.ROG.fadedStrikeHit(damages[0])
 		else if (key === 'risingFuror') skill.ROG.risingFurorHit(damages[0])
 		else if (key === 'mirageStrike') skill.ROG.mirageStrikeHit(damages[0])
+		// dots
+		else if (key === 'tigerStrike') skill.MNK.tigerStrikeDot(damages[0])
+		else if (key === 'rupture') skill.WAR.ruptureDot(damages[0])
+		else if (key === 'doomThrust') skill.SHD.doomThrustDot(damages[0])
+		else if (key === 'lacerate') skill.ROG.lacerateDot(damages[0])
+		else if (key === 'widowStrike') skill.ROG.widowStrikeDot(damages[0])
 	}
 
 	function triggerProc(damageType, index, key) {
@@ -504,74 +515,21 @@ var combat;
 				skill.SHD.procSanguineHarvest(index)
 			}
 		}
-		if (key === 'tigerStrike') {
-			procDamage = []
-			procHit = stats.skillDamage(my.target, -100)
-			procDamage.push({
-				key: 'tigerStrikeDot',
-				index: index,
-				damageType: DAMAGE_TYPE.BLOOD,
-				damage: round(procHit.damage * buffs.tigerStrike.dotModifier)
-			})
-			combat.txDotMob(procDamage)
-
-		}
-		else if (key === 'rupture') {
-			procDamage = []
-			hit = stats.skillDamage(my.target, -100)
-			procDamage.push({
-				key: 'ruptureDot',
-				index: index,
-				damageType: DAMAGE_TYPE.BLOOD,
-				damage: round(hit.damage * buffs.rupture.dotModifier)
-			})
-			combat.txDotMob(procDamage)
-		}
-		else if (key === 'doomThrust') {
-			procDamage = []
-			hit = stats.skillDamage(my.target, -100)
-			procDamage.push({
-				key: 'doomThrustDot',
-				index: index,
-				damageType: DAMAGE_TYPE.BLOOD,
-				damage: round(hit.damage * buffs.doomThrust.dotModifier)
-			})
-			combat.txDotMob(procDamage)
-		}
-		else if (key === 'lacerate') {
-			procDamage = []
-			hit = stats.skillDamage(my.target, -100)
-			procDamage.push({
-				key: 'lacerateDot',
-				index: index,
-				damageType: DAMAGE_TYPE.BLOOD,
-				damage: round(hit.damage * buffs.lacerate.dotModifier)
-			})
-			combat.txDotMob(procDamage)
-		}
-		else if (key === 'widowStrike') {
-			procDamage = []
-			hit = stats.skillDamage(my.target, -100)
-			procDamage.push({
-				key: 'widowStrikeDot',
-				index: index,
-				damageType: DAMAGE_TYPE.POISON,
-				damage: round(hit.damage * buffs.widowStrike.dotModifier)
-			})
-			combat.txDotMob(procDamage)
-		}
 	}
+
 	let damageData
 	function txDamageMob(damages) {
-		// console.info('txDamageMob', damages, damages[0].damage)
+		// console.info('txDamageMob b4', damages, damages[0].damage)
 		damages = damages.filter(filterImpossibleMobTargets).map(processDamagesMob)
+		// console.info('txDamageMob after', damages, damages[0].damage)
 		damageArr = []
 		buffArr = []
 		len = damages.length
 		myDamage = 0
 		for (i=0; i<len; i++) {
 			if (damages[i].damage > 0 ||
-				typeof buffs[damages[i].key] === 'object' && buffs[damages[i].key].isDebuff) {
+				typeof buffs[damages[i].key] === 'object' &&
+				buffs[damages[i].key].isDebuff) {
 				myDamage += damages[i].damage
 				damages[i].row = my.row
 				if (typeof damages[i].buffs === 'object') {
@@ -596,10 +554,10 @@ var combat;
 			}
 			// optionally adds buffs key if it exists
 			if (buffArr.length) damageData.buffs = buffArr
-			// console.info('txDamageMob: ', _.cloneDeep(damageData))
+			// console.warn('txDamageMob: ', _.cloneDeep(damageData))
 			socket.publish('party' + my.partyId, damageData)
 
-			triggerEffect(damageData.damages[0].key, damageData.damages)
+			triggerEffect(damageData.damages[0].key, damageData.damages, damages[0].enhancedDamage)
 			damageArr.forEach(d => {
 				triggerProc(d.damageType, d.index, d.key)
 			})
@@ -612,7 +570,17 @@ var combat;
 			// console.info('txDamageMob : ', data.damages[i])
 			updateMobHp(data.damages[i])
 		}
+		// console.info('rx', data);
+		if (data.damages[0].key === 'jubilee') {
+			// process hate reduction on all clients for player data.row
+			party.presence.forEach(p => {
+				if (data.damages[0].row !== p.row) {
+					mob.feignHate(p.row)
+				}
+			})
+		}
 		/*
+
 		if (typeof data.damages === 'object') {
 			mob.resetAllHate()
 		}
@@ -820,10 +788,13 @@ var combat;
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// riposte
 			if (skills.riposte[my.job].level &&
-				my.level >= skills.riposte[my.job].level) {
-				combat.levelSkillCheck(PROP.RIPOSTE)
+				my.level >= skills.riposte[my.job].level || skill.CRU.vengeanceOn) {
+
+				if (!skill.CRU.vengeanceOn) combat.levelSkillCheck(PROP.RIPOSTE)
+
 				if (!d.isPiercing &&
-					rand() < stats.riposteChance()) {
+					rand() < stats.riposteChance() || skill.CRU.vengeanceOn) {
+					skill.CRU.vengeanceOn = false
 					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you riposted!')
 					button.primaryAttack(true, index)
 					d.damage = 0
@@ -843,7 +814,7 @@ var combat;
 				}
 			}
 
-			if (my.buffs.mirageStrike && my.buffs.mirageStrike.stacks) {
+			if (my.buffs.mirageStrikeBuff && my.buffs.mirageStrikeBuff.stacks) {
 				skill.ROG.updateMirageStrikeBuff()
 				d.damage = 0
 				return d
@@ -1384,7 +1355,7 @@ var combat;
 			updateCharStatColOne()
 			updateAllResists()
 		}
-		else if (key === 'consecrate') {
+		else if (key === 'consecrateBuff') {
 			updateAllResists()
 		}
 		else if (key === 'sanguineHarvest') {
@@ -1396,11 +1367,11 @@ var combat;
 		else if (key === 'spiritBarrier') {
 			updateAllResists()
 		}
-		else if (key === 'fadedStrike') {
+		else if (key === 'fadedStrikeBuff') {
 			updateAllResists()
 			stats.dodge(true)
 		}
-		else if (key === 'risingFuror') {
+		else if (key === 'risingFurorBuff') {
 			// nothing required
 		}
 		else if (key === 'talismanOfTreachery') {

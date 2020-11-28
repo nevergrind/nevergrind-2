@@ -816,7 +816,7 @@ var ng;
 		return minMsg + secMsg
 	}
 	function toPercent(decimal) {
-		return ~~(decimal * 100)
+		return round(decimal * 100)
 	}
 	function toPercentWidth(pixels) {
 		return pixels / MaxWidth * 100

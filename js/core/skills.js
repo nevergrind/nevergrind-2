@@ -6,6 +6,7 @@ var skills;
 	const AllZeroes = [0,0,0,0,0,0,0,0]
 
 	skills = {
+		enhanceHit,
 		init,
 		getName,
 		notReady,
@@ -295,7 +296,7 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 0,
-				description: 'Unleash a powerful bash dealing physical damage on your target.<br>If a shield is equipped there is a 50% damage bonus.',
+				description: config => 'Unleash a powerful bash dealing physical damage on your target.<br>If a shield is equipped there is a 50% damage bonus.',
 			}, {
 				name: 'Rupture',
 				img: 'WAR-2',
@@ -306,7 +307,7 @@ var skills;
 				cooldownTime: 0,
 				isRanged: true,
 				isPiercing: true,
-				description: 'A vicious slash that deals physical damage and causes your target to bleed over time.<br>While active all physical damage receives a 5% damage bonus.',
+				description: config => 'A vicious slash that deals '+ config.damageString +' physical damage and, on successful hits, deals '+ modifiedDamageString(config.damageString, buffs.ruptureDot.dotModifier) +' bleed damage over time for '+ ng.toMinSecs(buffs.ruptureDot.duration) +'. While the bleed is active, all physical damage receives a 5% damage bonus.',
 			}, {
 				name: 'Whirlwind',
 				img: 'WAR-3',
@@ -315,7 +316,7 @@ var skills;
 				hitBonus: getSkillValues(-4.5, .5),
 				critBonus: getSkillValues(-2, .5),
 				cooldownTime: 15,
-				description: 'Swing your weapons wildly, hitting up to five targets with physical damage.',
+				description: config => 'Swing your weapons wildly, hitting up to five targets with physical damage.',
 			}, {
 				name: 'Pummel',
 				img: 'WAR-4',
@@ -326,7 +327,7 @@ var skills;
 				requiresFrontRow: true,
 				isPiercing: true,
 				cooldownTime: 30,
-				description: 'A powerful, high-threat attack that deals physical damage and stuns a front-row target.',
+				description: config => 'A powerful, high-threat attack that deals physical damage and stuns a front-row target.',
 			}, {
 				name: 'Double Throw',
 				img: 'WAR-5',
@@ -337,7 +338,7 @@ var skills;
 				cooldownTime: 20,
 				isRanged: true,
 				staggers: true,
-				description: 'A ranged physical attack that hits twice and staggers your target.<br>If your target is in the back row, there is an 80% damage bonus.',
+				description: config => 'A ranged physical attack that hits twice and staggers your target.<br>If your target is in the back row, there is an 80% damage bonus.',
 			}, {
 				name: 'Shockwave',
 				img: 'WAR-6',
@@ -348,7 +349,7 @@ var skills;
 				requiresFrontRow: true,
 				staggers: true,
 				cooldownTime: 25,
-				description: 'Unleash a shockwave that deals physical damage and staggers all targets in the front row.<br>If a shield is equipped there is a 20% damage bonus.',
+				description: config => 'Unleash a shockwave that deals physical damage and staggers all targets in the front row.<br>If a shield is equipped there is a 20% damage bonus.',
 			}, {
 				name: 'Frenzy',
 				img: 'WAR-7',
@@ -356,7 +357,7 @@ var skills;
 				castTime: 0,
 				cooldownTime: 60,
 				damageType: '',
-				description: 'Channel your wrath into a frenzy, boosting your skill haste for a short duration.',
+				description: config => 'Channel your wrath into a frenzy, boosting your skill haste for a short duration.',
 			}, {
 				name: 'Jump Strike',
 				img: 'WAR-8',
@@ -366,7 +367,7 @@ var skills;
 				critBonus: getSkillValues(2.5, .5),
 				cooldownTime: 24,
 				isPiercing: true,
-				description: 'Leaping strike that makes you completely invincible while in the air and deals physical damage when you land.',
+				description: config => 'Leaping strike that makes you completely invincible while in the air and deals physical damage when you land.',
 			}, {
 				name: 'Primal Stomp',
 				img: 'WAR-9',
@@ -377,7 +378,7 @@ var skills;
 				cooldownTime: 16,
 				isRanged: true,
 				staggers: true,
-				description: 'Unleash a mighty stomp that staggers and deals physical damage to all targets.',
+				description: config => 'Unleash a mighty stomp that staggers and deals physical damage to all targets.',
 			}, {
 				name: 'Bulwark',
 				img: 'WAR-10',
@@ -386,14 +387,14 @@ var skills;
 				castTime: 0,
 				damageType: '',
 				cooldownTime: 60,
-				description: 'Protect yourself with a magical bulwark that offers superior damage reduction for a short duration.',
+				description: config => 'Protect yourself with a magical bulwark that offers superior damage reduction for a short duration.',
 			}, {
 				name: 'Intrepid Shout',
 				img: 'WAR-11',
 				sp: level => spellValues.intrepidShoutMana[level],
 				enhancedDamage: AllZeroes,
 				cooldownTime: 0,
-				description: 'Boost all allies armor and fear resistance for '+ ng.toMinSecs(buffs.intrepidShout.duration) +'.',
+				description: config => 'Boost all allies armor and fear resistance for '+ ng.toMinSecs(buffs.intrepidShout.duration) +'.',
 			}, {
 				name: 'Furious Cleave',
 				img: 'WAR-12',
@@ -402,7 +403,7 @@ var skills;
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(4, .5),
 				cooldownTime: 16,
-				description: 'Swing with a mighty cleaving strike that hits three targets, dealing physical damage, and stuns them briefly.',
+				description: config => 'Swing with a mighty cleaving strike that hits three targets, dealing physical damage, and stuns them briefly.',
 			},
 		],
 		CRU: [
@@ -415,7 +416,7 @@ var skills;
 				critBonus: getSkillValues(-1, .5),
 				cooldownTime: 30,
 				isRanged: true,
-				description: 'Bash your target - Effect: 10% chance to stagger.',
+				description: config => 'Unleash a powerful bash dealing '+ config.damageString +' physical damage on your target with a '+ ng.toPercent(buffs.zealousSlam.staggerRate) +'% chance to stagger your target.',
 			}, {
 				name: 'Rebuke',
 				img: 'CRU-2',
@@ -425,7 +426,7 @@ var skills;
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 15,
 				staggers: true,
-				description: 'Hits 3x targets - hits for x damage Effect: staggers',
+				description: config => 'Rebuke up to three targets, staggering them and dealing '+ config.damageString +' physical damage.',
 			}, {
 				name: 'Vengeance',
 				img: 'CRU-3',
@@ -435,7 +436,7 @@ var skills;
 				critBonus: getSkillValues(3, .5),
 				requiresFrontRow: true,
 				cooldownTime: 8,
-				description: 'Hits for % damage - +25% damage bonus when your target is targeting you',
+				description: config => 'Strike your target dealing '+ config.damageString +' physical damage. You have a 100% chance to riposte the next physical attack.',
 			}, {
 				name: 'Consecrate',
 				img: 'CRU-4',
@@ -444,7 +445,7 @@ var skills;
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(1, .5),
 				cooldownTime: 10,
-				description: 'Hits target for % damage - AE blasts for 50% 5x arcane damage and self-boosts all resists +5 * level',
+				description: config => 'Strike your target dealing '+ config.damageString +' physical damage and blast up to four nearby targets dealing '+ modifiedDamageString(config.damageString, .5) +'  arcane damage. Buffs yourself with +1 stack of Consecrate up to five stacks. Consecrate buffs all resists while active.',
 			}, {
 				name: 'Seal of Damnation',
 				img: 'CRU-5',
@@ -455,7 +456,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 8,
-				description: 'Hits for % damage - Hits for % damage - Target marked with a Seal that reduces hit 5% and damage 5%',
+				description: config => 'Blast your target with '+ config.damageString +' arcane damage. Marks your target with a seal that reduces its hit chance by '+ ng.toPercent(buffs.sealOfDamnation.reduceHitRate) +'% and damage by '+ ng.toPercent(buffs.sealOfDamnation.reduceDamage) +'% for '+ ng.toMinSecs(buffs.sealOfDamnation.duration) +'.',
 			}, {
 				name: 'Holy Wrath',
 				img: 'CRU-6',
@@ -466,7 +467,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 30,
-				description: 'Hits target for % damage and stuns for x seconds',
+				description: config => 'Strike your target dealing '+ config.damageString +' arcane damage and stun them for '+ ng.toMinSecs(buffs.holyWrath.stunDuration) +'.',
 			}, {
 				name: 'Divine Judgment',
 				img: 'CRU-7',
@@ -478,7 +479,7 @@ var skills;
 				castTime: 2.5,
 				cooldownTime: 5,
 				isBlighted: true,
-				description: 'Strikes for X arcane damage - Effect: Blighted - 50% bonus to undead, demons.',
+				description: config => 'Strikes your target dealing '+ config.damageString +' arcane damage. Deals +50% bonus damage against undead or demons.',
 			}, {
 				name: 'Blessed Hammer',
 				img: 'CRU-8',
@@ -490,7 +491,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 7,
 				isBlighted: true,
-				description: 'Strikes 5x targets for arcane damage.',
+				description: config => 'Throw a magical hammer that deals '+ config.damageString +' arcane damage in a staggered circular pattern. Deals +50% bonus damage against undead or demons.',
 			}, {
 				name: 'Seal of Sanctuary',
 				img: 'CRU-9',
@@ -501,7 +502,8 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2,
 				cooldownTime: 60,
-				description: 'Protect yourself from all damage for 12 seconds, but your physical damage is reduced.',
+				isBuff: true,
+				description: config => 'Protect yourself from all damage for 12 seconds, but your physical damage is reduced by '+ ng.toPercent(buffs.sealOfSanctuary.reducedDamage[config.rank]) +'%.',
 			}, {
 				name: 'Divine Grace',
 				img: 'CRU-10',
@@ -512,7 +514,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Heal target for x amount.',
+				description: config => 'Restore '+ config.damageString +' of your target\'s health.',
 			}, {
 				name: 'Benevolence',
 				img: 'CRU-11',
@@ -523,7 +525,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 60,
-				description: 'Heal all allies for X amount.',
+				description: config => 'Restore '+ config.damageString +' health to all allies.',
 			}, {
 				name: 'Jubilee',
 				img: 'CRU-12',
@@ -534,7 +536,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 30,
-				description: 'Blast all targets with arcane damage (reduce threat for everyone else).',
+				description: config => 'Blast all targets with '+ config.damageString +' arcane damage. All allies\' threat is reduced.',
 			},
 		],
 		SHD: [
@@ -546,7 +548,7 @@ var skills;
 				hitBonus: getSkillValues(-.5, .5),
 				critBonus: getSkillValues(2.5, .5),
 				cooldownTime: 0,
-				description: 'Unleash a powerful bash dealing physical damage on your target.<br>Each hit reduces target\'s armor.<br>If a shield is equipped there is a 50% damage bonus.',
+				description: config => 'Unleash a powerful bash dealing physical damage on your target.<br>Each hit reduces target\'s armor.<br>If a shield is equipped there is a 50% damage bonus.',
 			}, {
 				name: 'Death Strike',
 				img: 'SHD-2',
@@ -555,7 +557,7 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 12,
-				description: 'Single-target strike that inflicts physical damage and leaches a percentage of damage as health.',
+				description: config => 'Single-target strike that inflicts physical damage and leaches a percentage of damage as health.',
 			}, {
 				name: 'Crescent Cleave',
 				img: 'SHD-3',
@@ -564,7 +566,7 @@ var skills;
 				hitBonus: getSkillValues(-4, .5),
 				critBonus: getSkillValues(2.5, .5),
 				cooldownTime: 9,
-				description: 'Unleash direct physical damage on up to three targets.',
+				description: config => 'Unleash direct physical damage on up to three targets.',
 			}, {
 				name: 'Doom Thrust',
 				img: 'SHD-4',
@@ -575,7 +577,7 @@ var skills;
 				cooldownTime: 10,
 				isRanged: true,
 				isPiercing: true,
-				description: 'A long-range thrust that deals physical damage and pierces enemy defenses.<br>Deals bleed damage over time for '+ ng.toMinSecs(buffs.doomThrustDot.duration) +'.',
+				description: config => 'A long-range thrust that deals '+ config.damageString +' physical damage and pierces enemy defenses. On successful hits, deals '+ modifiedDamageString(config.damageString, buffs.doomThrustDot.dotModifier) +' bleed damage over time for '+ ng.toMinSecs(buffs.doomThrustDot.duration) +'.',
 			}, {
 				name: 'Astral Blade',
 				img: 'SHD-5',
@@ -586,7 +588,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 20,
-				description: 'Summon astral blades that repeatedly strike up to five targets with arcane damage.',
+				description: config => 'Summon astral blades that repeatedly strike up to five targets with arcane damage.',
 			}, {
 				name: 'Ravaging Plague',
 				img: 'SHD-6',
@@ -597,7 +599,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Plague your target dealing poison damage over time for '+ ng.toMinSecs(buffs.ravagingPlague.duration) +'.',
+				description: config => 'Plague your target dealing poison damage over time for '+ ng.toMinSecs(buffs.ravagingPlague.duration) +'.',
 			}, {
 				name: 'Decaying Doom',
 				img: 'SHD-7',
@@ -608,7 +610,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Curse your target with decaying doom that deals arcane damage over time for '+ ng.toMinSecs(buffs.decayingDoom.duration) +'.<br>Debuffs target\'s armor by 15% while active.',
+				description: config => 'Curse your target with decaying doom that deals arcane damage over time for '+ ng.toMinSecs(buffs.decayingDoom.duration) +'.<br>Debuffs target\'s armor by 15% while active.',
 			}, {
 				name: 'Blood Terror',
 				img: 'SHD-8',
@@ -619,7 +621,7 @@ var skills;
 				damageType: DAMAGE_TYPE.BLOOD,
 				castTime: 3.5,
 				cooldownTime: 30,
-				description: 'Deals blood damage over time for '+ ng.toMinSecs(buffs.bloodTerror.duration) +'. Fears your target while active.',
+				description: config => 'Deals blood damage over time for '+ ng.toMinSecs(buffs.bloodTerror.duration) +'. Fears your target while active.',
 			}, {
 				name: 'Life Tap',
 				img: 'SHD-9',
@@ -631,7 +633,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 30,
 				cannotResist: true,
-				description: 'Strike your target with direct arcane damage. Drain all damage to yourself as health.',
+				description: config => 'Strike your target with direct arcane damage. Drain all damage to yourself as health.',
 			}, {
 				name: 'Vampiric Feast',
 				img: 'SHD-10',
@@ -643,7 +645,7 @@ var skills;
 				castTime: 2.5,
 				cooldownTime: 30,
 				cannotResist: true,
-				description: 'Feast on your enemies by striking all targets with direct arcane damage that drains the damage to your health.',
+				description: config => 'Feast on your enemies by striking all targets with direct arcane damage that drains the damage to your health.',
 			}, {
 				name: 'Sanguine Harvest',
 				img: 'SHD-11',
@@ -655,7 +657,7 @@ var skills;
 				castTime: 4.5,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Buffs your health on kill and gives a '+ ng.toPercent(buffs.sanguineHarvest.procRate) +'% chance for all melee attacks to proc an unresistable life drain spell.',
+				description: config => 'Buffs your health on kill and gives a '+ ng.toPercent(buffs.sanguineHarvest.procRate) +'% chance for all melee attacks to proc an unresistable life drain spell.',
 			}, {
 				name: 'Mark of Remphan',
 				img: 'SHD-12',
@@ -666,7 +668,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Debuff your target with an unholy curse that deals fire direct damage.<br>While active buffs hit and crit chance for all attacks on your target.',
+				description: config => 'Debuff your target with an unholy curse that deals fire direct damage.<br>While active buffs hit and crit chance for all attacks on your target.',
 			}
 		],
 		RNG: [
@@ -679,7 +681,7 @@ var skills;
 				critBonus: getSkillValues(1, .5),
 				requiresFrontRow: true,
 				cooldownTime: 0,
-				description: 'Melee up to three front-row targets with a horizontal slice.',
+				description: config => 'Melee up to three front-row targets with a horizontal slice.',
 			}, {
 				name: 'Explosive Shot',
 				img: 'RNG-2',
@@ -690,7 +692,7 @@ var skills;
 				cooldownTime: 20,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Launch an explosive fire arrow that bursts into flames hitting three targets.',
+				description: config => 'Launch an explosive fire arrow that bursts into flames hitting three targets.',
 			}, {
 				name: 'Trueshot Strike',
 				img: 'RNG-3',
@@ -702,7 +704,7 @@ var skills;
 				isPiercing: true,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Fire an accurate, powerful arrow at your target',
+				description: config => 'Fire an accurate, powerful arrow at your target',
 			}, {
 				name: 'Spread Shot',
 				img: 'RNG-4',
@@ -713,7 +715,7 @@ var skills;
 				cooldownTime: 24,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Launch up to five arrows at different targets. Targeting prioritizes the front row.',
+				description: config => 'Launch up to five arrows at different targets. Targeting prioritizes the front row.',
 			}, {
 				name: 'Blade Storm',
 				img: 'RNG-5',
@@ -722,18 +724,18 @@ var skills;
 				hitBonus: getSkillValues(1.5, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 16,
-				description: 'Unleash a rapid flurry of melee attacks that hit your target five times.',
+				description: config => 'Unleash a rapid flurry of melee attacks that hit your target five times.',
 			}, {
 				name: 'Suppressing Volley',
 				img: 'RNG-6',
 				mp: level => spellValues.suppressingVolleyMana[level],
 				enhancedDamage: getSkillValues(.45, .05),
-				hitBonus: getSkillValues(-1.5, .5),
+				hitBonus: getSkillValues(-91.5, .5),
 				critBonus: getSkillValues(-1.5, .5),
 				cooldownTime: 12,
 				isRanged: true,
 				isRangedDamage: true,
-				description: 'Launch sedative arrows that hits three targets and reduces your threat.<br>Debuffs each target\'s hit chance, up to five stacks, for 21 seconds.',
+				description: config => 'Launch sedative arrows that hits three targets and reduces your threat.<br>On successful hit, debuffs each target\'s hit chance, up to five stacks (2% to 6%), for 21 seconds.',
 			}, {
 				name: 'Burning Embers',
 				img: 'RNG-7',
@@ -744,7 +746,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Direct fire damage bursts on your target and burns for extra damage over time.<br>Reduces your target\'s armor by 15% while active.',
+				description: config => 'Direct fire damage bursts on your target and burns for extra damage over time.<br>Reduces your target\'s armor by 15% while active.',
 			}, {
 				name: 'Shock Nova',
 				img: 'RNG-8',
@@ -756,7 +758,7 @@ var skills;
 				castTime: 2,
 				cooldownTime: 12,
 				staggers: true,
-				description: 'A burst of static energy zaps all targets with lightning damage and staggers all targets.',
+				description: config => 'A burst of static energy zaps all targets with lightning damage and staggers all targets.',
 			}, {
 				name: 'Faerie Flame',
 				img: 'RNG-9',
@@ -767,7 +769,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Blast your target with direct fire damage.<br>The fire faeries illuminate your targets\' silhouette, increasing all allies\' hit chance by '+ ng.toPercent(buffs.faerieFlame.buffHitBonus) +'% while active.',
+				description: config => 'Blast your target with direct fire damage.<br>The fire faeries illuminate your targets\' silhouette, increasing all allies\' hit chance by '+ ng.toPercent(buffs.faerieFlame.buffHitBonus) +'% while active.',
 			}, {
 				name: 'Fungal Growth',
 				img: 'RNG-10',
@@ -778,7 +780,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2,
 				cooldownTime: 0,
-				description: 'Fungal spores restore your target\'s health over time.',
+				description: config => 'Fungal spores restore your target\'s health over time.',
 			}, {
 				name: 'Shimmering Orb',
 				img: 'RNG-11',
@@ -788,7 +790,7 @@ var skills;
 				spellType: PROP.CONJURATION,
 				castTime: 4,
 				cooldownTime: 5,
-				description: 'Buff your target with a shimmering orb that mitigates all damage on your target until the shield is depleted.',
+				description: config => 'Buff your target with a shimmering orb that mitigates all damage on your target until the shield is depleted.',
 			}, {
 				name: 'Spirit of the Hunter',
 				img: 'RNG-12',
@@ -798,7 +800,7 @@ var skills;
 				spellType: PROP.ALTERATION,
 				castTime: 3.5,
 				cooldownTime: 15,
-				description: 'Buff your target\'s attack power and attack haste.',
+				description: config => 'Buff your target\'s attack power and attack haste.',
 			},
 		],
 		MNK: [
@@ -810,7 +812,7 @@ var skills;
 				hitBonus: getSkillValues(.5, .5),
 				critBonus: getSkillValues(-4, .5),
 				cooldownTime: 0,
-				description: 'Strike your target with direct physical damage. Your target bleeds for additional damage over time for ' + ng.toMinSecs(buffs.tigerStrikeDot.duration),
+				description: config => 'Strike your target with '+ config.damageString + ' physical damage. On successful hits, deal '+ modifiedDamageString(config.damageString, buffs.tigerStrikeDot.dotModifier) +' bleed damage over time for ' + ng.toMinSecs(buffs.tigerStrikeDot.duration) +'.',
 			}, {
 				name: 'Hyper Strike',
 				img: 'MNK-2',
@@ -819,7 +821,7 @@ var skills;
 				hitBonus: getSkillValues(3, .5),
 				critBonus: getSkillValues(-8, .5),
 				cooldownTime: 7,
-				description: 'Strike your target with direct physical damage. Buffs your skill haste and stacks up to five times for greater effect.',
+				description: config => 'Strike your target with direct physical damage. On successful hits, buffs your skill haste and stacks up to five times for greater effect.',
 			}, {
 				name: 'Mime Strike',
 				img: 'MNK-3',
@@ -828,7 +830,7 @@ var skills;
 				hitBonus: getSkillValues(6, .5),
 				critBonus: getSkillValues(-2, .5),
 				cooldownTime: 20,
-				description: 'Strike your target with direct physical damage. Your next attack will strike twice.',
+				description: config => 'Strike your target with direct physical damage. Your next attack will strike twice.',
 			}, {
 				name: 'Crane Kick',
 				img: 'MNK-4',
@@ -838,7 +840,7 @@ var skills;
 				critBonus: getSkillValues(3.5, .5),
 				cooldownTime: 30,
 				stuns: 3,
-				description: 'Strikes your target with a crane kick. Stuns your target for ' + ng.toMinSecs(buffs.craneKick.stunDuration),
+				description: config => 'Strikes your target with a crane kick. Stuns your target for ' + ng.toMinSecs(buffs.craneKick.stunDuration),
 			}, {
 				name: 'Chakra Blast',
 				img: 'MNK-5',
@@ -848,7 +850,7 @@ var skills;
 				critBonus: getSkillValues(6.5, .5),
 				cooldownTime: 21,
 				damageType: DAMAGE_TYPE.ARCANE,
-				description: 'Focus and explode with arcane energy hitting all targets for direct arcane damage.',
+				description: config => 'Focus and explode with arcane energy hitting all targets for direct arcane damage.',
 			}, {
 				name: 'Hadoken',
 				img: 'MNK-6',
@@ -858,7 +860,7 @@ var skills;
 				cooldownTime: 12,
 				isRanged: true,
 				damageType: DAMAGE_TYPE.FIRE,
-				description: 'Shoot a fireball at your target that hits for direct fire damage.',
+				description: config => 'Shoot a fireball at your target that hits for direct fire damage.',
 			}, {
 				name: 'Hurricane Kicks',
 				img: 'MNK-7',
@@ -867,7 +869,7 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(-2, .5),
 				cooldownTime: 24,
-				description: 'Kick up to three targets three times inflicting direct physical damage at intervals.',
+				description: config => 'Kick up to three targets three times inflicting direct physical damage at intervals.',
 			}, {
 				name: 'Dragon Punch',
 				img: 'MNK-8',
@@ -878,7 +880,7 @@ var skills;
 				cooldownTime: 16,
 				damageType: DAMAGE_TYPE.FIRE,
 				staggers: true,
-				description: 'Unleash a flaming uppercut on a front-row target hitting three times for direct fire damage.',
+				description: config => 'Unleash a flaming uppercut on a front-row target hitting three times for direct fire damage.',
 			}, {
 				name: 'Viper Strike',
 				img: 'MNK-9',
@@ -887,7 +889,7 @@ var skills;
 				hitBonus: getSkillValues(9, .5),
 				critBonus: getSkillValues(-6, .5),
 				cooldownTime: 9,
-				description: 'Strike for direct physical damage. Leeches health and stacks up to five times for greater effect.',
+				description: config => 'Strike for direct physical damage. On successful hits, leeches health and stacks up to five times for greater effect.',
 			}, {
 				name: 'Palm Strike',
 				img: 'MNK-10',
@@ -897,7 +899,7 @@ var skills;
 				critBonus: getSkillValues(4, .5),
 				cooldownTime: 30,
 				staggers: true,
-				description: 'Delivers a powerful palm strike for direct physical damage. Staggers and paralyzes your target for ' + ng.toMinSecs(buffs.palmStrike.paralyzeDuration) + '.',
+				description: config => 'Delivers a powerful palm strike for direct physical damage. Staggers and paralyzes your target for ' + ng.toMinSecs(buffs.palmStrike.paralyzeDuration) + '.',
 			}, {
 				name: 'Mending Aura',
 				img: 'MNK-11',
@@ -910,13 +912,13 @@ var skills;
 				hitBonus: AllZeroes,
 				critBonus: AllZeroes,
 				cooldownTime: 35,
-				description: 'Summon your spiritual energy to mend your wounds over ' + ng.toMinSecs(buffs.mendingAura.duration) + '.<br>Reduces your threat to all mobs and reduces all physical damage to you while active.',
+				description: config => 'Summon your spiritual energy to mend your wounds over ' + ng.toMinSecs(buffs.mendingAura.duration) + '.<br>Reduces your threat to all mobs and reduces all physical damage to you while active.',
 			}, {
 				name: 'Spirit Barrier',
 				img: 'MNK-12',
 				sp: level => spellValues.spiritBarrierMana[level],
 				cooldownTime: 20,
-				description: 'Buffs your target with a spiritual barrier.<br>Enhances the power of all heals and boosts all resists for '+ ng.toMinSecs(buffs.spiritBarrier.duration) +'.',
+				description: config => 'Buffs your target with a spiritual barrier.<br>Enhances the power of all heals and boosts all resists for '+ ng.toMinSecs(buffs.spiritBarrier.duration) +'.',
 			},
 		],
 		ROG: [
@@ -927,7 +929,7 @@ var skills;
 				enhancedDamage: getSkillValues(.73, .09),
 				hitBonus: getSkillValues(5.5, .5),
 				critBonus: getSkillValues(-2, .5),
-				description: 'Reliable low-enmity strike on your target for X% damage',
+				description: config => 'Strike your target dealing '+ config.damageString +' physical damage with relatively low threat.',
 			}, {
 				name: 'Sonic Strike',
 				img: 'ROG-2',
@@ -937,7 +939,7 @@ var skills;
 				critBonus: getSkillValues(7.5, .5),
 				cooldownTime: 15,
 				staggers: true,
-				description: 'Strike target for X% damage and release a nova that hits 3x targets for % arcane damage - Effect: Staggers',
+				description: config => 'Strike for '+ config.damageString +' physical damage on your target. On successful hits, a nova deals '+ modifiedDamageString(config.damageString, buffs.sonicStrike.novaDamage) +' arcane damage and staggers up to three targets.',
 			}, {
 				name: 'Faded Strike',
 				img: 'ROG-3',
@@ -946,7 +948,7 @@ var skills;
 				hitBonus: getSkillValues(7, .5),
 				critBonus: getSkillValues(-1, .5),
 				cooldownTime: 10,
-				description: 'Strike your target and add +1 stack (max 5) to Fade (+x% resist all) - Effect: chill',
+				description: config => 'Deal '+ config.damageString +' physical damage, reduce your threat, and chill your target for '+ ng.toMinSecs(buffs.fadedStrike.chillDuration) +'. On successful hits, gives +1 to Faded Form which buffs your dodge and all resists up to five stacks.',
 			}, {
 				name: 'Rising Furor',
 				img: 'ROG-4',
@@ -955,7 +957,7 @@ var skills;
 				hitBonus: getSkillValues(4.5, .5),
 				critBonus: getSkillValues(1, .5),
 				cooldownTime: 8,
-				description: 'Strike your target - add +1 stack (max 5) to attack haste (X% haste)',
+				description: config => 'Strike your target and deal '+ config.damageString +' physical damage. On successful hits, earn +1 stack to Furor which buffs  attack haste up to five stacks.',
 			}, {
 				name: 'Lacerate',
 				img: 'ROG-5',
@@ -964,7 +966,7 @@ var skills;
 				hitBonus: getSkillValues(5.5, .5),
 				critBonus: getSkillValues(-4.5, .5),
 				cooldownTime: 7,
-				description: 'Strike target for % damage and bleed target over 30 seconds',
+				description: config => 'Strike your target dealing '+ config.damageString +' physical damage. On successful hits, your target will take '+ modifiedDamageString(config.damageString, buffs.lacerateDot.dotModifier) +' bleed damage over time for '+ ng.toMinSecs(buffs.lacerate.duration) +'.',
 			}, {
 				name: 'Backstab',
 				img: 'ROG-6',
@@ -975,7 +977,7 @@ var skills;
 				cooldownTime: 16,
 				isRanged: true,
 				isPiercing: true,
-				description: 'Strike single target from behind for X% damage - Effect: Ranged & Piercing',
+				description: config => 'Strike a single target from behind for '+ config.damageString +' physical damage. Causes high threat, but pierces enemy defenses and hits back-row targets for full damage.',
 			}, {
 				name: 'Widow Strike',
 				img: 'ROG-7',
@@ -984,7 +986,7 @@ var skills;
 				hitBonus: getSkillValues(3, .5),
 				critBonus: getSkillValues(-6, .5),
 				cooldownTime: 7,
-				description: 'Strike for % damage and poison target over X seconds',
+				description: config => 'Strike your target dealing '+ config.damageString +' physical damage. On successful hits, apply Widow Venom to your target dealing '+ modifiedDamageString(config.damageString, buffs.widowStrikeDot.dotModifier) +' poison damage over '+ ng.toMinSecs(buffs.widowStrikeDot.duration) +'.',
 			}, {
 				name: 'Dazzle Thrust',
 				img: 'ROG-8',
@@ -993,7 +995,7 @@ var skills;
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(5.5, .5),
 				cooldownTime: 25,
-				description: 'Hits target for % damage and stuns for 5 seconds',
+				description: config => 'Strike your target dealing '+ config.damageString +' physical damage. Dazzles your target with a powerful stun for '+ ng.toMinSecs(buffs.dazzleThrust.duration) +'.',
 			}, {
 				name: 'Mirage Strike',
 				img: 'ROG-9',
@@ -1002,7 +1004,7 @@ var skills;
 				hitBonus: getSkillValues(2.5, .5),
 				critBonus: getSkillValues(1, .5),
 				cooldownTime: 5,
-				description: 'Strike your target and summon a mirage that absorbs hits from physical damage - stacks up to 5',
+				description: config => 'Deal '+ config.damageString +' physical damage to your target. On successful hits, adds +1 to Mirage which can absorb one physical attack. You can stack up to five mirages at a time.',
 			}, {
 				name: 'Flash Strike',
 				img: 'ROG-10',
@@ -1013,7 +1015,8 @@ var skills;
 				cooldownTime: 10,
 				isRanged: true,
 				isPiercing: true,
-				description: 'Apply explosive flash powder to your weapon and strike for X fire damage - Effect: reduces threat and target\'s dodge for X seconds - Ranged & Piercing',
+				damageType: DAMAGE_TYPE.FIRE,
+				description: config => 'Apply explosive powder to your weapon to strike your target for '+ config.damageString +' fire damage. Disorients your target, reducing your threat and its dodge chance for '+ ng.toMinSecs(buffs.flashStrike.duration) +'.',
 			}, {
 				name: 'Talisman of Treachery',
 				img: 'ROG-11',
@@ -1022,7 +1025,7 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(3, .5),
 				cooldownTime: 50,
-				description: 'Buff target\'s agility, poison damage, and attack',
+				description: config => 'Buff your target\'s agility, poison damage, and attack rating for '+ ng.toMinSecs(buffs.talismanOfTreachery.duration) +'.',
 			}, {
 				name: 'Prowl',
 				img: 'ROG-12',
@@ -1031,7 +1034,7 @@ var skills;
 				hitBonus: getSkillValues(1, .5),
 				critBonus: getSkillValues(3, .5),
 				cooldownTime: 60,
-				description: 'While prowl is active: debuff your attack haste, but buffs physical damage resistance, fear resist, and enhances all of your physical damage',
+				description: config => 'Prowl into the shadows for '+ ng.toMinSecs(buffs.prowl.duration) +'. Slows down your attack speed, but buffs your physical damage resistance by '+ ng.toPercent(buffs.prowl.resistPhysical) +'%, your fear resistance by '+ buffs.prowl.resistFear[config.rank] +', and your physical damage by '+ ng.toPercent(buffs.prowl.bonusDamage[config.rank]) +'%.',
 			},
 		],
 		DRU: [
@@ -1045,7 +1048,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Blast your target with direct fire damage.',
+				description: config => 'Blast your target with direct fire damage.',
 			}, {
 				name: 'Fissure',
 				img: 'DRU-2',
@@ -1056,7 +1059,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 4,
 				cooldownTime: 12,
-				description: 'Lava erupts from the ground and hits up to three targets five times with direct fire damage at intervals over 8 seconds.',
+				description: config => 'Lava erupts from the ground and hits up to three targets five times with direct fire damage at intervals over 8 seconds.',
 			}, {
 				name: 'Lightning Blast',
 				img: 'DRU-3',
@@ -1067,7 +1070,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 5,
-				description: 'Hits up to three targets with direct lightning damage.',
+				description: config => 'Hits up to three targets with direct lightning damage.',
 			}, {
 				name: 'Blizzard',
 				img: 'DRU-4',
@@ -1078,7 +1081,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 5,
 				cooldownTime: 30,
-				description: 'An ice storm blasts up to three targets five times with direct ice damage at intervals over 8 seconds.',
+				description: config => 'An ice storm blasts up to three targets five times with direct ice damage at intervals over 8 seconds.',
 			}, {
 				name: 'Toxic Spores',
 				img: 'DRU-5',
@@ -1089,7 +1092,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Blast your target with toxic sports that do poison damage over '+ ng.toMinSecs(buffs.toxicSpores.duration) +'.',
+				description: config => 'Blast your target with toxic sports that do poison damage over '+ ng.toMinSecs(buffs.toxicSpores.duration) +'.',
 			}, {
 				name: 'Molten Boulder',
 				img: 'DRU-6',
@@ -1101,7 +1104,7 @@ var skills;
 				requiresFrontRow: true,
 				castTime: 4.5,
 				cooldownTime: 20,
-				description: 'Summon a molten boulder that crushes through the front row to your target with direct fire damage. Smolders for additional fire damage over time for '+ ng.toMinSecs(buffs.moltenBoulder.duration) +'.',
+				description: config => 'Summon a molten boulder that crushes through the front row to your target with direct fire damage. Smolders for additional fire damage over time for '+ ng.toMinSecs(buffs.moltenBoulder.duration) +'.',
 			}, {
 				name: 'Barbed Thicket',
 				img: 'DRU-7',
@@ -1113,7 +1116,7 @@ var skills;
 				castTime: 2,
 				cooldownTime: 15,
 				staggers: true,
-				description: 'Hits up to three targets for with direct arcane damage. Reduces threat and staggers each target.',
+				description: config => 'Hits up to three targets for with direct arcane damage. Reduces threat and staggers each target.',
 			}, {
 				name: 'Tornado',
 				img: 'DRU-8',
@@ -1124,7 +1127,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 9,
-				description: 'Hits a random target with direct arcane and cold damage. Chills your target for '+ ng.toMinSecs(buffs.tornado.chillDuration) +'.',
+				description: config => 'Hits a random target with direct arcane and cold damage. Chills your target for '+ ng.toMinSecs(buffs.tornado.chillDuration) +'.',
 			}, {
 				name: 'Nature\'s Touch',
 				img: 'DRU-9',
@@ -1135,7 +1138,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Heal your target\'s health and restore an additional '+ ng.toPercent(buffs.naturesTouchHot.tickPercent) +'% health over '+ ng.toMinSecs(buffs.naturesTouchHot.duration) +'.',
+				description: config => 'Heal your target\'s health and restore an additional '+ ng.toPercent(buffs.naturesTouchHot.tickPercent) +'% health over '+ ng.toMinSecs(buffs.naturesTouchHot.duration) +'.',
 			}, {
 				name: 'Moss Breath',
 				img: 'DRU-10',
@@ -1146,7 +1149,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Restore health on your target over time for '+ ng.toMinSecs(buffs.mossBreath.duration) +'.',
+				description: config => 'Restore health on your target over time for '+ ng.toMinSecs(buffs.mossBreath.duration) +'.',
 			}, {
 				name: 'Synthesize',
 				img: 'DRU-11',
@@ -1157,7 +1160,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 5,
 				cooldownTime: 0,
-				description: 'Buff your target\'s health regeneration ' + ng.toMinSecs(buffs.synthesize.duration) + '.',
+				description: config => 'Buff your target\'s health regeneration ' + ng.toMinSecs(buffs.synthesize.duration) + '.',
 			}, {
 				name: 'Branch Spirit',
 				img: 'DRU-12',
@@ -1168,7 +1171,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Infuse yourself with nature\'s wrath.<br>Buffs your physical damage by 25%.<br>Buffs your health regeneration, attack, and armor.',
+				description: config => 'Infuse yourself with nature\'s wrath.<br>Buffs your physical damage by 25%.<br>Buffs your health regeneration, attack, and armor.',
 			},
 		],
 		CLR: [
@@ -1182,7 +1185,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Direct arcane damage on your target.',
+				description: config => 'Direct arcane damage on your target.',
 			}, {
 				name: 'Deliverance',
 				img: 'CLR-2',
@@ -1194,7 +1197,7 @@ var skills;
 				castTime: 2,
 				cooldownTime: 6,
 				isBlighted: true,
-				description: 'Direct fire damage on your target that does bonus damage to demons and undead.',
+				description: config => 'Direct fire damage on your target that does bonus damage to demons and undead.',
 			}, {
 				name: 'Condemnation',
 				img: 'CLR-3',
@@ -1207,7 +1210,7 @@ var skills;
 				cooldownTime: 12,
 				isBlighted: true,
 				staggers: true,
-				description: 'Strike three targets with direct arcane damage that staggers and does bonus damage to demons and undead.',
+				description: config => 'Strike three targets with direct arcane damage that staggers and does bonus damage to demons and undead.',
 			}, {
 				name: 'Sacred Revelation',
 				img: 'CLR-4',
@@ -1218,7 +1221,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 1.5,
 				cooldownTime: 30,
-				description: 'Blast three targets with direct arcane damage and briefly stun them.',
+				description: config => 'Blast three targets with direct arcane damage and briefly stun them.',
 			}, {
 				name: 'Holy Sanctuary',
 				img: 'CLR-5',
@@ -1229,7 +1232,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 1.5,
 				cooldownTime: 24,
-				description: 'Blast all targets with arcane damage and reduce your threat.',
+				description: config => 'Blast all targets with arcane damage and reduce your threat.',
 			}, {
 				name: 'Force of Glory',
 				img: 'CLR-6',
@@ -1240,7 +1243,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 1.5,
 				cooldownTime: 60,
-				description: 'Strike your target with direct arcane damage and a powerful stun effect.',
+				description: config => 'Strike your target with direct arcane damage and a powerful stun effect.',
 			}, {
 				name: 'Binding Grace',
 				img: 'CLR-7',
@@ -1251,7 +1254,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 8,
-				description: 'Heal your target and yourself at the same time. You must target an ally to begin casting.',
+				description: config => 'Heal your target and yourself at the same time. You must target an ally to begin casting.',
 			}, {
 				name: 'Guardian Angel',
 				img: 'CLR-8',
@@ -1262,7 +1265,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 1.5,
 				cooldownTime: 15,
-				description: 'Protect your target with a holy shield that absorbs damage. Buffs fear resistance while active.',
+				description: config => 'Protect your target with a holy shield that absorbs damage. Buffs fear resistance while active.',
 			}, {
 				name: 'Divine Light',
 				img: 'CLR-9',
@@ -1273,7 +1276,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Restore your target\'s health with a splash of divine light.',
+				description: config => 'Restore your target\'s health with a splash of divine light.',
 			}, {
 				name: 'Circle of Prayer',
 				img: 'CLR-10',
@@ -1284,7 +1287,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Join hands and restore health to all allies with a solemn prayer.',
+				description: config => 'Join hands and restore health to all allies with a solemn prayer.',
 			}, {
 				name: 'Seal of Redemption',
 				img: 'CLR-11',
@@ -1296,7 +1299,7 @@ var skills;
 				castTime: 5,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Buff your target\'s health and blood magic resistance.',
+				description: config => 'Buff your target\'s health and blood magic resistance.',
 			}, {
 				name: 'Zealous Resolve',
 				img: 'CLR-12',
@@ -1308,7 +1311,7 @@ var skills;
 				castTime: 4.5,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Buff your target\'s health and armor.',
+				description: config => 'Buff your target\'s health and armor.',
 			},
 		],
 		SHM: [
@@ -1322,7 +1325,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Strike your target with direct ice damage.',
+				description: config => 'Strike your target with direct ice damage.',
 			}, {
 				name: 'Poison Nova',
 				img: 'SHM-2',
@@ -1333,7 +1336,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 4,
 				cooldownTime: 8,
-				description: 'Blast all targets with a poison nova that hits for direct poison damage.',
+				description: config => 'Blast all targets with a poison nova that hits for direct poison damage.',
 			}, {
 				name: 'Scourge',
 				img: 'SHM-3',
@@ -1344,7 +1347,7 @@ var skills;
 				damageType: DAMAGE_TYPE.BLOOD,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Deals blood damage over time for '+ ng.toMinSecs(buffs.scourge.duration) +'.',
+				description: config => 'Deals blood damage over time for '+ ng.toMinSecs(buffs.scourge.duration) +'.',
 			}, {
 				name: 'Poison Bolt',
 				img: 'SHM-4',
@@ -1355,7 +1358,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Launch a single bolt at your target dealing direct poison damage.',
+				description: config => 'Launch a single bolt at your target dealing direct poison damage.',
 			}, {
 				name: 'Vampiric Gaze',
 				img: 'SHM-5',
@@ -1366,7 +1369,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 15,
-				description: 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.vampiricGaze.duration) +'. While active all melee attacks on the affected target will leech additional health.',
+				description: config => 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.vampiricGaze.duration) +'. While active all melee attacks on the affected target will leech additional health.',
 			}, {
 				name: 'Glacial Shard',
 				img: 'SHM-6',
@@ -1377,7 +1380,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 3,
 				cooldownTime: 24,
-				description: 'Strike up to three targets with direct ice damage.',
+				description: config => 'Strike up to three targets with direct ice damage.',
 			}, {
 				name: 'Affliction',
 				img: 'SHM-7',
@@ -1388,7 +1391,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Deals poison damage over time for '+ ng.toMinSecs(buffs.affliction.duration) +'.',
+				description: config => 'Deals poison damage over time for '+ ng.toMinSecs(buffs.affliction.duration) +'.',
 			}, {
 				name: 'Devouring Swarm',
 				img: 'SHM-8',
@@ -1399,7 +1402,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 45,
-				description: 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.devouringSwarm.duration) +'. Each tick heals you for '+ ng.toPercent(buffs.devouringSwarmHeal.healRatio) +'% of damage dealt.',
+				description: config => 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.devouringSwarm.duration) +'. Each tick heals you for '+ ng.toPercent(buffs.devouringSwarmHeal.healRatio) +'% of damage dealt.',
 			}, {
 				name: 'Rejuvinate',
 				img: 'SHM-9',
@@ -1410,7 +1413,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Restores your target\'s health and restores an additional '+ ng.toPercent(buffs.rejuvinateHot.tickPercent) +'% health over '+ ng.toMinSecs(buffs.rejuvinateHot.duration) +'.',
+				description: config => 'Restores your target\'s health and restores an additional '+ ng.toPercent(buffs.rejuvinateHot.tickPercent) +'% health over '+ ng.toMinSecs(buffs.rejuvinateHot.duration) +'.',
 			}, {
 				name: 'Mystical Glow',
 				img: 'SHM-10',
@@ -1421,7 +1424,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Restores your target\'s health over time for '+ ng.toMinSecs(buffs.mysticalGlow.duration) +'. While active boosts all heals by '+ ng.toPercent(buffs.mysticalGlow.enhanceHealing) +'%',
+				description: config => 'Restores your target\'s health over time for '+ ng.toMinSecs(buffs.mysticalGlow.duration) +'. While active boosts all heals by '+ ng.toPercent(buffs.mysticalGlow.enhanceHealing) +'%',
 			}, {
 				name: 'Vampiric Allure',
 				img: 'SHM-11',
@@ -1432,7 +1435,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4.5,
 				cooldownTime: 0,
-				description: 'Buffs your ally\'s life leech and charisma for '+ ng.toMinSecs(buffs.vampiricAllure.duration) + '.',
+				description: config => 'Buffs your ally\'s life leech and charisma for '+ ng.toMinSecs(buffs.vampiricAllure.duration) + '.',
 			}, {
 				name: 'Boreal Talisman',
 				img: 'SHM-12',
@@ -1443,7 +1446,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Buff an ally\'s strength, stamina, and ice resistance for '+ ng.toMinSecs(buffs.borealTalisman.duration) +'.',
+				description: config => 'Buff an ally\'s strength, stamina, and ice resistance for '+ ng.toMinSecs(buffs.borealTalisman.duration) +'.',
 			},
 		],
 		BRD: [
@@ -1457,7 +1460,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Single target burst of direct arcane energy. Bellow has a 25% chance to stagger.',
+				description: config => 'Single target burst of direct arcane energy. Bellow has a 25% chance to stagger.',
 			}, {
 				name: 'Sonic Boom',
 				img: 'BRD-2',
@@ -1468,7 +1471,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 16,
-				description: 'Blasts up to three targets with direct arcane damage.',
+				description: config => 'Blasts up to three targets with direct arcane damage.',
 			}, {
 				name: 'Euphonic Dirge',
 				img: 'BRD-3',
@@ -1479,7 +1482,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Deals poison damage over time on up to three targets for '+ ng.toMinSecs(buffs.euphonicDirge.duration) +'.',
+				description: config => 'Deals poison damage over time on up to three targets for '+ ng.toMinSecs(buffs.euphonicDirge.duration) +'.',
 			}, {
 				name: 'Subverted Symphony',
 				img: 'BRD-4',
@@ -1490,7 +1493,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Deals fire damage over time on up to three targets for '+ ng.toMinSecs(buffs.subvertedSymphony.duration) +'. Lowers each target\'s armor by '+ ng.toPercent(buffs.subvertedSymphony.debuffArmor) +'% while active.',
+				description: config => 'Deals fire damage over time on up to three targets for '+ ng.toMinSecs(buffs.subvertedSymphony.duration) +'. Lowers each target\'s armor by '+ ng.toPercent(buffs.subvertedSymphony.debuffArmor) +'% while active.',
 			}, {
 				name: 'Crashing Chords',
 				img: 'BRD-5',
@@ -1501,7 +1504,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3,
 				cooldownTime: 30,
-				description: 'Strike your target with direct lightning damage. Paralyzes your target for '+ ng.toMinSecs(buffs.crashingChords.paralyzeDuration) +'.',
+				description: config => 'Strike your target with direct lightning damage. Paralyzes your target for '+ ng.toMinSecs(buffs.crashingChords.paralyzeDuration) +'.',
 			}, {
 				name: 'Battle Hymn',
 				img: 'BRD-6',
@@ -1513,7 +1516,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Boost the strength, dexterity, and attack haste of all allies for '+ ng.toMinSecs(buffs.battleHymn.duration) +'.',
+				description: config => 'Boost the strength, dexterity, and attack haste of all allies for '+ ng.toMinSecs(buffs.battleHymn.duration) +'.',
 			}, {
 				name: 'Militant Cadence',
 				img: 'BRD-7',
@@ -1525,7 +1528,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Bolster all allies maximum health, mana, and spirit for '+ ng.toMinSecs(buffs.militantCadence.duration) +'.',
+				description: config => 'Bolster all allies maximum health, mana, and spirit for '+ ng.toMinSecs(buffs.militantCadence.duration) +'.',
 			}, {
 				name: 'Consonant Chain',
 				img: 'BRD-8',
@@ -1536,7 +1539,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.consonantChain.duration) +'. Slows your target\'s attack speed while active.',
+				description: config => 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.consonantChain.duration) +'. Slows your target\'s attack speed while active.',
 			}, {
 				name: 'Litany of Life',
 				img: 'BRD-9',
@@ -1547,7 +1550,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Boosts the health regeneration of all allies for '+ ng.toMinSecs(buffs.litanyOfLife.duration) +'.',
+				description: config => 'Boosts the health regeneration of all allies for '+ ng.toMinSecs(buffs.litanyOfLife.duration) +'.',
 			}, {
 				name: 'Melody of Mana',
 				img: 'BRD-10',
@@ -1559,7 +1562,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Boosts the mana regeneration and casting haste of all allies for '+ ng.toMinSecs(buffs.melodyOfMana.duration) +'.',
+				description: config => 'Boosts the mana regeneration and casting haste of all allies for '+ ng.toMinSecs(buffs.melodyOfMana.duration) +'.',
 			}, {
 				name: 'Righteous Rhapsody',
 				img: 'BRD-11',
@@ -1571,7 +1574,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Reduce all resists of all mobs for '+ ng.toMinSecs(buffs.righteousRhapsody.duration) +'.',
+				description: config => 'Reduce all resists of all mobs for '+ ng.toMinSecs(buffs.righteousRhapsody.duration) +'.',
 			}, {
 				name: 'Chromatic Sonata',
 				img: 'BRD-12',
@@ -1583,7 +1586,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Buff armor and all resists of all allies for '+ ng.toMinSecs(buffs.chromaticSonata.duration) +'.',
+				description: config => 'Buff armor and all resists of all allies for '+ ng.toMinSecs(buffs.chromaticSonata.duration) +'.',
 			},
 		],
 		WLK: [
@@ -1597,7 +1600,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Launch a venom bolt at your target dealing direct poison damage.',
+				description: config => 'Launch a venom bolt at your target dealing direct poison damage.',
 			}, {
 				name: 'Explosive Plague',
 				img: 'WLK-2',
@@ -1619,7 +1622,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Scorch your target with direct fire damage and deal an additional 100% fire damage over time for '+ ng.toMinSecs(buffs.bloodFire.duration) +'.<br>Debuffs target\'s armor by '+ ng.toPercent(buffs.bloodFire.debuffArmor) +'%.',
+				description: config => 'Scorch your target with direct fire damage and deal an additional 100% fire damage over time for '+ ng.toMinSecs(buffs.bloodFire.duration) +'.<br>Debuffs target\'s armor by '+ ng.toPercent(buffs.bloodFire.debuffArmor) +'%.',
 			}, {
 				name: 'Demonic Pact',
 				img: 'WLK-4',
@@ -1630,7 +1633,7 @@ var skills;
 				damageType: DAMAGE_TYPE.BLOOD,
 				castTime: 4.5,
 				cooldownTime: 15,
-				description: 'Strike your target with direct blood damage and deal an additional 100% blood damage over time for '+ ng.toMinSecs(buffs.demonicPact.duration) +'. Buffs all physical damage on your target by '+ ng.toPercent(buffs.demonicPact.bonusDamage) +'%',
+				description: config => 'Strike your target with direct blood damage and deal an additional 100% blood damage over time for '+ ng.toMinSecs(buffs.demonicPact.duration) +'. Buffs all physical damage on your target by '+ ng.toPercent(buffs.demonicPact.bonusDamage) +'%',
 			}, {
 				name: 'Haunting Vision',
 				img: 'WLK-5',
@@ -1641,7 +1644,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 40,
-				description: 'Strike up to three targets with direct arcane damage. Fears all targets for '+ ng.toMinSecs(buffs.hauntingVision.fearDuration) +'.',
+				description: config => 'Strike up to three targets with direct arcane damage. Fears all targets for '+ ng.toMinSecs(buffs.hauntingVision.fearDuration) +'.',
 			}, {
 				name: 'Icing Death',
 				img: 'WLK-6',
@@ -1652,7 +1655,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 15,
-				description: 'Strikes up to three targets with direct ice damage that chills each target.<br>50% bonus vs undead.',
+				description: config => 'Strikes up to three targets with direct ice damage that chills each target.<br>50% bonus vs undead.',
 			}, {
 				name: 'Curse of Shadows',
 				img: 'WLK-7',
@@ -1663,7 +1666,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Deal arcane damage over time for '+ ng.toMinSecs(buffs.curseOfShadows.duration) +'. Debuffs your target\'s blood, poison, and arcane resistance by '+ ng.toPercent(buffs.curseOfShadows.reduceBloodResist) +'% while active.',
+				description: config => 'Deal arcane damage over time for '+ ng.toMinSecs(buffs.curseOfShadows.duration) +'. Debuffs your target\'s blood, poison, and arcane resistance by '+ ng.toPercent(buffs.curseOfShadows.reduceBloodResist) +'% while active.',
 			}, {
 				name: 'Panic Strike',
 				img: 'WLK-8',
@@ -1674,7 +1677,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 15,
-				description: 'Blast your target with direct arcane damage. Fears your target for '+ ng.toMinSecs(buffs.panicStrike.fearDuration) +'.',
+				description: config => 'Blast your target with direct arcane damage. Fears your target for '+ ng.toMinSecs(buffs.panicStrike.fearDuration) +'.',
 			}, {
 				name: 'Drain Soul',
 				img: 'WLK-9',
@@ -1686,7 +1689,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 8,
 				cannotResist: true,
-				description: 'Strike your target with direct arcane damage. Drain all damage to yourself as health.',
+				description: config => 'Strike your target with direct arcane damage. Drain all damage to yourself as health.',
 			}, {
 				name: 'Lich Form',
 				img: 'WLK-10',
@@ -1697,7 +1700,7 @@ var skills;
 				castTime: 5,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Transform into a lich. Reduces health regeneration, but buffs your mana regeneration, armor, poison spell damage, and blood spell damage.',
+				description: config => 'Transform into a lich. Reduces health regeneration, but buffs your mana regeneration, armor, poison spell damage, and blood spell damage.',
 			}, {
 				name: 'Engulfing Darkness',
 				img: 'WLK-11',
@@ -1708,7 +1711,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
 				cooldownTime: 45,
-				description: 'Deals poison damage over time for '+ ng.toMinSecs(buffs.engulfingDarkness.duration) +'. Reduces threat and nullifies a back-row target\'s ranged defensive bonus against melee attacks while active.',
+				description: config => 'Deals poison damage over time for '+ ng.toMinSecs(buffs.engulfingDarkness.duration) +'. Reduces threat and nullifies a back-row target\'s ranged defensive bonus against melee attacks while active.',
 			}, {
 				name: 'Profane Spirit',
 				img: 'WLK-12',
@@ -1719,7 +1722,7 @@ var skills;
 				castTime: 4,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Buff an ally\'s melee attacks with added poison damage and buff their poison resistance for '+ ng.toMinSecs(buffs.profaneSpirit.duration) +'.<br><br>If your ally dies while the buff is active, a large explosion will hit all mobs with direct poison damage.',
+				description: config => 'Buff an ally\'s melee attacks with added poison damage and buff their poison resistance for '+ ng.toMinSecs(buffs.profaneSpirit.duration) +'.<br><br>If your ally dies while the buff is active, a large explosion will hit all mobs with direct poison damage.',
 			}, {
 				name: 'Profane Spirit Explosion',
 				img: 'WLK-12',
@@ -1730,7 +1733,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 0,
 				cooldownTime: 0,
-				description: 'On death: poison explodes and hits all targets',
+				description: config => 'On death: poison explodes and hits all targets',
 			},
 		],
 		ENC: [
@@ -1744,7 +1747,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Strike your target with direct arcane damage. Receives bonus damage based on target\'s weight.',
+				description: config => 'Strike your target with direct arcane damage. Receives bonus damage based on target\'s weight.',
 			}, {
 				name: 'Static Suffocation',
 				img: 'ENC-2',
@@ -1756,7 +1759,7 @@ var skills;
 				castTime: 4,
 				cooldownTime: 0,
 				staggers: true,
-				description: 'Suffocate your target dealing lightning damage over time for '+ ng.toMinSecs(buffs.staticSuffocation.duration) +'.',
+				description: config => 'Suffocate your target dealing lightning damage over time for '+ ng.toMinSecs(buffs.staticSuffocation.duration) +'.',
 			}, {
 				name: 'Mind Blitz',
 				img: 'ENC-3',
@@ -1767,7 +1770,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Strike your target with direct lightning damage. Bebuffs your target with Debased Mind, which reduces arcane resistance by '+ ng.toPercent(buffs.mindBlitzEffect.reduceArcaneResist) +'% for '+ ng.toMinSecs(buffs.mindBlitzEffect.duration) +'.',
+				description: config => 'Strike your target with direct lightning damage. Bebuffs your target with Debased Mind, which reduces arcane resistance by '+ ng.toPercent(buffs.mindBlitzEffect.reduceArcaneResist) +'% for '+ ng.toMinSecs(buffs.mindBlitzEffect.duration) +'.',
 			}, {
 				name: 'Subversion',
 				img: 'ENC-4',
@@ -1778,7 +1781,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Subversive thoughts poison up to three targets dealing poison damage over '+ ng.toMinSecs(buffs.subversion.duration) +'.',
+				description: config => 'Subversive thoughts poison up to three targets dealing poison damage over '+ ng.toMinSecs(buffs.subversion.duration) +'.',
 			}, {
 				name: 'Color Shift',
 				img: 'ENC-5',
@@ -1789,7 +1792,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2,
 				cooldownTime: 30,
-				description: 'Blast all targets with a nova of direct arcane damage. Reduces hate and stuns all targets for '+ ng.toMinSecs(buffs.colorShift.stunDuration) +'.',
+				description: config => 'Blast all targets with a nova of direct arcane damage. Reduces hate and stuns all targets for '+ ng.toMinSecs(buffs.colorShift.stunDuration) +'.',
 			}, {
 				name: 'Phase Blade',
 				img: 'ENC-6',
@@ -1801,7 +1804,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 180,
 				isBuff: true,
-				description: 'Buff your target with crackling energy that buffs their lightning resistance and adds lightning damage to all melee attacks.',
+				description: config => 'Buff your target with crackling energy that buffs their lightning resistance and adds lightning damage to all melee attacks.',
 			}, {
 				name: 'Stasis Field',
 				img: 'ENC-7',
@@ -1813,7 +1816,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 60,
 				isBuff: true,
-				description: 'Seal your target in a stasis field. All damage from and to your target is heavily reduced for '+ ng.toMinSecs(buffs.stasisField.duration) +'.',
+				description: config => 'Seal your target in a stasis field. All damage from and to your target is heavily reduced for '+ ng.toMinSecs(buffs.stasisField.duration) +'.',
 			}, {
 				name: 'Shifting Ether',
 				img: 'ENC-8',
@@ -1824,7 +1827,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Tangle your target in strands of ether that deal arcane damage over time for '+ ng.toMinSecs(buffs.shiftingEther.duration) +'. Slows your target\'s attack speed by '+ ng.toPercent(buffs.shiftingEther.slowPercent) +'%.',
+				description: config => 'Tangle your target in strands of ether that deal arcane damage over time for '+ ng.toMinSecs(buffs.shiftingEther.duration) +'. Slows your target\'s attack speed by '+ ng.toPercent(buffs.shiftingEther.slowPercent) +'%.',
 			}, {
 				name: 'Serene Sigil',
 				img: 'ENC-9',
@@ -1836,7 +1839,7 @@ var skills;
 				castTime: 4.5,
 				cooldownTime: 0,
 				isShield: true,
-				description: 'Buffs you with a magical shield that absorb damage. It reduces damage per hit from all attacks until the shield is depleted. While active you are immune to spell channeling knockback.',
+				description: config => 'Buffs you with a magical shield that absorb damage. It reduces damage per hit from all attacks until the shield is depleted. While active you are immune to spell channeling knockback.',
 			}, {
 				name: 'Augmentation',
 				img: 'ENC-10',
@@ -1848,7 +1851,7 @@ var skills;
 				castTime: 4.5,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Buffs your target\'s agility, dexterity, and skill haste for '+ ng.toMinSecs(buffs.augmentation.duration) +'.',
+				description: config => 'Buffs your target\'s agility, dexterity, and skill haste for '+ ng.toMinSecs(buffs.augmentation.duration) +'.',
 			}, {
 				name: 'Clarity',
 				img: 'ENC-11',
@@ -1860,7 +1863,7 @@ var skills;
 				castTime: 4,
 				cooldownTime: 0,
 				isBuff: true,
-				description: 'Buff your target\'s mana regeneration and intelligence for '+ ng.toMinSecs(buffs.clarity.duration) +'.',
+				description: config => 'Buff your target\'s mana regeneration and intelligence for '+ ng.toMinSecs(buffs.clarity.duration) +'.',
 			}, {
 				name: 'Enthrall',
 				img: 'ENC-12',
@@ -1871,7 +1874,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 12,
-				description: 'Blast three targets with pillars of light that deal direct arcane damage. Reduces threat and slows each target\'s attack speed by '+ ng.toPercent(buffs.enthrall.slowPercent) +'% while active.',
+				description: config => 'Blast three targets with pillars of light that deal direct arcane damage. Reduces threat and slows each target\'s attack speed by '+ ng.toPercent(buffs.enthrall.slowPercent) +'% while active.',
 			},
 		],
 		TMP: [
@@ -1885,7 +1888,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Blast your target with direct fire damage.',
+				description: config => 'Blast your target with direct fire damage.',
 			}, {
 				name: 'Thunderclap',
 				img: 'TMP-2',
@@ -1896,7 +1899,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 4,
-				description: 'Hits your target with three successive zaps of direct lightning damage.',
+				description: config => 'Hits your target with three successive zaps of direct lightning damage.',
 			}, {
 				name: 'Frozen Orb',
 				img: 'TMP-3',
@@ -1907,7 +1910,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 16,
-				description: 'An area effect spell that strikes up to five targets with direct cold damage at intervals.',
+				description: config => 'An area effect spell that strikes up to five targets with direct cold damage at intervals.',
 			}, {
 				name: 'Static Storm',
 				img: 'TMP-4',
@@ -1919,7 +1922,7 @@ var skills;
 				castTime: 3.5,
 				cooldownTime: 0,
 				staggers: true,
-				description: 'Blast up to three targets with direct lightning damage.<br>Debuffs each target\'s lightning resistance by '+ ng.toPercent(buffs.staticStormDebuff.reduceLightningResist) +'% for '+ ng.toMinSecs(buffs.staticStormDebuff.duration) +'.',
+				description: config => 'Blast up to three targets with direct lightning damage.<br>Debuffs each target\'s lightning resistance by '+ ng.toPercent(buffs.staticStormDebuff.reduceLightningResist) +'% for '+ ng.toMinSecs(buffs.staticStormDebuff.duration) +'.',
 			}, {
 				name: 'Fire Wall',
 				img: 'TMP-5',
@@ -1930,7 +1933,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 4.5,
 				cooldownTime: 24,
-				description: 'Hits all front- or back-row targets with direct fire damage over time at intervals.',
+				description: config => 'Hits all front- or back-row targets with direct fire damage over time at intervals.',
 			}, {
 				name: 'Glacial Spike',
 				img: 'TMP-6',
@@ -1941,7 +1944,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 30,
-				description: 'Freeze your target for '+ buffs.glacialSpike.freezeDuration +' seconds and inflict direct cold damage. Splash damage hits nearby targets for half damage and chills them for '+ buffs.glacialSpike.chillDuration +' seconds.',
+				description: config => 'Freeze your target for '+ buffs.glacialSpike.freezeDuration +' seconds and inflict direct cold damage. Splash damage hits nearby targets for half damage and chills them for '+ buffs.glacialSpike.chillDuration +' seconds.',
 			}, {
 				name: 'Primordial Sludge',
 				img: 'TMP-7',
@@ -1952,7 +1955,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Deals poison damage over time for '+ buffs.primordialSludge.duration +' seconds. While active slows your target\'s attack speed.',
+				description: config => 'Deals poison damage over time for '+ buffs.primordialSludge.duration +' seconds. While active slows your target\'s attack speed.',
 			}, {
 				name: 'Arclight',
 				img: 'TMP-8',
@@ -1963,7 +1966,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 15,
-				description: 'Deals lightning damage over time for '+ buffs.arclight.duration +' seconds. Paralyzes the target for '+ buffs.arclightDebuff.duration +' seconds.',
+				description: config => 'Deals lightning damage over time for '+ buffs.arclight.duration +' seconds. Paralyzes the target for '+ buffs.arclightDebuff.duration +' seconds.',
 			}, {
 				name: 'Primeval Withering',
 				img: 'TMP-9',
@@ -1974,7 +1977,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists while active.',
+				description: config => 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists while active.',
 			}, {
 				name: 'Molten Aegis',
 				img: 'TMP-10',
@@ -1985,7 +1988,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Buffs fire resistance and adds fire damage to melee attacks for '+ ng.toMinSecs(buffs.moltenAegis.duration) +'.',
+				description: config => 'Buffs fire resistance and adds fire damage to melee attacks for '+ ng.toMinSecs(buffs.moltenAegis.duration) +'.',
 			}, {
 				name: 'Conviction',
 				img: 'TMP-11',
@@ -1996,7 +1999,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Single target buff that boosts spirit regen and charisma for '+ ng.toMinSecs(buffs.conviction.duration) +'.',
+				description: config => 'Single target buff that boosts spirit regen and charisma for '+ ng.toMinSecs(buffs.conviction.duration) +'.',
 			}, {
 				name: 'Celestial Frenzy',
 				img: 'TMP-12',
@@ -2007,7 +2010,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: 'Buffs target\'s casting speed and all spell power for '+ ng.toMinSecs(buffs.celestialFrenzy.duration) +'.',
+				description: config => 'Buffs target\'s casting speed and all spell power for '+ ng.toMinSecs(buffs.celestialFrenzy.duration) +'.',
 			},
 		],
 		WIZ: [
@@ -2021,7 +2024,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Blast your target with direct fire damage.',
+				description: config => 'Blast your target with direct fire damage.',
 			}, {
 				name: 'Ice Bolt',
 				img: 'WIZ-2',
@@ -2032,7 +2035,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: 'Blast your target with direct ice damage. Reduces threat and chills your target for '+ ng.toMinSecs(buffs.iceBolt.chillDuration) +'.',
+				description: config => 'Blast your target with direct ice damage. Reduces threat and chills your target for '+ ng.toMinSecs(buffs.iceBolt.chillDuration) +'.',
 			}, {
 				name: 'Lightning Bolt',
 				img: 'WIZ-3',
@@ -2043,7 +2046,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: 'Strike your target with direct lightning damage.',
+				description: config => 'Strike your target with direct lightning damage.',
 			}, {
 				name: 'Magic Missiles',
 				img: 'WIZ-4',
@@ -2054,7 +2057,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: 'Strike your target with three staggered bolts that do direct arcane damage.',
+				description: config => 'Strike your target with three staggered bolts that do direct arcane damage.',
 			}, {
 				name: 'Fireball',
 				img: 'WIZ-5',
@@ -2065,7 +2068,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 4,
 				cooldownTime: 10,
-				description: 'Explodes and hits up to three targets with direct fire damage.',
+				description: config => 'Explodes and hits up to three targets with direct fire damage.',
 			}, {
 				name: 'Chain Lightning',
 				img: 'WIZ-6',
@@ -2076,7 +2079,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3.5,
 				cooldownTime: 12,
-				description: 'A lightning bolt crackles through a row to your target with direct lightning damage.',
+				description: config => 'A lightning bolt crackles through a row to your target with direct lightning damage.',
 			}, {
 				name: 'Frost Nova',
 				img: 'WIZ-7',
@@ -2087,7 +2090,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 2,
 				cooldownTime: 30,
-				description: 'Hits all targets with a chilling nova that inflicts direct ice damage and reduces threat.',
+				description: config => 'Hits all targets with a chilling nova that inflicts direct ice damage and reduces threat.',
 			}, {
 				name: 'Meteor',
 				img: 'WIZ-8',
@@ -2098,7 +2101,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 5,
 				cooldownTime: 45,
-				description: 'Hits up to five targets with direct fire damage. Burning flames in the meteor\'s wake cause additional direct fire damage at intervals over '+ ng.toMinSecs(buffs.meteorStrike.duration) +'.',
+				description: config => 'Hits up to five targets with direct fire damage. Burning flames in the meteor\'s wake cause additional direct fire damage at intervals over '+ ng.toMinSecs(buffs.meteorStrike.duration) +'.',
 			}, {
 				name: 'Frozen Barrier',
 				img: 'WIZ-9',
@@ -2109,7 +2112,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 1.5,
 				cooldownTime: 90,
-				description: 'Protect yourself in a frozen barrier that makes you invincible for '+ ng.toMinSecs(buffs.frozenBarrier.duration) +'. Recover health and mana at intervals until the effect fades.',
+				description: config => 'Protect yourself in a frozen barrier that makes you invincible for '+ ng.toMinSecs(buffs.frozenBarrier.duration) +'. Recover health and mana at intervals until the effect fades.',
 			}, {
 				name: 'Mirror Image',
 				img: 'WIZ-10',
@@ -2120,7 +2123,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 60,
-				description: 'Summon an illusion that protects you and adds damage to all magic spells. The illusion\'s health determines how much damage is added to your magic. All damage received weakens its health.',
+				description: config => 'Summon an illusion that protects you and adds damage to all magic spells. The illusion\'s health determines how much damage is added to your magic. All damage received weakens its health.',
 			}, {
 				name: 'Mana Shell',
 				img: 'WIZ-11',
@@ -2131,7 +2134,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 5,
 				cooldownTime: 0,
-				description: 'Buffs all spell resistances, your silence resistance, and your ability to channel spells successfully.',
+				description: config => 'Buffs all spell resistances, your silence resistance, and your ability to channel spells successfully.',
 			}, {
 				name: 'Deep Freeze',
 				img: 'WIZ-12',
@@ -2142,7 +2145,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 3,
 				cooldownTime: 30,
-				description: 'Strike your target with direct ice damage that reduces threat and freezes your target for '+ ng.toMinSecs(buffs.deepFreeze.freezeDuration) +'.',
+				description: config => 'Strike your target with direct ice damage that reduces threat and freezes your target for '+ ng.toMinSecs(buffs.deepFreeze.freezeDuration) +'.',
 			},
 		],
 	}
@@ -2577,5 +2580,16 @@ var skills;
 			skillValues.push(start)
 		}
 		return skillValues
+	}
+	function modifiedDamageString(ds, multiplier) {
+		ds = ds.split('-')
+		let min = _.max([1, round(+ds[0] * multiplier)])
+		let max = _.max([1, round(+ds[1] * multiplier)])
+		return min +'-'+ max
+	}
+	function enhanceHit(hit, modifier) {
+		if (hit.min) hit.min *= modifier
+		if (hit.max) hit.max *= modifier
+		return hit
 	}
 }($, _, TweenMax, Object);

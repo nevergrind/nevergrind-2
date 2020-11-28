@@ -175,9 +175,10 @@ let mobs = [];
 		}
 	}
 	function feignHate(row) {
+		// feigns to 75% of current value
 		for (i=0; i<mob.max; i++) {
 			if (mob.isAlive(i)) {
-				mobs[i].hate[row] = ~~(mobs[i].hate[row] * .5)
+				mobs[i].hate[row] = ~~(mobs[i].hate[row] * .75)
 			}
 		}
 	}

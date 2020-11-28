@@ -1,5 +1,6 @@
 !function($, _, TweenMax, undefined) {
 	skill.CRU = {
+		vengeanceOn: false,
 		zealousSlam,
 		rebuke,
 		vengeance,
@@ -35,7 +36,7 @@
 			enhancedDamage: enhancedDamage,
 			hitBonus: data.hitBonus[my.skills[index]],
 		}
-		if (rand() > .9) hit.effects = { stagger: data.staggers }
+		if (rand() < buffs.zealousSlam.staggerRate) hit.effects = { stagger: data.staggers }
 		damages.push(hit)
 		combat.txDamageMob(damages)
 		// animate timers
@@ -81,9 +82,7 @@
 		// process skill data
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (mobs[tgt].target === my.row) {
-			enhancedDamage += .25
-		}
+		skill.CRU.vengeanceOn = true
 		damages = []
 		damages.push({
 			...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
@@ -177,7 +176,7 @@
 				i: spell.config.target, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'stun', // this sets the flag,
-				duration: spell.holyWrath.stun,
+				duration: buffs.holyWrath.stunDuration,
 			}],
 			...stats.spellDamage(spell.config.target)
 		}])

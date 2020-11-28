@@ -1,6 +1,7 @@
 !function($, _, TweenMax, undefined) {
 	skill.MNK = {
 		tigerStrike,
+		tigerStrikeDot,
 		hyperStrike,
 		hyperStrikeHit,
 		mimeStrike,
@@ -41,6 +42,14 @@
 
 		combat.txDamageMob(damages)
 		button.triggerGlobalCooldown()
+	}
+	function tigerStrikeDot(hit) {
+		combat.txDotMob([{
+			key: 'tigerStrikeDot',
+			index: hit.index,
+			damageType: buffs.tigerStrikeDot.damageType,
+			damage: round(hit.damage * buffs.tigerStrikeDot.dotModifier)
+		}])
 	}
 	function hyperStrike(index, data) {
 		// check constraints

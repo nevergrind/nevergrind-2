@@ -8,8 +8,10 @@
 		risingFuror,
 		risingFurorHit,
 		lacerate,
+		lacerateDot,
 		backstab,
 		widowStrike,
+		widowStrikeDot,
 		dazzleThrust,
 		mirageStrike,
 		mirageStrikeHit,
@@ -72,7 +74,8 @@
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++, originalTarget)
 			hit = stats.skillDamage(tgt, skills.ROG[2].critBonus[my.skills[damage.index]])
-			hit.damage *= .25
+			hit.damage *= buffs.sonicStrike.novaDamage
+			// TODO: SPELLS with enhancedDamage need to be modified in processMobDamages
 			damages.push({
 				...hit,
 				key: 'sonicStrikeNova',
@@ -178,6 +181,14 @@
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
 	}
+	function lacerateDot(hit) {
+		combat.txDotMob([{
+			key: 'lacerateDot',
+			index: hit.index,
+			damageType: buffs.lacerateDot.damageType,
+			damage: round(hit.damage * buffs.lacerateDot.dotModifier)
+		}])
+	}
 	function backstab(index, data) {
 		config = {
 			...skills.getDefaults(index, data),
@@ -222,6 +233,14 @@
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
+	}
+	function widowStrikeDot(hit) {
+		combat.txDotMob([{
+			key: 'widowStrikeDot',
+			index: hit.index,
+			damageType: buffs.widowStrikeDot.damageType,
+			damage: round(hit.damage * buffs.widowStrikeDot.dotModifier)
+		}])
 	}
 	function dazzleThrust(index, data) {
 		config = {
@@ -280,14 +299,14 @@
 		}])
 	}
 	function updateMirageStrikeBuff() {
-		my.buffs.mirageStrike.stacks--
-		if (my.buffs.mirageStrike.stacks) {
+		my.buffs.mirageStrikeBuff.stacks--
+		if (my.buffs.mirageStrikeBuff.stacks) {
 			el = querySelector('#mybuff-mirageStrike')
-			if (!!el) el.textContent = my.buffs.mirageStrike.stacks
-			chat.log(buffs.mirageStrike.fadeMsg, CHAT.HEAL)
+			if (!!el) el.textContent = my.buffs.mirageStrikeBuff.stacks
+			chat.log(buffs.mirageStrikeBuff.fadeMsg, CHAT.HEAL)
 		}
 		else {
-			battle.removeBuff('mirageStrike')
+			battle.removeBuff('mirageStrikeBuff')
 		}
 	}
 	function flashStrike(index, data) {
@@ -307,7 +326,7 @@
 			isRanged: data.isRanged,
 			isPiercing: data.isPiercing,
 			enhancedDamage: enhancedDamage,
-			damageType: DAMAGE_TYPE.FIRE,
+			damageType: data.damageType,
 			hitBonus: data.hitBonus[my.skills[index]],
 			buffs: [{
 				i: my.target, // target

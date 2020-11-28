@@ -176,7 +176,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Rupture',
 			img: 1,
 			job: JOB.WARRIOR,
-			dotModifier: 2.5,
+			dotModifier: .82,
 			ticks: 8,
 			interval: 3,
 			hate: 1.2,
@@ -189,12 +189,13 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Rupture',
 			img: 1,
 			job: JOB.WARRIOR,
-			dotModifier: 2.5,
+			dotModifier: .82,
 			ticks: 8,
 			interval: 3,
 			hate: 1.2,
 			duration: 24,
 			spellType: '',
+			bonusDamage: .05,
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		whirlwind: { hate: 1 },
@@ -981,7 +982,10 @@ let buffs; // buff data for use with skill/spells/icons
 			msg: () => 'A chromatic sonata shields you from magic.',
 			fadeMsg: 'The chromatic sonata fades.',
 		},
-		zealousSlam: { hate: 1.25 },
+		zealousSlam: {
+			hate: 1.25,
+			staggerRate: .1,
+		},
 		rebuke: { hate: 1.3 },
 		vengeance: { hate: .8 },
 		consecrate: {
@@ -991,6 +995,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 2,
 			duration: 30,
 			stacks: 5,
+			resistPerStack: 4,
 			msg: () => 'Holy light consecrates the ground you stand on.',
 			fadeMsg: 'The consecration fades.'
 		},
@@ -1001,6 +1006,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 2,
 			duration: 30,
 			stacks: 5,
+			resistPerStack: 4,
 			msg: () => 'Holy light consecrates the ground you stand on.',
 			fadeMsg: 'The consecration fades.'
 		},
@@ -1009,9 +1015,9 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 4,
 			job: JOB.CRUSADER,
 			reduceHitRate: .05,
-			reduceDamage: .05,
+			reduceDamage: .08,
 			hate: 1.2,
-			duration: 40,
+			duration: 60,
 		},
 		holyWrath: {
 			hate: 1.5,
@@ -1025,7 +1031,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.CRUSADER,
 			hate: 1,
 			duration: 12,
-			reducedDamage: [0, .2, .25, .3, .35, .4, .45, .5],
+			reducedDamage: [0, .7, .65, .6, .55, .5, .45, .4],
 			msg: () => 'A seal of sanctuary protects you from harm.',
 			fadeMsg: 'The seal of sanctuary fades.'
 		},
@@ -1070,7 +1076,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Doom Thrust',
 			img: 3,
 			job: JOB.SHADOW_KNIGHT,
-			dotModifier: 3,
+			dotModifier: 1.37,
 			hate: 1.3,
 			ticks: 12,
 			interval: 3,
@@ -1081,7 +1087,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Doom Thrust',
 			img: 3,
 			job: JOB.SHADOW_KNIGHT,
-			dotModifier: 3,
+			dotModifier: 1.37,
 			hate: 1.3,
 			ticks: 12,
 			interval: 3,
@@ -1204,7 +1210,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: .9,
 			duration: 12,
 			spellType: '',
-			dotModifier: .8,
+			dotModifier: .44,
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		tigerStrikeDot: {
@@ -1216,7 +1222,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: .9,
 			duration: 12,
 			spellType: '',
-			dotModifier: 2.5,
+			dotModifier: .44,
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		hyperStrike: {
@@ -1328,8 +1334,11 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: 'The chromatic barrier fades.'
 		},
 		// ROG
-		shadowStrike: { hate: .2 },
-		sonicStrike: { hate: 1 },
+		shadowStrike: { hate: .5 },
+		sonicStrike: {
+			hate: 1,
+			novaDamage: .25,
+		},
 		fadedStrike: {
 			name: 'Faded Strike',
 			img: 2,
@@ -1347,7 +1356,7 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: 'Your silhouette sharpens into view.'
 		},
 		fadedStrikeBuff: {
-			name: 'Faded Strike',
+			name: 'Faded ',
 			img: 2,
 			job: JOB.ROGUE,
 			hate: -.5,
@@ -1375,7 +1384,7 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: 'The furor fades.'
 		},
 		risingFurorBuff: {
-			name: 'Rising Furor',
+			name: 'Furor',
 			img: 3,
 			job: JOB.ROGUE,
 			hate: .8,
@@ -1391,7 +1400,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Lacerate',
 			img: 4,
 			job: JOB.ROGUE,
-			dotModifier: 3.5,
+			dotModifier: 1.42,
 			hate: 1.2,
 			ticks: 10,
 			interval: 3,
@@ -1402,7 +1411,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Lacerate',
 			img: 4,
 			job: JOB.ROGUE,
-			dotModifier: 3.5,
+			dotModifier: 1.42,
 			hate: 1.2,
 			ticks: 10,
 			interval: 3,
@@ -1414,7 +1423,7 @@ let buffs; // buff data for use with skill/spells/icons
 			name: 'Widow Strike',
 			img: 6,
 			job: JOB.ROGUE,
-			dotModifier: 4,
+			dotModifier: 1.72,
 			hate: 1.3,
 			ticks: 8,
 			interval: 3,
@@ -1422,10 +1431,10 @@ let buffs; // buff data for use with skill/spells/icons
 			damageType: DAMAGE_TYPE.POISON,
 		},
 		widowStrikeDot: {
-			name: 'Widow Strike',
+			name: 'Widow Venom',
 			img: 6,
 			job: JOB.ROGUE,
-			dotModifier: 4,
+			dotModifier: 1.72,
 			hate: 1.3,
 			ticks: 8,
 			interval: 3,
@@ -1449,7 +1458,7 @@ let buffs; // buff data for use with skill/spells/icons
 			fadeMsg: 'Your mirage absorbs a blow!',
 		},
 		mirageStrikeBuff: {
-			name: 'Mirage Strike',
+			name: 'Mirage',
 			img: 8,
 			job: JOB.ROGUE,
 			hate: 1,
@@ -1474,7 +1483,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.ROGUE,
 			agi: [0, 8, 12, 16, 20, 24, 28],
 			addPoison: [0, 2, 3, 5, 7, 9, 11, 13],
-			attackBonus: [0, 3, 7, 11, 17, 25, 33, 40],
+			attackBonus: [0, 5, 10, 16, 22, 28, 34, 40],
 			duration: 300,
 			msg: () => 'A treacherous talisman guides your weapons.',
 			fadeMsg: 'The treacherous talisman fades.'

@@ -429,27 +429,32 @@ var stats = {};
 	function dodgeChance(fresh) {
 		if (fresh || typeof stats.memo.dodgeChance === 'undefined') {
 			stats.memo.dodgeChance = dodge() / 2500 + (agi() / 2000)
-			if (my.buffFlags.fadedStrike) {
-				stats.memo.dodgeChance += (buffs.fadedStrike.dodgeChance[my.buffs.fadedStrike.level] * buffs.fadedStrike.ratioByStack[my.buffs.fadedStrike.stacks])
+			if (my.buffFlags.fadedStrikeBuff) {
+				stats.memo.dodgeChance += (buffs.fadedStrikeBuff.dodgeChance[my.buffs.fadedStrikeBuff.level] * buffs.fadedStrikeBuff.ratioByStack[my.buffs.fadedStrikeBuff.stacks])
 			}
+			if (stats.memo.dodgeChance > .5) stats.memo.dodgeChance = .5
 		}
 		return stats.memo.dodgeChance
 	}
 	function parryChance(fresh) {
 		if (fresh || typeof stats.memo.parryChance === 'undefined') {
 			stats.memo.parryChance = parry() / 2500 + (dex() / 2000)
+			if (stats.memo.parryChance > .4) stats.memo.parryChance = .4
 		}
 		return stats.memo.parryChance
 	}
 	function riposteChance(fresh) {
 		if (fresh || typeof stats.memo.riposteChance === 'undefined') {
 			stats.memo.riposteChance = riposte() / 2500 + (dex() / 2000)
+			if (stats.memo.riposteChance > .3) stats.memo.riposteChance = .3
 		}
 		return stats.memo.riposteChance
 	}
 	function critChance(fresh) {
 		if (fresh || typeof stats.memo.crit === 'undefined') {
 			stats.memo.crit = ( (dex() / 75) + ng.dimRetCrit(getEqTotal(PROP.CRIT)) ) / 100
+			if (stats.memo.crit < .01) stats.memo.crit = .01
+			else if (stats.memo.crit > .5) stats.memo.crit = .5
 		}
 		return stats.memo.crit
 	}
@@ -607,7 +612,6 @@ var stats = {};
 		max = config.spellDamage(my.skills[config.index])
 		// enhance by type % and ALL%
 		enhanceDamage = 0
-		console.info('dam x', max)
 		if (config.damageType === DAMAGE_TYPE.BLOOD) enhanceDamage = enhanceBlood()
 		else if (config.damageType === DAMAGE_TYPE.POISON) enhanceDamage = enhancePoison()
 		else if (config.damageType === DAMAGE_TYPE.ARCANE) enhanceDamage = enhanceArcane()
@@ -639,7 +643,6 @@ var stats = {};
 		else if (config.damageType === DAMAGE_TYPE.ICE) addedDamage = addSpellIce()
 		addedDamage += addSpellAll()
 
-		console.info('dam z', min, max)
 		if (my.buffFlags.mirrorImage) {
 			addedDamage += my.buffs.mirrorImage.damage
 		}
@@ -658,7 +661,6 @@ var stats = {};
 		if (min < 1) min = 1
 		if (max < 1) max = 1
 
-		console.info('dam c', min, max)
 		return {
 			min: ~~min,
 			max: ~~max,
@@ -722,7 +724,7 @@ var stats = {};
 		if (!skipSkillChecks) {
 			combat.levelSkillCheck(weaponSkill)
 		}
-		// console.warn('min max', min, max, skillDamageReturned)
+		// console.warn('min max', min, max)
 		return {
 			min: min,
 			max: max,
@@ -877,14 +879,14 @@ var stats = {};
 		if (my.buffFlags.chromaticSonata) {
 			value += buffs.chromaticSonata.resistAll[my.buffs.chromaticSonata.level]
 		}
-		if (my.buffFlags.consecrate) {
-			value += my.buffs.consecrate.stacks * my.buffs.consecrate.level
+		if (my.buffFlags.consecrateBuff) {
+			value += ((my.buffs.consecrateBuff.stacks * my.buffs.consecrateBuff.level) * buffs.consecrateBuff.resistPerStack)
 		}
 		if (my.buffFlags.spiritBarrier) {
 			value += buffs.spiritBarrier.resistAll[my.buffs.spiritBarrier.level]
 		}
-		if (my.buffFlags.fadedStrike) {
-			value += ~~(buffs.fadedStrike.resistAll[my.buffs.fadedStrike.level] * buffs.fadedStrike.ratioByStack[my.buffs.fadedStrike.stacks])
+		if (my.buffFlags.fadedStrikeBuff) {
+			value += ~~(buffs.fadedStrikeBuff.resistAll[my.buffs.fadedStrikeBuff.level] * buffs.fadedStrikeBuff.ratioByStack[my.buffs.fadedStrikeBuff.stacks])
 		}
 		return value
 	}
@@ -1561,13 +1563,14 @@ var stats = {};
 		// buffs
 		if (my.buffFlags.spiritOfTheHunter) speedHaste -= buffs.spiritOfTheHunter.attackHaste
 		if (my.buffFlags.battleHymn) speedHaste -= buffs.battleHymn.attackHaste
-		if (my.buffFlags.risingFuror) {
-			speedHaste -= buffs.risingFuror.attackHaste[my.buffs.risingFuror.stacks]
+		if (my.buffFlags.risingFurorBuff) {
+			speedHaste -= buffs.risingFurorBuff.attackHaste[my.buffs.risingFurorBuff.stacks]
 		}
 		if (my.buffFlags.prowl) speedHaste += buffs.prowl.attackHaste
 		// debuffs
 		if (speedHaste < .25) speedHaste = .25
 		else if (speedHaste > 2) speedHaste = 2
+		// console.info('attackSpeed', speedHaste)
 		return speed * speedHaste
 	}
 	function getSkillSpeed() {
