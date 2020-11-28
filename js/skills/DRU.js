@@ -182,10 +182,10 @@
 						...stats.spellDamage(tgt)
 					})
 					if (i + 1 < len) {
-						damages[0].damage *= .3
+						damages[0].damage *= buffs.moltenBoulderStrike.strikeModifier
 					}
 					else {
-						// add 50% damage via dot to final target
+						// dot on target only
 						let dots = []
 						dots.push({
 							key: 'moltenBoulderStrike',
@@ -193,7 +193,7 @@
 							damageType: damageType,
 							...stats.spellDamage(tgt, -100)
 						})
-						dots[0].damage *= .5
+						dots[0].damage *= buffs.moltenBoulderStrike.dotModifier
 						combat.txDotMob(dots)
 					}
 					// console.info('moltenBoulder', i, 'target', tgt, damages[Zero].damage)

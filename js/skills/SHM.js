@@ -86,12 +86,14 @@
 		}])
 		// AE DoT damage
 		damages = []
+		hit = stats.spellDamage(spell.config.target, -100)
+		hit.damage *= buffs.scourge.dotModifier
 		damages.push({
 			key: 'scourge',
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
-			...stats.spellDamage(spell.config.target, -100)
+			...hit
 		})
 		combat.txDotMob(damages)
 	}

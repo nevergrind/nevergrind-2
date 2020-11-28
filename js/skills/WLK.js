@@ -88,12 +88,14 @@
 		}])
 		// dot
 		damages = []
+		hit = stats.spellDamage(spell.config.target, -100)
+		hit.damage *= buffs.bloodFire.dotModifier
 		damages.push({
 			key: 'bloodFire',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			...stats.spellDamage(spell.config.target, -100)
+			...hit
 		})
 		combat.txDotMob(damages)
 	}
@@ -116,13 +118,15 @@
 		}])
 		// dot
 		damages = []
+		hit = stats.spellDamage(spell.config.target, -100)
+		hit.damage *= buffs.demonicPact.dotModifier
 		damages.push({
 			key: 'demonicPact',
 			index: spell.config.target,
 			damageType: spell.data.damageType,
 			spellType: spell.data.spellType,
 			level: my.skills[spell.index],
-			...stats.spellDamage(spell.config.target, -100)
+			...hit
 		})
 		combat.txDotMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)

@@ -203,7 +203,10 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 2.5,
 			stunDuration: 3,
 		},
-		doubleThrow: { hate: .8 },
+		doubleThrow: {
+			hate: .8,
+			doubleThrowBonus: .8,
+		},
 		shockwave: { hate: .8 },
 		frenzy: {
 			name: 'Frenzy',
@@ -340,6 +343,8 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 4,
 			interval: 3,
 			duration: 12,
+			strikeModifier: .35,
+			dotModifier: .64,
 			spellType: PROP.CONJURATION,
 			damageType: DAMAGE_TYPE.FIRE,
 		},
@@ -351,6 +356,8 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 4,
 			interval: 3,
 			duration: 12,
+			strikeModifier: .35,
+			dotModifier: .64,
 			spellType: PROP.CONJURATION,
 			damageType: DAMAGE_TYPE.FIRE,
 		},
@@ -427,6 +434,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 6,
 			interval: 3,
 			duration: 18,
+			dotModifier: 1.15,
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		poisonBolt: { hate: 1.25 },
@@ -538,7 +546,8 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 15,
 			interval: 3,
 			duration: 45,
-			explosionTickDamage: 5,
+			explosionTickDamage: 7, // 7 divided by 15 === .466
+			dotModifier: .466,
 			damageType: DAMAGE_TYPE.POISON,
 		},
 		bloodFire: {
@@ -550,6 +559,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 12,
 			interval: 3,
 			duration: 36,
+			dotModifier: 1.15,
 			damageType: DAMAGE_TYPE.FIRE,
 		},
 		demonicPact: {
@@ -561,6 +571,7 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 3,
 			duration: 60,
 			bonusDamage: .15,
+			dotModifier: 1.25,
 			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		hauntingVision: {
@@ -1069,6 +1080,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.SHADOW_KNIGHT,
 			hate: 1.25,
 			damageType: DAMAGE_TYPE.ARCANE,
+			leechRatio: .2,
 			msg: (buff) => 'Death Strike heals you for ' + buff.damage + ' health.',
 		},
 		crescentCleave: { hate: 1.5 },
@@ -1103,6 +1115,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 10,
 			interval: 3,
 			duration: 30,
+			dotModifier: 2.1,
 			damageType: DAMAGE_TYPE.POISON,
 		},
 		decayingDoom: {
@@ -1114,6 +1127,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 12,
 			interval: 3,
 			duration: 36,
+			dotModifier: 1.9,
 			damageType: DAMAGE_TYPE.ARCANE,
 		},
 		bloodTerror: {

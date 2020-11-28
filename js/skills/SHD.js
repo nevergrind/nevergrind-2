@@ -70,7 +70,7 @@
 			key: 'deathStrikeHeal',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			damage: Math.max(1, round(hit.damage * .2))
+			damage: Math.max(1, round(hit.damage * buffs.deathStrikeHeal.leechRatio))
 		}])
 	}
 	function crescentCleave(index, data) {
@@ -185,7 +185,7 @@
 		// dot
 		damages = []
 		hit = stats.spellDamage(spell.config.target, -100)
-		hit.damage *= 2
+		hit.damage *= buffs.ravagingPlague.dotModifier
 		damages.push({
 			key: 'ravagingPlague',
 			index: spell.config.target,
@@ -215,7 +215,7 @@
 		// dot
 		damages = []
 		hit = stats.spellDamage(spell.config.target, -100)
-		hit.damage *= 2
+		hit.damage *= buffs.decayingDoom.dotModifier
 		damages.push({
 			key: 'decayingDoom',
 			index: spell.config.target,

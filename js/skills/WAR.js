@@ -149,7 +149,7 @@ let skill = {};
 		// process skill data
 		let tgt = my.target
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
-		if (battle.targetIsBackRow(tgt)) enhancedDamage += .8
+		if (battle.targetIsBackRow(tgt)) enhancedDamage += buffs.doubleThrow.doubleThrowBonus
 		damages = []
 		for (var i=0; i<2; i++) {
 			damages.push({

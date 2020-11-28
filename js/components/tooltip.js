@@ -538,13 +538,13 @@ var tooltip;
 					skillHtml += `<div class="chat-skill">Resist Silence: ${config.resistSilence[minRank]}</div>`
 				}
 				if (config.reduceBloodResist) {
-					skillHtml += `<div class="chat-skill">Reduce Blood Resistance: ${ng.toPercent(config.reduceBloodResist[minRank])}%</div>`
+					skillHtml += `<div class="chat-skill">Reduce Blood Resistance: ${ng.toPercent(config.reduceBloodResist)}%</div>`
 				}
 				if (config.reducePoisonResist) {
-					skillHtml += `<div class="chat-skill">Reduce Poison Resistance: ${ng.toPercent(config.reducePoisonResist[minRank])}%</div>`
+					skillHtml += `<div class="chat-skill">Reduce Poison Resistance: ${ng.toPercent(config.reducePoisonResist)}%</div>`
 				}
 				if (config.reduceArcaneResist) {
-					skillHtml += `<div class="chat-skill">Reduce Arcane Resistance: ${ng.toPercent(config.reduceArcaneResist[minRank])}%</div>`
+					skillHtml += `<div class="chat-skill">Reduce Arcane Resistance: ${ng.toPercent(config.reduceArcaneResist)}%</div>`
 				}
 				if (config.reduceLightningResist) {
 					skillHtml += `<div class="chat-skill">Reduce Lightning Resistance: ${ng.toPercent(config.reduceLightningResist[minRank])}%</div>`
@@ -565,7 +565,19 @@ var tooltip;
 					skillHtml += `<div class="chat-skill">Damage Reduced: ${config.evpMitigation[minRank]}</div>`
 				}
 				if (config.slowPercent) {
-					skillHtml += `<div class="chat-skill">Slows target ${ng.toPercent(config.slowPercent)}%</div>`
+					skillHtml += `<div class="chat-skill">Slows Target ${ng.toPercent(config.slowPercent)}%</div>`
+				}
+				if (config.debuffArmor) {
+					skillHtml += `<div class="chat-skill">Debuff Armor: ${ng.toPercent(config.debuffArmor)}%</div>`
+				}
+				if (config.buffHitBonus) {
+					skillHtml += `<div class="chat-skill">
+						Hit Bonus: ${ng.toPercent(
+					typeof config.buffHitBonus === 'number' ? config.buffHitBonus : config.buffHitBonus[minRank]
+					)}%</div>`
+				}
+				if (config.buffCritBonus) {
+					skillHtml += `<div class="chat-skill">Crit Bonus: ${ng.toPercent(config.buffCritBonus[minRank])}%</div>`
 				}
 				if (config.dodgeChance) {
 					skillHtml += `<div class="chat-skill">
@@ -580,8 +592,17 @@ var tooltip;
 				if (config.addPoison) {
 					skillHtml += `<div class="chat-skill">Added Poison Damage: ${config.addPoison[minRank]}</div>`
 				}
+				if (config.addLightning) {
+					skillHtml += `<div class="chat-skill">Added Lightning Damage: ${config.addLightning[minRank]}</div>`
+				}
 				if (config.attackBonus) {
 					skillHtml += `<div class="chat-skill">Attack Bonus: ${config.attackBonus[minRank]}</div>`
+				}
+				if (config.bonusDamage) {
+					skillHtml += `<div class="chat-skill">
+						Physical Damage Bonus: ${ng.toPercent(typeof config.bonusDamage === 'number' ? 
+							config.bonusDamage : config.bonusDamage[minRank]
+					)}%</div>`
 				}
 				if (config.reduceHitRate) {
 					if (config.name === 'Suppressing Volley') {
