@@ -294,7 +294,6 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.WIZARD,
 			hate: 1,
 			isShield: true,
-			isBuff: true,
 			msg: () => 'Your mirror form materializes from the void.',
 			msgAbsorb: 'Your mirror image shields you from harm.'
 		},
@@ -314,7 +313,6 @@ let buffs; // buff data for use with skill/spells/icons
 		deepFreeze: {
 			hate: -1,
 			freezeDuration: 5,
-			isBuff: true,
 		},
 		// dru
 		starfire: { hate: 1 },

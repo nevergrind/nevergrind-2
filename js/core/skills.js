@@ -1565,7 +1565,7 @@ var skills;
 				castTime: 4.5,
 				cooldownTime: 0,
 				isShield: true,
-				description: config => 'Buffs you with a magical shield that absorb damage. It reduces damage per hit from all attacks until the shield is depleted. While active you are immune to spell channeling knockback.',
+				description: config => 'Buffs you with a magical shield that absorbs '+ config.damageString +' damage. It reduces '+ config.mitigation[config.rank] +' damage per hit from all attacks until the shield is depleted. While active you are immune to spell channeling knockback.',
 			}, {
 				name: 'Augmentation',
 				img: 'ENC-10',
@@ -1600,7 +1600,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 12,
-				description: config => 'Blast three targets with pillars of light that deal direct arcane damage. Reduces threat and slows each target\'s attack speed by '+ ng.toPercent(buffs.enthrall.slowPercent) +'% while active.',
+				description: config => 'Blast three targets with pillars of light that deal '+ config.damageString +' arcane damage. Reduces threat and slows each target\'s attack speed by '+ ng.toPercent(buffs.enthrall.slowPercent) +'% while active.',
 			},
 		],
 		TMP: [
@@ -1614,7 +1614,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: config => 'Blast your target with direct fire damage.',
+				description: config => 'Blast your target dealing '+ config.damageString +' fire damage.',
 			}, {
 				name: 'Thunderclap',
 				img: 'TMP-2',
@@ -1625,7 +1625,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 4,
-				description: config => 'Hits your target with three successive zaps of direct lightning damage.',
+				description: config => 'Hits your target with three successive zaps dealing '+ config.damageString +' lightning damage.',
 			}, {
 				name: 'Frozen Orb',
 				img: 'TMP-3',
@@ -1636,7 +1636,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 16,
-				description: config => 'An area effect spell that strikes up to five targets with direct cold damage at intervals.',
+				description: config => 'An area effect spell that strikes up to five targets dealing '+ config.damageString +' cold damage at intervals.',
 			}, {
 				name: 'Static Storm',
 				img: 'TMP-4',
@@ -1648,7 +1648,7 @@ var skills;
 				castTime: 3.5,
 				cooldownTime: 0,
 				staggers: true,
-				description: config => 'Blast up to three targets with direct lightning damage. Debuffs each target\'s lightning resistance by '+ ng.toPercent(buffs.staticStormDebuff.reduceLightningResist) +'% for '+ ng.toMinSecs(buffs.staticStormDebuff.duration) +'.',
+				description: config => 'Blast up to three targets dealing '+ config.damageString +' lightning damage. Debuffs each target\'s lightning resistance by '+ ng.toPercent(buffs.staticStormDebuff.reduceLightningResist) +'% for '+ ng.toMinSecs(buffs.staticStormDebuff.duration) +'.',
 			}, {
 				name: 'Fire Wall',
 				img: 'TMP-5',
@@ -1659,7 +1659,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 4.5,
 				cooldownTime: 24,
-				description: config => 'Hits all front- or back-row targets with direct fire damage over time at intervals.',
+				description: config => 'Hits all targets in a row dealing '+ config.damageString +' fire damage over time at intervals.',
 			}, {
 				name: 'Glacial Spike',
 				img: 'TMP-6',
@@ -1670,7 +1670,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 30,
-				description: config => 'Freeze your target for '+ buffs.glacialSpike.freezeDuration +' seconds and inflict direct cold damage. Splash damage hits nearby targets for half damage and chills them for '+ buffs.glacialSpike.chillDuration +' seconds.',
+				description: config => 'Freeze your target for '+ buffs.glacialSpike.freezeDuration +' seconds and inflict '+ config.damageString +' cold damage. Splash damage hits nearby targets for half damage and chills them for '+ buffs.glacialSpike.chillDuration +' seconds.',
 			}, {
 				name: 'Primordial Sludge',
 				img: 'TMP-7',
@@ -1681,7 +1681,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: config => 'Deals poison damage over time for '+ buffs.primordialSludge.duration +' seconds. While active slows your target\'s attack speed.',
+				description: config => 'Deals '+ config.damageString +' poison damage over time for '+ buffs.primordialSludge.duration +' seconds. While active slows your target\'s attack speed.',
 			}, {
 				name: 'Arclight',
 				img: 'TMP-8',
@@ -1692,7 +1692,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 4,
 				cooldownTime: 15,
-				description: config => 'Deals lightning damage over time for '+ buffs.arclight.duration +' seconds. Paralyzes the target for '+ buffs.arclightDebuff.duration +' seconds.',
+				description: config => 'Deals '+ config.damageString +' lightning damage over time for '+ buffs.arclight.duration +' seconds. Paralyzes the target for '+ buffs.arclightDebuff.duration +' seconds.',
 			}, {
 				name: 'Primeval Withering',
 				img: 'TMP-9',
@@ -1703,7 +1703,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: config => 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists while active.',
+				description: config => 'Deals '+ config.damageString +' arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists while active.',
 			}, {
 				name: 'Molten Aegis',
 				img: 'TMP-10',
@@ -1714,7 +1714,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: config => 'Buffs fire resistance and adds fire damage to melee attacks for '+ ng.toMinSecs(buffs.moltenAegis.duration) +'.',
+				description: config => 'Buffs fire resistance and adds fire damage to melee attacks for '+ ng.toMinSecs(config.duration) +'.',
 			}, {
 				name: 'Conviction',
 				img: 'TMP-11',
@@ -1725,7 +1725,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: config => 'Single target buff that boosts spirit regen and charisma for '+ ng.toMinSecs(buffs.conviction.duration) +'.',
+				description: config => 'Single target buff that boosts spirit regen and charisma for '+ ng.toMinSecs(config.duration) +'.',
 			}, {
 				name: 'Celestial Frenzy',
 				img: 'TMP-12',
@@ -1736,7 +1736,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 4,
 				cooldownTime: 0,
-				description: config => 'Buffs target\'s casting speed and all spell power for '+ ng.toMinSecs(buffs.celestialFrenzy.duration) +'.',
+				description: config => 'Buffs target\'s casting speed and all spell power for '+ ng.toMinSecs(config.duration) +'.',
 			},
 		],
 		WIZ: [
@@ -1750,7 +1750,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: config => 'Blast your target with direct fire damage.',
+				description: config => 'Blast your target dealing '+ config.damageString +' fire damage.',
 			}, {
 				name: 'Ice Bolt',
 				img: 'WIZ-2',
@@ -1761,7 +1761,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: config => 'Blast your target with direct ice damage. Reduces threat and chills your target for '+ ng.toMinSecs(buffs.iceBolt.chillDuration) +'.',
+				description: config => 'Blast your target dealing '+ config.damageString +' ice damage. Reduces threat and chills your target for '+ ng.toMinSecs(buffs.iceBolt.chillDuration) +'.',
 			}, {
 				name: 'Lightning Bolt',
 				img: 'WIZ-3',
@@ -1772,7 +1772,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: config => 'Strike your target with direct lightning damage.',
+				description: config => 'Strike your target dealing '+ config.damageString +' lightning damage.',
 			}, {
 				name: 'Magic Missiles',
 				img: 'WIZ-4',
@@ -1783,7 +1783,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: config => 'Strike your target with three staggered bolts that do direct arcane damage.',
+				description: config => 'Strike your target with three staggered bolts that deal '+ config.damageString +' arcane damage.',
 			}, {
 				name: 'Fireball',
 				img: 'WIZ-5',
@@ -1794,7 +1794,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 4,
 				cooldownTime: 10,
-				description: config => 'Explodes and hits up to three targets with direct fire damage.',
+				description: config => 'Explodes and hits up to three targets dealing '+ config.damageString +' fire damage.',
 			}, {
 				name: 'Chain Lightning',
 				img: 'WIZ-6',
@@ -1805,7 +1805,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3.5,
 				cooldownTime: 12,
-				description: config => 'A lightning bolt crackles through a row to your target with direct lightning damage.',
+				description: config => 'A lightning bolt crackles through a row to your target dealing '+ config.damageString +' lightning damage.',
 			}, {
 				name: 'Frost Nova',
 				img: 'WIZ-7',
@@ -1816,7 +1816,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 2,
 				cooldownTime: 30,
-				description: config => 'Hits all targets with a chilling nova that inflicts direct ice damage and reduces threat.',
+				description: config => 'Hits all targets with a chilling nova that inflicts '+ config.damageString +' ice damage and reduces threat.',
 			}, {
 				name: 'Meteor',
 				img: 'WIZ-8',
@@ -1827,7 +1827,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 5,
 				cooldownTime: 45,
-				description: config => 'Hits up to five targets with direct fire damage. Burning flames in the meteor\'s wake cause additional direct fire damage at intervals over '+ ng.toMinSecs(buffs.meteorStrike.duration) +'.',
+				description: config => 'Hits up to five targets dealing '+ config.damageString +' fire damage. Burning flames in the meteor\'s wake cause additional direct fire damage at intervals over '+ ng.toMinSecs(buffs.meteorStrike.duration) +'.',
 			}, {
 				name: 'Frozen Barrier',
 				img: 'WIZ-9',
@@ -1838,7 +1838,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 1.5,
 				cooldownTime: 90,
-				description: config => 'Protect yourself in a frozen barrier that makes you invincible for '+ ng.toMinSecs(buffs.frozenBarrier.duration) +'. Recover health and mana at intervals until the effect fades.',
+				description: config => 'Protect yourself in a frozen barrier that makes you invincible for '+ ng.toMinSecs(config.duration) +'. Recover health and mana at intervals until the effect fades.',
 			}, {
 				name: 'Mirror Image',
 				img: 'WIZ-10',
@@ -1849,7 +1849,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 2.5,
 				cooldownTime: 60,
-				description: config => 'Summon an illusion that protects you and adds damage to all magic spells. The illusion\'s health determines how much damage is added to your magic. All damage received weakens its health.',
+				description: config => 'Summon an illusion that protects you and adds up to '+ config.damageString +' damage to all magic spells. The illusion\'s health determines how much damage is added to your magic. All damage absorbed weakens its health, but protects you from harm.',
 			}, {
 				name: 'Mana Shell',
 				img: 'WIZ-11',
@@ -1871,7 +1871,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 3,
 				cooldownTime: 30,
-				description: config => 'Strike your target with direct ice damage that reduces threat and freezes your target for '+ ng.toMinSecs(buffs.deepFreeze.freezeDuration) +'.',
+				description: config => 'Strike your target dealing '+ config.damageString +' ice damage that reduces threat and freezes your target for '+ ng.toMinSecs(config.freezeDuration) +'.',
 			},
 		],
 		lastData: {},

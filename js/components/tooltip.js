@@ -547,13 +547,13 @@ var tooltip;
 					skillHtml += `<div class="chat-skill">Reduce Arcane Resistance: ${ng.toPercent(config.reduceArcaneResist)}%</div>`
 				}
 				if (config.reduceLightningResist) {
-					skillHtml += `<div class="chat-skill">Reduce Lightning Resistance: ${ng.toPercent(config.reduceLightningResist[minRank])}%</div>`
+					skillHtml += `<div class="chat-skill">Reduce Lightning Resistance: ${ng.toPercent(config.reduceLightningResist)}%</div>`
 				}
 				if (config.reduceFireResist) {
-					skillHtml += `<div class="chat-skill">Reduce Fire Resistance: ${ng.toPercent(config.reduceFireResist[minRank])}%</div>`
+					skillHtml += `<div class="chat-skill">Reduce Fire Resistance: ${ng.toPercent(config.reduceFireResist)}%</div>`
 				}
 				if (config.reduceIceResist) {
-					skillHtml += `<div class="chat-skill">Reduce Ice Resistance: ${ng.toPercent(config.reduceIceResist[minRank])}%</div>`
+					skillHtml += `<div class="chat-skill">Reduce Ice Resistance: ${ng.toPercent(config.reduceIceResist)}%</div>`
 				}
 				if (config.reduceAllResists) {
 					skillHtml += `<div class="chat-skill">Reduce All Resists: ${ng.toPercent(config.reduceAllResists[minRank])}%</div>`
@@ -592,11 +592,26 @@ var tooltip;
 				if (config.addPoison) {
 					skillHtml += `<div class="chat-skill">Added Poison Damage: ${config.addPoison[minRank]}</div>`
 				}
+				if (config.addBlood) {
+					skillHtml += `<div class="chat-skill">Added Blood Damage: ${config.addBlood[minRank]}</div>`
+				}
+				if (config.addArcane) {
+					skillHtml += `<div class="chat-skill">Added Arcane Damage: ${config.addArcane[minRank]}</div>`
+				}
 				if (config.addLightning) {
 					skillHtml += `<div class="chat-skill">Added Lightning Damage: ${config.addLightning[minRank]}</div>`
 				}
+				if (config.addFire) {
+					skillHtml += `<div class="chat-skill">Added Fire Damage: ${config.addFire[minRank]}</div>`
+				}
+				if (config.addIce) {
+					skillHtml += `<div class="chat-skill">Added Ice Damage: ${config.addIce[minRank]}</div>`
+				}
 				if (config.attackBonus) {
 					skillHtml += `<div class="chat-skill">Attack Bonus: ${config.attackBonus[minRank]}</div>`
+				}
+				if (config.addSpellAll) {
+					skillHtml += `<div class="chat-skill">Added Spell Power: ${config.addSpellAll[minRank]}</div>`
 				}
 				if (config.bonusDamage) {
 					skillHtml += `<div class="chat-skill">
@@ -664,7 +679,7 @@ var tooltip;
 				// hit damage
 				hit = {}
 				if (isRangedOrMelee(config)) {
-					// console.info('is ranged or skill', config)
+					console.info('is ranged or skill', config)
 					// TODO: Something off here with physical damage calc
 					if (config.isRangedDamage) {
 						hit = skills.enhanceHit(
@@ -687,10 +702,10 @@ var tooltip;
 				}
 				else if (isSpell(config)) {
 					hit = stats.spellDamage(-1, -100, config)
-					// console.info('spell damage', hit)
+					console.info('spell damage', hit)
 				}
 				else {
-					// console.info('no damage found', config)
+					console.info('no damage found', config)
 				}
 				if (hit.min) {
 					if (!config.isBuff) {
@@ -715,6 +730,7 @@ var tooltip;
 			return Array.isArray(config.hitBonus) && config.hitBonus.some(v => v !== 0)
 		}
 		function isSpell(config) {
+			console.info('isSpell', config)
 			return typeof config.spellDamage === 'function' &&
 				config.castTime > 0 &&
 				!config.isBuff
