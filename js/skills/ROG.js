@@ -75,12 +75,10 @@
 			tgt = battle.getSplashTarget(splashIndex++, originalTarget)
 			hit = stats.skillDamage(tgt, skills.ROG[2].critBonus[my.skills[damage.index]])
 			hit.damage *= buffs.sonicStrike.novaDamage
-			// TODO: SPELLS with enhancedDamage need to be modified in processMobDamages
 			damages.push({
 				...hit,
 				key: 'sonicStrikeNova',
 				index: tgt,
-				enhancedDamage: skills.ROG[2].enhancedDamage[my.skills[damage.index]],
 				damageType: DAMAGE_TYPE.ARCANE,
 				effects: { stagger: spell.data.staggers },
 			})

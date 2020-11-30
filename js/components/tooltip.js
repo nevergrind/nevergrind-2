@@ -693,12 +693,6 @@ var tooltip;
 							config.enhancedDamage[minRank]
 						)
 					}
-					/*
-					if (hit.min &&
-						typeof config.enhancedDamage[minRank] === 'number') {
-						hit.min *= config.enhancedDamage[minRank]
-						hit.max *= config.enhancedDamage[minRank]
-					}*/
 				}
 				else if (isSpell(config)) {
 					hit = stats.spellDamage(-1, -100, config)
@@ -727,10 +721,9 @@ var tooltip;
 		return skillHtml
 		///////////////////////////////
 		function isRangedOrMelee(config) {
-			return Array.isArray(config.hitBonus) && config.hitBonus.some(v => v !== 0)
+			return config.isMelee || Array.isArray(config.hitBonus) && config.hitBonus.some(v => v !== 0)
 		}
 		function isSpell(config) {
-			console.info('isSpell', config)
 			return typeof config.spellDamage === 'function' &&
 				config.castTime > 0 &&
 				!config.isBuff

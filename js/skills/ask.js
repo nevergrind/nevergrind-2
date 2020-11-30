@@ -923,7 +923,7 @@ var ask;
 	function setFrame(img, state) {
 		if (state.frame >= state.lastFrame + 1) {
 			state.lastFrame = ~~state.frame
-			console.info('setFrame', state.lastFrame, Date.now())
+			// console.info('setFrame', state.lastFrame, Date.now())
 			img.texture = PIXI.Texture.from('images/ask/'+ state.image + state.lastFrame +'.png')
 		}
 	}

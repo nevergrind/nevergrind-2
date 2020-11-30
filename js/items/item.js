@@ -1707,7 +1707,7 @@ var loot = {};
 				_item.itemType === ITEM_TYPE.ONE_HAND_BLUNTS && !stats.getPropMax(PROP.ONE_HAND_BLUNT) ||
 				_item.itemType === ITEM_TYPE.TWO_HAND_SLASHERS && !stats.getPropMax(PROP.TWO_HAND_SLASH) ||
 				_item.itemType === ITEM_TYPE.TWO_HAND_BLUNTS && !stats.getPropMax(PROP.TWO_HAND_BLUNT) ||
-				_item.itemType === ITEM_TYPE.PIERCING && !stats.getPropMax(PROP.PIERCING) ||
+				_item.itemType === ITEM_TYPE.PIERCERS && !stats.getPropMax(PROP.PIERCING) ||
 				_item.itemType === ITEM_TYPE.BOWS && !stats.getPropMax(PROP.ARCHERY)) {
 				chat.log('You cannot equip this type of weapon!', CHAT.WARNING)
 				return false

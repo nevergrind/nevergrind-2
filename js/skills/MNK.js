@@ -262,7 +262,7 @@
 				damageType: DAMAGE_TYPE.FIRE,
 				enhancedDamage: enhancedDamage,
 			}
-			if (i < 2) hit.damage *= .33
+			if (i < 2) hit.damage *= buffs.dragonPunch.damageModifier
 			else hit.effects = { stagger: data.staggers }
 			damages.push(hit)
 		}

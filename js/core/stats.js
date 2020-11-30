@@ -792,8 +792,8 @@ var stats = {};
 		atk = attack(weaponSkill)
 		if (weaponSkill === LABEL.HAND_TO_HAND) {
 			if (my.job === JOB.MONK) {
-				min = 1 + (handToHand() / 12)
-				max = 4 + (handToHand() / 4.5)
+				max = 4 + (handToHand() / 2) // 125
+				min = 1 + (handToHand() / 8) // 31.25 about 26 dps at 250
 			}
 			else {
 				min = 1 + (handToHand() / 16)

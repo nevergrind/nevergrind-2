@@ -1177,7 +1177,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 10,
 			job: JOB.SHADOW_KNIGHT,
 			duration: 480,
-			lifeTap: [0, 2, 3, 5, 6, 7, 8, 10],
+			lifeTap: [0, 3, 5, 8, 12, 16, 20, 24],
 			hpKill: [0, 4, 6, 9, 12, 16, 20],
 			procRate: .1,
 			msg: () => 'Your aura eminates a sanguine hue.',
@@ -1280,6 +1280,7 @@ let buffs; // buff data for use with skill/spells/icons
 		hurricaneKicks: { hate: .8 },
 		dragonPunch: {
 			hate: 1,
+			damageModifier: .33,
 		},
 		viperStrike: {
 			name: 'Viper Strike',

@@ -246,9 +246,9 @@ var combat;
 			if (my.buffFlags.prowl) {
 				d.enhancedDamage += buffs.prowl.bonusDamage[my.buffs.prowl.level]
 			}
-			console.warn('d.damage enhancedDamage 1', d.damage)
+			// console.warn('1 enhancedDamage', d.damage)
 			d.damage *= d.enhancedDamage
-			console.warn('d.damage enhancedDamage 2', d.damage)
+			// console.warn('2 d.damage', d.enhancedDamage, d.damage)
 
 			// reduce enhancedDamage
 
@@ -277,7 +277,7 @@ var combat;
 			if (mobArmor > 1) mobArmor = 1
 			// console.info('mobArmor', d.index, mobArmor)
 			d.damage *= mobArmor
-			console.warn('d.damage enhancedDamage 3', d.damage)
+			// console.warn('3', mobArmor, d.damage)
 
 			// damage penalties
 			if (!d.isRanged &&
@@ -292,7 +292,7 @@ var combat;
 			}
 			// +add spell damage
 			d.damage += getAddedDamage(d.index)
-			console.warn('d.damage enhancedDamage 4', d.damage)
+			// console.warn('4 added', getAddedDamage(d.index), d.damage)
 			// effects
 			if (mobs[d.index].buffFlags.vampiricGaze) {
 				// small boost to make it slightly stronger at lower levels
@@ -302,7 +302,9 @@ var combat;
 		}
 		else {
 			// mob magic resists
+			// console.warn('1 enhancedDamage', d.enhancedDamage)
 			if (!d.enhancedDamage) d.enhancedDamage = 1
+			// console.warn('2 enhancedDamage', d.enhancedDamage)
 			if (mobs[d.index].mobType === MOB_TYPE.UNDEAD) {
 				if (d.isBlighted) {
 					d.enhancedDamage += .5

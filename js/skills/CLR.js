@@ -166,7 +166,6 @@
 			fixTarget: false,
 			isMob: false,
 			oocEnabled: true,
-			targetOther: true,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, bindingGraceCompleted)
@@ -181,14 +180,16 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage(my.row)
 		})
-		damages.push({
-			index: spell.config.target,
-			name: spell.config.targetName,
-			key: 'bindingGrace',
-			spellType: spell.data.spellType,
-			damageType: spell.data.damageType,
-			...stats.spellDamage(spell.config.target)
-		})
+		if (my.row !== spell.config.target) {
+			damages.push({
+				index: spell.config.target,
+				name: spell.config.targetName,
+				key: 'bindingGrace',
+				spellType: spell.data.spellType,
+				damageType: spell.data.damageType,
+				...stats.spellDamage(spell.config.target)
+			})
+		}
 		combat.txHotHero(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}

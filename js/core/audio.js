@@ -56,6 +56,7 @@ var audio;
 
 		// console.info("Loaded config...", ng.config)
 		//audio.playMusic("WaitingBetweenWorlds")
+		// audio.playMusic('title', 'wav')
 	}
 	function save() {
 		localStorage.setItem('config', JSON.stringify(ng.config))
@@ -77,10 +78,10 @@ var audio;
 			x.play();
 		});*/
 	}
-	function playMusic(track) {
+	function playMusic(track, extension = 'mp3') {
 		query.el('#bgmusic').src = ''
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100
-		query.el('#bgmusic').src = "music/" + track + ".mp3"
+		query.el('#bgmusic').src = "music/" + track + '.' + extension
 
 		// var promise = new Audio("music/" + track + ".mp3")
 		var promise = query.el('#bgmusic').play()
