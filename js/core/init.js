@@ -15,7 +15,6 @@ let items = {
 login.init()
 ng.init()
 audio.init()
-//audio.gameMusicInit();
 context.init()
 mission.init()
 button.init()

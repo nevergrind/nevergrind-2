@@ -1,23 +1,7 @@
 // audio.js
 var audio;
-(function() {
+!function(Audio, TweenMax, undefined) {
 	audio = {
-		ext: 'mp3',
-		on: true,
-		// rotating music tracks in game
-		trackIndex: ~~(rand() * 8),
-		tracks: [
-			'ArcLight',
-			'Blackmoor Colossus',
-			'Blackmoor Tides',
-			'Dark Descent',
-			'Heroic Demise',
-			"Ireland's Coast",
-			'Salt Marsh Birds',
-			'Snowland Loop',
-			'soliliquoy',
-			'The Dark Amulet'
-		],
 		cache: {},
 		playMusic,
 		playSound,
@@ -27,10 +11,7 @@ var audio;
 		pause,
 		events,
 		loadGame,
-		gameMusicInit,
 		setSoundVolume,
-		setMusicVolume,
-		gameMusicPlayNext,
 	}
 	var key
 	const Buffer = .2
@@ -58,6 +39,7 @@ var audio;
 		audio.playMusic('intro', 'wav')
 	}
 	function save() {
+		// somehow my app config data ended up in here lul
 		localStorage.setItem('config', JSON.stringify(ng.config))
 	}
 	function events() {
@@ -69,21 +51,6 @@ var audio;
 				this.play()
 			}
 		}
-		/*$("#bgmusic").on('ended', function() {
-			var x = getElementById('bgmusic');
-			x.currentTime = 0;
-			x.play();
-		});
-		$("#bgamb1").on('ended', function() {
-			var x = getElementById('bgamb1');
-			x.currentTime = 0;
-			x.play();
-		});
-		$("#bgamb2").on('ended', function() {
-			var x = getElementById('bgamb2');
-			x.currentTime = 0;
-			x.play();
-		});*/
 	}
 	function playMusic(track, extension = 'mp3') {
 		query.el('#bgmusic').src = ''
@@ -102,20 +69,6 @@ var audio;
 		var sfx = new Audio("sound/" + sfx + ".mp3")
 		sfx.volume = ng.config.soundVolume / 100
 		sfx.play()
-		// console.info('playSound', sfx)
-	}
-	function setMusicVolume(val) {
-		if (ng.config.musicVolume){
-			if (!val){
-				audio.pause();
-			}
-		} else {
-			// start playing music
-			audio.musicStart();
-		}
-		query.el('#bgmusic').volume = val / 100;
-		ng.config.musicVolume = val;
-		audio.save();
 	}
 	function setSoundVolume(val) {
 		ng.config.soundVolume = val;
@@ -123,25 +76,6 @@ var audio;
 	}
 	function pause() {
 		query.el('#bgmusic').pause();
-	}
-	function gameMusicInit() {
-		if (ng.config.musicVolume){
-			audio.pause();
-			query.el('#bgmusic').loop = false;
-			audio.gameMusicPlayNext();
-		}
-	}
-	function gameMusicPlayNext() {
-		// FIX IT SO IT USES BGAUDIO
-		audio.totalTracks = audio.tracks.length;
-		var nowPlaying = audio.tracks[++audio.trackIndex % audio.totalTracks];
-		query.el('#bgmusic').pause();
-		query.el('#bgmusic').src = "music/" + nowPlaying +".mp3";
-		query.el('#bgmusic').volume = ng.config.musicVolume / 100;
-		query.el('#bgmusic').onended = function(){
-			audio.gameMusicPlayNext();
-		}
-		// console.info("PLAYING: ", nowPlaying);
 	}
 	function fade() {
 		var x = {
@@ -164,4 +98,4 @@ var audio;
 			audio.cache[z] = new Audio("sound/" + z + ".mp3");
 		}
 	}
-})();
+}(Audio, TweenMax)
