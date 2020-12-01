@@ -36,14 +36,7 @@ var party;
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
-	var time;
-	var index;
-	var player;
-	var diff;
-
-	var updateHp = false
-	var updateMp = false
-	var updateSp = false
+	var time, index, player, diff, updateHp = false, updateMp = false, updateSp = false
 	const resourceKeys = [PROP.HP, PROP.MP, PROP.SP, PROP.HP_MAX, PROP.MP_MAX, PROP.SP_MAX]
 	//////////////////////////////////////
 	function isSomeoneAlive() {

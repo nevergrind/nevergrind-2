@@ -91,6 +91,7 @@ const jsFiles = [
 	'mob/mob-images',
 	'mob/mob-data',
 	'mob/mob-effects',
+	'mob/mob-skills',
 	'skills/ask',
 	'skills/ask-WAR',
 	'skills/ask-CRU',

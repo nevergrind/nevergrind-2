@@ -624,7 +624,6 @@ var tooltip;
 						skillHtml += `<div class="chat-skill">Reduce Hit Rate: ${ng.toPercent(config.reduceHitRate[1])} to ${ng.toPercent(config.reduceHitRate[5])}%</div>`
 					}
 					else {
-						console.info('config', config)
 						skillHtml += `<div class="chat-skill">Reduce Hit Rate: ${ng.toPercent(config.reduceHitRate)}%</div>`
 					}
 				}
@@ -679,7 +678,7 @@ var tooltip;
 				// hit damage
 				hit = {}
 				if (isRangedOrMelee(config)) {
-					console.info('is ranged or skill', config)
+					// console.info('is ranged or skill', config)
 					// TODO: Something off here with physical damage calc
 					if (config.isRangedDamage) {
 						hit = skills.enhanceHit(
@@ -696,10 +695,10 @@ var tooltip;
 				}
 				else if (isSpell(config)) {
 					hit = stats.spellDamage(-1, -100, config)
-					console.info('spell damage', hit)
+					// console.info('spell damage', hit)
 				}
 				else {
-					console.info('no damage found', config)
+					// console.info('no damage found', config)
 				}
 				if (hit.min) {
 					if (!config.isBuff) {

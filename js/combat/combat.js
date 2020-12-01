@@ -884,74 +884,82 @@ var combat;
 	function txDamageHero(index, damages) {
 		// damages is an object with indices that point to player row (target)
 		// TODO: Single player mode should bypass publishes everywhere...? lots of work
-		socket.publish('party' + my.partyId, {
-			route: 'p->hit',
-			i: index,
-			d: damages,
-		})
+		if (party.presence[0].isLeader) {
+			socket.publish('party' + my.partyId, {
+				route: 'p->hit',
+				i: index,
+				d: damages,
+			})
+		}
 	}
 	function rxDamageHero(data) {
 		// mob is hitting me
-		damages = data.d
-		if (damages[0].isParalyzed) {
+		let hits = data.d
+		hits = hits.map(d => {
+			// set some default values to avoid broadcasting them all the time
+			if (!d.damageType) d.damageType = DAMAGE_TYPE.PHYSICAL
+			if (!d.key) d.key = 'autoAttack'
+			return d
+		})
+		// NOTE: possible for one mob to attack multiple PCs at once (AE breath, etc)
+
+		// console.info('rxDamageHero: ', damages.length, data)
+		if (hits[0].isParalyzed) {
 			chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', CHAT.WARNING)
 		}
-		else processDamageToMe(data.i, damages)
-		// console.info('rxDamageHero: ', damages.length, data)
+		else {
+			processDamageToMe(data.i, hits)
+		}
 	}
-	function processDamageToMe(index, damages) {
-		if (damages.findIndex(dam => dam.row === my.row) >= 0) {
-			// something hit me - single or double hit
-			// console.info('processDamageToMe', damages[Zero].damage)
-			damages = damages.map(dam => processDamagesHero(index, dam))
-			len = damages.length
-			totalDamage = 0
-			for (i=0; i<len; i++) {
-				if (damages[i].damage > 0) {
-					totalDamage += damages[i].damage
-					updateMyResource(PROP.HP, -damages[i].damage)
-					if (typeof damages[i] === 'object') {
-						if (damages[i].isPiercing) {
-							chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + damages[i].damage + ' damage!', CHAT.ALERT)
-						}
-						else {
-							blockMsg = ''
-							if (damages[i].blocked) {
-								blockMsg = ' ('+ damages[i].blocked +' blocked)'
-							}
-							chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + damages[i].damage + ' damage!'+ blockMsg, CHAT.ALERT)
-						}
-						if (damages[i].damageType === DAMAGE_TYPE.PHYSICAL) {
-							spell.knockback()
-						}
+	function processDamageToMe(index, hits) {
+		// NOTE should be all from ONE mob of the same attack TYPE, but MANY possible PC targets
+		// always animate
+		mob.animateAttack(index, hits[0].row)
+		totalDamage = 0
+		hits.forEach(hit => {
+			if (hit.row !== my.row) return
+			hit = processDamagesHero(index, hit)
+			// console.info('hit', hit)
+			if (hit.damage > 0) {
+				totalDamage += hit.damage
+				updateMyResource(PROP.HP, -hit.damage)
+				if (hit.isPiercing) {
+					if (hit.key === 'autoAttack') {
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
 					}
-					// console.info('tx processHit: ', damages[i].damage)
 				}
+				else {
+					blockMsg = ''
+					if (hit.blocked) {
+						blockMsg = ' ('+ hit.blocked +' blocked)'
+					}
+					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
+				}
+				if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
+					spell.knockback()
+				}
+				// console.info('tx processHit: ', hit.damage)
 			}
+		})
+		if (totalDamage > 0) {
 			animatePlayerFrames()
-			if (totalDamage) {
-				// damageTakenToMana vulpineMp
-				vulpineMp += totalDamage * (stats.damageTakenToMana() / resourceLeechDivider)
-				if (vulpineMp >= 1) {
-					updateMyResource(PROP.MP, ~~vulpineMp)
-					vulpineMp = vulpineMp % 1
-				}
-				vulpineSp += totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider)
-				if (vulpineSp >= 1) {
-					updateMyResource(PROP.SP, ~~vulpineSp)
-					vulpineSp = vulpineSp % 1
-				}
+			// damageTakenToMana vulpineMp
+			vulpineMp += totalDamage * (stats.damageTakenToMana() / resourceLeechDivider)
+			if (vulpineMp >= 1) {
+				updateMyResource(PROP.MP, ~~vulpineMp)
+				vulpineMp = vulpineMp % 1
+			}
+			vulpineSp += totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider)
+			if (vulpineSp >= 1) {
+				updateMyResource(PROP.SP, ~~vulpineSp)
+				vulpineSp = vulpineSp % 1
 			}
 			game.txPartyResources({
 				hp: my.hp,
 				hpMax: my.hpMax,
 			})
 		}
-		// animate
-		damages.forEach(dam => {
-			// console.info('processDamageToMe', index, dam.row)
-			mob.animateAttack(index, dam.row)
-		})
+		// only do this stuff if it hits me
 	}
 
 	const TextFoo = {

@@ -13,7 +13,6 @@ let mobs = [];
 		sizeMob,
 		setClickBox,
 		blur,
-		modifyMobStatsByClass,
 		configMobType,
 		drawMobBar,
 		drawTargetBar,
@@ -37,7 +36,6 @@ let mobs = [];
 		dodgeChance,
 		parryChance,
 		riposteChance,
-		getMobDamage,
 		updateMobName,
 		isAnyMobAlive,
 		addHateHeal,
@@ -292,7 +290,7 @@ let mobs = [];
 				...mob.type[mobConfig.img],
 				gold: getMobGold(mobConfig)
 			}
-			modifyMobStatsByClass(mobConfig)
+			mobSkills.modifyMobStatsByClass(mobConfig)
 			// console.info('mobConfig omit some props?', mobConfig)
 
 			mob.txData[i] = _.omit(mobConfig, KEYS.MOB_OMIT)
@@ -541,84 +539,57 @@ let mobs = [];
 		}
 
 	}
-	function getMobTargetRow(slot) {
-		mostHatedRow = []
-		mostHatedValue = null
-		for (row in mobs[slot].hate) {
-			row *= 1
-			val = mobs[slot].hate[row]
-			index = party.getIndexByRow(row)
-			// console.info(row, index, val)
-			if (typeof party.presence[index] === 'object' &&
-				party.presence[index].hp > 0) {
-				if (mostHatedValue === null) {
-					// first one is always added
-					mostHatedValue = val
-					mostHatedRow.push(row)
-				}
-				else {
-					if (val === mostHatedValue) {
-						// tie
-						mostHatedRow.push(row)
-					}
-					else if (val > mostHatedValue) {
-						// exceeds - new array with only that row
-						mostHatedValue = val
-						mostHatedRow = [row]
-					}
-				}
-			}
-		}
-		// set the host row
-		len = mostHatedRow.length
-		if (!len) mostHatedRow = -1
-		else if (len === 1) mostHatedRow = mostHatedRow[0]
-		else if (len > 1) {
-			// party members tied for hate - pick a random target among them
-			index = _.random(0, mostHatedRow.length - 1)
-			mostHatedRow = mostHatedRow[index]
-		}
-		return mostHatedRow *= 1
-	}
-
-	function getMobDamage(i, row, isPiercing) {
-		return {
-			row: row,
-			damage: _.random(ceil(mobs[i].level * .33), mobs[i].attack),
-			isPiercing: isPiercing,
-			damageType: DAMAGE_TYPE.PHYSICAL
-		}
-	}
 
 	function attack(i) {
 		timers.mobAttack[i].kill()
 		if (!mobs[i].name || mobs[i].isDead) return
 
-		if (party.presence[0].isLeader) {
+		if (party.presence[0].isLeader && party.isSomeoneAlive()) {
 			// only party leader should trigger attacks
-			if (party.isSomeoneAlive()) {
-				mobRow = getMobTargetRow(i)
-				if (mobRow > -1) {
-					// party.getIndexByRow(mostHatedRow)
-					// console.info('mob', i, 'attacking!', '=> targeting', mobRow, party.presence[party.getIndexByRow(mobRow)].hp)
-					if (mob.isParalyzed(i) && rand() < ParalyzeRate) {
-						mobDamages = [{
-							row: mobRow,
-							isParalyzed: true,
-						}]
-					}
-					else {
-						mobDamages = [getMobDamage(i, mobRow)]
-						if (Math.random() * 100 < mobs[i].doubleAttack) {
-							mobDamages.push(getMobDamage(i, mobRow))
-						}
-					}
-					combat.txDamageHero(i, mobDamages)
-				}
-			}
+			mobSkills.decideSkill(i, getMobTargetRow(i))
 		}
 		// keep it going for all in case some else takes over leader
 		timers.mobAttack[i] = delayedCall(getMobAttackSpeed(i), mob.attack, [i])
+		//////////////////////////////////////////////////
+		function getMobTargetRow(slot) {
+			mostHatedRow = []
+			mostHatedValue = null
+			for (row in mobs[slot].hate) {
+				row *= 1
+				val = mobs[slot].hate[row]
+				index = party.getIndexByRow(row)
+				// console.info(row, index, val)
+				if (typeof party.presence[index] === 'object' &&
+					party.presence[index].hp > 0) {
+					if (mostHatedValue === null) {
+						// first one is always added
+						mostHatedValue = val
+						mostHatedRow.push(row)
+					}
+					else {
+						if (val === mostHatedValue) {
+							// tie
+							mostHatedRow.push(row)
+						}
+						else if (val > mostHatedValue) {
+							// exceeds - new array with only that row
+							mostHatedValue = val
+							mostHatedRow = [row]
+						}
+					}
+				}
+			}
+			// set the host row
+			len = mostHatedRow.length
+			if (!len) mostHatedRow = -1
+			else if (len === 1) mostHatedRow = mostHatedRow[0]
+			else if (len > 1) {
+				// party members tied for hate - pick a random target among them
+				index = _.random(0, mostHatedRow.length - 1)
+				mostHatedRow = mostHatedRow[index]
+			}
+			return mostHatedRow *= 1
+		}
 	}
 	function animateAttack(i, row) {
 		if (mobs[i].isDead) return
@@ -745,186 +716,9 @@ let mobs = [];
 		mob.earnedGold += battle.addGold(mobs[i].gold)
 		mob.earnedExp += battle.addExp(mobs[i].exp)
 	}
-	function setMobSkill(config, val) {
-		// adjusts value based on what it is at max level
-		return config.level * val / mob.maxLevel
-	}
-	function modifyMobStatsByClass(config) {
-		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR
-		// base resources
-		config.hp = ~~((25 + ((config.level - 1) * 220) * config.hp) * party.presence.length)
-		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)
-		//config.spMax = config.sp = ~~(10 + ((config.level - 1) * 15) * config.sp)
-		config.attack = ~~(3 + (config.level * 1.66))
-		config.dodge = 0
-		config.parry = 0
-		config.riposte = 0
-		config.doubleAttack = 0
-		// class modifications
-		if (config.job === JOB.WARRIOR) {
-			config.hp = ~~(config.hp * 1.2)
-			config.attack = ~~(config.attack * 1.1)
-			if (config.level >= 6) config.dodge = setMobSkill(config, 7.5)
-			if (config.level >= 10) config.parry = setMobSkill(config, 12.5)
-			if (config.level >= 15) config.doubleAttack = setMobSkill(config, 25)
-			if (config.level >= 25) config.riposte = setMobSkill(config, 12.5)
-			config.skills = [
-				'Furious Slam',
-				'Pummel',
-				'Enrage',
-			];
-		}
-		else if (config.job === JOB.CRUSADER) {
-			config.hp = ~~(config.hp * 1.1)
-			config.attack = ~~(config.attack * 1.1);
-			if (config.level >= 10) config.dodge = setMobSkill(config, 7.5)
-			if (config.level >= 17) config.parry = setMobSkill(config, 12.5)
-			if (config.level >= 20) config.doubleAttack = setMobSkill(config, 33)
-			if (config.level >= 30) config.riposte = setMobSkill(config, 10)
-			config.skills = [
-				'Ardent Bash',
-				'Holy Light',
-				'Imbued Force',
-				'Divine Barrier',
-			];
-		}
-		else if (config.job === JOB.SHADOW_KNIGHT) {
-			config.hp = ~~(config.hp * 1.2)
-			config.attack = ~~(config.attack * 1.1);
-			if (config.level >= 10) config.dodge = setMobSkill(config, 7.5)
-			if (config.level >= 17) config.parry = setMobSkill(config, 10)
-			if (config.level >= 20) config.doubleAttack = setMobSkill(config, 33)
-			if (config.level >= 30) config.riposte = setMobSkill(config, 12.5)
-			config.skills = [
-				'Bash',
-				'Engulfing Darkness',
-				'Fear',
-				'Venom Bolt',
-			];
-		}
-		else if (config.job === JOB.MONK) {
-			config.attack = ~~(config.attack * 1.15);
-			config.dodge = setMobSkill(config, 7.5)
-			if (config.level >= 12) config.parry = setMobSkill(config, 7.5)
-			if (config.level >= 15) config.doubleAttack = setMobSkill(config, 40)
-			if (config.level >= 35) config.riposte = setMobSkill(config, 10)
-			config.skills = [
-				'Shadow Kick',
-				'Dragon Punch',
-			];
-		}
-		else if (config.job === JOB.ROGUE) {
-			config.attack = ~~(config.attack * 1.15);
-			if (config.level >= 4) config.dodge = setMobSkill(config, 10)
-			if (config.level >= 17) config.parry = setMobSkill(config, 7.5)
-			if (config.level >= 16) config.doubleAttack = setMobSkill(config, 40)
-			if (config.level >= 30) config.riposte = setMobSkill(config, 7.5)
-			config.skills = [
-				'Backstab',
-				'Widow Strike'
-			];
-		}
-		else if (config.job === JOB.RANGER) {
-			config.attack = ~~(config.attack * 1.15);
-			if (config.level >= 8) config.dodge = setMobSkill(config, 7.5)
-			if (config.level >= 18) config.parry = setMobSkill(config, 10)
-			if (config.level >= 20) config.doubleAttack = setMobSkill(config, 40)
-			if (config.level >= 35) config.riposte = setMobSkill(config, 7.5)
-			config.skills = [
-				'Light Healing',
-				'Faerie Flame',
-				'Burning Embers',
-				'Charged Bolts',
-			];
-		}
-		else if (config.job === JOB.BARD) {
-			config.attack = ~~(config.attack * 1.05);
-			if (config.level >= 10) config.dodge = setMobSkill(config, 10)
-			if (config.level >= 17) config.doubleAttack = setMobSkill(config, 12)
-			// cannot dispel bard songs
-			config.skills = [
-				'Psalm of Flames', // damage shield, FR boost
-				'Psalm of Frost', // damage shield, CR boost
-				'Elemental Rhythms', // LR, FR, CR
-				'Guardian Rhythms', // BR, PR, AR
-				'Chant of Battle', // damage shield, FR boost
-				'Hymn of Shielding', // % physical damage reduction
-				'Hymn of Soothing', // regen hp, mp
-			];
-		}
-		else if (config.job === JOB.DRUID) {
-			if (config.level >= 15) config.dodge = setMobSkill(config, 5)
-			config.skills = [
-				'Regrowth',
-				'Lightning Blast',
-				'Starfire',
-				'Drifting Death',
-			];
-		}
-		else if (config.job === JOB.CLERIC) {
-			if (config.level >= 15) config.dodge = setMobSkill(config, 5)
-			config.skills = [
-				'Holy Light',
-				'Smite',
-				'Imbued Force'
-			];
-		}
-		else if (config.job === JOB.SHAMAN) {
-			config.attack = ~~(config.attack * 1.05);
-			if (config.level >= 15) config.dodge = setMobSkill(config, 5)
-			config.skills = [
-				'Rekindle',
-				'Static Shock',
-				'Frost Shock',
-				'Envenom',
-				'Slumber',
-			];
-		}
-		else if (config.job === JOB.WARLOCK) {
-			config.hp = ~~(config.hp * .9)
-			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
-			config.skills = [
-				'Blood Boil',
-				'Engulfing Darkness',
-				'Fear',
-				'Venom Bolt',
-			];
-		}
-		else if (config.job === JOB.ENCHANTER) {
-			config.hp = ~~(config.hp * .9)
-			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
-			config.skills = [
-				'Gravity Flux',
-				'Runic Shield',
-				'Alacrity',
-				'Fiery Enchant',
-				'Glacial Enchant',
-			];
-		}
-		else if (config.job === JOB.TEMPLAR) {
-			config.hp = ~~(config.hp * .9)
-			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
-			config.skills = [
-				'Lava Bolt',
-				'Frozen Orb',
-				'Psionic Storm',
-			];
-		}
-		else if (config.job === JOB.WIZARD) {
-			config.hp = ~~(config.hp * .9)
-			if (config.level >= 22) config.dodge = setMobSkill(config, 5)
-			config.skills = [
-				'Ice Bolt',
-				'Arcane Missiles',
-				'Lightning Strike',
-				'Glacial Spike',
-			];
-		}
-		config.hpMax = config.hp
-	}
 
 	function resourceTick() {
-		//TODO: This code works, but I think it will create unnecessary network strain... explore later?
+		// TODO: Does this create too much network strain? maybe not?
 		if (mob.enableMobHeartbeat && my.isLeader) {
 			tickData = []
 			mobs.forEach(processMobResourceTick)
@@ -936,14 +730,14 @@ let mobs = [];
 			}
 		}
 		//////////////////////////////
-		function processMobResourceTick(mob, index) {
-			if (isAlive(index) &&
+		function processMobResourceTick(m, index) {
+			if (mob.isAlive(index) &&
 				timers.mobEffects[index].freezeDuration === 0 &&
 				!isPoisoned(index)) {
 				// hp
-				hpTick = mob.level
-				if (mob.hp + hpTick > mob.hpMax) {
-					hpTick = mob.hpMax - mob.hp
+				hpTick = m.level
+				if (m.hp + hpTick > m.hpMax) {
+					hpTick = m.hpMax - m.hp
 				}
 				// console.info('sending hpTick:', hpTick)
 				tickData.push({
@@ -951,6 +745,14 @@ let mobs = [];
 					h: hpTick,
 				})
 			}
+		}
+	}
+	function rxMobResourceTick(data) {
+		data.d.forEach(getMobRegen)
+		//////////////////
+		function getMobRegen(tick) {
+			mobs[tick.i].hp += tick.h
+			drawMobBar(tick.i)
 		}
 	}
 	function isParalyzed(index) {
@@ -970,14 +772,6 @@ let mobs = [];
 			mobs[index].buffFlags.widowStrike ||
 			mobs[index].buffFlags.affliction
 		)
-	}
-	function rxMobResourceTick(data) {
-		data.d.forEach(getMobRegen)
-		//////////////////
-		function getMobRegen(tick) {
-			mobs[tick.i].hp += tick.h
-			drawMobBar(tick.i)
-		}
 	}
 	function killAttacks(continueIdling) {
 		mobs.forEach((m, i) => {

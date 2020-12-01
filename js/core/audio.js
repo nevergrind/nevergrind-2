@@ -33,6 +33,7 @@ var audio;
 		gameMusicPlayNext,
 	}
 	var key
+	const Buffer = .2
 	///////////////////////////////////////////
 
 	function init(){
@@ -54,14 +55,20 @@ var audio;
 			}
 		}
 
-		// console.info("Loaded config...", ng.config)
-		//audio.playMusic("WaitingBetweenWorlds")
-		// audio.playMusic('title', 'wav')
+		audio.playMusic('intro', 'wav')
 	}
 	function save() {
 		localStorage.setItem('config', JSON.stringify(ng.config))
 	}
 	function events() {
+		querySelector('#bgmusic').addEventListener('timeupdate', musicUpdate)
+		///////////////////////////
+		function musicUpdate() {
+			if (this.currentTime > this.duration - Buffer) {
+				this.currentTime = 0
+				this.play()
+			}
+		}
 		/*$("#bgmusic").on('ended', function() {
 			var x = getElementById('bgmusic');
 			x.currentTime = 0;

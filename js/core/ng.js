@@ -732,7 +732,7 @@ var ng;
 			})
 		}
 
-		if (typeof r.characterData === 'object' &&
+		/*if (typeof r.characterData === 'object' &&
 			!r.characterData.length &&
 			!routedToCharacterPage) {
 			// go-create-character
@@ -741,7 +741,7 @@ var ng;
 				ng.goCreateCharacter()
 				ng.msg('Create your first character.', 5)
 			})
-		}
+		}*/
 	}
 	function getSelectedRowIndex(r) {
 		index = 0
