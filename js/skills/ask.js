@@ -879,6 +879,7 @@ var ask;
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		if (config.yStart) img.y = config.yStart
+		if (config.rotationStart) img.rotation = util.rotation(config.rotationStart)
 		ask.addChild(img)
 		TweenMax.to(img, config.duration, {
 			startAt: {
@@ -911,7 +912,7 @@ var ask;
 				lastFrame: 0,
 				frame: 0
 			}
-			console.info('animateFrames', config)
+			// console.info('animateFrames', config)
 			TweenMax.to(state, config.frameDuration, {
 				frame: o.endFrame + .99,
 				ease: config.frameEase || Power0.easeOut,
@@ -921,9 +922,10 @@ var ask;
 		}
 	}
 	function setFrame(img, state) {
+		console.info('frame', state.frame)
 		if (state.frame >= state.lastFrame + 1) {
 			state.lastFrame = ~~state.frame
-			// console.info('setFrame', state.lastFrame, Date.now())
+			console.warn('setFrame', state.lastFrame)
 			img.texture = PIXI.Texture.from('images/ask/'+ state.image + state.lastFrame +'.png')
 		}
 	}

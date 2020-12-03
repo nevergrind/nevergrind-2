@@ -30,6 +30,12 @@ mobSkills = {};
 					mobDamages.push(mobSkills.getMobDamage(index, row))
 				}
 			}
+			else {
+				mobDamages = [mobSkills.getMobDamage(index, row)]
+				if (Math.random() * 100 < mobs[index].doubleAttack) {
+					mobDamages.push(mobSkills.getMobDamage(index, row))
+				}
+			}
 		}
 		console.info('decideSkill', index, mobDamages)
 		combat.txDamageHero(index, mobDamages)

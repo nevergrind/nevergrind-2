@@ -885,6 +885,7 @@ var combat;
 		// damages is an object with indices that point to player row (target)
 		// TODO: Single player mode should bypass publishes everywhere...? lots of work
 		if (party.presence[0].isLeader) {
+			// console.info('txDamageHero', index, damages)
 			socket.publish('party' + my.partyId, {
 				route: 'p->hit',
 				i: index,
@@ -894,6 +895,7 @@ var combat;
 	}
 	function rxDamageHero(data) {
 		// mob is hitting me
+		// console.info('rxDamageHero', data)
 		let hits = data.d
 		hits = hits.map(d => {
 			// set some default values to avoid broadcasting them all the time
@@ -1115,11 +1117,11 @@ var combat;
 				onRepeatParams: [heal, healAmount],
 			})
 			battle.addMyBuff(heal.key, keyRow)
-			console.info('dot heal!', heal.damage)
+			// console.info('dot heal!', heal.damage)
 			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
 			ask.processAnimations(heal)
 		}
-		console.info('hotToMe rxHotHero', row, hate)
+		// console.info('hotToMe rxHotHero', row, hate)
 		if (~~hate !== 0) {
 			mob.addHateHeal({
 				row: row,
