@@ -774,6 +774,7 @@ var ng;
 						'<div class="ch-card-details">'+ ng.toJobLong(d.job) +'</div>' +
 					'</div>' +
 					'<img class="title-icon" src="images/ui/job-'+ d.job +'.png" style="">' +
+					'<div id="ch-index" class="text-shadow">'+ (ng.selectIndex + 1) +'</div>' +
 				'</div>' +
 				'<div id="title-select-up" class="title-select-col flex-center">'+
 					'<img class="title-select-chevron" src="images/ui/chevron-right.png">' +

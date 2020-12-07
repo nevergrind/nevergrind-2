@@ -95,92 +95,93 @@ var town;
 		my.targetIsMob = true
 		battle.hideTarget()
 		mob.killAttacks()
-		if (create.selected) {
-			clearTimeout(game.session.timer)
-			game.sceneCleanup('scene-town');
-			ng.lock(1);
-			if (ng.view === 'dungeon') {
-				TweenMax.set('#body', {
-					opacity: 0
-				})
-			}
-			for (key in town.isInitialized) {
-				// reset stores
-				town.isInitialized[key] = false
-			}
-			chat.sizeLarge();
-			TweenMax.set('#button-wrap', CSS.DISPLAY_NONE)
-			$.post(app.url + 'character/load-character.php', {
-				row: create.selected
-			}).done(function(data) {
-				// console.info('load-character: ', data)
-				// my processing
-				Object.assign(my, _.omit(data.characterData, KEYS.DATA))
-				data.characterData.data = JSON.parse(data.characterData.data)
-				for (key in data.characterData.data) {
-					my[key] = data.characterData.data[key]
-				}
-				my.jobLong = ng.toJobLong(my.job)
-				my.avatar = my.getAvatarUrl()
-				Object.assign(my, my.getResistObject())
-				// other things
-				bar.setDefaultInvWeaponImage()
-				guild.setGuildData(data)
-				initItemData(data.inv, 'inv')
-				initItemData(data.eq, 'eq')
+		if (!create.selected) return
 
-				if (typeof my.handToHand === 'undefined') {
-					my.handToHand = 1
-					my.saveCharacterData()
-				}
-				// skills
-				my.initSkills()
-
-				stats.setAllResources()
-				if (!app.isApp) {
-					/*my.hp = 1
-					my.mp = 1
-					my.sp = 1*/
-					my.set(PROP.HP, my.hpMax)
-					my.set(PROP.MP, my.mpMax)
-					my.set(PROP.SP, my.spMax)
-				}
-				else {
-					my.set(PROP.HP, my.hpMax)
-					my.set(PROP.MP, my.mpMax)
-					my.set(PROP.SP, my.spMax)
-				}
-
-				// init party member values
-				ng.setScene('town')
-				chat.init()
-
-				getElementById('scene-town').innerHTML = getTownHtml()
-				querySelector('#town-footer-wrap').style.display = 'flex'
-				querySelector('#town-gold').textContent = my.gold
-
-
-				if (socket.enabled) {
-					town.socketReady()
-				}
-				else {
-					// calls socket.init -> connectionSuccess
-					socket.init()
-					friend.init()
-					ignore.init()
-					game.initPlayedCache()
-				}
-				//!expanse.initialized && expanse.startSkyPhase()
-				expanse.startSkyPhase()
-				town.init()
-				bar.init()
-				tavern.init()
-				skills.init()
-				battle.removeAllBuffs()
-			}).fail(function(data){
-				ng.disconnect(data.responseText);
-			});
+		audio.playMusic('town', 'wav')
+		clearTimeout(game.session.timer)
+		game.sceneCleanup('scene-town');
+		ng.lock(1);
+		if (ng.view === 'dungeon') {
+			TweenMax.set('#body', {
+				opacity: 0
+			})
 		}
+		for (key in town.isInitialized) {
+			// reset stores
+			town.isInitialized[key] = false
+		}
+		chat.sizeLarge();
+		TweenMax.set('#button-wrap', CSS.DISPLAY_NONE)
+		$.post(app.url + 'character/load-character.php', {
+			row: create.selected
+		}).done(function(data) {
+			// console.info('load-character: ', data)
+			// my processing
+			Object.assign(my, _.omit(data.characterData, KEYS.DATA))
+			data.characterData.data = JSON.parse(data.characterData.data)
+			for (key in data.characterData.data) {
+				my[key] = data.characterData.data[key]
+			}
+			my.jobLong = ng.toJobLong(my.job)
+			my.avatar = my.getAvatarUrl()
+			Object.assign(my, my.getResistObject())
+			// other things
+			bar.setDefaultInvWeaponImage()
+			guild.setGuildData(data)
+			initItemData(data.inv, 'inv')
+			initItemData(data.eq, 'eq')
+
+			if (typeof my.handToHand === 'undefined') {
+				my.handToHand = 1
+				my.saveCharacterData()
+			}
+			// skills
+			my.initSkills()
+
+			stats.setAllResources()
+			if (!app.isApp) {
+				/*my.hp = 1
+				my.mp = 1
+				my.sp = 1*/
+				my.set(PROP.HP, my.hpMax)
+				my.set(PROP.MP, my.mpMax)
+				my.set(PROP.SP, my.spMax)
+			}
+			else {
+				my.set(PROP.HP, my.hpMax)
+				my.set(PROP.MP, my.mpMax)
+				my.set(PROP.SP, my.spMax)
+			}
+
+			// init party member values
+			ng.setScene('town')
+			chat.init()
+
+			getElementById('scene-town').innerHTML = getTownHtml()
+			querySelector('#town-footer-wrap').style.display = 'flex'
+			querySelector('#town-gold').textContent = my.gold
+
+
+			if (socket.enabled) {
+				town.socketReady()
+			}
+			else {
+				// calls socket.init -> connectionSuccess
+				socket.init()
+				friend.init()
+				ignore.init()
+				game.initPlayedCache()
+			}
+			//!expanse.initialized && expanse.startSkyPhase()
+			expanse.startSkyPhase()
+			town.init()
+			bar.init()
+			tavern.init()
+			skills.init()
+			battle.removeAllBuffs()
+		}).fail(function(data){
+			ng.disconnect(data.responseText);
+		});
 	}
 	function socketReady() {
 		// stuff to do after the socket wakes up

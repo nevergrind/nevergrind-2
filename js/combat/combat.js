@@ -220,7 +220,7 @@ var combat;
 				if (timers.castBar < 1) {
 					if (rand() * 100 < mob.riposteChance(d.index)) {
 						d.damage = 0
-						combat.txDamageHero(d.index, [ mob.getMobDamage(d.index, my.row, true) ])
+						combat.txDamageHero(d.index, [ mob.autoAttack(d.index, my.row, true) ])
 						combat.popupDamage(d.index, 'RIPOSTE!')
 						return d
 					}
@@ -769,7 +769,10 @@ var combat;
 			return d
 		}
 		// check miss
-		if (rand() < mob.missChance(index)) {
+		// console.info('processDamagesHero', d)
+		// NOTE: Only auto attack can miss
+		if (d.key === 'autoAttack' &&
+			rand() < mob.missChance(index)) {
 			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but misses!')
 			d.damage = 0
 			return d
@@ -895,14 +898,15 @@ var combat;
 	}
 	function rxDamageHero(data) {
 		// mob is hitting me
-		// console.info('rxDamageHero', data)
 		let hits = data.d
+		// console.info('rxDamageHero', data)
 		hits = hits.map(d => {
 			// set some default values to avoid broadcasting them all the time
 			if (!d.damageType) d.damageType = DAMAGE_TYPE.PHYSICAL
 			if (!d.key) d.key = 'autoAttack'
 			return d
 		})
+		// console.info('rxDamageHero', data)
 		// NOTE: possible for one mob to attack multiple PCs at once (AE breath, etc)
 
 		// console.info('rxDamageHero: ', damages.length, data)
@@ -921,27 +925,47 @@ var combat;
 		hits.forEach(hit => {
 			if (hit.row !== my.row) return
 			hit = processDamagesHero(index, hit)
+			if (hit.damage <= 0) {
+				// console.info('MISS!', hit.damage)
+				return
+			}
 			// console.info('hit', hit)
-			if (hit.damage > 0) {
-				totalDamage += hit.damage
-				updateMyResource(PROP.HP, -hit.damage)
+			totalDamage += hit.damage
+			updateMyResource(PROP.HP, -hit.damage)
+			if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
+				// P H Y S I C A L
 				if (hit.isPiercing) {
 					if (hit.key === 'autoAttack') {
 						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
 					}
 				}
 				else {
+					// physical damage hits
 					blockMsg = ''
 					if (hit.blocked) {
-						blockMsg = ' ('+ hit.blocked +' blocked)'
+						blockMsg = ' (blocked '+ hit.blocked +')'
 					}
-					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
+					let attackWord = 'hits'
+					if (hit.key === 'Slam') attackWord = 'slams'
+					else if (hit.key === 'Backstab') attackWord = 'backstabs'
+
+					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' '+ attackWord +' YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
 				}
-				if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
+
+				// E F F E C T S
+				if (hit.key === 'Slam') {
+					// should stun player
+					mobSkills.stunPlayer()
+				}
+				else {
 					spell.knockback()
 				}
-				// console.info('tx processHit: ', hit.damage)
 			}
+			else {
+				// M A G I C
+				console.warn("NOT PHYSICAL DAMAGE FROM MOB", hit)
+			}
+			// console.info('tx processHit: ', hit.damage)
 		})
 		if (totalDamage > 0) {
 			animatePlayerFrames()
@@ -1153,7 +1177,7 @@ var combat;
 	}
 	function processBuffToMe(data) {
 		hate = 0
-		// console.info('processBuffToMe', data)
+		console.info('processBuffToMe', data)
 		data.buffs.forEach(buff => {
 			if (buffs[buff.key].hate) {
 				hate += ~~(buff.damage * buffs[buff.key].hate)
@@ -1184,7 +1208,9 @@ var combat;
 					}
 				}
 				battle.lastBuffAlreadyActive = my.buffFlags[key]
-				chat.log(buffs[key].msg(), CHAT.HEAL)
+				if (typeof buffs[key].msg === 'function') {
+					chat.log(buffs[key].msg(), CHAT.HEAL)
+				}
 				if (buffs[key].stacks === void 0) {
 					battle.removeBuff(key)
 				}
@@ -1223,6 +1249,7 @@ var combat;
 				battle.addMyBuff(buff.key, key)
 				processStatBuffsToMe(key, data.row)
 				ask.processAnimations(buff)
+				if (buff.key === 'slam') mobSkills.stunPlayerEffect()
 			}
 		})
 		if (~~hate > 0) {

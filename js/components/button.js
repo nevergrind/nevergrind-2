@@ -118,6 +118,10 @@ var button;
 	}
 	function triggerSkill(index) {
 		if (my.hp <= 0) return
+		if (my.buffFlags.slam) {
+			chat.log('You are stunned!', CHAT.WARNING)
+			return
+		}
 
 		name = _.camelCase(skills[my.job][index].name)
 		// console.info('triggerSkill', name)

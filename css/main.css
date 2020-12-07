@@ -379,11 +379,11 @@ tbody { border: 0 }
 	font: 1.1rem/1 Play, Cinzel;
 	font-weight: 700;
 	border: .1rem ridge #3a3a3a;
+	background: #997;
 	text-align: center;
 	border-radius: 0;
 	cursor: url('cursor/pointer.png'), pointer;
 	letter-spacing: .1rem;
-	background: #997;
 	text-shadow: 1px 1px #000,
 	-1px 0 #000,
 	1px 0 #000,
@@ -1988,6 +1988,20 @@ background-repeat: no-repeat;
 #title-well-top {
 	border: .1rem solid #000;
 	border-bottom: none;
+}
+#ch-index {
+	position: absolute;
+	font-size: .8rem;
+	color: #fff;
+	padding: 0 .3rem;
+	top: 0;
+	right: 0;
+	background: #0008;
+	border-radius: 0 0 0 50%;
+	border-bottom: 1px solid #000;
+	border-left: 1px solid #000;
+	/*border: .1rem ridge #3a3a3a;
+	background: #997;*/
 }
 #title-select-down { border-left: none }
 #title-select-up { border-right: none }

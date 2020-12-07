@@ -305,6 +305,7 @@
 			level: my.skills[spell.config.skillIndex],
 			...stats.spellDamage(spell.config.target, -100)
 		})
+		console.info('damages', damages);
 		combat.txBuffHero(damages)
 	}
 

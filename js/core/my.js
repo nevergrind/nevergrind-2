@@ -17,6 +17,7 @@ var my;
 		saveCharacterData,
 		shieldIsEquipped,
 		skills: void 0,
+		stunTimer: {},
 		mouse: {
 			x: 0,
 			y: 0

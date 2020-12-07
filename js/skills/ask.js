@@ -22,16 +22,18 @@ var ask;
 		/**
 		 * h2h, 1hs, 2hs, 1hb, 2hb, pierce
 		*/
-		// skill effects
+		// particles
 		particleCircle,
 		particleGroup,
 		particleSmall,
-		flameRip,
-		groundExplosion,
+		// utility bursts
 		moonburst,
 		starburst,
 		sunburst,
+		// general use
 		explosion, // single frame outward from center
+		groundExplosion, // ground explosion that yoyos
+		flameRip, // flames across ground??
 		nova, // frame outward (ground and center) can rotate
 		slash, // auto slash single frame
 		pierce, // horizontal slash single frame
@@ -176,6 +178,7 @@ var ask;
 		ease: Power2.easeOut,
 	}
 	const explosionDefaults = {
+		repeat: false,
 		targetMob: true,
 		sizeStart: 80,
 		sizeEnd: 400,
@@ -912,7 +915,6 @@ var ask;
 				lastFrame: 0,
 				frame: 0
 			}
-			// console.info('animateFrames', config)
 			TweenMax.to(state, config.frameDuration, {
 				frame: o.endFrame + .99,
 				ease: config.frameEase || Power0.easeOut,
@@ -922,10 +924,10 @@ var ask;
 		}
 	}
 	function setFrame(img, state) {
-		console.info('frame', state.frame)
+		// console.info('frame', state.frame)
 		if (state.frame >= state.lastFrame + 1) {
 			state.lastFrame = ~~state.frame
-			console.warn('setFrame', state.lastFrame)
+			// console.warn('setFrame', state.lastFrame, img.id)
 			img.texture = PIXI.Texture.from('images/ask/'+ state.image + state.lastFrame +'.png')
 		}
 	}

@@ -2,12 +2,15 @@ mobSkills = {};
 !function($, _, TweenMax, Linear, Math, undefined) {
 	mobSkills = {
 		decideSkill,
-		getMobDamage,
+		autoAttack,
+		slam,
+		stunPlayer,
+		stunPlayerEffect,
 		modifyMobStatsByClass,
 		Slam: {
 			name: 'Slam',
 			stunDuration: 3
-		},
+		}
 	}
 	let mobDamage = {}, mobDamages
 	///////////////////////////////////////////
@@ -23,29 +26,42 @@ mobSkills = {};
 			// select a skill to use
 			let r = rand()
 			if (r < mobs[index].skillChance) {
+			// if (true) {
 				// do a skill!
-				// normal attack
-				mobDamages = [mobSkills.getMobDamage(index, row)]
-				if (Math.random() * 100 < mobs[index].doubleAttack) {
-					mobDamages.push(mobSkills.getMobDamage(index, row))
+				let len = mobs[index].skills.length
+				let skillIndex = _.random(1, len) - 1
+				let skillName = mobs[index].skills[skillIndex]
+				// console.info(index, skillIndex, skillName)
+				if (skillName === 'Slam') {
+					mobDamages = [mobSkills.slam(index, row)]
 				}
+
+				// TODO: heal branch in here at some point?
 			}
 			else {
-				mobDamages = [mobSkills.getMobDamage(index, row)]
+				mobDamages = [mobSkills.autoAttack(index, row)]
 				if (Math.random() * 100 < mobs[index].doubleAttack) {
-					mobDamages.push(mobSkills.getMobDamage(index, row))
+					mobDamages.push(mobSkills.autoAttack(index, row))
 				}
 			}
 		}
-		console.info('decideSkill', index, mobDamages)
+		// console.info('decideSkill', index, mobDamages)
 		combat.txDamageHero(index, mobDamages)
 
 	}
-
-	function getMobDamage(i, row, isPiercing) {
+	function slam(i, row) {
 		mobDamage = {
 			row: row,
-			damage: _.random(ceil(mobs[i].level * .33), mobs[i].attack),
+			key: 'Slam',
+			damage: ~~_.random(ceil(mobs[i].attack * .6), mobs[i].attack * 1.2),
+		}
+		// console.info('slam', mobDamage)
+		return mobDamage
+	}
+	function autoAttack(i, row, isPiercing) {
+		mobDamage = {
+			row: row,
+			damage: ~~_.random(ceil(mobs[i].attack * .2), mobs[i].attack),
 		}
 		if (isPiercing) {
 			mobDamage.isPiercing = isPiercing
@@ -227,5 +243,32 @@ mobSkills = {};
 			];
 		}
 		config.hpMax = config.hp
+	}
+	function stunPlayer() {
+		let damages = []
+		damages.push({
+			index: my.row,
+			key: 'slam',
+			duration: 3,
+		})
+		combat.txBuffHero(damages)
+	}
+	function stunPlayerEffect() {
+		spell.cancelSpell()
+		button.pauseAutoAttack()
+		my.stunTimer = TweenMax.to(timers, 3, {
+			startAt: { stunTimer: 0 },
+			stunTimer: 1,
+			ease: Power0.easeIn,
+			onComplete: stunPlayerComplete,
+		})
+		animateStun()
+		///////////////////////////
+		function stunPlayerComplete() {
+			button.resumeAutoAttack()
+		}
+		function animateStun() {
+
+		}
 	}
 }($, _, TweenMax, Linear, Math);

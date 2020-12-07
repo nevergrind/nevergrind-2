@@ -8,6 +8,7 @@ var timers;
 		spPotion: 1,
 		globalCooldown: 1,
 		castBar: 1,
+		stunTimer: 1,
 		skillCooldowns: [],
 		skillCooldownTimers: [],
 		// mob timer keys
