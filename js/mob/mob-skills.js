@@ -254,9 +254,10 @@ mobSkills = {};
 		combat.txBuffHero(damages)
 	}
 	function stunPlayerEffect() {
+		const stunDuration = 3
 		spell.cancelSpell()
 		button.pauseAutoAttack()
-		my.stunTimer = TweenMax.to(timers, 3, {
+		my.stunTimer = TweenMax.to(timers, stunDuration, {
 			startAt: { stunTimer: 0 },
 			stunTimer: 1,
 			ease: Power0.easeIn,
@@ -268,7 +269,11 @@ mobSkills = {};
 			button.resumeAutoAttack()
 		}
 		function animateStun() {
-
+			ask.stun({
+				index: my.row,
+				key: 'particle-small-default',
+				duration: stunDuration
+			}, false)
 		}
 	}
 }($, _, TweenMax, Linear, Math);

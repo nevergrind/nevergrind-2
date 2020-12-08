@@ -14,6 +14,7 @@ var timers;
 		// mob timer keys
 		mobAttack: [],
 		mobStunTimer: [],
+		mobStunTween: [],
 		mobFreezeTimer: [],
 		mobChillTimer: [],
 		mobFearTimer: [],
@@ -32,6 +33,7 @@ var timers;
 	const MobTimerKeys = [
 		'mobAttack',
 		'mobStunTimer',
+		'mobStunTween',
 		'mobFreezeTimer',
 		'mobChillTimer',
 		'mobFearTimer',

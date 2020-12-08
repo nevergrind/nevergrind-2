@@ -39,6 +39,11 @@ var mobEffects;
 				onCompleteParams: [i],
 				ease: Linear.easeNone,
 			})
+			ask.stun({
+				index: i,
+				key: 'particle-small-default',
+				duration: duration
+			}, true)
 		}
 		mob.hit(i, true, combat.MAX_DAMAGE)
 	}

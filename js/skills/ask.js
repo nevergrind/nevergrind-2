@@ -13,8 +13,10 @@ var ask;
 		sizeOffset,
 		bottomY,
 		centerY,
+		centerHeadY,
 		shadowY,
 		getPlayerBottom,
+		getPlayerHead,
 		getPlayerCenter,
 		autoAttack,
 		processAnimations,
@@ -23,6 +25,7 @@ var ask;
 		 * h2h, 1hs, 2hs, 1hb, 2hb, pierce
 		*/
 		// particles
+		particle,
 		particleCircle,
 		particleGroup,
 		particleSmall,
@@ -567,6 +570,13 @@ var ask;
 			})
 		}
 	}
+
+	function particle(o, config = { targetMob: true}) {
+		if (!o.key) o.key = 'particle-small-default'
+		let p = ask.getImg(o, config)
+		ask.addChild(p)
+		return p
+	}
 	function particleSmall(o, config = {}) {
 		config = {
 			...particleSmallDefaults,
@@ -979,6 +989,20 @@ var ask;
 		else {
 			// player target
 			return ask.getPlayerCenter().y
+		}
+	}
+	function centerHeadY(index, targetMob) {
+		if (targetMob) {
+			return ask.centerY(index, targetMob) - (mobs[index].clickAliveH * .2)
+		}
+		else {
+			return ask.getPlayerCenter().y
+		}
+	}
+	function getPlayerHead(index) {
+		return {
+			x: 960,
+			y: 850 - 50
 		}
 	}
 	function getPlayerCenter(index) {
