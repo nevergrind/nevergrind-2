@@ -591,17 +591,16 @@ let mobs = [];
 			return mostHatedRow *= 1
 		}
 	}
-	function animateAttack(i, row) {
+	function animateAttack(i, row, isSecondary = false) {
 		if (mobs[i].isDead) return
-		isSomeoneAlive = party.isSomeoneAlive()
 		let tgt = party.presence.findIndex(p => p.row === row)
-		if (tgt > -1) animateMobTarget(i, tgt, row)
+		if (tgt > -1) setMobTarget(i, tgt, row)
 		setTimeScaleSpeed(i)
-		if (isSomeoneAlive) {
+		if (party.isSomeoneAlive()) {
 			mobs[i].animation.pause()
 			mobs[i].isAnimationActive = true
 			// var attackType = isSecondary ? 'secondary' : 'primary'
-			var attackType = 'primary'
+			var attackType = isSecondary ? 'secondary' : 'primary'
 			var speed = mobs[i].frameSpeed * frame[attackType].diff;
 			if (!mobs[i].enableSecondary) {
 				attackType = 'primary'
@@ -626,7 +625,7 @@ let mobs = [];
 			el.style.background = party.color[0]
 		})
 	}
-	function animateMobTarget(i, tgt, row) {
+	function setMobTarget(i, tgt, row) {
 		mobs[i].target = row
 		el = querySelector('#mob-target-avatar-' + i)
 		el.src = party.presence[tgt].avatar

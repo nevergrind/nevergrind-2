@@ -769,7 +769,6 @@ var combat;
 			return d
 		}
 		// check miss
-		// console.info('processDamagesHero', d)
 		// NOTE: Only auto attack can miss
 		if (d.key === 'autoAttack' &&
 			rand() < mob.missChance(index)) {
@@ -777,7 +776,6 @@ var combat;
 			d.damage = 0
 			return d
 		}
-		// console.info('processDamagesHero', index, d)
 		// dodge
 		if (skills.dodge[my.job].level &&
 			my.level >= skills.dodge[my.job].level) {
@@ -799,7 +797,7 @@ var combat;
 
 				if (!d.isPiercing &&
 					rand() < stats.riposteChance() || skill.CRU.vengeanceOn) {
-					skill.CRU.vengeanceOn = false
+					if (skill.CRU.vengeanceOn) skill.CRU.vengeanceOn = false
 					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you riposted!')
 					button.primaryAttack(true, index)
 					d.damage = 0
@@ -833,7 +831,7 @@ var combat;
 			// enhancedDamage ?
 
 			// shield block? maxes 75% reduction of damage; skips armor
-			amountReduced = 1 - stats.armorReductionRatio()
+			amountReduced = stats.armorReductionRatio()
 
 			if (items.eq[13].blockRate &&
 				rand() * 100 < items.eq[13].blockRate) {
@@ -841,20 +839,22 @@ var combat;
 				d.blocked = round(d.damage * .25)
 				if (d.blocked < 0) d.blocked = 0
 			}
-			if (mobs[index].buffFlags.sealOfDamnation) amountReduced -= buffs.sealOfDamnation.reduceDamage
+			if (mobs[index].buffFlags.sealOfDamnation) {
+				amountReduced -= buffs.sealOfDamnation.reduceDamage
+			}
 			if (skill.MNK.isMendingAuraActive()) {
 				amountReduced -= buffs.mendingAura.damageReduced[my.buffs['mendingAura-' + my.row].level]
 				chat.log(buffs.mendingAura.msgReduced, CHAT.HEAL)
 			}
 			if (mob.isFeared(index)) amountReduced -= .5
 			if (my.buffFlags.prowl) amountReduced -= .5
+			amountReduced = amountReduced - (1 - stats.resistPhysical())
 
+			// console.info('hit 2', amountReduced)
 			// console.info('reduce', amountReduced)
 			if (amountReduced < .25) amountReduced = .25
 			// armor, shield, debuff reduction
 			d.damage *= amountReduced
-			// magic prop reduction
-			d.damage *= stats.resistPhysical()
 		}
 		else {
 			// magMit
@@ -920,20 +920,39 @@ var combat;
 	function processDamageToMe(index, hits) {
 		// NOTE should be all from ONE mob of the same attack TYPE, but MANY possible PC targets
 		// always animate
-		mob.animateAttack(index, hits[0].row)
 		totalDamage = 0
 		hits.forEach(hit => {
+			// animate!!!!
+			if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
+				if (hit.key === 'Slam') {
+					mob.animateAttack(index, hits[0].row, true)
+				}
+				else {
+					// normal attack
+					mob.animateAttack(index, hits[0].row)
+				}
+			}
+			else {
+				mob.special(index, hits[0].row)
+				if (hit.key === 'Divine Judgment') {
+					ask.mobDivineJudgment(hits[0].row)
+				}
+			}
+
 			if (hit.row !== my.row) return
+			// console.info('hit 1', hit.damage)
 			hit = processDamagesHero(index, hit)
+			// console.info('hit 2', hit.damage)
+
 			if (hit.damage <= 0) {
 				// console.info('MISS!', hit.damage)
 				return
 			}
-			// console.info('hit', hit)
-			totalDamage += hit.damage
 			updateMyResource(PROP.HP, -hit.damage)
 			if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
 				// P H Y S I C A L
+
+				// messaging
 				if (hit.isPiercing) {
 					if (hit.key === 'autoAttack') {
 						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
@@ -958,15 +977,20 @@ var combat;
 					mobSkills.stunPlayer()
 				}
 				else {
+					// normal attack
 					spell.knockback()
 				}
 			}
 			else {
 				// M A G I C
-				console.warn("NOT PHYSICAL DAMAGE FROM MOB", hit)
+				// messaging
+				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' strikes YOU with '+ hit.key +' for ' + hit.damage + ' ' + hit.damageType + ' damage!', CHAT.ALERT)
+				// effects
+				spell.knockback()
 			}
 			// console.info('tx processHit: ', hit.damage)
 		})
+		// only do this stuff if it hits me
 		if (totalDamage > 0) {
 			animatePlayerFrames()
 			// damageTakenToMana vulpineMp
@@ -985,7 +1009,6 @@ var combat;
 				hpMax: my.hpMax,
 			})
 		}
-		// only do this stuff if it hits me
 	}
 
 	const TextFoo = {

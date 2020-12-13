@@ -748,14 +748,14 @@ var tooltip;
 			let hit = stats.primaryAutoAttackDamage(0, true)
 			showSkill({
 				name: 'Primary Attack',
-				description: config => '<div>Attack with your primary weapon dealing '+ getDamageRange(hit) +' physical damage.</div>'
+				description: config => '<div>'+ getWord(12) +' dealing '+ getDamageRange(hit) +' physical damage.</div>'
 			})
 		}
 		else if (event.currentTarget.id === ('skill-secondary-attack-btn')) {
 			let hit = stats.secondaryAutoAttackDamage(0, true)
 			showSkill({
 				name: 'Secondary Attack',
-				description: config => '<div>Attack with your secondary weapon dealing '+ getDamageRange(hit) +' physical damage. The dual wield skill makes this skill succeed more often.</div>'
+				description: config => '<div>'+ getWord(13) +' dealing '+ getDamageRange(hit) +' physical damage. The dual wield skill makes this skill succeed more often.</div>'
 			})
 		}
 		else if (event.currentTarget.id.startsWith('skill') || event.currentTarget.id.startsWith('academy')) {
@@ -776,6 +776,12 @@ var tooltip;
 			if (items[type][index].name) {
 				tooltip.show(items[type][index], querySelector('#' + type + '-slot-img-' + index), type)
 			}
+		}
+		//////////////////////////
+		function getWord(slot) {
+			return typeof items.eq[slot].itemType === 'undefined' ?
+				'Punch with your fist' :
+				'Attack with your '+ (slot === 12 ? 'primary' : 'secondary') +' weapon'
 		}
 	}
 	function handleLeave(event) {

@@ -39,7 +39,7 @@ var mobEffects;
 				onCompleteParams: [i],
 				ease: Linear.easeNone,
 			})
-			ask.stun({
+			ask.mobStun({
 				index: i,
 				key: 'particle-small-default',
 				duration: duration

@@ -17,6 +17,7 @@
 	///////////////////////////////////////////
 
 	function zealousSlam(o) {
+		console.info('zealousSlam', o)
 		ask.explosion(o, {
 			duration: 1.2
 		})

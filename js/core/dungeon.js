@@ -3,13 +3,16 @@ var dungeon;
 	dungeon = {
 		initialized: 0,
 		layer: {},
+		playerIds: [],
+		player: {},
 		go,
 		init,
+		setPlayers,
 		html,
 		enterCombat,
 	};
 	$('#scene-dungeon').on('click', function() {
-		if (party.presence[0].isLeader) battle.go()
+		if (!app.isApp && party.presence[0].isLeader) battle.go()
 	})
 	///////////////////////////////////////
 	function go(force) {
@@ -63,13 +66,16 @@ var dungeon;
 		mob.earnedExp = 0
 		mob.earnedGold = 0
 		mob.leveledUp = false
+		// draw players
+		dungeon.setPlayers()
+
 		ng.unlock()
 		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
 			socket.publish('party' + my.partyId, {
 				route: 'p->goDungeon'
 			}, true)
 		}
-		delayedCall(1, () => {
+		delayedCall(.5, () => {
 			if (_.size(mob.textures) === 0) {
 				battle.loadTextures()
 			}
@@ -83,6 +89,7 @@ var dungeon;
 		}
 		if (dungeon.initialized) {
 			querySelector('#scene-dungeon').style.display = 'block'
+			dungeon.layer.stage.removeChildren()
 		}
 		else {
 			dungeon.initialized = true
@@ -106,6 +113,18 @@ var dungeon;
 		}
 		button.setAll()
 		chat.scrollBottom()
+	}
+	function setPlayers() {
+		dungeon.playerIds.forEach(id => ask.removeImg()(id))
+		dungeon.playerIds = []
+		dungeon.player = PIXI.Sprite.from(`images/players/default.png`)
+		dungeon.playerIds.push(ask.askId)
+		dungeon.player.id = 'ask-' + ask.askId++
+		dungeon.player.anchor.set(.5, 1)
+		dungeon.player.x = 960
+		dungeon.player.y = 960
+		dungeon.player.zIndex = ask.DEFAULT_PLAYER_LAYER
+		ask.addChild(dungeon.player)
 	}
 	function html() {
 		return '<img id="dungeon-bg" class="wh-100" src="images/dungeon/1.jpg">'

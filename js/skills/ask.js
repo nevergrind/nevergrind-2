@@ -1,6 +1,8 @@
 var ask;
 !function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase, Expo, Sine, Circ, undefined) {
 	ask = {
+		DEFAULT_MOB_LAYER: 200,
+		DEFAULT_PLAYER_LAYER: 300,
 		askId: 0,
 		castingTweens: [],
 		castingImgIds: [],
@@ -99,9 +101,9 @@ var ask;
 		sizeStart: 0,
 		sizeEnd: 350,
 		duration: .33,
-		saturationStart: 3,
+		saturationStart: 1.5,
 		saturationEnd: 1,
-		brightnessStart: 3,
+		brightnessStart: 2,
 		brightnessEnd: 1,
 		rotation: 0,
 		alpha: 1,
@@ -668,13 +670,14 @@ var ask;
 			...particleCircleDefaults,
 			...config,
 		}
+		// console.info('particleCircle', config)
 		if (!o.key) o.key = 'particle-circle-default'
 		const img = ask.getImg(o, config)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		ask.addChild(img)
 		TweenMax.to(img, config.duration, {
-			/*startAt: {
+			startAt: {
 				pixi: {
 					saturation: config.saturationStart,
 					brightness: config.brightnessStart,
@@ -683,7 +686,7 @@ var ask;
 			pixi: {
 				saturation: config.saturationEnd,
 				brightness: config.brightnessEnd,
-			},*/
+			},
 			width: config.sizeEnd,
 			height: config.sizeEnd,
 			ease: config.ease,
@@ -1002,7 +1005,7 @@ var ask;
 	function getPlayerHead(index) {
 		return {
 			x: 960,
-			y: 850 - 50
+			y: 850 - 100
 		}
 	}
 	function getPlayerCenter(index) {
@@ -1025,20 +1028,19 @@ var ask;
 		img.y = pos.y
 	}
 
-	const DEFAULT_MOB_LAYER = 200
-	const DEFAULT_PLAYER_LAYER = 300
 	function getImg(o, config = { targetMob: true }) {
 		const img = PIXI.Sprite.from(`images/ask/${o.key}.png`)
 		img.id = 'ask-' + ask.askId++
 		img.anchor.set(.5)
+		// console.info('getImg config.target', config.target)
 		if (config.targetMob) {
 			img.x = mob.centerX[o.index]
 			img.y = ask.centerY(o.index, true)
-			img.zIndex = config.zIndex || DEFAULT_MOB_LAYER
+			img.zIndex = config.zIndex || ask.DEFAULT_MOB_LAYER
 		}
 		else {
 			positionImgToPlayer(o, img)
-			img.zIndex = config.zIndex || DEFAULT_PLAYER_LAYER
+			img.zIndex = config.zIndex || ask.DEFAULT_PLAYER_LAYER
 		}
 		return img
 	}

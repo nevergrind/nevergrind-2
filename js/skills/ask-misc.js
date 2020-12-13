@@ -1,16 +1,78 @@
 !function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, TimelineMax, undefined) {
 	ask = {
 		...ask,
-		stun,
+		mobStun,
+		mobDivineJudgment,
 	}
-	///////////////////////////////////////////
 
 	const stunRangeX = 60
 	const stunRXH = stunRangeX * .5
 	const stunRangeY = 20
 	const stunRYH = stunRangeY * .5
+	const cacheMobStuns = []
+	const cachePlayerStuns = []
 
-	function stun(o, targetMob) {
+	///////////////////////////////////////////
+	/*
+	ask.particleSmall({
+		..._.clone(o),
+		key: 'particle-small-arcane',
+	}, {
+		interval: .001,
+		loops: 25,
+		sizeStart: 32,
+		sizeEnd: 8,
+		xRange: 150,
+		yRange: 50,
+	})
+
+	ask.particleCircle({
+		..._.clone(o),
+		key: 'particle-circle-default',
+	}, {
+		duration: .5,
+		ease: Power0.easeOut,
+		alpha: 0,
+		rotation: 0,
+		sizeEnd: 333,
+	})
+
+	ask.particleGroup({
+		..._.clone(o),
+		key: 'particle-group-arcane',
+	}, {
+		targetMob: false,
+		duration: .4,
+		interval: .1,
+		sizeStart: 128,
+		sizeEnd: 64,
+		xRange: 50,
+		yRange: 0,
+		loops: 3,
+	})
+	 */
+
+	function mobDivineJudgment(index) {
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-arcane',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power0.easeOut,
+						alpha: 0,
+						rotation: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+	}
+
+	function mobStun(o, targetMob) {
 		let startX
 		let startY
 		if (targetMob) {
@@ -39,13 +101,31 @@
 			{ x: startX, y: startY }
 		]
 
+		// remove cached IDs and reset array
+		if (targetMob) {
+			if (Array.isArray(cacheMobStuns[o.index])) {
+				cacheMobStuns[o.index].forEach(index => (ask.removeImg()(index)))
+			}
+			cacheMobStuns[o.index] = []
+		}
+		else {
+			if (Array.isArray(cachePlayerStuns[o.index])) {
+				cachePlayerStuns[o.index].forEach(index => (ask.removeImg()(index)))
+			}
+			cachePlayerStuns[o.index] = []
+		}
 		for (var i=0; i<3; i++) {
 			!function createParticle(i, p, values) {
 				p.width = 32
 				p.height = 32
-				TweenMax.to(p, .333, {
+				p.x = startX
+				p.y = startY
+				if (targetMob) cacheMobStuns[o.index].push(p.id)
+				else cachePlayerStuns[o.index].push(p.id)
+				var t = new TweenMax.to(p, .333, {
 					delay: i * .111,
 					repeat: -1,
+					curviness: 1.5,
 					bezier: {
 						type: 'quadratic',
 						autoRotate: false,
@@ -55,6 +135,8 @@
 					onUpdate: checkRemoval,
 					onUpdateParams: [p],
 				})
+				if (i === 1) t.progress(1/3)
+				else if (i === 2) t.progress(2/3)
 			}(i, ask.particle(o, { targetMob: targetMob}), bezierValues)
 		}
 		/////////////////////////////////////////////

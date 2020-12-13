@@ -281,7 +281,7 @@ var stats = {};
 	}
 	function armorReductionRatio() {
 		// max of 75% reduction
-		return (stats.armor() > 3000 ? 3000 : stats.armor()) / 4000
+		return 1 - ((stats.armor() > 3000 ? 3000 : stats.armor()) / 4000)
 	}
 
 	function attack(type, fresh) {

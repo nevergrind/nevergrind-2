@@ -260,6 +260,7 @@ var battle;
 		})
 		button.setAll()
 		initBattleLayer()
+		dungeon.setPlayers()
 		combat.initCombatTextLayer() // must come after battle
 
 		// add this to test out mob placement etc;
@@ -341,7 +342,7 @@ var battle;
 			for (i=0; i<totalMobs; i++) {
 				if (!i) mobSlot = 2
 				else mobSlot = _.random(0, availableSlots.length - 1)
-				let imgName = 'orc'
+				let imgName = 'toadlok'
 
 				let mobConfig = mob.configMobType({
 					img: imgName,
@@ -356,7 +357,7 @@ var battle;
 	}
 	function loadTextures() {
 		zones[mission.id].mobs.forEach(name => {
-			// console.warn('loading mob', name)
+			console.warn('loading mob', name)
 			mob.textures[name] = []
 			for (var i=1; i<=105; i++) {
 				mob.textures[name][i] = PIXI.Texture.from('mobs/'+ name +'/'+ i +'.png')
