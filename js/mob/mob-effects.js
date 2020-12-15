@@ -45,7 +45,7 @@ var mobEffects;
 				duration: duration
 			}, true)
 		}
-		mob.hit(i, true, combat.MAX_DAMAGE)
+		mob.animateHit(i, true, combat.MAX_DAMAGE)
 	}
 	function freeze(i, duration) {
 		if (duration > timers.mobEffects[i].freezeDuration) {
@@ -77,7 +77,7 @@ var mobEffects;
 		// console.info('mobEffects STAGGERED!', i)
 		timers.mobAttack[i].kill()
 		timers.mobAttack[i] = delayedCall(mob.getMobAttackSpeed(i), mob.attack, [i])
-		mob.hit(i, true, combat.MAX_DAMAGE)
+		mob.animateHit(i, true, combat.MAX_DAMAGE)
 	}
 	function chill(i, duration) {
 		if (duration > timers.mobEffects[i].chillDuration) {

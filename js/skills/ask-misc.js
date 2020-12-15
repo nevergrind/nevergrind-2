@@ -3,6 +3,8 @@
 		...ask,
 		mobStun,
 		mobDivineJudgment,
+		mobDivineGrace,
+		mobLayHands,
 	}
 
 	const stunRangeX = 60
@@ -51,6 +53,79 @@
 		loops: 3,
 	})
 	 */
+	function mobLayHands(index, tgt) { // tx rx
+		// console.info('mobDivineGrace', index, row)
+		for (var i=0; i<10; i++) {
+			ask.starburst({index: index})
+			!function(i) {
+				delayedCall(i * .1, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'cast-swirl-arcane',
+					}, {
+						duration: .7,
+						ease: Power1.easeInOut,
+						alpha: 0,
+						sizeStart: mobs[index].width * .75,
+						sizeEnd: mobs[index].width * .5,
+					})
+				})
+			}(i)
+		}
+		ask.starburst({index: tgt})
+		for (var i=0; i<5; i++) {
+			!function(i) {
+				delayedCall(i * .1, () => {
+					ask.particleCircle({
+						index: tgt,
+						key: 'particle-circle-arcane',
+					}, {
+						duration: .7,
+						ease: Power1.easeInOut,
+						saturationStart: 2,
+						brightnessStart: 5,
+						saturationEnd: 1,
+						brightnessEnd: 0,
+						alpha: 0,
+						sizeStart: mobs[tgt].width * .5,
+						sizeEnd: 0,
+					})
+				})
+			}(i)
+		}
+	}
+
+	function mobDivineGrace(index, tgt) { // tx rx
+		// console.info('mobDivineGrace', index, row)
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .03, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'cast-swirl-arcane',
+					}, {
+						duration: .4,
+						ease: Power2.easeOut,
+						alpha: 1,
+						sizeStart: mobs[index].width * .75,
+						sizeEnd: mobs[index].width * .5,
+					})
+				})
+			}(i)
+		}
+		ask.particleGroup({
+			index: tgt,
+			key: 'particle-group-arcane',
+		}, {
+			duration: .3,
+			interval: .1,
+			sizeStart: 192,
+			sizeEnd: 128,
+			xRange: 75,
+			yRange: 0,
+			loops: 3,
+		})
+	}
 
 	function mobDivineJudgment(index) {
 		for (var i=0; i<3; i++) {
@@ -64,7 +139,6 @@
 						duration: .25,
 						ease: Power0.easeOut,
 						alpha: 0,
-						rotation: 0,
 						sizeEnd: 350,
 					})
 				})

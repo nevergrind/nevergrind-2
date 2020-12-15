@@ -2,6 +2,12 @@ mobSkills = {};
 !function($, _, TweenMax, Linear, Math, undefined) {
 	mobSkills = {
 		decideSkill,
+		getMobsThatNeedsHealing,
+		stunPlayer,
+		stunPlayerEffect,
+		modifyMobStatsByClass,
+		skillNameByJob,
+		// mob skills
 		autoAttack,
 		slam,
 		divineJudgment,
@@ -46,21 +52,13 @@ mobSkills = {};
 		magicMissiles,
 		lightningBolt,
 		fireball,
-		stunPlayer,
-		stunPlayerEffect,
-		modifyMobStatsByClass,
-		skillNameByJob,
-		/*Slam: {
-			name: 'Slam',
-			stunDuration: 3
-		},*/
 		WAR: [
 			{ chance: .08, name: 'Slam' },
 		],
 		CRU: [
 			{ chance: .07, name: 'Slam' },
-			{ chance: .4, name: 'Divine Judgment' },
-			{ chance: 0, name: 'Divine Grace', type: 'heal' },
+			{ chance: .11, name: 'Divine Judgment' },
+			{ chance: 0, name: 'Divine Grace', maxHeal: 1 },
 			{ chance: 0, name: 'Lay Hands' },
 		],
 		SHD: [
@@ -95,20 +93,20 @@ mobSkills = {};
 			{ chance: .1, name: 'Starfire' },
 			{ chance: .1, name: 'Lightning Blast' },
 			{ chance: .1, name: 'Blizzard' },
-			{ chance: 0, name: 'Nature\'s Touch', type: 'heal' },
+			{ chance: 0, name: 'Nature\'s Touch', maxHeal: 2 },
 		],
 		CLR: [
 			{ chance: .03, name: 'Slam', },
 			{ chance: .1, name: 'Smite' },
 			{ chance: .12, name: 'Force of Glory' },
-			{ chance: 0, name: 'Divine Light', type: 'heal' },
+			{ chance: 0, name: 'Divine Light', maxHeal: 3 },
 		],
 		SHM: [
 			{ chance: .03, name: 'Slam', },
 			{ chance: .1, name: 'Frost Rift' },
 			{ chance: .12, name: 'Scourge' },
 			{ chance: .15, name: 'Affliction' },
-			{ chance: 0, name: 'Mystical Glow', type: 'heal' },
+			{ chance: 0, name: 'Mystical Glow', maxHeal: 2 },
 		],
 		WLK: [
 			{ chance: .02, name: 'Slam', },
@@ -157,6 +155,12 @@ mobSkills = {};
 		}
 		return name
 	}
+
+	const mobHealThreshold = .99
+	// const mobHealThreshold = .4
+	function getMobsThatNeedsHealing() {
+		return mobs.filter(m => ((m.hp / m.hpMax) < mobHealThreshold))
+	}
 	function decideSkill(index, row) {
 		if (row <= 0) return // player row not found?
 		if (mob.isParalyzed(index) && rand() < ParalyzeRate) {
@@ -167,30 +171,52 @@ mobSkills = {};
 		}
 		else {
 			mobDamages = []
-			// select a skill to use
-			let skillName = mobSkills.skillNameByJob(mobs[index].job)
-			if (skillName) {
-			// if (true) {
-				if (skillName === 'Slam') {
-					mobDamages = [mobSkills.slam(index, row)]
-				}
-				else if (skillName === 'Divine Judgment') {
-					mobDamages = [mobSkills.divineJudgment(index, row)]
-				}
 
-				// TODO: heal branch in here at some point?
+			// should this mob try to heal?
+			let injuredMobs = mobSkills.getMobsThatNeedsHealing()
+			let injuredMobLen = injuredMobs.length
+			let jobData = mobSkills[mobs[index].job]
+			let jobHealData = jobData.find(s => s.maxHeal > 0)
+
+			// must have a heal spell, be below heal count max, and be an injured mob
+			if (mobs[index].job === JOB.CRUSADER &&
+				!mobs[index].usedLayHands &&
+				rand() < .1 &&
+				injuredMobLen >= 1) {
+				mobDamages = [mobSkills.layHands(index, getHealTarget())]
+			}
+			else if (typeof jobHealData.maxHeal === 'number' &&
+				mobs[index].healCount < jobHealData.maxHeal &&
+				rand() < .1 &&
+				injuredMobLen >= 1) {
+				mobDamages = [mobSkills.divineGrace(index, getHealTarget())]
 			}
 			else {
-				// auto attack
-				mobDamages = [mobSkills.autoAttack(index, row)]
-				if (rand() * 100 < mobs[index].doubleAttack) {
-					mobDamages.push(mobSkills.autoAttack(index, row))
+				// see if a random skill is used or auto attack
+				let skillName = mobSkills.skillNameByJob(mobs[index].job)
+				if (skillName) {
+				// if (true) {
+					if (skillName === 'Slam') {
+						mobDamages = [mobSkills.slam(index, row)]
+					}
+					else if (skillName === 'Divine Judgment') {
+						mobDamages = [mobSkills.divineJudgment(index, row)]
+					}
+				}
+				else {
+					// auto attack
+					mobDamages = [mobSkills.autoAttack(index, row)]
+					if (rand() * 100 < mobs[index].doubleAttack) {
+						mobDamages.push(mobSkills.autoAttack(index, row))
+					}
 				}
 			}
-			// console.info(index, skillName, mobDamages)
+			///////////////////////////////////////////////////////////
+			function getHealTarget() {
+				return injuredMobs[_.random(0, injuredMobLen - 1)].index
+			}
 		}
 		combat.txDamageHero(index, mobDamages)
-
 	}
 	function slam(i, row) {
 		return {
@@ -207,11 +233,23 @@ mobSkills = {};
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
-	function divineGrace(i, row) {
-
+	function divineGrace(i, tgt) {
+		return {
+			isHeal: true,
+			index: tgt,
+			key: 'Divine Grace',
+			damage: ~~_.random(ceil(mobs[i].int * 18), mobs[i].int * 20),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
-	function layHands(i, row) {
-
+	function layHands(i, tgt) {
+		return {
+			isHeal: true,
+			index: tgt,
+			key: 'Lay Hands',
+			damage: ~~_.random(ceil(mobs[i].int * 76), mobs[i].int * 80),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function bloodTerror(i, row) {
 

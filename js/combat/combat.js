@@ -101,7 +101,6 @@ var combat;
 		},
 	}
 	var el, w, h, i, len, damageArr, hit, damages, procDamage, procHit, buffArr, index, hotData, buffData, key, resist, resistPenalty
-	let txHpUpdate = false
 	let battleTextInitialized = false
 	const TextDuration = 1
 	const TextDistanceX = 200
@@ -121,28 +120,16 @@ var combat;
 		stroke: '#430',
 		strokeThickness: 3,
 	}
-	const addedDamageTypes = [{
-		add: PROP.ADD_BLOOD,
-		resist: DAMAGE_TYPE.BLOOD,
-	}, {
-		add: PROP.ADD_POISON,
-		resist: DAMAGE_TYPE.POISON,
-	}, {
-		add: PROP.ADD_ARCANE,
-		resist: DAMAGE_TYPE.ARCANE,
-	}, {
-		add: PROP.ADD_LIGHTNING,
-		resist: DAMAGE_TYPE.LIGHTNING,
-	}, {
-		add: PROP.ADD_FIRE,
-		resist: DAMAGE_TYPE.FIRE,
-	}, {
-		add: PROP.ADD_ICE,
-		resist: DAMAGE_TYPE.ICE,
-	}]
+	const combatTextHealStyle = {
+		fontFamily: 'Play',
+		fontSize: 36,
+		fontWeight: 'bold',
+		fill: ['#55aa55', '#ddffdd', '#ddffdd', '#55aa55'],
+		stroke: '#060',
+		strokeThickness: 3,
+	}
 	const resourceLeechDivider = 1000
 	let chance = 0
-	let addedDamage = 0
 	let amountReduced = 0
 	let totalAddedDamage = 0
 	let totalDamage = 0
@@ -426,30 +413,39 @@ var combat;
 
 	function updateMobHp(o) {
 		// console.info('updateMobHp updateHate obj', _.clone(o))
-		if (typeof buffs[o.key] === 'object') {
-			if (typeof buffs[o.key].hate === 'undefined') o.hate = 1
-			else o.hate = buffs[o.key].hate
-		}
-		else {
-			// default damage hate value
-			o.hate = 1
+		if (!o.isHeal) {
+			if (typeof buffs[o.key] === 'object') {
+				if (typeof buffs[o.key].hate === 'undefined') o.hate = 1
+				else o.hate = buffs[o.key].hate
+			}
+			else {
+				// default damage hate value
+				o.hate = 1
+			}
 		}
 		// console.info('updateHate hate val', o.hate)
-		mobs[o.index].hp -= o.damage
-		party.damage[o.row] += o.damage
+		if (o.isHeal) {
+			mobs[o.index].hp += o.damage
+		}
+		else {
+			mobs[o.index].hp -= o.damage
+			party.damage[o.row] += o.damage
+		}
 
 		// alive
-		mob.hit(o.index, false, o.damage)
+		if (o.damage > 0) {
+			mob.animateHit(o.index, false, o.damage)
+		}
 		combat.popupDamage(o.index, o.damage, o)
 		mob.updateHate(o)
 		mob.drawMobBar(o.index)
-		if (mobs[o.index].hp <= 0) {
+		if (!o.isHeal && mobs[o.index].hp <= 0) {
 			// console.warn('mob is dead!')
 			if (timers.castBar < 1
 				&& my.target === o.index) {
 				spell.cancelSpell()
 			}
-			mob.death(o.index)
+			mob.animateDeath(o.index)
 			my.fixTarget()
 			if (isBattleOver()) {
 				endCombat()
@@ -458,14 +454,17 @@ var combat;
 			}
 		}
 		// console.info('object', o)
-		ask.processAnimations(o, true)
-		processEffects(o)
-	}
-	function processEffects(o) {
-		if (typeof o.effects === 'object') {
-			// console.info('processEffects')
-			// non-duration effects that are not buffs, but apply instantly
-			if (o.effects.stagger) mobEffects.stagger(o.index)
+		if (!o.isHeal) {
+			ask.processAnimations(o, true)
+			processEffects(o)
+		}
+		////////////////////////////////////////
+		function processEffects(o) {
+			if (typeof o.effects === 'object') {
+				// console.info('processEffects')
+				// non-duration effects that are not buffs, but apply instantly
+				if (o.effects.stagger) mobEffects.stagger(o.index)
+			}
 		}
 	}
 	function processLeech(leechValue) {
@@ -888,7 +887,6 @@ var combat;
 		// damages is an object with indices that point to player row (target)
 		// TODO: Single player mode should bypass publishes everywhere...? lots of work
 		if (party.presence[0].isLeader) {
-			// console.info('txDamageHero', index, damages)
 			socket.publish('party' + my.partyId, {
 				route: 'p->hit',
 				i: index,
@@ -909,13 +907,25 @@ var combat;
 		// console.info('rxDamageHero', data)
 		// NOTE: possible for one mob to attack multiple PCs at once (AE breath, etc)
 
-		// console.info('rxDamageHero: ', damages.length, data)
 		if (hits[0].isParalyzed) {
 			chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', CHAT.WARNING)
 		}
 		else {
-			processDamageToMe(data.i, hits)
+			if (hits[0].isHeal) processHealToMob(data.i, hits)
+			else processDamageToMe(data.i, hits)
 		}
+	}
+	function processHealToMob(index, hits) {
+		// animate mob
+		mob.animateSpecial(index)
+		// animate particles of tx and rx
+		hits.filter(filterImpossibleMobTargets).forEach(hit => {
+			console.info('hit', hit)
+			if (hit.key === 'Divine Grace') ask.mobDivineGrace(index, hit.index)
+			else if (hit.key === 'Lay Hands') ask.mobLayHands(index, hit.index)
+			hit.healedBy = index
+			updateMobHp(hit)
+		})
 	}
 	function processDamageToMe(index, hits) {
 		// NOTE should be all from ONE mob of the same attack TYPE, but MANY possible PC targets
@@ -933,7 +943,7 @@ var combat;
 				}
 			}
 			else {
-				mob.special(index, hits[0].row)
+				mob.animateSpecial(index)
 				if (hit.key === 'Divine Judgment') {
 					ask.mobDivineJudgment(hits[0].row)
 				}
@@ -976,6 +986,9 @@ var combat;
 					// should stun player
 					mobSkills.stunPlayer()
 				}
+				else if (hit.key === 'Harm Touch') {
+					mobs[index].usedHarmTouch = true
+				}
 				else {
 					// normal attack
 					spell.knockback()
@@ -986,9 +999,9 @@ var combat;
 				// messaging
 				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' strikes YOU with '+ hit.key +' for ' + hit.damage + ' ' + hit.damageType + ' damage!', CHAT.ALERT)
 				// effects
+				// console.info('tx processHit: ', hit)
 				spell.knockback()
 			}
-			// console.info('tx processHit: ', hit.damage)
 		})
 		// only do this stuff if it hits me
 		if (totalDamage > 0) {
@@ -1017,19 +1030,41 @@ var combat;
 	}
 	const TextBar = {
 		startAt: { pixi: { brightness: 3, contrast: 3 }},
-		pixi: { brightness: .75, contrast: .75 },
+		pixi: { brightness: 1.25, contrast: 1 },
 	}
 	function popupDamage(index, damage, o = {}) {
-		if (typeof damage === 'number' && damage <= 0) return
-		const basicText = new PIXI.Text(damage + '', o.isCrit ? combatTextCritStyle : combatTextRegularStyle)
+		if (!o.isHeal) {
+			if (typeof damage === 'number' && damage <= 0) return
+		}
+		const basicText = new PIXI.Text(damage + '', o.isCrit ?
+			combatTextCritStyle : o.isHeal ?
+				combatTextHealStyle : combatTextRegularStyle
+		)
 		basicText.anchor.set(0.5)
+		if (o.isHeal) {
+			if (o.key === 'Lay Hands') mobs[o.healedBy].usedLayHands = true
+			else mobs[o.healedBy].healCount++
+		}
+		else {
+			mobs[index].hitCount++
+		}
+
 		basicText.id = 'text-' + combat.textId++
-		mobs[index].hitCount++
 		basicText.x = mob.centerX[index]
 		basicText.y = ask.centerY(index, true) + ((mobs[index].hitCount % 5) * 20)
 		// console.info('basicText', basicText)
 		combat.text.stage.addChild(basicText)
-		if (o.isDot) {
+		if (o.isHeal) {
+			// heal
+			TweenMax.to(basicText, TextDuration * 2, {
+				y: '-=' + TextDistanceY * 1.5 + '',
+				ease: Power2.easeOut,
+				onComplete: removeText,
+				onCompleteParams: [ basicText.id ],
+			})
+		}
+		else if (o.isDot) {
+			// dot
 			TweenMax.to(basicText, TextDuration, {
 				y: '-=' + TextDistanceY * 1.5 + '',
 				ease: Power2.easeOut,
@@ -1038,9 +1073,10 @@ var combat;
 			})
 		}
 		else {
+			// damage
 			TweenMax.to(basicText, TextDuration * .6, {
 				y: '-=' + TextDistanceY + '',
-				onComplete: popupDamageFade,
+				onComplete: fadeOut,
 				ease: Power3.easeOut
 			})
 			x = _.random(-TextDistanceX, TextDistanceX)
@@ -1052,7 +1088,7 @@ var combat;
 		TweenMax.to(basicText, TextDuration * .5, TextFoo)
 		TweenMax.to(basicText, TextDuration, TextBar)
 		/////////////////////////
-		function popupDamageFade() {
+		function fadeOut() {
 			TweenMax.to(basicText, TextDuration * .4, {
 				y: '+=' + TextDistanceY * .5 + '',
 				alpha: 0,
@@ -1200,7 +1236,7 @@ var combat;
 	}
 	function processBuffToMe(data) {
 		hate = 0
-		console.info('processBuffToMe', data)
+		// console.info('processBuffToMe', data)
 		data.buffs.forEach(buff => {
 			if (buffs[buff.key].hate) {
 				hate += ~~(buff.damage * buffs[buff.key].hate)

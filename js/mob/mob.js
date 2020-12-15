@@ -25,11 +25,11 @@ let mobs = [];
 		// animations
 		resetIdle,
 		idle,
-		hit,
+		animateHit,
 		attack,
 		animateAttack,
-		special,
-		death,
+		animateSpecial,
+		animateDeath,
 		getMobAttackSpeed,
 		killAttacks,
 		missChance,
@@ -214,6 +214,9 @@ let mobs = [];
 				buffFlags: {},
 				box: {},
 				dom: {},
+				healCount: 0,
+				usedLayHands: false,
+				usedHarmTouch: false,
 				target: my.row,
 			}
 		}
@@ -511,7 +514,7 @@ let mobs = [];
 	function isAlive(i) {
 		return i >= 0 && i < mob.max && mobs[i].name && mobs[i].hp > 0
 	}
-	function hit(i, bypass, damage) {
+	function animateHit(i, bypass, damage) {
 		if (ng.view !== 'battle' || mobs[i].isDead) return
 		setTimeScaleSpeed(i)
 		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return;
@@ -632,7 +635,7 @@ let mobs = [];
 		el.style.background = party.color[tgt]
 	}
 
-	function special(i) {
+	function animateSpecial(i) {
 		if (mobs[i].isDead) return
 		if (mobs[i].isAnimationActive) return
 		if (party.isSomeoneAlive()) {
@@ -659,7 +662,7 @@ let mobs = [];
 			}
 		}
 	}
-	function death(i) {
+	function animateDeath(i) {
 		if (mobs[i].isDead) return
 		mobs[i].isDead = true
 		mobs[i].name = ''
