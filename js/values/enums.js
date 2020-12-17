@@ -185,6 +185,7 @@ const DAMAGE_TYPE = Object.freeze({
 	LIGHTNING: 'lightning',
 	FIRE: 'fire',
 	ICE: 'ice',
+	VOID: 'void',
 })
 const MOB_TYPE = Object.freeze({
 	HUMANOID: 'humanoid',

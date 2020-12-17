@@ -6,7 +6,7 @@ mobSkills = {};
 		stunPlayer,
 		stunPlayerEffect,
 		modifyMobStatsByClass,
-		skillNameByJob,
+		getRandomSkillByJob,
 		// mob skills
 		autoAttack,
 		slam,
@@ -53,111 +53,110 @@ mobSkills = {};
 		lightningBolt,
 		fireball,
 		WAR: [
-			{ chance: .08, name: 'Slam' },
+			{ chance: .08, key: 'slam' },
 		],
 		CRU: [
-			{ chance: .07, name: 'Slam' },
-			{ chance: .11, name: 'Divine Judgment' },
-			{ chance: 0, name: 'Divine Grace', maxHeal: 1 },
-			{ chance: 0, name: 'Lay Hands' },
+			{ chance: .05, key: 'slam' },
+			{ chance: .12, key: 'divineJudgment' },
+			{ chance: 0, key: 'divineGrace', maxHeal: 1 },
+			{ chance: 0, key: 'layHands' },
 		],
 		SHD: [
-			{ chance: .07, name: 'Slam' },
-			{ chance: .07, name: 'Blood Terror' },
-			{ chance: .09, name: 'Decaying Doom' },
-			{ chance: 0, name: 'Harm Touch' },
+			{ chance: .05, key: 'slam' },
+			{ chance: .99, key: 'bloodTerror' },
+			{ chance: .0, key: 'decayingDoom' },
+			{ chance: 0, key: 'harmTouch' },
 		],
 		MNK: [
-			{ chance: .05, name: 'Slam', },
-			{ chance: .07, name: 'Crane Kick' },
-			{ chance: .11, name: 'Hadoken' },
-			{ chance: .15, name: 'Dragon Punch' },
+			{ chance: .05, key: 'slam', },
+			{ chance: .07, key: 'craneKick' },
+			{ chance: .11, key: 'hadoken' },
+			{ chance: .15, key: 'dragonPunch' },
 		],
 		ROG: [
-			{ chance: .05, name: 'Slam', },
-			{ chance: .07, name: 'Backstab' },
-			{ chance: .1, name: 'Widow Strike' },
+			{ chance: .05, key: 'slam', },
+			{ chance: .07, key: 'backstab' },
+			{ chance: .1, key: 'widowStrike' },
 		],
 		RNG: [
-			{ chance: .05, name: 'Slam', },
-			{ chance: .07, name: 'Trueshot Strike' },
-			{ chance: .15, name: 'Burning Embers' },
-			{ chance: .19, name: 'Shock Nova' },
+			{ chance: .05, key: 'slam', },
+			{ chance: .07, key: 'trueshotStrike' },
+			{ chance: .15, key: 'burningEmbers' },
+			{ chance: .19, key: 'shockNova' },
 		],
 		BRD: [ // should boost regen and resists too?
-			{ chance: .05, name: 'Slam', },
-			{ chance: .1, name: 'Bellow' },
+			{ chance: .05, key: 'slam', },
+			{ chance: .1, key: 'bellow' },
 		],
 		DRU: [
-			{ chance: .03, name: 'Slam', },
-			{ chance: .1, name: 'Starfire' },
-			{ chance: .1, name: 'Lightning Blast' },
-			{ chance: .1, name: 'Blizzard' },
-			{ chance: 0, name: 'Nature\'s Touch', maxHeal: 2 },
+			{ chance: .03, key: 'slam', },
+			{ chance: .1, key: 'starfire' },
+			{ chance: .1, key: 'lightningBlast' },
+			{ chance: .1, key: 'blizzard' },
+			{ chance: 0, key: 'naturesTouch', maxHeal: 2 },
 		],
 		CLR: [
-			{ chance: .03, name: 'Slam', },
-			{ chance: .1, name: 'Smite' },
-			{ chance: .12, name: 'Force of Glory' },
-			{ chance: 0, name: 'Divine Light', maxHeal: 3 },
+			{ chance: .03, key: 'slam', },
+			{ chance: .1, key: 'smite' },
+			{ chance: .12, key: 'forceOfGlory' },
+			{ chance: 0, key: 'divineLight', maxHeal: 3 },
 		],
 		SHM: [
-			{ chance: .03, name: 'Slam', },
-			{ chance: .1, name: 'Frost Rift' },
-			{ chance: .12, name: 'Scourge' },
-			{ chance: .15, name: 'Affliction' },
-			{ chance: 0, name: 'Mystical Glow', maxHeal: 2 },
+			{ chance: .03, key: 'slam', },
+			{ chance: .1, key: 'frostRift' },
+			{ chance: .12, key: 'scourge' },
+			{ chance: .15, key: 'affliction' },
+			{ chance: 0, key: 'mysticalGlow', maxHeal: 2 },
 		],
 		WLK: [
-			{ chance: .02, name: 'Slam', },
-			{ chance: .1, name: 'Venom Bolt' },
-			{ chance: .12, name: 'Bloodfire' },
-			{ chance: .15, name: 'Panic Strike' },
-			{ chance: .15, name: 'Engulfing Darkness' },
+			{ chance: .02, key: 'slam', },
+			{ chance: .1, key: 'venomBolt' },
+			{ chance: .12, key: 'bloodfire' },
+			{ chance: .15, key: 'panicStrike' },
+			{ chance: .15, key: 'engulfingDarkness' },
 		],
 		ENC: [
-			{ chance: .02, name: 'Slam', },
-			{ chance: .1, name: 'Mind Blitz' },
-			{ chance: .12, name: 'Static Suffocation' },
-			{ chance: .15, name: 'Subversion' },
+			{ chance: .02, key: 'slam', },
+			{ chance: .1, key: 'mindBlitz' },
+			{ chance: .12, key: 'staticSuffocation' },
+			{ chance: .15, key: 'subversion' },
 		],
 		TMP: [
-			{ chance: .02, name: 'Slam', },
-			{ chance: .05, name: 'Lava Bolt', },
-			{ chance: .1, name: 'Static Storm' },
-			{ chance: .12, name: 'Arclight' },
-			{ chance: .15, name: 'Glacial Spike' },
+			{ chance: .02, key: 'slam', },
+			{ chance: .05, key: 'lavaBolt', },
+			{ chance: .1, key: 'staticStorm' },
+			{ chance: .12, key: 'arclight' },
+			{ chance: .15, key: 'glacialSpike' },
 		],
 		WIZ: [
-			{ chance: .02, name: 'Slam', },
-			{ chance: .1, name: 'Fire Bolt' },
-			{ chance: .12, name: 'Ice Bolt' },
-			{ chance: .15, name: 'Magic Missiles' },
-			{ chance: .15, name: 'Lightning Bolt' },
-			{ chance: .15, name: 'Fireball' },
+			{ chance: .02, key: 'slam', },
+			{ chance: .1, key: 'fireBolt' },
+			{ chance: .12, key: 'iceBolt' },
+			{ chance: .15, key: 'magicMissiles' },
+			{ chance: .15, key: 'lightningBolt' },
+			{ chance: .15, key: 'fireball' },
 		],
-
 	}
 	let mobDamage = {}, mobDamages
 
 
 	///////////////////////////////////////////
-	function skillNameByJob(job) {
+	function getRandomSkillByJob(job) {
 		let r = rand()
-		let name = ''
+		let skill = {}
 		let len = mobSkills[job].length
 		let i = len - 1
 		while (i >= 0) {
 			if (r < mobSkills[job][i].chance) {
-				name = mobSkills[job][i].name
+				skill = mobSkills[job][i]
 			}
 			i--
 		}
-		return name
+		return skill
 	}
 
-	const mobHealThreshold = .99
-	// const mobHealThreshold = .4
+	// const mobHealThreshold = .99
+	const mobHealThreshold = .4
 	function getMobsThatNeedsHealing() {
 		return mobs.filter(m => ((m.hp / m.hpMax) < mobHealThreshold))
 	}
@@ -176,31 +175,45 @@ mobSkills = {};
 			let injuredMobs = mobSkills.getMobsThatNeedsHealing()
 			let injuredMobLen = injuredMobs.length
 			let jobData = mobSkills[mobs[index].job]
-			let jobHealData = jobData.find(s => s.maxHeal > 0)
+			let jobHealData = jobData.find(s => s.maxHeal)
 
-			// must have a heal spell, be below heal count max, and be an injured mob
-			if (mobs[index].job === JOB.CRUSADER &&
+			// harm touch
+			if (mobs[index].job === JOB.SHADOW_KNIGHT &&
+				!mobs[index].usedHarmTouch
+				&& rand() < .1666) {
+				mobDamages = [mobSkills.harmTouch(index, row)]
+			}
+			// lay hands
+			else if (mobs[index].job === JOB.CRUSADER &&
 				!mobs[index].usedLayHands &&
 				rand() < .1 &&
 				injuredMobLen >= 1) {
 				mobDamages = [mobSkills.layHands(index, getHealTarget())]
 			}
-			else if (typeof jobHealData.maxHeal === 'number' &&
+			// all heals
+			else if (typeof jobHealData === 'object' &&
+				typeof jobHealData.maxHeal === 'number' &&
 				mobs[index].healCount < jobHealData.maxHeal &&
 				rand() < .1 &&
 				injuredMobLen >= 1) {
+				// must have a heal spell, be below heal count max, and find an injured mob
 				mobDamages = [mobSkills.divineGrace(index, getHealTarget())]
 			}
+			// DoTs and DDs
 			else {
 				// see if a random skill is used or auto attack
-				let skillName = mobSkills.skillNameByJob(mobs[index].job)
-				if (skillName) {
-				// if (true) {
-					if (skillName === 'Slam') {
+				let skillData = mobSkills.getRandomSkillByJob(mobs[index].job)
+				// console.info('picked', skillData)
+				if (skillData.key) {
+					// find skill names
+					if (skillData.key === 'slam') {
 						mobDamages = [mobSkills.slam(index, row)]
 					}
-					else if (skillName === 'Divine Judgment') {
+					else if (skillData.key === 'divineJudgment') {
 						mobDamages = [mobSkills.divineJudgment(index, row)]
+					}
+					else if (skillData.key === 'bloodTerror') {
+						mobDamages = [mobSkills.bloodTerror(index, row)]
 					}
 				}
 				else {
@@ -216,19 +229,21 @@ mobSkills = {};
 				return injuredMobs[_.random(0, injuredMobLen - 1)].index
 			}
 		}
+		// default just in case
+		if (!mobDamages.length) mobDamages = [mobSkills.autoAttack(index, row)]
 		combat.txDamageHero(index, mobDamages)
 	}
 	function slam(i, row) {
 		return {
 			row: row,
-			key: 'Slam',
+			key: 'slam',
 			damage: ~~_.random(ceil(mobs[i].attack * .6), mobs[i].attack * 1.2),
 		}
 	}
 	function divineJudgment(i, row) {
 		return {
 			row: row,
-			key: 'Divine Judgment',
+			key: 'divineJudgment',
 			damage: ~~_.random(ceil(mobs[i].int * 1.4), mobs[i].int * 1.6),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
@@ -237,7 +252,7 @@ mobSkills = {};
 		return {
 			isHeal: true,
 			index: tgt,
-			key: 'Divine Grace',
+			key: 'divineGrace',
 			damage: ~~_.random(ceil(mobs[i].int * 18), mobs[i].int * 20),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
@@ -246,19 +261,30 @@ mobSkills = {};
 		return {
 			isHeal: true,
 			index: tgt,
-			key: 'Lay Hands',
-			damage: ~~_.random(ceil(mobs[i].int * 76), mobs[i].int * 80),
+			key: 'layHands',
+			damage: ~~_.random(ceil(mobs[i].int * 70), mobs[i].int * 75),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
 	function bloodTerror(i, row) {
-
+		return {
+			row: row,
+			key: 'bloodTerror',
+			ticks: 10,
+			damage: mobs[i].int * 4.5,
+			damageType: DAMAGE_TYPE.BLOOD,
+		}
 	}
 	function decayingDoom(i, row) {
 
 	}
 	function harmTouch(i, row) {
-
+		return {
+			row: row,
+			key: 'harmTouch',
+			damage: ~~_.random(ceil(mobs[i].int * 8.6), mobs[i].int * 9),
+			damageType: DAMAGE_TYPE.VOID,
+		}
 	}
 	function craneKick(i, row) {
 

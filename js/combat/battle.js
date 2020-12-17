@@ -76,9 +76,16 @@ var battle;
 	let battleSceneInitialized = false
 	let buffImage = ''
 	let mobStackCount = 0
-	const flashDuration = 10
+	const FLASH_DURATION = 10
 	const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	let battleLayerInitialized = false
+	const FLASH_BUFF_OBJ = {
+		startAt: { opacity: 1 },
+		repeat: -1,
+		yoyo: true,
+		opacity: .5,
+		ease: Linear.easeNone,
+	}
 
 	init()
 
@@ -542,13 +549,13 @@ var battle;
 		// start current
 		if (mobs[my.target] !== void 0) {
 			for (key in mobs[my.target].buffs) {
-				if (mobs[tgt].buffs[key].duration < flashDuration) {
+				if (mobs[tgt].buffs[key].duration < FLASH_DURATION) {
 					flashTargetBuff(key, tgt)
 				}
 				else {
 					// console.info('flashTargetBuff startBuffTimers', key, tgt, mobs[tgt].buffs[key].duration)
 					battle.buffIconTimers[key] = delayedCall(
-						mobs[tgt].buffs[key].duration - flashDuration,
+						mobs[tgt].buffs[key].duration - FLASH_DURATION,
 						flashTargetBuff, [key, tgt]
 					)
 				}
@@ -587,7 +594,8 @@ var battle;
 		if (popover.lastHoverId.startsWith('buff-')) popover.hide()
 	}
 	///////////////////////// myBuffs
-	function addMyBuff(key, keyRow) {
+	function addMyBuff(key, keyRow, duration) {
+		duration = duration || buffs[key].duration
 		// buffs that can only be active once
 		if (typeof keyRow === 'undefined') keyRow = key
 		// console.info('addMyBuff', key, keyRow)
@@ -613,7 +621,7 @@ var battle;
 			})
 		}
 
-		if (buffs[key].duration > 0) {
+		if (duration > 0) {
 			if (typeof my.buffIconTimers[keyRow] === 'object') {
 				my.buffIconTimers[keyRow].kill()
 				if (typeof my.buffIconTimers[keyRow + '-remove'] === 'object') {
@@ -621,30 +629,19 @@ var battle;
 				}
 			}
 			// start timer
-			if (buffs[key].duration < flashDuration) flashMyBuff(key, keyRow)
+			if (duration < FLASH_DURATION) flashMyBuff(key, keyRow)
 			else {
-				my.buffIconTimers[keyRow] = delayedCall(
-					buffs[key].duration - flashDuration,
-					flashMyBuff, [key, keyRow]
-				)
+				my.buffIconTimers[keyRow] = delayedCall(duration - FLASH_DURATION, flashMyBuff, [key, keyRow])
 			}
 		}
+		///////////////////////////////////////////////////
+		function flashMyBuff(key, keyRow) {
+			// console.info('flashMyBuff', key)
+			my.buffIconTimers[keyRow] = TweenMax.to('#mybuff-' + keyRow, .5, FLASH_BUFF_OBJ)
+			my.buffIconTimers[keyRow + '-remove'] = delayedCall(my.buffs[keyRow].duration, removeMyBuffIcon, [key, keyRow])
+		}
 	}
-	function flashMyBuff(key, keyRow) {
-		// console.info('flashMyBuff', key)
-		my.buffIconTimers[keyRow] = TweenMax.to('#mybuff-' + keyRow, .5, {
-			startAt: { opacity: 1 },
-			repeat: -1,
-			yoyo: true,
-			opacity: .5,
-			ease: Linear.easeNone,
-		})
-		my.buffIconTimers[keyRow + '-remove'] = delayedCall(
-			my.buffs[keyRow].duration,
-			removeMyBuffIcon, [key, keyRow]
-		)
-	}
-	function removeMyBuffFlag(keyRow) {
+	function removeMyBuffFlag(keyRow, skipMsgCheck = false) {
 		/**
 		 * Buff naturally times out via duration
 		 */
@@ -659,6 +656,9 @@ var battle;
 		}
 		if (!buffStillActive) {
 			my.buffFlags[keyRow] = false
+			if (skipMsgCheck) return
+
+			// check msg and process stats?
 			if (startedActive &&
 				buffs[getBuffKey(keyRow)].fadeMsg) {
 				if (!battle.lastBuffAlreadyActive) {
@@ -668,10 +668,11 @@ var battle;
 				combat.processStatBuffsToMe(getBuffKey(keyRow))
 			}
 		}
-	}
-	function getBuffKey(keyRow) {
-		if (keyRow.includes('-')) keyRow = keyRow.split('-')[0]
-		return keyRow
+		///////////////////////////////////////////
+		function getBuffKey(keyRow) {
+			if (keyRow.includes('-')) keyRow = keyRow.split('-')[0]
+			return keyRow
+		}
 	}
 	function removeMyBuffIcon(key, keyRow) {
 		/**

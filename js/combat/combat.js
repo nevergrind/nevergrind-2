@@ -128,6 +128,15 @@ var combat;
 		stroke: '#060',
 		strokeThickness: 3,
 	}
+
+	const TextFoo = {
+		startAt: { pixi: {scale: 2}},
+		pixi: { scale: 1 },
+	}
+	const TextBar = {
+		startAt: { pixi: { brightness: 3, contrast: 3 }},
+		pixi: { brightness: 1.25, contrast: 1 },
+	}
 	const resourceLeechDivider = 1000
 	let chance = 0
 	let amountReduced = 0
@@ -581,7 +590,6 @@ var combat;
 			})
 		}
 		/*
-
 		if (typeof data.damages === 'object') {
 			mob.resetAllHate()
 		}
@@ -760,30 +768,32 @@ var combat;
 		}
 		// check for things that immediately set to 0
 		// check invulnerable
-		if (my.buffFlags.frozenBarrier ||
-			my.buffFlags.jumpStrike ||
-			my.buffFlags.sealOfSanctuary) {
-			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you are invulnerable!')
-			d.damage = 0
-			return d
-		}
-		// check miss
-		// NOTE: Only auto attack can miss
-		if (d.key === 'autoAttack' &&
-			rand() < mob.missChance(index)) {
-			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but misses!')
-			d.damage = 0
-			return d
-		}
-		// dodge
-		if (skills.dodge[my.job].level &&
-			my.level >= skills.dodge[my.job].level) {
-			combat.levelSkillCheck(PROP.DODGE)
-			if (!d.isPiercing &&
-				rand() < stats.dodgeChance()) {
-				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you dodged!')
+		if (!d.ticks) {
+			if (my.buffFlags.frozenBarrier ||
+				my.buffFlags.jumpStrike ||
+				my.buffFlags.sealOfSanctuary) {
+				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you are invulnerable!')
 				d.damage = 0
 				return d
+			}
+			// check miss
+			// NOTE: Only auto attack can miss
+			if (d.key === 'autoAttack' &&
+				rand() < mob.missChance(index)) {
+				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but misses!')
+				d.damage = 0
+				return d
+			}
+			// dodge
+			if (skills.dodge[my.job].level &&
+				my.level >= skills.dodge[my.job].level) {
+				combat.levelSkillCheck(PROP.DODGE)
+				if (!d.isPiercing &&
+					rand() < stats.dodgeChance()) {
+					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you dodged!')
+					d.damage = 0
+					return d
+				}
 			}
 		}
 		// console.info('processDamages', d)
@@ -860,10 +870,12 @@ var combat;
 			if (my.buffFlags.shimmeringOrb) buffMitigatesDamage(d, 'shimmeringOrb')
 			if (my.buffFlags.sereneSigil) buffMitigatesDamage(d, 'sereneSigil')
 			if (my.buffFlags.spiritBarrier) buffMitigatesDamage(d, 'spiritBarrier')
-			d.damage -= stats.magMit()
+			if (!d.ticks) d.damage -= stats.magMit()
 
 			amountReduced = 1
-			if (mob.isFeared(index)) amountReduced -= .5
+			if (!d.ticks) {
+				if (mob.isFeared(index)) amountReduced -= .5
+			}
 			if (amountReduced < .25) amountReduced = .25
 			d.damage *= amountReduced
 
@@ -872,21 +884,24 @@ var combat;
 			d.damage *= stats.getResistPercent(d.damageType)
 		}
 
-		if (mobs[index].buffFlags.stasisField) {
-			d.damage -= buffs.stasisField.evpMitigation[skill.ENC.getHighestStasis(index)]
+		if (!d.ticks) {
+			if (mobs[index].buffFlags.stasisField) {
+				d.damage -= buffs.stasisField.evpMitigation[skill.ENC.getHighestStasis(index)]
+			}
 		}
 		// final sanity checks
 		d.damage = d.damage < 1 ? 1 : round(d.damage)
 		// shield damage
 		if (my.buffFlags.guardianAngel) reduceMagicShieldDamage(d, 'guardianAngel')
 		if (my.buffFlags.mirrorImage) reduceMagicShieldDamage(d, 'mirrorImage')
-		combat.levelSkillCheck(PROP.DEFENSE)
+		if (!d.ticks) combat.levelSkillCheck(PROP.DEFENSE)
 		return d
 	}
 	function txDamageHero(index, damages) {
 		// damages is an object with indices that point to player row (target)
 		// TODO: Single player mode should bypass publishes everywhere...? lots of work
 		if (party.presence[0].isLeader) {
+			// console.info('tx', damages)
 			socket.publish('party' + my.partyId, {
 				route: 'p->hit',
 				i: index,
@@ -907,130 +922,190 @@ var combat;
 		// console.info('rxDamageHero', data)
 		// NOTE: possible for one mob to attack multiple PCs at once (AE breath, etc)
 
-		if (hits[0].isParalyzed) {
-			chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', CHAT.WARNING)
-		}
-		else {
-			if (hits[0].isHeal) processHealToMob(data.i, hits)
-			else processDamageToMe(data.i, hits)
-		}
-	}
-	function processHealToMob(index, hits) {
-		// animate mob
-		mob.animateSpecial(index)
-		// animate particles of tx and rx
-		hits.filter(filterImpossibleMobTargets).forEach(hit => {
-			console.info('hit', hit)
-			if (hit.key === 'Divine Grace') ask.mobDivineGrace(index, hit.index)
-			else if (hit.key === 'Lay Hands') ask.mobLayHands(index, hit.index)
-			hit.healedBy = index
-			updateMobHp(hit)
-		})
-	}
-	function processDamageToMe(index, hits) {
-		// NOTE should be all from ONE mob of the same attack TYPE, but MANY possible PC targets
-		// always animate
-		totalDamage = 0
-		hits.forEach(hit => {
-			// animate!!!!
-			if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
-				if (hit.key === 'Slam') {
-					mob.animateAttack(index, hits[0].row, true)
-				}
-				else {
-					// normal attack
-					mob.animateAttack(index, hits[0].row)
-				}
+		if (typeof hits[0] === 'object') {
+			if (hits[0].isParalyzed) {
+				chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', CHAT.WARNING)
 			}
 			else {
-				mob.animateSpecial(index)
-				if (hit.key === 'Divine Judgment') {
-					ask.mobDivineJudgment(hits[0].row)
-				}
+				if (hits[0].isHeal) processHealToMob(data.i, hits)
+				else if (hits[0].ticks) processDotToMe(data.i, hits)
+				else processDamageToMe(data.i, hits)
 			}
-
-			if (hit.row !== my.row) return
-			// console.info('hit 1', hit.damage)
-			hit = processDamagesHero(index, hit)
-			// console.info('hit 2', hit.damage)
-
-			if (hit.damage <= 0) {
-				// console.info('MISS!', hit.damage)
-				return
-			}
-			updateMyResource(PROP.HP, -hit.damage)
-			if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
-				// P H Y S I C A L
-
-				// messaging
-				if (hit.isPiercing) {
-					if (hit.key === 'autoAttack') {
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
-					}
-				}
-				else {
-					// physical damage hits
-					blockMsg = ''
-					if (hit.blocked) {
-						blockMsg = ' (blocked '+ hit.blocked +')'
-					}
-					let attackWord = 'hits'
-					if (hit.key === 'Slam') attackWord = 'slams'
-					else if (hit.key === 'Backstab') attackWord = 'backstabs'
-
-					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' '+ attackWord +' YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
-				}
-
-				// E F F E C T S
-				if (hit.key === 'Slam') {
-					// should stun player
-					mobSkills.stunPlayer()
-				}
-				else if (hit.key === 'Harm Touch') {
-					mobs[index].usedHarmTouch = true
-				}
-				else {
-					// normal attack
-					spell.knockback()
-				}
-			}
-			else {
-				// M A G I C
-				// messaging
-				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' strikes YOU with '+ hit.key +' for ' + hit.damage + ' ' + hit.damageType + ' damage!', CHAT.ALERT)
-				// effects
-				// console.info('tx processHit: ', hit)
-				spell.knockback()
-			}
-		})
-		// only do this stuff if it hits me
-		if (totalDamage > 0) {
-			animatePlayerFrames()
-			// damageTakenToMana vulpineMp
-			vulpineMp += totalDamage * (stats.damageTakenToMana() / resourceLeechDivider)
-			if (vulpineMp >= 1) {
-				updateMyResource(PROP.MP, ~~vulpineMp)
-				vulpineMp = vulpineMp % 1
-			}
-			vulpineSp += totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider)
-			if (vulpineSp >= 1) {
-				updateMyResource(PROP.SP, ~~vulpineSp)
-				vulpineSp = vulpineSp % 1
-			}
-			game.txPartyResources({
-				hp: my.hp,
-				hpMax: my.hpMax,
+		}
+		/////////////////////////////////////////////////////////////////////
+		function processHealToMob(index, hits) {
+			// animate mob
+			mob.animateSpecial(index)
+			// animate particles of tx and rx
+			hits.filter(filterImpossibleMobTargets).forEach(hit => {
+				console.info('hit', hit)
+				if (hit.key === 'divineGrace') ask.mobDivineGrace(index, hit.index)
+				else if (hit.key === 'layHands') ask.mobLayHands(index, hit.index)
+				hit.healedBy = index
+				updateMobHp(hit)
+				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> and restores '+ hit.damage +' health to ' + ng.getArticle(hit.index) + ' ' + mobs[hit.index].name +'!', CHAT.HEAL)
 			})
 		}
-	}
+		function processDotToMe(index, hits) {
+			mob.animateSpecial(index)
+			hits.forEach(hit => {
+				// animate
+				if (hit.key === 'bloodTerror') {
+					ask.mobBloodTerror(hits[0].row)
+				}
+				if (my.row !== hit.row) return
+				let keyRow = hit.key + '-' + index
+				// cancel/overwrite existing buff timer data keyRow: duration, function
+				if (typeof my.buffs[keyRow] === 'object' &&
+					typeof my.buffs[keyRow].timer === 'object') {
+					my.buffs[keyRow].timer.kill()
+					my.buffs[keyRow].hotTicks.kill()
+					battle.removeBuff(hit.key, keyRow)
+				}
+				// setup buff timer data
+				let duration = hit.ticks * 3
+				my.buffs[keyRow] = {
+					row: index,
+					key: hit.key,
+					duration: duration,
+				}
+				my.buffs[keyRow].timer = TweenMax.to(my.buffs[keyRow], duration, {
+					duration: 0,
+					ease: Linear.easeNone,
+					onComplete: battle.removeMyBuffFlag,
+					onCompleteParams: [hit.key, true],
+				})
+				my.buffFlags[hit.key] = true
+				// console.info('processDotToMe', hit)
 
-	const TextFoo = {
-		startAt: { pixi: {scale: 2}},
-		pixi: { scale: 1 },
-	}
-	const TextBar = {
-		startAt: { pixi: { brightness: 3, contrast: 3 }},
-		pixi: { brightness: 1.25, contrast: 1 },
+				my.buffs[keyRow].hotTicks = TweenMax.to(EmptyObject, 3, {
+					repeat: hit.ticks,
+					onRepeat: onDotTick,
+					onRepeatParams: [hit, _.max([1, Math.round(hit.damage / hit.ticks)])],
+				})
+				battle.addMyBuff(hit.key, keyRow, duration)
+
+				// messaging
+				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> on YOU!', CHAT.ALERT)
+			})
+			/////////////////////////////////////
+			function onDotTick(hit, hitAmount) {
+				// console.info('hitAmount b4', hit, hitAmount)
+				chat.log(_.startCase(hit.key) + ' hits you for ' + hitAmount + ' damage.', CHAT.ALERT)
+				hit.damage = hitAmount
+				processDamageToMe(index, [hit])
+			}
+		}
+		function processDamageToMe(index, hits) {
+			// NOTE should be all from ONE mob of the same attack TYPE, but MANY possible PC targets
+			// always animate
+			totalDamage = 0
+			hits.forEach(hit => {
+				// animate!!!!
+				if (!hit.ticks) {
+					if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
+						if (hit.key === 'slam') {
+							mob.animateAttack(index, hits[0].row, true)
+						}
+						else {
+							// normal attack
+							mob.animateAttack(index, hits[0].row)
+						}
+					}
+					else if (hit.damageType === DAMAGE_TYPE.VOID) {
+						// cannot resist this stuff
+						mob.animateSpecial(index)
+						if (hit.key === 'harmTouch') {
+							ask.mobHarmTouch(hits[0].row)
+						}
+
+					}
+					else {
+						mob.animateSpecial(index)
+						if (hit.key === 'divineJudgment') {
+							ask.mobDivineJudgment(hits[0].row)
+						}
+					}
+				}
+
+				if (hit.row !== my.row) return
+				// console.info('hit 1', hit.damage)
+				hit = processDamagesHero(index, hit)
+				// console.info('hit 2', hit.damage)
+
+				if (hit.damage <= 0) {
+					// console.info('MISS!', hit.damage)
+					return
+				}
+				updateMyResource(PROP.HP, -hit.damage)
+				if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
+					// P H Y S I C A L
+
+					// messaging
+					if (hit.isPiercing) {
+						if (hit.key === 'autoAttack') {
+							chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
+						}
+					}
+					else {
+						logPhysicalHit(hit)
+					}
+					// E F F E C T S
+					if (hit.key === 'slam') {
+						// should stun player
+						mobSkills.stunPlayer()
+					}
+					else {
+						// normal attack
+						spell.knockback()
+					}
+				}
+				else {
+					// M A G I C
+					// messaging
+					// console.info('hit', hit)
+					if (!hit.ticks) {
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' strikes YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' ' + (hit.damageType === DAMAGE_TYPE.VOID ? '' : hit.damageType) + ' damage!', CHAT.ALERT)
+						// effects
+						if (hit.key === 'harmTouch') {
+							mobs[index].usedHarmTouch = true
+						}
+					}
+				}
+			})
+			// only do this stuff if it hits me
+			if (totalDamage > 0) {
+				animatePlayerFrames()
+				// damageTakenToMana vulpineMp
+				vulpineMp += totalDamage * (stats.damageTakenToMana() / resourceLeechDivider)
+				if (vulpineMp >= 1) {
+					updateMyResource(PROP.MP, ~~vulpineMp)
+					vulpineMp = vulpineMp % 1
+				}
+				vulpineSp += totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider)
+				if (vulpineSp >= 1) {
+					updateMyResource(PROP.SP, ~~vulpineSp)
+					vulpineSp = vulpineSp % 1
+				}
+				game.txPartyResources({
+					hp: my.hp,
+					hpMax: my.hpMax,
+				})
+			}
+			////////////////////////////////////////////////////////
+			function logPhysicalHit(hit) {
+				blockMsg = ''
+				if (hit.blocked) {
+					blockMsg = ' (blocked '+ hit.blocked +')'
+				}
+				if (hit.key === 'autoAttack') {
+					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
+				}
+				else {
+					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
+				}
+			}
+		}
 	}
 	function popupDamage(index, damage, o = {}) {
 		if (!o.isHeal) {

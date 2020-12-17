@@ -70,7 +70,7 @@
 			key: 'deathStrikeHeal',
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
-			damage: Math.max(1, round(hit.damage * buffs.deathStrikeHeal.leechRatio))
+			damage: _.max([1, round(hit.damage * buffs.deathStrikeHeal.leechRatio)])
 		}])
 	}
 	function crescentCleave(index, data) {

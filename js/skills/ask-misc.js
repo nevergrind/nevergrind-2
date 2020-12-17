@@ -5,6 +5,8 @@
 		mobDivineJudgment,
 		mobDivineGrace,
 		mobLayHands,
+		mobHarmTouch,
+		mobBloodTerror,
 	}
 
 	const stunRangeX = 60
@@ -15,47 +17,54 @@
 	const cachePlayerStuns = []
 
 	///////////////////////////////////////////
-	/*
-	ask.particleSmall({
-		..._.clone(o),
-		key: 'particle-small-arcane',
-	}, {
-		interval: .001,
-		loops: 25,
-		sizeStart: 32,
-		sizeEnd: 8,
-		xRange: 150,
-		yRange: 50,
-	})
-
-	ask.particleCircle({
-		..._.clone(o),
-		key: 'particle-circle-default',
-	}, {
-		duration: .5,
-		ease: Power0.easeOut,
-		alpha: 0,
-		rotation: 0,
-		sizeEnd: 333,
-	})
-
-	ask.particleGroup({
-		..._.clone(o),
-		key: 'particle-group-arcane',
-	}, {
-		targetMob: false,
-		duration: .4,
-		interval: .1,
-		sizeStart: 128,
-		sizeEnd: 64,
-		xRange: 50,
-		yRange: 0,
-		loops: 3,
-	})
-	 */
+	function mobBloodTerror(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-blood',
+		}, {
+			targetMob: false,
+			duration: .5,
+			interval: .05,
+			sizeStart: 160,
+			sizeEnd: 128,
+			xRange: 64,
+			yRange: 0,
+			loops: 5,
+			ease: Power2.easeIn,
+		})
+	}
+	function mobHarmTouch(index) {
+		ask.particleCircle({
+			index: index,
+			key: 'cast-swirl-blood',
+		}, {
+			targetMob: false,
+			duration: .7,
+			ease: Power2.easeOut,
+			alpha: 1,
+			sizeStart: 512,
+			sizeEnd: 350,
+		})
+		for (var i=0; i<9; i++) {
+			!function(i) {
+				delayedCall(i * .033, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-blood',
+					}, {
+						targetMob: false,
+						duration: .5,
+						ease: Power2.easeOut,
+						alpha: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+	}
 	function mobLayHands(index, tgt) { // tx rx
 		// console.info('mobDivineGrace', index, row)
-		for (var i=0; i<10; i++) {
+		for (var i=0; i<7; i++) {
 			ask.starburst({index: index})
 			!function(i) {
 				delayedCall(i * .1, () => {
@@ -73,7 +82,20 @@
 			}(i)
 		}
 		ask.starburst({index: tgt})
-		for (var i=0; i<5; i++) {
+		ask.particleGroup({
+			index: tgt,
+			key: 'particle-group-arcane',
+		}, {
+			duration: .7,
+			interval: .1,
+			sizeStart: 192,
+			sizeEnd: 96,
+			xRange: 96,
+			ease: Power1.easeInOut,
+			yRange: 0,
+			loops: 7,
+		})
+		/*for (var i=0; i<5; i++) {
 			!function(i) {
 				delayedCall(i * .1, () => {
 					ask.particleCircle({
@@ -92,7 +114,7 @@
 					})
 				})
 			}(i)
-		}
+		}*/
 	}
 
 	function mobDivineGrace(index, tgt) { // tx rx
@@ -227,4 +249,42 @@
 			}
 		}
 	}
+	/*
+	ask.particleSmall({
+		..._.clone(o),
+		key: 'particle-small-arcane',
+	}, {
+		interval: .001,
+		loops: 25,
+		sizeStart: 32,
+		sizeEnd: 8,
+		xRange: 150,
+		yRange: 50,
+	})
+
+	ask.particleCircle({
+		..._.clone(o),
+		key: 'particle-circle-default',
+	}, {
+		duration: .5,
+		ease: Power0.easeOut,
+		alpha: 0,
+		rotation: 0,
+		sizeEnd: 333,
+	})
+
+	ask.particleGroup({
+		..._.clone(o),
+		key: 'particle-group-arcane',
+	}, {
+		targetMob: false,
+		duration: .4,
+		interval: .1,
+		sizeStart: 128,
+		sizeEnd: 64,
+		xRange: 50,
+		yRange: 0,
+		loops: 3,
+	})
+	 */
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, TimelineMax);
