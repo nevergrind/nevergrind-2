@@ -1218,15 +1218,13 @@ background-clip: content-box;
 	position: absolute;
 	display: flex;
 	flex-flow: column wrap-reverse;
-	justify-content: flex-start;
 	align-items: flex-start;
+	align-content: flex-start;
 	height: auto;
 	max-height: 21rem;
-	width: 5rem;
+	width: 8rem;
 	top: .5rem;
 	right: .5rem;
-	/*border: 1px solid #000;
-	background: #0008;*/
 	overflow: hidden;
 	z-index: 2;
 }

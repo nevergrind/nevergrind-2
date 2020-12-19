@@ -106,7 +106,9 @@ var stats = {};
 	let speedHaste = 1
 	let skillHaste = 1
 	let castHaste = 1
-	let val, base, i, len, type, min, max, totalAttack, h2h, atk, stat, dps
+	let val, base, i, len, type, min, max, dynamicAttackBonus, h2h, atk, stat, dps
+	let baseValue = 1
+	let obj = {}
 
 	const FailedWeaponDamage = {
 		min: 0,
@@ -174,50 +176,52 @@ var stats = {};
 
 	function str(fresh) {
 		if (fresh || typeof stats.memo.str === 'undefined') {
-			stats.memo.str = my.str + create.raceAttrs[my.race][0] + create.jobAttrs[my.jobLong][0] + getEqTotal(PROP.STR) + getEqTotal(PROP.ALL_STATS)
+			stats.memo.str = setStat(my.str + create.raceAttrs[my.race][0] + create.jobAttrs[my.jobLong][0] + getEqTotal(PROP.STR) + getEqTotal(PROP.ALL_STATS))
 			if (my.buffFlags.borealTalisman) {
-				stats.memo.str += buffs.borealTalisman.str[my.buffs.borealTalisman.level]
+				stats.memo.str.value += buffs.borealTalisman.str[my.buffs.borealTalisman.level]
 			}
 			if (my.buffFlags.battleHymn) {
-				stats.memo.str += buffs.battleHymn.str[my.buffs.battleHymn.level]
+				stats.memo.str.value += buffs.battleHymn.str[my.buffs.battleHymn.level]
 			}
+			setColor(stats.memo.str)
 		}
 		return stats.memo.str
 	}
 	function sta(fresh) {
 		if (fresh || typeof stats.memo.sta === 'undefined') {
-			stats.memo.sta = my.sta + create.raceAttrs[my.race][1] + create.jobAttrs[my.jobLong][1] + getEqTotal(PROP.STA) + getEqTotal(PROP.ALL_STATS)
+			stats.memo.sta = setStat(my.sta + create.raceAttrs[my.race][1] + create.jobAttrs[my.jobLong][1] + getEqTotal(PROP.STA) + getEqTotal(PROP.ALL_STATS))
 			if (my.buffFlags.borealTalisman) {
-				stats.memo.sta += buffs.borealTalisman.sta[my.buffs.borealTalisman.level]
+				stats.memo.sta.value += buffs.borealTalisman.sta[my.buffs.borealTalisman.level]
 			}
+			setColor(stats.memo.sta)
 		}
 		return stats.memo.sta
 	}
 	function agi(fresh) {
 		if (fresh || typeof stats.memo.agi === 'undefined') {
-			stats.memo.agi = my.agi + create.raceAttrs[my.race][2] + create.jobAttrs[my.jobLong][2] + getEqTotal(PROP.AGI) + getEqTotal(PROP.ALL_STATS)
+			stats.memo.agi = setStat(my.agi + create.raceAttrs[my.race][2] + create.jobAttrs[my.jobLong][2] + getEqTotal(PROP.AGI) + getEqTotal(PROP.ALL_STATS))
 			if (my.buffFlags.augmentation) {
-				stats.memo.agi += buffs.augmentation.agi[my.buffs.augmentation.level]
+				stats.memo.agi.value += buffs.augmentation.agi[my.buffs.augmentation.level]
 			}
 			if (my.buffFlags.talismanOfTreachery) {
-				stats.memo.agi += buffs.talismanOfTreachery.agi[my.buffs.talismanOfTreachery.level]
+				stats.memo.agi.value += buffs.talismanOfTreachery.agi[my.buffs.talismanOfTreachery.level]
 			}
-
 			if (fresh) {
 				dodgeChance(true)
 				armor(true)
 			}
+			setColor(stats.memo.agi)
 		}
 		return stats.memo.agi
 	}
 	function dex(fresh) {
 		if (fresh || typeof stats.memo.dex === 'undefined') {
-			stats.memo.dex = my.dex + create.raceAttrs[my.race][3] + create.jobAttrs[my.jobLong][3] + getEqTotal(PROP.DEX) + getEqTotal(PROP.ALL_STATS)
+			stats.memo.dex = setStat(my.dex + create.raceAttrs[my.race][3] + create.jobAttrs[my.jobLong][3] + getEqTotal(PROP.DEX) + getEqTotal(PROP.ALL_STATS))
 			if (my.buffFlags.augmentation) {
-				stats.memo.dex += buffs.augmentation.dex[my.buffs.augmentation.level]
+				stats.memo.dex.value += buffs.augmentation.dex[my.buffs.augmentation.level]
 			}
 			if (my.buffFlags.battleHymn) {
-				stats.memo.dex += buffs.battleHymn.dex[my.buffs.battleHymn.level]
+				stats.memo.dex.value += buffs.battleHymn.dex[my.buffs.battleHymn.level]
 			}
 
 			if (fresh) {
@@ -225,96 +229,121 @@ var stats = {};
 				riposteChance(true)
 				critChance(true)
 			}
+			setColor(stats.memo.dex)
 		}
 		return stats.memo.dex
 	}
 	function wis(fresh) {
 		if (fresh || typeof stats.memo.wis === 'undefined') {
-			stats.memo.wis = my.wis + create.raceAttrs[my.race][4] + create.jobAttrs[my.jobLong][4] + getEqTotal(PROP.WIS) + getEqTotal(PROP.ALL_STATS)
+			stats.memo.wis = setStat(my.wis + create.raceAttrs[my.race][4] + create.jobAttrs[my.jobLong][4] + getEqTotal(PROP.WIS) + getEqTotal(PROP.ALL_STATS))
+			setColor(stats.memo.wis)
 		}
 		return stats.memo.wis
 	}
 	function intel(fresh) {
 		if (fresh || typeof stats.memo.intel === 'undefined') {
-			stats.memo.intel = my.intel + create.raceAttrs[my.race][5] + create.jobAttrs[my.jobLong][5] + getEqTotal(PROP.INTEL) + getEqTotal(PROP.ALL_STATS)
+			stats.memo.intel = setStat(my.intel + create.raceAttrs[my.race][5] + create.jobAttrs[my.jobLong][5] + getEqTotal(PROP.INTEL) + getEqTotal(PROP.ALL_STATS))
 			if (my.buffFlags.clarity) {
-				stats.memo.intel += buffs.clarity.intel[my.buffs.clarity.level]
+				stats.memo.intel.value += buffs.clarity.intel[my.buffs.clarity.level]
 			}
 			mpMax(true)
+			setColor(stats.memo.intel)
 		}
 		return stats.memo.intel
 	}
 	function cha(fresh) {
 		if (fresh || typeof stats.memo.cha === 'undefined') {
-			stats.memo.cha = my.cha + create.raceAttrs[my.race][6] + create.jobAttrs[my.jobLong][6] + getEqTotal(PROP.CHA) + getEqTotal(PROP.ALL_STATS)
+			stats.memo.cha = setStat(my.cha + create.raceAttrs[my.race][6] + create.jobAttrs[my.jobLong][6] + getEqTotal(PROP.CHA) + getEqTotal(PROP.ALL_STATS))
 			if (my.buffFlags.vampiricAllure) {
-				stats.memo.cha += buffs.vampiricAllure.cha[my.buffs.vampiricAllure.level]
+				stats.memo.cha.value += buffs.vampiricAllure.cha[my.buffs.vampiricAllure.level]
 			}
 			if (my.buffFlags.conviction) {
-				stats.memo.cha += buffs.conviction.cha[my.buffs.conviction.level]
+				stats.memo.cha.value += buffs.conviction.cha[my.buffs.conviction.level]
 			}
 			spMax(true)
+			setColor(stats.memo.cha)
 		}
 		return stats.memo.cha
 	}
+
+	let reducedArmor = 1
+	function setStat(value) {
+		value = round(value)
+		return {
+			baseValue: value,
+			value: value
+		}
+	}
+	function setColor(o) {
+		o.color = o.baseValue === o.value ? 'color: style: #fff' :
+			o.baseValue < o.value ? 'color: #0f0' : 'color: #f22'
+		return o
+	}
 	function armor(fresh) {
 		if (fresh || typeof stats.memo.armor === 'undefined') {
-			stats.memo.armor = ((agi() * .66) +(defense() * 3.3)) + getEqTotal('armor')
+			stats.memo.armor = setStat(((agi().value * .66) +(defense() * 3.3)) + getEqTotal('armor'))
 			if (my.buffFlags.zealousResolve) {
-				stats.memo.armor += buffs.zealousResolve.armor[my.buffs.zealousResolve.level]
+				stats.memo.armor.value += buffs.zealousResolve.armor[my.buffs.zealousResolve.level]
 			}
 			if (my.buffFlags.intrepidShout) {
-				stats.memo.armor += buffs.intrepidShout.armor[my.buffs.intrepidShout.level]
+				stats.memo.armor.value += buffs.intrepidShout.armor[my.buffs.intrepidShout.level]
 			}
 			if (my.buffFlags.branchSpirit) {
-				stats.memo.armor += buffs.branchSpirit.armor[my.buffs.branchSpirit.level]
+				stats.memo.armor.value += buffs.branchSpirit.armor[my.buffs.branchSpirit.level]
 			}
 			if (my.buffFlags.lichForm) {
-				stats.memo.armor += buffs.lichForm.armor[my.buffs.lichForm.level]
+				stats.memo.armor.value += buffs.lichForm.armor[my.buffs.lichForm.level]
 			}
 			if (my.buffFlags.chromaticSonata) {
-				stats.memo.armor += buffs.chromaticSonata.armor[my.buffs.chromaticSonata.level]
+				stats.memo.armor.value += buffs.chromaticSonata.armor[my.buffs.chromaticSonata.level]
 			}
-			stats.memo.armor = round(stats.memo.armor)
+			reducedArmor = 1
+			if (my.buffFlags.decayingDoom) {
+				reducedArmor -= buffs.decayingDoom.debuffArmor
+			}
+			stats.memo.armor.value = round(stats.memo.armor.value * reducedArmor)
+			setColor(stats.memo.armor)
 		}
 		return stats.memo.armor
 	}
 	function armorReductionRatio() {
 		// max of 75% reduction
-		return 1 - ((stats.armor() > 3000 ? 3000 : stats.armor()) / 4000)
+		return 1 - ((stats.armor().value > 3000 ? 3000 : stats.armor().value) / 4000)
 	}
 
 	function attack(type, fresh) {
 		type = type || items.eq[12].weaponSkill
 		if (fresh || typeof stats.memo.attack === 'undefined') {
-			stats.memo.attack = getEqTotal(PROP.ATTACK) + (str() * .35)
+			stats.memo.attack = setStat(getEqTotal(PROP.ATTACK) + (str().value * .35))
 			// console.info('stats.missChance', type, ~~stats.memo.attack)
 			// buffs
 			if (my.buffFlags.spiritOfTheHunter) {
-				stats.memo.attack += buffs.spiritOfTheHunter.attackBonus[my.buffs.spiritOfTheHunter.level]
+				stats.memo.attack.value += buffs.spiritOfTheHunter.attackBonus[my.buffs.spiritOfTheHunter.level]
 			}
 			if (my.buffFlags.talismanOfTreachery) {
-				stats.memo.attack += buffs.talismanOfTreachery.attackBonus[my.buffs.talismanOfTreachery.level]
+				stats.memo.attack.value += buffs.talismanOfTreachery.attackBonus[my.buffs.talismanOfTreachery.level]
 			}
 			if (my.buffFlags.branchSpirit) {
-				stats.memo.attack += (my.buffs.branchSpirit.damage * buffs.branchSpirit.attackRatio)
+				stats.memo.attack.value += (my.buffs.branchSpirit.damage * buffs.branchSpirit.attackRatio)
 			}
+			setColor(stats.memo.attack)
 		}
-
-		totalAttack = stats.memo.attack
-		totalAttack += (offense() * 1.66)
+		// NOTE: parts below are dynamic by type - those parts are never cached
+		dynamicAttackBonus = (offense() * 1.66)
 		// by weapon type
-		if (type === LABEL.ONE_HAND_SLASH) totalAttack += (oneHandSlash() * 2.66)
-		else if (type === 'One-hand Blunt') totalAttack += (oneHandBlunt() * 2.66)
-		else if (type === 'Piercing') totalAttack += (piercing() * 2.66)
-		else if (type === 'Two-hand Slash') totalAttack += (twoHandSlash() * 2.66)
-		else if (type === 'Two-hand Blunt') totalAttack += (twoHandBlunt() * 2.66)
-		else if (type === 'Archery') totalAttack += (archery() * 2.66)
-		else if (type === LABEL.HAND_TO_HAND) totalAttack += (handToHand() * 2.66)
+		if (type === LABEL.ONE_HAND_SLASH) dynamicAttackBonus += (oneHandSlash() * 2.66)
+		else if (type === 'One-hand Blunt') dynamicAttackBonus += (oneHandBlunt() * 2.66)
+		else if (type === 'Piercing') dynamicAttackBonus += (piercing() * 2.66)
+		else if (type === 'Two-hand Slash') dynamicAttackBonus += (twoHandSlash() * 2.66)
+		else if (type === 'Two-hand Blunt') dynamicAttackBonus += (twoHandBlunt() * 2.66)
+		else if (type === 'Archery') dynamicAttackBonus += (archery() * 2.66)
+		else if (type === LABEL.HAND_TO_HAND) dynamicAttackBonus += (handToHand() * 2.66)
 
-		totalAttack = ~~totalAttack
-
-		return totalAttack
+		return {
+			baseValue: round(stats.memo.attack.baseValue + dynamicAttackBonus),
+			value: round(stats.memo.attack.value + dynamicAttackBonus),
+			color: stats.memo.color
+		}
 		//else atk += (handToHand() * (my.job === JOB.MONK ? 2.66 : .33))
 	}
 	function offense(fresh) {
@@ -386,7 +415,7 @@ var stats = {};
 	function missChance(index, weaponSkill, hitBonus = 0) {
 		chance = .2
 		// 24 is about how much attack you get per level (21.6?)
-		chance += ((mobs[index].level * 24) - stats.attack(weaponSkill)) / 2400
+		chance += ((mobs[index].level * 24) - attack(weaponSkill).value) / 2400
 		if (my.level < mobs[index].level) {
 			chance += ((mobs[index].level - my.level) / 40)
 		}
@@ -428,7 +457,7 @@ var stats = {};
 	}
 	function dodgeChance(fresh) {
 		if (fresh || typeof stats.memo.dodgeChance === 'undefined') {
-			stats.memo.dodgeChance = dodge() / 2500 + (agi() / 2000)
+			stats.memo.dodgeChance = dodge() / 2500 + (agi().value / 2000)
 			if (my.buffFlags.fadedStrikeBuff) {
 				stats.memo.dodgeChance += (buffs.fadedStrikeBuff.dodgeChance[my.buffs.fadedStrikeBuff.level] * buffs.fadedStrikeBuff.ratioByStack[my.buffs.fadedStrikeBuff.stacks])
 			}
@@ -438,21 +467,21 @@ var stats = {};
 	}
 	function parryChance(fresh) {
 		if (fresh || typeof stats.memo.parryChance === 'undefined') {
-			stats.memo.parryChance = parry() / 2500 + (dex() / 2000)
+			stats.memo.parryChance = parry() / 2500 + (dex().value / 2000)
 			if (stats.memo.parryChance > .4) stats.memo.parryChance = .4
 		}
 		return stats.memo.parryChance
 	}
 	function riposteChance(fresh) {
 		if (fresh || typeof stats.memo.riposteChance === 'undefined') {
-			stats.memo.riposteChance = riposte() / 2500 + (dex() / 2000)
+			stats.memo.riposteChance = riposte() / 2500 + (dex().value / 2000)
 			if (stats.memo.riposteChance > .3) stats.memo.riposteChance = .3
 		}
 		return stats.memo.riposteChance
 	}
 	function critChance(fresh) {
 		if (fresh || typeof stats.memo.crit === 'undefined') {
-			stats.memo.crit = ( (dex() / 75) + ng.dimRetCrit(getEqTotal(PROP.CRIT)) ) / 100
+			stats.memo.crit = ( (dex().value / 75) + ng.dimRetCrit(getEqTotal(PROP.CRIT)) ) / 100
 			if (stats.memo.crit < .01) stats.memo.crit = .01
 			else if (stats.memo.crit > .5) stats.memo.crit = .5
 		}
@@ -621,9 +650,9 @@ var stats = {};
 		enhanceDamage += enhanceAll()
 
 		// wis boosts conjuration
-		if (my[config.spellType] === PROP.CONJURATION) enhanceDamage += (stats.wis() / 15)
-		else if (my[config.spellType] === PROP.EVOCATION) enhanceDamage += (stats.intel() / 15)
-		else if (my[config.spellType] === PROP.ALTERATION) enhanceDamage += (stats.cha() / 15)
+		if (my[config.spellType] === PROP.CONJURATION) enhanceDamage += (stats.wis().value / 15)
+		else if (my[config.spellType] === PROP.EVOCATION) enhanceDamage += (stats.intel().value / 15)
+		else if (my[config.spellType] === PROP.ALTERATION) enhanceDamage += (stats.cha().value / 15)
 
 		if (my.buffFlags.lichForm) {
 			if (config.damageType === DAMAGE_TYPE.POISON || config.damageType === DAMAGE_TYPE.BLOOD) {
@@ -674,7 +703,7 @@ var stats = {};
 		max = 1
 		weaponSkill = typeof items.eq[12] === 'object' && items.eq[12].name ?
 			items.eq[12].weaponSkill : LABEL.HAND_TO_HAND
-		atk = attack(weaponSkill)
+		atk = attack(weaponSkill).value
 		 // get normalized DPS value for min/max
 		if (weaponSkill !== LABEL.HAND_TO_HAND) {
 			dps = tooltip.getDps(items.eq[12])
@@ -739,7 +768,7 @@ var stats = {};
 		min = 1
 		max = 1
 		weaponSkill = getWeaponSkill(12)
-		atk = attack(weaponSkill)
+		atk = attack(weaponSkill).value
 		if (weaponSkill === LABEL.HAND_TO_HAND) {
 			if (my.job === JOB.MONK) {
 				max = 4 + (handToHand() / 2) // 125
@@ -789,7 +818,7 @@ var stats = {};
 		min = 1
 		max = 1
 		weaponSkill = getWeaponSkill(13)
-		atk = attack(weaponSkill)
+		atk = attack(weaponSkill).value
 		if (weaponSkill === LABEL.HAND_TO_HAND) {
 			if (my.job === JOB.MONK) {
 				max = 4 + (handToHand() / 2) // 125
@@ -830,7 +859,7 @@ var stats = {};
 	function rangedDamage(index = 0, critMod = 0, skipSkillCheck = false) {
 		min = 1
 		max = 1
-		atk = attack('Archery')
+		atk = attack('Archery').value
 		if (!my.archery || items.eq[14].itemType !== ITEM_TYPE.BOWS) return failedRangeDamage
 
 		dps = tooltip.getDps(items.eq[14])
@@ -1253,7 +1282,7 @@ var stats = {};
 	function hpMax(fresh) {
 		if (fresh || typeof stats.memo.hpMax === 'undefined') {
 			baseResource = hpBase + (
-				stats.sta() * hpTier[my.job]) * (my.level / 50) +
+				stats.sta().value * hpTier[my.job]) * (my.level / 50) +
 				(my.level * (hpTier[my.job] * 2.5)
 			)
 			stats.memo.hpMax = ~~(baseResource * hpPercentBonus() + getEqTotal(PROP.HP))
@@ -1278,7 +1307,7 @@ var stats = {};
 	function mpMax(fresh) {
 		if (fresh || typeof stats.memo.mpMax === 'undefined') {
 			baseResource = mpBase + (
-				(stats.intel() * mpTier[my.job]) * (my.level / 50) +
+				(stats.intel().value * mpTier[my.job]) * (my.level / 50) +
 				(my.level * (mpTier[my.job] * 2.5))
 			)
 			stats.memo.mpMax = ~~(baseResource * mpPercentBonus() + getEqTotal(PROP.MP))
@@ -1296,7 +1325,7 @@ var stats = {};
 	function spMax(fresh) {
 		if (fresh || typeof stats.memo.spMax === 'undefined') {
 			baseResource = (spBase +
-				((stats.cha() * spTier[my.job]) * (my.level / 50) +
+				((stats.cha().value * spTier[my.job]) * (my.level / 50) +
 				(my.level * (spTier[my.job] * 2.5)))
 			)
 			stats.memo.spMax = ~~(baseResource * spPercentBonus() + getEqTotal(PROP.SP))

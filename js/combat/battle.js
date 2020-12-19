@@ -656,16 +656,22 @@ var battle;
 		}
 		if (!buffStillActive) {
 			my.buffFlags[keyRow] = false
-			if (skipMsgCheck) return
-
-			// check msg and process stats?
-			if (startedActive &&
-				buffs[getBuffKey(keyRow)].fadeMsg) {
-				if (!battle.lastBuffAlreadyActive) {
-					// suppresses remove message in cases where buff is being refreshed
-					chat.log(buffs[getBuffKey(keyRow)].fadeMsg, CHAT.HEAL)
-				}
+			if (skipMsgCheck) {
+				// mob DoTs fade
+				// console.info('key 2', keyRow)
 				combat.processStatBuffsToMe(getBuffKey(keyRow))
+			}
+			else {
+				// check msg and process stats?
+				if (startedActive &&
+					buffs[getBuffKey(keyRow)].fadeMsg) {
+					if (!battle.lastBuffAlreadyActive) {
+						// suppresses remove message in cases where buff is being refreshed
+						chat.log(buffs[getBuffKey(keyRow)].fadeMsg, CHAT.HEAL)
+					}
+					// buff faded and stats post-fade must be processed
+					combat.processStatBuffsToMe(getBuffKey(keyRow))
+				}
 			}
 		}
 		///////////////////////////////////////////

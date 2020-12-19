@@ -1,6 +1,7 @@
 mobSkills = {};
 !function($, _, TweenMax, Linear, Math, undefined) {
 	mobSkills = {
+		dots: {},
 		decideSkill,
 		getMobsThatNeedsHealing,
 		stunPlayer,
@@ -63,8 +64,8 @@ mobSkills = {};
 		],
 		SHD: [
 			{ chance: .05, key: 'slam' },
-			{ chance: .99, key: 'bloodTerror' },
-			{ chance: .0, key: 'decayingDoom' },
+			{ chance: .09, key: 'bloodTerror' },
+			{ chance: .13, key: 'decayingDoom' },
 			{ chance: 0, key: 'harmTouch' },
 		],
 		MNK: [
@@ -215,13 +216,13 @@ mobSkills = {};
 					else if (skillData.key === 'bloodTerror') {
 						mobDamages = [mobSkills.bloodTerror(index, row)]
 					}
+					else if (skillData.key === 'decayingDoom') {
+						mobDamages = [mobSkills.decayingDoom(index, row)]
+					}
 				}
 				else {
 					// auto attack
-					mobDamages = [mobSkills.autoAttack(index, row)]
-					if (rand() * 100 < mobs[index].doubleAttack) {
-						mobDamages.push(mobSkills.autoAttack(index, row))
-					}
+					regularAttack()
 				}
 			}
 			///////////////////////////////////////////////////////////
@@ -230,8 +231,30 @@ mobSkills = {};
 			}
 		}
 		// default just in case
-		if (!mobDamages.length) mobDamages = [mobSkills.autoAttack(index, row)]
+		if (!mobDamages.length) regularAttack()
+		else {
+			if (mobDamages[0].ticks) {
+				// TODO: Add logic for checking if it has been cast on that row with the last ticks * 3 seconds
+				let indexRow = index +'-'+ row +'-'+ mobDamages[0].key
+				let duration = mobDamages[0].ticks * 3000
+				if (typeof mobSkills.dots[indexRow] === 'number' &&
+					Date.now() - mobSkills.dots[indexRow] < duration) {
+					// not long enough - do a single attack
+					regularAttack()
+				}
+				else {
+					mobSkills.dots[indexRow] = Date.now()
+				}
+			}
+		}
 		combat.txDamageHero(index, mobDamages)
+		////////////////////////////////////////////////////
+		function regularAttack() {
+			mobDamages = [mobSkills.autoAttack(index, row)]
+			if (rand() * 100 < mobs[index].doubleAttack) {
+				mobDamages.push(mobSkills.autoAttack(index, row))
+			}
+		}
 	}
 	function slam(i, row) {
 		return {
@@ -270,13 +293,19 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'bloodTerror',
-			ticks: 10,
-			damage: mobs[i].int * 4.5,
+			ticks: 7,
+			damage: mobs[i].int * 3.3,
 			damageType: DAMAGE_TYPE.BLOOD,
 		}
 	}
 	function decayingDoom(i, row) {
-
+		return {
+			row: row,
+			key: 'decayingDoom',
+			ticks: 12,
+			damage: mobs[i].int * 5.8,
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function harmTouch(i, row) {
 		return {

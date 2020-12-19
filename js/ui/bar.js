@@ -1087,37 +1087,47 @@ var bar;
 	}
 	function charStatColOneHtml() {
 		return '<div class="flex space-between">' +
-			'<div style="color: gold">Armor:</div><div>'+ stats.armor() +'</div>' +
+			'<div style="color: gold">Armor:</div>'+
+			'<div style="'+ stats.armor().color +'">'+ stats.armor().value +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Strength:</div><div>'+ stats.str() +'</div>' +
+			'<div style="color: gold">Strength:</div>'+
+			'<div style="'+ stats.str().color +'">'+ stats.str().value +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Stamina:</div><div>'+ stats.sta() +'</div>' +
+			'<div style="color: gold">Stamina:</div>'+
+			'<div style="'+ stats.sta().color +'">'+ stats.sta().value +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Agility:</div><div>'+ stats.agi() +'</div>' +
+			'<div style="color: gold">Agility:</div>'+
+			'<div style="'+ stats.agi().color +'">'+ stats.agi().value +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Dexterity:</div><div>'+ stats.dex() +'</div>' +
+			'<div style="color: gold">Dexterity:</div>'+
+			'<div style="'+ stats.dex().color +'">'+ stats.dex().value +'</div>' +
 		'</div>'
 	}
 	function charStatColTwoHtml() {
 		let hit = stats.primaryAutoAttackDamage(0, true)
 		return '<div class="flex space-between">' +
-			'<div style="color: gold">Attack:</div><div>'+ stats.attack() +'</div>' +
+			'<div style="color: gold">Attack:</div>'+
+			'<div style="'+ stats.attack().color +'">'+ stats.attack().value +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Damage:</div><div>'+ round(hit.min) + '–' + round(hit.max) +'</div>' +
+			'<div style="color: gold">Damage:</div>'+
+			'<div>'+ round(hit.min) + '–' + round(hit.max) +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Wisdom:</div><div>'+ stats.wis() +'</div>' +
+			'<div style="color: gold">Wisdom:</div>'+
+			'<div style="'+ stats.wis().color +'">'+ stats.wis().value +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Intelligence:</div><div>'+ stats.intel() +'</div>' +
+			'<div style="color: gold">Intelligence:</div>'+
+			'<div style="'+ stats.intel().color +'">'+ stats.intel().value +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
-			'<div style="color: gold">Charisma:</div><div>'+ stats.cha() +'</div>' +
+			'<div style="color: gold">Charisma:</div>'+
+			'<div style="'+ stats.cha().color +'">'+ stats.cha().value +'</div>' +
 		'</div>'
 	}
 })(_, $, Draggable, TweenMax);

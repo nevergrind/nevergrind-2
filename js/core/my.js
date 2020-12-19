@@ -2,6 +2,7 @@ var my;
 !function($, _, TweenMax, undefined) {
 	my = {
 		//hud,
+		isFeared,
 		isPunching,
 		set,
 		getResistObject,
@@ -55,6 +56,9 @@ var my;
 	const tabOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	let index
 	////////////////////////////////////
+	function isFeared() {
+		return my.buffFlags.bloodTerror
+	}
 	function isPunching(slot) {
 		return !(typeof items.eq[slot] === 'object' && items.eq[slot].name)
 	}

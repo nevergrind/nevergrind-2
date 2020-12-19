@@ -186,6 +186,8 @@ var combat;
 		if (my.targetIsMob) return my.target >= 0 && my.target < mob.max
 		else return my.target >= 0
 	}
+
+	let reducedDamage = 0
 	function processDamagesMob(d) {
 		if (typeof mobs[d.index] === 'undefined' ||
 			!mobs[d.index].name
@@ -276,17 +278,23 @@ var combat;
 			// console.warn('3', mobArmor, d.damage)
 
 			// damage penalties
+			reducedDamage = 1
 			if (!d.isRanged &&
 				d.index > 4) {
 				// physical on back row
 				if (!mobs[d.index].buffFlags.engulfingDarkness) {
-					d.damage *= .5
+					reducedDamage -= .5
 				}
 			}
-			if (my.buffFlags.sealOfSanctuary) {
-				d.damage *= buffs.sealOfSanctuary.reducedDamage[my.buffs.sealOfSanctuary.level]
+			if (my.isFeared()) {
+				reducedDamage -= .5
 			}
-			// +add spell damage
+			if (my.buffFlags.sealOfSanctuary) {
+				reducedDamage -= buffs.sealOfSanctuary.reducedDamage[my.buffs.sealOfSanctuary.level]
+			}
+			if (reducedDamage < .2) reducedDamage = .2
+			d.damage *= reducedDamage
+			// +add elemental damage
 			d.damage += getAddedDamage(d.index)
 			// console.warn('4 added', getAddedDamage(d.index), d.damage)
 			// effects
@@ -984,6 +992,7 @@ var combat;
 					onRepeatParams: [hit, _.max([1, Math.round(hit.damage / hit.ticks)])],
 				})
 				battle.addMyBuff(hit.key, keyRow, duration)
+				processStatBuffsToMe(hit.key)
 
 				// messaging
 				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> on YOU!', CHAT.ALERT)
@@ -1394,7 +1403,7 @@ var combat;
 		}
 	}
 
-	function processStatBuffsToMe(key, buffedByRow) {
+	function processStatBuffsToMe(key) {
 		// console.info('processStatBuffsToMe key!', key)
 		if (key === 'spiritOfTheHunter') {
 			bustAttack()
@@ -1553,6 +1562,11 @@ var combat;
 			bustAttack()
 			updateCharStatColOne()
 			updateCharStatColTwo()
+		}
+		else if (key === 'decayingDoom') {
+			console.info('key', key)
+			stats.armor(true)
+			updateCharStatColOne()
 		}
 		////////////////////////////////
 		function updateAllResists() {
