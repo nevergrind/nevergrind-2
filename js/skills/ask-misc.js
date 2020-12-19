@@ -7,6 +7,9 @@
 		mobLayHands,
 		mobHarmTouch,
 		mobBloodTerror,
+		mobCraneKick,
+		mobHadoken,
+		mobDragonPunch,
 	}
 
 	const stunRangeX = 60
@@ -17,6 +20,99 @@
 	const cachePlayerStuns = []
 
 	///////////////////////////////////////////
+	function mobDragonPunch(index) {
+		ask.sunburst({
+			index: index,
+		}, {
+			targetMob: false,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-fire',
+		}, {
+			targetMob: false,
+			interval: .001,
+			loops: 25,
+			sizeStart: 32,
+			sizeEnd: 8,
+			xRange: 150,
+			yRange: 50,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-fire',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+	}
+	function mobHadoken(index) {
+		ask.moonburst({
+			index: index,
+		}, {
+			targetMob: false,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-arcane',
+		}, {
+			targetMob: false,
+			interval: .001,
+			loops: 25,
+			sizeStart: 32,
+			sizeEnd: 8,
+			xRange: 150,
+			yRange: 50,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-arcane',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+	}
+	function mobCraneKick(index) {
+		ask.moonburst({
+			index: index,
+		}, {
+			targetMob: false,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-default',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+	}
 	function mobBloodTerror(index) {
 		ask.particleGroup({
 			index: index,

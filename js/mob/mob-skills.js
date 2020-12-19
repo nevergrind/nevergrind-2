@@ -69,10 +69,10 @@ mobSkills = {};
 			{ chance: 0, key: 'harmTouch' },
 		],
 		MNK: [
-			{ chance: .05, key: 'slam', },
-			{ chance: .07, key: 'craneKick' },
-			{ chance: .11, key: 'hadoken' },
-			{ chance: .15, key: 'dragonPunch' },
+			{ chance: .02, key: 'slam', },
+			{ chance: .09, key: 'craneKick' },
+			{ chance: .17, key: 'hadoken' },
+			{ chance: .25, key: 'dragonPunch' },
 		],
 		ROG: [
 			{ chance: .05, key: 'slam', },
@@ -219,6 +219,15 @@ mobSkills = {};
 					else if (skillData.key === 'decayingDoom') {
 						mobDamages = [mobSkills.decayingDoom(index, row)]
 					}
+					else if (skillData.key === 'craneKick') {
+						mobDamages = [mobSkills.craneKick(index, row)]
+					}
+					else if (skillData.key === 'hadoken') {
+						mobDamages = [mobSkills.hadoken(index, row)]
+					}
+					else if (skillData.key === 'dragonPunch') {
+						mobDamages = [mobSkills.dragonPunch(index, row)]
+					}
 				}
 				else {
 					// auto attack
@@ -316,13 +325,27 @@ mobSkills = {};
 		}
 	}
 	function craneKick(i, row) {
-
+		return {
+			row: row,
+			key: 'craneKick',
+			damage: ~~_.random(ceil(mobs[i].attack * 1.6), mobs[i].attack * 1.8),
+		}
 	}
 	function hadoken(i, row) {
-
+		return {
+			row: row,
+			key: 'hadoken',
+			damage: ~~_.random(ceil(mobs[i].int * 1.8), mobs[i].int * 2),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function dragonPunch(i, row) {
-
+		return {
+			row: row,
+			key: 'dragonPunch',
+			damage: ~~_.random(ceil(mobs[i].attack * 1.6), mobs[i].attack * 2.4),
+			damageType: DAMAGE_TYPE.FIRE,
+		}
 	}
 	function backstab(i, row) {
 

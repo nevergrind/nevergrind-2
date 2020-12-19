@@ -1013,8 +1013,12 @@ var combat;
 				// animate!!!!
 				if (!hit.ticks) {
 					if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
+						// P H Y S I C A L
 						if (hit.key === 'slam') {
 							mob.animateAttack(index, hits[0].row, true)
+						}
+						else if (hit.key === 'craneKick') {
+							ask.mobCraneKick(hits[0].row)
 						}
 						else {
 							// normal attack
@@ -1022,7 +1026,7 @@ var combat;
 						}
 					}
 					else if (hit.damageType === DAMAGE_TYPE.VOID) {
-						// cannot resist this stuff
+						// V O I D
 						mob.animateSpecial(index)
 						if (hit.key === 'harmTouch') {
 							ask.mobHarmTouch(hits[0].row)
@@ -1030,9 +1034,16 @@ var combat;
 
 					}
 					else {
+						// M A G I C
 						mob.animateSpecial(index)
 						if (hit.key === 'divineJudgment') {
 							ask.mobDivineJudgment(hits[0].row)
+						}
+						else if (hit.key === 'hadoken') {
+							ask.mobHadoken(hits[0].row)
+						}
+						else if (hit.key === 'dragonPunch') {
+							ask.mobDragonPunch(hits[0].row)
 						}
 					}
 				}
