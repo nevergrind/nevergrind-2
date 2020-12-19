@@ -10,6 +10,8 @@
 		mobCraneKick,
 		mobHadoken,
 		mobDragonPunch,
+		mobBackstab,
+		mobWidowStrike,
 	}
 
 	const stunRangeX = 60
@@ -20,6 +22,74 @@
 	const cachePlayerStuns = []
 
 	///////////////////////////////////////////
+	function mobWidowStrike(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-poison',
+		}, {
+			targetMob: false,
+			duration: .5,
+			interval: .05,
+			sizeStart: 160,
+			sizeEnd: 128,
+			xRange: 64,
+			yRange: 0,
+			loops: 5,
+			ease: Power2.easeIn,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-poison',
+		}, {
+			targetMob: false,
+			interval: .001,
+			loops: 25,
+			sizeStart: 32,
+			sizeEnd: 8,
+			xRange: 150,
+			yRange: 50,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-poison',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+
+	}
+	function mobBackstab(index) {
+		ask.starburst({
+			index: index,
+		}, {
+			targetMob: false,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-default',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+	}
 	function mobDragonPunch(index) {
 		ask.sunburst({
 			index: index,
@@ -56,7 +126,7 @@
 		}
 	}
 	function mobHadoken(index) {
-		ask.moonburst({
+		ask.starburst({
 			index: index,
 		}, {
 			targetMob: false,

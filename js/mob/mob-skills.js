@@ -76,8 +76,8 @@ mobSkills = {};
 		],
 		ROG: [
 			{ chance: .05, key: 'slam', },
-			{ chance: .07, key: 'backstab' },
-			{ chance: .1, key: 'widowStrike' },
+			{ chance: .15, key: 'backstab' },
+			{ chance: .25, key: 'widowStrike' },
 		],
 		RNG: [
 			{ chance: .05, key: 'slam', },
@@ -228,6 +228,12 @@ mobSkills = {};
 					else if (skillData.key === 'dragonPunch') {
 						mobDamages = [mobSkills.dragonPunch(index, row)]
 					}
+					else if (skillData.key === 'backstab') {
+						mobDamages = [mobSkills.backstab(index, row)]
+					}
+					else if (skillData.key === 'widowStrike') {
+						mobDamages = [mobSkills.widowStrike(index, row)]
+					}
 				}
 				else {
 					// auto attack
@@ -348,10 +354,20 @@ mobSkills = {};
 		}
 	}
 	function backstab(i, row) {
-
+		return {
+			row: row,
+			key: 'backstab',
+			damage: ~~_.random(ceil(mobs[i].attack * 1.9), mobs[i].attack * 2.2),
+		}
 	}
 	function widowStrike(i, row) {
-
+		return {
+			row: row,
+			key: 'widowStrike',
+			ticks: 12,
+			damage: mobs[i].int * 6.2,
+			damageType: DAMAGE_TYPE.POISON,
+		}
 	}
 	function trueshotStrike(i, row) {
 

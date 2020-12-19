@@ -1020,6 +1020,9 @@ var combat;
 						else if (hit.key === 'craneKick') {
 							ask.mobCraneKick(hits[0].row)
 						}
+						else if (hit.key === 'backstab') {
+							ask.mobBackstab(hits[0].row)
+						}
 						else {
 							// normal attack
 							mob.animateAttack(index, hits[0].row)
@@ -1575,7 +1578,6 @@ var combat;
 			updateCharStatColTwo()
 		}
 		else if (key === 'decayingDoom') {
-			console.info('key', key)
 			stats.armor(true)
 			updateCharStatColOne()
 		}
