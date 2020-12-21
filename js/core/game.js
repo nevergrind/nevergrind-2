@@ -3,7 +3,7 @@ var game;
 (function(TweenMax, clearTimeout, setTimeout, _, $, localStorage, undefined) {
 	/** public */
 	game = {
-		heartbeatDifference: app.isApp ? 18000 : 18000,
+		maxTimeout: app.isApp ? 18000 : 18000,
 		session: {
 			timer: 0
 		},
@@ -79,7 +79,7 @@ var game;
 		}
 		// check disconnect
 		diff = time - heartbeat.receiveTime;
-		if (diff > game.heartbeatDifference) {
+		if (diff > game.maxTimeout) {
 			// console.warn('something wrong with the socket... please investigate...');
 			ng.disconnect();
 		}
@@ -200,7 +200,7 @@ var game;
 	function auditRoom(time) {
 		chat.presence.forEach(function(player) {
 			diff = time - player.time;
-			if (diff > game.heartbeatDifference) {
+			if (diff > game.maxTimeout) {
 				removePlayer(player);
 			}
 		})

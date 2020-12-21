@@ -961,6 +961,12 @@ var combat;
 				if (hit.key === 'bloodTerror') {
 					ask.mobBloodTerror(hits[0].row)
 				}
+				else if (hit.key === 'widowStrike') {
+					ask.mobWidowStrike(hits[0].row)
+				}
+				else if (hit.key === 'burningEmbers') {
+					ask.mobBurningEmbers(hits[0].row)
+				}
 				if (my.row !== hit.row) return
 				let keyRow = hit.key + '-' + index
 				// cancel/overwrite existing buff timer data keyRow: duration, function
@@ -1023,6 +1029,9 @@ var combat;
 						else if (hit.key === 'backstab') {
 							ask.mobBackstab(hits[0].row)
 						}
+						else if (hit.key === 'trueshotStrike') {
+							ask.mobTrueshotStrike(hits[0].row)
+						}
 						else {
 							// normal attack
 							mob.animateAttack(index, hits[0].row)
@@ -1048,6 +1057,12 @@ var combat;
 						else if (hit.key === 'dragonPunch') {
 							ask.mobDragonPunch(hits[0].row)
 						}
+						else if (hit.key === 'shockNova') {
+							ask.mobShockNova(hits[0].row)
+						}
+						else if (hit.key === 'bellow') {
+							ask.mobBellow(hits[0].row)
+						}
 					}
 				}
 
@@ -1065,10 +1080,8 @@ var combat;
 					// P H Y S I C A L
 
 					// messaging
-					if (hit.isPiercing) {
-						if (hit.key === 'autoAttack') {
-							chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
-						}
+					if (hit.isPiercing && hit.key === 'autoAttack') {
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
 					}
 					else {
 						logPhysicalHit(hit)
@@ -1578,6 +1591,10 @@ var combat;
 			updateCharStatColTwo()
 		}
 		else if (key === 'decayingDoom') {
+			stats.armor(true)
+			updateCharStatColOne()
+		}
+		else if (key === 'burningEmbers') {
 			stats.armor(true)
 			updateCharStatColOne()
 		}

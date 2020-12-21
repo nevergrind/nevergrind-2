@@ -1,5 +1,5 @@
 mobSkills = {};
-!function($, _, TweenMax, Linear, Math, undefined) {
+!function($, _, TweenMax, Linear, Math, Array, undefined) {
 	mobSkills = {
 		dots: {},
 		decideSkill,
@@ -80,14 +80,14 @@ mobSkills = {};
 			{ chance: .25, key: 'widowStrike' },
 		],
 		RNG: [
-			{ chance: .05, key: 'slam', },
-			{ chance: .07, key: 'trueshotStrike' },
-			{ chance: .15, key: 'burningEmbers' },
-			{ chance: .19, key: 'shockNova' },
+			{ chance: .02, key: 'slam', },
+			{ chance: .09, key: 'trueshotStrike' },
+			{ chance: .16, key: 'burningEmbers' },
+			{ chance: .21, key: 'shockNova' },
 		],
 		BRD: [ // should boost regen and resists too?
 			{ chance: .05, key: 'slam', },
-			{ chance: .1, key: 'bellow' },
+			{ chance: .12, key: 'bellow' },
 		],
 		DRU: [
 			{ chance: .03, key: 'slam', },
@@ -234,6 +234,20 @@ mobSkills = {};
 					else if (skillData.key === 'widowStrike') {
 						mobDamages = [mobSkills.widowStrike(index, row)]
 					}
+					else if (skillData.key === 'trueshotStrike') {
+						mobDamages = [mobSkills.trueshotStrike(index, row)]
+					}
+					else if (skillData.key === 'burningEmbers') {
+						mobDamages = [mobSkills.burningEmbers(index, row)]
+					}
+					else if (skillData.key === 'shockNova') {
+						mobDamages = party.presence.filter(party.isAlive).map(p => {
+							return mobSkills.shockNova(index, p.row)
+						})
+					}
+					else if (skillData.key === 'bellow') {
+						mobDamages = [mobSkills.bellow(index, row)]
+					}
 				}
 				else {
 					// auto attack
@@ -357,6 +371,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'backstab',
+			isPiercing: true,
 			damage: ~~_.random(ceil(mobs[i].attack * 1.9), mobs[i].attack * 2.2),
 		}
 	}
@@ -370,16 +385,37 @@ mobSkills = {};
 		}
 	}
 	function trueshotStrike(i, row) {
-
+		return {
+			row: row,
+			key: 'trueshotStrike',
+			isPiercing: true,
+			damage: ~~_.random(ceil(mobs[i].attack * 1.9), mobs[i].attack * 2.2),
+		}
 	}
 	function burningEmbers(i, row) {
-
+		return {
+			row: row,
+			key: 'burningEmbers',
+			ticks: 9,
+			damage: mobs[i].int * 4.8,
+			damageType: DAMAGE_TYPE.FIRE,
+		}
 	}
 	function shockNova(i, row) {
-
+		return {
+			row: row,
+			key: 'shockNova',
+			damage: ~~_.random(ceil(mobs[i].int * 1.1), mobs[i].int * 1.25),
+			damageType: DAMAGE_TYPE.LIGHTNING,
+		}
 	}
 	function bellow(i, row) {
-
+		return {
+			row: row,
+			key: 'bellow',
+			damage: ~~_.random(ceil(mobs[i].int * 1.5), mobs[i].int * 1.65),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function starfire(i, row) {
 
@@ -611,4 +647,4 @@ mobSkills = {};
 			}, false)
 		}
 	}
-}($, _, TweenMax, Linear, Math);
+}($, _, TweenMax, Linear, Math, Array);

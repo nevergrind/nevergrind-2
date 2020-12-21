@@ -54,6 +54,7 @@ var ask;
 		animateFrames,
 		setFrame,
 	}
+	const BOTTOM = 1080
 	let val, el
 	const fadeIn = {
 		startAt: { alpha: 0 },
@@ -201,6 +202,7 @@ var ask;
 	const novaDefaults = {
 		targetMob: true,
 		position: 'bottom',
+		yPosition: 100,
 		loops: 5,
 		interval: .033,
 		duration: 1,
@@ -209,6 +211,7 @@ var ask;
 		contrastEnd: 1,
 		brightnessEnd: 1,
 		width: 'auto',
+		height: 'auto',
 		rotation: 0,
 		zIndex: 30,
 		ease: Power4.easeOut,
@@ -549,23 +552,24 @@ var ask;
 		function novaExplode(o, config) {
 			const img = ask.getNova(o, config)
 			ask.addChild(img)
+			img.width = 0
+			img.height = 0
 			TweenMax.to(img, config.duration, {
 				startAt: { pixi: {
 						contrast: config.contrastStart,
 						brightness: config.brightnessStart,
 					},
 					rotation: config.rotation,
-					width: 0,
-					height: 0,
-					alpha: 1,
 				},
 				pixi: {
 					contrast: config.contrastEnd,
 					brightness: config.brightnessEnd,
 				},
 				alpha: 0,
-				width: config.width === 'auto' ? mobs[o.index].width : config.width,
-				height: mobs[o.index].width * .15,
+				width: !config.targetMob ? 600 :
+					config.width === 'auto' ? mobs[o.index].width : config.width,
+				height: !config.targetMob ? 100 :
+					config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
 				ease: config.ease,
 				onComplete: ask.removeImg(),
 				onCompleteParams: [ img.id ]
@@ -1012,7 +1016,7 @@ var ask;
 		// possibly expand to multiple party members later
 		return {
 			x: 960,
-			y: 850
+			y: BOTTOM - 230
 		}
 	}
 	function getPlayerBottom() {
@@ -1022,10 +1026,12 @@ var ask;
 			y: pos.y + 150,
 		}
 	}
-	function positionImgToPlayer(o, img) {
+	function positionImgToPlayer(o, img, config) {
 		const pos = getPlayerCenter()
 		img.x = pos.x
-		img.y = pos.y
+		// offset from combat bottom
+		if (typeof config === 'object' && config.yPosition) img.y = BOTTOM - config.yPosition
+		else img.y = pos.y
 	}
 
 	function getImg(o, config = { targetMob: true }) {
@@ -1039,7 +1045,7 @@ var ask;
 			img.zIndex = config.zIndex || ask.DEFAULT_MOB_LAYER
 		}
 		else {
-			positionImgToPlayer(o, img)
+			positionImgToPlayer(o, img, config)
 			img.zIndex = config.zIndex || ask.DEFAULT_PLAYER_LAYER
 		}
 		return img
@@ -1059,7 +1065,7 @@ var ask;
 			}
 		}
 		else {
-			positionImgToPlayer(o, img)
+			positionImgToPlayer(o, img, config)
 		}
 		img.zIndex = config.zIndex
 		return img

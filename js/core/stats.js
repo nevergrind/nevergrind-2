@@ -301,6 +301,10 @@ var stats = {};
 			if (my.buffFlags.decayingDoom) {
 				reducedArmor -= buffs.decayingDoom.debuffArmor
 			}
+			if (my.buffFlags.burningEmbers) {
+				reducedArmor -= buffs.burningEmbers.debuffArmor
+			}
+			if (reducedArmor < .25) reducedArmor = .25
 			stats.memo.armor.value = round(stats.memo.armor.value * reducedArmor)
 			setColor(stats.memo.armor)
 		}

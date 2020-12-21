@@ -33,6 +33,7 @@ var party;
 		getIndexByRow,
 		getNameByRow,
 		isSomeoneAlive,
+		isAlive,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -40,7 +41,10 @@ var party;
 	const resourceKeys = [PROP.HP, PROP.MP, PROP.SP, PROP.HP_MAX, PROP.MP_MAX, PROP.SP_MAX]
 	//////////////////////////////////////
 	function isSomeoneAlive() {
-		return party.presence.some(member => member.hp > 0) || my.hp > 0
+		return party.presence.some(party.isAlive)
+	}
+	function isAlive(p) {
+		return p.hp > 0 && p.row > 0 && Date.now() - p.time < game.maxTimeout
 	}
 	function getIndexByRow(row) {
 		return party.presence.findIndex(member => member.row === row)
@@ -167,7 +171,7 @@ var party;
 		// do not change to a for loop
 		party.presence.forEach(function(player) {
 			diff = time - player.time;
-			if (diff > game.heartbeatDifference) {
+			if (diff > game.maxTimeout) {
 				removePartyMember(player);
 			}
 		})
