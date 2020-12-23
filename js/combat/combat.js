@@ -286,9 +286,6 @@ var combat;
 					reducedDamage -= .5
 				}
 			}
-			if (my.isFeared()) {
-				reducedDamage -= .5
-			}
 			if (my.buffFlags.sealOfSanctuary) {
 				reducedDamage -= buffs.sealOfSanctuary.reducedDamage[my.buffs.sealOfSanctuary.level]
 			}
@@ -324,12 +321,15 @@ var combat;
 			}
 			d.damage *= d.enhancedDamage
 			if (!d.cannotResist) d.damage *= mob.getMobResist(d)
-
 		}
 
+		// final mods that affect all
 		if (mobs[d.index].buffFlags.stasisField) {
 			// console.info('stasisField', buffs.stasisField.pveMitigationRatio)
 			d.damage *= buffs.stasisField.pveMitigationRatio
+		}
+		if (my.isFeared()) {
+			d.damage *= .5
 		}
 		// console.info('combat', d)
 		// final sanity checks
@@ -966,6 +966,9 @@ var combat;
 				}
 				else if (hit.key === 'burningEmbers') {
 					ask.mobBurningEmbers(hits[0].row)
+				}
+				else if (hit.key === 'creepingChords') {
+					ask.mobCreepingChords(hits[0].row)
 				}
 				if (my.row !== hit.row) return
 				let keyRow = hit.key + '-' + index

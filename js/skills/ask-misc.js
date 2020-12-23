@@ -16,6 +16,7 @@
 		mobBurningEmbers,
 		mobShockNova,
 		mobBellow,
+		mobCreepingChords,
 	}
 
 	const stunRangeX = 60
@@ -26,6 +27,50 @@
 	const cachePlayerStuns = []
 
 	///////////////////////////////////////////
+	function mobCreepingChords(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-lightning',
+		}, {
+			targetMob: false,
+			duration: .9,
+			interval: .033,
+			sizeStart: 160,
+			sizeEnd: 128,
+			xRange: 96,
+			yRange: 0,
+			loops: 5,
+			ease: Power2.easeIn,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-lightning',
+		}, {
+			targetMob: false,
+			interval: .001,
+			loops: 12,
+			sizeStart: 32,
+			sizeEnd: 4,
+			xRange: 150,
+			yRange: 50,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-lightning',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+	}
 	function mobBellow(index) {
 		ask.moonburst({index: index}, {targetMob: false})
 		ask.particleSmall({
@@ -559,7 +604,7 @@
 				}
 			}
 			else {
-				if (!my.buffFlags.slam || my.hp <= 0) {
+				if (!my.isStunned() || my.hp <= 0) {
 					ask.removeImg()(particle.id)
 				}
 			}

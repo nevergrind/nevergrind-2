@@ -915,8 +915,17 @@ let buffs; // buff data for use with skill/spells/icons
 			damageType: DAMAGE_TYPE.FIRE,
 		},
 		crashingChords: {
+			name: 'Crashing Chords',
 			hate: 1,
+			job: JOB.BARD,
+			img: 4,
 			paralyzeDuration: 12,
+		},
+		creepingChords: {
+			name: 'Creeping Chords',
+			hate: 1,
+			job: JOB.BARD,
+			img: 4,
 		},
 		battleHymn: {
 			name: 'Battle Hymn',

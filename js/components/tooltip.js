@@ -21,6 +21,8 @@ var tooltip;
 		handleLeave,
 		conditionalHide,
 		getDps,
+		isRangedOrMelee,
+		isSpell,
 	};
 	const css = {
 		usePadding: 'padding: .5rem .5rem 0 .5rem'
@@ -718,15 +720,14 @@ var tooltip;
 		</div>
 		`
 		return skillHtml
-		///////////////////////////////
-		function isRangedOrMelee(config) {
-			return config.isMelee || Array.isArray(config.hitBonus) && config.hitBonus.some(v => v !== 0)
-		}
-		function isSpell(config) {
-			return typeof config.spellDamage === 'function' &&
-				config.castTime > 0 &&
-				!config.isBuff
-		}
+	}
+	function isRangedOrMelee(config) {
+		return config.isMelee || Array.isArray(config.hitBonus) && config.hitBonus.some(v => v !== 0)
+	}
+	function isSpell(config) {
+		return typeof config.spellDamage === 'function' &&
+			config.castTime > 0 &&
+			!config.isBuff
 	}
 	function getDamageRange(hit) {
 		let min = _.max([1, round(hit.min)])

@@ -25,7 +25,7 @@ let skill = {};
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// process skill data
@@ -81,7 +81,7 @@ let skill = {};
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
@@ -111,7 +111,7 @@ let skill = {};
 			...skills.getDefaults(index, data),
 			requiresFrontRow: data.requiresFrontRow,
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// process skill data
@@ -143,7 +143,7 @@ let skill = {};
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// process skill data
@@ -175,7 +175,7 @@ let skill = {};
 			...skills.getDefaults(index, data),
 			anyTarget: true,
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// process skill data
@@ -207,7 +207,7 @@ let skill = {};
 			anyTarget: true,
 			oocEnabled: true,
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		combat.txBuffHero([{
@@ -227,7 +227,7 @@ let skill = {};
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// buff
@@ -267,7 +267,7 @@ let skill = {};
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendSpirit(data, index)
 
 		// select targets
@@ -303,7 +303,7 @@ let skill = {};
 			anyTarget: true,
 			oocEnabled: true,
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendSpirit(data, index)
 
 		combat.txBuffHero([{
@@ -324,7 +324,7 @@ let skill = {};
 			anyTarget: true,
 			oocEnabled: true,
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendSpirit(data, index)
 
 		damages = []
@@ -346,7 +346,7 @@ let skill = {};
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendSpirit(data, index)
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]

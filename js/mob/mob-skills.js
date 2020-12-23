@@ -26,6 +26,7 @@ mobSkills = {};
 		burningEmbers,
 		shockNova,
 		bellow,
+		creepingChords,
 		starfire,
 		lightningBlast,
 		blizzard,
@@ -54,7 +55,7 @@ mobSkills = {};
 		lightningBolt,
 		fireball,
 		WAR: [
-			{ chance: .08, key: 'slam' },
+			{ chance: .07, key: 'slam' }, // STUN
 		],
 		CRU: [
 			{ chance: .05, key: 'slam' },
@@ -64,8 +65,8 @@ mobSkills = {};
 		],
 		SHD: [
 			{ chance: .05, key: 'slam' },
-			{ chance: .09, key: 'bloodTerror' },
-			{ chance: .13, key: 'decayingDoom' },
+			{ chance: .11, key: 'bloodTerror' }, // FEAR
+			{ chance: .16, key: 'decayingDoom' }, // ARMOR
 			{ chance: 0, key: 'harmTouch' },
 		],
 		MNK: [
@@ -82,29 +83,30 @@ mobSkills = {};
 		RNG: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .09, key: 'trueshotStrike' },
-			{ chance: .16, key: 'burningEmbers' },
+			{ chance: .16, key: 'burningEmbers' }, // ARMOR
 			{ chance: .21, key: 'shockNova' },
 		],
 		BRD: [ // should boost regen and resists too?
 			{ chance: .05, key: 'slam', },
 			{ chance: .12, key: 'bellow' },
+			{ chance: .2, key: 'creepingChords' }, // PARALYZE
 		],
 		DRU: [
 			{ chance: .03, key: 'slam', },
 			{ chance: .1, key: 'starfire' },
-			{ chance: .1, key: 'lightningBlast' },
+			{ chance: .1, key: 'lightningBlast' }, // SILENCE?
 			{ chance: .1, key: 'blizzard' },
 			{ chance: 0, key: 'naturesTouch', maxHeal: 2 },
 		],
 		CLR: [
 			{ chance: .03, key: 'slam', },
 			{ chance: .1, key: 'smite' },
-			{ chance: .12, key: 'forceOfGlory' },
+			{ chance: .12, key: 'forceOfGlory' }, // SILENCE?
 			{ chance: 0, key: 'divineLight', maxHeal: 3 },
 		],
 		SHM: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .1, key: 'frostRift' },
+			{ chance: .1, key: 'frostRift' }, // CHILL
 			{ chance: .12, key: 'scourge' },
 			{ chance: .15, key: 'affliction' },
 			{ chance: 0, key: 'mysticalGlow', maxHeal: 2 },
@@ -113,27 +115,27 @@ mobSkills = {};
 			{ chance: .02, key: 'slam', },
 			{ chance: .1, key: 'venomBolt' },
 			{ chance: .12, key: 'bloodfire' },
-			{ chance: .15, key: 'panicStrike' },
-			{ chance: .15, key: 'engulfingDarkness' },
+			{ chance: .15, key: 'panicStrike' }, // FEAR
+			{ chance: .15, key: 'engulfingDarkness' }, // SILENCE?
 		],
 		ENC: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .1, key: 'mindBlitz' },
-			{ chance: .12, key: 'staticSuffocation' },
+			{ chance: .1, key: 'mindBlitz' }, // SILENCE?
+			{ chance: .12, key: 'staticSuffocation' }, // PARALYZE
 			{ chance: .15, key: 'subversion' },
 		],
 		TMP: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .05, key: 'lavaBolt', },
-			{ chance: .1, key: 'staticStorm' },
-			{ chance: .12, key: 'arclight' },
+			{ chance: .1, key: 'staticStorm' }, // SILENCE?
+			{ chance: .12, key: 'arclight' }, // PARALYZE
 			{ chance: .15, key: 'glacialSpike' },
 		],
 		WIZ: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .1, key: 'fireBolt' },
-			{ chance: .12, key: 'iceBolt' },
-			{ chance: .15, key: 'magicMissiles' },
+			{ chance: .12, key: 'iceBolt' }, // CHILL
+			{ chance: .15, key: 'magicMissiles' }, // SILENCE
 			{ chance: .15, key: 'lightningBolt' },
 			{ chance: .15, key: 'fireball' },
 		],
@@ -163,7 +165,7 @@ mobSkills = {};
 	}
 	function decideSkill(index, row) {
 		if (row <= 0) return // player row not found?
-		if (mob.isParalyzed(index) && rand() < ParalyzeRate) {
+		if (mob.isParalyzed(index) && rand() > ParalyzeRate) {
 			mobDamages = [{
 				row: row,
 				isParalyzed: true,
@@ -247,6 +249,9 @@ mobSkills = {};
 					}
 					else if (skillData.key === 'bellow') {
 						mobDamages = [mobSkills.bellow(index, row)]
+					}
+					else if (skillData.key === 'creepingChords') {
+						mobDamages = [mobSkills.creepingChords(index, row)]
 					}
 				}
 				else {
@@ -415,6 +420,15 @@ mobSkills = {};
 			key: 'bellow',
 			damage: ~~_.random(ceil(mobs[i].int * 1.5), mobs[i].int * 1.65),
 			damageType: DAMAGE_TYPE.ARCANE,
+		}
+	}
+	function creepingChords(i, row) {
+		return {
+			row: row,
+			key: 'creepingChords',
+			ticks: 7,
+			damage: mobs[i].int * 3.1,
+			damageType: DAMAGE_TYPE.LIGHTNING,
 		}
 	}
 	function starfire(i, row) {
@@ -616,13 +630,15 @@ mobSkills = {};
 		config.hpMax = config.hp
 	}
 	function stunPlayer() {
-		let damages = []
-		damages.push({
-			index: my.row,
-			key: 'slam',
-			duration: 3,
-		})
-		combat.txBuffHero(damages)
+		if (my.stunCheck()) {
+			let damages = []
+			damages.push({
+				index: my.row,
+				key: 'slam',
+				duration: 3,
+			})
+			combat.txBuffHero(damages)
+		}
 	}
 	function stunPlayerEffect() {
 		const stunDuration = 3

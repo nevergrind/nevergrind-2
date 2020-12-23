@@ -21,7 +21,7 @@
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// process skill data
@@ -47,7 +47,7 @@
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// process skill data
@@ -76,7 +76,7 @@
 			...skills.getDefaults(index, data),
 			requiresFrontRow: data.requiresFrontRow,
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// process skill data
@@ -101,7 +101,7 @@
 		config = {
 			...skills.getDefaults(index, data),
 		}
-		if (skills.notReady(config)) return
+		if (skills.notReady(config, data)) return
 		spell.expendMana(data, index)
 
 		// process skill data

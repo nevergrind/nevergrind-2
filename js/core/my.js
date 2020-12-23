@@ -2,7 +2,18 @@ var my;
 !function($, _, TweenMax, undefined) {
 	my = {
 		//hud,
+		isStunned,
 		isFeared,
+		isParalyzed,
+		isSilenced,
+		stunCheck,
+		fearCheck,
+		paralyzeCheck,
+		silenceCheck,
+		stunMsg,
+		fearMsg,
+		paralyzeMsg,
+		silenceMsg,
 		isPunching,
 		set,
 		getResistObject,
@@ -56,8 +67,43 @@ var my;
 	const tabOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	let index
 	////////////////////////////////////
+	function stunCheck() {
+		return _.random(0, 100) > stats.resistStun()
+	}
+	function fearCheck() {
+		return _.random(0, 100) > stats.resistFear()
+	}
+	function paralyzeCheck(val) {
+		return my.isParalyzed() &&
+			rand() > (val || ParalyzeRate) &&
+			_.random(0, 100) > stats.resistParalyze()
+	}
+	function silenceCheck() {
+		return _.random(0, 100) > stats.resistSilence()
+	}
+	function isStunned() {
+		return my.buffFlags.slam
+	}
 	function isFeared() {
 		return my.buffFlags.bloodTerror
+	}
+	function isParalyzed() {
+		return my.buffFlags.crashingChords
+	}
+	function isSilenced() {
+		return false
+	}
+	function stunMsg() {
+		chat.log('You are stunned!', CHAT.WARNING)
+	}
+	function fearMsg() {
+		chat.log('You are feared!', CHAT.WARNING)
+	}
+	function paralyzeMsg() {
+		chat.log('You are paralyzed!', CHAT.WARNING)
+	}
+	function silenceMsg() {
+		chat.log('You cannot cast any spells!', CHAT.WARNING)
 	}
 	function isPunching(slot) {
 		return !(typeof items.eq[slot] === 'object' && items.eq[slot].name)

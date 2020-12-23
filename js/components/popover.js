@@ -1,5 +1,5 @@
 var popover;
-(function($, parseInt, getComputedStyle, TweenMax,  undefined) {
+(function($, parseInt, getComputedStyle, TweenMax, _, undefined) {
 	var mainMenuPopovers = {}
 
 	popover = {
@@ -60,8 +60,8 @@ var popover;
 		}
 		else if (id.startsWith('mybuff-')) {
 			buffName = _.camelCase(id.split('-')[1])
-			// console.info('buffName', buffName)
-			html = buffs[buffName].name
+			console.info('buffName', buffName)
+			html = buffs[buffName].name || _.startCase(buffName)
 		}
 		else {
 			html = mainMenuPopovers[id]
@@ -119,4 +119,4 @@ var popover;
 		yAdjust = isMenuAbove ? 15 : (y + 25) * -1
 		return my.mouse.y + yAdjust
 	}
-})($, parseInt, getComputedStyle, TweenMax);
+})($, parseInt, getComputedStyle, TweenMax, _);

@@ -2500,7 +2500,7 @@ var skills;
 		return my.buffFlags.silenced ||
 			my.buffFlags.frozenBarrier
 	}
-	function notReady(config, spellData = {}) {
+	function notReady(config, skillData = {}) {
 		if (timers.castBar < 1 ||
 			(config.global && timers.globalCooldown < 1) ||
 			(config.skillIndex >= 0 && timers.skillCooldowns[config.skillIndex] < 1) ||
@@ -2508,8 +2508,24 @@ var skills;
 
 		// console.info('notReady', config)
 		// some active spells disable casting
-		if (cannotCast()) {
-			chat.log('You cannot cast any spells!', CHAT.WARNING)
+
+		// STUN
+		if (my.isStunned()) {
+			my.stunMsg()
+			return true
+		}
+		// SILENCE
+		if (tooltip.isSpell(skillData) &&
+			my.isSilenced()) {
+			my.silenceMsg()
+			return true
+		}
+		// console.info('config', config, skillData)
+		// PARALYZE
+		if (tooltip.isRangedOrMelee(skillData) &&
+			my.paralyzeCheck()) {
+			my.paralyzeMsg()
+			button.triggerGlobalCooldown()
 			return true
 		}
 		// targeting
@@ -2571,7 +2587,7 @@ var skills;
 			}
 		}
 		// SUCCESS: set last data used for spell completed reference
-		skills.lastData = spellData
+		skills.lastData = skillData
 		return false
 	}
 

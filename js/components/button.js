@@ -87,6 +87,7 @@ var button;
 	}
 
 	function triggerGlobalCooldown() {
+		if (timers.globalCooldown !== 1) return
 		timers.globalCooldown = 0
 		let selector = []
 		timers.skillCooldowns.forEach((skill, index) => {
@@ -118,11 +119,6 @@ var button;
 	}
 	function triggerSkill(index) {
 		if (my.hp <= 0) return
-		if (my.buffFlags.slam) {
-			chat.log('You are stunned!', CHAT.WARNING)
-			return
-		}
-
 		name = _.camelCase(skills[my.job][index].name)
 		// console.info('triggerSkill', name)
 		if (typeof skill[my.job][name] === 'function') {
@@ -179,28 +175,33 @@ var button;
 			index = my.target
 		}
 
-		damages = []
-		hit = stats.primaryAutoAttackDamage(index)
-		damages.push({
-			key: getAutoAttackKey(true),
-			index: index,
-			isPiercing: isPiercing,
-			...hit
-		})
-		// double attack?
-		if (!isPiercing &&
-			my.level >= skills.doubleAttack[my.job].level) {
-			combat.levelSkillCheck(PROP.DOUBLE_ATTACK)
-			if (Math.random() < successfulDoubleAttack()) {
-				hit = stats.primaryAutoAttackDamage(index)
-				damages.push({
-					key: getAutoAttackKey(true),
-					index: index,
-					...hit
-				})
-			}
+		if (my.paralyzeCheck()) {
+			my.paralyzeMsg()
 		}
-		combat.txDamageMob(damages)
+		else {
+			damages = []
+			hit = stats.primaryAutoAttackDamage(index)
+			damages.push({
+				key: getAutoAttackKey(true),
+				index: index,
+				isPiercing: isPiercing,
+				...hit
+			})
+			// double attack?
+			if (!isPiercing &&
+				my.level >= skills.doubleAttack[my.job].level) {
+				combat.levelSkillCheck(PROP.DOUBLE_ATTACK)
+				if (Math.random() < successfulDoubleAttack()) {
+					hit = stats.primaryAutoAttackDamage(index)
+					damages.push({
+						key: getAutoAttackKey(true),
+						index: index,
+						...hit
+					})
+				}
+			}
+			combat.txDamageMob(damages)
+		}
 		startSwing('primaryAttack')
 	}
 
@@ -217,27 +218,32 @@ var button;
 		}
 		if (my.target === -1) return
 
-		if (my.level >= skills.dualWield[my.job].level) {
-			combat.levelSkillCheck(PROP.DUAL_WIELD)
-			if (Math.random() < successfulDualWield()) {
-				hit = stats.secondaryAutoAttackDamage(my.target)
-				damages = []
-				damages.push({
-					key: getAutoAttackKey(false),
-					index: my.target,
-					...hit
-				})
-				if (my.level >= skills.doubleAttack[my.job].level) {
-					if (Math.random() < successfulDoubleAttack()) {
-						hit = stats.secondaryAutoAttackDamage(my.target)
-						damages.push({
-							key: getAutoAttackKey(false),
-							index: my.target,
-							...hit
-						})
+		if (my.paralyzeCheck()) {
+			my.paralyzeMsg()
+		}
+		else {
+			if (my.level >= skills.dualWield[my.job].level) {
+				combat.levelSkillCheck(PROP.DUAL_WIELD)
+				if (Math.random() < successfulDualWield()) {
+					hit = stats.secondaryAutoAttackDamage(my.target)
+					damages = []
+					damages.push({
+						key: getAutoAttackKey(false),
+						index: my.target,
+						...hit
+					})
+					if (my.level >= skills.doubleAttack[my.job].level) {
+						if (Math.random() < successfulDoubleAttack()) {
+							hit = stats.secondaryAutoAttackDamage(my.target)
+							damages.push({
+								key: getAutoAttackKey(false),
+								index: my.target,
+								...hit
+							})
+						}
 					}
+					combat.txDamageMob(damages)
 				}
-				combat.txDamageMob(damages)
 			}
 		}
 		startSwing('secondaryAttack')
@@ -249,7 +255,8 @@ var button;
 	function cannotAutoAttack() {
 		return (!HybridAutoAttackers.includes(my.job) && timers.castBar < 1) ||
 			!my.targetIsMob ||
-			my.buffFlags.frozenBarrier
+			my.buffFlags.frozenBarrier ||
+			my.isStunned()
 	}
 
 	const CALL = 'Call'
