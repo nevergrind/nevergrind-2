@@ -909,6 +909,7 @@ var combat;
 		// damages is an object with indices that point to player row (target)
 		// TODO: Single player mode should bypass publishes everywhere...? lots of work
 		if (party.presence[0].isLeader) {
+			if (!Array.isArray(damages)) damages = [damages]
 			// console.info('tx', damages)
 			socket.publish('party' + my.partyId, {
 				route: 'p->hit',
@@ -1066,6 +1067,15 @@ var combat;
 						else if (hit.key === 'bellow') {
 							ask.mobBellow(hits[0].row)
 						}
+						else if (hit.key === 'starfire') {
+							ask.mobStarfire(hits[0].row)
+						}
+						else if (hit.key === 'lightningBlast') {
+							ask.mobLightningBlast(hits[0].row)
+						}
+						else if (hit.key === 'blizzard') {
+							ask.mobBlizzard(hits[0].row)
+						}
 					}
 				}
 
@@ -1090,9 +1100,9 @@ var combat;
 						logPhysicalHit(hit)
 					}
 					// E F F E C T S
-					if (hit.key === 'slam') {
+					if (hit.effect === 'stun') {
 						// should stun player
-						mobSkills.stunPlayer()
+						mobSkills.stunPlayerTx(hit.duration)
 					}
 					else {
 						// normal attack
@@ -1346,9 +1356,6 @@ var combat;
 	}
 	function rxBuffHero(data) {
 		// console.info('rxBuffHero: ', data)
-		processBuffToMe(data)
-	}
-	function processBuffToMe(data) {
 		hate = 0
 		// console.info('processBuffToMe', data)
 		data.buffs.forEach(buff => {
@@ -1422,7 +1429,12 @@ var combat;
 				battle.addMyBuff(buff.key, key)
 				processStatBuffsToMe(key, data.row)
 				ask.processAnimations(buff)
-				if (buff.key === 'slam') mobSkills.stunPlayerEffect()
+				if (buff.effect === 'slam') {
+					mobSkills.stunPlayerEffectRx(buff.duration)
+				}
+				else if (buff.effect === 'fear') {
+					mobSkills.fearPlayerEffectRx(buff.duration)
+				}
 			}
 		})
 		if (~~hate > 0) {
@@ -1593,6 +1605,18 @@ var combat;
 			updateCharStatColOne()
 			updateCharStatColTwo()
 		}
+		else if (key === 'bloodTerror') {
+			/*if (my.buffFlags.bloodTerror) {
+
+			}
+			if (my.isFeared()) {
+				battle.addMyBuff('fear')
+			}
+			else {
+				battle.removeBuff('fear')
+
+			}*/
+		}
 		else if (key === 'decayingDoom') {
 			stats.armor(true)
 			updateCharStatColOne()
@@ -1602,6 +1626,9 @@ var combat;
 			updateCharStatColOne()
 		}
 		////////////////////////////////
+		function updateFear() {
+
+		}
 		function updateAllResists() {
 			stats.resistSilence(true)
 			stats.resistBlood(true)

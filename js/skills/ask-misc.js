@@ -17,6 +17,9 @@
 		mobShockNova,
 		mobBellow,
 		mobCreepingChords,
+		mobStarfire,
+		mobBlizzard,
+		mobLightningBlast,
 	}
 
 	const stunRangeX = 60
@@ -27,6 +30,91 @@
 	const cachePlayerStuns = []
 
 	///////////////////////////////////////////
+	function mobLightningBlast(index) {
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-lightning',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 25,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 250,
+			yRange: 50,
+		})
+		ask.moonburst({index: index}, {targetMob: false})
+		ask.particleCircle({
+			index: index,
+			key: 'particle-circle-lightning',
+		}, {
+			targetMob: false,
+			duration: .33,
+			ease: Power1.easeOut,
+			alpha: 0,
+			sizeEnd: 300,
+		})
+	}
+	function mobBlizzard(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-ice',
+		}, {
+			targetMob: false,
+			duration: 1,
+			interval: .033,
+			sizeStart: 256,
+			sizeEnd: 192,
+			xRange: 70,
+			yRange: 0,
+			loops: 1,
+			yStartAdj: -70,
+			ease: Power2.easeOut,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-ice',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 11,
+			sizeStart: 32,
+			sizeEnd: 16,
+			xRange: 200,
+			yRange: 50,
+		})
+	}
+	function mobStarfire(index) {
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-fire',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 11,
+			sizeStart: 32,
+			sizeEnd: 16,
+			xRange: 200,
+			yRange: 50,
+		})
+		for (var i=0; i<7; i++) {
+			!function(i) {
+				if (i % 3 === 0) ask.sunburst({index: index}, {targetMob: false})
+				delayedCall(i * .033, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-fire',
+					}, {
+						targetMob: false,
+						duration: .27 - (i * .015),
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 200 + (i * 25),
+					})
+				})
+			}(i)
+		}
+	}
 	function mobCreepingChords(index) {
 		ask.particleGroup({
 			index: index,

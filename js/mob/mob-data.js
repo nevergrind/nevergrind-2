@@ -37,7 +37,7 @@ mob.data['Salubrin Den'] = [
 		maxLevel: 60,
 		size: 1,
 		// job: JOB.CRUSADER,
-		job: JOB.BARD,
+		job: JOB.DRUID,
 		type: 'normal', // normal, champion, unique, boss?
 		traits: [], // champ traits
 	},

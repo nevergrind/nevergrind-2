@@ -4,8 +4,9 @@ mobSkills = {};
 		dots: {},
 		decideSkill,
 		getMobsThatNeedsHealing,
-		stunPlayer,
-		stunPlayerEffect,
+		stunPlayerTx,
+		stunPlayerEffectRx,
+		fearPlayerEffectRx,
 		modifyMobStatsByClass,
 		getRandomSkillByJob,
 		// mob skills
@@ -93,9 +94,9 @@ mobSkills = {};
 		],
 		DRU: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .1, key: 'starfire' },
-			{ chance: .1, key: 'lightningBlast' }, // SILENCE?
-			{ chance: .1, key: 'blizzard' },
+			{ chance: .0, key: 'starfire' },
+			{ chance: .99, key: 'lightningBlast' }, // SILENCE?
+			{ chance: .0, key: 'blizzard' },
 			{ chance: 0, key: 'naturesTouch', maxHeal: 2 },
 		],
 		CLR: [
@@ -141,7 +142,6 @@ mobSkills = {};
 		],
 	}
 	let mobDamage = {}, mobDamages
-
 
 	///////////////////////////////////////////
 	function getRandomSkillByJob(job) {
@@ -253,6 +253,19 @@ mobSkills = {};
 					else if (skillData.key === 'creepingChords') {
 						mobDamages = [mobSkills.creepingChords(index, row)]
 					}
+					else if (skillData.key === 'starfire') {
+						mobDamages = [mobSkills.starfire(index, row)]
+					}
+					else if (skillData.key === 'lightningBlast') {
+						for (var i=0; i<5; i++) {
+							mobDamages.push(mobSkills.lightningBlast(index, row))
+						}
+					}
+					else if (skillData.key === 'blizzard') {
+						for (var i=0; i<5; i++) {
+							mobDamages.push(mobSkills.blizzard(index, row))
+						}
+					}
 				}
 				else {
 					// auto attack
@@ -281,7 +294,18 @@ mobSkills = {};
 				}
 			}
 		}
-		combat.txDamageHero(index, mobDamages)
+		mobDamages.forEach((dam, i) => {
+			if (!i) combat.txDamageHero(index, dam)
+			else {
+				if (!dam.interval) dam.interval = 1
+				// delayed casts at interval value
+				!function(i) {
+					delayedCall(i * dam.interval, () => {
+						combat.txDamageHero(index, dam)
+					})
+				}(i)
+			}
+		})
 		////////////////////////////////////////////////////
 		function regularAttack() {
 			mobDamages = [mobSkills.autoAttack(index, row)]
@@ -294,6 +318,8 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'slam',
+			effect: 'stun',
+			duration: 3,
 			damage: ~~_.random(ceil(mobs[i].attack * .6), mobs[i].attack * 1.2),
 		}
 	}
@@ -301,7 +327,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'divineJudgment',
-			damage: ~~_.random(ceil(mobs[i].int * 1.4), mobs[i].int * 1.6),
+			damage: ~~_.random(ceil(mobs[i].int * 1.5), mobs[i].int * 1.7),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -327,6 +353,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'bloodTerror',
+			effect: 'fear',
 			ticks: 7,
 			damage: mobs[i].int * 3.3,
 			damageType: DAMAGE_TYPE.BLOOD,
@@ -432,13 +459,30 @@ mobSkills = {};
 		}
 	}
 	function starfire(i, row) {
-
+		return {
+			row: row,
+			key: 'starfire',
+			damage: ~~_.random(ceil(mobs[i].int * 2.25), mobs[i].int * 2.4),
+			damageType: DAMAGE_TYPE.FIRE,
+		}
 	}
 	function lightningBlast(i, row) {
-
+		return {
+			row: row,
+			key: 'lightningBlast',
+			effect: 'silence',
+			damage: ~~_.random(ceil(mobs[i].int * .77), mobs[i].int * .82),
+			damageType: DAMAGE_TYPE.LIGHTNING,
+		}
 	}
 	function blizzard(i, row) {
-
+		return {
+			row: row,
+			key: 'blizzard',
+			interval: .33,
+			damage: ~~_.random(ceil(mobs[i].int * .62), mobs[i].int * .66),
+			damageType: DAMAGE_TYPE.ICE,
+		}
 	}
 	function naturesTouch(i, row) {
 
@@ -629,22 +673,24 @@ mobSkills = {};
 		}
 		config.hpMax = config.hp
 	}
-	function stunPlayer() {
+	function stunPlayerTx(duration) {
 		if (my.stunCheck()) {
 			let damages = []
 			damages.push({
 				index: my.row,
 				key: 'slam',
-				duration: 3,
+				duration: duration,
 			})
 			combat.txBuffHero(damages)
 		}
 	}
-	function stunPlayerEffect() {
-		const stunDuration = 3
+	function fearPlayerEffectRx(duration) {
+		battle.addMyBuff('fear')
+	}
+	function stunPlayerEffectRx(duration) {
 		spell.cancelSpell()
 		button.pauseAutoAttack()
-		my.stunTimer = TweenMax.to(timers, stunDuration, {
+		my.stunTimer = TweenMax.to(timers, duration, {
 			startAt: { stunTimer: 0 },
 			stunTimer: 1,
 			ease: Power0.easeIn,
@@ -659,7 +705,7 @@ mobSkills = {};
 			ask.mobStun({
 				index: my.row,
 				key: 'particle-small-default',
-				duration: stunDuration
+				duration: duration
 			}, false)
 		}
 	}

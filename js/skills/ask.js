@@ -645,6 +645,7 @@ var ask;
 					img.scale.x *= Math.random() > .5 ? 1 : -1
 					if (config.xRange) img.x += _.random(-config.xRange, config.xRange)
 					if (config.yRange) img.y += _.random(-config.yRange, config.yRange)
+					if (typeof config.yStartAdj !== 'undefined') img.y += config.yStartAdj
 					ask.addChild(img)
 					TweenMax.to(img, config.duration, {
 						startAt: {
