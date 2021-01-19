@@ -2,6 +2,7 @@ var dungeon;
 (function(TweenMax, $, _, undefined) {
 	dungeon = {
 		initialized: 0,
+
 		layer: {},
 		playerIds: [],
 		player: {},
@@ -68,6 +69,7 @@ var dungeon;
 		mob.leveledUp = false
 		// draw players
 		dungeon.setPlayers()
+		mobSkills.setFilter()
 
 		ng.unlock()
 		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {

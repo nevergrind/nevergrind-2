@@ -67,6 +67,7 @@ mobSkills = {};
 		magicMissiles,
 		lightningBolt,
 		fireball,
+		setFilter,
 		WAR: [
 			{ chance: .07, key: 'slam' }, // STUN
 		],
@@ -154,6 +155,20 @@ mobSkills = {};
 		],
 	}
 	let mobDamage = {}, mobDamages
+	const filter = {
+		freeze: { pixi: {
+			colorize: '#0ff',
+			colorizeAmount: 1,
+		}},
+		chill: { pixi: {
+			colorize: '#0ff',
+			colorizeAmount: .5,
+		}},
+		default: { pixi: {
+			colorize: '#0ff',
+			colorizeAmount: 0,
+		}}
+	}
 
 	///////////////////////////////////////////
 	function getRandomSkillByJob(job) {
@@ -491,7 +506,7 @@ mobSkills = {};
 			row: row,
 			key: 'lightningBlast',
 			effect: 'silence',
-			interval: .2,
+			interval: .1,
 			duration: 5,
 			damage: ~~_.random(ceil(mobs[i].int * .77), mobs[i].int * .82),
 			damageType: DAMAGE_TYPE.LIGHTNING,
@@ -859,7 +874,17 @@ mobSkills = {};
 			startAt: { chillTimer: 0 },
 			chillTimer: 1,
 			ease: Power0.easeIn,
+			onComplete: chillPlayerComplete,
 		})
+		if (!my.isFrozen()) {
+			TweenMax.to(dungeon.player, .5, filter.chill)
+		}
+		///////////////////////////
+		function chillPlayerComplete() {
+			if (!my.isChilled() && !my.isFrozen()) {
+				TweenMax.to(dungeon.player, .5, filter.default)
+			}
+		}
 	}
 	function freezePlayerEffectRx(duration) {
 		if (!my.freezeTimeValid(duration)) return
@@ -867,6 +892,22 @@ mobSkills = {};
 			startAt: { freezeTimer: 0 },
 			freezeTimer: 1,
 			ease: Power0.easeIn,
+			onComplete: freezePlayerComplete,
 		})
+		TweenMax.set(dungeon.player, filter.freeze)
+		///////////////////////////
+		function freezePlayerComplete() {
+			if (my.isChilled()) {
+				TweenMax.to(dungeon.player, .5, filter.chill)
+			}
+			else {
+				TweenMax.to(dungeon.player, .5, filter.default)
+			}
+		}
+	}
+	function setFilter() {
+		if (my.isFrozen()) TweenMax.to(dungeon.player, .5, filter.freeze)
+		else if (my.isChilled()) TweenMax.to(dungeon.player, .5, filter.chill)
+		else TweenMax.to(dungeon.player, .5, filter.default)
 	}
 }($, _, TweenMax, Linear, Math, Array, Power0);
