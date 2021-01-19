@@ -2,14 +2,25 @@ var my;
 !function($, _, TweenMax, undefined) {
 	my = {
 		//hud,
+		stunTimeValid,
+		fearTimeValid,
+		paralyzeTimeValid,
+		silenceTimeValid,
+		chillTimeValid,
+		freezeTimeValid,
 		isStunned,
 		isFeared,
 		isParalyzed,
 		isSilenced,
+		isChilled,
+		isFrozen,
 		stunCheck,
 		fearCheck,
 		paralyzeCheck,
+		paralyzeCheckRoll,
 		silenceCheck,
+		chillCheck,
+		freezeCheck,
 		stunMsg,
 		fearMsg,
 		paralyzeMsg,
@@ -30,6 +41,11 @@ var my;
 		shieldIsEquipped,
 		skills: void 0,
 		stunTimer: {},
+		fearTimer: {},
+		paralyzeTimer: {},
+		silenceTimer: {},
+		chillTimer: {},
+		freezeTimer: {},
 		mouse: {
 			x: 0,
 			y: 0
@@ -67,31 +83,67 @@ var my;
 	const tabOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
 	let index
 	////////////////////////////////////
+	// time valid check
+	function stunTimeValid(duration) {
+		return duration >= my.buffs.stun.duration
+	}
+	function fearTimeValid(duration) {
+		return duration >= my.buffs.fear.duration
+	}
+	function paralyzeTimeValid(duration) {
+		return duration >= my.buffs.paralyze.duration
+	}
+	function silenceTimeValid(duration) {
+		return duration >= my.buffs.silence.duration
+	}
+	function chillTimeValid(duration) {
+		return duration >= my.buffs.chill.duration
+	}
+	function freezeTimeValid(duration) {
+		return duration >= my.buffs.freeze.duration
+	}
+	// effect resist checks
 	function stunCheck() {
-		return _.random(0, 100) > stats.resistStun()
+		return _.random(1, 100) > stats.resistStun()
 	}
 	function fearCheck() {
-		return _.random(0, 100) > stats.resistFear()
+		return _.random(1, 100) > stats.resistFear()
 	}
-	function paralyzeCheck(val) {
+	function paralyzeCheck() {
+		return _.random(1, 100) > stats.resistParalyze()
+	}
+	function paralyzeCheckRoll(val) {
 		return my.isParalyzed() &&
 			rand() > (val || ParalyzeRate) &&
 			_.random(0, 100) > stats.resistParalyze()
 	}
 	function silenceCheck() {
-		return _.random(0, 100) > stats.resistSilence()
+		return _.random(1, 100) > stats.resistSilence()
 	}
+	function chillCheck() {
+		return true
+	}
+	function freezeCheck() {
+		return true
+	}
+	// status effect flag check
 	function isStunned() {
-		return my.buffFlags.slam
+		return my.buffFlags.stun
 	}
 	function isFeared() {
-		return my.buffFlags.bloodTerror
+		return my.buffFlags.fear
 	}
 	function isParalyzed() {
-		return my.buffFlags.crashingChords
+		return my.buffFlags.paralyze
 	}
 	function isSilenced() {
-		return false
+		return my.buffFlags.silence
+	}
+	function isChilled() {
+		return my.buffFlags.chill
+	}
+	function isFrozen() {
+		return my.buffFlags.freeze
 	}
 	function stunMsg() {
 		chat.log('You are stunned!', CHAT.WARNING)
@@ -103,7 +155,7 @@ var my;
 		chat.log('You are paralyzed!', CHAT.WARNING)
 	}
 	function silenceMsg() {
-		chat.log('You cannot cast any spells!', CHAT.WARNING)
+		chat.log('You are silenced!', CHAT.WARNING)
 	}
 	function isPunching(slot) {
 		return !(typeof items.eq[slot] === 'object' && items.eq[slot].name)

@@ -175,7 +175,7 @@ var button;
 			index = my.target
 		}
 
-		if (my.paralyzeCheck()) {
+		if (my.paralyzeCheckRoll()) {
 			my.paralyzeMsg()
 		}
 		else {
@@ -218,7 +218,7 @@ var button;
 		}
 		if (my.target === -1) return
 
-		if (my.paralyzeCheck()) {
+		if (my.paralyzeCheckRoll()) {
 			my.paralyzeMsg()
 		}
 		else {

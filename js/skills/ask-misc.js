@@ -2,6 +2,9 @@
 	ask = {
 		...ask,
 		mobStun,
+		mobFear,
+		mobParalyze,
+		mobSilence,
 		mobDivineJudgment,
 		mobDivineGrace,
 		mobLayHands,
@@ -20,6 +23,9 @@
 		mobStarfire,
 		mobBlizzard,
 		mobLightningBlast,
+		mobNaturesTouch,
+		mobSmite,
+		mobForceOfGlory,
 	}
 
 	const stunRangeX = 60
@@ -28,22 +34,109 @@
 	const stunRYH = stunRangeY * .5
 	const cacheMobStuns = []
 	const cachePlayerStuns = []
+	const cacheMobFears = []
+	const cachePlayerFears = []
+	const cacheMobParalyze = []
+	const cachePlayerParalyze = []
+	const cacheMobSilence = []
+	const cachePlayerSilence = []
 
 	///////////////////////////////////////////
+	function mobSmite(index) {
+		for (var i=0; i<11; i++) {
+			!function(i) {
+				delayedCall(i * .016, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-arcane',
+					}, {
+						targetMob: false,
+						duration: .27 - (i * .015),
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 200 + (i * 10),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobForceOfGlory(index) {
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-arcane',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 22,
+			sizeStart: 32,
+			sizeEnd: 16,
+			xRange: 400,
+			yRange: 50,
+		})
+		for (var i=0; i<7; i++) {
+			!function(i) {
+				delayedCall(i * .016, () => {
+					if (i === 0) ask.sunburst({index: index}, {targetMob: false})
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-arcane',
+					}, {
+						targetMob: false,
+						duration: .27 + (i * .015),
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 350 - (i * 30),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobNaturesTouch(index, tgt) {
+		// console.info('mobDivineGrace', index, row)
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .03, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'cast-swirl-arcane',
+					}, {
+						duration: 1,
+						ease: Power2.easeOut,
+						alpha: 1,
+						sizeStart: mobs[index].width * .75,
+						sizeEnd: mobs[index].width * .5,
+					})
+				})
+			}(i)
+		}
+		ask.particleGroup({
+			index: tgt,
+			key: 'particle-group-arcane',
+		}, {
+			duration: 1,
+			interval: .1,
+			sizeStart: 192,
+			sizeEnd: 128,
+			xRange: 75,
+			yRange: 0,
+			loops: 3,
+		})
+	}
 	function mobLightningBlast(index) {
+		ask.moonburst({index: index}, {targetMob: false})
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-lightning',
 		}, {
 			targetMob: false,
 			interval: .0016,
-			loops: 25,
+			duration: .25,
+			loops: 5,
 			sizeStart: 32,
 			sizeEnd: 0,
-			xRange: 250,
+			xRange: 125,
 			yRange: 50,
 		})
-		ask.moonburst({index: index}, {targetMob: false})
 		ask.particleCircle({
 			index: index,
 			key: 'particle-circle-lightning',
@@ -575,7 +668,7 @@
 						index: index,
 						key: 'cast-swirl-arcane',
 					}, {
-						duration: .4,
+						duration: 1,
 						ease: Power2.easeOut,
 						alpha: 1,
 						sizeStart: mobs[index].width * .75,
@@ -588,7 +681,7 @@
 			index: tgt,
 			key: 'particle-group-arcane',
 		}, {
-			duration: .3,
+			duration: 1,
 			interval: .1,
 			sizeStart: 192,
 			sizeEnd: 128,
@@ -614,6 +707,255 @@
 					})
 				})
 			}(i)
+		}
+	}
+
+	function mobSilence(o, targetMob) {
+		let startX
+		let startY
+		if (targetMob) {
+			if (!mob.isAlive(o.index)) return
+			startX = mob.centerX[o.index]
+			startY = ask.centerHeadY(o.index, true)
+		}
+		else {
+			const pos = ask.getPlayerHead()
+			startX = pos.x
+			startY = pos.y
+		}
+		let bezierValues = [
+			// p1
+			{ x: startX, y: startY },
+			{ x: startX + stunRXH, y: startY },
+			{ x: startX + stunRXH, y: startY + stunRYH },
+			// p2
+			{ x: startX + stunRXH, y: startY + stunRangeY },
+			{ x: startX, y: startY + stunRangeY },
+			// p3
+			{ x: startX - stunRXH, y: startY + stunRangeY },
+			{ x: startX - stunRXH, y: startY + stunRYH },
+			// p4
+			{ x: startX - stunRXH, y: startY },
+			{ x: startX, y: startY }
+		]
+
+		// remove cached IDs graphics and reset array
+		if (targetMob) {
+			if (Array.isArray(cacheMobSilence[o.index])) {
+				cacheMobSilence[o.index].forEach(index => (ask.removeImg()(index)))
+			}
+			cacheMobSilence[o.index] = []
+		}
+		else {
+			if (Array.isArray(cachePlayerSilence[o.index])) {
+				cachePlayerSilence[o.index].forEach(index => (ask.removeImg()(index)))
+			}
+			cachePlayerSilence[o.index] = []
+		}
+
+		for (var i=0; i<3; i++) {
+			!function createParticle(i, p) {
+				p.width = 32
+				p.height = 32
+				p.x = startX
+				p.y = startY
+				if (targetMob) cacheMobSilence[o.index].push(p.id)
+				else cachePlayerSilence[o.index].push(p.id)
+				var t = new TweenMax.to(p, .333, {
+					delay: i * .111,
+					repeat: -1,
+					curviness: 1.5,
+					bezier: {
+						type: 'quadratic',
+						autoRotate: false,
+						values: bezierValues
+					},
+					ease: Power0.easeNone,
+					onUpdate: checkRemoval,
+					onUpdateParams: [p],
+				})
+				if (i === 1) t.progress(1/3)
+				else if (i === 2) t.progress(2/3)
+			}(i, ask.particle(o, { targetMob: targetMob}))
+		}
+		/////////////////////////////////////////////
+		function checkRemoval(particle) {
+			if (targetMob) {
+				if (!mobs[o.index].buffFlags.silence || !mob.isAlive(o.index)) {
+					ask.removeImg()(particle.id)
+				}
+			}
+			else {
+				if (!my.isSilenced() || my.hp <= 0) {
+					ask.removeImg()(particle.id)
+				}
+			}
+		}
+	}
+
+	function mobParalyze(o, targetMob) {
+		let startX
+		let startY
+		if (targetMob) {
+			if (!mob.isAlive(o.index)) return
+			startX = mob.centerX[o.index]
+			startY = ask.centerHeadY(o.index, true)
+		}
+		else {
+			const pos = ask.getPlayerHead()
+			startX = pos.x
+			startY = pos.y
+		}
+		let bezierValues = [
+			// p1
+			{ x: startX, y: startY },
+			{ x: startX + stunRXH, y: startY },
+			{ x: startX + stunRXH, y: startY + stunRYH },
+			// p2
+			{ x: startX + stunRXH, y: startY + stunRangeY },
+			{ x: startX, y: startY + stunRangeY },
+			// p3
+			{ x: startX - stunRXH, y: startY + stunRangeY },
+			{ x: startX - stunRXH, y: startY + stunRYH },
+			// p4
+			{ x: startX - stunRXH, y: startY },
+			{ x: startX, y: startY }
+		]
+
+		// remove cached IDs graphics and reset array
+		if (targetMob) {
+			if (Array.isArray(cacheMobParalyze[o.index])) {
+				cacheMobParalyze[o.index].forEach(index => (ask.removeImg()(index)))
+			}
+			cacheMobParalyze[o.index] = []
+		}
+		else {
+			if (Array.isArray(cachePlayerParalyze[o.index])) {
+				cachePlayerParalyze[o.index].forEach(index => (ask.removeImg()(index)))
+			}
+			cachePlayerParalyze[o.index] = []
+		}
+
+		for (var i=0; i<3; i++) {
+			!function createParticle(i, p) {
+				p.width = 32
+				p.height = 32
+				p.x = startX
+				p.y = startY
+				if (targetMob) cacheMobParalyze[o.index].push(p.id)
+				else cachePlayerParalyze[o.index].push(p.id)
+				var t = new TweenMax.to(p, .333, {
+					delay: i * .111,
+					repeat: -1,
+					curviness: 1.5,
+					bezier: {
+						type: 'quadratic',
+						autoRotate: false,
+						values: bezierValues
+					},
+					ease: Power0.easeNone,
+					onUpdate: checkRemoval,
+					onUpdateParams: [p],
+				})
+				if (i === 1) t.progress(1/3)
+				else if (i === 2) t.progress(2/3)
+			}(i, ask.particle(o, { targetMob: targetMob}))
+		}
+		/////////////////////////////////////////////
+		function checkRemoval(particle) {
+			if (targetMob) {
+				if (!mobs[o.index].buffFlags.paralyze || !mob.isAlive(o.index)) {
+					ask.removeImg()(particle.id)
+				}
+			}
+			else {
+				if (!my.isParalyzed() || my.hp <= 0) {
+					ask.removeImg()(particle.id)
+				}
+			}
+		}
+	}
+
+	function mobFear(o, targetMob) {
+		let startX
+		let startY
+		if (targetMob) {
+			if (!mob.isAlive(o.index)) return
+			startX = mob.centerX[o.index]
+			startY = ask.centerHeadY(o.index, true)
+		}
+		else {
+			const pos = ask.getPlayerHead()
+			startX = pos.x
+			startY = pos.y
+		}
+		let bezierValues = [
+			// p1
+			{ x: startX, y: startY },
+			{ x: startX + stunRXH, y: startY },
+			{ x: startX + stunRXH, y: startY + stunRYH },
+			// p2
+			{ x: startX + stunRXH, y: startY + stunRangeY },
+			{ x: startX, y: startY + stunRangeY },
+			// p3
+			{ x: startX - stunRXH, y: startY + stunRangeY },
+			{ x: startX - stunRXH, y: startY + stunRYH },
+			// p4
+			{ x: startX - stunRXH, y: startY },
+			{ x: startX, y: startY }
+		]
+
+		// remove cached IDs graphics and reset array
+		if (targetMob) {
+			if (Array.isArray(cacheMobFears[o.index])) {
+				cacheMobFears[o.index].forEach(index => (ask.removeImg()(index)))
+			}
+			cacheMobFears[o.index] = []
+		}
+		else {
+			if (Array.isArray(cachePlayerFears[o.index])) {
+				cachePlayerFears[o.index].forEach(index => (ask.removeImg()(index)))
+			}
+			cachePlayerFears[o.index] = []
+		}
+
+		for (var i=0; i<3; i++) {
+			!function createParticle(i, p) {
+				p.width = 32
+				p.height = 32
+				p.x = startX
+				p.y = startY
+				if (targetMob) cacheMobFears[o.index].push(p.id)
+				else cachePlayerFears[o.index].push(p.id)
+				var t = new TweenMax.to(p, .333, {
+					delay: i * .111,
+					repeat: -1,
+					curviness: 1.5,
+					bezier: {
+						type: 'quadratic',
+						autoRotate: false,
+						values: bezierValues
+					},
+					ease: Power0.easeNone,
+					onUpdate: checkRemoval,
+					onUpdateParams: [p],
+				})
+				if (i === 1) t.progress(1/3)
+				else if (i === 2) t.progress(2/3)
+			}(i, ask.particle(o, { targetMob: targetMob}))
+		}
+		/////////////////////////////////////////////
+		function checkRemoval(particle) {
+			if (targetMob) {
+				if (!mobs[o.index].buffFlags.fear || !mob.isAlive(o.index)) {
+					ask.removeImg()(particle.id)
+				}
+			}
+			else {
+				if (!my.isFeared() || my.hp <= 0) {
+					ask.removeImg()(particle.id)
+				}
+			}
 		}
 	}
 
@@ -646,7 +988,7 @@
 			{ x: startX, y: startY }
 		]
 
-		// remove cached IDs and reset array
+		// remove cached IDs graphics and reset array
 		if (targetMob) {
 			if (Array.isArray(cacheMobStuns[o.index])) {
 				cacheMobStuns[o.index].forEach(index => (ask.removeImg()(index)))
@@ -659,8 +1001,9 @@
 			}
 			cachePlayerStuns[o.index] = []
 		}
+
 		for (var i=0; i<3; i++) {
-			!function createParticle(i, p, values) {
+			!function createParticle(i, p) {
 				p.width = 32
 				p.height = 32
 				p.x = startX
@@ -674,7 +1017,7 @@
 					bezier: {
 						type: 'quadratic',
 						autoRotate: false,
-						values: values
+						values: bezierValues
 					},
 					ease: Power0.easeNone,
 					onUpdate: checkRemoval,
@@ -682,7 +1025,7 @@
 				})
 				if (i === 1) t.progress(1/3)
 				else if (i === 2) t.progress(2/3)
-			}(i, ask.particle(o, { targetMob: targetMob}), bezierValues)
+			}(i, ask.particle(o, { targetMob: targetMob}))
 		}
 		/////////////////////////////////////////////
 		function checkRemoval(particle) {

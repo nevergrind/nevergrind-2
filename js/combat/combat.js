@@ -947,9 +947,9 @@ var combat;
 			mob.animateSpecial(index)
 			// animate particles of tx and rx
 			hits.filter(filterImpossibleMobTargets).forEach(hit => {
-				console.info('hit', hit)
 				if (hit.key === 'divineGrace') ask.mobDivineGrace(index, hit.index)
 				else if (hit.key === 'layHands') ask.mobLayHands(index, hit.index)
+				else if (hit.key === 'naturesTouch') ask.mobNaturesTouch(index, hit.index)
 				hit.healedBy = index
 				updateMobHp(hit)
 				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> and restores '+ hit.damage +' health to ' + ng.getArticle(hit.index) + ' ' + mobs[hit.index].name +'!', CHAT.HEAL)
@@ -1003,6 +1003,26 @@ var combat;
 				})
 				battle.addMyBuff(hit.key, keyRow, duration)
 				processStatBuffsToMe(hit.key)
+				// EFFECTS
+				if (hit.effect === 'stun') {
+					// spells that stun player
+					mobSkills.stunPlayerTx(duration)
+				}
+				else if (hit.effect === 'fear') {
+					mobSkills.fearPlayerTx(duration)
+				}
+				else if (hit.effect === 'paralyze') {
+					mobSkills.paralyzePlayerTx(duration)
+				}
+				else if (hit.effect === 'silence') {
+					mobSkills.silencePlayerTx(duration)
+				}
+				else if (hit.effect === 'chill') {
+					mobSkills.chillPlayerTx(duration)
+				}
+				else if (hit.effect === 'freeze') {
+					mobSkills.freezePlayerTx(duration)
+				}
 
 				// messaging
 				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> on YOU!', CHAT.ALERT)
@@ -1012,7 +1032,7 @@ var combat;
 				// console.info('hitAmount b4', hit, hitAmount)
 				chat.log(_.startCase(hit.key) + ' hits you for ' + hitAmount + ' damage.', CHAT.ALERT)
 				hit.damage = hitAmount
-				processDamageToMe(index, [hit])
+				processDamageToMe(index, [_.omit(hit, 'duration')])
 			}
 		}
 		function processDamageToMe(index, hits) {
@@ -1076,6 +1096,12 @@ var combat;
 						else if (hit.key === 'blizzard') {
 							ask.mobBlizzard(hits[0].row)
 						}
+						else if (hit.key === 'smite') {
+							ask.mobSmite(hits[0].row)
+						}
+						else if (hit.key === 'forceOfGlory') {
+							ask.mobForceOfGlory(hits[0].row)
+						}
 					}
 				}
 
@@ -1114,10 +1140,33 @@ var combat;
 					// messaging
 					// console.info('hit', hit)
 					if (!hit.ticks) {
+						// not a DoT spell
 						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' strikes YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' ' + (hit.damageType === DAMAGE_TYPE.VOID ? '' : hit.damageType) + ' damage!', CHAT.ALERT)
 						// effects
 						if (hit.key === 'harmTouch') {
 							mobs[index].usedHarmTouch = true
+						}
+					}
+					// DIRECT DAMAGE BUFFS ONLY (DoTs go above)
+					if (hit.duration) {
+						if (hit.effect === 'stun') {
+							// spells that stun player
+							mobSkills.stunPlayerTx(hit.duration)
+						}
+						else if (hit.effect === 'fear') {
+							mobSkills.fearPlayerTx(hit.duration)
+						}
+						else if (hit.effect === 'paralyze') {
+							mobSkills.paralyzePlayerTx(hit.duration)
+						}
+						else if (hit.effect === 'silence') {
+							mobSkills.silencePlayerTx(hit.duration)
+						}
+						else if (hit.effect === 'chill') {
+							mobSkills.chillPlayerTx(hit.duration)
+						}
+						else if (hit.effect === 'freeze') {
+							mobSkills.freezePlayerTx(hit.duration)
 						}
 					}
 				}
@@ -1414,11 +1463,13 @@ var combat;
 				}
 
 				// not timer based - my.buffFlags[key] must be set to false via depletion
-				if (buffs[buff.key].duration > 0) {
+				let duration = typeof buff.duration === 'number' ?
+					buff.duration : buffs[buff.key].duration
+				if (typeof duration === 'number') {
 					// timer based
-					// console.warn('adding buff - dur:', buffs[buff.key].duration)
-					my.buffs[key].duration = buffs[buff.key].duration
-					my.buffs[key].timer = TweenMax.to(my.buffs[key], my.buffs[key].duration, {
+					// console.warn('adding buff - dur:', duration)
+					my.buffs[key].duration = duration
+					my.buffs[key].timer = TweenMax.to(my.buffs[key], duration, {
 						duration: 0,
 						ease: Linear.easeNone,
 						onComplete: battle.removeMyBuffFlag,
@@ -1426,15 +1477,33 @@ var combat;
 					})
 				}
 				my.buffFlags[key] = true
-				battle.addMyBuff(buff.key, key)
+				battle.addMyBuff(buff.key, key, duration)
 				processStatBuffsToMe(key, data.row)
-				ask.processAnimations(buff)
-				if (buff.effect === 'slam') {
-					mobSkills.stunPlayerEffectRx(buff.duration)
+				if (buff.effect) {
+					// THIS IS THE EFFECT RECEIVED FROM processDamageToMe
+					if (buff.effect === 'stun') {
+						mobSkills.stunPlayerEffectRx(buff.duration)
+					}
+					else if (buff.effect === 'fear') {
+						mobSkills.fearPlayerEffectRx(buff.duration)
+					}
+					else if (buff.effect === 'paralyze') {
+						mobSkills.paralyzePlayerEffectRx(buff.duration)
+					}
+					else if (buff.effect === 'silence') {
+						mobSkills.silencePlayerEffectRx(buff.duration)
+					}
+					else if (buff.effect === 'chill') {
+						mobSkills.chillPlayerEffectRx(buff.duration)
+					}
+					else if (buff.effect === 'freeze') {
+						mobSkills.freezePlayerEffectRx(buff.duration)
+					}
 				}
-				else if (buff.effect === 'fear') {
-					mobSkills.fearPlayerEffectRx(buff.duration)
+				else {
+					ask.processAnimations(buff)
 				}
+				// console.warn("EFFECT! ", buff)
 			}
 		})
 		if (~~hate > 0) {

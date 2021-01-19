@@ -9,6 +9,11 @@ var timers;
 		globalCooldown: 1,
 		castBar: 1,
 		stunTimer: 1,
+		fearTimer: 1,
+		paralyzeTimer: 1,
+		silenceTimer: 1,
+		chillTimer: 1,
+		freezeTimer: 1,
 		skillCooldowns: [],
 		skillCooldownTimers: [],
 		// mob timer keys

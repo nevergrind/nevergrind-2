@@ -2,11 +2,10 @@ let buffs; // buff data for use with skill/spells/icons
 !function($, _, TweenMax, undefined) {
 	buffs = {
 		// mob skills
-		slam: {
-			name: 'Stunned',
-			img: 1,
+		bloodTerror: {
+			name: 'Feared',
+			img: 2,
 			job: 'misc',
-			duration: 3,
 		},
 		// dynamic shared effects
 		paralyze: {

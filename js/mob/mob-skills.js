@@ -1,12 +1,24 @@
 mobSkills = {};
-!function($, _, TweenMax, Linear, Math, Array, undefined) {
+!function($, _, TweenMax, Linear, Math, Array, Power0, undefined) {
 	mobSkills = {
 		dots: {},
 		decideSkill,
 		getMobsThatNeedsHealing,
+		// tx effect
 		stunPlayerTx,
+		fearPlayerTx,
+		paralyzePlayerTx,
+		silencePlayerTx,
+		chillPlayerTx,
+		freezePlayerTx,
+		// rx effect
 		stunPlayerEffectRx,
 		fearPlayerEffectRx,
+		paralyzePlayerEffectRx,
+		silencePlayerEffectRx,
+		chillPlayerEffectRx,
+		freezePlayerEffectRx,
+		// misc
 		modifyMobStatsByClass,
 		getRandomSkillByJob,
 		// mob skills
@@ -94,15 +106,15 @@ mobSkills = {};
 		],
 		DRU: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .0, key: 'starfire' },
-			{ chance: .99, key: 'lightningBlast' }, // SILENCE?
-			{ chance: .0, key: 'blizzard' },
+			{ chance: .1, key: 'starfire' },
+			{ chance: .16, key: 'lightningBlast' }, // SILENCE?
+			{ chance: .22, key: 'blizzard' }, // CHILL?
 			{ chance: 0, key: 'naturesTouch', maxHeal: 2 },
 		],
 		CLR: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .1, key: 'smite' },
-			{ chance: .12, key: 'forceOfGlory' }, // SILENCE?
+			{ chance: .11, key: 'smite' },
+			{ chance: .14, key: 'forceOfGlory' }, // STUN?
 			{ chance: 0, key: 'divineLight', maxHeal: 3 },
 		],
 		SHM: [
@@ -206,7 +218,7 @@ mobSkills = {};
 			else {
 				// see if a random skill is used or auto attack
 				let skillData = mobSkills.getRandomSkillByJob(mobs[index].job)
-				// console.info('picked', skillData)
+				// console.info('picked', skillData.key)
 				if (skillData.key) {
 					// find skill names
 					if (skillData.key === 'slam') {
@@ -266,6 +278,12 @@ mobSkills = {};
 							mobDamages.push(mobSkills.blizzard(index, row))
 						}
 					}
+					else if (skillData.key === 'smite') {
+						mobDamages = [mobSkills.smite(index, row)]
+					}
+					else if (skillData.key === 'forceOfGlory') {
+						mobDamages = [mobSkills.forceOfGlory(index, row)]
+					}
 				}
 				else {
 					// auto attack
@@ -295,6 +313,7 @@ mobSkills = {};
 			}
 		}
 		mobDamages.forEach((dam, i) => {
+			dam.damage = _.max([1, round(dam.damage)])
 			if (!i) combat.txDamageHero(index, dam)
 			else {
 				if (!dam.interval) dam.interval = 1
@@ -453,6 +472,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'creepingChords',
+			effect: 'paralyze',
 			ticks: 7,
 			damage: mobs[i].int * 3.1,
 			damageType: DAMAGE_TYPE.LIGHTNING,
@@ -471,6 +491,8 @@ mobSkills = {};
 			row: row,
 			key: 'lightningBlast',
 			effect: 'silence',
+			interval: .2,
+			duration: 5,
 			damage: ~~_.random(ceil(mobs[i].int * .77), mobs[i].int * .82),
 			damageType: DAMAGE_TYPE.LIGHTNING,
 		}
@@ -479,19 +501,39 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'blizzard',
+			effect: 'chill',
 			interval: .33,
+			duration: 9,
 			damage: ~~_.random(ceil(mobs[i].int * .62), mobs[i].int * .66),
 			damageType: DAMAGE_TYPE.ICE,
 		}
 	}
-	function naturesTouch(i, row) {
-
+	function naturesTouch(i, tgt) {
+		return {
+			isHeal: true,
+			index: tgt,
+			key: 'naturesTouch',
+			damage: ~~_.random(ceil(mobs[i].int * 23), mobs[i].int * 25),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function smite(i, row) {
-
+		return {
+			row: row,
+			key: 'smite',
+			damage: ~~_.random(ceil(mobs[i].int * 2.1), mobs[i].int * 2.25),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function forceOfGlory(i, row) {
-
+		return {
+			row: row,
+			key: 'forceOfGlory',
+			effect: 'stun',
+			duration: 5,
+			damage: ~~_.random(ceil(mobs[i].int * 2.5), mobs[i].int * 2.6),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function divineLight(i, row) {
 
@@ -673,21 +715,84 @@ mobSkills = {};
 		}
 		config.hpMax = config.hp
 	}
+	// EFFECTS MOBS TO PLAYERS
+
+	// tx status
 	function stunPlayerTx(duration) {
 		if (my.stunCheck()) {
 			let damages = []
 			damages.push({
 				index: my.row,
-				key: 'slam',
+				key: 'stun',
+				effect: 'stun',
 				duration: duration,
 			})
 			combat.txBuffHero(damages)
 		}
 	}
-	function fearPlayerEffectRx(duration) {
-		battle.addMyBuff('fear')
+	function fearPlayerTx(duration) {
+		if (my.fearCheck()) {
+			let damages = []
+			damages.push({
+				index: my.row,
+				key: 'fear',
+				effect: 'fear',
+				duration: duration,
+			})
+			combat.txBuffHero(damages)
+		}
 	}
+	function paralyzePlayerTx(duration) {
+		if (my.paralyzeCheck()) {
+			let damages = []
+			damages.push({
+				index: my.row,
+				key: 'paralyze',
+				effect: 'paralyze',
+				duration: duration,
+			})
+			combat.txBuffHero(damages)
+		}
+	}
+	function silencePlayerTx(duration) {
+		if (my.silenceCheck()) {
+			let damages = []
+			damages.push({
+				index: my.row,
+				key: 'silence',
+				effect: 'silence',
+				duration: duration,
+			})
+			combat.txBuffHero(damages)
+		}
+	}
+	function chillPlayerTx(duration) {
+		if (my.chillCheck()) {
+			let damages = []
+			damages.push({
+				index: my.row,
+				key: 'chill',
+				effect: 'chill',
+				duration: duration,
+			})
+			combat.txBuffHero(damages)
+		}
+	}
+	function freezePlayerTx(duration) {
+		if (my.freezeCheck()) {
+			let damages = []
+			damages.push({
+				index: my.row,
+				key: 'freeze',
+				effect: 'freeze',
+				duration: duration,
+			})
+			combat.txBuffHero(damages)
+		}
+	}
+	// rx status
 	function stunPlayerEffectRx(duration) {
+		if (!my.stunTimeValid(duration)) return
 		spell.cancelSpell()
 		button.pauseAutoAttack()
 		my.stunTimer = TweenMax.to(timers, duration, {
@@ -709,4 +814,59 @@ mobSkills = {};
 			}, false)
 		}
 	}
-}($, _, TweenMax, Linear, Math, Array);
+	function fearPlayerEffectRx(duration) {
+		if (!my.fearTimeValid(duration)) return
+		my.fearTimer = TweenMax.to(timers, duration, {
+			startAt: { fearTimer: 0 },
+			fearTimer: 1,
+			ease: Power0.easeIn,
+		})
+		ask.mobFear({
+			index: my.row,
+			key: 'particle-small-purple',
+			duration: duration
+		}, false)
+	}
+	function paralyzePlayerEffectRx(duration) {
+		if (!my.paralyzeTimeValid(duration)) return
+		my.paralyzeTimer = TweenMax.to(timers, duration, {
+			startAt: { paralyzeTimer: 0 },
+			paralyzeTimer: 1,
+			ease: Power0.easeIn,
+		})
+		ask.mobParalyze({
+			index: my.row,
+			key: 'particle-small-arcane',
+			duration: duration
+		}, false)
+	}
+	function silencePlayerEffectRx(duration) {
+		if (!my.silenceTimeValid(duration)) return
+		my.silenceTimer = TweenMax.to(timers, duration, {
+			startAt: { silenceTimer: 0 },
+			silenceTimer: 1,
+			ease: Power0.easeIn,
+		})
+		ask.mobSilence({
+			index: my.row,
+			key: 'particle-small-ice',
+			duration: duration
+		}, false)
+	}
+	function chillPlayerEffectRx(duration) {
+		if (!my.chillTimeValid(duration)) return
+		my.chillTimer = TweenMax.to(timers, duration, {
+			startAt: { chillTimer: 0 },
+			chillTimer: 1,
+			ease: Power0.easeIn,
+		})
+	}
+	function freezePlayerEffectRx(duration) {
+		if (!my.freezeTimeValid(duration)) return
+		my.freezeTimer = TweenMax.to(timers, duration, {
+			startAt: { freezeTimer: 0 },
+			freezeTimer: 1,
+			ease: Power0.easeIn,
+		})
+	}
+}($, _, TweenMax, Linear, Math, Array, Power0);

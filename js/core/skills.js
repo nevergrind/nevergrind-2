@@ -2523,7 +2523,7 @@ var skills;
 		// console.info('config', config, skillData)
 		// PARALYZE
 		if (tooltip.isRangedOrMelee(skillData) &&
-			my.paralyzeCheck()) {
+			my.paralyzeCheckRoll()) {
 			my.paralyzeMsg()
 			button.triggerGlobalCooldown()
 			return true

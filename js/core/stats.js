@@ -1599,8 +1599,10 @@ var stats = {};
 		if (my.buffFlags.risingFurorBuff) {
 			speedHaste -= buffs.risingFurorBuff.attackHaste[my.buffs.risingFurorBuff.stacks]
 		}
-		if (my.buffFlags.prowl) speedHaste += buffs.prowl.attackHaste
 		// debuffs
+		if (my.buffFlags.prowl) speedHaste += buffs.prowl.attackHaste
+		if (my.isChilled()) speedHaste += .5
+		// limit
 		if (speedHaste < .25) speedHaste = .25
 		else if (speedHaste > 2) speedHaste = 2
 		// console.info('attackSpeed', speedHaste)
@@ -1611,6 +1613,8 @@ var stats = {};
 		if (my.buffFlags.frenzy) skillHaste -= buffs.frenzy.skillHaste[my.buffs.frenzy.level]
 		if (my.buffFlags.augmentation) skillHaste -= buffs.augmentation.skillHaste[my.buffs.augmentation.level]
 		if (my.buffFlags.hyperStrike) skillHaste -= buffs.hyperStrike.skillHaste[my.buffs.hyperStrike.stacks]
+		// debuffs
+		if (my.isChilled()) skillHaste += .5
 		// console.info('getSkillSpeed', skillHaste)
 		if (skillHaste < .5) skillHaste = .5
 		else if (skillHaste > 2) skillHaste = 2
