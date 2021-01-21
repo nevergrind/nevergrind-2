@@ -947,9 +947,12 @@ var combat;
 			mob.animateSpecial(index)
 			// animate particles of tx and rx
 			hits.filter(filterImpossibleMobTargets).forEach(hit => {
+				console.info('hit', hit);
 				if (hit.key === 'divineGrace') ask.mobDivineGrace(index, hit.index)
 				else if (hit.key === 'layHands') ask.mobLayHands(index, hit.index)
 				else if (hit.key === 'naturesTouch') ask.mobNaturesTouch(index, hit.index)
+				else if (hit.key === 'divineLight') ask.mobDivineLight(index, hit.index)
+				else if (hit.key === 'mysticalGlow') ask.mobMysticalGlow(index, hit.index)
 				hit.healedBy = index
 				updateMobHp(hit)
 				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> and restores '+ hit.damage +' health to ' + ng.getArticle(hit.index) + ' ' + mobs[hit.index].name +'!', CHAT.HEAL)
@@ -970,6 +973,12 @@ var combat;
 				}
 				else if (hit.key === 'creepingChords') {
 					ask.mobCreepingChords(hits[0].row)
+				}
+				else if (hit.key === 'scourge') {
+					ask.mobScourge(hits[0].row)
+				}
+				else if (hit.key === 'affliction') {
+					ask.mobAffliction(hits[0].row)
 				}
 				if (my.row !== hit.row) return
 				let keyRow = hit.key + '-' + index
@@ -1101,6 +1110,9 @@ var combat;
 						}
 						else if (hit.key === 'forceOfGlory') {
 							ask.mobForceOfGlory(hits[0].row)
+						}
+						else if (hit.key === 'frostRift') {
+							ask.mobFrostRift(hits[0].row)
 						}
 					}
 				}

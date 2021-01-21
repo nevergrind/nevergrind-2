@@ -97,8 +97,8 @@ mobSkills = {};
 		RNG: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .09, key: 'trueshotStrike' },
-			{ chance: .16, key: 'burningEmbers' }, // ARMOR
-			{ chance: .21, key: 'shockNova' },
+			{ chance: .15, key: 'burningEmbers' }, // ARMOR
+			{ chance: .19, key: 'shockNova' },
 		],
 		BRD: [ // should boost regen and resists too?
 			{ chance: .05, key: 'slam', },
@@ -121,8 +121,8 @@ mobSkills = {};
 		SHM: [
 			{ chance: .03, key: 'slam', },
 			{ chance: .1, key: 'frostRift' }, // CHILL
-			{ chance: .12, key: 'scourge' },
-			{ chance: .15, key: 'affliction' },
+			{ chance: .15, key: 'scourge' },
+			{ chance: .2, key: 'affliction' },
 			{ chance: 0, key: 'mysticalGlow', maxHeal: 2 },
 		],
 		WLK: [
@@ -150,7 +150,7 @@ mobSkills = {};
 			{ chance: .1, key: 'fireBolt' },
 			{ chance: .12, key: 'iceBolt' }, // CHILL
 			{ chance: .15, key: 'magicMissiles' }, // SILENCE
-			{ chance: .15, key: 'lightningBolt' },
+			{ chance: .15, key: 'lightningBolt' }, // FREEZE IN HERE??!?
 			{ chance: .15, key: 'fireball' },
 		],
 	}
@@ -227,7 +227,18 @@ mobSkills = {};
 				rand() < .1 &&
 				injuredMobLen >= 1) {
 				// must have a heal spell, be below heal count max, and find an injured mob
-				mobDamages = [mobSkills.divineGrace(index, getHealTarget())]
+				if (mobs[index].job === JOB.CRUSADER) {
+					mobDamages = [mobSkills.divineGrace(index, getHealTarget())]
+				}
+				else if (mobs[index].job === JOB.DRUID) {
+					mobDamages = [mobSkills.naturesTouch(index, getHealTarget())]
+				}
+				else if (mobs[index].job === JOB.CLERIC) {
+					mobDamages = [mobSkills.divineLight(index, getHealTarget())]
+				}
+				else if (mobs[index].job === JOB.SHAMAN) {
+					mobDamages = [mobSkills.mysticalGlow(index, getHealTarget())]
+				}
 			}
 			// DoTs and DDs
 			else {
@@ -270,9 +281,8 @@ mobSkills = {};
 						mobDamages = [mobSkills.burningEmbers(index, row)]
 					}
 					else if (skillData.key === 'shockNova') {
-						mobDamages = party.presence.filter(party.isAlive).map(p => {
-							return mobSkills.shockNova(index, p.row)
-						})
+						mobDamages = party.presence.filter(party.isAlive)
+							.map(p => mobSkills.shockNova(index, p.row))
 					}
 					else if (skillData.key === 'bellow') {
 						mobDamages = [mobSkills.bellow(index, row)]
@@ -298,6 +308,15 @@ mobSkills = {};
 					}
 					else if (skillData.key === 'forceOfGlory') {
 						mobDamages = [mobSkills.forceOfGlory(index, row)]
+					}
+					else if (skillData.key === 'frostRift') {
+						mobDamages = [mobSkills.frostRift(index, row)]
+					}
+					else if (skillData.key === 'scourge') {
+						mobDamages = [mobSkills.scourge(index, row)]
+					}
+					else if (skillData.key === 'affliction') {
+						mobDamages = [mobSkills.affliction(index, row)]
 					}
 				}
 				else {
@@ -518,7 +537,7 @@ mobSkills = {};
 			key: 'blizzard',
 			effect: 'chill',
 			interval: .33,
-			duration: 9,
+			duration: 8,
 			damage: ~~_.random(ceil(mobs[i].int * .62), mobs[i].int * .66),
 			damageType: DAMAGE_TYPE.ICE,
 		}
@@ -550,20 +569,51 @@ mobSkills = {};
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
-	function divineLight(i, row) {
-
+	function divineLight(i, tgt) {
+		return {
+			isHeal: true,
+			index: tgt,
+			key: 'divineLight',
+			damage: ~~_.random(ceil(mobs[i].int * 28), mobs[i].int * 30),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function frostRift(i, row) {
-
+		return {
+			row: row,
+			key: 'frostRift',
+			effect: 'chill',
+			duration: 12,
+			damage: ~~_.random(ceil(mobs[i].int * 1.65), mobs[i].int * 1.8),
+			damageType: DAMAGE_TYPE.ICE,
+		}
 	}
 	function scourge(i, row) {
-
+		return {
+			row: row,
+			key: 'scourge',
+			ticks: 9,
+			damage: mobs[i].int * 4.8,
+			damageType: DAMAGE_TYPE.BLOOD,
+		}
 	}
 	function affliction(i, row) {
-
+		return {
+			row: row,
+			key: 'affliction',
+			ticks: 12,
+			damage: mobs[i].int * 5.4,
+			damageType: DAMAGE_TYPE.POISON,
+		}
 	}
-	function mysticalGlow(i, row) {
-
+	function mysticalGlow(i, tgt) {
+		return {
+			isHeal: true,
+			index: tgt,
+			key: 'mysticalGlow',
+			damage: ~~_.random(ceil(mobs[i].int * 22), mobs[i].int * 26),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function venomBolt(i, row) {
 

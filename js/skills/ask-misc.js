@@ -26,6 +26,11 @@
 		mobNaturesTouch,
 		mobSmite,
 		mobForceOfGlory,
+		mobFrostRift,
+		mobDivineLight,
+		mobMysticalGlow,
+		mobScourge,
+		mobAffliction,
 	}
 
 	const stunRangeX = 60
@@ -42,6 +47,184 @@
 	const cachePlayerSilence = []
 
 	///////////////////////////////////////////
+	function mobAffliction(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-poison',
+		}, {
+			targetMob: false,
+			duration: .75,
+			interval: .033,
+			sizeStart: 160,
+			sizeEnd: 128,
+			xRange: 96,
+			yRange: 0,
+			loops: 5,
+			ease: Power2.easeIn,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-poison',
+		}, {
+			targetMob: false,
+			interval: .001,
+			loops: 12,
+			sizeStart: 32,
+			sizeEnd: 4,
+			xRange: 150,
+			yRange: 50,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-poison',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+	}
+	function mobScourge(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-blood',
+		}, {
+			targetMob: false,
+			duration: .75,
+			interval: .033,
+			sizeStart: 160,
+			sizeEnd: 128,
+			xRange: 96,
+			yRange: 0,
+			loops: 5,
+			ease: Power2.easeIn,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-blood',
+		}, {
+			targetMob: false,
+			interval: .001,
+			loops: 12,
+			sizeStart: 32,
+			sizeEnd: 4,
+			xRange: 150,
+			yRange: 50,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-blood',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 350,
+					})
+				})
+			}(i)
+		}
+	}
+	function mobMysticalGlow(index, tgt) {
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .03, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'cast-swirl-arcane',
+					}, {
+						duration: 1,
+						ease: Power2.easeOut,
+						alpha: 1,
+						sizeStart: mobs[index].width * .75,
+						sizeEnd: mobs[index].width * .5,
+					})
+				})
+			}(i)
+		}
+		ask.particleGroup({
+			index: tgt,
+			key: 'particle-group-arcane',
+		}, {
+			duration: 1,
+			interval: .1,
+			sizeStart: 192,
+			sizeEnd: 128,
+			xRange: 75,
+			yRange: 0,
+			loops: 3,
+		})
+	}
+	function mobDivineLight(index, tgt) {
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .03, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'cast-swirl-arcane',
+					}, {
+						duration: 1,
+						ease: Power2.easeOut,
+						alpha: 1,
+						sizeStart: mobs[index].width * .75,
+						sizeEnd: mobs[index].width * .5,
+					})
+				})
+			}(i)
+		}
+		ask.particleGroup({
+			index: tgt,
+			key: 'particle-group-arcane',
+		}, {
+			duration: 1,
+			interval: .1,
+			sizeStart: 192,
+			sizeEnd: 128,
+			xRange: 75,
+			yRange: 0,
+			loops: 3,
+		})
+	}
+	function mobFrostRift(index) {
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-ice',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 13,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 250,
+			yRange: 50,
+		})
+		for (var i=0; i<11; i++) {
+			!function(i) {
+				delayedCall(i * .03, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-ice',
+					}, {
+						targetMob: false,
+						duration: .16,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 200 + (i * 5),
+					})
+				})
+			}(i)
+		}
+	}
 	function mobSmite(index) {
 		for (var i=0; i<11; i++) {
 			!function(i) {
