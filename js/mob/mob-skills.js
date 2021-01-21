@@ -52,9 +52,8 @@ mobSkills = {};
 		affliction,
 		mysticalGlow,
 		venomBolt,
-		bloodfire,
+		bloodFire,
 		panicStrike,
-		engulfingDarkness,
 		mindBlitz,
 		staticSuffocation,
 		subversion,
@@ -127,16 +126,15 @@ mobSkills = {};
 		],
 		WLK: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .1, key: 'venomBolt' },
-			{ chance: .12, key: 'bloodfire' },
-			{ chance: .15, key: 'panicStrike' }, // FEAR
-			{ chance: .15, key: 'engulfingDarkness' }, // SILENCE?
+			{ chance: .15, key: 'venomBolt' },
+			{ chance: .2, key: 'bloodFire' },
+			{ chance: .24, key: 'panicStrike' }, // FEAR
 		],
 		ENC: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .1, key: 'mindBlitz' }, // SILENCE?
-			{ chance: .12, key: 'staticSuffocation' }, // PARALYZE
-			{ chance: .15, key: 'subversion' },
+			{ chance: .99, key: 'mindBlitz' }, // SILENCE?
+			{ chance: .0, key: 'staticSuffocation' }, // PARALYZE
+			{ chance: .0, key: 'subversion' },
 		],
 		TMP: [
 			{ chance: .02, key: 'slam', },
@@ -317,6 +315,18 @@ mobSkills = {};
 					}
 					else if (skillData.key === 'affliction') {
 						mobDamages = [mobSkills.affliction(index, row)]
+					}
+					else if (skillData.key === 'venomBolt') {
+						mobDamages = [mobSkills.venomBolt(index, row)]
+					}
+					else if (skillData.key === 'bloodFire') {
+						mobDamages = [mobSkills.bloodFire(index, row)]
+					}
+					else if (skillData.key === 'panicStrike') {
+						mobDamages = [mobSkills.panicStrike(index, row)]
+					}
+					else if (skillData.key === 'mindBlitz') {
+						mobDamages = [mobSkills.mindBlitz(index, row)]
 					}
 				}
 				else {
@@ -616,19 +626,41 @@ mobSkills = {};
 		}
 	}
 	function venomBolt(i, row) {
-
+		return {
+			row: row,
+			key: 'venomBolt',
+			damage: ~~_.random(ceil(mobs[i].int * 2.25), mobs[i].int * 2.45),
+			damageType: DAMAGE_TYPE.POISON,
+		}
 	}
-	function bloodfire(i, row) {
-
+	function bloodFire(i, row) {
+		return {
+			row: row,
+			key: 'bloodFire',
+			ticks: 15,
+			damage: mobs[i].int * 8.25,
+			damageType: DAMAGE_TYPE.FIRE,
+		}
 	}
 	function panicStrike(i, row) {
-
-	}
-	function engulfingDarkness(i, row) {
-
+		return {
+			row: row,
+			key: 'panicStrike',
+			effect: 'fear',
+			duration: 24,
+			damage: ~~_.random(ceil(mobs[i].int * 2.25), mobs[i].int * 2.4),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function mindBlitz(i, row) {
-
+		return {
+			row: row,
+			key: 'mindBlitz',
+			effect: 'silence',
+			duration: 7,
+			damage: ~~_.random(ceil(mobs[i].int * 2.29), mobs[i].int * 2.43),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function staticSuffocation(i, row) {
 

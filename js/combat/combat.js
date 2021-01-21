@@ -980,6 +980,9 @@ var combat;
 				else if (hit.key === 'affliction') {
 					ask.mobAffliction(hits[0].row)
 				}
+				else if (hit.key === 'bloodFire') {
+					ask.mobBloodFire(hits[0].row)
+				}
 				if (my.row !== hit.row) return
 				let keyRow = hit.key + '-' + index
 				// cancel/overwrite existing buff timer data keyRow: duration, function
@@ -1113,6 +1116,15 @@ var combat;
 						}
 						else if (hit.key === 'frostRift') {
 							ask.mobFrostRift(hits[0].row)
+						}
+						else if (hit.key === 'venomBolt') {
+							ask.mobVenomBolt(hits[0].row)
+						}
+						else if (hit.key === 'panicStrike') {
+							ask.mobPanicStrike(hits[0].row)
+						}
+						else if (hit.key === 'mindBlitz') {
+							ask.mobMindBlitz(hits[0].row)
 						}
 					}
 				}
