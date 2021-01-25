@@ -52,8 +52,10 @@ mobSkills = {};
 		affliction,
 		mysticalGlow,
 		venomBolt,
+		engulfingDarkness,
 		bloodFire,
 		panicStrike,
+		gravityFlux,
 		mindBlitz,
 		staticSuffocation,
 		subversion,
@@ -101,55 +103,57 @@ mobSkills = {};
 		],
 		BRD: [ // should boost regen and resists too?
 			{ chance: .05, key: 'slam', },
-			{ chance: .12, key: 'bellow' },
+			{ chance: .14, key: 'bellow' },
 			{ chance: .2, key: 'creepingChords' }, // PARALYZE
 		],
 		DRU: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .1, key: 'starfire' },
-			{ chance: .16, key: 'lightningBlast' }, // SILENCE?
-			{ chance: .22, key: 'blizzard' }, // CHILL?
+			{ chance: .13, key: 'starfire' },
+			{ chance: .19, key: 'lightningBlast' }, // SILENCE?
+			{ chance: .24, key: 'blizzard' }, // CHILL?
 			{ chance: 0, key: 'naturesTouch', maxHeal: 2 },
 		],
 		CLR: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .11, key: 'smite' },
-			{ chance: .14, key: 'forceOfGlory' }, // STUN?
+			{ chance: .15, key: 'smite' },
+			{ chance: .2, key: 'forceOfGlory' }, // STUN?
 			{ chance: 0, key: 'divineLight', maxHeal: 3 },
 		],
 		SHM: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .1, key: 'frostRift' }, // CHILL
-			{ chance: .15, key: 'scourge' },
-			{ chance: .2, key: 'affliction' },
+			{ chance: .13, key: 'frostRift' }, // CHILL
+			{ chance: .18, key: 'scourge' },
+			{ chance: .24, key: 'affliction' },
 			{ chance: 0, key: 'mysticalGlow', maxHeal: 2 },
 		],
 		WLK: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .15, key: 'venomBolt' },
-			{ chance: .2, key: 'bloodFire' },
-			{ chance: .24, key: 'panicStrike' }, // FEAR
+			{ chance: .08, key: 'venomBolt' },
+			{ chance: .16, key: 'engulfingDarkness' },
+			{ chance: .24, key: 'bloodFire' },
+			{ chance: .3, key: 'panicStrike' }, // FEAR
 		],
 		ENC: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .99, key: 'mindBlitz' }, // SILENCE?
-			{ chance: .0, key: 'staticSuffocation' }, // PARALYZE
-			{ chance: .0, key: 'subversion' },
+			{ chance: .08, key: 'gravityFlux' }, // STUN (brief)
+			{ chance: .14, key: 'mindBlitz' }, // SILENCE?
+			{ chance: .24, key: 'staticSuffocation' }, // PARALYZE
+			{ chance: .3, key: 'subversion' },
 		],
 		TMP: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .05, key: 'lavaBolt', },
-			{ chance: .1, key: 'staticStorm' }, // SILENCE?
-			{ chance: .12, key: 'arclight' }, // PARALYZE
-			{ chance: .15, key: 'glacialSpike' },
+			{ chance: .09, key: 'lavaBolt', },
+			{ chance: .16, key: 'staticStorm' }, // SILENCE?
+			{ chance: .23, key: 'arclight' }, // PARALYZE
+			{ chance: .3, key: 'glacialSpike' }, // CHILL?
 		],
 		WIZ: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .1, key: 'fireBolt' },
-			{ chance: .12, key: 'iceBolt' }, // CHILL
-			{ chance: .15, key: 'magicMissiles' }, // SILENCE
-			{ chance: .15, key: 'lightningBolt' }, // FREEZE IN HERE??!?
-			{ chance: .15, key: 'fireball' },
+			{ chance: .07, key: 'fireBolt' },
+			{ chance: .13, key: 'iceBolt' }, // CHILL
+			{ chance: .19, key: 'magicMissiles' }, // SILENCE
+			{ chance: .25, key: 'lightningBolt' }, // PARALYZE
+			{ chance: .3, key: 'fireball' },
 		],
 	}
 	let mobDamage = {}, mobDamages
@@ -322,11 +326,54 @@ mobSkills = {};
 					else if (skillData.key === 'bloodFire') {
 						mobDamages = [mobSkills.bloodFire(index, row)]
 					}
+					else if (skillData.key === 'engulfingDarkness') {
+						mobDamages = [mobSkills.engulfingDarkness(index, row)]
+					}
 					else if (skillData.key === 'panicStrike') {
 						mobDamages = [mobSkills.panicStrike(index, row)]
 					}
+					else if (skillData.key === 'gravityFlux') {
+						mobDamages = [mobSkills.gravityFlux(index, row)]
+					}
 					else if (skillData.key === 'mindBlitz') {
 						mobDamages = [mobSkills.mindBlitz(index, row)]
+					}
+					else if (skillData.key === 'staticSuffocation') {
+						mobDamages = [mobSkills.staticSuffocation(index, row)]
+					}
+					else if (skillData.key === 'subversion') {
+						mobDamages = [mobSkills.subversion(index, row)]
+					}
+					else if (skillData.key === 'lavaBolt') {
+						mobDamages = [mobSkills.lavaBolt(index, row)]
+					}
+					else if (skillData.key === 'staticStorm') {
+						for (var i=0; i<4; i++) {
+							mobDamages.push(mobSkills.staticStorm(index, row))
+						}
+					}
+					else if (skillData.key === 'arclight') {
+						mobDamages = [mobSkills.arclight(index, row)]
+					}
+					else if (skillData.key === 'glacialSpike') {
+						mobDamages = [mobSkills.glacialSpike(index, row)]
+					}
+					else if (skillData.key === 'fireBolt') {
+						mobDamages = [mobSkills.fireBolt(index, row)]
+					}
+					else if (skillData.key === 'iceBolt') {
+						mobDamages = [mobSkills.iceBolt(index, row)]
+					}
+					else if (skillData.key === 'magicMissiles') {
+						for (var i=0; i<3; i++) {
+							mobDamages.push(mobSkills.magicMissiles(index, row))
+						}
+					}
+					else if (skillData.key === 'lightningBolt') {
+						mobDamages = [mobSkills.lightningBolt(index, row)]
+					}
+					else if (skillData.key === 'fireball') {
+						mobDamages = [mobSkills.fireball(index, row)]
 					}
 				}
 				else {
@@ -633,6 +680,15 @@ mobSkills = {};
 			damageType: DAMAGE_TYPE.POISON,
 		}
 	}
+	function engulfingDarkness(i, row) {
+		return {
+			row: row,
+			key: 'engulfingDarkness',
+			ticks: 12,
+			damage: mobs[i].int * 6.9,
+			damageType: DAMAGE_TYPE.POISON,
+		}
+	}
 	function bloodFire(i, row) {
 		return {
 			row: row,
@@ -652,48 +708,130 @@ mobSkills = {};
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
+	function gravityFlux(i, row) {
+		return {
+			row: row,
+			key: 'gravityFlux',
+			effect: 'stun',
+			duration: .5,
+			damage: ~~_.random(ceil(mobs[i].int * 2.35), mobs[i].int * 2.5),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
+	}
 	function mindBlitz(i, row) {
 		return {
 			row: row,
 			key: 'mindBlitz',
 			effect: 'silence',
 			duration: 7,
-			damage: ~~_.random(ceil(mobs[i].int * 2.29), mobs[i].int * 2.43),
+			damage: ~~_.random(ceil(mobs[i].int * 2.16), mobs[i].int * 2.3),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
 	function staticSuffocation(i, row) {
-
+		return {
+			row: row,
+			key: 'staticSuffocation',
+			ticks: 8,
+			effect: 'paralyze',
+			damage: mobs[i].int * 4.8,
+			damageType: DAMAGE_TYPE.LIGHTNING,
+		}
 	}
 	function subversion(i, row) {
-
+		return {
+			row: row,
+			key: 'subversion',
+			ticks: 12,
+			damage: mobs[i].int * 6.3,
+			damageType: DAMAGE_TYPE.POISON,
+		}
 	}
 	function lavaBolt(i, row) {
-
+		return {
+			row: row,
+			key: 'lavaBolt',
+			damage: ~~_.random(ceil(mobs[i].int * 2.33), mobs[i].int * 2.48),
+			damageType: DAMAGE_TYPE.FIRE,
+		}
 	}
 	function staticStorm(i, row) {
-
+		return {
+			row: row,
+			key: 'staticStorm',
+			effect: 'paralyze',
+			duration: 6,
+			interval: .75,
+			damage: mobs[i].int * .7,
+			damageType: DAMAGE_TYPE.LIGHTNING,
+		}
 	}
 	function arclight(i, row) {
-
+		return {
+			row: row,
+			key: 'arclight',
+			ticks: 6,
+			effect: 'paralyze',
+			damage: mobs[i].int * 4.2,
+			damageType: DAMAGE_TYPE.LIGHTNING,
+		}
 	}
 	function glacialSpike(i, row) {
-
+		return {
+			row: row,
+			key: 'glacialSpike',
+			effect: 'chill',
+			duration: 10,
+			damage: ~~_.random(ceil(mobs[i].int * 2.25), mobs[i].int * 2.38),
+			damageType: DAMAGE_TYPE.ICE,
+		}
 	}
 	function fireBolt(i, row) {
-
+		return {
+			row: row,
+			key: 'fireBolt',
+			damage: ~~_.random(ceil(mobs[i].int * 2.36), mobs[i].int * 2.52),
+			damageType: DAMAGE_TYPE.FIRE,
+		}
 	}
 	function iceBolt(i, row) {
-
+		return {
+			row: row,
+			key: 'iceBolt',
+			effect: 'chill',
+			duration: 6,
+			damage: ~~_.random(ceil(mobs[i].int * 2.1), mobs[i].int * 2.24),
+			damageType: DAMAGE_TYPE.ICE,
+		}
 	}
 	function magicMissiles(i, row) {
-
+		return {
+			row: row,
+			key: 'magicMissiles',
+			effect: 'silence',
+			interval: 1,
+			duration: 3,
+			damage: ~~_.random(ceil(mobs[i].int * .66), mobs[i].int * .72),
+			damageType: DAMAGE_TYPE.ARCANE,
+		}
 	}
 	function lightningBolt(i, row) {
-
+		return {
+			row: row,
+			key: 'lightningBolt',
+			effect: 'paralyze',
+			duration: 9,
+			damage: ~~_.random(ceil(mobs[i].int * 2.4), mobs[i].int * 2.6),
+			damageType: DAMAGE_TYPE.LIGHTNING,
+		}
 	}
 	function fireball(i, row) {
-
+		return {
+			row: row,
+			key: 'fireball',
+			damage: ~~_.random(ceil(mobs[i].int * 2.8), mobs[i].int * 3),
+			damageType: DAMAGE_TYPE.FIRE,
+		}
 	}
 	function autoAttack(i, row, isPiercing) {
 		mobDamage = {

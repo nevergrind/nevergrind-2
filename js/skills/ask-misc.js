@@ -1,4 +1,6 @@
-!function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, TimelineMax, undefined) {
+!function(
+	$, _, TweenMax, Power0, Power1, Power2, Power3, Power4, Circ,
+	TimelineMax, undefined) {
 
 	const stunRangeX = 60
 	const stunRXH = stunRangeX * .5
@@ -12,6 +14,7 @@
 	const cachePlayerParalyze = []
 	const cacheMobSilence = []
 	const cachePlayerSilence = []
+	const targetPlayerObj = {targetMob: false}
 
 	ask = {
 		...ask,
@@ -47,12 +50,358 @@
 		mobAffliction,
 		mobVenomBolt,
 		mobBloodFire,
+		mobEngulfingDarkness,
 		mobPanicStrike,
+		mobGravityFlux,
 		mobMindBlitz,
+		mobStaticSuffocation,
+		mobSubversion,
+		mobLavaBolt,
+		mobStaticStorm,
+		mobArclight,
+		mobGlacialSpike,
+		mobFireBolt,
+		mobIceBolt,
+		mobMagicMissiles,
+		mobLightningBolt,
+		mobFireball,
 	}
 
 	///////////////////////////////////////////
-	function mobMindBlitz(index) {
+	function mobFireball(index) {
+		ask.sunburst({index: index}, targetPlayerObj)
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-fire',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 12,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 60,
+			yRange: 50,
+		})
+		for (var i=0; i<5; i++) {
+			!function(i) {
+				delayedCall(i * .016, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-fire',
+					}, {
+						targetMob: false,
+						duration: .16,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 250 + (i * 7),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobLightningBolt(index) {
+		ask.explosion({index: index, key: 'burst-lightning'}, targetPlayerObj)
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-lightning',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 12,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 60,
+			yRange: 50,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .016, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-lightning',
+					}, {
+						targetMob: false,
+						duration: .16,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 250 + (i * 7),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobMagicMissiles(index) {
+		ask.explosion({index: index, key: 'burst-arcane'}, targetPlayerObj)
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-arcane',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 12,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 60,
+			yRange: 50,
+		})
+		for (var i=0; i<1; i++) {
+			!function(i) {
+				delayedCall(i * .016, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-arcane',
+					}, {
+						targetMob: false,
+						duration: .25,
+						ease: Power2.easeOut,
+						alpha: 0,
+						sizeEnd: 250 + (i * 7),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobIceBolt(index) {
+		ask.explosion({index: index, key: 'burst-ice'}, targetPlayerObj)
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-ice',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 25,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 200,
+			yRange: 50,
+		})
+		for (var i=0; i<5; i++) {
+			!function(i) {
+				delayedCall(i * .016, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-ice',
+					}, {
+						targetMob: false,
+						duration: .16,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 250 + (i * 7),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobFireBolt(index) {
+		ask.explosion({index: index, key: 'burst-fire'}, targetPlayerObj)
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-fire',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 25,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 200,
+			yRange: 50,
+		})
+		for (var i=0; i<5; i++) {
+			!function(i) {
+				delayedCall(i * .016, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-fire',
+					}, {
+						targetMob: false,
+						duration: .16,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 250 + (i * 7),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobGlacialSpike(index) {
+		ask.explosion({index: index, key: 'burst-ice'}, targetPlayerObj)
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-ice',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 20,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 100,
+			yRange: 50,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-ice',
+					}, {
+						targetMob: false,
+						duration: .16,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 250 + (i * 7),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobArclight(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-lightning',
+		}, {
+			targetMob: false,
+			duration: 1.25,
+			interval: .1,
+			sizeStart: 128,
+			sizeEnd: 128,
+			xRange: 64,
+			yRange: 0,
+			loops: 3,
+			ease: Circ.easeInOut,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-lightning',
+		}, {
+			targetMob: false,
+			interval: .0033,
+			loops: 17,
+			sizeStart: 50,
+			sizeEnd: 0,
+			xRange: 150,
+			yRange: 50,
+		})
+	}
+	function mobStaticStorm(index) {
+		ask.explosion({index: index, key: 'burst-lightning'}, targetPlayerObj)
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-lightning',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 4,
+			sizeStart: 50,
+			sizeEnd: 0,
+			xRange: 50,
+			yRange: 50,
+		})
+		for (var i=0; i<2; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-lightning',
+					}, {
+						targetMob: false,
+						duration: .16,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 250 + (i * 7),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobLavaBolt(index) {
+		ask.sunburst({index: index}, targetPlayerObj)
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-fire',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 25,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 200,
+			yRange: 50,
+		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .05, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-fire',
+					}, {
+						targetMob: false,
+						duration: .16,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 250 + (i * 7),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobSubversion(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-poison',
+		}, {
+			targetMob: false,
+			duration: 1.25,
+			interval: .05,
+			sizeStart: 160,
+			sizeEnd: 160,
+			xRange: 48,
+			yRange: 0,
+			loops: 3,
+			ease: Power2.easeInOut,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-poison',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 15,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 125,
+			yRange: 50,
+		})
+	}
+	function mobStaticSuffocation(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-lightning',
+		}, {
+			targetMob: false,
+			duration: 1,
+			interval: .05,
+			sizeStart: 160,
+			sizeEnd: 160,
+			xRange: 64,
+			yRange: 0,
+			loops: 3,
+			ease: Power3.easeInOut,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-lightning',
+		}, {
+			targetMob: false,
+			interval: .001,
+			loops: 9,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 50,
+			yRange: 50,
+		})
+	}
+	function mobGravityFlux(index) {
+		ask.explosion({index: index, key: 'burst-arcane'}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-arcane',
@@ -62,7 +411,39 @@
 			loops: 25,
 			sizeStart: 32,
 			sizeEnd: 0,
-			xRange: 70,
+			xRange: 250,
+			yRange: 50,
+		})
+		for (var i=0; i<5; i++) {
+			!function(i) {
+				delayedCall(i * .005, () => {
+					ask.particleCircle({
+						index: index,
+						key: 'particle-circle-arcane',
+					}, {
+						targetMob: false,
+						duration: .16,
+						rotation: !(i % 2) ? 90 : -90,
+						ease: Power0.easeOut,
+						alpha: 0,
+						sizeEnd: 250 + (i * 7),
+					})
+				})
+			}(i)
+		}
+	}
+	function mobMindBlitz(index) {
+		ask.explosion({index: index, key: 'burst-arcane'}, targetPlayerObj)
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-arcane',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 25,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 40,
 			yRange: 70,
 		})
 		for (var i=0; i<3; i++) {
@@ -84,6 +465,7 @@
 		}
 	}
 	function mobPanicStrike(index) {
+		ask.explosion({index: index, key: 'burst-arcane'}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-arcane',
@@ -96,7 +478,7 @@
 			xRange: 70,
 			yRange: 70,
 		})
-		for (var i=0; i<7; i++) {
+		for (var i=0; i<5; i++) {
 			!function(i) {
 				delayedCall(i * .016, () => {
 					ask.particleCircle({
@@ -113,6 +495,34 @@
 				})
 			}(i)
 		}
+	}
+	function mobEngulfingDarkness(index) {
+		ask.particleGroup({
+			index: index,
+			key: 'particle-group-poison',
+		}, {
+			targetMob: false,
+			duration: .75,
+			interval: .033,
+			sizeStart: 160,
+			sizeEnd: 128,
+			xRange: 96,
+			yRange: 0,
+			loops: 5,
+			ease: Power2.easeIn,
+		})
+		ask.particleSmall({
+			index: index,
+			key: 'particle-small-poison',
+		}, {
+			targetMob: false,
+			interval: .001,
+			loops: 12,
+			sizeStart: 32,
+			sizeEnd: 4,
+			xRange: 50,
+			yRange: 50,
+		})
 	}
 	function mobBloodFire(index) {
 		ask.particleGroup({
@@ -141,24 +551,9 @@
 			xRange: 50,
 			yRange: 50,
 		})
-		for (var i=0; i<3; i++) {
-			!function(i) {
-				delayedCall(i * .05, () => {
-					ask.particleCircle({
-						index: index,
-						key: 'particle-circle-fire',
-					}, {
-						targetMob: false,
-						duration: .25,
-						ease: Power0.easeOut,
-						alpha: 0,
-						sizeEnd: 350,
-					})
-				})
-			}(i)
-		}
 	}
 	function mobVenomBolt(index) {
+		ask.explosion({index: index, key: 'burst-poison'}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-poison',
@@ -171,7 +566,7 @@
 			xRange: 70,
 			yRange: 70,
 		})
-		for (var i=0; i<7; i++) {
+		for (var i=0; i<5; i++) {
 			!function(i) {
 				delayedCall(i * .016, () => {
 					ask.particleCircle({
@@ -216,22 +611,6 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		for (var i=0; i<3; i++) {
-			!function(i) {
-				delayedCall(i * .05, () => {
-					ask.particleCircle({
-						index: index,
-						key: 'particle-circle-poison',
-					}, {
-						targetMob: false,
-						duration: .25,
-						ease: Power0.easeOut,
-						alpha: 0,
-						sizeEnd: 350,
-					})
-				})
-			}(i)
-		}
 	}
 	function mobScourge(index) {
 		ask.particleGroup({
@@ -260,22 +639,6 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		for (var i=0; i<3; i++) {
-			!function(i) {
-				delayedCall(i * .05, () => {
-					ask.particleCircle({
-						index: index,
-						key: 'particle-circle-blood',
-					}, {
-						targetMob: false,
-						duration: .25,
-						ease: Power0.easeOut,
-						alpha: 0,
-						sizeEnd: 350,
-					})
-				})
-			}(i)
-		}
 	}
 	function mobMysticalGlow(index, tgt) {
 		for (var i=0; i<3; i++) {
@@ -338,6 +701,7 @@
 		})
 	}
 	function mobFrostRift(index) {
+		ask.explosion({index: index, key: 'burst-ice'}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-ice',
@@ -350,7 +714,7 @@
 			xRange: 250,
 			yRange: 50,
 		})
-		for (var i=0; i<11; i++) {
+		for (var i=0; i<5; i++) {
 			!function(i) {
 				delayedCall(i * .03, () => {
 					ask.particleCircle({
@@ -368,7 +732,8 @@
 		}
 	}
 	function mobSmite(index) {
-		for (var i=0; i<11; i++) {
+		ask.explosion({index: index, key: 'burst-arcane'}, targetPlayerObj)
+		for (var i=0; i<5; i++) {
 			!function(i) {
 				delayedCall(i * .016, () => {
 					ask.particleCircle({
@@ -376,7 +741,7 @@
 						key: 'particle-circle-arcane',
 					}, {
 						targetMob: false,
-						duration: .27 - (i * .015),
+						duration: .16,
 						ease: Power0.easeOut,
 						alpha: 0,
 						sizeEnd: 200 + (i * 10),
@@ -386,6 +751,8 @@
 		}
 	}
 	function mobForceOfGlory(index) {
+		ask.sunburst({index: index}, targetPlayerObj)
+		ask.explosion({index: index, key: 'burst-arcane'}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-arcane',
@@ -398,16 +765,15 @@
 			xRange: 400,
 			yRange: 50,
 		})
-		for (var i=0; i<7; i++) {
+		for (var i=0; i<5; i++) {
 			!function(i) {
 				delayedCall(i * .016, () => {
-					if (i === 0) ask.sunburst({index: index}, {targetMob: false})
 					ask.particleCircle({
 						index: index,
 						key: 'particle-circle-arcane',
 					}, {
 						targetMob: false,
-						duration: .27 + (i * .015),
+						duration: .16,
 						ease: Power0.easeOut,
 						alpha: 0,
 						sizeEnd: 350 - (i * 30),
@@ -448,7 +814,8 @@
 		})
 	}
 	function mobLightningBlast(index) {
-		ask.moonburst({index: index}, {targetMob: false})
+		ask.explosion({index: index, key: 'burst-lightning'}, targetPlayerObj)
+		ask.moonburst({index: index}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-lightning',
@@ -461,16 +828,6 @@
 			sizeEnd: 0,
 			xRange: 125,
 			yRange: 50,
-		})
-		ask.particleCircle({
-			index: index,
-			key: 'particle-circle-lightning',
-		}, {
-			targetMob: false,
-			duration: .33,
-			ease: Power1.easeOut,
-			alpha: 0,
-			sizeEnd: 300,
 		})
 	}
 	function mobBlizzard(index) {
@@ -503,6 +860,7 @@
 		})
 	}
 	function mobStarfire(index) {
+		ask.sunburst({index: index}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-fire',
@@ -515,16 +873,16 @@
 			xRange: 200,
 			yRange: 50,
 		})
-		for (var i=0; i<7; i++) {
+		for (var i=0; i<3; i++) {
 			!function(i) {
-				if (i % 3 === 0) ask.sunburst({index: index}, {targetMob: false})
+				if (i % 3 === 0) ask.sunburst({index: index}, targetPlayerObj)
 				delayedCall(i * .033, () => {
 					ask.particleCircle({
 						index: index,
 						key: 'particle-circle-fire',
 					}, {
 						targetMob: false,
-						duration: .27 - (i * .015),
+						duration: .16,
 						ease: Power0.easeOut,
 						alpha: 0,
 						sizeEnd: 200 + (i * 25),
@@ -560,25 +918,10 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		for (var i=0; i<3; i++) {
-			!function(i) {
-				delayedCall(i * .05, () => {
-					ask.particleCircle({
-						index: index,
-						key: 'particle-circle-lightning',
-					}, {
-						targetMob: false,
-						duration: .25,
-						ease: Power0.easeOut,
-						alpha: 0,
-						sizeEnd: 350,
-					})
-				})
-			}(i)
-		}
 	}
 	function mobBellow(index) {
-		ask.moonburst({index: index}, {targetMob: false})
+		ask.explosion({index: index, key: 'burst-arcane'}, targetPlayerObj)
+		ask.moonburst({index: index}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-arcane',
@@ -635,29 +978,11 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		for (var i=0; i<3; i++) {
-			!function(i) {
-				delayedCall(i * .05, () => {
-					ask.particleCircle({
-						index: index,
-						key: 'particle-circle-fire',
-					}, {
-						targetMob: false,
-						duration: .25,
-						ease: Power0.easeOut,
-						alpha: 0,
-						sizeEnd: 350,
-					})
-				})
-			}(i)
-		}
 	}
 	function mobShockNova(index) {
 		ask.moonburst({
 			index: index,
-		}, {
-			targetMob: false,
-		})
+		}, targetPlayerObj)
 		ask.nova({index: index, key: 'cast-swirl-lightning'}, {
 			targetMob: false,
 			position: 'bottom',
@@ -694,7 +1019,8 @@
 		}
 	}
 	function mobTrueshotStrike(index) {
-		ask.starburst({index: index}, {targetMob: false})
+		ask.explosion({index: index, key: 'burst-default'}, targetPlayerObj)
+		ask.starburst({index: index}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-default',
@@ -707,7 +1033,7 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		for (var i=0; i<3; i++) {
+		for (var i=0; i<1; i++) {
 			!function(i) {
 				delayedCall(i * .05, () => {
 					ask.particleCircle({
@@ -751,30 +1077,15 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		for (var i=0; i<3; i++) {
-			!function(i) {
-				delayedCall(i * .05, () => {
-					ask.particleCircle({
-						index: index,
-						key: 'particle-circle-poison',
-					}, {
-						targetMob: false,
-						duration: .25,
-						ease: Power0.easeOut,
-						alpha: 0,
-						sizeEnd: 350,
-					})
-				})
-			}(i)
-		}
 	}
 	function mobBackstab(index) {
+		ask.explosion({index: index, key: 'burst-default'}, targetPlayerObj)
 		ask.starburst({
 			index: index,
 		}, {
 			targetMob: false,
 		})
-		for (var i=0; i<3; i++) {
+		for (var i=0; i<1; i++) {
 			!function(i) {
 				delayedCall(i * .05, () => {
 					ask.particleCircle({
@@ -792,11 +1103,7 @@
 		}
 	}
 	function mobDragonPunch(index) {
-		ask.sunburst({
-			index: index,
-		}, {
-			targetMob: false,
-		})
+		ask.sunburst({index: index}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-fire',
@@ -809,7 +1116,7 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		for (var i=0; i<3; i++) {
+		for (var i=0; i<1; i++) {
 			!function(i) {
 				delayedCall(i * .05, () => {
 					ask.particleCircle({
@@ -827,11 +1134,10 @@
 		}
 	}
 	function mobHadoken(index) {
+		ask.explosion({index: index, key: 'burst-arcane'}, targetPlayerObj)
 		ask.starburst({
 			index: index,
-		}, {
-			targetMob: false,
-		})
+		}, targetPlayerObj)
 		ask.particleSmall({
 			index: index,
 			key: 'particle-small-arcane',
@@ -844,7 +1150,7 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		for (var i=0; i<3; i++) {
+		for (var i=0; i<2; i++) {
 			!function(i) {
 				delayedCall(i * .05, () => {
 					ask.particleCircle({
@@ -852,7 +1158,7 @@
 						key: 'particle-circle-arcane',
 					}, {
 						targetMob: false,
-						duration: .25,
+						duration: .16,
 						ease: Power0.easeOut,
 						alpha: 0,
 						sizeEnd: 350,
@@ -862,11 +1168,10 @@
 		}
 	}
 	function mobCraneKick(index) {
+		ask.explosion({index: index, key: 'burst-default'}, targetPlayerObj)
 		ask.moonburst({
 			index: index,
-		}, {
-			targetMob: false,
-		})
+		}, targetPlayerObj)
 		for (var i=0; i<3; i++) {
 			!function(i) {
 				delayedCall(i * .05, () => {
@@ -901,29 +1206,19 @@
 		})
 	}
 	function mobHarmTouch(index) {
-		ask.particleCircle({
-			index: index,
-			key: 'cast-swirl-blood',
-		}, {
-			targetMob: false,
-			duration: .7,
-			ease: Power2.easeOut,
-			alpha: 1,
-			sizeStart: 512,
-			sizeEnd: 350,
-		})
-		for (var i=0; i<9; i++) {
+		for (var i=0; i<5; i++) {
 			!function(i) {
-				delayedCall(i * .033, () => {
+				delayedCall(i * .016, () => {
+					ask.explosion({index: index, key: 'burst-blood'}, targetPlayerObj)
 					ask.particleCircle({
 						index: index,
 						key: 'particle-circle-blood',
 					}, {
 						targetMob: false,
-						duration: .5,
+						duration: .2,
 						ease: Power2.easeOut,
 						alpha: 0,
-						sizeEnd: 350,
+						sizeEnd: 300,
 					})
 				})
 			}(i)
@@ -931,7 +1226,7 @@
 	}
 	function mobLayHands(index, tgt) { // tx rx
 		// console.info('mobDivineGrace', index, row)
-		for (var i=0; i<7; i++) {
+		for (var i=0; i<5; i++) {
 			ask.starburst({index: index})
 			!function(i) {
 				delayedCall(i * .1, () => {
@@ -962,26 +1257,6 @@
 			yRange: 0,
 			loops: 7,
 		})
-		/*for (var i=0; i<5; i++) {
-			!function(i) {
-				delayedCall(i * .1, () => {
-					ask.particleCircle({
-						index: tgt,
-						key: 'particle-circle-arcane',
-					}, {
-						duration: .7,
-						ease: Power1.easeInOut,
-						saturationStart: 2,
-						brightnessStart: 5,
-						saturationEnd: 1,
-						brightnessEnd: 0,
-						alpha: 0,
-						sizeStart: mobs[tgt].width * .5,
-						sizeEnd: 0,
-					})
-				})
-			}(i)
-		}*/
 	}
 
 	function mobDivineGrace(index, tgt) { // tx rx
@@ -1017,6 +1292,7 @@
 	}
 
 	function mobDivineJudgment(index) {
+		ask.explosion({index: index, key: 'burst-arcane'}, targetPlayerObj)
 		for (var i=0; i<3; i++) {
 			!function(i) {
 				delayedCall(i * .05, () => {
@@ -1366,42 +1642,4 @@
 			}
 		}
 	}
-	/*
-	ask.particleSmall({
-		..._.clone(o),
-		key: 'particle-small-arcane',
-	}, {
-		interval: .001,
-		loops: 25,
-		sizeStart: 32,
-		sizeEnd: 8,
-		xRange: 150,
-		yRange: 50,
-	})
-
-	ask.particleCircle({
-		..._.clone(o),
-		key: 'particle-circle-default',
-	}, {
-		duration: .5,
-		ease: Power0.easeOut,
-		alpha: 0,
-		rotation: 0,
-		sizeEnd: 333,
-	})
-
-	ask.particleGroup({
-		..._.clone(o),
-		key: 'particle-group-arcane',
-	}, {
-		targetMob: false,
-		duration: .4,
-		interval: .1,
-		sizeStart: 128,
-		sizeEnd: 64,
-		xRange: 50,
-		yRange: 0,
-		loops: 3,
-	})
-	 */
-}($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, TimelineMax);
+}($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, Circ, TimelineMax);

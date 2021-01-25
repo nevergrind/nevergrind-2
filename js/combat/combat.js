@@ -937,8 +937,13 @@ var combat;
 			}
 			else {
 				if (hits[0].isHeal) processHealToMob(data.i, hits)
-				else if (hits[0].ticks) processDotToMe(data.i, hits)
-				else processDamageToMe(data.i, hits)
+				else {
+					if (ng.view === 'battle') {
+						// DoTs, damage only can be applied in battle
+						if (hits[0].ticks) processDotToMe(data.i, hits)
+						else processDamageToMe(data.i, hits)
+					}
+				}
 			}
 		}
 		/////////////////////////////////////////////////////////////////////
@@ -982,6 +987,18 @@ var combat;
 				}
 				else if (hit.key === 'bloodFire') {
 					ask.mobBloodFire(hits[0].row)
+				}
+				else if (hit.key === 'engulfingDarkness') {
+					ask.mobEngulfingDarkness(hits[0].row)
+				}
+				else if (hit.key === 'staticSuffocation') {
+					ask.mobStaticSuffocation(hits[0].row)
+				}
+				else if (hit.key === 'subversion') {
+					ask.mobSubversion(hits[0].row)
+				}
+				else if (hit.key === 'arclight') {
+					ask.mobArclight(hits[0].row)
 				}
 				if (my.row !== hit.row) return
 				let keyRow = hit.key + '-' + index
@@ -1041,8 +1058,8 @@ var combat;
 			})
 			/////////////////////////////////////
 			function onDotTick(hit, hitAmount) {
-				// console.info('hitAmount b4', hit, hitAmount)
-				chat.log(_.startCase(hit.key) + ' hits you for ' + hitAmount + ' damage.', CHAT.ALERT)
+				// console.info('hitAmount b4', hitAmount, hit)
+				chat.log(_.startCase(hit.key) + ' hits you for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
 				hit.damage = hitAmount
 				processDamageToMe(index, [_.omit(hit, 'duration')])
 			}
@@ -1123,8 +1140,35 @@ var combat;
 						else if (hit.key === 'panicStrike') {
 							ask.mobPanicStrike(hits[0].row)
 						}
+						else if (hit.key === 'gravityFlux') {
+							ask.mobGravityFlux(hits[0].row)
+						}
 						else if (hit.key === 'mindBlitz') {
 							ask.mobMindBlitz(hits[0].row)
+						}
+						else if (hit.key === 'lavaBolt') {
+							ask.mobLavaBolt(hits[0].row)
+						}
+						else if (hit.key === 'staticStorm') {
+							ask.mobStaticStorm(hits[0].row)
+						}
+						else if (hit.key === 'glacialSpike') {
+							ask.mobGlacialSpike(hits[0].row)
+						}
+						else if (hit.key === 'fireBolt') {
+							ask.mobFireBolt(hits[0].row)
+						}
+						else if (hit.key === 'iceBolt') {
+							ask.mobIceBolt(hits[0].row)
+						}
+						else if (hit.key === 'magicMissiles') {
+							ask.mobMagicMissiles(hits[0].row)
+						}
+						else if (hit.key === 'lightningBolt') {
+							ask.mobLightningBolt(hits[0].row)
+						}
+						else if (hit.key === 'fireball') {
+							ask.mobFireball(hits[0].row)
 						}
 					}
 				}

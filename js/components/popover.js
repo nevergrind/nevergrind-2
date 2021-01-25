@@ -60,7 +60,6 @@ var popover;
 		}
 		else if (id.startsWith('mybuff-')) {
 			buffName = _.camelCase(id.split('-')[1])
-			console.info('buffName', buffName)
 			html = buffs[buffName].name || _.startCase(buffName)
 		}
 		else {
