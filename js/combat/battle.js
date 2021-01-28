@@ -789,9 +789,7 @@ var battle;
 
 	function html() {
 		// console.info('target:', my.target)
-		var s =
-			'<img id="battle-bg" src="'+ mission.getZoneImg() +'">' +
-			'<img id="battle-fg" src="images/battle/tendolin-hollow-2-fg.png" class="no-pointer">';
+		var s = '<img id="battle-bg" src="'+ mission.getZoneImg() +'">';
 
 		// s += '<div id="mob-target-wrap" class="text-shadow3"></div>'
 		for (var i=0; i<mob.max; i++){

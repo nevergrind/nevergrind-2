@@ -1,7 +1,9 @@
 var ask;
 !function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase, Expo, Sine, Circ, undefined) {
 	ask = {
+		DEFAULT_BEHIND_MOB_LAYER: 80,
 		DEFAULT_MOB_LAYER: 200,
+		DEFAULT_BEHIND_PLAYER_LAYER: 299,
 		DEFAULT_PLAYER_LAYER: 300,
 		askId: 0,
 		castingTweens: [],
@@ -46,6 +48,7 @@ var ask;
 		castAlteration,
 		castEvocation,
 		lightColumn,
+		bloodDrop,
 		// buffCircle
 		// buffRunes (3 circles that rotate opposite directions)
 		// buffDoneImage (rotate, layer other images on it)
@@ -263,7 +266,37 @@ var ask;
 		duration: 1,
 		ease: Power2.easeOut,
 	}
+	const BLOOD_DURATION = 60
 	///////////////////////////////////////////
+	function bloodDrop(index, size) {
+		const img = ask.getImg({
+			index: index,
+			key: 'blood-pool'
+		}, {
+			targetMob: true,
+			zIndex: ask.DEFAULT_BEHIND_MOB_LAYER
+		})
+		img.width = size
+		img.height = size * .25
+		img.scale.x *= Math.random() > .5 ? 1 : -1
+		ask.addChild(img)
+		TweenMax.to(img, .15, {
+			x: '+=' + (_.random(-100, 100)),
+			y: ask.shadowY(index, true) + _.random(-15, 40),
+			ease: Power0.easeIn,
+			onComplete: () => {
+				TweenMax.to(img, BLOOD_DURATION, {
+					width: size * 2,
+					height: size * .5,
+					onComplete: ask.removeImg(),
+					onCompleteParams: [ img.id ]
+				})
+				TweenMax.to(img, BLOOD_DURATION, {
+					alpha: 0,
+				})
+			}
+		})
+	}
 	function lightColumn(o, config = {}) {
 		config = {
 			...lightColumnDefaults,
@@ -978,7 +1011,7 @@ var ask;
 			return ask.getPlayerBottom().y
 		}
 	}
-	function shadowY(index, targetMob) {
+	function shadowY(index, targetMob = true) {
 		// cringe bottom % from CSS
 		if (targetMob) {
 			return index <= 4
@@ -1039,7 +1072,6 @@ var ask;
 		const img = PIXI.Sprite.from(`images/ask/${o.key}.png`)
 		img.id = 'ask-' + ask.askId++
 		img.anchor.set(.5)
-		// console.info('getImg config.target', config.target)
 		if (config.targetMob) {
 			img.x = mob.centerX[o.index]
 			img.y = ask.centerY(o.index, true)

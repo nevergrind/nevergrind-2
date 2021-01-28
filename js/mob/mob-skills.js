@@ -1027,6 +1027,7 @@ mobSkills = {};
 	}
 	// rx status
 	function stunPlayerEffectRx(duration) {
+		duration = my.stunMod(duration, 'stun')
 		if (!my.stunTimeValid(duration)) return
 		spell.cancelSpell()
 		button.pauseAutoAttack()
@@ -1076,6 +1077,7 @@ mobSkills = {};
 		}, false)
 	}
 	function silencePlayerEffectRx(duration) {
+		duration = my.stunMod(duration, 'silence')
 		if (!my.silenceTimeValid(duration)) return
 		my.silenceTimer = TweenMax.to(timers, duration, {
 			startAt: { silenceTimer: 0 },

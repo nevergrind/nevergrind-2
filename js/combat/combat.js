@@ -1312,6 +1312,10 @@ var combat;
 				onComplete: removeText,
 				onCompleteParams: [ basicText.id ],
 			})
+			if (buffs[o.key].damageType === DAMAGE_TYPE.BLOOD) {
+				// TODO: Animate blood drop
+				ask.bloodDrop(index, 16)
+			}
 		}
 		else {
 			// damage
@@ -1325,6 +1329,9 @@ var combat;
 				x: x < 0 ? '-=' + (x * -1) : '+=' + x,
 				ease: Linear.easeOut
 			})
+			if (o.key === 'rupture') {
+				ask.bloodDrop(index, 64)
+			}
 		}
 		TweenMax.to(basicText, TextDuration * .5, TextFoo)
 		TweenMax.to(basicText, TextDuration, TextBar)

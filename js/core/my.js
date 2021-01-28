@@ -1,5 +1,5 @@
 var my;
-!function($, _, TweenMax, undefined) {
+!function($, _, TweenMax, Date, undefined) {
 	my = {
 		//hud,
 		stunTimeValid,
@@ -77,13 +77,40 @@ var my;
 		buffs: {},
 		buffFlags: {},
 		buffIconTimers: {},
+		stunMod,
+		effects: {
+			stun: { timestamp: 0, count: 0, },
+			fear: { timestamp: 0, count: 0, },
+			paralyze: { timestamp: 0, count: 0, },
+			silence: { timestamp: 0, count: 0, },
+			chill: { timestamp: 0, count: 0, },
+			freeze: { timestamp: 0, count: 0, },
+		},
+		lastStunReducedCount: 0,
+		lastStunFullTime: 0,
 		// buffs, potions, etc that need to be cancelled on death or whatever. looping through and killing them makes this easier
 	}
 
 	const tabOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
+	const EFFECT_COOLDOWN = 15000
 	let index
+	let time = 0
 	////////////////////////////////////
 	// time valid check
+	function stunMod(duration, type) {
+		time = Date.now()
+		if (time - my.effects[type].time > EFFECT_COOLDOWN) {
+			my.effects[type].time = time
+			my.effects[type].count = 0
+		}
+		else {
+			// reduction
+			my.effects[type].count++
+			if (my.effects[type].count === 1) duration = duration * .66
+			else duration = duration * .33
+		}
+		return duration
+	}
 	function stunTimeValid(duration) {
 		return duration >= my.buffs.stun.duration
 	}
@@ -288,4 +315,4 @@ var my;
 	function shieldIsEquipped() {
 		return typeof items.eq[13] === 'object' && items.eq[13].itemType === ITEM_TYPE.SHIELDS
 	}
-}($, _, TweenMax);
+}($, _, TweenMax, Date);
