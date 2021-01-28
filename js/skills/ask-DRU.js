@@ -17,14 +17,43 @@
 	///////////////////////////////////////////
 
 	function starfire(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.explosion({index: o.index, key: 'burst-fire'})
+		o.endFrame = 4
+		ask.explosion(_.clone(o), {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 300,
+			sizeEnd: 400,
+			duration: 1.5,
+			frameDuration: .3,
+			frameEase: Power0.easeIn,
 		})
 	}
 	function fissure(o) {
-		ask.explosion(o, {
-			duration: 1.2
-		})
+		for (var i=0; i<15; i++) {
+			!function(i) {
+				delayedCall(i * .1, () => {
+					o.endFrame = 2
+					ask.groundExplosion(o, {
+						yStart: ask.shadowY(o.index, true) + _.random(0, 30),
+						xAdjust: _.random(-100, 100),
+						contrastStart: 1,
+						brightnessStart: 1,
+						anchorY: .78,
+						sizeStart: 128,
+						sizeEnd: 128,
+						duration: .5,
+						frameDuration: .5,
+						yoyo: true,
+						zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
+						alphaStart: 0,
+						alpha: 1,
+						frameEase: Power0.easeOut,
+						ease: Power0.easeInOut,
+					})
+				})
+			}(i)
+		}
 	}
 	function lightningBlast(o) {
 		ask.explosion(o, {

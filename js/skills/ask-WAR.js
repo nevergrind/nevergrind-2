@@ -87,13 +87,13 @@
 		ask.explosion({index: o.index, key: 'burst-ice'})
 		o.endFrame = 2
 		ask.explosion(_.clone(o), {
-			contrastStart: 2,
-			brightnessStart: 5,
-			sizeStart: 512,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 256,
 			sizeEnd: 512,
-			duration: .75,
-			frameDuration: .25,
-			frameEase: Power1.easeIn,
+			duration: 1,
+			frameDuration: .33,
+			frameEase: Power0.easeIn,
 		})
 	}
 	function frenzy(o) {

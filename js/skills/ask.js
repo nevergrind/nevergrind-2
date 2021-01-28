@@ -896,9 +896,11 @@ var ask;
 		}
 		const img = ask.getImg(o, config)
 		img.y = config.yStart || ask.shadowY(o.index, config.targetMob)
+		img.x = config.xAdjust ? img.x + config.xAdjust : img.x
 		img.anchor.set(.5, config.anchorY)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
+		if (typeof config.alphaStart === 'number') img.alpha = config.alphaStart
 		ask.addChild(img)
 
 		TweenMax.to(img, config.duration, {
