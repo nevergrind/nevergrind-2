@@ -587,6 +587,9 @@ var ask;
 			ask.addChild(img)
 			img.width = 0
 			img.height = 0
+			if (config.xStart) {
+				img.x = config.xStart
+			}
 			TweenMax.to(img, config.duration, {
 				startAt: { pixi: {
 						contrast: config.contrastStart,
@@ -925,7 +928,10 @@ var ask;
 		})
 
 		animateFrames(o, config, img)
+		return img
 	}
+
+	let explosionObj = {}
 	function explosion(o, config = {}) {
 		config = {
 			...explosionDefaults,
@@ -934,10 +940,11 @@ var ask;
 		const img = ask.getImg(o, config)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
+		if (config.xStart) img.x = config.xStart
 		if (config.yStart) img.y = config.yStart
 		if (config.rotationStart) img.rotation = util.rotation(config.rotationStart)
 		ask.addChild(img)
-		TweenMax.to(img, config.duration, {
+		explosionObj = {
 			startAt: {
 				pixi: {
 					contrast: config.contrastStart,
@@ -950,13 +957,22 @@ var ask;
 				brightness: config.brightnessEnd,
 			},
 			rotation: util.rotation(config.rotation),
-			width: config.sizeEnd,
-			height: config.sizeEnd,
 			alpha: config.alpha,
 			ease: config.ease,
 			onComplete: ask.removeImg(),
 			onCompleteParams: [ img.id ]
-		})
+		}
+		if (config.autoSize) {
+			// some images use their auto size
+		}
+		else {
+			explosionObj.width = config.sizeEnd
+			explosionObj.height = config.sizeEnd
+		}
+		if (config.yEnd) {
+			explosionObj.y = config.yEnd
+		}
+		TweenMax.to(img, config.duration, explosionObj)
 
 		animateFrames(o, config, img)
 		return img
@@ -971,6 +987,7 @@ var ask;
 			TweenMax.to(state, config.frameDuration, {
 				frame: o.endFrame + .99,
 				ease: config.frameEase || Power0.easeOut,
+				repeat: config.repeat ? -1 : 0,
 				onUpdate: setFrame,
 				onUpdateParams: [img, state],
 			})
@@ -978,10 +995,15 @@ var ask;
 	}
 	function setFrame(img, state) {
 		// console.info('frame', state.frame)
-		if (state.frame >= state.lastFrame + 1) {
+		if (state.frame !== state.lastFrame + 1) {
 			state.lastFrame = ~~state.frame
 			// console.warn('setFrame', state.lastFrame, img.id)
-			img.texture = PIXI.Texture.from('images/ask/'+ state.image + state.lastFrame +'.png')
+			if (state.lastFrame === 0) {
+				img.texture = PIXI.Texture.from('images/ask/'+ state.image +'.png')
+			}
+			else {
+				img.texture = PIXI.Texture.from('images/ask/'+ state.image + state.lastFrame +'.png')
+			}
 		}
 	}
 	function addChild(img) {
@@ -1048,7 +1070,7 @@ var ask;
 			y: 850 - 100
 		}
 	}
-	function getPlayerCenter(index) {
+	function getPlayerCenter(o) {
 		// possibly expand to multiple party members later
 		return {
 			x: 960,
@@ -1063,7 +1085,7 @@ var ask;
 		}
 	}
 	function positionImgToPlayer(o, img, config) {
-		const pos = getPlayerCenter()
+		const pos = getPlayerCenter(o)
 		img.x = pos.x
 		// offset from combat bottom
 		if (typeof config === 'object' && config.yPosition) img.y = BOTTOM - config.yPosition

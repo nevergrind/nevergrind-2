@@ -80,6 +80,7 @@ var dungeon;
 		delayedCall(.5, () => {
 			if (_.size(mob.textures) === 0) {
 				battle.loadTextures()
+				cache.preloadPlayerAsk()
 			}
 		})
 	}

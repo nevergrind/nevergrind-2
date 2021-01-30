@@ -11,9 +11,20 @@ var cache;
 		clearImages,
 		preloadAudio,
 		preloadImages,
+		preloadPlayerAsk,
 	}
 	var mob, image, audio, index, len
 	///////////////////////
+	function preloadPlayerAsk() {
+		let path = 'images/ask/'
+		let ext = '.png'
+		let asks = [
+			path + 'tornado' + ext,
+			path + 'tornado1' + ext,
+			path + 'tornado2' + ext,
+		]
+		cache.preloadImages(asks);
+	}
 	function preloadMob(type) {
 		mob = [];
 		for (var i = 1; i <= 105; i++) {

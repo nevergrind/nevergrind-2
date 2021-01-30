@@ -583,31 +583,37 @@ var combat;
 	}
 	function rxDamageMob(data) {
 		// damages
-		len = data.damages.length
-		for (i=0; i<len; i++) {
-			// console.info('txDamageMob : ', data.damages[i])
-			updateMobHp(data.damages[i])
+		if (data.animate) {
+			// strictly to trigger an animation before damage happens
+			ask.processAnimations(data)
 		}
-		// console.info('rx', data);
-		if (data.damages[0].key === 'jubilee') {
-			// process hate reduction on all clients for player data.row
-			party.presence.forEach(p => {
-				if (data.damages[0].row !== p.row) {
-					mob.feignHate(p.row)
-				}
-			})
-		}
-		/*
-		if (typeof data.damages === 'object') {
-			mob.resetAllHate()
-		}
-		*/
-		// buffs
-		// console.info('bufffffs::::', data.buffs)
-		if (typeof data.buffs === 'object') {
-			buffArr = []
-			data.buffs.forEach(buff => buffArr.push(buff))
-			buffArr.length && battle.processBuffs(buffArr)
+		else {
+			len = data.damages.length
+			for (i=0; i<len; i++) {
+				// console.info('txDamageMob : ', data.damages[i])
+				updateMobHp(data.damages[i])
+			}
+			// console.info('rx', data);
+			if (data.damages[0].key === 'jubilee') {
+				// process hate reduction on all clients for player data.row
+				party.presence.forEach(p => {
+					if (data.damages[0].row !== p.row) {
+						mob.feignHate(p.row)
+					}
+				})
+			}
+			/*
+			if (typeof data.damages === 'object') {
+				mob.resetAllHate()
+			}
+			*/
+			// buffs
+			// console.info('bufffffs::::', data.buffs)
+			if (typeof data.buffs === 'object') {
+				buffArr = []
+				data.buffs.forEach(buff => buffArr.push(buff))
+				buffArr.length && battle.processBuffs(buffArr)
+			}
 		}
 	}
 
@@ -1463,7 +1469,7 @@ var combat;
 	function onHotTick(buff, healAmount) {
 		// console.info('healAmount b4', healAmount)
 		healAmount = processHeal(healAmount)
-		// console.info('healAmount b5', healAmount)
+		// console.info('onHotTick', buff)
 		chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CHAT.HEAL)
 		updateMyResource(PROP.HP, healAmount)
 	}

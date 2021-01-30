@@ -169,7 +169,14 @@
 		}
 		tgts.reverse()
 		const len = tgts.length
-		// console.info('moltenBoulder', tgts)
+		socket.publish('party' + my.partyId, {
+			route: 'p->damage',
+			animate: true,
+			index: 0,
+			key: 'moltenBoulder',
+			tgtStart: _.first(tgts),
+			tgtEnd: _.last(tgts),
+		})
 		delayedCall(1, () => {
 			tgts.forEach((tgt, i) => {
 				delayedCall(i * .333, () => {
