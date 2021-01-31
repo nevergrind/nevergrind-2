@@ -65,9 +65,20 @@
 		mobMagicMissiles,
 		mobLightningBolt,
 		mobFireball,
+		fadeOut,
 	}
-
+	let delay = 0
 	///////////////////////////////////////////
+	function fadeOut(img, duration, fadeDuration) {
+		if (typeof fadeDuration === 'undefined') fadeDuration = duration * .2
+		delay = duration - fadeDuration
+		TweenMax.to(img, fadeDuration, {
+			overwrite: 2,
+			delay: delay,
+			alpha: 0,
+			ease: Power0.easeIn,
+		})
+	}
 	function mobFireball(index) {
 		ask.sunburst({index: index}, targetPlayerObj)
 		ask.particleSmall({

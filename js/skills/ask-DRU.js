@@ -188,14 +188,53 @@
 				alpha: 1,
 				ease: Power0.easeOut,
 			})
+			// position boulder
 			img.x = x
 			img.y = y
-			TweenMax.to(img, duration, {
-				x: mob.centerX[o.tgtEnd],
-				ease: Power0.easeIn,
-			})
+			// fissure trail
+			!function(o) {
+				o.endFrame = 2
+				o.key = 'fissure'
+				let y = ask.shadowY(o.tgtEnd, true)
+				let adjVal = 100 + ((tgts - 2) * 25)
+				let xAdj = o.tgtStart > o.tgtEnd ? -adjVal : adjVal
+				TweenMax.to(img, duration, {
+					x: mob.centerX[o.tgtEnd],
+					ease: Power0.easeIn,
+					onUpdate: () => {
+						ask.groundExplosion(o, {
+							yStart: y + _.random(0, 30),
+							x: img.x + xAdj,
+							contrastStart: 1,
+							brightnessStart: 1,
+							anchorY: .78,
+							sizeStart: 96,
+							sizeEnd: 96,
+							duration: .3,
+							frameDuration: .3,
+							yoyo: true,
+							zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
+							alphaStart: 0,
+							alpha: 1,
+							frameEase: Power0.easeOut,
+							ease: Power0.easeInOut,
+						})
+					}
+				})
+			}(_.clone(o))
+			// target fissures
 			delayedCall(duration, () => {
 				ask.sunburst({index: o.tgtEnd})
+				ask.sunburst({index: o.tgtEnd}, {
+					sizeStart: 150,
+					sizeEnd: 450,
+					duration: .8
+				})
+				ask.sunburst({index: o.tgtEnd}, {
+					sizeStart: 200,
+					sizeEnd: 500,
+					duration: 1
+				})
 				ask.explosion({index: o.tgtEnd, key: 'burst-fire'})
 				// fissure
 				o.index = o.tgtEnd

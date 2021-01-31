@@ -654,7 +654,7 @@ var ng;
 		TweenMax.to('#ngo-logo-fg', 1.5, {
 			startAt: { webkitMaskPositionX: '-40rem', },
 			webkitMaskPositionX: '40rem',
-			ease: Power0.easeIn,
+			ease: Power2.easeInOut,
 			repeat: -1,
 			repeatDelay: 3,
 		});

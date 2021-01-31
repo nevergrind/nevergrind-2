@@ -898,6 +898,7 @@ var ask;
 			...config,
 		}
 		const img = ask.getImg(o, config)
+		if (config.x) img.x = config.x
 		img.y = config.yStart || ask.shadowY(o.index, config.targetMob)
 		img.x = config.xAdjust ? img.x + config.xAdjust : img.x
 		img.anchor.set(.5, config.anchorY)
