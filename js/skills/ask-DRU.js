@@ -178,7 +178,7 @@
 				x -= (384 * 3)
 			}
 			// rock
-			let img = ask.explosion(o, {
+			let boulder = ask.explosion(o, {
 				duration: duration,
 				contrastStart: 1,
 				brightnessStart: 1,
@@ -188,36 +188,35 @@
 				alpha: 1,
 				ease: Power0.easeOut,
 			})
+			TweenMax.to(boulder, .3, {
+				overwrite: 2,
+				repeat: -1,
+				yoyo: true,
+				pixi: {
+					contrast: 1.2,
+					brightness: 1.7,
+				},
+			})
 			// position boulder
-			img.x = x
-			img.y = y
-			// fissure trail
+			boulder.x = x
+			boulder.y = y
 			!function(o) {
 				o.endFrame = 2
-				o.key = 'fissure'
 				let y = ask.shadowY(o.tgtEnd, true)
-				let adjVal = 100 + ((tgts - 2) * 25)
+				let adjVal = 70 + ((tgts - 2) * 20)
 				let xAdj = o.tgtStart > o.tgtEnd ? -adjVal : adjVal
-				TweenMax.to(img, duration, {
+				TweenMax.to(boulder, duration, {
 					x: mob.centerX[o.tgtEnd],
 					ease: Power0.easeIn,
 					onUpdate: () => {
-						ask.groundExplosion(o, {
-							yStart: y + _.random(0, 30),
-							x: img.x + xAdj,
-							contrastStart: 1,
-							brightnessStart: 1,
-							anchorY: .78,
-							sizeStart: 96,
-							sizeEnd: 96,
-							duration: .3,
-							frameDuration: .3,
-							yoyo: true,
-							zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
-							alphaStart: 0,
-							alpha: 1,
-							frameEase: Power0.easeOut,
-							ease: Power0.easeInOut,
+						// fissure trail
+						o.endFrame = 3
+						o.key = 'flames'
+						ask.flames(o, {
+							x: boulder.x + xAdj,
+							y: y,
+							duration: 1.2,
+							fade: .2
 						})
 					}
 				})
@@ -242,7 +241,6 @@
 				o.key = 'fissure'
 				let y = ask.shadowY(o.tgtEnd, true)
 
-
 				ask.particleSmall({...o, key: 'particle-small-fire'}, {
 					interval: .001,
 					loops: 15,
@@ -252,26 +250,12 @@
 					yRange: 50,
 				})
 
-				for (var i=0; i<60; i++) {
+				for (var i=0; i<20; i++) {
 					!function(i) {
-						delayedCall(i * .2, () => {
-							ask.groundExplosion(o, {
-								yStart: y + _.random(0, 30),
-								xAdjust: _.random(-125, 125),
-								contrastStart: 2,
-								brightnessStart: 3,
-								anchorY: .78,
-								sizeStart: 128,
-								sizeEnd: 128,
-								duration: .5,
-								frameDuration: .5,
-								yoyo: true,
-								zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
-								alphaStart: 0,
-								alpha: 1,
-								frameEase: Power0.easeOut,
-								ease: Power0.easeInOut,
-							})
+						ask.flames(o, {
+							y: y,
+							duration: 12,
+							fade: .3
 						})
 					}(i)
 				}

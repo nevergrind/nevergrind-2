@@ -646,7 +646,8 @@ var skills;
 				img: 'MNK-12',
 				sp: level => spellValues.spiritBarrierMana[level],
 				cooldownTime: 20,
-				description: config => 'Buffs your target with a spiritual barrier. Enhances the power of all heals and boosts all resists for '+ ng.toMinSecs(buffs.spiritBarrier.duration) +'.',
+				description: config => 'Buffs your target with a spiritual barrier. Enhances the power of all heals by '+ ng.toPercent(buffs.spiritBarrier.enhanceHealing) +'%, adds +'+ buffs.spiritBarrier.addHealPower[config.rank] +' to all heals, and boosts all resists for '+ ng.toMinSecs(buffs.spiritBarrier.duration) +'.'
+				,
 			},
 		],
 		ROG: [

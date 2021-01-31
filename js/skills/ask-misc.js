@@ -66,9 +66,39 @@
 		mobLightningBolt,
 		mobFireball,
 		fadeOut,
+		flames,
 	}
 	let delay = 0
 	///////////////////////////////////////////
+	function flames(o, config) {
+		o.key = 'flames'
+		let flameObj = {
+			yStart: config.y + _.random(0, 30),
+			xAdjust: _.random(-125, 125),
+			contrastStart: 1,
+			brightnessStart: 1,
+			contrastEnd: 1,
+			brightnessEnd: 1,
+			anchorY: .938,
+			sizeStart: 96,
+			sizeEnd: 96,
+			duration: config.duration,
+			frameDuration: .3,
+			repeat: true,
+			alphaStart: 0,
+			// yoyo: true,
+			zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
+			frameEase: Power0.easeOut,
+			ease: Power2.easeOut,
+		}
+		if (config.x) flameObj.x = config.x
+		let flame = ask.groundExplosion(o, flameObj)
+		TweenMax.to(flame, config.fade, {
+			alpha: 1,
+		})
+		ask.fadeOut(flame, config.duration - config.fade, config.fade)
+		return flame
+	}
 	function fadeOut(img, duration, fadeDuration) {
 		if (typeof fadeDuration === 'undefined') fadeDuration = duration * .2
 		delay = duration - fadeDuration

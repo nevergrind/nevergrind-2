@@ -883,7 +883,6 @@ var combat;
 			// magMit
 			if (my.buffFlags.shimmeringOrb) buffMitigatesDamage(d, 'shimmeringOrb')
 			if (my.buffFlags.sereneSigil) buffMitigatesDamage(d, 'sereneSigil')
-			if (my.buffFlags.spiritBarrier) buffMitigatesDamage(d, 'spiritBarrier')
 			if (!d.ticks) d.damage -= stats.magMit()
 
 			amountReduced = 1

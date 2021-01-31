@@ -258,15 +258,46 @@
 			})
 	}
 	function mendingAura(o) {
+		ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1.5, targetMob: false})
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 1.2
+			duration: 1
+		})
+		ask.explosion({
+			..._.clone(o),
+			key: 'mendingAuraMeditate'
+		}, {
+			targetMob: false,
+			contrastStart: 2,
+			brightnessStart: 3,
+			sizeStart: 80,
+			sizeEnd: 250,
+			duration: 1
 		})
 	}
 	function spiritBarrier(o) {
 		ask.explosion(o, {
 			targetMob: false,
+			contrastStart: 2,
+			brightnessStart: 3,
 			duration: 1.2
+		})
+		o.key = 'spiritBarrierSwirl'
+		ask.explosion(o, {
+			targetMob: false,
+			rotationStart: 0,
+			rotation: 180,
+			sizeStart: 80,
+			sizeEnd: 300,
+			duration: 1.5
+		})
+		ask.explosion(o, {
+			targetMob: false,
+			rotationStart: 0,
+			rotation: -180,
+			sizeStart: 80,
+			sizeEnd: 300,
+			duration: 1.5
 		})
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);
