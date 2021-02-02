@@ -1,13 +1,23 @@
 var ask;
 !function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase, Expo, Sine, Circ, undefined) {
 	ask = {
-		DEFAULT_BEHIND_MOB_LAYER: 80,
+		// mob sprite layers
+		MOB_LAYER_BACK: 75,
+		MOB_LAYER: 100,
+		// effects on back row
+		DEFAULT_BEHIND_MOB_LAYER_BACK: 50,
+		DEFAULT_MOB_LAYER_BACK: 80,
+		// effects on front row
+		DEFAULT_BEHIND_MOB_LAYER: 85,
 		DEFAULT_MOB_LAYER: 200,
-		DEFAULT_BEHIND_PLAYER_LAYER: 299,
-		DEFAULT_PLAYER_LAYER: 300,
+		// player layers
+		DEFAULT_BEHIND_PLAYER_LAYER: 299, // player (front)
+		DEFAULT_PLAYER_LAYER: 300, // player (front effect)
 		askId: 0,
 		castingTweens: [],
 		castingImgIds: [],
+		behindMobLayer,
+		frontMobLayer,
 		getImg,
 		getNova,
 		addChild,
@@ -41,14 +51,15 @@ var ask;
 		explosion, // single frame outward from center
 		groundExplosion, // ground explosion that yoyos
 		flameRip, // flames across ground??
+		rings, // rings around the target (bg and fg)
 		nova, // frame outward (ground and center) can rotate
+		bloodDrop, // configurable blood!
 		slash, // auto slash single frame
 		pierce, // horizontal slash single frame
 		castConjuration,
 		castAlteration,
 		castEvocation,
 		lightColumn,
-		bloodDrop,
 		// buffCircle
 		// buffRunes (3 circles that rotate opposite directions)
 		// buffDoneImage (rotate, layer other images on it)
@@ -137,7 +148,6 @@ var ask;
 		brightnessStart: 2,
 		contrastEnd: 1,
 		brightnessEnd: 1,
-		rotation: 180,
 		alpha: 0,
 		duration: .6,
 		frameDuration: .15,
@@ -179,8 +189,8 @@ var ask;
 		duration: 1,
 		contrastStart: 1,
 		brightnessStart: 1,
-		contrastEnd: 2,
-		brightnessEnd: 2,
+		contrastEnd: 1,
+		brightnessEnd: 1,
 		yoyo: true,
 		alpha: 1,
 		anchorY: 1,
@@ -189,6 +199,7 @@ var ask;
 	const explosionDefaults = {
 		repeat: false,
 		targetMob: true,
+		autoSize: false,
 		sizeStart: 80,
 		sizeEnd: 400,
 		duration: .8,
@@ -200,6 +211,22 @@ var ask;
 		rotation: 0,
 		startAlpha: 1,
 		alpha: 0,
+		ease: Power4.easeOut,
+	}
+	const ringsDefaults = {
+		targetMob: true,
+		yPosition: 100,
+		loops: 5,
+		interval: .033,
+		duration: 1,
+		contrastStart: 1.5,
+		brightnessStart: 2,
+		contrastEnd: 1,
+		brightnessEnd: 1,
+		width: 'auto',
+		height: 'auto',
+		rotation: 0,
+		zIndex: ask.DEFAULT_MOB_LAYER,
 		ease: Power4.easeOut,
 	}
 	const novaDefaults = {
@@ -216,7 +243,7 @@ var ask;
 		width: 'auto',
 		height: 'auto',
 		rotation: 0,
-		zIndex: 30,
+		zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
 		ease: Power4.easeOut,
 	}
 	const slashDefaults = {
@@ -571,6 +598,89 @@ var ask;
 			})
 		}
 	}
+	function behindMobLayer(o) {
+		if (o.index <= 4) return ask.DEFAULT_MOB_LAYER_BACK
+		else return ask.DEFAULT_BEHIND_MOB_LAYER_BACK
+	}
+	function frontMobLayer(o) {
+		if (o.index <= 4) return ask.DEFAULT_MOB_LAYER
+		else return ask.DEFAULT_BEHIND_MOB_LAYER
+	}
+	function rings(o, config = {}) {
+		config = {
+			...ringsDefaults,
+			...config
+		}
+		for (var i=0; i<config.loops; i++) {
+			!function(i) {
+				delayedCall(config.interval * i, ringsExplode, [o, config])
+			}(i)
+		}
+	}
+	function ringsExplode(o, config) {
+		//bg
+		o.key = 'rings-' + o.type + '-bg'
+		config.zIndex = ask.behindMobLayer(o)
+		const bg = ask.getNova(o, config)
+		ask.addChild(bg)
+		//fg
+		o.key = 'rings-' + o.type + '-fg'
+		config.zIndex = ask.frontMobLayer(o)
+		const fg = ask.getNova(o, config)
+		ask.addChild(fg)
+
+		fg.width = bg.width = 0
+		fg.height = bg.height = 0
+		if (config.xStart) {
+			fg.x = bg.x = config.xStart
+		}
+		if (config.yStart) {
+			bg.y += config.yStart
+			fg.y += config.yStart
+		}
+		// bg
+		TweenMax.to(bg, config.duration, {
+			startAt: { pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+			},
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			alpha: 0,
+			y: config.yEnd ? config.yEnd : bg.y,
+			width: !config.targetMob ? 600 :
+				config.width === 'auto' ? mobs[o.index].width : config.width,
+			height: !config.targetMob ? 100 :
+				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
+			ease: config.ease,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ bg.id ]
+		})
+		// fg
+		TweenMax.to(fg, config.duration, {
+			startAt: { pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+			},
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			alpha: 0,
+			y: config.yEnd ? config.yEnd : fg.y,
+			width: !config.targetMob ? 600 :
+				config.width === 'auto' ? mobs[o.index].width : config.width,
+			height: !config.targetMob ? 100 :
+				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
+			ease: config.ease,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ bg.id ]
+		})
+	}
 	function nova(o, config = {}) {
 		config = {
 			...novaDefaults,
@@ -581,36 +691,38 @@ var ask;
 				delayedCall(config.interval * i, novaExplode, [o, config])
 			}(i)
 		}
-		/////////////////////////////////////
-		function novaExplode(o, config) {
-			const img = ask.getNova(o, config)
-			ask.addChild(img)
-			img.width = 0
-			img.height = 0
-			if (config.xStart) {
-				img.x = config.xStart
-			}
-			TweenMax.to(img, config.duration, {
-				startAt: { pixi: {
-						contrast: config.contrastStart,
-						brightness: config.brightnessStart,
-					},
-					rotation: config.rotation,
-				},
-				pixi: {
-					contrast: config.contrastEnd,
-					brightness: config.brightnessEnd,
-				},
-				alpha: 0,
-				width: !config.targetMob ? 600 :
-					config.width === 'auto' ? mobs[o.index].width : config.width,
-				height: !config.targetMob ? 100 :
-					config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
-				ease: config.ease,
-				onComplete: ask.removeImg(),
-				onCompleteParams: [ img.id ]
-			})
+	}
+	function novaExplode(o, config) {
+		const img = ask.getNova(o, config)
+		ask.addChild(img)
+		img.width = 0
+		img.height = 0
+		if (config.xStart) {
+			img.x = config.xStart
 		}
+		if (config.yStart) {
+			img.y += config.yStart
+		}
+		TweenMax.to(img, config.duration, {
+			startAt: { pixi: {
+					contrast: config.contrastStart,
+					brightness: config.brightnessStart,
+				},
+				rotation: config.rotation,
+			},
+			pixi: {
+				contrast: config.contrastEnd,
+				brightness: config.brightnessEnd,
+			},
+			alpha: 0,
+			width: !config.targetMob ? 600 :
+				config.width === 'auto' ? mobs[o.index].width : config.width,
+			height: !config.targetMob ? 100 :
+				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
+			ease: config.ease,
+			onComplete: ask.removeImg(),
+			onCompleteParams: [ img.id ]
+		})
 	}
 
 	function particle(o, config = { targetMob: true}) {
@@ -902,11 +1014,20 @@ var ask;
 		img.y = config.yStart || ask.shadowY(o.index, config.targetMob)
 		img.x = config.xAdjust ? img.x + config.xAdjust : img.x
 		img.anchor.set(.5, config.anchorY)
-		img.width = config.sizeStart
-		img.height = config.sizeStart
+		if (config.width) {
+			img.width = config.width
+			img.height = config.height
+		}
+		else {
+			img.width = config.sizeStart
+			img.height = config.sizeStart
+		}
 		if (typeof config.alphaStart === 'number') img.alpha = config.alphaStart
-		ask.addChild(img)
+		if (config.flip) {
+			img.scale.x *= -1
+		}
 
+		ask.addChild(img)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -918,8 +1039,8 @@ var ask;
 				contrast: config.contrastEnd,
 				brightness: config.brightnessEnd,
 			},
-			width: config.sizeEnd,
-			height: config.sizeEnd,
+			width: config.width ? config.width : config.sizeEnd,
+			height: config.height ? config.height : config.sizeEnd,
 			yoyo: config.yoyo,
 			alpha: config.alpha,
 			repeat: config.yoyo ? 1 : 0,
@@ -932,20 +1053,25 @@ var ask;
 		return img
 	}
 
-	let explosionObj = {}
 	function explosion(o, config = {}) {
 		config = {
 			...explosionDefaults,
 			...config,
 		}
 		const img = ask.getImg(o, config)
+		// pre-config
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		if (config.xStart) img.x = config.xStart
 		if (config.yStart) img.y = config.yStart
 		if (config.rotationStart) img.rotation = util.rotation(config.rotationStart)
+		if (config.flip) {
+			img.scale.x *= -1
+		}
+		// add to canvas
 		ask.addChild(img)
-		explosionObj = {
+		// tween config
+		let explosionObj = {
 			startAt: {
 				pixi: {
 					contrast: config.contrastStart,
@@ -1116,10 +1242,14 @@ var ask;
 		// bottom center of mob's feet
 		if (config.targetMob) {
 			img.x = mob.centerX[o.index]
-			if (config.position === 'bottom') img.y = ask.shadowY(o.index, config.targetMob)
+			if (config.position === 'bottom') {
+				// nova
+				img.y = ask.shadowY(o.index, config.targetMob)
+			}
 			else {
+				// rings
 				// if not on ground (behind) this will need a zIndex so it appears in front
-				img.y = ask.centerY(o.index, true)
+				img.y = ask.centerY(o.index, config.targetMob)
 			}
 		}
 		else {

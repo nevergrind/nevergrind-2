@@ -71,10 +71,27 @@
 	let delay = 0
 	///////////////////////////////////////////
 	function flames(o, config) {
+		let xAdj, yAdj
+		if (config.meteor) {
+			xAdj = _.random(-192, 192)
+			yAdj = _.random(-30, 60)
+		}
+		else {
+			xAdj = _.random(-125, 125)
+			yAdj = _.random(0, 30)
+		}
+		let zIndex
+		if (yAdj < 15) {
+			zIndex = ask.behindMobLayer(o)
+		}
+		else {
+			zIndex = ask.frontMobLayer(o)
+		}
 		o.key = 'flames'
+		o.endFrame = 3
 		let flameObj = {
-			yStart: config.y + _.random(0, 30),
-			xAdjust: _.random(-125, 125),
+			yStart: config.y + yAdj,
+			xAdjust: xAdj,
 			contrastStart: 1,
 			brightnessStart: 1,
 			contrastEnd: 1,
@@ -83,19 +100,21 @@
 			sizeStart: 96,
 			sizeEnd: 96,
 			duration: config.duration,
-			frameDuration: .3,
+			frameDuration: _.random(.3, .5),
 			repeat: true,
 			alphaStart: 0,
 			// yoyo: true,
-			zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
+			zIndex: zIndex,
 			frameEase: Power0.easeOut,
 			ease: Power2.easeOut,
 		}
 		if (config.x) flameObj.x = config.x
 		let flame = ask.groundExplosion(o, flameObj)
+		// fade in
 		TweenMax.to(flame, config.fade, {
 			alpha: 1,
 		})
+		// fade out
 		ask.fadeOut(flame, config.duration - config.fade, config.fade)
 		return flame
 	}

@@ -33,19 +33,22 @@
 		for (var i=0; i<15; i++) {
 			!function(i) {
 				delayedCall(i * .1, () => {
-					o.endFrame = 2
+					o.endFrame = 3
+					let y = ask.shadowY(o.index, true)
+					let yAdj = _.random(0, 30)
+					let zIndex = yAdj > 15 ? ask.DEFAULT_MOB_LAYER : ask.DEFAULT_BEHIND_MOB_LAYER
 					ask.groundExplosion(o, {
-						yStart: ask.shadowY(o.index, true) + _.random(0, 30),
+						yStart: y + yAdj,
 						xAdjust: _.random(-100, 100),
 						contrastStart: 1,
 						brightnessStart: 1,
 						anchorY: .78,
-						sizeStart: 128,
-						sizeEnd: 128,
+						sizeStart: 96,
+						sizeEnd: 96,
 						duration: .5,
 						frameDuration: .5,
 						yoyo: true,
-						zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
+						zIndex: zIndex,
 						alphaStart: 0,
 						alpha: 1,
 						frameEase: Power0.easeOut,
@@ -56,17 +59,38 @@
 		}
 	}
 	function lightningBlast(o) {
-		o.endFrame = 4
-		ask.groundExplosion(_.clone(o), {
-			yStart: ask.shadowY(o.index, true) + 50,
-			contrastStart: 1.5,
-			brightnessStart: 2,
-			sizeStart: 512,
-			sizeEnd: 512,
+		let shadowY = ask.shadowY(o.index, true) + 50
+		o.key = 'lightningBlast1'
+		let img = ask.groundExplosion(_.clone(o), {
+			yStart: shadowY,
+			contrastStart: 2,
+			brightnessStart: 5,
+			width: 400,
+			height: 900,
 			yoyo: false,
 			alpha: 1,
-			duration: .25,
+			duration: 1.1,
 			frameDuration: .25,
+			frameEase: Power0.easeIn,
+		})
+		delayedCall(.2, () => {
+			img.alpha = .033
+			TweenMax.to(img, 1, {
+				alpha: 0,
+			})
+		})
+		o.key = 'lightningBlast'
+		o.endFrame = 4
+		ask.groundExplosion(_.clone(o), {
+			yStart: shadowY,
+			contrastStart: 2,
+			brightnessStart: 5,
+			width: 400,
+			height: 900,
+			yoyo: false,
+			alpha: 1,
+			duration: .2,
+			frameDuration: .2,
 			frameEase: Power0.easeIn,
 		})
 		ask.particleSmall({
@@ -110,6 +134,8 @@
 			!function(i, o) {
 				let x = centerX + _.random(-125, 125)
 				let duration = distanceDuration + _.random(-.1, .1)
+				let yStart = _.random(-15, 15)
+				let zIndex = yStart < 0 ? ask.DEFAULT_MOB_LAYER : ask.DEFAULT_BEHIND_MOB_LAYER
 				o.key = 'blizzard-shard' + _.random(2)
 				o.endFrame = null
 				delayedCall(i * .1, () => {
@@ -122,6 +148,7 @@
 						xStart: x,
 						yStart: centerY,
 						yEnd: ground,
+						zIndex: zIndex,
 						alpha: 1,
 						ease: Power0.easeOut,
 					})
@@ -129,6 +156,7 @@
 						ask.nova({index: o.index, key: 'cast-swirl-ice'}, {
 							position: 'bottom',
 							xStart: x,
+							yStart: yStart,
 							width: 300,
 							height: 50,
 							loops: 1,
@@ -307,26 +335,22 @@
 	let tornadoInvert = false
 	function tornado(o) {
 		o.endFrame = 2
-		let img = ask.groundExplosion(o, {
+		tornadoInvert = !tornadoInvert
+		ask.groundExplosion(o, {
+			flip: tornadoInvert,
 			yStart: ask.shadowY(o.index, true) + 25,
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			sizeStart: 360,
 			sizeEnd: 250,
 			yoyo: false,
+			alphaStart: .5,
 			alpha: 0,
 			duration: 1,
 			frameDuration: .2,
 			repeat: true,
 			frameEase: Power0.easeIn,
 		})
-		tornadoInvert = !tornadoInvert
-		img.scale.x = tornadoInvert ? -1 : 1/*
-		for (var i=0; i<5; i++) {
-			delayedCall(i*.2, () => {
-				img.scale.x = Math.random() > .5 ? 1 : -1
-			})
-		}*/
 
 	}
 	function naturesTouch(o) {

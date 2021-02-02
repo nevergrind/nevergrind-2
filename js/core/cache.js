@@ -22,6 +22,9 @@ var cache;
 			path + 'tornado' + ext,
 			path + 'tornado1' + ext,
 			path + 'tornado2' + ext,
+			path + 'fireBolt' + ext,
+			path + 'fireBolt1' + ext,
+			path + 'fireBolt2' + ext,
 		]
 		cache.preloadImages(asks);
 	}

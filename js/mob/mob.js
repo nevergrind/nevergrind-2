@@ -341,7 +341,8 @@ let mobs = [];
 		m.sprite.height = height
 		m.sprite.interactive = true
 		m.sprite.buttonMode = true
-		m.sprite.zIndex = 100 - i
+		const layer = i <= 4 ? ask.MOB_LAYER : ask.MOB_LAYER_BACK
+		m.sprite.zIndex = layer - i
 		TweenMax.set(mobs[i].sprite, filter.default(i))
 
 		// mob shadow

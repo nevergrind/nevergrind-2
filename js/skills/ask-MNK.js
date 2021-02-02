@@ -136,10 +136,9 @@
 	}
 	function hurricaneKicks(o) {
 			ask.explosion({index: o.index, key: 'burst-default'}, {duration: 1})
-			ask.nova({index: o.index, key: 'cast-swirl-arcane'}, {
-				position: 'center',
+			ask.rings({index: o.index, type: 'arcane'}, {
 				loops: 3,
-				zIndex: ask.DEFAULT_MOB_LAYER,
+				duration: 1,
 			})
 			o.endFrame = 2
 			let dur = .3
@@ -240,10 +239,8 @@
 				frameEase: Power0.easeIn,
 			})
 			ask.fadeOut(img, dur, .1)
-			ask.nova({index: o.index, key: 'cast-swirl-default'}, {
-				position: 'center',
-				loops: 3,
-				zIndex: ask.DEFAULT_MOB_LAYER,
+			ask.rings({index: o.index, type: 'default'}, {
+				loops: 5,
 			})
 			ask.particleSmall({
 				..._.clone(o),

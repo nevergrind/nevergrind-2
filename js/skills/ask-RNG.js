@@ -239,20 +239,6 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		/*ask.nova(o, {
-			position: 'center',
-			rotation: util.rotation(45),
-			width: 400,
-			loops: 3,
-			zIndex: 200,
-		})
-		ask.nova(o, {
-			position: 'center',
-			rotation: util.rotation(135),
-			loops: 3,
-			width: 400,
-			zIndex: 200,
-		})*/
 	}
 	function faerieFlame(o) {
 		ask.particleGroup({

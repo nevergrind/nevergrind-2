@@ -206,6 +206,13 @@
 		let tgt = spell.config.target
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
+
+		socket.publish('party' + my.partyId, {
+			route: 'p->damage',
+			animate: true,
+			index: tgt,
+			key: 'meteorLaunch',
+		})
 		delayedCall(2, () => {
 			if (mob.isAlive(tgt)) {
 				let damages = []
