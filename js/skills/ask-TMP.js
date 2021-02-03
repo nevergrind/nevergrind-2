@@ -65,9 +65,112 @@
 		})
 	}
 	function frozenOrb(o) {
-		ask.explosion(o, {
-			duration: 1.2
-		})
+		if (o.animate) {
+			// orb
+			let yStart = ask.centerY(o.index, true) - 1100
+			let yEnd = ask.centerY(o.index, true) - 100
+			let dur = 1.5
+			o.key = 'frozenOrbRay'
+			o.endFrame = 1
+			let rays = ask.explosion(o, {
+				yStart: yStart,
+				yEnd: yEnd,
+				contrastStart: 1.5,
+				brightnessStart: 2,
+				sizeStart: 300,
+				sizeEnd: 300,
+				alpha: 1,
+				duration: dur,
+				frameDuration: .1,
+				repeat: true,
+				ease: Power4.easeOut,
+				frameEase: Power0.easeOut,
+			})
+			// orb
+			o.key = 'frozenOrb'
+			o.endFrame = null
+			let orb = ask.explosion(o, {
+				yStart: yStart,
+				yEnd: yEnd,
+				contrastStart: 1.5,
+				brightnessStart: 2,
+				sizeStart: 400,
+				sizeEnd: 400,
+				alpha: 1,
+				duration: dur,
+				ease: Power4.easeOut,
+			})
+			TweenMax.to(orb, .2, {
+				rotation: util.rotation(360),
+				repeat: -1,
+				ease: Power0.easeNone,
+			})
+			TweenMax.to(orb, dur, {
+				onUpdate: () => {
+					orb.scale.x = orb.scale.x * -1
+				}
+			})
+			// frost 1
+			o.key = 'frozenOrbFrost'
+			let frost1 = ask.explosion(o, {
+				yStart: yStart,
+				yEnd: yEnd,
+				contrastStart: 1.5,
+				brightnessStart: 2,
+				sizeStart: 300,
+				sizeEnd: 300,
+				startAlpha: .6,
+				alpha: .6,
+				duration: dur,
+				ease: Power4.easeOut,
+			})
+			TweenMax.to(frost1, 1.5, {
+				rotation: util.rotation(-360),
+				repeat: -1,
+				ease: Power0.easeNone,
+			})
+			// frost 2
+			let frost2 = ask.explosion(o, {
+				yStart: yStart,
+				yEnd: yEnd,
+				contrastStart: 1.5,
+				brightnessStart: 2,
+				sizeStart: 300,
+				sizeEnd: 300,
+				startAlpha: .6,
+				alpha: .6,
+				duration: dur,
+				ease: Power4.easeOut,
+			})
+			TweenMax.to(frost2, 1.5, {
+				rotation: util.rotation(360),
+				repeat: -1,
+				ease: Power0.easeNone,
+			})
+			ask.fadeOut([orb, frost1, frost2, rays], dur, dur * .1)
+		}
+		else {
+			// shards
+			ask.explosion({index: o.index, key: 'burst-ice'}, {duration: .5})
+			ask.explosion({index: o.index, key: 'frozenOrbRay1'}, {
+				contrastStart: 1.5,
+				brightnessStart: 3,
+				sizeStart: 200,
+				sizeEnd: 0,
+				duration: .5,
+			})
+			ask.particleSmall({
+				..._.clone(o),
+				key: 'particle-small-ice',
+			}, {
+				interval: .001,
+				loops: 5,
+				sizeStart: 32,
+				sizeEnd: 8,
+				xRange: 220,
+				yRange: 50,
+			})
+		}
 	}
 	function staticStorm(o) {
 		ask.explosion(o, {

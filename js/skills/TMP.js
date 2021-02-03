@@ -80,6 +80,8 @@
 	function frozenOrbCompleted() {
 		let originalTarget = my.target
 		let firstTargets = [-2, -1, 0, 1, 2]
+		let tgts = []
+
 		for (var i=0; i<15; i++) {
 			!function(i) {
 				let splashIndex
@@ -91,6 +93,7 @@
 				}
 				else splashIndex = _.random(-2, 2)
 				let tgt = battle.getSplashTarget(splashIndex, originalTarget)
+				tgts.push(tgt)
 				delayedCall(i * .1, () => {
 					combat.txDamageMob([{
 						key: 'frozenOrb',
@@ -108,6 +111,13 @@
 				})
 			}(i)
 		}
+		socket.publish('party' + my.partyId, {
+			route: 'p->damage',
+			animate: true,
+			index: originalTarget,
+			tgts: tgts,
+			key: 'frozenOrb',
+		})
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function staticStorm(index, data) {

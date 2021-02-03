@@ -501,7 +501,7 @@ var battle;
 				// console.info('stac', mobs[buff.i].buffs[buffKeyRow].stacks)
 			}
 			if (buff.duration) {
-				console.warn('processBuffs effect found', buff.i, buff.key, buff.duration)
+				// console.warn('processBuffs effect found', buff.i, buff.key, buff.duration)
 				if (buff.key === 'stun') mobEffects.stun(buff.i, buff.duration)
 				else if (buff.key === 'freeze') mobEffects.freeze(buff.i, buff.duration)
 				else if (buff.key === 'chill') mobEffects.chill(buff.i, buff.duration)
