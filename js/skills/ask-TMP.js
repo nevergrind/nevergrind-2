@@ -1,4 +1,4 @@
-!function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, undefined) {
+!function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, Bounce, Elastic, undefined) {
 	ask = {
 		...ask,
 		lavaBolt,
@@ -24,13 +24,13 @@
 			brightnessStart: 4,
 			contrastEnd: 1,
 			brightnessEnd: 1,
-			yStart: ask.shadowY(o.index, true) + 65,
+			yStart: ask.shadowY(o.index, true) + 60,
 			sizeStart: 250,
 			sizeEnd: 250,
 			alpha: 1,
 			repeat: true,
 			duration: .5,
-			frameDuration: .2,
+			frameDuration: .15,
 			frameEase: Power0.easeOut,
 		})
 		ask.fadeOut(img, .5, .1)
@@ -173,34 +173,162 @@
 		}
 	}
 	function staticStorm(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		o.endFrame = 3
+		let dur = .5
+		let img = ask.explosion(o, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 80,
+			sizeEnd: 280,
+			alpha: 1,
+			duration: dur,
+			frameDuration: dur,
+			frameEase: Power0.easeIn,
 		})
+		TweenMax.to(img, dur, {
+			rotation: Math.random() > .5 ? 360 : -360,
+			ease: Power0.easeOut,
+		})
+		ask.fadeOut(img, dur, dur * .2)
 	}
 	function fireWall(o) {
-		ask.explosion(o, {
-			duration: 1.2
-		})
+		let y = ask.shadowY(o.index, true)
+		for (var i=0; i<7; i++) {
+			!function() {
+				ask.flames(o, {
+					y: y,
+					key: 'fireWall',
+					size: 128,
+					duration: _.random(2.5, 4.5),
+					fade: _.random(.35, .5),
+				})
+			}()
+		}
 	}
 	function glacialSpike(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		console.info(o)
+		if (o.data.isPrimaryTgt) {
+			ask.explosion({index: o.index, key: 'burst-ice'}, {
+				duration: 1,
+				sizeEnd: 500,
+			})
+			ask.explosion({index: o.index, key: 'burst-ice'}, {
+				duration: 1,
+				sizeEnd: 600,
+			})
+			ask.rings({index: o.index, type: 'ice'}, {
+				loops: 3,
+				duration: 1,
+			})
+		}
+		else {
+			ask.explosion({index: o.index, key: 'burst-ice'}, {duration: .5})
+		}
+		o.endFrame = 2
+		let dur = .38
+		let img = ask.explosion(o, {
+			contrastStart: o.data.isPrimaryTgt ? 3 : 1.2,
+			brightnessStart: o.data.isPrimaryTgt ? 7 : 2.5,
+			sizeStart: 80,
+			sizeEnd: o.data.isPrimaryTgt ? 350 : 240,
+			alpha: 1,
+			duration: dur,
+			frameDuration: dur,
 		})
+		ask.fadeOut(img, dur, dur * .3)
 	}
 	function primordialSludge(o) {
-		ask.explosion(o, {
-			duration: 1.2
-		})
+		ask.explosion({index: o.index, key: 'burst-poison'}, {duration: 1.2})
+		let centerY = ask.centerY(o.index, true)
+		let centerX = mob.centerX[o.index]
+		o.endFrame = 2
+		let dur = .25
+		for (var i=0; i<30; i++) {
+			!function(i) {
+				delayedCall(i * .01, () => {
+					let x = centerX + _.random(-125, 125)
+					let y = centerY + _.random(-25, 75)
+					let img = ask.explosion(o, {
+						xStart: x,
+						yStart: y,
+						yEnd: y - 40,
+						contrastStart: 1.2,
+						brightnessStart: 2.5,
+						sizeStart: 80,
+						sizeEnd: 400,
+						alpha: 1,
+						duration: dur,
+						frameDuration: dur,
+					})
+					ask.fadeOut(img, dur, dur * .3)
+				})
+			}(i)
+		}
 	}
 	function arclight(o) {
-		ask.explosion(o, {
-			duration: 1.2
-		})
+		ask.explosion({index: o.index, key: 'burst-lightning'}, {duration: 1.2})
+		let centerX = mob.centerX[o.index]
+		let centerY = ask.centerY(o.index, true)
+		o.endFrame = 5
+		let dur = .5
+		for (var i=0; i<120; i++) {
+			!function(i) {
+				delayedCall(i * .003, () => {
+					let x = centerX + _.random(-120, 120)
+					let y = centerY + _.random(-50, 100)
+					let rotation = _.random(0, 7) * 45
+					let img = ask.explosion(o, {
+						xStart: x,
+						yStart: y,
+						contrastStart: 4,
+						brightnessStart: 10,
+						rotationStart: rotation,
+						rotation: (rotation + _.random(-90, 90)),
+						sizeStart: 120,
+						sizeEnd: 40,
+						alpha: 1,
+						ease: Bounce.easeOut,
+						frameEase: Elastic.easeOut,
+						duration: dur,
+						frameDuration: dur,
+					})
+					TweenMax.to(img, dur, {
+						x: x += _.random(-10, 10),
+						y: y += _.random(-10, 10),
+						ease: Power0.easeOut,
+					})
+					ask.fadeOut(img, dur, dur * .3)
+				})
+			}(i)
+		}
 	}
 	function primevalWithering(o) {
-		ask.explosion(o, {
-			duration: 1.2
-		})
+		ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1.2})
+		let centerY = ask.centerY(o.index, true)
+		let centerX = mob.centerX[o.index]
+		o.endFrame = 2
+		let dur = .25
+		for (var i=0; i<30; i++) {
+			!function(i) {
+				delayedCall(i * .01, () => {
+					let x = centerX + _.random(-125, 125)
+					let y = centerY + _.random(-25, 75)
+					let img = ask.explosion(o, {
+						xStart: x,
+						yStart: y,
+						yEnd: y + 40,
+						contrastStart: 1.2,
+						brightnessStart: 2.5,
+						sizeStart: 80,
+						sizeEnd: 400,
+						alpha: 1,
+						duration: dur,
+						frameDuration: dur,
+					})
+					ask.fadeOut(img, dur, dur * .3)
+				})
+			}(i)
+		}
 	}
 	function moltenAegis(o) {
 		ask.explosion(o, {
@@ -220,4 +348,4 @@
 			duration: 1.2
 		})
 	}
-}($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);
+}($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, Bounce, Elastic);

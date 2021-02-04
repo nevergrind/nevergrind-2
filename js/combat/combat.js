@@ -329,7 +329,10 @@ var combat;
 			d.damage *= buffs.stasisField.pveMitigationRatio
 		}
 		if (my.isFeared()) {
-			d.damage *= .5
+			// DoTs were already calculated
+			if (!d.isDot) {
+				d.damage *= .5
+			}
 		}
 		// console.info('combat', d)
 		// final sanity checks

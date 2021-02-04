@@ -19,45 +19,47 @@
 	///////////////////////////////////////////
 
 	function fireBolt(o) {
-		ask.explosion({index: o.index, key: 'burst-fire'})
+		ask.sunburst({index: o.index})
 		o.endFrame = 2
-		let dur = 1
-		ask.explosion(_.clone(o), {
-			contrastStart: 1.5,
-			brightnessStart: 2,
-			sizeStart: 80,
-			sizeEnd: 240,
-			duration: dur,
-			frameDuration: dur,
-			frameEase: Power0.easeIn,
-		})
-		ask.explosion(_.clone(o), {
-			flip: true,
-			contrastStart: 1.5,
-			brightnessStart: 2,
-			sizeStart: 80,
-			sizeEnd: 240,
-			duration: dur,
-			frameDuration: dur,
-			frameEase: Power0.easeIn,
-		})
-	}
-	function iceBolt(o) {
-		ask.explosion({index: o.index, key: 'burst-ice'})
-		o.endFrame = 2
-		let dur = .45
+		let dur = .25
 		let img = ask.explosion(_.clone(o), {
-			contrastStart: 1.5,
+			contrastStart: 1.2,
 			brightnessStart: 2,
-			sizeStart: 0,
-			sizeEnd: 250,
-			rotation: 90,
+			sizeStart: 10,
+			sizeEnd: 200,
 			alpha: 1,
 			duration: dur,
 			frameDuration: dur,
 			frameEase: Power0.easeIn,
 		})
 		let img2 = ask.explosion(_.clone(o), {
+			flip: true,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 10,
+			sizeEnd: 200,
+			alpha: 1,
+			duration: dur,
+			frameDuration: dur,
+			frameEase: Power0.easeIn,
+		})
+		ask.fadeOut([img, img2], dur, dur * .5)
+	}
+	function iceBolt(o) {
+		ask.explosion({index: o.index, key: 'burst-ice'})
+		o.endFrame = 2
+		let dur = .3
+		let img = ask.explosion(o, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 0,
+			sizeEnd: 250,
+			alpha: 1,
+			duration: dur,
+			frameDuration: dur,
+			frameEase: Power0.easeIn,
+		})
+		let img2 = ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			sizeStart: 0,
@@ -318,9 +320,9 @@
 			!function() {
 				ask.flames(o, {
 					y: y,
+					key: 'meteor',
 					duration: _.random(5.5, 6.5),
 					fade: _.random(.2, .5),
-					meteor: true
 				})
 			}()
 		}

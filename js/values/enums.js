@@ -206,7 +206,7 @@ const KEYS = Object.freeze({
 	SET_FACE: [ 'gender', 'race', 'face' ],
 	ITEM_ENTER: [ 'index', 'type' ],
 	PLAYER_CLICK: [ 'row', 'name' ],
-	DAMAGE_MOB: [ 'damage', 'key', 'index', 'row', 'effects', 'isDot', 'isCrit' ],
+	DAMAGE_MOB: [ 'damage', 'key', 'index', 'row', 'effects', 'isDot', 'isCrit', 'data' ],
 	DOT_MOB: [ 'damage', 'index', 'level' ],
 	HEAL_HERO: ['damage', 'index', 'key', 'level'],
 	BUFF_HERO: ['damage', 'index', 'key', 'level', 'duration', 'effect'],

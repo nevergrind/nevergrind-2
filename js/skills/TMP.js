@@ -209,14 +209,14 @@
 			let tgt = battle.getSplashTarget(splashIndex++, originalTarget)
 			hit = stats.spellDamage(tgt)
 			if (tgt !== originalTarget) hit.damage *= .5
-			let bf = [{
+			let buff = [{
 				i: tgt, // target
 				row: my.row, // this identifies unique buff state/icon
 				key: 'chill', // this sets the flag,
 				duration: buffs.glacialSpike.chillDuration,
 			}]
 			if (tgt === originalTarget) {
-				bf.push({
+				buff.push({
 					i: tgt, // target
 					row: my.row, // this identifies unique buff state/icon
 					key: 'freeze', // this sets the flag,
@@ -226,10 +226,11 @@
 			damages.push({
 				key: 'glacialSpike',
 				index: tgt,
+				data: { isPrimaryTgt: tgt === originalTarget },
 				spellType: spellType,
 				damageType: damageType,
 				...hit,
-				buffs: bf,
+				buffs: buff,
 			})
 		}
 		combat.txDamageMob(damages)

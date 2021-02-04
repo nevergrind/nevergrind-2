@@ -71,8 +71,12 @@
 	let delay = 0
 	///////////////////////////////////////////
 	function flames(o, config) {
-		let xAdj, yAdj
-		if (config.meteor) {
+		let xAdj, yAdj, zIndex
+		if (config.key === 'meteor') {
+			xAdj = _.random(-192, 192)
+			yAdj = _.random(-30, 60)
+		}
+		else if (config.key === 'fireWall') {
 			xAdj = _.random(-192, 192)
 			yAdj = _.random(-30, 60)
 		}
@@ -80,14 +84,13 @@
 			xAdj = _.random(-125, 125)
 			yAdj = _.random(0, 30)
 		}
-		let zIndex
 		if (yAdj < 15) {
 			zIndex = ask.behindMobLayer(o)
 		}
 		else {
 			zIndex = ask.frontMobLayer(o)
 		}
-		o.key = 'flames'
+		o.key = config.key ? config.key : 'flames'
 		o.endFrame = 3
 		let flameObj = {
 			yStart: config.y + yAdj,
@@ -97,8 +100,8 @@
 			contrastEnd: 1,
 			brightnessEnd: 1,
 			anchorY: .938,
-			sizeStart: 96,
-			sizeEnd: 96,
+			sizeStart: config.size ? config.size : 96,
+			sizeEnd: config.size ? config.size : 96,
 			duration: config.duration,
 			frameDuration: _.random(.3, .5),
 			repeat: true,
