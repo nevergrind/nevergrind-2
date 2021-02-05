@@ -331,21 +331,156 @@
 		}
 	}
 	function moltenAegis(o) {
+		ask.explosion({index: o.index, key: 'burst-fire'}, {targetMob: false, duration: 1.5})
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 1.2
+			duration: 1,
+			sizeStart: 300,
+			sizeEnd: 250,
+		})
+		delayedCall(.25, () => {
+			ask.explosion({
+				..._.clone(o),
+				key: 'moltenAegis1'
+			}, {
+				targetMob: false,
+				brightnessStart: 2,
+				duration: 1,
+				sizeStart: 300,
+				sizeEnd: 250,
+			})
+		})
+		delayedCall(.5, () => {
+			ask.explosion({
+				..._.clone(o),
+				key: 'moltenAegis2'
+			}, {
+				targetMob: false,
+				brightnessStart: 2,
+				duration: 4,
+				sizeStart: 300,
+				sizeEnd: 250,
+			})
+		})
+		delayedCall(.75, () => {
+			ask.explosion({
+				..._.clone(o),
+				key: 'moltenAegis3'
+			}, {
+				targetMob: false,
+				brightnessStart: 2,
+				duration: .5,
+				sizeStart: 200,
+				sizeEnd: 350,
+			})
 		})
 	}
 	function conviction(o) {
-		ask.explosion(o, {
+		ask.explosion({index: o.index, key: 'burst-arcane'}, {targetMob: false, duration: 1.5})
+		let img = ask.explosion(o, {
+			contrastStart: 2,
 			targetMob: false,
-			duration: 1.2
+			duration: 2,
+			sizeStart: 440,
+			sizeEnd: 240,
+		})
+		TweenMax.to(img, 2, {
+			rotation: 360,
+			ease: Power0.easeIn,
+		})
+		let img2 = ask.explosion(o, {
+			contrastStart: 2,
+			targetMob: false,
+			duration: 2,
+			sizeStart: 440,
+			sizeEnd: 240,
+		})
+		TweenMax.to(img2, 2, {
+			rotation: -360,
+			ease: Power0.easeIn,
+		})
+		ask.explosion({
+			..._.clone(o),
+			key: 'conviction1'
+		}, {
+			targetMob: false,
+			brightnessStart: 2,
+			duration: 1,
+			sizeStart: 300,
+			sizeEnd: 300,
+		})
+		delayedCall(.1, () => {
+			ask.explosion({
+				..._.clone(o),
+				key: 'conviction2'
+			}, {
+				targetMob: false,
+				brightnessStart: 2,
+				duration: 4,
+				sizeStart: 300,
+				sizeEnd: 300,
+			})
+		})
+		delayedCall(.75, () => {
+			let yStart = ask.centerY(o.index, false)
+			let img = ask.explosion({
+				..._.clone(o),
+				key: 'conviction3'
+			}, {
+				targetMob: false,
+				contrastStart: 2,
+				brightnessStart: 4,
+				duration: 1,
+				sizeStart: 250,
+				sizeEnd: 250,
+			})
+			TweenMax.to(img, 1, {
+				startAt: {y: yStart + 50},
+				y: yStart - 150,
+				ease: Power0.easeIn,
+			})
 		})
 	}
 	function celestialFrenzy(o) {
-		ask.explosion(o, {
+		let yStart = ask.centerY(o.index, false)
+		ask.explosion({index: o.index, key: 'burst-purple'}, {targetMob: false, duration: 2})
+		ask.explosion({
+			..._.clone(o),
+			key: 'celestialFrenzy1'
+		}, {
 			targetMob: false,
-			duration: 1.2
+			yStart: yStart,
+			yoyo: false,
+			alpha: 0,
+			brightnessStart: 2,
+			duration: 3,
+			sizeStart: 300,
+			sizeEnd: 300,
+		})
+		ask.explosion(o, {
+			contrastStart: 2,
+			targetMob: false,
+			duration: 2.5,
+			sizeStart: 440,
+			sizeEnd: 240,
+		})
+		delayedCall(.5, () => {
+			let img = ask.explosion({
+				..._.clone(o),
+				key: 'celestialFrenzy3'
+			}, {
+				targetMob: false,
+				contrastStart: 2,
+				brightnessStart: 4,
+				duration: 1,
+				sizeStart: 250,
+				sizeEnd: 250,
+			})
+			TweenMax.to(img, 1, {
+				startAt: {y: yStart + 100},
+				y: yStart - 100,
+				ease: Power0.easeIn,
+			})
 		})
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, Bounce, Elastic);

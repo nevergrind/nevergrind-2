@@ -2442,6 +2442,7 @@ background-repeat: no-repeat;
 	height: 25rem;
 	background: #000e;
 	border: 4px ridge #888;
+	backdrop-filter: blur(5px);
 	z-index: 100;
 }
 .option-category:hover {
@@ -2501,12 +2502,12 @@ background-repeat: no-repeat;
 #options-footer {
 	border-radius: 4px;
 	border: 1px solid #4a4a3a;
-	background: conic-gradient(
+	/*background: conic-gradient(
 			#111a .25turn,
 			#000a .25turn .5turn,
 			#111a 0.5turn .75turn,
 			#000a .75turn
-	) top left / 5px 5px repeat;
+	) top left / 5px 5px repeat;*/
 	padding: .2rem;
 }
 .options-column {
@@ -2514,12 +2515,12 @@ background-repeat: no-repeat;
 	border-radius: 4px;
 	border: 1px solid #4a4a3a;
 	margin: 0 .5rem;
-	background: conic-gradient(
+	/*background: conic-gradient(
 			#111a .25turn,
 			#000a .25turn .5turn,
 			#111a 0.5turn .75turn,
 			#000a .75turn
-	) top left / 5px 5px repeat;
+	) top left / 5px 5px repeat;*/
 }
 .ng-boolean, .options-hotkey {
 	display: flex;
