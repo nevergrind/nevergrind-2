@@ -1383,7 +1383,7 @@
 			startY = ask.centerHeadY(o.index, true)
 		}
 		else {
-			const pos = ask.getPlayerHead()
+			const pos = ask.getPlayerHead(o.index)
 			startX = pos.x
 			startY = pos.y
 		}
@@ -1466,7 +1466,7 @@
 			startY = ask.centerHeadY(o.index, true)
 		}
 		else {
-			const pos = ask.getPlayerHead()
+			const pos = ask.getPlayerHead(o.index)
 			startX = pos.x
 			startY = pos.y
 		}
@@ -1549,7 +1549,7 @@
 			startY = ask.centerHeadY(o.index, true)
 		}
 		else {
-			const pos = ask.getPlayerHead()
+			const pos = ask.getPlayerHead(o.index)
 			startX = pos.x
 			startY = pos.y
 		}
@@ -1632,7 +1632,7 @@
 			startY = ask.centerHeadY(o.index, true)
 		}
 		else {
-			const pos = ask.getPlayerHead()
+			const pos = ask.getPlayerHead(o.index)
 			startX = pos.x
 			startY = pos.y
 		}

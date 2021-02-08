@@ -440,13 +440,6 @@ tbody { border: 0 }
 	display: inline-block;
 }
 
-#flash-overlay {
-	opacity: 0;
-	pointer-events: none;
-	background: #fff;
-	z-index: 100;
-}
-
 #lock-overlay {
 	display: none;
 	background: rgba(0, 0, 0, .5);
@@ -836,34 +829,11 @@ animation: town-repeat-bg 90s linear infinite;*/
 	from { background-position: 0%; }
 	to { background-position: 200%; }
 }*/
-#town-footer-wrap {
-	position: absolute;
-	align-items: center;
-	bottom: .2rem;
-	left: 0;
-	width: 100%;
-	height: auto;
-	z-index: 2;
-}
 .mission-icon {
 	color: gold;
 	margin-right: .4rem;
 	height: 1rem;
 	filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);
-}
-#town-footer-gold-wrap {
-	position: absolute;
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	bottom: .2rem;
-	left: .5rem;
-	font-size: 1.25rem;
-	border: .1rem groove #aa8;
-	background: #0a0a0a;
-	border-radius: 8px;
-	padding: 0 .2rem 0 1rem;
-	min-width: 8rem;
 }
 #town-building-label-wrap {
 	position: absolute;
@@ -892,24 +862,27 @@ animation: town-repeat-bg 90s linear infinite;*/
 	font-size: .8rem;
 	color: #fff;
 	background: #0008;
-	border: 1px solid #013;
-	bottom: 0;
-	left: 50%;
-	transform: translate(-50%);
-	height: 24%;
+	border: 1px solid #000;
+	bottom: 1%;
+	left: 1%;
+	height: 25%;
 	z-index: 2;
 }
 
 #chat-present-wrap {
+	position: fixed;
 	display: flex;
 	flex-direction: column;
+	top: 1.5rem;
+	right: 1%;
+	height: 40%;
 	width: 9rem;
 }
 
 #chat-log-wrap {
 	display: flex;
 	flex-direction: column;
-	width: 21rem;
+	width: 24rem;
 	transition: background .2s linear;
 	background: rgba(0,0,0,.2);
 }
@@ -922,7 +895,6 @@ animation: town-repeat-bg 90s linear infinite;*/
 	justify-content: center;
 	color: gold;
 	border: .1rem groove #048;
-	margin: 1px;
 	white-space: nowrap;
 	padding: 0 .3rem;
 	background: radial-gradient(farthest-side at 50% 0%, rgba(0, 48, 96, 1), rgba(0, 0, 0, 1));
@@ -933,9 +905,8 @@ animation: town-repeat-bg 90s linear infinite;*/
 	line-height: 1.2;
 	overflow: auto;
 	overflow-x: hidden;
-	border: .1rem groove #025;
-	margin: 1px;
-	background: rgba(0, 32, 64, .3);
+	border: 1px solid #000;
+	background: #013a;
 }
 
 #chat-log {
@@ -946,8 +917,6 @@ animation: town-repeat-bg 90s linear infinite;*/
 	word-wrap: break-word;
 	word-break: break-word;
 	padding: .1rem .2rem 0 .2rem;
-	margin: .1rem;
-	border: .1rem groove #025;
 }
 #chat-log *::selection { background: #38d; }
 .chat-player {
@@ -964,8 +933,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 	flex-flow: row nowrap;
 	font-size: 1rem;
 	background: transparent;
-	margin: .1rem;
-	border: .1rem groove #025;
+	border: 1px solid #013;
 	line-height: 1.3;
 }
 
@@ -975,7 +943,6 @@ animation: town-repeat-bg 90s linear infinite;*/
 	background: #025;
 	padding: 0 .4rem;
 	max-width: 8rem;
-	border: .1rem groove #025;
 }
 
 #chat-mode-msg {
@@ -991,12 +958,12 @@ animation: town-repeat-bg 90s linear infinite;*/
 	width: 100%;
 	cursor: url('cursor/pointer.png'), pointer;
 	padding: .2rem .4rem;
-	border: 1px solid #013;
-	transition: border, background .2s linear;
+	border: 1px solid #0000;
+	transition: borderColor, background .2s linear;
 }
 
 #chat-input:focus {
-	border: 1px groove #048;
+	border: 1px solid #048;
 	background: rgba(0,0,0,.5);
 }
 
@@ -1136,33 +1103,36 @@ background-clip: content-box;
 }
 
 /* bar wrap */
-#bar-wrap {
-	display: none;
-	font-family: Play, Quatro, Roboto Condensed, Roboto, sans-serif;
+#bar-lag {
 	position: fixed;
+	font-family: Play, Quatro, Roboto Condensed, Roboto, sans-serif;
 	top: .2rem;
-	left: .2rem;
+	right: .2rem;
 	z-index: 2;
 	padding: 0 .3rem;
-}
-
-#bar-lag {
 	display: flex;
 	justify-content: space-between;
 	font-size: .675rem;
 	color: #0a0;
-	line-height: 1;
-	margin-bottom: .15rem;
+	width: 12rem;
+}
+#bar-wrap {
+	display: none;
+	font-family: Play, Quatro, Roboto Condensed, Roboto, sans-serif;
+	position: fixed;
+	top: .5rem;
+	left: .5rem;
+	z-index: 2;
 }
 
 #bar-main-menu {
+	position: absolute;
 	display: flex;
-	justify-content: space-around;
-	padding: .2rem 0;
-	margin-bottom: .3rem;
-	border: .1rem outset #048;
-	outline: 1px solid #579;
-	background: radial-gradient(farthest-side at 0% 100%, rgba(0, 48, 96, 1), rgba(0, 0, 0, 1));
+	flex-direction: column;
+	text-align: center;
+	bottom: 0;
+	right: 22.4rem;
+	background: #0008;
 }
 
 #bar-all-player-wrap {
@@ -1170,7 +1140,7 @@ background-clip: content-box;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: flex-start;
-	padding: .2rem;
+	padding-bottom: .2rem;
 }
 #bar-all-player-wrap .player-targeted {
 	outline: .1rem ridge #5fd;
@@ -1182,14 +1152,19 @@ background-clip: content-box;
 	100% { outline: .1rem ridge #5fd; }
 }
 .bar-icons {
-	color: gold;
 	cursor: url('cursor/pointer.png'), pointer;
-	padding: .2rem;
-	background: #103860;
-	border: 2px groove #579;
-	transition: background .3s ease;
+	box-shadow: 0 0 0 1px #013 inset;
+	width: 1.6rem;
+	height: 1.6rem;
+	transition: filter .2s ease-out;
 }
-.bar-icons:hover { background: #05b; }
+.bar-icons:hover {
+	filter: contrast(120%) brightness(150%);
+}
+.bar-icons:active {
+	filter: contrast(2) brightness(.5);
+	transition: none;
+}
 .bar-player-wrap {
 	position: relative;
 	display: flex;
@@ -1215,7 +1190,7 @@ background-clip: content-box;
 	height: auto;
 	max-height: 21rem;
 	width: 8rem;
-	top: .5rem;
+	top: 1.2rem;
 	right: .5rem;
 	overflow: hidden;
 	z-index: 2;
@@ -1590,43 +1565,78 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 #mission-abandon {
 	box-shadow: 0 500px 0 rgba(255, 0, 0, .4) inset;
 }
-
 /* dungeon */
 #button-wrap {
 	position: fixed;
-	display: none;
 	align-self: center;
 	bottom: 0;
 	z-index: 2;
 }
+#potion-wrap {
+	position: absolute;
+	bottom: 0;
+	left: 100%;
+	display: flex;
+	flex-direction: column;
+}
+.potion-slot {
+	position: relative;
+	width: 2.4rem;
+	height: 2.4rem;
+	background: linear-gradient(135deg, #000, #1a1a1a);
+	box-shadow: inset 0 0 0 1px #000;
+	transition: filter .2s ease-out;
+}
+.potion-slot:hover {
+	filter: contrast(1.2) brightness(1.5);
+}
+.potion-slot:active {
+	transition: none;
+	filter: contrast(1.5) brightness(2.5);
+}
+.potion-slot-children {
+	width: 2.4rem!important;
+	height: 2.4rem!important;
+	font-size: 1.6rem!important;
+}
 #main-attack-wrap {
 	position: absolute;
 	right: 100%;
+	bottom: 0;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	align-self: center;
-	margin-right: 1rem;
-	border: .1rem ridge transparent;
 }
 #status-panel-wrap {
-	position: absolute;
-	left: 100%;
+	position: fixed;
+	left: 50%;
+	bottom: 7rem;
+	transform: translate(-50%);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	align-self: center;
-	margin-left: 1rem;
 	border: .1rem ridge transparent;
 }
-#main-attack-wrap.active {
-	border: .1rem ridge #f11;
-	animation: repeat-auto-attack .5s ease-out infinite;
+#auto-attack-flash {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	box-shadow: 0 0 0 .1rem inset #4000;
+	z-index: 10;
 }
+#auto-attack-flash.active {
+	box-shadow: 0 0 0 .1rem inset #400f;
+	animation: repeat-auto-attack .5s ease-out infinite;
+ }
 @keyframes repeat-auto-attack {
-	0% { border: .1rem ridge #f11; }
-	50% { border: .1rem ridge #800; }
-	100% { border: .1rem ridge #f11; }
+	0% { box-shadow: 0 0 0 1px inset #400f; }
+	50% { box-shadow: 0 0 0 1px inset #f00f; }
+	100% { box-shadow: 0 0 0 1px inset #400f; }
 }
 #skill-btn-wrap {
 	display: flex;
@@ -1636,12 +1646,16 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	align-content: space-around;
 }
 #skill-col {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 }
 #exp-bar-wrap {
-	position: relative;
-	height: .5rem;
+	position: absolute;
+	bottom: 100%;
+	right: 0%;
+	width: 24rem;
+	height: .8rem;
 	overflow: hidden;
 	background: linear-gradient(to top, #222, #444, #444, #222);
 }
@@ -1661,9 +1675,9 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	width: 100%;
 	background: repeating-linear-gradient(to right,
 		transparent,
-		transparent calc(1.9rem - .5px),
-		#1a1a1a calc(1.9rem - .5px),
-		#1a1a1a calc(1.9rem + .5px));
+		transparent calc(2.4rem - .5px),
+		#1a1a1a calc(2.4rem - .5px),
+		#1a1a1a calc(2.4rem + .5px));
 	box-shadow: 1px 0 #1a1a1a inset, 0 1px #1a1a1a inset, -1px 0 #1a1a1a inset, 0 -1px #1a1a1a inset;
 	top: 0;
 	left: 0;
@@ -2440,7 +2454,7 @@ background-repeat: no-repeat;
 	margin: 0 auto;
 	width: 30rem;
 	height: 25rem;
-	background: #000e;
+	background: #000d;
 	border: 4px ridge #888;
 	backdrop-filter: blur(5px);
 	z-index: 100;

@@ -169,7 +169,6 @@ var mission;
 	function abort() {
 		if (ng.view === 'dungeon') {
 			mission.inProgress = false
-			button.hide()
 			chat.log('Returning to town...', CHAT.WARNING)
 			ng.lock(1)
 

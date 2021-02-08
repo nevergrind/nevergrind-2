@@ -42,7 +42,10 @@ var popover;
 			'bar-stats': '['+ _.capitalize(ng.config.hotkey.characterStats) +'] Character Sheet',
 			'bar-inventory': '['+ _.capitalize(ng.config.hotkey.inventory) +'] Inventory',
 			'bar-options': '[ESC] Options',
-			'bar-mission-abandon': 'Abandon Mission'
+			'bar-mission-abandon': 'Abandon Mission',
+			'potion-hp': 'Use Health Potion',
+			'potion-mp': 'Use Mana Potion',
+			'potion-sp': 'Use Spirit Potion',
 		}
 		if (id.startsWith('skill-')) {
 			if (id === 'skill-primary-attack-btn') html = 'Primary Attack'

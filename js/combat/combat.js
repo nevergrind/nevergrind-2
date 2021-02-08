@@ -404,13 +404,13 @@ var combat;
 		my.isAutoAttacking = true
 		button.primaryAttack()
 		button.secondaryAttack()
-		el = querySelector('#main-attack-wrap')
+		el = querySelector('#auto-attack-flash')
 		el.classList.remove('active')
 		el.classList.add('active')
 	}
 	function autoAttackDisable() {
 		my.isAutoAttacking = false
-		el = querySelector('#main-attack-wrap')
+		el = querySelector('#auto-attack-flash')
 		el.classList.remove('active')
 	}
 	function endCombat() {
@@ -1033,9 +1033,10 @@ var combat;
 				my.buffFlags[hit.key] = true
 				// console.info('processDotToMe', hit)
 
+				// NOTE: HoT and DoT
 				my.buffs[keyRow].hotTicks = TweenMax.to(EmptyObject, 3, {
 					repeat: hit.ticks,
-					onRepeat: onDotTick,
+					onRepeat: onDotTickToMe,
 					onRepeatParams: [hit, _.max([1, Math.round(hit.damage / hit.ticks)])],
 				})
 				battle.addMyBuff(hit.key, keyRow, duration)
@@ -1064,13 +1065,12 @@ var combat;
 				// messaging
 				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> on YOU!', CHAT.ALERT)
 			})
-			/////////////////////////////////////
-			function onDotTick(hit, hitAmount) {
-				// console.info('hitAmount b4', hitAmount, hit)
-				chat.log(_.startCase(hit.key) + ' hits you for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
-				hit.damage = hitAmount
-				processDamageToMe(index, [_.omit(hit, 'duration')])
-			}
+		}
+		function onDotTickToMe(hit, hitAmount) {
+			// console.info('hitAmount b4', hitAmount, hit)
+			chat.log(_.startCase(hit.key) + ' hits you for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
+			hit.damage = hitAmount
+			processDamageToMe(index, [_.omit(hit, 'duration')])
 		}
 		function processDamageToMe(index, hits) {
 			// NOTE should be all from ONE mob of the same attack TYPE, but MANY possible PC targets
@@ -1330,6 +1330,7 @@ var combat;
 			TweenMax.to(basicText, TextDuration * .6, {
 				y: '-=' + TextDistanceY + '',
 				onComplete: fadeOut,
+				onCompleteParams: [basicText],
 				ease: Power3.easeOut
 			})
 			x = _.random(-TextDistanceX, TextDistanceX)
@@ -1343,20 +1344,19 @@ var combat;
 		}
 		TweenMax.to(basicText, TextDuration * .5, TextFoo)
 		TweenMax.to(basicText, TextDuration, TextBar)
-		/////////////////////////
-		function fadeOut() {
-			TweenMax.to(basicText, TextDuration * .4, {
-				y: '+=' + TextDistanceY * .5 + '',
-				alpha: 0,
-				onComplete: removeText,
-				onCompleteParams: [ basicText.id ],
-				ease: Power1.easeIn
-			})
-		}
-		function removeText(id) {
-			el = pix.getId(combat.text, id)
-			combat.text.stage.removeChild(el)
-		}
+	}
+	function fadeOut(basicText) {
+		TweenMax.to(basicText, TextDuration * .4, {
+			y: '+=' + TextDistanceY * .5 + '',
+			alpha: 0,
+			onComplete: removeText,
+			onCompleteParams: [ basicText.id ],
+			ease: Power1.easeIn
+		})
+	}
+	function removeText(id) {
+		el = pix.getId(combat.text, id)
+		combat.text.stage.removeChild(el)
 	}
 
 	function txHotHero(data) {
@@ -1565,22 +1565,22 @@ var combat;
 				if (buff.effect) {
 					// THIS IS THE EFFECT RECEIVED FROM processDamageToMe
 					if (buff.effect === 'stun') {
-						mobSkills.stunPlayerEffectRx(buff.duration)
+						mobSkills.stunPlayerEffectRx(buff)
 					}
 					else if (buff.effect === 'fear') {
-						mobSkills.fearPlayerEffectRx(buff.duration)
+						mobSkills.fearPlayerEffectRx(buff)
 					}
 					else if (buff.effect === 'paralyze') {
-						mobSkills.paralyzePlayerEffectRx(buff.duration)
+						mobSkills.paralyzePlayerEffectRx(buff)
 					}
 					else if (buff.effect === 'silence') {
-						mobSkills.silencePlayerEffectRx(buff.duration)
+						mobSkills.silencePlayerEffectRx(buff)
 					}
 					else if (buff.effect === 'chill') {
-						mobSkills.chillPlayerEffectRx(buff.duration)
+						mobSkills.chillPlayerEffectRx(buff)
 					}
 					else if (buff.effect === 'freeze') {
-						mobSkills.freezePlayerEffectRx(buff.duration)
+						mobSkills.freezePlayerEffectRx(buff)
 					}
 				}
 				else {
@@ -1588,6 +1588,7 @@ var combat;
 				}
 				// console.warn("EFFECT! ", buff)
 			}
+			// things that happen to everyone
 		})
 		if (~~hate > 0) {
 			mob.addHateHeal({
@@ -1966,11 +1967,11 @@ var combat;
 			onUpdate: setFilter,
 			onUpdateParams: [o]
 		})
-		function setFilter(o) {
-			TweenMax.set(el, {
-				filter: 'grayscale(1) sepia(1) saturate('+ o.saturate +') hue-rotate(-30deg) contrast('+ o.contrast +') brightness('+ o.brightness +') grayscale('+ o.grayscale +') '
-			})
-		}
+	}
+	function setFilter(o) {
+		TweenMax.set(el, {
+			filter: 'grayscale(1) sepia(1) saturate('+ o.saturate +') hue-rotate(-30deg) contrast('+ o.contrast +') brightness('+ o.brightness +') grayscale('+ o.grayscale +') '
+		})
 	}
 	function buffMitigatesDamage(d, key) {
 		let val = buffs[key].mitigation[my.buffs[key].level]

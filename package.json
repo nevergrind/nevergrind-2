@@ -1064,6 +1064,7 @@
       "version": "0.1.2"
     },
     "pixi-projection": "0.3.5",
+    "pixi-spine": "^2.1.11",
     "preserve": {
       "integrity": "sha1-gV7R9uvGWSb4ZbMQwHE7yzMVzks=",
       "resolved": "https://registry.npmjs.org/preserve/-/preserve-0.2.0.tgz",

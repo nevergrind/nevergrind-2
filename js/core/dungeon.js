@@ -2,10 +2,14 @@ var dungeon;
 (function(TweenMax, $, _, undefined) {
 	dungeon = {
 		initialized: 0,
-
 		layer: {},
-		playerIds: [],
 		player: {},
+		centerX: [960, 1280, 640, 1600, 320],
+		bottom: MaxHeight,
+		headY: MaxHeight - 330,
+		centerY: MaxHeight - 230,
+		bottomY: MaxHeight - 80,
+		bottomPlayer: MaxHeight - 120,
 		go,
 		init,
 		setPlayers,
@@ -20,7 +24,6 @@ var dungeon;
 		if (!force && ng.view === 'dungeon') return
 		// cleanup sort of activities when going into dungeon
 		town.closeVarious()
-		querySelector('#town-footer-wrap').style.display = 'none'
 		tavern.leaders = ''
 		game.sceneCleanup('scene-dungeon')
 
@@ -69,7 +72,7 @@ var dungeon;
 		mob.leveledUp = false
 		// draw players
 		dungeon.setPlayers()
-		mobSkills.setFilter()
+		mobSkills.initFilter()
 
 		ng.unlock()
 		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
@@ -118,16 +121,22 @@ var dungeon;
 		chat.scrollBottom()
 	}
 	function setPlayers() {
-		dungeon.playerIds.forEach(id => ask.removeImg()(id))
-		dungeon.playerIds = []
-		dungeon.player = PIXI.Sprite.from(`images/players/default.png`)
-		dungeon.playerIds.push(ask.askId)
-		dungeon.player.id = 'ask-' + ask.askId++
-		dungeon.player.anchor.set(.5, 1)
-		dungeon.player.x = 960
-		dungeon.player.y = 960
-		dungeon.player.zIndex = ask.DEFAULT_PLAYER_LAYER
-		ask.addChild(dungeon.player)
+		// init
+		let id
+		party.presence.forEach((p, index) => {
+			if (p.askId) ask.removeImg()(p.askId)
+			// adding brand new player
+			p.sprite = PIXI.Sprite.from(`images/players/default.png`)
+			id = ask.getAskId()
+			p.askId = id
+			p.sprite.id = 'ask-' + id
+			p.sprite.anchor.set(.5, 1)
+			p.sprite.x = dungeon.centerX[index]
+			p.sprite.y = dungeon.bottomPlayer
+			p.sprite.zIndex = ask.DEFAULT_PLAYER_LAYER
+			ask.addChild(p.sprite)
+			mobSkills.applyEffectFilter(p.row)
+		})
 	}
 	function html() {
 		return '<img id="dungeon-bg" class="wh-100" src="images/dungeon/1.jpg">'

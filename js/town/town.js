@@ -158,8 +158,6 @@ var town;
 			chat.init()
 
 			getElementById('scene-town').innerHTML = getTownHtml()
-			querySelector('#town-footer-wrap').style.display = 'flex'
-			querySelector('#town-gold').textContent = my.gold
 
 
 			if (socket.enabled) {
@@ -179,6 +177,7 @@ var town;
 			tavern.init()
 			skills.init()
 			battle.removeAllBuffs()
+			button.setAll()
 		}).fail(function(data){
 			ng.disconnect(data.responseText);
 		});
@@ -473,6 +472,7 @@ var town;
 				x: 280,
 				y: 230
 			}
+			bar.openInventory()
 		}
 		else if (town.openVariousWindow === 'Apothecary') {
 			npc = 'Briza: '
@@ -484,6 +484,7 @@ var town;
 				x: -100,
 				y: -50
 			}
+			bar.openInventory()
 		}
 		else if (town.openVariousWindow === 'Bank') {
 			npc = 'Ingmar: '
@@ -495,6 +496,7 @@ var town;
 				x: 100,
 				y: 20
 			}
+			bar.openInventory()
 		}
 		else if (town.openVariousWindow === 'Blacksmith') {
 			npc = 'Kalamin: '
@@ -506,6 +508,7 @@ var town;
 				x: -130,
 				y: -100
 			}
+			bar.openInventory()
 		}
 		else if (town.openVariousWindow === 'Guild Hall') {
 			npc = 'Charlotte: '
@@ -535,6 +538,7 @@ var town;
 				x: 250,
 				y: -30
 			}
+			bar.openInventory()
 		}
 		else if (town.openVariousWindow === 'Tavern') {
 			npc = 'Eber: '
@@ -559,6 +563,7 @@ var town;
 				x: 0,
 				y: 0
 			}
+			bar.openInventory()
 		}
 		ng.splitText('various-description', npc + msg)
 		hideLabel()
@@ -613,8 +618,7 @@ var town;
 		}
 		TweenMax.to(goldConfig, .3, {
 			value: newGold,
-			onUpdate: updateMyGold,
-			onUpdateParams: [goldConfig]
+			onUpdate: bar.updateInventoryGold,
 		})
 		my.gold = newGold
 	}
@@ -631,12 +635,6 @@ var town;
 			})
 		}
 		item.goldValue = tooltip.goldValue
-	}
-
-	function updateMyGold(obj) {
-		myGoldEl = querySelector('#town-gold')
-		if (myGoldEl!== null) myGoldEl.textContent = floor(obj.value)
-		bar.updateInventoryGold()
 	}
 	function updateStoreGold(obj) {
 		goldEl = querySelector('#town-value')

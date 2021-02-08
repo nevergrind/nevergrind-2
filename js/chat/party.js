@@ -11,7 +11,7 @@ var party;
 			'#0dd',
 			'#a0f',
 		],
-		maxPlayers: 6,
+		maxPlayers: 5,
 		damage: {},
 		getUniquePartyChannel,
 		upsertPartyResource,
@@ -34,6 +34,8 @@ var party;
 		getNameByRow,
 		isSomeoneAlive,
 		isAlive,
+		isChilled,
+		isFrozen,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -45,6 +47,12 @@ var party;
 	}
 	function isAlive(p) {
 		return p.hp > 0 && p.row > 0 && Date.now() - p.time < game.maxTimeout
+	}
+	function isChilled(row) {
+		return party.presence[party.getIndexByRow(row)].isChilled
+	}
+	function isFrozen(row) {
+		return party.presence[party.getIndexByRow(row)].isFrozen
 	}
 	function getIndexByRow(row) {
 		return party.presence.findIndex(member => member.row === row)
@@ -155,6 +163,8 @@ var party;
 					row: data.row,
 					level: data.level,
 					avatar: data.avatar,
+					isChilled: false,
+					isFrozen: false,
 				});
 				var len = party.presence.length - 1;
 				bar.addPlayer(party.presence[len], data.row);

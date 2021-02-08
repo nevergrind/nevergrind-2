@@ -20,6 +20,7 @@ var loot = {};
 		getPotion,
 		getPotionUseMessage,
 		getIdentifyScroll,
+		useItem,
 		lastDragEvent: {},
 		lastDropEvent: {},
 		isIdentifyMode: false,
@@ -1639,6 +1640,7 @@ var loot = {};
 		bar.updateItemSwapDOM()
 		resetDrop()
 		button.updateWeaponPanel()
+		button.updatePotionPanel()
 		// console.warn('lastDragEvent', item.lastDragEvent)
 		if (item.isContextClick) tooltip.handleEnter(item.lastDragEvent)
 		else tooltip.handleEnter(item.lastDropEvent)
@@ -1847,6 +1849,7 @@ var loot = {};
 			}
 			town.setMyGold(my.gold - item.goldValue)
 			town.setStoreGold(item.goldValue)
+			button.updatePotionPanel()
 		}).fail(function() {
 			items.inv[buyItemSlot] = {}
 		}).always(handleDropAlways)
@@ -1885,13 +1888,15 @@ var loot = {};
 
 	function handleSellSuccess() {
 		querySelector('#various-description').innerHTML = 'Thank you for selling ' + getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold!'
-		handleDestroySuccess()
+		handleDestroySuccess(true)
 		tooltip.goldValue = 0
 		town.setMyGold(my.gold + item.goldValue)
 		town.setStoreGold()
 	}
-	function handleDestroySuccess() {
-		chat.log('You destroyed ' + item.getItemNameString(item.dragData))
+	function handleDestroySuccess(suppressDestroyMsg = false) {
+		if (!suppressDestroyMsg) {
+			chat.log('You destroyed ' + item.getItemNameString(item.dragData))
+		}
 		items[item.dragType][item.dragSlot] = {}
 		bar.updateItemSwapDOM()
 		resetDrop()
@@ -1901,6 +1906,7 @@ var loot = {};
 				availableSlots: trade.availableInvSlots(),
 			})
 		}
+		button.updatePotionPanel()
 	}
 	function handleItemSlotContextClick(event) {
 		if (item.awaitingDrop || item.isDragging) return false
@@ -1937,6 +1943,10 @@ var loot = {};
 
 			// console.info('dragData', item.dragData)
 			if (item.dragData.itemType === 'potion') {
+				if (timers[item.dragData.itemSubType + 'Potion'] < 1) {
+					chat.log('You cannot use that potion yet!', CHAT.WARNING)
+					return
+				}
 				handleDragStart()
 				$.post(app.url + 'item/destroy-item.php', {
 					row: items[type][index].row,
@@ -2032,7 +2042,7 @@ var loot = {};
 		if (item.dragData.itemType === 'potion') {
 			expendPotion(item.dragData.itemSubType, item.dragData.imgIndex)
 		}
-		handleDestroySuccess()
+		handleDestroySuccess(true)
 	}
 	function expendPotion(type, index) {
 		// type and potion size
@@ -2044,6 +2054,8 @@ var loot = {};
 			ease: SteppedEase.config(60),
 			onUpdate: parseDifference,
 		})
+		button.updatePotionPanel()
+		spell.triggerPotionCooldown(type)
 		/////////////////////
 		function parseDifference() {
 			diff = obj.value - lastValue

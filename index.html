@@ -464,19 +464,17 @@ app.socketUrl = app.isApp ?
 </div>
 
 <!-- layer 2 -->
-<div id="bar-wrap" class="no-select text-shadow"></div>
-<div id="town-footer-wrap" class="flex-max none no-select">
-	<div id="town-footer-gold-wrap">
-		<div id="town-gold" style="margin: 0 .2rem; "></div>
-		<i class="ra ra-gold-bar gold-img"></i>
-	</div>
+<div id="bar-lag" class="no-select text-shadow">
+	<span class="popover-icons"></span>
+	<span class="popover-icons"></span>
 </div>
+<div id="bar-wrap" class="no-select text-shadow"></div>
+
 <div id="chat-wrap" class="text-shadow"></div>
 <div id="button-wrap" class="no-select text-shadow"></div>
 <div id="tooltip-skill" class="no-pointer no-select text-shadow">
 	<div id="tooltip-skill-name">Test</div>
 	<div id="tooltip-skill-description">Test</div>
-
 </div>
 <div id="mob-target-wrap" class="text-shadow3">
 	<div id="mob-target-name" class=""></div>
@@ -514,7 +512,6 @@ app.socketUrl = app.isApp ?
 <div id="modal-wrap" class="text-shadow"></div>
 <div id="toast-window" class="text-shadow"></div>
 <img id="item-tooltip-cursor-img" src="" />
-<div id="flash-overlay" class="overlay"></div>
 <div id="lock-overlay" class="overlay"></div>
 <div id="root-options" class="no-select text-shadow"></div>
 <div id="msg" class="text-shadow no-pointer"></div>
@@ -532,6 +529,7 @@ app.socketUrl = app.isApp ?
 			'libs/lodash.min',
 			'libs/pixi.min',
 			'libs/pixi-filters.min',
+			// 'libs/pixi-spine',
 			'libs/pixi-projection.min',
 			'libs/gsap/TweenMax2.min',
 			// gsap/TweenMax3.min

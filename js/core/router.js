@@ -56,6 +56,7 @@ var router;
 		else if (r === 'p->goDungeon') dungeon.go(data)
 		else if (r === 'p->goBattle') battle.go(data)
 		else if (r === 'p->damage') combat.rxDamageMob(data)
+		else if (r === 'p->effect') mobSkills.rxPlayerEffect(data)
 		else if (r === 'p->dot') combat.rxDotMob(data)
 		else if (r === 'p->mobTick') mob.rxMobResourceTick(data)
 		else if (r === 'p->hit') combat.rxDamageHero(data)
@@ -65,12 +66,12 @@ var router;
 		else if (r === 'p->buff') combat.rxBuffHero(data)
 	}
 	function toGuild(data, route) {
-if (route === 'guild->hasJoined') guild.hasJoined(data)
-else if (route === 'guild->quit') guild.hasDisbanded(data)
-else if (route === 'guild->boot') guild.wasBooted(data)
-else if (route === 'guild->promote') guild.wasPromoted(data)
-else if (route === 'guild->demoteReceived') guild.demoteReceived(data)
-else if (route === 'guild->leader') guild.wasLeader(data)
-else if (route === 'guild->motd') guild.zmqMotd(data)
+		if (route === 'guild->hasJoined') guild.hasJoined(data)
+		else if (route === 'guild->quit') guild.hasDisbanded(data)
+		else if (route === 'guild->boot') guild.wasBooted(data)
+		else if (route === 'guild->promote') guild.wasPromoted(data)
+		else if (route === 'guild->demoteReceived') guild.demoteReceived(data)
+		else if (route === 'guild->leader') guild.wasLeader(data)
+		else if (route === 'guild->motd') guild.zmqMotd(data)
 	}
 })();

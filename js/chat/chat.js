@@ -434,13 +434,13 @@ var chat;
 			})
 		}
 	}
-	function camp() {
+	function camp(event) {
 		if (chat.isCamped) return;
-		chat.isCamped = true;
-		if (ng.view === 'battle') {
+		if (!event.bypass && ng.view === 'battle') {
 			chat.log('You cannot camp while in battle!')
 		}
 		else {
+			chat.isCamped = true;
 			if (ng.view !== 'title') {
 				console.log('Camping...', CHAT.WARNING);
 			}
@@ -562,9 +562,9 @@ var chat;
 	}
 	function sizeSmall() {
 		TweenMax.set('#chat-wrap', {
-			x: '0%',
-			y: 0,
-			left: '0%'
+			bottom: '0rem',
+			left: '0rem',
+			height: '10rem',
 		})
 		TweenMax.set('#chat-present-wrap', CSS.DISPLAY_NONE)
 	}
@@ -573,9 +573,9 @@ var chat;
 			display: 'flex'
 		})
 		TweenMax.set('#chat-wrap', {
-			x: '-50%',
-			y: 0,
-			left: '50%'
+			bottom: '.5rem',
+			left: '.5rem',
+			height: '15rem',
 		})
 	}
 

@@ -147,6 +147,7 @@ var battle;
 			chat.log('You have reached level ' + my.level + '!', 'chat-level')
 			stats.memo = {}
 			button.updateWeaponPanel() // could be dual wielding now
+			button.updatePotionPanel()
 			audio.playSound('levelup')
 		}
 		if (leveled) {
@@ -236,7 +237,6 @@ var battle;
 			chat.modeChange(CHAT.PARTY)
 		}
 
-		querySelector('#town-footer-wrap').style.display = 'none'
 		ng.setScene('battle')
 		if (!ng.isApp) {
 			// setup some mission data
@@ -721,11 +721,26 @@ var battle;
 
 	function removeAllBuffs() {
 		for (var key in my.buffFlags) {
-			if (my.buffs[key].duration > 0) {
+			console.info()
+			if (typeof my.buffs[key] === 'object') {
+				if (my.buffs[key].duration > 0) {
+					console.info('regular key', key)
+					removeBuff(key)
+				}
 				// console.info(key, my.buffs[key])
-				removeBuff(key)
 			}
 		}
+		// try to remove DoTs
+		for (var key in my.buffs) {
+			// key is a compound key
+			if (my.buffs[key].duration > 0) {
+				console.info('DoT key', key)
+				my.buffs[key].hotTicks.kill()
+				removeBuff(key.split('-')[0], key)
+
+			}
+		}
+		killMobBuffTimers()
 	}
 
 	function killAllBattleTimers() {

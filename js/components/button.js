@@ -5,9 +5,12 @@ var button;
 		resumeAutoAttack,
 		startSwing,
 		setAll,
-		hide,
 		triggerGlobalCooldown,
 		updateWeaponPanel,
+		handlePotionSlotContextClick,
+		getPotionPanelHtml,
+		updatePotionPanel,
+		getHighestPotion,
 		handleButtonStart,
 		handleButtonUpdate,
 		handleButtonComplete,
@@ -15,18 +18,32 @@ var button;
 		primaryAttack,
 		secondaryAttack,
 		triggerSkill,
+		processPotionTimers,
 		processSkillTimers,
 		init,
 		getPunchDps,
+		hpPotion: -1,
+		mpPotion: -1,
+		spPotion: -1,
 		initialized: false,
 		autoAttackSpeed: 3,
 	}
 	let name, hit
 	let mySwingSpeed = 0
+	const POTION_COOLDOWN = 60
 	const GlobalCooldownDuration = 2.5
 	const HybridAutoAttackers = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER, JOB.BARD]
 	let damages
 	let skillCooldownSpeed = 0
+	const ButtonFlash = {
+		startAt: {
+			scale: 1,
+			opacity: 1,
+			background: 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)',
+		},
+		scale: .75,
+		opacity: 0,
+	}
 	/////////////////////////////
 
 	function init() {
@@ -45,6 +62,46 @@ var button;
 				&& items.eq[12].weaponSkill !== 'Two-hand Blunt') // punching
 	}
 
+	function processPotionTimers(potionType) {
+		console.info('potionType', potionType)
+		let el = querySelector('#skill-timer-' + potionType + '-rotate')
+		TweenMax.set(el, CSS.DISPLAY_BLOCK)
+		let key = potionType + 'Potion'
+		let args = {
+			el: el, // element rotating
+			key: key
+		}
+		let timerObj = {
+			onStart: handleButtonStart,
+			onStartParams: [ args ],
+			onUpdate: handleButtonKeyUpdate,
+			onUpdateParams: [ args ],
+			onComplete: handleButtonComplete,
+			onCompleteParams: [ args, true ],
+			ease: Linear.easeNone
+		}
+		timerObj.startAt = {}
+		timerObj.startAt[key] = 0
+		timerObj[key] = 1
+		// timers
+		timers[potionType + 'Potion'] = 0
+		timers[potionType + 'PotionTimer'].kill()
+		timers[potionType + 'PotionTimer'] = TweenMax.to(timers, POTION_COOLDOWN, timerObj)
+
+		// number countdown
+		let textEl = querySelector('#skill-timer-' + potionType)
+		textEl.innerHTML = getSkillTimeString(POTION_COOLDOWN)
+		let textObj = {
+			el: textEl,
+			remaining: POTION_COOLDOWN
+		}
+
+		TweenMax.to(textObj, 1, {
+			repeat: POTION_COOLDOWN,
+			onRepeat: button.updateSkillTime,
+			onRepeatParams: [ textObj ]
+		})
+	}
 	//////////////////////////////////
 	function processSkillTimers(index, skillData) {
 		let el = querySelector('#skill-timer-' + index + '-rotate')
@@ -52,7 +109,7 @@ var button;
 		// console.info('processSkillTimers', index, skillData)
 		TweenMax.set(el, CSS.DISPLAY_BLOCK)
 		let args = {
-			el: el,
+			el: el, // element rotating
 			index: index,
 		}
 		let timerObj = {
@@ -81,7 +138,7 @@ var button;
 
 		TweenMax.to(textObj, 1, {
 			repeat: skillData.cooldownTime,
-			onRepeat: button.updateSkillTime,
+			onRepeat: button.updateSkillTime, // updates number
 			onRepeatParams: [ textObj ]
 		})
 	}
@@ -107,7 +164,7 @@ var button;
 			globalCooldown: 1,
 			onStart: handleButtonStart,
 			onStartParams: [ args ],
-			onUpdate: handleButtonUpdate,
+			onUpdate: handleButtonKeyUpdate,
 			onUpdateParams: [ args ],
 			onComplete: handleButtonComplete,
 			onCompleteParams: [ args ],
@@ -119,16 +176,18 @@ var button;
 	}
 	function triggerSkill(index) {
 		if (my.hp <= 0) return
-		name = _.camelCase(skills[my.job][index].name)
-		// console.info('triggerSkill', name)
-		if (typeof skill[my.job][name] === 'function') {
-			skill[my.job][name](index, skills[my.job][index])
-			if (!my.isAutoAttacking) {
-				// combat.autoAttackEnable()
+		if (ng.view === 'battle' || ng.view === 'combat') {
+			name = _.camelCase(skills[my.job][index].name)
+			// console.info('triggerSkill', name)
+			if (typeof skill[my.job][name] === 'function') {
+				skill[my.job][name](index, skills[my.job][index])
+				if (!my.isAutoAttacking) {
+					// combat.autoAttackEnable()
+				}
 			}
-		}
-		else {
-			chat.log('This skill is not defined:' + name, CHAT.WARNING)
+			else {
+				chat.log('This skill is not defined:' + name, CHAT.WARNING)
+			}
 		}
 	}
 	function handleSkillButtonClick() {
@@ -288,7 +347,7 @@ var button;
 			startAt: { [key]: 0 },
 			onStart: handleButtonStart,
 			onStartParams: [ o ],
-			onUpdate: handleButtonUpdate,
+			onUpdate: handleButtonKeyUpdate,
 			onUpdateParams: [ o ],
 			onComplete: handleButtonComplete,
 			onCompleteParams: [ o ],
@@ -330,36 +389,24 @@ var button;
 		})
 	}
 
-	function handleButtonUpdate(o) {
-		if (o.key === 'globalCooldown' ||
-			o.key === 'primaryAttack' ||
-			o.key === 'secondaryAttack') {
-			// global
-			TweenMax.set(o.el, {
-				overwrite: 1,
-				opacity: 1,
-				background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000d ' + timers[o.key] + 'turn)'
-			})
-		}
-		else {
-			// skill number
-			TweenMax.set(o.el, {
-				overwrite: 1,
-				opacity: 1,
-				background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
-			})
-		}
+	function handleButtonKeyUpdate(o) {
+		// other timer skills by key
+		TweenMax.set(o.el, {
+			overwrite: 1,
+			opacity: 1,
+			background: 'conic-gradient(#0000 ' + timers[o.key] + 'turn, #000d ' + timers[o.key] + 'turn)'
+		})
 	}
 
-	const ButtonFlash = {
-		startAt: {
-			scale: 1,
+	function handleButtonUpdate(o) {
+		// skill number
+		TweenMax.set(o.el, {
+			overwrite: 1,
 			opacity: 1,
-			background: 'radial-gradient(50% 50% at 50% 50%, #ffff, #27f8 66%, #0490 100%)',
-		},
-		scale: .75,
-		opacity: 0,
+			background: 'conic-gradient(#0000 ' + timers.skillCooldowns[o.index] + 'turn, #000d ' + timers.skillCooldowns[o.index] + 'turn)'
+		})
 	}
+
 	function handleButtonComplete(o, checkGlobalInProgress) {
 		if (checkGlobalInProgress && timers.globalCooldown < 1) {
 			let duration = getCooldownSpeed() - (timers.globalCooldown * getCooldownSpeed())
@@ -407,33 +454,103 @@ var button;
 	}
 	function getWeaponButtonHtml() {
 		return `
+		<div id="auto-attack-flash" class="no-pointer"></div>
 		<div class="skill-btn">
 			<img id="skill-primary-attack-btn" class="skill-img skill-btn-tooltip" src="${bar.getItemSlotImage('eq', 12, true)}">
 			<div id="skill-timer-primary-rotate" class="no-pointer skill-timer-rotate"></div>
 		</div>
 		${getOffhandWeaponHtml()}`
-		///////////////////////////
-		function getOffhandWeaponHtml() {
-			return canOffhandWeapon()
-				? `<div class="skill-btn">
-						<img id="skill-secondary-attack-btn" class="skill-img skill-btn-tooltip" src="${bar.getItemSlotImage('eq', 13, true)}">
-						<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>
-					</div>`
-				: ``
-
-		}
+	}
+	function getOffhandWeaponHtml() {
+		let str = `<div class="skill-btn ${canOffhandWeapon() ? '' : 'no-pointer dead-button'}">`
+			if (canOffhandWeapon()) {
+				str += `<img id="skill-secondary-attack-btn" class="skill-img skill-btn-tooltip" src="${bar.getItemSlotImage('eq', 13, true)}">
+			<div id="skill-timer-secondary-rotate" class="no-pointer skill-timer-rotate"></div>`
+			}
+		str += `</div>`
+		return str
 	}
 	function updateWeaponPanel() {
 		let el = querySelector('#main-attack-wrap')
 		if (!!el) el.innerHTML = getWeaponButtonHtml()
+	}
+	function getPotionPanelHtml() {
+		return `
+		<div id="potion-hp" class="potion-slot popover-icons">
+			<img id="potion-hp-img" class="potion-slot-children" src="${button.getHighestPotion('hp').img}">
+			<div id="skill-timer-hp-rotate" class="skill-timer-rotate potion-slot-children"></div>
+			<div id="skill-timer-hp" class="skill-timer potion-slot-children"></div>
+		</div>
+		<div id="potion-mp" class="potion-slot popover-icons">
+			<img id="potion-mp-img" class="potion-slot-children" src="${button.getHighestPotion('mp').img}">
+			<div id="skill-timer-mp-rotate" class="skill-timer-rotate potion-slot-children"></div>
+			<div id="skill-timer-mp" class="skill-timer potion-slot-children"></div>
+		</div>
+		<div id="potion-sp" class="potion-slot popover-icons">
+			<img id="potion-sp-img" class="potion-slot-children" src="${button.getHighestPotion('sp').img}">
+			<div id="skill-timer-sp-rotate" class="skill-timer-rotate potion-slot-children"></div>
+			<div id="skill-timer-sp" class="skill-timer potion-slot-children"></div>
+		</div>
+		`
+	}
+	const potionTypes = [
+		'hp',
+		'mp',
+		'sp',
+	]
+	function updatePotionPanel() {
+		potionTypes.forEach(type => {
+			let el = querySelector('#potion-'+ type +'-img')
+			if (!!el) {
+				el.src = button.getHighestPotion(type).img
+			}
+		})
+	}
+
+	function handlePotionSlotContextClick(event) {
+		let type = this.id.split('-')[1]
+		if (button[type + 'Potion'] < 0) return
+		let index = items.inv.findIndex(i =>
+			i.itemSubType === type && i.imgIndex === button[type + 'Potion'])
+
+		console.info(type, index)
+		if (index > -1 && items.inv[index].use) {
+			item.useItem('inv', index)
+		}
+		return false // context disabled
+	}
+	function getHighestPotion(potionType) {
+		let img = 'blank'
+		let highestLevel = -1
+		items.inv.forEach(i => {
+			if (i.itemSubType === potionType &&
+				i.imgIndex > highestLevel) {
+				img = i.itemSubType + i.imgIndex
+				button[i.itemSubType + 'Potion'] = highestLevel = i.imgIndex
+			}
+		})
+		return {
+			img: 'images/items/potion/' + img + '.png'
+		}
 	}
 	function setAll() {
 		TweenMax.set('#button-wrap', CSS.DISPLAY_FLEX)
 		if (!button.initialized) {
 			var s = '';
 			// base attack buttons
-			s += `<div id="main-attack-wrap">
+			// <i id="bar-mission-abandon" class="ra ra-player-shot popover-icons bar-icons"></i>
+			s += `
+			<div id="bar-main-menu">
+				<img id="bar-camp" class="popover-icons bar-icons" src="images/ui/bar-camp.png"></i>
+				<img id="bar-stats" class="popover-icons bar-icons" src="images/ui/bar-character.png"></i>
+				<img id="bar-inventory" class="popover-icons bar-icons" src="images/ui/bar-inventory.png"></i>
+				<img id="bar-options" class="popover-icons bar-icons" src="images/ui/bar-options.png"></i>
+			</div>
+			<div id="main-attack-wrap">
 				${getWeaponButtonHtml()}
+			</div>
+			<div id="potion-wrap" class="text-shadow">
+				${getPotionPanelHtml()}
 			</div>
 			<div id="skill-col">
 				<div id="exp-bar-wrap">
@@ -451,7 +568,7 @@ var button;
 			}
 			s += `</div>
 			</div>
-			<div id="status-panel-wrap">
+			<div id="status-panel-wrap" class="no-pointer">
 				<div id="cast-bar-wrap" class="flex-column no-pointer">
 					<div id="cast-bar-base" class="flex-column flex-max stag-blue">
 						<div id="cast-bar-flex">
@@ -479,8 +596,5 @@ var button;
 			el.classList.remove('skill-disabled')
 			if (my.skills[i] === 0) el.classList.add('skill-disabled')
 		})
-	}
-	function hide() {
-		TweenMax.set('#button-wrap', CSS.DISPLAY_NONE);
 	}
 }(TweenMax, $, _, Linear, Power4);

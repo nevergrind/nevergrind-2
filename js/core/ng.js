@@ -375,7 +375,7 @@ var ng;
 	}
 	function reloadGame() {
 		querySelector('#body').innerHTML = ''
-		setTimeout(function() {
+		setTimeout(() => {
 			location.reload()
 		}, 100)
 	}
@@ -434,7 +434,7 @@ var ng;
 			scale: 1,
 		})
 		if (d === 0) return
-		if (d === 'undefined' || d < 1 ){ d = 1 }
+		if (typeof d === 'undefined' || d < 1 ){ d = 2 }
 		msgTimer.kill()
 		msgTimer = delayedCall(d, msgComplete)
 	}

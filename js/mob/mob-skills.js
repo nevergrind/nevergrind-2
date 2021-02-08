@@ -11,7 +11,10 @@ mobSkills = {};
 		silencePlayerTx,
 		chillPlayerTx,
 		freezePlayerTx,
+		applyEffectFilter,
 		// rx effect
+		txPlayerEffect,
+		rxPlayerEffect,
 		stunPlayerEffectRx,
 		fearPlayerEffectRx,
 		paralyzePlayerEffectRx,
@@ -68,7 +71,7 @@ mobSkills = {};
 		magicMissiles,
 		lightningBolt,
 		fireball,
-		setFilter,
+		initFilter,
 		WAR: [
 			{ chance: .07, key: 'slam' }, // STUN
 		],
@@ -156,6 +159,7 @@ mobSkills = {};
 			{ chance: .3, key: 'fireball' },
 		],
 	}
+	let row
 	let mobDamage = {}, mobDamages
 	const filter = {
 		freeze: { pixi: {
@@ -1025,111 +1029,208 @@ mobSkills = {};
 			combat.txBuffHero(damages)
 		}
 	}
+
+
 	// rx status
-	function stunPlayerEffectRx(duration) {
-		duration = my.stunMod(duration, 'stun')
-		if (!my.stunTimeValid(duration)) return
+	function txPlayerEffect(data) {
+		socket.publish('party' + my.partyId, {
+			route: 'p->effect',
+			row: data.row,
+			duration: data.duration,
+			key: data.key,
+		})
+	}
+	function rxPlayerEffect(data) {
+		// console.info('rxPlayerEffect', data)
+		if (data.key === 'stun') animateStun(data)
+		else if (data.key === 'fear') animateFear(data)
+		else if (data.key === 'paralyze') animateParalyze(data)
+		else if (data.key === 'silence') animateSilence(data)
+		else if (data.key === 'chill') animateChill(data)
+		else if (data.key === 'thaw') animateThaw(data)
+		else if (data.key === 'freeze') animateFreeze(data)
+		else if (data.key === 'freezeThaw') animateFreezeThaw(data)
+	}
+	// animate status effects
+	function animateStun(data) {
+		ask.mobStun({
+			index: party.presence[party.getIndexByRow(data.row)].sprite,
+			key: 'particle-small-default',
+			duration: data.duration
+		}, false)
+	}
+	function animateFear(data) {
+		ask.mobFear({
+			index: party.presence[party.getIndexByRow(data.row)].sprite,
+			key: 'particle-small-purple',
+			duration: data.duration
+		}, false)
+	}
+	function animateParalyze(data) {
+		ask.mobParalyze({
+			index: party.presence[party.getIndexByRow(data.row)].sprite,
+			key: 'particle-small-arcane',
+			duration: data.duration
+		}, false)
+	}
+	function animateSilence(data) {
+		ask.mobSilence({
+			index: party.presence[party.getIndexByRow(data.row)].sprite,
+			key: 'particle-small-ice',
+			duration: data.duration
+		}, false)
+	}
+	function animateChill(data) {
+		row = party.getIndexByRow(data.row)
+		party.presence[row].isChilled = true
+		if (!my.isFrozen()) {
+			TweenMax.to(party.presence[party.getIndexByRow(data.row)].sprite, .5, filter.chill)
+		}
+	}
+	function animateThaw(data) {
+		row = party.getIndexByRow(data.row)
+		party.presence[row].isChilled = false
+		if (!party.isChilled(data.row) && !party.isFrozen(data.row)) {
+			TweenMax.to(party.presence[row].sprite, .5, filter.default)
+		}
+	}
+	function animateFreeze(data) {
+		row = party.getIndexByRow(data.row)
+		party.presence[row].isFrozen = true
+		TweenMax.set(party.presence[row].sprite, filter.freeze)
+	}
+	function animateFreezeThaw(data) {
+		row = party.getIndexByRow(data.row)
+		party.presence[row].isFrozen = false
+		TweenMax.to(party.presence[row].sprite, .5,
+			party.isChilled(data.row) ?
+				filter.chill : filter.default
+		)
+	}
+	function applyEffectFilter(row) {
+		row = party.getIndexByRow(row)
+		if (party.presence[row].isFrozen) {
+			TweenMax.set(party.presence[row].sprite, filter.freeze)
+		}
+		else if (party.presence[row].isChilled) {
+			TweenMax.set(party.presence[row].sprite, filter.chill)
+		}
+		else {
+			TweenMax.set(party.presence[row].sprite, filter.default)
+		}
+	}
+
+
+	function stunPlayerEffectRx(buff) {
+		buff.duration = my.stunMod(buff.duration, 'stun')
+		if (!my.stunTimeValid(buff.duration)) return
 		spell.cancelSpell()
 		button.pauseAutoAttack()
-		my.stunTimer = TweenMax.to(timers, duration, {
+		my.stunTimer = TweenMax.to(timers, buff.duration, {
 			startAt: { stunTimer: 0 },
 			stunTimer: 1,
 			ease: Power0.easeIn,
-			onComplete: stunPlayerComplete,
+			onComplete: button.resumeAutoAttack,
 		})
-		animateStun()
-		///////////////////////////
-		function stunPlayerComplete() {
-			button.resumeAutoAttack()
-		}
-		function animateStun() {
-			ask.mobStun({
-				index: my.row,
-				key: 'particle-small-default',
-				duration: duration
-			}, false)
-		}
+		mobSkills.txPlayerEffect({
+			row: my.row,
+			duration: buff.duration,
+			key: 'stun',
+		})
 	}
-	function fearPlayerEffectRx(duration) {
-		if (!my.fearTimeValid(duration)) return
-		my.fearTimer = TweenMax.to(timers, duration, {
+	function fearPlayerEffectRx(buff) {
+		if (!my.fearTimeValid(buff.duration)) return
+		my.fearTimer = TweenMax.to(timers, buff.duration, {
 			startAt: { fearTimer: 0 },
 			fearTimer: 1,
 			ease: Power0.easeIn,
 		})
-		ask.mobFear({
-			index: my.row,
-			key: 'particle-small-purple',
-			duration: duration
-		}, false)
+		mobSkills.txPlayerEffect({
+			row: my.row,
+			duration: buff.duration,
+			key: 'fear',
+		})
 	}
-	function paralyzePlayerEffectRx(duration) {
-		if (!my.paralyzeTimeValid(duration)) return
-		my.paralyzeTimer = TweenMax.to(timers, duration, {
+	function paralyzePlayerEffectRx(buff) {
+		if (!my.paralyzeTimeValid(buff.duration)) return
+		my.paralyzeTimer = TweenMax.to(timers, buff.duration, {
 			startAt: { paralyzeTimer: 0 },
 			paralyzeTimer: 1,
 			ease: Power0.easeIn,
 		})
-		ask.mobParalyze({
-			index: my.row,
-			key: 'particle-small-arcane',
-			duration: duration
-		}, false)
+		mobSkills.txPlayerEffect({
+			row: my.row,
+			duration: buff.duration,
+			key: 'paralyze',
+		})
 	}
-	function silencePlayerEffectRx(duration) {
-		duration = my.stunMod(duration, 'silence')
-		if (!my.silenceTimeValid(duration)) return
-		my.silenceTimer = TweenMax.to(timers, duration, {
+	function silencePlayerEffectRx(buff) {
+		buff.duration = my.stunMod(buff.duration, 'silence')
+		if (!my.silenceTimeValid(buff.duration)) return
+		my.silenceTimer = TweenMax.to(timers, buff.duration, {
 			startAt: { silenceTimer: 0 },
 			silenceTimer: 1,
 			ease: Power0.easeIn,
 		})
-		ask.mobSilence({
-			index: my.row,
-			key: 'particle-small-ice',
-			duration: duration
-		}, false)
+		mobSkills.txPlayerEffect({
+			row: my.row,
+			duration: buff.duration,
+			key: 'silence',
+		})
 	}
-	function chillPlayerEffectRx(duration) {
-		if (!my.chillTimeValid(duration)) return
-		my.chillTimer = TweenMax.to(timers, duration, {
+	function chillPlayerEffectRx(buff) {
+		if (!my.chillTimeValid(buff.duration)) return
+		my.chillTimer = TweenMax.to(timers, buff.duration, {
 			startAt: { chillTimer: 0 },
 			chillTimer: 1,
 			ease: Power0.easeIn,
 			onComplete: chillPlayerComplete,
+			onCompleteParams: [buff],
 		})
-		if (!my.isFrozen()) {
-			TweenMax.to(dungeon.player, .5, filter.chill)
-		}
-		///////////////////////////
-		function chillPlayerComplete() {
-			if (!my.isChilled() && !my.isFrozen()) {
-				TweenMax.to(dungeon.player, .5, filter.default)
-			}
-		}
+		mobSkills.txPlayerEffect({
+			row: my.row,
+			duration: buff.duration,
+			key: 'chill',
+		})
 	}
-	function freezePlayerEffectRx(duration) {
-		if (!my.freezeTimeValid(duration)) return
-		my.freezeTimer = TweenMax.to(timers, duration, {
+	function chillPlayerComplete(buff) {
+		mobSkills.txPlayerEffect({
+			row: my.row,
+			duration: buff.duration,
+			key: 'thaw',
+		})
+	}
+	function freezePlayerEffectRx(buff) {
+		if (!my.freezeTimeValid(buff.duration)) return
+		my.freezeTimer = TweenMax.to(timers, buff.duration, {
 			startAt: { freezeTimer: 0 },
 			freezeTimer: 1,
 			ease: Power0.easeIn,
 			onComplete: freezePlayerComplete,
+			onCompleteParams: [buff],
 		})
-		TweenMax.set(dungeon.player, filter.freeze)
-		///////////////////////////
-		function freezePlayerComplete() {
-			if (my.isChilled()) {
-				TweenMax.to(dungeon.player, .5, filter.chill)
-			}
-			else {
-				TweenMax.to(dungeon.player, .5, filter.default)
-			}
-		}
+		mobSkills.txPlayerEffect({
+			row: my.row,
+			duration: buff.duration,
+			key: 'freeze',
+		})
 	}
-	function setFilter() {
-		if (my.isFrozen()) TweenMax.to(dungeon.player, .5, filter.freeze)
-		else if (my.isChilled()) TweenMax.to(dungeon.player, .5, filter.chill)
-		else TweenMax.to(dungeon.player, .5, filter.default)
+	function freezePlayerComplete(buff) {
+		mobSkills.txPlayerEffect({
+			row: my.row,
+			duration: buff.duration,
+			key: 'freezeThaw',
+		})
+	}
+
+	function initFilter() {
+		party.presence.forEach(p => {
+			// filters only work on self for now
+			if (my.row === p.row) {
+				if (my.isFrozen()) TweenMax.to(p.sprite, .5, filter.freeze)
+				else if (my.isChilled()) TweenMax.to(p.sprite, .5, filter.chill)
+				else TweenMax.to(p.sprite, .5, filter.default)
+			}
+		})
 	}
 }($, _, TweenMax, Linear, Math, Array, Power0);

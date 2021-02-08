@@ -16,6 +16,7 @@ var spell;
 		expendMana,
 		expendSpirit,
 		triggerSkillCooldown,
+		triggerPotionCooldown,
 	}
 	let ratio
 	let castPenalty = 0
@@ -222,5 +223,10 @@ var spell;
 		timers.skillCooldowns[index] = 0
 		timers.skillCooldownTimers[index].kill()
 		button.processSkillTimers(index, data || skills.lastData)
+	}
+	function triggerPotionCooldown(potionType) {
+		timers[potionType + 'Potion'] = 0
+		timers[potionType + 'PotionTimer'].kill()
+		button.processPotionTimers(potionType)
 	}
 }($, _, TweenMax, Power0);

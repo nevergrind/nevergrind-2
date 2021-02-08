@@ -27,7 +27,7 @@ var tooltip;
 	const css = {
 		usePadding: 'padding: .5rem .5rem 0 .5rem'
 	}
-	var tooltipEl = getElementById('tooltip-wrap')
+	var tooltipEl = querySelector('#tooltip-wrap')
 	var useHtml = ''
 	let hit
 	const divider = '<hr class="fancy-hr" style="margin: .2rem 0">'

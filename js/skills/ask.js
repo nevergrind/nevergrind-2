@@ -16,6 +16,7 @@ var ask;
 		askId: 0,
 		castingTweens: [],
 		castingImgIds: [],
+		getAskId,
 		behindMobLayer,
 		frontMobLayer,
 		getImg,
@@ -68,7 +69,8 @@ var ask;
 		animateFrames,
 		setFrame,
 	}
-	const BOTTOM = 1080
+
+	let coord
 	let val, el
 	const fadeIn = {
 		startAt: { alpha: 0 },
@@ -1142,6 +1144,7 @@ var ask;
 		}
 	}
 	function sizeOffset(size) {
+		// some magic adjustment shit I dunno
 		val = 0
 		if (size >= 1) val = 16
 		else if (size > .9) val = 12
@@ -1165,9 +1168,7 @@ var ask;
 	function shadowY(index, targetMob = true) {
 		// cringe bottom % from CSS
 		if (targetMob) {
-			return index <= 4
-				? MaxHeight - (MaxHeight * .2037) - (mobs[index].shadowHeight * .5)
-				: MaxHeight - (MaxHeight * .2963) - (mobs[index].shadowHeight * .5)
+			return MaxHeight - ((mob.bottomY[index] / MaxHeight) * MaxHeight) - (mobs[index].shadowHeight * .5)
 		}
 		else {
 			// player target
@@ -1180,7 +1181,7 @@ var ask;
 		}
 		else {
 			// player target
-			return ask.getPlayerCenter().y
+			return ask.getPlayerCenter(index).y
 		}
 	}
 	function centerHeadY(index, targetMob) {
@@ -1188,40 +1189,43 @@ var ask;
 			return ask.centerY(index, targetMob) - (mobs[index].clickAliveH * .2)
 		}
 		else {
-			return ask.getPlayerCenter().y
+			return ask.getPlayerCenter(index).y
 		}
 	}
 	function getPlayerHead(index) {
 		return {
-			x: 960,
-			y: 850 - 100
+			x: dungeon.centerX[party.getIndexByRow(index)],
+			y: dungeon.headY,
 		}
 	}
-	function getPlayerCenter(o) {
+	function getPlayerCenter(index) {
 		// possibly expand to multiple party members later
 		return {
-			x: 960,
-			y: BOTTOM - 230
+			x: dungeon.centerX[party.getIndexByRow(index)],
+			y: dungeon.centerY,
 		}
 	}
-	function getPlayerBottom() {
-		const pos = getPlayerCenter()
+	function getPlayerBottom(index) {
 		return {
-			x: pos.x + 150,
-			y: pos.y + 150,
+			x: dungeon.centerX[party.getIndexByRow(index)],
+			y: dungeon.bottomY,
 		}
 	}
 	function positionImgToPlayer(o, img, config) {
-		const pos = getPlayerCenter(o)
-		img.x = pos.x
+		coord = getPlayerCenter(o.index)
+		img.x = coord.x
 		// offset from combat bottom
-		if (typeof config === 'object' && config.yPosition) img.y = BOTTOM - config.yPosition
-		else img.y = pos.y
+		if (typeof config === 'object' && config.yPosition) img.y = dungeon.bottom - config.yPosition
+		else img.y = coord.y
+	}
+
+	function getAskId() {
+		return ask.askId++
 	}
 
 	function getImg(o, config = { targetMob: true }) {
 		const img = PIXI.Sprite.from(`images/ask/${o.key}.png`)
-		img.id = 'ask-' + ask.askId++
+		img.id = 'ask-' + ask.getAskId()
 		img.anchor.set(.5)
 		if (config.targetMob) {
 			img.x = mob.centerX[o.index]
@@ -1237,7 +1241,7 @@ var ask;
 	// image @ feet of target (or center!)
 	function getNova(o, config = { targetMob: true }) {
 		const img = PIXI.Sprite.from(`images/ask/${o.key}.png`)
-		img.id = 'ask-' + ask.askId++
+		img.id = 'ask-' + ask.getAskId()
 		img.anchor.set(.5)
 		// bottom center of mob's feet
 		if (config.targetMob) {

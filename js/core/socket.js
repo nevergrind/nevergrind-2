@@ -17,9 +17,9 @@ var socket;
 	}
 
 	let len, secs
-
-	const realm = 'realm1'
 	let broadcasts = []
+
+	const Realm = 'realm1'
 	const excludeObj = { exclude_me: true }
 	const includeObj = { exclude_me: false }
 	////////////////////////////////////////
@@ -30,6 +30,10 @@ var socket;
 			// console.info("subscribing:", topic, callback.name);
 			socket.session.subscribe(topic, callback).then(registerSubscription);
 		}
+	}
+	function registerSubscription(sub) {
+		// console.info('registerSubscription', sub);
+		socket.subs[sub.topic] = sub;
 	}
 	function publish(topic, obj, exclude) {
 		topic = _.toLower(topic)
@@ -54,11 +58,6 @@ var socket;
 			);
 		}
 	}
-
-	function registerSubscription(sub) {
-		// console.info('registerSubscription', sub);
-		socket.subs[sub.topic] = sub;
-	}
 	function unsubscribe(channel) {
 		channel = _.toLower(channel);
 		if (typeof socket.subs[channel] === 'object') {
@@ -71,7 +70,7 @@ var socket;
 			}
 		}
 	}
-	function joinGame() {
+	/*function joinGame() {
 		(function retry(){
 			if (socket.enabled){
 				socket.unsubscribe('title' + my.channel);
@@ -88,11 +87,11 @@ var socket;
 		if (!ng.ignore.includes(data[0].account)){
 			title.chatReceive(data[0]);
 		}
-	}
+	}*/
 	function init() {
 		socket.connection = new autobahn.Connection({
 			url: app.socketUrl,
-			realm: realm
+			realm: Realm
 		});
 		socket.connection.onopen = connectionSuccess;
 		socket.connection.open();

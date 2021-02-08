@@ -42,6 +42,7 @@
 			.on('mouseenter', '.item-slot, .skill-btn-tooltip', tooltip.handleEnter)
 			.on('mouseleave', '.item-slot, .skill-btn-tooltip', tooltip.handleLeave)
 			.on('contextmenu', '.item-slot-inv, .item-slot-bank', item.handleItemSlotContextClick)
+			.on('contextmenu', '.potion-slot', button.handlePotionSlotContextClick)
 			.on('click', '.item-slot', item.toggleDrag)
 			.on('click', '.inv-tabs', bar.setCharActiveTab)
 			.on('click', '.inv-skill-row', bar.getSkillDescription)

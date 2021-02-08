@@ -3,6 +3,8 @@ var bar;
 	bar = {
 		updateInventoryGold,
 		updateInventoryDOM,
+		openInventory,
+		closeInventory,
 		init,
 		updatePlayerBar,
 		addPlayer,
@@ -112,9 +114,8 @@ var bar;
 			bar.initialized = 1
 			el = getElementById('bar-wrap')
 			// my bar
-			html = getBarHeader()
 			// party bars
-			html += '<div id="bar-all-player-wrap">'
+			html = '<div id="bar-all-player-wrap">'
 			/*for (var i=0; i<party.maxPlayers; i++) {
 				html += getPlayerBarHtml({}, i, true);
 			}*/
@@ -130,30 +131,29 @@ var bar;
 				.on('mouseenter', '.popover-icons', showBarMenuPopover)
 				.on('mousemove', '.popover-icons', popover.setPosition)
 				.on('mouseleave', '.popover-icons', popover.hide)
-
-			$("#bar-wrap")
-				.on('click contextmenu', '.bar-avatar', handleClickPartyContextMenu)
 				.on('click', '#bar-camp', chat.camp)
 				.on('click', '#bar-stats', toggleCharacterStats)
 				.on('click', '#bar-inventory', toggleInventory)
 				.on('click', '#bar-options', toggleOptions)
 				.on('click', '#bar-mission-abandon', mission.abandon)
+
+			$("#bar-wrap")
+				.on('click contextmenu', '.bar-avatar', handleClickPartyContextMenu)
 		}
 	}
 	function appExit() {
 		ng.lock()
 		ng.msg('Saving game data...')
 		if (app.isApp) {
-			delayedCall(ng.getExitTime(), () => {
-				nw.App.closeAllWindows();
-			})
+			delayedCall(ng.getExitTime(), nw.App.closeAllWindows)
 		}
 		else appReset()
 	}
 	function appReset() {
 		ng.lock()
-		ng.msg('Saving game data...')
-		delayedCall(ng.getExitTime(), ng.reloadGame)
+		delayedCall(ng.getExitTime(), () => {
+			chat.camp({bypass: true})
+		})
 	}
 
 	function handleClickPartyContextMenu() {
@@ -294,6 +294,13 @@ var bar;
 			}
 		}
 		return resp
+	}
+
+	function openInventory() {
+		if (!bar.windowsOpen.inventory) bar.toggleInventory()
+	}
+	function closeInventory() {
+		if (bar.windowsOpen.inventory) bar.toggleInventory()
 	}
 
 	function toggleInventory() {
@@ -847,22 +854,6 @@ var bar;
 			getElementById('bar-all-player-wrap').appendChild(el);
 			cachePlayerBars(index);
 		}
-	}
-	function getBarHeader() {
-		html = '';
-		html +=
-		'<div id="bar-lag">' +
-			'<span class="popover-icons">0ms</span>' +
-			'<span class="popover-icons">0ms</span>' +
-		'</div>' +
-		'<div id="bar-main-menu">' +
-			'<i id="bar-camp" class="ra ra-campfire popover-icons bar-icons"></i>' +
-			'<i id="bar-stats" class="ra ra-knight-helmet popover-icons bar-icons"></i>' +
-			'<i id="bar-inventory" class="ra ra-vest popover-icons bar-icons"></i>' +
-			'<i id="bar-options" class="ra ra-gear-hammer popover-icons bar-icons"></i>' +
-			'<i id="bar-mission-abandon" class="ra ra-player-shot popover-icons bar-icons"></i>' +
-		'</div>';
-		return html;
 	}
 	function getPlayerBarHtml(player, index) {
 		player = player || {};
