@@ -34,7 +34,7 @@
 			!function(i) {
 				delayedCall(i * .1, () => {
 					o.endFrame = 3
-					let y = ask.shadowY(o.index, true)
+					let y = ask.bottomY(o.index, true)
 					let yAdj = _.random(0, 30)
 					let zIndex = yAdj > 15 ? ask.DEFAULT_MOB_LAYER : ask.DEFAULT_BEHIND_MOB_LAYER
 					ask.groundExplosion(o, {
@@ -59,7 +59,7 @@
 		}
 	}
 	function lightningBlast(o) {
-		let shadowY = ask.shadowY(o.index, true) + 50
+		let shadowY = ask.bottomY(o.index, true) + 50
 		o.key = 'lightningBlast1'
 		let img = ask.groundExplosion(_.clone(o), {
 			yStart: shadowY,
@@ -128,7 +128,7 @@
 		}(_.clone(o))
 		let centerY = ask.centerY(o.index, true) - 175
 		let centerX = mob.centerX[o.index]
-		let ground = ask.shadowY(o.index, true) + 25
+		let ground = ask.bottomY(o.index, true) + 25
 		let distanceDuration = (ground - centerY) / 1000
 		for (var i=0; i<9; i++) {
 			!function(i, o) {
@@ -194,7 +194,7 @@
 		if (o.animate) {
 			let size = 300
 			let x = mob.centerX[o.tgtStart]
-			let y = ask.shadowY(o.tgtStart, true) - (size * .5) + 20
+			let y = ask.bottomY(o.tgtStart, true) - (size * .5) + 20
 			let tgts = Math.abs(o.tgtStart - o.tgtEnd)
 			let duration = 1 + (tgts * .333)
 			let rotation = 720 + ((tgts - 2) * 180)
@@ -230,7 +230,7 @@
 			boulder.y = y
 			!function(o) {
 				o.endFrame = 2
-				let y = ask.shadowY(o.tgtEnd, true)
+				let y = ask.bottomY(o.tgtEnd, true)
 				let adjVal = 70 + ((tgts - 2) * 20)
 				let xAdj = o.tgtStart > o.tgtEnd ? -adjVal : adjVal
 				TweenMax.to(boulder, duration, {
@@ -267,7 +267,7 @@
 				o.index = o.tgtEnd
 				o.endFrame = 2
 				o.key = 'fissure'
-				let y = ask.shadowY(o.tgtEnd, true)
+				let y = ask.bottomY(o.tgtEnd, true)
 
 				ask.particleSmall({...o, key: 'particle-small-fire'}, {
 					interval: .001,
@@ -298,7 +298,7 @@
 				let zIndex = yAdjust >= 0 ? ask.DEFAULT_MOB_LAYER : ask.DEFAULT_BEHIND_MOB_LAYER
 				let size = 100 - ((yAdjust + 15) * 2)
 				let img = ask.groundExplosion(_.clone(o), {
-					yStart: ask.shadowY(o.index, true) + yAdjust,
+					yStart: ask.bottomY(o.index, true) + yAdjust,
 					xAdjust: _.random(-125, 125),
 					contrastStart: 1.5,
 					brightnessStart: 2,
@@ -338,7 +338,7 @@
 		tornadoInvert = !tornadoInvert
 		ask.groundExplosion(o, {
 			flip: tornadoInvert,
-			yStart: ask.shadowY(o.index, true) + 25,
+			yStart: ask.bottomY(o.index, true) + 25,
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			sizeStart: 360,

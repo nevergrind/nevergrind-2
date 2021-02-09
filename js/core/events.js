@@ -116,9 +116,9 @@
 		}
 	}
 	function mousemove(e) {
-		// console.info('mousemove', e.clientX, e.clientY)
 		my.mouse.x = e.clientX
 		my.mouse.y = e.clientY
+		// console.info(my.mouse.x, my.mouse.y)
 		if (item.isDragging) item.updateCursorImgPosition()
 	}
 	function resize() {

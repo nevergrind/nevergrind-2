@@ -1380,7 +1380,7 @@
 		if (targetMob) {
 			if (!mob.isAlive(o.index)) return
 			startX = mob.centerX[o.index]
-			startY = ask.centerHeadY(o.index, true)
+			startY = ask.centerHeadY(o.index)
 		}
 		else {
 			const pos = ask.getPlayerHead(o.index)
@@ -1463,7 +1463,7 @@
 		if (targetMob) {
 			if (!mob.isAlive(o.index)) return
 			startX = mob.centerX[o.index]
-			startY = ask.centerHeadY(o.index, true)
+			startY = ask.centerHeadY(o.index)
 		}
 		else {
 			const pos = ask.getPlayerHead(o.index)
@@ -1546,7 +1546,7 @@
 		if (targetMob) {
 			if (!mob.isAlive(o.index)) return
 			startX = mob.centerX[o.index]
-			startY = ask.centerHeadY(o.index, true)
+			startY = ask.centerHeadY(o.index)
 		}
 		else {
 			const pos = ask.getPlayerHead(o.index)
@@ -1629,7 +1629,7 @@
 		if (targetMob) {
 			if (!mob.isAlive(o.index)) return
 			startX = mob.centerX[o.index]
-			startY = ask.centerHeadY(o.index, true)
+			startY = ask.centerHeadY(o.index)
 		}
 		else {
 			const pos = ask.getPlayerHead(o.index)

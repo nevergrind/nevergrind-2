@@ -1041,7 +1041,6 @@ mobSkills = {};
 		})
 	}
 	function rxPlayerEffect(data) {
-		// console.info('rxPlayerEffect', data)
 		if (data.key === 'stun') animateStun(data)
 		else if (data.key === 'fear') animateFear(data)
 		else if (data.key === 'paralyze') animateParalyze(data)
@@ -1054,28 +1053,28 @@ mobSkills = {};
 	// animate status effects
 	function animateStun(data) {
 		ask.mobStun({
-			index: party.presence[party.getIndexByRow(data.row)].sprite,
+			index: party.presence[party.getIndexByRow(data.row)].row,
 			key: 'particle-small-default',
 			duration: data.duration
 		}, false)
 	}
 	function animateFear(data) {
 		ask.mobFear({
-			index: party.presence[party.getIndexByRow(data.row)].sprite,
+			index: party.presence[party.getIndexByRow(data.row)].row,
 			key: 'particle-small-purple',
 			duration: data.duration
 		}, false)
 	}
 	function animateParalyze(data) {
 		ask.mobParalyze({
-			index: party.presence[party.getIndexByRow(data.row)].sprite,
+			index: party.presence[party.getIndexByRow(data.row)].row,
 			key: 'particle-small-arcane',
 			duration: data.duration
 		}, false)
 	}
 	function animateSilence(data) {
 		ask.mobSilence({
-			index: party.presence[party.getIndexByRow(data.row)].sprite,
+			index: party.presence[party.getIndexByRow(data.row)].row,
 			key: 'particle-small-ice',
 			duration: data.duration
 		}, false)

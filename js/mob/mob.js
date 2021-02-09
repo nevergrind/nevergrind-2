@@ -2,6 +2,7 @@ var mob;
 let mobs = [];
 (function(TweenMax, $, _, Object, Linear,  PIXI, Sine, Power2, undefined) {
 	mob = {
+		getMobTypesByZone,
 		getMobResist,
 		isAlive,
 		getRandomMobKey,
@@ -57,7 +58,7 @@ let mobs = [];
 		maxLevel: 50,
 		element: {},
 		centerX: [192,576,960,1344,1728,384,768,1152,1536],
-		bottomY: [220,220,220,220,220,320,320,320,320],
+		bottomY: [260,260,260,260,260,420,420,420,420],
 		earnedExp: 0,
 		earnedGold: 0,
 		leveledUp: false,
@@ -326,14 +327,28 @@ let mobs = [];
 		var m = mobs[i]
 		if (!m.img) return
 		// set dom
-		let width = ~~(m.size * (mobs.images[m.img].width))
-		let height = ~~(m.size * (mobs.images[m.img].height))
+		const scaleByLayer = i <= 4 ? 1 : .925
+		let width = ~~((m.size * (mobs.images[m.img].width)) * scaleByLayer)
+		let height = ~~((m.size * (mobs.images[m.img].height)) * scaleByLayer)
 		let x = mob.centerX[i]
 		// botttom - row offset - image size offset for transparency at bottom - more size offset?
 		let y = ask.bottomY(i, true)
+		const layer = i <= 4 ? ask.MOB_LAYER : ask.MOB_LAYER_BACK
+		// mob shadow
+		m.shadow = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
+		m.shadow.anchor.set(.5, mobs.images[m.img].anchorY)
+		m.shadow.index = i
+		m.shadow.x = x
+		m.shadow.y = y
+		m.shadow.width = width
+		m.shadow.height = height * .2
+		m.shadow.interactive = false
+		m.shadow.buttonMode = false
+		m.shadow.zIndex = layer - 1 // layer - i // don't think I want - i at all
+		TweenMax.set(mobs[i].shadow, filter.shadow())
 		// mob sprite
 		m.sprite = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
-		m.sprite.anchor.set(.5, 1)
+		m.sprite.anchor.set(.5, mobs.images[m.img].anchorY)
 		m.sprite.index = i
 		m.sprite.x = x
 		m.sprite.y = y
@@ -341,35 +356,13 @@ let mobs = [];
 		m.sprite.height = height
 		m.sprite.interactive = true
 		m.sprite.buttonMode = true
-		const layer = i <= 4 ? ask.MOB_LAYER : ask.MOB_LAYER_BACK
-		m.sprite.zIndex = layer - i
+		m.sprite.zIndex = layer // layer - i // don't think I want - i at all
 		TweenMax.set(mobs[i].sprite, filter.default(i))
 
-		// mob shadow
-		/*m.shadow = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
-		m.shadow.anchor.set(.5, 1)
-		m.shadow.x = x
-		m.shadow.y = y
-		m.shadow.width = width
-		m.shadow.height = height
-		m.shadow.zIndex = 90 - i
-		TweenMax.set(m.shadow, {
-			pixi: {
-				brightness: 0,
-				alpha: .2
-			}
-		})*/
 		mob.setClickBox(m, i)
 		//m.sprite.hitArea = new PIXI.Rectangle(c.x, c.y, c.w, c.h)
+		battle.layer.stage.addChild(m.shadow)
 		battle.layer.stage.addChild(m.sprite)
-
-		// shadow
-		//TODO: how the fuck does this work?
-		let el = querySelector('#mob-shadow-' + i)
-		el.style.display = 'block'
-        el.style.width = (m.shadowWidth * m.size) * 100 / MaxWidth + '%'
-        el.style.height = (m.shadowHeight * m.size) * 100 / MaxHeight + '%'
-        el.style.bottom = '0%'
 
 		TweenMax.set(querySelector('#mob-details-' + i), {
 			y: 0,
@@ -420,7 +413,7 @@ let mobs = [];
 	function setSrc(i) {
 		mobs[i].frame = ~~mobs[i].frame
 		if (mobs[i].frame !== mobs[i].lastFrame) {
-			mobs[i].sprite.texture = mob.textures[mobs[i].img][mobs[i].frame]
+			mobs[i].shadow.texture = mobs[i].sprite.texture = mob.textures[mobs[i].img][mobs[i].frame]
 			mobs[i].lastFrame = mobs[i].frame
 		}
 	}
@@ -480,6 +473,12 @@ let mobs = [];
 				...filter.stasis(i),
 				colorize: '#0ff',
 				colorizeAmount: 0,
+			}}
+		},
+		shadow: () => {
+			return { pixi: {
+				brightness: 0,
+				alpha: .4,
 			}}
 		}
 	}
@@ -861,6 +860,12 @@ let mobs = [];
 		}
 		// console.info('getMobResist after', d.index, d.damageType, resist)
 		return resist
+	}
+	function getMobTypesByZone(acc, m) {
+		if (!acc.includes(m.img)) {
+			acc.push(m.img)
+		}
+		return acc
 	}
 
 })(TweenMax, $, _, Object, Linear, PIXI, Sine, Power2);

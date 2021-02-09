@@ -79,12 +79,12 @@ var my;
 		buffIconTimers: {},
 		stunMod,
 		effects: {
-			stun: { timestamp: 0, count: 0, },
-			fear: { timestamp: 0, count: 0, },
-			paralyze: { timestamp: 0, count: 0, },
-			silence: { timestamp: 0, count: 0, },
-			chill: { timestamp: 0, count: 0, },
-			freeze: { timestamp: 0, count: 0, },
+			stun: { time: 0, count: 0, },
+			fear: { time: 0, count: 0, },
+			paralyze: { time: 0, count: 0, },
+			silence: { time: 0, count: 0, },
+			chill: { time: 0, count: 0, },
+			freeze: { time: 0, count: 0, },
 		},
 		lastStunReducedCount: 0,
 		lastStunFullTime: 0,
@@ -112,22 +112,28 @@ var my;
 		return duration
 	}
 	function stunTimeValid(duration) {
-		return duration >= my.buffs.stun.duration
+		return typeof my.buffs.stun === 'undefined' ||
+			typeof my.buffs.stun === 'object' && duration >= my.buffs.stun.duration
 	}
 	function fearTimeValid(duration) {
-		return duration >= my.buffs.fear.duration
+		return typeof my.buffs.fear === 'undefined' ||
+			typeof my.buffs.fear === 'object' && duration >= my.buffs.fear.duration
 	}
 	function paralyzeTimeValid(duration) {
-		return duration >= my.buffs.paralyze.duration
+		return typeof my.buffs.paralyze === 'undefined' ||
+			typeof my.buffs.paralyze === 'object' && duration >= my.buffs.paralyze.duration
 	}
 	function silenceTimeValid(duration) {
-		return duration >= my.buffs.silence.duration
+		return typeof my.buffs.silence === 'undefined' ||
+			typeof my.buffs.silence === 'object' && duration >= my.buffs.silence.duration
 	}
 	function chillTimeValid(duration) {
-		return duration >= my.buffs.chill.duration
+		return typeof my.buffs.chill === 'undefined' ||
+			typeof my.buffs.chill === 'object' && duration >= my.buffs.chill.duration
 	}
 	function freezeTimeValid(duration) {
-		return duration >= my.buffs.freeze.duration
+		return typeof my.buffs.freeze === 'undefined' ||
+			typeof my.buffs.freeze === 'object' && duration >= my.buffs.freeze.duration
 	}
 	// effect resist checks
 	function stunCheck() {

@@ -207,7 +207,7 @@
 			duration: .6,
 			sizeStart: 200,
 			sizeEnd: 420,
-			yStart: ask.shadowY(o.index, true) + 35,
+			yStart: ask.bottomY(o.index, true) + 35,
 			alpha: 0,
 			yoyo: false,
 			ease: Power2.easeOut,
@@ -251,7 +251,7 @@
 		o.endFrame = 2
 		ask.groundExplosion(o, {
 			targetMob: false,
-			yStart: ask.shadowY(o.index, false) + 25,
+			yStart: ask.bottomY(o.index, false) + 25,
 			contrastStart: 1.5,
 			brightnessStart: 4,
 			duration: 1,

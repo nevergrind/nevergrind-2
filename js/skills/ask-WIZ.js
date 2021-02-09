@@ -73,7 +73,7 @@
 		ask.fadeOut([img, img2], dur, dur * .5)
 	}
 	function lightningBolt(o) {
-		let shadowY = ask.shadowY(o.index, true) + 50
+		let shadowY = ask.bottomY(o.index, true) + 50
 		ask.explosion({index: o.index, key: 'burst-lightning'})
 		let img = ask.groundExplosion(o, {
 			yStart: shadowY,
@@ -315,7 +315,7 @@
 	}
 	function meteorStrike(o) {
 		// 6 seconds of burning 12 * .5
-		let y = ask.shadowY(o.index, true)
+		let y = ask.bottomY(o.index, true)
 		for (var i=0; i<20; i++) {
 			!function() {
 				ask.flames(o, {
@@ -426,7 +426,7 @@
 			brightnessStart: 2,
 			contrastEnd: 1,
 			brightnessEnd: 1,
-			yStart: ask.shadowY(o.index, true) + 40,
+			yStart: ask.bottomY(o.index, true) + 40,
 			sizeStart: 350,
 			sizeEnd: 350,
 			alpha: 1,

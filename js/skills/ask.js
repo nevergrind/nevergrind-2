@@ -25,11 +25,9 @@ var ask;
 		removeImg,
 		removeDungeonImg,
 		removeBattleImg,
-		sizeOffset,
-		bottomY,
 		centerY,
 		centerHeadY,
-		shadowY,
+		bottomY,
 		getPlayerBottom,
 		getPlayerHead,
 		getPlayerCenter,
@@ -311,7 +309,7 @@ var ask;
 		ask.addChild(img)
 		TweenMax.to(img, .15, {
 			x: '+=' + (_.random(-100, 100)),
-			y: ask.shadowY(index, true) + _.random(-15, 40),
+			y: ask.bottomY(index, true) + _.random(-15, 40),
 			ease: Power0.easeIn,
 			onComplete: () => {
 				TweenMax.to(img, BLOOD_DURATION, {
@@ -764,7 +762,7 @@ var ask;
 							saturation: config.saturationEnd,
 							brightness: config.brightnessEnd,
 						},
-						y: config.yEnd ? ('+=' + config.yEnd) : (ask.shadowY(o.index, config.targetMob)),
+						y: config.yEnd ? ('+=' + config.yEnd) : (ask.bottomY(o.index, config.targetMob)),
 						width: config.sizeEnd,
 						height: config.sizeEnd,
 						ease: config.ease,
@@ -808,7 +806,7 @@ var ask;
 							saturation: config.saturationEnd,
 							brightness: config.brightnessEnd,
 						},
-						y: config.yEnd ? ('+=' + config.yEnd) : (ask.shadowY(o.index, config.targetMob)),
+						y: config.yEnd ? ('+=' + config.yEnd) : (ask.bottomY(o.index, config.targetMob)),
 						width: config.sizeEnd,
 						height: config.sizeEnd,
 						ease: config.ease,
@@ -1013,7 +1011,7 @@ var ask;
 		}
 		const img = ask.getImg(o, config)
 		if (config.x) img.x = config.x
-		img.y = config.yStart || ask.shadowY(o.index, config.targetMob)
+		img.y = config.yStart || ask.bottomY(o.index, config.targetMob)
 		img.x = config.xAdjust ? img.x + config.xAdjust : img.x
 		img.anchor.set(.5, config.anchorY)
 		if (config.width) {
@@ -1143,32 +1141,12 @@ var ask;
 			dungeon.layer.stage.addChild(img)
 		}
 	}
-	function sizeOffset(size) {
-		// some magic adjustment shit I dunno
-		val = 0
-		if (size >= 1) val = 16
-		else if (size > .9) val = 12
-		else if (size > .8) val = 8
-		else if (size > .7) val = 4
-		else val = 0
-		return val
-	}
-	function bottomY(index, targetMob) {
+	// positioning
+	function bottomY(index, targetMob = true) {
 		if (targetMob) {
 			return MaxHeight
 				- mob.bottomY[index]
-				+ (mobs.images[mobs[index].img].yPadding * mobs[index].size)
-				+ ask.sizeOffset(mobs[index].size)
-		}
-		else {
-			// player target
-			return ask.getPlayerBottom().y
-		}
-	}
-	function shadowY(index, targetMob = true) {
-		// cringe bottom % from CSS
-		if (targetMob) {
-			return MaxHeight - ((mob.bottomY[index] / MaxHeight) * MaxHeight) - (mobs[index].shadowHeight * .5)
+				// yPadding not needed because... reasons
 		}
 		else {
 			// player target
@@ -1177,21 +1155,17 @@ var ask;
 	}
 	function centerY(index, targetMob) {
 		if (targetMob) {
-			return ask.bottomY(index, true) - (mobs[index].clickAliveH * mobs[index].size)
+			return ask.bottomY(index, true) - (mobs[index].imgCy * mobs[index].size)
 		}
 		else {
 			// player target
 			return ask.getPlayerCenter(index).y
 		}
 	}
-	function centerHeadY(index, targetMob) {
-		if (targetMob) {
-			return ask.centerY(index, targetMob) - (mobs[index].clickAliveH * .2)
-		}
-		else {
-			return ask.getPlayerCenter(index).y
-		}
+	function centerHeadY(index) {
+		return ask.centerY(index, true) - (mobs[index].clickAliveH * .2)
 	}
+	// get player positions
 	function getPlayerHead(index) {
 		return {
 			x: dungeon.centerX[party.getIndexByRow(index)],
@@ -1218,7 +1192,6 @@ var ask;
 		if (typeof config === 'object' && config.yPosition) img.y = dungeon.bottom - config.yPosition
 		else img.y = coord.y
 	}
-
 	function getAskId() {
 		return ask.askId++
 	}
@@ -1248,7 +1221,7 @@ var ask;
 			img.x = mob.centerX[o.index]
 			if (config.position === 'bottom') {
 				// nova
-				img.y = ask.shadowY(o.index, config.targetMob)
+				img.y = ask.bottomY(o.index, config.targetMob)
 			}
 			else {
 				// rings

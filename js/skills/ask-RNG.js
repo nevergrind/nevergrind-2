@@ -75,7 +75,7 @@
 	function spreadShot(o) {
 		o.endFrame = 2
 		ask.groundExplosion(o, {
-			yStart: ask.shadowY(o.index, true) + 25,
+			yStart: ask.bottomY(o.index, true) + 25,
 			contrastStart: 2,
 			brightnessStart: 4,
 			sizeStart: 25,
@@ -130,7 +130,7 @@
 	function suppressingVolley(o) {
 		o.endFrame = 2
 		ask.groundExplosion(o, {
-			yStart: ask.shadowY(o.index, true) + 25,
+			yStart: ask.bottomY(o.index, true) + 25,
 			contrastStart: 2,
 			brightnessStart: 4,
 			sizeStart: 25,
@@ -218,7 +218,7 @@
 		// nova
 		o.endFrame = 3
 		ask.explosion(o, {
-			yStart: ask.shadowY(o.index, true) - 100,
+			yStart: ask.bottomY(o.index, true) - 100,
 			contrastStart: 2,
 			brightnessStart: 4,
 			duration: 1,
@@ -271,7 +271,7 @@
 			sizeStart: 50,
 			sizeEnd: 200,
 			yoyo: true,
-			yStart: ask.shadowY(o.index, true),
+			yStart: ask.bottomY(o.index, true),
 			anchorY: .845, // 433/512
 			ease: Power4.easeOut,
 		})*/

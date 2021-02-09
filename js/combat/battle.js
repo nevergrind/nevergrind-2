@@ -819,7 +819,6 @@ var battle;
 						'<img id="mob-target-avatar-' +i+ '" class="mob-target-avatar" src="'+ my.avatar +'">' +
 					'</div>' +
 				'</div>' +
-				'<div id="mob-shadow-' +i+ '" class="mob-shadow"></div>' +
 				'<div id="mob-alive-' +i+ '" class="mob-alive" index="' + i + '"></div>' +
 				'<div id="mob-dead-' +i+ '" class="mob-dead" index="' + i + '"></div>' +
 			'</div>'

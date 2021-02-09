@@ -24,7 +24,7 @@
 			brightnessStart: 4,
 			contrastEnd: 1,
 			brightnessEnd: 1,
-			yStart: ask.shadowY(o.index, true) + 60,
+			yStart: ask.bottomY(o.index, true) + 60,
 			sizeStart: 250,
 			sizeEnd: 250,
 			alpha: 1,
@@ -37,7 +37,7 @@
 	}
 	function thunderclap(o) {
 		ask.explosion({index: o.index, key: 'burst-lightning'}, {duration: .5})
-		let shadowY = ask.shadowY(o.index, true) + 50
+		let shadowY = ask.bottomY(o.index, true) + 50
 		let dur = .1
 		o.key = 'thunderclap'
 		o.endFrame = 3
@@ -192,7 +192,7 @@
 		ask.fadeOut(img, dur, dur * .2)
 	}
 	function fireWall(o) {
-		let y = ask.shadowY(o.index, true)
+		let y = ask.bottomY(o.index, true)
 		for (var i=0; i<7; i++) {
 			!function() {
 				ask.flames(o, {
@@ -206,7 +206,6 @@
 		}
 	}
 	function glacialSpike(o) {
-		console.info(o)
 		if (o.data.isPrimaryTgt) {
 			ask.explosion({index: o.index, key: 'burst-ice'}, {
 				duration: 1,

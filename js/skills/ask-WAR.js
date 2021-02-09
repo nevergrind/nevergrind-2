@@ -119,7 +119,7 @@
 		ask.explosion({index: o.index, key: 'burst-purple'})
 		o.endFrame = 2
 		ask.groundExplosion(o, {
-			yStart: ask.shadowY(o.index, true) + 25,
+			yStart: ask.bottomY(o.index, true) + 25,
 			contrastStart: 2,
 			brightnessStart: 4,
 			sizeStart: 412,
@@ -136,7 +136,7 @@
 		// ask.explosion({index: o.index, key: 'burst-arcane'})
 		o.endFrame = 3
 		ask.groundExplosion(o, {
-			yStart: ask.shadowY(o.index, true) + 50,
+			yStart: ask.bottomY(o.index, true) + 50,
 			contrastStart: 2,
 			brightnessStart: 4,
 			sizeStart: 512,
