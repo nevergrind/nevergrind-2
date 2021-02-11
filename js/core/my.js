@@ -264,7 +264,7 @@ var my;
 
 	function getPartyNames() {
 		var a = [];
-		party.presence.forEach(function(v){
+		party.presence.forEach(v => {
 			v.name && a.push(v.name);
 		});
 		return a;

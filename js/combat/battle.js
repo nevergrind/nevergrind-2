@@ -230,7 +230,7 @@ var battle;
 		if (ng.view === 'battle') return
 		town.closeVarious()
 		item.resetDrop()
-		chat.sizeSmall()
+		chat.sizeDungeon()
 		mob.init()
 		game.sceneCleanup('scene-battle')
 		if (chat.modeCommand === '/say') {
@@ -724,7 +724,7 @@ var battle;
 			console.info()
 			if (typeof my.buffs[key] === 'object') {
 				if (my.buffs[key].duration > 0) {
-					console.info('regular key', key)
+					// console.info('regular key', key)
 					removeBuff(key)
 				}
 				// console.info(key, my.buffs[key])
@@ -734,10 +734,8 @@ var battle;
 		for (var key in my.buffs) {
 			// key is a compound key
 			if (my.buffs[key].duration > 0) {
-				console.info('DoT key', key)
 				my.buffs[key].hotTicks.kill()
 				removeBuff(key.split('-')[0], key)
-
 			}
 		}
 		killMobBuffTimers()

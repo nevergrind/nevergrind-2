@@ -1,15 +1,15 @@
 var dungeon;
 (function(TweenMax, $, _, undefined) {
+	const BOTTOM_PLAYER = MaxHeight - 80
 	dungeon = {
 		initialized: 0,
 		layer: {},
 		player: {},
 		centerX: [960, 1280, 640, 1600, 320],
 		bottom: MaxHeight,
-		headY: MaxHeight - 330,
-		centerY: MaxHeight - 230,
-		bottomY: MaxHeight - 80,
-		bottomPlayer: MaxHeight - 120,
+		headY: BOTTOM_PLAYER - 200,
+		bottomY: BOTTOM_PLAYER,
+		centerY,
 		go,
 		init,
 		setPlayers,
@@ -45,7 +45,7 @@ var dungeon;
 		if (chat.modeCommand === '/say') {
 			chat.modeChange(CHAT.PARTY)
 		}
-		chat.sizeSmall()
+		chat.sizeDungeon()
 		ng.setScene('dungeon')
 		dungeon.init()
 		combat.autoAttackDisable()
@@ -132,7 +132,7 @@ var dungeon;
 			p.sprite.id = 'ask-' + id
 			p.sprite.anchor.set(.5, 1)
 			p.sprite.x = dungeon.centerX[index]
-			p.sprite.y = dungeon.bottomPlayer
+			p.sprite.y = dungeon.bottomY
 			p.sprite.zIndex = ask.DEFAULT_PLAYER_LAYER
 			ask.addChild(p.sprite)
 			mobSkills.applyEffectFilter(p.row)
@@ -143,5 +143,8 @@ var dungeon;
 	}
 	function enterCombat() {
 		// console.info("ENTERING COMBAT")
+	}
+	function centerY(index, race) {
+		return BOTTOM_PLAYER - 100
 	}
 })(TweenMax, $, _);

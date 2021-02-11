@@ -1649,7 +1649,7 @@ var skills;
 				spellType: PROP.EVOCATION,
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 3.5,
-				cooldownTime: 0,
+				cooldownTime: 12,
 				staggers: true,
 				description: config => 'Blast up to three targets dealing '+ config.damageString +' lightning damage. Debuffs each target\'s lightning resistance by '+ ng.toPercent(buffs.staticStormDebuff.reduceLightningResist) +'% for '+ ng.toMinSecs(buffs.staticStormDebuff.duration) +'.',
 			}, {

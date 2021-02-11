@@ -90,7 +90,7 @@
 		else {
 			zIndex = ask.frontMobLayer(o)
 		}
-		o.key = config.key ? config.key : 'flames'
+		o.key = 'flames'
 		o.endFrame = 3
 		let flameObj = {
 			yStart: config.y + yAdj,
@@ -116,6 +116,12 @@
 		// fade in
 		TweenMax.to(flame, config.fade, {
 			alpha: 1,
+		})
+		TweenMax.to(flame, 1, {
+			pixi: {
+				hue: '+=45'
+			},
+			repeat: -1,
 		})
 		// fade out
 		ask.fadeOut(flame, config.duration - config.fade, config.fade)

@@ -34,7 +34,6 @@ var button;
 	const GlobalCooldownDuration = 2.5
 	const HybridAutoAttackers = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER, JOB.BARD]
 	let damages
-	let skillCooldownSpeed = 0
 	const ButtonFlash = {
 		startAt: {
 			scale: 1,
@@ -44,6 +43,20 @@ var button;
 		scale: .75,
 		opacity: 0,
 	}
+	const hotkeys = [
+		{ special: '', hotkey: '1' },
+		{ special: '', hotkey: '2' },
+		{ special: '', hotkey: '3' },
+		{ special: '', hotkey: '4' },
+		{ special: '', hotkey: '5' },
+		{ special: '', hotkey: '6' },
+		{ special: 'S+', hotkey: '1' },
+		{ special: 'S+', hotkey: '2' },
+		{ special: 'S+', hotkey: '3' },
+		{ special: 'S+', hotkey: '4' },
+		{ special: 'S+', hotkey: '5' },
+		{ special: 'S+', hotkey: '6' },
+	]
 	/////////////////////////////
 
 	function init() {
@@ -63,7 +76,6 @@ var button;
 	}
 
 	function processPotionTimers(potionType) {
-		console.info('potionType', potionType)
 		let el = querySelector('#skill-timer-' + potionType + '-rotate')
 		TweenMax.set(el, CSS.DISPLAY_BLOCK)
 		let key = potionType + 'Potion'
@@ -176,7 +188,7 @@ var button;
 	}
 	function triggerSkill(index) {
 		if (my.hp <= 0) return
-		if (ng.view === 'battle' || ng.view === 'combat') {
+		if (ng.view === 'battle' || ng.view === 'dungeon') {
 			name = _.camelCase(skills[my.job][index].name)
 			// console.info('triggerSkill', name)
 			if (typeof skill[my.job][name] === 'function') {
@@ -188,6 +200,9 @@ var button;
 			else {
 				chat.log('This skill is not defined:' + name, CHAT.WARNING)
 			}
+		}
+		else if (ng.view === 'town') {
+			chat.log('You cannot cast in town.', CHAT.WARNING)
 		}
 	}
 	function handleSkillButtonClick() {
@@ -513,7 +528,6 @@ var button;
 		let index = items.inv.findIndex(i =>
 			i.itemSubType === type && i.imgIndex === button[type + 'Potion'])
 
-		console.info(type, index)
 		if (index > -1 && items.inv[index].use) {
 			item.useItem('inv', index)
 		}
@@ -533,6 +547,12 @@ var button;
 			img: 'images/items/potion/' + img + '.png'
 		}
 	}
+	function getHotkeySpecial(i) {
+		return hotkeys[i].special
+	}
+	function getHotkey(i) {
+		return hotkeys[i].hotkey
+	}
 	function setAll() {
 		TweenMax.set('#button-wrap', CSS.DISPLAY_FLEX)
 		if (!button.initialized) {
@@ -540,13 +560,13 @@ var button;
 			// base attack buttons
 			// <i id="bar-mission-abandon" class="ra ra-player-shot popover-icons bar-icons"></i>
 			s += `
-			<div id="bar-main-menu">
-				<img id="bar-camp" class="popover-icons bar-icons" src="images/ui/bar-camp.png"></i>
-				<img id="bar-stats" class="popover-icons bar-icons" src="images/ui/bar-character.png"></i>
-				<img id="bar-inventory" class="popover-icons bar-icons" src="images/ui/bar-inventory.png"></i>
-				<img id="bar-options" class="popover-icons bar-icons" src="images/ui/bar-options.png"></i>
-			</div>
 			<div id="main-attack-wrap">
+				<div id="bar-main-menu">
+					<img id="bar-camp" class="popover-icons bar-icons" src="images/ui/bar-camp.png"></i>
+					<img id="bar-stats" class="popover-icons bar-icons" src="images/ui/bar-character.png"></i>
+					<img id="bar-inventory" class="popover-icons bar-icons" src="images/ui/bar-inventory.png"></i>
+					<img id="bar-options" class="popover-icons bar-icons" src="images/ui/bar-options.png"></i>
+				</div>
 				${getWeaponButtonHtml()}
 			</div>
 			<div id="potion-wrap" class="text-shadow">
@@ -561,6 +581,9 @@ var button;
 			// skill buttons
 			for (var i=0; i<12; i++) {
 				s += `<div id="skill-btn-${i}" class="skill-btn job-skill-btn skill-btn-tooltip" data-index="${i}">
+					<div id="skill-btn-hotkey-${i}" class="skill-btn-hotkey text-shadow">
+						<div class="skill-btn-hotkey-value">${getHotkeySpecial(i)}${getHotkey(i)}</div>
+					</div>
 					<img id="skill-${i}" class="skill-img" src="images/skills/${my.job}/${i}.png">
 					<div id="skill-timer-${i}-rotate" class="skill-timer-rotate"></div>
 					<div id="skill-timer-${i}" class="skill-timer"></div>

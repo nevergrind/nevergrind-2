@@ -542,25 +542,17 @@ var test;
 	}
 	function projectionTest(empty = false) {
 		if (empty) dungeon.layer.removeChildren()
-		var container = new PIXI.projection.Container2d();
-		container.position.set(dungeon.layer.screen.width / 2, dungeon.layer.screen.height);
-		var surface = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/bg_plane.jpg'));
-		surface.anchor.set(0.5, 1.0)
-		// surface.scale.y = -1; //sorry, have to do that to make a correct projection
-		surface.width = dungeon.layer.screen.width
-		surface.height = dungeon.layer.screen.height
-		surface.x = surface.width * .5
-		surface.y = surface.height
-		container.addChild(surface)
-		dungeon.layer.stage.addChild(container)
+
+		test.container = new PIXI.projection.Container2d();
+		test.container.position.set(dungeon.layer.screen.width / 2, dungeon.layer.screen.height);
+
+		test.plane = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/bg_plane.jpg'));
+		test.plane.anchor.set(.5, 1)
+		/*test.plane.width = dungeon.layer.screen.width
+		test.plane.height = dungeon.layer.screen.height*/
+		test.plane.x = 0
+		test.plane.y = 0
+		test.container.addChild(test.plane)
+		dungeon.layer.stage.addChild(test.container)
 	}
-	/*
-	random test code that should be documented somewhere
-	TweenMax.set(mobs[3].sprite, {
-		pixi: { scaleX: -1 },
-		ease: Power0.easeOut,
-		yoyo: true,
-		repeat: -1
-	})
-	 */
 })(Linear, TweenMax, TimelineMax, PIXI, $);

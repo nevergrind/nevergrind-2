@@ -165,6 +165,7 @@ var party;
 					avatar: data.avatar,
 					isChilled: false,
 					isFrozen: false,
+					hitCount: 0,
 				});
 				var len = party.presence.length - 1;
 				bar.addPlayer(party.presence[len], data.row);

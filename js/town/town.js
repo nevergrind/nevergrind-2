@@ -110,7 +110,7 @@ var town;
 			// reset stores
 			town.isInitialized[key] = false
 		}
-		chat.sizeLarge();
+		chat.sizeTown();
 		TweenMax.set('#button-wrap', CSS.DISPLAY_NONE)
 		$.post(app.url + 'character/load-character.php', {
 			row: create.selected

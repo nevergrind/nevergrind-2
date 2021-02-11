@@ -52,8 +52,8 @@ var chat;
 		joinChangeCallback,
 		publishRemove,
 		clearLog,
-		sizeSmall,
-		sizeLarge,
+		sizeDungeon,
+		sizeTown,
 		prepare,
 		getPrefix,
 	}
@@ -560,22 +560,24 @@ var chat;
 			row: my.row
 		});
 	}
-	function sizeSmall() {
+	function sizeDungeon() {
 		TweenMax.set('#chat-wrap', {
-			bottom: '0rem',
-			left: '0rem',
-			height: '10rem',
+			height: '10.8rem',
+			width: '22rem',
+			/*bottom: '4rem',
+			left: '.5rem',
+			height: '10rem',*/
 		})
 		TweenMax.set('#chat-present-wrap', CSS.DISPLAY_NONE)
 	}
-	function sizeLarge() {
-		TweenMax.set('#chat-present-wrap', {
-			display: 'flex'
-		})
+	function sizeTown() {
+		TweenMax.set('#chat-present-wrap', CSS.DISPLAY_FLEX)
 		TweenMax.set('#chat-wrap', {
-			bottom: '.5rem',
-			left: '.5rem',
 			height: '15rem',
+			width: '24rem',
+			/*bottom: '4rem',
+			left: '.5rem',
+			height: '15rem',*/
 		})
 	}
 

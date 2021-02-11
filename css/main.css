@@ -849,11 +849,9 @@ animation: town-repeat-bg 90s linear infinite;*/
 	position: absolute;
 	font-size: .8rem;
 	color: #fff;
-	background: #0008;
-	border: 1px solid #000;
-	bottom: 1%;
-	left: 1%;
-	height: 25%;
+	bottom: 5rem;
+	left: .5rem;
+	height: 15rem;
 	z-index: 2;
 }
 
@@ -872,10 +870,14 @@ animation: town-repeat-bg 90s linear infinite;*/
 	flex-direction: column;
 	width: 24rem;
 	transition: background .2s linear;
-	background: rgba(0,0,0,.2);
+	background: #0000;
 }
 #chat-log-wrap:hover {
-	background: rgba(0, 0, 0, .5);
+	background: #0008;
+}
+#chat-log-wrap:hover #chat-input-wrap {
+	transition: background .2s linear;
+	background: #0138;
 }
 
 #chat-header {
@@ -898,13 +900,22 @@ animation: town-repeat-bg 90s linear infinite;*/
 }
 
 #chat-log {
+	display: flex;
+	flex-flow: column nowrap;
 	flex: 1;
-	overflow: auto;
+	overflow-y: scroll;
 	overflow-x: hidden;
 	line-height: 1.25;
 	word-wrap: break-word;
 	word-break: break-word;
-	padding: .1rem .2rem 0 .2rem;
+	padding: .1rem .3rem;
+	direction: rtl;
+}
+#chat-log > :first-child {
+	margin-top: auto;
+}
+#chat-log > * {
+	direction: ltr;
 }
 #chat-log *::selection { background: #38d; }
 .chat-player {
@@ -920,8 +931,6 @@ animation: town-repeat-bg 90s linear infinite;*/
 	display: flex;
 	flex-flow: row nowrap;
 	font-size: 1rem;
-	background: transparent;
-	border: 1px solid #013;
 	line-height: 1.3;
 }
 
@@ -931,6 +940,7 @@ animation: town-repeat-bg 90s linear infinite;*/
 	background: #025;
 	padding: 0 .4rem;
 	max-width: 8rem;
+	box-shadow: 0 0 0 1px #048;
 }
 
 #chat-mode-msg {
@@ -1116,10 +1126,9 @@ background-clip: content-box;
 #bar-main-menu {
 	position: absolute;
 	display: flex;
-	flex-direction: column;
 	text-align: center;
 	bottom: 0;
-	right: 22.4rem;
+	right: 100%;
 	background: #0008;
 }
 
@@ -1142,8 +1151,8 @@ background-clip: content-box;
 .bar-icons {
 	cursor: url('cursor/pointer.png'), pointer;
 	box-shadow: 0 0 0 1px #013 inset;
-	width: 1.6rem;
-	height: 1.6rem;
+	width: 2rem;
+	height: 2rem;
 	transition: filter .2s ease-out;
 }
 .bar-icons:hover {
@@ -1565,12 +1574,11 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	bottom: 0;
 	left: 100%;
 	display: flex;
-	flex-direction: column;
 }
 .potion-slot {
 	position: relative;
-	width: 2.4rem;
-	height: 2.4rem;
+	width: 3.2rem;
+	height: 3.2rem;
 	background: linear-gradient(135deg, #000, #1a1a1a);
 	box-shadow: inset 0 0 0 1px #000;
 	transition: filter .2s ease-out;
@@ -1583,16 +1591,14 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	filter: contrast(1.5) brightness(2.5);
 }
 .potion-slot-children {
-	width: 2.4rem!important;
-	height: 2.4rem!important;
-	font-size: 1.6rem!important;
+	width: 3.2rem!important;
+	height: 3.2rem!important;
 }
 #main-attack-wrap {
 	position: absolute;
 	right: 100%;
 	bottom: 0;
 	display: flex;
-	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	align-self: center;
@@ -1600,7 +1606,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 #status-panel-wrap {
 	position: fixed;
 	left: 50%;
-	bottom: 7rem;
+	bottom: 5rem;
 	transform: translate(-50%);
 	display: flex;
 	justify-content: center;
@@ -1626,12 +1632,29 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	50% { box-shadow: 0 0 0 1px inset #f00f; }
 	100% { box-shadow: 0 0 0 1px inset #400f; }
 }
+.skill-btn-hotkey {
+	position: absolute;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	font-size: .675rem;
+	z-index: 2;
+}
+.skill-btn-hotkey-value {
+	align-self: center;
+	background: #0008;
+	border-radius: 4px 4px 0 0;
+	padding: .2rem;
+	line-height: .75;
+	border: 1px solid #000;
+}
+#potion-wrap { margin-left: 1rem; }
+#main-attack-wrap, #bar-main-menu { margin-right: 1rem; }
+
 #skill-btn-wrap {
 	display: flex;
-	width: 19.2rem;
-	flex-flow: row wrap;
-	justify-content: center;
-	align-content: space-around;
+	width: auto;
 }
 #skill-col {
 	position: relative;
@@ -1642,7 +1665,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	position: absolute;
 	bottom: 100%;
 	right: 0%;
-	width: 24rem;
+	width: 100%;
 	height: .8rem;
 	overflow: hidden;
 	background: linear-gradient(to top, #222, #444, #444, #222);
@@ -1663,9 +1686,9 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	width: 100%;
 	background: repeating-linear-gradient(to right,
 		transparent,
-		transparent calc(2.4rem - .5px),
-		#1a1a1a calc(2.4rem - .5px),
-		#1a1a1a calc(2.4rem + .5px));
+		transparent calc(10% - .5px),
+		#1a1a1a calc(10% - .5px),
+		#1a1a1a calc(10% + .5px));
 	box-shadow: 1px 0 #1a1a1a inset, 0 1px #1a1a1a inset, -1px 0 #1a1a1a inset, 0 -1px #1a1a1a inset;
 	top: 0;
 	left: 0;

@@ -1,5 +1,5 @@
 var combat;
-!function($, _, TweenMax, PIXI, Math, Power1, Power3, Linear, undefined) {
+!function($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear, undefined) {
 	combat = {
 		txHpChange,
 		txMpChange,
@@ -102,38 +102,16 @@ var combat;
 	}
 	var el, w, h, i, len, damageArr, hit, damages, procDamage, procHit, buffArr, index, hotData, buffData, key, resist, resistPenalty
 	let battleTextInitialized = false
-	const TextDuration = 1
-	const TextDistanceX = 200
-	const TextDistanceY = 150
-	const combatTextRegularStyle = {
-		fontFamily: 'Play',
-		fontSize: 36,
-		fill: ['#048', '#ee8', '#ee8', '#048'],
-		stroke: '#025',
-		strokeThickness: 3,
-	}
-	const combatTextCritStyle = {
-		fontFamily: 'Play',
-		fontSize: 36,
-		fontWeight: 'bold',
-		fill: ['#ffd700', '#ffe', '#ffe', '#ffd700'],
-		stroke: '#430',
-		strokeThickness: 3,
-	}
-	const combatTextHealStyle = {
-		fontFamily: 'Play',
-		fontSize: 36,
-		fontWeight: 'bold',
-		fill: ['#55aa55', '#ddffdd', '#ddffdd', '#55aa55'],
-		stroke: '#060',
-		strokeThickness: 3,
-	}
+	const TEXT_DURATION = 1
+	const TEXT_DISTANCE_X = 200
+	const TEXT_DISTANCE_Y = 150
+	let duration = 0
 
-	const TextFoo = {
+	const TEXT_SCALE = {
 		startAt: { pixi: {scale: 2}},
 		pixi: { scale: 1 },
 	}
-	const TextBar = {
+	const TEXT_FILTER = {
 		startAt: { pixi: { brightness: 3, contrast: 3 }},
 		pixi: { brightness: 1.25, contrast: 1 },
 	}
@@ -334,7 +312,6 @@ var combat;
 				d.damage *= .5
 			}
 		}
-		// console.info('combat', d)
 		// final sanity checks
 		if (d.damage <= 0) d.damage = 0
 		else if (d.damage < 1) d.damage = 1
@@ -789,7 +766,7 @@ var combat;
 			if (my.buffFlags.frozenBarrier ||
 				my.buffFlags.jumpStrike ||
 				my.buffFlags.sealOfSanctuary) {
-				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you are invulnerable!')
+				combat.popupDamage(d.row, 'INVULNERABLE!', {targetMob: false})
 				d.damage = 0
 				return d
 			}
@@ -797,7 +774,8 @@ var combat;
 			// NOTE: Only auto attack can miss
 			if (d.key === 'autoAttack' &&
 				rand() < mob.missChance(index)) {
-				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but misses!')
+
+				combat.popupDamage(d.row, 'MISS!', {targetMob: false})
 				d.damage = 0
 				return d
 			}
@@ -807,7 +785,7 @@ var combat;
 				combat.levelSkillCheck(PROP.DODGE)
 				if (!d.isPiercing &&
 					rand() < stats.dodgeChance()) {
-					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' tries to hit YOU, but you dodged!')
+					combat.popupDamage(d.row, 'DODGE!', {targetMob: false})
 					d.damage = 0
 					return d
 				}
@@ -824,7 +802,7 @@ var combat;
 				if (!d.isPiercing &&
 					rand() < stats.riposteChance() || skill.CRU.vengeanceOn) {
 					if (skill.CRU.vengeanceOn) skill.CRU.vengeanceOn = false
-					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you riposted!')
+					combat.popupDamage(d.row, 'RIPOSTE!', {targetMob: false})
 					button.primaryAttack(true, index)
 					d.damage = 0
 					return d
@@ -836,7 +814,7 @@ var combat;
 				combat.levelSkillCheck(PROP.PARRY)
 				if (!d.isPiercing &&
 					rand() < stats.parryChance()) {
-					chat.log(ng.getArticle(index, true) + ' ' +mobs[index].name + ' tries to hit YOU, but you parried!')
+					combat.popupDamage(d.row, 'PARRY!', {targetMob: false})
 					d.damage = 0
 					button.startSwing('primaryAttack')
 					return d
@@ -870,7 +848,8 @@ var combat;
 			}
 			if (skill.MNK.isMendingAuraActive()) {
 				amountReduced -= buffs.mendingAura.damageReduced[my.buffs['mendingAura-' + my.row].level]
-				chat.log(buffs.mendingAura.msgReduced, CHAT.HEAL)
+				// chat.log(buffs.mendingAura.msgReduced, CHAT.HEAL)
+				// combat.popupDamage(d.row, 'MENDING AURA', {targetMob: false})
 			}
 			if (mob.isFeared(index)) amountReduced -= .5
 			if (my.buffFlags.prowl) amountReduced -= .5
@@ -1063,13 +1042,15 @@ var combat;
 				}
 
 				// messaging
-				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> on YOU!', CHAT.ALERT)
+				// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> on YOU!', CHAT.ALERT)
+				combat.popupDamage(hit.row, _.startCase(hit.key), {targetMob: false, damageType: hit.damageType})
 			})
 		}
 		function onDotTickToMe(hit, hitAmount) {
 			// console.info('hitAmount b4', hitAmount, hit)
-			chat.log(_.startCase(hit.key) + ' hits you for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
+			// chat.log(_.startCase(hit.key) + ' hits YOU for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
 			hit.damage = hitAmount
+			combat.popupDamage(hit.row, hit.damage, {targetMob: false, isDot: true, damageType: hit.damageType})
 			processDamageToMe(index, [_.omit(hit, 'duration')])
 		}
 		function processDamageToMe(index, hits) {
@@ -1196,10 +1177,11 @@ var combat;
 
 					// messaging
 					if (hit.isPiercing && hit.key === 'autoAttack') {
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
+						// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
+						combat.popupDamage(hit.row, hit.damage, {targetMob: false})
 					}
 					else {
-						logPhysicalHit(hit)
+						logPhysicalHit(index, hit)
 					}
 					// E F F E C T S
 					if (hit.effect === 'stun') {
@@ -1217,7 +1199,8 @@ var combat;
 					// console.info('hit', hit)
 					if (!hit.ticks) {
 						// not a DoT spell
-						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' strikes YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' ' + (hit.damageType === DAMAGE_TYPE.VOID ? '' : hit.damageType) + ' damage!', CHAT.ALERT)
+						// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' strikes YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' ' + (hit.damageType === DAMAGE_TYPE.VOID ? '' : hit.damageType) + ' damage!', CHAT.ALERT)
+						combat.popupDamage(hit.row, hit.damage, {targetMob: false, damageType: hit.damageType})
 						// effects
 						if (hit.key === 'harmTouch') {
 							mobs[index].usedHarmTouch = true
@@ -1266,47 +1249,121 @@ var combat;
 					hpMax: my.hpMax,
 				})
 			}
-			////////////////////////////////////////////////////////
-			function logPhysicalHit(hit) {
-				blockMsg = ''
-				if (hit.blocked) {
-					blockMsg = ' (blocked '+ hit.blocked +')'
-				}
-				if (hit.key === 'autoAttack') {
-					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
-				}
-				else {
-					chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
-				}
-			}
 		}
 	}
+	function logPhysicalHit(index, hit) {
+		blockMsg = ''
+		if (hit.blocked) {
+			blockMsg = ' (blocked '+ hit.blocked +')'
+		}
+		if (hit.key === 'autoAttack') {
+			// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
+			combat.popupDamage(hit.row, hit.damage, {targetMob: false})
+		}
+		else {
+			// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
+			combat.popupDamage(hit.row, hit.damage, {targetMob: false})
+		}
+	}
+
+	function getPopupTextStyle(o) {
+		let text = {
+			fontFamily: 'Tinos',
+			fontSize: 28,
+			fill: '#fff',
+			stroke: '#000',
+			strokeThickness: 2,
+			dropShadow: true,
+			dropShadowBlur: 0,
+			dropShadowColor: '#000',
+			dropShadowDistance: 0,
+		}
+		if (o.damageType) {
+			if (o.damageType === DAMAGE_TYPE.BLOOD) {
+				text.fill = '#b11'
+				text.stroke = '#300'
+				text.dropShadowColor = '#b11'
+			}
+			else if (o.damageType === DAMAGE_TYPE.POISON) {
+				text.fill = '#0e0'
+				text.stroke = '#020'
+				text.dropShadowColor = '#0e0'
+			}
+			else if (o.damageType === DAMAGE_TYPE.ARCANE) {
+				text.fill = '#ff8',
+				text.stroke = '#a60'
+				text.dropShadowColor = '#ff8'
+			}
+			else if (o.damageType === DAMAGE_TYPE.LIGHTNING) {
+				text.fill = '#aef'
+				text.stroke = '#066'
+				text.dropShadowColor = '#aef'
+			}
+			else if (o.damageType === DAMAGE_TYPE.FIRE) {
+				text.fill = '#f40'
+				text.stroke = '#510'
+				text.dropShadowColor = '#f40'
+			}
+			else if (o.damageType === DAMAGE_TYPE.ICE) {
+				text.fill = '#27d'
+				text.stroke = '#002'
+				text.dropShadowColor = '#27d'
+			}
+		}
+		else if (o.isHeal) {
+			text.fill = '#fff'
+			text.stroke = '#0a0'
+			text.strokeThickness = 6
+			text.dropShadowColor = '#080'
+		}
+
+		if (o.isCrit) {
+			text.strokeThickness = 6
+			text.fontSize = 36
+			text.fontWeight = 'bold'
+			text.dropShadowColor = '#fff'
+			text.dropShadowBlur = 6
+		}
+		return text
+	}
 	function popupDamage(index, damage, o = {}) {
+		if (typeof o.targetMob === 'undefined') {
+			o.targetMob = true
+		}
 		if (!o.isHeal) {
 			if (typeof damage === 'number' && damage <= 0) return
 		}
-		const basicText = new PIXI.Text(damage + '', o.isCrit ?
-			combatTextCritStyle : o.isHeal ?
-				combatTextHealStyle : combatTextRegularStyle
-		)
-		basicText.anchor.set(0.5)
+		if (!o.targetMob) {
+			index = party.getIndexByRow(index)
+		}
+		const basicText = new PIXI.Text(o.isHeal ? '+' + damage + '' : damage + '', getPopupTextStyle(o))
+		basicText.anchor.set(.5)
 		if (o.isHeal) {
 			if (o.key === 'Lay Hands') mobs[o.healedBy].usedLayHands = true
 			else mobs[o.healedBy].healCount++
 		}
 		else {
-			mobs[index].hitCount++
+			if (o.targetMob) {
+				mobs[index].hitCount++
+			}
 		}
 
 		basicText.id = 'text-' + combat.textId++
-		basicText.x = mob.centerX[index]
-		basicText.y = ask.centerY(index, true) + ((mobs[index].hitCount % 5) * 20)
-		// console.info('basicText', basicText)
+		if (o.targetMob) {
+			basicText.x = mob.centerX[index]
+			basicText.y = ask.centerY(index, true)// + ((mobs[index].hitCount % 5) * 20)
+		}
+		else {
+			basicText.x = dungeon.centerX[index]
+			basicText.y = dungeon.centerY(index)// + ((party.presence[index].hitCount % 5) * 20)
+		}
 		combat.text.stage.addChild(basicText)
+
 		if (o.isHeal) {
 			// heal
-			TweenMax.to(basicText, TextDuration * 2, {
-				y: '-=' + TextDistanceY * 1.5 + '',
+			duration = TEXT_DURATION * 2
+			TweenMax.to(basicText, duration, {
+				y: '-=' + TEXT_DISTANCE_Y * 1.5 + '',
 				ease: Power2.easeOut,
 				onComplete: removeText,
 				onCompleteParams: [ basicText.id ],
@@ -1314,45 +1371,77 @@ var combat;
 		}
 		else if (o.isDot) {
 			// dot
-			TweenMax.to(basicText, TextDuration, {
-				y: '-=' + TextDistanceY * 1.5 + '',
+			duration = TEXT_DURATION
+			TweenMax.to(basicText, duration, {
+				y: o.targetMob ? ('-=' + TEXT_DISTANCE_Y * 1.5 + '') : ('-=' + TEXT_DISTANCE_Y * .75 + ''),
 				ease: Power2.easeOut,
 				onComplete: removeText,
 				onCompleteParams: [ basicText.id ],
 			})
-			if (buffs[o.key].damageType === DAMAGE_TYPE.BLOOD) {
-				// TODO: Animate blood drop
+			if (o.targetMob && 
+				buffs[o.key].damageType === DAMAGE_TYPE.BLOOD) {
 				ask.bloodDrop(index, 16)
 			}
 		}
 		else {
 			// damage
-			TweenMax.to(basicText, TextDuration * .6, {
-				y: '-=' + TextDistanceY + '',
-				onComplete: fadeOut,
-				onCompleteParams: [basicText],
-				ease: Power3.easeOut
-			})
-			x = _.random(-TextDistanceX, TextDistanceX)
-			TweenMax.to(basicText, TextDuration, {
-				x: x < 0 ? '-=' + (x * -1) : '+=' + x,
-				ease: Linear.easeOut
-			})
-			if (o.key === 'rupture') {
-				ask.bloodDrop(index, 64)
+			if (o.targetMob) {
+				// up
+				duration = TEXT_DURATION * .6
+				TweenMax.to(basicText, duration, {
+					y: '-=' + TEXT_DISTANCE_Y + '',
+					onComplete: fadeOut,
+					onCompleteParams: [basicText],
+					ease: Power3.easeOut
+				})
+				x = _.random(-TEXT_DISTANCE_X, TEXT_DISTANCE_X)
+				// left/right
+				TweenMax.to(basicText, duration * 2, {
+					x: x < 0 ? '-=' + (x * -1) : '+=' + x,
+					ease: Linear.easeOut
+				})
+				// scale
+				TweenMax.to(basicText, TEXT_DURATION * .5, TEXT_SCALE)
+				if (o.key === 'rupture') {
+					ask.bloodDrop(index, 64)
+				}
+			}
+			else {
+				// player hit
+				if (typeof damage === 'string') {
+					duration = TEXT_DURATION * .66
+					TweenMax.to(basicText, duration, {
+						pixi: { scale: 1.5 },
+						alpha: 0,
+						onComplete: removeText,
+						onCompleteParams: [ basicText.id ],
+						ease: Power2.easeOut
+					})
+				}
+				else {
+					duration = TEXT_DURATION * 2
+					TweenMax.to(basicText, duration, {
+						y: '+=' + (TEXT_DISTANCE_Y * .6) + '',
+						onComplete: removeText,
+						onCompleteParams: [ basicText.id ],
+						ease: Power0.easeOut
+					})
+					ask.fadeOut(basicText, duration, duration * .1)
+				}
 			}
 		}
-		TweenMax.to(basicText, TextDuration * .5, TextFoo)
-		TweenMax.to(basicText, TextDuration, TextBar)
+		// TweenMax.to(basicText, duration, TEXT_FILTER)
 	}
 	function fadeOut(basicText) {
-		TweenMax.to(basicText, TextDuration * .4, {
-			y: '+=' + TextDistanceY * .5 + '',
-			alpha: 0,
+		duration = TEXT_DURATION * .4
+		TweenMax.to(basicText, duration, {
+			overwrite: 2,
+			y: '+=' + TEXT_DISTANCE_Y * .5 + '',
 			onComplete: removeText,
 			onCompleteParams: [ basicText.id ],
 			ease: Power1.easeIn
 		})
+		ask.fadeOut(basicText, duration, duration * .1)
 	}
 	function removeText(id) {
 		el = pix.getId(combat.text, id)
@@ -1996,4 +2085,4 @@ var combat;
 		}
 
 	}
-}($, _, TweenMax, PIXI, Math, Power1, Power3, Linear);
+}($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear);

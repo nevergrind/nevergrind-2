@@ -976,9 +976,9 @@ var bar;
 	}
 
 	function hideParty() {
-		party.presence.forEach(function(v, i){
+		party.presence.forEach((v, i) => {
 			if (i) getElementById('bar-player-wrap-' + i).style.display = 'none'
-		});
+		})
 	}
 	function linkdead(data) {
 		chat.log(data.name + ' has gone linkdead.', CHAT.WARNING);

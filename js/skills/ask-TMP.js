@@ -229,7 +229,7 @@
 			contrastStart: o.data.isPrimaryTgt ? 3 : 1.2,
 			brightnessStart: o.data.isPrimaryTgt ? 7 : 2.5,
 			sizeStart: 80,
-			sizeEnd: o.data.isPrimaryTgt ? 350 : 240,
+			sizeEnd: o.data.isPrimaryTgt ? 350 : 200,
 			alpha: 1,
 			duration: dur,
 			frameDuration: dur,

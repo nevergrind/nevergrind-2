@@ -1,7 +1,8 @@
 mob.data = {}
 mob.data['Salubrin Den'] = [
+	/*
 	{
-		img: 'toadlok',
+		img: 'orc',
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 60,
@@ -11,7 +12,7 @@ mob.data['Salubrin Den'] = [
 		traits: [], // champ traits
 	},
 	{
-		img: 'toadlok',
+		img: 'orc',
 		name: 'orc centurion',
 		minLevel: 1,
 		maxLevel: 60,
@@ -21,7 +22,7 @@ mob.data['Salubrin Den'] = [
 		traits: [], // champ traits
 	},
 	{
-		img: 'toadlok',
+		img: 'orc',
 		name: 'orc legionnaire',
 		minLevel: 1,
 		maxLevel: 60,
@@ -30,13 +31,14 @@ mob.data['Salubrin Den'] = [
 		type: 'normal', // normal, champion, unique, boss?
 		traits: [], // champ traits
 	},
+	*/
 	{
 		img: 'toadlok',
 		name: 'toadlok',
 		minLevel: 1,
 		maxLevel: 60,
 		size: 1,
-		job: JOB.WARRIOR,
+		job: JOB.SHAMAN,
 		type: 'normal', // normal, champion, unique, boss?
 		traits: [], // champ traits
 	},

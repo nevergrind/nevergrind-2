@@ -1628,7 +1628,7 @@ var stats = {};
 		if (castHaste < .5) castHaste = .5
 		else if (castHaste > 2) castHaste = 2
 		// console.info('getCastingSpeed', spell.castTime * castHaste)
-		if (!ng.isApp) spell.castTime = 23
+		if (!ng.isApp) spell.castTime = 1
 		return spell.castTime * castHaste
 	}
 })($, TweenMax, _);

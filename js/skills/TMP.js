@@ -170,22 +170,24 @@
 	}
 	function fireWallCompleted() {
 		let originalTarget = spell.config.target
+		let spellType = spell.data.spellType
+		let damageType = spell.data.damageType
 		let targets = originalTarget <= 4 ? [0,1,2,3,4] : [5,6,7,8]
 		for (let i=0; i<10; i++) {
 			!function(i) {
-				delayedCall(1 + (i * 1), fireWallBurn, [targets])
+				delayedCall(1 + (i * 1), fireWallBurn, [targets, spellType, damageType])
 			}(i)
 		}
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
-	function fireWallBurn(targets) {
+	function fireWallBurn(targets, spellType, damageType) {
 		let damages = []
 		targets.forEach(tgt => {
 			damages.push({
 				key: 'fireWall',
 				index: tgt,
-				spellType: spell.data.spellType,
-				damageType: spell.data.damageType,
+				spellType: spellType,
+				damageType: damageType,
 				...stats.spellDamage(tgt)
 			})
 		})

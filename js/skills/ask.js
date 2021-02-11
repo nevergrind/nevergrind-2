@@ -2,6 +2,7 @@ var ask;
 !function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase, Expo, Sine, Circ, undefined) {
 	ask = {
 		// mob sprite layers
+		MOB_LAYER_GROUND: 60,
 		MOB_LAYER_BACK: 75,
 		MOB_LAYER: 100,
 		// effects on back row
@@ -1159,7 +1160,7 @@ var ask;
 		}
 		else {
 			// player target
-			return ask.getPlayerCenter(index).y
+			return ask.getPlayerCenter(party.getIndexByRow(index)).y
 		}
 	}
 	function centerHeadY(index) {
@@ -1175,8 +1176,8 @@ var ask;
 	function getPlayerCenter(index) {
 		// possibly expand to multiple party members later
 		return {
-			x: dungeon.centerX[party.getIndexByRow(index)],
-			y: dungeon.centerY,
+			x: dungeon.centerX[index],
+			y: dungeon.centerY(index),
 		}
 	}
 	function getPlayerBottom(index) {
@@ -1186,7 +1187,7 @@ var ask;
 		}
 	}
 	function positionImgToPlayer(o, img, config) {
-		coord = getPlayerCenter(o.index)
+		coord = getPlayerCenter(party.getIndexByRow(o.index))
 		img.x = coord.x
 		// offset from combat bottom
 		if (typeof config === 'object' && config.yPosition) img.y = dungeon.bottom - config.yPosition
