@@ -263,11 +263,7 @@ var my;
 	}
 
 	function getPartyNames() {
-		var a = [];
-		party.presence.forEach(v => {
-			v.name && a.push(v.name);
-		});
-		return a;
+		return party.presence.filter(p => p.name).map(p => p.name)
 	}
 	function getAvatarUrl(obj) {
 		obj = obj || my

@@ -207,7 +207,8 @@ var mission;
 	}
 
 	function embarkReceived(data) {
-		// console.info("MISSION UPDATE! ", data)
+		console.info("MISSION UPDATE! ", data)
+		// all party updated on mission status
 		mission.inProgress = true
 		mission.id = data.id
 		mission.questId = data.questId
@@ -227,6 +228,7 @@ var mission;
 			ease: Power4.easeOut
 		});
 		ng.msg('Mission started: ' + quests[mission.questId].title)
-		delayedCall(game.questDelay, dungeon.go)
+		let questDelay = ng.isApp ? 3 : 0
+		delayedCall(questDelay, dungeon.go)
 	}
 })(TweenMax, $, _);

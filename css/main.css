@@ -81,8 +81,8 @@ html {
 	color: #fff;
 	min-width: 1280px;
 	min-height: 720px;
-	max-width: 3840px;
-	max-height: 2160px;
+	max-width: 1920px;
+	max-height: 1080px;
 	margin: 0;
 	overflow: hidden;
 }
@@ -3636,6 +3636,6 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 .damage-blood { color: #b11 }
 .damage-poison { color: #0e0 }
 .damage-arcane { color: #ff8 }
-.damage-lightning { color: #aef }
+.damage-lightning { color: #5fc }
 .damage-fire { color: #f40 }
 .damage-ice { color: #27d }

@@ -1,9 +1,8 @@
 var socket;
-(function(_, $, undefined) {
+(function(_, $, Date, undefined) {
 	socket = {
 		connection: void 0,
 		enabled: false,
-		emptyArray: [],
 		initialConnection: 1,
 		subs: {}, // active channel subscriptions - required to unsub
 		msgPerSec: 0,
@@ -15,7 +14,7 @@ var socket;
 		init,
 		routeMainChat,
 	}
-
+	const EMPTY_ARRAY = []
 	let len, secs
 	let broadcasts = []
 
@@ -52,7 +51,7 @@ var socket;
 
 			socket.session.publish(
 				topic,
-				socket.emptyArray,
+				EMPTY_ARRAY,
 				obj,
 				exclude ? excludeObj : includeObj
 			);
@@ -128,4 +127,4 @@ var socket;
 			});
 		}
 	}
-})(_, $);
+})(_, $, Date);

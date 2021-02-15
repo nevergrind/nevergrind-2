@@ -32,12 +32,13 @@
 	function fissure(o) {
 		for (var i=0; i<15; i++) {
 			!function(i) {
+				let dur = .5
 				delayedCall(i * .1, () => {
 					o.endFrame = 3
 					let y = ask.bottomY(o.index, true)
 					let yAdj = _.random(0, 30)
-					let zIndex = yAdj > 15 ? ask.DEFAULT_MOB_LAYER : ask.DEFAULT_BEHIND_MOB_LAYER
-					ask.groundExplosion(o, {
+					let zIndex = yAdj < 15 ? ask.behindMobLayer(o) : ask.frontMobLayer(o)
+					let img = ask.groundExplosion(o, {
 						yStart: y + yAdj,
 						xAdjust: _.random(-100, 100),
 						contrastStart: 1,
@@ -45,15 +46,16 @@
 						anchorY: .78,
 						sizeStart: 96,
 						sizeEnd: 96,
-						duration: .5,
-						frameDuration: .5,
+						duration: dur,
+						frameDuration: dur,
 						yoyo: true,
 						zIndex: zIndex,
 						alphaStart: 0,
 						alpha: 1,
-						frameEase: Power0.easeOut,
+						frameEase: Power2.easeOut,
 						ease: Power0.easeInOut,
 					})
+					ask.fadeOut(img, dur, dur * .2)
 				})
 			}(i)
 		}
@@ -130,12 +132,12 @@
 		let centerX = mob.centerX[o.index]
 		let ground = ask.bottomY(o.index, true) + 25
 		let distanceDuration = (ground - centerY) / 1000
-		for (var i=0; i<9; i++) {
+		for (var i=0; i<13; i++) {
 			!function(i, o) {
 				let x = centerX + _.random(-125, 125)
 				let duration = distanceDuration + _.random(-.1, .1)
 				let yStart = _.random(-15, 15)
-				let zIndex = yStart < 0 ? ask.DEFAULT_MOB_LAYER : ask.DEFAULT_BEHIND_MOB_LAYER
+				let zIndex = yStart < 0 ? ask.behindMobLayer(o) : ask.frontMobLayer(o)
 				o.key = 'blizzard-shard' + _.random(2)
 				o.endFrame = null
 				delayedCall(i * .1, () => {
@@ -295,7 +297,7 @@
 		for (var i=0; i<13; i++) {
 			!function() {
 				let yAdjust = _.random(-15, 15)
-				let zIndex = yAdjust >= 0 ? ask.DEFAULT_MOB_LAYER : ask.DEFAULT_BEHIND_MOB_LAYER
+				let zIndex = yAdjust < 0 ? ask.behindMobLayer(o) : ask.frontMobLayer(o)
 				let size = 100 - ((yAdjust + 15) * 2)
 				let img = ask.groundExplosion(_.clone(o), {
 					yStart: ask.bottomY(o.index, true) + yAdjust,

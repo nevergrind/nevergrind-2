@@ -111,9 +111,15 @@ var combat;
 		startAt: { pixi: {scale: 2}},
 		pixi: { scale: 1 },
 	}
+	const TEXT_SCALE_CRIT = {
+		startAt: { pixi: {scale: 2.5}},
+		pixi: { scale: 1 },
+		ease: Bounce.easeOut,
+	}
 	const TEXT_FILTER = {
-		startAt: { pixi: { brightness: 3, contrast: 3 }},
+		startAt: { pixi: { brightness: 3, contrast: 1.5 }},
 		pixi: { brightness: 1.25, contrast: 1 },
+		ease: Power2.easeInOut
 	}
 	const resourceLeechDivider = 1000
 	let chance = 0
@@ -1268,7 +1274,7 @@ var combat;
 
 	function getPopupTextStyle(o) {
 		let text = {
-			fontFamily: 'Tinos',
+			fontFamily: 'Play',
 			fontSize: 28,
 			fill: '#fff',
 			stroke: '#000',
@@ -1295,9 +1301,9 @@ var combat;
 				text.dropShadowColor = '#ff8'
 			}
 			else if (o.damageType === DAMAGE_TYPE.LIGHTNING) {
-				text.fill = '#aef'
+				text.fill = '#5fc'
 				text.stroke = '#066'
-				text.dropShadowColor = '#aef'
+				text.dropShadowColor = '#5fc'
 			}
 			else if (o.damageType === DAMAGE_TYPE.FIRE) {
 				text.fill = '#f40'
@@ -1352,12 +1358,14 @@ var combat;
 		if (o.targetMob) {
 			basicText.x = mob.centerX[index]
 			basicText.y = ask.centerY(index, true)// + ((mobs[index].hitCount % 5) * 20)
+			basicText.zIndex = ask.DEFAULT_MOB_LAYER
 		}
 		else {
 			basicText.x = dungeon.centerX[index]
 			basicText.y = dungeon.centerY(index)// + ((party.presence[index].hitCount % 5) * 20)
+			basicText.zIndex = ask.DEFAULT_PLAYER_LAYER
 		}
-		combat.text.stage.addChild(basicText)
+		ask.addChild(basicText, o.targetMob)
 
 		if (o.isHeal) {
 			// heal
@@ -1365,8 +1373,8 @@ var combat;
 			TweenMax.to(basicText, duration, {
 				y: '-=' + TEXT_DISTANCE_Y * 1.5 + '',
 				ease: Power2.easeOut,
-				onComplete: removeText,
-				onCompleteParams: [ basicText.id ],
+				onComplete: ask.removeImg,
+				onCompleteParams: [ basicText.id, o.targetMob ],
 			})
 		}
 		else if (o.isDot) {
@@ -1375,8 +1383,8 @@ var combat;
 			TweenMax.to(basicText, duration, {
 				y: o.targetMob ? ('-=' + TEXT_DISTANCE_Y * 1.5 + '') : ('-=' + TEXT_DISTANCE_Y * .75 + ''),
 				ease: Power2.easeOut,
-				onComplete: removeText,
-				onCompleteParams: [ basicText.id ],
+				onComplete: ask.removeImg,
+				onCompleteParams: [ basicText.id, o.targetMob ],
 			})
 			if (o.targetMob && 
 				buffs[o.key].damageType === DAMAGE_TYPE.BLOOD) {
@@ -1390,9 +1398,9 @@ var combat;
 				duration = TEXT_DURATION * .6
 				TweenMax.to(basicText, duration, {
 					y: '-=' + TEXT_DISTANCE_Y + '',
-					onComplete: fadeOut,
-					onCompleteParams: [basicText],
-					ease: Power3.easeOut
+					onComplete: fadeTextOut,
+					onCompleteParams: [ basicText, o ],
+					ease: Power2.easeOut
 				})
 				x = _.random(-TEXT_DISTANCE_X, TEXT_DISTANCE_X)
 				// left/right
@@ -1401,7 +1409,7 @@ var combat;
 					ease: Linear.easeOut
 				})
 				// scale
-				TweenMax.to(basicText, TEXT_DURATION * .5, TEXT_SCALE)
+				TweenMax.to(basicText, TEXT_DURATION * .5, o.isCrit ? TEXT_SCALE_CRIT : TEXT_SCALE)
 				if (o.key === 'rupture') {
 					ask.bloodDrop(index, 64)
 				}
@@ -1409,43 +1417,39 @@ var combat;
 			else {
 				// player hit
 				if (typeof damage === 'string') {
-					duration = TEXT_DURATION * .66
+					duration = TEXT_DURATION * .8
 					TweenMax.to(basicText, duration, {
 						pixi: { scale: 1.5 },
-						alpha: 0,
-						onComplete: removeText,
-						onCompleteParams: [ basicText.id ],
+						onComplete: ask.removeImg,
+						onCompleteParams: [ basicText.id, o.targetMob ],
 						ease: Power2.easeOut
 					})
+					ask.fadeOut(basicText, duration, duration * .5)
 				}
 				else {
 					duration = TEXT_DURATION * 2
 					TweenMax.to(basicText, duration, {
 						y: '+=' + (TEXT_DISTANCE_Y * .6) + '',
-						onComplete: removeText,
-						onCompleteParams: [ basicText.id ],
+						onComplete: ask.removeImg,
+						onCompleteParams: [ basicText.id, o.targetMob ],
 						ease: Power0.easeOut
 					})
 					ask.fadeOut(basicText, duration, duration * .1)
 				}
 			}
 		}
-		// TweenMax.to(basicText, duration, TEXT_FILTER)
+		TweenMax.to(basicText, duration, TEXT_FILTER)
 	}
-	function fadeOut(basicText) {
+	function fadeTextOut(text, o) {
 		duration = TEXT_DURATION * .4
-		TweenMax.to(basicText, duration, {
+		TweenMax.to(text, duration, {
 			overwrite: 2,
 			y: '+=' + TEXT_DISTANCE_Y * .5 + '',
-			onComplete: removeText,
-			onCompleteParams: [ basicText.id ],
+			onComplete: ask.removeImg,
+			onCompleteParams: [ text.id, o.targetMob ],
 			ease: Power1.easeIn
 		})
-		ask.fadeOut(basicText, duration, duration * .1)
-	}
-	function removeText(id) {
-		el = pix.getId(combat.text, id)
-		combat.text.stage.removeChild(el)
+		ask.fadeOut(text, duration, duration * .1)
 	}
 
 	function txHotHero(data) {
@@ -1983,10 +1987,10 @@ var combat;
 			battle.layer.view.style.width = w + 'px'
 			battle.layer.view.style.height = h + 'px'
 		}
-		if (dungeon.layer.view !== void 0) {
-			h = ~~(dungeon.layer.screen.height / MaxHeight * window.innerHeight)
-			dungeon.layer.view.style.width = w + 'px'
-			dungeon.layer.view.style.height = h + 'px'
+		if (player.layer.view !== void 0) {
+			h = ~~(player.layer.screen.height / MaxHeight * window.innerHeight)
+			player.layer.view.style.width = w + 'px'
+			player.layer.view.style.height = h + 'px'
 		}
 
 

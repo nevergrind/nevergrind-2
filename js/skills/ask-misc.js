@@ -84,12 +84,7 @@
 			xAdj = _.random(-125, 125)
 			yAdj = _.random(0, 30)
 		}
-		if (yAdj < 15) {
-			zIndex = ask.behindMobLayer(o)
-		}
-		else {
-			zIndex = ask.frontMobLayer(o)
-		}
+		zIndex = yAdj < 15 ? ask.behindMobLayer(o) : ask.frontMobLayer(o)
 		o.key = 'flames'
 		o.endFrame = 3
 		let flameObj = {
@@ -1412,13 +1407,13 @@
 		// remove cached IDs graphics and reset array
 		if (targetMob) {
 			if (Array.isArray(cacheMobSilence[o.index])) {
-				cacheMobSilence[o.index].forEach(index => (ask.removeImg()(index)))
+				cacheMobSilence[o.index].forEach(index => (ask.removeImg(index, targetMob)))
 			}
 			cacheMobSilence[o.index] = []
 		}
 		else {
 			if (Array.isArray(cachePlayerSilence[o.index])) {
-				cachePlayerSilence[o.index].forEach(index => (ask.removeImg()(index)))
+				cachePlayerSilence[o.index].forEach(index => (ask.removeImg(index, targetMob)))
 			}
 			cachePlayerSilence[o.index] = []
 		}
@@ -1452,12 +1447,12 @@
 		function checkRemoval(particle) {
 			if (targetMob) {
 				if (!mobs[o.index].buffFlags.silence || !mob.isAlive(o.index)) {
-					ask.removeImg()(particle.id)
+					ask.removeImg(particle.id, targetMob)
 				}
 			}
 			else {
 				if (!my.isSilenced() || my.hp <= 0) {
-					ask.removeImg()(particle.id)
+					ask.removeImg(particle.id, targetMob)
 				}
 			}
 		}
@@ -1495,13 +1490,13 @@
 		// remove cached IDs graphics and reset array
 		if (targetMob) {
 			if (Array.isArray(cacheMobParalyze[o.index])) {
-				cacheMobParalyze[o.index].forEach(index => (ask.removeImg()(index)))
+				cacheMobParalyze[o.index].forEach(index => (ask.removeImg(index, targetMob)))
 			}
 			cacheMobParalyze[o.index] = []
 		}
 		else {
 			if (Array.isArray(cachePlayerParalyze[o.index])) {
-				cachePlayerParalyze[o.index].forEach(index => (ask.removeImg()(index)))
+				cachePlayerParalyze[o.index].forEach(index => (ask.removeImg(index, targetMob)))
 			}
 			cachePlayerParalyze[o.index] = []
 		}
@@ -1535,12 +1530,12 @@
 		function checkRemoval(particle) {
 			if (targetMob) {
 				if (!mobs[o.index].buffFlags.paralyze || !mob.isAlive(o.index)) {
-					ask.removeImg()(particle.id)
+					ask.removeImg(particle.id, targetMob)
 				}
 			}
 			else {
 				if (!my.isParalyzed() || my.hp <= 0) {
-					ask.removeImg()(particle.id)
+					ask.removeImg(particle.id, targetMob)
 				}
 			}
 		}
@@ -1578,13 +1573,13 @@
 		// remove cached IDs graphics and reset array
 		if (targetMob) {
 			if (Array.isArray(cacheMobFears[o.index])) {
-				cacheMobFears[o.index].forEach(index => (ask.removeImg()(index)))
+				cacheMobFears[o.index].forEach(index => (ask.removeImg(index, targetMob)))
 			}
 			cacheMobFears[o.index] = []
 		}
 		else {
 			if (Array.isArray(cachePlayerFears[o.index])) {
-				cachePlayerFears[o.index].forEach(index => (ask.removeImg()(index)))
+				cachePlayerFears[o.index].forEach(index => (ask.removeImg(index, targetMob)))
 			}
 			cachePlayerFears[o.index] = []
 		}
@@ -1618,12 +1613,12 @@
 		function checkRemoval(particle) {
 			if (targetMob) {
 				if (!mobs[o.index].buffFlags.fear || !mob.isAlive(o.index)) {
-					ask.removeImg()(particle.id)
+					ask.removeImg(particle.id, targetMob)
 				}
 			}
 			else {
 				if (!my.isFeared() || my.hp <= 0) {
-					ask.removeImg()(particle.id)
+					ask.removeImg(particle.id, targetMob)
 				}
 			}
 		}
@@ -1661,13 +1656,13 @@
 		// remove cached IDs graphics and reset array
 		if (targetMob) {
 			if (Array.isArray(cacheMobStuns[o.index])) {
-				cacheMobStuns[o.index].forEach(index => (ask.removeImg()(index)))
+				cacheMobStuns[o.index].forEach(index => (ask.removeImg(index, targetMob)))
 			}
 			cacheMobStuns[o.index] = []
 		}
 		else {
 			if (Array.isArray(cachePlayerStuns[o.index])) {
-				cachePlayerStuns[o.index].forEach(index => (ask.removeImg()(index)))
+				cachePlayerStuns[o.index].forEach(index => (ask.removeImg(index, targetMob)))
 			}
 			cachePlayerStuns[o.index] = []
 		}
@@ -1701,12 +1696,12 @@
 		function checkRemoval(particle) {
 			if (targetMob) {
 				if (!mobs[o.index].buffFlags.stun || !mob.isAlive(o.index)) {
-					ask.removeImg()(particle.id)
+					ask.removeImg(particle.id, targetMob)
 				}
 			}
 			else {
 				if (!my.isStunned() || my.hp <= 0) {
-					ask.removeImg()(particle.id)
+					ask.removeImg(particle.id, targetMob)
 				}
 			}
 		}

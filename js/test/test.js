@@ -541,18 +541,18 @@ var test;
 		})
 	}
 	function projectionTest(empty = false) {
-		if (empty) dungeon.layer.removeChildren()
+		if (empty) player.layer.removeChildren()
 
 		test.container = new PIXI.projection.Container2d();
-		test.container.position.set(dungeon.layer.screen.width / 2, dungeon.layer.screen.height);
+		test.container.position.set(player.layer.screen.width / 2, player.layer.screen.height);
 
 		test.plane = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/bg_plane.jpg'));
 		test.plane.anchor.set(.5, 1)
-		/*test.plane.width = dungeon.layer.screen.width
-		test.plane.height = dungeon.layer.screen.height*/
+		/*test.plane.width = player.layer.screen.width
+		test.plane.height = player.layer.screen.height*/
 		test.plane.x = 0
 		test.plane.y = 0
 		test.container.addChild(test.plane)
-		dungeon.layer.stage.addChild(test.container)
+		player.layer.stage.addChild(test.container)
 	}
 })(Linear, TweenMax, TimelineMax, PIXI, $);

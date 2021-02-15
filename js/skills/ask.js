@@ -24,8 +24,6 @@ var ask;
 		getNova,
 		addChild,
 		removeImg,
-		removeDungeonImg,
-		removeBattleImg,
 		centerY,
 		centerHeadY,
 		bottomY,
@@ -248,6 +246,7 @@ var ask;
 		ease: Power4.easeOut,
 	}
 	const slashDefaults = {
+		targetMob: true,
 		isPrimary: true,
 		size: 200,
 		yAdjust: 0,
@@ -256,6 +255,7 @@ var ask;
 		easeEnd: Power2.easeOut,
 	}
 	const pierceDefaults = {
+		targetMob: true,
 		isPrimary: true,
 		size: 200,
 		duration: .2,
@@ -287,6 +287,7 @@ var ask;
 		ease: Back.easeInOut,
 	}
 	const lightColumnDefaults = {
+		targetMob: true,
 		isPrimary: true,
 		loops: 10,
 		interval: .1,
@@ -307,7 +308,7 @@ var ask;
 		img.width = size
 		img.height = size * .25
 		img.scale.x *= Math.random() > .5 ? 1 : -1
-		ask.addChild(img)
+		ask.addChild(img, true)
 		TweenMax.to(img, .15, {
 			x: '+=' + (_.random(-100, 100)),
 			y: ask.bottomY(index, true) + _.random(-15, 40),
@@ -316,8 +317,8 @@ var ask;
 				TweenMax.to(img, BLOOD_DURATION, {
 					width: size * 2,
 					height: size * .5,
-					onComplete: ask.removeImg(),
-					onCompleteParams: [ img.id ]
+					onComplete: ask.removeImg,
+					onCompleteParams: [ img.id, true ]
 				})
 				TweenMax.to(img, BLOOD_DURATION, {
 					alpha: 0,
@@ -331,14 +332,14 @@ var ask;
 			...config
 		}
 		const img = ask.getImg(o)
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 	}
 	function killCastingTweens() {
 		ask.castingTweens.forEach(t => {
 			t.kill()
 		})
 		ask.castingImgIds.forEach(t => {
-			ask.removeImg()(t)
+			ask.removeImg(t, false)
 		})
 		ask.castingTweens = []
 		ask.castingImgIds = []
@@ -364,15 +365,15 @@ var ask;
 				pixi: { contrast: 1.15, brightness: 1.15 }
 			})
 			img.rotation = util.rotation(rotation)
-			ask.addChild(img)
+			ask.addChild(img, false)
 			rotation += 30
 			ask.castingTweens.push(TweenMax.to(img, config.duration, {
 				pixi: { contrast: 0, brightness: 1 },
 				width: 0,
 				height: 0,
 				ease: config.ease,
-				onComplete: ask.removeImg(),
-				onCompleteParams: [img.id]
+				onComplete: ask.removeImg,
+				onCompleteParams: [img.id, false]
 			}))
 		}
 	}
@@ -387,7 +388,7 @@ var ask;
 		ask.castingImgIds.push(img.id)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
-		ask.addChild(img)
+		ask.addChild(img, false)
 		ask.castingTweens.push(TweenMax.to(img, config.duration, {
 			pixi: { contrast: 2, brightness: 2, },
 			width: config.sizeEnd,
@@ -420,14 +421,14 @@ var ask;
 				height: img._width,
 			})
 			z.rotation = util.rotation(rotation)
-			ask.addChild(z)
+			ask.addChild(z, false)
 			rotation += 30
 			ask.castingTweens.push(TweenMax.to(z, config.duration, {
 				pixi: { contrast: 0, brightness: 0 },
 				width: 0,
 				height: 0,
-				onComplete: ask.removeImg(),
-				onCompleteParams: [z.id]
+				onComplete: ask.removeImg,
+				onCompleteParams: [z.id, false]
 			}))
 		}
 	}
@@ -441,7 +442,7 @@ var ask;
 		ask.castingImgIds.push(img.id)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
-		ask.addChild(img)
+		ask.addChild(img, false)
 		ask.castingTweens.push(TweenMax.to(img, config.duration, {
 			pixi: { contrast: 2, brightness: 2, },
 			width: config.sizeEnd,
@@ -461,7 +462,7 @@ var ask;
 		TweenMax.set(img2, {
 			pixi: { contrast: 2, brightness: 2, },
 		})
-		ask.addChild(img2)
+		ask.addChild(img2, false)
 		ask.castingTweens.push(TweenMax.to(img2, config.duration, {
 			pixi: { contrast: 1, brightness: 1, },
 			width: config.sizeEnd,
@@ -495,15 +496,15 @@ var ask;
 				height: img._height,
 				zIndex: img._zIndex - 1
 			})
-			ask.addChild(z)
+			ask.addChild(z, false)
 			ask.castingTweens.push(TweenMax.to(z, config.duration, {
 				width: img._width * 1.5,
 				height: img._height * 1.5,
 				alpha: 0,
 				rotation: util.rotation(Math.random() > .5 ? config.rotation : -config.rotation),
 				ease: config.ease,
-				onComplete: ask.removeImg(),
-				onCompleteParams: [z.id]
+				onComplete: ask.removeImg,
+				onCompleteParams: [z.id, false]
 			}))
 		}
 	}
@@ -515,7 +516,7 @@ var ask;
 		const img = ask.getImg(o)
 		img.width = 0
 		img.height = 0
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 		if (config.isPrimary) setPrimaryStart()
 		else setSecondaryStart()
 		TweenMax.to(img, config.duration, {
@@ -532,8 +533,8 @@ var ask;
 				width: 0,
 				height: config.size,
 				ease: config.easeEnd,
-				onComplete: ask.removeImg(),
-				onCompleteParams: [ img.id ]
+				onComplete: ask.removeImg,
+				onCompleteParams: [ img.id, config.targetMob ]
 			})
 		}
 		function setPrimaryStart() {
@@ -561,7 +562,7 @@ var ask;
 		const img = ask.getImg(o)
 		img.width = 0
 		img.height = 0
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 		if (config.isPrimary) {
 			img.anchor.set(1, 0)
 			img.x += config.size * .5
@@ -594,8 +595,8 @@ var ask;
 				width: 0,
 				height: 0,
 				ease: config.easeEnd,
-				onComplete: ask.removeImg(),
-				onCompleteParams: [ img.id ]
+				onComplete: ask.removeImg,
+				onCompleteParams: [ img.id, config.targetMob ]
 			})
 		}
 	}
@@ -623,12 +624,12 @@ var ask;
 		o.key = 'rings-' + o.type + '-bg'
 		config.zIndex = ask.behindMobLayer(o)
 		const bg = ask.getNova(o, config)
-		ask.addChild(bg)
+		ask.addChild(bg, config.targetMob)
 		//fg
 		o.key = 'rings-' + o.type + '-fg'
 		config.zIndex = ask.frontMobLayer(o)
 		const fg = ask.getNova(o, config)
-		ask.addChild(fg)
+		ask.addChild(fg, config.targetMob)
 
 		fg.width = bg.width = 0
 		fg.height = bg.height = 0
@@ -657,8 +658,8 @@ var ask;
 			height: !config.targetMob ? 100 :
 				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
 			ease: config.ease,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ bg.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ bg.id, config.targetMob ]
 		})
 		// fg
 		TweenMax.to(fg, config.duration, {
@@ -678,8 +679,8 @@ var ask;
 			height: !config.targetMob ? 100 :
 				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
 			ease: config.ease,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ bg.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ bg.id, config.targetMob ]
 		})
 	}
 	function nova(o, config = {}) {
@@ -695,7 +696,7 @@ var ask;
 	}
 	function novaExplode(o, config) {
 		const img = ask.getNova(o, config)
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 		img.width = 0
 		img.height = 0
 		if (config.xStart) {
@@ -721,15 +722,15 @@ var ask;
 			height: !config.targetMob ? 100 :
 				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
 			ease: config.ease,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ img.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, config.targetMob ]
 		})
 	}
 
 	function particle(o, config = { targetMob: true}) {
 		if (!o.key) o.key = 'particle-small-default'
 		let p = ask.getImg(o, config)
-		ask.addChild(p)
+		ask.addChild(p, config.targetMob)
 		return p
 	}
 	function particleSmall(o, config = {}) {
@@ -751,7 +752,7 @@ var ask;
 						img.x += xRangeEnd
 					}
 					if (config.yRange) img.y += _.random(-config.yRange, config.yRange)
-					ask.addChild(img)
+					ask.addChild(img, config.targetMob)
 					TweenMax.to(img, config.duration, {
 						startAt: {
 							pixi: {
@@ -767,8 +768,8 @@ var ask;
 						width: config.sizeEnd,
 						height: config.sizeEnd,
 						ease: config.ease,
-						onComplete: ask.removeImg(),
-						onCompleteParams: [ img.id ]
+						onComplete: ask.removeImg,
+						onCompleteParams: [ img.id, config.targetMob ]
 					})
 					TweenMax.to(img, config.duration, {
 						x: '+=' + (xRangeEnd * config.xRangeRatio),
@@ -795,7 +796,7 @@ var ask;
 					if (config.xRange) img.x += _.random(-config.xRange, config.xRange)
 					if (config.yRange) img.y += _.random(-config.yRange, config.yRange)
 					if (typeof config.yStartAdj !== 'undefined') img.y += config.yStartAdj
-					ask.addChild(img)
+					ask.addChild(img, config.targetMob)
 					TweenMax.to(img, config.duration, {
 						startAt: {
 							pixi: {
@@ -811,8 +812,8 @@ var ask;
 						width: config.sizeEnd,
 						height: config.sizeEnd,
 						ease: config.ease,
-						onComplete: ask.removeImg(),
-						onCompleteParams: [ img.id ]
+						onComplete: ask.removeImg,
+						onCompleteParams: [ img.id, config.targetMob ]
 					})
 					delayedImgFade(img, config)
 				})
@@ -829,7 +830,7 @@ var ask;
 		const img = ask.getImg(o, config)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -844,8 +845,8 @@ var ask;
 			width: config.sizeEnd,
 			height: config.sizeEnd,
 			ease: config.ease,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ img.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, config.targetMob ]
 		})
 		if (config.rotation !== 0) {
 			TweenMax.to(img, config.duration, {
@@ -877,7 +878,7 @@ var ask;
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		if (config.yStart) img.y = config.yStart
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -893,8 +894,8 @@ var ask;
 			height: config.sizeEnd,
 			alpha: config.alpha,
 			ease: config.ease,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ img.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, config.targetMob ]
 		})
 		animateFrames(o, config, img)
 		return img
@@ -909,7 +910,7 @@ var ask;
 		const img = ask.getImg(o, config)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -925,8 +926,8 @@ var ask;
 			height: config.sizeEnd,
 			alpha: config.alpha,
 			ease: 1,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ img.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, config.targetMob ]
 		})
 		animateFrames(o, config, img)
 		return img
@@ -941,7 +942,7 @@ var ask;
 		const img = ask.getImg(o, config)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -958,8 +959,8 @@ var ask;
 			height: config.sizeEnd,
 			// alpha: config.alpha,
 			ease: config.ease,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ img.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, config.targetMob ]
 		})
 		// delayedImgFade(img, config)
 		animateFrames(o, config, img)
@@ -975,7 +976,7 @@ var ask;
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		img.anchor.set(.5, config.anchorY)
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 
 		TweenMax.to(img, config.duration, {
 			startAt: {
@@ -994,8 +995,8 @@ var ask;
 			ease: config.ease,
 			yoyo: true,
 			repeat: 1,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ img.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, config.targetMob ]
 		})
 		TweenMax.to(img, config.duration * .5, {
 			delay: config.duration * .5,
@@ -1028,7 +1029,7 @@ var ask;
 			img.scale.x *= -1
 		}
 
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 		TweenMax.to(img, config.duration, {
 			startAt: {
 				pixi: {
@@ -1046,8 +1047,8 @@ var ask;
 			alpha: config.alpha,
 			repeat: config.yoyo ? 1 : 0,
 			ease: config.ease,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ img.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, config.targetMob ]
 		})
 
 		animateFrames(o, config, img)
@@ -1070,7 +1071,7 @@ var ask;
 			img.scale.x *= -1
 		}
 		// add to canvas
-		ask.addChild(img)
+		ask.addChild(img, config.targetMob)
 		// tween config
 		let explosionObj = {
 			startAt: {
@@ -1087,8 +1088,8 @@ var ask;
 			rotation: util.rotation(config.rotation),
 			alpha: config.alpha,
 			ease: config.ease,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ img.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, config.targetMob ]
 		}
 		if (config.autoSize) {
 			// some images use their auto size
@@ -1134,13 +1135,9 @@ var ask;
 			}
 		}
 	}
-	function addChild(img) {
-		if (ng.view === 'battle') {
-			battle.layer.stage.addChild(img)
-		}
-		else {
-			dungeon.layer.stage.addChild(img)
-		}
+	function addChild(img, targetMob) {
+		if (targetMob) battle.layer.stage.addChild(img)
+		else player.layer.stage.addChild(img)
 	}
 	// positioning
 	function bottomY(index, targetMob = true) {
@@ -1244,7 +1241,7 @@ var ask;
 		img.width = 0
 		img.height = 0
 
-		ask.addChild(img)
+		ask.addChild(img, true)
 		if (o.key.includes('Hand-to-hand')) {
 			img.x = mob.centerX[o.index] + _.random(-50, 50)
 			img.y = ask.centerY(o.index, true) + _.random(-50, 50)
@@ -1282,8 +1279,8 @@ var ask;
 			TweenMax.to(img, duration, {
 				height: 0,
 				ease: Power2.easeOut,
-				onComplete: ask.removeImg(),
-				onCompleteParams: [ img.id ]
+				onComplete: ask.removeImg,
+				onCompleteParams: [ img.id, false ]
 			})
 		}
 	}
@@ -1305,8 +1302,8 @@ var ask;
 				width: 0,
 				height: 0,
 				ease: Power2.easeOut,
-				onComplete: ask.removeImg(),
-				onCompleteParams: [ img.id ]
+				onComplete: ask.removeImg,
+				onCompleteParams: [ img.id, false ]
 			})
 		}
 		function setPrimaryStart() {
@@ -1337,18 +1334,18 @@ var ask;
 			width: 256,
 			height: 256,
 			ease: Power2.easeIn,
-			onComplete: finishSlash
+			onComplete: finishPierce
 		})
 		//////////////////////////////
-		function finishSlash() {
+		function finishPierce() {
 			if (isPrimary) setPrimaryMid()
 			else setSecondaryMid()
 			TweenMax.to(img, .2, {
 				width: 0,
 				height: 0,
 				ease: Power2.easeOut,
-				onComplete: ask.removeImg(),
-				onCompleteParams: [ img.id ]
+				onComplete: ask.removeImg,
+				onCompleteParams: [ img.id, false ]
 			})
 		}
 		function setPrimaryStart() {
@@ -1375,8 +1372,8 @@ var ask;
 			width: 150,
 			height: 150,
 			ease: Power1.easeOut,
-			onComplete: ask.removeImg(),
-			onCompleteParams: [ img.id ]
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, false ]
 		})
 		TweenMax.to(img, .25, {
 			startAt: { rotation: util.rotation(_.random(0, 360)) },
@@ -1389,16 +1386,13 @@ var ask;
 			ease: Power3.easeIn,
 		})
 	}
-	function removeImg() {
-		return ng.view === 'battle' ? ask.removeBattleImg : ask.removeDungeonImg
-	}
-	function removeDungeonImg(askId) {
-		el = pix.getId(dungeon.layer, askId)
-		dungeon.layer.stage.removeChild(el)
-	}
-	function removeBattleImg(askId) {
-		el = pix.getId(battle.layer, askId)
-		battle.layer.stage.removeChild(el)
+	function removeImg(askId, targetMob = true) {
+		if (targetMob) {
+			battle.layer.stage.removeChild(pix.getId(battle.layer, askId))
+		}
+		else {
+			player.layer.stage.removeChild(pix.getId(player.layer, askId))
+		}
 	}
 	function processAnimations(o, checkAutoAttacks = false) {
 		if (o.key) {

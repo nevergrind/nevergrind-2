@@ -232,7 +232,7 @@ var battle;
 		item.resetDrop()
 		chat.sizeDungeon()
 		mob.init()
-		game.sceneCleanup('scene-battle')
+		game.showScene('scene-battle')
 		if (chat.modeCommand === '/say') {
 			chat.modeChange(CHAT.PARTY)
 		}
@@ -267,7 +267,7 @@ var battle;
 		})
 		button.setAll()
 		initBattleLayer()
-		dungeon.setPlayers()
+		player.setPlayers()
 		combat.initCombatTextLayer() // must come after battle
 
 		// add this to test out mob placement etc;
@@ -363,13 +363,15 @@ var battle;
 		}
 	}
 	function loadTextures() {
-		zones[mission.id].mobs.forEach(name => {
-			console.warn('loading mob', name)
-			mob.textures[name] = []
-			for (var i=1; i<=105; i++) {
-				mob.textures[name][i] = PIXI.Texture.from('mobs/'+ name +'/'+ i +'.png')
-			}
-		})
+		if (_.size(mob.textures) === 0) {
+			zones[mission.id].mobs.forEach(name => {
+				console.warn('loading mob', name)
+				mob.textures[name] = []
+				for (var i=1; i<=105; i++) {
+					mob.textures[name][i] = PIXI.Texture.from('mobs/'+ name +'/'+ i +'.png')
+				}
+			})
+		}
 	}
 	function showTarget() {
 		query.el('#mob-target-wrap').style.display = 'flex'
@@ -828,7 +830,6 @@ var battle;
 		if (battleSceneInitialized) {
 			getElementById('scene-battle').style.display = 'block'
 			battle.layer.stage.removeChildren()
-			combat.text.stage.removeChildren()
 
 		}
 		else {

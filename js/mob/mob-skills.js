@@ -1083,25 +1083,25 @@ mobSkills = {};
 		row = party.getIndexByRow(data.row)
 		party.presence[row].isChilled = true
 		if (!my.isFrozen()) {
-			TweenMax.to(party.presence[party.getIndexByRow(data.row)].sprite, .5, filter.chill)
+			TweenMax.to(players[row].sprite, .5, filter.chill)
 		}
 	}
 	function animateThaw(data) {
 		row = party.getIndexByRow(data.row)
 		party.presence[row].isChilled = false
 		if (!party.isChilled(data.row) && !party.isFrozen(data.row)) {
-			TweenMax.to(party.presence[row].sprite, .5, filter.default)
+			TweenMax.to(players[row].sprite, .5, filter.default)
 		}
 	}
 	function animateFreeze(data) {
 		row = party.getIndexByRow(data.row)
 		party.presence[row].isFrozen = true
-		TweenMax.set(party.presence[row].sprite, filter.freeze)
+		TweenMax.set(players[row].sprite, filter.freeze)
 	}
 	function animateFreezeThaw(data) {
 		row = party.getIndexByRow(data.row)
 		party.presence[row].isFrozen = false
-		TweenMax.to(party.presence[row].sprite, .5,
+		TweenMax.to(players[row].sprite, .5,
 			party.isChilled(data.row) ?
 				filter.chill : filter.default
 		)
@@ -1109,13 +1109,13 @@ mobSkills = {};
 	function applyEffectFilter(row) {
 		row = party.getIndexByRow(row)
 		if (party.presence[row].isFrozen) {
-			TweenMax.set(party.presence[row].sprite, filter.freeze)
+			TweenMax.set(players[row].sprite, filter.freeze)
 		}
 		else if (party.presence[row].isChilled) {
-			TweenMax.set(party.presence[row].sprite, filter.chill)
+			TweenMax.set(players[row].sprite, filter.chill)
 		}
 		else {
-			TweenMax.set(party.presence[row].sprite, filter.default)
+			TweenMax.set(players[row].sprite, filter.default)
 		}
 	}
 
@@ -1223,12 +1223,12 @@ mobSkills = {};
 	}
 
 	function initFilter() {
-		party.presence.forEach(p => {
+		party.presence.forEach((p, i) => {
 			// filters only work on self for now
 			if (my.row === p.row) {
-				if (my.isFrozen()) TweenMax.to(p.sprite, .5, filter.freeze)
-				else if (my.isChilled()) TweenMax.to(p.sprite, .5, filter.chill)
-				else TweenMax.to(p.sprite, .5, filter.default)
+				if (my.isFrozen()) TweenMax.to(players[i].sprite, .5, filter.freeze)
+				else if (my.isChilled()) TweenMax.to(players[i].sprite, .5, filter.chill)
+				else TweenMax.to(players[i].sprite, .5, filter.default)
 			}
 		})
 	}

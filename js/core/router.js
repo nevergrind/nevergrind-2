@@ -53,7 +53,7 @@ var router;
 		else if (r === 'p->promote') party.promoteReceived(data)
 		else if (r === 'p->boot') party.bootReceived(data)
 		else if (r === 'p->getPresence') game.updateParty()
-		else if (r === 'p->goDungeon') dungeon.go(data)
+		else if (r === 'p->goDungeon') dungeon.rxGo(data)
 		else if (r === 'p->goBattle') battle.go(data)
 		else if (r === 'p->damage') combat.rxDamageMob(data)
 		else if (r === 'p->effect') mobSkills.rxPlayerEffect(data)

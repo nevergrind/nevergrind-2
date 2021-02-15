@@ -8,7 +8,6 @@ var game;
 			timer: 0
 		},
 		pingHistory: [],
-		questDelay: ng.isApp ? 3 : 0,
 		start: Date.now(),
 		upsertRoom,
 		removePlayer,
@@ -17,7 +16,7 @@ var game;
 		heartbeatReceived,
 		heartbeatReceivedParty,
 		getPresence,
-		sceneCleanup,
+		showScene,
 		getPetName,
 		played,
 		getCachedMinutes,
@@ -213,7 +212,7 @@ var game;
 		el !== null && el.parentNode.removeChild(el);
 		chat.setHeader();
 	}
-	function sceneCleanup(currentScene) {
+	function showScene(currentScene) {
 		TweenMax.set('#sky-wrap', filterBrightnessDark)
 		scenes.forEach(v => {
 			if (v === '#' + currentScene) {

@@ -34,12 +34,13 @@ var party;
 		getNameByRow,
 		isSomeoneAlive,
 		isAlive,
+		aliveByIndex,
 		isChilled,
 		isFrozen,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
-	var time, index, player, diff, updateHp = false, updateMp = false, updateSp = false
+	var time, index, diff, updateHp = false, updateMp = false, updateSp = false
 	const resourceKeys = [PROP.HP, PROP.MP, PROP.SP, PROP.HP_MAX, PROP.MP_MAX, PROP.SP_MAX]
 	//////////////////////////////////////
 	function isSomeoneAlive() {
@@ -47,6 +48,12 @@ var party;
 	}
 	function isAlive(p) {
 		return p.hp > 0 && p.row > 0 && Date.now() - p.time < game.maxTimeout
+	}
+	function aliveByIndex(i) {
+		return typeof party.presence[i] === 'object' &&
+			party.presence[i].row > 0 &&
+			party.presence[i].hp > 0 &&
+			Date.now() - party.presence[i].time < game.maxTimeout
 	}
 	function isChilled(row) {
 		return party.presence[party.getIndexByRow(row)].isChilled
@@ -113,8 +120,8 @@ var party;
 		updateHp = false
 		updateMp = false
 		updateSp = false
-		index = _.findIndex(party.presence, { row: data.row })
-		player = party.presence[index]
+		index = party.getIndexByRow(data.row)
+		let player = party.presence[index]
 		if (index >= 0) {
 			// console.info('upsertPartyResource', data)
 			for (var key in data) {
@@ -132,19 +139,19 @@ var party;
 	}
 	function upsertParty(data) {
 		// if (my.partyId !== data.partyId) return;
-		time = Date.now();
-		index = _.findIndex(party.presence, { row: data.row });
-		player = party.presence[index];
+		time = Date.now()
+		index = party.getIndexByRow(data.row)
+		let p = party.presence[index]
 		if (index >= 0) {
-			checkUpdateBars(data, player)
 			// update
-			player.time = time;
-			player.job = data.job;
-			player.name = _.capitalize(data.name);
-			player.row = data.row;
-			player.level = data.level;
-			player.avatar = data.avatar;
-			bar.updatePlayerBar(data);
+			checkUpdateBars(data, p)
+			p.time = time
+			p.job = data.job
+			p.name = _.capitalize(data.name)
+			p.row = data.row
+			p.level = data.level
+			p.avatar = data.avatar
+			bar.updatePlayerBar(data)
 		}
 		else {
 			// not found - add!
@@ -167,10 +174,12 @@ var party;
 					isFrozen: false,
 					hitCount: 0,
 				});
-				var len = party.presence.length - 1;
-				bar.addPlayer(party.presence[len], data.row);
+				console.info('player', _.cloneDeep(player))
+				var len = party.presence.length - 1
+				bar.addPlayer(party.presence[len], data.row)
 				checkUpdateBars(data, party.presence[len])
-				bar.updatePlayerBar(data);
+				bar.updatePlayerBar(data)
+				player.updateAllPlayerSprites()
 			}
 			else {
 				// broadcast and reject join with a boot
@@ -180,7 +189,7 @@ var party;
 	}
 	function auditParty(time) {
 		// do not change to a for loop
-		party.presence.forEach(function(player) {
+		party.presence.forEach(player => {
 			diff = time - player.time;
 			if (diff > game.maxTimeout) {
 				removePartyMember(player);
@@ -193,19 +202,19 @@ var party;
 	 * @param player
 	 * @param checkLeader
 	 */
-	function removePartyMember(player, checkLeader = true) {
-		if (typeof player === 'object') {
-			index = _.findIndex(party.presence, { row: player.row });
-			// console.warn('removing party member: index', index, 'row', player.row)
+	function removePartyMember(p, checkLeader = true) {
+		if (typeof p === 'object') {
+			index = party.getIndexByRow(p.row)
+			// console.warn('removing party member: index', index, 'row', p.row)
 			_.pullAt(party.presence, [ index ])
-			bar.dom[player.row] = undefined
-			$('#bar-player-wrap-' + player.row).remove()
+			bar.dom[p.row] = undefined
+			$('#bar-player-wrap-' + p.row).remove()
 			// elect new leader - only possible if timed out
 			// console.info('checkLeader', checkLeader)
 			if (checkLeader) {
-				// console.info('electLeader', player.isLeader, party.presence.length)
+				// console.info('electLeader', p.isLeader, party.presence.length)
 				// console.info('party', _.cloneDeep(party.presence))
-				if (player.isLeader && party.hasMoreThanOnePlayer()) {
+				if (p.isLeader && party.hasMoreThanOnePlayer()) {
 					electLeader()
 				}
 				if (party.presence.length === 1) {
@@ -213,6 +222,8 @@ var party;
 					getElementById('bar-name-' + my.row).classList.remove('chat-gold')
 				}
 			}
+			console.warn("REMOVING PARTY MEMBER", _.cloneDeep(party.presence))
+			player.updateAllPlayerSprites()
 		}
 	}
 	function getUniquePartyChannel(increment) {
@@ -340,7 +351,7 @@ var party;
 			chat.log(data.leader + " has booted you from the party!", CHAT.WARNING);
 		}
 		else {
-			var index = _.findIndex(party.presence, { name: data.name });
+			var index = party.getNameByRow(data.name)
 			removePartyMember(party.presence[index]);
 			chat.log(data.name + " has been booted from the party.", CHAT.WARNING);
 		}
@@ -376,7 +387,7 @@ var party;
 	function disbandReceived(data) {
 		if (data.name !== my.name) {
 			// console.warn('disbandReceived', data);
-			var index = _.findIndex(party.presence, { name: data.name });
+			var index = party.getNameByRow(data.name)
 			chat.log(data.name + " has disbanded the party.", CHAT.WARNING);
 			removePartyMember(party.presence[index]);
 		}
@@ -392,7 +403,7 @@ var party;
 			// console.warn("New leader!", player.name);
 		}
 		else {
-			index = _.findIndex(party.presence, { row: player.row });
+			index = party.getIndexByRow(player.row)
 			party.presence[index].isLeader = true;
 		}
 		// console.warn("LEADER INDEX: ", index, player.row);
@@ -401,7 +412,7 @@ var party;
 	function promote(name) {
 		// console.info('/promote ', name);
 		// must be leader or bypass by auto-election when leader leaves
-		var id = _.findIndex(party.presence, { name: name });
+		var id = party.getNameByRow(name)
 
 		if (party.presence[0].isLeader) {
 			if (id >= 1) {
@@ -421,7 +432,7 @@ var party;
 		}
 	}
 	function promoteReceived(data) {
-		var index = _.findIndex(party.presence, { name: data.name })
+		var index = party.getNameByRow(data.name)
 		if (index >= 0) {
 			chat.log(data.name + " has been promoted to party leader.", CHAT.WARNING)
 			// console.warn('index', index)
@@ -430,7 +441,7 @@ var party;
 				// console.warn('Look at me. I am the leader now')
 				my.isLeader = true
 			}
-			var oldLeader = _.findIndex(party.presence, { row: data.leaderRow })
+			var oldLeader = party.getIndexByRow(data.leaderRow)
 			// console.warn('oldLeader', oldLeader)
 			getElementById('bar-name-' + party.presence[index].row).classList.add('chat-gold')
 			getElementById('bar-name-' + party.presence[oldLeader].row).classList.remove('chat-gold')

@@ -152,6 +152,7 @@ const jsFiles = [
 	'core/cache',
 	'core/router',
 	'core/dungeon',
+	'core/player',
 	'core/skills',
 	'core/zone',
 	'core/stats',

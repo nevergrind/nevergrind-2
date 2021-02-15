@@ -160,7 +160,7 @@ var bar;
 		id = this.id
 		arr = id.split("-")
 		context.player.row = arr[arr.length - 1] * 1
-		slot = _.findIndex(party.presence, { row: context.player.row })
+		slot = party.getIndexByRow(context.player.row)
 		context.player.name = party.presence[slot].name
 		context.setPartyMenuHtml()
 	}
@@ -902,7 +902,7 @@ var bar;
 	 * @param data
 	 */
 	function updatePlayerBar(data) {
-		index = _.findIndex(party.presence, { row: data.row });
+		index = party.getIndexByRow(data.row)
 		if (index === -1) return
 		player = party.presence[index];
 

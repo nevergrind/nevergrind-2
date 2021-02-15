@@ -99,7 +99,7 @@ var town;
 
 		audio.playMusic('town', 'wav')
 		clearTimeout(game.session.timer)
-		game.sceneCleanup('scene-town');
+		game.showScene('scene-town');
 		ng.lock(1);
 		if (ng.view === 'dungeon') {
 			TweenMax.set('#body', {

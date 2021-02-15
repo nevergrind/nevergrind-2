@@ -388,10 +388,12 @@ var ng;
 	function setScene(scene) {
 		$("#scene-title").remove()
 		// remove defaults and set via js
-		$(".scene").removeClass('none')
-			.css('display', 'none');
-		getElementById('scene-' + scene).style.display = 'block';
-		ng.view = scene;
+		$(".scene").removeClass('none').css('display', 'none')
+		getElementById('scene-' + scene).style.display = 'block'
+		ng.view = scene
+		if (ng.view === 'dungeon' || ng.view === 'battle') {
+			querySelector('#scene-players').style.display = 'block'
+		}
 	}
 	function lock(hide) {
 		ng.lockOverlay.style.display = 'block';

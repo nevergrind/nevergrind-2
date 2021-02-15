@@ -115,11 +115,9 @@ var pix
 		}
 	});
 	*/
-	function getId(el, id) {
+	function getId(layer, id) {
 		// example: pix.getId(pix.sky, 'test')
 		// console.info('getId', el)
-		return _.find(el.stage.children, {
-			id: id
-		})
+		return layer.stage.children.find(n => n.id === id)
 	}
 }(PIXI, _, $, Linear, Power1, Power2, Power3, Power4, TweenMax, Expo);
