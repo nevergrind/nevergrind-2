@@ -32,7 +32,7 @@ app.socketUrl = app.isApp ?
 		var link = d.createElement('link');
 		link.href = 'css/' + css[i] + suffix + '?v='+ app.version;
 		link.rel = 'stylesheet';
-		document.write(link.outerHTML);
+		d.write(link.outerHTML);
 	}
 }(document)
 </script>

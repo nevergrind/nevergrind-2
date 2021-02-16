@@ -259,3 +259,11 @@ const ANIMATE_CANDLE = RoughEase.ease.config({
 	randomize: true,
 	clamp: true
 })
+const QUEST_TYPES = Object.freeze({
+	cleanse: 'cleanse',
+	target: 'target',
+	kill: 'kill',
+	explore: 'explore',
+	gather: 'gather',
+	investigate: 'investigate',
+})

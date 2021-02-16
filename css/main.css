@@ -1459,11 +1459,11 @@ background-clip: content-box;
 	box-shadow: inset 0 0rem 10rem 0rem #ffa2;
 }
 /*background: conic-gradient(
-		#0016 .25turn,
-		#025a .25turn .5turn,
-		#0016 0.5turn .75turn,
-		#025a .75turn
-) top left / 3px 3px repeat;
+		#010f .25turn,
+		#181f .25turn .5turn,
+		#010f 0.5turn .75turn,
+		#181f .75turn
+) top left / 20px 20px repeat;
 background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px);
 */
 
@@ -3639,3 +3639,82 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 .damage-lightning { color: #5fc }
 .damage-fire { color: #f40 }
 .damage-ice { color: #27d }
+
+
+
+#dungeon-grid-parent {
+}
+.grid-parent {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	perspective: 100px;
+	transform-style: preserve-3d;
+	z-index: 1;
+}
+#dungeon-stag-black {
+	background: linear-gradient(to bottom, #f0ff, #f0f0);
+}
+#dungeon-path {
+	border-left: 1rem groove #111;
+	border-right: 1rem groove #111;
+	transform: scaleX(1.2) rotateX(60deg);
+	/*background: linear-gradient(to bottom, #333f, #3338);*/
+	background-image: url(../images/dungeon/bg_plane.jpg);
+	background-size: 20%;
+}
+#dungeon-mob {
+	transform-origin: 50% 100%;
+}
+.dungeon-mob {
+	transform: rotateY(0deg) rotateX(0deg) scale(0.5);
+}
+#dungeon-bg-floor {
+	position: fixed;
+	top: 50%;
+	left: 0;
+	width: 100%;
+	height: 50%;
+	z-index: 1;
+}
+#dungeon-bg-sky {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 50%;
+}
+.dungeon-floor {
+	position: absolute;
+	transform-style: preserve-3d;
+	transform-origin: 50% 100%;
+	z-index: 1;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	width: 100%;
+	height: 100%;
+}
+#dungeon-floor-vertical {
+	z-index: 2;
+	transform: scaleX(12) rotateX(60deg);
+	background: repeating-linear-gradient(to right,
+		#f0f0 0%,
+		#f0f0 calc(1% - .5px),
+		#f0ff calc(1% - .5px),
+		#f0ff calc(1% + .5px)
+	);
+}
+#dungeon-floor-horizontal {
+	z-index: 2;
+	transform: scaleX(5) rotateX(60deg);
+	background: repeating-linear-gradient(to bottom,
+		#0f00 0%,
+		#0f00 calc(1% - .1%),
+		#f0ff calc(1% - .1%),
+		#f0ff calc(1% + .1%)
+	);
+}

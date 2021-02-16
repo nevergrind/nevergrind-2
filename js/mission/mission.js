@@ -19,6 +19,8 @@ var mission;
 		toggleZone,
 		clickQuest,
 		getZoneImg,
+		onKilledMob,
+		onClearedRoom,
 	};
 	var questHtml
 	var html = ''
@@ -230,5 +232,12 @@ var mission;
 		ng.msg('Mission started: ' + quests[mission.questId].title)
 		let questDelay = ng.isApp ? 3 : 0
 		delayedCall(questDelay, dungeon.go)
+	}
+
+	function onKilledMob(mobData) {
+
+	}
+	function onClearedRoom() {
+
 	}
 })(TweenMax, $, _);
