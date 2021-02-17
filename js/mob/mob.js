@@ -10,6 +10,7 @@ let mobs = [];
 		initMobData,
 		// configs, resets (active animations) and idles mobs in one call for start of combat
 		setMob,
+		setSrc,
 		// size only
 		sizeMob,
 		setClickBox,

@@ -14,6 +14,7 @@ let players = []; // player sprites
 	function initCanvas() {
 		// happens once
 		if (typeof player.layer.view === 'undefined') {
+			// player layer
 			player.layer = new PIXI.Application({
 				width: MaxWidth,
 				height: MaxHeight,

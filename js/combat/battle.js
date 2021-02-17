@@ -47,6 +47,7 @@ var battle;
 		targetIsBackRow,
 		updateTarget,
 		loadTextures,
+		loadMobTexture,
 		updateMobTargetBuffs,
 		processBuffs,
 		addMyBuff,
@@ -232,6 +233,7 @@ var battle;
 		item.resetDrop()
 		chat.sizeDungeon()
 		mob.init()
+		dungeon.killEntityTweens()
 		game.showScene('scene-battle')
 		if (chat.modeCommand === '/say') {
 			chat.modeChange(CHAT.PARTY)
@@ -268,7 +270,6 @@ var battle;
 		button.setAll()
 		initBattleLayer()
 		player.setPlayers()
-		combat.initCombatTextLayer() // must come after battle
 
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
@@ -366,11 +367,16 @@ var battle;
 		if (_.size(mob.textures) === 0) {
 			zones[mission.id].mobs.forEach(name => {
 				console.warn('loading mob', name)
-				mob.textures[name] = []
-				for (var i=1; i<=105; i++) {
-					mob.textures[name][i] = PIXI.Texture.from('mobs/'+ name +'/'+ i +'.png')
-				}
+				battle.loadMobTexture(name)
 			})
+		}
+	}
+	function loadMobTexture(mobImage) {
+		if (typeof mob.textures[mobImage] === 'undefined') {
+			mob.textures[mobImage] = []
+			for (var i=1; i<=105; i++) {
+				mob.textures[mobImage][i] = PIXI.Texture.from('mobs/'+ mobImage +'/'+ i +'.png')
+			}
 		}
 	}
 	function showTarget() {

@@ -95,6 +95,7 @@ var town;
 		my.targetIsMob = true
 		battle.hideTarget()
 		mob.killAttacks()
+		dungeon.killEntityTweens()
 		if (!create.selected) return
 
 		audio.playMusic('town', 'wav')

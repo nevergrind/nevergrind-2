@@ -9,7 +9,6 @@ var combat;
 		rxDamageMob,
 		popupDamage,
 		targetChanged,
-		initCombatTextLayer,
 		updateCanvasLayer,
 		toggleAutoAttack,
 		txDamageMob,
@@ -101,7 +100,6 @@ var combat;
 		},
 	}
 	var el, w, h, i, len, damageArr, hit, damages, procDamage, procHit, buffArr, index, hotData, buffData, key, resist, resistPenalty
-	let battleTextInitialized = false
 	const TEXT_DURATION = 1
 	const TEXT_DISTANCE_X = 200
 	const TEXT_DISTANCE_Y = 150
@@ -1961,29 +1959,15 @@ var combat;
 			opacity: 0
 		})
 	}
-	function initCombatTextLayer() {
-		if (battleTextInitialized) return
-		battleTextInitialized = true
-		combat.text = new PIXI.Application({
-			width: MaxWidth,
-			height: MaxHeight,
-			transparent: true
-		});
-		// style
-		combat.text.view.id = 'combat-text'
-		combat.text.view.style.position = 'absolute'
-		combat.text.view.style.zIndex = 2
-		combat.text.view.style.pointerEvents = 'none'
-		querySelector('#scene-battle').appendChild(combat.text.view)
-		updateCanvasLayer()
-	}
 	function updateCanvasLayer() {
+		// called via resizeAll method
 		w = window.innerWidth
-		if (combat.text !== void 0) {
-			h = ~~(combat.text.screen.height / MaxHeight * window.innerHeight)
-			combat.text.view.style.width = w + 'px'
-			combat.text.view.style.height = h + 'px'
-
+		if (dungeon.layer !== void 0) {
+			h = ~~(dungeon.layer.screen.height / MaxHeight * window.innerHeight)
+			dungeon.layer.view.style.width = w + 'px'
+			dungeon.layer.view.style.height = h + 'px'
+		}
+		if (battle.layer !== void 0) {
 			battle.layer.view.style.width = w + 'px'
 			battle.layer.view.style.height = h + 'px'
 		}
