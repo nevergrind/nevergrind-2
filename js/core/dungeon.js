@@ -1,18 +1,27 @@
 var dungeon;
 (function(TweenMax, $, _, Power0, Sine, undefined) {
 	const BOTTOM_PLAYER = MaxHeight - 80
+	const GRID_SIZE = 1920
+	const TOTAL_TILES = 5
 	dungeon = {
 		initialized: 0,
+		isDungeon: true,
 		entityTweens: [],
 		layer: {},
-		squareFar: {},
-		container: {},
+		tilesFloor: [],
+		tilesCeiling: [],
+		tilesLeftWall: [],
+		tilesRightWall: [],
+		containerFloor: {},
+		containerCeiling: {},
+		containerLeftWall: {},
+		containerRightWall: {},
 		tiling: {},
 		floor: {},
 		ceiling: {},
-		mobParent: {},
 		sky: {},
-		orc: {},
+		entity: {},
+		endWall: {},
 		tickUpdate: {},
 		direction: 0, // 0 is north, 90 east, 180 south, 270 west
 		centerX: [960, 1280, 640, 1600, 320],
@@ -20,13 +29,14 @@ var dungeon;
 		headY: BOTTOM_PLAYER - 200,
 		bottomY: BOTTOM_PLAYER,
 		gridElementY: {},
-		gridSize: 640,
+		gridSize: GRID_SIZE,
 		gridDuration: 2,
 		walking: 0,
 		distanceStart: 0,
 		distanceCurrent: 0,
-		distanceEnd: 6400,
-		distancePerSecond: 320,
+		totalTiles: TOTAL_TILES,
+		distanceEnd: GRID_SIZE * TOTAL_TILES,
+		distancePerSecond: app.isApp ? (GRID_SIZE * .15) : GRID_SIZE,
 		walkTween: TweenMax.to('#body', 0, {}),
 		getCompass,
 		centerY,
@@ -36,8 +46,8 @@ var dungeon;
 		html,
 		enterCombat,
 		walkForward,
-		moveEnd,
 		walkBackward,
+		moveEnd,
 		setGridPosition,
 		getWalkDurationEnd,
 		getWalkDurationStart,
@@ -52,7 +62,7 @@ var dungeon;
 		killEntityTweens,
 	}
 	let blurValue = 0
-	const CLOSEST_MOB_DISTANCE = 200
+	const CLOSEST_MOB_DISTANCE = -100
 	const MOB_DUNGEON_SIZE = 1
 	const MAX_BLUR = 3
 	const TURN_SPEED = 1
@@ -169,10 +179,6 @@ var dungeon;
 	}
 	function initCanvas() {
 		if (typeof dungeon.layer.view === 'object') return
-		let pos = {
-			x: 0,
-			y: MaxHeight * .5,
-		}
 		dungeon.layer = new PIXI.Application({
 			width: MaxWidth,
 			height: MaxHeight,
@@ -190,12 +196,7 @@ var dungeon;
 
 		dungeon.sky = PIXI.Sprite.from('images/dungeon/bg-test-sky.jpg')
 		dungeon.sky.zIndex = 1
-
-		// create a new Sprite from an image path
-		dungeon.container = new PIXI.projection.Container2d()
-		dungeon.container.position.set(MaxWidth / 2, MaxHeight)
-		dungeon.container.zIndex = 1
-		dungeon.container.proj.setAxisY(pos, -1)
+		dungeon.layer.stage.addChild(dungeon.sky)
 
 		// tiling - takes whole screen, anchor and position are the same as of sprite floor
 		dungeon.tiling = new PIXI.projection.TilingSprite2d(
@@ -208,34 +209,157 @@ var dungeon;
 		dungeon.tiling.anchor.set(0.5, 1.0)
 		dungeon.tiling.tint = 0xff00ff
 		dungeon.tiling.zIndex = 1
-		dungeon.tiling.tileProj.setAxisY(pos, -1)
-
-		// dungeon.orc
-		// set yFloor of dungeon.orc
-
-		dungeon.layer.stage.addChild(dungeon.sky)
+		dungeon.tiling.tileProj.setAxisY({
+			x: 0,
+			y: MaxHeight * .5,
+		}, -1)
 		dungeon.layer.stage.addChild(dungeon.tiling)
-		dungeon.layer.stage.addChild(dungeon.container)
-		// dungeon.container.addChild(dungeon.ceiling)
+
+		// experimental
+		dungeon.tilesCeiling = []
+		dungeon.tilesFloor = []
+		dungeon.tilesLeftWall = []
+		dungeon.tilesRightWall = []
+		if (dungeon.isDungeon) {
+			addFloorTiles()
+			addCeilingTiles()
+			addLeftWallTiles()
+			addRightWallTiles()
+			addEndWall()
+		}
+	}
+	function addFloorTiles() {
+		dungeon.containerFloor = new PIXI.projection.Container2d()
+		dungeon.containerFloor.zIndex = 1
+		dungeon.containerFloor.position.set(MaxWidth / 2, MaxHeight)
+		dungeon.containerFloor.proj.setAxisY({
+			x: 0,
+			y: MaxHeight * .5,
+		}, -1)
+		dungeon.layer.stage.addChild(dungeon.containerFloor)
+		for (var i=0; i<TOTAL_TILES; i++) {
+			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'))
+			tile.anchor.set(0.5, 1.0)
+			tile.width = MaxWidth
+			tile.height = MaxWidth
+			tile.position.y = i * MaxWidth * -1
+			tile.gridY = i
+			TweenMax.set(tile, {
+				pixi: {
+					tint: '#aaa',
+				}
+			})
+			dungeon.tilesFloor.push(tile)
+			dungeon.containerFloor.addChild(tile)
+		}
+	}
+	function addCeilingTiles() {
+		dungeon.containerCeiling = new PIXI.projection.Container2d()
+		dungeon.containerCeiling.zIndex = 1
+		dungeon.containerCeiling.position.set(MaxWidth / 2, 0)
+		dungeon.containerCeiling.proj.setAxisY({
+			x: 0,
+			y: MaxHeight * .5 * -1,
+		}, -1)
+		dungeon.layer.stage.addChild(dungeon.containerCeiling)
+
+		for (var i=0; i<TOTAL_TILES; i++) {
+			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'))
+			tile.anchor.set(0.5, 1)
+			tile.width = MaxWidth
+			tile.height = MaxWidth
+			tile.position.y = i * MaxWidth * -1
+			tile.gridY = i
+			TweenMax.set(tile, {
+				pixi: {
+					tint: '#aaa',
+				}
+			})
+			dungeon.tilesCeiling.push(tile)
+			dungeon.containerCeiling.addChild(tile)
+		}
+	}
+	function addLeftWallTiles() {
+		dungeon.containerLeftWall = new PIXI.projection.Container2d()
+		dungeon.containerLeftWall.zIndex = 1
+		dungeon.containerLeftWall.position.set(0, MaxHeight * .5)
+		dungeon.containerLeftWall.proj.setAxisX({
+			x: MaxWidth * .5 * -1,
+			y: 0,
+		}, -1)
+		dungeon.layer.stage.addChild(dungeon.containerLeftWall)
+
+		for (var i=0; i<TOTAL_TILES; i++) {
+			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane-wall.jpg'))
+			tile.anchor.set(1, .5)
+			tile.width = MaxWidth * AspectRatio
+			tile.height = MaxHeight
+			tile.position.x = i * MaxWidth * AspectRatio * -1
+			tile.gridY = i
+			TweenMax.set(tile, {
+				pixi: {
+					tint: '#fda',
+				}
+			})
+			dungeon.tilesLeftWall.push(tile)
+			dungeon.containerLeftWall.addChild(tile)
+		}
+	}
+	function addRightWallTiles() {
+		dungeon.containerRightWall = new PIXI.projection.Container2d()
+		dungeon.containerRightWall.zIndex = 1
+		dungeon.containerRightWall.position.set(MaxWidth, MaxHeight * .5)
+		dungeon.containerRightWall.proj.setAxisX({
+			x: MaxWidth * .5,
+			y: 0,
+		}, -1)
+		dungeon.layer.stage.addChild(dungeon.containerRightWall)
+
+		for (var i=0; i<TOTAL_TILES; i++) {
+			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane-wall.jpg'))
+			tile.anchor.set(1, .5)
+			tile.width = MaxWidth * AspectRatio
+			tile.height = MaxHeight
+			tile.position.x = i * MaxWidth * AspectRatio * -1
+			tile.gridY = i
+			TweenMax.set(tile, {
+				pixi: {
+					tint: '#fda',
+				}
+			})
+			dungeon.tilesRightWall.push(tile)
+			dungeon.containerRightWall.addChild(tile)
+		}
+	}
+	function addEndWall() {
+		dungeon.endWall = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'))
+		dungeon.endWall.anchor.set(.5, 1)
+		dungeon.endWall.factor = 1
+		dungeon.endWall.proj.affine = PIXI.projection.AFFINE.AXIS_X
+		dungeon.endWall.position.set(0, 0)
+		dungeon.endWall.width = MaxWidth
+		dungeon.endWall.height = MaxHeight
+		TweenMax.set(dungeon.endWall, {
+			pixi: {
+				contrast: 5,
+				brightness: .05
+			}
+		})
+		// size and check offset
+		dungeon.endWall.y = -dungeon.distanceEnd
+		dungeon.containerFloor.addChild(dungeon.endWall)
 	}
 	function setDungeonEntity(img) {
-		// parent container?
-		/*dungeon.mobParent = new PIXI.projection.Sprite2d(PIXI.Texture.EMPTY)
-		dungeon.mobParent.tint = 0x00ffff
-		dungeon.mobParent.factor = 1
-		dungeon.mobParent.proj.affine = PIXI.projection.AFFINE.AXIS_X
-		dungeon.mobParent.anchor.set(0.5, 1)
-		dungeon.mobParent.position.set(0, (dungeon.distanceEnd + CLOSEST_MOB_DISTANCE) * -1)*/
-		// child container - check texture is loaded
 		battle.loadMobTexture(img)
-		dungeon.orc = new PIXI.projection.Sprite2d(PIXI.Texture.from('mobs/'+ img + '/1.png'))
-		dungeon.orc.anchor.set(0.5, 1.0)
-		dungeon.orc.factor = 1
-		dungeon.orc.proj.affine = PIXI.projection.AFFINE.AXIS_X
-		dungeon.orc.position.set(0, (dungeon.distanceEnd + CLOSEST_MOB_DISTANCE) * -1)
+		dungeon.entity = new PIXI.projection.Sprite2d(PIXI.Texture.from('mobs/'+ img + '/1.png'))
+		dungeon.entity.anchor.set(0.5, mobs.images[img].anchorY)
+		dungeon.entity.factor = 1
+		dungeon.entity.proj.affine = PIXI.projection.AFFINE.AXIS_X
+		dungeon.entity.position.set(0, (dungeon.distanceEnd + CLOSEST_MOB_DISTANCE) * -1)
+		dungeon.entity.positionBattleGo = dungeon.distanceEnd + (CLOSEST_MOB_DISTANCE * 3)
 		// size and check offset
-		dungeon.orc.y = mobs.images.orc.yPadding * MOB_DUNGEON_SIZE
-		TweenMax.set(dungeon.orc, {
+		// dungeon.entity.y = mobs.images[img].yPadding * MOB_DUNGEON_SIZE
+		TweenMax.set(dungeon.entity, {
 			pixi: { scale: MOB_DUNGEON_SIZE }
 		})
 		// idle
@@ -250,14 +374,32 @@ var dungeon;
 			onUpdate: dungeon.setSrc,
 			onUpdateParams: [tween, img],
 		}))
-		// dungeon.container.addChild(dungeon.mobParent)
-		dungeon.container.addChild(dungeon.orc)
+		dungeon.containerFloor.addChild(dungeon.entity)
 	}
 	function setGridPosition() {
 		// dungeon.tiling.tileProj.pivot.y = -dungeon.distanceCurrent
 		dungeon.tiling.tilePosition.y = dungeon.distanceCurrent
 		// console.info('dungeon.distanceCurrent', dungeon.distanceCurrent)
 		dungeon.animateEntities()
+
+		// experimental corridor
+		if (dungeon.isDungeon) {
+			dungeon.tilesFloor.length && dungeon.tilesFloor.forEach(positionGridTile)
+			dungeon.tilesCeiling.length && dungeon.tilesCeiling.forEach(positionGridTile)
+			dungeon.tilesLeftWall.length && dungeon.tilesLeftWall.forEach(positionGridTileWall)
+			dungeon.tilesRightWall.length && dungeon.tilesRightWall.forEach(positionGridTileWall)
+			dungeon.endWall.y = (dungeon.distanceEnd - dungeon.distanceCurrent) * -1
+		}
+		console.info(dungeon.distanceCurrent, -dungeon.entity.positionBattleGo)
+		if (dungeon.distanceCurrent >= Math.min(dungeon.distanceEnd, dungeon.entity.positionBattleGo)) {
+			battle.go()
+		}
+	}
+	function positionGridTile(tile, index) {
+		tile.position.y = ((tile.gridY * MaxWidth) - dungeon.distanceCurrent) * -1
+	}
+	function positionGridTileWall(tile, index) {
+		tile.position.x = ((tile.gridY * MaxWidth * AspectRatio) - (dungeon.distanceCurrent * AspectRatio)) * -1
 	}
 	function getCompass() {
 		return dungeon.direction % TURN_INTERVAL
@@ -267,17 +409,15 @@ var dungeon;
 	}
 	function animateEntities() {
 		let distance = -dungeon.getEntityDistance()
-		TweenMax.set(dungeon.orc, {
-			pixi: {
-				blur: getBlurValue(distance)
-			}
-		})
-		dungeon.orc.position.y = distance
+		/*TweenMax.set(dungeon.entity, {
+			pixi: { blur: getBlurValue(distance) }
+		})*/
+		dungeon.entity.position.y = distance
 	}
 	function setSrc(tween, img) {
 		tween.frame = ~~tween.frame
 		if (tween.frame !== tween.lastFrame) {
-			dungeon.orc.texture = mob.textures[img][tween.frame]
+			dungeon.entity.texture = mob.textures[img][tween.frame]
 			tween.lastFrame = tween.frame
 		}
 	}
@@ -308,6 +448,7 @@ var dungeon;
 			else dungeon.walkForward()
 		}
 	}
+	// moving functions
 	function getWalkProgress() {
 		return dungeon.distanceCurrent / dungeon.distanceEnd
 	}
@@ -321,26 +462,37 @@ var dungeon;
 	function getWalkDurationStart() {
 		return dungeon.distanceCurrent / dungeon.distancePerSecond
 	}
+	function getBlurValue(distance) {
+		distance = ((distance * -1) - 1500)
+		if (distance < 0) distance = 0
+		blurValue = distance / 5000
+		if (blurValue > MAX_BLUR) blurValue = MAX_BLUR
+		return blurValue
+	}
 	function walkForward() {
-		if (dungeon.walking || dungeon.distanceCurrent >= dungeon.distanceEnd) {
+		if (dungeon.walking) {
 			// nothing
+			dungeon.moveEnd()
 		}
 		else {
-			dungeon.walking = 1
-			dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationEnd(), {
-				distanceCurrent: dungeon.distanceEnd,
-				ease: Power0.easeIn,
-				onUpdate: dungeon.setGridPosition,
-				onComplete: dungeon.moveEnd,
-			})
+			if (dungeon.getWalkProgress() >= 0 && dungeon.getWalkProgress() < 1) {
+				dungeon.walking = 1
+				dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationEnd(), {
+					distanceCurrent: dungeon.distanceEnd,
+					ease: Power0.easeIn,
+					onUpdate: dungeon.setGridPosition,
+					onComplete: dungeon.moveEnd,
+				})
+			}
 		}
 	}
 	function walkBackward() {
-		if (dungeon.walking || dungeon.distanceCurrent <= dungeon.distanceStart) {
+		if (dungeon.walking) {
 			// nothing
+			dungeon.moveEnd()
 		}
 		else {
-			if (dungeon.getWalkProgress() < 1) {
+			if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
 				dungeon.walking = -1
 				dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationStart(), {
 					distanceCurrent: dungeon.distanceStart,
@@ -354,22 +506,12 @@ var dungeon;
 	function moveEnd() {
 		dungeon.walking = 0
 		dungeon.walkTween.pause()
-		if (dungeon.distanceCurrent >= dungeon.distanceEnd) {
-			battle.go()
-		}
-	}
-	function getBlurValue(distance) {
-		distance = ((distance * -1) - 1500)
-		if (distance < 0) distance = 0
-		blurValue = distance / 5000
-		if (blurValue > MAX_BLUR) blurValue = MAX_BLUR
-		return blurValue
 	}
 	function turnLeft() {
 		if (dungeon.walking || TURN_DISABLED) return
 		dungeon.walking = 1
-		let x = dungeon.orc.x
-		let y = dungeon.orc.y
+		let x = dungeon.entity.x
+		let y = dungeon.entity.y
 		let xEnd = 0
 		let yEnd = 0
 		let alphaEnd = 1
@@ -395,29 +537,29 @@ var dungeon;
 				xEnd = 0
 				yEnd = distance
 				alphaEnd = 0
-				dungeon.orc.alpha = 0
+				dungeon.entity.alpha = 0
 			}
 			else {
 				// left
 				xEnd = 0
 				yEnd = -distance
 				yEase = Circ.easeOut
-				dungeon.orc.alpha = 1
+				dungeon.entity.alpha = 1
 			}
 		}
 		TweenMax.to(dungeon.tiling.tileTransform, TURN_SPEED, {
 			pixi: { rotation: '+=' + TURN_INTERVAL },
 			ease: Power0.easeIn,
 		})
-		TweenMax.to(dungeon.orc, TURN_SPEED, {
+		TweenMax.to(dungeon.entity, TURN_SPEED, {
 			x: xEnd,
 			ease: Power0.easeNone,
 		})
-		TweenMax.to(dungeon.orc, TURN_SPEED, {
+		TweenMax.to(dungeon.entity, TURN_SPEED, {
 			y: yEnd,
 			ease: yEase,
 			onComplete: () => {
-				dungeon.orc.alpha = alphaEnd
+				dungeon.entity.alpha = alphaEnd
 				dungeon.moveEnd()
 			}
 		})
@@ -426,8 +568,8 @@ var dungeon;
 	function turnRight() {
 		if (dungeon.walking || TURN_DISABLED) return
 		dungeon.walking = 1
-		let x = dungeon.orc.x
-		let y = dungeon.orc.y
+		let x = dungeon.entity.x
+		let y = dungeon.entity.y
 		let xEnd = 0
 		let yEnd = 0
 		let alphaStart = 1
@@ -455,14 +597,14 @@ var dungeon;
 				xEnd = 0
 				yEnd = -distance
 				yEase = Circ.easeOut
-				dungeon.orc.alpha = 1
+				dungeon.entity.alpha = 1
 			}
 			else {
 				// left
 				xEnd = 0
 				yEnd = distance
 				alphaEnd = 0
-				dungeon.orc.alpha = 0
+				dungeon.entity.alpha = 0
 			}
 		}
 
@@ -470,15 +612,15 @@ var dungeon;
 			pixi: { rotation: '-=' + TURN_INTERVAL },
 			ease: Power0.easeIn,
 		})
-		TweenMax.to(dungeon.orc, TURN_SPEED, {
+		TweenMax.to(dungeon.entity, TURN_SPEED, {
 			x: xEnd,
 			ease: Power0.easeNone,
 		})
-		TweenMax.to(dungeon.orc, TURN_SPEED, {
+		TweenMax.to(dungeon.entity, TURN_SPEED, {
 			y: yEnd,
 			ease: yEase,
 			onComplete: () => {
-				dungeon.orc.alpha = alphaEnd
+				dungeon.entity.alpha = alphaEnd
 				dungeon.moveEnd()
 			}
 		})

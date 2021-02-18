@@ -20,7 +20,7 @@ var expanse;
 
 	var cloudSpeed = 777
 	const phaseDuration = 2000 // 20 minutes?
-	expanse.aspectRatio = MaxWidth / MaxHeight
+	expanse.aspectRatio = AspectRatio
 	determineStartingPhase()
 	//////////////////////////////
 

@@ -74,7 +74,7 @@ var game;
 		time = Date.now();
 		if (time - ng.clearConsoleTime > 1800000) {
 			ng.clearConsoleTime = time
-			console.clear()
+			// console.clear()
 		}
 		// check disconnect
 		diff = time - heartbeat.receiveTime;
