@@ -52,7 +52,7 @@ let players = []; // player sprites
 		}
 	}
 	function initPlayerSprite(i) {
-		console.info('initPlayerSprite')
+		// console.info('initPlayerSprite')
 		let id = ask.getAskId()
 		players[i] = {}
 		players[i].askId = id
@@ -76,7 +76,7 @@ let players = []; // player sprites
 		// this may change appearance depending on players leaving/joining etc
 		players[i].sprite = PIXI.Sprite.from(`images/players/default.png`)
 		players[i].sprite.alpha = alpha
-		console.warn("updatePlayerSprite", i, alpha)
+		// console.warn("updatePlayerSprite", i, alpha)
 	}
 	function updateAllPlayerSprites() {
 		players.forEach((p, i) => {

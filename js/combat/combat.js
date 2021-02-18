@@ -1962,12 +1962,12 @@ var combat;
 	function updateCanvasLayer() {
 		// called via resizeAll method
 		w = window.innerWidth
-		if (dungeon.layer !== void 0) {
+		if (dungeon.layer.view !== void 0) {
 			h = ~~(dungeon.layer.screen.height / MaxHeight * window.innerHeight)
 			dungeon.layer.view.style.width = w + 'px'
 			dungeon.layer.view.style.height = h + 'px'
 		}
-		if (battle.layer !== void 0) {
+		if (battle.layer.view !== void 0) {
 			battle.layer.view.style.width = w + 'px'
 			battle.layer.view.style.height = h + 'px'
 		}

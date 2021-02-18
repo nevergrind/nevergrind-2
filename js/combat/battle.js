@@ -1,6 +1,7 @@
 var battle;
 (function(TweenMax, $, _, PIXI, Linear, undefined) {
 	battle = {
+		layer: {},
 		lastBuffAlreadyActive: false,
 		buffIconTimers: {},
 		expThreshold: [0,
@@ -311,7 +312,7 @@ var battle;
 		battle.layer.view.style.position = 'absolute'
 		battle.layer.view.style.zIndex = 1
 		querySelector('#scene-battle').appendChild(battle.layer.view)
-
+		combat.updateCanvasLayer()
 	}
 	function setupMobs(config) {
 		if (typeof config === 'object') {

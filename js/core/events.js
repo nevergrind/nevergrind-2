@@ -266,6 +266,8 @@
 						else if (key === '$') button.triggerSkill(9)
 						else if (key === '%') button.triggerSkill(10)
 						else if (key === '^') button.triggerSkill(11)
+						else if (key === 'ArrowRight') dungeon.turnRight()
+						else if (key === 'ArrowLeft') dungeon.turnLeft()
 					}
 
 
