@@ -6,8 +6,14 @@ var dungeon;
 	dungeon = {
 		initialized: 0,
 		isDungeon: true,
+		is2Dmode: true,
 		entityTweens: [],
 		layer: {},
+		camera: {},
+		bgLayer: {},
+		bg: {},
+		mainLayer: {},
+		groundLayer: {},
 		tilesFloor: [],
 		tilesCeiling: [],
 		tilesLeftWall: [],
@@ -36,7 +42,7 @@ var dungeon;
 		distanceCurrent: 0,
 		totalTiles: TOTAL_TILES,
 		distanceEnd: GRID_SIZE * TOTAL_TILES,
-		distancePerSecond: app.isApp ? (GRID_SIZE * .15) : GRID_SIZE,
+		distancePerSecond: app.isApp ? (GRID_SIZE * .2) : GRID_SIZE,
 		walkTween: TweenMax.to('#body', 0, {}),
 		getCompass,
 		centerY,
@@ -166,8 +172,13 @@ var dungeon;
 			combat.updateCanvasLayer()
 		}
 		entityCleanup()
-		setDungeonEntity('toadlok')
-		dungeon.animateEntities()
+		if (dungeon.is2Dmode) {
+			setDungeonEntity('toadlok')
+			dungeon.animateEntities()
+		}
+		else {
+			// 3d things?
+		}
 		button.setAll()
 		chat.scrollBottom()
 	}
@@ -221,17 +232,70 @@ var dungeon;
 		dungeon.tilesLeftWall = []
 		dungeon.tilesRightWall = []
 		if (dungeon.isDungeon) {
-			addFloorTiles()
-			addCeilingTiles()
-			addLeftWallTiles()
-			addRightWallTiles()
-			addEndWall()
+			if (dungeon.is2Dmode) {
+				addFloorTiles()
+				addCeilingTiles()
+				addLeftWallTiles()
+				addRightWallTiles()
+				addEndWall()
+			}
+			else {
+				addFloorTiles3d()
+			}
 		}
+	}
+	function addFloorTiles3d() {
+		dungeon.containerFloor = new PIXI.projection.Container2d()
+		dungeon.containerFloor.zIndex = 3
+		dungeon.containerFloor.position.set(MaxWidth * .5, MaxHeight)
+		dungeon.containerFloor.proj.setAxisY({
+			x: 0,
+			y: MaxHeight * .5,
+		}, -1)
+		dungeon.layer.stage.addChild(dungeon.containerFloor)
+
+
+		dungeon.camera = new PIXI.projection.Camera3d();
+		dungeon.camera.setPlanes(300, 10, 1000, false);
+		dungeon.camera.position.set(MaxWidth * .5, MaxHeight * .5);
+		dungeon.camera.position3d.y = 0; // camera is above the ground
+		dungeon.layer.stage.addChild(dungeon.camera);
+
+		dungeon.groundLayer = new PIXI.projection.Container3d();
+		dungeon.groundLayer.euler.x = Math.PI * .5;
+		dungeon.camera.addChild(dungeon.groundLayer);
+
+		dungeon.bgLayer = new PIXI.projection.Container3d();
+		dungeon.bgLayer.proj.affine = PIXI.projection.AFFINE.AXIS_X;
+		dungeon.camera.addChild(dungeon.bgLayer);
+		dungeon.bgLayer.position3d.z = 80;
+
+		dungeon.mainLayer = new PIXI.projection.Container3d();
+		dungeon.mainLayer.proj.affine = PIXI.projection.AFFINE.AXIS_X;
+		dungeon.camera.addChild(dungeon.mainLayer);
+
+		// background sprite
+		dungeon.bg = new PIXI.Sprite(PIXI.Texture.from('images/dungeon/bg-test-sky.jpg'))
+        dungeon.bg.position.x = 0;
+        dungeon.bg.anchor.set(.5, .5)
+        dungeon.bgLayer.addChild(dungeon.bg);
+
+        dungeon.fg = new PIXI.projection.Sprite3d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'));
+        dungeon.fg.anchor.set(.5, .5);
+        dungeon.fg.position.x = 0;
+        dungeon.bgLayer.addChild(dungeon.fg);
+        // use position or position3d here, its not important,
+        // unless you need Z - then you need position3d
+
+        // dungeon.groundLayer.addChild(dungeon.fg);
+
+        dungeon.sky.alpha = 0
+		dungeon.tiling.alpha = 0
 	}
 	function addFloorTiles() {
 		dungeon.containerFloor = new PIXI.projection.Container2d()
-		dungeon.containerFloor.zIndex = 1
-		dungeon.containerFloor.position.set(MaxWidth / 2, MaxHeight)
+		dungeon.containerFloor.zIndex = 3
+		dungeon.containerFloor.position.set(MaxWidth * .5, MaxHeight)
 		dungeon.containerFloor.proj.setAxisY({
 			x: 0,
 			y: MaxHeight * .5,
@@ -239,15 +303,13 @@ var dungeon;
 		dungeon.layer.stage.addChild(dungeon.containerFloor)
 		for (var i=0; i<TOTAL_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'))
-			tile.anchor.set(0.5, 1.0)
+			tile.anchor.set(.5, 1)
 			tile.width = MaxWidth
 			tile.height = MaxWidth
 			tile.position.y = i * MaxWidth * -1
-			tile.gridY = i
+			tile.gridIndex = i
 			TweenMax.set(tile, {
-				pixi: {
-					tint: '#aaa',
-				}
+				pixi: { tint: '#aaa', }
 			})
 			dungeon.tilesFloor.push(tile)
 			dungeon.containerFloor.addChild(tile)
@@ -256,7 +318,7 @@ var dungeon;
 	function addCeilingTiles() {
 		dungeon.containerCeiling = new PIXI.projection.Container2d()
 		dungeon.containerCeiling.zIndex = 1
-		dungeon.containerCeiling.position.set(MaxWidth / 2, 0)
+		dungeon.containerCeiling.position.set(MaxWidth * .5, 0)
 		dungeon.containerCeiling.proj.setAxisY({
 			x: 0,
 			y: MaxHeight * .5 * -1,
@@ -265,11 +327,11 @@ var dungeon;
 
 		for (var i=0; i<TOTAL_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'))
-			tile.anchor.set(0.5, 1)
+			tile.anchor.set(.5, 1)
 			tile.width = MaxWidth
 			tile.height = MaxWidth
 			tile.position.y = i * MaxWidth * -1
-			tile.gridY = i
+			tile.gridIndex = i
 			TweenMax.set(tile, {
 				pixi: {
 					tint: '#aaa',
@@ -295,7 +357,7 @@ var dungeon;
 			tile.width = MaxWidth * AspectRatio
 			tile.height = MaxHeight
 			tile.position.x = i * MaxWidth * AspectRatio * -1
-			tile.gridY = i
+			tile.gridIndex = i
 			TweenMax.set(tile, {
 				pixi: {
 					tint: '#fda',
@@ -321,7 +383,7 @@ var dungeon;
 			tile.width = MaxWidth * AspectRatio
 			tile.height = MaxHeight
 			tile.position.x = i * MaxWidth * AspectRatio * -1
-			tile.gridY = i
+			tile.gridIndex = i
 			TweenMax.set(tile, {
 				pixi: {
 					tint: '#fda',
@@ -384,22 +446,27 @@ var dungeon;
 
 		// experimental corridor
 		if (dungeon.isDungeon) {
-			dungeon.tilesFloor.length && dungeon.tilesFloor.forEach(positionGridTile)
-			dungeon.tilesCeiling.length && dungeon.tilesCeiling.forEach(positionGridTile)
-			dungeon.tilesLeftWall.length && dungeon.tilesLeftWall.forEach(positionGridTileWall)
-			dungeon.tilesRightWall.length && dungeon.tilesRightWall.forEach(positionGridTileWall)
-			dungeon.endWall.y = (dungeon.distanceEnd - dungeon.distanceCurrent) * -1
+			if (dungeon.is2Dmode) {
+				dungeon.tilesFloor.forEach(positionGridTile)
+				dungeon.tilesCeiling.forEach(positionGridTile)
+				dungeon.tilesLeftWall.forEach(positionGridTileWall)
+				dungeon.tilesRightWall.forEach(positionGridTileWall)
+				dungeon.endWall.y = (dungeon.distanceEnd - dungeon.distanceCurrent) * -1
+			}
+			else {
+
+			}
 		}
-		console.info(dungeon.distanceCurrent, -dungeon.entity.positionBattleGo)
+		// console.info(dungeon.distanceCurrent, -dungeon.entity.positionBattleGo)
 		if (dungeon.distanceCurrent >= Math.min(dungeon.distanceEnd, dungeon.entity.positionBattleGo)) {
 			battle.go()
 		}
 	}
 	function positionGridTile(tile, index) {
-		tile.position.y = ((tile.gridY * MaxWidth) - dungeon.distanceCurrent) * -1
+		tile.position.y = ((tile.gridIndex * MaxWidth) - dungeon.distanceCurrent) * -1
 	}
 	function positionGridTileWall(tile, index) {
-		tile.position.x = ((tile.gridY * MaxWidth * AspectRatio) - (dungeon.distanceCurrent * AspectRatio)) * -1
+		tile.position.x = ((tile.gridIndex * MaxWidth * AspectRatio) - (dungeon.distanceCurrent * AspectRatio)) * -1
 	}
 	function getCompass() {
 		return dungeon.direction % TURN_INTERVAL
@@ -408,11 +475,12 @@ var dungeon;
 		return (dungeon.getWalkProgressToGo() * dungeon.distanceEnd) + CLOSEST_MOB_DISTANCE
 	}
 	function animateEntities() {
-		let distance = -dungeon.getEntityDistance()
-		/*TweenMax.set(dungeon.entity, {
-			pixi: { blur: getBlurValue(distance) }
-		})*/
-		dungeon.entity.position.y = distance
+		if (dungeon.is2Dmode) {
+			let distance = -dungeon.getEntityDistance()
+			/*TweenMax.set(dungeon.entity, {
+				pixi: { blur: getBlurValue(distance) }
+			})*/
+			dungeon.entity.position.y = distance		}
 	}
 	function setSrc(tween, img) {
 		tween.frame = ~~tween.frame

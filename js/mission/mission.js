@@ -230,7 +230,7 @@ var mission;
 			ease: Power4.easeOut
 		});
 		ng.msg('Mission started: ' + quests[mission.questId].title)
-		let questDelay = ng.isApp ? 3 : 0
+		let questDelay = app.isApp ? 3 : 0
 		delayedCall(questDelay, dungeon.go)
 	}
 

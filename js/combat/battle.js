@@ -241,7 +241,7 @@ var battle;
 		}
 
 		ng.setScene('battle')
-		if (!ng.isApp) {
+		if (!app.isApp) {
 			// setup some mission data
 			mission.inProgress = true
 			mission.id = 1

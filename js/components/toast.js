@@ -39,13 +39,13 @@ var toast;
 			toast.timer = delayedCall(toast.expired, removeToast)
 			if (data.action === 'trade-request') {
 				trade.timer = delayedCall(toast.expired, trade.tradeExpired, [ data.name ])
-				if (!ng.isApp) {
+				if (!app.isApp) {
 					// console.info('toast data', _.cloneDeep(toast.data))
 					setTimeout(toast.accept, 100)
 				}
 			}
 			else if (data.action === 'party-invite') {
-				if (!ng.isApp) {
+				if (!app.isApp) {
 					setTimeout(toast.accept, 100)
 				}
 			}

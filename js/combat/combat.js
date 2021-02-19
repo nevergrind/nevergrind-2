@@ -711,7 +711,7 @@ var combat;
 	function selfDied() {
 		// console.warn('You died!')
 		// subtract XP
-		if (!ng.isApp) {
+		if (!app.isApp) {
 			// really just for testing
 			my.set(PROP.HP, 0)
 			bar.updateBar(PROP.HP, my)
@@ -753,7 +753,7 @@ var combat;
 		if (type === PROP.HP) {
 			if (my.hp <= 0) {
 				// death
-				if (ng.isApp) selfDied()
+				if (app.isApp) selfDied()
 				else my.set(PROP.HP, my.hpMax) // testing
 			}
 		}
