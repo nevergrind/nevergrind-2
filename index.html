@@ -473,6 +473,18 @@ app.socketUrl = app.isApp ?
 
 <div id="chat-wrap" class="text-shadow"></div>
 <div id="button-wrap" class="no-select text-shadow"></div>
+<div id="mini-map" class="text-shadow no-select">
+	<div id="mini-map-head" class="flex-row flex-center">
+		<div id="mini-map-zoom-in" class="ng-btn">Zoom+</div>
+		<div id="mini-map-center" class="ng-btn">Center</div>
+		<div id="mini-map-zoom-out" class="ng-btn">Zoom-</div>
+	</div>
+	<div id="mini-map-bg">
+		<div id="mini-map-drag-parent">
+			<div id="mini-map-drag"></div>
+		</div>
+	</div>
+</div>
 <div id="tooltip-skill" class="no-pointer no-select text-shadow">
 	<div id="tooltip-skill-name">Test</div>
 	<div id="tooltip-skill-description">Test</div>
@@ -561,6 +573,8 @@ app.socketUrl = app.isApp ?
 			'core/context',
 			'core/events',
 			'core/socket',
+			'core/map',
+			'core/maps',
 			'chat/chat',
 			'chat/party',
 			'chat/guild',

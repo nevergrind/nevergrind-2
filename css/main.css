@@ -1563,6 +1563,52 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	box-shadow: 0 500px 0 rgba(255, 0, 0, .4) inset;
 }
 /* dungeon */
+#mini-map {
+	display: none;
+	opacity: 0;
+	position: fixed;
+	right: .5rem;
+	bottom: 4rem;
+	padding: .2rem;
+	border: 1px solid #048;
+	background: linear-gradient(135deg, #048, #025, #013, #025, #048);
+	text-align: center;
+	z-index: 2;
+}
+#mini-map-head {
+	margin-bottom: .2rem;
+	border: 1px solid #000;
+	background: #060606;
+}
+#mini-map-head > * {
+	font-size: .75rem;
+	padding: 0 .5rem;
+	text-transform: uppercase;
+	line-height: 1.5;
+}
+#mini-map-bg {
+	display: flex;
+	flex-direction: column;
+	background: #060606;
+	border: 1px solid #000;
+}
+#mini-map-drag-parent {
+	position: relative;
+	width: 300px;
+	height: 300px;
+	overflow: hidden;
+}
+#mini-map-drag {
+	position: absolute;
+	top: 0;
+	left: 0;
+	min-width: 600px;
+	min-height: 600px;
+	background: repeating-linear-gradient(90deg, #0000 0px, #0000 19px, #444 20px, #444 20px),
+		repeating-linear-gradient(0deg, #0000 0px, #0000 19px, #444 20px, #444 20px);
+	box-shadow: 0 0 20px 0 #9973 inset;
+	cursor: url('cursor/pointer.png'), pointer!important;
+}
 #button-wrap {
 	position: fixed;
 	align-self: center;

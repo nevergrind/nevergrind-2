@@ -64,6 +64,8 @@ const jsFiles = [
 	'core/context',
 	'core/events',
 	'core/socket',
+	'core/map',
+	'core/maps',
 	'chat/chat',
 	'chat/party',
 	'chat/guild',

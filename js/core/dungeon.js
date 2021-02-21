@@ -20,6 +20,7 @@ var dungeon;
 		bg: {},
 		mainLayer: {},
 		groundLayer: {},
+		map: {},
 		tilesFloor: [],
 		tilesCeiling: [],
 		tilesLeftWall: [],
@@ -144,6 +145,17 @@ var dungeon;
 			chat.modeChange(CHAT.PARTY)
 		}
 		chat.sizeDungeon()
+		TweenMax.to('#mini-map', .6, {
+			delay: 1,
+			startAt: {
+				display: 'block',
+				opacity: 0,
+				scale: 0,
+			},
+			opacity: 1,
+			scale: 1,
+			ease: Back.easeOut,
+		})
 		ng.setScene('dungeon')
 		dungeon.init()
 		combat.autoAttackDisable()
@@ -188,6 +200,8 @@ var dungeon;
 			dungeon.initialized = true
 			querySelector('#scene-dungeon').innerHTML = dungeon.html()
 			// dungeon layer for ooc buffs
+			dungeon.map = maps[mission.id]
+			map.init()
 			dungeon.initCanvas()
 			player.initCanvas()
 			combat.updateCanvasLayer()
@@ -264,7 +278,6 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.tiling)
 
-		// experimental
 		dungeon.tilesCeiling = []
 		dungeon.tilesFloor = []
 		dungeon.tilesLeftWall = []
