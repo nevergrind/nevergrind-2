@@ -46,6 +46,9 @@ var popover;
 			'potion-hp': 'Use Health Potion',
 			'potion-mp': 'Use Mana Potion',
 			'potion-sp': 'Use Spirit Potion',
+			'potion-hp-empty': 'No Health Potions Remain',
+			'potion-mp-empty': 'No Mana Potions Remain',
+			'potion-sp-empty': 'No Spirit Potions Remain',
 		}
 		if (id.startsWith('skill-')) {
 			if (id === 'skill-primary-attack-btn') html = 'Primary Attack'
@@ -66,6 +69,15 @@ var popover;
 			html = buffs[buffName].name || _.startCase(buffName)
 		}
 		else {
+			if (id === 'potion-hp') {
+				if (button.hasPotionByType('hp')) id = 'potion-hp-empty'
+			}
+			else if (id === 'potion-mp') {
+				if (button.hasPotionByType('mp')) id = 'potion-mp-empty'
+			}
+			else if (id === 'potion-sp') {
+				if (button.hasPotionByType('sp')) id = 'potion-sp-empty'
+			}
 			html = mainMenuPopovers[id]
 		}
 		// console.info('setPopoverHtml', mainMenuPopovers['bar-inventory'])

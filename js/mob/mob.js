@@ -693,7 +693,7 @@ let mobs = [];
 		setTimeScaleSpeed(i)
 		var filter = new PIXI.filters.ColorMatrixFilter()
 		filter.sepia()
-		TweenMax.to([mobs[i].sprite, mobs[i].shadow], 3, {
+		TweenMax.to(mobs[i].sprite, 3, {
 			startAt: {
 				alpha: 1,
 				pixi: {

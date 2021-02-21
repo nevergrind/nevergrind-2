@@ -30,30 +30,39 @@
 		})
 	}
 	function fissure(o) {
-		for (var i=0; i<15; i++) {
+		for (var i=0; i<30; i++) {
 			!function(i) {
-				let dur = .5
-				delayedCall(i * .1, () => {
-					o.endFrame = 3
+				let dur = 1
+				delayedCall(i * .05, () => {
+					o.endFrame = 6
 					let y = ask.bottomY(o.index, true)
-					let yAdj = _.random(0, 30)
-					let zIndex = yAdj < 15 ? ask.behindMobLayer(o) : ask.frontMobLayer(o)
+					let yAdj = _.random(0, 40)
+					let zIndex = yAdj < 20 ? ask.behindMobLayer(o) : ask.frontMobLayer(o)
 					let img = ask.groundExplosion(o, {
 						yStart: y + yAdj,
-						xAdjust: _.random(-100, 100),
+						xAdjust: _.random(-125, 125),
 						contrastStart: 1,
 						brightnessStart: 1,
+						contrastEnd: 1.2,
+						brightnessEnd: 3,
 						anchorY: .78,
 						sizeStart: 96,
-						sizeEnd: 96,
+						sizeEnd: 128,
 						duration: dur,
 						frameDuration: dur,
 						yoyo: true,
 						zIndex: zIndex,
-						alphaStart: 0,
+						alphaStart: 1,
 						alpha: 1,
-						frameEase: Power2.easeOut,
-						ease: Power0.easeInOut,
+						frameEase: Power2.easeIn,
+						ease: Power2.easeOut,
+					})
+					TweenMax.to(img, dur, {
+						startAt: { pixi: { blur: 20 }},
+						pixi: { blur: 0 },
+						ease: Power4.easeOut,
+						repeat: 1,
+						yoyo: true,
 					})
 					ask.fadeOut(img, dur, dur * .2)
 				})

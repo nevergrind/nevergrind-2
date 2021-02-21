@@ -451,7 +451,8 @@ var combat;
 			if (isBattleOver()) {
 				endCombat()
 				ng.view = 'dungeon'
-				delayedCall(5, dungeon.go, [true])
+				// TODO: broadcast done
+				dungeon.endBattle()
 			}
 		}
 		// console.info('object', o)

@@ -10,6 +10,7 @@ var button;
 		handlePotionSlotContextClick,
 		getPotionPanelHtml,
 		updatePotionPanel,
+		hasPotionByType,
 		getHighestPotion,
 		handleButtonStart,
 		handleButtonUpdate,
@@ -532,6 +533,9 @@ var button;
 			item.useItem('inv', index)
 		}
 		return false // context disabled
+	}
+	function hasPotionByType(potionType) {
+		return button.getHighestPotion(potionType).img.includes('blank')
 	}
 	function getHighestPotion(potionType) {
 		let img = 'blank'

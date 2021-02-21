@@ -3,9 +3,11 @@ const querySelector = document.querySelector.bind(document)
 const querySelectorAll = document.querySelectorAll.bind(document)
 const getElementById = document.getElementById.bind(document)
 const createElement = document.createElement.bind(document)
-
 const delayedCall = TweenMax.delayedCall.bind(TweenMax)
 
+
+const Log = console.log
+const Info = console.info
 const rand = Math.random
 const ceil = Math.ceil
 const floor = Math.floor
