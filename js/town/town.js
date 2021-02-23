@@ -97,7 +97,7 @@ var town;
 		mob.killAttacks()
 		dungeon.killEntityTweens()
 		TweenMax.set('#mini-map', {
-			display: 'none',
+			visibility: 'hidden',
 			opacity: 0
 		})
 		if (!create.selected) return

@@ -124,6 +124,7 @@
 	function resize() {
 		context.hide()
 		context.timer.kill()
+		map.applyBounds()
 		windowResized()
 	}
 	function keydown(e) {

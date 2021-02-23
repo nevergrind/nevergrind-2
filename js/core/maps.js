@@ -4,8 +4,8 @@ let maps;
 	maps = [{},
 		{
 			id: 1,
-			width: '24rem',
-			height: '24rem',
+			width: 800,
+			height: 800,
 			rooms: [
 				{
 					id: 0,

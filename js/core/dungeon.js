@@ -40,8 +40,8 @@ var dungeon;
 		endWall: {},
 		tickUpdate: {},
 		direction: 0, // 0 is north, 90 east, 180 south, 270 west
-		positionX: 0, // relative to start?
-		positionY: 0, // relative to start?
+		positionX: 0, // relative to center
+		positionY: 0, // relative to center
 		centerX: [960, 1280, 640, 1600, 320],
 		bottom: MaxHeight,
 		headY: BOTTOM_PLAYER - 200,
@@ -148,7 +148,7 @@ var dungeon;
 		TweenMax.to('#mini-map', .6, {
 			delay: 1,
 			startAt: {
-				display: 'block',
+				visibility: 'visible',
 				opacity: 0,
 				scale: 0,
 			},

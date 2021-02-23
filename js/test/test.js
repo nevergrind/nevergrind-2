@@ -555,4 +555,163 @@ var test;
 		test.container.addChild(test.plane)
 		player.layer.stage.addChild(test.container)
 	}
+	function leftoverMapCode() {
+
+	/*function getEventConfig() {
+		// click center of map
+		let styleMapRoot = getComputedStyle(querySelector('#mini-map'))
+		let styleMapParent = getComputedStyle(map.miniMapParent)
+		let right = parseInt(styleMapRoot.right, 10)
+		let bottom = parseInt(styleMapRoot.bottom, 10)
+		let halfDragMapWidth = parseInt(styleMapParent.width, 10) * .5
+		let halfDragMapHeight = parseInt(styleMapParent.height, 10) * .5
+
+		let clientX = window.innerWidth - right - MAP_PADDING - halfDragMapWidth
+		let clientY = window.innerHeight - bottom - MAP_PADDING - halfDragMapHeight
+		let el = document.elementFromPoint(clientX, clientY)
+		return {
+			el: el,
+			clientX: clientX,
+			clientY: clientY,
+		}
+	}
+	function clickZoomIn() {
+		let config = getEventConfig()
+		const wheelEvent = $.Event( 'wheel', {
+			originalEvent: {
+				deltaY: -650,
+				clientX: config.clientX,
+				clientY: config.clientY,
+				preventDefault: ng.noop
+			}
+		})
+		$(config.el).trigger(wheelEvent)
+	}
+	function clickZoomOut() {
+		let config = getEventConfig()
+		const wheelEvent = $.Event( 'wheel',{
+			originalEvent: {
+				deltaY: 650,
+				clientX: config.clientX,
+				clientY: config.clientY,
+				preventDefault: ng.noop
+			}
+		})
+		$(config.el).trigger(wheelEvent)
+	}*/
+	}
+	function setFromTransformOrigins() {
+		// TOP LEFT
+		// -200 @ .5 scale // (((map.scale * .01) * map.width) * .5) - 300 * .5
+		// 0 @ 1 scale
+		// 400 @ 2 scale // 1600 - 300 * .5
+
+		// CENTER
+		// -250 @ .5 scale
+		// -250 @ 1 scale // 800 * .5 - 300 * .5
+		// -250 @ 2 scale
+
+		// BOTTOM RIGHT
+		// -300 @ .5 scale
+		// -500 @ 1 scale
+		// -900 @ 2
+
+		// preserve original origin
+		map.originX1 = map.originX2
+		map.originY1 = map.originY2
+		// 800x800 map in a 300x300 portlet
+		let parentWidth = map.miniMapParent.offsetWidth // 300
+		let parentHeight = map.miniMapParent.offsetHeight // 300
+		let parentWidthHalf = parentWidth * .5 // 150
+		let parentHeightHalf = parentHeight * .5 // 150
+		let dragWidth = map.miniMapDrag.offsetWidth // 800
+		let dragHeight = map.miniMapDrag.offsetHeight // 800
+		let halfMapWidth = dragWidth * .5
+		let halfMapHeight = dragHeight * .5
+		let centerX = (halfMapWidth - parentWidthHalf) * -1 // 400 - 150 === 250
+		let centerY = (halfMapHeight - parentHeightHalf) * -1 // 400 - 150 === 250
+
+		// scale === 2 - zoomed in BIG X, Y MOVEMENT 1600x1600 map in 300x300 portlet
+		let maxMapHalfWidth = (((SCALE_OUT_MAX * .01) * map.width) * .5) // 800
+		let maxMapHalfHeight = (((SCALE_OUT_MAX * .01) * map.height) * .5) // 800
+		// top-left
+		let scaleMaxOutMinX = centerX + maxMapHalfWidth - parentWidthHalf // -250 + 800 - 150 === 400?
+		let scaleMaxOutMinY = centerY + maxMapHalfHeight - parentHeightHalf // -250 + 800 - 150 === 400?
+		// bottom-right
+		let scaleMaxOutMaxX = centerX - maxMapHalfWidth + parentWidthHalf // -250 - 800 + 150 === -900
+		let scaleMaxOutMaxY = centerY - maxMapHalfHeight + parentHeightHalf // -250 - 800 + 150 === -900
+
+		// scale === .5 - zoomed out SMALL X, Y MOVEMENT 400x400 map in 300x300 portlet
+		let minMapHalfWidth = (((SCALE_IN_MAX * .01) * map.width) * .5) // 200
+		let minMapHalfHeight = (((SCALE_IN_MAX * .01) * map.height) * .5) // 200
+		// top-left
+		let scaleMaxInMinX = centerX + minMapHalfWidth - parentWidthHalf // -250 + 200 - 150 === -200
+		let scaleMaxInMinY = centerY + minMapHalfHeight - parentHeightHalf // -250 + 200 - 150 === -200
+		// bottom-right
+		let scaleMaxInMaxX = centerX - minMapHalfWidth + parentWidthHalf // -250 - 200 + 150 === -300
+		let scaleMaxInMaxY = centerY - minMapHalfHeight + parentHeightHalf // -250 - 200 + 150 === -300
+
+		let dynamicHalfWidth = (((map.scale * .01) * map.width) * .5)
+		let dynamicHalfHeight = (((map.scale * .01) * map.height) * .5)
+		let scaleDynamicX = map.dragMap.x > centerX ?
+			centerX + dynamicHalfWidth - parentWidthHalf :
+			centerX - dynamicHalfWidth + parentWidthHalf
+		let scaleDynamicY = map.dragMap.y > centerY ?
+			centerY + dynamicHalfHeight - parentHeightHalf :
+			centerY - dynamicHalfHeight + parentHeightHalf
+
+		let transformOriginX = centerX
+		let transformOriginY = centerY
+
+		let coords = {
+			x: map.dragMap.x,
+			y: map.dragMap.y,
+			parentWidth,
+			parentHeight,
+			dragWidth,
+			dragHeight,
+			centerX,
+			centerY,
+			scaleMaxOutMinX,
+			scaleMaxOutMaxX,
+			scaleMaxOutMinY,
+			scaleMaxOutMaxY,
+			scaleMaxInMinX,
+			scaleMaxInMaxX,
+			scaleMaxInMinY,
+			scaleMaxInMaxY,
+			dynamicHalfWidth,
+			dynamicHalfHeight,
+			scaleDynamicX,
+			scaleDynamicY,
+			transformOriginX,
+			transformOriginY,
+		}
+		/*let minOriginX = map.miniMapParent.offsetWidth * .5
+		let maxOriginX = map.miniMapParent.offsetWidth * .5*/
+
+		// console.info('trans x, y', transformOriginX, transformOriginY)
+		/*
+		console.info('coords', coords)*/
+		// console.info('dynamic x, y', coords.scaleDynamicX, coords.scaleDynamicY, coords);
+		let xDiff = (map.dragMap.minX - map.dragMap.maxX) * .25 // half of a half // 25?
+		let originAdjX = map.dragMap.x < centerX ? halfMapWidth - xDiff : halfMapWidth + xDiff
+		let yDiff = (map.dragMap.minY - map.dragMap.maxY) * .25 // half of a half
+		let originAdjY = map.dragMap.y < centerY ? halfMapHeight - xDiff : halfMapHeight + yDiff
+
+		console.info('scale, x, y', map.scale * .01, map.dragMap.x, map.dragMap.y)
+		console.info('dragMap min/max', map.dragMap.minX, map.dragMap.minY, '/', map.dragMap.maxX, map.dragMap.maxY)
+		map.originX2 = originAdjX
+		map.originY2 = originAdjY
+
+		// fallback
+		map.originX2 = map.mouseX
+		map.originY2 = map.mouseY
+		console.warn('origin coords', originAdjX, originAdjY)
+	}
+	function setTransformOrigin(tween) {
+		TweenMax.set(map.miniMapDrag, {
+			transformOrigin: (map.width - tween.x) + 'px ' + (map.height - tween.y) + 'px',
+		})
+	}
 })(Linear, TweenMax, TimelineMax, PIXI, $);
