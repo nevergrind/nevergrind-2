@@ -1,7 +1,5 @@
 let maps;
 !function($, _, TweenMax, undefined) {
-	const HALLWAY_WIDTH = 16
-	const HALLWAY_LENGTH = 100
 	maps = [{},
 		{
 			id: 1,

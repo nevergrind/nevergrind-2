@@ -11,10 +11,14 @@ var dungeon;
 	const GRID_SIZE = 1920
 	const MAX_TILES = 20
 	const HALLWAY_TILE_LENGTH = 5
+	const MOB_HALLWAY_INTERVAL = (GRID_SIZE * 5) * .5 // 4800 - length that a mob can spawn in
+	const MOB_HALLWAY_MIN = 0 // 1200 - 2400 minimum if first interval (25%)
+	const MOB_HALLWAY_MAX = MOB_HALLWAY_INTERVAL * .75
+	// player starts in hallway at 1200 (12.5%), but mob on first interval can't appear until 2400 (25%)
+	const PLAYER_HALLWAY_START = MOB_HALLWAY_INTERVAL - MOB_HALLWAY_MAX
 	dungeon = {
 		initialized: 0,
 		isDungeon: true,
-		is2Dmode: true,
 		layer: {},
 		camera: {},
 		bgLayer: {},
@@ -35,12 +39,13 @@ var dungeon;
 		floor: {},
 		ceiling: {},
 		sky: {},
-		entities: [{}],
+		entities: [[{}]],
 		closestEntity: 0, // cached closest alive entity
 		closestEntityIndex: -1, // wall or indexed mob
 		endWall: {},
 		tickUpdate: {},
 		compass: 0, // 0 is north, 90 east, 180 south, 270 west
+		hallwayPlayerStart: PLAYER_HALLWAY_START,
 		centerX: [960, 1280, 640, 1600, 320],
 		bottom: MaxHeight,
 		headY: BOTTOM_PLAYER - 200,
@@ -73,23 +78,19 @@ var dungeon;
 		getWalkProgress,
 		getWalkProgressToGo,
 		getEntityDistance,
+		setEndWallDistance,
+		setEndWall,
+		getHallwayMobs,
 		initCanvas,
 		setSrc,
 		removeDungeonEntities,
 		setDungeonEntities,
 		killEntityTweens,
-		endBattle,
-		clearRoom,
 	}
 	let blurValue = 0
 	const CLOSEST_MOB_DISTANCE = -200
 	const MOB_DUNGEON_SIZE = 1
 	const MAX_BLUR = 3
-	const MOB_HALLWAY_INTERVAL = GRID_SIZE * .5 // 4800 - length that a mob can spawn in
-	const MOB_HALLWAY_MIN = MOB_HALLWAY_INTERVAL * .25 // 1200 - 2400 minimum if first interval (25%)
-	const MOB_HALLWAY_MAX = MOB_HALLWAY_INTERVAL * .875
-	// player starts in hallway at 1200 (12.5%), but mob on first interval can't appear until 2400 (25%)
-	const HALLWAY_START = MOB_HALLWAY_MIN
 	$('#scene-dungeon')
 		.on('mousedown', handleClickDungeon)
 		.on('mouseup', handleClickDungeonUp)
@@ -141,19 +142,10 @@ var dungeon;
 			chat.modeChange(CHAT.PARTY)
 		}
 		chat.sizeDungeon()
-		TweenMax.to('#mini-map', .6, {
-			delay: 1,
-			startAt: {
-				visibility: 'visible',
-				opacity: 0,
-				scale: 0,
-			},
-			opacity: 1,
-			scale: 1,
-			ease: Back.easeOut,
-		})
 		ng.setScene('dungeon')
 		dungeon.init()
+		dungeon.setGridPosition()
+
 		combat.autoAttackDisable()
 		// reset some combat data
 		mobs.forEach((m, i) => {
@@ -200,47 +192,24 @@ var dungeon;
 			querySelector('#scene-dungeon').innerHTML = dungeon.html()
 			// dungeon layer for ooc buffs
 			dungeon.map = maps[mission.id]
+			dungeon.entities = [[]]
 			map.init(dungeon.map)
 			dungeon.initCanvas()
 			player.initCanvas()
 			combat.updateCanvasLayer()
 		}
-		if (dungeon.is2Dmode) {
-			setDungeonEntities()
-			dungeon.animateEntities()
-		}
-		else {
-			// 3d things?
-		}
+		setDungeonEntities()
+		dungeon.animateEntities()
 		button.setAll()
 		chat.scrollBottom()
 	}
-	function getHallwayMobs() {
-		// up to 2 mobs per 9600 length hallway
-		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
-		// TODO: Random from zone instead of hard-coded
-		let resp = []
-		for (var i=0; i<mobLen; i++) {
-			if (Math.random() > .33) {
-				let minDistance = i === 0 ?
-					i * MOB_HALLWAY_INTERVAL + (MOB_HALLWAY_MIN * 2) :
-					i * MOB_HALLWAY_INTERVAL + MOB_HALLWAY_MIN
-				let maxDistance = i * MOB_HALLWAY_INTERVAL + MOB_HALLWAY_MAX
-
-				resp.push({
-					isAlive: true,
-					img: 'toadlok',
-					distance: _.random(minDistance, maxDistance) * -1
-				})
-			}
-		}
-		return resp
-	}
 	function killEntityTweens() {
-		dungeon.entities.forEach(entity => {
-			typeof entity.sprite === 'object' &&
-			typeof entity.sprite.tween === 'object' &&
-			entity.sprite.tween.kill()
+		dungeon.entities.forEach(hallway => {
+			hallway.forEach(entity => {
+				typeof entity.sprite === 'object' &&
+				typeof entity.sprite.tween === 'object' &&
+				entity.sprite.tween.kill()
+			})
 		})
 	}
 	function initCanvas() {
@@ -286,21 +255,17 @@ var dungeon;
 		dungeon.tilesLeftWall = []
 		dungeon.tilesRightWall = []
 		if (dungeon.isDungeon) {
-			if (dungeon.is2Dmode) {
-				addFloorTiles()
-				addCeilingTiles()
-				addLeftWallTiles()
-				addRightWallTiles()
-				addEndWall()
-				addEntityContainer()
-			}
-			else {
-				addFloorTiles3d()
-			}
+			addFloorTiles()
+			addCeilingTiles()
+			addLeftWallTiles()
+			addRightWallTiles()
+			addEndWall()
+			addEntityContainer()
 		}
 	}
 	function addEntityContainer() {
 		dungeon.containerEntities = new PIXI.projection.Container2d()
+		dungeon.containerEntities.sortableChildren = true
 		dungeon.containerEntities.id = 'entities'
 		dungeon.containerEntities.zIndex = 3
 		dungeon.containerEntities.position.set(MaxWidth * .5, MaxHeight)
@@ -309,6 +274,228 @@ var dungeon;
 			y: MaxHeight * .5,
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerEntities)
+	}
+	function setEndWallDistance() {
+		dungeon.endWall.position.y = (dungeon.distanceEnd - dungeon.distanceCurrent) * -1
+	}
+	function removeDungeonEntities() {
+		dungeon.killEntityTweens()
+		dungeon.containerEntities.removeChildren()
+	}
+	function getHallwayMobs() {
+		// up to 2 mobs per 9600 length hallway
+		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
+		// TODO: Random from zone instead of hard-coded
+		let resp = []
+		for (var i=0; i<mobLen; i++) {
+			if (Math.random() > .33) {
+				let loopDistance = i * MOB_HALLWAY_INTERVAL
+				let minDistance = i === 0 ?
+					loopDistance + (PLAYER_HALLWAY_START * 2) : // 2400
+					loopDistance + PLAYER_HALLWAY_START // 1200
+				let maxDistance = i === (mobLen - 1) ?
+					loopDistance + MOB_HALLWAY_MAX : // prior to door 4080
+					loopDistance + MOB_HALLWAY_INTERVAL // to end 4800
+
+				resp.push({
+					isAlive: true,
+					img: 'toadlok',
+					distance: _.random(minDistance, maxDistance) * -1
+				})
+			}
+		}
+		return resp
+	}
+	function setDungeonEntities() {
+		// cleanup
+		removeDungeonEntities()
+		// setup
+		dungeon.entities[map.hallwayId].forEach((entity, index) => {
+			if (!entity.isAlive) return
+			battle.loadMobTexture(entity.img)
+			let ent = dungeon.entities[map.hallwayId][index]
+			ent.sprite = new PIXI.projection.Sprite2d(PIXI.Texture.from('mobs/'+ entity.img + '/1.png'))
+			ent.sprite.index = index
+			ent.sprite.id = 'entity-' + index
+			ent.sprite.class = 'entities'
+			ent.sprite.anchor.set(0.5, mobs.images[entity.img].anchorY)
+			ent.sprite.factor = 1
+			ent.sprite.proj.affine = PIXI.projection.AFFINE.AXIS_X
+			ent.sprite.y = dungeon.getEntityDistance(ent)
+			ent.sprite.zIndex = 999 - index
+			// size and check offset
+			// ent.y = mobs.images[img].yPadding * MOB_DUNGEON_SIZE
+			TweenMax.set(ent.sprite, {
+				pixi: { scale: MOB_DUNGEON_SIZE }
+			})
+			// idle
+			let tween = getIdleTween()
+			ent.sprite.tween = TweenMax.to(tween,
+				mobs.images[entity.img].frameSpeed * tween.diff * 2, {
+				startAt: { frame: tween.start },
+				frame: tween.end,
+				yoyo: true,
+				repeat: -1,
+				repeatDelay: mobs.images[entity.img].frameSpeed,
+				ease: Sine.easeOut,
+				onUpdate: dungeon.setSrc,
+				onUpdateParams: [tween, ent],
+			})
+			dungeon.containerEntities.addChild(ent.sprite)
+		})
+		setClosestEntity()
+	}
+	function setClosestEntity() {
+		dungeon.closestEntity = dungeon.distanceEnd
+		dungeon.closestEntityIndex = -1 // door
+		if (dungeon.entities[map.hallwayId].length) {
+			dungeon.closestEntity = dungeon.entities[map.hallwayId].reduce((acc, entity, index) => {
+				// higher number is closer (confusing)
+				if (entity.isAlive && -entity.distance < acc) {
+					acc = -entity.distance + CLOSEST_MOB_DISTANCE
+					dungeon.closestEntityIndex = index
+				}
+				return acc
+			}, dungeon.distanceEnd)
+		}
+	}
+	function setGridPosition() {
+		// position updates
+		map.updatePosition()
+
+		// animate
+		dungeon.animateEntities()
+		if (dungeon.isDungeon) {
+			dungeon.tilesFloor.forEach(positionGridTile)
+			dungeon.tilesCeiling.forEach(positionGridTile)
+			dungeon.tilesLeftWall.forEach(positionGridTileWall)
+			dungeon.tilesRightWall.forEach(positionGridTileWall)
+			setEndWallDistance()
+		}
+		else {
+			dungeon.tiling.tilePosition.y = dungeon.distanceCurrent
+		}
+
+		// room/battle checks
+		if (dungeon.distanceCurrent <= 0) {
+			// go backwards to roomId
+			map.inRoom = true
+			dungeon.walkStop()
+			battle.go()
+		}
+		else if (dungeon.distanceCurrent >= Math.min(dungeon.distanceEnd, dungeon.closestEntity)) {
+			if (dungeon.distanceCurrent >= dungeon.distanceEnd) {
+				// entered room
+				map.inRoom = true
+			}
+			else {
+				// or non-room battle?
+				map.inRoom = false
+			}
+			dungeon.walkStop()
+			battle.go()
+		}
+	}
+	function positionGridTile(tile, index) {
+		tile.position.y = ((tile.gridIndex * MaxWidth) - dungeon.distanceCurrent) * -1
+	}
+	function positionGridTileWall(tile, index) {
+		tile.position.x = ((tile.gridIndex * MaxWidth * AspectRatio) - (dungeon.distanceCurrent * AspectRatio)) * -1
+	}
+	function getEntityDistance(entity) {
+		return entity.distance + dungeon.distanceCurrent
+	}
+	function animateEntities() {
+		dungeon.entities[map.hallwayId].forEach(positionEntity)
+	}
+	function positionEntity(entity) {
+		if (typeof entity.sprite === 'undefined') return
+		let dist = dungeon.getEntityDistance(entity)
+		entity.sprite.y = dist
+	}
+	function setSrc(tween, ent) {
+		tween.frame = ~~tween.frame
+		if (tween.frame !== tween.lastFrame) {
+			ent.sprite.texture = mob.textures[ent.img][tween.frame]
+			tween.lastFrame = tween.frame
+		}
+	}
+	function getIdleTween() {
+		return {
+			frame: 1,
+			lastFrame: 1,
+			start: 1,
+			end: 5.999,
+			diff: 4.999
+		}
+	}
+	function html() {
+		return '';
+	}
+	function enterCombat() {
+		// console.info("ENTERING COMBAT")
+	}
+	function centerY(index, race) {
+		return BOTTOM_PLAYER - 100
+	}
+	function handleClickDungeon(e) {
+		if (party.presence[0].isLeader) {
+			if (e.shiftKey || (e.clientY / window.innerHeight > .85)) dungeon.walkBackward()
+			else dungeon.walkForward()
+		}
+	}
+	function handleClickDungeonUp() {
+		if (party.presence[0].isLeader) {
+			dungeon.walkStop()
+		}
+	}
+	// moving functions
+	function getWalkProgress() {
+		return dungeon.distanceCurrent / dungeon.distanceEnd
+	}
+	function getWalkProgressToGo() {
+		return 1 - (dungeon.distanceCurrent / dungeon.distanceEnd)
+	}
+	function getWalkDurationEnd() {
+		// return dungeon.gridSize / dungeon.distancePerSecond
+		return (dungeon.distanceEnd - dungeon.distanceCurrent) / dungeon.distancePerSecond
+	}
+	function getWalkDurationStart() {
+		return dungeon.distanceCurrent / dungeon.distancePerSecond
+	}
+	function getBlurValue(distance) {
+		distance = ((distance * -1) - 1500)
+		if (distance < 0) distance = 0
+		blurValue = distance / 5000
+		if (blurValue > MAX_BLUR) blurValue = MAX_BLUR
+		return blurValue
+	}
+	function walkForward() {
+		if (dungeon.getWalkProgress() >= 0 &&
+			dungeon.getWalkProgress() < 1) {
+			dungeon.walking = 1
+			dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationEnd(), {
+				distanceCurrent: dungeon.distanceEnd,
+				ease: Power0.easeIn,
+				onUpdate: dungeon.setGridPosition,
+				onComplete: dungeon.walkStop,
+			})
+		}
+	}
+	function walkBackward() {
+		if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
+			dungeon.walking = -1
+			dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationStart(), {
+				distanceCurrent: dungeon.distanceStart,
+				ease: Power0.easeIn,
+				onUpdate: dungeon.setGridPosition,
+				onComplete: dungeon.walkStop,
+			})
+		}
+	}
+	function walkStop() {
+		dungeon.walking = 0
+		dungeon.walkTween.pause()
 	}
 	function addFloorTiles() {
 		dungeon.containerFloor = new PIXI.projection.Container2d()
@@ -430,227 +617,9 @@ var dungeon;
 		setEndWallDistance()
 		dungeon.containerFloor.addChild(dungeon.endWall)
 	}
-	function setEndWallDistance() {
-		dungeon.endWall.position.y = (dungeon.distanceEnd - dungeon.distanceCurrent) * -1
-	}
-	function removeDungeonEntities() {
-		dungeon.killEntityTweens()
-		dungeon.containerEntities.removeChildren()
-	}
-	function enteredNewHallway() {
-		// new hallway!
-		dungeon.hallwayTileLength = 5 // TODO: from hallway segment data later
-		dungeon.distanceEnd = dungeon.hallwayTileLength * GRID_SIZE
-		setEndWallDistance()
-	}
-	function setDungeonEntities(entities) {
-		if (dungeon.distanceCurrent === HALLWAY_START) {
-			enteredNewHallway()
-			entities = getHallwayMobs()
-		}
-		else if (typeof entities === 'undefined') entities = dungeon.entities
-		// cleanup
-		removeDungeonEntities()
-		// setup
-		dungeon.entities = entities
-		dungeon.entities.forEach((entity, index) => {
-			if (!entity.isAlive) return
-			battle.loadMobTexture(entity.img)
-			let ent = dungeon.entities[index]
-			ent.sprite = new PIXI.projection.Sprite2d(PIXI.Texture.from('mobs/'+ entity.img + '/1.png'))
-			ent.sprite.index = index
-			ent.sprite.id = 'entity-' + index
-			ent.sprite.class = 'entities'
-			ent.sprite.anchor.set(0.5, mobs.images[entity.img].anchorY)
-			ent.sprite.factor = 1
-			ent.sprite.proj.affine = PIXI.projection.AFFINE.AXIS_X
-			ent.sprite.y = dungeon.getEntityDistance(ent)
-			// size and check offset
-			// ent.y = mobs.images[img].yPadding * MOB_DUNGEON_SIZE
-			TweenMax.set(ent.sprite, {
-				pixi: { scale: MOB_DUNGEON_SIZE }
-			})
-			// idle
-			let tween = getIdleTween()
-			ent.sprite.tween = TweenMax.to(tween,
-				mobs.images[entity.img].frameSpeed * tween.diff * 2, {
-				startAt: { frame: tween.start },
-				frame: tween.end,
-				yoyo: true,
-				repeat: -1,
-				repeatDelay: mobs.images[entity.img].frameSpeed,
-				ease: Sine.easeOut,
-				onUpdate: dungeon.setSrc,
-				onUpdateParams: [tween, ent],
-			})
-			dungeon.containerEntities.addChild(ent.sprite)
+	function setEndWall() {
+		TweenMax.set(dungeon.endWall, {
+			y: -dungeon.distanceEnd
 		})
-		setClosestEntity()
-	}
-	function setClosestEntity() {
-		dungeon.closestEntity = dungeon.distanceEnd
-		dungeon.closestEntityIndex = -1 // door
-		if (dungeon.entities.length) {
-			dungeon.closestEntity = dungeon.entities.reduce((acc, entity, index) => {
-				// higher number is closer (confusing)
-				if (entity.isAlive && -entity.distance < acc) {
-					acc = -entity.distance + CLOSEST_MOB_DISTANCE
-					dungeon.closestEntityIndex = index
-				}
-				return acc
-			}, dungeon.distanceEnd)
-		}
-	}
-	function endBattle() {
-		if (dungeon.closestEntityIndex === -1) {
-			// clear room
-			dungeon.clearRoom()
-			// prompt to pick a new room/direction
-		}
-		else {
-			dungeon.entities[dungeon.closestEntityIndex].isAlive = false
-			dungeon.entities[dungeon.closestEntityIndex].sprite.alpha = 0
-			setDungeonEntities(dungeon.entities)
-			delayedCall(5, dungeon.go, [true])
-		}
-	}
-	function clearRoom() {
-		console.info('clearRoom')
-	}
-	function setGridPosition() {
-		// position updates
-		map.updatePosition()
-
-		// animate
-		dungeon.animateEntities()
-		if (dungeon.isDungeon) {
-			if (dungeon.is2Dmode) {
-				dungeon.tilesFloor.forEach(positionGridTile)
-				dungeon.tilesCeiling.forEach(positionGridTile)
-				dungeon.tilesLeftWall.forEach(positionGridTileWall)
-				dungeon.tilesRightWall.forEach(positionGridTileWall)
-				setEndWallDistance()
-			}
-			else {
-			}
-		}
-		else {
-			dungeon.tiling.tilePosition.y = dungeon.distanceCurrent
-		}
-
-		// room/battle checks
-		if (dungeon.distanceCurrent >= Math.min(dungeon.distanceEnd, dungeon.closestEntity)) {
-			if (dungeon.distanceCurrent >= dungeon.distanceEnd) {
-				// entered room
-			}
-			else {
-				// or non-room battle?
-			}
-			dungeon.walkStop()
-			battle.go()
-		}
-	}
-	function positionGridTile(tile, index) {
-		tile.position.y = ((tile.gridIndex * MaxWidth) - dungeon.distanceCurrent) * -1
-	}
-	function positionGridTileWall(tile, index) {
-		tile.position.x = ((tile.gridIndex * MaxWidth * AspectRatio) - (dungeon.distanceCurrent * AspectRatio)) * -1
-	}
-	function getEntityDistance(entity) {
-		return entity.distance + dungeon.distanceCurrent
-	}
-	function animateEntities() {
-		if (dungeon.is2Dmode) {
-			dungeon.entities.forEach(positionEntity)
-		}
-	}
-	function positionEntity(entity) {
-		if (typeof entity.sprite === 'undefined') return
-		let dist = dungeon.getEntityDistance(entity)
-		entity.sprite.y = dist
-	}
-	function setSrc(tween, ent) {
-		tween.frame = ~~tween.frame
-		if (tween.frame !== tween.lastFrame) {
-			ent.sprite.texture = mob.textures[ent.img][tween.frame]
-			tween.lastFrame = tween.frame
-		}
-	}
-	function getIdleTween() {
-		return {
-			frame: 1,
-			lastFrame: 1,
-			start: 1,
-			end: 5.999,
-			diff: 4.999
-		}
-	}
-	function html() {
-		return '';
-	}
-	function enterCombat() {
-		// console.info("ENTERING COMBAT")
-	}
-	function centerY(index, race) {
-		return BOTTOM_PLAYER - 100
-	}
-	function handleClickDungeon(e) {
-		if (party.presence[0].isLeader) {
-			if (e.shiftKey || (e.clientY / window.innerHeight > .85)) dungeon.walkBackward()
-			else dungeon.walkForward()
-		}
-	}
-	function handleClickDungeonUp() {
-		if (party.presence[0].isLeader) {
-			dungeon.walkStop()
-		}
-	}
-	// moving functions
-	function getWalkProgress() {
-		return dungeon.distanceCurrent / dungeon.distanceEnd
-	}
-	function getWalkProgressToGo() {
-		return 1 - (dungeon.distanceCurrent / dungeon.distanceEnd)
-	}
-	function getWalkDurationEnd() {
-		// return dungeon.gridSize / dungeon.distancePerSecond
-		return (dungeon.distanceEnd - dungeon.distanceCurrent) / dungeon.distancePerSecond
-	}
-	function getWalkDurationStart() {
-		return dungeon.distanceCurrent / dungeon.distancePerSecond
-	}
-	function getBlurValue(distance) {
-		distance = ((distance * -1) - 1500)
-		if (distance < 0) distance = 0
-		blurValue = distance / 5000
-		if (blurValue > MAX_BLUR) blurValue = MAX_BLUR
-		return blurValue
-	}
-	function walkForward() {
-		if (dungeon.getWalkProgress() >= 0 &&
-			dungeon.getWalkProgress() < 1) {
-			dungeon.walking = 1
-			dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationEnd(), {
-				distanceCurrent: dungeon.distanceEnd,
-				ease: Power0.easeIn,
-				onUpdate: dungeon.setGridPosition,
-				onComplete: dungeon.walkStop,
-			})
-		}
-	}
-	function walkBackward() {
-		if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
-			dungeon.walking = -1
-			dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationStart(), {
-				distanceCurrent: dungeon.distanceStart,
-				ease: Power0.easeIn,
-				onUpdate: dungeon.setGridPosition,
-				onComplete: dungeon.walkStop,
-			})
-		}
-	}
-	function walkStop() {
-		dungeon.walking = 0
-		dungeon.walkTween.pause()
 	}
 })(TweenMax, $, _, Power0, Sine);

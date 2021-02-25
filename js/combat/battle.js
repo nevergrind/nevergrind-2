@@ -299,6 +299,9 @@ var battle;
 				config: mob.txData // from setupMobs
 			}, true)
 		}
+
+		if (combat.isBattleOver()) map.show(1.5) // empty battle room - only in original room
+		else map.hide()
 	}
 	function initBattleLayer() {
 		if (battleLayerInitialized) return

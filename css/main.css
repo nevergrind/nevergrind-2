@@ -1566,6 +1566,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 #mini-map {
 	visibility: hidden;
 	opacity: 0;
+	transform: scale(0);
 	position: fixed;
 	right: .5rem;
 	bottom: 4rem;

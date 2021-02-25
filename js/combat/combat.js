@@ -30,6 +30,7 @@ var combat;
 		txBuffHero,
 		rxBuffHero,
 		selfDied,
+		isBattleOver,
 		processStatBuffsToMe,
 		MAX_DAMAGE: 999999999,
 		textId: 0,
@@ -448,11 +449,20 @@ var combat;
 			}
 			mob.animateDeath(o.index)
 			my.fixTarget()
-			if (isBattleOver()) {
+			if (combat.isBattleOver()) { // mobs slain
 				endCombat()
-				ng.view = 'dungeon'
+				map.show(2)
 				// TODO: broadcast done
-				dungeon.endBattle()
+				// when combat ends
+				if (dungeon.closestEntityIndex >= 0) {
+					// return to dungeon
+					// clear nearest entity and redraw
+					console.info('closest index', map.hallwayId, dungeon.closestEntityIndex)
+					dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].isAlive = false
+					dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].sprite.alpha = 0
+					dungeon.setDungeonEntities()
+					delayedCall(5, dungeon.go, [true])
+				}
 			}
 		}
 		// console.info('object', o)

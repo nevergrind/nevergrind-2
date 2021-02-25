@@ -96,10 +96,7 @@ var town;
 		battle.hideTarget()
 		mob.killAttacks()
 		dungeon.killEntityTweens()
-		TweenMax.set('#mini-map', {
-			visibility: 'hidden',
-			opacity: 0
-		})
+		map.hide()
 		if (!create.selected) return
 
 		audio.playMusic('intro', 'wav')

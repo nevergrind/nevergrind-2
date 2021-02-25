@@ -37,7 +37,10 @@ let map;
 		centerCameraAt,
 		updatePosition,
 		getCompass,
+		setDirection,
 		setDotPosition,
+		show,
+		hide,
 	}
 	const SCALE_IN_MAX = 50 // ZOOM OUT
 	const SCALE_DEFAULT = 100
@@ -148,7 +151,7 @@ let map;
 				map.dotX =
 					map.roomX + ((100 * dungeon.distanceCurrent) / dungeon.hallwayLength)
 		}
-		console.info('map.camera', map.cameraX, map.cameraY)
+		// console.info('map.camera', map.cameraX, map.cameraY)
 		map.setDotPosition()
 		map.setCameraPosition()
 	}
@@ -247,7 +250,7 @@ let map;
 	}
 	function handleRoomClick(e) {
 		let roomId = e.target.id.split('-')[1] * 1
-		if (my.isLeader) {
+		if (my.isLeader && map.inRoom && combat.isBattleOver()) {
 			if (roomId === map.roomId) {
 				chat.log('You are already in that room!', CHAT.WARNING)
 			}
@@ -271,7 +274,53 @@ let map;
 			h.connects.includes(map.roomToId)
 		).id
 		map.inRoom = false
+		if (typeof dungeon.entities[map.hallwayId] === 'object' &&
+			!dungeon.entities[map.hallwayId].length) {
+			dungeon.entities[map.hallwayId] = dungeon.getHallwayMobs()
+		}
+		dungeon.distanceCurrent = dungeon.hallwayPlayerStart
+		dungeon.distanceEnd = getHallwayDistance(map.hallwayId)
+		map.setDirection()
+		map.updatePosition()
 		console.info('enterHallway room', roomId, 'hallway', map.hallwayId)
 		dungeon.go()
+	}
+	function setDirection() {
+		let room = dungeon.map.rooms[map.roomId]
+		let roomTo = dungeon.map.rooms[map.roomToId]
+		if (roomTo.y < room.y) dungeon.direction = 0
+		else if (roomTo.y > room.y) dungeon.direction = 180
+		else if (roomTo.x < room.x) dungeon.direction = 270
+		else dungeon.direction = 90
+	}
+	function getHallwayDistance(id) {
+		let len
+		if (dungeon.map.hallways[id].width === HALLWAY_WIDTH) {
+			// vertical
+			len = dungeon.map.hallways[id].height * 96
+		}
+		else {
+			// horizontal
+			len = dungeon.map.hallways[id].width * 96
+		}
+		return len
+	}
+	function show(delay = 0) {
+		TweenMax.to('#mini-map', .6, {
+			delay: delay,
+			startAt: {
+				visibility: 'visible',
+			},
+			opacity: 1,
+			scale: 1,
+			ease: Back.easeOut,
+		})
+	}
+	function hide() {
+		TweenMax.set('#mini-map', {
+			visibility: 'hidden',
+			opacity: 0,
+			scale: 0,
+		})
 	}
 }($, _, TweenMax, getComputedStyle, parseInt, window);
