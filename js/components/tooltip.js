@@ -306,7 +306,7 @@ var tooltip;
 		return false
 	}
 	function show(obj, slotElement, type) {
-		if (!_.size(obj)) return
+		if (map.isDragging || !_.size(obj)) return
 		tooltipEl.innerHTML = getItemHtml(obj, type)
 		if (slotElement) {
 			// x position
@@ -745,6 +745,7 @@ var tooltip;
 		setTooltipVisible(.5)
 	}
 	function handleEnter(event) {
+		if (map.isDragging) return
 		if (event.currentTarget.id === ('skill-primary-attack-btn')) {
 			let hit = stats.primaryAutoAttackDamage(0, true)
 			showSkill({

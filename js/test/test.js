@@ -714,4 +714,171 @@ var test;
 			transformOrigin: (map.width - tween.x) + 'px ' + (map.height - tween.y) + 'px',
 		})
 	}
+	function turnLeft() {
+		if (dungeon.walking || TURN_DISABLED) return
+		dungeon.walking = 1
+		let x = dungeon.entity.x
+		let y = dungeon.entity.y
+		let xEnd = 0
+		let yEnd = 0
+		let alphaEnd = 1
+		let distance = dungeon.getEntityDistance()
+		let yEase = Power0.easeNone
+		if (x === 0) {
+			if (y <= -CLOSEST_MOB_DISTANCE) {
+				// front
+				xEnd = distance
+				yEnd = 0
+				alphaEnd = 0
+				yEase = Circ.easeIn
+			}
+			else {
+				// back
+				xEnd = -distance
+				yEnd = 0
+			}
+		}
+		else {
+			if (x > 0) {
+				// right
+				xEnd = 0
+				yEnd = distance
+				alphaEnd = 0
+				dungeon.entity.alpha = 0
+			}
+			else {
+				// left
+				xEnd = 0
+				yEnd = -distance
+				yEase = Circ.easeOut
+				dungeon.entity.alpha = 1
+			}
+		}
+		TweenMax.to(dungeon.tiling.tileTransform, TURN_SPEED, {
+			pixi: { rotation: '+=' + TURN_INTERVAL },
+			ease: Power0.easeIn,
+		})
+		TweenMax.to(dungeon.entity, TURN_SPEED, {
+			x: xEnd,
+			ease: Power0.easeNone,
+		})
+		TweenMax.to(dungeon.entity, TURN_SPEED, {
+			y: yEnd,
+			ease: yEase,
+			onComplete: () => {
+				dungeon.entity.alpha = alphaEnd
+				dungeon.walkStop()
+			}
+		})
+		dungeon.compass -= TURN_INTERVAL
+	}
+	function turnRight() {
+		if (dungeon.walking || TURN_DISABLED) return
+		dungeon.walking = 1
+		let x = dungeon.entity.x
+		let y = dungeon.entity.y
+		let xEnd = 0
+		let yEnd = 0
+		let alphaStart = 1
+		let alphaEnd = 1
+		let distance = dungeon.getEntityDistance()
+		let yEase = Power0.easeNone
+
+		if (x === 0) {
+			if (y <= -CLOSEST_MOB_DISTANCE) {
+				// front
+				xEnd = -distance
+				yEnd = 0
+				alphaEnd = 0
+				yEase = Circ.easeIn
+			}
+			else {
+				// back
+				xEnd = distance
+				yEnd = 0
+			}
+		}
+		else {
+			if (x > 0) {
+				// right
+				xEnd = 0
+				yEnd = -distance
+				yEase = Circ.easeOut
+				dungeon.entity.alpha = 1
+			}
+			else {
+				// left
+				xEnd = 0
+				yEnd = distance
+				alphaEnd = 0
+				dungeon.entity.alpha = 0
+			}
+		}
+
+		TweenMax.to(dungeon.tiling.tileTransform, TURN_SPEED, {
+			pixi: { rotation: '-=' + TURN_INTERVAL },
+			ease: Power0.easeIn,
+		})
+		TweenMax.to(dungeon.entity, TURN_SPEED, {
+			x: xEnd,
+			ease: Power0.easeNone,
+		})
+		TweenMax.to(dungeon.entity, TURN_SPEED, {
+			y: yEnd,
+			ease: yEase,
+			onComplete: () => {
+				dungeon.entity.alpha = alphaEnd
+				dungeon.walkStop()
+			}
+		})
+		dungeon.compass += TURN_INTERVAL
+	}
+	function addFloorTiles3d() {
+		dungeon.containerFloor = new PIXI.projection.Container2d()
+		dungeon.containerFloor.zIndex = 3
+		dungeon.containerFloor.position.set(MaxWidth * .5, MaxHeight)
+		dungeon.containerFloor.proj.setAxisY({
+			x: 0,
+			y: MaxHeight * .5,
+		}, -1)
+		dungeon.layer.stage.addChild(dungeon.containerFloor)
+
+
+		dungeon.camera = new PIXI.projection.Camera3d();
+		dungeon.camera.setPlanes(300, 10, 1000, false);
+		dungeon.camera.position.set(MaxWidth * .5, MaxHeight * .5);
+		dungeon.camera.position3d.y = 0; // camera is above the ground
+		dungeon.layer.stage.addChild(dungeon.camera);
+
+		dungeon.groundLayer = new PIXI.projection.Container3d();
+		dungeon.groundLayer.euler.x = Math.PI * .5;
+		dungeon.camera.addChild(dungeon.groundLayer);
+
+		dungeon.bgLayer = new PIXI.projection.Container3d();
+		dungeon.bgLayer.proj.affine = PIXI.projection.AFFINE.AXIS_X;
+		dungeon.camera.addChild(dungeon.bgLayer);
+		dungeon.bgLayer.position3d.z = 80;
+
+		dungeon.mainLayer = new PIXI.projection.Container3d();
+		dungeon.mainLayer.proj.affine = PIXI.projection.AFFINE.AXIS_X;
+		dungeon.camera.addChild(dungeon.mainLayer);
+
+		// background sprite
+		dungeon.bg = new PIXI.Sprite(PIXI.Texture.from('images/dungeon/bg-test-sky.jpg'))
+        dungeon.bg.position.x = 0;
+        dungeon.bg.anchor.set(.5, .5)
+        dungeon.bgLayer.addChild(dungeon.bg);
+
+        dungeon.fg = new PIXI.projection.Sprite3d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'));
+        dungeon.fg.anchor.set(.5, .5);
+        dungeon.fg.position.x = 0;
+        dungeon.bgLayer.addChild(dungeon.fg);
+        // use position or position3d here, its not important,
+        // unless you need Z - then you need position3d
+
+        // dungeon.groundLayer.addChild(dungeon.fg);
+
+        dungeon.sky.alpha = 0
+		dungeon.tiling.alpha = 0
+	}
 })(Linear, TweenMax, TimelineMax, PIXI, $);

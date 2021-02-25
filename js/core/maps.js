@@ -1,33 +1,43 @@
 let maps;
 !function($, _, TweenMax, undefined) {
-
+	const HALLWAY_WIDTH = 16
+	const HALLWAY_LENGTH = 100
 	maps = [{},
 		{
 			id: 1,
-			width: 800,
-			height: 800,
+			width: 1000,
+			height: 1000,
+			startX: 500,
+			startY: 600,
 			rooms: [
 				{
 					id: 0,
-					x: 0, y: 0,
-					connects: [1]
+					x: 500, y: 600,
+					connects: [1],
+					mobs: 0,
 				}, {
 					id: 1,
-					x: 0, y: 6,
-					connects: [0, 2]
+					x: 500, y: 500,
+					connects: [0, 2],
+					mobs: 9,
 				}, {
 					id: 2,
-					x: 0, y: 12,
-					connects: [1]
+					x: 500, y: 400,
+					connects: [1],
+					mobs: 9,
 				}
 			],
 			hallways: [
 				{
-					x1: 0, y1: 1,
-					x2: 0, y2: 5,
+					id: 0,
+					x: 500, y: 500,
+					connects: [0, 1],
+					width: HALLWAY_WIDTH, height: HALLWAY_LENGTH,
 				}, {
-					x1: 0, y1: 7,
-					x2: 0, y2: 11,
+					id: 1,
+					x: 500, y: 400,
+					connects: [1, 2],
+					width: HALLWAY_WIDTH, height: HALLWAY_LENGTH,
 				}
 			]
 		}

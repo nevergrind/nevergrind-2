@@ -200,6 +200,7 @@ let mobs = [];
 		}
 	}
 	function initMobData() {
+		// for resetting to dead only
 		for (var i=0; i<mob.max; i++){
 			mobs[i] = {
 				hp: 0,
@@ -325,7 +326,6 @@ let mobs = [];
 		idle(i)
 	}
 
-	const blurFilter = new PIXI.filters.BlurFilter();
 	function sizeMob(i) {
 		var m = mobs[i]
 		if (!m.img) return
@@ -399,9 +399,13 @@ let mobs = [];
 		el.style.height = (m.clickDeadH * m.size) + 'px'
 		el.style.display = m.hp ? 'none' : 'block'
 	}
+	let mobHealthBar
 	function drawMobBar(index, drawInstant) {
+		mobHealthBar = query.el('#mob-health-' + index)
+		console.info('mobHealthBar', mobHealthBar)
+		if (mobHealthBar === null) return
 		percent = bar.getRatio(PROP.HP, mobs[index])
-		TweenMax.to(query.el('#mob-health-' + index), drawInstant ? 0 : .15, {
+		TweenMax.to(mobHealthBar, drawInstant ? 0 : .15, {
 			x: '-' + percent + '%'
 		})
 		if (my.targetIsMob && index === my.target) drawTargetBar(percent, drawInstant, index)

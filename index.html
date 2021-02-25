@@ -471,18 +471,35 @@ app.socketUrl = app.isApp ?
 </div>
 <div id="bar-wrap" class="no-select text-shadow"></div>
 
-<div id="chat-wrap" class="text-shadow"></div>
+<div id="chat-wrap" class="text-shadow">
+	<div id="chat-log-wrap">
+		<div id="chat-log">
+			<div>Welcome to Broken.net!</div>
+			<div>You have entered Vandamor.</div>
+			<div class="chat-warning">Type /help or /h for a list of chat commands.</div>
+		</div>
+		<div id="chat-input-wrap">
+			<div id="chat-input-mode" class="chat-pink no-select">
+				<span id="chat-mode-msg" class="ellipsis">To town:</span>
+			</div>
+			<input id="chat-input" type="text" maxlength="240" autocomplete="off" spellcheck="false" />
+		</div>
+	</div>
+	<div id="chat-present-wrap" class="no-select">
+		<div id="chat-header">&nbsp;</div>
+		<div id="chat-room"></div>
+	</div>
+</div>
 <div id="button-wrap" class="no-select text-shadow"></div>
 <div id="mini-map" class="text-shadow no-select">
-	<div id="mini-map-head" class="flex-row flex-center">
-		<div id="mini-map-center" class="ng-btn">Center</div>
-		<div id="mini-map-party" class="ng-btn">Party</div>
-		<!--<div id="mini-map-zoom-out" class="ng-btn">-</div>
-		<div id="mini-map-zoom-in" class="ng-btn">+</div>-->
-	</div>
 	<div id="mini-map-bg">
+		<div id="mini-map-button-parent" class="flex-row">
+			<img id="mini-map-party" src="images/ui/bar-options.png" class="map-btn">
+		</div>
 		<div id="mini-map-drag-parent">
-			<div id="mini-map-drag"></div>
+			<div id="mini-map-drag">
+				<div id="mini-map-dot" class="mini-map-entity"></div>
+			</div>
 		</div>
 	</div>
 </div>

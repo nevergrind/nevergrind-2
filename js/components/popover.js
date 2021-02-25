@@ -27,7 +27,7 @@ var popover;
 	//////////////////////////////////////////////////
 
 	function setPopoverHtml(id) {
-		if (!id) return;
+		if (!id || map.isDragging) return;
 		popover.lastHoverId = id
 		mainMenuPopovers = {
 			'inv-resist-blood': 'Resist Blood',

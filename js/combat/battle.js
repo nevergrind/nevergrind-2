@@ -277,10 +277,13 @@ var battle;
 		if (typeof data === 'object' &&
 			typeof data.config === 'object' &&
 			data.config.length) {
-			// console.warn('p->goBattle data in from goBattle', data.config)
+			// rx setup
 			setupMobs(data.config)
 		}
-		else setupMobs()
+		else {
+			// tx setup
+			setupMobs()
+		}
 
 		// set to center target
 		my.target = 2
@@ -290,10 +293,10 @@ var battle;
 		battle.updateTarget()
 
 		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
-			// console.info('p->goBattle txData!', mob.txData)
+			console.info('p->goBattle txData!', mob.txData)
 			socket.publish('party' + my.partyId, {
 				route: 'p->goBattle',
-				config: mob.txData
+				config: mob.txData // from setupMobs
 			}, true)
 		}
 	}
@@ -325,8 +328,7 @@ var battle;
 		}
 		else {
 			// leader
-			let minLevel = ~~(quests[mission.questId].level * .7)
-			if (minLevel < 1) minLevel = 1
+			let minLevel = Math.max(~~(quests[mission.questId].level * .7), 1)
 			let maxLevel = quests[mission.questId].level
 
 			let availableSlots = []
@@ -335,21 +337,31 @@ var battle;
 				mob.txData.push({})
 				availableSlots.push(i)
 			}
-			let minMobs = 1
-			let maxMobs = ceil(quests[mission.questId].level / 7)
-			if (maxMobs > mob.max) maxMobs = mob.max
+			// maps[dungeon.map.id].rooms[map.roomId].mobs
+			let minMobs
+			let maxMobs
+			if (map.inRoom && map.roomId === 0) {
+				// starting room always empty - only time a room is empty?
+				minMobs = 0
+				maxMobs = 0
+			}
+			else {
+				minMobs = Math.max(~~(quests[mission.questId].level / 12), 1)
+				maxMobs = Math.min(ceil(quests[mission.questId].level / 7), mob.max)
+			}
 
 			let totalMobs = _.random(minMobs, maxMobs)
 
-			if (!ng.isApp) {
+			// test data
+			/*if (!ng.isApp) {
 				totalMobs = 9
 				minLevel = 7
 				maxLevel = 15
-			}
+			}*/
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
 			for (i=0; i<totalMobs; i++) {
-				if (!i) mobSlot = 2
+				if (!i) mobSlot = 2 // first is always slot 2 (center)
 				else mobSlot = _.random(0, availableSlots.length - 1)
 				let imgName = 'toadlok'
 
@@ -430,6 +442,7 @@ var battle;
 	}
 	function getMobTargetTraitsHtml() {
 		// remove trailing s from value
+		if (typeof mobs[my.target].img === 'undefined') return
 		traitHtml = ['<div class="mob-trait">' +
 			combat.mobType[mobs[my.target].img].replace(/s+$/, '') +
 		'</div>']

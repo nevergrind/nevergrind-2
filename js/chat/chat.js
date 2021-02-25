@@ -30,9 +30,9 @@ var chat;
 		modeCommand: '/say',
 		modeName: '',
 		focusKeys: 'Enter/',
+		chatLogEl: querySelector('#chat-log'),
 		log,
 		init,
-		html,
 		getChannel,
 		modeChange,
 		modeSet,
@@ -100,28 +100,6 @@ var chat;
 	/** public */
 	function getChannel() {
 		return _.toLower(chat.prefix + my.channel);
-	}
-	function html() {
-	// receives channel prop from index.php
-		var s =
-			'<div id="chat-log-wrap">' +
-				'<div id="chat-log">' +
-					'<div>Welcome to Broken.net!</div>' +
-					'<div>You have entered Vandamor.</div>' +
-					'<div class="chat-warning">Type /help or /h for a list of chat commands.</div>' +
-				'</div>' +
-				'<div id="chat-input-wrap">' +
-					'<div id="chat-input-mode" class="chat-pink no-select">'+
-						'<span id="chat-mode-msg" class="ellipsis">To town:</span>' +
-					'</div>' +
-					'<input id="chat-input" type="text" maxlength="240" autocomplete="off" spellcheck="false" />' +
-				'</div>' +
-			'</div>' +
-			'<div id="chat-present-wrap" class="no-select">' +
-				'<div id="chat-header">&nbsp;</div>' +
-				'<div id="chat-room"></div>' +
-			'</div>';
-		return s;
 	}
 	function modeChange(h) {
 		// only trim leading spaces
@@ -196,14 +174,12 @@ var chat;
 		// default initialization of chat
 		if (!chat.initialized) {
 			var e = getElementById('chat-wrap');
-			e.innerHTML = '';
 			e.style.display = 'flex';
-			e.innerHTML = chat.html();
 
 			chat.initialized = 1;
 			// show
 			// prevents auto scroll while scrolling
-			$("#chat-log")
+			$('#chat-log')
 				.on('mousedown', handleMousedownChatLog)
 				.on('mouseup', handleMouseupChatLog);
 
@@ -228,15 +204,15 @@ var chat;
 	function log(msg, className) {
 		// report to chat-log
 		if (msg){
-			while (query.el('#chat-log').childElementCount >= 500) {
-				query.el('#chat-log').removeChild(query.el('#chat-log').firstChild)
+			while (chat.chatLogEl.childElementCount >= 500) {
+				chat.chatLogEl.removeChild(chat.chatLogEl.firstChild)
 			}
 			var el = createElement('div')
 			if (className){
 				el.className = className
 			}
 			el.innerHTML = msg
-			query.el('#chat-log').appendChild(el)
+			chat.chatLogEl.appendChild(el)
 			chat.scrollBottom()
 		}
 	}
@@ -274,7 +250,6 @@ var chat;
 
 		// bypass via ENTER or chat has focus
 		if (msg === '/h' || msg.startsWith('/help')) {
-			chat.updateHistory(msg);
 			var filter = msg.split(' ')
 			if (filter[1] && filter[1].length) chat.help(filter[1].toLowerCase())
 			else chat.help()
@@ -417,7 +392,7 @@ var chat;
 		query.el('#chat-input').value = '';
 	}
 	function clearChatLog() {
-		query.el('#chat-log').innerHTML = '';
+		chat.chatLogEl.innerHTML = '';
 	}
 	function emote(msg) {
 		var a = msg.split(' ');
@@ -486,11 +461,11 @@ var chat;
 	}
 	function scrollBottom() {
 		if (!chat.isClicked && chat.initialized){
-			query.el('#chat-log').scrollTop = query.el('#chat-log').scrollHeight;
+			chat.chatLogEl.scrollTop = chat.chatLogEl.scrollHeight;
 		}
 	}
 	function clearLog() {
-		query.el('#chat-log').innerHTML = '';
+		chat.chatLogEl.innerHTML = '';
 	}
 	function setHeader() {
 		// or chat.presence.length ?

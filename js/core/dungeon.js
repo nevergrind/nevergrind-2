@@ -10,6 +10,7 @@ var dungeon;
 	const BOTTOM_PLAYER = MaxHeight - 80
 	const GRID_SIZE = 1920
 	const MAX_TILES = 20
+	const HALLWAY_TILE_LENGTH = 5
 	dungeon = {
 		initialized: 0,
 		isDungeon: true,
@@ -39,9 +40,7 @@ var dungeon;
 		closestEntityIndex: -1, // wall or indexed mob
 		endWall: {},
 		tickUpdate: {},
-		direction: 0, // 0 is north, 90 east, 180 south, 270 west
-		positionX: 0, // relative to center
-		positionY: 0, // relative to center
+		compass: 0, // 0 is north, 90 east, 180 south, 270 west
 		centerX: [960, 1280, 640, 1600, 320],
 		bottom: MaxHeight,
 		headY: BOTTOM_PLAYER - 200,
@@ -52,12 +51,12 @@ var dungeon;
 		walking: 0,
 		distanceStart: 0,
 		distanceCurrent: 0,
-		hallwayLength: 5,
+		hallwayTileLength: HALLWAY_TILE_LENGTH,
 		totalTiles: MAX_TILES,
 		distanceEnd: GRID_SIZE * MAX_TILES,
+		hallwayLength: GRID_SIZE * HALLWAY_TILE_LENGTH,
 		distancePerSecond: app.isApp ? (GRID_SIZE * .2) : GRID_SIZE,
 		walkTween: TweenMax.to('#body', 0, {}),
-		getCompass,
 		centerY,
 		go,
 		rxGo,
@@ -74,8 +73,6 @@ var dungeon;
 		getWalkProgress,
 		getWalkProgressToGo,
 		getEntityDistance,
-		turnRight,
-		turnLeft,
 		initCanvas,
 		setSrc,
 		removeDungeonEntities,
@@ -88,12 +85,11 @@ var dungeon;
 	const CLOSEST_MOB_DISTANCE = -200
 	const MOB_DUNGEON_SIZE = 1
 	const MAX_BLUR = 3
-	const TURN_SPEED = 1
-	const TURN_INTERVAL = 90
-	const TURN_DISABLED = false
-	const MOB_HALLWAY_INTERVAL = 4800
-	const MOB_HALLWAY_MIN = MOB_HALLWAY_INTERVAL * .25
+	const MOB_HALLWAY_INTERVAL = GRID_SIZE * .5 // 4800 - length that a mob can spawn in
+	const MOB_HALLWAY_MIN = MOB_HALLWAY_INTERVAL * .25 // 1200 - 2400 minimum if first interval (25%)
 	const MOB_HALLWAY_MAX = MOB_HALLWAY_INTERVAL * .875
+	// player starts in hallway at 1200 (12.5%), but mob on first interval can't appear until 2400 (25%)
+	const HALLWAY_START = MOB_HALLWAY_MIN
 	$('#scene-dungeon')
 		.on('mousedown', handleClickDungeon)
 		.on('mouseup', handleClickDungeonUp)
@@ -111,7 +107,7 @@ var dungeon;
 			delayedCall(.5, preloadCombatAssets)
 		}
 	}
-	function rxGo(data) {
+	function rxGo() {
 		goTasks()
 		delayedCall(.5, preloadCombatAssets)
 	}
@@ -184,6 +180,9 @@ var dungeon;
 		player.setPlayers()
 		player.show()
 		mobSkills.initFilter()
+		if (map.inRoom) {
+			battle.go()
+		}
 
 		ng.unlock()
 	}
@@ -201,7 +200,7 @@ var dungeon;
 			querySelector('#scene-dungeon').innerHTML = dungeon.html()
 			// dungeon layer for ooc buffs
 			dungeon.map = maps[mission.id]
-			map.init()
+			map.init(dungeon.map)
 			dungeon.initCanvas()
 			player.initCanvas()
 			combat.updateCanvasLayer()
@@ -217,19 +216,23 @@ var dungeon;
 		chat.scrollBottom()
 	}
 	function getHallwayMobs() {
-		let min = app.isApp ? 0 : 1
-		let mobLen = _.random(min, ~~(dungeon.hallwayLength / 5))
+		// up to 2 mobs per 9600 length hallway
+		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
 		// TODO: Random from zone instead of hard-coded
 		let resp = []
 		for (var i=0; i<mobLen; i++) {
-			resp.push({
-				isAlive: true,
-				img: 'toadlok',
-				distance: _.random(
-					(i * MOB_HALLWAY_INTERVAL + MOB_HALLWAY_MIN) * -1,
-					(i * MOB_HALLWAY_INTERVAL + MOB_HALLWAY_MAX) * -1
-				)
-			})
+			if (Math.random() > .33) {
+				let minDistance = i === 0 ?
+					i * MOB_HALLWAY_INTERVAL + (MOB_HALLWAY_MIN * 2) :
+					i * MOB_HALLWAY_INTERVAL + MOB_HALLWAY_MIN
+				let maxDistance = i * MOB_HALLWAY_INTERVAL + MOB_HALLWAY_MAX
+
+				resp.push({
+					isAlive: true,
+					img: 'toadlok',
+					distance: _.random(minDistance, maxDistance) * -1
+				})
+			}
 		}
 		return resp
 	}
@@ -436,19 +439,21 @@ var dungeon;
 	}
 	function enteredNewHallway() {
 		// new hallway!
-		dungeon.hallwayLength = 5 // TODO: from hallway segment data later
-		dungeon.distanceEnd = dungeon.hallwayLength * GRID_SIZE
+		dungeon.hallwayTileLength = 5 // TODO: from hallway segment data later
+		dungeon.distanceEnd = dungeon.hallwayTileLength * GRID_SIZE
 		setEndWallDistance()
-		return getHallwayMobs()
 	}
 	function setDungeonEntities(entities) {
-		if (dungeon.distanceCurrent === 0) entities = enteredNewHallway(entities)
+		if (dungeon.distanceCurrent === HALLWAY_START) {
+			enteredNewHallway()
+			entities = getHallwayMobs()
+		}
 		else if (typeof entities === 'undefined') entities = dungeon.entities
 		// cleanup
 		removeDungeonEntities()
 		// setup
 		dungeon.entities = entities
-		entities.forEach((entity, index) => {
+		dungeon.entities.forEach((entity, index) => {
 			if (!entity.isAlive) return
 			battle.loadMobTexture(entity.img)
 			let ent = dungeon.entities[index]
@@ -513,8 +518,11 @@ var dungeon;
 		console.info('clearRoom')
 	}
 	function setGridPosition() {
+		// position updates
+		map.updatePosition()
+
+		// animate
 		dungeon.animateEntities()
-		// experimental corridor
 		if (dungeon.isDungeon) {
 			if (dungeon.is2Dmode) {
 				dungeon.tilesFloor.forEach(positionGridTile)
@@ -529,25 +537,14 @@ var dungeon;
 		else {
 			dungeon.tiling.tilePosition.y = dungeon.distanceCurrent
 		}
+
+		// room/battle checks
 		if (dungeon.distanceCurrent >= Math.min(dungeon.distanceEnd, dungeon.closestEntity)) {
 			if (dungeon.distanceCurrent >= dungeon.distanceEnd) {
 				// entered room
-				if (dungeon.getCompass() === 0) {
-					// north
-					dungeon.positionY += dungeon.distanceEnd
-				}
-				else if (dungeon.getCompass() === 1) {
-					// east
-					dungeon.positionX += dungeon.distanceEnd
-				}
-				else if (dungeon.getCompass() === 2) {
-					// south
-					dungeon.positionY -= dungeon.distanceEnd
-				}
-				else if (dungeon.getCompass() === 3) {
-					// west
-					dungeon.positionX -= dungeon.distanceEnd
-				}
+			}
+			else {
+				// or non-room battle?
 			}
 			dungeon.walkStop()
 			battle.go()
@@ -559,9 +556,6 @@ var dungeon;
 	function positionGridTileWall(tile, index) {
 		tile.position.x = ((tile.gridIndex * MaxWidth * AspectRatio) - (dungeon.distanceCurrent * AspectRatio)) * -1
 	}
-	function getCompass() {
-		return dungeon.direction % TURN_INTERVAL
-	}
 	function getEntityDistance(entity) {
 		return entity.distance + dungeon.distanceCurrent
 	}
@@ -571,6 +565,7 @@ var dungeon;
 		}
 	}
 	function positionEntity(entity) {
+		if (typeof entity.sprite === 'undefined') return
 		let dist = dungeon.getEntityDistance(entity)
 		entity.sprite.y = dist
 	}
@@ -657,172 +652,5 @@ var dungeon;
 	function walkStop() {
 		dungeon.walking = 0
 		dungeon.walkTween.pause()
-	}
-	function turnLeft() {
-		if (dungeon.walking || TURN_DISABLED) return
-		dungeon.walking = 1
-		let x = dungeon.entity.x
-		let y = dungeon.entity.y
-		let xEnd = 0
-		let yEnd = 0
-		let alphaEnd = 1
-		let distance = dungeon.getEntityDistance()
-		let yEase = Power0.easeNone
-		if (x === 0) {
-			if (y <= -CLOSEST_MOB_DISTANCE) {
-				// front
-				xEnd = distance
-				yEnd = 0
-				alphaEnd = 0
-				yEase = Circ.easeIn
-			}
-			else {
-				// back
-				xEnd = -distance
-				yEnd = 0
-			}
-		}
-		else {
-			if (x > 0) {
-				// right
-				xEnd = 0
-				yEnd = distance
-				alphaEnd = 0
-				dungeon.entity.alpha = 0
-			}
-			else {
-				// left
-				xEnd = 0
-				yEnd = -distance
-				yEase = Circ.easeOut
-				dungeon.entity.alpha = 1
-			}
-		}
-		TweenMax.to(dungeon.tiling.tileTransform, TURN_SPEED, {
-			pixi: { rotation: '+=' + TURN_INTERVAL },
-			ease: Power0.easeIn,
-		})
-		TweenMax.to(dungeon.entity, TURN_SPEED, {
-			x: xEnd,
-			ease: Power0.easeNone,
-		})
-		TweenMax.to(dungeon.entity, TURN_SPEED, {
-			y: yEnd,
-			ease: yEase,
-			onComplete: () => {
-				dungeon.entity.alpha = alphaEnd
-				dungeon.walkStop()
-			}
-		})
-		dungeon.direction -= TURN_INTERVAL
-	}
-	function turnRight() {
-		if (dungeon.walking || TURN_DISABLED) return
-		dungeon.walking = 1
-		let x = dungeon.entity.x
-		let y = dungeon.entity.y
-		let xEnd = 0
-		let yEnd = 0
-		let alphaStart = 1
-		let alphaEnd = 1
-		let distance = dungeon.getEntityDistance()
-		let yEase = Power0.easeNone
-
-		if (x === 0) {
-			if (y <= -CLOSEST_MOB_DISTANCE) {
-				// front
-				xEnd = -distance
-				yEnd = 0
-				alphaEnd = 0
-				yEase = Circ.easeIn
-			}
-			else {
-				// back
-				xEnd = distance
-				yEnd = 0
-			}
-		}
-		else {
-			if (x > 0) {
-				// right
-				xEnd = 0
-				yEnd = -distance
-				yEase = Circ.easeOut
-				dungeon.entity.alpha = 1
-			}
-			else {
-				// left
-				xEnd = 0
-				yEnd = distance
-				alphaEnd = 0
-				dungeon.entity.alpha = 0
-			}
-		}
-
-		TweenMax.to(dungeon.tiling.tileTransform, TURN_SPEED, {
-			pixi: { rotation: '-=' + TURN_INTERVAL },
-			ease: Power0.easeIn,
-		})
-		TweenMax.to(dungeon.entity, TURN_SPEED, {
-			x: xEnd,
-			ease: Power0.easeNone,
-		})
-		TweenMax.to(dungeon.entity, TURN_SPEED, {
-			y: yEnd,
-			ease: yEase,
-			onComplete: () => {
-				dungeon.entity.alpha = alphaEnd
-				dungeon.walkStop()
-			}
-		})
-		dungeon.direction += TURN_INTERVAL
-	}
-	function addFloorTiles3d() {
-		dungeon.containerFloor = new PIXI.projection.Container2d()
-		dungeon.containerFloor.zIndex = 3
-		dungeon.containerFloor.position.set(MaxWidth * .5, MaxHeight)
-		dungeon.containerFloor.proj.setAxisY({
-			x: 0,
-			y: MaxHeight * .5,
-		}, -1)
-		dungeon.layer.stage.addChild(dungeon.containerFloor)
-
-
-		dungeon.camera = new PIXI.projection.Camera3d();
-		dungeon.camera.setPlanes(300, 10, 1000, false);
-		dungeon.camera.position.set(MaxWidth * .5, MaxHeight * .5);
-		dungeon.camera.position3d.y = 0; // camera is above the ground
-		dungeon.layer.stage.addChild(dungeon.camera);
-
-		dungeon.groundLayer = new PIXI.projection.Container3d();
-		dungeon.groundLayer.euler.x = Math.PI * .5;
-		dungeon.camera.addChild(dungeon.groundLayer);
-
-		dungeon.bgLayer = new PIXI.projection.Container3d();
-		dungeon.bgLayer.proj.affine = PIXI.projection.AFFINE.AXIS_X;
-		dungeon.camera.addChild(dungeon.bgLayer);
-		dungeon.bgLayer.position3d.z = 80;
-
-		dungeon.mainLayer = new PIXI.projection.Container3d();
-		dungeon.mainLayer.proj.affine = PIXI.projection.AFFINE.AXIS_X;
-		dungeon.camera.addChild(dungeon.mainLayer);
-
-		// background sprite
-		dungeon.bg = new PIXI.Sprite(PIXI.Texture.from('images/dungeon/bg-test-sky.jpg'))
-        dungeon.bg.position.x = 0;
-        dungeon.bg.anchor.set(.5, .5)
-        dungeon.bgLayer.addChild(dungeon.bg);
-
-        dungeon.fg = new PIXI.projection.Sprite3d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'));
-        dungeon.fg.anchor.set(.5, .5);
-        dungeon.fg.position.x = 0;
-        dungeon.bgLayer.addChild(dungeon.fg);
-        // use position or position3d here, its not important,
-        // unless you need Z - then you need position3d
-
-        // dungeon.groundLayer.addChild(dungeon.fg);
-
-        dungeon.sky.alpha = 0
-		dungeon.tiling.alpha = 0
 	}
 })(TweenMax, $, _, Power0, Sine);

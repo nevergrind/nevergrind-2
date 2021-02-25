@@ -102,7 +102,7 @@ var town;
 		})
 		if (!create.selected) return
 
-		audio.playMusic('town', 'wav')
+		audio.playMusic('intro', 'wav')
 		clearTimeout(game.session.timer)
 		game.showScene('scene-town');
 		ng.lock(1);

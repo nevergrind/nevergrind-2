@@ -1587,6 +1587,17 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	height: 300px;
 	overflow: hidden;
 }
+#mini-map-drag {
+	position: absolute;
+	top: 0;
+	left: 0;
+	min-width: 600px;
+	min-height: 600px;
+	background: repeating-linear-gradient(90deg, #0000 0px, #0000 48px, #444 49px, #444 50px),
+		repeating-linear-gradient(0deg, #0000 0px, #0000 48px, #444 49px, #444 50px);
+	box-shadow: 0 0 20px 0 #9973 inset;
+	cursor: url('cursor/pointer.png'), pointer!important;
+}
 #mini-map-button-parent {
 	position: absolute;
 	z-index: 10000;
@@ -1607,60 +1618,6 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	transition: none;
 	filter: saturate(.8) brightness(.8);
 	transform: scale(.96);
-}
-#mini-map-drag {
-	position: absolute;
-	top: 0;
-	left: 0;
-	min-width: 600px;
-	min-height: 600px;
-	background: repeating-linear-gradient(90deg, #0000 0px, #0000 48px, #444 49px, #444 50px),
-		repeating-linear-gradient(0deg, #0000 0px, #0000 48px, #444 49px, #444 50px);
-	box-shadow: 0 0 20px 0 #9973 inset;
-	cursor: url('cursor/normal.png'), pointer!important;
-}
-.mini-map-entity {
-	position: absolute;
-	transform: translate(-50%, -50%);
-	top: 0;
-	left: 0;
-	z-index: 1;
-}
-.map-room {
-	width: 40px;
-	height: 40px;
-	background: #08f;
-	box-shadow: 0 0 0 2px #025;
-	z-index: 2;
-	cursor: url('cursor/pointer.png'), pointer!important;
-	transition: filter .2s ease-out, transform .2s ease-out;
-}
-.map-room:hover {
-	filter: contrast(1.2) brightness(1.5);
-}
-.map-room:active {
-	transition: none;
-	filter: contrast(1) brightness(.8);
-}
-.map-hallway-x {
-	transform: translate(0%, -50%)!important;
-	box-shadow: 0 0 0 1px #08f;
-	background: linear-gradient(to bottom, #444, #aaa, #444);
-}
-.map-hallway-y {
-	transform: translate(-50%, 0%)!important;
-	box-shadow: 0 0 0 1px #08f;
-	background: linear-gradient(to right, #444, #aaa, #444);
-}
-#mini-map-dot {
-	top: 0;
-	left: 0;
-	width: 14px;
-	height: 14px;
-	background: #0f0;
-	box-shadow: 0 0 0 2px #070;
-	pointer-events: none;
-	z-index: 10;
 }
 #button-wrap {
 	position: fixed;

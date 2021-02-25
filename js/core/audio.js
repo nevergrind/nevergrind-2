@@ -36,7 +36,7 @@ var audio;
 			}
 		}
 
-		audio.playMusic('intro', 'wav')
+		audio.playMusic('town', 'wav')
 	}
 	function save() {
 		// somehow my app config data ended up in here lul
