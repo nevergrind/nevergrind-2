@@ -23,7 +23,7 @@ var combat;
 		rxDotMob,
 		levelSkillCheck,
 		skillLevelChance,
-		endCombat,
+		resetTimersAndUI,
 		updateMyResource,
 		txHotHero,
 		rxHotHero,
@@ -395,7 +395,7 @@ var combat;
 		el = querySelector('#auto-attack-flash')
 		el.classList.remove('active')
 	}
-	function endCombat() {
+	function resetTimersAndUI() {
 		mob.killAttacks(true)
 		mob.hideMobTargets()
 		battle.hideTarget()
@@ -450,19 +450,8 @@ var combat;
 			mob.animateDeath(o.index)
 			my.fixTarget()
 			if (combat.isBattleOver()) { // mobs slain
-				endCombat()
-				map.show(2)
-				// TODO: broadcast done
-				// when combat ends
-				if (dungeon.closestEntityIndex >= 0) {
-					// return to dungeon
-					// clear nearest entity and redraw
-					console.info('closest index', map.hallwayId, dungeon.closestEntityIndex)
-					dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].isAlive = false
-					dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].sprite.alpha = 0
-					dungeon.setDungeonEntities()
-					delayedCall(5, dungeon.go, [true])
-				}
+				combat.resetTimersAndUI()
+				map.endCombat()
 			}
 		}
 		// console.info('object', o)
@@ -470,13 +459,12 @@ var combat;
 			ask.processAnimations(o, true)
 			processEffects(o)
 		}
-		////////////////////////////////////////
-		function processEffects(o) {
-			if (typeof o.effects === 'object') {
-				// console.info('processEffects')
-				// non-duration effects that are not buffs, but apply instantly
-				if (o.effects.stagger) mobEffects.stagger(o.index)
-			}
+	}
+	function processEffects(o) {
+		if (typeof o.effects === 'object') {
+			// console.info('processEffects')
+			// non-duration effects that are not buffs, but apply instantly
+			if (o.effects.stagger) mobEffects.stagger(o.index)
 		}
 	}
 	function processLeech(leechValue) {

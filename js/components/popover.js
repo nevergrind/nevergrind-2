@@ -49,6 +49,7 @@ var popover;
 			'potion-hp-empty': 'No Health Potions Remain',
 			'potion-mp-empty': 'No Mana Potions Remain',
 			'potion-sp-empty': 'No Spirit Potions Remain',
+			'mini-map-party': 'Center Camera on Party',
 		}
 		if (id.startsWith('skill-')) {
 			if (id === 'skill-primary-attack-btn') html = 'Primary Attack'

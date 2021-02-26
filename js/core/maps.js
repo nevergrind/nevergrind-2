@@ -12,17 +12,14 @@ let maps;
 					id: 0,
 					x: 500, y: 600,
 					connects: [1],
-					mobs: 0,
 				}, {
 					id: 1,
 					x: 500, y: 500,
 					connects: [0, 2],
-					mobs: 9,
 				}, {
 					id: 2,
 					x: 500, y: 400,
 					connects: [1],
-					mobs: 9,
 				}
 			],
 			hallways: [

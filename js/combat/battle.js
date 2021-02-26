@@ -68,6 +68,9 @@ var battle;
 		reckonGXL,
 		subtractExpPenalty,
 		getDeathPenaltyRatio,
+		getMinMobCount,
+		getMaxMobCount,
+		getRandomMobCount,
 	}
 	let index, buffHtml, traitHtml, buffEl, key, keyRow, el, i
 	let tgt = {}
@@ -343,14 +346,15 @@ var battle;
 			// maps[dungeon.map.id].rooms[map.roomId].mobs
 			let minMobs
 			let maxMobs
-			if (map.inRoom && map.roomId === 0) {
+			if (map.inRoom && map.roomId === 0 ||
+				map.inRoom && !dungeon.map.rooms[map.roomId].mobs) {
 				// starting room always empty - only time a room is empty?
 				minMobs = 0
 				maxMobs = 0
 			}
 			else {
-				minMobs = Math.max(~~(quests[mission.questId].level / 12), 1)
-				maxMobs = Math.min(ceil(quests[mission.questId].level / 7), mob.max)
+				minMobs = battle.getMinMobCount()
+				maxMobs = battle.getMaxMobCount()
 			}
 
 			let totalMobs = _.random(minMobs, maxMobs)
@@ -378,6 +382,15 @@ var battle;
 				_.remove(availableSlots, val => val === availableSlots[mobSlot])
 			}
 		}
+	}
+	function getRandomMobCount() {
+		return _.random(battle.getMinMobCount(), battle.getMaxMobCount())
+	}
+	function getMinMobCount() {
+		return Math.max(~~(quests[mission.questId].level / 12), 1)
+	}
+	function getMaxMobCount() {
+		return Math.min(ceil(quests[mission.questId].level / 7), mob.max)
 	}
 	function loadTextures() {
 		if (_.size(mob.textures) === 0) {

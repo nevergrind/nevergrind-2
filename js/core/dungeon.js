@@ -44,7 +44,6 @@ var dungeon;
 		closestEntityIndex: -1, // wall or indexed mob
 		endWall: {},
 		tickUpdate: {},
-		compass: 0, // 0 is north, 90 east, 180 south, 270 west
 		hallwayPlayerStart: PLAYER_HALLWAY_START,
 		centerX: [960, 1280, 640, 1600, 320],
 		bottom: MaxHeight,
@@ -77,13 +76,12 @@ var dungeon;
 		animateEntities,
 		getWalkProgress,
 		getWalkProgressToGo,
-		getEntityDistance,
+		getEntityDistanceFromMe,
 		setEndWallDistance,
 		setEndWall,
 		getHallwayMobs,
 		initCanvas,
 		setSrc,
-		removeDungeonEntities,
 		setDungeonEntities,
 		killEntityTweens,
 	}
@@ -152,7 +150,7 @@ var dungeon;
 			mobs[i].name = ''
 			mobs[i].hp = 0
 		})
-		combat.endCombat()
+		combat.resetTimersAndUI()
 
 		TweenMax.to('#scene-dungeon', .5, {
 			startAt: { filter: 'brightness(0)' },
@@ -278,17 +276,15 @@ var dungeon;
 	function setEndWallDistance() {
 		dungeon.endWall.position.y = (dungeon.distanceEnd - dungeon.distanceCurrent) * -1
 	}
-	function removeDungeonEntities() {
-		dungeon.killEntityTweens()
-		dungeon.containerEntities.removeChildren()
-	}
 	function getHallwayMobs() {
 		// up to 2 mobs per 9600 length hallway
 		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
+		mobLen = 1
 		// TODO: Random from zone instead of hard-coded
 		let resp = []
 		for (var i=0; i<mobLen; i++) {
-			if (Math.random() > .33) {
+			// if (Math.random() > .33) {
+			if (true) {
 				let loopDistance = i * MOB_HALLWAY_INTERVAL
 				let minDistance = i === 0 ?
 					loopDistance + (PLAYER_HALLWAY_START * 2) : // 2400
@@ -308,7 +304,8 @@ var dungeon;
 	}
 	function setDungeonEntities() {
 		// cleanup
-		removeDungeonEntities()
+		dungeon.killEntityTweens()
+		dungeon.containerEntities.removeChildren()
 		// setup
 		dungeon.entities[map.hallwayId].forEach((entity, index) => {
 			if (!entity.isAlive) return
@@ -321,7 +318,7 @@ var dungeon;
 			ent.sprite.anchor.set(0.5, mobs.images[entity.img].anchorY)
 			ent.sprite.factor = 1
 			ent.sprite.proj.affine = PIXI.projection.AFFINE.AXIS_X
-			ent.sprite.y = dungeon.getEntityDistance(ent)
+			ent.sprite.y = dungeon.getEntityDistanceFromMe(index)
 			ent.sprite.zIndex = 999 - index
 			// size and check offset
 			// ent.y = mobs.images[img].yPadding * MOB_DUNGEON_SIZE
@@ -351,8 +348,14 @@ var dungeon;
 		if (dungeon.entities[map.hallwayId].length) {
 			dungeon.closestEntity = dungeon.entities[map.hallwayId].reduce((acc, entity, index) => {
 				// higher number is closer (confusing)
-				if (entity.isAlive && -entity.distance < acc) {
-					acc = -entity.distance + CLOSEST_MOB_DISTANCE
+				// let distance = -dungeon.getEntityDistanceFromMe(index)
+				let distance = -entity.distance
+				if (map.compass >= 2) {
+					distance = dungeon.distanceEnd + entity.distance
+				}
+				// console.info('setClosestEntity', distance, acc)
+				if (entity.isAlive && distance < acc) {
+					acc = distance + CLOSEST_MOB_DISTANCE
 					dungeon.closestEntityIndex = index
 				}
 				return acc
@@ -377,19 +380,23 @@ var dungeon;
 		}
 
 		// room/battle checks
+		// console.info(dungeon.distanceCurrent, dungeon.distanceEnd, dungeon.closestEntity, -dungeon.getEntityDistanceFromMe(dungeon.closestEntityIndex))
 		if (dungeon.distanceCurrent <= 0) {
 			// go backwards to roomId
 			map.inRoom = true
 			dungeon.walkStop()
 			battle.go()
 		}
-		else if (dungeon.distanceCurrent >= Math.min(dungeon.distanceEnd, dungeon.closestEntity)) {
+		else if (dungeon.distanceCurrent >= Math.min(
+			dungeon.distanceEnd,
+			dungeon.closestEntity
+		)) {
 			if (dungeon.distanceCurrent >= dungeon.distanceEnd) {
 				// entered room
-				map.inRoom = true
+				map.enterRoom(map.roomToId)
 			}
 			else {
-				// or non-room battle?
+				// or hallway battle?
 				map.inRoom = false
 			}
 			dungeon.walkStop()
@@ -402,16 +409,23 @@ var dungeon;
 	function positionGridTileWall(tile, index) {
 		tile.position.x = ((tile.gridIndex * MaxWidth * AspectRatio) - (dungeon.distanceCurrent * AspectRatio)) * -1
 	}
-	function getEntityDistance(entity) {
-		return entity.distance + dungeon.distanceCurrent
+	function getEntityDistanceFromMe(index) {
+		if (index < 0) return
+		if (map.compass <= 1) {
+			// north/east
+			return dungeon.entities[map.hallwayId][index].distance + dungeon.distanceCurrent
+		}
+		else {
+			// south/west
+			return ((-dungeon.distanceEnd - dungeon.entities[map.hallwayId][index].distance) + dungeon.distanceCurrent)
+		}
 	}
 	function animateEntities() {
 		dungeon.entities[map.hallwayId].forEach(positionEntity)
 	}
-	function positionEntity(entity) {
+	function positionEntity(entity, index) {
 		if (typeof entity.sprite === 'undefined') return
-		let dist = dungeon.getEntityDistance(entity)
-		entity.sprite.y = dist
+		entity.sprite.y = dungeon.getEntityDistanceFromMe(index)
 	}
 	function setSrc(tween, ent) {
 		tween.frame = ~~tween.frame

@@ -402,7 +402,6 @@ let mobs = [];
 	let mobHealthBar
 	function drawMobBar(index, drawInstant) {
 		mobHealthBar = query.el('#mob-health-' + index)
-		console.info('mobHealthBar', mobHealthBar)
 		if (mobHealthBar === null) return
 		percent = bar.getRatio(PROP.HP, mobs[index])
 		TweenMax.to(mobHealthBar, drawInstant ? 0 : .15, {

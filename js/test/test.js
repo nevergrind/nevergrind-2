@@ -722,7 +722,7 @@ var test;
 		let xEnd = 0
 		let yEnd = 0
 		let alphaEnd = 1
-		let distance = dungeon.getEntityDistance()
+		let distance = dungeon.getEntityDistanceFromMe()
 		let yEase = Power0.easeNone
 		if (x === 0) {
 			if (y <= -CLOSEST_MOB_DISTANCE) {
@@ -770,7 +770,7 @@ var test;
 				dungeon.walkStop()
 			}
 		})
-		dungeon.compass -= TURN_INTERVAL
+		map.compass -= TURN_INTERVAL
 	}
 	function turnRight() {
 		if (dungeon.walking || TURN_DISABLED) return
@@ -781,7 +781,7 @@ var test;
 		let yEnd = 0
 		let alphaStart = 1
 		let alphaEnd = 1
-		let distance = dungeon.getEntityDistance()
+		let distance = dungeon.getEntityDistanceFromMe()
 		let yEase = Power0.easeNone
 
 		if (x === 0) {
@@ -831,7 +831,7 @@ var test;
 				dungeon.walkStop()
 			}
 		})
-		dungeon.compass += TURN_INTERVAL
+		map.compass += TURN_INTERVAL
 	}
 	function addFloorTiles3d() {
 		dungeon.containerFloor = new PIXI.projection.Container2d()

@@ -16,7 +16,7 @@ let map;
 		hallwayId: 0,
 		roomId: 0,
 		roomToId: 0,
-		direction: 0,
+		compass: 0, // 0-3 clockwise
 		scale: 100,
 		width: 0,
 		height: 0,
@@ -36,9 +36,11 @@ let map;
 		centerMap,
 		centerCameraAt,
 		updatePosition,
-		getCompass,
-		setDirection,
+		setCompass,
 		setDotPosition,
+		enterRoom,
+		enterHallway,
+		endCombat,
 		show,
 		hide,
 	}
@@ -89,11 +91,17 @@ let map;
 		map.miniMapDrag.style.height = map.height + 'px'
 
 		mapData.rooms.forEach(createRoom)
+		mapData.rooms.forEach(setMobCount)
 		mapData.hallways.forEach(createHallway)
 
 		delayedCall(1.5, () => {
 			map.centerCameraAt(map.dotX, map.dotY)
 		})
+	}
+	function setMobCount(room, index) {
+		// room zero never has mobs
+		dungeon.map.rooms[index].mobs = !index ?
+			0 : battle.getRandomMobCount()
 	}
 	function createRoom(room) {
 		console.info('room', room)
@@ -122,30 +130,26 @@ let map;
 	function handleDragEnd() {
 		map.isDragging = false
 	}
-	function getCompass() {
-		return map.direction % TURN_INTERVAL
-	}
 	function updatePosition() {
-		map.compass = map.getCompass()
-		if (dungeon.compass === 0) {
+		if (map.compass === 0) {
 			// north
 			map.cameraY =
 				map.dotY =
 					map.roomY - ((100 * dungeon.distanceCurrent) / dungeon.hallwayLength)
 		}
-		else if (dungeon.compass === 1) {
+		else if (map.compass === 1) {
 			// east
 			map.cameraX =
 				map.dotX = 
 					map.roomX - ((100 * dungeon.distanceCurrent) / dungeon.hallwayLength)
 		}
-		else if (dungeon.compass === 2) {
+		else if (map.compass === 2) {
 			// south
 			map.cameraY =
 				map.dotY =
 					map.roomY + ((100 * dungeon.distanceCurrent) / dungeon.hallwayLength)
 		}
-		else if (dungeon.compass === 3) {
+		else if (map.compass === 3) {
 			// west
 			map.cameraX =
 				map.dotX =
@@ -264,34 +268,55 @@ let map;
 			}
 		}
 	}
-	function enterRoom() {
-
+	function enterRoom(roomId) {
+		map.inRoom = true
+		map.roomId = roomId
+		map.roomX = dungeon.map.rooms[roomId].x
+		map.roomY = dungeon.map.rooms[roomId].y
 	}
 	function enterHallway(roomId) {
 		map.roomToId = roomId
+
 		map.hallwayId = dungeon.map.hallways.find(h =>
 			h.connects.includes(map.roomId) &&
 			h.connects.includes(map.roomToId)
 		).id
 		map.inRoom = false
-		if (typeof dungeon.entities[map.hallwayId] === 'object' &&
-			!dungeon.entities[map.hallwayId].length) {
+		if (typeof dungeon.entities[map.hallwayId] === 'object' && !dungeon.entities[map.hallwayId].length ||
+			typeof dungeon.entities[map.hallwayId] === 'undefined') {
 			dungeon.entities[map.hallwayId] = dungeon.getHallwayMobs()
 		}
 		dungeon.distanceCurrent = dungeon.hallwayPlayerStart
 		dungeon.distanceEnd = getHallwayDistance(map.hallwayId)
-		map.setDirection()
+		map.setCompass()
 		map.updatePosition()
-		console.info('enterHallway room', roomId, 'hallway', map.hallwayId)
+		console.info('enterHallway', 'room', roomId, 'hallway', map.hallwayId)
 		dungeon.go()
 	}
-	function setDirection() {
+	function setCompass() {
 		let room = dungeon.map.rooms[map.roomId]
 		let roomTo = dungeon.map.rooms[map.roomToId]
-		if (roomTo.y < room.y) dungeon.direction = 0
-		else if (roomTo.y > room.y) dungeon.direction = 180
-		else if (roomTo.x < room.x) dungeon.direction = 270
-		else dungeon.direction = 90
+		if (roomTo.y < room.y) map.compass = 0
+		else if (roomTo.y > room.y) map.compass = 2
+		else if (roomTo.x < room.x) map.compass = 3
+		else map.compass = 1
+	}
+	function endCombat() {
+		// map stuff
+		if (map.inRoom) {
+			// in a room
+			dungeon.map.rooms[map.roomId].mobs = 0
+			map.show(3)
+		}
+		else {
+			// clear nearest entity and redraw
+			dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].isAlive = false
+			dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].sprite.alpha = 0
+			dungeon.setDungeonEntities()
+			// return to dungeon hallway
+			delayedCall(4, dungeon.go, [true])
+			map.show(4)
+		}
 	}
 	function getHallwayDistance(id) {
 		let len
