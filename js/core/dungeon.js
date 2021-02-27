@@ -59,7 +59,7 @@ var dungeon;
 		totalTiles: MAX_TILES,
 		distanceEnd: GRID_SIZE * MAX_TILES,
 		hallwayLength: GRID_SIZE * HALLWAY_TILE_LENGTH,
-		distancePerSecond: app.isApp ? (GRID_SIZE * .2) : GRID_SIZE,
+		distancePerSecond: app.isApp ? (GRID_SIZE * .2) : GRID_SIZE * 3,
 		walkTween: TweenMax.to('#body', 0, {}),
 		centerY,
 		go,
@@ -279,7 +279,7 @@ var dungeon;
 	function getHallwayMobs() {
 		// up to 2 mobs per 9600 length hallway
 		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
-		mobLen = 1
+		mobLen = 0
 		// TODO: Random from zone instead of hard-coded
 		let resp = []
 		for (var i=0; i<mobLen; i++) {

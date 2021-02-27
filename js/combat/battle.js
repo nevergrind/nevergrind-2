@@ -358,6 +358,7 @@ var battle;
 			}
 
 			let totalMobs = _.random(minMobs, maxMobs)
+			totalMobs = 0
 
 			// test data
 			/*if (!ng.isApp) {

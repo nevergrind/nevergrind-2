@@ -1584,7 +1584,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 #mini-map-drag-parent {
 	position: relative;
-	width: 300px;
+	width: 400px;
 	height: 300px;
 	overflow: hidden;
 }
@@ -1618,6 +1618,10 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	background: repeating-linear-gradient(90deg, #0000 0px, #0000 48px, #444 49px, #444 50px),
 		repeating-linear-gradient(0deg, #0000 0px, #0000 48px, #444 49px, #444 50px);
 	box-shadow: 0 0 20px 0 #9973 inset;
+	font-size: 1rem;
+	color: #f00;
+	text-shadow: 1px 1px #000;
+	text-align: center;
 	cursor: url('cursor/normal.png'), pointer!important;
 }
 .mini-map-entity {
@@ -1628,11 +1632,15 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	z-index: 1;
 }
 .map-room {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 40px;
 	height: 40px;
 	background: #08f;
 	box-shadow: 0 0 0 2px #025;
 	z-index: 2;
+	font-size: 2rem;
 	cursor: url('cursor/pointer.png'), pointer!important;
 	transition: filter .2s ease-out, transform .2s ease-out;
 }
@@ -1644,11 +1652,17 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	filter: contrast(1) brightness(.8);
 }
 .map-hallway-x {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	transform: translate(0%, -50%)!important;
 	box-shadow: 0 0 0 1px #08f;
 	background: linear-gradient(to bottom, #444, #aaa, #444);
 }
 .map-hallway-y {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	transform: translate(-50%, 0%)!important;
 	box-shadow: 0 0 0 1px #08f;
 	background: linear-gradient(to right, #444, #aaa, #444);

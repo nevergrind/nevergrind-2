@@ -78,8 +78,8 @@ let map;
 		})[0]
 
 		// init map data
-		map.originX = map.dotX = map.roomX = map.cameraX = dungeon.map.startX
-		map.originY = map.dotY = map.roomY = map.cameraY = dungeon.map.startY
+		map.originX = map.dotX = map.roomX = map.cameraX = dungeon.map.rooms[0].x
+		map.originY = map.dotY = map.roomY = map.cameraY = dungeon.map.rooms[0].y
 
 		// map dimensions
 		map.width = Math.max(MIN_MAP_WIDTH, dungeon.map.width)
@@ -104,18 +104,20 @@ let map;
 			0 : battle.getRandomMobCount()
 	}
 	function createRoom(room) {
-		console.info('room', room)
+		// console.info('room', room)
 		let el = createElement('div')
 		el.id = 'room-' + room.id
+		el.innerHTML = room.id
 		el.className = 'mini-map-entity map-room'
 		el.style.top = room.y + 'px'
 		el.style.left = room.x + 'px'
 		map.miniMapDrag.appendChild(el)
 	}
 	function createHallway(hallway) {
-		console.info('hallway', hallway)
+		// console.info('hallway', hallway)
 		let el = createElement('div')
 		el.id = 'hallway-' + hallway.id
+		el.innerHTML = hallway.id
 		if (hallway.width === 16) el.className = 'mini-map-entity map-hallway map-hallway-y'
 		else el.className = 'mini-map-entity map-hallway map-hallway-x'
 		el.style.top = hallway.y + 'px'
@@ -141,7 +143,7 @@ let map;
 			// east
 			map.cameraX =
 				map.dotX = 
-					map.roomX - ((100 * dungeon.distanceCurrent) / dungeon.hallwayLength)
+					map.roomX + ((100 * dungeon.distanceCurrent) / dungeon.hallwayLength)
 		}
 		else if (map.compass === 2) {
 			// south
@@ -153,11 +155,11 @@ let map;
 			// west
 			map.cameraX =
 				map.dotX =
-					map.roomX + ((100 * dungeon.distanceCurrent) / dungeon.hallwayLength)
+					map.roomX - ((100 * dungeon.distanceCurrent) / dungeon.hallwayLength)
 		}
 		// console.info('map.camera', map.cameraX, map.cameraY)
 		map.setDotPosition()
-		map.setCameraPosition()
+		map.setCameraPosition(0)
 	}
 	function handleWheel(e) {
 		if (e.originalEvent.deltaY < 0) map.wheelZoomIn(e)
@@ -204,7 +206,7 @@ let map;
 		map.cameraX = (map.width * .5) - PARENT_WIDTH_HALF * -1
 		map.cameraY = (map.height * .5) - PARENT_HEIGHT_HALF * -1
 		map.scale = SCALE_DEFAULT
-		map.setCameraPosition()
+		map.setCameraPosition(1)
 	}
 	/*function setOrigin(t) {
 		TweenMax.set(map.miniMapDrag, {
@@ -229,11 +231,12 @@ let map;
 			y: map.dotY - DOT_OFFSET,
 		})
 	}
-	function setCameraPosition() {
+	function setCameraPosition(delay) {
 		map.setMapScale()
-		TweenMax.to(map.miniMapDrag, 1, {
+		TweenMax.to(map.miniMapDrag, delay, {
 			x: -map.cameraX + PARENT_WIDTH_HALF,
 			y: -map.cameraY + PARENT_HEIGHT_HALF,
+			onUpdate: map.applyBounds
 		})
 	}
 	function centerCameraAt(x, y) {
@@ -247,7 +250,7 @@ let map;
 		map.cameraY = y
 		console.warn('centerCameraAt', map.cameraX, map.cameraY)
 		map.scale = SCALE_DEFAULT
-		map.setCameraPosition()
+		map.setCameraPosition(1)
 	}
 	function handleCenterParty() {
 		map.centerCameraAt(map.dotX, map.dotY)
@@ -263,7 +266,7 @@ let map;
 					enterHallway(roomId)
 				}
 				else {
-					console.warn('does not connect!', roomId, dungeon.map.rooms[map.roomId].connects)
+					console.warn('does not connect!', roomId, map.roomId, dungeon.map.rooms[map.roomId].connects)
 				}
 			}
 		}
@@ -276,12 +279,12 @@ let map;
 	}
 	function enterHallway(roomId) {
 		map.roomToId = roomId
-
 		map.hallwayId = dungeon.map.hallways.find(h =>
 			h.connects.includes(map.roomId) &&
 			h.connects.includes(map.roomToId)
 		).id
 		map.inRoom = false
+
 		if (typeof dungeon.entities[map.hallwayId] === 'object' && !dungeon.entities[map.hallwayId].length ||
 			typeof dungeon.entities[map.hallwayId] === 'undefined') {
 			dungeon.entities[map.hallwayId] = dungeon.getHallwayMobs()
