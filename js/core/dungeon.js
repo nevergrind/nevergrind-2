@@ -95,18 +95,26 @@ var dungeon;
 	///////////////////////////////////////
 	function go(force) {
 		if (!force && ng.view === 'dungeon') return
-		goTasks()
 		if (party.presence[0].isLeader) {
+			if (!_.size(dungeon.map)) {
+				dungeon.map = Grid.createMap(quests[mission.questId].size)
+			}
+			console.info('dungeon.map', dungeon.map)
 			if (party.hasMoreThanOnePlayer()) {
 				socket.publish('party' + my.partyId, {
 					route: 'p->goDungeon',
-					config: { age: 35 },
+					grid: dungeon.map,
 				}, true)
 			}
 			delayedCall(.5, preloadCombatAssets)
 		}
+		goTasks()
 	}
-	function rxGo() {
+	function rxGo(data) {
+		console.info('rxGo', data)
+		if (!_.size(dungeon.map)) {
+			dungeon.map = data.grid
+		}
 		goTasks()
 		delayedCall(.5, preloadCombatAssets)
 	}
@@ -189,7 +197,6 @@ var dungeon;
 			dungeon.initialized = true
 			querySelector('#scene-dungeon').innerHTML = dungeon.html()
 			// dungeon layer for ooc buffs
-			dungeon.map = maps[mission.id]
 			dungeon.entities = [[]]
 			map.init(dungeon.map)
 			dungeon.initCanvas()

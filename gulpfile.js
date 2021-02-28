@@ -65,7 +65,7 @@ const jsFiles = [
 	'core/events',
 	'core/socket',
 	'core/map',
-	'core/maps',
+	'core/grid',
 	'chat/chat',
 	'chat/party',
 	'chat/guild',

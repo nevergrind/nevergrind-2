@@ -16,6 +16,7 @@ var quests;
 			description: '',
 			imgIndex: 1,
 			type: QUEST_TYPES.kill,
+			size: 'small',
 		},
 		{
 			level: 2,
@@ -23,6 +24,7 @@ var quests;
 			description: '',
 			imgIndex: 2,
 			type: QUEST_TYPES.kill,
+			size: 'small',
 		},
 		{
 			level: 3,
@@ -30,6 +32,7 @@ var quests;
 			description: '',
 			imgIndex: 1,
 			type: QUEST_TYPES.kill,
+			size: 'small',
 		},
 		{
 			level: 5,
@@ -37,6 +40,7 @@ var quests;
 			description: '',
 			imgIndex: 2,
 			type: QUEST_TYPES.kill,
+			size: 'small',
 		},
 		{
 			level: 7,
@@ -44,6 +48,7 @@ var quests;
 			description: '',
 			imgIndex: 1,
 			type: QUEST_TYPES.kill,
+			size: 'small',
 		},
 	]
 	///////////////////////////////////////////

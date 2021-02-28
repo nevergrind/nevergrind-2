@@ -6,7 +6,7 @@ var mission;
 		loaded: 0,
 		delegated: 0,
 		quests: [],
-		id: 0,
+		id: 0, // zone id
 		title: '',
 		init,
 		getMissionBodyHtml,
@@ -19,11 +19,8 @@ var mission;
 		toggleZone,
 		clickQuest,
 		getZoneImg,
-		onKilledMob,
-		onClearedRoom,
 	};
 	var questHtml
-	var html = ''
 	var that = {}
 	const minusClasses = 'mission-tree-btn mission-minus'
 	const plusClasses = 'mission-tree-btn mission-plus'
@@ -59,15 +56,15 @@ var mission;
 		'</div>'
 
 		questHtml += '<div id="mission-counter" class="aside-frame text-shadow">'
-		zones.forEach(function(zone) {
-			if (my.level + 4 >= zone.level) {
+		zones.forEach(function(z) {
+			if (my.level + 4 >= z.level) {
 				questHtml +=
-				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ combat.considerClass[combat.getDiffIndex(zone.level)] +'" data-id="'+ zone.id +'">'+
+				'<div class="mission-zone-headers '+ getOpenMenuClass(z.level) + ' '+ combat.considerClass[combat.getDiffIndex(z.level)] +'" data-id="'+ z.id +'">'+
 					'<img class="mission-tree-btn mission-plus" src="images/ui/plus.png">'+
-					'<div>' + zone.name + '</div>' +
+					'<div>' + z.name + '</div>' +
 				'</div>' +
-				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">' +
-					getMissionRowHtml(zone) +
+				'<div id="mission-quest-list-wrap-'+ z.id +'" class="mission-quest-list">' +
+					getMissionRowHtml(z) +
 				'</div>';
 				// console.info('zone', zone);
 			}
@@ -76,11 +73,11 @@ var mission;
 		return questHtml
 
 	}
-	function getMissionRowHtml(zone) {
+	function getMissionRowHtml(z) {
 		var html = '';
-		zones[zone.id].missions.forEach(questId => {
+		zones[z.id].missions.forEach(questId => {
 			html += '<div class="mission-quest-item ellipsis ' + combat.considerClass[combat.getDiffIndex(quests[questId].level)] +'" '+
-				'data-id="'+ zone.id +'" ' +
+				'data-id="'+ z.id +'" ' +
 				'data-quest="'+ questId +'">' +
 				quests[questId].title +
 			'</div>'
@@ -119,27 +116,27 @@ var mission;
 		that = $(this)
 		// console.info('toggleZone', this.dataset.id)
 		var zoneId = this.dataset.id * 1
-		var index = zones.findIndex(zone => zone.id === zoneId);
-		var zone = zones[index];
+		var index = zones.findIndex(z => z.id === zoneId);
+		var z = zones[index];
 
 		// console.info('JSON ', _.cloneDeep(zone));
 		// console.info(index, "isOpen: ", zone.isOpen, zone);
 
-		if (zone.isOpen) {
+		if (z.isOpen) {
 			// close menu
-			var e = that.find('.mission-minus');
-			e.attr('src', 'images/ui/plus.png');
+			var e = that.find('.mission-minus')
+			e.attr('src', 'images/ui/plus.png')
 			e.removeClass().addClass(plusClasses)
-			$("#mission-quest-list-wrap-" + zone.id).css('display', 'none');
-			zone.isOpen = 0;
+			$("#mission-quest-list-wrap-" + z.id).css('display', 'none')
+			z.isOpen = 0
 		}
 		else {
 			// open menu
-			var e = that.find('.mission-plus');
-			e.attr('src', 'images/ui/minus.png');
+			var e = that.find('.mission-plus')
+			e.attr('src', 'images/ui/minus.png')
 			e.removeClass().addClass(minusClasses)
-			$("#mission-quest-list-wrap-" + zone.id).css('display', 'block');
-			zone.isOpen = 1;
+			$("#mission-quest-list-wrap-" + z.id).css('display', 'block')
+			z.isOpen = 1
 		}
 	}
 	function abandon() {
@@ -232,12 +229,5 @@ var mission;
 		ng.msg('Mission started: ' + quests[mission.questId].title)
 		let questDelay = app.isApp ? 3 : 0
 		delayedCall(questDelay, dungeon.go)
-	}
-
-	function onKilledMob(mobData) {
-
-	}
-	function onClearedRoom() {
-
 	}
 })(TweenMax, $, _);

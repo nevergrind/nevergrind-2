@@ -1615,8 +1615,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	left: 0;
 	min-width: 600px;
 	min-height: 600px;
-	background: repeating-linear-gradient(90deg, #0000 0px, #0000 48px, #444 49px, #444 50px),
-		repeating-linear-gradient(0deg, #0000 0px, #0000 48px, #444 49px, #444 50px);
+	background: repeating-linear-gradient(90deg, #444 0px, #444 1px, #0000 2px, #0000 50px),
+		repeating-linear-gradient(0deg, #444 0px, #444 1px, #0000 2px, #0000 50px);
 	box-shadow: 0 0 20px 0 #9973 inset;
 	font-size: 1rem;
 	color: #f00;

@@ -95,6 +95,7 @@ var town;
 		my.targetIsMob = true
 		battle.hideTarget()
 		mob.killAttacks()
+		dungeon.map = {} // reset map data so it can be initialized next embark
 		dungeon.killEntityTweens()
 		map.hide()
 		if (!create.selected) return
@@ -544,9 +545,9 @@ var town;
 		}
 		else if (town.openVariousWindow === 'Tavern') {
 			npc = 'Eber: '
-			zones = zones.map(zone => {
-				zone.isOpen = 0
-				return zone;
+			zones = zones.map(z => {
+				z.isOpen = 0
+				return z;
 			})
 			msg = 'Welcome to the Edenburg Tavern, '+ my.name +'. The King has requested the services of brave adventurers like yourself to complete missions in defense of our interests. How do you choose to serve?'
 			townConfig = {
