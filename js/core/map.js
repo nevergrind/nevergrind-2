@@ -43,6 +43,7 @@ let map;
 		endCombat,
 		show,
 		hide,
+		rxEnterHallway,
 	}
 	const SCALE_IN_MAX = 50 // ZOOM OUT
 	const SCALE_DEFAULT = 100
@@ -91,17 +92,11 @@ let map;
 		map.miniMapDrag.style.height = map.height + 'px'
 
 		mapData.rooms.forEach(createRoom)
-		mapData.rooms.forEach(setMobCount)
 		mapData.hallways.forEach(createHallway)
 
 		delayedCall(1.5, () => {
 			map.centerCameraAt(map.dotX, map.dotY)
 		})
-	}
-	function setMobCount(room, index) {
-		// room zero never has mobs
-		dungeon.map.rooms[index].mobs = !index ?
-			0 : battle.getRandomMobCount()
 	}
 	function createRoom(room) {
 		// console.info('room', room)
@@ -109,6 +104,9 @@ let map;
 		el.id = 'room-' + room.id
 		el.innerHTML = room.id
 		el.className = 'mini-map-entity map-room'
+		if (room.boss) {
+			el.classList.add('boss-room')
+		}
 		el.style.top = room.y + 'px'
 		el.style.left = room.x + 'px'
 		map.miniMapDrag.appendChild(el)
@@ -278,7 +276,19 @@ let map;
 		map.roomY = dungeon.map.rooms[roomId].y
 	}
 	function enterHallway(roomId) {
-		map.roomToId = roomId
+		if (party.presence[0].isLeader) {
+			let data = {
+				route: 'p->enterHallway',
+				id: roomId,
+			}
+			if (party.hasMoreThanOnePlayer()) {
+				socket.publish('party' + my.partyId, data, true)
+			}
+			map.rxEnterHallway(data)
+		}
+	}
+	function rxEnterHallway(data) {
+		map.roomToId = data.id
 		map.hallwayId = dungeon.map.hallways.find(h =>
 			h.connects.includes(map.roomId) &&
 			h.connects.includes(map.roomToId)
@@ -287,13 +297,13 @@ let map;
 
 		if (typeof dungeon.entities[map.hallwayId] === 'object' && !dungeon.entities[map.hallwayId].length ||
 			typeof dungeon.entities[map.hallwayId] === 'undefined') {
-			dungeon.entities[map.hallwayId] = dungeon.getHallwayMobs()
+			dungeon.entities[map.hallwayId] = dungeon.map.hallways[map.hallwayId].entities
 		}
 		dungeon.distanceCurrent = dungeon.hallwayPlayerStart
 		dungeon.distanceEnd = getHallwayDistance(map.hallwayId)
 		map.setCompass()
 		map.updatePosition()
-		console.info('enterHallway', 'room', roomId, 'hallway', map.hallwayId)
+		console.info('enterHallway', 'room', data.id, 'hallway', map.hallwayId)
 		dungeon.go()
 	}
 	function setCompass() {
@@ -308,7 +318,7 @@ let map;
 		// map stuff
 		if (map.inRoom) {
 			// in a room
-			dungeon.map.rooms[map.roomId].mobs = 0
+			dungeon.map.rooms[map.roomId].isAlive = false
 			map.show(3)
 		}
 		else {

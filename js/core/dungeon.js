@@ -79,11 +79,13 @@ var dungeon;
 		getEntityDistanceFromMe,
 		setEndWallDistance,
 		setEndWall,
-		getHallwayMobs,
 		initCanvas,
 		setSrc,
 		setDungeonEntities,
 		killEntityTweens,
+		rxWalkForward,
+		rxWalkBackward,
+		rxWalkStop,
 	}
 	let blurValue = 0
 	const CLOSEST_MOB_DISTANCE = -200
@@ -98,25 +100,48 @@ var dungeon;
 		if (party.presence[0].isLeader) {
 			if (!_.size(dungeon.map)) {
 				dungeon.map = Grid.createMap(quests[mission.questId].size)
-			}
-			console.info('dungeon.map', dungeon.map)
-			if (party.hasMoreThanOnePlayer()) {
-				socket.publish('party' + my.partyId, {
-					route: 'p->goDungeon',
-					grid: dungeon.map,
-				}, true)
+				createHallwayMobs()
+				dungeon.map.rooms.forEach(getRoomMobCount)
+				setBossRoom()
+				if (party.hasMoreThanOnePlayer()) {
+					broadcastMapData()
+				}
 			}
 			delayedCall(.5, preloadCombatAssets)
 		}
 		goTasks()
 	}
+	function broadcastMapData() {
+		socket.publish('party' + my.partyId, {
+			route: 'p->goDungeon',
+			grid: dungeon.map,
+		}, true)
+	}
 	function rxGo(data) {
-		console.info('rxGo', data)
-		if (!_.size(dungeon.map)) {
-			dungeon.map = data.grid
-		}
+		console.info('p->goDungeon rxGo', data)
+		dungeon.map = data.grid
 		goTasks()
 		delayedCall(.5, preloadCombatAssets)
+	}
+	function getRoomMobCount(h, index) {
+		// room zero never has mobs
+		h.isAlive = index === 0 ? false : true
+	}
+	function setBossRoom() {
+		let x = dungeon.map.rooms[0].x
+		let y = dungeon.map.rooms[0].y
+		let maxDiff = 0
+		let bossIndex = 0
+		dungeon.map.rooms.forEach((r, index) => {
+			let xDiff = Math.abs(r.x - x)
+			let yDiff = Math.abs(r.y - y)
+			let totalDiff = xDiff + yDiff
+			if (totalDiff > maxDiff) {
+				maxDiff = totalDiff
+				bossIndex = index
+			}
+		})
+		dungeon.map.rooms[bossIndex].boss = true
 	}
 	function preloadCombatAssets() {
 		console.info('LOADING ASSETS')
@@ -283,31 +308,29 @@ var dungeon;
 	function setEndWallDistance() {
 		dungeon.endWall.position.y = (dungeon.distanceEnd - dungeon.distanceCurrent) * -1
 	}
-	function getHallwayMobs() {
+	function createHallwayMobs() {
 		// up to 2 mobs per 9600 length hallway
 		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
-		mobLen = 0
-		// TODO: Random from zone instead of hard-coded
-		let resp = []
-		for (var i=0; i<mobLen; i++) {
-			// if (Math.random() > .33) {
-			if (true) {
-				let loopDistance = i * MOB_HALLWAY_INTERVAL
-				let minDistance = i === 0 ?
-					loopDistance + (PLAYER_HALLWAY_START * 2) : // 2400
-					loopDistance + PLAYER_HALLWAY_START // 1200
-				let maxDistance = i === (mobLen - 1) ?
-					loopDistance + MOB_HALLWAY_MAX : // prior to door 4080
-					loopDistance + MOB_HALLWAY_INTERVAL // to end 4800
-
-				resp.push({
-					isAlive: true,
-					img: 'toadlok',
-					distance: _.random(minDistance, maxDistance) * -1
-				})
+		dungeon.map.hallways.forEach((h, hIndex) => {
+			h.entities = []
+			for (var i=0; i<mobLen; i++) {
+				if (Math.random() > .33) {
+					let loopDistance = i * MOB_HALLWAY_INTERVAL
+					let minDistance = i === 0 ?
+						loopDistance + (PLAYER_HALLWAY_START * 2) : // 2400
+						loopDistance + PLAYER_HALLWAY_START // 1200
+					let maxDistance = i === (mobLen - 1) ?
+						loopDistance + MOB_HALLWAY_MAX : // prior to door 4080
+						loopDistance + MOB_HALLWAY_INTERVAL // to end 4800
+					// TODO: Random from zone instead of hard-coded
+					h.entities.push({
+						isAlive: true,
+						img: 'toadlok',
+						distance: _.random(minDistance, maxDistance) * -1
+					})
+				}
 			}
-		}
-		return resp
+		})
 	}
 	function setDungeonEntities() {
 		// cleanup
@@ -494,27 +517,53 @@ var dungeon;
 	function walkForward() {
 		if (dungeon.getWalkProgress() >= 0 &&
 			dungeon.getWalkProgress() < 1) {
-			dungeon.walking = 1
-			dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationEnd(), {
-				distanceCurrent: dungeon.distanceEnd,
-				ease: Power0.easeIn,
-				onUpdate: dungeon.setGridPosition,
-				onComplete: dungeon.walkStop,
-			})
+			if (party.presence[0].isLeader) {
+				if (party.hasMoreThanOnePlayer()) {
+					socket.publish('party' + my.partyId, {
+						route: 'p->walkForward',
+					}, true)
+				}
+				dungeon.rxWalkForward()
+			}
 		}
+	}
+	function rxWalkForward() {
+		dungeon.walking = 1
+		dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationEnd(), {
+			distanceCurrent: dungeon.distanceEnd,
+			ease: Power0.easeIn,
+			onUpdate: dungeon.setGridPosition,
+			onComplete: dungeon.walkStop,
+		})
 	}
 	function walkBackward() {
 		if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
-			dungeon.walking = -1
-			dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationStart(), {
-				distanceCurrent: dungeon.distanceStart,
-				ease: Power0.easeIn,
-				onUpdate: dungeon.setGridPosition,
-				onComplete: dungeon.walkStop,
-			})
+			if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
+				socket.publish('party' + my.partyId, {
+					route: 'p->walkBackward',
+				}, true)
+			}
+			dungeon.rxWalkBackward()
 		}
 	}
+	function rxWalkBackward() {
+		dungeon.walking = -1
+		dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationStart(), {
+			distanceCurrent: dungeon.distanceStart,
+			ease: Power0.easeIn,
+			onUpdate: dungeon.setGridPosition,
+			onComplete: dungeon.walkStop,
+		})
+	}
 	function walkStop() {
+		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
+			socket.publish('party' + my.partyId, {
+				route: 'p->walkStop',
+			}, true)
+		}
+		dungeon.rxWalkStop()
+	}
+	function rxWalkStop() {
 		dungeon.walking = 0
 		dungeon.walkTween.pause()
 	}

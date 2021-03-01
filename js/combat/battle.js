@@ -347,7 +347,7 @@ var battle;
 			let minMobs
 			let maxMobs
 			if (map.inRoom && map.roomId === 0 ||
-				map.inRoom && !dungeon.map.rooms[map.roomId].mobs) {
+				map.inRoom && !dungeon.map.rooms[map.roomId].isAlive) {
 				// starting room always empty - only time a room is empty?
 				minMobs = 0
 				maxMobs = 0
@@ -358,7 +358,7 @@ var battle;
 			}
 
 			let totalMobs = _.random(minMobs, maxMobs)
-			totalMobs = 0
+			// totalMobs = 0
 
 			// test data
 			/*if (!ng.isApp) {

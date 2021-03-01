@@ -1644,6 +1644,10 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	cursor: url('cursor/pointer.png'), pointer!important;
 	transition: filter .2s ease-out, transform .2s ease-out;
 }
+.boss-room {
+	color: #111!important;
+	background: #911!important;
+}
 .map-room:hover {
 	filter: contrast(1.2) brightness(1.5);
 }
