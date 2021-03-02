@@ -43,9 +43,10 @@ function onOpen(session) {
 $now = microtime(true);
 
 require_once '../session/start.php';
-
 echo '__DIR__ ' . __DIR__ . '<br>';
 echo '$_SERVER[\'DOCUMENT_ROOT\']' . $_SERVER['DOCUMENT_ROOT'] . '<br>';
+
+echo '<div>' . $config['db'] . '</div>';
 echo 'time ' . microtime(true) * 1000 . '<br>';
 
 require '../db.php';
@@ -65,7 +66,7 @@ $obj[5] = [
 ];
 
 
-$loops = 100000;
+$loops = 1000;
 $val = 5;
 $obj = [
 	'name' => 'Bob',

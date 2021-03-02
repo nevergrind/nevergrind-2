@@ -17,6 +17,7 @@ if (empty($_SESSION['account']) &&
 	strlen($_POST['screenName']) > 0 &&
 	strlen($_POST['steamId']) > 0 &&
 	strlen($_POST['ticket']) > 0) {
+	require $_SERVER['DOCUMENT_ROOT'] . '/ng2/config.php';
 	// Steam
 	$r['checkedSteam'] = 1;
 	// try for Steam login
@@ -27,7 +28,7 @@ if (empty($_SESSION['account']) &&
 	$steamid = $_POST['steamId'];
 	// set options
 	$url = 'https://api.steampowered.com/ISteamUserAuth/AuthenticateUserTicket/v1/';
-	$key = '98714A473D3003BDB1C90742087B3386';
+	$key = $config['steamKey']; // no idea what this is
 	$appId = '853450';
 	// authenticate via steam API
 	$ch = curl_init();
@@ -100,6 +101,7 @@ if (empty($_SESSION['account']) &&
 
 		// length check - if too short change name to player
 		if (strlen($screenName) < 2){
+			// what the fuck is this?
 			$screenName = 'p' . mt_rand(0, 727379969);
 			$screenName = substr(
 				preg_replace(

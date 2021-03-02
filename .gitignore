@@ -3,6 +3,7 @@ nevergrind-online.min.js
 ng2.min.css
 docs/ng2.xlsx
 v8.log
+config.php
 greenworks*
 /build-ng2
 /nwjs*
