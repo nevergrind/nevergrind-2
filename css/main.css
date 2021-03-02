@@ -1563,6 +1563,25 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	box-shadow: 0 500px 0 rgba(255, 0, 0, .4) inset;
 }
 /* dungeon */
+#quest-log {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translate(0%, -100%);
+	font-family: Cinzel, Quatro, serif;
+	font-size: .875rem;
+	padding: .2rem .5rem;
+	background: #0008;
+	border-radius: 10px 10px 0 0;
+	border: 1px solid #000;
+	border-bottom: 0;
+	backdrop-filter: blur(5px);
+}
+#quest-header {
+	color: gold;
+}
+#quest-name {
+}
 #mini-map {
 	visibility: hidden;
 	opacity: 0;
@@ -1631,6 +1650,10 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	left: 0;
 	z-index: 1;
 }
+#room-0 {
+	background: #cc0;
+	opacity: 1;
+}
 .map-room {
 	display: flex;
 	align-items: center;
@@ -1643,6 +1666,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	font-size: 2rem;
 	cursor: url('cursor/pointer.png'), pointer!important;
 	transition: filter .2s ease-out, transform .2s ease-out;
+	visibility: hidden;
+	opacity: 0;
 }
 .boss-room {
 	color: #111!important;
@@ -1656,6 +1681,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	filter: contrast(1) brightness(.8);
 }
 .map-hallway-x {
+	visibility: hidden;
+	opacity: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1664,6 +1691,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	background: linear-gradient(to bottom, #444, #aaa, #444);
 }
 .map-hallway-y {
+	visibility: hidden;
+	opacity: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1674,13 +1703,19 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 #mini-map-dot {
 	top: 0;
 	left: 0;
-	width: 14px;
-	height: 14px;
-	background: #0f0;
-	box-shadow: 0 0 0 2px #070;
+	width: 50px;
+	height: 50px;
 	pointer-events: none;
 	z-index: 10;
 }
+/*#mini-map-fog {
+	top: 0;
+	left: 0;
+	width: 2400px;
+	height: 2400px;
+	pointer-events: none;
+	z-index: 10;
+}*/
 #button-wrap {
 	position: fixed;
 	align-self: center;

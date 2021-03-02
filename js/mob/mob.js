@@ -118,7 +118,7 @@ let mobs = [];
 		img: 'orc',
 		size: 1,
 		name: 'monster',
-		type: 'normal',
+		type: MOB_TYPES.normal,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -212,7 +212,7 @@ let mobs = [];
 				isDead: true,
 				speed: 0,
 				hitCount: 0,
-				type: 'normal',
+				type: MOB_TYPES.normal,
 				buffs: {},
 				buffFlags: {},
 				box: {},

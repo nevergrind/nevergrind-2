@@ -15,7 +15,7 @@ let Grid;
 				height: 800, // 7x7 = 49
 				totalRooms: 30,
 			},
-			long: {
+			large: {
 				width: 1000,
 				height: 1000, // 9x9 = 81
 				totalRooms: 44,
@@ -35,6 +35,7 @@ let Grid;
 		}
 		const MAX_ROOMS = ~~((((grid.width - ROOM_DISTANCE) / 100) * ((grid.height - ROOM_DISTANCE) / 100)) * .66)
 		grid.totalRooms = Math.min(grid.totalRooms, MAX_ROOMS)
+
 		let xRange = (grid.width - (ROOM_DISTANCE * 2)) / 100
 		let yRange = (grid.height - (ROOM_DISTANCE * 2)) / 100
 		let xStart = _.random(1, 1 + xRange) * 100
@@ -50,10 +51,12 @@ let Grid;
 
 		while (grid.rooms.length < grid.totalRooms) {
 			let validRoomIds = grid.rooms.filter(roomHasLessThanThreeHallways).map(getRoomIds)
-			let fromId = validRoomIds[_.random(0, validRoomIds.length - 1)]
-			let direction = getDirection(fromId)
-			if (direction >= 0) {
-				addRoom(grid, { from: fromId, to: direction })
+			if (validRoomIds.length) {
+				let fromId = validRoomIds[_.random(0, validRoomIds.length - 1)]
+				let direction = getDirection(fromId)
+				if (direction >= 0) {
+					addRoom(grid, { from: fromId, to: direction })
+				}
 			}
 		}
 		return grid
@@ -107,7 +110,7 @@ let Grid;
 			}
 		}
 		function roomHasLessThanThreeHallways(r) {
-			return r.connects.length < 3
+			return r.connects.length < _.random(2, 3)
 		}
 		function getRoomIds(r) {
 			return r.id

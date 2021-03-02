@@ -492,20 +492,25 @@ app.socketUrl = app.isApp ?
 </div>
 <div id="button-wrap" class="no-select text-shadow"></div>
 <div id="mini-map" class="text-shadow no-select">
+	<div id="quest-log" class="flex-column text-shadow3">
+		<div id="quest-header">Objective:</div>
+		<div id="quest-name"></div>
+	</div>
 	<div id="mini-map-bg">
 		<div id="mini-map-button-parent" class="flex-row">
 			<img id="mini-map-party" src="images/ui/bar-options.png" class="map-btn popover-icons">
 		</div>
 		<div id="mini-map-drag-parent">
 			<div id="mini-map-drag">
-				<div id="mini-map-dot" class="mini-map-entity"></div>
+				<img id="mini-map-dot" class="mini-map-entity" src="images/dungeon/torch.png" />
+				<!--<img id="mini-map-fog" class="mini-map-entity" src="images/dungeon/fog.png" />-->
 			</div>
 		</div>
 	</div>
 </div>
 <div id="tooltip-skill" class="no-pointer no-select text-shadow">
-	<div id="tooltip-skill-name">Test</div>
-	<div id="tooltip-skill-description">Test</div>
+	<div id="tooltip-skill-name"></div>
+	<div id="tooltip-skill-description"></div>
 </div>
 <div id="mob-target-wrap" class="text-shadow3">
 	<div id="mob-target-name" class=""></div>

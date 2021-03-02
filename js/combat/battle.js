@@ -238,6 +238,7 @@ var battle;
 		chat.sizeDungeon()
 		mob.init()
 		dungeon.killEntityTweens()
+
 		game.showScene('scene-battle')
 		if (chat.modeCommand === '/say') {
 			chat.modeChange(CHAT.PARTY)
@@ -432,7 +433,7 @@ var battle;
 				tgt = {
 					class: 'con-white',
 					name: party.getNameByRow(my.target),
-					type: 'normal',
+					type: MOB_TYPES.normal,
 					hp: ceil(100 - bar.getRatio(PROP.HP, party.presence[party.getIndexByRow(my.target)])),
 					traits: 'Player',
 					buffs: '',

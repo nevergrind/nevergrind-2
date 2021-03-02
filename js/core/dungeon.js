@@ -13,9 +13,19 @@ var dungeon;
 	const HALLWAY_TILE_LENGTH = 5
 	const MOB_HALLWAY_INTERVAL = (GRID_SIZE * 5) * .5 // 4800 - length that a mob can spawn in
 	const MOB_HALLWAY_MIN = 0 // 1200 - 2400 minimum if first interval (25%)
-	const MOB_HALLWAY_MAX = MOB_HALLWAY_INTERVAL * .75
+	const MOB_HALLWAY_MAX = MOB_HALLWAY_INTERVAL * .7
 	// player starts in hallway at 1200 (12.5%), but mob on first interval can't appear until 2400 (25%)
 	const PLAYER_HALLWAY_START = MOB_HALLWAY_INTERVAL - MOB_HALLWAY_MAX
+	const MOB_DISTANCE = [
+		{
+			min: PLAYER_HALLWAY_START * 2,
+			max: MOB_HALLWAY_INTERVAL,
+		},
+		{
+			min: MOB_HALLWAY_INTERVAL + PLAYER_HALLWAY_START,
+			max: MOB_HALLWAY_INTERVAL + MOB_HALLWAY_MAX,
+		}
+	]
 	dungeon = {
 		initialized: 0,
 		isDungeon: true,
@@ -315,18 +325,11 @@ var dungeon;
 			h.entities = []
 			for (var i=0; i<mobLen; i++) {
 				if (Math.random() > .33) {
-					let loopDistance = i * MOB_HALLWAY_INTERVAL
-					let minDistance = i === 0 ?
-						loopDistance + (PLAYER_HALLWAY_START * 2) : // 2400
-						loopDistance + PLAYER_HALLWAY_START // 1200
-					let maxDistance = i === (mobLen - 1) ?
-						loopDistance + MOB_HALLWAY_MAX : // prior to door 4080
-						loopDistance + MOB_HALLWAY_INTERVAL // to end 4800
 					// TODO: Random from zone instead of hard-coded
 					h.entities.push({
 						isAlive: true,
 						img: 'toadlok',
-						distance: _.random(minDistance, maxDistance) * -1
+						distance: _.random(MOB_DISTANCE[i].min, MOB_DISTANCE[i].max) * -1
 					})
 				}
 			}
@@ -538,12 +541,14 @@ var dungeon;
 	}
 	function walkBackward() {
 		if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
-			if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
-				socket.publish('party' + my.partyId, {
-					route: 'p->walkBackward',
-				}, true)
+			if (party.presence[0].isLeader) {
+				if (party.hasMoreThanOnePlayer()) {
+					socket.publish('party' + my.partyId, {
+						route: 'p->walkBackward',
+					}, true)
+				}
+				dungeon.rxWalkBackward()
 			}
-			dungeon.rxWalkBackward()
 		}
 	}
 	function rxWalkBackward() {
@@ -556,12 +561,14 @@ var dungeon;
 		})
 	}
 	function walkStop() {
-		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
-			socket.publish('party' + my.partyId, {
-				route: 'p->walkStop',
-			}, true)
+		if (party.presence[0].isLeader) {
+			if (party.hasMoreThanOnePlayer()) {
+				socket.publish('party' + my.partyId, {
+					route: 'p->walkStop',
+				}, true)
+			}
+			dungeon.rxWalkStop()
 		}
-		dungeon.rxWalkStop()
 	}
 	function rxWalkStop() {
 		dungeon.walking = 0

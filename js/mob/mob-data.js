@@ -8,7 +8,7 @@ mob.data['Salubrin Den'] = [
 		maxLevel: 60,
 		size: .97,
 		job: JOB.WARRIOR,
-		type: 'normal', // champion, unique, boss?
+		type: 'normal',
 		traits: [], // champ traits
 	},
 	{
@@ -18,7 +18,7 @@ mob.data['Salubrin Den'] = [
 		maxLevel: 60,
 		size: .9,
 		job: JOB.WARRIOR,
-		type: 'normal', // champion, unique, boss?
+		type: MOB_TYPES.normal,
 		traits: [], // champ traits
 	},
 	{
@@ -28,7 +28,7 @@ mob.data['Salubrin Den'] = [
 		maxLevel: 60,
 		size: .9,
 		job: JOB.WARRIOR,
-		type: 'normal', // normal, champion, unique, boss?
+		type: MOB_TYPES.normal,
 		traits: [], // champ traits
 	},
 	*/
@@ -39,7 +39,7 @@ mob.data['Salubrin Den'] = [
 		maxLevel: 60,
 		size: 1,
 		job: JOB.SHAMAN,
-		type: 'normal', // normal, champion, unique, boss?
+		type: MOB_TYPES.normal,
 		traits: [], // champ traits
 	},
 ]

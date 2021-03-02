@@ -834,7 +834,9 @@ var ng;
 	let article
 	function getArticle(index, capitalize) {
 		article = ''
-		if (mobs[index].type === 'normal' || mobs[index].type === 'champion') {
+		if (mobs[index].type === MOB_TYPES.normal ||
+			mobs[index].type === MOB_TYPES.champion ||
+			mobs[index].type === MOB_TYPES.conqueror) {
 			article = vowels.includes(mobs[index].name[0]) ? 'an' : 'a'
 		}
 		if (capitalize) article = _.capitalize(article)

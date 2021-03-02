@@ -20,12 +20,15 @@ let map;
 		scale: 100,
 		width: 0,
 		height: 0,
+		questName: querySelector('#quest-name'),
 		dot: querySelector('#mini-map-dot'),
+		// fog: querySelector('#mini-map-fog'),
 		miniMapDrag: querySelector('#mini-map-drag'),
 		miniMapParent: querySelector('#mini-map-drag-parent'),
 		dragWidth: 0,
 		dragHeight: 0,
 		dragMap: {},
+		fogTween: {},
 		init,
 		setMapScale,
 		setCameraPosition,
@@ -44,6 +47,9 @@ let map;
 		show,
 		hide,
 		rxEnterHallway,
+		revealRoom,
+		revealMap,
+		getRoomClearData,
 	}
 	const SCALE_IN_MAX = 50 // ZOOM OUT
 	const SCALE_DEFAULT = 100
@@ -58,11 +64,20 @@ let map;
 	const MIN_MAP_HEIGHT = PARENT_HEIGHT * (1 / (SCALE_IN_MAX * .01))
 	const TURN_INTERVAL = 90
 	const DOT_OFFSET = map.dot.offsetWidth * .5
+	// const FOG_OFFSET = map.fog.offsetWidth * .5
+
+	/*map.fogTween = TweenMax.to(map.fog, .2, {
+		startAt: { scale: 1.007 },
+		scale: 1,
+		repeat: -1,
+		yoyo: true,
+		ease: Sine.easeOut,
+	})
+	map.fogTween.pause()*/
 	///////////////////////////////////////////
 	$('#mini-map-drag').on('wheel', handleWheel)
 	$('#mini-map-party').on('click', handleCenterParty)
 	$(map.miniMapDrag).on('click', '.map-room', handleRoomClick)
-
 	function init(mapData) {
 		map.dragMap = Draggable.create(map.miniMapDrag, {
 			bounds: map.miniMapParent,
@@ -93,6 +108,11 @@ let map;
 
 		mapData.rooms.forEach(createRoom)
 		mapData.hallways.forEach(createHallway)
+
+		/*TweenMax.set(map.fog, {
+			x: map.dotX - FOG_OFFSET,
+			y: map.dotY - FOG_OFFSET
+		})*/
 
 		delayedCall(1.5, () => {
 			map.centerCameraAt(map.dotX, map.dotY)
@@ -228,6 +248,10 @@ let map;
 			x: map.dotX - DOT_OFFSET,
 			y: map.dotY - DOT_OFFSET,
 		})
+		/*TweenMax.set(map.fog, {
+			x: map.dotX - FOG_OFFSET,
+			y: map.dotY - FOG_OFFSET
+		})*/
 	}
 	function setCameraPosition(delay) {
 		map.setMapScale()
@@ -287,6 +311,51 @@ let map;
 			map.rxEnterHallway(data)
 		}
 	}
+	function revealRoom() {
+		let rooms = ['#room-' + map.roomId]
+		let halls = []
+		dungeon.map.rooms[map.roomId].visible = true
+		dungeon.map.rooms[map.roomId].connects.forEach(roomId => {
+			rooms.push('#room-' + roomId)
+			dungeon.map.rooms[roomId].visible = true
+			let hallIndex = dungeon.map.hallways.findIndex(h => {
+				return h.connects.includes(roomId) && h.connects.includes(map.roomId)
+			})
+			dungeon.map.hallways[hallIndex].visible = true
+			halls.push('#hallway-' + hallIndex)
+		})
+		/*console.info('halls', halls)
+		console.info('rooms', rooms)*/
+		TweenMax.to(halls, 1, {
+			startAt: { visibility: 'visible' },
+			delay: .5,
+			opacity: 1
+		})
+		TweenMax.to(rooms, 1, {
+			startAt: { visibility: 'visible' },
+			delay: 1,
+			opacity: 1
+		})
+	}
+	function revealMap() {
+		let els = []
+		dungeon.map.rooms.forEach(r => {
+			(r.id === 0 || r.visible) && els.push('#room-' + r.id)
+		})
+		dungeon.map.hallways.forEach(h => {
+			h.visible && els.push('#hallway-' + h.id)
+		})
+
+		TweenMax.set('.map-room, .map-hallway', {
+			startAt: { visibility: 'hidden' },
+			opacity: 0
+		})
+		TweenMax.to(els, 1, {
+			startAt: { visibility: 'visible' },
+			opacity: 1
+		})
+
+	}
 	function rxEnterHallway(data) {
 		map.roomToId = data.id
 		map.hallwayId = dungeon.map.hallways.find(h =>
@@ -314,16 +383,20 @@ let map;
 		else if (roomTo.x < room.x) map.compass = 3
 		else map.compass = 1
 	}
-	function endCombat() {
+	function endCombat() { // clear room or hallway
 		// map stuff
 		if (map.inRoom) {
 			// in a room
 			dungeon.map.rooms[map.roomId].isAlive = false
+			TweenMax.set('#room-' + map.roomId, {
+				backgroundColor: '#060',
+			})
 			map.show(3)
 		}
 		else {
 			// clear nearest entity and redraw
 			dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].isAlive = false
+			dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].timestamp = Date.now()
 			dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].sprite.alpha = 0
 			dungeon.setDungeonEntities()
 			// return to dungeon hallway
@@ -353,6 +426,9 @@ let map;
 			scale: 1,
 			ease: Back.easeOut,
 		})
+		// map.fogTween.play()
+		map.questName.textContent = quests[mission.questId].title
+		delayedCall(delay, revealRoom)
 	}
 	function hide() {
 		TweenMax.set('#mini-map', {
@@ -360,5 +436,24 @@ let map;
 			opacity: 0,
 			scale: 0,
 		})
+		// map.fogTween.pause()
+	}
+	function getRoomClearData() {
+		let data = dungeon.map.rooms.reduce((acc, r) => {
+			if (r.id === 0 || r.boss) {
+				// don't count these rooms
+			}
+			else {
+				acc.total++
+				if (!r.isAlive) {
+					acc.cleared++
+				}
+			}
+			return acc
+		}, {total: 0, cleared: 0, bossUnlocked: false})
+		if (data.cleared / data.total >= .9) {
+			data.bossUnlocked = true
+		}
+		return data
 	}
 }($, _, TweenMax, getComputedStyle, parseInt, window);

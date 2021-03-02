@@ -16,7 +16,7 @@ var quests;
 			description: '',
 			imgIndex: 1,
 			type: QUEST_TYPES.kill,
-			size: 'small',
+			size: 'large',
 		},
 		{
 			level: 2,
