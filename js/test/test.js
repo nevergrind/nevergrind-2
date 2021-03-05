@@ -20,11 +20,11 @@ var test;
 			brightness(100%)
 			contrast(100%)
 			shadow(100%)
+			grayscale(100%
 			drop-shadow(0 0 5px #0f0)
-			grayscale(100%)
 			invert(100%)
 			opacity(100%)
-			saturate(100%)
+			saturate(100%) (this is grayscale) (saturation in pixi)
 			sepia(100%)
 			 */
 			hueRotate,
@@ -546,7 +546,7 @@ var test;
 		test.container = new PIXI.projection.Container2d();
 		test.container.position.set(player.layer.screen.width / 2, player.layer.screen.height);
 
-		test.plane = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/bg_plane.jpg'));
+		test.plane = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/bg_plane-512.jpg'));
 		test.plane.anchor.set(.5, 1)
 		/*test.plane.width = player.layer.screen.width
 		test.plane.height = player.layer.screen.height*/
@@ -869,7 +869,7 @@ var test;
         dungeon.bg.anchor.set(.5, .5)
         dungeon.bgLayer.addChild(dungeon.bg);
 
-        dungeon.fg = new PIXI.projection.Sprite3d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'));
+        dungeon.fg = new PIXI.projection.Sprite3d(PIXI.Texture.from('images/dungeon/bg_plane-512.jpg'));
         dungeon.fg.anchor.set(.5, .5);
         dungeon.fg.position.x = 0;
         dungeon.bgLayer.addChild(dungeon.fg);

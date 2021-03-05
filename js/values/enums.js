@@ -274,3 +274,8 @@ const MOB_TYPES = Object.freeze({
 	unique: 'unique',
 	boss: 'boss',
 })
+const MAP_SIZES = Object.freeze({
+	small: 'small',
+	medium: 'medium',
+	lare: 'large',
+})

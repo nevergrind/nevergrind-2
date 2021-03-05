@@ -275,7 +275,7 @@ var dungeon;
 
 		// tiling - takes whole screen, anchor and position are the same as of sprite floor
 		dungeon.tiling = new PIXI.projection.TilingSprite2d(
-			PIXI.Texture.from('images/dungeon/bg_plane.jpg'),
+			PIXI.Texture.from('images/dungeon/bg_plane-512.jpg'),
 			MaxWidth,
 			MaxHeight
 		)
@@ -585,7 +585,7 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerFloor)
 		for (var i=0; i<MAX_TILES; i++) {
-			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'))
+			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane-512.jpg'))
 			tile.anchor.set(.5, 1)
 			tile.width = MaxWidth
 			tile.height = MaxWidth
@@ -609,7 +609,7 @@ var dungeon;
 		dungeon.layer.stage.addChild(dungeon.containerCeiling)
 
 		for (var i=0; i<MAX_TILES; i++) {
-			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'))
+			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane-512.jpg'))
 			tile.anchor.set(.5, 1)
 			tile.width = MaxWidth
 			tile.height = MaxWidth
@@ -635,7 +635,7 @@ var dungeon;
 		dungeon.layer.stage.addChild(dungeon.containerLeftWall)
 
 		for (var i=0; i<MAX_TILES; i++) {
-			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane-wall.jpg'))
+			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane-wall-512.jpg'))
 			tile.anchor.set(1, .5)
 			tile.width = MaxWidth * AspectRatio
 			tile.height = MaxHeight
@@ -661,7 +661,7 @@ var dungeon;
 		dungeon.layer.stage.addChild(dungeon.containerRightWall)
 
 		for (var i=0; i<MAX_TILES; i++) {
-			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane-wall.jpg'))
+			let tile = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane-wall-512.jpg'))
 			tile.anchor.set(1, .5)
 			tile.width = MaxWidth * AspectRatio
 			tile.height = MaxHeight
@@ -677,7 +677,7 @@ var dungeon;
 		}
 	}
 	function addEndWall() {
-		dungeon.endWall = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane.jpg'))
+		dungeon.endWall = new PIXI.projection.Sprite2d(PIXI.Texture.from('images/dungeon/bg_plane-512.jpg'))
 		dungeon.endWall.anchor.set(.5, 1)
 		dungeon.endWall.factor = 1
 		dungeon.endWall.proj.affine = PIXI.projection.AFFINE.AXIS_X

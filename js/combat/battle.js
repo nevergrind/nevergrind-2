@@ -861,6 +861,7 @@ var battle;
 				'<div id="mob-dead-' +i+ '" class="mob-dead" index="' + i + '"></div>' +
 			'</div>'
 		}
+		s += '<div id="quest-bg"></div>'
 		return s;
 	}
 	function show() {

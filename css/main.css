@@ -3792,3 +3792,16 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 .damage-lightning { color: #5fc }
 .damage-fire { color: #f40 }
 .damage-ice { color: #27d }
+#quest-bg {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 130%;
+	height: 8.5rem;
+	background: #000;
+	opacity: 0;
+	z-index: 2;
+	filter: blur(10px);
+	pointer-events: none;
+}
