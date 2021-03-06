@@ -13,6 +13,7 @@ var quests;
 		{
 			level: 1,
 			title: 'Kill Himber',
+			bossName: 'Himber',
 			description: '',
 			imgIndex: 1,
 			type: QUEST_TYPES.kill,
@@ -21,6 +22,7 @@ var quests;
 		{
 			level: 2,
 			title: 'Kill Fahesh',
+			bossName: 'Fahesh',
 			description: '',
 			imgIndex: 2,
 			type: QUEST_TYPES.kill,
@@ -29,6 +31,7 @@ var quests;
 		{
 			level: 3,
 			title: 'Kill Umusaq',
+			bossName: 'Umusaq',
 			description: '',
 			imgIndex: 1,
 			type: QUEST_TYPES.kill,
@@ -37,6 +40,7 @@ var quests;
 		{
 			level: 5,
 			title: 'Kill Aslan',
+			bossName: 'Aslan',
 			description: '',
 			imgIndex: 2,
 			type: QUEST_TYPES.kill,
@@ -45,6 +49,7 @@ var quests;
 		{
 			level: 7,
 			title: 'Kill Gaurav',
+			bossName: 'Gaurav',
 			description: '',
 			imgIndex: 1,
 			type: QUEST_TYPES.kill,

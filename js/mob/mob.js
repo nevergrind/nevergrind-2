@@ -105,7 +105,7 @@ let mobs = [];
 			diff: 29.999
 		},
 	};
-	const mobBaseConfig = {
+	const MOB_BASE_CONFIG = {
 		hp: 1,
 		mp: 1,
 		sp: 1,
@@ -118,7 +118,7 @@ let mobs = [];
 		img: 'orc',
 		size: 1,
 		name: 'monster',
-		type: MOB_TYPES.normal,
+		type: MOB_TIERS.normal,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -127,7 +127,8 @@ let mobs = [];
 			fire: 1,
 			ice: 1,
 		},
-		traits: []
+		traits: [],
+		isDead: false,
 	}
 	let mobSpeed = 1
 	let timeScaleSpeed = 1
@@ -212,7 +213,7 @@ let mobs = [];
 				isDead: true,
 				speed: 0,
 				hitCount: 0,
-				type: MOB_TYPES.normal,
+				type: MOB_TIERS.normal,
 				buffs: {},
 				buffFlags: {},
 				box: {},
@@ -225,46 +226,26 @@ let mobs = [];
 		}
 	}
 	function configMobType(config) {
-		let results = []
-		let level = 1
-		let possibleLvls = []
-		let i
-		mob.data[zones[mission.id].name].forEach(mob => {
-			possibleLvls = []
-			i = mob.minLevel
-			for (; i<=mob.maxLevel; i++) {
-				if (i >= config.minLevel &&
-					i <= config.maxLevel) {
-					// within the config range
-					possibleLvls.push(i)
-				}
-			}
-			if (possibleLvls.length) {
-				// constrain max level
-				level = _.random(possibleLvls[0], possibleLvls[possibleLvls.length - 1])
-				if (mob.name === config.name) {
-					// console.info('pushing by name', mob.name, config.name)
-					results.push({
-						...mob,
-						level: level,
-						isDead: false,
-					})
-				}
-				else if (mob.img === config.img) {
-					// console.info('pushing by img', mob.img, config.img)
-					results.push({
-						...mob,
-						level: level,
-						isDead: false,
-					})
-				}
-			}
+		/**
+		 * filters zone's mobData and returns one mob in the level range
+		 * tries by name first and then by level
+		 * @type {*[]}
+		 */
+		let results
+		if (config.name) {
+			results = mob.data[zones[mission.id].name].find(m =>
+				m.name === config.name)
+		}
+		else {
+			results = mob.data[zones[mission.id].name].filter(m =>
+				m.minLevel <= config.level && config.level <= m.maxLevel)
+		}
+		results.forEach((r, i) => {
+			results[i].level = config.level
 		})
-		// console.info('configMobType results', results)
-		index = _.random(0, results.length - 1)
 		return {
-			...mobBaseConfig,
-			...results[index],
+			...MOB_BASE_CONFIG,
+			...results[_.random(0, results.length - 1)],
 		}
 	}
 	function getMobGold(config) {
@@ -290,15 +271,20 @@ let mobs = [];
 		mob.earnedGold = 0
 		mob.leveledUp = false
 		if (!dataFromLeader) {
-			// leader
+			// leader gets this
 			mobConfig = {
 				...mobConfig,
 				...mob.type[mobConfig.img],
 				gold: getMobGold(mobConfig)
 			}
+			// mob class
 			mobSkills.modifyMobStatsByClass(mobConfig)
-			// console.info('mobConfig omit some props?', mobConfig)
+			// mob tier
 
+			mobSkills.modifyMobStatsByTier(mobConfig)
+			// mob traits
+
+			// console.info('mobConfig omit some props?', mobConfig)
 			mob.txData[i] = _.omit(mobConfig, KEYS.MOB_OMIT)
 		}
 		// console.info('p->goBattle', mobConfig)
@@ -310,6 +296,7 @@ let mobs = [];
 			...mobConfig,
 			exp: getMobExp(mobConfig)
 		}
+		console.info('setMob', _.cloneDeep(mobs[i]))
 		// start attack cycle
 		timers.mobAttack[i].kill()
 		timers.mobAttack[i] = delayedCall(Math.random() * 2 + 2, mob.attack, [i])
@@ -321,9 +308,9 @@ let mobs = [];
 		// delete mobs[i].cache;
 		TweenMax.set(querySelector('#mob-wrap-' + i), { display: 'block' })
 		TweenMax.set(querySelector('#mob-details-' + i), { opacity: 1 })
-		sizeMob(i)
-		resetIdle(i, true)
-		idle(i)
+		mob.sizeMob(i)
+		mob.resetIdle(i, true)
+		mob.idle(i)
 	}
 
 	function sizeMob(i) {

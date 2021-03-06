@@ -8,7 +8,6 @@ mob.data['Salubrin Den'] = [
 		maxLevel: 60,
 		size: .97,
 		job: JOB.WARRIOR,
-		type: 'normal',
 		traits: [], // champ traits
 	},
 	{
@@ -18,7 +17,6 @@ mob.data['Salubrin Den'] = [
 		maxLevel: 60,
 		size: .9,
 		job: JOB.WARRIOR,
-		type: MOB_TYPES.normal,
 		traits: [], // champ traits
 	},
 	{
@@ -28,7 +26,6 @@ mob.data['Salubrin Den'] = [
 		maxLevel: 60,
 		size: .9,
 		job: JOB.WARRIOR,
-		type: MOB_TYPES.normal,
 		traits: [], // champ traits
 	},
 	*/
@@ -39,7 +36,16 @@ mob.data['Salubrin Den'] = [
 		maxLevel: 60,
 		size: 1,
 		job: JOB.SHAMAN,
-		type: MOB_TYPES.normal,
+		traits: [], // champ traits
+	},
+	{
+		img: 'toadlok',
+		name: 'Himber',
+		minLevel: 2,
+		maxLevel: 60,
+		size: 1,
+		job: JOB.SHAMAN,
+		tier: MOB_TIERS.champion,
 		traits: [], // champ traits
 	},
 ]

@@ -22,6 +22,7 @@ mobSkills = {};
 		chillPlayerEffectRx,
 		freezePlayerEffectRx,
 		// misc
+		modifyMobStatsByTier,
 		modifyMobStatsByClass,
 		getRandomSkillByJob,
 		// mob skills
@@ -850,6 +851,21 @@ mobSkills = {};
 	function getValueByLevel(config, val) {
 		// adjusts value based on what it is at max level
 		return config.level * val / mob.maxLevel
+	}
+	function modifyMobStatsByTier(config) {
+		console.info('modifyMobStatsByTier', config)
+		if (config.tier === MOB_TIERS.champion) {
+
+		}
+		else if (config.tier === MOB_TIERS.conqueror) {
+
+		}
+		else if (config.tier === MOB_TIERS.unique) {
+
+		}
+		else if (config.tier === MOB_TIERS.boss) {
+
+		}
 	}
 	function modifyMobStatsByClass(config) {
 		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR

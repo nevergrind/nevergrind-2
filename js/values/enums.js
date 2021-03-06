@@ -267,7 +267,7 @@ const QUEST_TYPES = Object.freeze({
 	gather: 'gather',
 	investigate: 'investigate',
 })
-const MOB_TYPES = Object.freeze({
+const MOB_TIERS = Object.freeze({
 	normal: 'normal',
 	champion: 'champion',
 	conqueror: 'conqueror',

@@ -43,10 +43,10 @@ function onOpen(session) {
 $now = microtime(true);
 
 require_once '../session/start.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/config.php';
 echo '__DIR__ ' . __DIR__ . '<br>';
 echo '$_SERVER[\'DOCUMENT_ROOT\']' . $_SERVER['DOCUMENT_ROOT'] . '<br>';
 
-echo '<div>' . $config['db'] . '</div>';
 echo 'time ' . microtime(true) * 1000 . '<br>';
 
 require '../db.php';

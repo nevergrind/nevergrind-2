@@ -364,22 +364,33 @@ var battle;
 			// test data
 			/*if (!ng.isApp) {
 				totalMobs = 9
-				minLevel = 7
-				maxLevel = 15
 			}*/
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
 			for (i=0; i<totalMobs; i++) {
-				if (!i) mobSlot = 2 // first is always slot 2 (center)
-				else mobSlot = _.random(0, availableSlots.length - 1)
-				let imgName = 'toadlok'
+				let config = {
+					img: 'toadlok',
+					level: 1,
+				}
+				if (i === 0) {
+					mobSlot = 2
+					// THE BOSS
+					if (dungeon.map.rooms[map.roomId].boss) {
+						config.name = quests[mission.id].bossName
+					}
+				}
+				else {
+					mobSlot = _.random(0, availableSlots.length - 1)
+				}
+				// tries to find by name first and then by img
+				let mobConfig = mob.configMobType(config)
 
-				let mobConfig = mob.configMobType({
-					img: imgName,
-					name: 'gaz toadlok knight',
-					minLevel: minLevel,
-					maxLevel: maxLevel,
-				})
+				// MOB_TIERS - add champion, conqueror, unique, boss traits
+				if (!mobConfig.tier) {
+					// no tier from mob.data - calculate odds of random champ, conqueror, unique
+				}
+
+				console.info('setupMobs', mobConfig)
 				mob.setMob(availableSlots[mobSlot], mobConfig)
 				_.remove(availableSlots, val => val === availableSlots[mobSlot])
 			}
@@ -433,7 +444,7 @@ var battle;
 				tgt = {
 					class: 'con-white',
 					name: party.getNameByRow(my.target),
-					type: MOB_TYPES.normal,
+					type: MOB_TIERS.normal,
 					hp: ceil(100 - bar.getRatio(PROP.HP, party.presence[party.getIndexByRow(my.target)])),
 					traits: 'Player',
 					buffs: '',

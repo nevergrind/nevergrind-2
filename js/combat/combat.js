@@ -1,6 +1,6 @@
 var combat;
 !function($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear, undefined) {
-	const QUEST_TEXT_STYLE = new PIXI.TextStyle({
+	const QUEST_TEXT_STYLE = {
 		fontFamily: 'Cinzel',
 		fontSize: 128,
 		fill: ['#eebb00', '#ffffaa', '#ffff22', '#eeee00', '#cc8800'],
@@ -10,7 +10,7 @@ var combat;
 		dropShadowBlur: 10,
 		dropShadowColor: '#000',
 		dropShadowDistance: 10,
-	})
+	}
 	combat = {
 		questBg: {},
 		questText: {},
@@ -133,17 +133,6 @@ var combat;
 		startAt: { pixi: { brightness: 3, contrast: 1.5 }},
 		pixi: { brightness: 1.25, contrast: 1 },
 		ease: Power2.easeInOut
-	}
-	const text = {
-		fontFamily: 'Play',
-		fontSize: 28,
-		fill: '#fff',
-		stroke: '#000',
-		strokeThickness: 2,
-		dropShadow: true,
-		dropShadowBlur: 0,
-		dropShadowColor: '#000',
-		dropShadowDistance: 0,
 	}
 	const resourceLeechDivider = 1000
 	let chance = 0
@@ -1294,6 +1283,17 @@ var combat;
 		}
 	}
 	function getPopupTextStyle(o) {
+		let text = {
+			fontFamily: 'Play',
+			fontSize: 28,
+			fill: '#fff',
+			stroke: '#000',
+			strokeThickness: 2,
+			dropShadow: true,
+			dropShadowBlur: 0,
+			dropShadowColor: '#000',
+			dropShadowDistance: 0,
+		}
 		if (o.damageType) {
 			if (o.damageType === DAMAGE_TYPE.BLOOD) {
 				text.fill = '#b11'
@@ -1345,11 +1345,6 @@ var combat;
 	function showQuestMsg(msg) {
 		// QUEST_TEXT_STYLE
 		if (!_.size(combat.questText)) {
-			combat.questContainer = new PIXI.Container();
-			combat.questContainer.width = MaxWidth
-			combat.questContainer.height = 150
-			combat.questContainerFilter = new PIXI.filters.CRTFilter()
-			combat.questContainer.filters = [combat.questContainerFilter]
 
 			combat.questText = new PIXI.Text(msg, QUEST_TEXT_STYLE)
 			combat.questText.id = 'text-' + combat.textId++
@@ -1358,13 +1353,40 @@ var combat;
 			combat.questText.y = MaxHeight * .5
 			combat.questText.anchor.set(.5)
 
+
+			combat.questContainer = new PIXI.Container()
+
 			combat.questContainer.addChild(combat.questText)
 
 			ask.addChild(combat.questContainer, false)
+
+			combat.questContainerCRTFilter = new PIXI.filters.CRTFilter()
+			combat.questContainerBlurFilter = new PIXI.filters.ZoomBlurFilter({
+				strength: .2,
+				innerRadius: 0,
+				center: {
+					x: MaxWidth * .5,
+					y: combat.questContainer.getLocalBounds().y * .5
+				}
+			})
+			combat.questContainerBlurFilter.padding = 200
+			combat.questContainer.filters = [combat.questContainerBlurFilter, combat.questContainerCRTFilter]
 		}
 		else {
 			combat.questText.text = msg
 		}
+		// filter animations
+		TweenMax.to({}, 5, {
+			onUpdate: () => {
+				combat.questContainerCRTFilter.seed = Math.random()
+				combat.questContainerCRTFilter.time += .5
+			},
+		})
+		TweenMax.to(combat.questContainerBlurFilter, 3, {
+			startAt: { strength: .2 },
+			strength: 0,
+		})
+		// background shadow animation
 		TweenMax.to(querySelector('#quest-bg'), .5, {
 			startAt: { opacity: 0 },
 			opacity: .7,
@@ -1375,6 +1397,13 @@ var combat;
 				})
 			}
 		})
+		TweenMax.to(querySelector('#quest-bg'), 5, {
+			startAt: { scale: 2, x: '-50%', y: '-50%' },
+			scale: 1,
+			x: '-50%',
+			y: '-50%',
+		})
+		// container fade
 		TweenMax.to(combat.questContainer, .5, {
 			startAt: {
 				alpha: 0,
@@ -1387,34 +1416,27 @@ var combat;
 				})
 			}
 		})
-		TweenMax.to({}, 6, {
-			onUpdate: () => {
-				combat.questContainerFilter.seed = Math.random()
-				combat.questContainerFilter.time += .5
-			},
+		// flash text color in/out and fade out
+		TweenMax.to(combat.questText, 5, {
+			startAt: { pixi: { scale: 1.5 }},
+			pixi: {scale: 1},
 		})
-		TweenMax.to(combat.questText, 1, {
+		TweenMax.to(combat.questText, 2, {
 			startAt: {
-				alpha: 0,
-				pixi: { saturation: 0, brightness: 0, blur: 20, },
+				pixi: { saturation: 0, brightness: 0 },
 			},
-			alpha: 1,
-			pixi: { saturation: 2, brightness: 2, blur: 0, },
+			pixi: { saturation: 2, brightness: 5 },
 			onComplete: () => {
-				TweenMax.to(combat.questText, 1, {
+				TweenMax.to(combat.questText, 1.5, {
 					pixi: { saturation: 1, brightness: 1 },
 					onComplete: () => {
 						TweenMax.to(combat.questText, 1, {
-							delay: 2,
-							pixi: { alpha: 0, brightness: 0 },
+							delay: .5,
+							pixi: { brightness: 0 },
 						})
 					}
 				})
 			}
-		})
-		TweenMax.to(combat.questText, 2, {
-			startAt: { pixi: { blurX: 20 }},
-			pixi: { blurX: 0 },
 		})
 	}
 	function popupDamage(index, damage, o = {}) {
@@ -1428,7 +1450,7 @@ var combat;
 			index = party.getIndexByRow(index)
 		}
 		const basicText = new PIXI.Text(o.isHeal ? '+' + damage + '' : damage + '', getPopupTextStyle(o))
-		// basicText.anchor.set(.5)
+		basicText.anchor.set(.5)
 		if (o.isHeal) {
 			if (o.key === 'Lay Hands') mobs[o.healedBy].usedLayHands = true
 			else mobs[o.healedBy].healCount++

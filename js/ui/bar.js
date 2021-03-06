@@ -213,7 +213,11 @@ var bar;
 
 	function getPlayerGuildDescription() {
 		html = '<div>&nbsp;</div>'
-		if (my.guild.name) html = 'Guild ' + guild.ranks[my.guild.rank] + ' of ' + my.guild.name
+		if (my.guild.name) {
+			html = '<div class="ellipsis">Guild ' +
+				guild.ranks[my.guild.rank] + ' of ' + my.guild.name +
+			'</div>'
+		}
 		return html
 	}
 
