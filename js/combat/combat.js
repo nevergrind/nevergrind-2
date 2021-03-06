@@ -1,19 +1,9 @@
 var combat;
 !function($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear, undefined) {
-	const QUEST_TEXT_STYLE = {
-		fontFamily: 'Cinzel',
-		fontSize: 128,
-		fill: ['#eebb00', '#ffffaa', '#ffff22', '#eeee00', '#cc8800'],
-		stroke: '#000',
-		strokeThickness: 4,
-		dropShadow: true,
-		dropShadowBlur: 10,
-		dropShadowColor: '#000',
-		dropShadowDistance: 10,
-	}
 	combat = {
 		questBg: {},
 		questText: {},
+		deathText: {},
 		txHpChange,
 		txMpChange,
 		txSpChange,
@@ -46,6 +36,7 @@ var combat;
 		isBattleOver,
 		processStatBuffsToMe,
 		showQuestMsg,
+		showDeathMsg,
 		MAX_DAMAGE: 999999999,
 		textId: 0,
 		considerClass: [
@@ -1342,38 +1333,42 @@ var combat;
 		}
 		return text
 	}
-	function showQuestMsg(msg) {
+	function showQuestMsg() {
 		// QUEST_TEXT_STYLE
+		const FILTER_PADDING = 200
 		if (!_.size(combat.questText)) {
-
-			combat.questText = new PIXI.Text(msg, QUEST_TEXT_STYLE)
+			combat.questText = new PIXI.Text('Victory Achieved', {
+				fontFamily: 'Cinzel',
+				fontSize: 128,
+				fill: ['#eebb00', '#ffffaa', '#ffff22', '#eeee00', '#cc8800'],
+				stroke: '#000',
+				strokeThickness: 4,
+				dropShadow: true,
+				dropShadowBlur: 10,
+				dropShadowColor: '#000',
+				dropShadowDistance: 10,
+			})
 			combat.questText.id = 'text-' + combat.textId++
 			combat.questText.zIndex = ask.DEFAULT_PLAYER_LAYER
 			combat.questText.x = MaxWidth * .5
 			combat.questText.y = MaxHeight * .5
 			combat.questText.anchor.set(.5)
 
-
 			combat.questContainer = new PIXI.Container()
-
 			combat.questContainer.addChild(combat.questText)
-
 			ask.addChild(combat.questContainer, false)
 
 			combat.questContainerCRTFilter = new PIXI.filters.CRTFilter()
 			combat.questContainerBlurFilter = new PIXI.filters.ZoomBlurFilter({
-				strength: .2,
+				strength: .25,
 				innerRadius: 0,
 				center: {
-					x: MaxWidth * .5,
-					y: combat.questContainer.getLocalBounds().y * .5
+					x: FILTER_PADDING + (combat.questText.width * .5),
+					y: FILTER_PADDING + (combat.questText.height * .5)
 				}
 			})
-			combat.questContainerBlurFilter.padding = 200
+			combat.questContainerBlurFilter.padding = FILTER_PADDING
 			combat.questContainer.filters = [combat.questContainerBlurFilter, combat.questContainerCRTFilter]
-		}
-		else {
-			combat.questText.text = msg
 		}
 		// filter animations
 		TweenMax.to({}, 5, {
@@ -1383,7 +1378,7 @@ var combat;
 			},
 		})
 		TweenMax.to(combat.questContainerBlurFilter, 3, {
-			startAt: { strength: .2 },
+			startAt: { strength: .25 },
 			strength: 0,
 		})
 		// background shadow animation
@@ -1431,6 +1426,109 @@ var combat;
 					pixi: { saturation: 1, brightness: 1 },
 					onComplete: () => {
 						TweenMax.to(combat.questText, 1, {
+							delay: .5,
+							pixi: { brightness: 0 },
+						})
+					}
+				})
+			}
+		})
+	}
+	function showDeathMsg() {
+		const FILTER_PADDING = 200
+		TweenMax.set(querySelector('#scene-battle'), {
+			filter: 'brightness(.5) sepia(1)'
+		})
+		if (!_.size(combat.deathText)) {
+			combat.deathText = new PIXI.Text('You died', {
+				fontFamily: 'Cinzel',
+				fontSize: 128,
+				fill: ['#aa0000', '#ff4444', '#ff2222', '#ee1111', '#881100'],
+				stroke: '#000',
+				strokeThickness: 4,
+				dropShadow: true,
+				dropShadowBlur: 10,
+				dropShadowColor: '#000',
+				dropShadowDistance: 10,
+			})
+			combat.deathText.id = 'text-' + combat.textId++
+			combat.deathText.zIndex = ask.DEFAULT_PLAYER_LAYER
+			combat.deathText.x = MaxWidth * .5
+			combat.deathText.y = MaxHeight * .5
+			combat.deathText.anchor.set(.5)
+
+			combat.deathContainer = new PIXI.Container()
+			combat.deathContainer.addChild(combat.deathText)
+			ask.addChild(combat.deathContainer, false)
+
+			combat.deathContainerCRTFilter = new PIXI.filters.CRTFilter()
+			combat.deathContainerBlurFilter = new PIXI.filters.ZoomBlurFilter({
+				strength: .5,
+				innerRadius: 0,
+				center: {
+					x: FILTER_PADDING + (combat.deathText.width * .5),
+					y: FILTER_PADDING + (combat.deathText.height * .5)
+				}
+			})
+			combat.deathContainerBlurFilter.padding = FILTER_PADDING
+			combat.deathContainer.filters = [combat.deathContainerBlurFilter, combat.deathContainerCRTFilter]
+		}
+		// filter animations
+		TweenMax.to({}, 5, {
+			onUpdate: () => {
+				combat.deathContainerCRTFilter.seed = Math.random()
+				combat.deathContainerCRTFilter.time += .5
+			},
+		})
+		TweenMax.to(combat.deathContainerBlurFilter, 3, {
+			startAt: { strength: .5 },
+			strength: 0,
+		})
+		// background shadow animation
+		TweenMax.to(querySelector('#quest-bg'), .5, {
+			startAt: { opacity: 0 },
+			opacity: .7,
+			onComplete: () => {
+				TweenMax.to(querySelector('#quest-bg'), 1, {
+					delay: 3.5,
+					opacity: 0,
+				})
+			}
+		})
+		TweenMax.to(querySelector('#quest-bg'), 5, {
+			startAt: { scale: 2, x: '-50%', y: '-50%' },
+			scale: 1,
+			x: '-50%',
+			y: '-50%',
+		})
+		// container fade
+		TweenMax.to(combat.deathContainer, .5, {
+			startAt: {
+				alpha: 0,
+			},
+			alpha: 1,
+			onComplete: () => {
+				TweenMax.to(combat.deathContainer, 1, {
+					delay: 3.5,
+					alpha: 0,
+				})
+			}
+		})
+		// flash text color in/out and fade out
+		TweenMax.to(combat.deathText, 5, {
+			startAt: { pixi: { scale: 1.5 }},
+			pixi: {scale: 1},
+		})
+		TweenMax.to(combat.deathText, 2, {
+			startAt: {
+				pixi: { saturation: 0, brightness: 0 },
+			},
+			pixi: { saturation: 2, brightness: 5 },
+			onComplete: () => {
+				TweenMax.to(combat.deathText, 1.5, {
+					pixi: { saturation: 1, brightness: 1 },
+					onComplete: () => {
+						TweenMax.to(combat.deathText, 1, {
 							delay: .5,
 							pixi: { brightness: 0 },
 						})
