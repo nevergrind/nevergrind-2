@@ -64,7 +64,6 @@
 			.on('click', '.mission-zone-headers', mission.toggleZone)
 			.on('click', '.mission-quest-item', mission.clickQuest)
 			.on('click', '#mission-embark', mission.embark)
-			.on('click', '#mission-abandon', mission.abandon)
 
 	}
 
@@ -149,7 +148,7 @@
 				// key input view router
 				if (key === 'PageDown') battle.go()
 				else if (key === 'Home') town.go()
-				else if (key === 'PageUp') dungeon.go()
+				else if (key === 'PageUp') mission.embark()
 			}
 		}
 

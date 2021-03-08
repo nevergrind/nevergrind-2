@@ -31,7 +31,7 @@ mob.data['Salubrin Den'] = [
 	*/
 	{
 		img: 'toadlok',
-		name: 'toadlok',
+		name: 'toadlok tad',
 		minLevel: 1,
 		maxLevel: 60,
 		size: 1,

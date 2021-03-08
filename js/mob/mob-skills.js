@@ -853,19 +853,59 @@ mobSkills = {};
 		return config.level * val / mob.maxLevel
 	}
 	function modifyMobStatsByTier(config) {
-		console.info('modifyMobStatsByTier', config)
+		let multi = {
+			hp: 1,
+			attack: 1,
+			gold: 1,
+			expPerLevel: 1,
+			int: 1,
+			size: 1,
+		}
 		if (config.tier === MOB_TIERS.champion) {
-
+			multi = {
+				hp: 2,
+				attack: 1.2,
+				gold: 1.5,
+				expPerLevel: 1.5,
+				int: 1.2,
+				size: 1.1,
+			}
 		}
 		else if (config.tier === MOB_TIERS.conqueror) {
-
+			multi = {
+				hp: 3,
+				attack: 1.4,
+				gold: 1.75,
+				expPerLevel: 1.75,
+				int: 1.4,
+				size: 1.2,
+			}
 		}
 		else if (config.tier === MOB_TIERS.unique) {
-
+			multi = {
+				hp: 4,
+				attack: 1.25,
+				gold: 2.5,
+				expPerLevel: 2,
+				int: 1.25,
+				size: 1,
+			}
 		}
 		else if (config.tier === MOB_TIERS.boss) {
-
+			multi = {
+				hp: 12,
+				attack: 3,
+				gold: 5,
+				expPerLevel: 2,
+				int: 3,
+				size: 1,
+			}
 		}
+		for (var key in multi) {
+			config[key] = ~~(config[key] * multi[key])
+		}
+
+		config.hpMax = config.hp
 	}
 	function modifyMobStatsByClass(config) {
 		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR

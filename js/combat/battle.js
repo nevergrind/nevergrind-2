@@ -72,7 +72,7 @@ var battle;
 		getMaxMobCount,
 		getRandomMobCount,
 	}
-	let index, buffHtml, traitHtml, buffEl, key, keyRow, el, i
+	let index, buffHtml, tierHtml, traitHtml, buffEl, key, keyRow, el, i
 	let tgt = {}
 	let ratio = 0
 	let mobBuffData = {}
@@ -367,8 +367,9 @@ var battle;
 			}*/
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
+			let query
 			for (i=0; i<totalMobs; i++) {
-				let config = {
+				query = {
 					img: 'toadlok',
 					level: 1,
 				}
@@ -376,14 +377,17 @@ var battle;
 					mobSlot = 2
 					// THE BOSS
 					if (dungeon.map.rooms[map.roomId].boss) {
-						config.name = quests[mission.id].bossName
+						query.name = quests[mission.id].bossName
 					}
 				}
 				else {
 					mobSlot = _.random(0, availableSlots.length - 1)
 				}
 				// tries to find by name first and then by img
-				let mobConfig = mob.configMobType(config)
+				let mobConfig = {
+					...mob.configMobType(query),
+					expPerLevel: 3,
+				}
 
 				// MOB_TIERS - add champion, conqueror, unique, boss traits
 				if (!mobConfig.tier) {
@@ -432,11 +436,11 @@ var battle;
 		if (combat.isValidTarget()) {
 			if (my.targetIsMob) {
 				tgt = {
-					class: combat.considerClass[combat.getDiffIndex(mobs[my.target].level)],
+					class: combat.considerClass[combat.getLevelDifferenceIndex(mobs[my.target].level)],
 					name: mobs[my.target].name,
-					type: mobs[my.target].type,
+					tier: mobs[my.target].tier,
 					hp: ceil(100 - bar.getRatio(PROP.HP, mobs[my.target])),
-					traits: getMobTargetTraitsHtml(),
+					traits: getMobTargetTraitHtml(),
 					buffs: getMobTargetBuffsHtml(),
 				}
 			}
@@ -444,17 +448,18 @@ var battle;
 				tgt = {
 					class: 'con-white',
 					name: party.getNameByRow(my.target),
-					type: MOB_TIERS.normal,
+					tier: MOB_TIERS.normal,
 					hp: ceil(100 - bar.getRatio(PROP.HP, party.presence[party.getIndexByRow(my.target)])),
 					traits: 'Player',
+					mobType: 'humanoid',
 					buffs: '',
 				}
 
 			}
 			query.el('#mob-target-name').className = tgt.class
 			query.el('#mob-target-name').textContent = tgt.name
-			query.el('#mob-target-hp-plate').className = 'mob-plate-' + tgt.type
-			query.el('#mob-target-hp-plate').src = 'images/ui/bar-' + tgt.type + '.png'
+			query.el('#mob-target-hp-plate').className = 'mob-plate-' + tgt.tier
+			query.el('#mob-target-hp-plate').src = 'images/ui/bar-' + tgt.tier + '.png'
 			query.el('#mob-target-percent').textContent = tgt.hp + '%'
 			query.el('#mob-target-traits').innerHTML = tgt.traits
 			querySelector('#mob-target-buffs').innerHTML = tgt.buffs
@@ -469,16 +474,21 @@ var battle;
 			mob.drawMobBar(my.target, drawInstant)
 		}
 	}
-	function getMobTargetTraitsHtml() {
+	function getMobTargetTraitHtml() {
 		// remove trailing s from value
 		if (typeof mobs[my.target].img === 'undefined') return
-		traitHtml = ['<div class="mob-trait">' +
+		// mobType + type e.g. Humanoid Champion
+		// type and tier
+		tierHtml = '<div class="mob-types mob-tier-'+ mobs[my.target].tier +'">' +
 			combat.mobType[mobs[my.target].img].replace(/s+$/, '') +
-		'</div>']
-		mobs[my.target].traits.forEach(trait => {
+			(mobs[my.target].tier === 'normal' ? '' : ' ' + mobs[my.target].tier) +
+		'</div>'
+		// traits
+		traitHtml = []
+		mobs[my.target].traits.length && mobs[my.target].traits.forEach(trait => {
 			traitHtml.push('<div class="mob-trait">' + trait + '</div>')
 		})
-		return traitHtml.join('<div class="trait-pipe"></div>')
+		return tierHtml + traitHtml.join('<div class="trait-pipe"></div>')
 	}
 	function getMobTargetBuffsHtml() {
 		buffHtml = ''

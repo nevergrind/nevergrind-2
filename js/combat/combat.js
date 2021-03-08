@@ -16,7 +16,7 @@ var combat;
 		toggleAutoAttack,
 		txDamageMob,
 		isValidTarget,
-		getDiffIndex,
+		getLevelDifferenceIndex,
 		autoAttackEnable,
 		autoAttackDisable,
 		processDamagesHero,
@@ -1334,6 +1334,8 @@ var combat;
 		return text
 	}
 	function showQuestMsg() {
+		if (mission.isCompleted) return
+		mission.isCompleted = true
 		// QUEST_TEXT_STYLE
 		const FILTER_PADDING = 200
 		if (!_.size(combat.questText)) {
@@ -1436,8 +1438,9 @@ var combat;
 	}
 	function showDeathMsg() {
 		const FILTER_PADDING = 200
-		TweenMax.set(querySelector('#scene-battle'), {
-			filter: 'brightness(.5) sepia(1)'
+		TweenMax.to(querySelector('#scene-battle'), 1, {
+			startAt: { filter: 'contrast(1) brightness(1) sepia(0)' },
+			filter: 'contrast(1.5) brightness(.5) sepia(1)'
 		})
 		if (!_.size(combat.deathText)) {
 			combat.deathText = new PIXI.Text('You died', {
@@ -2225,7 +2228,7 @@ var combat;
 			}
 		}
 	}
-	function getDiffIndex(level) {
+	function getLevelDifferenceIndex(level) {
 		var resp = 0
 		if (level >= my.level + 3) resp = 6
 		else if (level > my.level) resp = 5

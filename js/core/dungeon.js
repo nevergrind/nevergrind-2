@@ -96,6 +96,10 @@ var dungeon;
 		rxWalkForward,
 		rxWalkBackward,
 		rxWalkStop,
+		createHallwayMobs,
+		getRoomMobCount,
+		setBossRoom,
+		broadcastMapData,
 	}
 	let blurValue = 0
 	const CLOSEST_MOB_DISTANCE = -200
@@ -108,55 +112,14 @@ var dungeon;
 	function go(force) {
 		if (!force && ng.view === 'dungeon') return
 		if (party.presence[0].isLeader) {
-			if (!_.size(dungeon.map)) {
-				dungeon.map = Grid.createMap(quests[mission.questId].size)
-				createHallwayMobs()
-				dungeon.map.rooms.forEach(getRoomMobCount)
-				setBossRoom()
-				if (party.hasMoreThanOnePlayer()) {
-					broadcastMapData()
-				}
-			}
 			delayedCall(.5, preloadCombatAssets)
 		}
 		goTasks()
 	}
-	function broadcastMapData() {
-		socket.publish('party' + my.partyId, {
-			route: 'p->goDungeon',
-			grid: dungeon.map,
-		}, true)
-	}
-	function rxGo(data) {
-		console.info('p->goDungeon rxGo', data)
-		dungeon.map = data.grid
+	function rxGo() {
+		console.info('rxGo')
 		goTasks()
 		delayedCall(.5, preloadCombatAssets)
-	}
-	function getRoomMobCount(h, index) {
-		// room zero never has mobs
-		h.isAlive = index === 0 ? false : true
-	}
-	function setBossRoom() {
-		let x = dungeon.map.rooms[0].x
-		let y = dungeon.map.rooms[0].y
-		let maxDiff = 0
-		let bossIndex = 0
-		dungeon.map.rooms.forEach((r, index) => {
-			let xDiff = Math.abs(r.x - x)
-			let yDiff = Math.abs(r.y - y)
-			let totalDiff = xDiff + yDiff
-			if (totalDiff > maxDiff) {
-				maxDiff = totalDiff
-				bossIndex = index
-			}
-		})
-		dungeon.map.rooms[bossIndex].boss = true
-	}
-	function preloadCombatAssets() {
-		console.info('LOADING ASSETS')
-		battle.loadTextures()
-		cache.preloadPlayerAsk()
 	}
 	function goTasks() {
 		// cleanup sort of activities when going into dungeon
@@ -218,6 +181,37 @@ var dungeon;
 		}
 
 		ng.unlock()
+	}
+	function broadcastMapData() {
+		socket.publish('party' + my.partyId, {
+			route: 'p->goDungeon',
+			grid: dungeon.map,
+		}, true)
+	}
+	function getRoomMobCount(h, index) {
+		// room zero never has mobs
+		h.isAlive = index === 0 ? false : true
+	}
+	function setBossRoom() {
+		let x = dungeon.map.rooms[0].x
+		let y = dungeon.map.rooms[0].y
+		let maxDiff = 0
+		let bossIndex = 0
+		dungeon.map.rooms.forEach((r, index) => {
+			let xDiff = Math.abs(r.x - x)
+			let yDiff = Math.abs(r.y - y)
+			let totalDiff = xDiff + yDiff
+			if (totalDiff > maxDiff) {
+				maxDiff = totalDiff
+				bossIndex = index
+			}
+		})
+		dungeon.map.rooms[bossIndex].boss = true
+	}
+	function preloadCombatAssets() {
+		console.info('LOADING ASSETS')
+		battle.loadTextures()
+		cache.preloadPlayerAsk()
 	}
 	function init() {
 		if (zones[mission.id].mobs.length) {

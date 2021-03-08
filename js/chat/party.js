@@ -37,12 +37,19 @@ var party;
 		aliveByIndex,
 		isChilled,
 		isFrozen,
+		totalPlayers,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
 	var time, index, diff, updateHp = false, updateMp = false, updateSp = false
 	const resourceKeys = [PROP.HP, PROP.MP, PROP.SP, PROP.HP_MAX, PROP.MP_MAX, PROP.SP_MAX]
 	//////////////////////////////////////
+	function totalPlayers() {
+		return party.presence.reduce((acc, v) => {
+			if (v.name) acc++
+			return acc
+		}, 0)
+	}
 	function isSomeoneAlive() {
 		return party.presence.some(party.isAlive)
 	}
@@ -174,7 +181,7 @@ var party;
 					isFrozen: false,
 					hitCount: 0,
 				});
-				console.info('player', _.cloneDeep(player))
+				// console.info('player', _.cloneDeep(player))
 				var len = party.presence.length - 1
 				bar.addPlayer(party.presence[len], data.row)
 				checkUpdateBars(data, party.presence[len])
@@ -367,7 +374,7 @@ var party;
 			if (party.hasMoreThanOnePlayer()) {
 				my.isLeader = party.presence[0].isLeader = true;
 				socket.publish('party' + my.partyId, {
-					name: my.name,
+					row: my.row,
 					route: 'p->disband',
 				});
 				// stuff for disbander
@@ -380,15 +387,14 @@ var party;
 				party.listen(party.getUniquePartyChannel(true));
 			}
 			chat.log('Mission abandoned!', CHAT.WARNING);
-			mission.abort();
+			mission.rxReturnToTown();
 			mission.resetLocalQuestData();
 		}
 	}
 	function disbandReceived(data) {
 		if (data.name !== my.name) {
-			// console.warn('disbandReceived', data);
-			var index = party.getNameByRow(data.name)
-			chat.log(data.name + " has disbanded the party.", CHAT.WARNING);
+			var index = party.getIndexByRow(data.row)
+			chat.log(party.presence[index].name + " has disbanded the party.", CHAT.WARNING);
 			removePartyMember(party.presence[index]);
 		}
 	}

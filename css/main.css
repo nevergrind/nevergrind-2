@@ -1334,15 +1334,15 @@ background-clip: content-box;
 
 .capitalize { text-transform: capitalize }
 .item-normal { color: #fff; }
-.item-magic { color: #2a9aff; }
+.item-magic,
+.mob-tier-champion { color: #2a9aff; }
 .item-magic-alt { color: #487af8 }
-.item-rare { color: #ff0; }
+.item-rare, .mob-tier-conqueror { color: #ff0; }
 .item-set { color: #00c400; }
-.item-unique { color: #908858; /*b5a170*/}
+.item-unique, .mob-tier-unique { color: #908858; /*b5a170*/}
 .item-runic { color: #ad68f8; }
-.item-legendary { color: #ffa500; }
+.item-legendary, .mob-tier-boss { color: #ffa500; }
 .item-restricted { color: #f55; }
-
 .item-use { color: #2f2;}
 
 .town-aside {
@@ -1558,10 +1558,6 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	pointer-events: none;
 	filter: brightness(.2);
 }
-
-#mission-abandon {
-	box-shadow: 0 500px 0 rgba(255, 0, 0, .4) inset;
-}
 /* dungeon */
 #quest-log {
 	position: absolute;
@@ -1580,7 +1576,23 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	color: gold;
 	margin-right: .2rem;
 }
-#quest-name {
+#quest-completed {
+	display: none;
+	cursor: pointer;
+	font-size: 1rem;
+	background: #320;
+	color: gold;
+	border: 1px solid #540;
+	border-radius: 4px;
+	padding: 0 .5rem;
+	line-height: 1.5;
+}
+#quest-completed:hover {
+	transition: filter .2s ease-out;
+	filter: saturate(1.5) brightness(2);
+}
+#quest-completed:active {
+	transition: none;
 }
 #mini-map {
 	visibility: hidden;
@@ -3661,8 +3673,9 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	z-index: 1;
 }
 .mob-plate-normal { top: -.2rem; width: 17.45rem; height: 1.95rem; }
-.mob-plate-rare { top: -1.8rem; width: 19rem; height: 5rem; }
-.mob-plate-champion { top: -1.2rem; left: -1rem; width: 20.25rem; height: 4.05rem; }
+.mob-plate-unique { top: -1.8rem; width: 19rem; height: 5rem; }
+.mob-plate-champion,
+.mob-plate-conqueror { top: -1.2rem; left: -1rem; width: 20.25rem; height: 4.05rem; }
 .mob-plate-boss { top: -1.2rem; left: -1rem; width: 22.6rem; height: 4.4rem; }
 #mob-target-hp {
 	background: linear-gradient(to top, #300, #b11, #b11, #300);
@@ -3755,13 +3768,11 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	font-size: .8rem;
 	margin-bottom: .2rem;
 	align-self: center;
-	color: #2a9aff;
 	letter-spacing: .5px;
-	font-variant: small-caps;
 	white-space: nowrap;
+	text-transform: capitalize;
 }
-.mob-trait {
-}
+.mob-trait { color: #2a9aff; }
 .trait-pipe {
 	background: linear-gradient(to bottom, #908858, #ffd700, #908858);
 	width: 2px;

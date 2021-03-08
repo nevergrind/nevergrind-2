@@ -562,7 +562,6 @@ var button;
 		if (!button.initialized) {
 			var s = '';
 			// base attack buttons
-			// <i id="bar-mission-abandon" class="ra ra-player-shot popover-icons bar-icons"></i>
 			s += `
 			<div id="main-attack-wrap">
 				<div id="bar-main-menu">

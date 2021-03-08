@@ -135,7 +135,6 @@ var bar;
 				.on('click', '#bar-stats', toggleCharacterStats)
 				.on('click', '#bar-inventory', toggleInventory)
 				.on('click', '#bar-options', toggleOptions)
-				.on('click', '#bar-mission-abandon', mission.abandon)
 
 			$("#bar-wrap")
 				.on('click contextmenu', '.bar-avatar', handleClickPartyContextMenu)

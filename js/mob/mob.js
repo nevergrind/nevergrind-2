@@ -14,6 +14,7 @@ let mobs = [];
 		// size only
 		sizeMob,
 		setClickBox,
+		getMobExp,
 		blur,
 		configMobType,
 		drawMobBar,
@@ -66,7 +67,6 @@ let mobs = [];
 	};
 	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el, chance
 	let isSomeoneAlive = false
-	let goldChance = 0
 	let goldFound = 0
 	let exp = 0
 	let hpKillVal = 0
@@ -118,7 +118,7 @@ let mobs = [];
 		img: 'orc',
 		size: 1,
 		name: 'monster',
-		type: MOB_TIERS.normal,
+		tier: MOB_TIERS.normal,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -213,7 +213,7 @@ let mobs = [];
 				isDead: true,
 				speed: 0,
 				hitCount: 0,
-				type: MOB_TIERS.normal,
+				tier: MOB_TIERS.normal,
 				buffs: {},
 				buffFlags: {},
 				box: {},
@@ -225,23 +225,24 @@ let mobs = [];
 			}
 		}
 	}
-	function configMobType(config) {
+	function configMobType(query) {
 		/**
 		 * filters zone's mobData and returns one mob in the level range
 		 * tries by name first and then by level
 		 * @type {*[]}
 		 */
 		let results
-		if (config.name) {
-			results = mob.data[zones[mission.id].name].find(m =>
-				m.name === config.name)
+		if (query.name) {
+			results = [
+				mob.data[zones[mission.id].name].find(m => m.name === query.name)
+			]
 		}
 		else {
 			results = mob.data[zones[mission.id].name].filter(m =>
-				m.minLevel <= config.level && config.level <= m.maxLevel)
+				m.minLevel <= query.level && query.level <= m.maxLevel)
 		}
 		results.forEach((r, i) => {
-			results[i].level = config.level
+			results[i].level = query.level
 		})
 		return {
 			...MOB_BASE_CONFIG,
@@ -249,18 +250,33 @@ let mobs = [];
 		}
 	}
 	function getMobGold(config) {
-		goldChance = rand()
 		goldFound = 0
-		if (goldChance > .3) goldFound = 0
+		if (rand() > .3) goldFound = 0
 		else goldFound = ~~_.random(2, config.level * 2.66)
 		return goldFound
 	}
-	function getMobExp(config) {
-		exp = config.level * 3
-		index = combat.getDiffIndex(config.level)
-		// console.info('getMobExp', index, exp)
-		exp = round(exp * battle.earnedExpRatio[index])
-		// console.info('getMobExp', exp)
+	function getMobExp(index) {
+		let exp = mobs[index].level * mobs[index].expPerLevel
+		let totalPlayers = party.totalPlayers()
+		exp = exp * totalPlayers
+		if (totalPlayers === 5) exp = exp * 1.1 // 10% exp bonus for a full group
+
+		// adjusted for being too high or low level
+		let ratioIndex = combat.getLevelDifferenceIndex(mobs[index].level)
+		exp = round(exp * battle.earnedExpRatio[ratioIndex])
+
+		// penalize for party members that are much higher
+		if (my.level <= 10) {
+			if (party.presence.some(p => p.level > my.level + 4)) {
+				exp = 0
+			}
+		}
+		else {
+			// level 20+ uses a percentage instead of a fixed penalty
+			if (party.presence.some(p => p.level > my.level * 1.5)) {
+				exp = 0
+			}
+		}
 		return exp
 	}
 	function isAnyMobAlive() {
@@ -275,12 +291,11 @@ let mobs = [];
 			mobConfig = {
 				...mobConfig,
 				...mob.type[mobConfig.img],
-				gold: getMobGold(mobConfig)
+				gold: getMobGold(mobConfig),
 			}
 			// mob class
 			mobSkills.modifyMobStatsByClass(mobConfig)
 			// mob tier
-
 			mobSkills.modifyMobStatsByTier(mobConfig)
 			// mob traits
 
@@ -294,7 +309,6 @@ let mobs = [];
 			...mobs[i],
 			...mobs.images[mobConfig.img],
 			...mobConfig,
-			exp: getMobExp(mobConfig)
 		}
 		console.info('setMob', _.cloneDeep(mobs[i]))
 		// start attack cycle
@@ -367,7 +381,7 @@ let mobs = [];
 		el = querySelector('#mob-name-' + i)
 		el.innerHTML = mobs[i].name;
 		el.className = 'mob-name text-shadow3'
-		el.classList.add(combat.considerClass[combat.getDiffIndex(mobs[i].level)])
+		el.classList.add(combat.considerClass[combat.getLevelDifferenceIndex(mobs[i].level)])
 	}
 	function setClickBox(m, i) {
 		// alive box
@@ -713,7 +727,8 @@ let mobs = [];
 			combat.updateMyResource(PROP.SP, spKillVal)
 		}
 		mob.earnedGold += battle.addGold(mobs[i].gold)
-		mob.earnedExp += battle.addExp(mobs[i].exp)
+		// earn mob exp -
+		mob.earnedExp += battle.addExp(mob.getMobExp(i))
 	}
 
 	function resourceTick() {

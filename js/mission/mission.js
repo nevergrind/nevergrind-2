@@ -2,6 +2,7 @@ var mission;
 (function(TweenMax, $, _, undefined) {
 	mission = {
 		inProgress: false,
+		isCompleted: false, // assure the victory screen is only shown once
 		data: {},
 		loaded: 0,
 		delegated: 0,
@@ -12,13 +13,13 @@ var mission;
 		getMissionBodyHtml,
 		embark,
 		resetLocalQuestData,
-		abandon,
-		abandonReceived,
-		abort,
+		returnToTown,
+		rxReturnToTown,
 		embarkReceived,
 		toggleZone,
 		clickQuest,
 		getZoneImg,
+		isQuestCompleted,
 	};
 	var questHtml
 	var that = {}
@@ -59,7 +60,7 @@ var mission;
 		zones.forEach(function(z) {
 			if (my.level + 4 >= z.level) {
 				questHtml +=
-				'<div class="mission-zone-headers '+ getOpenMenuClass(z.level) + ' '+ combat.considerClass[combat.getDiffIndex(z.level)] +'" data-id="'+ z.id +'">'+
+				'<div class="mission-zone-headers '+ getOpenMenuClass(z.level) + ' '+ combat.considerClass[combat.getLevelDifferenceIndex(z.level)] +'" data-id="'+ z.id +'">'+
 					'<img class="mission-tree-btn mission-plus" src="images/ui/plus.png">'+
 					'<div>' + z.name + '</div>' +
 				'</div>' +
@@ -76,7 +77,7 @@ var mission;
 	function getMissionRowHtml(z) {
 		var html = '';
 		zones[z.id].missions.forEach(questId => {
-			html += '<div class="mission-quest-item ellipsis ' + combat.considerClass[combat.getDiffIndex(quests[questId].level)] +'" '+
+			html += '<div class="mission-quest-item ellipsis ' + combat.considerClass[combat.getLevelDifferenceIndex(quests[questId].level)] +'" '+
 				'data-id="'+ z.id +'" ' +
 				'data-quest="'+ questId +'">' +
 				quests[questId].title +
@@ -139,66 +140,56 @@ var mission;
 			z.isOpen = 1
 		}
 	}
-	function abandon() {
-		// clicked flag
-		if (!mission.inProgress) {
-			chat.log("You have not started a mission!", CHAT.WARNING);
-		}
-		else if (!party.presence[0].isLeader) {
-			chat.log("Only party leaders can abandon missions, but you can /disband the party to quit.", CHAT.WARNING);
-		}
-		else if (ng.view !== 'dungeon') {
-			chat.log("You cannot abandon missions while in combat!", CHAT.WARNING);
-		}
-		else {
+	function returnToTown() {
+		if (map.isShown) {
+			rxReturnToTown()
 			socket.publish('party' + my.partyId, {
-				route: 'p->abandon',
-				msg: my.name + ' has abandoned the mission.',
-				popupMsg: 'Mission abandoned: ' + quests[mission.questId].title
-			})
+				route: 'p->returnToTown',
+			}, true)
 		}
 	}
-
-	function abandonReceived(data) {
-		// console.info('abandonReceived', data)
-		chat.log(data.msg, CHAT.WARNING)
-		ng.msg(data.popupMsg, 4)
-		mission.abort()
-	}
-	function abort() {
-		if (ng.view === 'dungeon') {
-			mission.inProgress = false
+	function rxReturnToTown() {
+		mission.inProgress = false
+		map.hide()
+		if (ng.view !== 'town') {
 			chat.log('Returning to town...', CHAT.WARNING)
-			ng.lock(1)
-
-			// init client and transition back to town
-			resetLocalQuestData();
-
-			TweenMax.to('#scene-dungeon', 2, {
-				delay: 2,
-				filter: 'brightness(0)',
-				onComplete: function() {
-					// rejoin main chat
-					town.go()
-					chat.joinChannel('town', 1, true)
-					game.getPresence()
-					delayedCall(.5, function() {
-						game.updateChat()
-						chat.modeChange(CHAT.SAY)
-					})
-					ng.unlock()
-				}
-			});
 		}
+		ng.lock(1)
+
+		// init client and transition back to town
+		resetLocalQuestData();
+
+		TweenMax.to('#scene-dungeon', 2, {
+			filter: 'brightness(0)',
+			onComplete: () => {
+				// rejoin main chat
+				town.go()
+				chat.joinChannel('town', 1, true)
+				game.getPresence()
+				delayedCall(.5, () => {
+					game.updateChat()
+					chat.modeChange(CHAT.SAY)
+				})
+				ng.unlock()
+			}
+		})
 	}
 
 	function embark() {
 		if (party.presence[0].isLeader) {
 			mission.inProgress = true
+			mission.isCompleted = false
+			if (!_.size(dungeon.map)) {
+				dungeon.map = Grid.createMap(quests[mission.questId].size)
+				dungeon.createHallwayMobs()
+				dungeon.map.rooms.forEach(dungeon.getRoomMobCount)
+				dungeon.setBossRoom()
+			}
 			var data = {
 				route: 'p->embarkReceived',
 				id: mission.id,
 				questId: mission.questId,
+				grid: dungeon.map,
 			}
 			// console.info('embark isLeader!', data)
 			socket.publish('party' + my.partyId, data)
@@ -209,8 +200,10 @@ var mission;
 		console.info("MISSION UPDATE! ", data)
 		// all party updated on mission status
 		mission.inProgress = true
+		mission.isCompleted = false
 		mission.id = data.id
 		mission.questId = data.questId
+		dungeon.map = data.grid
 		town.closeVarious()
 
 		chat.log('Now departing for ' + zones[mission.id].name + '!', CHAT.WARNING)
@@ -225,9 +218,12 @@ var mission;
 			delay: 1,
 			filter: 'brightness(0)',
 			ease: Power4.easeOut
-		});
+		})
 		ng.msg('Mission started: ' + quests[mission.questId].title)
 		let questDelay = app.isApp ? 3 : 0
 		delayedCall(questDelay, dungeon.go)
+	}
+	function isQuestCompleted() {
+		return !dungeon.map.rooms.find(r => r.boss).isAlive
 	}
 })(TweenMax, $, _);

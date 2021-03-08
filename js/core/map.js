@@ -1,6 +1,7 @@
 let map;
 !function($, _, TweenMax, getComputedStyle, parseInt, window, undefined) {
 	map = {
+		isShown: false,
 		isDragging: false,
 		originX: 0,
 		originY: 0,
@@ -20,6 +21,7 @@ let map;
 		scale: 100,
 		width: 0,
 		height: 0,
+		questHeader: querySelector('#quest-header'),
 		questName: querySelector('#quest-name'),
 		dot: querySelector('#mini-map-dot'),
 		// fog: querySelector('#mini-map-fog'),
@@ -77,6 +79,7 @@ let map;
 	///////////////////////////////////////////
 	$('#mini-map-drag').on('wheel', handleWheel)
 	$('#mini-map-party').on('click', handleCenterParty)
+	$('#quest-completed').on('click', handleQuestCompleted)
 	$(map.miniMapDrag).on('click', '.map-room', handleRoomClick)
 	function init(mapData) {
 		map.dragMap = Draggable.create(map.miniMapDrag, {
@@ -92,7 +95,7 @@ let map;
 			onThrowUpdate: throwUpdate,
 			onThrowComplete: throwUpdate,
 		})[0]
-
+		console.warn('map', _.cloneDeep(dungeon.map))
 		// init map data
 		map.originX = map.dotX = map.roomX = map.cameraX = dungeon.map.rooms[0].x
 		map.originY = map.dotY = map.roomY = map.cameraY = dungeon.map.rooms[0].y
@@ -311,6 +314,25 @@ let map;
 			map.rxEnterHallway(data)
 		}
 	}
+	function rxEnterHallway(data) {
+		map.roomToId = data.id
+		map.hallwayId = dungeon.map.hallways.find(h =>
+			h.connects.includes(map.roomId) &&
+			h.connects.includes(map.roomToId)
+		).id
+		map.inRoom = false
+
+		if (typeof dungeon.entities[map.hallwayId] === 'object' && !dungeon.entities[map.hallwayId].length ||
+			typeof dungeon.entities[map.hallwayId] === 'undefined') {
+			dungeon.entities[map.hallwayId] = dungeon.map.hallways[map.hallwayId].entities
+		}
+		dungeon.distanceCurrent = dungeon.hallwayPlayerStart
+		dungeon.distanceEnd = getHallwayDistance(map.hallwayId)
+		map.setCompass()
+		map.updatePosition()
+		console.info('enterHallway', 'room', data.id, 'hallway', map.hallwayId)
+		dungeon.go()
+	}
 	function revealRoom() {
 		let rooms = ['#room-' + map.roomId]
 		let halls = []
@@ -354,26 +376,6 @@ let map;
 			startAt: { visibility: 'visible' },
 			opacity: 1
 		})
-
-	}
-	function rxEnterHallway(data) {
-		map.roomToId = data.id
-		map.hallwayId = dungeon.map.hallways.find(h =>
-			h.connects.includes(map.roomId) &&
-			h.connects.includes(map.roomToId)
-		).id
-		map.inRoom = false
-
-		if (typeof dungeon.entities[map.hallwayId] === 'object' && !dungeon.entities[map.hallwayId].length ||
-			typeof dungeon.entities[map.hallwayId] === 'undefined') {
-			dungeon.entities[map.hallwayId] = dungeon.map.hallways[map.hallwayId].entities
-		}
-		dungeon.distanceCurrent = dungeon.hallwayPlayerStart
-		dungeon.distanceEnd = getHallwayDistance(map.hallwayId)
-		map.setCompass()
-		map.updatePosition()
-		console.info('enterHallway', 'room', data.id, 'hallway', map.hallwayId)
-		dungeon.go()
 	}
 	function setCompass() {
 		let room = dungeon.map.rooms[map.roomId]
@@ -391,13 +393,24 @@ let map;
 			TweenMax.set('#room-' + map.roomId, {
 				backgroundColor: '#060',
 			})
-			map.show(3)
+			if (mission.isQuestCompleted() &&
+				!mission.isCompleted) {
+				delayedCall(3, () => {
+					combat.showQuestMsg()
+					map.show(3)
+				})
+			}
+			else {
+				map.show(3)
+			}
 		}
 		else {
 			// clear nearest entity and redraw
-			dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].isAlive = false
-			dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].timestamp = Date.now()
-			dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].sprite.alpha = 0
+			if (dungeon.closestEntityIndex > -1) {
+				dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].isAlive = false
+				dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].timestamp = Date.now()
+				dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].sprite.alpha = 0
+			}
 			dungeon.setDungeonEntities()
 			// return to dungeon hallway
 			delayedCall(4, dungeon.go, [true])
@@ -417,26 +430,46 @@ let map;
 		return len
 	}
 	function show(delay = 0) {
+		map.isShown = true
 		TweenMax.to('#mini-map', .6, {
 			delay: delay,
-			startAt: {
-				visibility: 'visible',
-			},
+			startAt: { visibility: 'visible' },
 			opacity: 1,
 			scale: 1,
 			ease: Back.easeOut,
 		})
 		// map.fogTween.play()
-		map.questName.textContent = quests[mission.questId].title
+		querySelector('#quest-log').classList.remove('no-pointer')
+		if (mission.isQuestCompleted()) {
+			TweenMax.set([map.questHeader, map.questName], CSS.DISPLAY_NONE)
+			querySelector('#quest-completed').classList.add('no-pointer')
+			if (party.presence[0].isLeader) {
+				querySelector('#quest-completed').classList.remove('no-pointer')
+			}
+			TweenMax.set('#quest-completed', CSS.DISPLAY_BLOCK)
+		}
+		else {
+			TweenMax.set([map.questHeader, map.questName], CSS.DISPLAY_BLOCK)
+			TweenMax.set('#quest-completed', CSS.DISPLAY_NONE)
+			querySelector('#quest-log').classList.add('no-pointer')
+			map.questHeader.textContent = 'Objective:'
+			map.questName.textContent = quests[mission.questId].title
+		}
 		delayedCall(delay, revealRoom)
 	}
 	function hide() {
+		map.isShown = false
 		TweenMax.set('#mini-map', {
 			visibility: 'hidden',
 			opacity: 0,
 			scale: 0,
 		})
-		// map.fogTween.pause()
+	}
+	function handleQuestCompleted() {
+		console.info('handleQuestCompleted')
+		if (party.presence[0].isLeader) {
+			mission.returnToTown()
+		}
 	}
 	function getRoomClearData() {
 		let data = dungeon.map.rooms.reduce((acc, r) => {

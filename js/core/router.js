@@ -45,7 +45,7 @@ var router;
 	}
 	function toParty(data, r) {
 		if (r === 'p->hb') game.heartbeatReceivedParty(data)
-		else if (r === 'p->abandon') mission.abandonReceived(data)
+		else if (r === 'p->returnToTown') mission.rxReturnToTown(data)
 		else if (r === 'p->embarkReceived') mission.embarkReceived(data)
 		else if (r === 'p->notifyJoin') party.notifyJoin(data)
 		else if (r === 'p->inviteAccepted') party.joinAck(data)
