@@ -1,5 +1,5 @@
 mob.data = {}
-mob.data['Salubrin Den'] = [
+mob.data['Salubrin Haven'] = [
 	/*
 	{
 		img: 'orc',
@@ -50,7 +50,7 @@ mob.data['Salubrin Den'] = [
 		traits: [], // champ traits
 	},
 ]
-mob.data['Tendolin Hollow'] = [{
+mob.data['Tendolin Passage'] = [{
 
 }]
 mob.data['Greenthorn Cavern'] = [{
@@ -62,16 +62,16 @@ mob.data['Lanfeld Refuge'] = [{
 mob.data['Riven Grotto'] = [{
 
 }]
-mob.data['Babel\'s Bastille'] = [{
+mob.data['Bastille Citadel'] = [{
 
 }]
 mob.data['Kordata Cove'] = [{
 
 }]
-mob.data['Sylong Mausoleum'] = [{
+mob.data['Sylong Sanctuary'] = [{
 
 }]
-mob.data['Arcturin\'s Crypt'] = [{
+mob.data['Thule Crypt'] = [{
 
 }]
 mob.data['Temple of Prenssor'] = [{

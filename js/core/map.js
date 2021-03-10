@@ -99,7 +99,6 @@ let map;
 			onThrowUpdate: throwUpdate,
 			onThrowComplete: throwUpdate,
 		})[0]
-		console.warn('map', _.cloneDeep(dungeon.map))
 		// init map data
 		map.dotX = map.roomX = map.cameraX = dungeon.map.rooms[0].x
 		map.dotY = map.roomY = map.cameraY = dungeon.map.rooms[0].y
@@ -107,7 +106,6 @@ let map;
 		// map state
 		map.inRoom = true
 		map.hallwayId = map.roomId = map.roomToId = dungeon.distanceCurrent = 0
-
 
 		// map dimensions
 		map.width = Math.max(MIN_MAP_WIDTH, dungeon.map.width)

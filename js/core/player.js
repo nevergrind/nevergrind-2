@@ -45,17 +45,6 @@ let players = []; // player sprites
 		}
 		// and update status if player is present
 		player.updateAllPlayerSprites()
-		/*for (var i=0; i<party.maxPlayers; i++) {
-			let p = party.presence[i]
-			if (typeof p === 'object') {
-				if (!p.name) updatePlayerSprite(i, 0)
-				else updatePlayerSprite(i, 1)
-			}
-			else if (typeof p === 'undefined') {
-				// hide if not in the game - let's not remove them completely
-				updatePlayerSprite(i, 0)
-			}
-		}*/
 	}
 	function initPlayerSprite(i) {
 		// console.info('initPlayerSprite')
@@ -84,7 +73,6 @@ let players = []; // player sprites
 		// this may change appearance depending on players leaving/joining etc
 		players[i].sprite.texture = player.textures[0]
 		players[i].sprite.alpha = alpha
-		console.warn("updatePlayerSprite", i, alpha)
 	}
 	function updateAllPlayerSprites() {
 		players.forEach((p, i) => {

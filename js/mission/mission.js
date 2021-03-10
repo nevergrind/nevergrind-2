@@ -41,7 +41,7 @@ var mission;
 		questHtml = '<div id="various-body" class="flex-column flex-max">'
 
 		questHtml = '<div id="mission-wrap" class="flex-row aside-frame">' +
-			'<img id="mission-preview" src="images/battle/salubrin-den-1.png">' +
+			'<img id="mission-preview" src="images/battle/fahlnir-citadel-2.png">' +
 			'<div id="mission-detail-col">'
 				if (party.presence[0].isLeader) {
 					questHtml += '<div id="mission-details">'+

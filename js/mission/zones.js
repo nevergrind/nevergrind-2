@@ -1,29 +1,22 @@
 
 var zones = [{},
 	{
-		name: 'Salubrin Den',
+		name: 'Salubrin Haven',
 		level: 1,
 		maxLevel: 8,
 		id: 1,
 		isOpen: 0,
 		missions: [1,2],
-		mobs: mob.data['Salubrin Den'].reduce(mob.getMobTypesByZone, [])
+		mobs: mob.data['Salubrin Haven'].reduce(mob.getMobTypesByZone, [])
 	},
 	{
-		name: 'Tendolin Hollow',
+		name: 'Tendolin Passage',
 		level: 1,
 		maxLevel: 8,
 		id: 2,
 		isOpen: 0,
 		missions: [1,2,3,4,5],
-		mobs: mob.data['Tendolin Hollow'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'rat',
-			'snake',
-			'beetle',
-			'lioness',
-			'rhino',
-		]*/
+		mobs: mob.data['Tendolin Passage'].reduce(mob.getMobTypesByZone, [])
 	},
 	{
 		name: 'Greenthorn Cavern',
@@ -33,12 +26,6 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2,3,4,5],
 		mobs: mob.data['Greenthorn Cavern'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'hobgoblin',
-			'bear',
-			'crocodile',
-			'scorpion',
-		]*/
 	},
 	{
 		name: 'Lanfeld Refuge',
@@ -48,12 +35,6 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2,3,4,5],
 		mobs: mob.data['Lanfeld Refuge'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'orc',
-			'rat',
-			'wolf',
-			'scorpion',
-		]*/
 	},
 	{
 		name: 'Riven Grotto',
@@ -63,28 +44,15 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2,3,4,5],
 		mobs: mob.data['Riven Grotto'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'ghoul',
-			'mummy',
-			'skeleton',
-			'evil eye',
-			'zombie',
-		]*/
 	},
 	{
-		name: "Babel's Bastille",
+		name: "Bastille Citadel",
 		level: 8,
 		maxLevel: 20,
 		id: 6,
 		isOpen: 0,
 		missions: [1,2,3,4,5],
-		mobs: mob.data["Babel's Bastille"].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'goblin',
-			'hobgoblin',
-			'evil eye',
-			'iron golem',
-		]*/
+		mobs: mob.data["Bastille Citadel"].reduce(mob.getMobTypesByZone, [])
 	},
 	{
 		name: 'Kordata Cove',
@@ -94,46 +62,24 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2,3,4,5],
 		mobs: mob.data['Kordata Cove'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'angler',
-			'fungoid',
-			'treant',
-			'stone golem',
-		]*/
 	},
 	{
-		name: 'Sylong Mausoleum',
+		name: 'Sylong Sanctuary',
 		level: 16,
 		maxLevel: 30,
 		id: 8,
 		isOpen: 0,
 		missions: [1,2,3,4,5],
-		mobs: mob.data['Sylong Mausoleum'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'minotaur',
-			'centaur',
-			'aviak',
-			'griffon',
-			'harpy',
-			'skeleton',
-			'unicorn',
-		]*/
+		mobs: mob.data['Sylong Sanctuary'].reduce(mob.getMobTypesByZone, [])
 	},
 	{
-		name: "Arcturin's Crypt",
+		name: "Thule Crypt",
 		level: 20,
 		maxLevel: 35,
 		id: 9,
 		isOpen: 0,
 		missions: [1,2,3,4,5],
-		mobs: mob.data["Arcturin's Crypt"].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'skeleton',
-			'ghoul',
-			'mummy',
-			'spectre',
-			'fungoid',
-		]*/
+		mobs: mob.data["Thule Crypt"].reduce(mob.getMobTypesByZone, [])
 	},
 	{
 		name: 'Temple of Prenssor',
@@ -143,15 +89,6 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2,3,4,5],
 		mobs: mob.data['Temple of Prenssor'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'lizardman',
-			'dragonkin',
-			'crocodile',
-			'stone golem',
-			'iron golem',
-			'griffon',
-			MOB_TYPE.GIANT,
-		]*/
 	},
 	{
 		name: 'Fahlnir Citadel',
@@ -161,14 +98,6 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2,3,4,5],
 		mobs: mob.data['Fahlnir Citadel'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'vampire',
-			'gargoyle',
-			'werewolf',
-			'ghoul',
-			MOB_TYPE.GIANT,
-			'zombie',
-		]*/
 	},
 	{
 		name: 'Anuran Ruins',
@@ -178,14 +107,6 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2,3,4,5],
 		mobs: mob.data['Anuran Ruins'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'toadlok',
-			'minotaur',
-			'aviak',
-			'fungoid',
-			'spider',
-			'skeleton',
-		]*/
 	},
 	{
 		name: 'Galeblast Fortress',
@@ -195,14 +116,6 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2,3,4,5],
 		mobs: mob.data['Galeblast Fortress'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'ice goblin',
-			'polar bear',
-			'ice wolf',
-			'ice golem',
-			'ice giant',
-			'ice dragon',
-		]*/
 	},
 	{
 		name: 'Ashenflow Peak',
@@ -212,13 +125,5 @@ var zones = [{},
 		isOpen: 0,
 		missions: [1,2,3,4,5],
 		mobs: mob.data['Ashenflow Peak'].reduce(mob.getMobTypesByZone, [])
-		/*mobs: [
-			'kobold',
-			'imp',
-			'balrog',
-			'cerberus',
-			'fire giant',
-			'dragon',
-		]*/
 	},
 ];
