@@ -439,9 +439,9 @@ var bar;
 		updateAllMyBars()
 	}
 	function updateAllMyBars() {
-		updateBar(PROP.HP, my)
-		updateBar(PROP.MP, my)
-		updateBar(PROP.SP, my)
+		bar.updateBar(PROP.HP, my)
+		bar.updateBar(PROP.MP, my)
+		bar.updateBar(PROP.SP, my)
 	}
 	function getRatio(type, data) {
 		data = data || my
@@ -453,7 +453,7 @@ var bar;
 		percent = getRatio(type, data)
 		if (type === PROP.HP) {
 			TweenMax.to(querySelector('#bar-hp-fg-' + data.row), .1, { x: '-' + percent + '%' })
-			query.el('#bar-hp-text-' + data.row).textContent = ~~data.hp + '/' + data.hpMax
+			querySelector('#bar-hp-text-' + data.row).textContent = ~~data.hp + '/' + data.hpMax
 
 			if (type === PROP.HP &&
 				typeof data === 'object' &&
@@ -465,11 +465,11 @@ var bar;
 		}
 		else if (type === PROP.MP) {
 			TweenMax.to(querySelector('#bar-mp-fg-' + data.row), .1, { x: '-' + percent + '%' })
-			query.el('#bar-mp-text-' + data.row).textContent = ~~data.mp + '/' + data.mpMax
+			querySelector('#bar-mp-text-' + data.row).textContent = ~~data.mp + '/' + data.mpMax
 		}
 		else if (type === PROP.SP) {
 			TweenMax.to(querySelector('#bar-sp-fg-' + data.row), .1, { x: '-' + percent + '%' })
-			query.el('#bar-sp-text-' + data.row).textContent = ~~data.sp + '/' + data.spMax
+			querySelector('#bar-sp-text-' + data.row).textContent = ~~data.sp + '/' + data.spMax
 		}
 	}
 	function getMaxType(type, data) {
@@ -911,15 +911,15 @@ var bar;
 
 		player.hp = data.hp;
 		player.hpMax = data.hpMax;
-		updateBar(PROP.HP, data)
+		bar.updateBar(PROP.HP, data)
 
 		player.mp = data.mp;
 		player.mpMax = data.mpMax;
-		updateBar(PROP.MP, data)
+		bar.updateBar(PROP.MP, data)
 
 		player.sp = data.sp;
 		player.spMax = data.spMax;
-		updateBar(PROP.SP, data)
+		bar.updateBar(PROP.SP, data)
 
 		if (data.isLeader !== player.isLeader) {
 			player.isLeader = data.isLeader;
@@ -945,7 +945,6 @@ var bar;
 		}
 		if (data.name !== player.name) {
 			player.name = data.name;
-
 		}
 	}
 	function updatePing(ping) {

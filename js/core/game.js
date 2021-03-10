@@ -126,6 +126,7 @@ var game;
 			...obj,
 			..._.pick(my, KEYS.PARTY_PROPS)
 		}
+		// console.info('updateParty', partyData)
 		socket.publish('party' + my.partyId, partyData)
 	}
 	function txPartyResources(changedResourceObj) {

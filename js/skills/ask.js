@@ -1135,7 +1135,7 @@ var ask;
 			}
 		}
 	}
-	function addChild(img, targetMob) {
+	function addChild(img, targetMob) { // false is player.layer, true is battle.layer
 		if (targetMob) battle.layer.stage.addChild(img)
 		else player.layer.stage.addChild(img)
 	}

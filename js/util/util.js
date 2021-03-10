@@ -5,10 +5,18 @@ var util;
 		toRadiansCos,
 		toDegrees,
 		rotation,
+		removeElements,
 	}
 	const radianValue = Math.PI / 180
 	const degreeValue = 180 / Math.PI
+	let len, i
 	///////////////////////////////////////////
+	function removeElements(els) {
+		len = els.length
+		for (i=0; i<len; i++) {
+			els[i].parentNode.removeChild(els[i])
+		}
+	}
 	function toRadiansSin(angle) {
 		return Math.sin(angle * radianValue)
 	}

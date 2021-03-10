@@ -36,7 +36,14 @@ var context;
 
 	function contextTrade() {
 		// console.warn('contextTrade', context.player)
-		if (!trade.canTrade()) chat.log('You are already trading with ' + trade.data.name +'.', CHAT.WARNING)
+		if (!trade.canTrade()) {
+			if (trade.data.name) {
+				chat.log('You are already trading with ' + trade.data.name +'.', CHAT.WARNING)
+			}
+			else {
+				chat.log('You cannot trade right now.', CHAT.WARNING)
+			}
+		}
 		else trade.init()
 	}
 
@@ -117,11 +124,13 @@ var context;
 			// promote
 			if (party.presence[0].isLeader) {
 				s += '<div id="context-boot" ' + z + '>Boot</div>'
-				s += '<div id="context-promote" ' + z + '>Promote</div>'
+				// s += '<div id="context-promote" ' + z + '>Promote</div>'
 			}
 			// whisper
-			s += '<div id="context-whisper" ' + z + '>Whisper</div>' +
-				'<div id="context-trade" ' + z + '>Trade</div>'
+			s += '<div id="context-whisper" ' + z + '>Whisper</div>'
+			if (ng.view === 'town') {
+				s += '<div id="context-trade" ' + z + '>Trade</div>'
+			}
 			// friend list
 			if (ng.friends.includes(context.player.name)) {
 				s += '<div id="context-remove-friend" ' + z + '>Unfriend</div>'

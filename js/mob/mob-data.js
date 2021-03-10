@@ -46,6 +46,7 @@ mob.data['Salubrin Den'] = [
 		size: 1,
 		job: JOB.SHAMAN,
 		tier: MOB_TIERS.champion,
+		questOnly: true,
 		traits: [], // champ traits
 	},
 ]

@@ -274,7 +274,7 @@ var battle;
 		})
 		button.setAll()
 		initBattleLayer()
-		player.setPlayers()
+		player.updateAllPlayerSprites()
 
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
@@ -304,8 +304,14 @@ var battle;
 			}, true)
 		}
 
-		if (combat.isBattleOver()) map.show(1.5) // empty battle room - only in original room
-		else map.hide()
+		if (combat.isBattleOver()) {
+			map.inCombat = false
+			map.show(1.5)
+		}
+		else {
+			map.inCombat = true
+			map.hide()
+		}
 	}
 	function initBattleLayer() {
 		if (battleLayerInitialized) return
@@ -385,7 +391,7 @@ var battle;
 				}
 				// tries to find by name first and then by img
 				let mobConfig = {
-					...mob.configMobType(query),
+					...mob.getRandomMob(query),
 					expPerLevel: 3,
 				}
 

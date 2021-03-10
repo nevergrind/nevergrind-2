@@ -411,7 +411,7 @@ var chat;
 	}
 	function camp(event) {
 		if (chat.isCamped) return;
-		if (!event.bypass && ng.view === 'battle') {
+		if (!event.bypass && map.inCombat) {
 			chat.log('You cannot camp while in battle!')
 		}
 		else {
@@ -487,7 +487,7 @@ var chat;
 						channel: channel
 					}).done(function (data) {
 						!keepLog && clearLog()
-						console.log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>')
+						// console.log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>')
 						joinChangeCallback(data)
 					});
 				}

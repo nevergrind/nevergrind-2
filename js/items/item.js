@@ -1502,7 +1502,7 @@ var loot = {};
 	}
 
 	function toggleDrag(event) {
-		if (ng.view === 'battle') {
+		if (map.inCombat) {
 			chat.log('You cannot adjust your equipment or inventory while in combat!', CHAT.WARNING)
 			return
 		}

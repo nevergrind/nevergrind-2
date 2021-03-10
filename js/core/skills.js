@@ -2567,7 +2567,7 @@ var skills;
 		}
 
 		if (!config.oocEnabled &&
-			ng.view !== 'battle') {
+			!map.inCombat) {
 			chat.log('You cannot use this skill out of combat.', CHAT.WARNING)
 			return true
 		}

@@ -492,6 +492,15 @@ app.socketUrl = app.isApp ?
 </div>
 <div id="button-wrap" class="no-select text-shadow"></div>
 <div id="mini-map" class="text-shadow no-select">
+	<div id="mini-map-confirm-wrap" class="flex-column flex-center">
+		<div id="mini-map-prompt-border">
+			<div id="mini-map-menu-prompt">Are you sure you want to return to town?</div>
+			<div id="mini-map-prompt-btn-wrap" class="flex-center">
+				<div id="mini-map-prompt-btn-yes" class="mini-map-menu-btn ng-btn">Yes</div>
+				<div id="mini-map-prompt-btn-no" class="mini-map-menu-btn ng-btn">No</div>
+			</div>
+		</div>
+	</div>
 	<div id="quest-log" class="flex-row no-pointer text-shadow">
 		<span id="quest-header">Objective:</span>
 		<span id="quest-name"></span>
@@ -500,6 +509,7 @@ app.socketUrl = app.isApp ?
 	<div id="mini-map-bg">
 		<div id="mini-map-button-parent" class="flex-row">
 			<img id="mini-map-party" src="images/ui/bar-options.png" class="map-btn popover-icons">
+			<img id="mini-map-leave" src="images/ui/bar-camp.png" class="map-btn popover-icons">
 		</div>
 		<div id="mini-map-drag-parent">
 			<div id="mini-map-drag">

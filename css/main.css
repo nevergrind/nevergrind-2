@@ -1605,7 +1605,29 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	border: 1px solid #048;
 	background: linear-gradient(135deg, #048, #025, #013, #025, #048);
 	text-align: center;
+	overflow: hidden;
 	z-index: 2;
+}
+#mini-map-confirm-wrap {
+	visibility: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 20000;
+	background: radial-gradient(farthest-corner at center, #013, #060606);
+}
+#mini-map-prompt-border {
+	padding: 1rem;
+	border: 2px outset #025;
+	background: #048;
+}
+#mini-map-prompt-btn-wrap {
+	margin-top: .5rem;
+}
+.mini-map-menu-btn  {
+	margin: 0 .5rem;
 }
 #mini-map-bg {
 	position: relative;
@@ -1720,14 +1742,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	pointer-events: none;
 	z-index: 10;
 }
-/*#mini-map-fog {
-	top: 0;
-	left: 0;
-	width: 2400px;
-	height: 2400px;
-	pointer-events: none;
-	z-index: 10;
-}*/
+
+
 #button-wrap {
 	position: fixed;
 	align-self: center;

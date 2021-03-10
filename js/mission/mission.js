@@ -13,7 +13,7 @@ var mission;
 		getMissionBodyHtml,
 		embark,
 		resetLocalQuestData,
-		returnToTown,
+		txReturnToTown,
 		rxReturnToTown,
 		embarkReceived,
 		toggleZone,
@@ -140,8 +140,9 @@ var mission;
 			z.isOpen = 1
 		}
 	}
-	function returnToTown() {
-		if (map.isShown) {
+	function txReturnToTown() {
+		if (party.presence[0].isLeader &&
+			map.isShown) {
 			rxReturnToTown()
 			socket.publish('party' + my.partyId, {
 				route: 'p->returnToTown',
@@ -184,6 +185,7 @@ var mission;
 				dungeon.createHallwayMobs()
 				dungeon.map.rooms.forEach(dungeon.getRoomMobCount)
 				dungeon.setBossRoom()
+				map.init(dungeon.map)
 			}
 			var data = {
 				route: 'p->embarkReceived',
@@ -204,6 +206,7 @@ var mission;
 		mission.id = data.id
 		mission.questId = data.questId
 		dungeon.map = data.grid
+		map.init(dungeon.map)
 		town.closeVarious()
 
 		chat.log('Now departing for ' + zones[mission.id].name + '!', CHAT.WARNING)

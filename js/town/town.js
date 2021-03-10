@@ -98,6 +98,7 @@ var town;
 		dungeon.map = {} // reset map data so it can be initialized next embark
 		dungeon.killEntityTweens()
 		map.hide()
+		map.inCombat = false
 		if (!create.selected) return
 
 		audio.playMusic('intro', 'wav')
@@ -787,7 +788,7 @@ var town;
 		// for trading to PCs
 		html = variousHeaderHtml() +
 		trade.getBodyHtml() +
-		variousFooterHtml('images/avatar/' + trade.getTradeAvatar())
+		variousFooterHtml('images/avatars/' + trade.getTradeAvatar())
 		return html
 	}
 	function variousHeaderHtml() {

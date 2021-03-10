@@ -1,10 +1,10 @@
 let map;
 !function($, _, TweenMax, getComputedStyle, parseInt, window, undefined) {
 	map = {
+		inCombat: false,
+		menuPrompt: false,
 		isShown: false,
 		isDragging: false,
-		originX: 0,
-		originY: 0,
 		mouseX: 0, // used for wheel scaling
 		mouseY: 0,
 		roomX: 0, // coordinate X of origin room
@@ -52,6 +52,7 @@ let map;
 		revealRoom,
 		revealMap,
 		getRoomClearData,
+		drawMap,
 	}
 	const SCALE_IN_MAX = 50 // ZOOM OUT
 	const SCALE_DEFAULT = 100
@@ -79,9 +80,12 @@ let map;
 	///////////////////////////////////////////
 	$('#mini-map-drag').on('wheel', handleWheel)
 	$('#mini-map-party').on('click', handleCenterParty)
+	$('#mini-map-leave').on('click', handleLeave)
 	$('#quest-completed').on('click', handleQuestCompleted)
+	$('#mini-map-prompt-btn-yes').on('click', handleMapYes)
+	$('#mini-map-prompt-btn-no').on('click', handleMapNo)
 	$(map.miniMapDrag).on('click', '.map-room', handleRoomClick)
-	function init(mapData) {
+	function init() {
 		map.dragMap = Draggable.create(map.miniMapDrag, {
 			bounds: map.miniMapParent,
 			type: 'x,y',
@@ -97,8 +101,13 @@ let map;
 		})[0]
 		console.warn('map', _.cloneDeep(dungeon.map))
 		// init map data
-		map.originX = map.dotX = map.roomX = map.cameraX = dungeon.map.rooms[0].x
-		map.originY = map.dotY = map.roomY = map.cameraY = dungeon.map.rooms[0].y
+		map.dotX = map.roomX = map.cameraX = dungeon.map.rooms[0].x
+		map.dotY = map.roomY = map.cameraY = dungeon.map.rooms[0].y
+
+		// map state
+		map.inRoom = true
+		map.hallwayId = map.roomId = map.roomToId = dungeon.distanceCurrent = 0
+
 
 		// map dimensions
 		map.width = Math.max(MIN_MAP_WIDTH, dungeon.map.width)
@@ -106,20 +115,21 @@ let map;
 
 		map.setDotPosition()
 		// set dynamic style
-		map.miniMapDrag.style.width = map.width + 'px'
-		map.miniMapDrag.style.height = map.height + 'px'
-
-		mapData.rooms.forEach(createRoom)
-		mapData.hallways.forEach(createHallway)
-
-		/*TweenMax.set(map.fog, {
-			x: map.dotX - FOG_OFFSET,
-			y: map.dotY - FOG_OFFSET
-		})*/
+		map.drawMap()
 
 		delayedCall(1.5, () => {
 			map.centerCameraAt(map.dotX, map.dotY)
 		})
+	}
+	function removeElements(els) {
+
+	}
+	function drawMap() {
+		util.removeElements(querySelectorAll('.map-room, .map-hallway'))
+		map.miniMapDrag.style.width = map.width + 'px'
+		map.miniMapDrag.style.height = map.height + 'px'
+		dungeon.map.rooms.forEach(createRoom)
+		dungeon.map.hallways.forEach(createHallway)
 	}
 	function createRoom(room) {
 		// console.info('room', room)
@@ -280,6 +290,42 @@ let map;
 	function handleCenterParty() {
 		map.centerCameraAt(map.dotX, map.dotY)
 	}
+	function handleLeave() {
+		if (party.presence[0].isLeader) {
+			map.menuPrompt = true
+			querySelector('#mini-map-confirm-wrap').style.visibility = 'visible'
+			TweenMax.to('#mini-map-confirm-wrap', .3, {
+				startAt: { opacity: 0 },
+				opacity: 1
+			})
+			TweenMax.to('#mini-map-prompt-border', .5, {
+				startAt: { scale: 0 },
+				scale: 1,
+				ease: Back.easeOut,
+			})
+		}
+		else {
+			ng.msg('Only the party leader can make that decision.')
+		}
+	}
+	function handleMapYes() {
+		map.menuPrompt = false
+		querySelector('#mini-map-confirm-wrap').style.visibility = 'hidden'
+		mission.txReturnToTown()
+	}
+	function handleMapNo() {
+		map.menuPrompt = false
+		TweenMax.to('#mini-map-prompt-border', .25, {
+			scale: 0,
+		})
+		TweenMax.to('#mini-map-confirm-wrap', .5, {
+			startAt: { opacity: 1 },
+			opacity: 0,
+			onComplete: () => {
+				querySelector('#mini-map-confirm-wrap').style.visibility = 'hidden'
+			}
+		})
+	}
 	function handleRoomClick(e) {
 		let roomId = e.target.id.split('-')[1] * 1
 		if (my.isLeader && map.inRoom && combat.isBattleOver()) {
@@ -431,6 +477,7 @@ let map;
 	}
 	function show(delay = 0) {
 		map.isShown = true
+		map.inCombat = false
 		TweenMax.to('#mini-map', .6, {
 			delay: delay,
 			startAt: { visibility: 'visible' },
@@ -467,9 +514,7 @@ let map;
 	}
 	function handleQuestCompleted() {
 		console.info('handleQuestCompleted')
-		if (party.presence[0].isLeader) {
-			mission.returnToTown()
-		}
+		mission.txReturnToTown()
 	}
 	function getRoomClearData() {
 		let data = dungeon.map.rooms.reduce((acc, r) => {

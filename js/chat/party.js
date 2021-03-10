@@ -181,7 +181,6 @@ var party;
 					isFrozen: false,
 					hitCount: 0,
 				});
-				// console.info('player', _.cloneDeep(player))
 				var len = party.presence.length - 1
 				bar.addPlayer(party.presence[len], data.row)
 				checkUpdateBars(data, party.presence[len])
@@ -212,6 +211,9 @@ var party;
 	function removePartyMember(p, checkLeader = true) {
 		if (typeof p === 'object') {
 			index = party.getIndexByRow(p.row)
+			if (party.presence[index].isLeader) {
+				mission.rxReturnToTown()
+			}
 			// console.warn('removing party member: index', index, 'row', p.row)
 			_.pullAt(party.presence, [ index ])
 			bar.dom[p.row] = undefined
@@ -291,9 +293,9 @@ var party;
 			socket.publish('name' + data.name, {
 				action: 'party-confirmed',
 				row: my.partyId
-			});
+			})
 			// console.warn('length: ', party.presence.length)
-			party.presence.length === 1 && getElementById('bar-name-' + my.row).classList.add('chat-gold');
+			party.presence.length === 1 && getElementById('bar-name-' + my.row).classList.add('chat-gold')
 		}
 	}
 	/**
@@ -302,16 +304,16 @@ var party;
 	 */
 	function joinConfirmed(data) {
 		// console.warn('joinConfirmed', data);
-		my.isLeader = party.presence[0].isLeader = false;
-		my.partyId = data.row;
-		party.listen(data.row);
+		my.isLeader = party.presence[0].isLeader = false
+		my.partyId = data.row
+		party.listen(data.row)
 		chat.log("You have joined the party.", CHAT.WARNING)
 		query.resetCache()
 		delayedCall(.1, () => {
 			socket.publish('party' + my.partyId, {
 				msg: my.name + ' has joined the party.',
 				route: 'p->notifyJoin',
-			});
+			})
 		})
 	}
 	/**
@@ -328,7 +330,7 @@ var party;
 	}
 	function boot(name, bypass) {
 		// console.info('/boot ', name, bypass);
-		if (ng.view === 'battle') {
+		if (map.inCombat) {
 			chat.log("You cannot boot party members during battle!", CHAT.WARNING);
 		}
 		else {
@@ -358,7 +360,7 @@ var party;
 			chat.log(data.leader + " has booted you from the party!", CHAT.WARNING);
 		}
 		else {
-			var index = party.getNameByRow(data.name)
+			var index = party.presence.findIndex(p => p.name === data.name)
 			removePartyMember(party.presence[index]);
 			chat.log(data.name + " has been booted from the party.", CHAT.WARNING);
 		}
@@ -367,7 +369,7 @@ var party;
 		if (party.presence.length === 1) {
 			chat.log('You are not in a party. Try to abandon the mission instead.', CHAT.WARNING);
 		}
-		else if (ng.view === 'battle') {
+		else if (map.inCombat) {
 			chat.log("You cannot disband the party during battle!", CHAT.WARNING);
 		}
 		else {

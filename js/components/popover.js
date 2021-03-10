@@ -49,6 +49,7 @@ var popover;
 			'potion-mp-empty': 'No Mana Potions Remain',
 			'potion-sp-empty': 'No Spirit Potions Remain',
 			'mini-map-party': 'Center Camera on Party',
+			'mini-map-leave': 'Return to Town',
 			'quest-completed': 'Click to Return to Town',
 		}
 		if (id.startsWith('skill-')) {

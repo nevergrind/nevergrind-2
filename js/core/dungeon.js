@@ -173,7 +173,6 @@ var dungeon;
 		mob.earnedGold = 0
 		mob.leveledUp = false
 		// draw players
-		player.setPlayers()
 		player.show()
 		mobSkills.initFilter()
 		if (map.inRoom) {
@@ -227,7 +226,7 @@ var dungeon;
 			querySelector('#scene-dungeon').innerHTML = dungeon.html()
 			// dungeon layer for ooc buffs
 			dungeon.entities = [[]]
-			map.init(dungeon.map)
+			map.init()
 			dungeon.initCanvas()
 			player.initCanvas()
 			combat.updateCanvasLayer()
@@ -512,6 +511,7 @@ var dungeon;
 		return blurValue
 	}
 	function walkForward() {
+		if (map.menuPrompt) return
 		if (dungeon.getWalkProgress() >= 0 &&
 			dungeon.getWalkProgress() < 1) {
 			if (party.presence[0].isLeader) {
@@ -534,6 +534,7 @@ var dungeon;
 		})
 	}
 	function walkBackward() {
+		if (map.menuPrompt) return
 		if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
 			if (party.presence[0].isLeader) {
 				if (party.hasMoreThanOnePlayer()) {
