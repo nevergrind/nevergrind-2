@@ -1,6 +1,7 @@
 var test;
 (function(Linear, TweenMax, TimelineMax, PIXI, $, undefined) {
 	test = {
+		getMob,
 		projectionTest,
 		getTestLootItemWeapon,
 		disableConsole,
@@ -880,5 +881,19 @@ var test;
 
         dungeon.sky.alpha = 0
 		dungeon.tiling.alpha = 0
+	}
+	function getMob(query, zoneName) {
+		if (typeof query === 'undefined') {
+			query = {
+				level: 1,
+				img: 'orc'
+			}
+		}
+		let result = mob.getRandomMobByZone(query, zoneName)
+		console.warn(result.name, result.level)
+		for (var key in result) {
+			console.info(key, result[key])
+		}
+		return result
 	}
 })(Linear, TweenMax, TimelineMax, PIXI, $);

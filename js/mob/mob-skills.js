@@ -902,7 +902,12 @@ mobSkills = {};
 			}
 		}
 		for (var key in multi) {
-			config[key] = ~~(config[key] * multi[key])
+			if (key === 'size') {
+				config[key] = (config[key] * multi[key])
+			}
+			else {
+				config[key] = ~~(config[key] * multi[key])
+			}
 		}
 
 		config.hpMax = config.hp

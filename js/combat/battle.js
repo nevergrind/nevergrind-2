@@ -376,7 +376,7 @@ var battle;
 			let query
 			for (i=0; i<totalMobs; i++) {
 				query = {
-					img: 'toadlok',
+					img: 'orc',
 					level: 1,
 				}
 				if (i === 0) {
@@ -391,7 +391,7 @@ var battle;
 				}
 				// tries to find by name first and then by img
 				let mobConfig = {
-					...mob.getRandomMob(query),
+					...mob.getRandomMobByZone(query),
 					expPerLevel: 3,
 				}
 

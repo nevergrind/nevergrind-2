@@ -16,7 +16,7 @@ let mobs = [];
 		setClickBox,
 		getMobExp,
 		blur,
-		getRandomMob,
+		getRandomMobByZone,
 		drawMobBar,
 		drawTargetBar,
 		resourceTick,
@@ -225,7 +225,10 @@ let mobs = [];
 			}
 		}
 	}
-	function getRandomMob(query) {
+	function getRandomMobByZone(query, zoneName) {
+		if (typeof zoneName === 'undefined') {
+			zoneName = zones[mission.id].name
+		}
 		/**
 		 * filters zone's mobData and returns one mob in the level range
 		 * tries by name first and then by level
@@ -234,13 +237,14 @@ let mobs = [];
 		let results
 		if (query.name) {
 			results = [
-				mob.data[zones[mission.id].name].find(m => m.name === query.name)
+				mob.data[zoneName].find(m => m.name === query.name)
 			]
 		}
 		else {
-			results = mob.data[zones[mission.id].name].filter(m =>
+			results = mob.data[zoneName].filter(m =>
 				m.minLevel <= query.level && query.level <= m.maxLevel && !m.questOnly)
 		}
+		console.info('results', results)
 		results.forEach((r, i) => {
 			results[i].level = query.level
 		})

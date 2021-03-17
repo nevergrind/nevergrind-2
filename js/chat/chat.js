@@ -265,7 +265,7 @@ var chat;
 		else if (msgLower.startsWith('/boot')) party.boot(party.parse(msg))
 		else if (msgLower === '/disband') party.disband()
 		else if (msgLower.startsWith('/invite')) party.invite(party.parse(msg))
-		else if (msgLower === '/camp') chat.camp()
+		else if (msgLower === '/camp') chat.camp({bypass: false})
 		else if (msgLower === '/played') game.played()
 		else if (msgLower.startsWith('/join')) chat.joinChannel(joinParse(msg))
 		else if (msgLower === '/clear') clearChatLog()
@@ -409,7 +409,7 @@ var chat;
 			})
 		}
 	}
-	function camp(event) {
+	function camp(event = {}) {
 		if (chat.isCamped) return;
 		if (!event.bypass && map.inCombat) {
 			chat.log('You cannot camp while in battle!')
