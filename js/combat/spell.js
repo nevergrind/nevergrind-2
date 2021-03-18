@@ -139,7 +139,7 @@ var spell;
 		return rand() < chance
 	}
 	function checkSpellFizzle() {
-		spellFizzleChance() && delayedCall(.2, spellFizzle)
+		app.isApp && spellFizzleChance() && delayedCall(.2, spellFizzle)
 	}
 	function spellFizzle() {
 		expendSpellResources(true)

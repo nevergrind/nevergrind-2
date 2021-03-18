@@ -74,6 +74,15 @@ mob.data['Salubrin Haven'] = [
 		job: JOB.SHAMAN,
 		traits: [], // champ traits
 	},
+	{
+		img: 'orc',
+		name: 'orc shaman elder',
+		minLevel: 47,
+		maxLevel: 50,
+		size: 1,
+		job: JOB.SHAMAN,
+		traits: [], // champ traits
+	},
 	// champs
 	{
 		img: 'orc',

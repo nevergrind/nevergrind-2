@@ -1161,7 +1161,8 @@ var ask;
 		}
 	}
 	function centerHeadY(index) {
-		return ask.centerY(index, true) - (mobs[index].clickAliveH * .2)
+		return MaxHeight - mob.bottomY[index] - ((mobs[index].barAliveBottom * mobs[index].size))
+		// return ask.centerY(index, true) - (mobs[index].clickAliveH * .2)
 	}
 	// get player positions
 	function getPlayerHead(index) {
@@ -1187,8 +1188,12 @@ var ask;
 		coord = getPlayerCenter(party.getIndexByRow(o.index))
 		img.x = coord.x
 		// offset from combat bottom
-		if (typeof config === 'object' && config.yPosition) img.y = dungeon.bottom - config.yPosition
-		else img.y = coord.y
+		if (typeof config === 'object' && config.yPosition) {
+			img.y = MaxHeight - config.yPosition
+		}
+		else {
+			img.y = coord.y
+		}
 	}
 	function getAskId() {
 		return ask.askId++

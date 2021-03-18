@@ -140,9 +140,9 @@
 			duration: .5,
 			ease: Power2.easeOut,
 		})
-		for (var i=0; i<7; i++) {
+		for (var i=0; i<4; i++) {
 			!function(i) {
-				delayedCall(i * .05, () => {
+				delayedCall(i * .01, () => {
 					o.key = 'sacredRevelation'
 					ask.explosion(o, {
 						contrastStart: 1.2,
@@ -152,7 +152,7 @@
 						sizeStart: 0,
 						sizeEnd: 400,
 						alpha: 1,
-						duration: .4,
+						duration: .25,
 						ease: Back.easeOut,
 					})
 				})

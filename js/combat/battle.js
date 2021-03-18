@@ -377,7 +377,7 @@ var battle;
 			for (i=0; i<totalMobs; i++) {
 				query = {
 					img: 'orc',
-					level: 1,
+					level: 50,
 				}
 				if (i === 0) {
 					mobSlot = 2

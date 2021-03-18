@@ -15,7 +15,8 @@ var dungeon;
 	const MOB_HALLWAY_MIN = 0 // 1200 - 2400 minimum if first interval (25%)
 	const MOB_HALLWAY_MAX = MOB_HALLWAY_INTERVAL * .7
 	// player starts in hallway at 1200 (12.5%), but mob on first interval can't appear until 2400 (25%)
-	const PLAYER_HALLWAY_START = MOB_HALLWAY_INTERVAL - MOB_HALLWAY_MAX
+	const PLAYER_HALLWAY_START = MOB_HALLWAY_INTERVAL * .25
+	// first and second mob min/max positions
 	const MOB_DISTANCE = [
 		{
 			min: PLAYER_HALLWAY_START * 2,
@@ -56,7 +57,6 @@ var dungeon;
 		tickUpdate: {},
 		hallwayPlayerStart: PLAYER_HALLWAY_START,
 		centerX: [960, 1280, 640, 1600, 320],
-		bottom: MaxHeight,
 		headY: BOTTOM_PLAYER - 200,
 		bottomY: BOTTOM_PLAYER,
 		gridElementY: {},
