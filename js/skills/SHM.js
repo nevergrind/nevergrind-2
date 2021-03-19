@@ -221,7 +221,6 @@
 	}
 	function devouringSwarmHeal(data) {
 		// combat.updateMyResource(PROP.HP, ~~(data.damage * buffs.devouringSwarm.healRatio))
-		console.info('tx devouringSwarmHeal', data)
 		combat.txHotHero([{
 			index: my.row,
 			key: 'devouringSwarmHeal',
