@@ -159,9 +159,9 @@
 				brightnessStart: 2,
 				sizeStart: 150,
 				sizeEnd: 250,
-				yStart: ask.centerY(o.index, true) - 150,
+				yStart: ask.centerY(o.index, true) - 100,
 				alpha: 1,
-				duration: 1.2,
+				duration: 1,
 				frameDuration: .45,
 				frameEase: Power0.easeIn,
 			})
@@ -169,7 +169,7 @@
 				TweenMax.to(img, .5, {
 					pixi: { scale: 0 },
 					y: ask.centerY(o.index, true),
-					delay: .7,
+					delay: .5,
 					ease: Power1.easeInOut
 				})
 			})

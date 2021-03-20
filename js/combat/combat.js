@@ -1646,7 +1646,7 @@ var combat;
 				}
 			}
 		}
-		TweenMax.to(basicText, duration, TEXT_FILTER)
+		// TweenMax.to(basicText, duration, TEXT_FILTER)
 	}
 	function fadeTextOut(text, o) {
 		duration = TEXT_DURATION * .4

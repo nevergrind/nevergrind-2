@@ -896,4 +896,12 @@ var test;
 		}
 		return result
 	}
+	/*
+	https://greensock.com/docs/v2/Plugins/BezierPlugin
+	bezier types
+"thru" (the default) - the plugin figures out how to draw the Bezier naturally through the supplied values using a proprietary algorithm. The values you provide in the array are essentially treated as anchors on the Bezier and the plugin calculates the control points. The target's current/starting values are used as the initial anchor. You can define a curviness special property that allows you to adjust the tension on the Bezier where 0 has no curviness (straight lines), 1 is normal curviness, 2 is twice the normal curviness, etc. Since "thru" is the default Bezier type, you don't need to define a type at all if this is the one you want.
+"soft" - the values that you provide in the array act almost like magnets that attract the curve towards them, but the Bezier doesn't typically travel through them. They are treated as control points on a Quadratic Bezier and the plugin creates the necessary intermediate anchors. The target's current/starting values are used as the initial anchor.
+"quadratic" - allows you to define standard Quadratic Bezier data (Quadratic Beziers have 1 control point between each anchor). The array should start with the first anchor, then control point, then anchor, control point, etc. for as many iterations as you want, but obviously make sure that it starts and ends with anchors.
+"cubic" - allows you to define standard Cubic Bezier data (Cubic Beziers have 2 control points between each anchor). The array should start with the first anchor, then 2 control points, then anchor, 2 control points, anchor, etc. for as many iterations as you want, but obviously make sure that it starts and ends with anchors.
+	 */
 })(Linear, TweenMax, TimelineMax, PIXI, $);
