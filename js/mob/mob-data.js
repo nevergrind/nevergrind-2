@@ -79,7 +79,7 @@ mob.data['Salubrin Haven'] = [
 		name: 'orc shaman elder',
 		minLevel: 47,
 		maxLevel: 50,
-		size: 1,
+		size: .8,
 		job: JOB.SHAMAN,
 		traits: [], // champ traits
 	},

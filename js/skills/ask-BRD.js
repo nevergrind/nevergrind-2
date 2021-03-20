@@ -266,7 +266,7 @@
 		})
 		ask.rings({index: o.index, type: 'poison'}, {
 			loops: 1,
-			yPosition: 150,
+			yAdj: 150,
 			targetMob: false,
 			duration: .32,
 			width: 50,

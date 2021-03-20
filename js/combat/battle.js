@@ -368,9 +368,9 @@ var battle;
 			// totalMobs = 0
 
 			// test data
-			/*if (!ng.isApp) {
+			if (!ng.isApp && (map.roomId || map.hallwayId)) {
 				totalMobs = 9
-			}*/
+			}
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
 			let query

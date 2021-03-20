@@ -60,7 +60,7 @@ let mobs = [];
 		maxLevel: 50,
 		element: {},
 		centerX: [192,576,960,1344,1728,384,768,1152,1536],
-		bottomY: [260,260,260,260,260,420,420,420,420],
+		bottomY: [240,240,240,240,240,340,340,340,340],
 		earnedExp: 0,
 		earnedGold: 0,
 		leveledUp: false,
@@ -424,6 +424,7 @@ let mobs = [];
 	function setSrc(i) {
 		mobs[i].frame = ~~mobs[i].frame
 		if (mobs[i].frame !== mobs[i].lastFrame) {
+			// if (typeof mob.textures[mobs[i].img] === 'object') {
 			mobs[i].shadow.texture = mobs[i].sprite.texture = mob.textures[mobs[i].img][mobs[i].frame]
 			mobs[i].lastFrame = mobs[i].frame
 		}

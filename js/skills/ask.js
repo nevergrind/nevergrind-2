@@ -637,8 +637,11 @@ var ask;
 			fg.x = bg.x = config.xStart
 		}
 		if (config.yStart) {
-			bg.y += config.yStart
-			fg.y += config.yStart
+			fg.y = bg.y = config.yStart
+		}
+		if (config.yAdj) {
+			bg.y += config.yAdj
+			fg.y += config.yAdj
 		}
 		// bg
 		TweenMax.to(bg, config.duration, {
@@ -1062,8 +1065,7 @@ var ask;
 		}
 		const img = ask.getImg(o, config)
 		// pre-config
-		img.width = config.sizeStart
-		img.height = config.sizeStart
+		img.height = img.width = config.sizeStart
 		if (config.xStart) img.x = config.xStart
 		if (config.yStart) img.y = config.yStart
 		if (config.rotationStart) img.rotation = util.rotation(config.rotationStart)
@@ -1153,15 +1155,15 @@ var ask;
 	}
 	function centerY(index, targetMob) {
 		if (targetMob) {
-			return ask.bottomY(index, true) - (mobs[index].imgCy * mobs[index].size)
+			return ask.bottomY(index, targetMob) - (mobs[index].imgCy * mobs[index].size)
 		}
 		else {
 			// player target
 			return ask.getPlayerCenter(party.getIndexByRow(index)).y
 		}
 	}
-	function centerHeadY(index) {
-		return MaxHeight - mob.bottomY[index] - ((mobs[index].barAliveBottom * mobs[index].size))
+	function centerHeadY(index, targetMob = true) {
+		return ask.bottomY(index, targetMob) - ((mobs[index].barAliveBottom * mobs[index].size))
 		// return ask.centerY(index, true) - (mobs[index].clickAliveH * .2)
 	}
 	// get player positions
