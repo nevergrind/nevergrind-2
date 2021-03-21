@@ -362,7 +362,6 @@
 			repeat: true,
 			frameEase: Power0.easeIn,
 		})
-
 	}
 	function naturesTouch(o) {
 		let img = ask.explosion(o, {

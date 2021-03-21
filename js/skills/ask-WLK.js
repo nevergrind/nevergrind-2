@@ -3,7 +3,7 @@
 		...ask,
 		venomBolt,
 		explosivePlague,
-		// explosivePlagueExplode,
+		explosivePlagueExplosion,
 		bloodFire,
 		demonicPact,
 		hauntingVision,
@@ -25,9 +25,47 @@
 		})
 	}
 	function explosivePlague(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.particleGroup({
+			..._.clone(o),
+			key: 'particle-group-poison',
+		}, {
+			interval: .0166,
+			sizeStart: 128,
+			sizeEnd: 64,
+			xRange: 75,
+			yRange: 100,
+			loops: 7
 		})
+		ask.explosion({index: o.index, key: 'orb-poison'}, {
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			sizeStart: 400,
+			sizeEnd: 0,
+			rotation: 360,
+			duration: 2,
+		})
+	}
+	function explosivePlagueExplosion(o) {
+		ask.explosion({index: o.index, key: 'burst-poison'})
+		ask.explosion({index: o.index, key: 'orb-poison'}, {
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			sizeStart: 0,
+			sizeEnd: 400,
+			rotation: 360,
+			duration: 1.5,
+		})
+		o.endFrame = 3
+		ask.explosion(o, {
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			sizeStart: 0,
+			sizeEnd: 200,
+			duration: .8,
+			frameDuration: .8,
+			frameEase: Power0.easeIn,
+		})
+
 	}
 	function bloodFire(o) {
 		ask.explosion({index: o.index, key: 'burst-fire'})
@@ -101,8 +139,29 @@
 		})
 	}
 	function hauntingVision(o) {
+		ask.explosion({index: o.index, key: 'burst-purple'})
+		ask.particleSmall({
+			..._.clone(o),
+			key: 'particle-small-purple',
+		}, {
+			interval: .001,
+			loops: 22,
+			sizeStart: 16,
+			sizeEnd: 0,
+			xRange: 50,
+			yRange: 0,
+		})
+		o.endFrame = 1
 		ask.explosion(o, {
-			duration: 1.2
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 250,
+			sizeEnd: 200,
+			yStart: ask.centerY(o.index, true) - 50,
+			repeat: true,
+			duration: 1.5,
+			frameDuration: .125,
+			frameEase: Power0.easeIn,
 		})
 	}
 	function icingDeath(o) {
@@ -218,8 +277,42 @@
 		})
 	}
 	function engulfingDarkness(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.explosion({index: o.index, key: 'burst-purple'})
+		o.endFrame = 2
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				let dur = _.random(.7, 1.1)
+				let size = _.random(260, 340)
+				let img = ask.groundExplosion(o, {
+					yStart: ask.bottomY(o.index, true) + 25,
+					contrastStart: 1.5,
+					brightnessStart: 2,
+					contrastEnd: 1,
+					brightnessEnd: 0,
+					sizeStart: size,
+					sizeEnd: size * .75,
+					yoyo: false,
+					alphaStart: 1,
+					alpha: .5,
+					duration: dur,
+					frameDuration: .15,
+					repeat: true,
+					frameEase: Power0.easeIn,
+				})
+				if (!i) img.x += 50
+				else if (i === 2) img.x -= 50
+			}(i)
+		}
+		ask.particleGroup({
+			..._.clone(o),
+			key: 'particle-group-purple',
+		}, {
+			interval: .0166,
+			sizeStart: 128,
+			sizeEnd: 64,
+			xRange: 75,
+			yRange: 100,
+			loops: 6
 		})
 	}
 	function profaneSpirit(o) {

@@ -1027,7 +1027,9 @@ var ask;
 			img.width = config.sizeStart
 			img.height = config.sizeStart
 		}
-		if (typeof config.alphaStart === 'number') img.alpha = config.alphaStart
+		if (typeof config.alphaStart === 'number') {
+			img.alpha = config.alphaStart
+		}
 		if (config.flip) {
 			img.scale.x *= -1
 		}
