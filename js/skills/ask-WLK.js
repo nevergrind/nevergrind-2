@@ -20,8 +20,25 @@
 	///////////////////////////////////////////
 
 	function venomBolt(o) {
+		ask.explosion({index: o.index, key: 'burst-poison'})
+		ask.particleCircle({
+			index: o.index,
+			key: 'particle-circle-poison',
+		}, {
+			duration: .3,
+			alpha: 0,
+			sizeEnd: 250,
+		})
+		o.endFrame = 3
 		ask.explosion(o, {
-			duration: 1.2
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 180,
+			sizeEnd: 225,
+			alpha: 1,
+			duration: .32,
+			frameDuration: .32,
+			frameEase: Power0.easeIn,
 		})
 	}
 	function explosivePlague(o) {
@@ -165,8 +182,27 @@
 		})
 	}
 	function icingDeath(o) {
+		ask.explosion({index: o.index, key: 'burst-ice'})
+		ask.explosion({index: o.index, key: 'icingDeath2'}, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 0,
+			sizeEnd: 300,
+			duration: .8,
+		})
+		ask.explosion({index: o.index, key: 'icingDeath1'}, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 0,
+			sizeEnd: 225,
+			duration: 1,
+		})
 		ask.explosion(o, {
-			duration: 1.2
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 0,
+			sizeEnd: 150,
+			duration: 1.2,
 		})
 	}
 	function curseOfShadows(o) {
@@ -207,9 +243,40 @@
 		})
 	}
 	function panicStrike(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.explosion({index: o.index, key: 'burst-arcane'})
+
+		const ringWidth = ((mobs[o.index].clickAliveW * mobs[o.index].size) * 2)
+		ask.rings({index: o.index, type: 'arcane'}, {
+			loops: 6,
+			yStart: ask.centerHeadY(o.index, true),
+			yEnd: ask.bottomY(o.index, true),
+			alpha: 1,
+			widthStart: ringWidth,
+			width: ringWidth,
+			height: ringWidth * .2,
+			interval: .1,
+			duration: .666,
+			ease: Power2.easeOut,
 		})
+
+		for (var i=0; i<30; i++) {
+			!function(i) {
+				delayedCall(i * .03, () => {
+					ask.explosion(o, {
+						duration: 2,
+						contrastStart: 1.5,
+						brightnessStart: 2,
+						xStart: mob.centerX[o.index] + _.random(-125, 125),
+						yStart: ask.centerHeadY(o.index, true) + _.random(-20, 20),
+						alpha: .5,
+						rotation: 360,
+						sizeStart: 50,
+						sizeEnd: 50,
+						ease: Power0.easeIn,
+					})
+				})
+			}(i)
+		}
 	}
 	function drainSoul(o) {
 		ask.explosion({index: o.index, key: 'burst-poison'})
@@ -271,9 +338,29 @@
 		})
 	}
 	function lichForm(o) {
+		ask.explosion({index: o.index, key: 'orb-purple'}, {
+			targetMob: false,
+			duration: 3,
+			sizeStart: 400,
+			sizeEnd: 300,
+		})
+		ask.explosion({
+			..._.clone(o),
+			key: 'lichForm1'
+		}, {
+			targetMob: false,
+			duration: 4,
+			alphaStart: .5,
+			brightnessStart: .5,
+			brightnessEnd: 0,
+			sizeStart: 320,
+			sizeEnd: 270,
+		})
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 1.2
+			duration: 4,
+			sizeStart: 300,
+			sizeEnd: 250,
 		})
 	}
 	function engulfingDarkness(o) {
@@ -316,14 +403,63 @@
 		})
 	}
 	function profaneSpirit(o) {
-		ask.explosion(o, {
-			targetMob: false,
-			duration: 1.2
-		})
+		for (var i=0; i<3; i++) {
+			!function(i) {
+				delayedCall(i * .2, () => {
+					ask.explosion({index: o.index, key: 'orb-poison'}, {targetMob: false})
+					ask.particleCircle({
+						index: o.index,
+						key: 'particle-circle-poison',
+					}, {
+						targetMob: false,
+						duration: .5,
+						alpha: 0,
+						sizeEnd: 250 + (i * 60),
+					})
+					if (i === 0) {
+						ask.explosion(o, {
+							targetMob: false,
+							duration: 1,
+							sizeStart: 250,
+							sizeEnd: 100,
+						})
+					}
+					else if (i === 1) {
+						ask.explosion({
+							index: o.index,
+							key: 'profaneSpirit1'
+						}, {
+							targetMob: false,
+							duration: 2,
+							sizeStart: 200,
+							sizeEnd: 100,
+						})
+					}
+					else if (i === 2) {
+						ask.explosion({
+							index: o.index,
+							key: 'profaneSpirit2'
+						}, {
+							targetMob: false,
+							duration: 2.5,
+							sizeStart: 250,
+							sizeEnd: 150,
+						})
+					}
+				})
+			}(i)
+		}
 	}
 	function profaneSpiritExplosion(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.explosion({index: o.index, key: 'burst-poison'})
+		ask.explosion({index: o.index, key: 'orb-poison'}, {sizeEnd: 400})
+		ask.particleCircle({
+			index: o.index,
+			key: 'particle-circle-poison',
+		}, {
+			duration: .33,
+			alpha: 0,
+			sizeEnd: 300,
 		})
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);

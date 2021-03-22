@@ -151,7 +151,7 @@ var ask;
 		duration: .6,
 		frameDuration: .15,
 		frameEase: Power0.easeOut,
-		ease: Power4.easeOut,
+		ease: Power2.easeOut,
 	}
 	const starburstDefaults = {
 		targetMob: true,
@@ -210,12 +210,13 @@ var ask;
 		rotation: 0,
 		startAlpha: 1,
 		alpha: 0,
-		ease: Power4.easeOut,
+		ease: Power2.easeOut,
 	}
 	const ringsDefaults = {
 		targetMob: true,
 		yPosition: 100,
 		loops: 5,
+		alpha: 0,
 		interval: .033,
 		duration: 1,
 		contrastStart: 1.5,
@@ -226,7 +227,7 @@ var ask;
 		height: 'auto',
 		rotation: 0,
 		zIndex: ask.DEFAULT_MOB_LAYER,
-		ease: Power4.easeOut,
+		ease: Power2.easeOut,
 	}
 	const novaDefaults = {
 		targetMob: true,
@@ -243,7 +244,7 @@ var ask;
 		height: 'auto',
 		rotation: 0,
 		zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
-		ease: Power4.easeOut,
+		ease: Power2.easeOut,
 	}
 	const slashDefaults = {
 		targetMob: true,
@@ -289,10 +290,12 @@ var ask;
 	const lightColumnDefaults = {
 		targetMob: true,
 		isPrimary: true,
-		loops: 10,
-		interval: .1,
-		size: 300,
-		duration: 1,
+		widthStart: 200,
+		anchorY: 1,
+		widthEnd: 0,
+		alpha: 1,
+		height: MaxHeight - 200,
+		duration: .4,
 		ease: Power2.easeOut,
 	}
 	const BLOOD_DURATION = 60
@@ -333,6 +336,19 @@ var ask;
 		}
 		const img = ask.getImg(o)
 		ask.addChild(img, config.targetMob)
+
+		img.width = config.widthStart
+		img.height = config.height
+		img.y = ask.bottomY(o.index, config.targetMob)
+		img.anchor.set(.5, config.anchorY)
+
+		TweenMax.to(img, config.duration, {
+			ease: config.ease,
+			alpha: config.alpha,
+			width: config.widthEnd,
+			onComplete: ask.removeImg,
+			onCompleteParams: [ img.id, config.targetMob ]
+		})
 	}
 	function killCastingTweens() {
 		ask.castingTweens.forEach(t => {
@@ -631,8 +647,15 @@ var ask;
 		const fg = ask.getNova(o, config)
 		ask.addChild(fg, config.targetMob)
 
-		fg.width = bg.width = 0
-		fg.height = bg.height = 0
+		if (config.widthStart) {
+			// vertical rings config
+			fg.width = bg.width = config.widthStart
+			fg.height = bg.height = config.height
+		}
+		else {
+			fg.width = bg.width = 0
+			fg.height = bg.height = 0
+		}
 		if (config.xStart) {
 			fg.x = bg.x = config.xStart
 		}
@@ -654,12 +677,12 @@ var ask;
 				contrast: config.contrastEnd,
 				brightness: config.brightnessEnd,
 			},
-			alpha: 0,
+			alpha: config.alpha,
 			y: config.yEnd ? config.yEnd : bg.y,
 			width: !config.targetMob ? 600 :
 				config.width === 'auto' ? mobs[o.index].width : config.width,
 			height: !config.targetMob ? 100 :
-				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
+				config.height === 'auto' ? mobs[o.index].width * .2 : config.height,
 			ease: config.ease,
 			onComplete: ask.removeImg,
 			onCompleteParams: [ bg.id, config.targetMob ]
@@ -675,7 +698,7 @@ var ask;
 				contrast: config.contrastEnd,
 				brightness: config.brightnessEnd,
 			},
-			alpha: 0,
+			alpha: config.alpha,
 			y: config.yEnd ? config.yEnd : fg.y,
 			width: !config.targetMob ? 600 :
 				config.width === 'auto' ? mobs[o.index].width : config.width,
@@ -683,7 +706,7 @@ var ask;
 				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
 			ease: config.ease,
 			onComplete: ask.removeImg,
-			onCompleteParams: [ bg.id, config.targetMob ]
+			onCompleteParams: [ fg.id, config.targetMob ]
 		})
 	}
 	function nova(o, config = {}) {
@@ -1090,8 +1113,8 @@ var ask;
 				brightness: config.brightnessEnd,
 			},
 			rotation: util.rotation(config.rotation),
-			alpha: config.alpha,
 			ease: config.ease,
+			alpha: config.alpha,
 			onComplete: ask.removeImg,
 			onCompleteParams: [ img.id, config.targetMob ]
 		}
@@ -1099,8 +1122,7 @@ var ask;
 			// some images use their auto size
 		}
 		else {
-			explosionObj.width = config.sizeEnd
-			explosionObj.height = config.sizeEnd
+			explosionObj.height = explosionObj.width = config.sizeEnd
 		}
 		if (config.yEnd) {
 			explosionObj.y = config.yEnd
