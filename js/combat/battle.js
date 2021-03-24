@@ -71,6 +71,7 @@ var battle;
 		getMinMobCount,
 		getMaxMobCount,
 		getRandomMobCount,
+		handleMobClick,
 	}
 	let index, buffHtml, tierHtml, traitHtml, buffEl, key, keyRow, el, i
 	let tgt = {}
@@ -219,6 +220,7 @@ var battle;
 		return tgt > 4
 	}
 	function handleMobClick() {
+		// console.info('handleMobClick', this)
 		my.setTarget(this.getAttribute('index') * 1)
 	}
 	function handleMobEnter() {
@@ -322,9 +324,13 @@ var battle;
 			height: MaxHeight,
 			transparent: true
 		});
+		/*const defaultIcon = "url('css/cursor/normal.png'), auto"
+		const hoverIcon = "url('css/cursor/sword-color.png'), auto"
+		battle.layer.renderer.plugins.interaction.cursorStyles.default = defaultIcon
+		battle.layer.renderer.plugins.interaction.cursorStyles.hover = hoverIcon*/
 		battle.layer.stage.sortableChildren = true
 		battle.layer.view.id = 'battle-layer'
-		battle.layer.view.style.pointerEvents = 'none'
+		// battle.layer.view.style.pointerEvents = 'none'
 		battle.layer.view.style.position = 'absolute'
 		battle.layer.view.style.zIndex = 1
 		querySelector('#scene-battle').appendChild(battle.layer.view)
@@ -368,7 +374,7 @@ var battle;
 			// totalMobs = 0
 
 			// test data
-			if (!ng.isApp && (map.roomId || map.hallwayId)) {
+			if (!ng.isApp && (map.roomId || (!map.inRoom && map.hallwayId))) {
 				totalMobs = 9
 			}
 			// console.info('levels', minLevel, maxLevel)
@@ -895,6 +901,7 @@ var battle;
 		ng.setScene('battle');
 		if (battleSceneInitialized) {
 			getElementById('scene-battle').style.display = 'block'
+			querySelector('#battle-bg').src = mission.getZoneImg()
 			battle.layer.stage.removeChildren()
 
 		}

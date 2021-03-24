@@ -18,6 +18,7 @@ var mission;
 		embarkReceived,
 		toggleZone,
 		clickQuest,
+		getKebabName,
 		getZoneImg,
 		isQuestCompleted,
 	};
@@ -109,8 +110,14 @@ var mission;
 			// TODO: non-party member needs to see something... EMBARK?
 		}
 	}
+	function getKebabName() {
+		return _.kebabCase(zones[mission.id].name.replace(/'/g, ''))
+	}
 	function getZoneImg() {
-		return 'images/battle/' + _.kebabCase(zones[mission.id].name.replace(/'/g, '')) + '-'+ quests[mission.questId].imgIndex +'.png'
+		const zoneName = mission.getKebabName()
+		const index = quests[mission.questId].imgIndex
+		const bgType = map.inRoom ? 'room' : 'hallway'
+		return 'images/battle/' + zoneName + '-'+ bgType + '-'+ index +'.jpg'
 	}
 
 	function toggleZone() {

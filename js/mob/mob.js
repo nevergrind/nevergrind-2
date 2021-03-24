@@ -362,8 +362,9 @@ let mobs = [];
 		m.sprite.y = y
 		m.sprite.width = width
 		m.sprite.height = height
-		m.sprite.interactive = true
-		m.sprite.buttonMode = true
+		/*m.sprite.interactive = true
+		m.sprite.cursor = "url('css/cursor/sword-color.png'), auto"
+		m.sprite.on('mousedown', battle.handleMobClick)*/
 		m.sprite.zIndex = layer // layer - i // don't think I want - i at all
 		TweenMax.set(mobs[i].sprite, filter.default(i))
 
