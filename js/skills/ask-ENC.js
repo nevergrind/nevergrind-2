@@ -17,24 +17,146 @@
 	///////////////////////////////////////////
 
 	function gravityFlux(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		const yBottom = ask.bottomY(o.index, true) + 60
+		ask.explosion({index: o.index, key: 'burst-purple'})
+		ask.nova({index: o.index, key: 'cast-swirl-purple'}, {
+			position: 'bottom',
+			loops: 1,
+		})
+		ask.groundExplosion(o, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			yStart: yBottom,
+			sizeStart: 200,
+			sizeEnd: 300,
+			duration: .8,
+			alpha: 0,
+			yoyo: false,
+		})
+		ask.groundExplosion({index: o.index, key: 'gravityFlux1'}, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			yStart: yBottom,
+			sizeStart: 200,
+			sizeEnd: 300,
+			duration: .6,
+			alpha: 0,
+			yoyo: false,
+		})
+		ask.explosion({index: o.index, key: 'gravityFlux-center'}, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			rotation: 360,
+			sizeStart: 0,
+			sizeEnd: 300,
+			duration: .4,
 		})
 	}
 	function staticSuffocation(o) {
-		ask.explosion(o, {
-			duration: 1.2
-		})
+		o.endFrame = 3
+		const centerX = mob.centerX[o.index]
+		const centerY = ask.centerY(o.index, true)
+		const bottomY = ask.bottomY(o.index, true)
+		for (var i=0; i<6; i++) {
+			(i => {
+				let xStart = centerX + _.random(-100, 100)
+				let yStart = centerY + _.random(-100, 100)
+				let dur = _.random(.32, .52)
+				ask.explosion({index: o.index, key: 'orb-lightning'}, {
+					contrastStart: 1.5,
+					brightnessStart: 3,
+					sizeStart: 150,
+					sizeEnd: 0,
+					duration: 1,
+					xStart: xStart,
+					yStart: yStart,
+				})
+				ask.explosion(o, {
+					contrastStart: 1.5,
+					brightnessStart: 3,
+					xStart: xStart,
+					yStart: yStart,
+					yEnd: Math.min(yStart + 30, bottomY),
+					sizeStart: 150,
+					sizeEnd: 200,
+					alpha: 1,
+					duration: dur,
+					frameDuration: dur,
+					frameEase: Power0.easeIn,
+				})
+			})(i)
+		}
 	}
 	function mindBlitz(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.nova({index: o.index, key: 'cast-swirl-lightning'}, {
+			position: 'bottom',
+			loops: 4,
+			duration: .3
+		})
+		let shadowY = ask.bottomY(o.index, true) + 90
+		o.endFrame = 3
+		ask.groundExplosion(o, {
+			yStart: shadowY,
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			width: 512,
+			height: 512,
+			yoyo: false,
+			alpha: 1,
+			duration: .24,
+			frameDuration: .24,
+			frameEase: Power0.easeIn,
+		})
+		ask.particleSmall({
+			index: o.index,
+			key: 'particle-small-lightning',
+		}, {
+			interval: .001,
+			loops: 15,
+			sizeStart: 24,
+			sizeEnd: 4,
+			xRange: 400,
+			yRange: 50,
 		})
 	}
 	function subversion(o) {
-		ask.explosion(o, {
-			duration: 1.2
-		})
+		o.endFrame = 2
+		const centerX = mob.centerX[o.index]
+		const centerY = ask.centerY(o.index, true)
+		const bottomY = ask.bottomY(o.index, true)
+		for (var i=0; i<8; i++) {
+			(i => {
+				let xStart = centerX + _.random(-80, 80)
+				let yStart = centerY + _.random(-80, 80)
+				let dur = _.random(.24, .36)
+				let img = ask.explosion({index: o.index, key: 'orb-poison'}, {
+					contrastStart: 1.5,
+					brightnessStart: 3,
+					sizeStart: 200,
+					sizeEnd: 32,
+					duration: dur + .3,
+					xStart: xStart,
+					yStart: yStart,
+					yEnd: yStart + 70,
+				})
+				TweenMax.to(img, dur + .3, {
+					x: '+=' + 70
+				})
+				ask.explosion(o, {
+					contrastStart: 1.5,
+					brightnessStart: 3,
+					xStart: xStart,
+					yStart: yStart,
+					yEnd: Math.min(yStart + 30, bottomY),
+					sizeStart: 80,
+					sizeEnd: 120,
+					alpha: 1,
+					duration: dur,
+					frameDuration: dur,
+					frameEase: Power0.easeIn,
+				})
+			})(i)
+		}
 	}
 	function colorShift(o) {
 		ask.explosion({index: o.index, key: 'burst-arcane'})
@@ -73,25 +195,161 @@
 		})
 	}
 	function phaseBlade(o) {
-		ask.explosion(o, {
+		ask.explosion({index: o.index, key: 'orb-lightning'}, {
 			targetMob: false,
-			duration: 1.2
+			duration: 3.5,
+			sizeStart: 50,
+			sizeEnd: 350,
 		})
+		for (var i=0; i<3; i++) {
+			(i => {
+				delayedCall(i * .25, () => {
+					let img = ask.explosion({
+						index: o.index,
+						key: 'phaseBlade1'
+					}, {
+						targetMob: false,
+						duration: 2,
+						contrastStart: 1.5,
+						brightnessStart: 2,
+						sizeStart: 200 + (i * 75),
+						sizeEnd: 0,
+					})
+					TweenMax.to(img, 1.5, {
+						rotation: util.rotation(90),
+						ease: Power0.easeIn,
+					})
+				})
+			})(i)
+		}
+		let img = ask.explosion(o, {
+			targetMob: false,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			duration: 3.5,
+			sizeStart: 250,
+			sizeEnd: 350,
+		})
+		img.zIndex = ask.DEFAULT_PLAYER_LAYER + 1
 	}
 	function stasisField(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.explosion({index: o.index, key: 'orb-purple'})
+		const dur = 1.5
+		let img = ask.explosion({
+			index: o.index,
+			key: 'stasisField'
+		}, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			duration: dur,
+			sizeStart: 450,
+			sizeEnd: 300,
+		})
+		TweenMax.to(img, dur, {
+			rotation: util.rotation(133),
+			ease: Power0.easeIn,
+		})
+		let img2 = ask.explosion({
+			index: o.index,
+			key: 'stasisField'
+		}, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			duration: dur,
+			sizeStart: 150,
+			sizeEnd: 300,
+		})
+		TweenMax.to(img2, dur, {
+			rotation: util.rotation(-133),
+			ease: Power0.easeIn,
 		})
 	}
 	function shiftingEther(o) {
+		ask.explosion({index: o.index, key: 'orb-blood'})
+		ask.explosion({index: o.index, key: 'burst-lightning'})
 		ask.explosion(o, {
-			duration: 1.2
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			duration: .8,
+			sizeStart: 250,
+			sizeEnd: 350,
+		})
+		delayedCall(0, () => {
+			ask.explosion({
+				index: o.index,
+				key: 'shiftingEther1'
+			}, {
+				duration: .8,
+				rotation: 90,
+				contrastStart: 1.5,
+				brightnessStart: 2,
+				sizeStart: 150,
+				sizeEnd: 250,
+			})
+		})
+		delayedCall(.1, () => {
+			ask.explosion({
+				index: o.index,
+				key: 'shiftingEther2'
+			}, {
+				contrastStart: 1.5,
+				brightnessStart: 2,
+				duration: .8,
+				rotation: 90,
+				sizeStart: 200,
+				sizeEnd: 300,
+			})
+		})
+		delayedCall(.2, () => {
+			ask.explosion({
+				index: o.index,
+				key: 'shiftingEther3'
+			}, {
+				contrastStart: 1.5,
+				brightnessStart: 2,
+				duration: .8,
+				rotation: 90,
+				sizeStart: 250,
+				sizeEnd: 350,
+			})
 		})
 	}
 	function sereneSigil(o) {
+		ask.explosion({index: o.index, key: 'orb-arcane'}, {
+			targetMob: false,
+			duration: 3.5,
+			sizeStart: 50,
+			sizeEnd: 350,
+		})
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 1.2
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			duration: .5,
+			sizeStart: 0,
+			sizeEnd: 350,
+		})
+		ask.explosion({
+			index: o.index,
+			key: 'sereneSigil1'
+		}, {
+			targetMob: false,
+			duration: 2.5,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 200,
+			sizeEnd: 250,
+		})
+		ask.explosion({
+			index: o.index,
+			key: 'sereneSigil2'
+		}, {
+			targetMob: false,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			duration: 3,
+			sizeStart: 200,
+			sizeEnd: 350,
 		})
 	}
 	function augmentation(o) {
@@ -153,13 +411,20 @@
 			ease: Power2.easeOut,
 		})
 	}
+
+	const ENTHRALL_CONFIG = {
+		innerStrength: 0,
+		outerStrength: 5,
+		color: '0xffff00',
+	}
 	function enthrall(o) {
-		ask.explosion({index: o.index, key: 'burst-arcane'})
 		ask.lightColumn({index: o.index, key: 'enthrall-col2'}, {
-			widthStart: 200
+			widthStart: 200,
+			glowFilter: ENTHRALL_CONFIG,
 		})
 		ask.lightColumn({index: o.index, key: 'enthrall-col1'}, {
-			widthStart: 100
+			widthStart: 100,
+			glowFilter: ENTHRALL_CONFIG,
 		})
 		ask.groundExplosion(o, {
 			yStart: ask.bottomY(o.index, true) + 25,

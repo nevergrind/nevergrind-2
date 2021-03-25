@@ -35,13 +35,12 @@
 			damageType: spell.data.damageType,
 			...hit
 		}])
-		///////////////////////////
-		function sizeDamageBonus(index) {
-			bonus = 1 + ((mobs[index].sprite.width + mobs[index].sprite.height - 750) / 5000)
-			if (bonus > 1.5) bonus = 1.5
-			else if (bonus < 1) bonus = 1
-			return bonus
-		}
+	}
+	function sizeDamageBonus(index) {
+		bonus = 1 + ((mobs[index].sprite.width + mobs[index].sprite.height - 750) / 5000)
+		if (bonus > 1.5) bonus = 1.5
+		else if (bonus < 1) bonus = 1
+		return bonus
 	}
 	function staticSuffocation(index, data) {
 		if (timers.castBar < 1) return
@@ -52,25 +51,23 @@
 		spell.startCasting(index, data, staticSuffocationCompleted)
 	}
 	function staticSuffocationCompleted() {
-		// dd
-		combat.txDamageMob([{
+		// don't believe this was intended to be here - DoT only
+		/*combat.txDamageMob([{
 			key: 'staticSuffocation',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			effects: { stagger: spell.data.staggers },
 			...stats.spellDamage(spell.config.target)
-		}])
+		}])*/
 		// dot
-		damages = []
-		damages.push({
+		combat.txDotMob([{
 			key: 'staticSuffocation',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			...stats.spellDamage(spell.config.target, -100)
-		})
-		combat.txDotMob(damages)
+		}])
 	}
 	function mindBlitz(index, data) {
 		if (timers.castBar < 1) return

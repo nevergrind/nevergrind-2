@@ -263,18 +263,6 @@
 			xRange: 150,
 			yRange: 50,
 		})
-
-		/*o.endFrame = 2
-		ask.flameRip(o, {
-			duration: .75,
-			frameDuration: .3,
-			sizeStart: 50,
-			sizeEnd: 200,
-			yoyo: true,
-			yStart: ask.bottomY(o.index, true),
-			anchorY: .845, // 433/512
-			ease: Power4.easeOut,
-		})*/
 /*
 		ask.sunburst(_.clone(o), {
 			duration: .6,

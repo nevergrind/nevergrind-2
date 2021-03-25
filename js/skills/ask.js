@@ -48,16 +48,15 @@ var ask;
 		// general use
 		explosion, // single frame outward from center
 		groundExplosion, // ground explosion that yoyos
-		flameRip, // flames across ground??
 		rings, // rings around the target (bg and fg)
 		nova, // frame outward (ground and center) can rotate
+		lightColumn,
 		bloodDrop, // configurable blood!
 		slash, // auto slash single frame
 		pierce, // horizontal slash single frame
 		castConjuration,
 		castAlteration,
 		castEvocation,
-		lightColumn,
 		// buffCircle
 		// buffRunes (3 circles that rotate opposite directions)
 		// buffDoneImage (rotate, layer other images on it)
@@ -167,19 +166,6 @@ var ask;
 		frameDuration: .2,
 		frameEase: Sine.easeIn,
 		ease: Sine.easeOut,
-	}
-	const flameRipDefaults = {
-		targetMob: true,
-		sizeStart: 250,
-		sizeEnd: 300,
-		duration: .6,
-		contrastStart: 2,
-		brightnessStart: 2,
-		contrastEnd: 1,
-		brightnessEnd: 1,
-		yStart: 1,
-		yEnd: 1,
-		ease: Power2.easeOut,
 	}
 	const groundExplosionDefaults = {
 		targetMob: true,
@@ -341,6 +327,9 @@ var ask;
 		img.height = config.height
 		img.y = ask.bottomY(o.index, config.targetMob)
 		img.anchor.set(.5, config.anchorY)
+		if (config.glowFilter) {
+			img.filters = [new PIXI.filters.GlowFilter(config.glowFilter)]
+		}
 
 		TweenMax.to(img, config.duration, {
 			ease: config.ease,
@@ -992,45 +981,6 @@ var ask;
 		animateFrames(o, config, img)
 		return img
 	}
-	function flameRip(o, config = {}) {
-		config = {
-			...flameRipDefaults,
-			...config,
-		}
-		const img = ask.getImg(o, config)
-		img.y = config.yStart
-		img.width = config.sizeStart
-		img.height = config.sizeStart
-		img.anchor.set(.5, config.anchorY)
-		ask.addChild(img, config.targetMob)
-
-		TweenMax.to(img, config.duration, {
-			startAt: {
-				pixi: {
-					contrast: config.contrastStart,
-					brightness: config.brightnessStart,
-				},
-			},
-			pixi: {
-				contrast: config.contrastEnd,
-				brightness: config.brightnessEnd,
-			},
-			y: '+=' + (config.yEnd || config.yStart),
-			width: config.sizeEnd,
-			height: config.sizeEnd,
-			ease: config.ease,
-			yoyo: true,
-			repeat: 1,
-			onComplete: ask.removeImg,
-			onCompleteParams: [ img.id, config.targetMob ]
-		})
-		TweenMax.to(img, config.duration * .5, {
-			delay: config.duration * .5,
-			alpha: 0,
-			ease: config.ease,
-		})
-		animateFrames(o, config, img)
-	}
 	function groundExplosion(o, config = {}) {
 		// Guardian Heroes style explosion from shadow up - yoyos back down
 		config = {
@@ -1124,11 +1074,9 @@ var ask;
 		else {
 			explosionObj.height = explosionObj.width = config.sizeEnd
 		}
-		if (config.yEnd) {
-			explosionObj.y = config.yEnd
-		}
+		if (config.yEnd) explosionObj.y = config.yEnd
+		// tween it good
 		TweenMax.to(img, config.duration, explosionObj)
-
 		animateFrames(o, config, img)
 		return img
 	}
@@ -1232,7 +1180,12 @@ var ask;
 		if (config.targetMob) {
 			img.x = mob.centerX[o.index]
 			img.y = ask.centerY(o.index, true)
-			img.zIndex = config.zIndex || ask.DEFAULT_MOB_LAYER
+			if (config.zIndex) {
+				img.zIndex = config.zIndex
+			}
+			else {
+				img.zIndex = ask.frontMobLayer(o)
+			}
 		}
 		else {
 			positionImgToPlayer(o, img, config)
