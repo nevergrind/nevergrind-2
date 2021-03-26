@@ -1378,6 +1378,12 @@ var ask;
 			player.layer.stage.removeChild(pix.getId(player.layer, askId))
 		}
 	}
+
+	/**
+	 * Function that magically invokes skill animation based on camelCase key
+	 * @param o
+	 * @param checkAutoAttacks
+	 */
 	function processAnimations(o, checkAutoAttacks = false) {
 		if (o.key) {
 			if (!o.isDot

@@ -194,11 +194,13 @@ var combat;
 			}
 			if (rand() < stats.missChance(d.index, d.weaponSkill, d.hitBonus)) {
 				d.damage = 0
+				d.missed = true
 				combat.popupDamage(d.index, 'MISS!')
 				return d
 			}
 			if (rand() * 100 < mob.dodgeChance(d.index)) {
 				d.damage = 0
+				d.missed = true
 				combat.popupDamage(d.index, 'DODGE!')
 				return d
 			}
@@ -206,12 +208,14 @@ var combat;
 				if (timers.castBar < 1) {
 					if (rand() * 100 < mob.riposteChance(d.index)) {
 						d.damage = 0
+						d.missed = true
 						combat.txDamageHero(d.index, [ mob.autoAttack(d.index, my.row, true) ])
 						combat.popupDamage(d.index, 'RIPOSTE!')
 						return d
 					}
 					else if (rand() * 100 < mob.parryChance(d.index)) {
 						d.damage = 0
+						d.missed = true
 						combat.popupDamage(d.index, 'PARRY!')
 						return d
 					}
@@ -543,6 +547,10 @@ var combat;
 					damages[i].buffs.forEach(buff => buffArr.push(buff))
 				}
 				damageArr.push(damages[i])
+			}
+			else if (damages[i].missed) {
+				// missed - show to client only
+				ask.processAnimations(damages[i])
 			}
 		}
 		if (myDamage) {

@@ -22,8 +22,16 @@
 	///////////////////////////////////////////
 
 	function shadowBreak(o) {
+		ask.explosion({index: o.index, key: 'burst-purple'})
+		o.endFrame = 3
 		ask.explosion(o, {
-			duration: 1.2
+			contrastStart: 2,
+			brightnessStart: 5,
+			sizeStart: 100,
+			sizeEnd: 300,
+			duration: .4,
+			frameDuration: .4,
+			frameEase: Power0.easeIn,
 		})
 	}
 	function deathStrike(o) {
