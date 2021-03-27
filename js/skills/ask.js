@@ -292,7 +292,7 @@ var ask;
 			key: 'blood-pool'
 		}, {
 			targetMob: true,
-			zIndex: ask.DEFAULT_BEHIND_MOB_LAYER
+			zIndex: ask.behindMobLayer({index: index})
 		})
 		img.width = size
 		img.height = size * .25
@@ -883,13 +883,14 @@ var ask;
 		}
 	}
 	function moonburst(o, config = {}) {
+		let b = _.clone(o)
 		config = {
 			...moonburstDefaults,
 			...config,
 		}
-		o.endFrame = 2
-		o.key = 'moonburst'
-		const img = ask.getImg(o, config)
+		b.endFrame = 2
+		b.key = 'moonburst'
+		const img = ask.getImg(b, config)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		if (config.yStart) img.y = config.yStart
@@ -912,17 +913,18 @@ var ask;
 			onComplete: ask.removeImg,
 			onCompleteParams: [ img.id, config.targetMob ]
 		})
-		animateFrames(o, config, img)
+		animateFrames(b, config, img)
 		return img
 	}
 	function sunburst(o, config = {}) {
+		let b = _.clone(o)
 		config = {
 			...sunburstDefaults,
 			...config,
 		}
-		o.endFrame = 2
-		o.key = 'sunburst'
-		const img = ask.getImg(o, config)
+		b.endFrame = 2
+		b.key = 'sunburst'
+		const img = ask.getImg(b, config)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		ask.addChild(img, config.targetMob)
@@ -944,17 +946,18 @@ var ask;
 			onComplete: ask.removeImg,
 			onCompleteParams: [ img.id, config.targetMob ]
 		})
-		animateFrames(o, config, img)
+		animateFrames(b, config, img)
 		return img
 	}
 	function starburst(o, config = {}) {
+		let b = _.clone(o)
 		config = {
 			...starburstDefaults,
 			...config,
 		}
-		o.endFrame = 2
-		o.key = 'starburst'
-		const img = ask.getImg(o, config)
+		b.endFrame = 2
+		b.key = 'starburst'
+		const img = ask.getImg(b, config)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		ask.addChild(img, config.targetMob)
@@ -978,7 +981,7 @@ var ask;
 			onCompleteParams: [ img.id, config.targetMob ]
 		})
 		// delayedImgFade(img, config)
-		animateFrames(o, config, img)
+		animateFrames(b, config, img)
 		return img
 	}
 	function groundExplosion(o, config = {}) {
