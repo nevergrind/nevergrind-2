@@ -83,24 +83,43 @@
 			contrastEnd: 1,
 			brightnessEnd: .25,
 			alpha: 1,
-			sizeStart: 220,
-			sizeEnd: 180,
+			sizeStart: 250,
+			sizeEnd: 225,
 			duration: dur,
 			frameDuration: dur,
 			frameEase: Power0.easeIn,
 		})
-		/*ask.slash({index: o.index, key: 'doomThrust-slash1'}, {
-			duration: .25,
-			size: 250,
-		})*/
-		/*ask.slash({index: o.index, key: 'doomThrust-slash2'}, {
-			duration: .25,
-			size: 250,
-		})*/
 	}
 	function astralBlade(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.slash({index: o.index, key: 'astralBlade-slash'}, {
+			duration: .2,
+			size: 250,
+		})
+		const centerX = mob.centerX[o.index]
+		const centerY = ask.centerY(o.index, true)
+		ask.explosion({index: o.index, key: 'astralBlade-swing'}, {
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			contrastEnd: 1,
+			brightnessEnd: .25,
+			alpha: 1,
+			xStart: centerX + 75,
+			yStart: centerY + 75,
+			sizeStart: 300,
+			sizeEnd: 300,
+			rotationStart: 150,
+			rotation: -30,
+			duration: .3,
+		})
+		ask.groundExplosion({index: o.index, key: 'astralBlade-burst'}, {
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			width: 512,
+			height: 512,
+			anchorY: .76,
+			yoyo: false,
+			alpha: 0,
+			duration: .5,
 		})
 	}
 	function ravagingPlague(o) {
@@ -306,28 +325,100 @@
 	function vampiricFeastHeal(o) {
 		ask.explosion({index: o.index, key: 'orb-purple'}, {
 			targetMob: false,
+			sizeStart: 300,
+			sizeEnd: 100,
 		})
 	}
 	function sanguineHarvest(o) {
+		ask.explosion({index: o.index, key: 'burst-blood'}, {targetMob: false})
+
+		let dur = 2.5
+		/*ask.explosion({index: o.index, key: 'sanguineHarvest-moon'}, {
+			targetMob: false,
+			contrastStart: 1,
+			brightnessStart: 2,
+			brightnessEnd: .2,
+			alpha: 1,
+			sizeStart: 150,
+			sizeEnd: 125,
+			duration: dur,
+		})*/
+
+		o.endFrame = 3
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 1.2
+			contrastStart: 1.2,
+			brightnessStart: 2,
+			brightnessEnd: .33,
+			sizeStart: 200,
+			sizeEnd: 180,
+			repeat: true,
+			alpha: 0,
+			duration: dur,
+			frameDuration: .25,
+		})
+
+		const pos = ask.getPlayerHead(o.index)
+		ask.rings({index: o.index, type: 'blood'}, {
+			targetMob: false,
+			loops: 12,
+			yStart: pos.y,
+			yEnd: ask.getPlayerBottom(o.index).y + 80,
+			alpha: 1,
+			widthStart: 240,
+			width: 240,
+			height: 240 * .2,
+			interval: .05,
+			duration: .666,
+			ease: Power0.easeOut,
 		})
 	}
 	function sanguineHarvestProc(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.explosion({index: o.index, key: 'burst-blood'}, {
+			targetMob: false,
+			sizeStart: 200,
+			sizeEnd: 0,
 		})
 	}
 	function sanguineHarvestHeal(o) {
-		ask.explosion(o, {
+		ask.explosion({index: o.index, key: 'burst-poison'}, {
 			targetMob: false,
-			duration: 1.2
+			sizeStart: 300,
+			sizeEnd: 100,
 		})
 	}
 	function markOfRemphan(o) {
+		ask.explosion({index: o.index, key: 'burst-purple'})
+		ask.particleSmall({
+			index: o.index,
+			key: 'particle-small-purple',
+		}, {
+			duration: .5,
+			interval: .02,
+			loops: 16,
+			sizeStart: 50,
+			sizeEnd: 16,
+			xRange: 15,
+			yRange: 0,
+			ease: Power1.easeOut,
+		})
+		ask.explosion({index: o.index, key: 'markOfRemphan-dragon'}, {
+			sizeStart: 300,
+			sizeEnd: 250,
+			duration: 1.2,
+			zIndexAdj: 1,
+		})
+
+		o.endFrame = 3
 		ask.explosion(o, {
-			duration: 1.2
+			yStart: ask.centerHeadY(o.index),
+			contrastStart: 1.2,
+			brightnessStart: 2,
+			sizeStart: 250,
+			sizeEnd: 220,
+			repeat: true,
+			duration: 2,
+			frameDuration: .1,
 		})
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);

@@ -2,18 +2,19 @@ var ask;
 !function($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, SteppedEase, Expo, Sine, Circ, undefined) {
 	ask = {
 		// mob sprite layers
-		MOB_LAYER_GROUND: 60,
-		MOB_LAYER_BACK: 75,
-		MOB_LAYER: 100,
+		LAYER_MOB_GROUND: 60,
+		LAYER_MOB_BACK_ROW: 75,
+		LAYER_MOB_FRONT_ROW: 100,
 		// effects on back row
-		DEFAULT_BEHIND_MOB_LAYER_BACK: 50,
-		DEFAULT_MOB_LAYER_BACK: 80,
+		LAYER_BACK_ROW_BACK: 50,
+		LAYER_BACK_ROW_FRONT: 80,
 		// effects on front row
-		DEFAULT_BEHIND_MOB_LAYER: 85,
-		DEFAULT_MOB_LAYER: 200,
+		LAYER_FRONT_ROW_BACK: 85,
+		LAYER_FRONT_ROW_FRONT: 200,
 		// player layers
-		DEFAULT_BEHIND_PLAYER_LAYER: 299, // player (front)
-		DEFAULT_PLAYER_LAYER: 300, // player (front effect)
+		LAYER_PLAYER_ROW_BACK: 299, // player (front)
+		LAYER_PLAYER_ROW_FRONT: 300, // player (front effect)
+		LAYER_TEXT: 310,
 		askId: 0,
 		castingTweens: [],
 		castingImgIds: [],
@@ -200,7 +201,6 @@ var ask;
 	}
 	const ringsDefaults = {
 		targetMob: true,
-		yPosition: 100,
 		loops: 5,
 		alpha: 0,
 		interval: .033,
@@ -212,7 +212,7 @@ var ask;
 		width: 'auto',
 		height: 'auto',
 		rotation: 0,
-		zIndex: ask.DEFAULT_MOB_LAYER,
+		zIndex: ask.LAYER_FRONT_ROW_FRONT,
 		ease: Power2.easeOut,
 	}
 	const novaDefaults = {
@@ -229,7 +229,7 @@ var ask;
 		width: 'auto',
 		height: 'auto',
 		rotation: 0,
-		zIndex: ask.DEFAULT_BEHIND_MOB_LAYER,
+		zIndex: ask.LAYER_FRONT_ROW_BACK,
 		ease: Power2.easeOut,
 	}
 	const slashDefaults = {
@@ -292,7 +292,7 @@ var ask;
 			key: 'blood-pool'
 		}, {
 			targetMob: true,
-			zIndex: ask.behindMobLayer({index: index})
+			zIndex: ask.behindMobLayer({index: index, targetMob: true})
 		})
 		img.width = size
 		img.height = size * .25
@@ -605,13 +605,30 @@ var ask;
 			})
 		}
 	}
+
+	/**
+	 * get zIndex to make image appear behind target (any position)
+	 * @param o
+	 * @returns {number}
+	 */
 	function behindMobLayer(o) {
-		if (o.index <= 4) return ask.DEFAULT_MOB_LAYER_BACK
-		else return ask.DEFAULT_BEHIND_MOB_LAYER_BACK
+		if (o.targetMob) {
+			if (o.index <= 4) return ask.LAYER_BACK_ROW_BACK
+			else return ask.LAYER_BACK_ROW_BACK
+		}
+		else return ask.LAYER_PLAYER_ROW_BACK
 	}
+	/**
+	 * get zIndex to make image appear in front of target (any position)
+	 * @param o
+	 * @returns {number}
+	 */
 	function frontMobLayer(o) {
-		if (o.index <= 4) return ask.DEFAULT_MOB_LAYER
-		else return ask.DEFAULT_BEHIND_MOB_LAYER
+		if (o.targetMob) {
+			if (o.index <= 4) return ask.LAYER_FRONT_ROW_FRONT
+			else return ask.LAYER_FRONT_ROW_BACK
+		}
+		else return ask.LAYER_PLAYER_ROW_FRONT
 	}
 	function rings(o, config = {}) {
 		config = {
@@ -619,9 +636,9 @@ var ask;
 			...config
 		}
 		for (var i=0; i<config.loops; i++) {
-			!function(i) {
+			(i => {
 				delayedCall(config.interval * i, ringsExplode, [o, config])
-			}(i)
+			})(i)
 		}
 	}
 	function ringsExplode(o, config) {
@@ -655,6 +672,17 @@ var ask;
 			bg.y += config.yAdj
 			fg.y += config.yAdj
 		}
+		let endWidth
+		let endHeight
+		const yEnd = config.yEnd ? config.yEnd : bg.y
+		if (config.targetMob) {
+			endWidth = config.width === 'auto' ? mobs[o.index].width : config.width
+			endHeight = config.height === 'auto' ? mobs[o.index].width * .2 : config.height
+		}
+		else {
+			endWidth = config.width
+			endHeight = config.width * .2
+		}
 		// bg
 		TweenMax.to(bg, config.duration, {
 			startAt: { pixi: {
@@ -667,11 +695,9 @@ var ask;
 				brightness: config.brightnessEnd,
 			},
 			alpha: config.alpha,
-			y: config.yEnd ? config.yEnd : bg.y,
-			width: !config.targetMob ? 600 :
-				config.width === 'auto' ? mobs[o.index].width : config.width,
-			height: !config.targetMob ? 100 :
-				config.height === 'auto' ? mobs[o.index].width * .2 : config.height,
+			y: yEnd,
+			width: endWidth,
+			height: endHeight,
 			ease: config.ease,
 			onComplete: ask.removeImg,
 			onCompleteParams: [ bg.id, config.targetMob ]
@@ -688,11 +714,9 @@ var ask;
 				brightness: config.brightnessEnd,
 			},
 			alpha: config.alpha,
-			y: config.yEnd ? config.yEnd : fg.y,
-			width: !config.targetMob ? 600 :
-				config.width === 'auto' ? mobs[o.index].width : config.width,
-			height: !config.targetMob ? 100 :
-				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
+			y: yEnd,
+			width: endWidth,
+			height: endHeight,
 			ease: config.ease,
 			onComplete: ask.removeImg,
 			onCompleteParams: [ fg.id, config.targetMob ]
@@ -734,7 +758,7 @@ var ask;
 			alpha: 0,
 			width: !config.targetMob ? 600 :
 				config.width === 'auto' ? mobs[o.index].width : config.width,
-			height: !config.targetMob ? 100 :
+			height: !config.targetMob ? 125 :
 				config.height === 'auto' ? mobs[o.index].width * .125 : config.height,
 			ease: config.ease,
 			onComplete: ask.removeImg,
@@ -1050,6 +1074,7 @@ var ask;
 		if (config.flip) {
 			img.scale.x *= -1
 		}
+		if (config.zIndexAdj) img.zIndex += config.zIndexAdj
 		// add to canvas
 		ask.addChild(img, config.targetMob)
 		// tween config
@@ -1192,7 +1217,7 @@ var ask;
 		}
 		else {
 			positionImgToPlayer(o, img, config)
-			img.zIndex = config.zIndex || ask.DEFAULT_PLAYER_LAYER
+			img.zIndex = config.zIndex || ask.LAYER_PLAYER_ROW_FRONT
 		}
 		return img
 	}

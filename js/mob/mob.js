@@ -341,7 +341,7 @@ let mobs = [];
 		let x = mob.centerX[i]
 		// botttom - row offset - image size offset for transparency at bottom - more size offset?
 		let y = ask.bottomY(i, true)
-		const layer = i <= 4 ? ask.MOB_LAYER : ask.MOB_LAYER_BACK
+		const layer = i <= 4 ? ask.LAYER_MOB_FRONT_ROW : ask.LAYER_MOB_BACK_ROW
 		// mob shadow
 		m.shadow = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')
 		m.shadow.anchor.set(.5, mobs.images[m.img].anchorY)
@@ -352,7 +352,7 @@ let mobs = [];
 		m.shadow.height = i<= 4 ? height * .67 : height * .5
 		m.shadow.interactive = false
 		m.shadow.buttonMode = false
-		m.shadow.zIndex = ask.MOB_LAYER_GROUND // layer - i // don't think I want - i at all
+		m.shadow.zIndex = ask.LAYER_MOB_GROUND // layer - i // don't think I want - i at all
 		TweenMax.set(mobs[i].shadow, filter.shadow())
 		// mob sprite
 		m.sprite = PIXI.Sprite.from('mobs/'+ m.img +'/1.png')

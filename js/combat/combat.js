@@ -1359,7 +1359,7 @@ var combat;
 				dropShadowDistance: 10,
 			})
 			combat.questText.id = 'text-' + combat.textId++
-			combat.questText.zIndex = ask.DEFAULT_PLAYER_LAYER
+			combat.questText.zIndex = ask.LAYER_PLAYER_ROW_FRONT
 			combat.questText.x = MaxWidth * .5
 			combat.questText.y = MaxHeight * .5
 			combat.questText.anchor.set(.5)
@@ -1463,7 +1463,7 @@ var combat;
 				dropShadowDistance: 10,
 			})
 			combat.deathText.id = 'text-' + combat.textId++
-			combat.deathText.zIndex = ask.DEFAULT_PLAYER_LAYER
+			combat.deathText.zIndex = ask.LAYER_PLAYER_ROW_FRONT
 			combat.deathText.x = MaxWidth * .5
 			combat.deathText.y = MaxHeight * .5
 			combat.deathText.anchor.set(.5)
@@ -1578,13 +1578,12 @@ var combat;
 		if (o.targetMob) {
 			basicText.x = mob.centerX[index]
 			basicText.y = ask.centerY(index, true)// + ((mobs[index].hitCount % 5) * 20)
-			basicText.zIndex = ask.DEFAULT_MOB_LAYER
 		}
 		else {
 			basicText.x = dungeon.centerX[index]
 			basicText.y = dungeon.centerY(index)// + ((party.presence[index].hitCount % 5) * 20)
-			basicText.zIndex = ask.DEFAULT_PLAYER_LAYER
 		}
+		basicText.zIndex = ask.LAYER_TEXT
 		ask.addChild(basicText, o.targetMob)
 
 		if (o.isHeal) {

@@ -335,6 +335,8 @@
 	function drainSoulHeal(o) {
 		ask.explosion({index: o.index, key: 'burst-poison'}, {
 			targetMob: false,
+			sizeStart: 300,
+			sizeEnd: 100,
 		})
 	}
 	function lichForm(o) {

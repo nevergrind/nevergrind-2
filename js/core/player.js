@@ -58,7 +58,7 @@ let players = []; // player sprites
 		players[i].sprite.anchor.set(.5, 1)
 		players[i].sprite.x = dungeon.centerX[i]
 		players[i].sprite.y = dungeon.bottomY
-		players[i].sprite.zIndex = ask.DEFAULT_PLAYER_LAYER
+		players[i].sprite.zIndex = ask.LAYER_PLAYER_ROW_FRONT
 		if (typeof party.presence[i] === 'object') {
 			// mobSkills.applyEffectFilter(party.presence[i].row)
 			players[i].sprite.alpha = 1

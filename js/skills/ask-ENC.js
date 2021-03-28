@@ -230,7 +230,7 @@
 			sizeStart: 250,
 			sizeEnd: 350,
 		})
-		img.zIndex = ask.DEFAULT_PLAYER_LAYER + 1
+		img.zIndex = ask.LAYER_PLAYER_ROW_FRONT + 1
 	}
 	function stasisField(o) {
 		ask.explosion({index: o.index, key: 'orb-purple'})
