@@ -216,6 +216,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 7,
+				requiresFrontRow: true,
 				isBlighted: true,
 				description: config => 'Throw a magical hammer that deals '+ config.damageString +' arcane damage in a staggered circular pattern. Deals +50% bonus damage against undead or demons.',
 			}, {

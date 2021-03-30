@@ -292,7 +292,7 @@ var ask;
 			key: 'blood-pool'
 		}, {
 			targetMob: true,
-			zIndex: ask.behindMobLayer({index: index, targetMob: true})
+			zIndex: ask.behindMobLayer({index: index})
 		})
 		img.width = size
 		img.height = size * .25
@@ -611,9 +611,9 @@ var ask;
 	 * @param o
 	 * @returns {number}
 	 */
-	function behindMobLayer(o) {
-		if (o.targetMob) {
-			if (o.index <= 4) return ask.LAYER_BACK_ROW_BACK
+	function behindMobLayer(o, targetMob = true) {
+		if (targetMob) {
+			if (o.index <= 4) return ask.LAYER_FRONT_ROW_BACK
 			else return ask.LAYER_BACK_ROW_BACK
 		}
 		else return ask.LAYER_PLAYER_ROW_BACK
@@ -623,10 +623,10 @@ var ask;
 	 * @param o
 	 * @returns {number}
 	 */
-	function frontMobLayer(o) {
-		if (o.targetMob) {
+	function frontMobLayer(o, targetMob = true) {
+		if (targetMob) {
 			if (o.index <= 4) return ask.LAYER_FRONT_ROW_FRONT
-			else return ask.LAYER_FRONT_ROW_BACK
+			else return ask.LAYER_BACK_ROW_FRONT
 		}
 		else return ask.LAYER_PLAYER_ROW_FRONT
 	}
@@ -644,12 +644,12 @@ var ask;
 	function ringsExplode(o, config) {
 		//bg
 		o.key = 'rings-' + o.type + '-bg'
-		config.zIndex = ask.behindMobLayer(o)
+		config.zIndex = ask.behindMobLayer(o, config.targetMob)
 		const bg = ask.getNova(o, config)
 		ask.addChild(bg, config.targetMob)
 		//fg
 		o.key = 'rings-' + o.type + '-fg'
-		config.zIndex = ask.frontMobLayer(o)
+		config.zIndex = ask.frontMobLayer(o, config.targetMob)
 		const fg = ask.getNova(o, config)
 		ask.addChild(fg, config.targetMob)
 
@@ -677,11 +677,11 @@ var ask;
 		const yEnd = config.yEnd ? config.yEnd : bg.y
 		if (config.targetMob) {
 			endWidth = config.width === 'auto' ? mobs[o.index].width : config.width
-			endHeight = config.height === 'auto' ? mobs[o.index].width * .2 : config.height
+			endHeight = config.height === 'auto' ? mobs[o.index].width * .15 : config.height
 		}
 		else {
 			endWidth = config.width
-			endHeight = config.width * .2
+			endHeight = config.width * .15
 		}
 		// bg
 		TweenMax.to(bg, config.duration, {
@@ -1183,7 +1183,7 @@ var ask;
 	function getPlayerBottom(index) {
 		return {
 			x: dungeon.centerX[party.getIndexByRow(index)],
-			y: dungeon.bottomY,
+			y: MaxHeight,
 		}
 	}
 	function positionImgToPlayer(o, img, config) {

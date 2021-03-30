@@ -134,6 +134,8 @@
 			level: my.skills[index],
 			damage: 0
 		}])
+
+		ask.consecrateBuff({index: my.row})
 	}
 	function sealOfDamnation(index, data) {
 		if (timers.castBar < 1) return
@@ -205,6 +207,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
+			requiresFrontRow: data.requiresFrontRow,
 		}
 		if (skills.notReady(spell.config, data)) return
 		spell.startCasting(index, data, blessedHammerCompleted)
@@ -219,7 +222,7 @@
 			targets.push(battle.getSplashTarget(targetPattern[i]))
 		}
 		targets.forEach((tgt, i) => {
-			delayedCall(i * .2, () => {
+			delayedCall(i * .25, () => {
 				damages = []
 				hit = {
 					key: 'blessedHammer',
@@ -235,6 +238,12 @@
 				damages.push(hit)
 				combat.txDamageMob(damages)
 			})
+		})
+		socket.publish('party' + my.partyId, {
+			route: 'p->damage',
+			animate: true,
+			index: targets[0],
+			key: 'blessedHammer',
 		})
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}

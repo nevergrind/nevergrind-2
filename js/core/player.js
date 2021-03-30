@@ -55,9 +55,12 @@ let players = []; // player sprites
 		player.textures.push(texture)
 		players[i].sprite = PIXI.Sprite.from(player.textures[0])
 		players[i].sprite.id = 'ask-' + id
-		players[i].sprite.anchor.set(.5, 1)
+		players[i].sprite.anchor.set(.5, .5)
 		players[i].sprite.x = dungeon.centerX[i]
-		players[i].sprite.y = dungeon.bottomY
+		players[i].sprite.y = MaxHeight - 80
+		const raceMod = .8
+		players[i].sprite.width = 250 * raceMod
+		players[i].sprite.height = 500 * raceMod
 		players[i].sprite.zIndex = ask.LAYER_PLAYER_ROW_FRONT
 		if (typeof party.presence[i] === 'object') {
 			// mobSkills.applyEffectFilter(party.presence[i].row)

@@ -7,7 +7,7 @@ var dungeon;
 	- move end
 	- battle won (set index of entities to alive: false)
 */
-	const BOTTOM_PLAYER = MaxHeight - 80
+	const BOTTOM_PLAYER = MaxHeight
 	const GRID_SIZE = 1920
 	const MAX_TILES = 20
 	const HALLWAY_TILE_LENGTH = 5
@@ -57,7 +57,7 @@ var dungeon;
 		tickUpdate: {},
 		hallwayPlayerStart: PLAYER_HALLWAY_START,
 		centerX: [960, 1280, 640, 1600, 320],
-		headY: BOTTOM_PLAYER - 200,
+		headY: BOTTOM_PLAYER - 280,
 		bottomY: BOTTOM_PLAYER,
 		gridElementY: {},
 		gridSize: GRID_SIZE,
@@ -477,7 +477,7 @@ var dungeon;
 		// console.info("ENTERING COMBAT")
 	}
 	function centerY(index, race) {
-		return BOTTOM_PLAYER - 100
+		return BOTTOM_PLAYER - 180
 	}
 	function handleClickDungeon(e) {
 		if (party.presence[0].isLeader) {
@@ -683,7 +683,6 @@ var dungeon;
 	}
 	function addEndWall() {
 		const zoneName = mission.getKebabName()
-		// PIXI.Texture.from('images/dungeon/'+ zoneName +'-floor.jpg'))
 		dungeon.endWall = new PIXI.projection.Sprite2d(
 			PIXI.Texture.from('images/dungeon/'+ zoneName +'-door.jpg'))
 		dungeon.endWall.anchor.set(.5, 1)
