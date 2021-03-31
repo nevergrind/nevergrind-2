@@ -157,7 +157,7 @@ let skill = {};
 				key: 'doubleThrow',
 				index: tgt,
 				isRanged: data.isRanged,
-				effects: { stagger: spell.data.staggers },
+				effects: { stagger: skills.WAR[4].staggers },
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})
@@ -182,7 +182,7 @@ let skill = {};
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		if (my.shieldIsEquipped()) enhancedDamage += .2
 		damages = []
-		for (var i = 0; i<=4; i++) {
+		for (var i=0; i<=4; i++) {
 			if (mobs[i].hp) {
 				hit = stats.skillDamage(i, data.critBonus[my.skills[index]])
 				damages.push({
@@ -190,12 +190,13 @@ let skill = {};
 					key: 'shockwave',
 					index: i,
 					requiresFrontRow: data.requiresFrontRow,
-					effects: { stagger: spell.data.staggers },
+					effects: { stagger: skills.WAR[5].staggers },
 					enhancedDamage: enhancedDamage,
 					hitBonus: data.hitBonus[my.skills[index]],
 				})
 			}
 		}
+		console.info('damages', damages)
 		combat.txDamageMob(damages)
 		// animate timers
 		spell.triggerSkillCooldown(index, data)
@@ -284,7 +285,7 @@ let skill = {};
 				...hit,
 				key: 'primalStomp',
 				index: target,
-				effects: { stagger: spell.data.staggers },
+				effects: { stagger: skills.WAR[8].staggers },
 				isRanged: data.isRanged,
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],

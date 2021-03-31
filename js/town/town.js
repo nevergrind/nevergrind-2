@@ -143,19 +143,9 @@ var town;
 			my.initSkills()
 
 			stats.setAllResources()
-			if (!app.isApp) {
-				/*my.hp = 1
-				my.mp = 1
-				my.sp = 1*/
-				my.set(PROP.HP, my.hpMax)
-				my.set(PROP.MP, my.mpMax)
-				my.set(PROP.SP, my.spMax)
-			}
-			else {
-				my.set(PROP.HP, my.hpMax)
-				my.set(PROP.MP, my.mpMax)
-				my.set(PROP.SP, my.spMax)
-			}
+			my.set(PROP.HP, my.hpMax)
+			my.set(PROP.MP, my.mpMax)
+			my.set(PROP.SP, my.spMax)
 
 			// init party member values
 			ng.setScene('town')

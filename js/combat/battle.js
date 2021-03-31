@@ -374,7 +374,7 @@ var battle;
 			// totalMobs = 0
 
 			// test data
-			if (!ng.isApp && (map.roomId || (!map.inRoom && map.hallwayId))) {
+			if (!app.isApp && (map.roomId || (!map.inRoom && map.hallwayId))) {
 				totalMobs = 9
 			}
 			// console.info('levels', minLevel, maxLevel)

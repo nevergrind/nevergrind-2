@@ -497,11 +497,11 @@ var combat;
 	}
 
 	function triggerEffect(key, damages) {
-		// console.info('triggerEffect', damages[0]);
+		console.info('triggerEffect', damages[0]);
 		// heals
 		if (key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(damages[0])
 		else if (key === 'deathStrike') skill.SHD.deathStrikeHeal(damages[0])
-		// buffs
+		// buffs or effect??
 		else if (key === 'hyperStrike') skill.MNK.hyperStrikeHit(damages)
 		else if (key === 'viperStrike') skill.MNK.viperStrikeHit(damages)
 		else if (key === 'sonicStrike') skill.ROG.sonicStrikeHit(damages[0])

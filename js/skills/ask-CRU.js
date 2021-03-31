@@ -266,24 +266,134 @@
 	function sealOfSanctuary(o) {
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 1.2
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			sizeStart: 350,
+			sizeEnd: 256,
+			duration: 2.5,
+			ease: Power2.easeOut,
 		})
+		for (var i=0; i<4; i++) {
+			(i => {
+				delayedCall(i * .1, () => {
+					ask.groundExplosion({index: o.index, key: 'sealOfSanctuary-light'}, {
+						targetMob: false,
+						contrastStart: 1.5,
+						brightnessStart: 2 + (i * .25),
+						sizeStart: 100 + (i * 60),
+						sizeEnd: 50 + (i * 50),
+						anchorY: .89,
+						yoyo: false,
+						alpha: 0,
+						duration: 2 - (i * .1),
+					})
+				})
+			})(i)
+		}
 	}
 	function divineGrace(o) {
-		ask.explosion(o, {
+			ask.explosion(o, {
 			targetMob: false,
-			duration: 1.2
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			sizeStart: 220,
+			sizeEnd: 300,
+			duration: .7,
+			ease: Power2.easeOut,
+		})
+		delayedCall(.2, () => {
+			ask.explosion({index: o.index, key: 'mysticalGlow-p2'}, {
+				targetMob: false,
+				contrastStart: 1.5,
+				brightnessStart: 3,
+				contrastEnd: 0,
+				brightnessEnd: 0,
+				sizeStart: 260,
+				sizeEnd: 350,
+				duration: .7,
+				ease: Power3.easeOut,
+			})
+		})
+		delayedCall(.15, () => {
+			ask.explosion({index: o.index, key: 'divineGrace-cross'}, {
+				targetMob: false,
+				contrastStart: 1,
+				brightnessStart: 2,
+				sizeStart: 64,
+				sizeEnd: 150,
+				duration: 1,
+				ease: Power2.easeOut,
+			})
 		})
 	}
 	function benevolence(o) {
+		ask.groundExplosion({index: o.index, key: 'sealOfSanctuary-light'}, {
+			targetMob: false,
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			sizeStart: 300,
+			sizeEnd: 150,
+			anchorY: .89,
+			yoyo: false,
+			alpha: 0,
+			duration: 1.5,
+		})
+		ask.explosion({index: o.index, key: 'mysticalGlow-p2'}, {
+			targetMob: false,
+			contrastStart: 1.5,
+			brightnessStart: 3,
+			contrastEnd: 0,
+			brightnessEnd: 0,
+			sizeStart: 0,
+			sizeEnd: 300,
+			duration: 1.5,
+			ease: Power3.easeOut,
+		})
+		o.endFrame = 3
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 1.2
+			contrastStart: 2,
+			brightnessStart: 4,
+			sizeStart: 300,
+			sizeEnd: 260,
+			duration: 1,
+			frameDuration: .32,
+			ease: Power2.easeOut,
+			frameEase: Power0.easeIn,
 		})
 	}
 	function jubilee(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.explosion({index: o.index, key: 'burst-arcane'}, {
+			sizeEnd: 250
+		})
+		let centerY = ask.centerY(o.index, true)
+		let centerX = mob.centerX[o.index]
+		for (var i=0; i<12; i++) {
+			!function(i) {
+					let xStart = centerX + _.random(-120, 120)
+					let yStart = centerY + _.random(-120, 120)
+					ask.explosion({index: o.index, key: 'jubilee'}, {
+						contrastStart: 1,
+						brightnessStart: 1,
+						sizeStart: 80,
+						sizeEnd: 20,
+						yEnd: yStart,
+						xEnd: xStart,
+						rotation: 720,
+						alpha: 0,
+						duration: .77,
+						ease: Power3.easeOut,
+						alphaEase: Power1.easeOut,
+					})
+			}(i)
+		}
+		ask.particleCircle({
+			index: o.index,
+			key: 'particle-circle-arcane',
+		}, {
+			duration: .33,
+			alpha: 0,
+			sizeEnd: 300,
 		})
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);

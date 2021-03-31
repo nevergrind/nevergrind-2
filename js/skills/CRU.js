@@ -63,7 +63,7 @@
 				index: tgt,
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
-				effects: { stagger: spell.data.staggers },
+				effects: { stagger: skills.CRU[1].staggers },
 			})
 		}
 		combat.txDamageMob(damages)

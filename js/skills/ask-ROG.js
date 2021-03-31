@@ -21,18 +21,45 @@
 	///////////////////////////////////////////
 
 	function shadowStrike(o) {
+		ask.explosion({index: o.index, key: 'burst-purple'}, {
+			duration: .33,
+			sizeEnd: 300,
+		})
+		o.endFrame = 2
 		ask.explosion(o, {
-			duration: 1.2
+			contrastStart: 1.3,
+			brightnessStart: 2,
+			sizeStart: 250,
+			sizeEnd: 150,
+			alpha: 1,
+			duration: .39,
+			frameDuration: .39,
+			frameEase: Power0.easeIn,
 		})
 	}
 	function sonicStrike(o) {
+		ask.explosion({index: o.index, key: 'burst-ice'}, {
+			duration: .33,
+			sizeEnd: 300,
+		})
+		ask.rings({index: o.index, type: 'default'}, {
+			loops: 5,
+		})
+		o.endFrame = 2
 		ask.explosion(o, {
-			duration: 1.2
+			contrastStart: 1.3,
+			brightnessStart: 2,
+			sizeStart: 300,
+			sizeEnd: 200,
+			alpha: 1,
+			duration: .39,
+			frameDuration: .39,
+			frameEase: Power0.easeIn,
 		})
 	}
 	function sonicStrikeNova(o) {
-		ask.explosion(o, {
-			duration: 1.2
+		ask.rings({index: o.index, type: 'default'}, {
+			loops: 5,
 		})
 	}
 	function fadedStrike(o) {

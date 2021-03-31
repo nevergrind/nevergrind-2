@@ -351,8 +351,8 @@
 				brightnessStart: 3,
 				contrastEnd: 0,
 				brightnessEnd: 0,
-				sizeStart: 320,
-				sizeEnd: 400,
+				sizeStart: 260,
+				sizeEnd: 350,
 				duration: .7,
 				ease: Power3.easeOut,
 			})

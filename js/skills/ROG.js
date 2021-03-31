@@ -73,14 +73,14 @@
 		damages = []
 		for (var i=0; i<3; i++) {
 			tgt = battle.getSplashTarget(splashIndex++, originalTarget)
-			hit = stats.skillDamage(tgt, skills.ROG[2].critBonus[my.skills[damage.index]])
+			hit = stats.skillDamage(tgt, skills.ROG[1].critBonus[my.skills[damage.index]])
 			hit.damage *= buffs.sonicStrike.novaDamage
 			damages.push({
 				...hit,
 				key: 'sonicStrikeNova',
 				index: tgt,
 				damageType: DAMAGE_TYPE.ARCANE,
-				effects: { stagger: spell.data.staggers },
+				effects: { stagger: skills.ROG[1].staggers },
 			})
 		}
 		combat.txDamageMob(damages)
@@ -116,7 +116,6 @@
 	}
 	function fadedStrikeHit(damage) {
 		let d = []
-		console.info('faded', damage)
 		d.push({
 			key: 'fadedStrikeBuff',
 			index: my.row,

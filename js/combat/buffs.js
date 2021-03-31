@@ -673,6 +673,7 @@ let buffs; // buff data for use with skill/spells/icons
 		staticSuffocation: {
 			name: 'Static Suffocation',
 			img: 1,
+			isDebuff: true, // allows for 0 damage stagger effect
 			job: JOB.ENCHANTER,
 			hate: 1.2,
 			ticks: 9,

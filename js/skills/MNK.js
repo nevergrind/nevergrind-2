@@ -333,7 +333,7 @@
 			index: tgt,
 			enhancedDamage: data.enhancedDamage[my.skills[index]],
 			hitBonus: data.hitBonus[my.skills[index]],
-			effects: { stagger: spell.data.staggers },
+			effects: { stagger: skills.MNK[9].staggers },
 			buffs: [{
 				i: tgt,
 				row: my.row, // this identifies unique buff state/icon

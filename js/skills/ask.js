@@ -1092,7 +1092,6 @@ var ask;
 			},
 			rotation: util.rotation(config.rotation),
 			ease: config.ease,
-			alpha: config.alpha,
 			onComplete: ask.removeImg,
 			onCompleteParams: [ img.id, config.targetMob ]
 		}
@@ -1102,7 +1101,17 @@ var ask;
 		else {
 			explosionObj.height = explosionObj.width = config.sizeEnd
 		}
+		if (config.xEnd) explosionObj.x = config.xEnd
 		if (config.yEnd) explosionObj.y = config.yEnd
+		if (!config.alphaEase) {
+			explosionObj.alpha = config.alpha
+		}
+		else {
+			TweenMax.to(img, config.duration, {
+				alpha: config.alpha,
+				ease: config.alphaEase
+			})
+		}
 		// tween it good
 		TweenMax.to(img, config.duration, explosionObj)
 		animateFrames(o, config, img)
@@ -1183,7 +1192,7 @@ var ask;
 	function getPlayerBottom(index) {
 		return {
 			x: dungeon.centerX[party.getIndexByRow(index)],
-			y: MaxHeight,
+			y: MaxHeight - 80, // bar in the way
 		}
 	}
 	function positionImgToPlayer(o, img, config) {

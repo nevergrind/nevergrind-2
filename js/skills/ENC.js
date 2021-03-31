@@ -52,14 +52,14 @@
 	}
 	function staticSuffocationCompleted() {
 		// don't believe this was intended to be here - DoT only
-		/*combat.txDamageMob([{
+		combat.txDamageMob([{
 			key: 'staticSuffocation',
 			index: spell.config.target,
 			spellType: spell.data.spellType,
 			damageType: spell.data.damageType,
 			effects: { stagger: spell.data.staggers },
-			...stats.spellDamage(spell.config.target)
-		}])*/
+			damage: 0
+		}])
 		// dot
 		combat.txDotMob([{
 			key: 'staticSuffocation',
