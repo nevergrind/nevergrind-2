@@ -44,6 +44,7 @@
 			duration: .2,
 			size: 250,
 		})
+		ask.bloodDrop(o.index, 64)
 	}
 	function deathStrikeHeal(o) {
 		ask.explosion({index: o.index, key: 'orb-blood'}, {

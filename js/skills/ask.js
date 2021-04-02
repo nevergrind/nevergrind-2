@@ -1072,6 +1072,7 @@ var ask;
 		if (config.yStart) img.y = config.yStart
 		if (config.rotationStart) img.rotation = util.rotation(config.rotationStart)
 		if (config.flip) {
+			console.warn('flipping')
 			img.scale.x *= -1
 		}
 		if (config.zIndexAdj) img.zIndex += config.zIndexAdj

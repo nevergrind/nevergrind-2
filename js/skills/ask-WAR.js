@@ -40,6 +40,7 @@
 				})
 			}(i)
 		}
+		ask.bloodDrop(o.index, 64)
 	}
 	function whirlwind(o) {
 		ask.explosion({index: o.index, key: 'burst-ice'})

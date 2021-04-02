@@ -1548,10 +1548,6 @@ var combat;
 			}
 		})
 	}
-	const BLEED_KEYS = [
-		'rupture',
-		'deathStrike',
-	]
 	function popupDamage(index, damage, o = {}) {
 		if (typeof o.targetMob === 'undefined') {
 			o.targetMob = true
@@ -1629,9 +1625,6 @@ var combat;
 				})
 				// scale
 				TweenMax.to(basicText, TEXT_DURATION * .5, o.isCrit ? TEXT_SCALE_CRIT : TEXT_SCALE)
-				if (BLEED_KEYS.includes(o.key)) {
-					ask.bloodDrop(index, 64)
-				}
 			}
 			else {
 				// player hit
