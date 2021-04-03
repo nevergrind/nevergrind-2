@@ -17,36 +17,36 @@
 	///////////////////////////////////////////
 
 	function smite(o) {
+		ask.explosion({index: o.index, key: 'burst-arcane'}, {
+			sizeEnd: 250,
+			duration: .5
+		})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-arcane',
 		}, {
 			interval: .001,
-			loops: 25,
+			loops: 7,
 			sizeStart: 32,
 			sizeEnd: 8,
 			xRange: 150,
 			yRange: 50,
 		})
 		o.endFrame = 2
-		ask.explosion(_.clone(o), {
+		ask.explosion(o, {
 			contrastStart: 2,
 			brightnessStart: 5,
 			sizeStart: 200,
 			sizeEnd: 300,
-			duration: 1,
-			frameDuration: .25,
+			duration: .6,
+			frameDuration: .4,
 			frameEase: Power0.easeIn,
 		})
 	}
 	function deliverance(o) {
-		ask.sunburst(_.clone(o), {
-			duration: .6,
-			frameDuration: .25,
-			sizeEnd: 500
-		})
+		ask.sunburst({index: o.index})
 		o.endFrame = 1
-		ask.explosion(_.clone(o), {
+		ask.explosion(o, {
 			contrastStart: 2,
 			brightnessStart: 5,
 			sizeStart: 100,
@@ -56,10 +56,7 @@
 			ease: Power2.easeOut,
 			frameEase: Power0.easeIn,
 		})
-
-		o.key = 'deliverance-eye'
-		o.endFrame = null
-		ask.explosion(o, {
+		ask.explosion({index: o.index, key: 'deliverance-eye'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			contrastEnd: 1,
@@ -89,7 +86,7 @@
 				})
 			})
 		}
-		for (var i=0; i<3; i++) {
+		for (var i=0; i<2; i++) {
 			delayedCall(i * .1, () => {
 				o.key = 'condemnation-cross'
 				ask.explosion(o, {
@@ -121,7 +118,7 @@
 	}
 	function sacredRevelation(o) {
 		ask.particleCircle({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-circle-arcane',
 		}, {
 			duration: .5,
@@ -148,12 +145,16 @@
 						contrastStart: 1.2,
 						brightnessStart: 2,
 						contrastEnd: 1,
-						brightnessEnd: .5,
+						brightnessEnd: 1,
 						sizeStart: 0,
-						sizeEnd: 400,
-						alpha: 1,
-						duration: .25,
+						sizeEnd: 350,
+						alpha: 0,
+						duration: 1.2,
 						ease: Back.easeOut,
+					})
+					ask.rings({index: o.index, type: 'arcane'}, {
+						loops: 1,
+						duration: .4,
 					})
 				})
 			}(i)
@@ -207,7 +208,7 @@
 			duration: .6,
 			sizeStart: 200,
 			sizeEnd: 420,
-			yStart: ask.bottomY(o.index, true) + 35,
+			anchorY: .93,
 			alpha: 0,
 			yoyo: false,
 			ease: Power2.easeOut,
@@ -235,7 +236,7 @@
 	function circleOfPrayer(o) {
 		delayedCall(.2, () => {
 			ask.particleGroup({
-				..._.clone(o),
+				index: o.index,
 				key: 'particle-group-arcane',
 			}, {
 				targetMob: false,
@@ -251,7 +252,6 @@
 		o.endFrame = 2
 		ask.groundExplosion(o, {
 			targetMob: false,
-			yStart: ask.bottomY(o.index, false) + 25,
 			contrastStart: 1.5,
 			brightnessStart: 4,
 			duration: 1,
@@ -259,6 +259,7 @@
 			frameEase: Power2.easeOut,
 			sizeStart: 360,
 			sizeEnd: 360,
+			anchorY: .82,
 			yoyo: false,
 			alpha: 0,
 			ease: Power2.easeOut,
@@ -271,7 +272,7 @@
 			contrastStart: 1.5,
 			brightnessStart: 3,
 			sizeStart: 0,
-			sizeEnd: 400,
+			sizeEnd: 350,
 			duration: 1,
 			ease: Power2.easeOut,
 		})
@@ -283,8 +284,8 @@
 			brightnessStart: 3,
 			sizeStart: 300,
 			sizeEnd: 400,
-			duration: .8,
-			frameDuration: .8,
+			duration: .7,
+			frameDuration: .7,
 			frameEase: Power4.easeOut,
 			ease: Power2.easeOut,
 		})
@@ -300,8 +301,7 @@
 			ease: Power2.easeOut,
 		})
 		delayedCall(.1, () => {
-			o.key = 'divineLight1'
-			ask.explosion(o, {
+			ask.explosion({index: o.index, key: 'divineLight1'}, {
 				targetMob: false,
 				contrastStart: 1.5,
 				brightnessStart: 3,
@@ -312,8 +312,7 @@
 			})
 		})
 		delayedCall(.2, () => {
-			o.key = 'divineLight2'
-			ask.explosion(o, {
+			ask.explosion({index: o.index, key: 'divineLight2'}, {
 				targetMob: false,
 				contrastStart: 2,
 				brightnessStart: 4,
@@ -324,8 +323,7 @@
 			})
 		})
 		delayedCall(.3, () => {
-			o.key = 'divineLight3'
-			ask.explosion(o, {
+			ask.explosion({index: o.index, key: 'divineLight3'}, {
 				targetMob: false,
 				contrastStart: 1.5,
 				brightnessStart: 3,
@@ -339,7 +337,7 @@
 		})
 		delayedCall(.4, () => {
 			ask.particleGroup({
-				...o,
+				index: o.index,
 				key: 'particle-group-arcane',
 			}, {
 				targetMob: false,
@@ -347,7 +345,7 @@
 				interval: .1,
 				sizeStart: 192,
 				sizeEnd: 128,
-				xRange: 75,
+				xRange: 60,
 				yRange: 0,
 				loops: 3,
 			})
@@ -356,7 +354,7 @@
 	function bindingGrace(o) {
 		delayedCall(.2, () => {
 			ask.particleGroup({
-				..._.clone(o),
+				index: o.index,
 				key: 'particle-group-arcane',
 			}, {
 				targetMob: false,
@@ -398,29 +396,29 @@
 	function sealOfRedemption(o) {
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 5,
+			duration: 3,
 			sizeStart: 256,
 			sizeEnd: 128,
 		})
 		delayedCall(.25, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'sealOfRedemption1'
 			}, {
 				targetMob: false,
-				duration: 4.75,
+				duration: 2.75,
 				sizeStart: 300,
 				sizeEnd: 200,
 			})
 		})
 		delayedCall(.5, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'sealOfRedemption2'
 			}, {
 				targetMob: false,
-				brightnessStart: 12,
-				duration: 4,
+				brightnessStart: 3,
+				duration: 2,
 				sizeStart: 300,
 				sizeEnd: 200,
 			})
@@ -429,45 +427,27 @@
 	function zealousResolve(o) {
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 5,
-			sizeStart: 400,
-			sizeEnd: 300,
+			duration: 3,
+			sizeStart: 320,
+			sizeEnd: 250,
 		})
-		ask.explosion({
-			..._.clone(o),
-			key: 'zealousResolve-particles'
-		}, {
+		ask.explosion({index: my.row, key: 'mysticalGlow-p1'}, {
 			targetMob: false,
-			duration: 4.75,
-			sizeStart: 0,
-			sizeEnd: 200,
-		})
-		ask.explosion({
-			..._.clone(o),
-			key: 'zealousResolve-particles'
-		}, {
-			targetMob: false,
-			duration: 4.75,
-			sizeStart: 0,
-			sizeEnd: 333,
-		})
-		ask.explosion({
-			..._.clone(o),
-			key: 'zealousResolve-particles'
-		}, {
-			targetMob: false,
-			duration: 4.75,
-			sizeStart: 0,
-			sizeEnd: 300,
+			contrastStart: 2,
+			brightnessStart: 4,
+			sizeStart: 320,
+			sizeEnd: 400,
+			duration: 1.2,
+			ease: Power2.easeOut,
 		})
 		delayedCall(.5, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'zealousResolve-buff'
 			}, {
 				targetMob: false,
 				brightnessStart: 12,
-				duration: 4,
+				duration: 2,
 				sizeStart: 200,
 				sizeEnd: 150,
 			})

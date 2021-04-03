@@ -57,7 +57,7 @@ var spell;
 		// HIGHER success value is better
 		return resp
 	}
-	function shieldsActive() {
+	function areShieldsActive() {
 		// buffs that help you ignore knockback
 		isShieldActive = false
 		if (my.buffFlags.guardianAngel ||
@@ -67,7 +67,7 @@ var spell;
 	function knockback() {
 		if (timers.castBar < 1 &&
 			app.isApp && // knockback only happens in real app for testing purposes
-			!shieldsActive() &&
+			!areShieldsActive() &&
 			!channelSuccessful()) {
 			// console.info('channelSuccessful knockback', success)
 			spell.timer.kill()

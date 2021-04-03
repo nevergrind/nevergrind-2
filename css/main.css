@@ -1118,8 +1118,7 @@ background-clip: content-box;
 	display: none;
 	font-family: Play, Quatro, Roboto Condensed, Roboto, sans-serif;
 	position: fixed;
-	top: .5rem;
-	left: .5rem;
+	transform: translate(.5rem, .5rem);
 	z-index: 2;
 }
 
@@ -1746,7 +1745,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 
 #button-wrap {
 	position: fixed;
-	align-self: center;
+	left: 50%;
+	transform: translateX(-50%);
 	bottom: 0;
 	z-index: 2;
 }

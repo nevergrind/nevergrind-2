@@ -149,7 +149,7 @@ var ask;
 		brightnessEnd: 1,
 		alpha: 0,
 		duration: .6,
-		frameDuration: .15,
+		frameDuration: .24,
 		frameEase: Power0.easeOut,
 		ease: Power2.easeOut,
 	}
@@ -1073,7 +1073,6 @@ var ask;
 		if (config.yStart) img.y = config.yStart
 		if (config.rotationStart) img.rotation = util.rotation(config.rotationStart)
 		if (config.flip) {
-			console.warn('flipping')
 			img.scale.x *= -1
 		}
 		if (config.zIndexAdj) img.zIndex += config.zIndexAdj

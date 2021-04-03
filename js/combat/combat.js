@@ -2277,7 +2277,7 @@ var combat;
 	function reduceMagicShieldDamage(d, key) {
 		chat.log(buffs[key].msgAbsorb, 'chat-buff')
 		if (d.damage > my.buffs[key].damage) {
-			d.damage -= my.buffs[key].damage
+			d.damage = Math.round(d.damage - my.buffs[key].damage)
 			my.buffs[key].damage = 0
 			battle.removeBuff(key)
 		}

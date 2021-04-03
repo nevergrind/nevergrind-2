@@ -27,71 +27,91 @@
 	}
 
 	function explosiveShot(o) {
-		ask.sunburst(_.clone(o), {
-			duration: 1,
-			frameDuration: .25,
-			sizeEnd: 450
+		ask.sunburst({index: o.index}, {
+			duration: .8,
+			sizeEnd: 400
 		})
 		o.endFrame = 1
 		ask.explosion(o, {
-			duration: 1.25,
 			contrastStart: 2,
 			brightnessStart: 2,
 			sizeStart: 0,
 			sizeEnd: 325,
-			rotation: -90,
-			frameDuration: .5,
+			duration: .8,
+			frameDuration: .4,
 			frameEase: Power2.easeInOut,
 		})
 	}
 
 	function trueshotStrike(o) {
-		o.endFrame = 1
-		ask.explosion(o, {
+		ask.explosion({index: o.index, key: 'burst-default'})
+		ask.explosion({index: o.index, key: 'trueshotStrike'}, {
+			contrastStart: 1.2,
+			brightnessStart: 3,
+			sizeStart: 100,
+			sizeEnd: 400,
+			duration: .8,
+			ease: Power2.easeOut,
+			zIndexAdj: 1,
+		})
+		ask.explosion({index: o.index, key: 'trueshotStrike1'}, {
 			contrastStart: 2,
 			brightnessStart: 5,
 			sizeStart: 100,
-			sizeEnd: 500,
-			duration: 1,
+			sizeEnd: 400,
+			duration: .4,
 			ease: Power2.easeOut,
-			frameDuration: .5,
-			frameEase: Power0.easeOut,
 		})
-		delayedCall(.1, () => {
-			ask.moonburst(_.clone(o), {
-				sizeEnd: 200
-			})
-			ask.moonburst(_.clone(o), {
-				duration: 1,
-				sizeEnd: 400
-			})
-			ask.moonburst(_.clone(o), {
-				duration: 1.2,
-				sizeEnd: 800
-			})
+		ask.moonburst(o, {
+			duration: 1,
+			sizeEnd: 350
 		})
 	}
 
 	function spreadShot(o) {
-		o.endFrame = 2
+		/*o.endFrame = 2
 		ask.groundExplosion(o, {
 			yStart: ask.bottomY(o.index, true) + 25,
-			contrastStart: 2,
-			brightnessStart: 4,
-			sizeStart: 25,
-			sizeEnd: 312,
-			duration: .4,
-			frameDuration: .15,
+			contrastStart: 1.2,
+			brightnessStart: 2,
+			sizeStart: 150,
+			sizeEnd: 260,
+			duration: .6,
+			anchorY: .85,
+			frameDuration: .3,
 			yoyo: false,
 			alpha: 0,
 			frameEase: Power0.easeOut,
-			ease: Power3.easeOut,
-		})
-		delayedCall(.1, () => {
-			ask.moonburst(_.clone(o))
-		})
+			ease: Power2.easeOut,
+		})*/
+		let centerY = ask.centerY(o.index, true)
+		let centerX = mob.centerX[o.index]
+		/*let width = mobs[o.index].clickAliveW * .5
+		let yTop = mobs[o.index].clickAliveH - mobs[o.index].imgCy
+		let yBottom = mobs[o.index].imgCy*/
+		for (var i=0; i<12; i++) {
+			!function(i) {
+					/*let xStart = centerX + _.random(-width, width)
+					let yStart = centerY + _.random(-yTop, yBottom)*/
+					let xStart = centerX + _.random(-80, 80)
+					let yStart = centerY + _.random(-80, 80)
+					delayedCall(i * .015, () => {
+						ask.explosion({index: o.index, key: 'burst-default'}, {
+							contrastStart: 1.2,
+							brightnessStart: 2,
+							sizeStart: 0,
+							sizeEnd: 80,
+							xStart: xStart,
+							yStart: yStart,
+							duration: .5,
+							ease: Power2.easeOut,
+						})
+					})
+			}(i)
+		}
+		ask.moonburst(o)
 		ask.particleCircle({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-circle-default',
 		}, {
 			duration: .3,
@@ -100,25 +120,14 @@
 			rotation: 0,
 			sizeEnd: 200,
 		})
-		ask.particleSmall({
-			..._.clone(o),
-			key: 'particle-small-default',
-		}, {
-			interval: .016,
-			loops: _.random(4, 7),
-			sizeStart: 32,
-			sizeEnd: 4,
-			xRange: 150,
-			yRange: 50,
-		})
 	}
 
 	function bladeStorm(o) {
 		for (var i=0; i<5; i++) {
 			!function(i) {
-				delayedCall(i * .05, () => {
+				delayedCall(i * .025, () => {
 					ask.slash(o, {
-						duration: .25,
+						duration: .16,
 						size: 200,
 						yAdjust: (i * 50) - 100
 					})
@@ -128,7 +137,27 @@
 	}
 
 	function suppressingVolley(o) {
-		o.endFrame = 2
+		let centerY = ask.centerY(o.index, true)
+		let centerX = mob.centerX[o.index]
+		for (var i=0; i<15; i++) {
+			!function(i) {
+					let xStart = centerX + _.random(-60, 60)
+					let yStart = centerY + _.random(-60, 60)
+					delayedCall(i * .015, () => {
+						ask.explosion({index: o.index, key: 'burst-purple'}, {
+							contrastStart: 1.2,
+							brightnessStart: 2,
+							sizeStart: 0,
+							sizeEnd: 100,
+							xStart: xStart,
+							yStart: yStart,
+							duration: .6,
+							ease: Power2.easeOut,
+						})
+					})
+			}(i)
+		}
+		/*o.endFrame = 2
 		ask.groundExplosion(o, {
 			yStart: ask.bottomY(o.index, true) + 25,
 			contrastStart: 2,
@@ -136,27 +165,27 @@
 			sizeStart: 25,
 			sizeEnd: 312,
 			duration: .5,
-			frameDuration: .2,
+			frameDuration: .5,
+			anchorY: .85,
 			yoyo: false,
 			alpha: 0,
 			frameEase: Power2.easeIn,
 			ease: Power3.easeOut,
-		})
+		})*/
 		delayedCall(.1, () => {
-			ask.moonburst(_.clone(o))
+			ask.moonburst(o)
 		})
 		ask.particleCircle({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-circle-purple',
 		}, {
-			duration: .3,
-			ease: Power0.easeOut,
+			duration: .4,
+			ease: Power2.easeOut,
 			alpha: 0,
-			rotation: 0,
-			sizeEnd: 200,
+			sizeEnd: 300,
 		})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-purple',
 		}, {
 			interval: .016,
@@ -263,23 +292,6 @@
 			xRange: 150,
 			yRange: 50,
 		})
-/*
-		ask.sunburst(_.clone(o), {
-			duration: .6,
-			frameDuration: .15,
-			sizeEnd: 350
-		})
-		ask.particleCircle({
-			..._.clone(o),
-			key: 'particle-circle-fire',
-		}, {
-			duration: .33,
-			ease: Power1.easeOut,
-			alpha: 0,
-			rotation: 0,
-			sizeEnd: 350,
-		})
-		*/
 	}
 	function fungalGrowth(o) {
 		// flash of light animates down over target
