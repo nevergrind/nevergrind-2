@@ -584,6 +584,7 @@ var ask;
 			ease: config.easeStart,
 			onComplete: finishSlash
 		})
+		return img
 		/////////////////////////////
 		function finishSlash() {
 			if (config.isPrimary) {
