@@ -272,7 +272,7 @@
 			contrastStart: 1.5,
 			brightnessStart: 3,
 			sizeStart: 0,
-			sizeEnd: 350,
+			sizeEnd: 300,
 			duration: 1,
 			ease: Power2.easeOut,
 		})
@@ -282,8 +282,8 @@
 			targetMob: false,
 			contrastStart: 1.5,
 			brightnessStart: 3,
-			sizeStart: 300,
-			sizeEnd: 400,
+			sizeStart: 250,
+			sizeEnd: 350,
 			duration: .7,
 			frameDuration: .7,
 			frameEase: Power4.easeOut,
@@ -318,7 +318,7 @@
 				brightnessStart: 4,
 				sizeStart: 320,
 				sizeEnd: 400,
-				duration: 1,
+				duration: .8,
 				ease: Power2.easeOut,
 			})
 		})
@@ -345,9 +345,9 @@
 				interval: .1,
 				sizeStart: 192,
 				sizeEnd: 128,
-				xRange: 60,
+				xRange: 0,
 				yRange: 0,
-				loops: 3,
+				loops: 1,
 			})
 		})
 	}

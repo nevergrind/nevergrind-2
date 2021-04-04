@@ -19,35 +19,36 @@
 	function starfire(o) {
 		ask.explosion({index: o.index, key: 'burst-fire'})
 		o.endFrame = 4
-		ask.explosion(_.clone(o), {
+		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
-			sizeStart: 300,
-			sizeEnd: 400,
-			duration: 1.5,
-			frameDuration: .3,
+			sizeStart: 200,
+			sizeEnd: 250,
+			alpha: 1,
+			duration: .4,
+			frameDuration: .4,
 			frameEase: Power0.easeIn,
 		})
 	}
 	function fissure(o) {
+		let y = ask.bottomY(o.index, true)
 		for (var i=0; i<30; i++) {
 			!function(i) {
 				let dur = 1
 				delayedCall(i * .05, () => {
 					o.endFrame = 6
-					let y = ask.bottomY(o.index, true)
 					let yAdj = _.random(0, 40)
 					let zIndex = yAdj < 20 ? ask.behindMobLayer(o) : ask.frontMobLayer(o)
 					let img = ask.groundExplosion(o, {
 						yStart: y + yAdj,
 						xAdjust: _.random(-125, 125),
-						contrastStart: 1,
+						contrastStart: 3,
 						brightnessStart: 1,
-						contrastEnd: 1.2,
-						brightnessEnd: 3,
+						contrastEnd: 1,
+						brightnessEnd: 2,
 						anchorY: .78,
-						sizeStart: 96,
-						sizeEnd: 128,
+						sizeStart: 64,
+						sizeEnd: 96,
 						duration: dur,
 						frameDuration: dur,
 						yoyo: true,
@@ -55,7 +56,6 @@
 						alphaStart: 1,
 						alpha: 1,
 						frameEase: Power2.easeIn,
-						ease: Power2.easeOut,
 					})
 					TweenMax.to(img, dur, {
 						startAt: { pixi: { blur: 20 }},
@@ -72,10 +72,10 @@
 	function lightningBlast(o) {
 		let shadowY = ask.bottomY(o.index, true) + 50
 		o.key = 'lightningBlast1'
-		let img = ask.groundExplosion(_.clone(o), {
+		let img = ask.groundExplosion(o, {
 			yStart: shadowY,
 			contrastStart: 2,
-			brightnessStart: 5,
+			brightnessStart: 3,
 			width: 400,
 			height: 900,
 			yoyo: false,
@@ -88,14 +88,15 @@
 			img.alpha = .033
 			TweenMax.to(img, 1, {
 				alpha: 0,
+				ease: Power2.easeIn,
 			})
 		})
 		o.key = 'lightningBlast'
 		o.endFrame = 4
-		ask.groundExplosion(_.clone(o), {
+		ask.groundExplosion(o, {
 			yStart: shadowY,
 			contrastStart: 2,
-			brightnessStart: 5,
+			brightnessStart: 4,
 			width: 400,
 			height: 900,
 			yoyo: false,
@@ -105,7 +106,7 @@
 			frameEase: Power0.easeIn,
 		})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-lightning',
 		}, {
 			interval: .001,
@@ -170,6 +171,7 @@
 							yStart: yStart,
 							width: 300,
 							height: 50,
+							zIndex: ask.LAYER_MOB_GROUND,
 							loops: 1,
 						})
 					})
@@ -179,7 +181,7 @@
 	}
 	function toxicSpores(o) {
 		ask.particleGroup({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-group-poison',
 		}, {
 			interval: .0166,
@@ -190,7 +192,7 @@
 			loops: 1
 		})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-poison',
 		}, {
 			interval: .001,
@@ -262,16 +264,10 @@
 			}(_.clone(o))
 			// target fissures
 			delayedCall(duration, () => {
-				ask.sunburst({index: o.tgtEnd})
 				ask.sunburst({index: o.tgtEnd}, {
-					sizeStart: 150,
+					sizeStart: 0,
 					sizeEnd: 450,
-					duration: .8
-				})
-				ask.sunburst({index: o.tgtEnd}, {
-					sizeStart: 200,
-					sizeEnd: 500,
-					duration: 1
+					duration: .75
 				})
 				ask.explosion({index: o.tgtEnd, key: 'burst-fire'})
 				// fissure
@@ -280,7 +276,7 @@
 				o.key = 'fissure'
 				let y = ask.bottomY(o.tgtEnd, true)
 
-				ask.particleSmall({...o, key: 'particle-small-fire'}, {
+				ask.particleSmall({index: o.index, key: 'particle-small-fire'}, {
 					interval: .001,
 					loops: 15,
 					sizeStart: 24,
@@ -326,6 +322,7 @@
 				img.scale.x *= Math.random() > .5 ? 1 : -1
 				delayedCall(2, () => {
 					TweenMax.to(img, .5, {
+						pixi: { brightness: 0 },
 						alpha: 0,
 					})
 				})
@@ -370,12 +367,12 @@
 			brightnessStart: 2,
 			alpha: 1,
 			sizeStart: 128,
-			sizeEnd: 320,
-			duration: 1,
+			sizeEnd: 256,
+			duration: .8,
 			ease: Power2.easeOut,
 		})
 		TweenMax.to(img, .3, {
-			delay: .7,
+			delay: .5,
 			alpha: 0,
 		})
 		o.key = 'naturesTouchStar'
@@ -387,7 +384,7 @@
 			rotation: 360,
 			sizeStart: 256,
 			sizeEnd: 128,
-			duration: 1,
+			duration: .8,
 			ease: Power2.easeOut,
 		})
 		let img3 = ask.explosion(o, {
@@ -398,11 +395,11 @@
 			rotation: -360,
 			sizeStart: 256,
 			sizeEnd: 128,
-			duration: 1,
+			duration: .8,
 			ease: Power2.easeOut,
 		})
 		TweenMax.to([img2, img3], .3, {
-			delay: .7,
+			delay: .5,
 			alpha: 0,
 		})
 		!function(o) {
@@ -416,12 +413,12 @@
 				sizeStart: 256,
 				sizeEnd: 256,
 				alpha: 1,
-				duration: 1,
+				duration: .8,
 				frameDuration: .25,
 				ease: Power3.easeOut,
 			})
 			TweenMax.to(img, .3, {
-				delay: .7,
+				delay: .5,
 				alpha: 0,
 			})
 		}(_.clone(o))
@@ -495,14 +492,14 @@
 	function synthesize(o) {
 		ask.explosion({index: o.index, key: 'burst-poison'}, {targetMob: false})
 		o.endFrame = 3
-		let dur = 1.5
+		let dur = 1
 		let fade = .3
 		let img = ask.explosion(o, {
 			targetMob: false,
 			contrastStart: 1.5,
 			brightnessStart: 2,
-			sizeStart: 256,
-			sizeEnd: 312,
+			sizeStart: 200,
+			sizeEnd: 256,
 			alpha: 1,
 			duration: dur,
 			frameDuration: dur/4,
@@ -512,7 +509,7 @@
 			delay: dur - fade,
 			alpha: 0,
 		})
-		TweenMax.to(img, 2, {
+		TweenMax.to(img, dur, {
 			rotation: 360,
 			ease: Power0.easeNone
 		})
@@ -521,7 +518,7 @@
 		o.key = 'branchSpiritGlow'
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 5,
+			duration: 3,
 			sizeStart: 400,
 			sizeEnd: 300,
 		})
@@ -534,16 +531,16 @@
 			duration: 1,
 			alpha: 0,
 			sizeStart: 0,
-			sizeEnd: 350,
+			sizeEnd: 300,
 		})
 		ask.explosion({
 			...o,
 			key: 'branchSpiritNova'
 		}, {
 			targetMob: false,
-			duration: 2.5,
+			duration: 1.5,
 			sizeStart: 0,
-			sizeEnd: 500,
+			sizeEnd: 400,
 		})
 		for (var i=0; i<1; i++) {
 			!function(i) {
@@ -553,7 +550,7 @@
 						key: 'branchSpiritRing'
 					}, {
 						targetMob: false,
-						duration: 4,
+						duration: 2,
 						alpha: 0,
 						sizeStart: 400,
 						sizeEnd: 300,
@@ -567,7 +564,7 @@
 				key: 'branchSpiritTree'
 			}, {
 				targetMob: false,
-				duration: 4,
+				duration: 2,
 				sizeStart: 400,
 				sizeEnd: 300,
 			})
