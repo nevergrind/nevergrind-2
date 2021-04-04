@@ -21,13 +21,15 @@
 
 	function tigerStrike(o) {
 		for (var i=0; i<3; i++) {
-			ask.slash(o, {
-				duration: .25,
-				size: 200,
-				yAdjust: (i * 33) - 33
-			})
+			(i => {
+				ask.slash(o, {
+					duration: .2,
+					size: 250,
+					yAdjust: (i * 33) - 33
+				})
+			})(i)
 		}
-		o.endFrame = 2
+		/*o.endFrame = 2
 		o.key = 'tigerStrikeRoar'
 		ask.explosion(o, {
 			yStart: ask.centerY(o.index, false) - 350,
@@ -39,20 +41,21 @@
 			alpha: 1,
 			frameDuration: .45,
 			frameEase: Power0.easeIn,
-		})
+		})*/
 	}
 	function hyperStrike(o) {
-		ask.explosion({index: o.index, key: 'burst-purple'})
+		ask.explosion({index: o.index, key: 'burst-purple'}, {
+			sizeEnd: 300
+		})
 		o.endFrame = 2
 		let img = ask.explosion(o, {
-			contrastStart: 2,
-			brightnessStart: 4,
-			sizeStart: 0,
-			sizeEnd: 300,
-			duration: .3,
+			contrastStart: 1.2,
+			brightnessStart: 2,
+			sizeStart: 120,
+			sizeEnd: 240,
+			duration: .27,
 			alpha: 1,
-			frameDuration: .3,
-			ease: Power0.easeIn,
+			frameDuration: .27,
 			frameEase: Power0.easeIn,
 		})
 		ask.fadeOut(img, .4, .1)
@@ -71,9 +74,9 @@
 				// yStart: ask.centerY(o.index, false) - 350,
 				sizeStart: 180,
 				sizeEnd: 200,
-				duration: .7,
+				duration: .64,
 				alpha: 0,
-				frameDuration: .7,
+				frameDuration: .32,
 				ease: Power0.easeIn,
 				frameEase: Power0.easeIn,
 			})
@@ -84,24 +87,21 @@
 		}
 	}
 	function craneKick(o) {
-			ask.explosion({index: o.index, key: 'burst-fire'}, {sizeEnd: 300})
-			ask.explosion({index: o.index, key: 'burst-arcane'}, {sizeEnd: 500})
-			let img = ask.explosion(o, {
+			ask.lightColumn({index: o.index, key: 'column-arcane'}, {
+				widthStart: 250,
+				duration: .6,
+			})
+			ask.sunburst(o)
+			ask.explosion(o, {
 				contrastStart: 1.5,
 				brightnessStart: 2,
-				sizeStart: 300,
-				sizeEnd: 150,
-				alpha: 1,
-				ease: Bounce.easeOut,
-				duration: .4,
+				sizeStart: 100,
+				sizeEnd: 250,
+				duration: 1,
 			})
-			TweenMax.to(img, .4, {
-				rotation: util.rotation(-90)
-			})
-			ask.fadeOut(img, .4, .1)
 	}
 	function chakraBlast(o) {
-			ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1.5})
+			ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1})
 			o.endFrame = 4
 			let dur = .33
 			let img = ask.explosion(o, {
@@ -120,12 +120,12 @@
 	function hadoken(o) {
 			ask.explosion({index: o.index, key: 'burst-purple'}, {duration: 1})
 			o.endFrame = 2
-			let dur = .33
+			let dur = .3
 			let img = ask.explosion(o, {
 				contrastStart: 2,
 				brightnessStart: 4,
-				sizeStart: 80,
-				sizeEnd: 350,
+				sizeStart: 150,
+				sizeEnd: 320,
 				duration: dur,
 				alpha: 1,
 				frameDuration: dur,
@@ -185,25 +185,20 @@
 			})
 	}
 	function viperStrike(o) {
-		ask.slash(o, {
-			duration: .22,
-			size: 220,
+		ask.slash({index: o.index, key: 'viperStrike2'}, {
+			duration: .2,
+			size: 222,
 		})
-		o.key = 'viperStrike1'
-		ask.slash(o, {
-			duration: .18,
-			size: 200,
+		let bolt = ask.slash({index: o.index, key: 'viperStrike1'}, {
+			duration: .2,
+			size: 222,
 		})
-		o.key = 'viperStrike2'
-		ask.slash(o, {
-			duration: .15,
-			size: 180,
+		bolt.y += 30
+		let wad = ask.slash({index: o.index, key: 'viperStrike3'}, {
+			duration: .2,
+			size: 222,
 		})
-		o.key = 'viperStrike3'
-		ask.slash(o, {
-			duration: .25,
-			size: 250,
-		})
+		wad.y += 60
 	}
 	function viperStrikeBuff(o) {
 		let img = ask.explosion({
@@ -212,8 +207,8 @@
 		}, {
 			targetMob: false,
 			yStart: ask.centerY(o.index, false) - 50,
-			duration: 1,
-			sizeStart: 400,
+			duration: .8,
+			sizeStart: 320,
 			sizeEnd: 250,
 			alpha: 0,
 			ease: Power3.easeOut,
@@ -224,7 +219,7 @@
 		ask.explosion({index: o.index, key: 'burst-poison'}, {targetMob: false, duration: .5})
 	}
 	function palmStrike(o) {
-			ask.explosion({index: o.index, key: 'burst-ice'}, {duration: 1})
+			ask.explosion({index: o.index, key: 'burst-ice'}, {duration: .8})
 			o.endFrame = 1
 			let dur = .33
 			let img = ask.explosion(o, {
@@ -240,10 +235,10 @@
 			})
 			ask.fadeOut(img, dur, .1)
 			ask.rings({index: o.index, type: 'default'}, {
-				loops: 5,
+				loops: 3,
 			})
 			ask.particleSmall({
-				..._.clone(o),
+				index: o.index,
 				key: 'particle-small-default',
 			}, {
 				interval: .001,
@@ -255,13 +250,13 @@
 			})
 	}
 	function mendingAura(o) {
-		ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1.5, targetMob: false})
+		ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1.25, targetMob: false})
 		ask.explosion(o, {
 			targetMob: false,
 			duration: 1
 		})
 		ask.explosion({
-			..._.clone(o),
+			index: o.index,
 			key: 'mendingAuraMeditate'
 		}, {
 			targetMob: false,
@@ -277,7 +272,7 @@
 			targetMob: false,
 			contrastStart: 2,
 			brightnessStart: 3,
-			duration: 1.2
+			duration: 1
 		})
 		o.key = 'spiritBarrierSwirl'
 		ask.explosion(o, {
@@ -285,16 +280,16 @@
 			rotationStart: 0,
 			rotation: 180,
 			sizeStart: 80,
-			sizeEnd: 300,
-			duration: 1.5
+			sizeEnd: 250,
+			duration: 1.25
 		})
 		ask.explosion(o, {
 			targetMob: false,
 			rotationStart: 0,
 			rotation: -180,
 			sizeStart: 80,
-			sizeEnd: 300,
-			duration: 1.5
+			sizeEnd: 250,
+			duration: 1.25
 		})
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);
