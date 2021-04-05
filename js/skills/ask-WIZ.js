@@ -21,22 +21,22 @@
 	function fireBolt(o) {
 		ask.sunburst({index: o.index})
 		o.endFrame = 2
-		let dur = .25
-		let img = ask.explosion(_.clone(o), {
+		let dur = .32
+		let img = ask.explosion(o, {
 			contrastStart: 1.2,
 			brightnessStart: 2,
-			sizeStart: 10,
+			sizeStart: 50,
 			sizeEnd: 200,
 			alpha: 1,
 			duration: dur,
 			frameDuration: dur,
 			frameEase: Power0.easeIn,
 		})
-		let img2 = ask.explosion(_.clone(o), {
+		let img2 = ask.explosion(o, {
 			flip: true,
 			contrastStart: 1.5,
 			brightnessStart: 2,
-			sizeStart: 10,
+			sizeStart: 50,
 			sizeEnd: 200,
 			alpha: 1,
 			duration: dur,
@@ -74,7 +74,9 @@
 	}
 	function lightningBolt(o) {
 		let shadowY = ask.bottomY(o.index, true) + 50
-		ask.explosion({index: o.index, key: 'burst-lightning'})
+		ask.explosion({index: o.index, key: 'burst-lightning'}, {
+			sizeEnd: 250,
+		})
 		let img = ask.groundExplosion(o, {
 			yStart: shadowY,
 			contrastStart: 2,
@@ -132,7 +134,7 @@
 			})
 		})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-lightning',
 		}, {
 			interval: .001,
@@ -144,47 +146,49 @@
 		})
 	}
 	function magicMissiles(o) {
-		ask.explosion({index: o.index, key: 'burst-purple'})
-		ask.starburst(o)
+		ask.explosion({index: o.index, key: 'burst-lightning'}, {
+			sizeEnd: 245,
+			duration: .4,
+		})
 		o.key = 'magicMissiles1'
 		ask.slash(o, {
 			isPrimary: false,
 			yAdjust: -80,
-			duration: _.random(.125, .25),
+			duration: .2,
 			size: 150,
 		})
 		ask.slash(o, {
 			isPrimary: false,
 			yAdjust: 80,
-			duration: _.random(.125, .25),
+			duration: .2,
 			size: 150,
 		})
 		o.key = 'magicMissiles2'
 		ask.slash(o, {
 			isPrimary: false,
-			duration: _.random(.125, .25),
+			duration: .2,
 			size: 300,
 		})
 	}
 	function fireball(o) {
 		ask.sunburst({index: o.index}, {
-			sizeEnd: 500,
-			duration: 1.5
+			sizeEnd: 400,
+			duration: 1.2
 		})
 		o.endFrame = 3
 		let dur = .45
-		let img = ask.explosion(_.clone(o), {
+		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 3,
-			sizeStart: 40,
-			sizeEnd: 350,
+			sizeStart: 50,
+			sizeEnd: 300,
 			alpha: 1,
 			duration: dur,
 			frameDuration: dur,
 			frameEase: Power0.easeIn,
 		})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-fire',
 		}, {
 			interval: .001,
@@ -196,7 +200,10 @@
 		})
 	}
 	function chainLightning(o) {
-		ask.explosion({index: o.index, key: 'burst-lightning'}, { sizeEnd: 400 })
+		ask.explosion({index: o.index, key: 'burst-lightning'}, {
+			sizeEnd: 250,
+			duration: .6
+		})
 		o.endFrame = 4
 		let dur = .125 * 2
 		let img = ask.explosion(o, {
@@ -213,13 +220,17 @@
 	}
 	function frostNova(o) {
 		ask.explosion({index: o.index, key: 'burst-ice'})
+		ask.rings({index: o.index, type: 'ice'}, {
+			loops: 1,
+			duration: .5,
+		})
 		o.endFrame = 3
 		let dur = .4
-		let img = ask.groundExplosion(_.clone(o), {
+		let img = ask.groundExplosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2.5,
-			sizeStart: 20,
-			sizeEnd: 260,
+			sizeStart: 50,
+			sizeEnd: 320,
 			anchorY: .508,
 			yoyo: false,
 			alpha: 1,
@@ -230,7 +241,7 @@
 		})
 		ask.fadeOut(img, dur, dur * .7)
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-ice',
 		}, {
 			interval: .001,
@@ -251,7 +262,7 @@
 		o.key = 'meteor'
 		o.endFrame = 1
 		let dur = 2
-		let img = ask.explosion(_.clone(o), {
+		let img = ask.explosion(o, {
 			xStart: xStart,
 			yStart: yStart,
 			contrastStart: 1.3,
@@ -272,9 +283,9 @@
 			y: yEnd,
 			ease: Power0.easeNone,
 			onComplete: () => {
-				ask.explosion({index: o.index, key: 'burst-default'}, {sizeEnd: 500, duration: 1.5})
+				ask.explosion({index: o.index, key: 'burst-default'}, {sizeEnd: 350, duration: 1})
 				ask.rings({index: o.index, type: 'default'}, {
-					duration: 1.5,
+					duration: 1,
 					loops: 3,
 				})
 			}
@@ -287,7 +298,7 @@
 		o.key = 'meteorBurst'
 		o.endFrame = 3
 		let dur = .44
-		let img = ask.groundExplosion(_.clone(o), {
+		let img = ask.groundExplosion(o, {
 			contrastStart: 1.3,
 			brightnessStart: 3,
 			sizeStart: 80,
@@ -302,7 +313,7 @@
 		})
 		ask.fadeOut(img, dur, dur * .3)
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-fire',
 		}, {
 			interval: .001,
@@ -316,15 +327,13 @@
 	function meteorStrike(o) {
 		// 6 seconds of burning 12 * .5
 		let y = ask.bottomY(o.index, true)
-		for (var i=0; i<20; i++) {
-			!function() {
-				ask.flames(o, {
-					y: y,
-					key: 'meteor',
-					duration: _.random(5.5, 6.5),
-					fade: _.random(.2, .5),
-				})
-			}()
+		for (var i=0; i<30; i++) {
+			ask.flames(o, {
+				y: y,
+				key: 'meteor',
+				duration: _.random(5.5, 6.5),
+				fade: _.random(.2, .5),
+			})
 		}
 	}
 	function frozenBarrier(o) {
@@ -395,25 +404,42 @@
 			}, {
 				targetMob: false,
 				brightnessStart: 8,
-				duration: 4,
+				duration: 2.5,
 				sizeStart: 300,
 				sizeEnd: 200,
 			})
 		})
 	}
 	function manaShell(o) {
-		ask.explosion({index: o.index, key: 'burst-lightning'}, {targetMob: false})
-		o.endFrame = 2
-		let dur = 1
-		ask.explosion(o, {
+		ask.explosion({index: o.index, key: 'manaShell-'}, {
 			targetMob: false,
 			contrastStart: 1.2,
 			brightnessStart: 2,
 			sizeStart: 300,
 			sizeEnd: 200,
-			duration: dur,
-			frameDuration: dur,
-			frameEase: Power2.easeOut,
+			duration: .33,
+		})
+		ask.explosion({index: o.index, key: 'manaShell-1'}, {
+			targetMob: false,
+			contrastStart: 1.2,
+			brightnessStart: 2,
+			sizeStart: 300,
+			sizeEnd: 200,
+			duration: .33,
+		})
+		delayedCall(.33, () => {
+			ask.explosion({index: o.index, key: 'burst-lightning'}, {
+				targetMob: false,
+				sizeEnd: 300
+			})
+			ask.explosion({index: o.index, key: 'manaShell-2'}, {
+				targetMob: false,
+				contrastStart: 1.2,
+				brightnessStart: 2,
+				sizeStart: 300,
+				sizeEnd: 250,
+				duration: 1.25,
+			})
 		})
 	}
 	function deepFreeze(o) {
@@ -426,7 +452,7 @@
 			brightnessStart: 2,
 			contrastEnd: 1,
 			brightnessEnd: 1,
-			yStart: ask.bottomY(o.index, true) + 40,
+			anchorY: .879,
 			sizeStart: 350,
 			sizeEnd: 350,
 			alpha: 1,

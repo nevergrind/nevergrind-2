@@ -17,29 +17,31 @@
 	///////////////////////////////////////////
 
 	function frostRift(o) {
-		ask.explosion({index: o.index, key: 'burst-ice'})
+		ask.explosion({index: o.index, key: 'burst-ice'}, {
+			sizeEnd: 250
+		})
 		ask.explosion({index: o.index, key: 'frostRift2'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			sizeStart: 0,
-			sizeEnd: 300,
-			duration: .8,
+			sizeEnd: 250,
+			duration: .4,
 		})
 		ask.explosion({index: o.index, key: 'frostRift1'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			rotation: 90,
 			sizeStart: 0,
-			sizeEnd: 225,
-			duration: 1,
+			sizeEnd: 200,
+			duration: .5,
 		})
 		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			rotation: -90,
 			sizeStart: 0,
-			sizeEnd: 150,
-			duration: 1.2,
+			sizeEnd: 125,
+			duration: .6,
 		})
 	}
 	function poisonNova(o) {
@@ -48,111 +50,84 @@
 			yStart: ask.bottomY(o.index),
 			duration: .32,
 		})
+		o.endFrame = 2
 		let dur = .4
-		ask.groundExplosion({index: o.index, key: 'poisonNova1'}, {
+		let img = ask.groundExplosion(o, {
 			contrastStart: 1.5,
-			brightnessStart: 3,
-			sizeStart: 100,
+			brightnessStart: 2.5,
+			sizeStart: 50,
 			sizeEnd: 300,
+			anchorY: .508,
 			yoyo: false,
-			alpha: 0,
+			alpha: 1,
 			duration: dur,
 			ease: Power2.easeOut,
 			frameDuration: dur,
 			frameEase: Power0.easeIn,
 		})
-		ask.groundExplosion({index: o.index, key: 'poisonNova'}, {
-			contrastStart: 2,
-			brightnessStart: 4,
-			sizeStart: 100,
-			sizeEnd: 300,
-			yoyo: false,
-			alpha: 0,
-			duration: dur,
-			ease: Power2.easeOut,
-			frameDuration: dur,
-			frameEase: Power0.easeIn,
-		})
+		ask.fadeOut(img, dur, dur * .85)
 	}
 	function scourge(o) {
-		ask.explosion({index: o.index, key: 'burst-blood'})
-		let dur = .5
-		let img = ask.explosion(o, {
-			contrastStart: 1.5,
-			brightnessStart: 3,
-			alpha: 1,
-			sizeStart: 0,
-			yStart: ask.centerY(o.index, true) - 100,
-			duration: dur,
-			ease: Power2.easeOut,
+		ask.explosion({index: o.index, key: 'burst-blood'}, {
+			sizeEnd: 280
 		})
-		img.anchor.set(1, 1)
-		TweenMax.to(img, dur/2, {
-			overwrite: 2,
-			startAt: {
-				x: '+=100',
-				y: '+=100',
-				width: 0,
-				height: 0,
-			},
-			width: 200,
-			height: 200,
-			ease: Power2.easeIn,
-			onComplete: () => {
-				img.anchor.set(0, 0)
-				TweenMax.to(img, dur/2, {
-					overwrite: 2,
-					startAt: {
-						x: '-=200',
-						y: '-=200',
-					},
-					width: 0,
-					height: 0,
-					ease: Power2.easeOut,
-				})
-			}
+		ask.slash({index: o.index, key: 'scourge'}, {
+			duration: .25,
+			size: 250,
 		})
+		let top = ask.slash({index: o.index, key: 'scourge'}, {
+			duration: .25,
+			size: 250,
+		})
+		top.y -= 40
+		let bot = ask.slash({index: o.index, key: 'scourge'}, {
+			duration: .25,
+			size: 250,
+		})
+		bot.y += 40
 		ask.particleGroup({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-group-blood',
 		}, {
 			interval: .0166,
 			sizeStart: 64,
 			sizeEnd: 64,
-			xRange: 120,
-			yRange: 50,
+			xRange: 90,
+			yRange: 0,
 			loops: 6
 		})
 	}
 	function poisonBolt(o) {
-		ask.explosion({index: o.index, key: 'burst-poison'})
+		ask.explosion({index: o.index, key: 'burst-poison'}, {
+			sizeEnd: 280
+		})
 		ask.explosion({index: o.index, key: 'poisonBolt2'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
+			rotation: -180,
 			sizeStart: 0,
-			sizeEnd: 300,
-			duration: .6,
+			sizeEnd: 250,
+			duration: .5,
 		})
 		ask.explosion({index: o.index, key: 'poisonBolt1'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
-			rotation: 90,
+			rotation: 180,
 			sizeStart: 0,
 			sizeEnd: 225,
-			duration: .8,
+			duration: .65,
 		})
 		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
-			rotation: -90,
 			sizeStart: 0,
-			sizeEnd: 150,
-			duration: 1,
+			sizeEnd: 220,
+			duration: .8,
 		})
 	}
 	function vampiricGaze(o) {
 		// ask.explosion({index: o.index, key: 'burst-arcane'})
-		!function(o) {
+		/*!function(o) {
 			o.endFrame = 2
 			let img = ask.explosion(o, {
 				contrastStart: 1,
@@ -174,7 +149,7 @@
 				})
 			})
 			ask.fadeOut(img, 1.5, .1)
-		}(_.clone(o))
+		}(_.clone(o))*/
 
 		!function(o) {
 			for (var i=0; i<5; i++) {
@@ -242,7 +217,10 @@
 		})
 	}
 	function affliction(o) {
-		ask.explosion({index: o.index, key: 'burst-poison'}, {duration: 1.2})
+		ask.explosion({index: o.index, key: 'burst-poison'}, {
+			duration: 1.2,
+			sizeEnd: 280
+		})
 		ask.particleGroup({
 			index: o.index,
 			key: 'particle-group-poison',
@@ -289,8 +267,8 @@
 			let dur = _.random(.4, .8)
 			!function(i) {
 				delayedCall(i * .01, () => {
-					let x = centerX + _.random(-120, 120)
-					let y = centerY + _.random(-50, 100)
+					let x = centerX + _.random(-80, 80)
+					let y = centerY + _.random(-40, 80)
 					let img = ask.explosion(o, {
 						xStart: x,
 						yStart: y,
@@ -351,8 +329,8 @@
 				brightnessStart: 3,
 				contrastEnd: 0,
 				brightnessEnd: 0,
-				sizeStart: 260,
-				sizeEnd: 350,
+				sizeStart: 240,
+				sizeEnd: 300,
 				duration: .7,
 				ease: Power3.easeOut,
 			})
@@ -384,8 +362,8 @@
 				targetMob: false,
 				contrastStart: 2,
 				brightnessStart: 4,
-				sizeStart: 320,
-				sizeEnd: 400,
+				sizeStart: 250,
+				sizeEnd: 300,
 				duration: 1.2,
 				ease: Power2.easeOut,
 			})
@@ -397,8 +375,8 @@
 				brightnessStart: 3,
 				contrastEnd: 0,
 				brightnessEnd: 0,
-				sizeStart: 320,
-				sizeEnd: 400,
+				sizeStart: 250,
+				sizeEnd: 300,
 				duration: 1.5,
 				ease: Power3.easeOut,
 			})
@@ -430,8 +408,8 @@
 				targetMob: false,
 				contrastStart: 2,
 				brightnessStart: 4,
-				sizeStart: 320,
-				sizeEnd: 400,
+				sizeStart: 220,
+				sizeEnd: 300,
 				duration: 1.2,
 				ease: Power2.easeOut,
 			})
@@ -443,8 +421,8 @@
 				brightnessStart: 3,
 				contrastEnd: 0,
 				brightnessEnd: 0,
-				sizeStart: 320,
-				sizeEnd: 400,
+				sizeStart: 220,
+				sizeEnd: 300,
 				duration: 1.5,
 				ease: Power3.easeOut,
 			})
@@ -452,44 +430,43 @@
 	}
 	function borealTalisman(o) {
 		ask.explosion({index: o.index, key: 'burst-ice'}, {targetMob: false})
-		let y = ask.bottomY(o.index, false) - 50
 		ask.explosion(o, {
 			targetMob: false,
-			yStart: y,
-			duration: 5,
-			sizeStart: 400,
-			sizeEnd: 350,
+			yStart: ask.bottomY(o.index, false) - 50,
+			duration: 2,
+			sizeStart: 300,
+			sizeEnd: 250,
 		})
-		delayedCall(.25, () => {
+		delayedCall(.1, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'borealTalisman1'
 			}, {
 				targetMob: false,
-				duration: 4.75,
+				duration: 1.75,
 				sizeStart: 300,
 				sizeEnd: 200,
 			})
 		})
-		delayedCall(.5, () => {
+		delayedCall(.2, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'borealTalisman2'
 			}, {
 				targetMob: false,
-				brightnessStart: 12,
-				duration: 4,
-				sizeStart: 400,
-				sizeEnd: 300,
+				brightnessStart: 4,
+				duration: 2,
+				sizeStart: 300,
+				sizeEnd: 250,
 			})
 		})
-		delayedCall(.75, () => {
+		delayedCall(.3, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'borealTalisman3'
 			}, {
 				targetMob: false,
-				brightnessStart: 12,
+				brightnessStart: 4,
 				duration: 1,
 				sizeStart: 300,
 				sizeEnd: 300,
