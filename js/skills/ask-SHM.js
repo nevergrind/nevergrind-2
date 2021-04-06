@@ -50,22 +50,16 @@
 			yStart: ask.bottomY(o.index),
 			duration: .32,
 		})
-		o.endFrame = 2
-		let dur = .4
-		let img = ask.groundExplosion(o, {
+		ask.groundExplosion({index: o.index, key: 'burstGround-poison'}, {
+			yStart: ask.bottomY(o.index, true) + 25,
 			contrastStart: 1.5,
-			brightnessStart: 2.5,
-			sizeStart: 50,
-			sizeEnd: 300,
-			anchorY: .508,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 400,
 			yoyo: false,
-			alpha: 1,
-			duration: dur,
-			ease: Power2.easeOut,
-			frameDuration: dur,
-			frameEase: Power0.easeIn,
+			alpha: 0,
+			duration: .6,
 		})
-		ask.fadeOut(img, dur, dur * .85)
 	}
 	function scourge(o) {
 		ask.explosion({index: o.index, key: 'burst-blood'}, {

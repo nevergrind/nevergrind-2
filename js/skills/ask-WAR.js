@@ -145,26 +145,49 @@
 			frameEase: Power0.easeOut,
 			ease: Power3.easeOut,
 		})
+		ask.groundExplosion({index: o.index, key: 'burstGround-lightning'}, {
+			yStart: ask.bottomY(o.index, true) + 25,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 400,
+			yoyo: false,
+			alpha: 0,
+			duration: .5,
+		})
 	}
 	function primalStomp(o) {
 		// ask.explosion({index: o.index, key: 'burst-arcane'})
 		o.endFrame = 3
-		ask.groundExplosion(o, {
+		let img = ask.groundExplosion(o, {
 			contrastStart: 1.2,
 			brightnessStart: 2,
-			sizeStart: 400,
+			sizeStart: 300,
 			sizeEnd: 300,
 			anchorY: .713,
 			duration: .8,
 			frameDuration: .32,
 			yoyo: false,
-			alpha: 0,
+			alpha: 1,
 			frameEase: Power0.easeOut,
 			ease: Power2.easeOut,
 		})
-		ask.nova({index: o.index, key: 'cast-swirl-fire'}, {
-			position: 'bottom',
-			loops: 3,
+		ask.fadeOut(img, .4, .4)
+		delayedCall(.24, () => {
+			ask.nova({index: o.index, key: 'cast-swirl-fire'}, {
+				position: 'bottom',
+				loops: 3,
+			})
+			ask.groundExplosion({index: o.index, key: 'burstGround-fire'}, {
+				yStart: ask.bottomY(o.index, true),
+				contrastStart: 1.5,
+				brightnessStart: 2,
+				sizeStart: 100,
+				sizeEnd: 300,
+				yoyo: false,
+				alpha: 0,
+				duration: .6,
+			})
 		})
 	}
 	function bulwark(o) {

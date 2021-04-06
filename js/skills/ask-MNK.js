@@ -87,18 +87,28 @@
 		}
 	}
 	function craneKick(o) {
-			ask.lightColumn({index: o.index, key: 'column-arcane'}, {
-				widthStart: 250,
-				duration: .6,
-			})
-			ask.sunburst(o)
-			ask.explosion(o, {
-				contrastStart: 1.5,
-				brightnessStart: 2,
-				sizeStart: 100,
-				sizeEnd: 250,
-				duration: 1,
-			})
+		ask.lightColumn({index: o.index, key: 'column-arcane'}, {
+			widthStart: 250,
+			duration: .6,
+		})
+		ask.sunburst(o)
+		ask.explosion(o, {
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 250,
+			duration: 1,
+		})
+		ask.groundExplosion({index: o.index, key: 'burstGround-arcane'}, {
+			yStart: ask.bottomY(o.index, true) + 25,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 400,
+			yoyo: false,
+			alpha: 0,
+			duration: .5,
+		})
 	}
 	function chakraBlast(o) {
 			ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1})

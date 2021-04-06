@@ -57,10 +57,11 @@
 		const centerX = mob.centerX[o.index]
 		const centerY = ask.centerY(o.index, true)
 		const bottomY = ask.bottomY(o.index, true)
-		for (var i=0; i<6; i++) {
+		for (var i=0; i<5; i++) {
 			(i => {
 				let xStart = centerX + _.random(-100, 100)
 				let yStart = centerY + _.random(-100, 100)
+				let yEnd = Math.min(yStart + 30, bottomY)
 				let dur = _.random(.32, .52)
 				ask.explosion({index: o.index, key: 'orb-lightning'}, {
 					contrastStart: 1.5,
@@ -70,15 +71,16 @@
 					duration: 1,
 					xStart: xStart,
 					yStart: yStart,
+					yEnd: yEnd,
 				})
 				ask.explosion(o, {
 					contrastStart: 1.5,
 					brightnessStart: 3,
 					xStart: xStart,
 					yStart: yStart,
-					yEnd: Math.min(yStart + 30, bottomY),
-					sizeStart: 150,
-					sizeEnd: 200,
+					yEnd: yEnd,
+					sizeStart: 160,
+					sizeEnd: 120,
 					alpha: 1,
 					duration: dur,
 					frameDuration: dur,
@@ -132,7 +134,7 @@
 				let img = ask.explosion({index: o.index, key: 'orb-poison'}, {
 					contrastStart: 1.5,
 					brightnessStart: 3,
-					sizeStart: 200,
+					sizeStart: 150,
 					sizeEnd: 32,
 					duration: dur + .3,
 					xStart: xStart,
@@ -140,7 +142,7 @@
 					yEnd: yStart + 70,
 				})
 				TweenMax.to(img, dur + .3, {
-					x: '+=' + 70
+					y: '+=' + 70
 				})
 				ask.explosion(o, {
 					contrastStart: 1.5,
@@ -148,8 +150,8 @@
 					xStart: xStart,
 					yStart: yStart,
 					yEnd: Math.min(yStart + 30, bottomY),
-					sizeStart: 80,
-					sizeEnd: 120,
+					sizeStart: 100,
+					sizeEnd: 50,
 					alpha: 1,
 					duration: dur,
 					frameDuration: dur,
@@ -159,7 +161,9 @@
 		}
 	}
 	function colorShift(o) {
-		ask.explosion({index: o.index, key: 'burst-arcane'})
+		ask.explosion({index: o.index, key: 'burst-arcane'}, {
+			sizeEnd: 260
+		})
 		ask.rings({index: o.index, type: 'arcane'}, {
 			loops: 1,
 			duration: .3,
@@ -270,54 +274,52 @@
 		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
-			duration: .8,
-			sizeStart: 250,
-			sizeEnd: 350,
+			duration: .7,
+			sizeStart: 150,
+			sizeEnd: 200,
 		})
-		delayedCall(0, () => {
-			ask.explosion({
-				index: o.index,
-				key: 'shiftingEther1'
-			}, {
-				duration: .8,
-				rotation: 90,
-				contrastStart: 1.5,
-				brightnessStart: 2,
-				sizeStart: 150,
-				sizeEnd: 250,
-			})
+		ask.explosion({
+			index: o.index,
+			key: 'shiftingEther1'
+		}, {
+			duration: .7,
+			rotation: 90,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 150,
+			sizeEnd: 220,
 		})
-		delayedCall(.1, () => {
+		delayedCall(.15, () => {
 			ask.explosion({
 				index: o.index,
 				key: 'shiftingEther2'
 			}, {
 				contrastStart: 1.5,
 				brightnessStart: 2,
-				duration: .8,
+				duration: .6,
 				rotation: 90,
-				sizeStart: 200,
-				sizeEnd: 300,
+				sizeStart: 150,
+				sizeEnd: 240,
 			})
 		})
-		delayedCall(.2, () => {
+		delayedCall(.3, () => {
 			ask.explosion({
 				index: o.index,
 				key: 'shiftingEther3'
 			}, {
 				contrastStart: 1.5,
 				brightnessStart: 2,
-				duration: .8,
+				duration: .6,
 				rotation: 90,
-				sizeStart: 250,
-				sizeEnd: 350,
+				sizeStart: 180,
+				sizeEnd: 280,
 			})
 		})
 	}
 	function sereneSigil(o) {
 		ask.explosion({index: o.index, key: 'orb-arcane'}, {
 			targetMob: false,
-			duration: 3.5,
+			duration: 2.5,
 			sizeStart: 50,
 			sizeEnd: 350,
 		})
@@ -334,7 +336,7 @@
 			key: 'sereneSigil1'
 		}, {
 			targetMob: false,
-			duration: 2.5,
+			duration: 1.5,
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			sizeStart: 200,
@@ -347,13 +349,16 @@
 			targetMob: false,
 			contrastStart: 1.5,
 			brightnessStart: 2,
-			duration: 3,
+			duration: 2,
 			sizeStart: 200,
 			sizeEnd: 350,
 		})
 	}
 	function augmentation(o) {
-		ask.explosion({index: o.index, key: 'orb-arcane'}, {targetMob: false})
+		ask.explosion({index: o.index, key: 'orb-arcane'}, {
+			targetMob: false,
+			sizeEnd: 300
+		})
 		ask.particleCircle({
 			index: o.index,
 			key: 'particle-circle-arcane',
@@ -366,26 +371,43 @@
 		o.endFrame = 2
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 2.5,
+			duration: 1.25,
 			frameDuration: .3,
 			sizeStart: 300,
 			sizeEnd: 200,
 		})
 	}
 	function clarity(o) {
+		ask.explosion({index: o.index, key: 'orb-ice'}, {
+			targetMob: false,
+			sizeStart: 300,
+			sizeEnd: 0
+		})
+		ask.particleSmall({
+			index: o.index,
+			key: 'particle-small-ice',
+		}, {
+			targetMob: false,
+			interval: .0016,
+			loops: 22,
+			sizeStart: 32,
+			sizeEnd: 0,
+			xRange: 100,
+			yRange: 0,
+		})
 		!function(o) {
 			delayedCall(.3, () => {
 				ask.explosion({index: o.index, key: 'mysticalGlow-p1'}, {
 					targetMob: false,
 					contrastStart: 2,
 					brightnessStart: 4,
-					sizeStart: 320,
-					sizeEnd: 400,
-					duration: 1.2,
+					sizeStart: 280,
+					sizeEnd: 370,
+					duration: 1,
 					ease: Power2.easeOut,
 				})
 				ask.explosion({index: o.index, key: 'orb-ice'}, {targetMob: false})
-				ask.explosion({index: o.index, key: 'clarity-blue'}, {
+				/*ask.explosion({index: o.index, key: 'clarity-blue'}, {
 					targetMob: false,
 					contrastStart: 1.5,
 					brightnessStart: 3,
@@ -395,7 +417,7 @@
 					sizeEnd: 250,
 					duration: 1.2,
 					ease: Power2.easeOut,
-				})
+				})*/
 			})
 		}(_.clone(o))
 		o.endFrame = 2

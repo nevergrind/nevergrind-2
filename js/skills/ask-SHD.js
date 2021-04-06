@@ -30,8 +30,8 @@
 			sizeStart: 250,
 			sizeEnd: 300,
 			alpha: 1,
-			duration: .28,
-			frameDuration: .28,
+			duration: .32,
+			frameDuration: .32,
 			frameEase: Power0.easeIn,
 		})
 	}
@@ -69,26 +69,24 @@
 		ask.explosion({index: o.index, key: 'orb-purple'}, {
 			contrastStart: 1.2,
 			brightnessStart: 2,
-			sizeStart: 333,
-			sizeEnd: 0,
+			sizeStart: 350,
+			sizeEnd: 100,
 			duration: 1,
 		})
-		delayedCall(.15, () => {
-			ask.starburst(o)
+		ask.slash({index: o.index, key: 'doomThrust-slash'}, {
+			duration: .2,
+			size: 250,
 		})
-		o.endFrame = 4
-		let dur = .35
-		ask.explosion(o, {
-			contrastStart: 1.5,
-			brightnessStart: 3,
-			contrastEnd: 1,
-			brightnessEnd: .25,
-			alpha: 1,
-			sizeStart: 250,
-			sizeEnd: 225,
-			duration: dur,
-			frameDuration: dur,
-			frameEase: Power0.easeIn,
+		ask.particleSmall({
+			index: o.index,
+			key: 'particle-small-blood',
+		}, {
+			interval: .001,
+			loops: 15,
+			sizeStart: 32,
+			sizeEnd: 8,
+			xRange: 70,
+			yRange: 50,
 		})
 	}
 	function astralBlade(o) {
@@ -138,7 +136,7 @@
 		})
 		ask.fadeOut(img, 1.5, .1)
 		ask.particleGroup({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-group-poison',
 		}, {
 			interval: .0166,
@@ -260,6 +258,7 @@
 					alpha: 1,
 					duration: .8,
 				})
+				console.info('index', o)
 				TweenMax.to(img, .8, {
 					curviness: 1.5,
 					bezier: {
@@ -269,7 +268,7 @@
 							points: 5,
 							xStart: mob.centerX[o.index],
 							yStart: ask.centerY(o.index, true),
-							xEnd: dungeon.centerX[0],
+							xEnd: dungeon.centerX[party.getIndexByRow(o.row)],
 							yEnd: ask.centerY(0, false),
 						})
 					},
@@ -284,7 +283,7 @@
 	}
 	function vampiricFeast(o) {
 		ask.explosion({index: o.index, key: 'burst-purple'})
-		o.endFrame = 2
+		/*o.endFrame = 2
 		let img = ask.explosion(o, {
 			contrastStart: 1.2,
 			brightnessStart: 2,
@@ -295,7 +294,7 @@
 			duration: .5,
 			frameDuration: .25,
 		})
-		ask.fadeOut(img, .5, .25)
+		ask.fadeOut(img, .5, .25)*/
 		for (var i=0; i<3; i++) {
 			!function(i) {
 				let img = ask.explosion({index: o.index, key: 'drainSoul3'}, {
@@ -315,10 +314,19 @@
 							points: 5,
 							xStart: mob.centerX[o.index],
 							yStart: ask.centerY(o.index, true),
-							xEnd: dungeon.centerX[0],
+							xEnd: dungeon.centerX[party.getIndexByRow(o.row)],
 							yEnd: ask.centerY(0, false),
 						})
 					},
+				})
+				delayedCall(i * .1, () => {
+					ask.explosion({index: o.index, key: 'orb-purple'}, {
+						contrastStart: 1.2,
+						brightnessStart: 2,
+						sizeStart: 300,
+						sizeEnd: 50,
+						duration: .6,
+					})
 				})
 			}(i)
 		}
@@ -404,8 +412,8 @@
 			ease: Power1.easeOut,
 		})
 		ask.explosion({index: o.index, key: 'markOfRemphan-dragon'}, {
-			sizeStart: 300,
-			sizeEnd: 250,
+			sizeStart: 240,
+			sizeEnd: 220,
 			duration: 1.2,
 			zIndexAdj: 1,
 		})
@@ -415,8 +423,8 @@
 			yStart: ask.centerHeadY(o.index),
 			contrastStart: 1.2,
 			brightnessStart: 2,
-			sizeStart: 250,
-			sizeEnd: 220,
+			sizeStart: 200,
+			sizeEnd: 180,
 			repeat: true,
 			duration: 2,
 			frameDuration: .1,

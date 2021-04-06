@@ -116,6 +116,16 @@
 			xRange: 400,
 			yRange: 50,
 		})
+		ask.groundExplosion({index: o.index, key: 'burstGround-lightning'}, {
+			yStart: ask.bottomY(o.index, true) + 25,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 400,
+			yoyo: false,
+			alpha: 0,
+			duration: .5,
+		})
 	}
 
 	function blizzard(o) {

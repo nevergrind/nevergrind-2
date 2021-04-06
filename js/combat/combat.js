@@ -713,8 +713,10 @@ var combat;
 			// console.info('onDotTick', k, mobs[index].buffs[k].row, mobs[index].buffs[k].duration)
 			if (mobs[index].buffs[k].key === 'explosivePlague' &&
 				my.row === mobs[index].buffs[k].row &&
-				mobs[index].buffs[k].duration === 0) {
+				mobs[index].buffs[k].duration === 0 &&
+				!mobs[index].buffs[k].hasExploded) {
 				// console.info('onDotTick DONE!', k, mobs[index].buffs[k])
+				mobs[index].buffs[k].hasExploded = true
 				skill.WLK.explosivePlagueExplode(index, damage)
 			}
 		}

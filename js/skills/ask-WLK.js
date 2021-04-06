@@ -63,26 +63,27 @@
 		})
 	}
 	function explosivePlagueExplosion(o) {
-		ask.explosion({index: o.index, key: 'burst-poison'})
+		ask.explosion({index: o.index, key: 'burst-poison'}, {
+			sizeEnd: 300,
+			duration: .8
+		})
 		ask.explosion({index: o.index, key: 'orb-poison'}, {
 			contrastStart: 1.5,
 			brightnessStart: 3,
 			sizeStart: 0,
-			sizeEnd: 400,
-			rotation: 360,
+			sizeEnd: 450,
 			duration: 1.5,
 		})
 		o.endFrame = 3
 		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 3,
-			sizeStart: 0,
-			sizeEnd: 200,
-			duration: .8,
+			sizeStart: 100,
+			sizeEnd: 225,
+			duration: 1,
 			frameDuration: .8,
 			frameEase: Power0.easeIn,
 		})
-
 	}
 	function bloodFire(o) {
 		ask.explosion({index: o.index, key: 'burst-fire'})
@@ -90,7 +91,7 @@
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			rotation: 90,
-			sizeStart: 0,
+			sizeStart: 100,
 			sizeEnd: 250,
 			duration: 1,
 		})
@@ -98,19 +99,19 @@
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			rotation: -90,
-			sizeStart: 0,
+			sizeStart: 100,
 			sizeEnd: 200,
 			duration: 1.2,
 		})
 		ask.explosion({index: o.index, key: 'bloodFire2'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
-			sizeStart: 0,
+			sizeStart: 100,
 			sizeEnd: 300,
 			duration: .8,
 		})
 		ask.particleGroup({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-group-fire',
 		}, {
 			interval: .0166,
@@ -122,7 +123,9 @@
 		})
 	}
 	function demonicPact(o) {
-		ask.explosion({index: o.index, key: 'burst-blood'})
+		ask.explosion({index: o.index, key: 'burst-blood'}, {
+			sizeEnd: 250
+		})
 		o.endFrame = 2
 		let dur = .15
 		let xStart = mob.centerX[o.index] + 100
@@ -148,17 +151,17 @@
 			key: 'particle-group-blood',
 		}, {
 			interval: .0166,
-			sizeStart: 32,
-			sizeEnd: 32,
-			xRange: 100,
+			sizeStart: 50,
+			sizeEnd: 50,
+			xRange: 60,
 			yRange: 100,
-			loops: 3
+			loops: 6
 		})
 	}
 	function hauntingVision(o) {
 		ask.explosion({index: o.index, key: 'burst-purple'})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-purple',
 		}, {
 			interval: .001,
@@ -172,64 +175,68 @@
 		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
-			sizeStart: 250,
-			sizeEnd: 200,
+			sizeStart: 200,
+			sizeEnd: 180,
 			yStart: ask.centerY(o.index, true) - 50,
 			repeat: true,
-			duration: 1.5,
+			duration: 1.2,
 			frameDuration: .125,
 			frameEase: Power0.easeIn,
 		})
 	}
 	function icingDeath(o) {
-		ask.explosion({index: o.index, key: 'burst-ice'})
+		ask.explosion({index: o.index, key: 'burst-ice'}, {
+			sizeEnd: 270
+		})
 		ask.explosion({index: o.index, key: 'icingDeath2'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			sizeStart: 0,
-			sizeEnd: 300,
+			sizeEnd: 240,
 			duration: .8,
 		})
 		ask.explosion({index: o.index, key: 'icingDeath1'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			sizeStart: 0,
-			sizeEnd: 225,
-			duration: 1,
+			sizeEnd: 200,
+			duration: .7,
 		})
 		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			sizeStart: 0,
 			sizeEnd: 150,
-			duration: 1.2,
+			duration: .85,
 		})
 	}
 	function curseOfShadows(o) {
-		ask.explosion({index: o.index, key: 'burst-purple'})
+		ask.explosion({index: o.index, key: 'burst-purple'}, {
+			sizeEnd: 300
+		})
 		ask.explosion({index: o.index, key: 'curseOfShadows2'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			rotation: -90,
 			sizeStart: 200,
-			sizeEnd: 300,
-			duration: 1.5,
+			sizeEnd: 250,
+			duration: 1,
 		})
 		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			rotation: -90,
 			sizeStart: 150,
-			sizeEnd: 225,
-			duration: 1.2,
+			sizeEnd: 200,
+			duration: .8,
 		})
 		ask.explosion({index: o.index, key: 'curseOfShadows1'}, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			rotation: 90,
 			sizeStart: 100,
-			sizeEnd: 200,
-			duration: .8,
+			sizeEnd: 180,
+			duration: .66,
 		})
 		ask.particleCircle({
 			index: o.index,
@@ -246,7 +253,7 @@
 		ask.explosion({index: o.index, key: 'burst-arcane'})
 
 		const ringWidth = ((mobs[o.index].clickAliveW * mobs[o.index].size) * 2)
-		ask.rings({index: o.index, type: 'arcane'}, {
+		ask.rings({index: o.index, type: 'purple'}, {
 			loops: 6,
 			yStart: ask.centerHeadY(o.index, true),
 			yEnd: ask.bottomY(o.index, true),
@@ -254,25 +261,27 @@
 			widthStart: ringWidth,
 			width: ringWidth,
 			height: ringWidth * .2,
-			interval: .1,
-			duration: .666,
+			interval: .07,
+			duration: .5,
 			ease: Power2.easeOut,
 		})
 
 		for (var i=0; i<30; i++) {
 			!function(i) {
 				delayedCall(i * .03, () => {
-					ask.explosion(o, {
-						duration: 2,
+					let img = ask.explosion(o, {
+						duration: .666,
 						contrastStart: 1.5,
 						brightnessStart: 2,
 						xStart: mob.centerX[o.index] + _.random(-125, 125),
 						yStart: ask.centerHeadY(o.index, true) + _.random(-20, 20),
-						alpha: .5,
-						rotation: 360,
 						sizeStart: 50,
-						sizeEnd: 50,
+						sizeEnd: 0,
 						ease: Power0.easeIn,
+					})
+					TweenMax.to(img, .666, {
+						y: '+=' + 40,
+						ease: Circ.easeOut,
 					})
 				})
 			}(i)
@@ -324,7 +333,7 @@
 							points: 5,
 							xStart: mob.centerX[o.index],
 							yStart: ask.centerY(o.index, true),
-							xEnd: dungeon.centerX[0],
+							xEnd: dungeon.centerX[party.getIndexByRow(o.row)],
 							yEnd: ask.centerY(0, false),
 						})
 					},
@@ -342,16 +351,16 @@
 	function lichForm(o) {
 		ask.explosion({index: o.index, key: 'orb-purple'}, {
 			targetMob: false,
-			duration: 3,
+			duration: 1.5,
 			sizeStart: 400,
 			sizeEnd: 300,
 		})
 		ask.explosion({
-			..._.clone(o),
+			index: o.index,
 			key: 'lichForm1'
 		}, {
 			targetMob: false,
-			duration: 4,
+			duration: 2,
 			alphaStart: .5,
 			brightnessStart: .5,
 			brightnessEnd: 0,
@@ -360,7 +369,7 @@
 		})
 		ask.explosion(o, {
 			targetMob: false,
-			duration: 4,
+			duration: 2,
 			sizeStart: 300,
 			sizeEnd: 250,
 		})
@@ -393,7 +402,7 @@
 			}(i)
 		}
 		ask.particleGroup({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-group-purple',
 		}, {
 			interval: .0166,
@@ -405,56 +414,53 @@
 		})
 	}
 	function profaneSpirit(o) {
-		for (var i=0; i<3; i++) {
-			!function(i) {
-				delayedCall(i * .2, () => {
-					ask.explosion({index: o.index, key: 'orb-poison'}, {targetMob: false})
-					ask.particleCircle({
-						index: o.index,
-						key: 'particle-circle-poison',
-					}, {
-						targetMob: false,
-						duration: .5,
-						alpha: 0,
-						sizeEnd: 250 + (i * 60),
-					})
-					if (i === 0) {
-						ask.explosion(o, {
-							targetMob: false,
-							duration: 1,
-							sizeStart: 250,
-							sizeEnd: 100,
-						})
-					}
-					else if (i === 1) {
-						ask.explosion({
-							index: o.index,
-							key: 'profaneSpirit1'
-						}, {
-							targetMob: false,
-							duration: 2,
-							sizeStart: 200,
-							sizeEnd: 100,
-						})
-					}
-					else if (i === 2) {
-						ask.explosion({
-							index: o.index,
-							key: 'profaneSpirit2'
-						}, {
-							targetMob: false,
-							duration: 2.5,
-							sizeStart: 250,
-							sizeEnd: 150,
-						})
-					}
-				})
-			}(i)
-		}
+		ask.explosion({index: o.index, key: 'orb-poison'}, {
+			targetMob: false,
+			sizeEnd: 300
+		})
+		ask.particleCircle({
+			index: o.index,
+			key: 'particle-circle-poison',
+		}, {
+			targetMob: false,
+			duration: .6,
+			alpha: 0,
+			sizeEnd: 250,
+		})
+		ask.explosion(o, {
+			targetMob: false,
+			duration: .6,
+			sizeStart: 250,
+			sizeEnd: 100,
+		})
+		delayedCall(.15, () => {
+			ask.explosion({
+				index: o.index,
+				key: 'profaneSpirit1'
+			}, {
+				targetMob: false,
+				duration: .6,
+				sizeStart: 200,
+				sizeEnd: 100,
+			})
+		})
+		delayedCall(.3, () => {
+			ask.explosion({
+				index: o.index,
+				key: 'profaneSpirit2'
+			}, {
+				targetMob: false,
+				duration: .6,
+				sizeStart: 250,
+				sizeEnd: 150,
+			})
+		})
 	}
 	function profaneSpiritExplosion(o) {
 		ask.explosion({index: o.index, key: 'burst-poison'})
-		ask.explosion({index: o.index, key: 'orb-poison'}, {sizeEnd: 400})
+		ask.explosion({index: o.index, key: 'orb-poison'}, {
+			sizeEnd: 400
+		})
 		ask.particleCircle({
 			index: o.index,
 			key: 'particle-circle-poison',

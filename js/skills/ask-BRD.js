@@ -160,6 +160,16 @@
 		ask.lightColumn({index: o.index, key: 'column-lightning'}, {
 			widthStart: 150,
 		})
+		ask.groundExplosion({index: o.index, key: 'burstGround-lightning'}, {
+			yStart: ask.bottomY(o.index, true) + 25,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 400,
+			yoyo: false,
+			alpha: 0,
+			duration: .5,
+		})
 	}
 	function battleHymn(o) {
 		ask.explosion({index: o.index, key: 'burst-arcane'}, {targetMob: false})
@@ -271,27 +281,6 @@
 			sizeEnd: 200,
 			duration: .8,
 		})
-		/*ask.rings({index: o.index, type: 'poison'}, {
-			loops: 1,
-			yAdj: 150,
-			targetMob: false,
-			duration: .32,
-			width: 50,
-		})*/
-		/*o.endFrame = 3
-		let img = ask.explosion(o, {
-			targetMob: false,
-			contrastStart: 1.2,
-			brightnessStart: 2,
-			sizeStart: 350,
-			sizeEnd: 220,
-			duration: .4,
-			alpha: 1,
-			frameDuration: .32,
-			frameEase: Power0.easeOut,
-		})
-		ask.fadeOut(img, .4, .1)
-		*/
 		ask.particleSmall({
 			index: o.index,
 			key: 'particle-small-poison',
@@ -333,19 +322,6 @@
 		})
 	}
 	function righteousRhapsody(o) {
-		/*o.endFrame = 3
-		let dur = .32 * 3
-		ask.explosion(o, {
-			contrastStart: 1.2,
-			brightnessStart: 3,
-			sizeStart: 350,
-			sizeEnd: 160,
-			alpha: 1,
-			duration: dur,
-			frameDuration: .32,
-			repeat: true,
-			frameEase: Power0.easeOut,
-		})*/
 		ask.explosion({index: o.index, key: 'burst-arcane'}, {
 			sizeEnd: 225
 		})

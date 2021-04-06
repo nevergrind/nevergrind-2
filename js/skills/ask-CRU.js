@@ -101,11 +101,25 @@
 		})
 	}
 	function consecrate(o) {
-		console.info('consecrate', o)
-		ask.explosion({index: o.index, key: 'burst-arcane'}, {
-			sizeEnd: 300,
+		ask.explosion({index: o.index, key: 'orb-arcane'}, {
+			sizeStart: 400,
+			sizeEnd: 100,
 		})
-		const dur = .25
+		ask.lightColumn({index: o.index, key: 'column-arcane'}, {
+			widthStart: 150,
+			duration: .6,
+		})
+		ask.groundExplosion({index: o.index, key: 'burstGround-arcane'}, {
+			yStart: ask.bottomY(o.index, true) + 25,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 350,
+			yoyo: false,
+			alpha: 0,
+			duration: .6,
+		})
+		/*const dur = .25
 		o.endFrame = 1
 		ask.explosion(o, {
 			contrastStart: 1.3,
@@ -130,19 +144,19 @@
 			duration: dur,
 			frameDuration: dur,
 			frameEase: Power0.easeIn,
-		})
+		})*/
 	}
 	function consecrateBuff(o) {
 		ask.groundExplosion({index: o.index, key: 'consecrate-buff'}, {
 			targetMob: false,
 			contrastStart: 1.2,
 			brightnessStart: 2,
-			sizeStart: 250,
+			sizeStart: 200,
 			sizeEnd: 150,
 			anchorY: .863,
 			yoyo: false,
 			alpha: 0,
-			duration: 1.25,
+			duration: 1,
 		})
 	}
 	function sealOfDamnation(o) {
@@ -169,12 +183,14 @@
 		})
 		const dur = .4
 		o.endFrame = 4
-		let img = ask.explosion(o, {
+		let img = ask.groundExplosion(o, {
 			contrastStart: 1.2,
 			brightnessStart: 2,
-			sizeStart: 0,
-			sizeEnd: 400,
+			sizeStart: 450,
+			sizeEnd: 450,
+			anchorY: .928,
 			alpha: 1,
+			yoyo: false,
 			duration: dur,
 			frameDuration: dur,
 			frameEase: Power0.easeIn,
@@ -363,37 +379,25 @@
 		})
 	}
 	function jubilee(o) {
-		ask.explosion({index: o.index, key: 'burst-arcane'}, {
-			sizeEnd: 250
+		ask.explosion({index: o.index, key: 'orb-fire'}, {
+			sizeStart: 400,
+			sizeEnd: 120,
+			duration: 1.5,
+			rotation: 360,
 		})
-		let centerY = ask.centerY(o.index, true)
-		let centerX = mob.centerX[o.index]
-		for (var i=0; i<12; i++) {
-			!function(i) {
-					let xStart = centerX + _.random(-120, 120)
-					let yStart = centerY + _.random(-120, 120)
-					ask.explosion({index: o.index, key: 'jubilee'}, {
-						contrastStart: 1,
-						brightnessStart: 1,
-						sizeStart: 80,
-						sizeEnd: 20,
-						yEnd: yStart,
-						xEnd: xStart,
-						rotation: 720,
-						alpha: 0,
-						duration: .77,
-						ease: Power3.easeOut,
-						alphaEase: Power1.easeOut,
-					})
-			}(i)
-		}
-		ask.particleCircle({
-			index: o.index,
-			key: 'particle-circle-arcane',
-		}, {
-			duration: .33,
+		ask.lightColumn({index: o.index, key: 'column-fire'}, {
+			widthStart: 150,
+			duration: .6,
+		})
+		ask.groundExplosion({index: o.index, key: 'burstGround-fire'}, {
+			yStart: ask.bottomY(o.index, true) + 25,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 350,
+			yoyo: false,
 			alpha: 0,
-			sizeEnd: 300,
+			duration: .6,
 		})
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);

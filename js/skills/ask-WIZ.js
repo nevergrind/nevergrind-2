@@ -133,6 +133,16 @@
 				})
 			})
 		})
+		ask.groundExplosion({index: o.index, key: 'burstGround-lightning'}, {
+			yStart: ask.bottomY(o.index, true) + 25,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 400,
+			yoyo: false,
+			alpha: 0,
+			duration: .5,
+		})
 		ask.particleSmall({
 			index: o.index,
 			key: 'particle-small-lightning',
@@ -335,6 +345,16 @@
 				fade: _.random(.2, .5),
 			})
 		}
+		ask.groundExplosion({index: o.index, key: 'burstGround-fire'}, {
+			yStart: ask.bottomY(o.index, true) + 25,
+			contrastStart: 1.5,
+			brightnessStart: 2,
+			sizeStart: 100,
+			sizeEnd: 450,
+			yoyo: false,
+			alpha: 0,
+			duration: 1,
+		})
 	}
 	function frozenBarrier(o) {
 		ask.explosion({index: o.index, key: 'burst-ice'}, {targetMob: false, duration: 1.5})
