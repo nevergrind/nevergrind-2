@@ -183,7 +183,7 @@
 			})
 			ask.fadeOut(img, dur, .1)
 			ask.particleSmall({
-				..._.clone(o),
+				index: o.index,
 				key: 'particle-small-fire',
 			}, {
 				interval: .001,
@@ -212,7 +212,7 @@
 	}
 	function viperStrikeBuff(o) {
 		let img = ask.explosion({
-			..._.clone(o),
+			index: o.index,
 			key: 'viperStrikeBuff'
 		}, {
 			targetMob: false,

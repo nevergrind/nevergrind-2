@@ -156,7 +156,7 @@
 				duration: .5,
 			})
 			ask.particleSmall({
-				..._.clone(o),
+				index: o.index,
 				key: 'particle-small-ice',
 			}, {
 				interval: .001,
@@ -413,23 +413,5 @@
 			sizeStart: 350,
 			sizeEnd: 240,
 		})
-		/*delayedCall(.5, () => {
-			let img = ask.explosion({
-				..._.clone(o),
-				key: 'celestialFrenzy3'
-			}, {
-				targetMob: false,
-				contrastStart: 2,
-				brightnessStart: 4,
-				duration: 1,
-				sizeStart: 250,
-				sizeEnd: 250,
-			})
-			TweenMax.to(img, 1, {
-				startAt: {y: yStart + 100},
-				y: yStart - 100,
-				ease: Power0.easeIn,
-			})
-		})*/
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4, Bounce, Elastic);

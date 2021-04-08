@@ -1,34 +1,5 @@
 mob.data = {}
 mob.data['Salubrin Haven'] = [
-	/*
-	{
-		img: 'orc',
-		name: 'orc pawn',
-		minLevel: 1,
-		maxLevel: 60,
-		size: .97,
-		job: JOB.WARRIOR,
-		traits: [], // champ traits
-	},
-	{
-		img: 'orc',
-		name: 'orc centurion',
-		minLevel: 1,
-		maxLevel: 60,
-		size: .9,
-		job: JOB.WARRIOR,
-		traits: [], // champ traits
-	},
-	{
-		img: 'orc',
-		name: 'orc legionnaire',
-		minLevel: 1,
-		maxLevel: 60,
-		size: .9,
-		job: JOB.WARRIOR,
-		traits: [], // champ traits
-	},
-	*/
 	{
 		img: 'orc',
 		name: 'orc pawn',
@@ -49,19 +20,19 @@ mob.data['Salubrin Haven'] = [
 	},
 	{
 		img: 'orc',
-		name: 'orc',
+		name: 'orc initiate',
 		minLevel: 3,
 		maxLevel: 4,
-		size: .75,
+		size: .8,
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
 	{
 		img: 'orc',
-		name: 'orc initiate',
-		minLevel: 4,
-		maxLevel: 5,
-		size: .8,
+		name: 'orc',
+		minLevel: 5,
+		maxLevel: 6,
+		size: .75,
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
@@ -76,9 +47,27 @@ mob.data['Salubrin Haven'] = [
 	},
 	{
 		img: 'orc',
+		name: 'orc centurion',
+		minLevel: 3,
+		maxLevel: 5,
+		size: .8,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: 'orc',
+		name: 'orc legionnaire',
+		minLevel: 6,
+		maxLevel: 7,
+		size: .9,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: 'orc',
 		name: 'orc shaman elder',
-		minLevel: 47,
-		maxLevel: 50,
+		minLevel: 6,
+		maxLevel: 8,
 		size: .8,
 		job: JOB.SHAMAN,
 		traits: [], // champ traits
@@ -87,8 +76,8 @@ mob.data['Salubrin Haven'] = [
 	{
 		img: 'orc',
 		name: 'Sergeant Boggun',
-		minLevel: 2,
-		maxLevel: 60,
+		minLevel: 7,
+		maxLevel: 8,
 		size: 1,
 		job: JOB.WARRIOR,
 		tier: MOB_TIERS.champion,

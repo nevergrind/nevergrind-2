@@ -115,12 +115,12 @@ var bar;
 			el = getElementById('bar-wrap')
 			// my bar
 			// party bars
-			html = '<div id="bar-all-player-wrap">'
+			// html = '<div id="bar-all-player-wrap">'
 			/*for (var i=0; i<party.maxPlayers; i++) {
 				html += getPlayerBarHtml({}, i, true);
 			}*/
-			html += '</div>'
-			el.innerHTML = html
+			// html += '</div>'
+			// el.innerHTML = html
 			el.style.display = 'block'
 
 			bar.dom.lag = getElementById('bar-lag')
@@ -854,7 +854,7 @@ var bar;
 			el.id = 'bar-player-wrap-' + index;
 			el.className = 'bar-player-wrap';
 			el.innerHTML = getPlayerBarHtml(player, index);
-			getElementById('bar-all-player-wrap').appendChild(el);
+			getElementById('bar-wrap').appendChild(el);
 			cachePlayerBars(index);
 		}
 	}

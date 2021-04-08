@@ -56,7 +56,7 @@ var dungeon;
 		endWall: {},
 		tickUpdate: {},
 		hallwayPlayerStart: PLAYER_HALLWAY_START,
-		centerX: [960, 1280, 640, 1600, 320],
+		centerX: [960, 1248, 672, 1536, 384],
 		headY: BOTTOM_PLAYER - 280,
 		bottomY: BOTTOM_PLAYER,
 		gridElementY: {},

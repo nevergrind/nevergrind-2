@@ -162,7 +162,7 @@
 	}
 	function holySanctuary(o) {
 		ask.particleCircle({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-circle-default',
 		}, {
 			duration: .5,

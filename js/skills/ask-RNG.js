@@ -231,7 +231,7 @@
 			ease: Power4.easeOut,
 		})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-fire',
 		}, {
 			interval: .001,
@@ -258,7 +258,7 @@
 			ease: Power3.easeOut,
 		})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-lightning',
 		}, {
 			interval: .016,
@@ -271,7 +271,7 @@
 	}
 	function faerieFlame(o) {
 		ask.particleGroup({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-group-fire',
 		}, {
 			interval: .0166,
@@ -282,7 +282,7 @@
 			loops: 1
 		})
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-fire',
 		}, {
 			interval: .001,
@@ -297,7 +297,7 @@
 		// flash of light animates down over target
 		delayedCall(.3, () => {
 			ask.particleGroup({
-				..._.clone(o),
+				index: o.index,
 				key: 'particle-group-arcane',
 			}, {
 				targetMob: false,
@@ -397,7 +397,7 @@
 		})
 		delayedCall(.25, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'spiritOfTheHunter1'
 			}, {
 				targetMob: false,
@@ -408,7 +408,7 @@
 		})
 		delayedCall(.5, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'spiritOfTheHunter2'
 			}, {
 				targetMob: false,

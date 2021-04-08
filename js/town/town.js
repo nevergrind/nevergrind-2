@@ -26,6 +26,7 @@ var town;
 			'blacksmith': false,
 			'merchant': false,
 		},
+		firstLoad: true,
 		lastAside: {},
 		delegated: 0,
 		openVariousWindow: '',
@@ -114,11 +115,17 @@ var town;
 			// reset stores
 			town.isInitialized[key] = false
 		}
-		chat.sizeTown();
 		TweenMax.set('#button-wrap', CSS.DISPLAY_NONE)
 		$.post(app.url + 'character/load-character.php', {
 			row: create.selected
-		}).done(function(data) {
+		}).done((data) => {
+			if (town.firstLoad) {
+				town.firstLoad = false;
+				chat.log('Welcome to Broken.net!')
+				chat.log('You have entered Vandamor.')
+				chat.log('Type /help or /h for a list of chat commands.', 'chat-warning')
+			}
+			chat.sizeTown();
 			// console.info('load-character: ', data)
 			// my processing
 			Object.assign(my, _.omit(data.characterData, KEYS.DATA))

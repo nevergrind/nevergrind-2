@@ -46,6 +46,7 @@ var toast;
 			}
 			else if (data.action === 'party-invite') {
 				if (!app.isApp) {
+					// auto accept party invites for testing
 					setTimeout(toast.accept, 100)
 				}
 			}

@@ -247,6 +247,7 @@ var battle;
 		}
 
 		ng.setScene('battle')
+		// test mission defaults for fast test mission start-up
 		if (!app.isApp) {
 			// setup some mission data
 			mission.inProgress = true
@@ -357,39 +358,35 @@ var battle;
 				availableSlots.push(i)
 			}
 			// maps[dungeon.map.id].rooms[map.roomId].mobs
-			let minMobs
-			let maxMobs
+			let totalMobs
 			if (map.inRoom && map.roomId === 0 ||
 				map.inRoom && !dungeon.map.rooms[map.roomId].isAlive) {
 				// starting room always empty - only time a room is empty?
-				minMobs = 0
-				maxMobs = 0
+				totalMobs = 0
 			}
 			else {
-				minMobs = battle.getMinMobCount()
-				maxMobs = battle.getMaxMobCount()
+				totalMobs = battle.getRandomMobCount()
 			}
 
-			let totalMobs = _.random(minMobs, maxMobs)
-			// totalMobs = 0
-
-			// test data
-			if (!app.isApp && (map.roomId || (!map.inRoom && map.hallwayId))) {
+			// full room for testing
+			/*if (!app.isApp && (map.roomId || (!map.inRoom && map.hallwayId))) {
 				totalMobs = 9
-			}
+			}*/
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
-			let query
+			let q
 			for (i=0; i<totalMobs; i++) {
-				query = {
-					img: 'orc',
-					level: 50,
+				const maxLevel = quests[mission.id].maxLevel
+				const minLevel = ~~(maxLevel * .75)
+				q = {
+					// img: 'orc',
+					level: _.random(minLevel, maxLevel)
 				}
 				if (i === 0) {
 					mobSlot = 2
 					// THE BOSS
 					if (dungeon.map.rooms[map.roomId].boss) {
-						query.name = quests[mission.id].bossName
+						q.name = quests[mission.id].bossName
 					}
 				}
 				else {
@@ -397,7 +394,7 @@ var battle;
 				}
 				// tries to find by name first and then by img
 				let mobConfig = {
-					...mob.getRandomMobByZone(query),
+					...mob.getRandomMobByZone(q),
 					expPerLevel: 3,
 				}
 
@@ -416,10 +413,31 @@ var battle;
 		return _.random(battle.getMinMobCount(), battle.getMaxMobCount())
 	}
 	function getMinMobCount() {
-		return Math.max(~~(quests[mission.questId].level / 12), 1)
+		if (map.inRoom) {
+			if (quests[mission.questId].level < 5) return 2
+			else if (quests[mission.questId].level < 10) return 2
+			else if (quests[mission.questId].level < 20) return 3
+			else if (quests[mission.questId].level < 30) return 4
+			else return 5
+		}
+		else {
+			if (quests[mission.questId].level < 5) return 1
+			else if (quests[mission.questId].level < 10) return 2
+			else if (quests[mission.questId].level < 20) return 3
+			else if (quests[mission.questId].level < 30) return 3
+			else return 4
+		}
 	}
 	function getMaxMobCount() {
-		return Math.min(ceil(quests[mission.questId].level / 7), mob.max)
+		let ambushBonus = 0
+		if (map.inRoom && Math.random() > .9) ambushBonus = 1
+		if (quests[mission.questId].level < 5) return 2
+		else if (quests[mission.questId].level < 10) return 3 + ambushBonus
+		else if (quests[mission.questId].level < 15) return 4 + ambushBonus
+		else if (quests[mission.questId].level < 20) return 5 + ambushBonus
+		else if (quests[mission.questId].level < 25) return 6 + ambushBonus
+		else if (quests[mission.questId].level < 30) return 7 + ambushBonus
+		else return 8 + ambushBonus
 	}
 	function loadTextures() {
 		if (_.size(mob.textures) === 0) {

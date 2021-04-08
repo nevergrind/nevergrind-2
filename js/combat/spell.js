@@ -65,8 +65,9 @@ var spell;
 		return isShieldActive
 	}
 	function knockback() {
+		// knockback only happens in real app for testing purposes
 		if (timers.castBar < 1 &&
-			app.isApp && // knockback only happens in real app for testing purposes
+			// app.isApp &&
 			!areShieldsActive() &&
 			!channelSuccessful()) {
 			// console.info('channelSuccessful knockback', success)
@@ -106,7 +107,7 @@ var spell;
 			onComplete: spellComplete,
 			onCompleteParams: [spell.callbackFn]
 		})
-		if (!spell.config.cannotFizzle || !app.isApp) {
+		if (!spell.config.cannotFizzle) {
 			checkSpellFizzle()
 		}
 
@@ -139,7 +140,7 @@ var spell;
 		return rand() < chance
 	}
 	function checkSpellFizzle() {
-		app.isApp && spellFizzleChance() && delayedCall(.2, spellFizzle)
+		spellFizzleChance() && delayedCall(.2, spellFizzle)
 	}
 	function spellFizzle() {
 		expendSpellResources(true)

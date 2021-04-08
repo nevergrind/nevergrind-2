@@ -225,32 +225,71 @@ let mobs = [];
 			}
 		}
 	}
-	function getRandomMobByZone(query, zoneName) {
+
+	/**
+	 * filters zone's mobData and returns one mob in the level range
+	 * tries by name first and then by level
+	 * @type {*[]}
+	 */
+	function getRandomMobByZone(q, zoneName) {
 		if (typeof zoneName === 'undefined') {
 			zoneName = zones[mission.id].name
 		}
-		/**
-		 * filters zone's mobData and returns one mob in the level range
-		 * tries by name first and then by level
-		 * @type {*[]}
-		 */
-		let results
-		if (query.name) {
+		let results = []
+		if (q.name) {
+			// get mob by name (quests, bosses)
 			results = [
-				mob.data[zoneName].find(m => m.name === query.name)
+				mob.data[zoneName].find(m => m.name === q.name)
 			]
 		}
 		else {
-			results = mob.data[zoneName].filter(m =>
-				m.minLevel <= query.level && query.level <= m.maxLevel && !m.questOnly)
+			// get random mob by level
+			results = mob.data[zoneName].filter(m => {
+				let valid = false
+				if (m.questOnly) {
+					valid = false
+				}
+				if (q.level && q.img) {
+					if (m.img === q.img &&
+						m.minLevel <= q.level &&
+						q.level <= m.maxLevel) {
+						valid = true
+					}
+					else valid = false
+				}
+				else if (q.level) {
+					if (m.minLevel <= q.level && q.level <= m.maxLevel) valid = true
+					else valid = false
+				}
+				else if (q.img) {
+					if (m.img === q.img) valid = true
+					else valid = false
+				}
+				return valid
+			})
 		}
+		// no results? just in case..
+		if (!results.length) {
+			results = [mob.data[zoneName][0]]
+		}
+
+		if (q.level) {
+			results.forEach((r, i) => {
+				results[i].level = q.level
+			})
+		}
+		else {
+			results.forEach((r, i) => {
+				results[i].level = _.random(r.minLevel, r.maxLevel)
+			})
+		}
+
+		const randomMob = results[_.random(0, results.length - 1)]
 		console.info('results', results)
-		results.forEach((r, i) => {
-			results[i].level = query.level
-		})
+		console.info('randomMob', randomMob)
 		return {
 			...MOB_BASE_CONFIG,
-			...results[_.random(0, results.length - 1)],
+			...randomMob,
 		}
 	}
 	function getMobGold(config) {

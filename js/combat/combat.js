@@ -497,7 +497,6 @@ var combat;
 	}
 
 	function triggerEffect(key, damages) {
-		console.info('triggerEffect', damages[0]);
 		// heals
 		if (key === 'devouringSwarm') skill.SHM.devouringSwarmHeal(damages[0])
 		else if (key === 'deathStrike') skill.SHD.deathStrikeHeal(damages[0])
@@ -1631,6 +1630,7 @@ var combat;
 			else {
 				// player hit
 				if (typeof damage === 'string') {
+					// dodge, parry, etc
 					duration = TEXT_DURATION * .8
 					TweenMax.to(basicText, duration, {
 						pixi: { scale: 1.5 },
@@ -1643,10 +1643,10 @@ var combat;
 				else {
 					duration = TEXT_DURATION * 2
 					TweenMax.to(basicText, duration, {
-						y: '+=' + (TEXT_DISTANCE_Y * .6) + '',
+						y: '-=' + (TEXT_DISTANCE_Y * .6) + '',
 						onComplete: ask.removeImg,
 						onCompleteParams: [ basicText.id, o.targetMob ],
-						ease: Power0.easeOut
+						ease: Power2.easeOut
 					})
 					ask.fadeOut(basicText, duration, duration * .1)
 				}

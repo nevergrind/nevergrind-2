@@ -173,26 +173,25 @@ var chat;
 	function init() {
 		// default initialization of chat
 		if (!chat.initialized) {
-			var e = getElementById('chat-wrap');
-			e.style.display = 'flex';
-
+			querySelector('#chat-log').style.display = 'flex'
+			querySelector('#chat-input-wrap').style.display = 'flex'
 			chat.initialized = 1;
 			// show
 			// prevents auto scroll while scrolling
-			$('#chat-log')
+			/*$('#chat-log')
 				.on('mousedown', handleMousedownChatLog)
-				.on('mouseup', handleMouseupChatLog);
+				.on('mouseup', handleMouseupChatLog);*/
 
 			$("#chat-room")
 				.on('click contextmenu', '.chat-player', handlePlayerClick);
 		}
 	}
-	function handleMousedownChatLog() {
+	/*function handleMousedownChatLog() {
 		chat.isClicked = true
 	}
 	function handleMouseupChatLog() {
 		chat.isClicked = false;
-	}
+	}*/
 	function handlePlayerClick(event) {
 		var {row, name} = _.pick(event.currentTarget.dataset, KEYS.PLAYER_CLICK)
 		context.player.name = name
@@ -204,16 +203,21 @@ var chat;
 	function log(msg, className) {
 		// report to chat-log
 		if (msg){
-			while (chat.chatLogEl.childElementCount >= 500) {
+			while (chat.chatLogEl.childElementCount >= 50) {
 				chat.chatLogEl.removeChild(chat.chatLogEl.firstChild)
 			}
 			var el = createElement('div')
+			el.classList.add('chat-all')
 			if (className){
-				el.className = className
+				el.classList.add(className)
 			}
 			el.innerHTML = msg
 			chat.chatLogEl.appendChild(el)
 			chat.scrollBottom()
+			TweenMax.to(el, .2, {
+				delay: 20,
+				opacity: 0
+			})
 		}
 	}
 	function updateHistory(msg) {
@@ -536,24 +540,10 @@ var chat;
 		});
 	}
 	function sizeDungeon() {
-		TweenMax.set('#chat-wrap', {
-			height: '10.8rem',
-			width: '22rem',
-			/*bottom: '4rem',
-			left: '.5rem',
-			height: '10rem',*/
-		})
 		TweenMax.set('#chat-present-wrap', CSS.DISPLAY_NONE)
 	}
 	function sizeTown() {
 		TweenMax.set('#chat-present-wrap', CSS.DISPLAY_FLEX)
-		TweenMax.set('#chat-wrap', {
-			height: '15rem',
-			width: '24rem',
-			/*bottom: '4rem',
-			left: '.5rem',
-			height: '15rem',*/
-		})
 	}
 
 	/**

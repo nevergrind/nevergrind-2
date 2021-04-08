@@ -1274,11 +1274,12 @@ var ask;
 			if (o.key.includes('Piercing')) {
 				autoAttackPierce(isPrimary, img)
 			}
-			else if (o.key.includes('-hand Blunt')) {
-				autoAttackBlunt(o, img, o.key.includes('Two-hand') ? 256 : 200)
-			}
 			else {
-				autoAttackSlash(isPrimary, img, o.key.includes('Two-hand') ? 256 : 200)
+				autoAttackSlash(
+					isPrimary,
+					img,
+					o.key.includes('Two-hand') ? 300 : 200
+				)
 			}
 		}
 	}
@@ -1390,22 +1391,16 @@ var ask;
 	// autoAttackPiercing
 	function autoAttackPunch(img) {
 		TweenMax.to(img, .25, {
-			startAt: { width: 0, height: 0, },
-			width: 150,
-			height: 150,
+			startAt: {
+				width: 250,
+				height: 250,
+				rotation: util.rotation(_.random(0, 360))
+			},
+			width: 0,
+			height: 0,
 			ease: Power1.easeOut,
 			onComplete: ask.removeImg,
 			onCompleteParams: [ img.id, false ]
-		})
-		TweenMax.to(img, .25, {
-			startAt: { rotation: util.rotation(_.random(0, 360)) },
-			rotation: '+=' + util.rotation(45),
-			ease: Power0.easeIn,
-		})
-		TweenMax.to(img, .25, {
-			startAt: { alpha: 1 },
-			alpha: 0,
-			ease: Power3.easeIn,
 		})
 	}
 	function removeImg(askId, targetMob = true) {

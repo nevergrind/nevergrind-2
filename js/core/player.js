@@ -64,18 +64,19 @@ let players = []; // player sprites
 		players[i].sprite.zIndex = ask.LAYER_PLAYER_ROW_FRONT
 		if (typeof party.presence[i] === 'object') {
 			// mobSkills.applyEffectFilter(party.presence[i].row)
-			players[i].sprite.alpha = 1
+			// players[i].sprite.alpha = 1
 		}
 		else {
 			players[i].sprite.alpha = 0
 		}
+		players[i].sprite.alpha = 0
 
 		ask.addChild(players[i].sprite, false)
 	}
 	function updatePlayerSprite(i, alpha) {
 		// this may change appearance depending on players leaving/joining etc
 		players[i].sprite.texture = player.textures[0]
-		players[i].sprite.alpha = alpha
+		// players[i].sprite.alpha = alpha
 	}
 	function updateAllPlayerSprites() {
 		players.forEach((p, i) => {

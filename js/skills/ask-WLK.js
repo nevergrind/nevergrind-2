@@ -43,7 +43,7 @@
 	}
 	function explosivePlague(o) {
 		ask.particleGroup({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-group-poison',
 		}, {
 			interval: .0166,

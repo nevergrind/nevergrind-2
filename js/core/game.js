@@ -186,13 +186,14 @@ var game;
 				name: player.name,
 				time: time
 			});
-			var el = createElement('div');
-			el.id = 'chat-player-' + player.row;
+			var el = createElement('div')
+			el.id = 'chat-player-' + player.row
+			el.classList.add('ellipsis')
 			el.innerHTML =
 				'<span data-row="'+ player.row +'" data-name="'+ player.name +'" class="chat-player">' +
 					'['+ player.level +':<span class="chat-'+ player.job +'">'+ player.name +'</span>]' +
-				'</span>';
-			query.el('#chat-room').appendChild(el);
+				'</span>'
+			query.el('#chat-room').appendChild(el)
 		}
 		auditRoom(time);
 		chat.setHeader();

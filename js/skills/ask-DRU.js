@@ -339,7 +339,7 @@
 			}()
 		}
 		ask.particleSmall({
-			..._.clone(o),
+			index: o.index,
 			key: 'particle-small-lightning',
 		}, {
 			interval: .001,

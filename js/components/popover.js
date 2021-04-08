@@ -1,5 +1,5 @@
 var popover;
-(function($, parseInt, getComputedStyle, TweenMax, _, undefined) {
+(($, parseInt, getComputedStyle, TweenMax, _, undefined) => {
 	var mainMenuPopovers = {}
 
 	popover = {

@@ -456,7 +456,6 @@ app.socketUrl = app.isApp ?
 <div id="scene-town" class="scene none no-select"></div>
 <div id="scene-dungeon" class="scene none no-select"></div>
 <div id="scene-battle" class="scene none no-select"></div>
-<div id="scene-players" class="scene none no-select no-pointer"></div>
 <div id="sky-elements" class="wh-100 no-select">
 	<!-- rain and snow -->
 <!--<img id="sky-rain1" class="env-rain" src="images/env/rain.png">
@@ -469,27 +468,23 @@ app.socketUrl = app.isApp ?
 	<span class="popover-icons"></span>
 	<span class="popover-icons"></span>
 </div>
-<div id="bar-wrap" class="no-select text-shadow"></div>
 
-<div id="chat-wrap" class="text-shadow">
-	<div id="chat-log-wrap">
-		<div id="chat-log">
-			<div>Welcome to Broken.net!</div>
-			<div>You have entered Vandamor.</div>
-			<div class="chat-warning">Type /help or /h for a list of chat commands.</div>
-		</div>
-		<div id="chat-input-wrap">
-			<div id="chat-input-mode" class="chat-pink no-select">
-				<span id="chat-mode-msg" class="ellipsis">To town:</span>
-			</div>
-			<input id="chat-input" type="text" maxlength="240" autocomplete="off" spellcheck="false" />
-		</div>
+<div id="chat-log" class="no-pointer text-shadow"></div>
+
+<div id="chat-input-wrap">
+	<div id="chat-input-mode" class="chat-pink no-select">
+		<span id="chat-mode-msg" class="ellipsis">To town:</span>
 	</div>
-	<div id="chat-present-wrap" class="no-select">
-		<div id="chat-header">&nbsp;</div>
-		<div id="chat-room"></div>
-	</div>
+	<input id="chat-input" type="text" maxlength="240" autocomplete="off" spellcheck="false" />
 </div>
+
+<div id="chat-present-wrap" class="no-select">
+	<div id="chat-header">&nbsp;</div>
+	<div id="chat-room"></div>
+</div>
+
+<div id="bar-wrap" class="no-select text-shadow"></div>
+<div id="scene-players" class="scene none no-select no-pointer" style="z-index: 2"></div>
 <div id="button-wrap" class="no-select text-shadow"></div>
 <div id="mini-map" class="text-shadow no-select">
 	<div id="mini-map-confirm-wrap" class="flex-column flex-center">

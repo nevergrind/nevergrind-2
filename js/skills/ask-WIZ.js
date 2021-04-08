@@ -395,7 +395,7 @@
 		})
 		delayedCall(.25, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'mirrorImage1'
 			}, {
 				targetMob: false,
@@ -407,7 +407,7 @@
 		})
 		delayedCall(.5, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'mirrorImage2'
 			}, {
 				targetMob: false,
@@ -419,7 +419,7 @@
 		})
 		delayedCall(.75, () => {
 			ask.explosion({
-				..._.clone(o),
+				index: o.index,
 				key: 'mirrorImage3'
 			}, {
 				targetMob: false,
