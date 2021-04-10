@@ -1,5 +1,5 @@
 mob.data = {}
-mob.data['Salubrin Haven'] = [
+mob.data[ZONES.salubrinHaven] = [
 	{
 		img: 'orc',
 		name: 'orc pawn',
@@ -85,55 +85,55 @@ mob.data['Salubrin Haven'] = [
 		traits: [], // champ traits
 	},
 ]
-mob.data['Tendolin Passage'] = [{
+mob.data[ZONES.tendolinPassage] = [{
 
 	// champs
 }]
-mob.data['Greenthorn Cavern'] = [{
+mob.data[ZONES.greenthornCavern] = [{
 
 	// champs
 }]
-mob.data['Lanfeld Refuge'] = [{
+mob.data[ZONES.lanfeldRefuge] = [{
 
 	// champs
 }]
-mob.data['Riven Grotto'] = [{
+mob.data[ZONES.rivenGrotto] = [{
 
 	// champs
 }]
-mob.data['Bastille Citadel'] = [{
+mob.data[ZONES.bastilleCitadel] = [{
 
 	// champs
 }]
-mob.data['Kordata Cove'] = [{
+mob.data[ZONES.kordataCove] = [{
 
 	// champs
 }]
-mob.data['Sylong Sanctuary'] = [{
+mob.data[ZONES.sylongSanctuary] = [{
 
 	// champs
 }]
-mob.data['Thule Crypt'] = [{
+mob.data[ZONES.thuleCrypt] = [{
 
 	// champs
 }]
-mob.data['Temple of Prenssor'] = [{
+mob.data[ZONES.templeOfPrenssor] = [{
 
 	// champs
 }]
-mob.data['Fahlnir Citadel'] = [{
+mob.data[ZONES.fahlnirCitadel] = [{
 
 	// champs
 }]
-mob.data['Anuran Ruins'] = [{
+mob.data[ZONES.anuranRuins] = [{
 
 	// champs
 }]
-mob.data['Galeblast Fortress'] = [{
+mob.data[ZONES.galeblastFortress] = [{
 
 	// champs
 }]
-mob.data['Ashenflow Peak'] = [{
+mob.data[ZONES.ashenflowPeak] = [{
 
 	// champs
 }]

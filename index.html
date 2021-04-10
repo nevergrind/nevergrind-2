@@ -464,6 +464,20 @@ app.socketUrl = app.isApp ?
 </div>
 
 <!-- layer 2 -->
+<div id="bar-main-menu">
+	<img id="bar-camp"
+		 class="popover-icons bar-icons"
+		 src="images/ui/bar-camp.png"></i>
+	<img id="bar-stats"
+		 class="popover-icons bar-icons"
+		 src="images/ui/bar-character.png"></i>
+	<img id="bar-inventory"
+		 class="popover-icons bar-icons"
+		 src="images/ui/bar-inventory.png"></i>
+	<img id="bar-options"
+		 class="popover-icons bar-icons"
+		 src="images/ui/bar-options.png"></i>
+</div>
 <div id="bar-lag" class="no-select text-shadow">
 	<span class="popover-icons"></span>
 	<span class="popover-icons"></span>
@@ -475,7 +489,12 @@ app.socketUrl = app.isApp ?
 	<div id="chat-input-mode" class="chat-pink no-select">
 		<span id="chat-mode-msg" class="ellipsis">To town:</span>
 	</div>
-	<input id="chat-input" type="text" maxlength="240" autocomplete="off" spellcheck="false" />
+	<input id="chat-input"
+		   type="text"
+		   maxlength="240"
+		   autocomplete="off"
+		   placeholder="Hit enter to chat"
+		   spellcheck="false" />
 </div>
 
 <div id="chat-present-wrap" class="no-select">
@@ -483,8 +502,8 @@ app.socketUrl = app.isApp ?
 	<div id="chat-room"></div>
 </div>
 
-<div id="bar-wrap" class="no-select text-shadow"></div>
 <div id="scene-players" class="scene none no-select no-pointer" style="z-index: 2"></div>
+<div id="bar-wrap" class="no-select text-shadow"></div>
 <div id="button-wrap" class="no-select text-shadow"></div>
 <div id="mini-map" class="text-shadow no-select">
 	<div id="mini-map-confirm-wrap" class="flex-column flex-center">

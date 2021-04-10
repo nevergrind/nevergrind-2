@@ -42,7 +42,7 @@ var mission;
 		questHtml = '<div id="various-body" class="flex-column flex-max">'
 
 		questHtml = '<div id="mission-wrap" class="flex-row aside-frame">' +
-			'<img id="mission-preview" src="images/battle/fahlnir-citadel-2.png">' +
+			'<img id="mission-preview" src="images/battle/salubrin-haven-hallway-1.jpg">' +
 			'<div id="mission-detail-col">'
 				if (party.presence[0].isLeader) {
 					questHtml += '<div id="mission-details">'+
@@ -77,11 +77,12 @@ var mission;
 	}
 	function getMissionRowHtml(z) {
 		var html = '';
-		zones[z.id].missions.forEach(questId => {
-			html += '<div class="mission-quest-item ellipsis ' + combat.considerClass[combat.getLevelDifferenceIndex(quests[questId].level)] +'" '+
+		zones[z.id].missions.forEach((questId, index) => {
+			const levelDiffClass = combat.considerClass[combat.getLevelDifferenceIndex(quests[index].level)]
+			html += '<div class="mission-quest-item ellipsis ' + levelDiffClass +'" '+
 				'data-id="'+ z.id +'" ' +
-				'data-quest="'+ questId +'">' +
-				quests[questId].title +
+				'data-quest="'+ index +'">' +
+				quests[index].title +
 			'</div>'
 		})
 
@@ -101,8 +102,7 @@ var mission;
 			mission.id = id
 			mission.questId = questId
 			// console.info("zone name: ", zones[mission.id].name)
-			var png = getZoneImg()
-			querySelector('#mission-preview').src = png
+			querySelector('#mission-preview').src = getZonePreviewImg(questId)
 			$("#mission-title").html(quests[mission.questId].title);
 			querySelector('#mission-level').innerHTML = levelHtml()
 		}
@@ -110,13 +110,19 @@ var mission;
 			// TODO: non-party member needs to see something... EMBARK?
 		}
 	}
+	function getZonePreviewImg(id) {
+		const zoneName = mission.getKebabName()
+		const bgType = id % 2 === 1 ? 'room' : 'hallway'
+		const index = 1
+		return 'images/battle/' + zoneName + '-'+ bgType + '-'+ index +'.jpg'
+	}
 	function getKebabName() {
 		return _.kebabCase(zones[mission.id].name.replace(/'/g, ''))
 	}
 	function getZoneImg() {
 		const zoneName = mission.getKebabName()
-		const index = quests[mission.questId].imgIndex
 		const bgType = map.inRoom ? 'room' : 'hallway'
+		const index = 1
 		return 'images/battle/' + zoneName + '-'+ bgType + '-'+ index +'.jpg'
 	}
 

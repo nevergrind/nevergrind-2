@@ -38,6 +38,7 @@ var party;
 		isChilled,
 		isFrozen,
 		totalPlayers,
+		casting,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -214,7 +215,8 @@ var party;
 			if (party.presence[index].isLeader) {
 				mission.rxReturnToTown()
 			}
-			// console.warn('removing party member: index', index, 'row', p.row)
+			// console.warn('r
+			// emoving party member: index', index, 'row', p.row)
 			_.pullAt(party.presence, [ index ])
 			bar.dom[p.row] = undefined
 			$('#bar-player-wrap-' + p.row).remove()
@@ -459,5 +461,21 @@ var party;
 		var a = msg.replace(/ +/g, " ").split(" ")
 		return a[1] === void 0 ?
 			'' : (_.capitalize(a[1].trim()))
+	}
+
+	/**
+	 * Sends casting start/stop events to all party members to trigger animations
+	 * @param data
+	 */
+	function casting(data) {
+		if (data.event === 'stop') {
+			ask.killCastingTweens(data)
+		}
+		else if (data.event === 'start') {
+			ask.castEvocation({
+				index: data.index,
+				key: data.key
+			})
+		}
 	}
 })(Date, _, $);

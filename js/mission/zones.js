@@ -1,129 +1,129 @@
 
 var zones = [{},
 	{
-		name: 'Salubrin Haven',
+		name: ZONES.salubrinHaven,
 		level: 1,
 		maxLevel: 8,
 		id: 1,
 		isOpen: 0,
-		missions: [1,2],
-		mobs: mob.data['Salubrin Haven'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.salubrinHaven),
+		mobs: mob.data[ZONES.salubrinHaven].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Tendolin Passage',
+		name: ZONES.tendolinPassage,
 		level: 1,
 		maxLevel: 8,
 		id: 2,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Tendolin Passage'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.tendolinPassage),
+		mobs: mob.data[ZONES.tendolinPassage].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Greenthorn Cavern',
+		name: ZONES.greenthornCavern,
 		level: 5,
 		maxLevel: 20,
 		id: 3,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Greenthorn Cavern'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.greenthornCavern),
+		mobs: mob.data[ZONES.greenthornCavern].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Lanfeld Refuge',
+		name: ZONES.lanfeldRefuge,
 		level: 5,
 		maxLevel: 20,
 		id: 4,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Lanfeld Refuge'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.lanfeldRefuge),
+		mobs: mob.data[ZONES.lanfeldRefuge].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Riven Grotto',
+		name: ZONES.rivenGrotto,
 		level: 5,
 		maxLevel: 20,
 		id: 5,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Riven Grotto'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.rivenGrotto),
+		mobs: mob.data[ZONES.rivenGrotto].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: "Bastille Citadel",
+		name: ZONES.bastilleCitadel,
 		level: 8,
 		maxLevel: 20,
 		id: 6,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data["Bastille Citadel"].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.bastilleCitadel),
+		mobs: mob.data[ZONES.bastilleCitadel].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Kordata Cove',
+		name: ZONES.kordataCove,
 		level: 12,
 		maxLevel: 25,
 		id: 7,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Kordata Cove'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.kordataCove),
+		mobs: mob.data[ZONES.kordataCove].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Sylong Sanctuary',
+		name: ZONES.sylongSanctuary,
 		level: 16,
 		maxLevel: 30,
 		id: 8,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Sylong Sanctuary'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.sylongSanctuary),
+		mobs: mob.data[ZONES.sylongSanctuary].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: "Thule Crypt",
+		name: ZONES.thuleCrypt,
 		level: 20,
 		maxLevel: 35,
 		id: 9,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data["Thule Crypt"].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.thuleCrypt),
+		mobs: mob.data[ZONES.thuleCrypt].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Temple of Prenssor',
+		name: ZONES.templeOfPrenssor,
 		level: 24,
 		maxLevel: 40,
 		id: 10,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Temple of Prenssor'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.templeOfPrenssor),
+		mobs: mob.data[ZONES.templeOfPrenssor].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Fahlnir Citadel',
+		name: ZONES.fahlnirCitadel,
 		level: 28,
 		maxLevel: 45,
 		id: 11,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Fahlnir Citadel'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.fahlnirCitadel),
+		mobs: mob.data[ZONES.fahlnirCitadel].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Anuran Ruins',
+		name: ZONES.anuranRuins,
 		level: 32,
 		maxLevel: 50,
 		id: 12,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Anuran Ruins'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.anuranRuins),
+		mobs: mob.data[ZONES.anuranRuins].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Galeblast Fortress',
+		name: ZONES.galeblastFortress,
 		level: 35,
 		maxLevel: 50,
 		id: 13,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Galeblast Fortress'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.galeblastFortress),
+		mobs: mob.data[ZONES.galeblastFortress].reduce(mob.getMobImagesByZone, [])
 	},
 	{
-		name: 'Ashenflow Peak',
+		name: ZONES.ashenflowPeak,
 		level: 35,
 		maxLevel: 50,
 		id: 14,
 		isOpen: 0,
-		missions: [1,2,3,4,5],
-		mobs: mob.data['Ashenflow Peak'].reduce(mob.getMobTypesByZone, [])
+		missions: quests.filter(q => q.zone === ZONES.ashenflowPeak),
+		mobs: mob.data[ZONES.ashenflowPeak].reduce(mob.getMobImagesByZone, [])
 	},
 ];

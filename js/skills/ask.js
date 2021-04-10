@@ -251,8 +251,8 @@ var ask;
 	}
 	const castConjurationDefaults = {
 		isPrimary: true,
-		sizeStart: 250,
-		sizeEnd: 200,
+		sizeStart: 200,
+		sizeEnd: 150,
 		rotation: 360,
 		duration: .5,
 		removeDelay: 0,
@@ -260,16 +260,14 @@ var ask;
 	}
 	const castAlterationDefaults = {
 		isPrimary: true,
-		sizeStart: 300,
-		sizeEnd: 200,
+		sizeStart: 200,
+		sizeEnd: 150,
 		duration: .5,
 		removeDelay: 0,
-		interval: .1,
 		ease: Power0.easeOut,
 	}
 	const castEvocationDefaults = {
-		interval: .1,
-		size: 300,
+		size: 200,
 		duration: .5,
 		ease: Back.easeInOut,
 	}
@@ -339,40 +337,57 @@ var ask;
 			onCompleteParams: [ img.id, config.targetMob ]
 		})
 	}
-	function killCastingTweens() {
-		ask.castingTweens.forEach(t => {
+
+	function castingArrayInit(o) {
+		if (typeof ask.castingTweens[o.index] === 'undefined') {
+			console.warn('set castingTweens')
+			ask.castingTweens[o.index] = []
+		}
+		if (typeof ask.castingImgIds[o.index] === 'undefined') {
+			console.warn('set castingImgIds')
+			ask.castingImgIds[o.index] = []
+		}
+	}
+	function killCastingTweens(data) {
+		castingArrayInit(data)
+		ask.castingTweens[data.index].forEach(t => {
 			t.kill()
 		})
-		ask.castingImgIds.forEach(t => {
+		ask.castingImgIds[data.index].forEach(t => {
 			ask.removeImg(t, false)
 		})
-		ask.castingTweens = []
-		ask.castingImgIds = []
+		ask.castingTweens[data.index] = []
+		ask.castingImgIds[data.index] = []
 	}
 
 	function castEvocation(o, config = {}) {
+		ask.killCastingTweens({index: o.index})
 		let rotation = 0
+		let count = 0
 		config = {
 			...castEvocationDefaults,
 			...config
 		}
-		ask.castingTweens.push(TweenMax.to(EmptyObject, config.interval, {
+		ask.castingTweens[o.index].push(TweenMax.to(EmptyObject, .1, {
 			repeat: -1,
 			onRepeat: drawEvocationLines,
 		}))
 		//////////////////////////////////////
 		function drawEvocationLines() {
 			const img = ask.getImg(o, { targetMob: false })
-			ask.castingImgIds.push(img.id)
 			img.width = config.size
 			img.height = config.size
-			TweenMax.set(img, {
-				pixi: { contrast: 1.15, brightness: 1.15 }
-			})
 			img.rotation = util.rotation(rotation)
+			TweenMax.set(img, {
+				pixi: {
+					contrast: 1.15,
+					brightness: 1.15
+				}
+			})
+			ask.castingImgIds[o.index].push(img.id)
 			ask.addChild(img, false)
 			rotation += 30
-			ask.castingTweens.push(TweenMax.to(img, config.duration, {
+			ask.castingTweens[o.index].push(TweenMax.to(img, config.duration, {
 				pixi: { contrast: 0, brightness: 1 },
 				width: 0,
 				height: 0,
@@ -380,21 +395,26 @@ var ask;
 				onComplete: ask.removeImg,
 				onCompleteParams: [img.id, false]
 			}))
+			if (count++ > 55) {
+				ask.killCastingTweens({index: o.index})
+			}
 		}
 	}
 	function castAlteration(o, config) {
-		ask.killCastingTweens()
+		let count = 0
+		ask.killCastingTweens({index: o.index})
 		config = {
 			...castAlterationDefaults,
 			...config
 		}
 		// rotate1
 		const img = ask.getImg(o, { targetMob: false })
-		ask.castingImgIds.push(img.id)
+		console.info('castAlteration', o)
+		ask.castingImgIds[o.index].push(img.id)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		ask.addChild(img, false)
-		ask.castingTweens.push(TweenMax.to(img, config.duration, {
+		ask.castingTweens[o.index].push(TweenMax.to(img, config.duration, {
 			pixi: { contrast: 2, brightness: 2, },
 			width: config.sizeEnd,
 			height: config.sizeEnd,
@@ -402,13 +422,13 @@ var ask;
 			repeat: -1,
 			ease: config.ease,
 		}))
-		ask.castingTweens.push(TweenMax.to(img, config.duration, {
+		ask.castingTweens[o.index].push(TweenMax.to(img, config.duration, {
 			rotation: util.rotation(360),
 			repeat: -1,
 			ease: config.ease,
 		}))
 
-		ask.castingTweens.push(TweenMax.to(EmptyObject, config.interval, {
+		ask.castingTweens[o.index].push(TweenMax.to(EmptyObject, .1, {
 			repeat: -1,
 			onRepeat: drawAlterationLines,
 		}))
@@ -416,7 +436,7 @@ var ask;
 		//////////////////////////////////////
 		function drawAlterationLines() {
 			const z = ask.getImg(o, { targetMob: false })
-			ask.castingImgIds.push(z.id)
+			ask.castingImgIds[o.index].push(z.id)
 			TweenMax.set(z, {
 				pixi: {
 					contrast: img._gsColorMatrixFilter.brightness,
@@ -428,27 +448,31 @@ var ask;
 			z.rotation = util.rotation(rotation)
 			ask.addChild(z, false)
 			rotation += 30
-			ask.castingTweens.push(TweenMax.to(z, config.duration, {
+			ask.castingTweens[o.index].push(TweenMax.to(z, config.duration, {
 				pixi: { contrast: 0, brightness: 0 },
 				width: 0,
 				height: 0,
 				onComplete: ask.removeImg,
 				onCompleteParams: [z.id, false]
 			}))
+			if (count++ > 55) {
+				ask.killCastingTweens({index: o.index})
+			}
 		}
 	}
 	function castConjuration(o, config) {
-		ask.killCastingTweens()
+		let count = 0
+		ask.killCastingTweens({index: o.index})
 		config = {
 			...castConjurationDefaults,
 			...config
 		}
 		const img = ask.getImg(o, { targetMob: false })
-		ask.castingImgIds.push(img.id)
+		ask.castingImgIds[o.index].push(img.id)
 		img.width = config.sizeStart
 		img.height = config.sizeStart
 		ask.addChild(img, false)
-		ask.castingTweens.push(TweenMax.to(img, config.duration, {
+		ask.castingTweens[o.index].push(TweenMax.to(img, config.duration, {
 			pixi: { contrast: 2, brightness: 2, },
 			width: config.sizeEnd,
 			height: config.sizeEnd,
@@ -461,14 +485,14 @@ var ask;
 		const img2 = ask.getImg(o, {
 			targetMob: false
 		})
-		ask.castingImgIds.push(img2.id)
+		ask.castingImgIds[o.index].push(img2.id)
 		img2.width = config.sizeStart
 		img2.height = config.sizeStart
 		TweenMax.set(img2, {
 			pixi: { contrast: 2, brightness: 2, },
 		})
 		ask.addChild(img2, false)
-		ask.castingTweens.push(TweenMax.to(img2, config.duration, {
+		ask.castingTweens[o.index].push(TweenMax.to(img2, config.duration, {
 			pixi: { contrast: 1, brightness: 1, },
 			width: config.sizeEnd,
 			height: config.sizeEnd,
@@ -483,14 +507,14 @@ var ask;
 			ease: Power0.easeIn
 		})
 
-		ask.castingTweens.push(TweenMax.to(EmptyObject, .1, {
+		ask.castingTweens[o.index].push(TweenMax.to(EmptyObject, .1, {
 			repeat: -1,
 			onRepeat: drawConjurationLines,
 		}))
 		//////////////////////////////////////
 		function drawConjurationLines() {
 			const z = ask.getImg(o, { targetMob: false })
-			ask.castingImgIds.push(z.id)
+			ask.castingImgIds[o.index].push(z.id)
 			TweenMax.set(z, {
 				pixi: {
 					contrast: img._gsColorMatrixFilter.brightness,
@@ -502,7 +526,7 @@ var ask;
 				zIndex: img._zIndex - 1
 			})
 			ask.addChild(z, false)
-			ask.castingTweens.push(TweenMax.to(z, config.duration, {
+			ask.castingTweens[o.index].push(TweenMax.to(z, config.duration, {
 				width: img._width * 1.5,
 				height: img._height * 1.5,
 				alpha: 0,
@@ -511,6 +535,9 @@ var ask;
 				onComplete: ask.removeImg,
 				onCompleteParams: [z.id, false]
 			}))
+			if (count++ > 55) {
+				ask.killCastingTweens({index: o.index})
+			}
 		}
 	}
 	function pierce(o, config) {

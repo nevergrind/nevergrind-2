@@ -23,6 +23,8 @@
 			.on('click', mousedown)
 			.on('keydown', keydown)
 
+		$('#chat-input').on('blur', chat.focusChatBlur)
+
 		$('#root-options')
 			.on('click', '#app-exit', bar.appExit)
 			.on('click', '#app-reset', bar.appReset)
@@ -64,6 +66,8 @@
 			.on('click', '.mission-zone-headers', mission.toggleZone)
 			.on('click', '.mission-quest-item', mission.clickQuest)
 			.on('click', '#mission-embark', mission.embark)
+			// bars
+			.on('click', '.bar-hp-name', bar.targetPlayer)
 
 	}
 
@@ -191,7 +195,7 @@
 					if (!chat.hasFocus && !guild.hasFocus && chat.focusKeys.includes(key)) {
 						var z = $("#chat-input");
 						var txt = z.val();
-						!txt && query.el('#chat-input').focus();
+						!txt && chat.focusChatInput()
 						// console.warn('canceling', key)
 						return;
 					}
@@ -241,7 +245,7 @@
 					// town specific
 					if (!chat.hasFocus) {
 						// if no aside, focus on chat input first
-						chat.focusKeys.includes(key) && query.el('#chat-input').focus();
+						chat.focusKeys.includes(key) && chat.focusChatInput()
 
 						if (guild.hasFocus && key === 'Enter') {
 							guild.create();
@@ -251,10 +255,10 @@
 				else {
 					// dungeon & combat specific
 					if (!chat.hasFocus) {
-						if (chat.focusKeys.includes(key)) query.el('#chat-input').focus()
+						if (chat.focusKeys.includes(key)) chat.focusChatInput()
 						else if (key === ' ') spell.cancelSpell()
 						else if (key === 'F1') my.partyTarget(0)
-						else if (key === 'F2') my.partyTarget(1)
+						else if (key === 'F2') my.partyTarget(1) // bar-hp-name
 						else if (key === 'F3') my.partyTarget(2)
 						else if (key === 'F4') my.partyTarget(3)
 						else if (key === 'F5') my.partyTarget(4)

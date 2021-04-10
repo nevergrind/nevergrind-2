@@ -2,10 +2,14 @@
 	$, _, TweenMax, Power0, Power1, Power2, Power3, Power4, Circ,
 	TimelineMax, undefined) {
 
-	const stunRangeX = 60
-	const stunRXH = stunRangeX * .5
-	const stunRangeY = 20
-	const stunRYH = stunRangeY * .5
+	const smallRangeX = 60
+	const smallRXH = smallRangeX * .5
+	const smallRangeY = 20
+	const smallRYH = smallRangeY * .5
+	const mediumRangeX = 120
+	const mediumRXH = mediumRangeX * .5
+	const mediumRangeY = 40
+	const mediumRYH = smallRangeY * .5
 	const cacheMobStuns = []
 	const cachePlayerStuns = []
 	const cacheMobFears = []
@@ -14,7 +18,10 @@
 	const cachePlayerParalyze = []
 	const cacheMobSilence = []
 	const cachePlayerSilence = []
-	const targetPlayerObj = {targetMob: false}
+	const targetPlayerObj = {
+		targetMob: false,
+		sizeEnd: 300,
+	}
 
 	ask = {
 		...ask,
@@ -1391,16 +1398,16 @@
 		let bezierValues = [
 			// p1
 			{ x: startX, y: startY },
-			{ x: startX + stunRXH, y: startY },
-			{ x: startX + stunRXH, y: startY + stunRYH },
+			{ x: startX + mediumRXH, y: startY },
+			{ x: startX + mediumRXH, y: startY + mediumRYH },
 			// p2
-			{ x: startX + stunRXH, y: startY + stunRangeY },
-			{ x: startX, y: startY + stunRangeY },
+			{ x: startX + mediumRXH, y: startY + mediumRangeY },
+			{ x: startX, y: startY + mediumRangeY },
 			// p3
-			{ x: startX - stunRXH, y: startY + stunRangeY },
-			{ x: startX - stunRXH, y: startY + stunRYH },
+			{ x: startX - mediumRXH, y: startY + mediumRangeY },
+			{ x: startX - mediumRXH, y: startY + mediumRYH },
 			// p4
-			{ x: startX - stunRXH, y: startY },
+			{ x: startX - mediumRXH, y: startY },
 			{ x: startX, y: startY }
 		]
 
@@ -1420,18 +1427,18 @@
 
 		for (var i=0; i<3; i++) {
 			!function createParticle(i, p) {
-				p.width = 32
-				p.height = 32
+				p.width = 40
+				p.height = 40
 				p.x = startX
 				p.y = startY
 				if (targetMob) cacheMobSilence[o.index].push(p.id)
 				else cachePlayerSilence[o.index].push(p.id)
-				var t = new TweenMax.to(p, .333, {
-					delay: i * .111,
+				var t = new TweenMax.to(p, .75, {
+					delay: i * .25,
 					repeat: -1,
-					curviness: 1.5,
 					bezier: {
 						type: 'quadratic',
+						curviness: 1,
 						autoRotate: false,
 						values: bezierValues
 					},
@@ -1474,16 +1481,16 @@
 		let bezierValues = [
 			// p1
 			{ x: startX, y: startY },
-			{ x: startX + stunRXH, y: startY },
-			{ x: startX + stunRXH, y: startY + stunRYH },
+			{ x: startX + mediumRXH, y: startY },
+			{ x: startX + mediumRXH, y: startY + mediumRYH },
 			// p2
-			{ x: startX + stunRXH, y: startY + stunRangeY },
-			{ x: startX, y: startY + stunRangeY },
+			{ x: startX + mediumRXH, y: startY + mediumRangeY },
+			{ x: startX, y: startY + mediumRangeY },
 			// p3
-			{ x: startX - stunRXH, y: startY + stunRangeY },
-			{ x: startX - stunRXH, y: startY + stunRYH },
+			{ x: startX - mediumRXH, y: startY + mediumRangeY },
+			{ x: startX - mediumRXH, y: startY + mediumRYH },
 			// p4
-			{ x: startX - stunRXH, y: startY },
+			{ x: startX - mediumRXH, y: startY },
 			{ x: startX, y: startY }
 		]
 
@@ -1503,16 +1510,15 @@
 
 		for (var i=0; i<3; i++) {
 			!function createParticle(i, p) {
-				p.width = 32
-				p.height = 32
+				p.width = 64
+				p.height = 64
 				p.x = startX
 				p.y = startY
 				if (targetMob) cacheMobParalyze[o.index].push(p.id)
 				else cachePlayerParalyze[o.index].push(p.id)
-				var t = new TweenMax.to(p, .333, {
-					delay: i * .111,
+				var t = new TweenMax.to(p, 1, {
+					delay: i * .3333,
 					repeat: -1,
-					curviness: 1.5,
 					bezier: {
 						type: 'quadratic',
 						autoRotate: false,
@@ -1557,16 +1563,16 @@
 		let bezierValues = [
 			// p1
 			{ x: startX, y: startY },
-			{ x: startX + stunRXH, y: startY },
-			{ x: startX + stunRXH, y: startY + stunRYH },
+			{ x: startX + mediumRXH, y: startY },
+			{ x: startX + mediumRXH, y: startY + mediumRYH },
 			// p2
-			{ x: startX + stunRXH, y: startY + stunRangeY },
-			{ x: startX, y: startY + stunRangeY },
+			{ x: startX + mediumRXH, y: startY + mediumRangeY },
+			{ x: startX, y: startY + mediumRangeY },
 			// p3
-			{ x: startX - stunRXH, y: startY + stunRangeY },
-			{ x: startX - stunRXH, y: startY + stunRYH },
+			{ x: startX - mediumRXH, y: startY + mediumRangeY },
+			{ x: startX - mediumRXH, y: startY + mediumRYH },
 			// p4
-			{ x: startX - stunRXH, y: startY },
+			{ x: startX - mediumRXH, y: startY },
 			{ x: startX, y: startY }
 		]
 
@@ -1586,16 +1592,15 @@
 
 		for (var i=0; i<3; i++) {
 			!function createParticle(i, p) {
-				p.width = 32
-				p.height = 32
+				p.width = 50
+				p.height = 50
 				p.x = startX
 				p.y = startY
 				if (targetMob) cacheMobFears[o.index].push(p.id)
 				else cachePlayerFears[o.index].push(p.id)
-				var t = new TweenMax.to(p, .333, {
-					delay: i * .111,
+				var t = new TweenMax.to(p, .666, {
+					delay: i * .222,
 					repeat: -1,
-					curviness: 1.5,
 					bezier: {
 						type: 'quadratic',
 						autoRotate: false,
@@ -1640,16 +1645,16 @@
 		let bezierValues = [
 			// p1
 			{ x: startX, y: startY },
-			{ x: startX + stunRXH, y: startY },
-			{ x: startX + stunRXH, y: startY + stunRYH },
+			{ x: startX + smallRXH, y: startY },
+			{ x: startX + smallRXH, y: startY + smallRYH },
 			// p2
-			{ x: startX + stunRXH, y: startY + stunRangeY },
-			{ x: startX, y: startY + stunRangeY },
+			{ x: startX + smallRXH, y: startY + smallRangeY },
+			{ x: startX, y: startY + smallRangeY },
 			// p3
-			{ x: startX - stunRXH, y: startY + stunRangeY },
-			{ x: startX - stunRXH, y: startY + stunRYH },
+			{ x: startX - smallRXH, y: startY + smallRangeY },
+			{ x: startX - smallRXH, y: startY + smallRYH },
 			// p4
-			{ x: startX - stunRXH, y: startY },
+			{ x: startX - smallRXH, y: startY },
 			{ x: startX, y: startY }
 		]
 
@@ -1678,7 +1683,6 @@
 				var t = new TweenMax.to(p, .333, {
 					delay: i * .111,
 					repeat: -1,
-					curviness: 1.5,
 					bezier: {
 						type: 'quadratic',
 						autoRotate: false,

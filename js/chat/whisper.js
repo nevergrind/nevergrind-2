@@ -96,7 +96,5 @@ var whisper;
 		else if (r === 'trade-processing') trade.rxProcessing(data)
 		else if (r === 'trade-send-slots') trade.rxSlotsAndSend(data)
 		else if (r === 'trade-update-inventory') trade.rxUpdateInventory(data)
-		else if (r === 'p->HoT') combat.rxHotHero(data)
-		else if (r === 'p->buff') combat.rxBuffHero(data)
 	}
 })();

@@ -9,8 +9,7 @@ var quests;
 	 * gather - retrieve # lost relics
 	 * investigate - record ancient writings,
 	 */
-	quests = [{},
-		{
+	quests = [{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -19,6 +18,7 @@ var quests;
 			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
+			zone: ZONES.salubrinHaven,
 		},
 		{
 			level: 2,
@@ -29,6 +29,7 @@ var quests;
 			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
+			zone: ZONES.salubrinHaven,
 		},
 		{
 			level: 3,
@@ -39,6 +40,7 @@ var quests;
 			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
+			zone: ZONES.salubrinHaven,
 		},
 		{
 			level: 5,
@@ -49,6 +51,7 @@ var quests;
 			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
+			zone: ZONES.salubrinHaven,
 		},
 		{
 			level: 7,
@@ -59,6 +62,7 @@ var quests;
 			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
+			zone: ZONES.salubrinHaven,
 		},
 	]
 	///////////////////////////////////////////

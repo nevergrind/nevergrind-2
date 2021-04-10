@@ -2,7 +2,7 @@ var mob;
 let mobs = [];
 (function(TweenMax, $, _, Object, Linear,  PIXI, Sine, Power2, undefined) {
 	mob = {
-		getMobTypesByZone,
+		getMobImagesByZone,
 		getMobResist,
 		isAlive,
 		getRandomMobKey,
@@ -918,8 +918,8 @@ let mobs = [];
 		// console.info('getMobResist after', d.index, d.damageType, resist)
 		return resist
 	}
-	function getMobTypesByZone(acc, m) {
-		if (!acc.includes(m.img)) {
+	function getMobImagesByZone(acc, m) {
+		if (m.img && !acc.includes(m.img)) {
 			acc.push(m.img)
 		}
 		return acc

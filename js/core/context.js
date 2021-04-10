@@ -74,13 +74,13 @@ var context;
 		})
 	}
 	function contextWhisper() {
-		query.el('#chat-input').value = '';
+		query.el('#chat-input').value = ''
 		chat.modeChange({
 			msg: '',
 			mode: '@',
 			name: context.player.name
-		});
-		query.el('#chat-input').focus();
+		})
+		chat.focusChatInput()
 	}
 	function contextAddFriend() {
 		chat.sendMsg('/friend add ' + context.player.name);

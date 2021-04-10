@@ -40,6 +40,7 @@ var bar;
 		charStatColOneHtml,
 		charStatColTwoHtml,
 		updateAllResistsDOM,
+		targetPlayer,
 		defaultImage: [
 			'helms1',
 			'amulets0',
@@ -1122,5 +1123,15 @@ var bar;
 			'<div style="color: gold">Charisma:</div>'+
 			'<div style="'+ stats.cha().color +'">'+ stats.cha().value +'</div>' +
 		'</div>'
+	}
+
+	function targetPlayer() {
+		if (ng.view === 'dungeon' || ng.view === 'battle') {
+			const id = +this.id.split('-')[2]
+			const index = party.getIndexByRow(id)
+			console.info('id', id, index)
+			my.partyTarget(index)
+		}
+
 	}
 })(_, $, Draggable, TweenMax);

@@ -114,21 +114,31 @@ var spell;
 		query.el('#cast-bar-icon').src = 'images/skills/'+ my.job +'/'+ spell.index +'.png'
 		query.el('#cast-bar-name').textContent = spell.data.name
 
+		const spellKey = ask.getCastingKey(spell.data)
 		if (spell.data.spellType === 'evocation') {
 			ask.castEvocation({
-				key: ask.getCastingKey(spell.data)
+				index: my.row,
+				key: spellKey
 			})
 		}
 		else if (spell.data.spellType === 'alteration') {
 			ask.castAlteration({
-				key: ask.getCastingKey(spell.data)
+				index: my.row,
+				key: spellKey
 			})
 		}
 		else {
 			ask.castConjuration({
-				key: ask.getCastingKey(spell.data)
+				index: my.row,
+				key: spellKey
 			})
 		}
+		socket.publish('party' + my.partyId, {
+			route: 'p->casting',
+			event: 'start',
+			index: my.row,
+			key: spellKey,
+		}, true)
 	}
 	function spellFizzleChance() {
 		spellType = skills[my.job][spell.index].spellType
@@ -188,7 +198,12 @@ var spell;
 		timers.castBar = 1
 		querySelector('#cast-bar-wrap').style.opacity = 0
 		button.resumeAutoAttack()
-		ask.killCastingTweens()
+		ask.killCastingTweens({index: my.row})
+		socket.publish('party' + my.partyId, {
+			route: 'p->casting',
+			event: 'stop',
+			index: my.row,
+		}, true)
 	}
 	// defaults for combat DD on mob
 	function getDefaults(skillIndex, data) {

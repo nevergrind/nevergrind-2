@@ -277,5 +277,21 @@ const MOB_TIERS = Object.freeze({
 const MAP_SIZES = Object.freeze({
 	small: 'small',
 	medium: 'medium',
-	lare: 'large',
+	large: 'large',
+})
+const ZONES = Object.freeze({
+	salubrinHaven: 'Salubrin Haven',
+	tendolinPassage: 'Tendolin Passage',
+	greenthornCavern: 'Greenthorn Cavern',
+	lanfeldRefuge: 'Lanfeld Refuge',
+	rivenGrotto: 'Riven Grotto',
+	bastilleCitadel: 'Bastille Citadel',
+	kordataCove: 'Kordata Cove',
+	sylongSanctuary: 'Sylong Sanctuary',
+	thuleCrypt: 'Thule Crypt',
+	templeOfPrenssor: 'Temple of Prenssor',
+	fahlnirCitadel: 'Fahlnir Citadel',
+	anuranRuins: 'Anuran Ruins',
+	galeblastFortress: 'Galeblast Fortress',
+	ashenflowPeak: 'Ashenflow Peak',
 })

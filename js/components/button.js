@@ -567,12 +567,6 @@ var button;
 			// base attack buttons
 			s += `
 			<div id="main-attack-wrap">
-				<div id="bar-main-menu">
-					<img id="bar-camp" class="popover-icons bar-icons" src="images/ui/bar-camp.png"></i>
-					<img id="bar-stats" class="popover-icons bar-icons" src="images/ui/bar-character.png"></i>
-					<img id="bar-inventory" class="popover-icons bar-icons" src="images/ui/bar-inventory.png"></i>
-					<img id="bar-options" class="popover-icons bar-icons" src="images/ui/bar-options.png"></i>
-				</div>
 				${getWeaponButtonHtml()}
 			</div>
 			<div id="potion-wrap" class="text-shadow">

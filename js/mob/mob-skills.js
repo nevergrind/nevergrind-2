@@ -1122,21 +1122,21 @@ mobSkills = {};
 	function animateFear(data) {
 		ask.mobFear({
 			index: party.presence[party.getIndexByRow(data.row)].row,
-			key: 'particle-small-purple',
+			key: 'hauntingVision',
 			duration: data.duration
 		}, false)
 	}
 	function animateParalyze(data) {
 		ask.mobParalyze({
 			index: party.presence[party.getIndexByRow(data.row)].row,
-			key: 'particle-small-arcane',
+			key: 'palmStrikeHand',
 			duration: data.duration
 		}, false)
 	}
 	function animateSilence(data) {
 		ask.mobSilence({
 			index: party.presence[party.getIndexByRow(data.row)].row,
-			key: 'particle-small-ice',
+			key: 'mendingAura',
 			duration: data.duration
 		}, false)
 	}

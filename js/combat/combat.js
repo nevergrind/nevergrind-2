@@ -1633,7 +1633,7 @@ var combat;
 					// dodge, parry, etc
 					duration = TEXT_DURATION * .8
 					TweenMax.to(basicText, duration, {
-						pixi: { scale: 1.5 },
+						pixi: { scale: .75 },
 						onComplete: ask.removeImg,
 						onCompleteParams: [ basicText.id, o.targetMob ],
 						ease: Power2.easeOut
@@ -1706,7 +1706,7 @@ var combat;
 		if (my.row === heal.index) {
 			// healing ME
 			heal.damage = processHeal(heal.damage)
-			console.info('insta heal!', heal.damage)
+			// console.info('insta heal!', heal.damage)
 			if (heal.damage > 0) {
 				chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
 				updateMyResource(PROP.HP, heal.damage)
@@ -1716,8 +1716,8 @@ var combat;
 					hpMax: my.hpMax,
 				})
 			}
-			ask.processAnimations(heal)
 		}
+		ask.processAnimations(heal)
 		if (~~hate !== 0) {
 			mob.addHateHeal({
 				row: row,
@@ -1778,8 +1778,8 @@ var combat;
 	function onHotTick(buff, healAmount) {
 		// console.info('healAmount b4', healAmount)
 		healAmount = processHeal(healAmount)
-		// console.info('onHotTick', buff)
-		chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CHAT.HEAL)
+		console.info('onHotTick', buff)
+		// chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CHAT.HEAL)
 		updateMyResource(PROP.HP, healAmount)
 	}
 
@@ -1796,7 +1796,7 @@ var combat;
 	function rxBuffHero(data) {
 		// console.info('rxBuffHero: ', data)
 		hate = 0
-		// console.info('processBuffToMe', data)
+		console.info('processBuffToMe', data)
 		data.buffs.forEach(buff => {
 			if (buffs[buff.key].hate) {
 				hate += ~~(buff.damage * buffs[buff.key].hate)
@@ -1890,11 +1890,10 @@ var combat;
 						mobSkills.freezePlayerEffectRx(buff)
 					}
 				}
-				else {
-					ask.processAnimations(buff)
-				}
 				// console.warn("EFFECT! ", buff)
 			}
+			// buff effects shown to all
+			ask.processAnimations(buff)
 			// things that happen to everyone
 		})
 		if (~~hate > 0) {

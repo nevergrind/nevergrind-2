@@ -868,9 +868,17 @@ animation: town-repeat-bg 90s linear infinite;*/
 	left: .5rem;
 	width: 21rem;
 	height: 2rem;
+	opacity: 0;
+	transition: opacity .2s ease-out;
 	line-height: 1.4;
 	font-size: 1rem;
 	z-index: 2;
+}
+#chat-input-wrap.opaque {
+	opacity: 1!important;
+}
+#chat-input-wrap:hover {
+	opacity: 1;
 }
 #chat-present-wrap {
 	position: fixed;
@@ -919,10 +927,10 @@ animation: town-repeat-bg 90s linear infinite;*/
 #chat-input-mode {
 	display: flex;
 	flex: 0;
-	background: #025;
+	background: #0258;
 	padding: 0 .4rem;
 	max-width: 8rem;
-	box-shadow: 0 0 0 1px #048;
+	box-shadow: 0 0 0 1px #0488;
 }
 
 #chat-mode-msg {
@@ -1108,12 +1116,12 @@ background-clip: content-box;
 }
 
 #bar-main-menu {
-	position: absolute;
-	display: flex;
-	text-align: center;
-	bottom: 0;
-	right: 100%;
+	display: none;
+	position: fixed;
+	top: .2rem;
+	left: .2rem;
 	background: #0008;
+	z-index: 2;
 }
 
 #bar-wrap .player-targeted {
@@ -1227,8 +1235,15 @@ background-clip: content-box;
 	text-indent: .2rem;
 	font-size: .9rem;
 	line-height: 1.2;
+	transition: background .2s ease-out;
 }
-
+.bar-hp-name:hover {
+	background: #025;
+}
+.bar-hp-name:active {
+	background: #048;
+	transition: none;
+}
 .bar-any-wrap {
 	position: relative;
 	border: 1px solid #000;
@@ -1815,7 +1830,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	border: 1px solid #000;
 }
 #potion-wrap { margin-left: 1rem; }
-#main-attack-wrap, #bar-main-menu { margin-right: 1rem; }
+#main-attack-wrap { margin-right: 1rem; }
 
 #skill-btn-wrap {
 	display: flex;

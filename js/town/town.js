@@ -116,6 +116,7 @@ var town;
 			town.isInitialized[key] = false
 		}
 		TweenMax.set('#button-wrap', CSS.DISPLAY_NONE)
+
 		$.post(app.url + 'character/load-character.php', {
 			row: create.selected
 		}).done((data) => {
@@ -126,6 +127,7 @@ var town;
 				chat.log('Type /help or /h for a list of chat commands.', 'chat-warning')
 			}
 			chat.sizeTown();
+			TweenMax.set(['#bar-main-menu'], CSS.DISPLAY_FLEX)
 			// console.info('load-character: ', data)
 			// my processing
 			Object.assign(my, _.omit(data.characterData, KEYS.DATA))

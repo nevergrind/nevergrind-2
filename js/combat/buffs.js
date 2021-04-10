@@ -388,7 +388,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 3,
 			isHeal: true,
 			tickPercent: .5,
-			msg: () => 'Nature\'s Touch starts healing your wounds.',
+			msg: () => 'Nature\'s Touch begins to heal your wounds.',
 		},
 		mossBreath: {
 			name: 'Moss Breath',
@@ -399,7 +399,7 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 21,
 			hate: 4.8,
 			isHeal: true,
-			msg: () => 'Moss Breath starts healing your wounds.',
+			msg: () => 'Moss Breath begins to heal your wounds.',
 		},
 		synthesize: {
 			name: 'Synthesize',
@@ -411,7 +411,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 2.5,
 			minimumValue: 1,
 			isHeal: true,
-			msg: () => 'Synthesize starts healing your wounds.',
+			msg: () => 'Synthesize begins to heal your wounds.',
 		},
 		branchSpirit: {
 			name: 'Branch Spirit',
@@ -506,7 +506,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 3.5,
 			isHeal: true,
 			tickPercent: .33,
-			msg: () => 'Rejuvinate starts healing your wounds.',
+			msg: () => 'Rejuvinate begins to heal your wounds.',
 		},
 		mysticalGlow: {
 			name: 'Mystical Glow',

@@ -56,6 +56,8 @@ var chat;
 		sizeTown,
 		prepare,
 		getPrefix,
+		focusChatInput,
+		focusChatBlur,
 	}
 	var el, helpHtml;
 	var resp;
@@ -459,8 +461,8 @@ var chat;
 				mode: '@',
 				name: chat.lastWhisper.name
 			}
-			chat.modeChange(o);
-			query.el('#chat-input').focus();
+			chat.modeChange(o)
+			chat.focusChatInput()
 		}
 	}
 	function scrollBottom() {
@@ -574,6 +576,14 @@ var chat;
 		el = createElement('div');
 		el.innerHTML = html;
 		return el.textContent || el.innerText || '';
+	}
+
+	function focusChatInput() {
+		query.el('#chat-input').focus()
+		querySelector('#chat-input-wrap').classList.add('opaque')
+	}
+	function focusChatBlur() {
+		querySelector('#chat-input-wrap').classList.remove('opaque')
 	}
 
 })(TweenMax, _, $);
