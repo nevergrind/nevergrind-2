@@ -573,7 +573,7 @@ let mobs = [];
 	function animateHit(i, bypass, damage) {
 		if (ng.view !== 'battle' || mobs[i].isDead) return
 		setTimeScaleSpeed(i)
-		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return;
+		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return
 
 		if (!timers.mobEffects[i].freezeDuration &&
 			damage > (2 + (mobs[i].level * .75))) {
@@ -595,6 +595,16 @@ let mobs = [];
 				onComplete: resetIdle,
 				onCompleteParams: [i]
 			})
+			// attack sound effect
+			const now = Date.now()
+			if (typeof mobs[i].sfxHitTimestamp === 'undefined') {
+				mobs[i].sfxHitTimestamp = now
+				audio.playSound(mobs[i].sfxHit)
+			}
+			else if (now - mobs[i].sfxHitTimestamp > 6000) {
+				mobs[i].sfxHitTimestamp = now
+				audio.playSound(mobs[i].sfxHit)
+			}
 		}
 
 	}
@@ -676,6 +686,17 @@ let mobs = [];
 				onComplete: resetIdle,
 				onCompleteParams: [i]
 			})
+			// attack sound effect
+			const now = Date.now()
+			if (typeof mobs[i].sfxAttackTimestamp === 'undefined') {
+				mobs[i].sfxAttackTimestamp = now
+				audio.playSound(mobs[i].sfxAttack)
+			}
+			else if (now - mobs[i].sfxAttackTimestamp > 12000) {
+				mobs[i].sfxAttackTimestamp = now
+				audio.playSound(mobs[i].sfxAttack)
+			}
+
 		}
 	}
 	function hideMobTargets() {
@@ -715,6 +736,16 @@ let mobs = [];
 					onComplete: resetIdle,
 					onCompleteParams: [i]
 				})
+				// special sound effect
+				const now = Date.now()
+				if (typeof mobs[i].sfxSpecialTimestamp === 'undefined') {
+					mobs[i].sfxSpecialTimestamp = now
+					audio.playSound(mobs[i].sfxSpecial)
+				}
+				else if (now - mobs[i].sfxSpecialTimestamp > 12000) {
+					mobs[i].sfxSpecialTimestamp = now
+					audio.playSound(mobs[i].sfxSpecial)
+				}
 			}
 		}
 	}
@@ -774,6 +805,8 @@ let mobs = [];
 		mob.earnedGold += battle.addGold(mobs[i].gold)
 		// earn mob exp -
 		mob.earnedExp += battle.addExp(mob.getMobExp(i))
+		// death sound effect
+		audio.playSound(mobs[i].sfxDeath)
 	}
 
 	function resourceTick() {

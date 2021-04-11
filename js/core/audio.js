@@ -66,6 +66,7 @@ var audio;
 		}
 	}
 	function playSound(sfx) {
+		if (!sfx) return
 		var sfx = new Audio("sound/" + sfx + ".mp3")
 		sfx.volume = ng.config.soundVolume / 100
 		sfx.play()

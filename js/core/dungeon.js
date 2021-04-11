@@ -581,7 +581,7 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerFloor)
 
-		const zoneName = mission.getKebabName()
+		const zoneName = mission.getZoneKey()
 		for (var i=0; i<MAX_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-floor.jpg'))
@@ -607,7 +607,7 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerCeiling)
 
-		const zoneName = mission.getKebabName()
+		const zoneName = mission.getZoneKey()
 		for (var i=0; i<MAX_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-ceiling.jpg'))
@@ -635,7 +635,7 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerLeftWall)
 
-		const zoneName = mission.getKebabName()
+		const zoneName = mission.getZoneKey()
 		for (var i=0; i<MAX_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-wall.jpg'))
@@ -663,7 +663,7 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerRightWall)
 
-		const zoneName = mission.getKebabName()
+		const zoneName = mission.getZoneKey()
 		for (var i=0; i<MAX_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-wall.jpg'))
@@ -682,7 +682,7 @@ var dungeon;
 		}
 	}
 	function addEndWall() {
-		const zoneName = mission.getKebabName()
+		const zoneName = mission.getZoneKey()
 		dungeon.endWall = new PIXI.projection.Sprite2d(
 			PIXI.Texture.from('images/dungeon/'+ zoneName +'-door.jpg'))
 		dungeon.endWall.anchor.set(.5, 1)

@@ -247,12 +247,6 @@ var battle;
 		}
 
 		ng.setScene('battle')
-		// test mission defaults for fast test mission start-up
-		if (!app.isApp) {
-			// setup some mission data
-			mission.inProgress = true
-			mission.id = 1
-		}
 		TweenMax.to('#scene-battle', .5, {
 			startAt: { filter: 'brightness(0)' },
 			delay: .5,
@@ -374,7 +368,9 @@ var battle;
 			}*/
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
-			let q
+			let q = {
+				level: 1
+			}
 			for (i=0; i<totalMobs; i++) {
 				const maxLevel = quests[mission.id].maxLevel
 				const minLevel = ~~(maxLevel * .75)

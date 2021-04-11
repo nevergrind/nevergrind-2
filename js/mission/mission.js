@@ -18,7 +18,7 @@ var mission;
 		embarkReceived,
 		toggleZone,
 		clickQuest,
-		getKebabName,
+		getZoneKey,
 		getZoneImg,
 		isQuestCompleted,
 	};
@@ -32,8 +32,8 @@ var mission;
 		resetLocalQuestData()
 	}
 	function resetLocalQuestData() {
-		mission.id = 1
-		mission.questId = 1
+		mission.id = 0
+		mission.questId = 0
 	}
 	function getOpenMenuClass(level) {
 		return (level <= my.level && level > ~~(my.level * .66)) ? 'mission-open-menu' : ''
@@ -97,7 +97,7 @@ var mission;
 	function clickQuest() {
 		var id = this.dataset.id * 1
 		var questId = this.dataset.quest * 1
-		if (id && party.presence[0].isLeader) {
+		if (id >= 0 && party.presence[0].isLeader) {
 			// console.info("QUEST SELECTED: ", id, questId, title)
 			mission.id = id
 			mission.questId = questId
@@ -111,16 +111,16 @@ var mission;
 		}
 	}
 	function getZonePreviewImg(id) {
-		const zoneName = mission.getKebabName()
+		const zoneName = mission.getZoneKey()
 		const bgType = id % 2 === 1 ? 'room' : 'hallway'
 		const index = 1
 		return 'images/battle/' + zoneName + '-'+ bgType + '-'+ index +'.jpg'
 	}
-	function getKebabName() {
+	function getZoneKey() {
 		return _.kebabCase(zones[mission.id].name.replace(/'/g, ''))
 	}
 	function getZoneImg() {
-		const zoneName = mission.getKebabName()
+		const zoneName = mission.getZoneKey()
 		const bgType = map.inRoom ? 'room' : 'hallway'
 		const index = 1
 		return 'images/battle/' + zoneName + '-'+ bgType + '-'+ index +'.jpg'
@@ -199,6 +199,12 @@ var mission;
 				dungeon.map.rooms.forEach(dungeon.getRoomMobCount)
 				dungeon.setBossRoom()
 				map.init(dungeon.map)
+			}
+			// test mission defaults for fast test mission start-up
+			if (!app.isApp) {
+				// setup some mission data
+				mission.inProgress = true
+				mission.id = 0
 			}
 			var data = {
 				route: 'p->embarkReceived',
