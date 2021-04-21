@@ -500,7 +500,7 @@ var bar;
 		querySelector('#root-options').style.display = 'none'
 	}
 	function handleDragSfxEnd() {
-		audio.playSound('frog_att')
+		audio.playSound('toadlok-attack', 'mobs')
 		//audio.playSound('flshhit2')
 	}
 	function handleDragMusicEnd() {

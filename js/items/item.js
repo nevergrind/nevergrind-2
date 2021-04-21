@@ -1637,6 +1637,7 @@ var loot = {};
 	function handleDropSuccess() {
 		items[item.dropType][item.dropSlot] = item.dragData
 		items[item.dragType][item.dragSlot] = item.dropData
+		audio.playEquipmentSound(item.dragData)
 		bar.updateItemSwapDOM()
 		resetDrop()
 		button.updateWeaponPanel()

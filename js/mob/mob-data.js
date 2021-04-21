@@ -85,55 +85,146 @@ mob.data[ZONES.salubrinHaven] = [
 		traits: [], // champ traits
 	},
 ]
-mob.data[ZONES.tendolinPassage] = [{
-
-	// champs
-}]
-mob.data[ZONES.greenthornCavern] = [{
-
-	// champs
-}]
-mob.data[ZONES.lanfeldRefuge] = [{
-
-	// champs
-}]
-mob.data[ZONES.rivenGrotto] = [{
-
-	// champs
-}]
-mob.data[ZONES.bastilleCitadel] = [{
-
-	// champs
-}]
-mob.data[ZONES.kordataCove] = [{
-
-	// champs
-}]
-mob.data[ZONES.sylongSanctuary] = [{
-
-	// champs
-}]
-mob.data[ZONES.thuleCrypt] = [{
-
-	// champs
-}]
-mob.data[ZONES.templeOfPrenssor] = [{
-
-	// champs
-}]
-mob.data[ZONES.fahlnirCitadel] = [{
-
-	// champs
-}]
-mob.data[ZONES.anuranRuins] = [{
-
-	// champs
-}]
-mob.data[ZONES.galeblastFortress] = [{
-
-	// champs
-}]
-mob.data[ZONES.ashenflowPeak] = [{
-
-	// champs
-}]
+mob.data[ZONES.tendolinPassage] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.greenthornCavern] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.lanfeldRefuge] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.rivenGrotto] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.bastilleCitadel] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.kordataCove] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.sylongSanctuary] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.thuleCrypt] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.templeOfPrenssor] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.fahlnirCitadel] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.anuranRuins] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.galeblastFortress] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]
+mob.data[ZONES.ashenflowPeak] = [
+	{
+		img: 'orc',
+		name: 'orc pawn',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+]

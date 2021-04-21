@@ -98,6 +98,7 @@ var town;
 		mob.killAttacks()
 		dungeon.map = {} // reset map data so it can be initialized next embark
 		dungeon.killEntityTweens()
+		audio.stopAmbient()
 		map.hide()
 		map.inCombat = false
 		if (!create.selected) return

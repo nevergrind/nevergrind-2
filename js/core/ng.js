@@ -361,7 +361,10 @@ var ng;
 		return ng.id;
 	}
 	function events() {
-		$("#enter-world").on('click', town.go);
+		$("#enter-world").on('click', () => {
+			audio.playSound('click')
+			town.go()
+		})
 	}
 	function disconnect(msg) {
 		ng.view = 'disconnected';
@@ -556,6 +559,7 @@ var ng;
 		})
 
 		$("#create-character-name").val('')
+		audio.playSound('click')
 		allDone()
 		///////////////////////////////////////////////////
 		function allDone(){
@@ -797,6 +801,7 @@ var ng;
 		if (ng.selectIndex > characterData.length - 1) {
 			ng.selectIndex = 0
 		}
+		audio.playSound('click')
 		updateCharacterCard()
 	}
 	function decrementCharacter() {
@@ -804,6 +809,7 @@ var ng;
 		if (ng.selectIndex < 0) {
 			ng.selectIndex = characterData.length - 1
 		}
+		audio.playSound('click')
 		updateCharacterCard()
 	}
 	function toMinSecs(seconds) {

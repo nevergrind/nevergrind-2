@@ -439,6 +439,7 @@ let map;
 			})
 			if (mission.isQuestCompleted() &&
 				!mission.isCompleted) {
+				// quest has been completed! show Dark souls message
 				delayedCall(3, () => {
 					combat.showQuestMsg()
 					map.show(3)
@@ -447,6 +448,9 @@ let map;
 			else {
 				map.show(3)
 			}
+			delayedCall(1.5, () => {
+				audio.playAmbientLoop()
+			})
 		}
 		else {
 			// clear nearest entity and redraw
@@ -458,6 +462,9 @@ let map;
 			dungeon.setDungeonEntities()
 			// return to dungeon hallway
 			delayedCall(4, dungeon.go, [true])
+			delayedCall(1.5, () => {
+				audio.playAmbientLoop()
+			})
 			map.show(4)
 		}
 	}

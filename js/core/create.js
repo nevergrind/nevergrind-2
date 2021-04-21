@@ -111,6 +111,7 @@ var create;
 		modal.show({
 			key: 'delete-character'
 		});
+		audio.playSound('click')
 	}
 	function selectRace() {
 		var race = $(this).text();
@@ -120,6 +121,7 @@ var create;
 		create.setRandomClass(race);
 		create.set('race', race);
 		setFace()
+		audio.debClick()
 	}
 	function selectClass() {
 		if (!$(this).get(0).className.includes('disabled')){
@@ -129,6 +131,7 @@ var create;
 			$(this).addClass('active');
 			create.set('job', job)
 			setAvatarBg()
+			audio.debClick()
 		}
 	}
 	function selectGender() {
@@ -138,6 +141,7 @@ var create;
 		$('#' + gender).addClass('active');
 		create.set('gender', gender);
 		setFace()
+		audio.debClick()
 	}
 	function onNameChange(e) {
 		if (create.whitelist.includes(e.key)) {
@@ -154,6 +158,7 @@ var create;
 			(create.form[attr] - create.base[attr] > 0) ){
 			getElementById('create-points-' + attr).innerHTML = --create.form[attr];
 			getElementById('create-points-remaining').innerHTML = ++create.form.left;
+			audio.playSound('click')
 		}
 	}
 	function addAttribute() {
@@ -161,11 +166,13 @@ var create;
 		if (create.form.left){
 			getElementById('create-points-' + attr).innerHTML = ++create.form[attr];
 			getElementById('create-points-remaining').innerHTML = --create.form.left;
+			audio.playSound('click')
 		}
 	}
 	function goCreateToTitle() {
 		ng.lock(1);
 		ng.initGame();
+		audio.playSound('click')
 		TweenMax.to('#scene-title-create-character', .6, {
 			y: 20,
 			opacity: 0,
@@ -231,6 +238,7 @@ var create;
 		var f = create.form;
 		var err = '';
 		f.name = getCleanName(f.name);
+		audio.playSound('click')
 		if (!f.name){
 			err = 'Your character needs a name!';
 			$("#create-character-name").focus();
@@ -271,6 +279,7 @@ var create;
 		// send to server
 		if (ng.locked) return;
 		ng.lock();
+		audio.playSound('click')
 		$.post(app.url + 'create/delete-character.php', {
 			row: create.selected
 		}).done(function(r){
@@ -612,6 +621,7 @@ var create;
 		var obj = _.pick(create.form, KEYS.SET_FACE)
 		obj.gender = obj.gender === 'Male' ? 0 : 1
 		query.el('#create-portrait').src = my.getAvatarUrl(obj)
+		audio.debClick()
 		TweenMax.to('#create-portrait', .25, {
 			startAt: {
 				filter: 'brightness(.5) contrast(3)',

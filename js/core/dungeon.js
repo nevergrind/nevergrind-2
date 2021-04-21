@@ -123,6 +123,7 @@ var dungeon;
 	}
 	function goTasks() {
 		// cleanup sort of activities when going into dungeon
+		audio.pause()
 		town.closeVarious()
 		tavern.leaders = ''
 		game.showScene('scene-dungeon')
@@ -345,7 +346,16 @@ var dungeon;
 			ent.sprite.factor = 1
 			ent.sprite.proj.affine = PIXI.projection.AFFINE.AXIS_X
 			ent.sprite.y = dungeon.getEntityDistanceFromMe(index)
-			ent.sprite.zIndex = 999 - index
+
+			// This should layer mobs correctly when going north, south, east, or west
+			// it should be reversed for south/west
+			if (map.compass < 2) {
+				// north or east
+				ent.sprite.zIndex = 999 - index
+			}
+			else {
+				ent.sprite.zIndex = 999 + index
+			}
 			// size and check offset
 			// ent.y = mobs.images[img].yPadding * MOB_DUNGEON_SIZE
 			TweenMax.set(ent.sprite, {
@@ -420,6 +430,7 @@ var dungeon;
 		)) {
 			if (dungeon.distanceCurrent >= dungeon.distanceEnd) {
 				// entered room
+				audio.playEnterDoor()
 				map.enterRoom(map.roomToId)
 			}
 			else {

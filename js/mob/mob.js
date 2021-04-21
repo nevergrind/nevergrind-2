@@ -573,7 +573,7 @@ let mobs = [];
 	function animateHit(i, bypass, damage) {
 		if (ng.view !== 'battle' || mobs[i].isDead) return
 		setTimeScaleSpeed(i)
-		if (typeof bypass === 'undefined' && mobs[i].isAnimationActive) return
+		if (!bypass && mobs[i].isAnimationActive) return
 
 		if (!timers.mobEffects[i].freezeDuration &&
 			damage > (2 + (mobs[i].level * .75))) {
@@ -596,17 +596,19 @@ let mobs = [];
 				onCompleteParams: [i]
 			})
 			// attack sound effect
-			const now = Date.now()
-			if (typeof mobs[i].sfxHitTimestamp === 'undefined') {
-				mobs[i].sfxHitTimestamp = now
-				audio.playSound(mobs[i].sfxHit)
+			if (mob.isAlive(i)) {
+				const now = Date.now()
+				if (typeof mobs[i].sfxHitTimestamp === 'undefined') {
+					mobs[i].sfxHitTimestamp = now
+					audio.playSound(mobs[i].sfxHit, 'mobs')
+				}
+				else if (now - mobs[i].sfxHitTimestamp > 500) {
+					mobs[i].sfxHitTimestamp = now
+					audio.playSound(mobs[i].sfxHit, 'mobs')
+				}
 			}
-			else if (now - mobs[i].sfxHitTimestamp > 6000) {
-				mobs[i].sfxHitTimestamp = now
-				audio.playSound(mobs[i].sfxHit)
-			}
-		}
 
+		}
 	}
 
 	function attack(i) {
@@ -690,11 +692,11 @@ let mobs = [];
 			const now = Date.now()
 			if (typeof mobs[i].sfxAttackTimestamp === 'undefined') {
 				mobs[i].sfxAttackTimestamp = now
-				audio.playSound(mobs[i].sfxAttack)
+				audio.playSound(mobs[i].sfxAttack, 'mobs')
 			}
 			else if (now - mobs[i].sfxAttackTimestamp > 12000) {
 				mobs[i].sfxAttackTimestamp = now
-				audio.playSound(mobs[i].sfxAttack)
+				audio.playSound(mobs[i].sfxAttack, 'mobs')
 			}
 
 		}
@@ -714,6 +716,16 @@ let mobs = [];
 
 	function animateSpecial(i) {
 		if (mobs[i].isDead) return
+		// special sound effect
+		const now = Date.now()
+		if (typeof mobs[i].sfxSpecialTimestamp === 'undefined') {
+			mobs[i].sfxSpecialTimestamp = now
+			audio.playSound(mobs[i].sfxSpecial, 'mobs')
+		}
+		else if (now - mobs[i].sfxSpecialTimestamp > 12000) {
+			mobs[i].sfxSpecialTimestamp = now
+			audio.playSound(mobs[i].sfxSpecial, 'mobs')
+		}
 		if (mobs[i].isAnimationActive) return
 		if (party.isSomeoneAlive()) {
 			setTimeScaleSpeed(i)
@@ -736,16 +748,6 @@ let mobs = [];
 					onComplete: resetIdle,
 					onCompleteParams: [i]
 				})
-				// special sound effect
-				const now = Date.now()
-				if (typeof mobs[i].sfxSpecialTimestamp === 'undefined') {
-					mobs[i].sfxSpecialTimestamp = now
-					audio.playSound(mobs[i].sfxSpecial)
-				}
-				else if (now - mobs[i].sfxSpecialTimestamp > 12000) {
-					mobs[i].sfxSpecialTimestamp = now
-					audio.playSound(mobs[i].sfxSpecial)
-				}
 			}
 		}
 	}
@@ -806,7 +808,7 @@ let mobs = [];
 		// earn mob exp -
 		mob.earnedExp += battle.addExp(mob.getMobExp(i))
 		// death sound effect
-		audio.playSound(mobs[i].sfxDeath)
+		audio.playSound(mobs[i].sfxDeath, 'mobs')
 	}
 
 	function resourceTick() {

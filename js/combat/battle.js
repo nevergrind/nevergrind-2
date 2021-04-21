@@ -154,7 +154,7 @@ var battle;
 			stats.memo = {}
 			button.updateWeaponPanel() // could be dual wielding now
 			button.updatePotionPanel()
-			audio.playSound('levelup')
+			audio.playSound('ding')
 		}
 		if (leveled) {
 			for (var i=0; i<mob.max; i++) {
@@ -303,10 +303,12 @@ var battle;
 
 		if (combat.isBattleOver()) {
 			map.inCombat = false
+			audio.playAmbientLoop()
 			map.show(1.5)
 		}
 		else {
 			map.inCombat = true
+			audio.stopAmbient()
 			map.hide()
 		}
 	}

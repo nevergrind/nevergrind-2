@@ -164,6 +164,7 @@ var mission;
 	}
 	function rxReturnToTown() {
 		mission.inProgress = false
+		audio.stopAmbient()
 		map.hide()
 		if (ng.view !== 'town') {
 			chat.log('Returning to town...', CHAT.WARNING)
@@ -200,8 +201,9 @@ var mission;
 				dungeon.setBossRoom()
 				map.init(dungeon.map)
 			}
+			console.info('embark', mission.id, mission.questId)
 			// test mission defaults for fast test mission start-up
-			if (!app.isApp) {
+			if (!app.isApp && !mission.id) {
 				// setup some mission data
 				mission.inProgress = true
 				mission.id = 0
