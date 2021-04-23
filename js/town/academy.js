@@ -54,6 +54,7 @@ var academy;
 	function trainSkillSuccess() {
 		my.skills[selected.index] = selected.rank
 		town.setMyGold(my.gold - selected.cost)
+		audio.playSound('upgrade')
 		selected.cost = 0
 		if (town.openVariousWindow === 'Academy') {
 			querySelector('#academy-skill-' + selected.index).innerHTML = getSkillRowHtml(selected.index)

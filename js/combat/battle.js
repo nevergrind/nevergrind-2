@@ -179,6 +179,7 @@ var battle;
 			my.gold += gold
 			chat.log('You found ' + gold + ' gold!', 'chat-gold')
 			bar.updateInventoryGold()
+			audio.playSound('gold')
 		}
 		return gold
 	}

@@ -477,6 +477,7 @@ var town;
 				y: 230
 			}
 			bar.openInventory()
+			audio.playSound('door-academy', 'town')
 		}
 		else if (town.openVariousWindow === 'Apothecary') {
 			npc = 'Briza: '
@@ -489,6 +490,7 @@ var town;
 				y: -50
 			}
 			bar.openInventory()
+			audio.playSound('door-apothecary', 'town')
 		}
 		else if (town.openVariousWindow === 'Bank') {
 			npc = 'Ingmar: '
@@ -501,6 +503,7 @@ var town;
 				y: 20
 			}
 			bar.openInventory()
+			audio.playSound('door-bank', 'town')
 		}
 		else if (town.openVariousWindow === 'Blacksmith') {
 			npc = 'Kalamin: '
@@ -513,6 +516,7 @@ var town;
 				y: -100
 			}
 			bar.openInventory()
+			audio.playSound('door-blacksmith', 'town')
 		}
 		else if (town.openVariousWindow === 'Guild Hall') {
 			npc = 'Charlotte: '
@@ -531,6 +535,7 @@ var town;
 				x: -180,
 				y: 120
 			}
+			audio.playSound('door-guild', 'town')
 		}
 		else if (town.openVariousWindow === 'Merchant') {
 			npc = 'Roland: '
@@ -543,6 +548,7 @@ var town;
 				y: -30
 			}
 			bar.openInventory()
+			audio.playSound('door-merchant', 'town')
 		}
 		else if (town.openVariousWindow === 'Tavern') {
 			npc = 'Eber: '
@@ -557,6 +563,7 @@ var town;
 				x: 100,
 				y: -100
 			}
+			audio.playSound('door-tavern', 'town')
 		}
 		else if (town.openVariousWindow === 'Trade') {
 			npc = ''
@@ -628,7 +635,7 @@ var town;
 	}
 	function setStoreGold(newV) {
 		if (!item.lastDragEvent.ctrlKey) {
-			// console.info('animating to:', newV)
+			console.info('animating to:', newV)
 			obj = {
 				value: _.clone(item.goldValue)
 			}
@@ -642,6 +649,7 @@ var town;
 	}
 	function updateStoreGold(obj) {
 		goldEl = querySelector('#town-value')
+		console.info('updateStoreGold', obj)
 		if (goldEl !== null) goldEl.textContent = floor(obj.value)
 	}
 	function showMerchantMsg() {

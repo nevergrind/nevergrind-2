@@ -63,11 +63,11 @@ var audio;
 			this.play()
 		}
 	}
-	function playMusic(track, extension = 'mp3') {
+	function playMusic(track) {
 		if (!app.isApp) return
 		query.el('#bgmusic').src = ''
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100
-		query.el('#bgmusic').src = "music/" + track + '.' + extension
+		query.el('#bgmusic').src = "music/" + track + '.' + 'mp3'
 
 		// var promise = new Audio("music/" + track + ".mp3")
 		var promise = query.el('#bgmusic').play()
@@ -90,6 +90,7 @@ var audio;
 		sfx.play()
 	}
 	function playEquipmentSound(data) {
+		console.info('playEquipmentSound', data)
 		if (data.itemType === 'helms') audio.playSound('item-shield', 'item')
 		else if (data.armorType === 'cloth') audio.playSound('item-cloth', 'item')
 		else if (data.armorType === 'leather') audio.playSound('item-leather', 'item')
@@ -104,6 +105,8 @@ var audio;
 		else if (data.itemType === 'twoHandSlashers') audio.playSound('item-weapon', 'item')
 		else if (data.itemType === 'oneHandBlunts') audio.playSound('item-shield', 'item')
 		else if (data.itemType === 'twoHandBlunts') audio.playSound('item-shield', 'item')
+		else if (data.itemType === 'potion') audio.playSound('item-potion', 'item')
+		else if (data.itemType === 'scroll') audio.playSound('item-scroll', 'item')
 	}
 	function playAmbient(foo, dualDelay) {
 		if (audio.isAmbientPlaying) return

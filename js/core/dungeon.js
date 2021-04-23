@@ -441,10 +441,10 @@ var dungeon;
 			battle.go()
 		}
 	}
-	function positionGridTile(tile, index) {
+	function positionGridTile(tile) {
 		tile.position.y = ((tile.gridIndex * MaxWidth) - dungeon.distanceCurrent) * -1
 	}
-	function positionGridTileWall(tile, index) {
+	function positionGridTileWall(tile) {
 		tile.position.x = ((tile.gridIndex * MaxWidth * AspectRatio) - (dungeon.distanceCurrent * AspectRatio)) * -1
 	}
 	function getEntityDistanceFromMe(index) {

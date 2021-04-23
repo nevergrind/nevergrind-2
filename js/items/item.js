@@ -1848,8 +1848,9 @@ var loot = {};
 				resetDrop()
 				tooltip.goldValue = 0
 			}
+			audio.playSound('gold')
 			town.setMyGold(my.gold - item.goldValue)
-			town.setStoreGold(item.goldValue)
+			town.setStoreGold(0)
 			button.updatePotionPanel()
 		}).fail(function() {
 			items.inv[buyItemSlot] = {}
@@ -1891,8 +1892,9 @@ var loot = {};
 		querySelector('#various-description').innerHTML = 'Thank you for selling ' + getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold!'
 		handleDestroySuccess(true)
 		tooltip.goldValue = 0
+		audio.playSound('gold')
 		town.setMyGold(my.gold + item.goldValue)
-		town.setStoreGold()
+		town.setStoreGold(0)
 	}
 	function handleDestroySuccess(suppressDestroyMsg = false) {
 		if (!suppressDestroyMsg) {
@@ -2055,6 +2057,7 @@ var loot = {};
 			ease: SteppedEase.config(60),
 			onUpdate: parseDifference,
 		})
+		audio.playSound('potion-used')
 		button.updatePotionPanel()
 		spell.triggerPotionCooldown(type)
 		/////////////////////
