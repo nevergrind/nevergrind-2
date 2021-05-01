@@ -915,7 +915,8 @@ mobSkills = {};
 	function modifyMobStatsByClass(config) {
 		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR
 		// base resources
-		config.hp = ~~((25 + ((config.level - 1) * 220) * config.hp) * party.presence.length)
+		const hpPerLevel = (config.level - 1) * (60 + ((config.level / 50) * 160))
+		config.hp = (~~((50 + (hpPerLevel * config.hp))) * party.presence.length)
 		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)
 		//config.spMax = config.sp = ~~(10 + ((config.level - 1) * 15) * config.sp)
 		config.attack = ~~(3 + (config.level * 1.66))

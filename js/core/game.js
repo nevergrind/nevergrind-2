@@ -120,6 +120,8 @@ var game;
 			level: my.level,
 			job: my.job,
 			name: my.name,
+			gender: my.gender,
+			race: my.race,
 			isLeader: typeof party.presence[0] === 'object' ? party.presence[0].isLeader : true
 		}
 		partyData = {

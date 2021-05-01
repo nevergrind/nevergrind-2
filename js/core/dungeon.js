@@ -99,7 +99,7 @@ var dungeon;
 		createHallwayMobs,
 		getRoomMobCount,
 		setBossRoom,
-		broadcastMapData,
+		preloadCombatAssets,
 	}
 	let blurValue = 0
 	const CLOSEST_MOB_DISTANCE = -200
@@ -181,12 +181,6 @@ var dungeon;
 		}
 
 		ng.unlock()
-	}
-	function broadcastMapData() {
-		socket.publish('party' + my.partyId, {
-			route: 'p->goDungeon',
-			grid: dungeon.map,
-		}, true)
 	}
 	function getRoomMobCount(h, index) {
 		// room zero never has mobs

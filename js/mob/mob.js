@@ -464,9 +464,14 @@ let mobs = [];
 	function setSrc(i) {
 		mobs[i].frame = ~~mobs[i].frame
 		if (mobs[i].frame !== mobs[i].lastFrame) {
-			// if (typeof mob.textures[mobs[i].img] === 'object') {
-			mobs[i].shadow.texture = mobs[i].sprite.texture = mob.textures[mobs[i].img][mobs[i].frame]
-			mobs[i].lastFrame = mobs[i].frame
+			if (typeof mob.textures[mobs[i].img] === 'object') {
+				mobs[i].shadow.texture = mobs[i].sprite.texture = mob.textures[mobs[i].img][mobs[i].frame]
+				mobs[i].lastFrame = mobs[i].frame
+			}
+			else {
+				console.warn('setSrc', i, mobs[i].img)
+				dungeon.preloadCombatAssets()
+			}
 		}
 	}
 	function resetIdle(i) {

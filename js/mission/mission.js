@@ -245,7 +245,7 @@ var mission;
 		})
 		ng.msg('Mission started: ' + quests[mission.questId].title)
 		let questDelay = app.isApp ? 3 : 0
-		delayedCall(questDelay, dungeon.go)
+		delayedCall(questDelay, dungeon.rxGo)
 	}
 	function isQuestCompleted() {
 		return !dungeon.map.rooms.find(r => r.boss).isAlive

@@ -44,6 +44,7 @@ var router;
 		}
 	}
 	function toParty(data, r) {
+		// console.info('goBattle', r, data)
 		if (r === 'p->hb') game.heartbeatReceivedParty(data)
 		else if (r === 'p->returnToTown') mission.rxReturnToTown(data)
 		else if (r === 'p->embarkReceived') mission.embarkReceived(data)
@@ -53,7 +54,6 @@ var router;
 		else if (r === 'p->promote') party.promoteReceived(data)
 		else if (r === 'p->boot') party.bootReceived(data)
 		else if (r === 'p->getPresence') game.updateParty()
-		else if (r === 'p->goDungeon') dungeon.rxGo(data)
 		else if (r === 'p->enterHallway') map.rxEnterHallway(data)
 		else if (r === 'p->walkForward') dungeon.rxWalkForward(data)
 		else if (r === 'p->walkBackward') dungeon.rxWalkBackward(data)
@@ -69,6 +69,7 @@ var router;
 		else if (r === 'p->heal') combat.rxHotHero(data)
 		else if (r === 'p->buff') combat.rxBuffHero(data)
 		else if (r === 'p->casting') party.casting(data)
+		else if (r === 'p->checkWipe') party.rxCheckWipe(data)
 	}
 	function toGuild(data, route) {
 		if (route === 'guild->hasJoined') guild.hasJoined(data)

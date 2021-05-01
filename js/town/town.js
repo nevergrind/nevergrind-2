@@ -563,6 +563,7 @@ var town;
 				x: 100,
 				y: -100
 			}
+			tavern.activeTab = 'tavern-missions'
 			audio.playSound('door-tavern', 'town')
 		}
 		else if (town.openVariousWindow === 'Trade') {

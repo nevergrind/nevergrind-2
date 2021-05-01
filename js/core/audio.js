@@ -1,6 +1,6 @@
 // audio.js
 var audio;
-!function(Audio, TweenMax, undefined) {
+!function(Audio, TweenMax, _, undefined) {
 	audio = {
 		cache: {},
 		isAmbientPlaying: false,
@@ -18,6 +18,8 @@ var audio;
 		events,
 		loadGame,
 		setSoundVolume,
+		playerHit,
+		playerDeath,
 	}
 
 	audio.debClick = _.debounce(debClick)
@@ -63,11 +65,11 @@ var audio;
 			this.play()
 		}
 	}
-	function playMusic(track) {
+	function playMusic(fileName) {
 		if (!app.isApp) return
 		query.el('#bgmusic').src = ''
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100
-		query.el('#bgmusic').src = "music/" + track + '.' + 'mp3'
+		query.el('#bgmusic').src = "music/" + fileName + '.' + 'mp3'
 
 		// var promise = new Audio("music/" + track + ".mp3")
 		var promise = query.el('#bgmusic').play()
@@ -78,14 +80,14 @@ var audio;
 		}
 	}
 	function debClick() {
-		var sfx = new Audio('sound/click.mp3')
+		const sfx = new Audio('sound/click.mp3')
 		sfx.volume = ng.config.soundVolume / 100
 		sfx.play()
 	}
-	function playSound(sfx, path = '') {
-		if (!sfx) return
+	function playSound(fileName, path = '') {
+		if (!fileName) return
 		if (path) path += '/'
-		var sfx = new Audio('sound/' + path + sfx + '.mp3')
+		const sfx = new Audio('sound/' + path + fileName + '.mp3')
 		sfx.volume = ng.config.soundVolume / 100
 		sfx.play()
 	}
@@ -204,4 +206,63 @@ var audio;
 			audio.cache[z] = new Audio("sound/" + z + ".mp3");
 		}
 	}
-}(Audio, TweenMax)
+
+	const BIG_RACES = [
+		'orc',
+		'troll'
+	]
+	const SMALL_RACES = [
+		'halfling',
+		'gnome',
+		'dwarf'
+	]
+	let hitSound = ''
+	function playerHit(damage, index) {
+		if (party.presence[index].hp / party.presence[index].hpMax < .33) {
+			// below 33% health - more crunchiness
+			if (damage > party.presence[index].hpMax * .025) {
+				playerHitCrunch()
+			}
+			else {
+				audio.playSound('flshhit1', 'combat')
+				playerHitRegular(index)
+			}
+		}
+		else {
+			if (damage > party.presence[index].hpMax * .05) {
+				playerHitCrunch()
+			}
+			else if (damage > party.presence[index].hpMax * .03) {
+				audio.playSound('flshhit1', 'combat')
+				playerHitRegular(index)
+			}
+			else {
+				audio.playSound('flshhit1', 'combat')
+			}
+		}
+	}
+	function playerHitRegular(index) {
+		hitSound = 'hit-' + _.random(1, 4) + '-' + (!party.presence[index].gender ? 'male' : 'female')
+		if (BIG_RACES.includes(party.presence[index].race)) {
+			hitSound += '-big'
+		}
+		else if (SMALL_RACES.includes(party.presence[index].race)) {
+			hitSound += '-small'
+		}
+		audio.playSound(hitSound, 'player')
+	}
+	function playerHitCrunch() {
+		audio.playSound('flshhit2', 'combat')
+	}
+	let deathSound = ''
+	function playerDeath(index) {
+		deathSound = 'death-' + (!party.presence[index].gender ? 'male' : 'female')
+		if (BIG_RACES.includes(party.presence[index].race)) {
+			deathSound += '-big'
+		}
+		else if (SMALL_RACES.includes(party.presence[index].race)) {
+			deathSound += '-small'
+		}
+		audio.playSound(deathSound, 'player')
+	}
+}(Audio, TweenMax, _)

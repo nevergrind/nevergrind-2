@@ -235,7 +235,11 @@ var battle;
 		if (my.target !== index) querySelector('#mob-details-' + index).classList.remove('block-imp')
 	}
 	function go(data) {
-		if (ng.view === 'battle') return
+		console.info("goBattle", ng.view, data)
+		if (typeof data === 'object') {
+			// party member receiving data
+		}
+		else if (ng.view === 'battle') return
 		town.closeVarious()
 		item.resetDrop()
 		chat.sizeDungeon()
@@ -276,6 +280,7 @@ var battle;
 
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
+		console.info('goBattle', data)
 		if (typeof data === 'object' &&
 			typeof data.config === 'object' &&
 			data.config.length) {
@@ -283,7 +288,7 @@ var battle;
 			setupMobs(data.config)
 		}
 		else {
-			// tx setup
+			// leader tx setup
 			setupMobs()
 		}
 
@@ -335,7 +340,9 @@ var battle;
 		combat.updateCanvasLayer()
 	}
 	function setupMobs(config) {
+		console.info('setupMobs', config)
 		if (typeof config === 'object') {
+			console.warn('FOLLOWER SETUP MOBS')
 			// followers
 			config.forEach((mobData, index) => {
 				if (mobData.name) {
@@ -344,9 +351,10 @@ var battle;
 			})
 		}
 		else {
+			console.warn('LEADER SETUP MOBS')
 			// leader
-			let minLevel = Math.max(~~(quests[mission.questId].level * .7), 1)
-			let maxLevel = quests[mission.questId].level
+			/*let minLevel = Math.max(~~(quests[mission.questId].level * .7), 1)
+			let maxLevel = quests[mission.questId].level*/
 
 			let availableSlots = []
 			mob.txData = []

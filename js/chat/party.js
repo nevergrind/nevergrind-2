@@ -39,6 +39,9 @@ var party;
 		isFrozen,
 		totalPlayers,
 		casting,
+		txCheckWipe,
+		rxCheckWipe,
+		respawn,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -136,14 +139,62 @@ var party;
 				if (resourceKeys.includes(key)) {
 					player[key] = data[key]
 					if (key === PROP.HP) updateHp = true
-					if (key === PROP.MP) updateMp = true
-					if (key === PROP.SP) updateSp = true
+					else if (key === PROP.MP) updateMp = true
+					else if (key === PROP.SP) updateSp = true
 				}
 			}
 			updateHp && bar.updateBar(PROP.HP, data)
 			updateMp && bar.updateBar(PROP.MP, data)
 			updateSp && bar.updateBar(PROP.SP, data)
+
+			if (updateHp && data.hp <= 0) {
+				// someone died
+				if (!party.presence[index].isDead) {
+					party.presence[index].isDead = true
+					audio.playerDeath(index)
+					party.txCheckWipe()
+				}
+			}
 		}
+	}
+
+	/**
+	 * Trigger a wipe check when a party member dies
+	 */
+	function txCheckWipe() {
+		console.warn('txCheckWipe')
+		socket.publish('party' + my.partyId, {
+			route: 'p->checkWipe',
+		})
+	}
+
+	/**
+	 * Triggered to determine if all party members are dead
+	 * Triggers a team revival at room 0
+	 */
+	function rxCheckWipe() {
+		console.info('is anyone alive????', party.presence)
+		if (party.presence[0].isLeader && !party.isSomeoneAlive()) {
+			// everyone is dead!
+			mob.killAttacks(true)
+			// TODO: trigger a party respawn at room 0
+			party.respawn()
+		}
+	}
+
+	function respawn() {
+		console.warn('Everyone died! Respawning party...')
+		chat.log('The party wiped!', 'chat-warning')
+		chat.log('Respawning in the safe room...', 'chat-warning')
+		delayedCall(8, () => {
+			map.enterRoom(0)
+			map.roomToId = map.roomId = map.hallwayId = 0
+			map.show(1.5)
+			party.presence.forEach((p, i) => {
+				p.isDead = false
+			})
+			battle.go()
+		})
 	}
 	function upsertParty(data) {
 		// if (my.partyId !== data.partyId) return;
@@ -178,6 +229,8 @@ var party;
 					row: data.row,
 					level: data.level,
 					avatar: data.avatar,
+					race: data.race,
+					gender: data.gender,
 					isChilled: false,
 					isFrozen: false,
 					hitCount: 0,

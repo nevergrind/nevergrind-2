@@ -504,7 +504,9 @@ var bar;
 		//audio.playSound('flshhit2')
 	}
 	function handleDragMusicEnd() {
-		query.el('#bgmusic').volume = ng.config.musicVolume / 100;
+		query.el('#bgmusic').volume = ng.config.musicVolume / 100
+		query.el('#bgamb1').volume = (ng.config.musicVolume / 100) * .5
+		query.el('#bgamb2').volume = (ng.config.musicVolume / 100) * .5
 	}
 
 	function handleDragSfx() {

@@ -37,6 +37,7 @@ var combat;
 		processStatBuffsToMe,
 		showQuestMsg,
 		showDeathMsg,
+		animateMyDeath,
 		MAX_DAMAGE: 999999999,
 		textId: 0,
 		considerClass: [
@@ -721,6 +722,10 @@ var combat;
 		}
 	}
 
+	/**
+	 * Handles client-side handling of single player's death
+	 * multiplayer handling happens in party.upsertPartyResource() checks
+	 */
 	function selfDied() {
 		// console.warn('You died!')
 		// subtract XP
@@ -733,11 +738,9 @@ var combat;
 		autoAttackDisable()
 		spell.cancelSpell()
 		battle.subtractExpPenalty()
-		if (!party.isSomeoneAlive()) {
-			mob.killAttacks(true)
-		}
 		battle.reckonGXL()
 		animateMyDeath()
+		party.rxCheckWipe()
 	}
 	function triggerOnMyDeath() {
 		// on death - must be done before health is subtracted
@@ -766,7 +769,7 @@ var combat;
 		if (type === PROP.HP) {
 			if (my.hp <= 0) {
 				// death
-				if (app.isApp) selfDied()
+				if (app.deathEnabled) selfDied()
 				else my.set(PROP.HP, my.hpMax) // testing
 			}
 		}
@@ -1189,6 +1192,7 @@ var combat;
 					return
 				}
 				updateMyResource(PROP.HP, -hit.damage)
+				totalDamage += hit.damage
 				if (hit.damageType === DAMAGE_TYPE.PHYSICAL) {
 					// P H Y S I C A L
 
@@ -1249,7 +1253,8 @@ var combat;
 			})
 			// only do this stuff if it hits me
 			if (totalDamage > 0) {
-				animatePlayerFrames()
+				animatePlayerFramesBg()
+				audio.playerHit(totalDamage, 0)
 				// damageTakenToMana vulpineMp
 				vulpineMp += totalDamage * (stats.damageTakenToMana() / resourceLeechDivider)
 				if (vulpineMp >= 1) {
@@ -2168,7 +2173,7 @@ var combat;
 			spMax: my.spMax,
 		})
 	}
-	function animatePlayerFrames() {
+	function animatePlayerFramesBg() {
 		TweenMax.to('#bar-card-bg-' + my.row, .5, {
 			startAt: { opacity: .5 },
 			opacity: 0
@@ -2244,7 +2249,6 @@ var combat;
 		return resp
 	}
 	function animateMyDeath() {
-		let el = querySelector('#scene-battle')
 		let o = {
 			grayscale: 0,
 			saturate: 1,
@@ -2252,13 +2256,14 @@ var combat;
 			brightness: 1,
 		}
 		TweenMax.to(o, 3, {
-			grayscale: .666,
-			saturate: 5,
-			contrast: 5,
-			brightness: .333,
+			grayscale: .6,
+			saturate: 4,
+			contrast: 4,
+			brightness: .4,
 			onUpdate: setFilter,
 			onUpdateParams: [o]
 		})
+		combat.showDeathMsg()
 	}
 	function setFilter(o) {
 		TweenMax.set(el, {
