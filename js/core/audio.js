@@ -1,6 +1,6 @@
 // audio.js
 var audio;
-!function(Audio, TweenMax, _, undefined) {
+!function(Audio, TweenMax, _, clearInterval, setInterval, undefined) {
 	audio = {
 		cache: {},
 		isAmbientPlaying: false,
@@ -20,6 +20,8 @@ var audio;
 		setSoundVolume,
 		playerHit,
 		playerDeath,
+		startWalk,
+		playWalk,
 	}
 
 	audio.debClick = _.debounce(debClick)
@@ -170,6 +172,15 @@ var audio;
 		else if (zoneName === ZONES.galeblastFortress) audio.playSound('door-metal-closed', 'dungeon')
 		else if (zoneName === ZONES.ashenflowPeak) audio.playSound('door-stone-closed', 'dungeon')
 	}
+
+	const walkInterval = 500
+	function startWalk() {
+		clearInterval(dungeon.walkSoundInterval)
+		dungeon.walkSoundInterval = setInterval(audio.playWalk, walkInterval)
+	}
+	function playWalk() {
+		audio.playSound('walk-' + _.random(1, 4), 'player')
+	}
 	function ambientUpdate() {
 		if (!this.duration) return
 		// console.info(this.currentTime, this.duration)
@@ -265,4 +276,4 @@ var audio;
 		}
 		audio.playSound(deathSound, 'player')
 	}
-}(Audio, TweenMax, _)
+}(Audio, TweenMax, _, clearInterval, setInterval)

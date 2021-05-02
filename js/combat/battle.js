@@ -234,18 +234,18 @@ var battle;
 		my.hoverTarget = -1
 		if (my.target !== index) querySelector('#mob-details-' + index).classList.remove('block-imp')
 	}
-	function go(data) {
-		console.info("goBattle", ng.view, data)
-		if (typeof data === 'object') {
-			// party member receiving data
+	function go(data, isRespawn = false) {
+		if (!isRespawn) {
+			if (typeof data === 'object') {
+				// party member receiving data
+			}
+			else if (ng.view === 'battle') return
 		}
-		else if (ng.view === 'battle') return
 		town.closeVarious()
 		item.resetDrop()
 		chat.sizeDungeon()
 		mob.init()
 		dungeon.killEntityTweens()
-
 		game.showScene('scene-battle')
 		if (chat.modeCommand === '/say') {
 			chat.modeChange(CHAT.PARTY)
@@ -280,7 +280,6 @@ var battle;
 
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
-		console.info('goBattle', data)
 		if (typeof data === 'object' &&
 			typeof data.config === 'object' &&
 			data.config.length) {
@@ -299,7 +298,7 @@ var battle;
 		my.fixTarget()
 		battle.updateTarget()
 
-		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer()) {
+		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer() && !isRespawn) {
 			console.info('p->goBattle txData!', mob.txData)
 			socket.publish('party' + my.partyId, {
 				route: 'p->goBattle',

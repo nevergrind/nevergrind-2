@@ -28,6 +28,7 @@ var dungeon;
 		}
 	]
 	dungeon = {
+		walkSoundInterval: 0,
 		initialized: 0,
 		isDungeon: true,
 		layer: {},
@@ -69,7 +70,7 @@ var dungeon;
 		totalTiles: MAX_TILES,
 		distanceEnd: GRID_SIZE * MAX_TILES,
 		hallwayLength: GRID_SIZE * HALLWAY_TILE_LENGTH,
-		distancePerSecond: app.isApp ? (GRID_SIZE * .2) : GRID_SIZE * 3,
+		distancePerSecond: config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .2,
 		walkTween: TweenMax.to('#body', 0, {}),
 		centerY,
 		go,
@@ -117,7 +118,6 @@ var dungeon;
 		goTasks()
 	}
 	function rxGo() {
-		console.info('rxGo')
 		goTasks()
 		delayedCall(.5, preloadCombatAssets)
 	}
@@ -532,6 +532,7 @@ var dungeon;
 	}
 	function rxWalkForward() {
 		dungeon.walking = 1
+		audio.startWalk()
 		dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationEnd(), {
 			distanceCurrent: dungeon.distanceEnd,
 			ease: Power0.easeIn,
@@ -543,6 +544,7 @@ var dungeon;
 		if (map.menuPrompt) return
 		if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
 			if (party.presence[0].isLeader) {
+				audio.startWalk()
 				if (party.hasMoreThanOnePlayer()) {
 					socket.publish('party' + my.partyId, {
 						route: 'p->walkBackward',
@@ -554,6 +556,7 @@ var dungeon;
 	}
 	function rxWalkBackward() {
 		dungeon.walking = -1
+		audio.startWalk()
 		dungeon.walkTween = TweenMax.to(dungeon, dungeon.getWalkDurationStart(), {
 			distanceCurrent: dungeon.distanceStart,
 			ease: Power0.easeIn,
@@ -574,6 +577,7 @@ var dungeon;
 	function rxWalkStop() {
 		dungeon.walking = 0
 		dungeon.walkTween.pause()
+		clearInterval(dungeon.walkSoundInterval)
 	}
 	function addFloorTiles() {
 		dungeon.containerFloor = new PIXI.projection.Container2d()

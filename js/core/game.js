@@ -306,12 +306,12 @@ var game;
 	function listenFriendAlerts() {
 		ng.friends.forEach(function(v){
 			socket.unsubscribe('friend' + v);
-			socket.subscribe('friend' + v, friend.notify);
+			socket.subscribe('friend' + v, friend.notify)
 		});
 	}
 	function playedStart() {
-		clearInterval(played.timer);
-		played.timer = setInterval(playedSend, played.interval);
+		clearInterval(played.timer)
+		played.timer = setInterval(playedSend, played.interval)
 	}
 	function playedSend() {
 		updateCachedMinutes()

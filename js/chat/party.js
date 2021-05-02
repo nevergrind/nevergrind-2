@@ -1,6 +1,7 @@
 var party;
 (function(Date, _, $) {
 	party = {
+		hasWiped: false,
 		prefix: (sessionStorage.getItem('reloads') ? +sessionStorage.getItem('reloads') : 1),
 		presence: [],
 		color: [
@@ -42,6 +43,8 @@ var party;
 		txCheckWipe,
 		rxCheckWipe,
 		respawn,
+		reviveDeadAllies,
+		memberDied,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -110,23 +113,29 @@ var party;
 	function checkUpdateBars(data, player) {
 		if (data.hp !== player.hp ||
 			data.hpMax !== player.hpMax) {
-			player.hp = data.hp;
-			player.hpMax = data.hpMax;
+			player.hp = data.hp
+			player.hpMax = data.hpMax
 			bar.updateBar(PROP.HP, data)
 		}
 		if (data.mp !== player.mp ||
 			data.mpMax !== player.mpMax) {
-			player.mp = data.mp;
-			player.mpMax = data.mpMax;
+			player.mp = data.mp
+			player.mpMax = data.mpMax
 			bar.updateBar(PROP.MP, data)
 		}
 		if (data.sp !== player.sp ||
 			data.spMax !== player.spMax) {
-			player.sp = data.sp;
-			player.spMax = data.spMax;
+			player.sp = data.sp
+			player.spMax = data.spMax
 			bar.updateBar(PROP.SP, data)
 		}
 	}
+
+	/**
+	 * rx function that handles updates from party members
+	 * client-side death is handled in selfDied
+	 * @param data
+	 */
 	function upsertPartyResource(data) {
 		updateHp = false
 		updateMp = false
@@ -134,7 +143,6 @@ var party;
 		index = party.getIndexByRow(data.row)
 		let player = party.presence[index]
 		if (index >= 0) {
-			// console.info('upsertPartyResource', data)
 			for (var key in data) {
 				if (resourceKeys.includes(key)) {
 					player[key] = data[key]
@@ -148,13 +156,28 @@ var party;
 			updateSp && bar.updateBar(PROP.SP, data)
 
 			if (updateHp && data.hp <= 0) {
-				// someone died
-				if (!party.presence[index].isDead) {
-					party.presence[index].isDead = true
-					audio.playerDeath(index)
-					party.txCheckWipe()
-				}
+				party.memberDied(index)
 			}
+		}
+	}
+
+	/**
+	 * handles death actions for all party members by index
+	 * @param index
+	 */
+	function memberDied(index) {
+		// someone died
+		// console.info('memberDied', index)
+		if (!party.presence[index].isDead) {
+			party.presence[index].isDead = true
+			if (combat.lastMobHitMeName) {
+				chat.log(party.presence[index].name + ' has been slain by '+ combat.lastMobHitMeName +'!', 'chat-warning')
+			}
+			else {
+				chat.log(party.presence[index].name + ' has been slain!', 'chat-warning')
+			}
+			audio.playerDeath(index)
+			party.txCheckWipe()
 		}
 	}
 
@@ -162,7 +185,7 @@ var party;
 	 * Trigger a wipe check when a party member dies
 	 */
 	function txCheckWipe() {
-		console.warn('txCheckWipe')
+		// console.warn('txCheckWipe')
 		socket.publish('party' + my.partyId, {
 			route: 'p->checkWipe',
 		})
@@ -173,28 +196,66 @@ var party;
 	 * Triggers a team revival at room 0
 	 */
 	function rxCheckWipe() {
-		console.info('is anyone alive????', party.presence)
-		if (party.presence[0].isLeader && !party.isSomeoneAlive()) {
-			// everyone is dead!
-			mob.killAttacks(true)
-			// TODO: trigger a party respawn at room 0
+		// console.info('everyone dead????', !party.isSomeoneAlive())
+		if (!party.isSomeoneAlive()) {
+			// console.info('everyone is dead... respawn!')
+			if (party.presence[0].isLeader) {
+				// everyone is dead and I'm the leader... kill mob attacks
+				mob.killAttacks(true)
+			}
 			party.respawn()
 		}
 	}
 
+	/**
+	 * Local respawn code for each client
+	 * triggered by a received rxCheckWipe to all party members
+	 * Sends them to room 0 with 1 of all resources
+	 */
 	function respawn() {
-		console.warn('Everyone died! Respawning party...')
-		chat.log('The party wiped!', 'chat-warning')
-		chat.log('Respawning in the safe room...', 'chat-warning')
-		delayedCall(8, () => {
-			map.enterRoom(0)
-			map.roomToId = map.roomId = map.hallwayId = 0
-			map.show(1.5)
-			party.presence.forEach((p, i) => {
-				p.isDead = false
+		if (!party.hasWiped) {
+			// ensure we only call this once
+			party.hasWiped = true
+			chat.log('The party wiped!', 'chat-warning')
+			chat.log('Respawning in the safe room...', 'chat-warning')
+			delayedCall(8, () => {
+				party.hasWiped = false
+				combat.resetTimersAndUI()
+				map.endCombat(true)
+				map.enterRoom(0)
+				party.reviveDeadAllies()
+				map.setRoom0()
+				battle.go(undefined, true)
 			})
-			battle.go()
-		})
+		}
+	}
+
+	/**
+	 * revive a single ally ... if they're dead
+	 * @param p
+	 */
+	function reviveAlly(p) {
+		if (p.hp <= 0) {
+			p.isDead = false
+			if (p.row === my.row) {
+				my.set(PROP.HP, 1)
+				my.set(PROP.MP, 1)
+				my.set(PROP.SP, 1)
+			}
+			else {
+				p.hp = p.mp = p.sp = 1
+			}
+			bar.updateBar(PROP.HP, p)
+			bar.updateBar(PROP.MP, p)
+			bar.updateBar(PROP.SP, p)
+		}
+	}
+
+	/**
+	 * Revives all fallen allies after combat is over
+	 */
+	function reviveDeadAllies() {
+		party.presence.forEach(reviveAlly)
 	}
 	function upsertParty(data) {
 		// if (my.partyId !== data.partyId) return;

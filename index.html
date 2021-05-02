@@ -18,7 +18,6 @@ var app = {
 	initialized: 0,
 	isApp: location.protocol === 'chrome-extension:',
 	account: '',
-	deathEnabled: true
 }
 // remove if server goes down
 app.url = app.isApp ?
@@ -611,6 +610,7 @@ app.socketUrl = app.isApp ?
 			'values/constants',
 			'util/util',
 			'util/query',
+			'core/config',
 			'core/alias',
 			'core/login',
 			'core/create',

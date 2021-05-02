@@ -53,6 +53,7 @@ let map;
 		revealMap,
 		getRoomClearData,
 		drawMap,
+		setRoom0,
 	}
 	const SCALE_IN_MAX = 50 // ZOOM OUT
 	const SCALE_DEFAULT = 100
@@ -85,6 +86,7 @@ let map;
 	$('#mini-map-prompt-btn-yes').on('click', handleMapYes)
 	$('#mini-map-prompt-btn-no').on('click', handleMapNo)
 	$(map.miniMapDrag).on('click', '.map-room', handleRoomClick)
+
 	function init() {
 		map.dragMap = Draggable.create(map.miniMapDrag, {
 			bounds: map.miniMapParent,
@@ -99,6 +101,17 @@ let map;
 			onThrowUpdate: throwUpdate,
 			onThrowComplete: throwUpdate,
 		})[0]
+
+		map.setRoom0()
+
+		// map dimensions
+		map.width = Math.max(MIN_MAP_WIDTH, dungeon.map.width)
+		map.height = Math.max(MIN_MAP_HEIGHT, dungeon.map.height)
+
+		// set dynamic style
+		map.drawMap()
+	}
+	function setRoom0() {
 		// init map data
 		map.dotX = map.roomX = map.cameraX = dungeon.map.rooms[0].x
 		map.dotY = map.roomY = map.cameraY = dungeon.map.rooms[0].y
@@ -106,21 +119,11 @@ let map;
 		// map state
 		map.inRoom = true
 		map.hallwayId = map.roomId = map.roomToId = dungeon.distanceCurrent = 0
-
-		// map dimensions
-		map.width = Math.max(MIN_MAP_WIDTH, dungeon.map.width)
-		map.height = Math.max(MIN_MAP_HEIGHT, dungeon.map.height)
-
 		map.setDotPosition()
-		// set dynamic style
-		map.drawMap()
 
 		delayedCall(1.5, () => {
 			map.centerCameraAt(map.dotX, map.dotY)
 		})
-	}
-	function removeElements(els) {
-
 	}
 	function drawMap() {
 		util.removeElements(querySelectorAll('.map-room, .map-hallway'))
@@ -429,24 +432,26 @@ let map;
 		else if (roomTo.x < room.x) map.compass = 3
 		else map.compass = 1
 	}
-	function endCombat() { // clear room or hallway
+	function endCombat(isRespawn = false) { // clear room or hallway
 		// map stuff
 		if (map.inRoom) {
 			// in a room
-			dungeon.map.rooms[map.roomId].isAlive = false
+			if (!isRespawn) dungeon.map.rooms[map.roomId].isAlive = false
+			/*
+			// why was this here? I dunno
 			TweenMax.set('#room-' + map.roomId, {
 				backgroundColor: '#060',
-			})
+			})*/
 			if (mission.isQuestCompleted() &&
 				!mission.isCompleted) {
 				// quest has been completed! show Dark souls message
 				delayedCall(3, () => {
 					combat.showQuestMsg()
-					map.show(3)
+					!isRespawn && map.show(3)
 				})
 			}
 			else {
-				map.show(3)
+				!isRespawn && map.show(3)
 			}
 			delayedCall(1.5, () => {
 				audio.playAmbientLoop()
@@ -454,18 +459,18 @@ let map;
 		}
 		else {
 			// clear nearest entity and redraw
-			if (dungeon.closestEntityIndex > -1) {
+			if (!isRespawn && dungeon.closestEntityIndex > -1) {
 				dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].isAlive = false
 				dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].timestamp = Date.now()
 				dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].sprite.alpha = 0
 			}
 			dungeon.setDungeonEntities()
 			// return to dungeon hallway
-			delayedCall(4, dungeon.go, [true])
+			!isRespawn && delayedCall(4, dungeon.go, [true])
 			delayedCall(1.5, () => {
 				audio.playAmbientLoop()
 			})
-			map.show(4)
+			!isRespawn && map.show(4)
 		}
 	}
 	function getHallwayDistance(id) {
@@ -507,7 +512,7 @@ let map;
 			map.questHeader.textContent = 'Objective:'
 			map.questName.textContent = quests[mission.questId].title
 		}
-		delayedCall(delay, revealRoom)
+		delayedCall(delay, map.revealRoom)
 	}
 	function hide() {
 		map.isShown = false

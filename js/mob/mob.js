@@ -195,7 +195,7 @@ let mobs = [];
 		mob.imageKeysLen = mob.imageKeys.length
 		battle.show()
 		// init mob/dom connections
-		initMobData()
+		mob.initMobData()
 		for (var i=0; i<mob.max; i++) {
 			querySelector('#mob-wrap-' + i).style.display = 'none'
 		}
@@ -203,6 +203,12 @@ let mobs = [];
 	function initMobData() {
 		// for resetting to dead only
 		for (var i=0; i<mob.max; i++){
+			if (typeof mobs[i] === 'object' &&
+				typeof mobs[i].animation === 'object') {
+				// kills mob animation, timer and sets to alpha to be sure it's hidden upon respawn
+				mobs[i].animation.kill()
+				mobs[i].sprite.alpha = 0
+			}
 			mobs[i] = {
 				hp: 0,
 				index: i,

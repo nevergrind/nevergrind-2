@@ -193,6 +193,14 @@ var my;
 	function isPunching(slot) {
 		return !(typeof items.eq[slot] === 'object' && items.eq[slot].name)
 	}
+
+	/**
+	 * client-side increment or set a resource value with built-in max checks
+	 * also synchronizes the values in party.presence
+	 * @param key
+	 * @param val
+	 * @param increment
+	 */
 	function set(key, val, increment) {
 		if (increment) {
 			party.presence[0][key] = my[key] += val
@@ -200,6 +208,28 @@ var my;
 		else {
 			if (typeof party.presence[0] === 'object') party.presence[0][key] = val
 			my[key] = val
+		}
+
+		if (key === PROP.HP) {
+			if (my.hp > my.hpMax) {
+				my.hp = my.hpMax
+			}
+		}
+		else if (key === PROP.MP) {
+			if (my.mp > my.mpMax) {
+				my.mp = my.mpMax
+			}
+		}
+		else if (key === PROP.SP) {
+			if (my.sp > my.spMax) {
+				my.sp = my.spMax
+			}
+		}
+		// sync party presence values
+		if (typeof party.presence[0] === 'object') {
+			party.presence[0].hp = my.hp
+			party.presence[0].mp = my.mp
+			party.presence[0].sp = my.sp
 		}
 	}
 	function fixTarget() {
@@ -285,16 +315,13 @@ var my;
 		// hpRegen mpRegen spRegen
 		if (my.hp > 0 && !my.buffFlags.frozen) {
 			if (type === PROP.HP) {
-				my.hp += stats.hpRegen()
-				if (my.hp > my.hpMax) my.hp = my.hpMax
+				my.set(PROP.HP, my.hp + stats.hpRegen())
 			}
 			else if (type === PROP.MP) {
-				my.mp += stats.mpRegen()
-				if (my.mp > my.mpMax) my.mp = my.mpMax
+				my.set(PROP.MP, my.mp + stats.mpRegen())
 			}
 			else if (type === PROP.SP) {
-				my.sp += stats.spRegen()
-				if (my.sp > my.spMax) my.sp = my.spMax
+				my.set(PROP.SP, my.sp + stats.spRegen())
 			}
 		}
 	}

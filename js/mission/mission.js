@@ -206,7 +206,7 @@ var mission;
 			if (!app.isApp && !mission.id) {
 				// setup some mission data
 				mission.inProgress = true
-				mission.id = 0
+				mission.id = 5
 			}
 			var data = {
 				route: 'p->embarkReceived',

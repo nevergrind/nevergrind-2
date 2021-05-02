@@ -1,6 +1,7 @@
 var combat;
 !function($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear, undefined) {
 	combat = {
+		lastMobHitMeName: '',
 		questBg: {},
 		questText: {},
 		deathText: {},
@@ -424,7 +425,6 @@ var combat;
 	}
 
 	function updateMobHp(o) {
-		// console.info('updateMobHp updateHate obj', _.clone(o))
 		if (!o.isHeal) {
 			if (typeof buffs[o.key] === 'object') {
 				if (typeof buffs[o.key].hate === 'undefined') o.hate = 1
@@ -462,6 +462,7 @@ var combat;
 			if (combat.isBattleOver()) { // mobs slain
 				combat.resetTimersAndUI()
 				map.endCombat()
+				party.reviveDeadAllies()
 			}
 		}
 		// console.info('object', o)
@@ -740,7 +741,7 @@ var combat;
 		battle.subtractExpPenalty()
 		battle.reckonGXL()
 		animateMyDeath()
-		party.rxCheckWipe()
+		party.memberDied(0)
 	}
 	function triggerOnMyDeath() {
 		// on death - must be done before health is subtracted
@@ -1198,6 +1199,7 @@ var combat;
 
 					// messaging
 					if (hit.isPiercing && hit.key === 'autoAttack') {
+						combat.lastMobHitMeName = ng.getArticle(index, true) + ' ' + mobs[index].name
 						// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
 						combat.popupDamage(hit.row, hit.damage, {targetMob: false})
 					}
@@ -1278,6 +1280,8 @@ var combat;
 		if (hit.blocked) {
 			blockMsg = ' (blocked '+ hit.blocked +')'
 		}
+
+		combat.lastMobHitMeName = ng.getArticle(index, true) + ' ' + mobs[index].name
 		if (hit.key === 'autoAttack') {
 			// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
 			combat.popupDamage(hit.row, hit.damage, {targetMob: false})

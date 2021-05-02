@@ -44,7 +44,6 @@ var router;
 		}
 	}
 	function toParty(data, r) {
-		// console.info('goBattle', r, data)
 		if (r === 'p->hb') game.heartbeatReceivedParty(data)
 		else if (r === 'p->returnToTown') mission.rxReturnToTown(data)
 		else if (r === 'p->embarkReceived') mission.embarkReceived(data)
