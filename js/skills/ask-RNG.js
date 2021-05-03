@@ -24,6 +24,7 @@
 		delayedCall(.25, () => {
 			ask.starburst(_.clone(o))
 		})
+		audio.playSound('slice', 'combat')
 	}
 
 	function explosiveShot(o) {
@@ -41,6 +42,7 @@
 			frameDuration: .4,
 			frameEase: Power2.easeInOut,
 		})
+		audio.playSound('fire-' + _.random(1, 3), 'spells')
 	}
 
 	function trueshotStrike(o) {
@@ -66,6 +68,8 @@
 			duration: 1,
 			sizeEnd: 350
 		})
+		audio.playSound('arrow-impact', 'combat')
+		audio.playSound('hit-5', 'combat')
 	}
 
 	function spreadShot(o) {
@@ -120,6 +124,7 @@
 			rotation: 0,
 			sizeEnd: 200,
 		})
+		audio.playSound('arrow-' + _.random(1, 3), 'combat')
 	}
 
 	function bladeStorm(o) {
@@ -131,6 +136,9 @@
 						size: 200,
 						yAdjust: (i * 50) - 100
 					})
+					if (i % 2 === 0) {
+						audio.playSound('hit-' + (i + 1), 'combat')
+					}
 				})
 			}(i)
 		}
@@ -195,6 +203,8 @@
 			xRange: 150,
 			yRange: 50,
 		})
+		audio.playSound('arrow-impact', 'combat')
+		audio.playSound('hit-3', 'combat')
 	}
 
 	function burningEmbers(o) {

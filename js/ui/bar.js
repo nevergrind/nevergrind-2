@@ -501,7 +501,6 @@ var bar;
 	}
 	function handleDragSfxEnd() {
 		audio.playSound('toadlok-attack', 'mobs')
-		//audio.playSound('flshhit2')
 	}
 	function handleDragMusicEnd() {
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100

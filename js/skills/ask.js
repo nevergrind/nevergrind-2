@@ -1309,6 +1309,7 @@ var ask;
 				)
 			}
 		}
+		audio.playAutoAttack(o.key)
 	}
 	// old function that used frames
 	function autoAttackBlunt(o, img, size) {
@@ -1448,6 +1449,7 @@ var ask;
 		if (o.key) {
 			if (!o.isDot
 				&& typeof ask[o.key] === 'function') {
+				console.info('processAnimations', o.key, o)
 				ask[o.key](o)
 			}
 			else if (checkAutoAttacks && o.key.startsWith('autoAttack')) {
@@ -1455,6 +1457,7 @@ var ask;
 			}
 		}
 	}
+
 	let askSpellImg = ''
 	function getCastingKey(data) {
 		if (!data.damageType) data.damageType = 'arcane'

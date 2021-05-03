@@ -22,6 +22,7 @@ var audio;
 		playerDeath,
 		startWalk,
 		playWalk,
+		playAutoAttack,
 	}
 
 	audio.debClick = _.debounce(debClick)
@@ -173,6 +174,19 @@ var audio;
 		else if (zoneName === ZONES.ashenflowPeak) audio.playSound('door-stone-closed', 'dungeon')
 	}
 
+	function playAutoAttack(key) {
+		if (key.includes('Hand-to-hand')) {
+			audio.playSound('auto-h2h', 'combat')
+		}
+		else if (key.includes('autoAttackOne-hand') ||
+			key.includes('autoAttackPiercing')) {
+			audio.playSound('auto-1h', 'combat')
+		}
+		else {
+			audio.playSound('auto-2hs', 'combat')
+		}
+	}
+
 	const walkInterval = 500
 	function startWalk() {
 		clearInterval(dungeon.walkSoundInterval)
@@ -235,7 +249,7 @@ var audio;
 				playerHitCrunch()
 			}
 			else {
-				audio.playSound('flshhit1', 'combat')
+				audio.playSound('hit', 'combat')
 				playerHitRegular(index)
 			}
 		}
@@ -244,11 +258,11 @@ var audio;
 				playerHitCrunch()
 			}
 			else if (damage > party.presence[index].hpMax * .03) {
-				audio.playSound('flshhit1', 'combat')
+				audio.playSound('hit', 'combat')
 				playerHitRegular(index)
 			}
 			else {
-				audio.playSound('flshhit1', 'combat')
+				audio.playSound('hit', 'combat')
 			}
 		}
 	}
@@ -263,7 +277,7 @@ var audio;
 		audio.playSound(hitSound, 'player')
 	}
 	function playerHitCrunch() {
-		audio.playSound('flshhit2', 'combat')
+		audio.playSound('hit-crunch', 'combat')
 	}
 	let deathSound = ''
 	function playerDeath(index) {

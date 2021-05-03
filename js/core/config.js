@@ -1,4 +1,4 @@
 const config = {
 	deathEnabled: true,
-	walkFast: false,
+	walkFast: true,
 }

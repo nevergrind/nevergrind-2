@@ -198,12 +198,14 @@ var combat;
 				d.damage = 0
 				d.missed = true
 				combat.popupDamage(d.index, 'MISS!')
+					audio.playSound('miss', 'combat')
 				return d
 			}
 			if (rand() * 100 < mob.dodgeChance(d.index)) {
 				d.damage = 0
 				d.missed = true
 				combat.popupDamage(d.index, 'DODGE!')
+					audio.playSound('miss', 'combat')
 				return d
 			}
 			if (!d.isPiercing) {
@@ -213,12 +215,14 @@ var combat;
 						d.missed = true
 						combat.txDamageHero(d.index, [ mob.autoAttack(d.index, my.row, true) ])
 						combat.popupDamage(d.index, 'RIPOSTE!')
+						audio.playSound('riposte', 'combat')
 						return d
 					}
 					else if (rand() * 100 < mob.parryChance(d.index)) {
 						d.damage = 0
 						d.missed = true
 						combat.popupDamage(d.index, 'PARRY!')
+						audio.playSound('parry', 'combat')
 						return d
 					}
 				}
@@ -452,7 +456,7 @@ var combat;
 		mob.updateHate(o)
 		mob.drawMobBar(o.index)
 		if (!o.isHeal && mobs[o.index].hp <= 0) {
-			// console.warn('mob is dead!')
+			// mob has been killed
 			if (timers.castBar < 1
 				&& my.target === o.index) {
 				spell.cancelSpell()
@@ -465,7 +469,6 @@ var combat;
 				party.reviveDeadAllies()
 			}
 		}
-		// console.info('object', o)
 		if (!o.isHeal) {
 			ask.processAnimations(o, true)
 			processEffects(o)
@@ -788,6 +791,7 @@ var combat;
 				my.buffFlags.jumpStrike ||
 				my.buffFlags.sealOfSanctuary) {
 				combat.popupDamage(d.row, 'INVULNERABLE!', {targetMob: false})
+				audio.playSound('invulnerable', 'combat')
 				d.damage = 0
 				return d
 			}
@@ -797,6 +801,7 @@ var combat;
 				rand() < mob.missChance(index)) {
 
 				combat.popupDamage(d.row, 'MISS!', {targetMob: false})
+				audio.playSound('miss', 'combat')
 				d.damage = 0
 				return d
 			}
@@ -807,6 +812,7 @@ var combat;
 				if (!d.isPiercing &&
 					rand() < stats.dodgeChance()) {
 					combat.popupDamage(d.row, 'DODGE!', {targetMob: false})
+					audio.playSound('miss', 'combat')
 					d.damage = 0
 					return d
 				}
@@ -824,6 +830,7 @@ var combat;
 					rand() < stats.riposteChance() || skill.CRU.vengeanceOn) {
 					if (skill.CRU.vengeanceOn) skill.CRU.vengeanceOn = false
 					combat.popupDamage(d.row, 'RIPOSTE!', {targetMob: false})
+					audio.playSound('riposte', 'combat')
 					button.primaryAttack(true, index)
 					d.damage = 0
 					return d
@@ -836,6 +843,7 @@ var combat;
 				if (!d.isPiercing &&
 					rand() < stats.parryChance()) {
 					combat.popupDamage(d.row, 'PARRY!', {targetMob: false})
+					audio.playSound('parry', 'combat')
 					d.damage = 0
 					button.startSwing('primaryAttack')
 					return d
@@ -1279,6 +1287,7 @@ var combat;
 		blockMsg = ''
 		if (hit.blocked) {
 			blockMsg = ' (blocked '+ hit.blocked +')'
+			audio.playSound('block', 'combat')
 		}
 
 		combat.lastMobHitMeName = ng.getArticle(index, true) + ' ' + mobs[index].name
