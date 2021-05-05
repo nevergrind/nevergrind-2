@@ -1783,8 +1783,8 @@ var combat;
 			battle.addMyBuff(heal.key, keyRow)
 			// console.info('dot heal!', heal.damage)
 			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
-			ask.processAnimations(heal)
 		}
+		ask.processAnimations(heal)
 		// console.info('hotToMe rxHotHero', row, hate)
 		if (~~hate !== 0) {
 			mob.addHateHeal({
@@ -1796,7 +1796,7 @@ var combat;
 	function onHotTick(buff, healAmount) {
 		// console.info('healAmount b4', healAmount)
 		healAmount = processHeal(healAmount)
-		console.info('onHotTick', buff)
+		// console.info('onHotTick', buff)
 		// chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CHAT.HEAL)
 		updateMyResource(PROP.HP, healAmount)
 	}
@@ -1814,7 +1814,6 @@ var combat;
 	function rxBuffHero(data) {
 		// console.info('rxBuffHero: ', data)
 		hate = 0
-		console.info('processBuffToMe', data)
 		data.buffs.forEach(buff => {
 			if (buffs[buff.key].hate) {
 				hate += ~~(buff.damage * buffs[buff.key].hate)

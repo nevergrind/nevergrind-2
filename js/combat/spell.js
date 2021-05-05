@@ -135,6 +135,7 @@ var spell;
 		}
 		socket.publish('party' + my.partyId, {
 			route: 'p->casting',
+			name: spell.data.name, // used as key for sound effect via socket
 			event: 'start',
 			index: my.row,
 			key: spellKey,
@@ -150,7 +151,12 @@ var spell;
 		return rand() < chance
 	}
 	function checkSpellFizzle() {
-		spellFizzleChance() && delayedCall(.2, spellFizzle)
+		if (spellFizzleChance()) {
+			delayedCall(.2, spellFizzle)
+		}
+		else {
+			audio.castSoundStart(my.row, spell.data.name)
+		}
 	}
 	function spellFizzle() {
 		expendSpellResources(true)
@@ -168,7 +174,7 @@ var spell;
 		return ratio * 100
 	}
 	function spellComplete(callbackFn) {
-		stopCasting()
+		stopCasting(true)
 		// console.info('complete spell cast:', spell.data.name)
 		// console.warn('calling:', functionName)
 		// functionName = _.camelCase(spell.data.name + 'Completed')
@@ -194,16 +200,22 @@ var spell;
 			bar.updateBar(PROP.SP, my)
 		}
 	}
-	function stopCasting() {
+	let stopCastObj = {}
+	function stopCasting(finishedCasting = false) {
 		timers.castBar = 1
 		querySelector('#cast-bar-wrap').style.opacity = 0
 		button.resumeAutoAttack()
 		ask.killCastingTweens({index: my.row})
-		socket.publish('party' + my.partyId, {
+		stopCastObj = {
 			route: 'p->casting',
 			event: 'stop',
 			index: my.row,
-		}, true)
+		}
+		if (finishedCasting) {
+			stopCastObj.name = spell.data.name
+			audio.castSoundEnd(my.row, spell.data.name)
+		}
+		socket.publish('party' + my.partyId, stopCastObj, true)
 	}
 	// defaults for combat DD on mob
 	function getDefaults(skillIndex, data) {

@@ -578,18 +578,38 @@ var party;
 	}
 
 	/**
+	 * socket rx only
 	 * Sends casting start/stop events to all party members to trigger animations
 	 * @param data
 	 */
+	let castSpellType = ''
 	function casting(data) {
 		if (data.event === 'stop') {
 			ask.killCastingTweens(data)
+			audio.castSoundEnd(data.row, data.name)
 		}
 		else if (data.event === 'start') {
-			ask.castEvocation({
-				index: data.index,
-				key: data.key
-			})
+			castSpellType = data.key.split('-')[1]
+			console.info('casting', data.key, data)
+			if (castSpellType === 'evocation') {
+				ask.castEvocation({
+					index: data.index,
+					key: data.key
+				})
+			}
+			else if (castSpellType === 'conjuration') {
+				ask.castConjuration({
+					index: data.index,
+					key: data.key
+				})
+			}
+			else {
+				ask.castAlteration({
+					index: data.index,
+					key: data.key
+				})
+			}
+			audio.castSoundStart(data.row, data.name)
 		}
 	}
 })(Date, _, $);

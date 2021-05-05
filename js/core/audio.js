@@ -23,12 +23,499 @@ var audio;
 		startWalk,
 		playWalk,
 		playAutoAttack,
+		castSoundStart,
+		castSoundEnd,
 	}
 
 	audio.debClick = _.debounce(debClick)
 
 	var key
 	const LOOP_BUFFER = .2
+	const castData = {
+		// RNG
+		'Burning Embers': {
+			start: 'spell-legacy-start-conjuration-dd',
+			end: 'spell-legacy-end-conjuration-buff'
+		},
+		'Shock Nova': {
+			start: 'spell-legacy-start-conjuration-dd',
+			end: () => 'zap' + _.random(1, 4)
+		},
+		'Faerie Flame': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'Fungal Growth': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'Shimmering Orb': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'Spirit of the Hunter': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		// CLR
+		'Smite': {
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'spell-legacy-end-evocation-dd-slam'
+		},
+		'Deliverance': {
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-alteration-buff-fire'
+		},
+		'Condemnation': {
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'spell-legacy-end-conjuration-buff'
+		},
+		'Sacred Revelation': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-evocation-dd-slam'
+		},
+		'Holy Sanctuary': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-conjuration-buff'
+		},
+		'Force of Glory': {
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-evocation-dd-slam-long'
+		},
+		'Binding Grace': {
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-heal'
+		},
+		'Guardian Angel': {
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-alteration-buff'
+		},
+		'Divine Light': {
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-heal'
+		},
+		'Circle of Prayer': {
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-heal'
+		},
+		'Seal of Redemption': {
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
+		},
+		'Zealous Resolve': {
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
+		},
+		// DRU
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		// WIZ
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		// TMP
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		// SHD
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		// SHM
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		// WLK
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		// ENC
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		// BRD
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		// CRU
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+		'TEST': {
+			start: 'spell-legacy-start-conjuration-dot',
+			end: 'spell-legacy-end-heal'
+		},
+	}
 	///////////////////////////////////////////
 
 	function init(){
@@ -289,5 +776,40 @@ var audio;
 			deathSound += '-small'
 		}
 		audio.playSound(deathSound, 'player')
+	}
+	function castSoundStart(row, name) {
+		console.info('castSoundStart', row, name)
+		let sfx = ''
+		if (typeof castData[name].start === 'string' && castData[name].start) {
+			sfx = castData[name].start
+			// audio.playSound(sfx, 'spells')
+		}
+		else if (typeof castData[name] === 'function') {
+			sfx = castData[name].start()
+			// audio.playSound(sfx, 'spells')
+		}
+		sfx && playCastingSound(row, sfx)
+	}
+	function castSoundEnd(row, name) {
+		// console.info('castSoundEnd', data.name, data)
+		if (name) {
+			pauseCastingSound(row)
+			if (typeof castData[name].end === 'string') {
+				audio.playSound(castData[name].end, 'spells')
+			}
+			else if (typeof castData[name].end === 'function') {
+				audio.playSound(castData[name].end(), 'spells')
+			}
+		}
+	}
+	function playCastingSound(row, sfx) {
+		console.info('playCastingSound', row, sfx)
+		var el = querySelector('#cast-' + party.getIndexByRow(row))
+		el.src = 'sound/spells/' + sfx + '.mp3'
+		el.volume = (ng.config.soundVolume / 100) * .5
+		el.play()
+	}
+	function pauseCastingSound(row) {
+		querySelector('#cast-' + party.getIndexByRow(row)).pause()
 	}
 }(Audio, TweenMax, _, clearInterval, setInterval)

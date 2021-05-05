@@ -1449,7 +1449,7 @@ var ask;
 		if (o.key) {
 			if (!o.isDot
 				&& typeof ask[o.key] === 'function') {
-				console.info('processAnimations', o.key, o)
+				// console.info('processAnimations', o.key, o)
 				ask[o.key](o)
 			}
 			else if (checkAutoAttacks && o.key.startsWith('autoAttack')) {
