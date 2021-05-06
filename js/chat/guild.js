@@ -288,7 +288,7 @@ var guild;
 			});
 			// nothing
 		}).fail(data => {
-			chat.log(data.responseText, CHAT.WARNING);
+			chat.log(data.responseText, CHAT.WARNING)
 		}).always(() => {
 			delayedCall(throttleTime, ng.unlock);
 		});
@@ -313,8 +313,10 @@ var guild;
 	}
 	function getGuildStar(rank) {
 		return rank === 0 ?
-			'<i class="ra ra-crown guild-leader"></i>' :
-			'<i class="ra ra-castle-flag guild-leader"></i>'
+			'<img class="guild-icon" src="images/town/guild-leader.png">' :
+			rank === 1 ?
+				'<img class="guild-icon" src="images/town/guild-officers.png">' :
+				'<img class="guild-icon" src="images/town/guild-members.png">'
 	}
 	function setGuildData(data) {
 		my.guild = data.guild;

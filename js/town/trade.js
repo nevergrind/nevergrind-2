@@ -502,7 +502,7 @@ var trade;
 						'<div class="trade-names ellipsis">'+ my.name +'</div>' +
 					'</div>' +
 					'<div class="trade-gold-row">' +
-						'<i class="ra ra-gold-bar gold-img"></i>' +
+						'<img class="gold-img" src="images/ui/gold-bar.png">' +
 						'<input id="trade-gold" type="number" min="0" max="'+ my.gold +'" value="0">' +
 					'</div>' +
 					'<div class="trade-item-wrap">'
@@ -518,7 +518,7 @@ var trade;
 						'<div class="trade-names ellipsis">'+ trade.data.name +'</div>' +
 					'</div>' +
 					'<div class="trade-gold-row">' +
-						'<i class="ra ra-gold-bar gold-img"></i>' +
+						'<img class="gold-img" src="images/ui/gold-bar.png">' +
 						'<div id="trade-gold-from" class="flex-row" style="justify-content: flex-end">0</div>' +
 					'</div>' +
 					'<div class="trade-item-wrap">'

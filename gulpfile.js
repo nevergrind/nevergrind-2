@@ -164,7 +164,7 @@ const jsFiles = [
 	'core/loading',
 	'build/endWrap',
 ].map((file) => './js/' + file + '.js')
-const cssFiles = ['main'].map((file) => './css/' + file + '.css')
+const cssFiles = ['main'].map(file => './css/' + file + '.css')
 
 //////////////////////////////////////////////
 function minifyCss() {

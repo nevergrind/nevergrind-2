@@ -364,7 +364,7 @@ var bar;
 		html += '</div>' +
 		'<div id="inventory-gold-row" class="flex-row flex-max">'+
 			'<div id="inventory-gold">'+ my.gold +'</div>' +
-			'<i class="ra ra-gold-bar gold-img"></i>' +
+			'<img class="gold-img" src="images/ui/gold-bar.png">' +
 		'</div>'+
 		'<div id="inventory-footer" class="flex-row flex-max">'+
 			//'<div id="inventory-identify" class="ng-btn text-shadow inv-btn">Identify</div>' +

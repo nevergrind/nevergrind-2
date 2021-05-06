@@ -154,13 +154,15 @@ var academy;
 					if (my.skills[i] === 0) {
 						row += '<div class="academy-skill-next">'+
 							'<div>Learn Skill:</div>'+
-							'<div><i class="ra ra-gold-bar academy-gold-img"></i>'+ trainCosts[nextRank] + '</div>' +
+							'<div><img class="academy-gold-img" src="images/ui/gold-bar.png">'+ trainCosts[nextRank] + '</div>' +
 						'</div>'
 					}
 					else if (nextRank <= 7) {
 						row += '<div class="academy-skill-next">'+
 							'<div>Next Rank:</div>'+
-							'<div><i class="ra ra-gold-bar academy-gold-img"></i>'+ trainCosts[nextRank] + '</div>' +
+							'<div class="flex-center">'+
+								'<img class="academy-gold-img" src="images/ui/gold-bar.png">'+ trainCosts[nextRank] +
+							'</div>' +
 						'</div>'
 					}
 					else {
@@ -194,7 +196,7 @@ var academy;
 	function getTrainRow() {
 		return `<div id="buy-sell-row" class="flex-row align-center" style="margin-bottom: 0">
 			<div id="town-value-wrap" class="flex-row">
-				<i style="align-self: center;" class="ra ra-gold-bar"></i>
+				<img class="store-gold-bar" src="images/ui/gold-bar.png">
 				<div id="town-value">0</div>
 			</div>
 			<div class="flex-row" style="height: 100%">

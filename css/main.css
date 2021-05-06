@@ -2421,9 +2421,12 @@ background-repeat: no-repeat;
 	background: #236;
 	transition: background .2s ease;
 }
-.guild-leader {
+.guild-icon {
+	width: 1rem;
+	height: 1rem;
 	color: #ff8;
 	vertical-align: middle;
+	transform: scale(1.5);
 }
 
 /* toast */
@@ -3420,7 +3423,8 @@ background-repeat: no-repeat;
 	justify-content: center;
 }
 .academy-gold-img {
-	color: gold;
+	width: .8rem;
+	height: .8rem;
 	margin-right: .1rem;
 }
 .academy-shield {
@@ -3517,8 +3521,14 @@ background-repeat: no-repeat;
 .trade-names {
 	color: gold;
 }
+.store-gold-bar {
+	width: 1.5rem;
+	height: 1.5rem;
+	align-self: center;
+}
 .gold-img {
-	color: gold;
+	width: 1rem;
+	height: 1rem;
 	margin: .2rem;
 }
 .trade-gold-row {
