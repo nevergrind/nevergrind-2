@@ -54,7 +54,20 @@ let map;
 		getRoomClearData,
 		drawMap,
 		setRoom0,
+		animateTorch,
 	}
+
+	let torch = {
+		tween: {},
+		lastFrame: 1,
+		frame: 1,
+	}
+	let torchGlow = {
+		tween: {},
+		lastRadius: 30,
+		radius: 30,
+	}
+
 	const SCALE_IN_MAX = 50 // ZOOM OUT
 	const SCALE_DEFAULT = 100
 	const SCALE_OUT_MAX = 150 // ZOOM IN
@@ -110,6 +123,7 @@ let map;
 
 		// set dynamic style
 		map.drawMap()
+		map.animateTorch()
 	}
 	function setRoom0() {
 		// init map data
@@ -513,6 +527,7 @@ let map;
 			map.questName.textContent = quests[mission.questId].title
 		}
 		delayedCall(delay, map.revealRoom)
+		animateTorch()
 	}
 	function hide() {
 		map.isShown = false
@@ -521,6 +536,7 @@ let map;
 			opacity: 0,
 			scale: 0,
 		})
+		killTorchTween()
 	}
 	function handleQuestCompleted() {
 		console.info('handleQuestCompleted')
@@ -543,5 +559,49 @@ let map;
 			data.bossUnlocked = true
 		}
 		return data
+	}
+	function animateTorch() {
+		killTorchTween()
+		torch = {
+			lastFrame: 1,
+			frame: 1,
+		}
+		torchGlow = {
+			lastRadius: 30,
+			radius: 30,
+		}
+		torch.tween = TweenMax.to(torch, .5, {
+			frame: 5.99,
+			ease: Power0.easeIn,
+			repeat: -1,
+			onUpdate: setTorchFrame,
+		})
+		torchGlow.tween = TweenMax.to(torchGlow, .3, {
+			radius: 33.99,
+			ease: Power0.easeOut,
+			repeat: -1,
+			yoyo: true,
+			onUpdate: setTorchRadius,
+		})
+	}
+	function killTorchTween() {
+		if (typeof torch.tween.kill === 'function') {
+			torch.tween.kill()
+			torchGlow.tween.kill()
+		}
+	}
+	function setTorchFrame() {
+		if (torch.lastFrame !== ~~torch.frame) {
+			torch.lastFrame = ~~torch.frame
+			map.dot.src = 'images/map/torch-' + torch.lastFrame + '.png'
+		}
+	}
+	function setTorchRadius() {
+		if (torchGlow.lastRadius !== ~~torchGlow.radius) {
+			torchGlow.lastRadius = ~~torchGlow.radius
+			TweenMax.set(map.dot, {
+				background: 'radial-gradient('+ torchGlow.lastRadius +'% '+ torchGlow.lastRadius +'% at 50% 40%, #f80, transparent)'
+			})
+		}
 	}
 }($, _, TweenMax, getComputedStyle, parseInt, window);
