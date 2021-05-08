@@ -202,6 +202,10 @@
 		})
 	}
 	function forceOfGlory(o) {
+		ask.rings({index: o.index, type: 'arcane'}, {
+			loops: 5,
+			duration: .5,
+		})
 		ask.groundExplosion(o, {
 			contrastStart: 2,
 			brightnessStart: 4,
@@ -213,7 +217,7 @@
 			yoyo: false,
 			ease: Power2.easeOut,
 		})
-		o.key = 'forceOfGlory-fist'
+		/*o.key = 'forceOfGlory-fist'
 		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
@@ -231,7 +235,7 @@
 				randomize: false
 			}),
 			yStart: ask.centerY(o.index, false) - 400,
-		})
+		})*/
 	}
 	function circleOfPrayer(o) {
 		delayedCall(.2, () => {

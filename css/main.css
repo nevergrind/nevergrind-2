@@ -1735,8 +1735,8 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 #mini-map-dot {
 	top: 0;
 	left: 0;
-	width: 4rem;
-	height: 4rem;
+	width: 64px; /* intentionally px */
+	height: 64px; /* intentionally px */
 	pointer-events: none;
 	z-index: 10;
 	background: radial-gradient(30% 30% at 50% 42%, #f80, transparent);

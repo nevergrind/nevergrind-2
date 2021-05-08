@@ -31,6 +31,7 @@ var audio;
 
 	var key
 	const LOOP_BUFFER = .2
+	// cast start/stop audio files for all spells
 	const castData = {
 		// RNG
 		'Burning Embers': {
@@ -107,374 +108,374 @@ var audio;
 			end: 'spell-legacy-end-alteration-buff'
 		},
 		// DRU
-		'TEST': {
+		'Starfire': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Fissure': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Lightning Blast': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Blizzard': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Toxic Spores': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Molten Boulder': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Barbed Thicket': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Tornado': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Nature\'s Touch': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Moss Breath': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Synthesize': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Branch Spirit': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		// WIZ
-		'TEST': {
+		'Fire Bolt': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Ice Bolt': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Lightning Bolt': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Magic Missiles': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Fireball': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Chain Lightning': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Frost Nova': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Meteor': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Frozen Barrier': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Mirror Image': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Mana Shell': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Deep Freeze': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		// TMP
-		'TEST': {
+		'Lava Bolt': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Thunderclap': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Frozen Orb': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Static Storm': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Fire Wall': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Glacial Spike': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Primordial Sludge': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Arclight': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Primeval Withering': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Molten Aegis': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Conviction': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Celestial Frenzy': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		// SHD
-		'TEST': {
+		'Astral Blade': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Ravaging Plague': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Decaying Doom': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Blood Terror': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Life Tap': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Vampiric Feast': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Sanguine Harvest': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Mark of Remphan': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		// SHM
-		'TEST': {
+		'Frost Rift': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Poison Nova': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Scourge': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Poison Bolt': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Vampiric Gaze': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Glacial Shard': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Affliction': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Devouring Swarm': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Rejuvinate': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Mystical Glow': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Vampiric Allure': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Boreal Talisman': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		// WLK
-		'TEST': {
+		'Venom Bolt': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Explosive Plague': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Blood Fire': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Demonic Pact': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Haunting Vision': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Icing Death': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Curse of Shadows': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Panic Strike': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Drain Soul': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Lich Form': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Engulfing Darkness': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Profane Spirit': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		// ENC
-		'TEST': {
+		'Gravity Flux': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Static Suffocation': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Mind Blitz': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Subversion': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Color Shift': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Phase Blade': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Stasis Field': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Shifting Ether': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Serene Sigil': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Augmentation': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Clarity': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Enthrall': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		// BRD
-		'TEST': {
+		'Bellow': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Sonic Boom': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Euphonic Dirge': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Subverted Symphony': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Crashing Chords': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Battle Hymn': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Militant Cadence': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Consonant Chain': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Melody of Mana': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Righteous Rhapsody': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Chromatic Sonata': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
@@ -483,35 +484,35 @@ var audio;
 			end: 'spell-legacy-end-heal'
 		},
 		// CRU
-		'TEST': {
+		'Seal of Damnation': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Holy Wrath': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Divine Judgment': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Blessed Hammer': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Seal of Sanctuary': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Divine Grace': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Benevolence': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
-		'TEST': {
+		'Jubilee': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
