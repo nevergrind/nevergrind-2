@@ -148,12 +148,33 @@ let map;
 	}
 	function createRoom(room) {
 		// console.info('room', room)
-		let el = createElement('div')
+		let el = createElement('img')
 		el.id = 'room-' + room.id
-		el.innerHTML = room.id
+		if (config.showMapNumbers) {
+			el.innerHTML = room.id
+		}
 		el.className = 'mini-map-entity map-room'
-		if (room.boss) {
+
+		if (room.id === 0) {
+			el.style.opacity = 1
+			el.src = 'images/map/room-safe.png'
+		}
+		else if (room.isTreasure) {
+			el.src = 'images/map/room-treasure.png'
+		}
+		else if (room.isRelic) {
+			el.src = 'images/map/room-relic.png'
+		}
+		else if (room.boss) {
 			el.classList.add('boss-room')
+			el.src = 'images/map/room-boss.png'
+			console.warn('BOSS', room.id, room)
+		}
+		else if (room.isAlive) {
+			el.src = 'images/map/room-combat.png'
+		}
+		else {
+			el.src = 'images/map/room-empty.png'
 		}
 		el.style.top = room.y + 'px'
 		el.style.left = room.x + 'px'
@@ -163,7 +184,9 @@ let map;
 		// console.info('hallway', hallway)
 		let el = createElement('div')
 		el.id = 'hallway-' + hallway.id
-		el.innerHTML = hallway.id
+		if (config.showMapNumbers) {
+			el.innerHTML = hallway.id
+		}
 		if (hallway.width === 16) el.className = 'mini-map-entity map-hallway map-hallway-y'
 		else el.className = 'mini-map-entity map-hallway map-hallway-x'
 		el.style.top = hallway.y + 'px'

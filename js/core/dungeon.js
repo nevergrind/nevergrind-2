@@ -184,7 +184,26 @@ var dungeon;
 	}
 	function getRoomMobCount(h, index) {
 		// room zero never has mobs
-		h.isAlive = index === 0 ? false : true
+		if (index === 0) {
+			h.isAlive = false
+		}
+		else {
+			let r = Math.random()
+			h.isAlive = false
+			if (r > .95) {
+				h.isTreasure = true
+			}
+			else if (r > .9) {
+				h.isRelic = true
+			}
+			else if (r > .8) {
+				h.isAlive = false
+			}
+			else {
+				// 80% chance for combat room
+				h.isAlive = true
+			}
+		}
 	}
 	function setBossRoom() {
 		let x = dungeon.map.rooms[0].x

@@ -544,7 +544,7 @@ var battle;
 	}
 	function mobBuffTimerExists(i, key) {
 		// kill existing buff timer for player
-		return typeof typeof mobs[i] === 'object' &&
+		return typeof mobs[i] === 'object' &&
 			typeof mobs[i].buffs[key] === 'object' &&
 			typeof mobs[i].buffs[key].timer === 'object'
 	}
@@ -863,7 +863,7 @@ var battle;
 	}
 	function killMobBuffTimers() {
 		if (!mob.initialized) return
-		i=0
+		var i=0
 		// mob buff/debuffs
 		for (; i<mob.max; i++) {
 			for (key in mobs[i].buffs) {

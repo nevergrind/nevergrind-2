@@ -179,6 +179,9 @@
 			duration: .2,
 			size: 300,
 		})
+		delayedCall(.2, () => {
+			audio.playSound('holybolt', 'spells')
+		})
 	}
 	function fireball(o) {
 		ask.sunburst({index: o.index}, {
@@ -227,6 +230,7 @@
 			frameEase: Power0.easeIn,
 		})
 		ask.fadeOut(img, dur, dur * .3)
+		audio.playSound('zap' + _.random(1, 4), 'spells')
 	}
 	function frostNova(o) {
 		ask.explosion({index: o.index, key: 'burst-ice'})
@@ -261,6 +265,7 @@
 			xRange: 250,
 			yRange: 50,
 		})
+		audio.playSound('blue' + _.random(1, 3), 'spells')
 	}
 	function meteorLaunch(o) {
 		// launch
@@ -333,6 +338,7 @@
 			xRange: 250,
 			yRange: 50,
 		})
+		audio.playSound('meteor-impact', 'spells')
 	}
 	function meteorStrike(o) {
 		// 6 seconds of burning 12 * .5

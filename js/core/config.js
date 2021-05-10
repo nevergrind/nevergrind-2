@@ -7,4 +7,5 @@ const config = {
 	deathEnabled: true,
 	walkFast: true,
 	defaultZone: 2,
+	showMapNumbers: false,
 }

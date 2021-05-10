@@ -586,7 +586,7 @@ var party;
 	function casting(data) {
 		if (data.event === 'stop') {
 			ask.killCastingTweens(data)
-			audio.castSoundEnd(data.row, data.name)
+			audio.castSoundEnd(data.index, data.name)
 		}
 		else if (data.event === 'start') {
 			castSpellType = data.key.split('-')[1]
@@ -609,7 +609,7 @@ var party;
 					key: data.key
 				})
 			}
-			audio.castSoundStart(data.row, data.name)
+			audio.castSoundStart(data.index, data.name)
 		}
 	}
 })(Date, _, $);

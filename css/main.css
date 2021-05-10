@@ -1682,10 +1682,6 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	left: 0;
 	z-index: 1;
 }
-#room-0 {
-	background: #cc0;
-	opacity: 1;
-}
 .map-room {
 	display: flex;
 	align-items: center;

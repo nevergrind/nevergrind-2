@@ -166,6 +166,7 @@
 				xRange: 220,
 				yRange: 50,
 			})
+			audio.playSound('blue3', 'spells')
 		}
 	}
 	function staticStorm(o) {
@@ -288,11 +289,18 @@
 						frameDuration: dur,
 					})
 					TweenMax.to(img, dur, {
-						x: x += _.random(-10, 10),
-						y: y += _.random(-10, 10),
+						x: x + _.random(-10, 10),
+						y: y + _.random(-10, 10),
 						ease: Power0.easeOut,
 					})
 					ask.fadeOut(img, dur, dur * .3)
+				})
+			}(i)
+		}
+		for (var i=0; i<5; i++) {
+			!function(i) {
+				delayedCall(i * .15, () => {
+					audio.playSound('zap' + _.random(1, 4), 'spells')
 				})
 			}(i)
 		}

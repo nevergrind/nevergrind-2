@@ -84,6 +84,7 @@
 			frameDuration: .8,
 			frameEase: Power0.easeIn,
 		})
+		audio.playSound('spell-legacy-end-evocation-dd', 'spells')
 	}
 	function bloodFire(o) {
 		ask.explosion({index: o.index, key: 'burst-fire'})
@@ -469,5 +470,6 @@
 			alpha: 0,
 			sizeEnd: 300,
 		})
+		audio.playSound('spell-legacy-end-evocation-dd', 'spells')
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);

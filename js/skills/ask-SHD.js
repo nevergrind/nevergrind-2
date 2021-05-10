@@ -120,6 +120,7 @@
 			alpha: 0,
 			duration: .5,
 		})
+		audio.playSound('slice', 'combat')
 	}
 	function ravagingPlague(o) {
 		o.endFrame = 3

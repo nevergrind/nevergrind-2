@@ -81,7 +81,7 @@ var audio;
 		},
 		'Force of Glory': {
 			start: 'spell-legacy-start-evocation-fire',
-			end: 'spell-legacy-end-evocation-dd-slam-long'
+			end: 'spell-legacy-end-evocation-dd-slam'
 		},
 		'Binding Grace': {
 			start: 'spell-legacy-start-heal',
@@ -109,36 +109,36 @@ var audio;
 		},
 		// DRU
 		'Starfire': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-evocation-dd'
 		},
 		'Fissure': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'windcast'
 		},
 		'Lightning Blast': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'zap1'
 		},
 		'Blizzard': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'icespike1'
 		},
 		'Toxic Spores': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		'Molten Boulder': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-conjuration-dd',
+			end: 'windcast'
 		},
 		'Barbed Thicket': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		'Tornado': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-conjuration-dd',
+			end: 'windcast'
 		},
 		'Nature\'s Touch': {
 			start: 'spell-legacy-start-conjuration-dot',
@@ -153,82 +153,82 @@ var audio;
 			end: 'spell-legacy-end-heal'
 		},
 		'Branch Spirit': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		// WIZ
 		'Fire Bolt': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-evocation-dd'
 		},
 		'Ice Bolt': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'blue3'
 		},
 		'Lightning Bolt': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'zap4'
 		},
 		'Magic Missiles': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: ''
 		},
 		'Fireball': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-evocation-dd'
 		},
 		'Chain Lightning': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: ''
 		},
 		'Frost Nova': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: ''
 		},
 		'Meteor': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'meteor-launch'
 		},
 		'Frozen Barrier': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-conjuration-dd',
+			end: 'icespike1'
 		},
 		'Mirror Image': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Mana Shell': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Deep Freeze': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-evocation-dd-slam'
 		},
 		// TMP
 		'Lava Bolt': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-evocation-dd'
 		},
 		'Thunderclap': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'thunder1'
 		},
 		'Frozen Orb': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'icebolt2'
 		},
 		'Static Storm': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'lightning2'
 		},
 		'Fire Wall': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-conjuration-dd',
+			end: 'windcast'
 		},
 		'Glacial Spike': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-evocation-dd-slam'
 		},
 		'Primordial Sludge': {
 			start: 'spell-legacy-start-conjuration-dot',
@@ -236,36 +236,36 @@ var audio;
 		},
 		'Arclight': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: ''
 		},
 		'Primeval Withering': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		'Molten Aegis': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Conviction': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Celestial Frenzy': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		// SHD
 		'Astral Blade': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-conjuration-dd',
+			end: 'redemption'
 		},
 		'Ravaging Plague': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-evocation-dd'
 		},
 		'Decaying Doom': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-evocation-dd'
 		},
 		'Blood Terror': {
 			start: 'spell-legacy-start-conjuration-dot',
@@ -276,41 +276,41 @@ var audio;
 			end: 'spell-legacy-end-heal'
 		},
 		'Vampiric Feast': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff-fire'
 		},
 		'Sanguine Harvest': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Mark of Remphan': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-alteration-buff-fire'
 		},
 		// SHM
 		'Frost Rift': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-evocation-dd-slam'
 		},
 		'Poison Nova': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-alteration-buff-fire'
 		},
 		'Scourge': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-evocation-dd'
 		},
 		'Poison Bolt': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		'Vampiric Gaze': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		'Glacial Shard': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'spell-legacy-end-evocation-dd-slam'
 		},
 		'Affliction': {
 			start: 'spell-legacy-start-conjuration-dot',
@@ -318,10 +318,10 @@ var audio;
 		},
 		'Devouring Swarm': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		'Rejuvinate': {
-			start: 'spell-legacy-start-conjuration-dot',
+			start: 'spell-legacy-start-heal',
 			end: 'spell-legacy-end-heal'
 		},
 		'Mystical Glow': {
@@ -329,61 +329,61 @@ var audio;
 			end: 'spell-legacy-end-heal'
 		},
 		'Vampiric Allure': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Boreal Talisman': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		// WLK
 		'Venom Bolt': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-evocation-dd'
 		},
 		'Explosive Plague': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		'Blood Fire': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		'Demonic Pact': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-alteration-buff-fire'
 		},
 		'Haunting Vision': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-start-evocation-magic'
 		},
 		'Icing Death': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'icespike3'
 		},
 		'Curse of Shadows': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		'Panic Strike': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-conjuration-dd',
+			end: 'spell-legacy-start-evocation-magic'
 		},
 		'Drain Soul': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-conjuration-dd',
+			end: 'spell-legacy-end-alteration-buff-fire'
 		},
 		'Lich Form': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Engulfing Darkness': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		'Profane Spirit': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		// ENC
 		'Gravity Flux': {
@@ -778,23 +778,21 @@ var audio;
 		}
 		audio.playSound(deathSound, 'player')
 	}
-	function castSoundStart(row, name) {
-		console.info('castSoundStart', row, name)
+	function castSoundStart(index, name) {
+		// console.info('castSoundStart', index, name)
 		let sfx = ''
 		if (typeof castData[name].start === 'string' && castData[name].start) {
 			sfx = castData[name].start
-			// audio.playSound(sfx, 'spells')
 		}
 		else if (typeof castData[name] === 'function') {
 			sfx = castData[name].start()
-			// audio.playSound(sfx, 'spells')
 		}
-		sfx && playCastingSound(row, sfx)
+		sfx && playCastingSound(index, sfx)
 	}
-	function castSoundEnd(row, name) {
-		// console.info('castSoundEnd', data.name, data)
+	function castSoundEnd(index, name) {
+		// console.info('castSoundEnd', index, name)
 		if (name) {
-			pauseCastingSound(row)
+			pauseCastingSound(index)
 			if (typeof castData[name].end === 'string') {
 				audio.playSound(castData[name].end, 'spells')
 			}
@@ -802,15 +800,19 @@ var audio;
 				audio.playSound(castData[name].end(), 'spells')
 			}
 		}
+		else {
+			pauseCastingSound(index)
+		}
 	}
-	function playCastingSound(row, sfx) {
-		console.info('playCastingSound', row, sfx)
-		var el = querySelector('#cast-' + party.getIndexByRow(row))
+	function playCastingSound(index, sfx) {
+		// console.info('playCastingSound', index, sfx)
+		var el = querySelector('#cast-' + party.getIndexByRow(index))
 		el.src = 'sound/spells/' + sfx + '.mp3'
 		el.volume = (ng.config.soundVolume / 100) * .5
 		el.play()
 	}
-	function pauseCastingSound(row) {
-		querySelector('#cast-' + party.getIndexByRow(row)).pause()
+	function pauseCastingSound(index) {
+		// console.info('pauseCastingSound', index)
+		querySelector('#cast-' + party.getIndexByRow(index)).pause()
 	}
 }(Audio, TweenMax, _, clearInterval, setInterval)

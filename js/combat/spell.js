@@ -133,13 +133,6 @@ var spell;
 				key: spellKey
 			})
 		}
-		socket.publish('party' + my.partyId, {
-			route: 'p->casting',
-			name: spell.data.name, // used as key for sound effect via socket
-			event: 'start',
-			index: my.row,
-			key: spellKey,
-		}, true)
 	}
 	function spellFizzleChance() {
 		spellType = skills[my.job][spell.index].spellType
@@ -155,6 +148,15 @@ var spell;
 			delayedCall(.2, spellFizzle)
 		}
 		else {
+			// for other party members
+			socket.publish('party' + my.partyId, {
+				route: 'p->casting',
+				name: spell.data.name, // used as key for sound effect via socket
+				event: 'start',
+				index: my.row,
+				key: ask.getCastingKey(spell.data),
+			}, true)
+			// for me
 			audio.castSoundStart(my.row, spell.data.name)
 		}
 	}
