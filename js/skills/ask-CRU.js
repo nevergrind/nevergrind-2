@@ -229,8 +229,8 @@
 			let img = ask.explosion(o, {
 				contrastStart: 1.2,
 				brightnessStart: 2,
-				sizeStart: 120,
-				sizeEnd: 120,
+				sizeStart: 64,
+				sizeEnd: 64,
 				alpha: 1,
 				duration: dur,
 			})
@@ -266,7 +266,7 @@
 			TweenMax.to(img, dur, {
 				bezier: {
 					type: 'thru', // bezier thru, soft, quadratic, cubic
-					curviness: 1.5,
+					curviness: 1,
 					values: bezierValues
 				},
 				ease: Power0.easeIn,

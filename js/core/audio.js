@@ -2,6 +2,7 @@
 var audio;
 !function(Audio, TweenMax, _, clearInterval, setInterval, undefined) {
 	audio = {
+		ambianceVolume: .5,
 		cache: {},
 		isAmbientPlaying: false,
 		init,
@@ -387,16 +388,16 @@ var audio;
 		},
 		// ENC
 		'Gravity Flux': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'holybolt'
 		},
 		'Static Suffocation': {
-			start: 'spell-legacy-start-conjuration-dot',
+			start: 'spell-legacy-start-evocation-magic',
 			end: 'spell-legacy-end-heal'
 		},
 		'Mind Blitz': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'lightning2'
 		},
 		'Subversion': {
 			start: 'spell-legacy-start-conjuration-dot',
@@ -404,44 +405,44 @@ var audio;
 		},
 		'Color Shift': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-start-evocation-fire'
 		},
 		'Phase Blade': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Stasis Field': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		'Shifting Ether': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		'Serene Sigil': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Augmentation': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Clarity': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Enthrall': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		// BRD
 		'Bellow': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		'Sonic Boom': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-evocation-dd'
 		},
 		'Euphonic Dirge': {
 			start: 'spell-legacy-start-conjuration-dot',
@@ -453,68 +454,68 @@ var audio;
 		},
 		'Crashing Chords': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-evocation-dd-slam'
 		},
 		'Battle Hymn': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Militant Cadence': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Consonant Chain': {
-			start: 'spell-legacy-start-conjuration-dot',
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-alteration-buff-fire'
+		},
+		'Litany of Life': {
+			start: 'spell-legacy-start-heal',
 			end: 'spell-legacy-end-heal'
 		},
 		'Melody of Mana': {
-			start: 'spell-legacy-start-conjuration-dot',
+			start: 'spell-legacy-start-heal',
 			end: 'spell-legacy-end-heal'
 		},
 		'Righteous Rhapsody': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		'Chromatic Sonata': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
-		},
-		'TEST': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		// CRU
 		'Seal of Damnation': {
-			start: 'spell-legacy-start-conjuration-dot',
+			start: 'spell-legacy-end-conjuration-buff',
 			end: 'spell-legacy-end-heal'
 		},
 		'Holy Wrath': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-fire',
+			end: 'spell-legacy-end-evocation-dd-slam'
 		},
 		'Divine Judgment': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		'Blessed Hammer': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-evocation-magic',
+			end: 'handofgod'
 		},
 		'Seal of Sanctuary': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-heal',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Divine Grace': {
-			start: 'spell-legacy-start-conjuration-dot',
+			start: 'spell-legacy-start-heal',
 			end: 'spell-legacy-end-heal'
 		},
 		'Benevolence': {
-			start: 'spell-legacy-start-conjuration-dot',
+			start: 'spell-legacy-start-heal',
 			end: 'spell-legacy-end-heal'
 		},
 		'Jubilee': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 	}
 	///////////////////////////////////////////
@@ -557,14 +558,12 @@ var audio;
 		}
 	}
 	function playMusic(fileName) {
-		if (!app.isApp) return
+		// if (!app.isApp) return
 		query.el('#bgmusic').src = ''
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100
 		query.el('#bgmusic').src = "music/" + fileName + '.' + 'mp3'
 
-		// var promise = new Audio("music/" + track + ".mp3")
 		var promise = query.el('#bgmusic').play()
-
 		//var promise = query.el('#bgmusic').play()
 		if (promise !== undefined) {
 			promise.then(_ => {})
@@ -606,14 +605,14 @@ var audio;
 		var amb1 = querySelector('#bgamb1')
 		amb1.setAttribute('type', 'audio/mp3')
 		amb1.src = 'sound/ambient/' + foo + '.mp3'
-		amb1.volume = (ng.config.musicVolume / 100) * .5
+		amb1.volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
 		amb1.play()
 		if (dualDelay) {
 			setTimeout(() => {
 				var amb2 = querySelector('#bgamb2')
 				amb2.setAttribute('type', 'audio/mp3')
 				amb2.src = 'sound/ambient/' + foo + '.mp3'
-				amb2.volume = (ng.config.musicVolume / 100) * .5
+				amb2.volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
 				amb2.play()
 			}, dualDelay)
 		}
@@ -808,7 +807,7 @@ var audio;
 		// console.info('playCastingSound', index, sfx)
 		var el = querySelector('#cast-' + party.getIndexByRow(index))
 		el.src = 'sound/spells/' + sfx + '.mp3'
-		el.volume = (ng.config.soundVolume / 100) * .5
+		el.volume = (ng.config.soundVolume / 100) * audio.ambianceVolume
 		el.play()
 	}
 	function pauseCastingSound(index) {

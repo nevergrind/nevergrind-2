@@ -220,6 +220,7 @@ var dungeon;
 			}
 		})
 		dungeon.map.rooms[bossIndex].boss = true
+		dungeon.map.rooms[bossIndex].isAlive = true
 	}
 	function preloadCombatAssets() {
 		console.info('LOADING ASSETS')
