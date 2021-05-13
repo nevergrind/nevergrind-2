@@ -340,11 +340,11 @@ var ask;
 
 	function castingArrayInit(o) {
 		if (typeof ask.castingTweens[o.index] === 'undefined') {
-			console.warn('set castingTweens')
+			// console.warn('set castingTweens')
 			ask.castingTweens[o.index] = []
 		}
 		if (typeof ask.castingImgIds[o.index] === 'undefined') {
-			console.warn('set castingImgIds')
+			// console.warn('set castingImgIds')
 			ask.castingImgIds[o.index] = []
 		}
 	}
@@ -1309,7 +1309,7 @@ var ask;
 				)
 			}
 		}
-		audio.playAutoAttack(o.key)
+		audio.playAutoAttack(o)
 	}
 	// old function that used frames
 	function autoAttackBlunt(o, img, size) {

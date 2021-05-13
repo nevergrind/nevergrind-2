@@ -114,6 +114,7 @@
 		socket.publish('party' + my.partyId, {
 			route: 'p->damage',
 			animate: true,
+			row: my.row,
 			index: originalTarget,
 			tgts: tgts,
 			key: 'frozenOrb',

@@ -28,6 +28,7 @@
 			frameDuration: .8,
 			frameEase: Power0.easeIn,
 		})
+		audio.playSound('hit-shield', 'combat', audio.getVolume(o.row))
 	}
 	function rupture(o) {
 		for (var i=0; i<3; i++) {
@@ -51,6 +52,7 @@
 			}(i)
 		}
 		ask.bloodDrop(o.index, 64)
+		audio.playSound('hit-slice', 'combat', audio.getVolume(o.row))
 	}
 	function whirlwind(o) {
 		ask.explosion({index: o.index, key: 'burst-ice'})
@@ -64,6 +66,7 @@
 			frameDuration: .4,
 			frameEase: Power0.easeIn,
 		})
+		audio.playSound('whirlwind', 'combat', audio.getVolume(o.row), 100)
 	}
 	function pummel(o) {
 		ask.slash(o, {
@@ -80,6 +83,7 @@
 			loops: 5,
 			duration: .5
 		})
+		audio.playSound('pound', 'combat', audio.getVolume(o.row))
 	}
 	function doubleThrow(o) {
 		ask.explosion({index: o.index, key: 'burst-arcane'})
@@ -93,6 +97,8 @@
 			frameDuration: .3,
 			frameEase: Power1.easeIn,
 		})
+		audio.playSound('windcast', 'spells', audio.getVolume(o.row))
+		audio.playSound('throw-double', 'combat', audio.getVolume(o.row))
 	}
 	function shockwave(o) {
 		ask.explosion({index: o.index, key: 'burst-ice'})
@@ -106,6 +112,7 @@
 			frameDuration: .5,
 			frameEase: Power0.easeIn,
 		})
+		audio.playSound('tremor', 'spells', audio.getVolume(o.row), 100)
 	}
 	function frenzy(o) {
 		ask.explosion(o, {
@@ -125,6 +132,7 @@
 				sizeEnd: 200,
 			})
 		})
+		audio.playSound('frenzy', 'combat', audio.getVolume(o.row))
 	}
 	function jumpStrike(o) {
 		ask.explosion({index: o.index, key: 'burst-purple'})
@@ -155,6 +163,7 @@
 			alpha: 0,
 			duration: .5,
 		})
+		audio.playSound('jump-strike', 'combat', audio.getVolume(o.row))
 	}
 	function primalStomp(o) {
 		// ask.explosion({index: o.index, key: 'burst-arcane'})
@@ -189,6 +198,7 @@
 				duration: .6,
 			})
 		})
+		audio.playSound('jump-strike', 'combat', audio.getVolume(o.row), 100)
 	}
 	function bulwark(o) {
 		ask.explosion(o, {
@@ -230,6 +240,7 @@
 				sizeEnd: 300,
 			})
 		})
+		audio.playSound('bulwark', 'combat', audio.getVolume(o.row))
 	}
 	function intrepidShout(o) {
 		let interval = .1
@@ -275,6 +286,7 @@
 				})
 			})
 		})
+		audio.playSound('buff-up', 'combat', audio.getVolume(o.row), 100)
 	}
 	function furiousCleave(o) {
 		ask.explosion({index: o.index, key: 'burst-default'})
@@ -293,5 +305,9 @@
 		})
 		z.y += 44
 		ask.moonburst(o)
+		audio.playSound('wind-slow', 'combat', audio.getVolume(o.row), 100)
+		delayedCall(.2, () => {
+			audio.playSound('hit-kick', 'combat', audio.getVolume(o.row), 100)
+		})
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);

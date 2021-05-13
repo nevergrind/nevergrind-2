@@ -29,19 +29,7 @@
 				})
 			})(i)
 		}
-		/*o.endFrame = 2
-		o.key = 'tigerStrikeRoar'
-		ask.explosion(o, {
-			yStart: ask.centerY(o.index, false) - 350,
-			contrastStart: 1.5,
-			brightnessStart: 2,
-			sizeStart: 200,
-			sizeEnd: 150,
-			duration: .45,
-			alpha: 1,
-			frameDuration: .45,
-			frameEase: Power0.easeIn,
-		})*/
+		audio.playSound('wind-slow', 'combat', audio.getVolume(o.row))
 	}
 	function hyperStrike(o) {
 		ask.explosion({index: o.index, key: 'burst-purple'}, {
@@ -59,6 +47,7 @@
 			frameEase: Power0.easeIn,
 		})
 		ask.fadeOut(img, .4, .1)
+		audio.playSound('wind-fast', 'combat', audio.getVolume(o.row))
 	}
 	function hyperStrikeBuff(o) {
 		ask.explosion({index: o.index, key: 'burst-default'}, {targetMob: false})
@@ -80,6 +69,7 @@
 				ease: Power0.easeIn,
 				frameEase: Power0.easeIn,
 			})
+			audio.playSound('star-throw', 'combat', audio.getVolume(o.row))
 		}
 		else {
 			// buff
@@ -109,90 +99,96 @@
 			alpha: 0,
 			duration: .5,
 		})
+		audio.playSound('hit-4', 'combat', audio.getVolume(o.row), 100)
 	}
 	function chakraBlast(o) {
-			ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1})
-			o.endFrame = 4
-			let dur = .33
-			let img = ask.explosion(o, {
-				contrastStart: 2,
-				brightnessStart: 4,
-				sizeStart: 0,
-				sizeEnd: 300,
-				duration: dur,
-				alpha: 1,
-				frameDuration: dur,
-				ease: Power3.easeOut,
-				frameEase: Power0.easeIn,
-			})
-			ask.fadeOut(img, dur, .1)
+		ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1})
+		o.endFrame = 4
+		let dur = .33
+		let img = ask.explosion(o, {
+			contrastStart: 2,
+			brightnessStart: 4,
+			sizeStart: 0,
+			sizeEnd: 300,
+			duration: dur,
+			alpha: 1,
+			frameDuration: dur,
+			ease: Power3.easeOut,
+			frameEase: Power0.easeIn,
+		})
+		ask.fadeOut(img, dur, .1)
+		audio.playSound('explode3', 'spells', audio.getVolume(o.row), 100)
 	}
 	function hadoken(o) {
-			ask.explosion({index: o.index, key: 'burst-purple'}, {duration: 1})
-			o.endFrame = 2
-			let dur = .3
-			let img = ask.explosion(o, {
-				contrastStart: 2,
-				brightnessStart: 4,
-				sizeStart: 150,
-				sizeEnd: 320,
-				duration: dur,
-				alpha: 1,
-				frameDuration: dur,
-				ease: Power3.easeOut,
-				frameEase: Power0.easeIn,
-			})
-			ask.fadeOut(img, dur, .1)
+		ask.explosion({index: o.index, key: 'burst-purple'}, {duration: 1})
+		o.endFrame = 2
+		let dur = .3
+		let img = ask.explosion(o, {
+			contrastStart: 2,
+			brightnessStart: 4,
+			sizeStart: 150,
+			sizeEnd: 320,
+			duration: dur,
+			alpha: 1,
+			frameDuration: dur,
+			ease: Power3.easeOut,
+			frameEase: Power0.easeIn,
+		})
+		ask.fadeOut(img, dur, .1)
+		audio.playSound('fire-1', 'spells', audio.getVolume(o.row), 100)
 	}
 	function hurricaneKicks(o) {
-			ask.explosion({index: o.index, key: 'burst-default'}, {duration: 1})
-			ask.rings({index: o.index, type: 'arcane'}, {
-				loops: 3,
-				duration: 1,
-			})
-			o.endFrame = 2
-			let dur = .3
-			let img = ask.explosion(o, {
-				contrastStart: 2,
-				brightnessStart: 4,
-				sizeStart: 300,
-				sizeEnd: 250,
-				duration: dur,
-				alpha: 1,
-				frameDuration: dur,
-				ease: Power3.easeOut,
-				frameEase: Power0.easeIn,
-			})
-			ask.fadeOut(img, dur, .1)
+		ask.explosion({index: o.index, key: 'burst-default'}, {duration: 1})
+		ask.rings({index: o.index, type: 'arcane'}, {
+			loops: 3,
+			duration: 1,
+		})
+		o.endFrame = 2
+		let dur = .3
+		let img = ask.explosion(o, {
+			contrastStart: 2,
+			brightnessStart: 4,
+			sizeStart: 300,
+			sizeEnd: 250,
+			duration: dur,
+			alpha: 1,
+			frameDuration: dur,
+			ease: Power3.easeOut,
+			frameEase: Power0.easeIn,
+		})
+		ask.fadeOut(img, dur, .1)
+		audio.playSound('windcast', 'spells', audio.getVolume(o.row), 100)
+		audio.playSound('hit-kick', 'combat', audio.getVolume(o.row), 10)
 	}
 	function dragonPunch(o) {
-			// ask.sunburst({index: o.index})
-			ask.explosion({index: o.index, key: 'burst-fire'}, {duration: 1})
-			o.endFrame = 3
-			let dur = .5
-			let img = ask.explosion(o, {
-				contrastStart: 2,
-				brightnessStart: 3,
-				sizeStart: 200,
-				sizeEnd: 250,
-				duration: dur,
-				alpha: 1,
-				frameDuration: dur,
-				ease: Power3.easeOut,
-				frameEase: Power0.easeIn,
-			})
-			ask.fadeOut(img, dur, .1)
-			ask.particleSmall({
-				index: o.index,
-				key: 'particle-small-fire',
-			}, {
-				interval: .001,
-				loops: 20,
-				sizeStart: 24,
-				sizeEnd: 4,
-				xRange: 400,
-				yRange: 50,
-			})
+		// ask.sunburst({index: o.index})
+		ask.explosion({index: o.index, key: 'burst-fire'}, {duration: 1})
+		o.endFrame = 3
+		let dur = .5
+		let img = ask.explosion(o, {
+			contrastStart: 2,
+			brightnessStart: 3,
+			sizeStart: 200,
+			sizeEnd: 250,
+			duration: dur,
+			alpha: 1,
+			frameDuration: dur,
+			ease: Power3.easeOut,
+			frameEase: Power0.easeIn,
+		})
+		ask.fadeOut(img, dur, .1)
+		ask.particleSmall({
+			index: o.index,
+			key: 'particle-small-fire',
+		}, {
+			interval: .001,
+			loops: 20,
+			sizeStart: 24,
+			sizeEnd: 4,
+			xRange: 400,
+			yRange: 50,
+		})
+		audio.playSound('spell-end-burn', 'spells', audio.getVolume(o.row))
 	}
 	function viperStrike(o) {
 		ask.slash({index: o.index, key: 'viperStrike2'}, {
@@ -209,6 +205,7 @@
 			size: 222,
 		})
 		wad.y += 60
+		audio.playSound('hit-stab', 'combat', audio.getVolume(o.row))
 	}
 	function viperStrikeBuff(o) {
 		let img = ask.explosion({
@@ -229,40 +226,46 @@
 		ask.explosion({index: o.index, key: 'burst-poison'}, {targetMob: false, duration: .5})
 	}
 	function palmStrike(o) {
-			ask.explosion({index: o.index, key: 'burst-ice'}, {duration: .8})
-			o.endFrame = 1
-			let dur = .33
-			let img = ask.explosion(o, {
-				contrastStart: 2,
-				brightnessStart: 3,
-				sizeStart: 80,
-				sizeEnd: 250,
-				duration: dur,
-				alpha: 1,
-				frameDuration: dur,
-				ease: Power2.easeOut,
-				frameEase: Power0.easeIn,
-			})
-			ask.fadeOut(img, dur, .1)
-			ask.rings({index: o.index, type: 'default'}, {
-				loops: 3,
-			})
-			ask.particleSmall({
-				index: o.index,
-				key: 'particle-small-default',
-			}, {
-				interval: .001,
-				loops: 15,
-				sizeStart: 24,
-				sizeEnd: 4,
-				xRange: 400,
-				yRange: 50,
-			})
+		ask.explosion({index: o.index, key: 'burst-ice'}, {duration: .8})
+		o.endFrame = 1
+		let dur = .33
+		let img = ask.explosion(o, {
+			contrastStart: 2,
+			brightnessStart: 3,
+			sizeStart: 80,
+			sizeEnd: 250,
+			duration: dur,
+			alpha: 1,
+			frameDuration: dur,
+			ease: Power2.easeOut,
+			frameEase: Power0.easeIn,
+		})
+		ask.fadeOut(img, dur, .1)
+		ask.rings({index: o.index, type: 'default'}, {
+			loops: 3,
+		})
+		ask.particleSmall({
+			index: o.index,
+			key: 'particle-small-default',
+		}, {
+			interval: .001,
+			loops: 15,
+			sizeStart: 24,
+			sizeEnd: 4,
+			xRange: 400,
+			yRange: 50,
+		})
+		audio.playSound('hit-3', 'combat', audio.getVolume(o.row))
 	}
 	function mendingAura(o) {
-		ask.explosion({index: o.index, key: 'burst-arcane'}, {duration: 1.25, targetMob: false})
+		ask.explosion({index: o.index, key: 'burst-arcane'}, {
+			duration: 1.25,
+			sizeEnd: 250,
+			targetMob: false
+		})
 		ask.explosion(o, {
 			targetMob: false,
+			sizeEnd: 250,
 			duration: 1
 		})
 		ask.explosion({
@@ -272,14 +275,16 @@
 			targetMob: false,
 			contrastStart: 2,
 			brightnessStart: 3,
-			sizeStart: 80,
-			sizeEnd: 250,
+			sizeStart: 50,
+			sizeEnd: 200,
 			duration: 1
 		})
+		audio.playSound('spell-done-heal', 'spells', audio.getVolume(o.row))
 	}
 	function spiritBarrier(o) {
 		ask.explosion(o, {
 			targetMob: false,
+			sizeEnd: 250,
 			contrastStart: 2,
 			brightnessStart: 3,
 			duration: 1
@@ -289,17 +294,18 @@
 			targetMob: false,
 			rotationStart: 0,
 			rotation: 180,
-			sizeStart: 80,
-			sizeEnd: 250,
+			sizeStart: 50,
+			sizeEnd: 200,
 			duration: 1.25
 		})
 		ask.explosion(o, {
 			targetMob: false,
 			rotationStart: 0,
 			rotation: -180,
-			sizeStart: 80,
-			sizeEnd: 250,
+			sizeStart: 50,
+			sizeEnd: 200,
 			duration: 1.25
 		})
+		audio.playSound('spell-end-buff', 'spells', audio.getVolume(o.row))
 	}
 }($, _, TweenMax, Power0, Power1, Power2, Power3, Power4);

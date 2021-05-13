@@ -172,6 +172,13 @@
 		}
 		combat.txDamageMob(damages)
 
+		socket.publish('party' + my.partyId, {
+			route: 'p->damage',
+			animate: true,
+			row: my.row,
+			index: tgt,
+			key: 'bladeStorm',
+		})
 		// animate timers
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()

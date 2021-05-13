@@ -1287,7 +1287,7 @@ var combat;
 		blockMsg = ''
 		if (hit.blocked) {
 			blockMsg = ' (blocked '+ hit.blocked +')'
-			audio.playSound('block', 'combat')
+			audio.playSound('hit-block', 'combat')
 		}
 
 		combat.lastMobHitMeName = ng.getArticle(index, true) + ' ' + mobs[index].name

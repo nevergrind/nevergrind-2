@@ -242,6 +242,7 @@
 		socket.publish('party' + my.partyId, {
 			route: 'p->damage',
 			animate: true,
+			row: my.row,
 			index: targets[0],
 			key: 'blessedHammer',
 		})

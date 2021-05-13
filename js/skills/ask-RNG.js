@@ -24,7 +24,7 @@
 		delayedCall(.25, () => {
 			ask.starburst(_.clone(o))
 		})
-		audio.playSound('slice', 'combat')
+		audio.playSound('wind-slow', 'combat', audio.getVolume(o.row))
 	}
 
 	function explosiveShot(o) {
@@ -42,7 +42,7 @@
 			frameDuration: .4,
 			frameEase: Power2.easeInOut,
 		})
-		audio.playSound('fire-' + _.random(1, 3), 'spells')
+		audio.playSound('fire-3', 'spells', audio.getVolume(o.row))
 	}
 
 	function trueshotStrike(o) {
@@ -68,8 +68,7 @@
 			duration: 1,
 			sizeEnd: 350
 		})
-		audio.playSound('arrow-impact', 'combat')
-		audio.playSound('hit-5', 'combat')
+		audio.playSound('arrow-impact', 'combat', audio.getVolume(o.row))
 	}
 
 	function spreadShot(o) {
@@ -124,23 +123,29 @@
 			rotation: 0,
 			sizeEnd: 200,
 		})
-		audio.playSound('arrow-' + _.random(1, 3), 'combat')
+		delayedCall(Math.random() * .2, () => {
+			audio.playSound('arrow-' + _.random(1, 3), 'combat', audio.getVolume(o.row))
+		})
 	}
 
 	function bladeStorm(o) {
-		for (var i=0; i<5; i++) {
-			!function(i) {
-				delayedCall(i * .025, () => {
-					ask.slash(o, {
-						duration: .16,
-						size: 200,
-						yAdjust: (i * 50) - 100
+		if (o.animate) {
+			let vol = audio.getVolume(o.row)
+			for (var i=0; i<5; i++) {
+				!function(i) {
+					delayedCall(i * .025, () => {
+						ask.slash(o, {
+							duration: .16,
+							size: 150,
+							yAdjust: (i * 50) - 100
+						})
+						if (i === 0 || i === 4) {
+							console.info('storm')
+							audio.playSound('wind-fast', 'combat', vol)
+						}
 					})
-					if (i % 2 === 0) {
-						audio.playSound('hit-' + (i + 1), 'combat')
-					}
-				})
-			}(i)
+				}(i)
+			}
 		}
 	}
 
@@ -203,8 +208,7 @@
 			xRange: 150,
 			yRange: 50,
 		})
-		audio.playSound('arrow-impact', 'combat')
-		audio.playSound('hit-3', 'combat')
+		audio.playSound('arrow-1', 'combat', audio.getVolume(o.row))
 	}
 
 	function burningEmbers(o) {

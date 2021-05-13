@@ -210,6 +210,7 @@
 		socket.publish('party' + my.partyId, {
 			route: 'p->damage',
 			animate: true,
+			row: my.row,
 			index: tgt,
 			key: 'meteorLaunch',
 		})

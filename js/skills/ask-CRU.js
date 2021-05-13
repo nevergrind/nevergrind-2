@@ -32,6 +32,7 @@
 			frameDuration: .28,
 			frameEase: Power0.easeIn,
 		})
+		audio.playSound('hit-shield', 'combat', audio.getVolume(o.row))
 	}
 	function rebuke(o) {
 		ask.explosion({index: o.index, key: 'burst-default'}, {
@@ -44,6 +45,7 @@
 			sizeEnd: 300,
 			duration: 1,
 		})
+		audio.playSound('metal-thud', 'combat', audio.getVolume(o.row), 100)
 	}
 	function vengeance(o) {
 		const dur = .2
@@ -99,6 +101,7 @@
 				duration: .6,
 			})
 		})
+		audio.playSound('throw-double', 'combat', audio.getVolume(o.row))
 	}
 	function consecrate(o) {
 		ask.explosion({index: o.index, key: 'orb-arcane'}, {
@@ -119,32 +122,8 @@
 			alpha: 0,
 			duration: .6,
 		})
-		/*const dur = .25
-		o.endFrame = 1
-		ask.explosion(o, {
-			contrastStart: 1.3,
-			brightnessStart: 3,
-			sizeStart: 100,
-			sizeEnd: 350,
-			alpha: 1,
-			rotationStart: 0,
-			rotation: 0,
-			duration: dur,
-			frameDuration: dur,
-			frameEase: Power0.easeIn,
-		})
-		ask.explosion(o, {
-			contrastStart: 1.3,
-			brightnessStart: 3,
-			sizeStart: 100,
-			sizeEnd: 350,
-			alpha: 1,
-			rotationStart: 180,
-			rotation: 180,
-			duration: dur,
-			frameDuration: dur,
-			frameEase: Power0.easeIn,
-		})*/
+		audio.playSound('bolthammercast', 'spells', audio.getVolume(o.row), 100)
+		audio.playSound('consecrate', 'combat', audio.getVolume(o.row), 100)
 	}
 	function consecrateBuff(o) {
 		ask.groundExplosion({index: o.index, key: 'consecrate-buff'}, {

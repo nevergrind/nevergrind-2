@@ -586,7 +586,7 @@ var party;
 	function casting(data) {
 		if (data.event === 'stop') {
 			ask.killCastingTweens(data)
-			audio.castSoundEnd(data.index, data.name)
+			audio.castSoundEnd(data.index, data.name, true)
 		}
 		else if (data.event === 'start') {
 			castSpellType = data.key.split('-')[1]

@@ -2,7 +2,9 @@
 var audio;
 !function(Audio, TweenMax, _, clearInterval, setInterval, undefined) {
 	audio = {
+		debounceMap: {},
 		ambianceVolume: .5,
+		allyVolume: .2,
 		cache: {},
 		isAmbientPlaying: false,
 		init,
@@ -26,6 +28,8 @@ var audio;
 		playAutoAttack,
 		castSoundStart,
 		castSoundEnd,
+		getVolumeMod,
+		getVolume,
 	}
 
 	audio.debClick = _.debounce(debClick)
@@ -45,19 +49,19 @@ var audio;
 		},
 		'Faerie Flame': {
 			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			end: 'spell-legacy-end-conjuration-buff'
 		},
 		'Fungal Growth': {
 			start: 'spell-legacy-start-conjuration-dot',
 			end: 'spell-legacy-end-heal'
 		},
 		'Shimmering Orb': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		'Spirit of the Hunter': {
-			start: 'spell-legacy-start-conjuration-dot',
-			end: 'spell-legacy-end-heal'
+			start: 'spell-legacy-start-buff',
+			end: 'spell-legacy-end-alteration-buff'
 		},
 		// CLR
 		'Smite': {
@@ -574,11 +578,27 @@ var audio;
 		sfx.volume = ng.config.soundVolume / 100
 		sfx.play()
 	}
-	function playSound(fileName, path = '') {
+
+	function playSound(
+		fileName,
+		path = '',
+		volumeMod = 1,
+		debounceTime = 16
+	) {
 		if (!fileName) return
 		if (path) path += '/'
+		if (debounceTime) {
+			if (typeof audio.debounceMap[path + fileName] === 'undefined') {
+				audio.debounceMap[path + fileName] = Date.now()
+			}
+			else {
+				const d = Date.now()
+				if (d - audio.debounceMap[path + fileName] < debounceTime) return
+				audio.debounceMap[path + fileName] = d
+			}
+		}
 		const sfx = new Audio('sound/' + path + fileName + '.mp3')
-		sfx.volume = ng.config.soundVolume / 100
+		sfx.volume = (ng.config.soundVolume * volumeMod) / 100
 		sfx.play()
 	}
 	function playEquipmentSound(data) {
@@ -661,16 +681,17 @@ var audio;
 		else if (zoneName === ZONES.ashenflowPeak) audio.playSound('door-stone-closed', 'dungeon')
 	}
 
-	function playAutoAttack(key) {
-		if (key.includes('Hand-to-hand')) {
-			audio.playSound('auto-h2h', 'combat')
+	function playAutoAttack(o) {
+		const volMod = getVolumeMod(party.getIndexByRow(o.row) > 0)
+		if (o.key.includes('Hand-to-hand')) {
+			audio.playSound('punch-1', 'combat', volMod)
 		}
-		else if (key.includes('autoAttackOne-hand') ||
-			key.includes('autoAttackPiercing')) {
-			audio.playSound('auto-1h', 'combat')
+		else if (o.key.includes('autoAttackOne-hand') ||
+			o.key.includes('autoAttackPiercing')) {
+			audio.playSound('auto-1h', 'combat', volMod)
 		}
 		else {
-			audio.playSound('auto-2hs', 'combat')
+			audio.playSound('auto-2hs', 'combat', volMod)
 		}
 	}
 
@@ -733,23 +754,23 @@ var audio;
 		if (party.presence[index].hp / party.presence[index].hpMax < .33) {
 			// below 33% health - more crunchiness
 			if (damage > party.presence[index].hpMax * .025) {
-				playerHitCrunch()
+				playerHitCrunch(index > 0)
 			}
 			else {
-				audio.playSound('hit', 'combat')
+				audio.playSound('hit', 'combat', getVolumeMod(index > 0))
 				playerHitRegular(index)
 			}
 		}
 		else {
 			if (damage > party.presence[index].hpMax * .05) {
-				playerHitCrunch()
+				playerHitCrunch(index > 0)
 			}
 			else if (damage > party.presence[index].hpMax * .03) {
-				audio.playSound('hit', 'combat')
+				audio.playSound('hit', 'combat', getVolumeMod(index > 0))
 				playerHitRegular(index)
 			}
 			else {
-				audio.playSound('hit', 'combat')
+				audio.playSound('hit', 'combat', getVolumeMod(index > 0))
 			}
 		}
 	}
@@ -761,10 +782,10 @@ var audio;
 		else if (SMALL_RACES.includes(party.presence[index].race)) {
 			hitSound += '-small'
 		}
-		audio.playSound(hitSound, 'player')
+		audio.playSound(hitSound, 'player', getVolumeMod(index > 0))
 	}
-	function playerHitCrunch() {
-		audio.playSound('hit-crunch', 'combat')
+	function playerHitCrunch(isAlly = false) {
+		audio.playSound('hit-crunch', 'combat', getVolumeMod(isAlly))
 	}
 	let deathSound = ''
 	function playerDeath(index) {
@@ -775,7 +796,7 @@ var audio;
 		else if (SMALL_RACES.includes(party.presence[index].race)) {
 			deathSound += '-small'
 		}
-		audio.playSound(deathSound, 'player')
+		audio.playSound(deathSound, 'player', getVolumeMod(index > 0))
 	}
 	function castSoundStart(index, name) {
 		// console.info('castSoundStart', index, name)
@@ -786,32 +807,58 @@ var audio;
 		else if (typeof castData[name] === 'function') {
 			sfx = castData[name].start()
 		}
-		sfx && playCastingSound(index, sfx)
+		sfx && playCastingStartSound(index, sfx)
 	}
-	function castSoundEnd(index, name) {
+
+	function castSoundEnd(index, name, isAlly = false) {
 		// console.info('castSoundEnd', index, name)
 		if (name) {
+			console.info('isAlly', isAlly, getVolumeMod(isAlly))
 			pauseCastingSound(index)
 			if (typeof castData[name].end === 'string') {
-				audio.playSound(castData[name].end, 'spells')
+				audio.playSound(
+					castData[name].end,
+					'spells',
+					getVolumeMod(isAlly)
+				)
 			}
 			else if (typeof castData[name].end === 'function') {
-				audio.playSound(castData[name].end(), 'spells')
+				audio.playSound(castData[name].end(), 'spells', getVolumeMod(isAlly))
 			}
 		}
 		else {
 			pauseCastingSound(index)
 		}
 	}
-	function playCastingSound(index, sfx) {
-		// console.info('playCastingSound', index, sfx)
-		var el = querySelector('#cast-' + party.getIndexByRow(index))
+	function playCastingStartSound(index, sfx) {
+		// console.info('playCastingStartSound', index, sfx)
+		const partyIndex = party.getIndexByRow(index)
+
+		var el = querySelector('#cast-' + partyIndex)
 		el.src = 'sound/spells/' + sfx + '.mp3'
-		el.volume = (ng.config.soundVolume / 100) * audio.ambianceVolume
+		el.volume = (ng.config.soundVolume / 100) * (getVolumeMod(partyIndex > 0) * .5)
 		el.play()
 	}
 	function pauseCastingSound(index) {
 		// console.info('pauseCastingSound', index)
 		querySelector('#cast-' + party.getIndexByRow(index)).pause()
+	}
+
+	/**
+	 * Returns the proper volume mod for player or ally
+	 * @param isAlly
+	 * @returns {number}
+	 */
+	function getVolumeMod(isAlly) {
+		return isAlly ? audio.allyVolume : 1
+	}
+
+	/**
+	 * Gets volume for any sfx based on if it's player's or an ally's
+	 * @param o
+	 * @returns {number}
+	 */
+	function getVolume(row) {
+		return getVolumeMod(party.getIndexByRow(row) > 0)
 	}
 }(Audio, TweenMax, _, clearInterval, setInterval)

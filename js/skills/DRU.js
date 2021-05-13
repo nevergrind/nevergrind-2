@@ -172,6 +172,7 @@
 		socket.publish('party' + my.partyId, {
 			route: 'p->damage',
 			animate: true,
+			row: my.row,
 			index: 0,
 			key: 'moltenBoulder',
 			tgtStart: _.first(tgts),

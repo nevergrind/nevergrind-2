@@ -34,6 +34,7 @@
 			frameDuration: .32,
 			frameEase: Power0.easeIn,
 		})
+		audio.playSound('hit-shield', 'combat', audio.getVolume(o.row))
 	}
 	function deathStrike(o) {
 		ask.slash({index: o.index, key: 'deathStrike-blood'}, {
@@ -45,6 +46,7 @@
 			size: 250,
 		})
 		ask.bloodDrop(o.index, 64)
+		audio.playSound('hit-slice', 'combat', audio.getVolume(o.row))
 	}
 	function deathStrikeHeal(o) {
 		ask.explosion({index: o.index, key: 'orb-blood'}, {
@@ -64,6 +66,7 @@
 			ease: Power0.easeIn,
 		})
 		ask.bloodDrop(o.index, 16)
+		audio.playSound('slice', 'combat', audio.getVolume(o.row), 100)
 	}
 	function doomThrust(o) {
 		ask.explosion({index: o.index, key: 'orb-purple'}, {
@@ -88,6 +91,7 @@
 			xRange: 70,
 			yRange: 50,
 		})
+		audio.playSound('spell-done-slam', 'spells', audio.getVolume(o.row), 100)
 	}
 	function astralBlade(o) {
 		ask.slash({index: o.index, key: 'astralBlade-slash'}, {
@@ -120,7 +124,7 @@
 			alpha: 0,
 			duration: .5,
 		})
-		audio.playSound('slice', 'combat')
+		audio.playSound('hit-slice', 'combat')
 	}
 	function ravagingPlague(o) {
 		o.endFrame = 3
