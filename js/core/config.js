@@ -6,6 +6,6 @@
 const config = {
 	deathEnabled: true,
 	walkFast: true,
-	defaultZone: 2,
+	defaultZone: 6,
 	showMapNumbers: false,
 }

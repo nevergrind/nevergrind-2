@@ -1,12 +1,14 @@
 // audio.js
 var audio;
-!function(Audio, TweenMax, _, clearInterval, setInterval, undefined) {
+!function(Audio, TweenMax, _, clearInterval, setInterval, Power0, undefined) {
 	audio = {
 		debounceMap: {},
 		ambianceVolume: .5,
 		allyVolume: .2,
 		cache: {},
 		isAmbientPlaying: false,
+		musicTimeout: 0,
+		musicTween: 0,
 		init,
 		playMusic,
 		playSound,
@@ -19,7 +21,6 @@ var audio;
 		fade,
 		pause,
 		events,
-		loadGame,
 		setSoundVolume,
 		playerHit,
 		playerDeath,
@@ -32,7 +33,9 @@ var audio;
 		getVolume,
 	}
 
-	audio.debClick = _.debounce(debClick)
+	const bgmusicElement = query.el('#bgmusic')
+	const bgamb1Element = query.el('#bgamb1')
+	const bgamb2Element = query.el('#bgamb2')
 
 	var key
 	const LOOP_BUFFER = .2
@@ -543,16 +546,16 @@ var audio;
 			}
 		}
 
-		audio.playMusic('town', 'wav')
+		audio.playMusic('intro', .5)
 	}
 	function save() {
 		// somehow my app config data ended up in here lul
 		localStorage.setItem('config', JSON.stringify(ng.config))
 	}
 	function events() {
-		querySelector('#bgmusic').addEventListener('timeupdate', musicUpdate)
-		querySelector('#bgamb1').addEventListener('timeupdate', ambientUpdate)
-		querySelector('#bgamb2').addEventListener('timeupdate', ambientUpdate)
+		bgmusicElement.addEventListener('timeupdate', musicUpdate)
+		bgamb1Element.addEventListener('timeupdate', ambientUpdate)
+		bgamb2Element.addEventListener('timeupdate', ambientUpdate)
 	}
 	function musicUpdate() {
 		if (!this.duration) return
@@ -561,29 +564,60 @@ var audio;
 			this.play()
 		}
 	}
-	function playMusic(fileName) {
-		// if (!app.isApp) return
-		query.el('#bgmusic').src = ''
-		query.el('#bgmusic').volume = ng.config.musicVolume / 100
-		query.el('#bgmusic').src = "music/" + fileName + '.' + 'mp3'
-
-		var promise = query.el('#bgmusic').play()
-		//var promise = query.el('#bgmusic').play()
-		if (promise !== undefined) {
-			promise.then(_ => {})
-		}
+	function pause() {
+		bgmusicElement.pause();
 	}
-	function debClick() {
-		const sfx = new Audio('sound/click.mp3')
-		sfx.volume = ng.config.soundVolume / 100
-		sfx.play()
+	function fade() {
+		var x = {
+			vol: ng.config.musicVolume / 100
+		}
+		TweenMax.to(x, 2.5, {
+			vol: 0,
+			ease: Linear.easeNone,
+			onUpdate: () => {
+				bgmusicElement.volume = x.vol
+			},
+			onComplete: () => {
+				bgmusicElement.src = ''
+			}
+		});
+	}
+	function playMusic(fileName, fade = .25, delay = 0) {
+		if (!fade) {
+			bgmusicElement.src = ''
+		}
+
+		const tween = {
+			volume: ng.config.musicVolume / 100,
+		}
+		if (typeof audio.musicTween === 'object') {
+			audio.musicTween.kill()
+		}
+		clearTimeout(audio.musicTimeout)
+		audio.musicTween = TweenMax.to(tween, fade, {
+			volume: 0,
+			ease: Power0.easeNone,
+			onUpdate: () => {
+				bgmusicElement.volume = tween.volume
+			},
+			onComplete: () => {
+				audio.musicTimeout = setTimeout(() => {
+					bgmusicElement.volume = ng.config.musicVolume / 100
+					bgmusicElement.src = 'music/' + fileName + '.' + 'mp3'
+					const promise = bgmusicElement.play()
+					if (promise !== undefined) {
+						promise.then(_ => {})
+					}
+				}, delay)
+			}
+		})
 	}
 
 	function playSound(
 		fileName,
 		path = '',
 		volumeMod = 1,
-		debounceTime = 16
+		debounceTime = 25
 	) {
 		if (!fileName) return
 		if (path) path += '/'
@@ -622,28 +656,26 @@ var audio;
 	}
 	function playAmbient(foo, dualDelay) {
 		if (audio.isAmbientPlaying) return
-		var amb1 = querySelector('#bgamb1')
-		amb1.setAttribute('type', 'audio/mp3')
-		amb1.src = 'sound/ambient/' + foo + '.mp3'
-		amb1.volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
-		amb1.play()
+		bgamb1Element.setAttribute('type', 'audio/mp3')
+		bgamb1Element.src = 'sound/ambient/' + foo + '.mp3'
+		bgamb1Element.volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
+		bgamb1Element.play()
 		if (dualDelay) {
 			setTimeout(() => {
-				var amb2 = querySelector('#bgamb2')
-				amb2.setAttribute('type', 'audio/mp3')
-				amb2.src = 'sound/ambient/' + foo + '.mp3'
-				amb2.volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
-				amb2.play()
+				bgamb2Element.setAttribute('type', 'audio/mp3')
+				bgamb2Element.src = 'sound/ambient/' + foo + '.mp3'
+				bgamb2Element.volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
+				bgamb2Element.play()
 			}, dualDelay)
 		}
 		else {
-			querySelector('#bgamb2').pause()
+			bgamb2Element.pause()
 		}
 		audio.isAmbientPlaying = true
 	}
 	function stopAmbient() {
-		querySelector('#bgamb1').pause()
-		querySelector('#bgamb2').pause()
+		bgamb1Element.pause()
+		bgamb2Element.pause()
 		audio.isAmbientPlaying = false
 	}
 	function playAmbientLoop() {
@@ -663,7 +695,13 @@ var audio;
 		else if (zoneName === ZONES.galeblastFortress) audio.playAmbient('wind_lp1')
 		else if (zoneName === ZONES.ashenflowPeak) audio.playAmbient('hell')
 	}
+
 	function playEnterDoor() {
+		if (dungeon.suppressDoorAudio) {
+			dungeon.suppressDoorAudio = false
+			audio.playSound('sit')
+			return
+		}
 		const zoneName = zones[mission.id].name
 		if (zoneName === ZONES.salubrinHaven) audio.playSound('door-wood', 'dungeon')
 		else if (zoneName === ZONES.tendolinPassage) audio.playSound('door-wood', 'dungeon')
@@ -714,30 +752,6 @@ var audio;
 	function setSoundVolume(val) {
 		ng.config.soundVolume = val;
 		audio.save();
-	}
-	function pause() {
-		query.el('#bgmusic').pause();
-	}
-	function fade() {
-		var x = {
-			vol: ng.config.musicVolume / 100
-		}
-		TweenMax.to(x, 2.5, {
-			vol: 0,
-			ease: Linear.easeNone,
-			onUpdate: function(){
-				query.el('#bgmusic').volume = x.vol;
-			}
-		});
-	}
-	function loadGame() {
-		var x = [
-			'bash'
-		];
-		for (var i=0, len=x.length; i<len; i++){
-			var z = x[i];
-			audio.cache[z] = new Audio("sound/" + z + ".mp3");
-		}
 	}
 
 	const BIG_RACES = [
@@ -813,7 +827,7 @@ var audio;
 	function castSoundEnd(index, name, isAlly = false) {
 		// console.info('castSoundEnd', index, name)
 		if (name) {
-			console.info('isAlly', isAlly, getVolumeMod(isAlly))
+			// console.info('isAlly', isAlly, getVolumeMod(isAlly))
 			pauseCastingSound(index)
 			if (typeof castData[name].end === 'string') {
 				audio.playSound(
@@ -861,4 +875,4 @@ var audio;
 	function getVolume(row) {
 		return getVolumeMod(party.getIndexByRow(row) > 0)
 	}
-}(Audio, TweenMax, _, clearInterval, setInterval)
+}(Audio, TweenMax, _, clearInterval, setInterval, Power0)

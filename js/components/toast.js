@@ -84,6 +84,7 @@ var toast;
 			else if (toast.data.action === 'guild-invite') guild.inviteAccepted(toast.data)
 			removeToast()
 		}
+		audio.playSound('click-7')
 	}
 	function decline() {
 		// console.info('decline: ', toast.data)
@@ -95,15 +96,20 @@ var toast;
 			action: toast.data.action + '-decline',
 		})
 		removeToast()
+		audio.playSound('beep-3')
 	}
 	function acceptDestroy() {
 		if (destroyData.accept === 'destroy-item') {
 			item.destroy()
 			hideDestroyToast()
+			audio.playSound('click-5')
 		}
 	}
 	function declineDestroy() {
-		if (destroyData.accept === 'destroy-item') hideDestroyToast()
+		if (destroyData.accept === 'destroy-item') {
+			audio.playSound('beep-3')
+			hideDestroyToast()
+		}
 	}
 	function destroyItem(data) {
 		// console.info('destroyItem', destroyData)

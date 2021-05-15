@@ -1765,6 +1765,7 @@ var loot = {};
 	function handleDropFail(r) {
 		ng.msg(r.responseText, 8);
 		resetDrop()
+		audio.playSound('beep-3')
 	}
 
 	function handleDragStart() {
@@ -1790,15 +1791,21 @@ var loot = {};
 	}
 
 	function dropItem(event) {
-		if (!item.dragType) return
+		if (!item.dragType) {
+			ng.msg('Select an item to destroy first.', 3)
+			audio.playSound('beep-3')
+			return
+		}
 		if (!myItemTypes.includes(item.dragType)) {
 			ng.msg('You can\'t destroy items that don\'t belong to you!', 4)
 			resetDrop()
+			audio.playSound('beep-3')
 			return
 		}
 		// console.info('dropItem', event)
 		if (event.ctrlKey || ng.config.fastDestroy) destroy()
 		else if (item.dragType && item.dragSlot >= 0) {
+			audio.playSound('click-7')
 			toast.destroyItem({
 				accept: 'destroy-item',
 				dismiss: '',
@@ -1910,6 +1917,7 @@ var loot = {};
 			})
 		}
 		button.updatePotionPanel()
+		audio.playSound('click-4')
 	}
 	function handleItemSlotContextClick(event) {
 		if (item.awaitingDrop || item.isDragging) return false

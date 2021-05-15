@@ -91,6 +91,7 @@ var town;
 	////////////////////////////////////////////
 	function go() {
 		if (ng.view === 'town') return
+		dungeon.suppressDoorAudio = true
 		mob.textures = {}
 		my.target = -1
 		my.targetIsMob = true
@@ -103,7 +104,7 @@ var town;
 		map.inCombat = false
 		if (!create.selected) return
 
-		audio.playMusic('intro', 'wav')
+		audio.playMusic('eq-training', .5, 1500)
 		clearTimeout(game.session.timer)
 		game.showScene('scene-town');
 		ng.lock(1);
@@ -613,6 +614,7 @@ var town;
 			}
 			else item.buy()
 		}
+		audio.playSound('click-7')
 	}
 	function sellItem() {
 		// console.warn('sellItem', item.dragType, item.dragSlot, item.dragData.name)
@@ -623,6 +625,7 @@ var town;
 			ng.splitText('various-description', 'You want to sell MY items? That\'s not how this works, buddy.')
 		}
 		else item.sell()
+		audio.playSound('click-7')
 	}
 	function setMyGold(newGold) {
 		goldConfig = {

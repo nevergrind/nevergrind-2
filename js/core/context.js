@@ -61,6 +61,7 @@ var context;
 		else if (id === 'context-promote') context.contextPromote()
 		else if (id === 'context-disband') context.contextDisband()
 		context.hide()
+		audio.playSound('click-1')
 	}
 	function handleMouseEnter() {
 		context.isInside = 1;

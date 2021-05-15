@@ -130,6 +130,7 @@
 		map.applyBounds()
 		windowResized()
 	}
+
 	function keydown(e) {
 		key = e.key;
 

@@ -48,7 +48,7 @@ var trade;
 		// console.info('trade drag', item.dragType, item.dragSlot, item.dragData)
 
 		// console.info('trade drop', item.dropType, item.dropSlot, item.dropData)
-		querySelector('#' + item.dropType + '-name-' + item.dropSlot).innerHTML = item.getItemNameString(item.dragData, item.dragData.baseName, true)
+		querySelector('#' + item.dropType + '-name-' + item.dropSlot).innerHTML = item.getItemNameString(item.dragData, item.dragData.name, true)
 		// broadcast to tradeFrom
 
 		updateTrade({
@@ -70,13 +70,14 @@ var trade;
 			data: data
 		}
 		if (typeof slot !== void 0) tradeData.slot = slot
+		console.info('updateTrade', tradeData)
 		socket.publish('name' + trade.data.name, tradeData);
 	}
 	function updateToItem(obj) {
 		// console.warn('tradeTo', obj)
 		items.tradeTo[obj.slot] = obj.data.tradeTo
 		bar.updateItemSlotDOM('tradeTo', obj.slot)
-		querySelector('#tradeTo-name-' + obj.slot).innerHTML = item.getItemNameString(obj.data.tradeTo, obj.data.tradeTo.baseName, true)
+		querySelector('#tradeTo-name-' + obj.slot).innerHTML = item.getItemNameString(obj.data.tradeTo, obj.data.tradeTo.name, true)
 	}
 	function rxTradeUpdate(obj) {
 		// console.info('trade rxTradeUpdate', obj.data)
@@ -150,12 +151,14 @@ var trade;
 			el.setAttribute('style', rule.confirmed)
 			el.classList.add('no-pointer')
 		}
+		audio.playSound('click-10')
 	}
 	function tradeCancelled() {
 		tradeChanged()
 		updateTrade({
 			confirmed: false
 		})
+		audio.playSound('beep-3')
 	}
 	function goldChange() {
 		el = $(this)
@@ -291,7 +294,7 @@ var trade;
 		town.initItemData(data.inv, 'inv')
 		bar.updateInventoryDOM()
 		ng.unlock()
-		chat.log('Client update completed!')
+		// chat.log('Client update completed!')
 	}
 	function convertItemsForDb(items, slots) {
 		return _.filter(items.map(item => {
@@ -445,7 +448,7 @@ var trade;
 	}
 	function rxTradeClosedReceived(data) {
 		// console.info('trade tradeClosedReceived')
-		msg = data.msg || trade.data.name + ' closed the chat window.'
+		msg = data.msg || trade.data.name + ' closed the trade window.'
 		if (trade.data.name) {
 			chat.log(msg, CHAT.WARNING)
 			closeTradeWindow()

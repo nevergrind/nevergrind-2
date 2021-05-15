@@ -141,12 +141,14 @@ var tavern;
 		setDescriptionStyle()
 		querySelector('#town-avatar').src = 'images/avatars/' + avatar + '.png'
 		querySelector('#tavern-body').innerHTML = html
+		audio.playSound('click-3')
 	}
 
 	function handleClickTips(event) {
 		key = _.camelCase(_.pick(event.currentTarget.dataset, KEYS.ID).id)
 		setDescriptionStyle()
 		typeof tips[key] === 'string' && ng.splitText('various-description', tips[key])
+		audio.playSound('click-2')
 	}
 	function setDescriptionStyle() {
 		querySelector('#various-description').scrollTop = 0
@@ -256,6 +258,7 @@ var tavern;
 			getLeaders(selectedLeaderboard)
 		}
 		else querySelector('#tavern-leaderboard-body').innerHTML = leaderboardBodyHtml(tavern.leaders[selectedLeaderboard])
+		audio.playSound('click-3')
 	}
 	function getLeaders(job) {
 		ng.lock(true)

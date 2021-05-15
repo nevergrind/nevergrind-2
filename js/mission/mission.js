@@ -105,9 +105,11 @@ var mission;
 			querySelector('#mission-preview').src = getZonePreviewImg(questId)
 			$("#mission-title").html(quests[mission.questId].title);
 			querySelector('#mission-level').innerHTML = levelHtml()
+			audio.playSound('click-12')
 		}
 		else {
 			// TODO: non-party member needs to see something... EMBARK?
+			audio.playSound('beep-3')
 		}
 	}
 	function getZonePreviewImg(id) {
@@ -143,6 +145,7 @@ var mission;
 			e.removeClass().addClass(plusClasses)
 			$("#mission-quest-list-wrap-" + z.id).css('display', 'none')
 			z.isOpen = 0
+			audio.playSound('click-3')
 		}
 		else {
 			// open menu
@@ -151,6 +154,7 @@ var mission;
 			e.removeClass().addClass(minusClasses)
 			$("#mission-quest-list-wrap-" + z.id).css('display', 'block')
 			z.isOpen = 1
+			audio.playSound('click-2')
 		}
 	}
 	function txReturnToTown() {
@@ -192,6 +196,7 @@ var mission;
 
 	function embark() {
 		if (party.presence[0].isLeader) {
+			audio.playSound('click-4', '', 1, 500)
 			mission.inProgress = true
 			mission.isCompleted = false
 			if (!_.size(dungeon.map)) {
@@ -245,6 +250,7 @@ var mission;
 		})
 		ng.msg('Mission started: ' + quests[mission.questId].title)
 		let questDelay = app.isApp ? 3 : 0
+		audio.playSound('click-4', '', 1, 500)
 		delayedCall(questDelay, dungeon.rxGo)
 	}
 	function isQuestCompleted() {

@@ -373,9 +373,11 @@ let map;
 			else {
 				if (dungeon.map.rooms[map.roomId].connects.includes(roomId)) {
 					enterHallway(roomId)
+					audio.playSound('click-2')
 				}
 				else {
 					console.warn('does not connect!', roomId, map.roomId, dungeon.map.rooms[map.roomId].connects)
+					audio.playSound('click-3')
 				}
 			}
 		}
@@ -416,6 +418,7 @@ let map;
 		map.updatePosition()
 		console.info('enterHallway', 'room', data.id, 'hallway', map.hallwayId)
 		dungeon.go()
+		audio.playEnterDoor()
 	}
 	function revealRoom() {
 		let rooms = ['#room-' + map.roomId]
@@ -491,6 +494,7 @@ let map;
 				!isRespawn && map.show(3)
 			}
 			delayedCall(1.5, () => {
+				audio.fade()
 				audio.playAmbientLoop()
 			})
 		}

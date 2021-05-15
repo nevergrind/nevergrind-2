@@ -28,6 +28,7 @@ var dungeon;
 		}
 	]
 	dungeon = {
+		suppressDoorAudio: true,
 		walkSoundInterval: 0,
 		initialized: 0,
 		isDungeon: true,
@@ -123,7 +124,7 @@ var dungeon;
 	}
 	function goTasks() {
 		// cleanup sort of activities when going into dungeon
-		audio.pause()
+		audio.fade()
 		town.closeVarious()
 		tavern.leaders = ''
 		game.showScene('scene-dungeon')
@@ -436,6 +437,7 @@ var dungeon;
 			map.inRoom = true
 			dungeon.walkStop()
 			map.enterRoom(map.roomId)
+			audio.playEnterDoor()
 			battle.go()
 		}
 		else if (dungeon.distanceCurrent >= Math.min(
@@ -444,8 +446,8 @@ var dungeon;
 		)) {
 			if (dungeon.distanceCurrent >= dungeon.distanceEnd) {
 				// entered room
-				audio.playEnterDoor()
 				map.enterRoom(map.roomToId)
+				audio.playEnterDoor()
 			}
 			else {
 				// or hallway battle?

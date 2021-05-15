@@ -323,6 +323,7 @@ var bar;
 			bar.dom.inventory.innerHTML = ''
 			bar.dom.inventory.style.display = 'none'
 		}
+		audio.playSound('bag-open', '', 1, 250)
 	}
 
 	function updateInventoryGold() {
@@ -383,11 +384,13 @@ var bar;
 				ng.splitText('inv-skill-description', skillDescriptions[PROP.OFFENSE]);
 			}
 			updateAllMyBars()
+			audio.playSound('click-2', '', 1, 250)
 		}
 		else {
 			querySelector('#bar-character-stats').innerHTML = ''
 			querySelector('#bar-character-stats').style.display = 'none'
 			hideBarText()
+			audio.playSound('click-22', '', 1, 250)
 		}
 	}
 
@@ -483,6 +486,9 @@ var bar;
 
 	function toggleOptions() {
 		bar.windowsOpen.options = !bar.windowsOpen.options;
+		bar.hotkeyId = ''
+		bar.hotkeyElement = undefined;
+		audio.playSound('click-4')
 		updateOptionsDOM();
 	}
 
@@ -498,9 +504,6 @@ var bar;
 	function optionsClose() {
 		querySelector('#root-options').innerHTML = ''
 		querySelector('#root-options').style.display = 'none'
-	}
-	function handleDragSfxEnd() {
-		audio.playSound('toadlok-attack', 'mobs')
 	}
 	function handleDragMusicEnd() {
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100
@@ -519,7 +522,7 @@ var bar;
 		if (elSfx !== null) {
 			elSfx.textContent = val
 		}
-		_.debounce(handleDragSfxEnd, 1000)
+		audio.playSound('beep-5')
 	}
 	function initDraggableAudioDials() {
 		Draggable.create('#options-knob-sfx', {
@@ -530,7 +533,6 @@ var bar;
 			maxDuration: 1,
 			snap: volumeSettings,
 			onDrag: handleDragSfx,
-			onDragEnd: handleDragSfxEnd,
 			onThrowUpdate: handleDragSfx,
 			onThrowComplete: handleDragSfx,
 			bounds: {
@@ -577,6 +579,7 @@ var bar;
 			elMusic.textContent = val
 		}
 		handleDragMusicEnd()
+		audio.playSound('beep-5')
 	}
 
 	function selectOptionCategory(event) {
@@ -596,6 +599,7 @@ var bar;
 			el.className = 'option-category'
 		})
 		this.className = 'option-category active'
+		audio.playSound('beep-2')
 	}
 
 	function getOptionsHtml() {
@@ -632,9 +636,12 @@ var bar;
 
 	function setDefaultOptions() {
 		ng.config = ng.getDefaultOptions()
+		bar.hotkeyId = ''
+		bar.hotkeyElement = undefined
 		updateOptionsDOM()
 		audio.save()
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100
+		audio.playSound('chime-3')
 		setWindowSize({
 			currentTarget: {
 				dataset: { id: ng.config.display }
@@ -731,19 +738,21 @@ var bar;
 		return str
 	}
 
-	function setHotkey(key, e) {
+	function setHotkey(key) {
 		// console.info('setHotkey', e)
 		if (_.values(ng.config.hotkey).includes(key)) {
 			var camelKey = _.findKey(ng.config.hotkey, hotkey => hotkey === key)
 			// console.info('keys: ', bar.hotkeyId, camelKey)
 			if (_.camelCase(bar.hotkeyId) === camelKey) stopListeningForHotkey()
 			else ng.msg('This key is already assigned: ' + _.startCase(camelKey))
+			audio.playSound('beep-3')
 		}
 		else {
 			ng.config.hotkey[_.camelCase(bar.hotkeyId)] = key
 			bar.hotkeyElement.textContent = key
 			stopListeningForHotkey()
 			audio.save()
+			audio.playSound('click-4')
 		}
 	}
 	function listenForHotkey() {
@@ -753,6 +762,7 @@ var bar;
 			el.classList.remove('active')
 		})
 		this.classList.add('active')
+		audio.playSound('click-7')
 	}
 	function stopListeningForHotkey() {
 		bar.hotkeyId = ''
@@ -796,6 +806,7 @@ var bar;
 		ng.config.fastDestroy = !ng.config.fastDestroy
 		this.textContent = ng.config.fastDestroy ? 'On' : 'Off'
 		audio.save()
+		audio.playSound('click-7')
 	}
 
 	function toggleShowNetwork() {
@@ -804,6 +815,7 @@ var bar;
 		this.textContent = ng.config.showNetwork ? 'On' : 'Off'
 		updateDynamicStyles()
 		audio.save()
+		audio.playSound('click-7')
 	}
 
 	function updateDynamicStyles() {
@@ -815,6 +827,7 @@ var bar;
 		if (event.currentTarget.dataset.id === 'character-stats') bar.toggleCharacterStats()
 		else if (event.currentTarget.dataset.id === 'inventory') bar.toggleInventory()
 		else if (event.currentTarget.dataset.id === 'various') town.closeVarious()
+		audio.playSound('click-7')
 	}
 
 	function closeAllWindows() {

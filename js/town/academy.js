@@ -82,6 +82,7 @@ var academy;
 			ng.splitText('various-description', 'You do not meet the level requirements for '+ skills.skillNames[selected.index] +', Rank '+ selected.rank +'. We can begin training once you reach level '+ reqLevel[selected.rank] +'.')
 		}
 		setAcademyGold()
+		audio.playSound('click-19')
 	}
 	function setAcademyGold() {
 		obj = {

@@ -60,29 +60,28 @@ var modal;
 			y: 0
 		});
 		// assign events
-		$("#modal-dismiss, #modal-overlay").on('click', function(){
-			modal.hide();
-		});
+		$("#modal-dismiss, #modal-overlay").on('click', modal.hide);
 		// confirm event actions
 		$('#modal-wrap').on('click', '#delete-character-confirm', create.deleteCharacter);
 		if (e.focus) {
-            delayedCall(.1, function () {
+            delayedCall(.1, () => {
                 $("#modal-wrap input:first").focus();
-            });
+            })
         }
 	}
 	function hide() {
 		TweenMax.to([modal.overlay, modal.wrap], .3, {
 			overwrite: 0,
 			alpha: 0,
-			onComplete: function(){
+			onComplete: function() {
 				modal.isOpen = 0;
 				ng.unlock();
 				TweenMax.set(this.target, {
 					visibility: 'hidden'
 				});
 			}
-		});
+		})
+		audio.playSound('click-18')
 	}
 	// private ////////////////////////////////////////////////////////////////////
 	function defaultFooter(e) {

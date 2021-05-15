@@ -111,7 +111,7 @@ var create;
 		modal.show({
 			key: 'delete-character'
 		});
-		audio.playSound('click')
+		audio.playSound('click-4')
 	}
 	function selectRace() {
 		var race = $(this).text();
@@ -121,7 +121,7 @@ var create;
 		create.setRandomClass(race);
 		create.set('race', race);
 		setFace()
-		audio.debClick()
+		audio.playSound('click-17')
 	}
 	function selectClass() {
 		if (!$(this).get(0).className.includes('disabled')){
@@ -131,7 +131,7 @@ var create;
 			$(this).addClass('active');
 			create.set('job', job)
 			setAvatarBg()
-			audio.debClick()
+			audio.playSound('click-17')
 		}
 	}
 	function selectGender() {
@@ -141,7 +141,7 @@ var create;
 		$('#' + gender).addClass('active');
 		create.set('gender', gender);
 		setFace()
-		audio.debClick()
+		audio.playSound('click-17')
 	}
 	function onNameChange(e) {
 		if (create.whitelist.includes(e.key)) {
@@ -158,7 +158,7 @@ var create;
 			(create.form[attr] - create.base[attr] > 0) ){
 			getElementById('create-points-' + attr).innerHTML = --create.form[attr];
 			getElementById('create-points-remaining').innerHTML = ++create.form.left;
-			audio.playSound('click')
+			audio.playSound('chime-4')
 		}
 	}
 	function addAttribute() {
@@ -166,13 +166,13 @@ var create;
 		if (create.form.left){
 			getElementById('create-points-' + attr).innerHTML = ++create.form[attr];
 			getElementById('create-points-remaining').innerHTML = --create.form.left;
-			audio.playSound('click')
+			audio.playSound('chime-4')
 		}
 	}
 	function goCreateToTitle() {
 		ng.lock(1);
 		ng.initGame();
-		audio.playSound('click')
+		audio.playSound('click-4')
 		TweenMax.to('#scene-title-create-character', .6, {
 			y: 20,
 			opacity: 0,
@@ -234,11 +234,11 @@ var create;
 		//client-side validation
 		if (ng.locked) return;
 
-		ng.lock(1);
+		ng.lock(1)
 		var f = create.form;
 		var err = '';
 		f.name = getCleanName(f.name);
-		audio.playSound('click')
+		audio.playSound('chime-3')
 		if (!f.name){
 			err = 'Your character needs a name!';
 			$("#create-character-name").focus();
@@ -264,12 +264,12 @@ var create;
 			// send to server
 			$.post(app.url + 'create/create-character.php', {
 				form: finalForm
-			}).done(function(r){
+			}).done(r => {
 				ng.config.selectedRowIndex = r.id
 				ng.msg(r.hero.name + ' has been created!')
 				$("#create-character-back").trigger('click')
 				audio.save()
-			}).fail(function(r){
+			}).fail(r => {
 				ng.msg(r.responseText, 8)
 				ng.unlock()
 			});
@@ -279,18 +279,18 @@ var create;
 		// send to server
 		if (ng.locked) return;
 		ng.lock();
-		audio.playSound('click')
+		audio.playSound('click-4')
 		$.post(app.url + 'create/delete-character.php', {
 			row: create.selected
-		}).done(function(r){
+		}).done(r => {
 			// console.info('Deleted character: ', r);
 			ng.msg(create.name + ' has been deleted!');
 			modal.hide();
 			ng.initGame();
-		}).fail(function(r){
+		}).fail(r => {
 			ng.msg(r.responseText, 8);
 			ng.unlock();
-		});
+		})
 	}
 	function msg(key, val) {
 		return create.info[key][val];
@@ -621,7 +621,7 @@ var create;
 		var obj = _.pick(create.form, KEYS.SET_FACE)
 		obj.gender = obj.gender === 'Male' ? 0 : 1
 		query.el('#create-portrait').src = my.getAvatarUrl(obj)
-		audio.debClick()
+		audio.playSound('click-17')
 		TweenMax.to('#create-portrait', .25, {
 			startAt: {
 				filter: 'brightness(.5) contrast(3)',
