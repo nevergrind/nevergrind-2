@@ -124,7 +124,7 @@ var dungeon;
 	}
 	function goTasks() {
 		// cleanup sort of activities when going into dungeon
-		audio.fade()
+		audio.fadeMusic()
 		town.closeVarious()
 		tavern.leaders = ''
 		game.showScene('scene-dungeon')

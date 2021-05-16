@@ -495,7 +495,7 @@ let map;
 				!isRespawn && map.show(3)
 			}
 			delayedCall(1.5, () => {
-				audio.fade()
+				audio.fadeMusic()
 				audio.playAmbientLoop()
 			})
 		}

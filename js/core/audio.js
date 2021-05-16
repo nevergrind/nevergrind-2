@@ -3,6 +3,9 @@ var audio;
 !function(Audio, TweenMax, _, clearInterval, setInterval, Power0, undefined) {
 	audio = {
 		debounceMap: {},
+		ambientTrackPlaying: 1,
+		ambientIsFading: false,
+		ambientTrackDuration: 0,
 		isAmbientPlaying: false,
 		ambientVolume: .5,
 		allyVolume: .2,
@@ -18,8 +21,8 @@ var audio;
 		playAmbientLoop,
 		playEnterDoor,
 		save,
-		fade,
-		pause,
+		fadeMusic,
+		pauseMusic,
 		events,
 		setSoundVolume,
 		playerHit,
@@ -35,9 +38,11 @@ var audio;
 
 	const bgmusicElement = query.el('#bgmusic')
 	const bgamb1Element = query.el('#bgamb1')
+	const bgamb2Element = query.el('#bgamb2')
 
 	var key
-	const LOOP_BUFFER = .2
+	const MUSIC_BUFFER = .2
+	const AMBIENT_BUFFER = 2
 	// cast start/stop audio files for all spells
 	const castData = {
 		// RNG
@@ -552,24 +557,98 @@ var audio;
 		localStorage.setItem('config', JSON.stringify(ng.config))
 	}
 	function events() {
-		bgmusicElement.addEventListener('timeupdate', musicUpdate)
-		bgamb1Element.addEventListener('timeupdate', ambientUpdate)
+		bgmusicElement.addEventListener('timeupdate', loopMusic)
+		bgamb1Element.addEventListener('timeupdate', loopAmbient)
+		bgamb2Element.addEventListener('timeupdate', loopAmbient)
 	}
-	function musicUpdate() {
+	function loopMusic() {
 		if (!this.duration) return
-		if (this.currentTime > this.duration - LOOP_BUFFER) {
+		// console.info(this.currentTime, this.duration)
+		if (this.currentTime > this.duration - MUSIC_BUFFER) {
 			this.currentTime = 0
 			this.play()
 		}
 	}
-	function pause() {
-		bgmusicElement.pause();
+	// TODO: Perfect ambient loop by fading them in and out - detect track length and fade 2 seconds from end
+	function loopAmbient() {
+		if (!this.duration) return
+		audio.ambientTrackDuration = this.duration
+		// console.info(this.currentTime, this.duration)
+		if (this.currentTime > this.duration - AMBIENT_BUFFER) {
+			if (!audio.ambientIsFading) {
+				audio.ambientIsFading = true
+				if (audio.ambientTrackPlaying === 1) {
+					fadeAmbientOut(bgamb1Element)
+					fadeAmbientIn(bgamb2Element)
+					audio.ambientTrackPlaying = 2
+				}
+				else {
+					fadeAmbientOut(bgamb2Element)
+					fadeAmbientIn(bgamb1Element)
+					audio.ambientTrackPlaying = 1
+				}
+				/*this.currentTime = 0
+				this.play()*/
+			}
+		}
 	}
-	function fade() {
+	function stopAmbient() {
+		bgamb1Element.pause()
+		bgamb2Element.pause()
+		audio.isAmbientPlaying = false
+	}
+	function playAmbientLoop() {
+		audio.playAmbient(_.kebabCase(zones[mission.id].name))
+	}
+	function playAmbient(foo) {
+		if (audio.isAmbientPlaying) return
+		audio.ambientTrackPlaying = 1
+		bgamb1Element.setAttribute('type', 'audio/mp3')
+		bgamb1Element.src = 'sound/ambient/' + foo + '.mp3'
+		bgamb1Element.volume = (ng.config.musicVolume / 100) * audio.ambientVolume
+		bgamb1Element.play()
+		audio.isAmbientPlaying = true
+
+		bgamb2Element.volume = (ng.config.musicVolume / 100) * audio.ambientVolume
+		bgamb2Element.setAttribute('type', 'audio/mp3')
+		bgamb2Element.src = 'sound/ambient/' + foo + '.mp3'
+	}
+	function fadeAmbientOut(el) {
+		var x = { vol: ng.config.musicVolume / 100 * audio.ambientVolume }
+		TweenMax.to(x, AMBIENT_BUFFER, {
+			vol: 0,
+			ease: Power0.easeNone,
+			onUpdate: () => {
+				el.volume = x.vol
+			},
+			onComplete: () => {
+				el.currentTime = 0
+				el.pause()
+				audio.ambientIsFading = false
+			}
+		})
+	}
+	function fadeAmbientIn(el) {
+		el.currentTime = 0
+		el.play()
+		var x = { vol: 0 }
+		TweenMax.to(x, AMBIENT_BUFFER, {
+			vol: ng.config.musicVolume / 100 * audio.ambientVolume,
+			ease: Power0.easeNone,
+			onUpdate: () => {
+				// console.info('fadeAmbientIn', x.vol)
+				el.volume = x.vol
+			},
+		})
+	}
+	function pauseMusic() {
+		bgmusicElement.pause()
+	}
+	function fadeMusic(duration = 2.5) {
 		var x = {
 			vol: ng.config.musicVolume / 100
 		}
-		TweenMax.to(x, 2.5, {
+		TweenMax.to(x, duration, {
 			vol: 0,
 			ease: Linear.easeNone,
 			onUpdate: () => {
@@ -578,7 +657,7 @@ var audio;
 			onComplete: () => {
 				bgmusicElement.src = ''
 			}
-		});
+		})
 	}
 	function playMusic(fileName, fade = .25, delay = 0) {
 		if (!fade) {
@@ -652,21 +731,6 @@ var audio;
 		else if (data.itemType === 'potion') audio.playSound('item-potion', 'item')
 		else if (data.itemType === 'scroll') audio.playSound('item-scroll', 'item')
 	}
-	function playAmbient(foo) {
-		if (audio.isAmbientPlaying) return
-		bgamb1Element.setAttribute('type', 'audio/mp3')
-		bgamb1Element.src = 'sound/ambient/' + foo + '.mp3'
-		bgamb1Element.volume = (ng.config.musicVolume / 100) * audio.ambientVolume
-		bgamb1Element.play()
-		audio.isAmbientPlaying = true
-	}
-	function stopAmbient() {
-		bgamb1Element.pause()
-		audio.isAmbientPlaying = false
-	}
-	function playAmbientLoop() {
-		audio.playAmbient(_.kebabCase(zones[mission.id].name))
-	}
 
 	function playEnterDoor() {
 		if (dungeon.suppressDoorAudio) {
@@ -712,14 +776,6 @@ var audio;
 	}
 	function playWalk() {
 		audio.playSound('walk-' + _.random(1, 4), 'player')
-	}
-	function ambientUpdate() {
-		if (!this.duration) return
-		// console.info(this.currentTime, this.duration)
-		if (this.currentTime > this.duration - LOOP_BUFFER) {
-			this.currentTime = 0
-			this.play()
-		}
 	}
 	function setSoundVolume(val) {
 		ng.config.soundVolume = val;
