@@ -369,11 +369,12 @@ let map;
 		if (my.isLeader && map.inRoom && combat.isBattleOver()) {
 			if (roomId === map.roomId) {
 				chat.log('You are already in that room!', CHAT.WARNING)
+				audio.playSound('click-3')
 			}
 			else {
 				if (dungeon.map.rooms[map.roomId].connects.includes(roomId)) {
 					enterHallway(roomId)
-					audio.playSound('click-2')
+					audio.playSound('click-20')
 				}
 				else {
 					console.warn('does not connect!', roomId, map.roomId, dungeon.map.rooms[map.roomId].connects)

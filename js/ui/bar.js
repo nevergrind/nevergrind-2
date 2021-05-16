@@ -507,8 +507,7 @@ var bar;
 	}
 	function handleDragMusicEnd() {
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100
-		query.el('#bgamb1').volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
-		query.el('#bgamb2').volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
+		query.el('#bgamb1').volume = (ng.config.musicVolume / 100) * audio.ambientVolume
 	}
 
 	function handleDragSfx() {

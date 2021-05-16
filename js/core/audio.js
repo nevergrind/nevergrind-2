@@ -3,10 +3,10 @@ var audio;
 !function(Audio, TweenMax, _, clearInterval, setInterval, Power0, undefined) {
 	audio = {
 		debounceMap: {},
-		ambianceVolume: .5,
+		isAmbientPlaying: false,
+		ambientVolume: .5,
 		allyVolume: .2,
 		cache: {},
-		isAmbientPlaying: false,
 		musicTimeout: 0,
 		musicTween: 0,
 		init,
@@ -35,7 +35,6 @@ var audio;
 
 	const bgmusicElement = query.el('#bgmusic')
 	const bgamb1Element = query.el('#bgamb1')
-	const bgamb2Element = query.el('#bgamb2')
 
 	var key
 	const LOOP_BUFFER = .2
@@ -555,7 +554,6 @@ var audio;
 	function events() {
 		bgmusicElement.addEventListener('timeupdate', musicUpdate)
 		bgamb1Element.addEventListener('timeupdate', ambientUpdate)
-		bgamb2Element.addEventListener('timeupdate', ambientUpdate)
 	}
 	function musicUpdate() {
 		if (!this.duration) return
@@ -654,46 +652,20 @@ var audio;
 		else if (data.itemType === 'potion') audio.playSound('item-potion', 'item')
 		else if (data.itemType === 'scroll') audio.playSound('item-scroll', 'item')
 	}
-	function playAmbient(foo, dualDelay) {
+	function playAmbient(foo) {
 		if (audio.isAmbientPlaying) return
 		bgamb1Element.setAttribute('type', 'audio/mp3')
 		bgamb1Element.src = 'sound/ambient/' + foo + '.mp3'
-		bgamb1Element.volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
+		bgamb1Element.volume = (ng.config.musicVolume / 100) * audio.ambientVolume
 		bgamb1Element.play()
-		if (dualDelay) {
-			setTimeout(() => {
-				bgamb2Element.setAttribute('type', 'audio/mp3')
-				bgamb2Element.src = 'sound/ambient/' + foo + '.mp3'
-				bgamb2Element.volume = (ng.config.musicVolume / 100) * audio.ambianceVolume
-				bgamb2Element.play()
-			}, dualDelay)
-		}
-		else {
-			bgamb2Element.pause()
-		}
 		audio.isAmbientPlaying = true
 	}
 	function stopAmbient() {
 		bgamb1Element.pause()
-		bgamb2Element.pause()
 		audio.isAmbientPlaying = false
 	}
 	function playAmbientLoop() {
-		const zoneName = zones[mission.id].name
-		if (zoneName === ZONES.salubrinHaven) audio.playAmbient('darkwds1')
-		else if (zoneName === ZONES.tendolinPassage) audio.playAmbient('darkwds2')
-		else if (zoneName === ZONES.greenthornCavern) audio.playAmbient('creepywind')
-		else if (zoneName === ZONES.lanfeldRefuge) audio.playAmbient('darkwds2')
-		else if (zoneName === ZONES.rivenGrotto) audio.playAmbient('steamlp')
-		else if (zoneName === ZONES.bastilleCitadel) audio.playAmbient('darkwds2')
-		else if (zoneName === ZONES.kordataCove) audio.playAmbient('swmp1')
-		else if (zoneName === ZONES.sylongSanctuary) audio.playAmbient('darkwds1')
-		else if (zoneName === ZONES.thuleCrypt) audio.playAmbient('tomb')
-		else if (zoneName === ZONES.templeOfPrenssor) audio.playAmbient('hell')
-		else if (zoneName === ZONES.fahlnirCitadel) audio.playAmbient('hell')
-		else if (zoneName === ZONES.anuranRuins) audio.playAmbient('swmp3')
-		else if (zoneName === ZONES.galeblastFortress) audio.playAmbient('wind_lp1')
-		else if (zoneName === ZONES.ashenflowPeak) audio.playAmbient('hell')
+		audio.playAmbient(_.kebabCase(zones[mission.id].name))
 	}
 
 	function playEnterDoor() {

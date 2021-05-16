@@ -314,7 +314,7 @@ var battle;
 		else {
 			audio.playMusic('battle' + _.random(1, 3))
 			map.inCombat = true
-			audio.stopAmbient()
+			// audio.stopAmbient()
 			map.hide()
 		}
 	}
