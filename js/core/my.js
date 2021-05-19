@@ -328,7 +328,7 @@ var my;
 	function initSkills() {
 		// console.warn('initSkills', my.skills)
 		if (my.skills === void 0) {
-			my.skills = [0,0,0,0,0,0,0,0,0,0,0,0]
+			my.skills = [1,0,0,0,0,0,0,0,0,0,0,0]
 			saveCharacterData()
 		}
 	}

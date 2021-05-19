@@ -396,7 +396,7 @@ tbody { border: 0 }
 
 #modal-overlay {
 	visibility: hidden;
-	background: radial-gradient(farthest-corner at 50% 50%, rgba(0, 0, 0, 1), rgba(0, 0, 0, .7));
+	background: #000d;
 	z-index: 100;
 }
 

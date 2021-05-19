@@ -917,6 +917,11 @@ mobSkills = {};
 		// base resources
 		const hpPerLevel = (config.level - 1) * (60 + ((config.level / 50) * 160))
 		config.hp = (~~((50 + (hpPerLevel * config.hp))) * party.presence.length)
+		if (config.level < 20) {
+			const hpPenalty = .25 + ((config.level / 20) * .75)
+			console.info('config', config.level, hpPenalty)
+			config.hp = Math.round(config.hp * hpPenalty)
+		}
 		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)
 		//config.spMax = config.sp = ~~(10 + ((config.level - 1) * 15) * config.sp)
 		config.attack = ~~(3 + (config.level * 1.66))

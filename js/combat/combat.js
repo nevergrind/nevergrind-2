@@ -791,7 +791,12 @@ var combat;
 				my.buffFlags.jumpStrike ||
 				my.buffFlags.sealOfSanctuary) {
 				combat.popupDamage(d.row, 'INVULNERABLE!', {targetMob: false})
-				audio.playSound('invulnerable', 'combat')
+				if (my.buffFlags.frozenBarrier) {
+					audio.playSound('blue3', 'combat')
+				}
+				else {
+					audio.playSound('invulnerable', 'combat')
+				}
 				d.damage = 0
 				return d
 			}
@@ -1462,6 +1467,9 @@ var combat;
 				})
 			}
 		})
+		delayedCall(.75, () => {
+			audio.playSound('mission-complete-2')
+		})
 	}
 	function showDeathMsg() {
 		const FILTER_PADDING = 200
@@ -1565,6 +1573,9 @@ var combat;
 					}
 				})
 			}
+		})
+		delayedCall(.75, () => {
+			audio.playSound('death')
 		})
 	}
 	function popupDamage(index, damage, o = {}) {
@@ -2291,6 +2302,7 @@ var combat;
 			my.buffs[key].damage = 0
 			battle.removeBuff(key)
 		}
+		audio.playSound('mitigate', 'combat', 1, 250)
 	}
 	function reduceMagicShieldDamage(d, key) {
 		chat.log(buffs[key].msgAbsorb, 'chat-buff')
@@ -2303,6 +2315,6 @@ var combat;
 			my.buffs[key].damage -= d.damage
 			d.damage = 0
 		}
-
+		audio.playSound('invulnerable', 'combat')
 	}
 }($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear);

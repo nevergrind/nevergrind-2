@@ -32,6 +32,7 @@ var ng;
 		html,
 		getArticle,
 		// defaults are defined in getDefaultOptions
+		characterData: [],
 		selectIndex: 0,
 		initialized: false,
 		config: {
@@ -303,8 +304,6 @@ var ng;
 		},
 	}
 	var msgTimer = delayedCall(0, '')
-	let characterData = []
-	let routedToCharacterPage = false
 	const vowels = 'aeiou'
 	let steam = {
 		screenName: '',
@@ -638,6 +637,7 @@ var ng;
 					channel: my.channel,
 					ticket: steam.ticket
 				}).done(function (data) {
+					console.info('initGame', data)
 					handleInitGame(data)
 					ng.unlock()
 				}).fail(function (data) {
@@ -750,24 +750,26 @@ var ng;
 		}*/
 	}
 	function getSelectedRowIndex(r) {
-		index = 0
+		let index = 0
 		if (r.length && ng.config.selectedRowIndex) {
 			index = _.findIndex(r, {
 				row: ng.config.selectedRowIndex
 			})
+			// player was deleted
+			if (index === -1) index = 0
 		}
 		return typeof index === 'number' ? index : 0
 	}
 	function displayCharacter(r) {
-		characterData = r
+		ng.characterData = r
 		create.selected = 0
 		ng.selectIndex = getSelectedRowIndex(r)
 		updateCharacterCard()
 	}
 	function updateCharacterCard() {
 		var s = ''
-		if (characterData.length) {
-			var d = characterData[ng.selectIndex] || characterData[0]
+		if (ng.characterData.length) {
+			var d = ng.characterData[ng.selectIndex] || ng.characterData[0]
 			var url = my.getAvatarUrl(d);
 			s += '<div id="title-select-down" class="title-select-col flex-center grad-black">'+
 					'<img class="title-select-chevron" src="images/ui/chevron-left.png">' +
@@ -798,7 +800,7 @@ var ng;
 	}
 	function incrementCharacter() {
 		ng.selectIndex++
-		if (ng.selectIndex > characterData.length - 1) {
+		if (ng.selectIndex > ng.characterData.length - 1) {
 			ng.selectIndex = 0
 		}
 		audio.playSound('click-17')
@@ -807,7 +809,7 @@ var ng;
 	function decrementCharacter() {
 		ng.selectIndex--
 		if (ng.selectIndex < 0) {
-			ng.selectIndex = characterData.length - 1
+			ng.selectIndex = ng.characterData.length - 1
 		}
 		audio.playSound('click-17')
 		updateCharacterCard()

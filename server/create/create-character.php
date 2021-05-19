@@ -147,6 +147,7 @@
 	// weapon
 	if ($f['job'] === 'Warrior' ||
 		$f['job'] === 'Shadow Knight' ||
+		$f['job'] === 'Ranger' ||
 		$f['job'] === 'Bard') {
 		$data = json_encode('{"slots":["primary","secondary"],"weaponSkill":"One-hand Slash","minDamage":1,"maxDamage":4,"speed":2.8,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"oneHandSlashers"}');
 		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Sword", '. $data .')';
@@ -168,13 +169,17 @@
 		$data = json_encode('{"slots":["primary","secondary"],"weaponSkill":"Piercing","minDamage":1,"maxDamage":3,"speed":2.2,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"piercers"}');
 		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Dagger", '. $data .')';
 	}
-	else if ($f['job'] === 'Ranger') {
-		$data = json_encode('{"slots":["primary"],"weaponSkill":"Archery","minDamage":3,"maxDamage":6,"speed":3,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"bows"}');
-		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 12, "Training Bow", '. $data .')';
-	}
 	$stmt = $db->prepare($query);
 	$stmt->bind_param('i', $character_id);
 	$stmt->execute();
+
+	if ($f['job'] === 'Ranger') {
+		$data = json_encode('{"slots":["primary"],"weaponSkill":"Archery","minDamage":3,"maxDamage":6,"speed":3,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"bows"}');
+		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 14, "Training Bow", '. $data .')';
+		$stmt = $db->prepare($query);
+		$stmt->bind_param('i', $character_id);
+		$stmt->execute();
+	}
 
 	// echo something for fun
 	$r['hero'] = $f;
