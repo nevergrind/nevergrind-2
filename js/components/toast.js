@@ -122,6 +122,10 @@ var toast;
 		}
 		destroyData = data
 	}
+
+	/**
+	 * Great function for getting rid of the stupid toast without breaking shit
+	 */
 	function hideDestroyToast() {
 		if (destroyData.msg) {
 			el = querySelector('#toast-destroy-wrap')

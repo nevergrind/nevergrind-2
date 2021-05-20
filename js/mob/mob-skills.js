@@ -918,8 +918,7 @@ mobSkills = {};
 		const hpPerLevel = (config.level - 1) * (60 + ((config.level / 50) * 160))
 		config.hp = (~~((50 + (hpPerLevel * config.hp))) * party.presence.length)
 		if (config.level < 20) {
-			const hpPenalty = .25 + ((config.level / 20) * .75)
-			console.info('config', config.level, hpPenalty)
+			const hpPenalty = .2125 + ((config.level / 20) * .75)
 			config.hp = Math.round(config.hp * hpPenalty)
 		}
 		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)

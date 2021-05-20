@@ -5,6 +5,7 @@ var tooltip;
 		eq: { isHovering: false },
 		inv: { isHovering: false },
 		bank: { isHovering: false },
+		loot: { isHovering: false },
 		merchant: { isHovering: false },
 		blacksmith: { isHovering: false },
 		apothecary: { isHovering: false },
@@ -15,6 +16,7 @@ var tooltip;
 		isOpen: 0,
 		openDate: 0,
 		goldValue: 1,
+		getTooltipName,
 		hide,
 		show,
 		handleEnter,
@@ -32,25 +34,34 @@ var tooltip;
 	let hit
 	const divider = '<hr class="fancy-hr" style="margin: .2rem 0">'
 	//////////////////////////////////////////////////
+	/**
+	 * returns column ridge plus item name HTML
+	 * @param obj
+	 * @returns {string}
+	 */
+	function getTooltipName(obj) {
+		return '<div style="border: 1px ridge #013"></div>' +
+		'<div class="tooltip-name-bg" class="flex-column flex-center align-center">' +
+			'<div class="tooltip-name" class="item-' + _.kebabCase(obj.rarity) + '">' +
+				(obj.unidentified ? obj.baseName : obj.name) +
+			'</div>' +
+			(obj.unidentified ? '' : (
+				obj.rarity === 'unique'
+				? '<div class="item-' + _.kebabCase(obj.rarity) + '" style="font-size: .8rem">' + obj.baseName + '</div>'
+				: ''
+			)) +
+		'</div>'
+	}
 	function getItemHtml(obj, type) {
 		var html = ''
 		var statHtml = ''
 		html +=
 		'<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">' +
 			'<div class="flex" style="border: .1rem ridge #013; margin-bottom: .1rem">' +
-				'<div id="tooltip-item-img-bg">' +
-					'<img id="tooltip-item-img" src="images/items/'+ bar.getItemIconFileNameByObj(obj) + '.png">' +
+				'<div class="tooltip-item-img-bg">' +
+					'<img class="tooltip-item-img" src="images/items/'+ bar.getItemIconFileNameByObj(obj) + '.png">' +
 				'</div>' +
-				'<div style="border: 1px ridge #013"></div>' +
-				'<div id="tooltip-name-bg" class="flex-column flex-center align-center">' +
-					'<div id="tooltip-name" class="text-center item-' + _.kebabCase(obj.rarity) + '">' + (obj.unidentified ? obj.baseName : obj.name) + '</div>' +
-					(obj.unidentified ? '' :
-					(
-						obj.rarity === 'unique'
-						? '<div class="item-' + _.kebabCase(obj.rarity) + '" style="font-size: .8rem">' + obj.baseName + '</div>'
-						: ''
-					)) +
-				'</div>' +
+				tooltip.getTooltipName(obj) +
 			'</div>' +
 			'<div id="tooltip-item-stat-wrap" class="text-center" style="border: .1rem ridge #013">' +
 			'<div style="padding: .2rem">' +
@@ -745,6 +756,7 @@ var tooltip;
 		setTooltipVisible(.5)
 	}
 	function handleEnter(event) {
+		console.info('handleEnter tooltip', event)
 		if (map.isDragging) return
 		if (event.currentTarget.id === ('skill-primary-attack-btn')) {
 			let hit = stats.primaryAutoAttackDamage(0, true)
@@ -773,6 +785,7 @@ var tooltip;
 		else {
 			// item slots
 			var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
+			console.info('index type', index, type)
 			tooltip.lastHoveredType = type
 			tooltip[type].isHovering = true
 			if (items[type][index].name) {

@@ -2596,14 +2596,42 @@ background-repeat: no-repeat;
 	background: #013;
 	box-shadow: none;
 }
-
-#tooltip-item-img-bg {
+#loot-wrap {
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	bottom: 9rem;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 2;
+}
+.loot-timer-wrap {
+	margin-top: .2rem;
+	background: #001;
+	width: 15rem;
+	border: 1px solid #048;
+}
+.loot-timer-bar {
+	margin-bottom: .2rem;
+	background: #2a9aff;
+	height: .5rem;
+	animation: repeat-loot-flash 1s ease-out infinite;
+}
+@keyframes repeat-loot-flash {
+	0% { filter: contrast(1) brightness(1); }
+	50% { filter: contrast(1.2) brightness(1.5); }
+	100% { filter: contrast(1) brightness(1); }
+}
+.tooltip-item-img-bg {
 	border: 1px solid #048;
 	width: 3.2rem;
 	height: 3.2rem;
 	background: radial-gradient(closest-corner at 50% 50%, rgba(128, 160, 255, .3), rgba(0, 8, 24, 1));
 }
-#tooltip-name-bg {
+.tooltip-name-bg {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	flex: 1;
 	border: 1px solid #048;
 	padding: .1rem .3rem;
@@ -2612,14 +2640,14 @@ background-repeat: no-repeat;
 		rgba(0, 64, 128, 0),
 		rgba(128, 192, 255, .1));
 }
-#tooltip-item-img { width: 3.2rem; height: 3.2rem; }
+.tooltip-item-img { width: 3.2rem; height: 3.2rem; }
 #tooltip-item-stat-wrap {
 	background-image: linear-gradient(to right,
 		rgba(0, 0, 0, .1),
 		rgba(128, 192, 255, .1),
 		rgba(0, 0, 0, .1));
 }
-#tooltip-name {
+.tooltip-name {
 	font-size: 1rem;
 	line-height: 1.25;
 }

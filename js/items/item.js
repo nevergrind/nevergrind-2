@@ -1,11 +1,15 @@
 var item;
 var loot = {};
-(function(_, Object, JSON, $, SteppedEase, TweenMax, undefined) {
+(function(_, Object, JSON, $, SteppedEase, TweenMax, Power0, undefined) {
 	item = {
+		showLootMenu,
+		hideLootMenu,
 		canEquipArmor,
 		handleDropSuccess,
 		getItemNameString,
+		getBonus,
 		getRarity,
+		findLoot,
 		getItem,
 		getLoot,
 		resetDrop,
@@ -21,6 +25,7 @@ var loot = {};
 		getPotionUseMessage,
 		getIdentifyScroll,
 		useItem,
+		lootTimers: [],
 		lastDragEvent: {},
 		lastDropEvent: {},
 		isIdentifyMode: false,
@@ -124,6 +129,10 @@ var loot = {};
 	$('#inventory')
 		//.on('click', '#inventory-identify', preIdentifyItem)
 		.on('click', '#inventory-destroy', dropItem)
+
+	$('#loot-wrap')
+		.on('click', '.loot-confirm', handleLootConfirm)
+		.on('click', '.loot-cancel', handleLootCancel)
 
 	const identifyScroll = {
 		name: 'Identification Scroll',
@@ -881,39 +890,73 @@ var loot = {};
 		return potionRecovers[index] * potionMap[my.job][type]
 	}
 
-	function getEquipString() {
-		// cloth, leather, mail, plate, weapon types should show red if you can't use it
+	/**
+	 * gets the mob bonus based on tier (10 is high for bosses typically)
+		normal: 'normal',
+		champion: 'champion',
+		conqueror: 'conqueror',
+		unique: 'unique',
+		boss: 'boss',
+	 * @param tier
+	 * @returns {number}
+	 */
+	const tierMap = {
+		[MOB_TIERS.normal]: 0,
+		[MOB_TIERS.champion]: 2,
+		[MOB_TIERS.conqueror]: 4,
+		[MOB_TIERS.unique]: 10,
+		[MOB_TIERS.boss]: 7,
 	}
-	function getRarity(bonus = 0) {
-		/*'normal',
-			'magic',
-			'rare',
-			'set',
-			'unique',
-			'runic',
-			'legendary',*/
+	function getBonus(tier) {
+		return tierMap[tier]
+	}
+
+	const guaranteedLootTiers = [
+		MOB_TIERS.champion,
+		MOB_TIERS.conqueror,
+		MOB_TIERS.unique,
+		MOB_TIERS.boss
+	]
+	function tierGuaranteesMagic(tier) {
+		return guaranteedLootTiers.includes(tier)
+	}
+
+	/**
+	 * determine item rarity; uses a bonus based on bonus based on mob tier
+	 * @param bonus
+	 * @returns {string}
+	 */
+	function getRarity(bonus = 0, tier = 'normal') {
 		var resp = 'normal'
 		var randBase = _.random(1, 100)
 		var rand = randBase + bonus
 		// unique bonuses are halved
 		var uniqueRand = randBase + (bonus * .5)
 
-		// console.info('getRarity', rand);
-		if (uniqueRand >= 97) {
+		console.info('getRarity', bonus, rand);
+		if (uniqueRand >= 98) {
 			resp = 'unique'
 		}
 		else if (rand >= 75) {
 			resp = 'rare'
 		}
-		else if (rand >= 20) {
+		else if (rand >= 20 || tierGuaranteesMagic(tier)) {
 			resp = 'magic'
 		}
 		return resp;
 	}
 	function getItemNameString(drop, baseName, noBrackets) {
-		return '<span class="item-'+ drop.rarity +'">' + (noBrackets ? '' : '[') +
-			(baseName ? baseName : drop.name) +
-		(noBrackets ? '' : ']') + '</span>'
+		if (drop.unidentified) {
+			return '<span class="item-'+ drop.rarity +'">' + (noBrackets ? '' : '[') +
+				(drop.baseName) +
+			(noBrackets ? '' : ']') + '</span>'
+		}
+		else {
+			return '<span class="item-'+ drop.rarity +'">' + (noBrackets ? '' : '[') +
+				(baseName ? baseName : drop.name) +
+			(noBrackets ? '' : ']') + '</span>'
+
+		}
 	}
 	function getFirstAvailableInvSlot() {
 		var index = items.inv.findIndex(slot => !slot.name)
@@ -923,15 +966,31 @@ var loot = {};
 	function getFirstUnidentifiedItemSlot() {
 		return items.inv.findIndex(slot => slot.unidentified)
 	}
-	function getLoot(config, mobSlot) {
+	function handleLootConfirm() {
+		let index = this.id.split('-')[2]
+		console.info('handleLootConfirm', index)
+		item.getLoot(index)
+		item.hideLootMenu(index)
+	}
+	function handleLootCancel() {
+		let index = this.id.split('-')[2]
+		console.info('handleLootCancel', index)
+		item.hideLootMenu(index)
+	}
+
+	/**
+	 * checks to see if you can loot the item and then saves it to your inventory
+	 * @param config
+	 */
+	function getLoot(index) {
+		// console.info('getLoot', drop)
 		var slot = getFirstAvailableInvSlot()
 		if (slot === -1) {
 			chat.log('You have no room in your inventory!')
 			return
 		}
+		item.lootTimers[index].kill()
 		handleDragStart()
-		var drop = item.getItem(config)
-		// console.info('getLoot', drop)
 		$.post(app.url + 'item/loot-item.php', {
 			slot: slot,
 			name: drop.name,
@@ -942,17 +1001,130 @@ var loot = {};
 				itemData: drop,
 				row: data,
 			})
-			mobName = _.get(mob[mobSlot], 'name', 'You discovered an item: ')
-			chat.log(mobName + getItemNameString(drop, drop.baseName))
-		}).fail(function() {
+			chat.log('You discovered an item: ' + getItemNameString(drop, drop.baseName))
+		}).fail(() => {
 			items.inv[slot] = {}
 		}).always(handleDropAlways)
 	}
+
+	/**
+	 * Generates loot based on mob tier upon death
+	 * @param index
+	 */
+	function findLoot(index) {
+		console.info('findLoot', index)
+		var totalLoot = getFindLootCount(mobs[index].tier)
+		for (var i=0; i<totalLoot; i++) {
+			console.info('mobs', mobs)
+			console.info('mobs 2', mobs[index])
+			var config = {
+				mobLevel: mobs[index].level,
+				bonus: item.getBonus(mobs[index].tier),
+				tier: mobs[index].tier
+			}
+			var _item = item.getItem(config)
+			items.loot.push(_item)
+			var index = items.loot.length - 1
+			showLootMenu(index)
+		}
+	}
+
+	function showLootMenu(index) {
+		console.info('showLootMenu', index)
+		let html = `
+			<div class="flex-row">
+				<div id="loot-confirm-${index}" class="loot-confirm">OK</div>
+				<div class="flex-column">
+					<div class="flex-row">
+						${bar.getItemSlotHtml('loot', index)}
+						${tooltip.getTooltipName(items.loot[index])}
+					</div>
+					<div class="loot-timer-wrap">
+						<div id="loot-timer-${index}" class="loot-timer-bar stag-blue-top"></div>
+					</div>
+				</div>
+				<div id="loot-cancel-${index}" class="loot-cancel">X</div>
+			</div>
+		`
+		let el = createElement('div')
+		el.id = 'loot-row-' + index
+		el.innerHTML = html
+		querySelector('#loot-wrap').appendChild(el)
+		const tween = {
+			width: 0
+		}
+		item.lootTimers[index] = TweenMax.to(tween, 30, {
+			width: 100,
+			ease: Power0.easeIn,
+			onUpdate: setLootBarWidth,
+			onUpdateParams: [tween, index],
+			onComplete: item.hideLootMenu,
+			onCompleteParams: [index],
+		})
+	}
+	function setLootBarWidth(tween, index) {
+		TweenMax.set('#loot-timer-' + index, {
+			width: tween.width + '%'
+		})
+	}
+
+	/**
+	 * loot timer expired - hides loot menu
+	 * @param index
+	 */
+	function hideLootMenu(index) {
+		console.info('hideLootMenu', index)
+		item.lootTimers[index].kill()
+		const el = querySelector('#loot-row-' + index)
+		if (!!el) el.parentNode.removeChild(el)
+	}
+
+	/**
+	 * Gets number of found items from a mob
+	 * @param index
+	 * @returns {number}
+	 */
+	function getFindLootCount(tier) {
+		let resp = 0
+		const rand = Math.random()
+		if (tier === MOB_TIERS.normal) {
+			resp = rand > .93 ? 1 : 0
+		}
+		else if (tier === MOB_TIERS.champion ||
+			tier === MOB_TIERS.conqueror) {
+			resp = 2
+		}
+		else if (tier === MOB_TIERS.unique) {
+			resp = 1
+		}
+		else if (tier === MOB_TIERS.boss) {
+			if (rand > .99) resp = 1
+			else if (rand > .75) resp = 2
+			else if (rand > .45) resp = 3
+			else if (rand > .15) resp = 4
+			else if (rand > .025) resp = 5
+			else resp = 6
+		}
+		if (config.guaranteedLoot &&
+			resp < 1) {
+			resp = 1
+		}
+		return resp
+	}
+
+	/**
+	 * generates an item based on config input
+	 * can also generate items for the store
+	 * fully configurable with config object for quests, specific drops, etc
+	 * @param config
+	 * @returns {{[p: string]: *}}
+	 */
 	function getItem(config) {
 		/**
 		 * store: boolean to disable unidentified items
 		 * mobLevel: int = 1-max sets max possible item level
 		 * bonus: int = provides a boost to finding great items 10 is high
+		 * tier: string - champion plus guarantees magic item
 		 * rarity: string = forces a rarity type
 		 * itemSlot: forces a particular item slot
 		 * itemName: forces specific sub item based on base name
@@ -962,7 +1134,7 @@ var loot = {};
 		if (config.bonus === void 0) config.bonus = 0
 		if (config.mobLevel === void 0) config.mobLevel = 1
 		item.config = config
-		rarity = item.config.rarity || getRarity(item.config.bonus)
+		rarity = item.config.rarity || getRarity(config.bonus, config.tier)
 		// set item type (normal, magic, etc)
 		// console.info('getRarity', rarity)
 		keys = Object.keys(loot)
@@ -1761,6 +1933,7 @@ var loot = {};
 		item.dropEqType = ''
 		query.el('#item-tooltip-cursor-img').style.visibility = 'hidden'
 		item.isIdentifyMode && toggleIdentifyMode()
+		toast.hideDestroyToast()
 	}
 	function handleDropFail(r) {
 		ng.msg(r.responseText, 8);
@@ -1787,7 +1960,9 @@ var loot = {};
 	}
 
 	function getDragItemName() {
-		return items[item.dragType][item.dragSlot].name
+		return items[item.dragType][item.dragSlot].unidentified ?
+			items[item.dragType][item.dragSlot].baseName :
+			items[item.dragType][item.dragSlot].name
 	}
 
 	function dropItem(event) {
@@ -1809,7 +1984,7 @@ var loot = {};
 			toast.destroyItem({
 				accept: 'destroy-item',
 				dismiss: '',
-				msg: 'Are you sure you want to destroy ' + getDragItemName()
+				msg: 'Are you sure you want to destroy ' + getItemNameString(item.dragData)
 			});
 		}
 	}
@@ -2153,4 +2328,4 @@ var loot = {};
 		else if (armorType === 'mail') return wearsMail.includes(my.job)
 		else if (armorType === 'plate') return wearsPlate.includes(my.job)
 	}
-})(_, Object, JSON, $, SteppedEase, TweenMax);
+})(_, Object, JSON, $, SteppedEase, TweenMax, Power0);

@@ -4,6 +4,7 @@
  * @type {{deathEnabled: boolean, defaultZone: number, walkFast: boolean}}
  */
 const config = {
+	guaranteedLoot: true,
 	deathEnabled: true,
 	walkFast: true,
 	defaultZone: 6,

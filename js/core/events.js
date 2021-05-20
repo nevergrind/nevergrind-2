@@ -178,7 +178,7 @@
 		else {
 			// normal key functions
 			// literally in any view
-			if (key === 'Escape') {
+			if (key === 'Escape') { // ESC
 				if (item.dragType) item.resetDrop()
 				else bar.toggleOptions()
 			}

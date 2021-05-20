@@ -3,6 +3,7 @@ let items = {
 	inv: [],
 	eq: [],
 	bank: [],
+	loot: [],
 	merchant: [],
 	blacksmith: [],
 	apothecary: [],

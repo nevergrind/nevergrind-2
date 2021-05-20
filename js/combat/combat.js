@@ -461,6 +461,7 @@ var combat;
 				&& my.target === o.index) {
 				spell.cancelSpell()
 			}
+			item.findLoot(o.index)
 			mob.animateDeath(o.index)
 			my.fixTarget()
 			if (combat.isBattleOver()) { // mobs slain
