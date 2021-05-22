@@ -838,10 +838,28 @@ mobSkills = {};
 			damageType: DAMAGE_TYPE.FIRE,
 		}
 	}
+
+	// @ 1 3 + (10 * 1.66) = 4
+	// @ 5 3 + (10 * 1.66) = 11.3
+	// @ 10 3 + (10 * 1.66) = 19.6
+	const maxMobLevelDamageNerf = 10
+	const maxDamageByLevel = []
+	const minDamValues = [
+		1,2,3,4,6,8, // 5
+		10,12,14,16,18 // 10
+	]
+	for (var i=0; i<=maxMobLevelDamageNerf; i++) {
+		maxDamageByLevel.push(minDamValues[i])
+	}
+	// console.info('maxDamageByLevel', maxDamageByLevel.length, maxDamageByLevel)
 	function autoAttack(i, row, isPiercing) {
 		mobDamage = {
 			row: row,
 			damage: ~~_.random(ceil(mobs[i].attack * .2), mobs[i].attack),
+		}
+		if (mobs[i].level <= 10) {
+			// nerf mob damage <= 10
+			mobDamage.damage = maxDamageByLevel[mobs[i].level]
 		}
 		if (isPiercing) {
 			mobDamage.isPiercing = isPiercing

@@ -971,11 +971,13 @@ var loot = {};
 		console.info('handleLootConfirm', index)
 		item.getLoot(index)
 		item.hideLootMenu(index)
+		audio.playSound('item-cloth', 'item', 1, 100)
 	}
 	function handleLootCancel() {
 		let index = this.id.split('-')[2]
 		console.info('handleLootCancel', index)
 		item.hideLootMenu(index)
+		audio.playSound('beep-2', void 0, 1, 100)
 	}
 
 	/**
@@ -1012,11 +1014,9 @@ var loot = {};
 	 * @param index
 	 */
 	function findLoot(index) {
-		console.info('findLoot', index)
+		// console.info('findLoot', index)
 		var totalLoot = getFindLootCount(mobs[index].tier)
 		for (var i=0; i<totalLoot; i++) {
-			console.info('mobs', mobs)
-			console.info('mobs 2', mobs[index])
 			var config = {
 				mobLevel: mobs[index].level,
 				bonus: item.getBonus(mobs[index].tier),
@@ -1033,7 +1033,6 @@ var loot = {};
 		console.info('showLootMenu', index)
 		let html = `
 			<div class="flex-row">
-				<div id="loot-confirm-${index}" class="loot-confirm">OK</div>
 				<div class="flex-column">
 					<div class="flex-row">
 						${bar.getItemSlotHtml('loot', index)}
@@ -1043,11 +1042,19 @@ var loot = {};
 						<div id="loot-timer-${index}" class="loot-timer-bar stag-blue-top"></div>
 					</div>
 				</div>
-				<div id="loot-cancel-${index}" class="loot-cancel">X</div>
+				<div class="flex-column">
+					<img id="loot-confirm-${index}" 
+						class="loot-confirm popover-icons" 
+						src="images/map/room-treasure.png">
+					<img id="loot-cancel-${index}" 
+						class="loot-cancel popover-icons" 
+						src="images/map/room-boss.png">
+				</div>
 			</div>
 		`
 		let el = createElement('div')
 		el.id = 'loot-row-' + index
+		el.className = 'loot-row stag-blue'
 		el.innerHTML = html
 		querySelector('#loot-wrap').appendChild(el)
 		const tween = {
@@ -1077,6 +1084,10 @@ var loot = {};
 		item.lootTimers[index].kill()
 		const el = querySelector('#loot-row-' + index)
 		if (!!el) el.parentNode.removeChild(el)
+		popover.hide()
+		if (tooltip.loot.isHovering) {
+			tooltip.hide()
+		}
 	}
 
 	/**

@@ -301,7 +301,12 @@ let mobs = [];
 	function getMobGold(config) {
 		goldFound = 0
 		if (rand() > .3) goldFound = 0
-		else goldFound = ~~_.random(2, config.level * 2.66)
+		else {
+			// @1 2-5
+			// @25 14-53
+			// @1 26-103
+			goldFound = ~~_.random(2 + ~~(config.level * .5), 3 + config.level * 2)
+		}
 		return goldFound
 	}
 	function getMobExp(index) {
@@ -826,7 +831,9 @@ let mobs = [];
 		// TODO: Does this create too much network strain? maybe not?
 		if (mob.enableMobHeartbeat && my.isLeader) {
 			tickData = []
-			mobs.forEach(processMobResourceTick)
+			mobs.forEach((m,i) => {
+				processMobResourceTick(m, i, tickData)
+			})
 			if (tickData.length) {
 				socket.publish('party' + my.partyId, {
 					route: 'p->mobTick',
@@ -835,21 +842,22 @@ let mobs = [];
 			}
 		}
 		//////////////////////////////
-		function processMobResourceTick(m, index) {
-			if (mob.isAlive(index) &&
-				timers.mobEffects[index].freezeDuration === 0 &&
-				!isPoisoned(index)) {
-				// hp
-				hpTick = m.level
-				if (m.hp + hpTick > m.hpMax) {
-					hpTick = m.hpMax - m.hp
-				}
-				// console.info('sending hpTick:', hpTick)
-				tickData.push({
-					i: index,
-					h: hpTick,
-				})
+	}
+	function processMobResourceTick(m, index, tickData) {
+		if (m.level >= 6 &&
+			mob.isAlive(index) &&
+			timers.mobEffects[index].freezeDuration === 0 &&
+			!isPoisoned(index)) {
+			// hp
+			hpTick = m.level
+			if (m.hp + hpTick > m.hpMax) {
+				hpTick = m.hpMax - m.hp
 			}
+			// console.info('sending hpTick:', hpTick)
+			tickData.push({
+				i: index,
+				h: hpTick,
+			})
 		}
 	}
 	function rxMobResourceTick(data) {

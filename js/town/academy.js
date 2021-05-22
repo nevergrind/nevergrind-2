@@ -155,7 +155,8 @@ var academy;
 					if (my.skills[i] === 0) {
 						row += '<div class="academy-skill-next">'+
 							'<div>Learn Skill:</div>'+
-							'<div><img class="academy-gold-img" src="images/ui/gold-bar.png">'+ trainCosts[nextRank] + '</div>' +
+							'<div class="flex-center">'+
+								'<img class="academy-gold-img" src="images/ui/gold-bar.png">'+ trainCosts[nextRank] + '</div>' +
 						'</div>'
 					}
 					else if (nextRank <= 7) {

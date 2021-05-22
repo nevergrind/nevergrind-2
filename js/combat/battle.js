@@ -307,6 +307,7 @@ var battle;
 		}
 
 		if (combat.isBattleOver()) {
+			// nothing in this room
 			map.inCombat = false
 			audio.playAmbientLoop()
 			map.show(1.5)
@@ -356,12 +357,6 @@ var battle;
 			/*let minLevel = Math.max(~~(quests[mission.questId].level * .7), 1)
 			let maxLevel = quests[mission.questId].level*/
 
-			let availableSlots = []
-			mob.txData = []
-			for (var i=0; i<mob.max; i++) {
-				mob.txData.push({})
-				availableSlots.push(i)
-			}
 			// maps[dungeon.map.id].rooms[map.roomId].mobs
 			let totalMobs
 			if (map.inRoom && map.roomId === 0 ||
@@ -371,6 +366,15 @@ var battle;
 			}
 			else {
 				totalMobs = battle.getRandomMobCount()
+			}
+
+			let availableSlots = []
+			// this will limit mobs to front row for early missions
+			let maxMobs = quests[mission.questId].level <= 10 ? mob.max : 5
+			mob.txData = []
+			for (var i=0; i<maxMobs; i++) {
+				mob.txData.push({})
+				availableSlots.push(i)
 			}
 
 			// full room for testing

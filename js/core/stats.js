@@ -1347,7 +1347,7 @@ var stats = {};
 	// troll 9, normal 5
 	function baseHpRegen(fresh) {
 		if (fresh || typeof stats.memo.baseHpRegen === 'undefined') {
-			stats.memo.baseHpRegen = (my.race === RACE.TROLL ? 3 : 1) +
+			stats.memo.baseHpRegen = (my.race === RACE.TROLL ? 4 : 2) +
 				(my.level * (my.race === RACE.TROLL ? .12 : .08))
 		}
 		return stats.memo.baseHpRegen

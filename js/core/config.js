@@ -4,9 +4,11 @@
  * @type {{deathEnabled: boolean, defaultZone: number, walkFast: boolean}}
  */
 const config = {
-	guaranteedLoot: true,
+	consoleDisabled: false,
+	guaranteedLoot: false,
 	deathEnabled: true,
 	walkFast: true,
-	defaultZone: 6,
+	defaultZone: 3,
 	showMapNumbers: false,
+	autoAcceptPartyInvites: true,
 }

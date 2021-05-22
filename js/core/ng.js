@@ -318,7 +318,7 @@ var ng;
 		.on('click', '#title-select-down', decrementCharacter)
 	///////////////////////////////
 	function init() {
-		if (app.isApp) {
+		if (config.consoleDisabled) {
 			console.debug = console.log = console.warn = console.info = ng.noop
 		}
 		$.ajaxSetup({

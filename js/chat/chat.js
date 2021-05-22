@@ -437,7 +437,7 @@ var chat;
 			socket.publish('friend' + my.name, {
 				name: my.name,
 				route: 'off'
-			});
+			}, true);
 			var minutes = game.getCachedMinutes();
 			if (minutes) {
 				$.post(app.url + 'camp.php', {

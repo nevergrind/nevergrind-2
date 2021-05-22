@@ -40,9 +40,10 @@ var tooltip;
 	 * @returns {string}
 	 */
 	function getTooltipName(obj) {
+		console.info('getTooltipName', obj)
 		return '<div style="border: 1px ridge #013"></div>' +
 		'<div class="tooltip-name-bg" class="flex-column flex-center align-center">' +
-			'<div class="tooltip-name" class="item-' + _.kebabCase(obj.rarity) + '">' +
+			'<div class="tooltip-name item-' + _.kebabCase(obj.rarity) + '">' +
 				(obj.unidentified ? obj.baseName : obj.name) +
 			'</div>' +
 			(obj.unidentified ? '' : (
@@ -370,8 +371,9 @@ var tooltip;
 		// console.info('getSkillHtml config', config)
 		skillHtml = `
 		<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">
-			<div id="tooltip-name-bg" class="flex-column flex-center align-center">
-				<div id="tooltip-name" class="text-center" style="font-size: 1.125rem">${config.name}</div>
+			<div class="tooltip-name-bg" class="flex-column flex-center align-center">
+				<div class="tooltip-name" 
+				style="font-size: 1.125rem">${config.name}</div>
 			</div>
 			<div id="tooltip-item-stat-wrap" class="text-center" style="border: .1rem ridge #013">
 				<div style="padding: .2rem">`
@@ -756,7 +758,6 @@ var tooltip;
 		setTooltipVisible(.5)
 	}
 	function handleEnter(event) {
-		console.info('handleEnter tooltip', event)
 		if (map.isDragging) return
 		if (event.currentTarget.id === ('skill-primary-attack-btn')) {
 			let hit = stats.primaryAutoAttackDamage(0, true)
@@ -785,7 +786,6 @@ var tooltip;
 		else {
 			// item slots
 			var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
-			console.info('index type', index, type)
 			tooltip.lastHoveredType = type
 			tooltip[type].isHovering = true
 			if (items[type][index].name) {

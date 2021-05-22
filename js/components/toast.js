@@ -39,13 +39,13 @@ var toast;
 			toast.timer = delayedCall(toast.expired, removeToast)
 			if (data.action === 'trade-request') {
 				trade.timer = delayedCall(toast.expired, trade.tradeExpired, [ data.name ])
-				if (!app.isApp) {
+				if (config.autoAcceptPartyInvites) {
 					// console.info('toast data', _.cloneDeep(toast.data))
 					setTimeout(toast.accept, 100)
 				}
 			}
 			else if (data.action === 'party-invite') {
-				if (!app.isApp) {
+				if (config.autoAcceptPartyInvites) {
 					// auto accept party invites for testing
 					setTimeout(toast.accept, 100)
 				}

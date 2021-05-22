@@ -39,6 +39,7 @@ var combat;
 		showQuestMsg,
 		showDeathMsg,
 		animateMyDeath,
+		resetDeathFilter,
 		MAX_DAMAGE: 999999999,
 		textId: 0,
 		considerClass: [
@@ -111,6 +112,10 @@ var combat;
 	const TEXT_DURATION = 1
 	const TEXT_DISTANCE_X = 200
 	const TEXT_DISTANCE_Y = 150
+	const FILTER_ALIVE = 'contrast(1) brightness(1) sepia(0)'
+	const FILTER_DEAD = 'contrast(1.5) brightness(.5) sepia(1)'
+	const FILTER_PADDING = 200
+
 	let duration = 0
 
 	const TEXT_SCALE = {
@@ -122,11 +127,11 @@ var combat;
 		pixi: { scale: 1 },
 		ease: Bounce.easeOut,
 	}
-	const TEXT_FILTER = {
+	/*const TEXT_FILTER = {
 		startAt: { pixi: { brightness: 3, contrast: 1.5 }},
 		pixi: { brightness: 1.25, contrast: 1 },
 		ease: Power2.easeInOut
-	}
+	}*/
 	const resourceLeechDivider = 1000
 	let chance = 0
 	let amountReduced = 0
@@ -429,6 +434,7 @@ var combat;
 	}
 
 	function updateMobHp(o) {
+		// console.info('updateMobHp', o)
 		if (!o.isHeal) {
 			if (typeof buffs[o.key] === 'object') {
 				if (typeof buffs[o.key].hate === 'undefined') o.hate = 1
@@ -467,7 +473,7 @@ var combat;
 			if (combat.isBattleOver()) { // mobs slain
 				combat.resetTimersAndUI()
 				map.endCombat()
-				party.reviveDeadAllies()
+				party.reviveDeadAllies(false)
 			}
 		}
 		if (!o.isHeal) {
@@ -732,13 +738,9 @@ var combat;
 	 * multiplayer handling happens in party.upsertPartyResource() checks
 	 */
 	function selfDied() {
-		// console.warn('You died!')
-		// subtract XP
-		if (!app.isApp) {
-			// really just for testing
-			my.set(PROP.HP, 0)
-			bar.updateBar(PROP.HP, my)
-		}
+		console.warn('You died!')
+		my.set(PROP.HP, 0)
+		bar.updateBar(PROP.HP, my)
 		timers.clearMy()
 		autoAttackDisable()
 		spell.cancelSpell()
@@ -774,7 +776,7 @@ var combat;
 		if (type === PROP.HP) {
 			if (my.hp <= 0) {
 				// death
-				if (app.deathEnabled) selfDied()
+				if (config.deathEnabled) selfDied()
 				else my.set(PROP.HP, my.hpMax) // testing
 			}
 		}
@@ -1370,7 +1372,6 @@ var combat;
 		if (mission.isCompleted) return
 		mission.isCompleted = true
 		// QUEST_TEXT_STYLE
-		const FILTER_PADDING = 200
 		if (!_.size(combat.questText)) {
 			combat.questText = new PIXI.Text('Victory Achieved', {
 				fontFamily: 'Cinzel',
@@ -1473,11 +1474,6 @@ var combat;
 		})
 	}
 	function showDeathMsg() {
-		const FILTER_PADDING = 200
-		TweenMax.to(querySelector('#scene-battle'), 1, {
-			startAt: { filter: 'contrast(1) brightness(1) sepia(0)' },
-			filter: 'contrast(1.5) brightness(.5) sepia(1)'
-		})
 		if (!_.size(combat.deathText)) {
 			combat.deathText = new PIXI.Text('You died', {
 				fontFamily: 'Cinzel',
@@ -2272,26 +2268,18 @@ var combat;
 		else if (level >= ~~(my.level * .66) ) resp = 1
 		return resp
 	}
+
 	function animateMyDeath() {
-		let o = {
-			grayscale: 0,
-			saturate: 1,
-			contrast: 1,
-			brightness: 1,
-		}
-		TweenMax.to(o, 3, {
-			grayscale: .6,
-			saturate: 4,
-			contrast: 4,
-			brightness: .4,
-			onUpdate: setFilter,
-			onUpdateParams: [o]
+		TweenMax.to('#scene-battle', 1, {
+			startAt: { filter: FILTER_ALIVE },
+			filter: FILTER_DEAD
 		})
 		combat.showDeathMsg()
 	}
-	function setFilter(o) {
-		TweenMax.set(el, {
-			filter: 'grayscale(1) sepia(1) saturate('+ o.saturate +') hue-rotate(-30deg) contrast('+ o.contrast +') brightness('+ o.brightness +') grayscale('+ o.grayscale +') '
+	function resetDeathFilter() {
+		TweenMax.to('#scene-battle', 2, {
+			startAt: { filter: FILTER_DEAD },
+			filter: FILTER_ALIVE
 		})
 	}
 	function buffMitigatesDamage(d, key) {

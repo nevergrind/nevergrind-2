@@ -57,6 +57,9 @@ var party;
 			return acc
 		}, 0)
 	}
+	function hasMoreThanOnePlayer() {
+		return party.presence.length > 1
+	}
 	function isSomeoneAlive() {
 		return party.presence.some(party.isAlive)
 	}
@@ -82,9 +85,6 @@ var party;
 		return _.find(party.presence, {
 			row: row
 		}).name
-	}
-	function hasMoreThanOnePlayer() {
-		return party.presence.length > 1
 	}
 	/**
 	 * unsubs current party channel and subs the new one
@@ -231,31 +231,47 @@ var party;
 	}
 
 	/**
-	 * revive a single ally ... if they're dead
-	 * @param p
-	 */
-	function reviveAlly(p) {
-		if (p.hp <= 0) {
-			p.isDead = false
-			if (p.row === my.row) {
-				my.set(PROP.HP, 1)
-				my.set(PROP.MP, 1)
-				my.set(PROP.SP, 1)
-			}
-			else {
-				p.hp = p.mp = p.sp = 1
-			}
-			bar.updateBar(PROP.HP, p)
-			bar.updateBar(PROP.MP, p)
-			bar.updateBar(PROP.SP, p)
-		}
-	}
-
-	/**
 	 * Revives all fallen allies after combat is over
 	 */
-	function reviveDeadAllies() {
+	function reviveDeadAllies(isPartyWipe = true) {
 		party.presence.forEach(reviveAlly)
+		///////////////////////////////////
+		/**
+		 * revive a single ally ... if they're dead
+		 * @param p
+		 */
+		function reviveAlly(p) {
+			console.warn('reviveAlly!', p.row, p)
+			if (p.hp <= 0) {
+				p.isDead = false
+				if (p.row === my.row) {
+					console.info('isPartyWipe', isPartyWipe)
+					if (isPartyWipe) {
+						my.set(PROP.HP, p.hpMax)
+						my.set(PROP.MP, p.mpMax)
+						my.set(PROP.SP, p.spMax)
+					}
+					else {
+						my.set(PROP.HP, 1)
+						my.set(PROP.MP, 1)
+						my.set(PROP.SP, 1)
+					}
+				}
+				else {
+					if (isPartyWipe) {
+						p.hp = p.hpMax
+						p.mp = p.mpMax
+						p.sp = p.spMax
+					}
+					else {
+						p.hp = p.mp = p.sp = 1
+					}
+				}
+				bar.updateBar(PROP.HP, p)
+				bar.updateBar(PROP.MP, p)
+				bar.updateBar(PROP.SP, p)
+			}
+		}
 	}
 	function upsertParty(data) {
 		// if (my.partyId !== data.partyId) return;

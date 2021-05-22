@@ -51,6 +51,8 @@ var popover;
 			'mini-map-party': 'Center Camera on Party',
 			'mini-map-leave': 'Return to Town',
 			'quest-completed': 'Click to Return to Town',
+			'loot-confirm': 'Loot Item',
+			'loot-cancel': 'Dismiss Loot',
 		}
 		if (id.startsWith('skill-')) {
 			if (id === 'skill-primary-attack-btn') html = 'Primary Attack'
@@ -79,6 +81,12 @@ var popover;
 			}
 			else if (id === 'potion-sp') {
 				if (button.hasPotionByType('sp')) id = 'potion-sp-empty'
+			}
+			else if (id.startsWith('loot-confirm-')) {
+				id = 'loot-confirm'
+			}
+			else if (id.startsWith('loot-cancel-')) {
+				id = 'loot-cancel'
 			}
 			html = mainMenuPopovers[id]
 		}
