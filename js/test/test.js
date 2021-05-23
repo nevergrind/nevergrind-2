@@ -471,7 +471,7 @@ var test;
 		}
 	}
 	function mobPix(mobName) {
-		mobName = mobName || 'orc'
+		mobName = mobName || [MOB_IMAGES.orc]
 		const hoverIcon = "url('css/cursor/pointer.png'), auto"
 		if (!test.mob) {
 			test.mob = new PIXI.Application({
@@ -886,7 +886,7 @@ var test;
 		if (typeof query === 'undefined') {
 			query = {
 				level: 1,
-				img: 'orc'
+				img: [MOB_IMAGES.orc]
 			}
 		}
 		let result = mob.getRandomMobByZone(query, zoneName)

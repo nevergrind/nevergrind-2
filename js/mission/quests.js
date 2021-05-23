@@ -9,13 +9,15 @@ var quests;
 	 * gather - retrieve # lost relics
 	 * investigate - record ancient writings,
 	 */
-	quests = [{
+	quests = [
+		// Salubrin Haven Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
 			imgIndex: 1,
-			maxLevel: 2,
+			maxLevel: 1,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.salubrinHaven,
@@ -63,17 +65,21 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
 			zone: ZONES.salubrinHaven,
-		},{ // placeholders
+		},
+		// Tendolin Passage Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
 			imgIndex: 1,
-			maxLevel: 2,
+			maxLevel: 1,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.tendolinPassage,
-		},{
+		},
+		// Greenthorn Cavern Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -83,7 +89,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.greenthornCavern,
-		},{
+		},
+		// Lanfeld Refuge Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -93,7 +101,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.lanfeldRefuge,
-		},{
+		},
+		// Riven Grotto Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -103,7 +113,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.rivenGrotto,
-		},{
+		},
+		// Bastille Citadel Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -113,7 +125,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.bastilleCitadel,
-		},{
+		},
+		// Kordata Cove Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -123,7 +137,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.kordataCove,
-		},{
+		},
+		// Sylong Sanctuary Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -133,7 +149,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.sylongSanctuary,
-		},{
+		},
+		// Thule Crypt Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -143,7 +161,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.thuleCrypt,
-		},{
+		},
+		// Temple of Prenssor Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -153,7 +173,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.templeOfPrenssor,
-		},{
+		},
+		// Fahnir Citadel Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -163,7 +185,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.fahlnirCitadel,
-		},{
+		},
+		// Anuran Ruins Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -173,7 +197,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.anuranRuins,
-		},{
+		},
+		// Galeblast Fortress Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',
@@ -183,7 +209,9 @@ var quests;
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.galeblastFortress,
-		},{
+		},
+		// Ashenflow Peak Quests
+		{
 			level: 1,
 			title: 'Kill Himber',
 			bossName: 'Himber',

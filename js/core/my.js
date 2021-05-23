@@ -2,6 +2,7 @@ var my;
 !function($, _, TweenMax, Date, undefined) {
 	my = {
 		//hud,
+		targetCleared,
 		stunTimeValid,
 		fearTimeValid,
 		paralyzeTimeValid,
@@ -271,12 +272,17 @@ var my;
 			else combat.targetChanged()
 		}
 	}
-	function partyTarget(index) {
+	function targetCleared() {
+		my.targetIsMob = false
+		my.target = -1
+		combat.targetChanged()
+	}
+	function partyTarget(index, toggleEnabled = true) {
 		if (timers.castBar < 1) return
 		if (typeof party.presence[index] === 'object' &&
 			party.presence[index].row >= 0) {
 			my.targetIsMob = false
-			if (my.target === party.presence[index].row) my.target = -1
+			if (toggleEnabled && my.target === party.presence[index].row) my.target = -1
 			else my.target = party.presence[index].row
 			combat.targetChanged()
 		}

@@ -12,6 +12,7 @@ var cache;
 		preloadAudio,
 		preloadImages,
 		preloadPlayerAsk,
+		preloadTorch,
 	}
 	var mob, image, audio, index, len
 	///////////////////////
@@ -87,5 +88,17 @@ var cache;
 	function clearAudio() {
 		cache.audio = [];
 		cache.audioStrings = [];
+	}
+
+	function preloadTorch() {
+		const path = 'images/map/'
+		const ext = '.png'
+		cache.preloadImages([
+			path + 'torch-1' + ext,
+			path + 'torch-2' + ext,
+			path + 'torch-3' + ext,
+			path + 'torch-4' + ext,
+			path + 'torch-5' + ext,
+		])
 	}
 })(Image, Audio);

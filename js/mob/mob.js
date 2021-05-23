@@ -115,7 +115,7 @@ let mobs = [];
 		level: 1,
 		armor: 1,
 		healing: 1,
-		img: 'orc',
+		img: [MOB_IMAGES.orc],
 		size: 1,
 		name: 'monster',
 		tier: MOB_TIERS.normal,

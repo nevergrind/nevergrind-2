@@ -40,7 +40,7 @@ var tooltip;
 	 * @returns {string}
 	 */
 	function getTooltipName(obj) {
-		console.info('getTooltipName', obj)
+		// console.info('getTooltipName', obj)
 		return '<div style="border: 1px ridge #013"></div>' +
 		'<div class="tooltip-name-bg" class="flex-column flex-center align-center">' +
 			'<div class="tooltip-name item-' + _.kebabCase(obj.rarity) + '">' +

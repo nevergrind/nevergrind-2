@@ -123,6 +123,7 @@ let map;
 
 		// set dynamic style
 		map.drawMap()
+		cache.preloadTorch()
 		map.animateTorch()
 	}
 	function setRoom0() {

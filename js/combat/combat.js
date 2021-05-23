@@ -51,64 +51,8 @@ var combat;
 			'con-yellow',
 			'con-red',
 		],
-		mobType: {
-			'balrog': 'Demons',
-			'ice-golem': 'Mystical',
-			'stone-golem': 'Mystical',
-			'iron-golem': 'Mystical',
-			'treant': 'Mystical',
-			'spider': 'Beasts',
-			'wolf': 'Beasts',
-			'rat': 'Beasts',
-			'snake': 'Beasts',
-			[MOB_TYPE.DRAGONKIN]: 'Dragonkin',
-			'lizardman': 'Humanoids',
-			'dragon': 'Dragonkin',
-			'dragon-fire': 'Dragonkin',
-			'dragon-poison': 'Dragonkin',
-			'dragon-frost': 'Dragonkin',
-			'dragon-plains': 'Dragonkin',
-			'dragon-water': 'Dragonkin',
-			'dragon-forest': 'Dragonkin',
-			'dragon-desert': 'Dragonkin',
-			'ghoul': 'Undead',
-			'mummy': 'Undead',
-			'skeleton': 'Undead',
-			'zombie': 'Undead',
-			'vampire': 'Undead',
-			'goblin': 'Humanoids',
-			'hobgoblin': 'Humanoids',
-			'kobold': 'Humanoids',
-			'orc': 'Humanoids',
-			'griffon': 'Mystical',
-			'harpy': 'Mystical',
-			'werewolf': 'Mystical',
-			'centaur': 'Mystical',
-			'cerberus': 'Demons',
-			'fungoid': 'Humanoids',
-			'gargoyle': 'Mystical',
-			'beetle': 'Beasts',
-			'imp': 'Demons',
-			'minotaur': 'Mystical',
-			'aviak': 'Humanoids',
-			'elephant': 'Beasts',
-			'lion': 'Beasts',
-			'crocodile': 'Beasts',
-			'rhino': 'Beasts',
-			'lioness': 'Beasts',
-			'bear': 'Beasts',
-			'toadlok': 'Humanoids',
-			[MOB_TYPE.GIANT]: 'Giants',
-			'ice-giant': 'Giants',
-			'fire-giant': 'Giants',
-			'spectre': 'Undead',
-			'angler': 'Humanoids',
-			'evil-eye': 'Mystical',
-			'unicorn': 'Mystical',
-			'scorpion': 'Beasts',
-		},
 	}
-	var el, w, h, i, len, damageArr, hit, damages, procDamage, procHit, buffArr, index, hotData, buffData, key, resist, resistPenalty
+	var el, w, h, i, len, damageArr, damages, buffArr, index
 	const TEXT_DURATION = 1
 	const TEXT_DISTANCE_X = 200
 	const TEXT_DISTANCE_Y = 150
@@ -309,7 +253,7 @@ var combat;
 			// console.warn('1 enhancedDamage', d.enhancedDamage)
 			if (!d.enhancedDamage) d.enhancedDamage = 1
 			// console.warn('2 enhancedDamage', d.enhancedDamage)
-			if (mobs[d.index].mobType === MOB_TYPE.UNDEAD) {
+			if (mobs[d.index].mobType === MOB_TYPES.UNDEAD) {
 				if (d.isBlighted) {
 					d.enhancedDamage += .5
 				}
@@ -317,7 +261,7 @@ var combat;
 					d.enhancedDamage += .5
 				}
 			}
-			else if (mobs[d.index].mobType === MOB_TYPE.DEMON) {
+			else if (mobs[d.index].mobType === MOB_TYPES.DEMON) {
 				if (d.isBlighted) {
 					d.enhancedDamage += .5
 				}
@@ -347,40 +291,40 @@ var combat;
 
 	function getEnhancedDamageByMobType(d) {
 		enhanceDamageToMobType = 0
-		if (mobs[d.index].mobType === MOB_TYPE.HUMANOID) {
+		if (mobs[d.index].mobType === MOB_TYPES.HUMANOID) {
 			/*if (d.weaponSkill === 'One-hand Blunt' ||
 				d.weaponSkill === 'Two-hand Blunt') {
 				enhanceDamageToMobType += .25
 			}*/
 			enhanceDamageToMobType += stats.enhancedDamageToHumanoids()
 		}
-		else if (mobs[d.index].mobType === MOB_TYPE.DEMON) {
+		else if (mobs[d.index].mobType === MOB_TYPES.DEMON) {
 			enhanceDamageToMobType += stats.enhancedDamageToDemons()
 		}
-		else if (mobs[d.index].mobType === MOB_TYPE.BEAST) {
+		else if (mobs[d.index].mobType === MOB_TYPES.BEAST) {
 			/*if (d.weaponSkill === LABEL.ONE_HAND_SLASH ||
 				d.weaponSkill === 'Two-hand Slash') {
 				enhanceDamageToMobType += .25
 			}*/
 			enhanceDamageToMobType += stats.enhancedDamageToBeasts()
 		}
-		else if (mobs[d.index].mobType === MOB_TYPE.DRAGONKIN) {
+		else if (mobs[d.index].mobType === MOB_TYPES.DRAGONKIN) {
 			enhanceDamageToMobType += stats.enhancedDamageToDragonkin()
 		}
-		else if (mobs[d.index].mobType === MOB_TYPE.MYSTICAL) {
+		else if (mobs[d.index].mobType === MOB_TYPES.MYSTICAL) {
 			/*if (d.weaponSkill === 'Piercing') {
 				enhanceDamageToMobType += .25
 			}*/
 			enhanceDamageToMobType += stats.enhancedDamageToMystical()
 		}
-		else if (mobs[d.index].mobType === MOB_TYPE.UNDEAD) {
+		else if (mobs[d.index].mobType === MOB_TYPES.UNDEAD) {
 			/*if (d.weaponSkill === 'One-hand Blunt' ||
 				d.weaponSkill === 'Two-hand Blunt') {
 				enhanceDamageToMobType += .25
 			}*/
 			enhanceDamageToMobType += stats.enhancedDamageToUndead()
 		}
-		else if (mobs[d.index].mobType === MOB_TYPE.GIANT) {
+		else if (mobs[d.index].mobType === MOB_TYPES.GIANT) {
 			enhanceDamageToMobType += stats.enhancedDamageToGiants()
 		}
 		return enhanceDamageToMobType

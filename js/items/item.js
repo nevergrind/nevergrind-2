@@ -2,7 +2,7 @@ var item;
 var loot = {};
 (function(_, Object, JSON, $, SteppedEase, TweenMax, Power0, undefined) {
 	item = {
-		showLootMenu,
+		addLoot,
 		hideLootMenu,
 		canEquipArmor,
 		handleDropSuccess,
@@ -968,14 +968,14 @@ var loot = {};
 	}
 	function handleLootConfirm() {
 		let index = this.id.split('-')[2]
-		console.info('handleLootConfirm', index)
+		// console.info('handleLootConfirm', index)
 		item.getLoot(index)
 		item.hideLootMenu(index)
 		audio.playSound('item-cloth', 'item', 1, 100)
 	}
 	function handleLootCancel() {
 		let index = this.id.split('-')[2]
-		console.info('handleLootCancel', index)
+		// console.info('handleLootCancel', index)
 		item.hideLootMenu(index)
 		audio.playSound('beep-2', void 0, 1, 100)
 	}
@@ -1013,9 +1013,9 @@ var loot = {};
 	 * Generates loot based on mob tier upon death
 	 * @param index
 	 */
-	function findLoot(index) {
-		// console.info('findLoot', index)
-		var totalLoot = getFindLootCount(mobs[index].tier)
+	function findLoot(index, forceQuantity = 0) {
+		var totalLoot = forceQuantity ? forceQuantity : getFindLootCount(mobs[index].tier)
+		// console.info('findLoot', index, totalLoot)
 		for (var i=0; i<totalLoot; i++) {
 			var config = {
 				mobLevel: mobs[index].level,
@@ -1024,13 +1024,12 @@ var loot = {};
 			}
 			var _item = item.getItem(config)
 			items.loot.push(_item)
-			var index = items.loot.length - 1
-			showLootMenu(index)
+			addLoot(items.loot.length - 1)
 		}
 	}
 
-	function showLootMenu(index) {
-		console.info('showLootMenu', index)
+	function addLoot(index) {
+		// console.info('addLoot', index)
 		let html = `
 			<div class="flex-row">
 				<div class="flex-column">
@@ -1057,6 +1056,13 @@ var loot = {};
 		el.className = 'loot-row stag-blue'
 		el.innerHTML = html
 		querySelector('#loot-wrap').appendChild(el)
+		TweenMax.to(el, .3, {
+			startAt: {
+				scale: .5
+			},
+			scale: 1,
+			opacity: 1,
+		})
 		const tween = {
 			width: 0
 		}
@@ -1080,7 +1086,7 @@ var loot = {};
 	 * @param index
 	 */
 	function hideLootMenu(index) {
-		console.info('hideLootMenu', index)
+		// console.info('hideLootMenu', index)
 		item.lootTimers[index].kill()
 		const el = querySelector('#loot-row-' + index)
 		if (!!el) el.parentNode.removeChild(el)
@@ -2282,14 +2288,23 @@ var loot = {};
 		tooltip.goldValue = getItemValue(item, isSelling)
 		return '<div style="color: gold; margin: .2rem">'+ (isSelling ? 'Sell Value: ' : 'Cost: ') + tooltip.goldValue + '</div>'
 	}
+	const freeProps = [
+		'enhancedDamage',
+		'enhancedArmor',
+		'minDamage',
+		'maxDamage',
+		'armor',
+	]
 	function getItemValue(item, selling) {
 		value = 1
 		if (!item.cost) {
+			// item is being sold?
 			for (key in item) {
 				if (typeof item[key] === 'number' &&
 					typeof saleValues[key] === 'number') {
-					var val = item[key] * (saleValues[key] * (selling ? 1 : 16))
-					value += val
+					if (freeProps.includes(key) || !item.unidentified) {
+						value += item[key] * (saleValues[key] * (selling ? 1 : 16))
+					}
 				}
 			}
 		}
@@ -2301,7 +2316,17 @@ var loot = {};
 				value = item.cost
 			}
 		}
-		if (!selling) {
+		if (selling) {
+			// handle minimum values for rings, amulets, charms
+			if (item.itemType === ITEM_TYPE.RINGS ||
+				item.itemType === ITEM_TYPE.AMULETS ||
+				item.itemType === ITEM_TYPE.CHARMS) {
+				if (value < 20) {
+					value = 20
+				}
+			}
+		}
+		else {
 			// conditional purchase increases by itemType
 			if (item.itemType === ITEM_TYPE.RINGS ||
 				item.itemType === ITEM_TYPE.AMULETS ||

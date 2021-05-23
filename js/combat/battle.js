@@ -370,7 +370,7 @@ var battle;
 
 			let availableSlots = []
 			// this will limit mobs to front row for early missions
-			let maxMobs = quests[mission.questId].level <= 10 ? mob.max : 5
+			let maxMobs = quests[mission.questId].level <= 10 ? 5 : mob.max
 			mob.txData = []
 			for (var i=0; i<maxMobs; i++) {
 				mob.txData.push({})
@@ -390,7 +390,7 @@ var battle;
 				const maxLevel = quests[mission.id].maxLevel
 				const minLevel = ~~(maxLevel * .75)
 				q = {
-					// img: 'orc',
+					// img: [MOB_IMAGES.orc],
 					level: _.random(minLevel, maxLevel)
 				}
 				if (i === 0) {
@@ -521,7 +521,7 @@ var battle;
 		// mobType + type e.g. Humanoid Champion
 		// type and tier
 		tierHtml = '<div class="mob-types mob-tier-'+ mobs[my.target].tier +'">' +
-			combat.mobType[mobs[my.target].img].replace(/s+$/, '') +
+			mob.type[mobs[my.target].img].mobType +
 			(mobs[my.target].tier === 'normal' ? '' : ' ' + mobs[my.target].tier) +
 		'</div>'
 		// traits

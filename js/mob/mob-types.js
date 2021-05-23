@@ -1,9 +1,9 @@
 // mob type specific stats
 mob.type = {
-	balrog: {
+	[MOB_IMAGES.balrog]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DEMON,
+		mobType: MOB_TYPES.DEMON,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -18,10 +18,10 @@ mob.type = {
 		sfxIdle: 'balrog-idle',
 		sfxSpecial: 'balrog-special',
 	},
-	'ice-golem': {
+	[MOB_IMAGES.iceGolem]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -36,10 +36,10 @@ mob.type = {
 		sfxIdle: 'golem-idle',
 		sfxSpecial: undefined,
 	},
-	'stone-golem': {
+	[MOB_IMAGES.stoneGolem]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -54,10 +54,10 @@ mob.type = {
 		sfxIdle: 'golem-idle',
 		sfxSpecial: undefined,
 	},
-	'iron-golem': {
+	[MOB_IMAGES.ironGolem]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -72,10 +72,10 @@ mob.type = {
 		sfxIdle: 'golem-idle',
 		sfxSpecial: undefined,
 	},
-	treant: {
+	[MOB_IMAGES.treant]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -90,10 +90,10 @@ mob.type = {
 		sfxIdle: 'treant-idle',
 		sfxSpecial: 'treant-special',
 	},
-	spider: {
+	[MOB_IMAGES.spider]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -108,10 +108,10 @@ mob.type = {
 		sfxIdle: 'spider-idle',
 		sfxSpecial: undefined,
 	},
-	wolf: {
+	[MOB_IMAGES.wolf]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -126,10 +126,10 @@ mob.type = {
 		sfxIdle: 'wolf-idle',
 		sfxSpecial: undefined,
 	},
-	rat: {
+	[MOB_IMAGES.rat]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -144,10 +144,10 @@ mob.type = {
 		sfxIdle: 'rat-idle',
 		sfxSpecial: undefined,
 	},
-	snake: {
+	[MOB_IMAGES.snake]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -162,10 +162,10 @@ mob.type = {
 		sfxIdle: 'snake-idle',
 		sfxSpecial: undefined,
 	},
-	dragonkin: {
+	[MOB_IMAGES.dragonkin]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DRAGONKIN,
+		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -180,10 +180,10 @@ mob.type = {
 		sfxIdle: undefined,
 		sfxSpecial: undefined,
 	},
-	lizardman: {
+	[MOB_IMAGES.lizardman]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.HUMANOID,
+		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -198,10 +198,10 @@ mob.type = {
 		sfxIdle: 'lizardman-idle',
 		sfxSpecial: 'lizardman-special',
 	},
-	dragon: {
+	[MOB_IMAGES.dragon]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DRAGONKIN,
+		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -216,10 +216,10 @@ mob.type = {
 		sfxIdle: 'dragon-idle',
 		sfxSpecial: 'dragon-special',
 	},
-	'dragon-fire': {
+	[MOB_IMAGES.dragonFire]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DRAGONKIN,
+		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -234,10 +234,10 @@ mob.type = {
 		sfxIdle: 'dragon-idle',
 		sfxSpecial: 'dragon-special',
 	},
-	'dragon-poison': {
+	[MOB_IMAGES.dragonPoison]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DRAGONKIN,
+		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -252,10 +252,10 @@ mob.type = {
 		sfxIdle: 'dragon-idle',
 		sfxSpecial: 'dragon-special',
 	},
-	'dragon-frost': {
+	[MOB_IMAGES.dragonFrost]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DRAGONKIN,
+		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -270,10 +270,10 @@ mob.type = {
 		sfxIdle: 'dragon-idle',
 		sfxSpecial: 'dragon-special',
 	},
-	'dragon-plains': {
+	[MOB_IMAGES.dragonPlains]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DRAGONKIN,
+		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -288,10 +288,10 @@ mob.type = {
 		sfxIdle: 'dragon-idle',
 		sfxSpecial: 'dragon-special',
 	},
-	'dragon-water': {
+	[MOB_IMAGES.dragonWater]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DRAGONKIN,
+		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -306,10 +306,10 @@ mob.type = {
 		sfxIdle: 'dragon-idle',
 		sfxSpecial: 'dragon-special',
 	},
-	'dragon-forest': {
+	[MOB_IMAGES.dragonForest]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DRAGONKIN,
+		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -324,10 +324,10 @@ mob.type = {
 		sfxIdle: 'dragon-idle',
 		sfxSpecial: 'dragon-special',
 	},
-	'dragon-desert': {
+	[MOB_IMAGES.dragonDesert]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DRAGONKIN,
+		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -342,10 +342,10 @@ mob.type = {
 		sfxIdle: 'dragon-idle',
 		sfxSpecial: 'dragon-special',
 	},
-	ghoul: {
+	[MOB_IMAGES.ghoul]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.UNDEAD,
+		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -360,10 +360,10 @@ mob.type = {
 		sfxIdle: undefined,
 		sfxSpecial: 'ghoul-special',
 	},
-	mummy: {
+	[MOB_IMAGES.mummy]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.UNDEAD,
+		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -378,10 +378,10 @@ mob.type = {
 		sfxIdle: 'zombie-idle',
 		sfxSpecial: undefined,
 	},
-	skeleton: {
+	[MOB_IMAGES.skeleton]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.UNDEAD,
+		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -396,10 +396,10 @@ mob.type = {
 		sfxIdle: undefined,
 		sfxSpecial: 'skeleton-special',
 	},
-	'zombie': {
+	[MOB_IMAGES.zombie]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.UNDEAD,
+		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -414,10 +414,10 @@ mob.type = {
 		sfxIdle: 'zombie-idle',
 		sfxSpecial: undefined,
 	},
-	vampire: {
+	[MOB_IMAGES.vampire]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.UNDEAD,
+		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -432,10 +432,10 @@ mob.type = {
 		sfxIdle: 'vampire-attack',
 		sfxSpecial: 'vampire-special',
 	},
-	goblin: {
+	[MOB_IMAGES.goblin]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.HUMANOID,
+		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -450,10 +450,10 @@ mob.type = {
 		sfxIdle: 'goblin-attack',
 		sfxSpecial: 'goblin-special',
 	},
-	hobgoblin: {
+	[MOB_IMAGES.hobgoblin]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.HUMANOID,
+		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -468,10 +468,10 @@ mob.type = {
 		sfxIdle: 'rhino-idle',
 		sfxSpecial: undefined,
 	},
-	kobold: {
+	[MOB_IMAGES.kobold]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.HUMANOID,
+		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -486,10 +486,10 @@ mob.type = {
 		sfxIdle: 'werewolf-idle',
 		sfxSpecial: undefined,
 	},
-	orc: {
+	[MOB_IMAGES.orc]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.HUMANOID,
+		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -504,10 +504,10 @@ mob.type = {
 		sfxIdle: 'orc-idle',
 		sfxSpecial: undefined,
 	},
-	griffon: {
+	[MOB_IMAGES.griffon]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -522,10 +522,10 @@ mob.type = {
 		sfxIdle: 'griffon-idle',
 		sfxSpecial: 'griffon-special',
 	},
-	'harpy': {
+	[MOB_IMAGES.harpy]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -540,10 +540,10 @@ mob.type = {
 		sfxIdle: undefined,
 		sfxSpecial: 'harpy-special',
 	},
-	werewolf: {
+	[MOB_IMAGES.werewolf]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -558,10 +558,10 @@ mob.type = {
 		sfxIdle: 'werewolf-idle',
 		sfxSpecial: undefined,
 	},
-	centaur: {
+	[MOB_IMAGES.centaur]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -576,10 +576,10 @@ mob.type = {
 		sfxIdle: undefined,
 		sfxSpecial: undefined,
 	},
-	cerberus: {
+	[MOB_IMAGES.cerberus]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -594,10 +594,10 @@ mob.type = {
 		sfxIdle: 'cerberus-idle',
 		sfxSpecial: undefined,
 	},
-	fungoid: {
+	[MOB_IMAGES.fungoid]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.HUMANOID,
+		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -612,10 +612,10 @@ mob.type = {
 		sfxIdle: 'fungoid-idle',
 		sfxSpecial: 'fungoid-special',
 	},
-	gargoyle: {
+	[MOB_IMAGES.gargoyle]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -630,10 +630,10 @@ mob.type = {
 		sfxIdle: 'gargoyle-idle',
 		sfxSpecial: undefined,
 	},
-	beetle: {
+	[MOB_IMAGES.beetle]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -648,10 +648,10 @@ mob.type = {
 		sfxIdle: undefined,
 		sfxSpecial: undefined,
 	},
-	imp: {
+	[MOB_IMAGES.imp]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.DEMON,
+		mobType: MOB_TYPES.DEMON,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -666,10 +666,10 @@ mob.type = {
 		sfxIdle: 'imp-idle',
 		sfxSpecial: 'imp-attack',
 	},
-	minotaur: {
+	[MOB_IMAGES.minotaur]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -684,10 +684,10 @@ mob.type = {
 		sfxIdle: 'minotaur-idle',
 		sfxSpecial: undefined,
 	},
-	aviak: {
+	[MOB_IMAGES.aviak]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.HUMANOID,
+		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -702,10 +702,10 @@ mob.type = {
 		sfxIdle: undefined,
 		sfxSpecial: 'aviak-special',
 	},
-	elephant: {
+	[MOB_IMAGES.elephant]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -720,10 +720,10 @@ mob.type = {
 		sfxIdle: 'elephant-idle',
 		sfxSpecial: undefined,
 	},
-	lion: {
+	[MOB_IMAGES.lion]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -738,10 +738,10 @@ mob.type = {
 		sfxIdle: 'lion-idle',
 		sfxSpecial: undefined,
 	},
-	crocodile: {
+	[MOB_IMAGES.crocodile]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -756,10 +756,10 @@ mob.type = {
 		sfxIdle: undefined,
 		sfxSpecial: undefined,
 	},
-	rhino: {
+	[MOB_IMAGES.rhino]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -774,10 +774,10 @@ mob.type = {
 		sfxIdle: undefined,
 		sfxSpecial: undefined,
 	},
-	lioness: {
+	[MOB_IMAGES.lioness]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -792,10 +792,10 @@ mob.type = {
 		sfxIdle: 'lion-idle',
 		sfxSpecial: undefined,
 	},
-	bear: {
+	[MOB_IMAGES.bear]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -810,10 +810,10 @@ mob.type = {
 		sfxIdle: 'bear-idle',
 		sfxSpecial: undefined,
 	},
-	toadlok: {
+	[MOB_IMAGES.toadlok]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.HUMANOID,
+		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: .7,
@@ -828,10 +828,10 @@ mob.type = {
 		sfxIdle: 'toadlok-idle',
 		sfxSpecial: 'toadlok-special',
 	},
-	giant: {
+	[MOB_IMAGES.giant]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.GIANT,
+		mobType: MOB_TYPES.GIANT,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -846,10 +846,10 @@ mob.type = {
 		sfxIdle: 'giant-idle',
 		sfxSpecial: undefined,
 	},
-	'ice-giant': {
+	[MOB_IMAGES.iceGiant]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.GIANT,
+		mobType: MOB_TYPES.GIANT,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -864,10 +864,10 @@ mob.type = {
 		sfxIdle: 'giant-idle',
 		sfxSpecial: undefined,
 	},
-	'fire-giant': {
+	[MOB_IMAGES.fireGiant]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.GIANT,
+		mobType: MOB_TYPES.GIANT,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -882,10 +882,10 @@ mob.type = {
 		sfxIdle: 'giant-idle',
 		sfxSpecial: undefined,
 	},
-	spectre: {
+	[MOB_IMAGES.spectre]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.UNDEAD,
+		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -900,10 +900,10 @@ mob.type = {
 		sfxIdle: 'spectre-idle',
 		sfxSpecial: undefined,
 	},
-	angler: {
+	[MOB_IMAGES.angler]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.HUMANOID,
+		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -918,10 +918,10 @@ mob.type = {
 		sfxIdle: 'angler-attack',
 		sfxSpecial: undefined,
 	},
-	'evil-eye': {
+	[MOB_IMAGES.evilEye]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -936,10 +936,10 @@ mob.type = {
 		sfxIdle: 'evil-eye-idle',
 		sfxSpecial: undefined,
 	},
-	unicorn: {
+	[MOB_IMAGES.unicorn]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.MYSTICAL,
+		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
@@ -954,10 +954,10 @@ mob.type = {
 		sfxIdle: 'unicorn-idle',
 		sfxSpecial: undefined,
 	},
-	scorpion: {
+	[MOB_IMAGES.scorpion]: {
 		hp: 1,
 		armor: .8,
-		mobType: MOB_TYPE.BEAST,
+		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,

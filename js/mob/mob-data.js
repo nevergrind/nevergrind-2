@@ -1,7 +1,7 @@
 mob.data = {}
 mob.data[ZONES.salubrinHaven] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -10,7 +10,7 @@ mob.data[ZONES.salubrinHaven] = [
 		traits: [], // champ traits
 	},
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc trainee',
 		minLevel: 2,
 		maxLevel: 3,
@@ -19,7 +19,7 @@ mob.data[ZONES.salubrinHaven] = [
 		traits: [], // champ traits
 	},
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc initiate',
 		minLevel: 3,
 		maxLevel: 4,
@@ -28,8 +28,8 @@ mob.data[ZONES.salubrinHaven] = [
 		traits: [], // champ traits
 	},
 	{
-		img: 'orc',
-		name: 'orc',
+		img: MOB_IMAGES.orc,
+		name: MOB_IMAGES.orc,
 		minLevel: 5,
 		maxLevel: 6,
 		size: .75,
@@ -37,7 +37,7 @@ mob.data[ZONES.salubrinHaven] = [
 		traits: [], // champ traits
 	},
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc shaman',
 		minLevel: 3,
 		maxLevel: 5,
@@ -46,7 +46,7 @@ mob.data[ZONES.salubrinHaven] = [
 		traits: [], // champ traits
 	},
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc centurion',
 		minLevel: 3,
 		maxLevel: 5,
@@ -55,7 +55,7 @@ mob.data[ZONES.salubrinHaven] = [
 		traits: [], // champ traits
 	},
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc legionnaire',
 		minLevel: 6,
 		maxLevel: 7,
@@ -64,7 +64,7 @@ mob.data[ZONES.salubrinHaven] = [
 		traits: [], // champ traits
 	},
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc shaman elder',
 		minLevel: 6,
 		maxLevel: 8,
@@ -72,22 +72,139 @@ mob.data[ZONES.salubrinHaven] = [
 		job: JOB.SHAMAN,
 		traits: [], // champ traits
 	},
-	// champs
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
+		name: 'orc shaman elder',
+		minLevel: 6,
+		maxLevel: 8,
+		size: .8,
+		job: JOB.SHAMAN,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.snake,
+		name: 'snake',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .7,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.snake,
+		name: 'large snake',
+		minLevel: 3,
+		maxLevel: 4,
+		size: .8,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.snake,
+		name: 'giant snake',
+		minLevel: 5,
+		maxLevel: 7,
+		size: .9,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.spider,
+		name: 'cave spiderling',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .3,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.spider,
+		name: 'cave spider',
+		minLevel: 3,
+		maxLevel: 5,
+		size: .5,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.spider,
+		name: 'giant cave spider',
+		minLevel: 6,
+		maxLevel: 8,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.wolf,
+		name: 'wolf pup',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .65,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.wolf,
+		name: 'young wolf',
+		minLevel: 3,
+		maxLevel: 4,
+		size: .8,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.wolf,
+		name: 'cave wolf',
+		minLevel: 5,
+		maxLevel: 7,
+		size: .9,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.scorpion,
+		name: 'small scorpion',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .4,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.scorpion,
+		name: 'scorpion',
+		minLevel: 3,
+		maxLevel: 5,
+		size: .6,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	{
+		img: MOB_IMAGES.scorpion,
+		name: 'large scorpion',
+		minLevel: 6,
+		maxLevel: 8,
+		size: .8,
+		job: JOB.WARRIOR,
+		traits: [], // champ traits
+	},
+	// uniques
+	{
+		img: MOB_IMAGES.orc,
 		name: 'Sergeant Boggun',
 		minLevel: 7,
 		maxLevel: 8,
 		size: 1,
 		job: JOB.WARRIOR,
-		tier: MOB_TIERS.champion,
+		tier: MOB_TIERS.unique,
 		questOnly: true,
 		traits: [], // champ traits
 	},
 ]
 mob.data[ZONES.tendolinPassage] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -95,10 +212,11 @@ mob.data[ZONES.tendolinPassage] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.greenthornCavern] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -106,10 +224,11 @@ mob.data[ZONES.greenthornCavern] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.lanfeldRefuge] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -117,10 +236,11 @@ mob.data[ZONES.lanfeldRefuge] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.rivenGrotto] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -128,10 +248,11 @@ mob.data[ZONES.rivenGrotto] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.bastilleCitadel] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -139,10 +260,11 @@ mob.data[ZONES.bastilleCitadel] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.kordataCove] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -150,10 +272,11 @@ mob.data[ZONES.kordataCove] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.sylongSanctuary] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -161,10 +284,11 @@ mob.data[ZONES.sylongSanctuary] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.thuleCrypt] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -172,10 +296,11 @@ mob.data[ZONES.thuleCrypt] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.templeOfPrenssor] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -183,10 +308,11 @@ mob.data[ZONES.templeOfPrenssor] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.fahlnirCitadel] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -194,10 +320,11 @@ mob.data[ZONES.fahlnirCitadel] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.anuranRuins] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -205,10 +332,11 @@ mob.data[ZONES.anuranRuins] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.galeblastFortress] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -216,10 +344,11 @@ mob.data[ZONES.galeblastFortress] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]
 mob.data[ZONES.ashenflowPeak] = [
 	{
-		img: 'orc',
+		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
 		minLevel: 1,
 		maxLevel: 2,
@@ -227,4 +356,5 @@ mob.data[ZONES.ashenflowPeak] = [
 		job: JOB.WARRIOR,
 		traits: [], // champ traits
 	},
+	// uniques
 ]

@@ -8,7 +8,7 @@ const config = {
 	guaranteedLoot: false,
 	deathEnabled: true,
 	walkFast: true,
-	defaultZone: 3,
+	defaultZone: 0, // id in zones.js
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
 }

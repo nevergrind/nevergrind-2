@@ -1,5 +1,5 @@
 mobs.images = {
-	'balrog': {
+	[MOB_IMAGES.balrog]: {
 		imgW: 2000,
 		imgH: 1200,
 		imgCy: 360,
@@ -21,7 +21,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'ice-golem': {
+	[MOB_IMAGES.iceGolem]: {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 360,
@@ -43,7 +43,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'stone-golem': {
+	[MOB_IMAGES.stoneGolem]: {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 360,
@@ -65,7 +65,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'iron-golem': {
+	[MOB_IMAGES.ironGolem]: {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 360,
@@ -87,7 +87,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'treant': {
+	[MOB_IMAGES.treant]: {
 		imgW: 1300,
 		imgH: 1200,
 		imgCy: 420,
@@ -109,7 +109,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'spider': {
+	[MOB_IMAGES.spider]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 190,
@@ -131,7 +131,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'wolf': {
+	[MOB_IMAGES.wolf]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 240,
@@ -153,7 +153,7 @@ mobs.images = {
 		enableSecondary: false,
 		enableSpecial: true
 	},
-	'rat': {
+	[MOB_IMAGES.rat]: {
 		imgW: 1100,
 		imgH: 1000,
 		imgCy: 135,
@@ -175,7 +175,7 @@ mobs.images = {
 		enableSecondary: false,
 		enableSpecial: true
 	},
-	snake: {
+	[MOB_IMAGES.snake]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 160,
@@ -197,7 +197,7 @@ mobs.images = {
 		enableSecondary: false,
 		enableSpecial: true
 	},
-	dragonkin: {
+	[MOB_IMAGES.dragonkin]: {
 		imgW: 1300,
 		imgH: 1300,
 		imgCy: 340,
@@ -219,7 +219,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'lizardman': {
+	[MOB_IMAGES.lizardman]: {
 		imgW: 1100,
 		imgH: 1000,
 		imgCy: 350,
@@ -241,7 +241,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'dragon': {
+	[MOB_IMAGES.dragon]: {
 		imgW: 3000,
 		imgH: 1500,
 		imgCy: 240,
@@ -263,7 +263,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'dragon-fire': {
+	[MOB_IMAGES.dragonFire]: {
 		imgW: 2900,
 		imgH: 1500,
 		imgCy: 240,
@@ -285,7 +285,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'dragon-poison': {
+	[MOB_IMAGES.dragonPoison]: {
 		imgW: 2500,
 		imgH: 1500,
 		imgCy: 240,
@@ -307,7 +307,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'dragon-frost': {
+	[MOB_IMAGES.dragonFrost]: {
 		imgW: 2900,
 		imgH: 1500,
 		imgCy: 240,
@@ -329,7 +329,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'dragon-plains': {
+	[MOB_IMAGES.dragonPlains]: {
 		imgW: 3000,
 		imgH: 1500,
 		imgCy: 240,
@@ -351,7 +351,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'dragon-water': {
+	[MOB_IMAGES.dragonWater]: {
 		imgW: 3000,
 		imgH: 1500,
 		imgCy: 240,
@@ -373,7 +373,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'dragon-forest': {
+	[MOB_IMAGES.dragonForest]: {
 		imgW: 3000,
 		imgH: 1500,
 		imgCy: 240,
@@ -395,7 +395,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'dragon-desert': {
+	[MOB_IMAGES.dragonDesert]: {
 		imgW: 3000,
 		imgH: 1500,
 		imgCy: 240,
@@ -417,7 +417,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'ghoul': {
+	[MOB_IMAGES.ghoul]: {
 		imgW: 900,
 		imgH: 1000,
 		imgCy: 350,
@@ -439,7 +439,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'mummy': {
+	[MOB_IMAGES.mummy]: {
 		imgW: 800,
 		imgH: 1000,
 		imgCy: 370,
@@ -461,7 +461,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'skeleton': {
+	[MOB_IMAGES.skeleton]: {
 		imgW: 900,
 		imgH: 1000,
 		imgCy: 340,
@@ -483,7 +483,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'zombie': {
+	[MOB_IMAGES.zombie]: {
 		imgW: 900,
 		imgH: 1000,
 		imgCy: 400,
@@ -505,7 +505,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: false
 	},
-	'vampire': {
+	[MOB_IMAGES.vampire]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 350,
@@ -527,7 +527,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'goblin': {
+	[MOB_IMAGES.goblin]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 250,
@@ -549,7 +549,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'hobgoblin': {
+	[MOB_IMAGES.hobgoblin]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 340,
@@ -571,7 +571,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'kobold': {
+	[MOB_IMAGES.kobold]: {
 		imgW: 1400,
 		imgH: 1000,
 		imgCy: 230,
@@ -593,7 +593,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	orc: {
+	[MOB_IMAGES.orc]: {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 340,
@@ -615,7 +615,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	griffon: {
+	[MOB_IMAGES.griffon]: {
 		imgW: 2000,
 		imgH: 1200,
 		imgCy: 250,
@@ -637,7 +637,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'harpy': {
+	[MOB_IMAGES.harpy]: {
 		imgW: 1500,
 		imgH: 1000,
 		imgCy: 290,
@@ -659,7 +659,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'werewolf': {
+	[MOB_IMAGES.werewolf]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 260,
@@ -681,7 +681,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'centaur': {
+	[MOB_IMAGES.centaur]: {
 		imgW: 1500,
 		imgH: 1000,
 		imgCy: 330,
@@ -704,7 +704,7 @@ mobs.images = {
 		enableSpecial: true
 	},
 	// dont like the cerberus
-	'cerberus': {
+	[MOB_IMAGES.cerberus]: {
 		imgW: 1800,
 		imgH: 1200,
 		imgCy: 300,
@@ -726,7 +726,7 @@ mobs.images = {
 		enableSecondary: false,
 		enableSpecial: true
 	},
-	'fungoid': {
+	[MOB_IMAGES.fungoid]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 340,
@@ -748,7 +748,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'gargoyle': {
+	[MOB_IMAGES.gargoyle]: {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 300,
@@ -770,7 +770,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'beetle': {
+	[MOB_IMAGES.beetle]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 210,
@@ -792,7 +792,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'imp': {
+	[MOB_IMAGES.imp]: {
 		imgW: 1250,
 		imgH: 1000,
 		imgCy: 200,
@@ -814,7 +814,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'minotaur': {
+	[MOB_IMAGES.minotaur]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 380,
@@ -836,7 +836,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'aviak': {
+	[MOB_IMAGES.aviak]: {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 290,
@@ -858,7 +858,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'elephant': {
+	[MOB_IMAGES.elephant]: {
 		imgW: 1300,
 		imgH: 1000,
 		imgCy: 330,
@@ -880,7 +880,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'lion': {
+	[MOB_IMAGES.lion]: {
 		imgW: 900,
 		imgH: 1200,
 		imgCy: 300,
@@ -902,7 +902,7 @@ mobs.images = {
 		enableSecondary: false,
 		enableSpecial: true
 	},
-	'crocodile': {
+	[MOB_IMAGES.crocodile]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 120,
@@ -924,7 +924,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'rhino': {
+	[MOB_IMAGES.rhino]: {
 		imgW: 1200,
 		imgH: 1200,
 		imgCy: 275,
@@ -946,7 +946,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: false
 	},
-	'lioness': {
+	[MOB_IMAGES.lioness]: {
 		imgW: 900,
 		imgH: 1200,
 		imgCy: 300,
@@ -968,7 +968,7 @@ mobs.images = {
 		enableSecondary: false,
 		enableSpecial: true
 	},
-	'bear': {
+	[MOB_IMAGES.bear]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 260,
@@ -990,7 +990,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'toadlok': {
+	[MOB_IMAGES.toadlok]: {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 200,
@@ -1012,7 +1012,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'giant': {
+	[MOB_IMAGES.giant]: {
 		imgW: 1400,
 		imgH: 1200,
 		imgCy: 480,
@@ -1034,7 +1034,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'ice-giant': {
+	[MOB_IMAGES.iceGiant]: {
 		imgW: 1400,
 		imgH: 1200,
 		imgCy: 480,
@@ -1056,7 +1056,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'fire-giant': {
+	[MOB_IMAGES.fireGiant]: {
 		imgW: 1400,
 		imgH: 1200,
 		imgCy: 480,
@@ -1078,7 +1078,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'spectre': {
+	[MOB_IMAGES.spectre]: {
 		imgW: 1500,
 		imgH: 1500,
 		imgCy: 455,
@@ -1100,7 +1100,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'angler': {
+	[MOB_IMAGES.angler]: {
 		imgW: 1500,
 		imgH: 1200,
 		imgCy: 235,
@@ -1122,7 +1122,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'evil-eye': {
+	[MOB_IMAGES.evilEye]: {
 		imgW: 1200,
 		imgH: 1000,
 		imgCy: 240,
@@ -1144,7 +1144,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'unicorn': {
+	[MOB_IMAGES.unicorn]: {
 		imgW: 2000,
 		imgH: 1200,
 		imgCy: 280,
@@ -1166,7 +1166,7 @@ mobs.images = {
 		enableSecondary: true,
 		enableSpecial: true
 	},
-	'scorpion': {
+	[MOB_IMAGES.scorpion]: {
 		imgW: 1000,
 		imgH: 1000,
 		imgCy: 135,
@@ -1189,8 +1189,8 @@ mobs.images = {
 		enableSpecial: true
 	},
 	/*'cyclops': {
-		imgW: Thousand,
-		imgH: Thousand,
+		imgW: 1000,
+		imgH: 1000,
 		imgCy: 135,
 		width: 600,
 		height: 600,

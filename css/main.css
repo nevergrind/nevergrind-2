@@ -1235,13 +1235,16 @@ background-clip: content-box;
 	text-indent: .2rem;
 	font-size: .9rem;
 	line-height: 1.2;
+}
+.player-resource-column {
+	justify-content: space-around;
 	transition: background .2s ease-out;
 }
-.bar-hp-name:hover {
-	background: #025;
+.player-resource-column:hover {
+	background: #0258;
 }
-.bar-hp-name:active {
-	background: #048;
+.player-resource-column:active {
+	background: #0488;
 	transition: none;
 }
 .bar-any-wrap {
@@ -2606,6 +2609,7 @@ background-repeat: no-repeat;
 	z-index: 2;
 }
 .loot-row {
+	opacity: 0;
 	margin-top: .5rem;
 }
 .loot-cancel,
@@ -3277,8 +3281,10 @@ background-repeat: no-repeat;
 	z-index: 1;
 }
 .merchant-btn {
+	display: flex;
+	align-items: center;
 	margin: 0 .2rem;
-	padding: .25rem 1.5rem;
+	padding: 0 1.5rem;
 	border: .1rem ridge gold;
 	filter: hue-rotate(350deg) saturate(3);
 	cursor: url('cursor/buy.png'), pointer!important;

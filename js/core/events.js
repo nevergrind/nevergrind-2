@@ -67,7 +67,7 @@
 			.on('click', '.mission-quest-item', mission.clickQuest)
 			.on('click', '#mission-embark', mission.embark)
 			// bars
-			.on('click', '.bar-hp-name', bar.targetPlayer)
+			.on('click', '.player-resource-column', bar.handlePlayerClick)
 
 	}
 
@@ -180,6 +180,7 @@
 			// literally in any view
 			if (key === 'Escape') { // ESC
 				if (item.dragType) item.resetDrop()
+				else if (my.target >= 0) my.targetCleared()
 				else bar.toggleOptions()
 			}
 			else if (key === ' ') bar.optionsClose()

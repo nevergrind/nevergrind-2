@@ -40,7 +40,7 @@ var bar;
 		charStatColOneHtml,
 		charStatColTwoHtml,
 		updateAllResistsDOM,
-		targetPlayer,
+		handlePlayerClick,
 		defaultImage: [
 			'helms1',
 			'amulets0',
@@ -892,7 +892,8 @@ var bar;
 			'<img id="bar-avatar-'+ index +'" class="bar-avatar" src="'+ player.avatar +'">' +
 		'</div>' +
 		// bars
-		'<div class="flex-column '+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +'" style="justify-content: space-around">' +
+		'<div id="player-resource-'+ index +'" '+
+			'class="flex-column '+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +' player-resource-column">' +
 			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis text-shadow3 '+ (player.isLeader ? 'chat-gold' : '') +'">'+
 				(player.name || '') +
 			'</div>' +
@@ -1139,12 +1140,15 @@ var bar;
 		'</div>'
 	}
 
-	function targetPlayer() {
-		if (ng.view === 'dungeon' || ng.view === 'battle') {
+	/**
+	 * player clicked
+	 */
+	function handlePlayerClick() {
+		if (ng.view === 'dungeon' ||
+			ng.view === 'battle') {
 			const id = +this.id.split('-')[2]
 			const index = party.getIndexByRow(id)
-			console.info('id', id, index)
-			my.partyTarget(index)
+			my.partyTarget(index, false)
 		}
 
 	}
