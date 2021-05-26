@@ -22,7 +22,7 @@ mobSkills = {};
 		chillPlayerEffectRx,
 		freezePlayerEffectRx,
 		// misc
-		modifyMobStatsByTier,
+		modifyMobStatsByTierAndTraits,
 		modifyMobStatsByClass,
 		getRandomSkillByJob,
 		// mob skills
@@ -870,66 +870,6 @@ mobSkills = {};
 		// adjusts value based on what it is at max level
 		return config.level * val / mob.maxLevel
 	}
-	function modifyMobStatsByTier(config) {
-		let multi = {
-			hp: 1,
-			attack: 1,
-			gold: 1,
-			expPerLevel: 1,
-			int: 1,
-			size: 1,
-		}
-		if (config.tier === MOB_TIERS.champion) {
-			multi = {
-				hp: 2,
-				attack: 1.2,
-				gold: 1.5,
-				expPerLevel: 1.5,
-				int: 1.2,
-				size: 1.1,
-			}
-		}
-		else if (config.tier === MOB_TIERS.conqueror) {
-			multi = {
-				hp: 3,
-				attack: 1.4,
-				gold: 1.75,
-				expPerLevel: 1.75,
-				int: 1.4,
-				size: 1.2,
-			}
-		}
-		else if (config.tier === MOB_TIERS.unique) {
-			multi = {
-				hp: 4,
-				attack: 1.25,
-				gold: 2.5,
-				expPerLevel: 2,
-				int: 1.25,
-				size: 1,
-			}
-		}
-		else if (config.tier === MOB_TIERS.boss) {
-			multi = {
-				hp: 12,
-				attack: 3,
-				gold: 5,
-				expPerLevel: 2,
-				int: 3,
-				size: 1,
-			}
-		}
-		for (var key in multi) {
-			if (key === 'size') {
-				config[key] = (config[key] * multi[key])
-			}
-			else {
-				config[key] = ~~(config[key] * multi[key])
-			}
-		}
-
-		config.hpMax = config.hp
-	}
 	function modifyMobStatsByClass(config) {
 		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR
 		// base resources
@@ -1036,7 +976,125 @@ mobSkills = {};
 			config.int = ~~(config.int * 1.3)
 			if (config.level >= 22) config.dodge = getValueByLevel(config, 5)
 		}
-		config.hpMax = config.hp
+	}
+
+	function modifyMobStatsByTierAndTraits(config) {
+		// multiplies the base amounts set by mob type
+		let multi = getTierBase(config)
+		multi = modifyByTraits(multi, config)
+
+		// calculate new config values
+		for (var key in multi) {
+			config[key] = config[key] * multi[key]
+		}
+	}
+	function getTierBase(config) {
+		if (config.tier === MOB_TIERS.champion) {
+			return {
+				hp: 3,
+				attack: 1.2,
+				gold: 1.5,
+				expPerLevel: 2,
+				int: 1.2,
+				size: 1.1,
+			}
+		}
+		else if (config.tier === MOB_TIERS.unique) {
+			return {
+				hp: 4,
+				attack: 1.25,
+				gold: 2.5,
+				expPerLevel: 2,
+				int: 1.25,
+				size: 1,
+			}
+		}
+		else if (config.tier === MOB_TIERS.boss) {
+			return {
+				hp: 20,
+				attack: 3,
+				gold: 5,
+				expPerLevel: 3,
+				int: 3,
+				size: 1,
+			}
+		}
+		else {
+			return {
+				hp: 1,
+				attack: 1,
+				gold: 1,
+				expPerLevel: 1,
+				int: 1,
+				size: 1,
+			}
+		}
+	}
+	function modifyByTraits(multi, config) {
+		console.info('modifyByTraits', _.cloneDeep(config))
+		if (config.traits.brute) {
+			multi.attack = 2
+		}
+		if (config.traits.frenzied) {
+			// in code
+		}
+		if (config.traits.tough) {
+			multi.hp = 6
+		}
+		if (config.traits.deadEye) {
+			// in code
+		}
+		if (config.traits.nimble) {
+			// in code
+		}
+		if (config.traits.soulDrain) {
+			// in code
+		}
+		if (config.traits.spiritDrain) {
+			// in code
+		}
+		if (config.traits.dauntless) {
+			// in code
+		}
+		if (config.traits.bloodlusted) {
+			// regen in code
+			config.resist.blood -= .5
+		}
+		if (config.traits.magister) {
+			multi.int = 2
+			config.resist.poison -= .33
+			config.resist.blood -= .33
+			config.resist.arcane -= .33
+			config.resist.lightning -= .33
+			config.resist.fire -= .33
+			config.resist.ice -= .33
+		}
+		if (config.traits.poisonEnchanted) {
+			// damage bonus in code
+			config.resist.poison -= .75
+		}
+		if (config.traits.lightningEnchanted) {
+			// damage bonus in code
+			config.resist.lightning -= .75
+		}
+		if (config.traits.fireEnchanted) {
+			// damage bonus in code
+			config.resist.fire -= .75
+		}
+		if (config.traits.iceEnchanted) {
+			// damage bonus in code
+			config.resist.ice -= .75
+		}
+
+		// impose limits on resist values
+		if (config.tier === MOB_TIERS.champion) {
+			for (var key in config.resist) {
+				if (config.resist < .25) config.resist = .25
+			}
+		}
+		console.info('modifyByTraits multi', _.cloneDeep(multi))
+		console.info('modifyByTraits config', _.cloneDeep(config))
+		return multi
 	}
 	// EFFECTS MOBS TO PLAYERS
 

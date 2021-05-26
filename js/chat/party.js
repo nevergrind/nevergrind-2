@@ -12,6 +12,7 @@ var party;
 			'#0dd',
 			'#a0f',
 		],
+		combatStartLength: 1,
 		maxPlayers: 5,
 		damage: {},
 		getUniquePartyChannel,

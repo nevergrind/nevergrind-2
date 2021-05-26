@@ -3,7 +3,7 @@
  * this will help you centralize settings instead of searching throughout the code
  * @type {{deathEnabled: boolean, defaultZone: number, walkFast: boolean}}
  */
-const config = {
+const Config = {
 	consoleDisabled: false,
 	guaranteedLoot: false,
 	deathEnabled: true,
@@ -11,4 +11,6 @@ const config = {
 	defaultZone: 0, // id in zones.js
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
+	forceUnique: true,
+	forceChampion: false,
 }

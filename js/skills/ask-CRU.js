@@ -19,7 +19,8 @@
 
 	function zealousSlam(o) {
 		ask.explosion({index: o.index, key: 'burst-default'}, {
-			sizeEnd: 350,
+			sizeEnd: 250,
+			duration: .32
 		})
 		o.endFrame = 3
 		ask.explosion(o, {

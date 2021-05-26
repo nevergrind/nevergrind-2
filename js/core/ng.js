@@ -318,7 +318,7 @@ var ng;
 		.on('click', '#title-select-down', decrementCharacter)
 	///////////////////////////////
 	function init() {
-		if (config.consoleDisabled) {
+		if (Config.consoleDisabled) {
 			console.debug = console.log = console.warn = console.info = ng.noop
 		}
 		$.ajaxSetup({
@@ -843,8 +843,7 @@ var ng;
 	function getArticle(index, capitalize) {
 		article = ''
 		if (mobs[index].type === MOB_TIERS.normal ||
-			mobs[index].type === MOB_TIERS.champion ||
-			mobs[index].type === MOB_TIERS.conqueror) {
+			mobs[index].type === MOB_TIERS.champion) {
 			article = vowels.includes(mobs[index].name[0]) ? 'an' : 'a'
 		}
 		if (capitalize) article = _.capitalize(article)

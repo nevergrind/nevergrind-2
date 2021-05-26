@@ -12,12 +12,12 @@ var quests;
 	quests = [
 		// Salubrin Haven Quests
 		{
-			level: 1,
+			level: 1, // quest level
 			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
 			imgIndex: 1,
-			maxLevel: 1,
+			maxLevel: 1, // max mob level
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.salubrinHaven,

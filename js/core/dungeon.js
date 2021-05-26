@@ -71,7 +71,7 @@ var dungeon;
 		totalTiles: MAX_TILES,
 		distanceEnd: GRID_SIZE * MAX_TILES,
 		hallwayLength: GRID_SIZE * HALLWAY_TILE_LENGTH,
-		distancePerSecond: config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .2,
+		distancePerSecond: Config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .2,
 		walkTween: TweenMax.to('#body', 0, {}),
 		centerY,
 		go,

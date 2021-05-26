@@ -17,15 +17,18 @@
 	///////////////////////////////////////////
 
 	function shieldBash(o) {
-		ask.explosion({index: o.index, key: 'burst-default'})
+		ask.explosion({index: o.index, key: 'burst-default'}, {
+			sizeEnd: 250,
+			duration: .32
+		})
 		o.endFrame = 2
-		ask.explosion(_.clone(o), {
+		ask.explosion(o, {
 			contrastStart: 1.5,
 			brightnessStart: 2,
 			sizeStart: 100,
 			sizeEnd: 300,
-			duration: .8,
-			frameDuration: .8,
+			duration: .32,
+			frameDuration: .32,
 			frameEase: Power0.easeIn,
 		})
 		audio.playSound('hit-shield', 'combat', audio.getVolume(o.row))

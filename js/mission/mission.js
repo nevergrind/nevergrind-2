@@ -211,7 +211,7 @@ var mission;
 			if (!app.isApp && !mission.id) {
 				// setup some mission data
 				mission.inProgress = true
-				mission.id = config.defaultZone
+				mission.id = Config.defaultZone
 			}
 			var data = {
 				route: 'p->embarkReceived',

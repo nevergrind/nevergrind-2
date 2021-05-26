@@ -22,7 +22,10 @@
 	///////////////////////////////////////////
 
 	function shadowBreak(o) {
-		ask.explosion({index: o.index, key: 'burst-purple'})
+		ask.explosion({index: o.index, key: 'burst-purple'}, {
+			sizeEnd: 250,
+			duration: .32
+		})
 		o.endFrame = 3
 		ask.explosion(o, {
 			contrastStart: 1.3,

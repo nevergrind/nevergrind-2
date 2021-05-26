@@ -720,7 +720,7 @@ var combat;
 		if (type === PROP.HP) {
 			if (my.hp <= 0) {
 				// death
-				if (config.deathEnabled) selfDied()
+				if (Config.deathEnabled) selfDied()
 				else my.set(PROP.HP, my.hpMax) // testing
 			}
 		}
@@ -748,7 +748,7 @@ var combat;
 				return d
 			}
 			// check miss
-			// NOTE: Only auto attack can miss
+			// NOTE: Only mob's auto attack can miss
 			if (d.key === 'autoAttack' &&
 				rand() < mob.missChance(index)) {
 

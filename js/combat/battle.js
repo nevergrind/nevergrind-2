@@ -1,5 +1,5 @@
 var battle;
-(function(TweenMax, $, _, PIXI, Linear, undefined) {
+(function(TweenMax, $, _, PIXI, Linear, Object, undefined) {
 	battle = {
 		layer: {},
 		lastBuffAlreadyActive: false,
@@ -145,9 +145,9 @@ var battle;
 		my.exp += exp
 		if (exp) {
 			chat.log('You earned experience!', 'chat-exp')
-			battle.drawExpBar()
 		}
 		while (my.exp >= nextLevel()) {
+			// you leveled! Wow! (possibly multiple times if you cheated!?)
 			mob.leveledUp = leveled = true
 			my.level++
 			chat.log('You have reached level ' + my.level + '!', 'chat-level')
@@ -161,6 +161,10 @@ var battle;
 				mob.updateMobName(i)
 			}
 			battle.updateTarget()
+		}
+		if (exp) {
+			// must be down here in case they leveled
+			battle.drawExpBar()
 		}
 		return exp
 	}
@@ -297,6 +301,7 @@ var battle;
 		combat.targetChanged()
 		my.fixTarget()
 		battle.updateTarget()
+		party.combatStartLength = party.totalPlayers()
 
 		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer() && !isRespawn) {
 			console.info('p->goBattle txData!', mob.txData)
@@ -384,41 +389,67 @@ var battle;
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
 			let q = {
-				level: 1
+				level: quests[mission.id].maxLevel
 			}
 			for (i=0; i<totalMobs; i++) {
-				const maxLevel = quests[mission.id].maxLevel
-				const minLevel = ~~(maxLevel * .75)
+				const maxLevel = q.level
+				const minLevel = Math.max(1, ~~(maxLevel * .7))
+				let tierLotto = _.random(1, 100)
 				q = {
 					// img: [MOB_IMAGES.orc],
 					level: _.random(minLevel, maxLevel)
 				}
-				if (i === 0) {
-					mobSlot = 2
-					// THE BOSS
-					if (dungeon.map.rooms[map.roomId].boss) {
+
+				if (dungeon.map.rooms[map.roomId].boss) {
+					// boss room logic
+					if (i === 0) {
+						mobSlot = 2
 						q.name = quests[mission.id].bossName
+					}
+					else {
+						mobSlot = _.random(0, availableSlots.length - 1)
+						// cannot alter q here - must be a regular mob
 					}
 				}
 				else {
-					mobSlot = _.random(0, availableSlots.length - 1)
+					if (i) mobSlot = _.random(0, availableSlots.length - 1)
+					else mobSlot = 2
+					// is it a unique?
+					if (maxLevel >= 5 &&
+						tierLotto === 100 || Config.forceUnique) {
+						q.tier = MOB_TIERS.unique
+					}
+
+					// is it a champion?
 				}
 				// tries to find by name first and then by img
 				let mobConfig = {
-					...mob.getRandomMobByZone(q),
+					traits: {},
 					expPerLevel: 3,
+					...mob.getRandomMobByZone(q),
 				}
 
-				// MOB_TIERS - add champion, conqueror, unique, boss traits
-				if (!mobConfig.tier) {
-					// no tier from mob.data - calculate odds of random champ, conqueror, unique
+				// MOB_TIERS - add champion, unique, boss traits
+				if (!Config.forceUnique &&
+					tierLotto >= 97 &&
+					tierLotto <= 99 &&
+					maxLevel >= 5) {
+					// is champion - get random key
+					// TODO: For now this only supports one total trait
+					mobConfig.tier = MOB_TIERS.champion
+					if (_.size(mobConfig.traits) === 0) {
+						mobConfig.traits[getChampionKey()] = true
+					}
 				}
 
-				console.info('setupMobs', mobConfig)
+				console.info('setupMobs', _.cloneDeep(mobConfig))
 				mob.setMob(availableSlots[mobSlot], mobConfig)
 				_.remove(availableSlots, val => val === availableSlots[mobSlot])
 			}
 		}
+	}
+	function getChampionKey() {
+		return _.sample(Object.keys(MOB_TRAITS))
 	}
 	function getRandomMobCount() {
 		return _.random(battle.getMinMobCount(), battle.getMaxMobCount())
@@ -481,7 +512,7 @@ var battle;
 					name: mobs[my.target].name,
 					tier: mobs[my.target].tier,
 					hp: ceil(100 - bar.getRatio(PROP.HP, mobs[my.target])),
-					traits: getMobTargetTraitHtml(),
+					traits: getMobTargetTierAndTraitsHtml(),
 					buffs: getMobTargetBuffsHtml(),
 				}
 			}
@@ -515,7 +546,7 @@ var battle;
 			mob.drawMobBar(my.target, drawInstant)
 		}
 	}
-	function getMobTargetTraitHtml() {
+	function getMobTargetTierAndTraitsHtml() {
 		// remove trailing s from value
 		if (typeof mobs[my.target].img === 'undefined') return
 		// mobType + type e.g. Humanoid Champion
@@ -939,4 +970,4 @@ var battle;
 			battleSceneInitialized = true
 		}
 	}
-})(TweenMax, $, _, PIXI, Linear);
+})(TweenMax, $, _, PIXI, Linear, Object);

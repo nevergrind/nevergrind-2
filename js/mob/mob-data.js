@@ -7,7 +7,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.orc,
@@ -16,7 +15,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 3,
 		size: .7,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.orc,
@@ -25,7 +23,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 4,
 		size: .8,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.orc,
@@ -34,7 +31,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 6,
 		size: .75,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.orc,
@@ -43,7 +39,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 5,
 		size: .75,
 		job: JOB.SHAMAN,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.orc,
@@ -52,7 +47,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 5,
 		size: .8,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.orc,
@@ -61,7 +55,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 7,
 		size: .9,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.orc,
@@ -70,7 +63,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 8,
 		size: .8,
 		job: JOB.SHAMAN,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.orc,
@@ -79,7 +71,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 8,
 		size: .8,
 		job: JOB.SHAMAN,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.snake,
@@ -88,7 +79,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 2,
 		size: .7,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.snake,
@@ -97,7 +87,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 4,
 		size: .8,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.snake,
@@ -106,7 +95,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 7,
 		size: .9,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.spider,
@@ -115,7 +103,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 2,
 		size: .3,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.spider,
@@ -124,7 +111,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 5,
 		size: .5,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.spider,
@@ -133,7 +119,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 8,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.wolf,
@@ -142,7 +127,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.wolf,
@@ -151,7 +135,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 4,
 		size: .8,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.wolf,
@@ -160,7 +143,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 7,
 		size: .9,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.scorpion,
@@ -169,7 +151,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 2,
 		size: .4,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.scorpion,
@@ -178,7 +159,6 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 5,
 		size: .6,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	{
 		img: MOB_IMAGES.scorpion,
@@ -187,9 +167,19 @@ mob.data[ZONES.salubrinHaven] = [
 		maxLevel: 8,
 		size: .8,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.orc,
+		name: 'Peon Snuffy',
+		minLevel: 1,
+		maxLevel: 1,
+		size: .5,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { brute: true },
+	},
+	// quest mobs
 	{
 		img: MOB_IMAGES.orc,
 		name: 'Sergeant Boggun',
@@ -199,7 +189,7 @@ mob.data[ZONES.salubrinHaven] = [
 		job: JOB.WARRIOR,
 		tier: MOB_TIERS.unique,
 		questOnly: true,
-		traits: [], // champ traits
+		traits: { brute: true },
 	},
 ]
 mob.data[ZONES.tendolinPassage] = [
@@ -210,7 +200,6 @@ mob.data[ZONES.tendolinPassage] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -222,7 +211,6 @@ mob.data[ZONES.greenthornCavern] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -234,7 +222,6 @@ mob.data[ZONES.lanfeldRefuge] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -246,7 +233,6 @@ mob.data[ZONES.rivenGrotto] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -258,7 +244,6 @@ mob.data[ZONES.bastilleCitadel] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -270,7 +255,6 @@ mob.data[ZONES.kordataCove] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -282,7 +266,6 @@ mob.data[ZONES.sylongSanctuary] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -294,7 +277,6 @@ mob.data[ZONES.thuleCrypt] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -306,7 +288,6 @@ mob.data[ZONES.templeOfPrenssor] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -318,7 +299,6 @@ mob.data[ZONES.fahlnirCitadel] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -330,7 +310,6 @@ mob.data[ZONES.anuranRuins] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -342,7 +321,6 @@ mob.data[ZONES.galeblastFortress] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]
@@ -354,7 +332,6 @@ mob.data[ZONES.ashenflowPeak] = [
 		maxLevel: 2,
 		size: .65,
 		job: JOB.WARRIOR,
-		traits: [], // champ traits
 	},
 	// uniques
 ]

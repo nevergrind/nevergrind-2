@@ -127,7 +127,7 @@ let mobs = [];
 			fire: 1,
 			ice: 1,
 		},
-		traits: [],
+		traits: {},
 		isDead: false,
 	}
 	let mobSpeed = 1
@@ -239,6 +239,7 @@ let mobs = [];
 	 */
 	function getRandomMobByZone(q, zoneName) {
 		if (typeof zoneName === 'undefined') {
+			// current zone
 			zoneName = zones[mission.id].name
 		}
 		let results = []
@@ -248,8 +249,23 @@ let mobs = [];
 				mob.data[zoneName].find(m => m.name === q.name)
 			]
 		}
-		else {
-			// get random mob by level
+		else if (q.tier) {
+			// by tier (unique) - must be within the mob range
+			results = mob.data[zoneName].filter(m =>
+				!m.questOnly &&
+				m.tier === q.tier &&
+				m.minLevel <= q.level && q.level <= m.maxLevel
+			)
+			console.info('q', q)
+			console.info('results', results)
+			if (results.length) {
+				results = [_.sample(results)]
+			}
+		}
+		console.info('results', results)
+		// does this in case the tier query doesn't find a mob in the level range
+		if (!results.length || uniqueMobAlreadyExists(results)) {
+			// normal mob - get random mob by level
 			results = mob.data[zoneName].filter(m => {
 				let valid = false
 				if (m.questOnly) {
@@ -257,8 +273,7 @@ let mobs = [];
 				}
 				if (q.level && q.img) {
 					if (m.img === q.img &&
-						m.minLevel <= q.level &&
-						q.level <= m.maxLevel) {
+						m.minLevel <= q.level && q.level <= m.maxLevel) {
 						valid = true
 					}
 					else valid = false
@@ -290,13 +305,24 @@ let mobs = [];
 			})
 		}
 
-		const randomMob = results[_.random(0, results.length - 1)]
+		const randomMob = _.sample(results)
 		console.info('results', results)
 		console.info('randomMob', randomMob)
 		return {
 			...MOB_BASE_CONFIG,
 			...randomMob,
 		}
+	}
+
+	/**
+	 * Returns true if array contains unique mob that is already in combat
+	 * @param results
+	 * @returns {boolean}
+	 */
+	function uniqueMobAlreadyExists(results) {
+		return results.length &&
+			results[0].tier === MOB_TIERS.unique &&
+			mobs.filter(m => m.name === results[0].name).length > 0
 	}
 	function getMobGold(config) {
 		goldFound = 0
@@ -311,9 +337,8 @@ let mobs = [];
 	}
 	function getMobExp(index) {
 		let exp = mobs[index].level * mobs[index].expPerLevel
-		let totalPlayers = party.totalPlayers()
-		exp = exp * totalPlayers
-		if (totalPlayers === 5) exp = exp * 1.1 // 10% exp bonus for a full group
+		exp = exp * party.combatStartLength
+		if (party.combatStartLength === 5) exp = exp * 1.1 // 10% exp bonus for a full group
 
 		// adjusted for being too high or low level
 		let ratioIndex = combat.getLevelDifferenceIndex(mobs[index].level)
@@ -349,9 +374,10 @@ let mobs = [];
 			}
 			// mob class
 			mobSkills.modifyMobStatsByClass(mobConfig)
-			// mob tier
-			mobSkills.modifyMobStatsByTier(mobConfig)
-			// mob traits
+			// mob tier, traits
+			mobSkills.modifyMobStatsByTierAndTraits(mobConfig)
+			// post-processing on config
+			mobConfig.hpMax = mobConfig.hp
 
 			// console.info('mobConfig omit some props?', mobConfig)
 			mob.txData[i] = _.omit(mobConfig, KEYS.MOB_OMIT)
@@ -364,6 +390,7 @@ let mobs = [];
 			...mobs.images[mobConfig.img],
 			...mobConfig,
 		}
+		console.info('mobConfig', _.cloneDeep(mobConfig))
 		console.info('setMob', _.cloneDeep(mobs[i]))
 		// start attack cycle
 		timers.mobAttack[i].kill()
@@ -831,7 +858,7 @@ let mobs = [];
 		// TODO: Does this create too much network strain? maybe not?
 		if (mob.enableMobHeartbeat && my.isLeader) {
 			tickData = []
-			mobs.forEach((m,i) => {
+			mobs.forEach((m, i) => {
 				processMobResourceTick(m, i, tickData)
 			})
 			if (tickData.length) {
@@ -844,7 +871,7 @@ let mobs = [];
 		//////////////////////////////
 	}
 	function processMobResourceTick(m, index, tickData) {
-		if (m.level >= 6 &&
+		if (m.level >= 5 &&
 			mob.isAlive(index) &&
 			timers.mobEffects[index].freezeDuration === 0 &&
 			!isPoisoned(index)) {

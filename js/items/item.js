@@ -902,8 +902,7 @@ var loot = {};
 	 */
 	const tierMap = {
 		[MOB_TIERS.normal]: 0,
-		[MOB_TIERS.champion]: 2,
-		[MOB_TIERS.conqueror]: 4,
+		[MOB_TIERS.champion]: 3,
 		[MOB_TIERS.unique]: 10,
 		[MOB_TIERS.boss]: 7,
 	}
@@ -913,7 +912,6 @@ var loot = {};
 
 	const guaranteedLootTiers = [
 		MOB_TIERS.champion,
-		MOB_TIERS.conqueror,
 		MOB_TIERS.unique,
 		MOB_TIERS.boss
 	]
@@ -1107,8 +1105,7 @@ var loot = {};
 		if (tier === MOB_TIERS.normal) {
 			resp = rand > .93 ? 1 : 0
 		}
-		else if (tier === MOB_TIERS.champion ||
-			tier === MOB_TIERS.conqueror) {
+		else if (tier === MOB_TIERS.champion) {
 			resp = 2
 		}
 		else if (tier === MOB_TIERS.unique) {
@@ -1122,7 +1119,7 @@ var loot = {};
 			else if (rand > .025) resp = 5
 			else resp = 6
 		}
-		if (config.guaranteedLoot &&
+		if (Config.guaranteedLoot &&
 			resp < 1) {
 			resp = 1
 		}

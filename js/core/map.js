@@ -151,7 +151,7 @@ let map;
 		// console.info('room', room)
 		let el = createElement('img')
 		el.id = 'room-' + room.id
-		if (config.showMapNumbers) {
+		if (Config.showMapNumbers) {
 			el.innerHTML = room.id
 		}
 		el.className = 'mini-map-entity map-room'
@@ -185,7 +185,7 @@ let map;
 		// console.info('hallway', hallway)
 		let el = createElement('div')
 		el.id = 'hallway-' + hallway.id
-		if (config.showMapNumbers) {
+		if (Config.showMapNumbers) {
 			el.innerHTML = hallway.id
 		}
 		if (hallway.width === 16) el.className = 'mini-map-entity map-hallway map-hallway-y'
