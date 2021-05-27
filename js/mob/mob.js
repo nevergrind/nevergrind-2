@@ -256,13 +256,13 @@ let mobs = [];
 				m.tier === q.tier &&
 				m.minLevel <= q.level && q.level <= m.maxLevel
 			)
-			console.info('q', q)
-			console.info('results', results)
+			/*console.info('q', q)
+			console.info('results', results)*/
 			if (results.length) {
 				results = [_.sample(results)]
 			}
 		}
-		console.info('results', results)
+		// console.info('results', results)
 		// does this in case the tier query doesn't find a mob in the level range
 		if (!results.length || uniqueMobAlreadyExists(results)) {
 			// normal mob - get random mob by level
@@ -390,7 +390,7 @@ let mobs = [];
 			...mobs.images[mobConfig.img],
 			...mobConfig,
 		}
-		console.info('mobConfig', _.cloneDeep(mobConfig))
+		// console.info('mobConfig', _.cloneDeep(mobConfig))
 		console.info('setMob', _.cloneDeep(mobs[i]))
 		// start attack cycle
 		timers.mobAttack[i].kill()
@@ -871,20 +871,28 @@ let mobs = [];
 		//////////////////////////////
 	}
 	function processMobResourceTick(m, index, tickData) {
-		if (m.level >= 5 &&
-			mob.isAlive(index) &&
-			timers.mobEffects[index].freezeDuration === 0 &&
-			!isPoisoned(index)) {
-			// hp
-			hpTick = m.level
-			if (m.hp + hpTick > m.hpMax) {
-				hpTick = m.hpMax - m.hp
+		if (mob.isAlive(index)) {
+			hpTick = m.traits.bloodlusted ? m.level * 3 : 0
+			// console.info('hpTick', hpTick)
+			if (m.level >= 5 &&
+				timers.mobEffects[index].freezeDuration === 0 &&
+				!isPoisoned(index)) {
+				// hp
+				hpTick = m.level
+				// console.info('sending hpTick:', hpTick)
 			}
-			// console.info('sending hpTick:', hpTick)
-			tickData.push({
-				i: index,
-				h: hpTick,
-			})
+			if (hpTick) {
+				if (m.hp + hpTick > m.hpMax) {
+					hpTick = m.hpMax - m.hp
+				}
+				if (hpTick) {
+					tickData.push({
+						i: index,
+						h: hpTick,
+					})
+				}
+			}
+
 		}
 	}
 	function rxMobResourceTick(data) {
@@ -921,7 +929,7 @@ let mobs = [];
 		})
 	}
 	function missChance(index) {
-		chance = .2
+		chance = mobs[index].traits.deadEye ? .05 : .2
 		if (my.level > mobs[index].level) {
 			chance += ((my.level - mobs[index].level) / 150)
 		}
@@ -941,7 +949,8 @@ let mobs = [];
 	}
 	function dodgeChance(index) {
 		chance = mobs[index].dodge
-		// console.info('dodgeChance 1', chance)
+		if (mobs[index].traits.nimble) chance += 20
+		// console.info('dodgeChance', chance)
 		if (mobs[index].buffFlags.flashStrike) chance -= buffs.flashStrike.debuffDodge[skill.ROG.getHighestFlashPowder(index)]
 		if (chance < 0) chance = 0
 		// console.info('dodgeChance 2', chance)

@@ -931,7 +931,7 @@ var loot = {};
 		// unique bonuses are halved
 		var uniqueRand = randBase + (bonus * .5)
 
-		console.info('getRarity', bonus, rand);
+		// console.info('getRarity', bonus, rand);
 		if (uniqueRand >= 98) {
 			resp = 'unique'
 		}

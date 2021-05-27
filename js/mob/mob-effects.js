@@ -23,7 +23,7 @@ var mobEffects;
 				ease: Linear.easeNone,
 			})
 			mob.setFilter(i)
-			console.info('mob stasis!', i)
+			// console.info('mob stasis!', i)
 		}
 	}
 	function stun(i, duration) {

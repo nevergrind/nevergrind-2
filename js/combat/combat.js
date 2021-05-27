@@ -85,7 +85,11 @@ var combat;
 	let leechHp = 0
 	let wraithMp = 0
 	let vulpineMp = 0
+	let drainMp = 0
+	let totalMpChange = 0
 	let vulpineSp = 0
+	let drainSp = 0
+	let totalSpChange = 0
 	let mobArmor = 1
 	let blockMsg = ''
 	let hate = 0
@@ -482,6 +486,37 @@ var combat;
 		}
 	}
 
+	/**
+	 * modifies duration of buffs for dauntless mobs
+	 * @param duration
+	 * @param buff
+	 * @returns {*}
+	 */
+	function modifyBuffDuration(buff) {
+		console.info('modifyBuffDuration b4', buff.duration, buff)
+		if (mobs[buff.i].traits.dauntless) {
+			if (buff.key === 'stun' ||
+				buff.key === 'fear') {
+				buff.duration *= .5
+			}
+		}
+
+		if (mobs[buff.i].traits.lightningEnchanted) {
+			if (buff.key === 'paralyze') {
+				buff.duration *= .5
+			}
+		}
+
+		if (mobs[buff.i].traits.iceEnchanted) {
+			if (buff.key === 'chill' ||
+				buff.key === 'freeze') {
+				buff.duration *= .5
+			}
+		}
+		console.info('modifyBuffDuration after', buff.duration)
+		return buff
+	}
+
 	let damageData
 	function txDamageMob(damages) {
 		// console.info('txDamageMob b4', damages, damages[0].damage)
@@ -522,7 +557,10 @@ var combat;
 				damages: damageArr.map(dam => _.pick(dam, KEYS.DAMAGE_MOB))
 			}
 			// optionally adds buffs key if it exists
-			if (buffArr.length) damageData.buffs = buffArr
+			if (buffArr.length) {
+				damageData.buffs = buffArr
+				damageData.buffs.forEach(modifyBuffDuration)
+			}
 			// console.warn('txDamageMob: ', _.cloneDeep(damageData))
 			socket.publish('party' + my.partyId, damageData)
 
@@ -873,12 +911,37 @@ var combat;
 		if (!d.ticks) combat.levelSkillCheck(PROP.DEFENSE)
 		return d
 	}
+	function enhanceMobSpellDamage(index, hit) {
+		if (hit.damageType === DAMAGE_TYPE.POISON) {
+			if (mobs[index].traits.poisonEnchanted) {
+				hit.damage *= 2
+			}
+		}
+		else if (hit.damageType === DAMAGE_TYPE.LIGHTNING) {
+			if (mobs[index].traits.lightningEnchanted) {
+				hit.damage *= 2
+			}
+		}
+		else if (hit.damageType === DAMAGE_TYPE.FIRE) {
+			if (mobs[index].traits.fireEnchanted) {
+				hit.damage *= 2
+			}
+		}
+		else if (hit.damageType === DAMAGE_TYPE.ICE) {
+			if (mobs[index].traits.iceEnchanted) {
+				hit.damage *= 2
+			}
+		}
+		return hit
+	}
 	function txDamageHero(index, damages) {
 		// damages is an object with indices that point to player row (target)
 		// TODO: Single player mode should bypass publishes everywhere...? lots of work
 		if (party.presence[0].isLeader) {
 			if (!Array.isArray(damages)) damages = [damages]
-			// console.info('tx', damages)
+			damages = damages.map(dam => {
+				return enhanceMobSpellDamage(index, dam)
+			})
 			socket.publish('party' + my.partyId, {
 				route: 'p->hit',
 				i: index,
@@ -1215,23 +1278,29 @@ var combat;
 			})
 			// only do this stuff if it hits me
 			if (totalDamage > 0) {
+				const obj = {
+					hp: my.hp,
+					hpMax: my.hpMax,
+				}
 				animatePlayerFramesBg()
 				audio.playerHit(totalDamage, 0)
 				// damageTakenToMana vulpineMp
-				vulpineMp += totalDamage * (stats.damageTakenToMana() / resourceLeechDivider)
-				if (vulpineMp >= 1) {
-					updateMyResource(PROP.MP, ~~vulpineMp)
+				vulpineMp += ~~(totalDamage * (stats.damageTakenToMana() / resourceLeechDivider))
+				drainMp = mobs[index].traits.soulDrain ? totalDamage : 0
+				totalMpChange = vulpineMp - drainMp
+				if (totalMpChange !== 0) {
+					updateMyResource(PROP.MP, totalMpChange)
 					vulpineMp = vulpineMp % 1
 				}
-				vulpineSp += totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider)
-				if (vulpineSp >= 1) {
-					updateMyResource(PROP.SP, ~~vulpineSp)
+				// damageTakenToSpirit - sp drain
+				vulpineSp += ~~(totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider))
+				drainSp = mobs[index].traits.spiritDrain ? totalDamage : 0
+				totalSpChange = vulpineSp - drainSp
+				if (totalSpChange !== 0) {
+					updateMyResource(PROP.SP, totalSpChange)
 					vulpineSp = vulpineSp % 1
 				}
-				game.txPartyResources({
-					hp: my.hp,
-					hpMax: my.hpMax,
-				})
+				game.txPartyResources(obj)
 			}
 		}
 	}

@@ -75,6 +75,7 @@ mobSkills = {};
 		initFilter,
 		WAR: [
 			{ chance: .07, key: 'slam' }, // STUN
+			/*{ chance: .5, key: 'venomBolt' },*/ // TEST
 		],
 		CRU: [
 			{ chance: .05, key: 'slam' },
@@ -992,10 +993,10 @@ mobSkills = {};
 		if (config.tier === MOB_TIERS.champion) {
 			return {
 				hp: 3,
-				attack: 1.2,
+				attack: 1.25,
 				gold: 1.5,
 				expPerLevel: 2,
-				int: 1.2,
+				int: 1.5,
 				size: 1.1,
 			}
 		}
@@ -1005,7 +1006,7 @@ mobSkills = {};
 				attack: 1.25,
 				gold: 2.5,
 				expPerLevel: 2,
-				int: 1.25,
+				int: 1.5,
 				size: 1,
 			}
 		}
@@ -1031,37 +1032,27 @@ mobSkills = {};
 		}
 	}
 	function modifyByTraits(multi, config) {
-		console.info('modifyByTraits', _.cloneDeep(config))
+		// console.info('modifyByTraits', _.cloneDeep(config))
 		if (config.traits.brute) {
-			multi.attack = 2
+			multi.attack = 2.5
 		}
 		if (config.traits.frenzied) {
-			// in code
+			config.speed *= .7
 		}
 		if (config.traits.tough) {
-			multi.hp = 6
-		}
-		if (config.traits.deadEye) {
-			// in code
-		}
-		if (config.traits.nimble) {
-			// in code
-		}
-		if (config.traits.soulDrain) {
-			// in code
-		}
-		if (config.traits.spiritDrain) {
-			// in code
-		}
-		if (config.traits.dauntless) {
-			// in code
+			if (config.tier === MOB_TIERS.champion) multi.hp = 6
+			else if (config.tier === MOB_TIERS.unique) multi.hp = 8
+			else if (config.tier === MOB_TIERS.boss) multi.hp = 20
+			else multi.hp = 4 // ????
 		}
 		if (config.traits.bloodlusted) {
-			// regen in code
 			config.resist.blood -= .5
 		}
 		if (config.traits.magister) {
-			multi.int = 2
+			if (config.tier === MOB_TIERS.champion) multi.int = 3
+			else if (config.tier === MOB_TIERS.unique) multi.int = 3
+			else if (config.tier === MOB_TIERS.boss) multi.int = 6
+			else multi.int = 3
 			config.resist.poison -= .33
 			config.resist.blood -= .33
 			config.resist.arcane -= .33
@@ -1092,8 +1083,8 @@ mobSkills = {};
 				if (config.resist < .25) config.resist = .25
 			}
 		}
-		console.info('modifyByTraits multi', _.cloneDeep(multi))
-		console.info('modifyByTraits config', _.cloneDeep(config))
+		/*console.info('modifyByTraits multi', _.cloneDeep(multi))
+		console.info('modifyByTraits config', _.cloneDeep(config))*/
 		return multi
 	}
 	// EFFECTS MOBS TO PLAYERS

@@ -346,7 +346,7 @@ var battle;
 		combat.updateCanvasLayer()
 	}
 	function setupMobs(config) {
-		console.info('setupMobs', config)
+		// console.info('setupMobs', config)
 		if (typeof config === 'object') {
 			console.warn('FOLLOWER SETUP MOBS')
 			// followers
@@ -557,10 +557,12 @@ var battle;
 		'</div>'
 		// traits
 		traitHtml = []
-		mobs[my.target].traits.length && mobs[my.target].traits.forEach(trait => {
-			traitHtml.push('<div class="mob-trait">' + trait + '</div>')
-		})
-		return tierHtml + traitHtml.join('<div class="trait-pipe"></div>')
+		for (var traitKey in mobs[my.target].traits) {
+			traitHtml.push('<div class="mob-trait">' + MOB_TRAITS[traitKey] + '</div>')
+		}
+		return tierHtml + '<div id="trait-row-wrap">' +
+			traitHtml.join('<div class="trait-pipe"></div>') +
+			'</div>'
 	}
 	function getMobTargetBuffsHtml() {
 		buffHtml = ''
@@ -592,6 +594,7 @@ var battle;
 			let buffKeyRow = buff.key + '-' + buff.row
 			// is duration dynamically specified?
 			let duration = buff.duration || buffs[buff.key].duration
+			// handle dauntless duration adjustments
 			// console.info('processBuffs duration', buff)
 			if (mobBuffTimerExists(buff.i, buffKeyRow)) {
 				mobs[buff.i].buffs[buffKeyRow].timer.kill()
