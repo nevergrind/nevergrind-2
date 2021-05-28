@@ -11,6 +11,6 @@ const Config = {
 	defaultZone: 0, // id in zones.js
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
-	forceUnique: true,
+	forceUnique: false,
 	forceChampion: false,
 }

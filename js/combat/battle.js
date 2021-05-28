@@ -394,9 +394,8 @@ var battle;
 			for (i=0; i<totalMobs; i++) {
 				const maxLevel = q.level
 				const minLevel = Math.max(1, ~~(maxLevel * .7))
-				let tierLotto = _.random(1, 100)
+				const tierLotto = _.random(1, 100)
 				q = {
-					// img: [MOB_IMAGES.orc],
 					level: _.random(minLevel, maxLevel)
 				}
 
@@ -412,11 +411,25 @@ var battle;
 					}
 				}
 				else {
-					if (i) mobSlot = _.random(0, availableSlots.length - 1)
-					else mobSlot = 2
+					if (i) {
+						mobSlot = _.random(0, availableSlots.length - 1)
+					}
+					else {
+						mobSlot = 2
+						// add hallway query data for main mob only
+						if (!map.inRoom) {
+							// add hallway query for 0 index only
+							const entityProps = getNearestHallwayEntity()
+							dungeon.mobKeys.forEach(key => {
+								if (entityProps[key]) {
+									q[key] = entityProps[key]
+								}
+							})
+							console.info('entityProps', entityProps)
+						}
+					}
 					// is it a unique?
-					if (maxLevel >= 5 &&
-						tierLotto === 100 || Config.forceUnique) {
+					if (mob.isUniqueTier(tierLotto)) {
 						q.tier = MOB_TIERS.unique
 					}
 
@@ -431,6 +444,7 @@ var battle;
 
 				// MOB_TIERS - add champion, unique, boss traits
 				if (!Config.forceUnique &&
+					q.tier === MOB_TIERS.normal &&
 					tierLotto >= 97 &&
 					tierLotto <= 99 &&
 					maxLevel >= 5) {
@@ -447,6 +461,18 @@ var battle;
 				_.remove(availableSlots, val => val === availableSlots[mobSlot])
 			}
 		}
+	}
+	function getNearestHallwayEntity() {
+		const aliveEntitiesInHallway = dungeon.map.hallways[map.hallwayId].entities.filter(e => e.isAlive)
+		let entity = {}
+		if (map.compass < 2) {
+			// north/east
+			entity = _.first(aliveEntitiesInHallway)
+		} else {
+			// south/west
+			entity = _.last(aliveEntitiesInHallway)
+		}
+		return entity
 	}
 	function getChampionKey() {
 		return _.sample(Object.keys(MOB_TRAITS))

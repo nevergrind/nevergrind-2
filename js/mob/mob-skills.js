@@ -85,80 +85,80 @@ mobSkills = {};
 		],
 		SHD: [
 			{ chance: .05, key: 'slam' },
-			{ chance: .11, key: 'bloodTerror' }, // FEAR
-			{ chance: .16, key: 'decayingDoom' }, // ARMOR
-			{ chance: 0, key: 'harmTouch' },
+			{ chance: .11, key: 'bloodTerror' }, // BLOOD - FEAR
+			{ chance: .16, key: 'decayingDoom' }, // ARCANE - ARMOR
+			{ chance: 0, key: 'harmTouch' }, // VOID
 		],
 		MNK: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .09, key: 'craneKick' },
-			{ chance: .17, key: 'hadoken' },
-			{ chance: .25, key: 'dragonPunch' },
+			{ chance: .17, key: 'hadoken' }, // ARCANE
+			{ chance: .25, key: 'dragonPunch' }, // FIRE
 		],
 		ROG: [
 			{ chance: .05, key: 'slam', },
 			{ chance: .15, key: 'backstab' },
-			{ chance: .25, key: 'widowStrike' },
+			{ chance: .25, key: 'widowStrike' }, // POISON
 		],
 		RNG: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .09, key: 'trueshotStrike' },
-			{ chance: .15, key: 'burningEmbers' }, // ARMOR
-			{ chance: .19, key: 'shockNova' },
+			{ chance: .15, key: 'burningEmbers' }, // FIRE ARMOR
+			{ chance: .19, key: 'shockNova' }, // LIGHTNING
 		],
 		BRD: [ // should boost regen and resists too?
 			{ chance: .05, key: 'slam', },
-			{ chance: .14, key: 'bellow' },
-			{ chance: .2, key: 'creepingChords' }, // PARALYZE
+			{ chance: .14, key: 'bellow' }, // ARCANE
+			{ chance: .2, key: 'creepingChords' }, // LIGHTNING PARALYZE
 		],
 		DRU: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .13, key: 'starfire' },
-			{ chance: .19, key: 'lightningBlast' }, // SILENCE?
-			{ chance: .24, key: 'blizzard' }, // CHILL?
-			{ chance: 0, key: 'naturesTouch', maxHeal: 2 },
+			{ chance: .13, key: 'starfire' }, // FIRE
+			{ chance: .19, key: 'lightningBlast' }, // LIGHTNING SILENCE?
+			{ chance: .24, key: 'blizzard' }, // ICE CHILL?
+			{ chance: 0, key: 'naturesTouch', maxHeal: 2 }, // ARCANE
 		],
 		CLR: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .15, key: 'smite' },
-			{ chance: .2, key: 'forceOfGlory' }, // STUN?
+			{ chance: .15, key: 'smite' }, // ARCANE
+			{ chance: .2, key: 'forceOfGlory' }, // ARCANE STUN?
 			{ chance: 0, key: 'divineLight', maxHeal: 3 },
 		],
 		SHM: [
 			{ chance: .03, key: 'slam', },
-			{ chance: .13, key: 'frostRift' }, // CHILL
-			{ chance: .18, key: 'scourge' },
-			{ chance: .24, key: 'affliction' },
+			{ chance: .13, key: 'frostRift' }, // ICE CHILL
+			{ chance: .18, key: 'scourge' }, // BLOOD
+			{ chance: .24, key: 'affliction' }, // POISON
 			{ chance: 0, key: 'mysticalGlow', maxHeal: 2 },
 		],
 		WLK: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .08, key: 'venomBolt' },
-			{ chance: .16, key: 'engulfingDarkness' },
-			{ chance: .24, key: 'bloodFire' },
-			{ chance: .3, key: 'panicStrike' }, // FEAR
+			{ chance: .08, key: 'venomBolt' }, // POISON
+			{ chance: .16, key: 'engulfingDarkness' }, // POISON
+			{ chance: .24, key: 'bloodFire' }, // FIRE
+			{ chance: .3, key: 'panicStrike' }, // ARCANE FEAR
 		],
 		ENC: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .08, key: 'gravityFlux' }, // STUN (brief)
-			{ chance: .14, key: 'mindBlitz' }, // SILENCE?
-			{ chance: .24, key: 'staticSuffocation' }, // PARALYZE
-			{ chance: .3, key: 'subversion' },
+			{ chance: .08, key: 'gravityFlux' }, // ARCANE STUN (brief)
+			{ chance: .14, key: 'mindBlitz' }, // ARCANE SILENCE?
+			{ chance: .24, key: 'staticSuffocation' }, // LIGHTNING PARALYZE
+			{ chance: .3, key: 'subversion' }, // POISON
 		],
 		TMP: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .09, key: 'lavaBolt', },
-			{ chance: .16, key: 'staticStorm' }, // SILENCE?
-			{ chance: .23, key: 'arclight' }, // PARALYZE
-			{ chance: .3, key: 'glacialSpike' }, // CHILL?
+			{ chance: .09, key: 'lavaBolt', }, // FIRE
+			{ chance: .16, key: 'staticStorm' }, // LIGHTNING SILENCE?
+			{ chance: .23, key: 'arclight' }, // LIGHTNING PARALYZE
+			{ chance: .3, key: 'glacialSpike' }, // ICE CHILL?
 		],
 		WIZ: [
 			{ chance: .02, key: 'slam', },
-			{ chance: .07, key: 'fireBolt' },
-			{ chance: .13, key: 'iceBolt' }, // CHILL
-			{ chance: .19, key: 'magicMissiles' }, // SILENCE
-			{ chance: .25, key: 'lightningBolt' }, // PARALYZE
-			{ chance: .3, key: 'fireball' },
+			{ chance: .07, key: 'fireBolt' }, // FIRE
+			{ chance: .13, key: 'iceBolt' }, // ICE CHILL
+			{ chance: .19, key: 'magicMissiles' }, // ARCANE SILENCE
+			{ chance: .25, key: 'lightningBolt' }, // LIGHTNING PARALYZE
+			{ chance: .3, key: 'fireball' }, // FIRE
 		],
 	}
 	let row

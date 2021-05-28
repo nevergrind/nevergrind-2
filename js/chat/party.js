@@ -242,8 +242,8 @@ var party;
 		 * @param p
 		 */
 		function reviveAlly(p) {
-			console.warn('reviveAlly!', p.row, p)
 			if (p.hp <= 0) {
+				console.warn('reviveAlly!', p.row, p)
 				p.isDead = false
 				if (p.row === my.row) {
 					console.info('isPartyWipe', isPartyWipe)

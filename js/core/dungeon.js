@@ -28,6 +28,11 @@ var dungeon;
 		}
 	]
 	dungeon = {
+		mobKeys: [
+			'img',
+			'tier',
+			'size'
+		],
 		suppressDoorAudio: true,
 		walkSoundInterval: 0,
 		initialized: 0,
@@ -105,7 +110,7 @@ var dungeon;
 	}
 	let blurValue = 0
 	const CLOSEST_MOB_DISTANCE = -200
-	const MOB_DUNGEON_SIZE = 1
+	const MOB_DUNGEON_SIZE = 1.6 // this should equate to about scale 1 in combat (?)
 	const MAX_BLUR = 3
 	$('#scene-dungeon')
 		.on('mousedown', handleClickDungeon)
@@ -333,11 +338,18 @@ var dungeon;
 			h.entities = []
 			for (var i=0; i<mobLen; i++) {
 				if (Math.random() > .33) {
-					// TODO: Random from zone instead of hard-coded
+					const query = { level: _.random(
+						Math.max(1, ~~(quests[mission.id].maxLevel * .7)),
+						quests[mission.id].maxLevel
+					)}
+					if (mob.isUniqueTier(_.random(1, 100))) {
+						query.tier = MOB_TIERS.unique
+					}
+					let mobData = _.pick(mob.getRandomMobByZone(query, zones[mission.id].name), dungeon.mobKeys)
 					h.entities.push({
 						isAlive: true,
-						img: 'toadlok',
-						distance: _.random(MOB_DISTANCE[i].min, MOB_DISTANCE[i].max) * -1
+						distance: _.random(MOB_DISTANCE[i].min, MOB_DISTANCE[i].max) * -1,
+						...mobData
 					})
 				}
 			}
@@ -372,9 +384,22 @@ var dungeon;
 			}
 			// size and check offset
 			// ent.y = mobs.images[img].yPadding * MOB_DUNGEON_SIZE
+			console.info('entity size', entity.size)
 			TweenMax.set(ent.sprite, {
-				pixi: { scale: MOB_DUNGEON_SIZE }
+				pixi: { scale: MOB_DUNGEON_SIZE * entity.size }
 			})
+			function getEntityScale() {
+				const aliveEntitiesInHallway = dungeon.map.hallways[map.hallwayId].entities.filter(e => e.isAlive)
+				let entity = {}
+				if (map.compass < 2) {
+					// north/east
+					entity = _.first(aliveEntitiesInHallway)
+				} else {
+					// south/west
+					entity = _.last(aliveEntitiesInHallway)
+				}
+				return entity
+			}
 			// idle
 			let tween = getIdleTween()
 			ent.sprite.tween = TweenMax.to(tween,
@@ -398,7 +423,6 @@ var dungeon;
 		if (dungeon.entities[map.hallwayId].length) {
 			dungeon.closestEntity = dungeon.entities[map.hallwayId].reduce((acc, entity, index) => {
 				// higher number is closer (confusing)
-				// let distance = -dungeon.getEntityDistanceFromMe(index)
 				let distance = -entity.distance
 				if (map.compass >= 2) {
 					distance = dungeon.distanceEnd + entity.distance
@@ -430,7 +454,6 @@ var dungeon;
 		}
 
 		// room/battle checks
-		// console.info(dungeon.distanceCurrent, dungeon.distanceEnd, dungeon.closestEntity, -dungeon.getEntityDistanceFromMe(dungeon.closestEntityIndex))
 		if (dungeon.distanceCurrent <= 0) {
 			// go backwards to roomId
 			map.inRoom = true

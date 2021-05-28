@@ -2,6 +2,7 @@ var mob;
 let mobs = [];
 (function(TweenMax, $, _, Object, Linear,  PIXI, Sine, Power2, undefined) {
 	mob = {
+		isUniqueTier,
 		getMobImagesByZone,
 		getMobResist,
 		isAlive,
@@ -233,6 +234,16 @@ let mobs = [];
 	}
 
 	/**
+	 * Determines if a mob roll is a unique or not
+	 * @param rand
+	 * @returns {boolean}
+	 */
+	function isUniqueTier(rand) {
+		return quests[mission.id].maxLevel >= 5 && rand === 100 ||
+			Config.forceUnique
+	}
+
+	/**
 	 * filters zone's mobData and returns one mob in the level range
 	 * tries by name first and then by level
 	 * @type {*[]}
@@ -249,13 +260,9 @@ let mobs = [];
 				mob.data[zoneName].find(m => m.name === q.name)
 			]
 		}
-		else if (q.tier) {
-			// by tier (unique) - must be within the mob range
-			results = mob.data[zoneName].filter(m =>
-				!m.questOnly &&
-				m.tier === q.tier &&
-				m.minLevel <= q.level && q.level <= m.maxLevel
-			)
+		else if (q.tier === MOB_TIERS.unique) {
+			// by tier (random unique) - must be within the mob range
+			results = mob.data[zoneName].filter(isQuestMobWithinRange)
 			/*console.info('q', q)
 			console.info('results', results)*/
 			if (results.length) {
@@ -263,54 +270,73 @@ let mobs = [];
 			}
 		}
 		// console.info('results', results)
+
 		// does this in case the tier query doesn't find a mob in the level range
 		if (!results.length || uniqueMobAlreadyExists(results)) {
 			// normal mob - get random mob by level
-			results = mob.data[zoneName].filter(m => {
-				let valid = false
-				if (m.questOnly) {
-					valid = false
-				}
-				if (q.level && q.img) {
-					if (m.img === q.img &&
-						m.minLevel <= q.level && q.level <= m.maxLevel) {
-						valid = true
-					}
-					else valid = false
-				}
-				else if (q.level) {
-					if (m.minLevel <= q.level && q.level <= m.maxLevel) valid = true
-					else valid = false
-				}
-				else if (q.img) {
-					if (m.img === q.img) valid = true
-					else valid = false
-				}
-				return valid
-			})
+			results = mob.data[zoneName].filter(filterNormalMobs)
 		}
+
 		// no results? just in case..
 		if (!results.length) {
+			console.warn("THIS SHOULD NOT HAPPEN!")
 			results = [mob.data[zoneName][0]]
 		}
 
-		if (q.level) {
+		// post-processing
+		if (q.name || q.tier) {
+			// set random level based on range
+			// bosses, champs, uniques are set by mob, not by zone's average spread
+			results.forEach((r, i) => {
+				r.level = _.random(r.minLevel, r.maxLevel)
+			})
+		}
+		else {
+			// regular mob - set based on level
 			results.forEach((r, i) => {
 				results[i].level = q.level
 			})
 		}
-		else {
-			results.forEach((r, i) => {
-				results[i].level = _.random(r.minLevel, r.maxLevel)
-			})
-		}
 
 		const randomMob = _.sample(results)
-		console.info('results', results)
-		console.info('randomMob', randomMob)
+		/*console.info('results', results)
+		console.info('randomMob', randomMob)*/
 		return {
 			...MOB_BASE_CONFIG,
 			...randomMob,
+		}
+		///////////////////////////////
+		function isQuestMobWithinRange(m) {
+			return !m.questOnly &&
+			m.tier === q.tier &&
+			m.minLevel <= q.level && q.level <= m.maxLevel
+		}
+		function filterNormalMobs(m) {
+			if (m.tier || m.questOnly) {
+				// only should return normal mobs (no uniques or bosses)
+				return false
+			}
+			///////////////
+			let valid = false
+			if (q.level && q.img) {
+				// by level and img
+				if (m.img === q.img &&
+					m.minLevel <= q.level && q.level <= m.maxLevel) {
+					valid = true
+				}
+				else valid = false
+			}
+			else if (q.level) {
+				// by level only
+				if (m.minLevel <= q.level && q.level <= m.maxLevel) valid = true
+				else valid = false
+			}
+			else if (q.img) {
+				// by img only
+				if (m.img === q.img) valid = true
+				else valid = false
+			}
+			return valid
 		}
 	}
 
