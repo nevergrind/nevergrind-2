@@ -21,6 +21,7 @@ var mission;
 		getZoneKey,
 		getZoneImg,
 		isQuestCompleted,
+		getTitle,
 	};
 	var questHtml
 	var that = {}
@@ -46,7 +47,7 @@ var mission;
 			'<div id="mission-detail-col">'
 				if (party.presence[0].isLeader) {
 					questHtml += '<div id="mission-details">'+
-						'<div id="mission-title">'+ quests[mission.questId].title +'</div>' +
+						'<div id="mission-title">'+ mission.getTitle(mission.questId) +'</div>' +
 						'<div id="mission-level">'+ levelHtml() + '</div>' +
 					'</div>' +
 					'<div id="mission-embark" class="ng-btn">Embark!</div>'
@@ -77,12 +78,12 @@ var mission;
 	}
 	function getMissionRowHtml(z) {
 		var html = '';
-		zones[z.id].missions.forEach((questId, index) => {
+		zones[z.id].missions.forEach((quest, index) => {
 			const levelDiffClass = combat.considerClass[combat.getLevelDifferenceIndex(quests[index].level)]
 			html += '<div class="mission-quest-item ellipsis ' + levelDiffClass +'" '+
 				'data-id="'+ z.id +'" ' +
 				'data-quest="'+ index +'">' +
-				quests[index].title +
+				mission.getTitle(index) +
 			'</div>'
 		})
 
@@ -103,7 +104,7 @@ var mission;
 			mission.questId = questId
 			// console.info("zone name: ", zones[mission.id].name)
 			querySelector('#mission-preview').src = getZonePreviewImg(questId)
-			$("#mission-title").html(quests[mission.questId].title);
+			$("#mission-title").html(mission.getTitle(mission.questId));
 			querySelector('#mission-level').innerHTML = levelHtml()
 			audio.playSound('click-12')
 		}
@@ -248,12 +249,25 @@ var mission;
 			filter: 'brightness(0)',
 			ease: Power4.easeOut
 		})
-		ng.msg('Mission started: ' + quests[mission.questId].title)
+		ng.msg('Mission started: ' + mission.getTitle(mission.questId))
 		let questDelay = app.isApp ? 3 : 0
 		audio.playSound('click-4', '', 1, 500)
 		delayedCall(questDelay, dungeon.rxGo)
 	}
 	function isQuestCompleted() {
 		return !dungeon.map.rooms.find(r => r.boss).isAlive
+	}
+
+	/**
+	 * returns mission title based on mission id and quest type
+	 * @param id
+	 * @returns {string}
+	 */
+	function getTitle(id) {
+		console.info('getTitle', typeof id, id)
+		if (quests[id].type === QUEST_TYPES.kill) {
+			return 'Slay ' + quests[id].bossName
+		}
+		else return ''
 	}
 })(TweenMax, $, _);

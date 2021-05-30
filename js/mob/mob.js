@@ -239,7 +239,7 @@ let mobs = [];
 	 * @returns {boolean}
 	 */
 	function isUniqueTier(rand) {
-		return quests[mission.id].maxLevel >= 5 && rand === 100 ||
+		return quests[mission.id].level >= 5 && rand === 100 ||
 			Config.forceUnique
 	}
 

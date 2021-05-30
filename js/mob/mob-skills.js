@@ -1004,7 +1004,7 @@ mobSkills = {};
 			return {
 				hp: 4,
 				attack: 1.25,
-				gold: 2.5,
+				gold: 3,
 				expPerLevel: 2,
 				int: 1.5,
 				size: 1,

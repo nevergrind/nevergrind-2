@@ -12,56 +12,41 @@ var quests;
 	quests = [
 		// Salubrin Haven Quests
 		{
-			level: 1, // quest level
-			title: 'Kill Himber',
-			bossName: 'Himber',
+			level: 1, // quest level (controls min/max mobs, ambush), max mob level for this mission
+			bossName: QUEST_MOBS.peonHegug,
 			description: '',
-			imgIndex: 1,
-			maxLevel: 1, // max mob level
-			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
-			zone: ZONES.salubrinHaven,
-		},
-		{
-			level: 2,
-			title: 'Kill Fahesh',
-			bossName: 'Fahesh',
-			description: '',
-			imgIndex: 2,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
 			zone: ZONES.salubrinHaven,
 		},
 		{
 			level: 3,
-			title: 'Kill Umusaq',
-			bossName: 'Umusaq',
+			bossName: QUEST_MOBS.centurionShiloh,
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
 			zone: ZONES.salubrinHaven,
 		},
 		{
 			level: 5,
-			title: 'Kill Aslan',
-			bossName: 'Aslan',
+			bossName: QUEST_MOBS.prophetUrzoth,
 			description: '',
-			imgIndex: 2,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
 			zone: ZONES.salubrinHaven,
 		},
 		{
 			level: 7,
-			title: 'Kill Gaurav',
-			bossName: 'Gaurav',
+			bossName: QUEST_MOBS.sergeantGrug,
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.small,
+			zone: ZONES.salubrinHaven,
+		},
+		{
+			level: 7,
+			bossName: 'Sergeant Boggun',
+			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
 			zone: ZONES.salubrinHaven,
@@ -69,23 +54,17 @@ var quests;
 		// Tendolin Passage Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 1,
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.small,
 			zone: ZONES.tendolinPassage,
 		},
 		// Greenthorn Cavern Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.greenthornCavern,
@@ -93,11 +72,8 @@ var quests;
 		// Lanfeld Refuge Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.lanfeldRefuge,
@@ -105,11 +81,8 @@ var quests;
 		// Riven Grotto Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.rivenGrotto,
@@ -117,11 +90,8 @@ var quests;
 		// Bastille Citadel Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.bastilleCitadel,
@@ -129,11 +99,8 @@ var quests;
 		// Kordata Cove Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.kordataCove,
@@ -141,11 +108,8 @@ var quests;
 		// Sylong Sanctuary Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.sylongSanctuary,
@@ -153,11 +117,8 @@ var quests;
 		// Thule Crypt Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.thuleCrypt,
@@ -165,11 +126,8 @@ var quests;
 		// Temple of Prenssor Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.templeOfPrenssor,
@@ -177,11 +135,8 @@ var quests;
 		// Fahnir Citadel Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.fahlnirCitadel,
@@ -189,11 +144,8 @@ var quests;
 		// Anuran Ruins Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.anuranRuins,
@@ -201,11 +153,8 @@ var quests;
 		// Galeblast Fortress Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.galeblastFortress,
@@ -213,11 +162,8 @@ var quests;
 		// Ashenflow Peak Quests
 		{
 			level: 1,
-			title: 'Kill Himber',
 			bossName: 'Himber',
 			description: '',
-			imgIndex: 1,
-			maxLevel: 2,
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.large,
 			zone: ZONES.ashenflowPeak,

@@ -389,7 +389,7 @@ var battle;
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
 			let q = {
-				level: quests[mission.id].maxLevel
+				level: quests[mission.id].level
 			}
 			for (i=0; i<totalMobs; i++) {
 				const maxLevel = q.level

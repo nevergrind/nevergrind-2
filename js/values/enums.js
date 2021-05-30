@@ -196,22 +196,6 @@ const MOB_TYPES = Object.freeze({
 	UNDEAD: 'undead',
 	GIANT: 'giant',
 })
-const MOB_TRAITS = Object.freeze({
-	brute: 'Brute', // strong
-	frenzied: 'Frenzied', // fast attack
-	tough: 'Tough', // big hp
-	deadEye: 'Dead Eye', // never misses
-	nimble: 'Nimble', // high dodge
-	soulDrain: 'Mana Drain', // drains mana
-	spiritDrain: 'Spirit Drain', // drains spirit
-	dauntless: 'Dauntless', // 50% duration stun, fear
-	bloodlusted: 'Bloodlusted', // 50% BR, x3 health regen
-	magister: 'Magister', // 33% all resists, boosts int by 50%
-	poisonEnchanted: 'Poison Enchanted', // 75% PR, 2x poison damage
-	lightningEnchanted: 'Lightning Enchanted', // 75% LR, 2x lightning damage, 50% paralyze effect
-	fireEnchanted: 'Fire Enchanted', // 75% FR, 2x fire damage
-	iceEnchanted: 'Ice Enchanted', // 75% IR, 2x cold damage, 50% chill, freeze effects
-})
 const MOB_IMAGES = Object.freeze({
 	balrog: 'balrog',
 	iceGolem: 'ice-golem',
@@ -331,14 +315,6 @@ const ANIMATE_CANDLE = RoughEase.ease.config({
 	randomize: true,
 	clamp: true
 })
-const QUEST_TYPES = Object.freeze({
-	cleanse: 'cleanse',
-	target: 'target',
-	kill: 'kill',
-	explore: 'explore',
-	gather: 'gather',
-	investigate: 'investigate',
-})
 const MOB_TIERS = Object.freeze({
 	normal: 'normal',
 	champion: 'champion',
@@ -365,4 +341,34 @@ const ZONES = Object.freeze({
 	anuranRuins: 'Anuran Ruins',
 	galeblastFortress: 'Galeblast Fortress',
 	ashenflowPeak: 'Ashenflow Peak',
+})
+const QUEST_TYPES = Object.freeze({
+	cleanse: 'cleanse',
+	target: 'target',
+	kill: 'kill',
+	explore: 'explore',
+	gather: 'gather',
+	investigate: 'investigate',
+})
+const MOB_TRAITS = Object.freeze({
+	brute: 'Brute', // strong
+	frenzied: 'Frenzied', // fast attack
+	tough: 'Tough', // big hp
+	deadEye: 'Dead Eye', // never misses
+	nimble: 'Nimble', // high dodge
+	soulDrain: 'Mana Drain', // drains mana
+	spiritDrain: 'Spirit Drain', // drains spirit
+	dauntless: 'Dauntless', // 50% duration stun, fear
+	bloodlusted: 'Bloodlusted', // 50% BR, x3 health regen
+	magister: 'Magister', // 33% all resists, boosts int by 50%
+	poisonEnchanted: 'Poison Enchanted', // 75% PR, 2x poison damage
+	lightningEnchanted: 'Lightning Enchanted', // 75% LR, 2x lightning damage, 50% paralyze effect
+	fireEnchanted: 'Fire Enchanted', // 75% FR, 2x fire damage
+	iceEnchanted: 'Ice Enchanted', // 75% IR, 2x cold damage, 50% chill, freeze effects
+})
+const QUEST_MOBS = Object.freeze({
+	peonHegug: 'Peon Hegug',
+	centurionShiloh: 'Centurion Shiloh',
+	prophetUrzoth: 'Prophet Urzoth',
+	sergeantGrug: 'Sergeant Grug',
 })

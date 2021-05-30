@@ -339,8 +339,8 @@ var dungeon;
 			for (var i=0; i<mobLen; i++) {
 				if (Math.random() > .33) {
 					const query = { level: _.random(
-						Math.max(1, ~~(quests[mission.id].maxLevel * .7)),
-						quests[mission.id].maxLevel
+						Math.max(1, ~~(quests[mission.id].level * .7)),
+						quests[mission.id].level
 					)}
 					if (mob.isUniqueTier(_.random(1, 100))) {
 						query.tier = MOB_TIERS.unique
