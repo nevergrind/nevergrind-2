@@ -20,7 +20,7 @@
 	function zealousSlam(o) {
 		ask.explosion({index: o.index, key: 'burst-default'}, {
 			sizeEnd: 250,
-			duration: .32
+			duration: .24
 		})
 		o.endFrame = 3
 		ask.explosion(o, {
@@ -29,8 +29,8 @@
 			sizeStart: 250,
 			sizeEnd: 300,
 			alpha: 1,
-			duration: .28,
-			frameDuration: .28,
+			duration: .24,
+			frameDuration: .24,
 			frameEase: Power0.easeIn,
 		})
 		audio.playSound('hit-shield', 'combat', audio.getVolume(o.row))

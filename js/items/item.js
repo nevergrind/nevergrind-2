@@ -1042,10 +1042,10 @@ var loot = {};
 				<div class="flex-column">
 					<img id="loot-confirm-${index}" 
 						class="loot-confirm popover-icons" 
-						src="images/map/room-treasure.png">
+						src="images/ui/loot-confirm.png">
 					<img id="loot-cancel-${index}" 
 						class="loot-cancel popover-icons" 
-						src="images/map/room-boss.png">
+						src="images/ui/loot-dismiss.png">
 				</div>
 			</div>
 		`

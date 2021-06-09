@@ -19,7 +19,7 @@
 	function shieldBash(o) {
 		ask.explosion({index: o.index, key: 'burst-default'}, {
 			sizeEnd: 250,
-			duration: .32
+			duration: .24
 		})
 		o.endFrame = 2
 		ask.explosion(o, {
@@ -27,8 +27,8 @@
 			brightnessStart: 2,
 			sizeStart: 100,
 			sizeEnd: 300,
-			duration: .32,
-			frameDuration: .32,
+			duration: .24,
+			frameDuration: .24,
 			frameEase: Power0.easeIn,
 		})
 		audio.playSound('hit-shield', 'combat', audio.getVolume(o.row))

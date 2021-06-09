@@ -797,6 +797,14 @@ var bar;
 			'<div style="flex-basis: 50%;">Auto Attack</div>' +
 			'<div data-id="auto-attack" class="options-hotkey flex-max">'+ ng.config.hotkey.autoAttack +'</div>'+
 		'</div>' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 50%;">Walk Forward</div>' +
+			'<div data-id="auto-attack" class="options-hotkey flex-max">'+ ng.config.hotkey.walkForward +'</div>'+
+		'</div>' +
+		'<div class="flex align-center">' +
+			'<div style="flex-basis: 50%;">Walk Backward</div>' +
+			'<div data-id="auto-attack" class="options-hotkey flex-max">'+ ng.config.hotkey.walkBackward +'</div>'+
+		'</div>' +
 		'</div>'
 
 		return str

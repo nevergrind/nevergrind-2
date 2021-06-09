@@ -294,7 +294,8 @@ let mobs = [];
 		else {
 			// regular mob - set based on level
 			results.forEach((r, i) => {
-				results[i].level = q.level
+				r.level = Math.min(q.level, quests[mission.id].level)
+				console.info('results level', r.level, q)
 			})
 		}
 
@@ -363,6 +364,7 @@ let mobs = [];
 	}
 	function getMobExp(index) {
 		let exp = mobs[index].level * mobs[index].expPerLevel
+		// how many were in party when combat started?
 		exp = exp * party.combatStartLength
 		if (party.combatStartLength === 5) exp = exp * 1.1 // 10% exp bonus for a full group
 
@@ -371,17 +373,7 @@ let mobs = [];
 		exp = round(exp * battle.earnedExpRatio[ratioIndex])
 
 		// penalize for party members that are much higher
-		if (my.level <= 10) {
-			if (party.presence.some(p => p.level > my.level + 4)) {
-				exp = 0
-			}
-		}
-		else {
-			// level 20+ uses a percentage instead of a fixed penalty
-			if (party.presence.some(p => p.level > my.level * 1.5)) {
-				exp = 0
-			}
-		}
+		if (party.expBrokenByAll()) exp = 0
 		return exp
 	}
 	function isAnyMobAlive() {

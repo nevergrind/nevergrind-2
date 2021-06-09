@@ -13,7 +13,7 @@ var quests;
 		// Salubrin Haven Quests
 		{
 			level: 1, // quest level (controls min/max mobs, ambush), max mob level for this mission
-			bossName: QUEST_MOBS.peonHegug,
+			bossName: 'Peon Hegug',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
@@ -21,7 +21,7 @@ var quests;
 		},
 		{
 			level: 3,
-			bossName: QUEST_MOBS.centurionShiloh,
+			bossName: 'Centurion Shiloh',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
@@ -29,7 +29,7 @@ var quests;
 		},
 		{
 			level: 5,
-			bossName: QUEST_MOBS.prophetUrzoth,
+			bossName: 'Prophet Urzoth',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,
@@ -37,7 +37,7 @@ var quests;
 		},
 		{
 			level: 7,
-			bossName: QUEST_MOBS.sergeantGrug,
+			bossName: 'Sergeant Grug',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.small,

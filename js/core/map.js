@@ -418,7 +418,7 @@ let map;
 		dungeon.distanceEnd = getHallwayDistance(map.hallwayId)
 		map.setCompass()
 		map.updatePosition()
-		console.info('enterHallway', 'room', data.id, 'hallway', map.hallwayId)
+		// console.info('enterHallway', 'room', data.id, 'hallway', map.hallwayId)
 		dungeon.go()
 		audio.playEnterDoor()
 	}
@@ -487,6 +487,7 @@ let map;
 			if (mission.isQuestCompleted() &&
 				!mission.isCompleted) {
 				// quest has been completed! show Dark souls message
+				mission.getRewards();
 				delayedCall(3, () => {
 					combat.showQuestMsg()
 					!isRespawn && map.show(3)

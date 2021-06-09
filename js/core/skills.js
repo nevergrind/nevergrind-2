@@ -2602,11 +2602,16 @@ var skills;
 		return skillValues
 	}
 	function modifiedDamageString(ds, multiplier) {
-		ds = ds.split('-')
-		// console.info('modifiedDamageString', ds, multiplier)
-		let min = _.max([1, round(+ds[0] * multiplier)])
-		let max = _.max([1, round(+ds[1] * multiplier)])
-		return min +'-'+ max
+		if (typeof ds.split === 'function') {
+			ds = ds.split('-')
+			// console.info('modifiedDamageString', ds, multiplier)
+			let min = _.max([1, round(+ds[0] * multiplier)])
+			let max = _.max([1, round(+ds[1] * multiplier)])
+			return min +'-'+ max
+		}
+		else {
+			return ds
+		}
 	}
 	function enhanceHit(hit, modifier) {
 		if (hit.min) hit.min *= modifier

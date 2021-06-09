@@ -24,6 +24,5 @@ var loading;
 		'Beasts take extra damage from slashing weapons.',
 		'Mystical creatures take extra damage from piercing weapons.',
 	]
-	loading.tipCount = loading.tips.length
 
 }($, _, TweenMax);

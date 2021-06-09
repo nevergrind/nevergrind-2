@@ -541,9 +541,13 @@ var audio;
 		else {
 			// previous data found. put config on top of default
 			const savedConfig = JSON.parse(config)
+			const defaultConfig = ng.getDefaultOptions()
 			ng.config = {
-				...ng.getDefaultOptions(),
+				...defaultConfig,
 				...savedConfig,
+			}
+			for (key in defaultConfig.hotkey) {
+				ng.config.hotkey[key] = defaultConfig.hotkey[key]
 			}
 			for (key in savedConfig.hotkey) {
 				ng.config.hotkey[key] = savedConfig.hotkey[key]

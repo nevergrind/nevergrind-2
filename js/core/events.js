@@ -258,6 +258,8 @@
 					// dungeon & combat specific
 					if (!chat.hasFocus) {
 						if (chat.focusKeys.includes(key)) chat.focusChatInput()
+						else if (key === ng.config.hotkey.walkForward) dungeon.walkForward()
+						else if (key === ng.config.hotkey.walkBackward) dungeon.walkBackward()
 						else if (key === ' ') spell.cancelSpell()
 						else if (key === 'F1') my.partyTarget(0)
 						else if (key === 'F2') my.partyTarget(1) // bar-hp-name

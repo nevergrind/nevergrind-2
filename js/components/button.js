@@ -198,7 +198,9 @@ var button;
 			if (typeof skill[my.job][name] === 'function') {
 				skill[my.job][name](index, skills[my.job][index])
 				if (!my.isAutoAttacking) {
-					// combat.autoAttackEnable()
+					setTimeout(() => {
+						// combat.autoAttackEnable()
+					}, 0)
 				}
 			}
 			else {

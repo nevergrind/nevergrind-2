@@ -51,7 +51,6 @@ const jsFiles = [
 	'values/constants',
 	'util/util',
 	'util/query',
-	'core/config',
 	'core/alias',
 	'core/login',
 	'core/create',
@@ -160,8 +159,9 @@ const jsFiles = [
 	'core/zone',
 	'core/stats',
 	'core/css',
-	'core/init',
+	'core/config',
 	'core/loading',
+	'core/init', // should be last one
 	'build/endWrap',
 ].map((file) => './js/' + file + '.js')
 const cssFiles = ['main'].map(file => './css/' + file + '.css')

@@ -76,7 +76,7 @@ var dungeon;
 		totalTiles: MAX_TILES,
 		distanceEnd: GRID_SIZE * MAX_TILES,
 		hallwayLength: GRID_SIZE * HALLWAY_TILE_LENGTH,
-		distancePerSecond: Config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .2,
+		distancePerSecond: GRID_SIZE * 3,
 		walkTween: TweenMax.to('#body', 0, {}),
 		centerY,
 		go,
@@ -233,6 +233,7 @@ var dungeon;
 		cache.preloadPlayerAsk()
 	}
 	function init() {
+		dungeon.distancePerSecond = Config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .2
 		if (zones[mission.id].mobs.length) {
 			zones[mission.id].mobs.forEach(v => {
 				cache.preloadMob(_.kebabCase(v))
@@ -384,7 +385,6 @@ var dungeon;
 			}
 			// size and check offset
 			// ent.y = mobs.images[img].yPadding * MOB_DUNGEON_SIZE
-			console.info('entity size', entity.size)
 			TweenMax.set(ent.sprite, {
 				pixi: { scale: MOB_DUNGEON_SIZE * entity.size }
 			})
@@ -561,7 +561,7 @@ var dungeon;
 		return blurValue
 	}
 	function walkForward() {
-		if (map.menuPrompt) return
+		if (ng.view !== 'dungeon' || map.menuPrompt) return
 		if (dungeon.getWalkProgress() >= 0 &&
 			dungeon.getWalkProgress() < 1) {
 			if (party.presence[0].isLeader) {
@@ -585,7 +585,7 @@ var dungeon;
 		})
 	}
 	function walkBackward() {
-		if (map.menuPrompt) return
+		if (ng.view !== 'dungeon' || map.menuPrompt) return
 		if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
 			if (party.presence[0].isLeader) {
 				audio.startWalk()

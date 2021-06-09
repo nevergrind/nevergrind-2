@@ -22,6 +22,7 @@ var mission;
 		getZoneImg,
 		isQuestCompleted,
 		getTitle,
+		getRewards,
 	};
 	var questHtml
 	var that = {}
@@ -255,7 +256,22 @@ var mission;
 		delayedCall(questDelay, dungeon.rxGo)
 	}
 	function isQuestCompleted() {
-		return !dungeon.map.rooms.find(r => r.boss).isAlive
+		const type = quests[mission.id].type
+		if (type === QUEST_TYPES.kill) {
+			return !dungeon.map.rooms.find(r => r.boss).isAlive
+		}
+		else if (type === QUEST_TYPES.explore) {
+
+		}
+		else if (type === QUEST_TYPES.find) {
+
+		}
+		else if (type === QUEST_TYPES.slay) {
+
+		}
+		else {
+			return false
+		}
 	}
 
 	/**
@@ -264,10 +280,80 @@ var mission;
 	 * @returns {string}
 	 */
 	function getTitle(id) {
-		console.info('getTitle', typeof id, id)
+		// console.info('getTitle', typeof id, id)
 		if (quests[id].type === QUEST_TYPES.kill) {
-			return 'Slay ' + quests[id].bossName
+			return 'Kill ' + quests[id].bossName
+		}
+		else if (quests[id].type === QUEST_TYPES.explore) {
+			return 'Explore 90% of rooms '
+		}
+		else if (quests[id].type === QUEST_TYPES.find) {
+			return 'Find 5 items'
+		}
+		else if (quests[id].type === QUEST_TYPES.slay) {
+			return 'Slay 8 orcs'
 		}
 		else return ''
+	}
+
+	function getQuestExp(level) {
+		// @1 6 @50 1275
+		let expMultiplier = Math.max(.06 - (level * .01), .01)
+		let exp = battle.expThreshold[level + 1] * expMultiplier
+		// penalize for party members that are much higher
+		if (party.expBrokenByAll()) exp = 0
+		return exp
+	}
+
+	function getQuestGold(level) {
+		return 15 + level * 5
+	}
+
+	function getRewards() {
+		const type = quests[mission.id].type
+		const size = quests[mission.id].size
+		let exp = 0
+		let gold = 0
+		if (type === QUEST_TYPES.kill) {
+			gold = getQuestGold(quests[mission.id].level) * .5
+			exp = getQuestExp(quests[mission.id].level) * .75
+		}
+		else if (type === QUEST_TYPES.explore) {
+			gold = getQuestGold(quests[mission.id].level) * 1.5
+			exp = getQuestExp(quests[mission.id].level)
+		}
+		else if (type === QUEST_TYPES.find) {
+			gold = getQuestGold(quests[mission.id].level) * 1.25
+			exp = getQuestExp(quests[mission.id].level) * 1.25
+		}
+		else if (type === QUEST_TYPES.slay) {
+			gold = getQuestGold(quests[mission.id].level)
+			exp = getQuestExp(quests[mission.id].level) * 1.5
+		}
+
+		// NOTE: exp value 6-1275
+		// NOTE: gold value 20-265
+		// map size
+		if (size === MAP_SIZES.small) {
+			/*exp = exp * .8
+			gold = gold * .8*/
+		}
+		else if (size === MAP_SIZES.medium) {
+			exp = exp * 1.35
+			gold = gold * 1.35
+		}
+		else if (size === MAP_SIZES.large) {
+			exp = exp * 2
+			gold = gold * 2
+		}
+		gold = ~~gold
+		exp = ~~exp
+		// add exp and gold values
+		if (gold) {
+			mob.earnedGold += battle.addGold(gold, true)
+		}
+		if (exp) {
+			mob.earnedExp += battle.addExp(exp, true)
+		}
 	}
 })(TweenMax, $, _);

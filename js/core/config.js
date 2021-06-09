@@ -8,7 +8,7 @@ const Config = {
 	guaranteedLoot: false,
 	deathEnabled: true,
 	walkFast: true,
-	defaultZone: 0, // id in zones.js
+	defaultZone: zones.find(z => z.name === ZONES.salubrinHaven).id,
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
 	forceUnique: false,

@@ -617,7 +617,6 @@ app.socketUrl = app.isApp ?
 			'values/constants',
 			'util/util',
 			'util/query',
-			'core/config',
 			'core/alias',
 			'core/login',
 			'core/create',
@@ -727,8 +726,9 @@ app.socketUrl = app.isApp ?
 			'core/stats',
 			'core/css',
 			'test/test',
-			'core/init',
+			'core/config',
 			'core/loading',
+			'core/init',
 		]
 		files.forEach((file) => {
 			const script = d.createElement('script')

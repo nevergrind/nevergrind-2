@@ -48,6 +48,8 @@ var ng;
 				inventory: 'i',
 				bank: 'b',
 				autoAttack: 'a',
+				walkForward: 'w',
+				walkBackward: 's',
 			}
 		},
 		responsiveRatio: 1,
@@ -311,7 +313,7 @@ var ng;
 		handle: 0
 	}
 
-	let index, el
+	let el
 
 	$('#ch-card-wrap')
 		.on('click', '#title-select-up', incrementCharacter)
@@ -349,6 +351,8 @@ var ng;
 				inventory: 'i',
 				bank: 'b',
 				autoAttack: 'a',
+				walkForward: 'w',
+				walkBackward: 's',
 			}
 		}
 	}

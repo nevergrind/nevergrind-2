@@ -343,12 +343,10 @@ const ZONES = Object.freeze({
 	ashenflowPeak: 'Ashenflow Peak',
 })
 const QUEST_TYPES = Object.freeze({
-	cleanse: 'cleanse',
-	target: 'target',
-	kill: 'kill',
-	explore: 'explore',
-	gather: 'gather',
-	investigate: 'investigate',
+	kill: 'kill', // named mob
+	explore: 'explore', // % of rooms
+	find: 'find', // find relics
+	slay: 'slay', // type of mob
 })
 const MOB_TRAITS = Object.freeze({
 	brute: 'Brute', // strong
@@ -366,9 +364,10 @@ const MOB_TRAITS = Object.freeze({
 	fireEnchanted: 'Fire Enchanted', // 75% FR, 2x fire damage
 	iceEnchanted: 'Ice Enchanted', // 75% IR, 2x cold damage, 50% chill, freeze effects
 })
+/*
 const QUEST_MOBS = Object.freeze({
 	peonHegug: 'Peon Hegug',
 	centurionShiloh: 'Centurion Shiloh',
 	prophetUrzoth: 'Prophet Urzoth',
 	sergeantGrug: 'Sergeant Grug',
-})
+})*/

@@ -137,14 +137,19 @@ var battle;
 			level: my.level,
 		})
 	}
-	function addExp(exp) {
+	function addExp(exp, isQuestExp) {
 		leveled = false // to determine UI updates
 		if (my.exp + exp > battle.expThreshold[MaxHeroLevel]) {
 			exp = battle.expThreshold[MaxHeroLevel] - my.exp
 		}
 		my.exp += exp
 		if (exp) {
-			chat.log('You earned experience!', 'chat-exp')
+			if (isQuestExp) {
+				chat.log('You earned quest experience!', 'chat-exp')
+			}
+			else {
+				chat.log('You earned experience!', 'chat-exp')
+			}
 		}
 		while (my.exp >= nextLevel()) {
 			// you leveled! Wow! (possibly multiple times if you cheated!?)
@@ -175,13 +180,18 @@ var battle;
 	function nextLevel() {
 		return battle.expThreshold[my.level + 1]
 	}
-	function addGold(gold) {
+	function addGold(gold, isQuestGold) {
 		if (my.gold + gold > trade.MAX_GOLD) {
 			gold = trade.MAX_GOLD - my.gold
 		}
 		if (gold) {
 			my.gold += gold
-			chat.log('You found ' + gold + ' gold!', 'chat-gold')
+			if (isQuestGold) {
+				chat.log('You quest reward is ' + gold + ' gold!', 'chat-gold')
+			}
+			else {
+				chat.log('You found ' + gold + ' gold!', 'chat-gold')
+			}
 			bar.updateInventoryGold()
 			audio.playSound('gold')
 		}
@@ -391,6 +401,7 @@ var battle;
 			let q = {
 				level: quests[mission.id].level
 			}
+			console.info('totalMobs', totalMobs)
 			for (i=0; i<totalMobs; i++) {
 				const maxLevel = q.level
 				const minLevel = Math.max(1, ~~(maxLevel * .7))
@@ -421,7 +432,8 @@ var battle;
 							// add hallway query for 0 index only
 							const entityProps = getNearestHallwayEntity()
 							dungeon.mobKeys.forEach(key => {
-								if (entityProps[key]) {
+								if (key === 'img' ||
+									key === 'tier' && entityProps[key] === MOB_TYPES.unique) {
 									q[key] = entityProps[key]
 								}
 							})

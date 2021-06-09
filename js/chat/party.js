@@ -46,6 +46,7 @@ var party;
 		respawn,
 		reviveDeadAllies,
 		memberDied,
+		expBrokenByAll,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -628,5 +629,26 @@ var party;
 			}
 			audio.castSoundStart(data.index, data.name)
 		}
+	}
+
+	/**
+	 * returns if someone in the party is too high level for you to gain exp
+	 * @type {boolean}
+	 */
+	let broken = false
+	function expBrokenByAll() {
+		broken = false
+		if (my.level <= 10) {
+			if (party.presence.some(p => p.level > my.level + 4)) {
+				broken = true
+			}
+		}
+		else {
+			// level 20+ uses a percentage instead of a fixed penalty
+			if (party.presence.some(p => p.level > my.level * 1.5)) {
+				broken = true
+			}
+		}
+		return broken
 	}
 })(Date, _, $);
