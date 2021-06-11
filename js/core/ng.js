@@ -447,7 +447,7 @@ var ng;
 		msgTimer = delayedCall(d, msgComplete)
 	}
 	function msgComplete() {
-		TweenMax.to(query.el('#msg'), .2, {
+		TweenMax.to(query.el('#msg'), 0, {
 			scale: 0,
 			ease: Power2.easeOut
 		})

@@ -107,6 +107,8 @@ var dungeon;
 		getRoomMobCount,
 		setBossRoom,
 		preloadCombatAssets,
+		rxEnterRoomForward,
+		rxEnterRoomBackward,
 	}
 	let blurValue = 0
 	const CLOSEST_MOB_DISTANCE = -200
@@ -456,27 +458,50 @@ var dungeon;
 		// room/battle checks
 		if (dungeon.distanceCurrent <= 0) {
 			// go backwards to roomId
-			map.inRoom = true
 			dungeon.walkStop()
-			map.enterRoom(map.roomId)
-			audio.playEnterDoor()
-			battle.go()
+			if (party.presence[0].isLeader) {
+				rxEnterRoomBackward()
+				socket.publish('party' + my.partyId, {
+					route: 'p->enterRoomBackward',
+				}, true)
+				battle.go()
+			}
 		}
 		else if (dungeon.distanceCurrent >= Math.min(
 			dungeon.distanceEnd,
 			dungeon.closestEntity
 		)) {
-			if (dungeon.distanceCurrent >= dungeon.distanceEnd) {
-				// entered room
-				map.enterRoom(map.roomToId)
-				audio.playEnterDoor()
-			}
-			else {
-				// or hallway battle?
-				map.inRoom = false
-			}
+			// going forwards
 			dungeon.walkStop()
-			battle.go()
+			if (party.presence[0].isLeader) {
+				map.inRoom = dungeon.distanceCurrent >= dungeon.distanceEnd
+				rxEnterRoomForward({
+					roomToId: map.roomToId,
+					inRoom: map.inRoom,
+				})
+				socket.publish('party' + my.partyId, {
+					route: 'p->enterRoomForward',
+					inRoom: map.inRoom,
+					roomToId: map.roomToId,
+				}, true)
+				battle.go()
+			}
+		}
+	}
+	function rxEnterRoomBackward() {
+		audio.playEnterDoor()
+		map.inRoom = true
+		map.enterRoom(map.roomId)
+	}
+	function rxEnterRoomForward(data) {
+		if (data.inRoom) {
+			// entered room
+			map.enterRoom(data.roomToId)
+			audio.playEnterDoor()
+		}
+		else {
+			// or hallway battle?
+			map.inRoom = false
 		}
 	}
 	function positionGridTile(tile) {

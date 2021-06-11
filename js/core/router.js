@@ -54,6 +54,8 @@ var router;
 		else if (r === 'p->boot') party.bootReceived(data)
 		else if (r === 'p->getPresence') game.updateParty()
 		else if (r === 'p->enterHallway') map.rxEnterHallway(data)
+		else if (r === 'p->enterRoomForward') dungeon.rxEnterRoomForward(data)
+		else if (r === 'p->enterRoomBackward') dungeon.rxEnterRoomBackward(data)
 		else if (r === 'p->walkForward') dungeon.rxWalkForward(data)
 		else if (r === 'p->walkBackward') dungeon.rxWalkBackward(data)
 		else if (r === 'p->walkStop') dungeon.rxWalkStop(data)

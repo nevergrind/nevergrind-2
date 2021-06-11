@@ -1,6 +1,7 @@
 (function(_, $, parseInt, getComputedStyle, undefined) {
-	var i;
-	var key;
+	var i
+	var key
+	let _keyup
 	// window
 
 	// document events
@@ -22,6 +23,7 @@
 			.on('mousemove', mousemove)
 			.on('click', mousedown)
 			.on('keydown', keydown)
+			.on('keyup', keyup)
 
 		$('#chat-input').on('blur', chat.focusChatBlur)
 
@@ -132,9 +134,9 @@
 	}
 
 	function keydown(e) {
-		key = e.key;
+		key = e.key
 
-		ng.lastKey = key;
+		ng.lastKey = key
 		// console.info('key: ', key)
 		// trying to bind a new hotkey
 		if (bar.hotkeyId) {
@@ -315,6 +317,18 @@
 				e.preventDefault()
 				return false
 			}
+		}
+	}
+
+	function keyup(e) {
+		_keyup = e.key
+		if (ng.view === 'dungeon') {
+			if (!map.inRoom) {
+				if (key === ng.config.hotkey.walkForward) dungeon.walkStop()
+				else if (key === ng.config.hotkey.walkBackward) dungeon.walkStop()
+
+			}
+
 		}
 	}
 })(_, $, parseInt, getComputedStyle);

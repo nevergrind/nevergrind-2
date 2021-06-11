@@ -1,5 +1,6 @@
 mob.data = {}
-mob.data[ZONES.salubrinHaven] = [
+mob.data[ZONES.salubrinHaven] =
+[
 	{
 		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
@@ -275,18 +276,45 @@ mob.data[ZONES.salubrinHaven] = [
 		traits: { brute: true },
 	},
 ]
-mob.data[ZONES.tendolinPassage] = [
+mob.data[ZONES.tendolinPassage] =
+[
 	{
-		img: MOB_IMAGES.orc,
-		name: 'orc pawn',
+		img: MOB_IMAGES.toadlok,
+		name: 'toadlok tad',
 		minLevel: 1,
 		maxLevel: 2,
-		size: .65,
+		size: .6,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.rat,
+		name: 'rat',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .6,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.snake,
+		name: 'snake',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .7,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'beetle',
+		minLevel: 1,
+		maxLevel: 2,
+		size: .6,
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
-mob.data[ZONES.greenthornCavern] = [
+mob.data[ZONES.greenthornCavern] =
+[
 	{
 		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
@@ -296,8 +324,10 @@ mob.data[ZONES.greenthornCavern] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
-mob.data[ZONES.lanfeldRefuge] = [
+mob.data[ZONES.lanfeldRefuge] =
+[
 	{
 		img: MOB_IMAGES.orc,
 		name: 'orc pawn',
@@ -307,6 +337,7 @@ mob.data[ZONES.lanfeldRefuge] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.rivenGrotto] = [
 	{
@@ -318,6 +349,7 @@ mob.data[ZONES.rivenGrotto] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.bastilleCitadel] = [
 	{
@@ -329,6 +361,7 @@ mob.data[ZONES.bastilleCitadel] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.kordataCove] = [
 	{
@@ -340,6 +373,7 @@ mob.data[ZONES.kordataCove] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.sylongSanctuary] = [
 	{
@@ -351,6 +385,7 @@ mob.data[ZONES.sylongSanctuary] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.thuleCrypt] = [
 	{
@@ -362,6 +397,7 @@ mob.data[ZONES.thuleCrypt] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.templeOfPrenssor] = [
 	{
@@ -373,6 +409,7 @@ mob.data[ZONES.templeOfPrenssor] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.fahlnirCitadel] = [
 	{
@@ -384,6 +421,7 @@ mob.data[ZONES.fahlnirCitadel] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.anuranRuins] = [
 	{
@@ -395,6 +433,7 @@ mob.data[ZONES.anuranRuins] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.galeblastFortress] = [
 	{
@@ -406,6 +445,7 @@ mob.data[ZONES.galeblastFortress] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]
 mob.data[ZONES.ashenflowPeak] = [
 	{
@@ -417,4 +457,5 @@ mob.data[ZONES.ashenflowPeak] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	// quest mobs
 ]

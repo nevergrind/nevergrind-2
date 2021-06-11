@@ -208,13 +208,16 @@ var mission;
 				dungeon.setBossRoom()
 				map.init(dungeon.map)
 			}
-			console.info('embark', mission.id, mission.questId)
 			// test mission defaults for fast test mission start-up
 			if (!app.isApp && !mission.id) {
 				// setup some mission data
 				mission.inProgress = true
+				// TODO: something broken here lol
+				const zoneName = zones.find(z => z.id === Config.defaultZone).name
 				mission.id = Config.defaultZone
+				mission.questId = quests.findIndex(q => q.zone === zoneName)
 			}
+			console.info('embark', mission.id, mission.questId)
 			var data = {
 				route: 'p->embarkReceived',
 				id: mission.id,
@@ -335,8 +338,7 @@ var mission;
 		// NOTE: gold value 20-265
 		// map size
 		if (size === MAP_SIZES.small) {
-			/*exp = exp * .8
-			gold = gold * .8*/
+			// do nothing
 		}
 		else if (size === MAP_SIZES.medium) {
 			exp = exp * 1.35

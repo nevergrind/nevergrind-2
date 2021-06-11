@@ -180,16 +180,16 @@ var my;
 		return my.buffFlags.freeze
 	}
 	function stunMsg() {
-		chat.log('You are stunned!', CHAT.WARNING)
+		ng.msg('You are stunned!')
 	}
 	function fearMsg() {
-		chat.log('You are feared!', CHAT.WARNING)
+		ng.msg('You are feared!')
 	}
 	function paralyzeMsg() {
-		chat.log('You are paralyzed!', CHAT.WARNING)
+		ng.msg('You are paralyzed!')
 	}
 	function silenceMsg() {
-		chat.log('You are silenced!', CHAT.WARNING)
+		ng.msg('You are silenced!')
 	}
 	function isPunching(slot) {
 		return !(typeof items.eq[slot] === 'object' && items.eq[slot].name)

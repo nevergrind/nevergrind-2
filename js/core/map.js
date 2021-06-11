@@ -310,7 +310,8 @@ let map;
 		TweenMax.to(map.miniMapDrag, delay, {
 			x: -map.cameraX + PARENT_WIDTH_HALF,
 			y: -map.cameraY + PARENT_HEIGHT_HALF,
-			onUpdate: map.applyBounds
+			onUpdate: applyBounds,
+			onComplete: applyBounds
 		})
 	}
 	function centerCameraAt(x, y) {
@@ -389,6 +390,7 @@ let map;
 		map.roomId = roomId
 		map.roomX = dungeon.map.rooms[roomId].x
 		map.roomY = dungeon.map.rooms[roomId].y
+		// console.info('enterRoom map.roomId', roomId)
 	}
 	function enterHallway(roomId) {
 		if (party.presence[0].isLeader) {
@@ -403,6 +405,7 @@ let map;
 		}
 	}
 	function rxEnterHallway(data) {
+		// set map state
 		map.roomToId = data.id
 		map.hallwayId = dungeon.map.hallways.find(h =>
 			h.connects.includes(map.roomId) &&
@@ -410,6 +413,14 @@ let map;
 		).id
 		map.inRoom = false
 
+		// check hallway respawn
+		if (triggerHallwayMobRespawn()) {
+			dungeon.map.hallways[map.hallwayId].entities.map((e, i) => {
+				dungeon.map.hallways[map.hallwayId].entities[i].isAlive = true
+			})
+		}
+
+		// set current hallway entities
 		if (typeof dungeon.entities[map.hallwayId] === 'object' && !dungeon.entities[map.hallwayId].length ||
 			typeof dungeon.entities[map.hallwayId] === 'undefined') {
 			dungeon.entities[map.hallwayId] = dungeon.map.hallways[map.hallwayId].entities
@@ -418,11 +429,26 @@ let map;
 		dungeon.distanceEnd = getHallwayDistance(map.hallwayId)
 		map.setCompass()
 		map.updatePosition()
-		// console.info('enterHallway', 'room', data.id, 'hallway', map.hallwayId)
+		/*console.info('enterHallway', 'room', map.roomId)
+		console.info('enterHallway', 'hallway', map.hallwayId)
+		console.info('enterHallway', 'roomToId', map.roomToId)
+		console.info('enterHallway', 'compass', map.compass)*/
 		dungeon.go()
 		audio.playEnterDoor()
 	}
+
+	/**
+	 * Determine if mobs have respawned based on timer
+	 * @returns {boolean}
+	 */
+	const MOB_RESPAWN_TIME = 300000 // 5 minutes
+	function triggerHallwayMobRespawn() {
+		return dungeon.map.hallways[map.hallwayId].entities.every(e =>
+			!e.isAlive && (Date.now() - e.timestamp) > MOB_RESPAWN_TIME
+		)
+	}
 	function revealRoom() {
+		applyBounds()
 		let rooms = ['#room-' + map.roomId]
 		let halls = []
 		dungeon.map.rooms[map.roomId].visible = true
@@ -538,6 +564,8 @@ let map;
 			opacity: 1,
 			scale: 1,
 			ease: Back.easeOut,
+			onUpdate: applyBounds,
+			onComplete: applyBounds,
 		})
 		// map.fogTween.play()
 		querySelector('#quest-log').classList.remove('no-pointer')
@@ -556,8 +584,9 @@ let map;
 			map.questHeader.textContent = 'Objective:'
 			map.questName.textContent = mission.getTitle(mission.questId)
 		}
-		delayedCall(delay, map.revealRoom)
 		animateTorch()
+		handleCenterParty()
+		delayedCall(delay, map.revealRoom)
 	}
 	function hide() {
 		map.isShown = false
@@ -569,7 +598,6 @@ let map;
 		killTorchTween()
 	}
 	function handleQuestCompleted() {
-		console.info('handleQuestCompleted')
 		mission.txReturnToTown()
 	}
 	function getRoomClearData() {
