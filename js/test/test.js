@@ -1,6 +1,7 @@
 var test;
 (function(Linear, TweenMax, TimelineMax, PIXI, $, undefined) {
 	test = {
+		setupMissionData,
 		getMob,
 		projectionTest,
 		getTestLootItemWeapon,
@@ -895,6 +896,13 @@ var test;
 			console.info(key, result[key])
 		}
 		return result
+	}
+	function setupMissionData() {
+		mission.inProgress = true
+		// TODO: something broken here lol
+		const zoneName = zones.find(z => z.id === Config.defaultZone).name
+		mission.id = Config.defaultZone
+		mission.questId = quests.findIndex(q => q.zone === zoneName)
 	}
 	/*
 	https://greensock.com/docs/v2/Plugins/BezierPlugin

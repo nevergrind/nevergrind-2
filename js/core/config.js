@@ -8,7 +8,7 @@ const Config = {
 	guaranteedLoot: false,
 	deathEnabled: true,
 	walkFast: true,
-	defaultZone: zones.find(z => z.name === ZONES.salubrinHaven).id,
+	defaultZone: zones.find(z => z.name === ZONES.tendolinPassage).id,
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
 	forceUnique: false,

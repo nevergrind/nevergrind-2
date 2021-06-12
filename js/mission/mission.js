@@ -201,21 +201,17 @@ var mission;
 			audio.playSound('click-4', '', 1, 500)
 			mission.inProgress = true
 			mission.isCompleted = false
+			// test mission defaults for fast test mission start-up
+			if (!app.isApp && !mission.id) {
+				// setup some mission data
+				test.setupMissionData()
+			}
 			if (!_.size(dungeon.map)) {
 				dungeon.map = Grid.createMap(quests[mission.questId].size)
 				dungeon.createHallwayMobs()
 				dungeon.map.rooms.forEach(dungeon.getRoomMobCount)
 				dungeon.setBossRoom()
 				map.init(dungeon.map)
-			}
-			// test mission defaults for fast test mission start-up
-			if (!app.isApp && !mission.id) {
-				// setup some mission data
-				mission.inProgress = true
-				// TODO: something broken here lol
-				const zoneName = zones.find(z => z.id === Config.defaultZone).name
-				mission.id = Config.defaultZone
-				mission.questId = quests.findIndex(q => q.zone === zoneName)
 			}
 			console.info('embark', mission.id, mission.questId)
 			var data = {
