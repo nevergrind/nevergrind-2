@@ -78,11 +78,51 @@ var quests;
 		},
 		// Greenthorn Cavern Quests
 		{
-			level: 1,
+			level: 6,
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
+			zone: ZONES.greenthornCavern,
+		},
+		{
+			level: 8,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.greenthornCavern,
+		},
+		{
+			level: 10,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.greenthornCavern,
+		},
+		{
+			level: 12,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.greenthornCavern,
+		},
+		{
+			level: 14,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.greenthornCavern,
+		},
+		{
+			level: 16,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
 			zone: ZONES.greenthornCavern,
 		},
 		// Lanfeld Refuge Quests
@@ -91,7 +131,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.lanfeldRefuge,
 		},
 		// Riven Grotto Quests
@@ -100,7 +140,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.rivenGrotto,
 		},
 		// Bastille Citadel Quests
@@ -109,7 +149,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.bastilleCitadel,
 		},
 		// Kordata Cove Quests
@@ -118,7 +158,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.kordataCove,
 		},
 		// Sylong Sanctuary Quests
@@ -127,7 +167,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.sylongSanctuary,
 		},
 		// Thule Crypt Quests
@@ -136,7 +176,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.thuleCrypt,
 		},
 		// Temple of Prenssor Quests
@@ -145,7 +185,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.templeOfPrenssor,
 		},
 		// Fahnir Citadel Quests
@@ -154,7 +194,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.fahlnirCitadel,
 		},
 		// Anuran Ruins Quests
@@ -163,7 +203,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.anuranRuins,
 		},
 		// Galeblast Fortress Quests
@@ -172,7 +212,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.galeblastFortress,
 		},
 		// Ashenflow Peak Quests
@@ -181,7 +221,7 @@ var quests;
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.large,
+			size: MAP_SIZES.medium,
 			zone: ZONES.ashenflowPeak,
 		},
 	]

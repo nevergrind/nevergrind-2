@@ -557,15 +557,267 @@ mob.data[ZONES.tendolinPassage] =
 mob.data[ZONES.greenthornCavern] =
 [
 	{
-		img: MOB_IMAGES.orc,
-		name: 'orc pawn',
-		minLevel: 1,
-		maxLevel: 2,
+		img: MOB_IMAGES.hobgoblin,
+		name: 'hobgoblin runt',
+		minLevel: 5,
+		maxLevel: 6,
+		size: .62,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'scrawny hobgoblin',
+		minLevel: 6,
+		maxLevel: 8,
+		size: .68,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'hobgoblin scout',
+		minLevel: 7,
+		maxLevel: 9,
+		size: .72,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'hobgoblin shaman',
+		minLevel: 8,
+		maxLevel: 14,
+		size: .72,
+		job: JOB.SHAMAN,
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'hobgoblin',
+		minLevel: 7,
+		maxLevel: 11,
+		size: .7,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'burly hobgoblin',
+		minLevel: 9,
+		maxLevel: 13,
+		size: .75,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'hobgoblin guardsman',
+		minLevel: 10,
+		maxLevel: 14,
+		size: .8,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'hobgoblin commander',
+		minLevel: 14,
+		maxLevel: 16,
+		size: .85,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.bear,
+		name: 'bear cub',
+		minLevel: 5,
+		maxLevel: 6,
+		size: .5,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.bear,
+		name: 'brown bear',
+		minLevel: 10,
+		maxLevel: 11,
+		size: .7,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.bear,
+		name: 'grizzly bear',
+		minLevel: 13,
+		maxLevel: 14,
+		size: .86,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.crocodile,
+		name: 'caiman',
+		minLevel: 7,
+		maxLevel: 8,
 		size: .65,
 		job: JOB.WARRIOR,
 	},
+	{
+		img: MOB_IMAGES.crocodile,
+		name: 'crocodile',
+		minLevel: 9,
+		maxLevel: 10,
+		size: .75,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.crocodile,
+		name: 'deepwater caiman',
+		minLevel: 12,
+		maxLevel: 13,
+		size: .72,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.crocodile,
+		name: 'deepwater crocodile',
+		minLevel: 15,
+		maxLevel: 16,
+		size: .83,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.scorpion,
+		name: 'whiptail scorpion',
+		minLevel: 6,
+		maxLevel: 8,
+		size: .66,
+		job: JOB.WARRIOR,
+	},
+	{
+		img: MOB_IMAGES.scorpion,
+		name: 'tainted scorpion',
+		minLevel: 10,
+		maxLevel: 12,
+		size: .83,
+		job: JOB.ROGUE,
+	},
+	{
+		img: MOB_IMAGES.scorpion,
+		name: 'heartsting scorpion',
+		minLevel: 14,
+		maxLevel: 16,
+		size: .83,
+		job: JOB.ROGUE,
+	},
 	// uniques
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'Chogarr Arpen',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .72,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { deadEye: true },
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'Hafex Tanaden',
+		minLevel: 12,
+		maxLevel: 12,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { bloodlusted: true },
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'Rikolb Dygon',
+		minLevel: 15,
+		maxLevel: 15,
+		size: .85,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
+	{
+		img: MOB_IMAGES.bear,
+		name: 'Festerpaw',
+		minLevel: 12,
+		maxLevel: 12,
+		size: .9,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { poisonEnchanted: true },
+	},
+	{
+		img: MOB_IMAGES.scorpion,
+		name: 'Krakator',
+		minLevel: 16,
+		maxLevel: 16,
+		size: .9,
+		job: JOB.WARLOCK,
+		tier: MOB_TIERS.unique,
+		traits: { magister: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'Kyrgiarr Dreckhand',
+		minLevel: 6,
+		maxLevel: 6,
+		size: .7,
+		job: JOB.TEMPLAR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { dauntless: true },
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'Gyz Tamebeam',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { nimble: true },
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'Vyrg Dampclub',
+		minLevel: 10,
+		maxLevel: 10,
+		size: .77,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { soulDrain: true },
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'Brirger Dustfist',
+		minLevel: 12,
+		maxLevel: 12,
+		size: .79,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { tough: true },
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'Troto Rotgrinder',
+		minLevel: 14,
+		maxLevel: 14,
+		size: .73,
+		job: JOB.DRUID,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { lightningEnchanted: true },
+	},
+	{
+		img: MOB_IMAGES.hobgoblin,
+		name: 'Shiz Gorenail',
+		minLevel: 16,
+		maxLevel: 16,
+		size: .84,
+		job: JOB.SHADOW_KNIGHT,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { spiritDrain: true },
+	},
 ]
 mob.data[ZONES.lanfeldRefuge] =
 [
@@ -578,7 +830,28 @@ mob.data[ZONES.lanfeldRefuge] =
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.rivenGrotto] = [
 	{
@@ -590,7 +863,28 @@ mob.data[ZONES.rivenGrotto] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.bastilleCitadel] = [
 	{
@@ -602,7 +896,28 @@ mob.data[ZONES.bastilleCitadel] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.kordataCove] = [
 	{
@@ -614,7 +929,28 @@ mob.data[ZONES.kordataCove] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.sylongSanctuary] = [
 	{
@@ -626,7 +962,28 @@ mob.data[ZONES.sylongSanctuary] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.thuleCrypt] = [
 	{
@@ -638,7 +995,28 @@ mob.data[ZONES.thuleCrypt] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.templeOfPrenssor] = [
 	{
@@ -650,7 +1028,28 @@ mob.data[ZONES.templeOfPrenssor] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.fahlnirCitadel] = [
 	{
@@ -662,7 +1061,28 @@ mob.data[ZONES.fahlnirCitadel] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.anuranRuins] = [
 	{
@@ -674,7 +1094,28 @@ mob.data[ZONES.anuranRuins] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.galeblastFortress] = [
 	{
@@ -686,7 +1127,28 @@ mob.data[ZONES.galeblastFortress] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
 mob.data[ZONES.ashenflowPeak] = [
 	{
@@ -698,5 +1160,26 @@ mob.data[ZONES.ashenflowPeak] = [
 		job: JOB.WARRIOR,
 	},
 	// uniques
+	{
+		img: MOB_IMAGES.beetle,
+		name: 'Magmavore',
+		minLevel: 7,
+		maxLevel: 7,
+		size: .8,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		traits: { fireEnchanted: true },
+	},
 	// quest mobs
+	{
+		img: MOB_IMAGES.toadlok,
+		name: 'Gelphon',
+		minLevel: 8,
+		maxLevel: 8,
+		size: .75,
+		job: JOB.WARRIOR,
+		tier: MOB_TIERS.unique,
+		questOnly: true,
+		traits: { deadEye: true },
+	},
 ]
