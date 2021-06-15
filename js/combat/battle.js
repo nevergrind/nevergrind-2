@@ -398,11 +398,12 @@ var battle;
 			}*/
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
-			let q = {
-				level: quests[mission.id].level
-			}
 			console.info('totalMobs', totalMobs)
 			for (i=0; i<totalMobs; i++) {
+				let q = {
+					level: quests[mission.id].level
+				}
+				console.info('Q LEVEL', q.level)
 				const maxLevel = q.level
 				const minLevel = Math.max(1, ~~(maxLevel * .7))
 				const tierLotto = _.random(1, 100)
@@ -434,6 +435,7 @@ var battle;
 							dungeon.mobKeys.forEach(key => {
 								if (key === 'img' ||
 									key === 'tier' && entityProps[key] === MOB_TYPES.unique) {
+									// only update the query for these conditions
 									q[key] = entityProps[key]
 								}
 							})

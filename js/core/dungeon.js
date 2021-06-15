@@ -1,5 +1,5 @@
 var dungeon;
-(function(TweenMax, $, _, Power0, Sine, undefined) {
+(function(TweenMax, $, _, Power0, Sine, Power2, undefined) {
 	// TODO: broadcast
 /*
 	- state of entities
@@ -337,14 +337,14 @@ var dungeon;
 	function createHallwayMobs() {
 		// up to 2 mobs per 9600 length hallway
 		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
+		const maxLevel = quests[mission.id].level
+		const minZoneLevel = zones[mission.id].level
+		const minLevel = ~~(Math.max(minZoneLevel, quests[mission.id].level * .7))
 		dungeon.map.hallways.forEach((h, hIndex) => {
 			h.entities = []
 			for (var i=0; i<mobLen; i++) {
 				if (Math.random() > .33) {
-					const query = { level: _.random(
-						Math.max(1, ~~(quests[mission.id].level * .7)),
-						quests[mission.id].level
-					)}
+					const query = { level: _.random(Math.max(1, minLevel), maxLevel) }
 					if (mob.isUniqueTier(_.random(1, 100))) {
 						query.tier = MOB_TIERS.unique
 					}
@@ -484,10 +484,12 @@ var dungeon;
 					inRoom: map.inRoom,
 					roomToId: map.roomToId,
 				}, true)
-				battle.go()
+				delayedCall(ROOM_TRANSITION_DURATION, battle.go)
 			}
 		}
 	}
+
+	const ROOM_TRANSITION_DURATION = .6
 	function rxEnterRoomBackward() {
 		audio.playEnterDoor()
 		map.inRoom = true
@@ -496,12 +498,39 @@ var dungeon;
 	function rxEnterRoomForward(data) {
 		if (data.inRoom) {
 			// entered room
-			map.enterRoom(data.roomToId)
+			TweenMax.to('#scene-dungeon', ROOM_TRANSITION_DURATION, {
+				startAt: { transformOrigin: '50% 50%' },
+				scale: 2.5,
+				filter: 'brightness(0)',
+				ease: Power0.easeOut,
+				onComplete: () => {
+					TweenMax.set('#scene-dungeon', {
+						startAt: { transformOrigin: '50% 50%' },
+						scale: 1,
+						filter: 'brightness(1)'
+					})
+					map.enterRoom(data.roomToId)
+				}
+			})
 			audio.playEnterDoor()
 		}
 		else {
 			// or hallway battle?
+			TweenMax.to('#scene-dungeon', ROOM_TRANSITION_DURATION, {
+				startAt: { transformOrigin: '50% 80%' },
+				scale: 2,
+				filter: 'brightness(20)',
+				ease: Power0.easeOut,
+				onComplete: () => {
+					TweenMax.set('#scene-dungeon', {
+						transformOrigin: '50% 50%',
+						scale: 1,
+						filter: 'brightness(1)'
+					})
+				}
+			})
 			map.inRoom = false
+			audio.playSound('sword-sharpen', 'combat')
 		}
 	}
 	function positionGridTile(tile) {
@@ -784,4 +813,4 @@ var dungeon;
 			y: -dungeon.distanceEnd
 		})
 	}
-})(TweenMax, $, _, Power0, Sine);
+})(TweenMax, $, _, Power0, Sine, Power2);

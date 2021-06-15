@@ -513,7 +513,7 @@ var combat;
 				buff.duration *= .5
 			}
 		}
-		console.info('modifyBuffDuration after', buff.duration)
+		// console.info('modifyBuffDuration after', buff.duration)
 		return buff
 	}
 
@@ -664,7 +664,7 @@ var combat;
 
 				let damPerTick = round(damages[i].damage / buffs[data.key].ticks)
 				// interval only exists on caster's client - broadcasts on tick
-				// console.info('buffs', buffs[data.key], damPerTick)
+				// console.info('buffs', data.key, buffs[data.key].ticks)
 				mobs[damages[i].index].buffs[rowKey].dotTicks = TweenMax.to('', buffs[data.key].interval, {
 					repeat: buffs[data.key].ticks,
 					onRepeat: onDotTick,
@@ -879,6 +879,19 @@ var combat;
 			if (amountReduced < .25) amountReduced = .25
 			// armor, shield, debuff reduction
 			d.damage *= amountReduced
+			// enchanted bonus not affected by armor etc
+			if (mobs[index].traits.poisonEnchanted) {
+				d.damage += addEnchantedDamage(index)
+			}
+			if (mobs[index].traits.lightningEnchanted) {
+				d.damage += addEnchantedDamage(index)
+			}
+			if (mobs[index].traits.fireEnchanted) {
+				d.damage += addEnchantedDamage(index)
+			}
+			if (mobs[index].traits.iceEnchanted) {
+				d.damage += addEnchantedDamage(index)
+			}
 		}
 		else {
 			// magMit
@@ -910,6 +923,9 @@ var combat;
 		if (my.buffFlags.mirrorImage) reduceMagicShieldDamage(d, 'mirrorImage')
 		if (!d.ticks) combat.levelSkillCheck(PROP.DEFENSE)
 		return d
+	}
+	function addEnchantedDamage(index) {
+		return mobs[index].level / 3
 	}
 	function enhanceMobSpellDamage(index, hit) {
 		if (hit.damageType === DAMAGE_TYPE.POISON) {

@@ -271,7 +271,7 @@ let mobs = [];
 		}
 		// console.info('results', results)
 
-		// does this in case the tier query doesn't find a mob in the level range
+		// does this when no name/tier OR in case the tier query doesn't find a mob in the level range
 		if (!results.length || uniqueMobAlreadyExists(results)) {
 			// normal mob - get random mob by level
 			results = mob.data[zoneName].filter(filterNormalMobs)
@@ -295,6 +295,9 @@ let mobs = [];
 			// regular mob - set based on level
 			results.forEach((r, i) => {
 				r.level = Math.min(q.level, quests[mission.id].level)
+				if (r.level < zones[mission.id].level) {
+					r.level = zones[mission.id].level
+				}
 				console.info('results level', r.level, q)
 			})
 		}
@@ -409,7 +412,7 @@ let mobs = [];
 			...mobConfig,
 		}
 		// console.info('mobConfig', _.cloneDeep(mobConfig))
-		console.info('setMob', _.cloneDeep(mobs[i]))
+		console.info('setMob', mobs[i].level, _.cloneDeep(mobs[i]))
 		// start attack cycle
 		timers.mobAttack[i].kill()
 		timers.mobAttack[i] = delayedCall(Math.random() * 2 + 2, mob.attack, [i])
@@ -431,6 +434,10 @@ let mobs = [];
 		if (!m.img) return
 		// set dom
 		const scaleByLayer = i <= 4 ? 1 : .925
+		// console.info('m', m)
+		const finalSize = m.size + ((m.level - m.minLevel) / 100)
+		m.size = finalSize
+		// console.info('finalSize', finalSize)
 		let width = ~~((m.size * (mobs.images[m.img].width)) * scaleByLayer)
 		let height = ~~((m.size * (mobs.images[m.img].height)) * scaleByLayer)
 		let x = mob.centerX[i]

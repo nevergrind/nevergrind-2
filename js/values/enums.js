@@ -359,10 +359,11 @@ const MOB_TRAITS = Object.freeze({
 	dauntless: 'Dauntless', // 50% duration stun, fear
 	bloodlusted: 'Bloodlusted', // 50% BR, x3 health regen
 	magister: 'Magister', // 33% all resists, boosts int by 50%
-	poisonEnchanted: 'Poison Enchanted', // 75% PR, 2x poison damage TODO: add +damage to melee?
+	poisonEnchanted: 'Poison Enchanted', // 75% PR, 2x poison damage
 	lightningEnchanted: 'Lightning Enchanted', // 75% LR, 2x lightning damage, 50% paralyze effect
 	fireEnchanted: 'Fire Enchanted', // 75% FR, 2x fire damage
 	iceEnchanted: 'Ice Enchanted', // 75% IR, 2x cold damage, 50% chill, freeze effects
+	// half duration for all DoTs?
 })
 /*
 const QUEST_MOBS = Object.freeze({
