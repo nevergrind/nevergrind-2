@@ -38,8 +38,8 @@ var zones = [{
 	{
 		id: 4,
 		name: ZONES.rivenGrotto,
-		level: 5,
-		maxLevel: 20,
+		level: 8,
+		maxLevel: 24,
 		isOpen: 0,
 		missions: quests.filter(q => q.zone === ZONES.rivenGrotto),
 		mobs: mob.data[ZONES.rivenGrotto].reduce(mob.getMobImagesByZone, [])
@@ -47,8 +47,8 @@ var zones = [{
 	{
 		id: 5,
 		name: ZONES.bastilleCitadel,
-		level: 8,
-		maxLevel: 20,
+		level: 10,
+		maxLevel: 24,
 		isOpen: 0,
 		missions: quests.filter(q => q.zone === ZONES.bastilleCitadel),
 		mobs: mob.data[ZONES.bastilleCitadel].reduce(mob.getMobImagesByZone, [])
