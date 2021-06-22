@@ -489,7 +489,7 @@ var dungeon;
 		}
 	}
 
-	const ROOM_TRANSITION_DURATION = .6
+	const ROOM_TRANSITION_DURATION = 1
 	function rxEnterRoomBackward() {
 		audio.playEnterDoor()
 		map.inRoom = true
@@ -502,7 +502,7 @@ var dungeon;
 				startAt: { transformOrigin: '50% 50%' },
 				scale: 2.5,
 				filter: 'brightness(0)',
-				ease: Power0.easeOut,
+				ease: Power2.easeOut,
 				onComplete: () => {
 					TweenMax.set('#scene-dungeon', {
 						startAt: { transformOrigin: '50% 50%' },
@@ -517,10 +517,13 @@ var dungeon;
 		else {
 			// or hallway battle?
 			TweenMax.to('#scene-dungeon', ROOM_TRANSITION_DURATION, {
+				filter: 'brightness(0)',
+				ease: Power2.easeOut,
+			})
+			TweenMax.to('#scene-dungeon', ROOM_TRANSITION_DURATION, {
 				startAt: { transformOrigin: '50% 80%' },
-				scale: 2,
-				filter: 'brightness(20)',
-				ease: Power0.easeOut,
+				scale: 1.5,
+				ease: Back.easeOut,
 				onComplete: () => {
 					TweenMax.set('#scene-dungeon', {
 						transformOrigin: '50% 50%',
@@ -773,7 +776,7 @@ var dungeon;
 		const zoneName = mission.getZoneKey()
 		for (var i=0; i<MAX_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(
-				PIXI.Texture.from('images/dungeon/'+ zoneName +'-wall.jpg'))
+				PIXI.Texture.from('images/dungeon/'+ zoneName +'-wall-right.jpg'))
 			tile.anchor.set(1, .5)
 			tile.width = MaxWidth * AspectRatio
 			tile.height = MaxHeight

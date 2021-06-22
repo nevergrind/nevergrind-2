@@ -4,11 +4,12 @@
  * @type {{deathEnabled: boolean, defaultZone: number, walkFast: boolean}}
  */
 const Config = {
+	autoAttackEnabled: true,
 	consoleDisabled: false,
 	guaranteedLoot: false,
 	deathEnabled: true,
-	walkFast: true,
-	defaultZone: zones.find(z => z.name === ZONES.greenthornCavern).id,
+	walkFast: false,
+	defaultZone: zones.find(z => z.name === ZONES.bastilleCitadel).id,
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
 	forceUnique: false,
