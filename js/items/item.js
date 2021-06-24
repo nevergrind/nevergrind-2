@@ -110,20 +110,20 @@ var loot = {};
 	const MAX_TREASURE_CLASS = 45
 	const potionRecovers = [20,40,80,160,320,640]
 	const potionMap = {
-		WAR: { hp: 2, mp: 1, sp: 1 },
-		SHD: { hp: 2, mp: 1.5, sp: 1 },
-		CRU: { hp: 2, mp: 1.5, sp: 1.5 },
-		MNK: { hp: 1.5, mp: 1.5, sp: 1.5 },
-		ROG: { hp: 1.5, mp: 1.5, sp: 1.5 },
-		RNG: { hp: 1.5, mp: 1.5, sp: 1.5 },
-		BRD: { hp: 1.5, mp: 1.5, sp: 1.5 },
-		DRU: { hp: 1.5, mp: 1.5, sp: 2 },
-		CLR: { hp: 1.5, mp: 1.5, sp: 2 },
-		SHM: { hp: 1.5, mp: 1.5, sp: 2 },
-		WLK: { hp: 1, mp: 2, sp: 1.5 },
-		ENC: { hp: 1, mp: 2, sp: 1.5 },
-		TMP: { hp: 1, mp: 2, sp: 1.5 },
-		WIZ: { hp: 1, mp: 2, sp: 1.5 },
+		[JOB.WARRIOR]: { hp: 2, mp: 1, sp: 1 },
+		[JOB.SHADOW_KNIGHT]: { hp: 2, mp: 1.5, sp: 1 },
+		[JOB.CRUSADER]: { hp: 2, mp: 1.5, sp: 1.5 },
+		[JOB.MONK]: { hp: 1.5, mp: 1.5, sp: 1.5 },
+		[JOB.ROGUE]: { hp: 1.5, mp: 1.5, sp: 1.5 },
+		[JOB.RANGER]: { hp: 1.5, mp: 1.5, sp: 1.5 },
+		[JOB.BARD]: { hp: 1.5, mp: 1.5, sp: 1.5 },
+		[JOB.DRUID]: { hp: 1.5, mp: 1.5, sp: 2 },
+		[JOB.CLERIC]: { hp: 1.5, mp: 1.5, sp: 2 },
+		[JOB.SHAMAN]: { hp: 1.5, mp: 1.5, sp: 2 },
+		[JOB.WARLOCK]: { hp: 1, mp: 2, sp: 1.5 },
+		[JOB.ENCHANTER]: { hp: 1, mp: 2, sp: 1.5 },
+		[JOB.TEMPLAR]: { hp: 1, mp: 2, sp: 1.5 },
+		[JOB.WIZARD]: { hp: 1, mp: 2, sp: 1.5 },
 	}
 	// events
 	$('#inventory')

@@ -73,86 +73,86 @@ mobSkills = {};
 		lightningBolt,
 		fireball,
 		initFilter,
-		WAR: [
+		[JOB.WARRIOR]: [
 			{ chance: .07, key: 'slam' }, // STUN
 			/*{ chance: .5, key: 'venomBolt' },*/ // TEST
 		],
-		CRU: [
+		[JOB.CRUSADER]: [
 			{ chance: .05, key: 'slam' },
 			{ chance: .12, key: 'divineJudgment' },
 			{ chance: 0, key: 'divineGrace', maxHeal: 1 },
 			{ chance: 0, key: 'layHands' },
 		],
-		SHD: [
+		[JOB.SHADOW_KNIGHT]: [
 			{ chance: .05, key: 'slam' },
 			{ chance: .11, key: 'bloodTerror' }, // BLOOD - FEAR
 			{ chance: .16, key: 'decayingDoom' }, // ARCANE - ARMOR
 			{ chance: 0, key: 'harmTouch' }, // VOID
 		],
-		MNK: [
+		[JOB.MONK]: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .09, key: 'craneKick' },
 			{ chance: .17, key: 'hadoken' }, // ARCANE
 			{ chance: .25, key: 'dragonPunch' }, // FIRE
 		],
-		ROG: [
+		[JOB.ROGUE]: [
 			{ chance: .05, key: 'slam', },
 			{ chance: .15, key: 'backstab' },
 			{ chance: .25, key: 'widowStrike' }, // POISON
 		],
-		RNG: [
+		[JOB.RANGER]: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .09, key: 'trueshotStrike' },
 			{ chance: .15, key: 'burningEmbers' }, // FIRE ARMOR
 			{ chance: .19, key: 'shockNova' }, // LIGHTNING
 		],
-		BRD: [ // should boost regen and resists too?
+		[JOB.BARD]: [ // should boost regen and resists too?
 			{ chance: .05, key: 'slam', },
 			{ chance: .14, key: 'bellow' }, // ARCANE
 			{ chance: .2, key: 'creepingChords' }, // LIGHTNING PARALYZE
 		],
-		DRU: [
+		[JOB.DRUID]: [
 			{ chance: .03, key: 'slam', },
 			{ chance: .13, key: 'starfire' }, // FIRE
 			{ chance: .19, key: 'lightningBlast' }, // LIGHTNING SILENCE?
 			{ chance: .24, key: 'blizzard' }, // ICE CHILL?
 			{ chance: 0, key: 'naturesTouch', maxHeal: 2 }, // ARCANE
 		],
-		CLR: [
+		[JOB.CLERIC]: [
 			{ chance: .03, key: 'slam', },
 			{ chance: .15, key: 'smite' }, // ARCANE
 			{ chance: .2, key: 'forceOfGlory' }, // ARCANE STUN?
 			{ chance: 0, key: 'divineLight', maxHeal: 3 },
 		],
-		SHM: [
+		[JOB.SHAMAN]: [
 			{ chance: .03, key: 'slam', },
 			{ chance: .13, key: 'frostRift' }, // ICE CHILL
 			{ chance: .18, key: 'scourge' }, // BLOOD
 			{ chance: .24, key: 'affliction' }, // POISON
 			{ chance: 0, key: 'mysticalGlow', maxHeal: 2 },
 		],
-		WLK: [
+		[JOB.WARLOCK]: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .08, key: 'venomBolt' }, // POISON
 			{ chance: .16, key: 'engulfingDarkness' }, // POISON
 			{ chance: .24, key: 'bloodFire' }, // FIRE
 			{ chance: .3, key: 'panicStrike' }, // ARCANE FEAR
 		],
-		ENC: [
+		[JOB.ENCHANTER]: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .08, key: 'gravityFlux' }, // ARCANE STUN (brief)
 			{ chance: .14, key: 'mindBlitz' }, // ARCANE SILENCE?
 			{ chance: .24, key: 'staticSuffocation' }, // LIGHTNING PARALYZE
 			{ chance: .3, key: 'subversion' }, // POISON
 		],
-		TMP: [
+		[JOB.TEMPLAR]: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .09, key: 'lavaBolt', }, // FIRE
 			{ chance: .16, key: 'staticStorm' }, // LIGHTNING SILENCE?
 			{ chance: .23, key: 'arclight' }, // LIGHTNING PARALYZE
 			{ chance: .3, key: 'glacialSpike' }, // ICE CHILL?
 		],
-		WIZ: [
+		[JOB.WIZARD]: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .07, key: 'fireBolt' }, // FIRE
 			{ chance: .13, key: 'iceBolt' }, // ICE CHILL
