@@ -315,7 +315,7 @@ var quests;
 		// Kordata Cove Quests
 		{
 			level: 13,
-			bossName: 'Himber',
+			bossName: 'Spearmaster Dimas',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -323,7 +323,7 @@ var quests;
 		},
 		{
 			level: 15,
-			bossName: 'Himber',
+			bossName: 'Assassin Nagugesa',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -331,7 +331,7 @@ var quests;
 		},
 		{
 			level: 17,
-			bossName: 'Himber',
+			bossName: 'Umber',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -339,7 +339,7 @@ var quests;
 		},
 		{
 			level: 19,
-			bossName: 'Himber',
+			bossName: 'Troubadour Tesai',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -347,7 +347,7 @@ var quests;
 		},
 		{
 			level: 21,
-			bossName: 'Himber',
+			bossName: 'Thaumaturge Vanma',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -355,7 +355,7 @@ var quests;
 		},
 		{
 			level: 23,
-			bossName: 'Himber',
+			bossName: 'Prime Occultist Kattra',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -363,7 +363,7 @@ var quests;
 		},
 		{
 			level: 25,
-			bossName: 'Himber',
+			bossName: 'King Krama',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
