@@ -372,7 +372,7 @@ var quests;
 		// Sylong Sanctuary Quests
 		{
 			level: 18,
-			bossName: 'Himber',
+			bossName: 'Trainer Grudor',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -380,7 +380,7 @@ var quests;
 		},
 		{
 			level: 20,
-			bossName: 'Himber',
+			bossName: 'Shadow Weaver Zamgara',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -388,7 +388,7 @@ var quests;
 		},
 		{
 			level: 22,
-			bossName: 'Himber',
+			bossName: 'Hierophant Suprak',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -396,7 +396,7 @@ var quests;
 		},
 		{
 			level: 24,
-			bossName: 'Himber',
+			bossName: 'Blademaster Xamud',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -404,7 +404,7 @@ var quests;
 		},
 		{
 			level: 26,
-			bossName: 'Himber',
+			bossName: 'Mordin the Conqueror',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -412,7 +412,7 @@ var quests;
 		},
 		{
 			level: 28,
-			bossName: 'Himber',
+			bossName: 'Arch Bishop Griven',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -420,7 +420,7 @@ var quests;
 		},
 		{
 			level: 30,
-			bossName: 'Himber',
+			bossName: 'Baron of Sylong',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
