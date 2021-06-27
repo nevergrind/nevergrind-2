@@ -9,7 +9,7 @@ const Config = {
 	guaranteedLoot: false,
 	deathEnabled: true,
 	walkFast: false,
-	defaultZone: zones.find(z => z.name === ZONES.bastilleCitadel).id,
+	defaultZone: zones.find(z => z.name === ZONES.thuleCrypt).id,
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
 	forceUnique: false,

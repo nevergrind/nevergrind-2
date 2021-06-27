@@ -582,7 +582,7 @@ let map;
 			TweenMax.set('#quest-completed', CSS.DISPLAY_NONE)
 			querySelector('#quest-log').classList.add('no-pointer')
 			map.questHeader.textContent = 'Objective:'
-			map.questName.textContent = mission.getTitle(mission.questId)
+			map.questName.textContent = mission.getTitle(mission.id, mission.questId)
 		}
 		animateTorch()
 		handleCenterParty()

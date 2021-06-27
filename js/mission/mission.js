@@ -48,8 +48,8 @@ var mission;
 			'<div id="mission-detail-col">'
 				if (party.presence[0].isLeader) {
 					questHtml += '<div id="mission-details">'+
-						'<div id="mission-title">'+ mission.getTitle(mission.questId) +'</div>' +
-						'<div id="mission-level">'+ levelHtml() + '</div>' +
+						'<div id="mission-title">'+ mission.getTitle(mission.id, mission.questId) +'</div>' +
+						'<div id="mission-level">'+ levelHtml(mission.id, mission.questId) + '</div>' +
 					'</div>' +
 					'<div id="mission-embark" class="ng-btn">Embark!</div>'
 				}
@@ -60,15 +60,15 @@ var mission;
 		'</div>'
 
 		questHtml += '<div id="mission-counter" class="aside-frame text-shadow">'
-		zones.forEach(function(z) {
-			if (my.level + 4 >= z.level) {
+		zones.forEach(zone => {
+			if (my.level + 4 >= zone.level) {
 				questHtml +=
-				'<div class="mission-zone-headers '+ getOpenMenuClass(z.level) + ' '+ combat.considerClass[combat.getLevelDifferenceIndex(z.level)] +'" data-id="'+ z.id +'">'+
+				'<div class="mission-zone-headers '+ getOpenMenuClass(zone.level) + ' '+ combat.considerClass[combat.getLevelDifferenceIndex(zone.level)] +'" data-id="'+ zone.id +'">'+
 					'<img class="mission-tree-btn mission-plus" src="images/ui/plus.png">'+
-					'<div>' + z.name + '</div>' +
+					'<div>' + zone.name + '</div>' +
 				'</div>' +
-				'<div id="mission-quest-list-wrap-'+ z.id +'" class="mission-quest-list">' +
-					getMissionRowHtml(z) +
+				'<div id="mission-quest-list-wrap-'+ zone.id +'" class="mission-quest-list">' +
+					getMissionRowHtml(zone) +
 				'</div>';
 				// console.info('zone', zone);
 			}
@@ -77,14 +77,14 @@ var mission;
 		return questHtml
 
 	}
-	function getMissionRowHtml(z) {
+	function getMissionRowHtml(zone) {
 		var html = '';
-		zones[z.id].missions.forEach((quest, index) => {
-			const levelDiffClass = combat.considerClass[combat.getLevelDifferenceIndex(quests[index].level)]
+		zones[zone.id].missions.forEach((quest, questIndex) => {
+			const levelDiffClass = combat.considerClass[combat.getLevelDifferenceIndex(quests[questIndex].level)]
 			html += '<div class="mission-quest-item ellipsis ' + levelDiffClass +'" '+
-				'data-id="'+ z.id +'" ' +
-				'data-quest="'+ index +'">' +
-				mission.getTitle(index) +
+				'data-id="'+ zone.id +'" ' +
+				'data-quest="'+ questIndex +'">' +
+				mission.getTitle(zone.id, questIndex) +
 			'</div>'
 		})
 
@@ -93,8 +93,8 @@ var mission;
 		}
 		return html;
 	}
-	function levelHtml() {
-		return 'Lv.' + quests[mission.questId].level
+	function levelHtml(zoneId, questId) {
+		return 'Lv.' + zones[zoneId].missions[questId].level
 	}
 	function clickQuest() {
 		var id = this.dataset.id * 1
@@ -105,8 +105,8 @@ var mission;
 			mission.questId = questId
 			// console.info("zone name: ", zones[mission.id].name)
 			querySelector('#mission-preview').src = getZonePreviewImg(questId)
-			$("#mission-title").html(mission.getTitle(mission.questId));
-			querySelector('#mission-level').innerHTML = levelHtml()
+			$("#mission-title").html(mission.getTitle(mission.id, mission.questId));
+			querySelector('#mission-level').innerHTML = levelHtml(mission.id, mission.questId)
 			audio.playSound('click-12')
 		}
 		else {
@@ -226,7 +226,7 @@ var mission;
 	}
 
 	function embarkReceived(data) {
-		console.info("MISSION UPDATE! ", data)
+		console.info("MISSION UPDATE! ", data.id, data.questId, data)
 		// all party updated on mission status
 		mission.inProgress = true
 		mission.isCompleted = false
@@ -249,7 +249,7 @@ var mission;
 			filter: 'brightness(0)',
 			ease: Power4.easeOut
 		})
-		ng.msg('Mission started: ' + mission.getTitle(mission.questId))
+		ng.msg('Mission started: ' + mission.getTitle(mission.id, mission.questId))
 		let questDelay = app.isApp ? 3 : 0
 		audio.playSound('click-4', '', 1, 500)
 		delayedCall(questDelay, dungeon.rxGo)
@@ -278,18 +278,19 @@ var mission;
 	 * @param id
 	 * @returns {string}
 	 */
-	function getTitle(id) {
+	function getTitle(zoneId, questId) {
 		// console.info('getTitle', typeof id, id)
-		if (quests[id].type === QUEST_TYPES.kill) {
-			return 'Kill ' + quests[id].bossName
+		const questObj = zones[zoneId].missions[questId]
+		if (questObj.type === QUEST_TYPES.kill) {
+			return 'Kill ' + questObj.bossName
 		}
-		else if (quests[id].type === QUEST_TYPES.explore) {
+		else if (questObj.type === QUEST_TYPES.explore) {
 			return 'Explore 90% of rooms '
 		}
-		else if (quests[id].type === QUEST_TYPES.find) {
+		else if (questObj.type === QUEST_TYPES.find) {
 			return 'Find 5 items'
 		}
-		else if (quests[id].type === QUEST_TYPES.slay) {
+		else if (questObj.type === QUEST_TYPES.slay) {
 			return 'Slay 8 orcs'
 		}
 		else return ''

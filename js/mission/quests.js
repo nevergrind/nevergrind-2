@@ -429,7 +429,7 @@ var quests;
 		// Thule Crypt Quests
 		{
 			level: 22,
-			bossName: 'Himber',
+			bossName: 'Undead Knight of Thule',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -437,7 +437,7 @@ var quests;
 		},
 		{
 			level: 24,
-			bossName: 'Himber',
+			bossName: 'Skeleton King Arcturus',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -445,7 +445,7 @@ var quests;
 		},
 		{
 			level: 26,
-			bossName: 'Himber',
+			bossName: 'Doctor Grelzn',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -453,7 +453,7 @@ var quests;
 		},
 		{
 			level: 28,
-			bossName: 'Himber',
+			bossName: 'Contaminated Fiend',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -461,7 +461,7 @@ var quests;
 		},
 		{
 			level: 30,
-			bossName: 'Himber',
+			bossName: 'Prince Heparot',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -469,7 +469,7 @@ var quests;
 		},
 		{
 			level: 32,
-			bossName: 'Himber',
+			bossName: 'Myconid Spore King',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -477,7 +477,7 @@ var quests;
 		},
 		{
 			level: 35,
-			bossName: 'Himber',
+			bossName: 'Thulian Wraith Lord',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -485,7 +485,63 @@ var quests;
 		},
 		// Temple of Prenssor Quests
 		{
-			level: 1,
+			level: 26,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.templeOfPrenssor,
+		},
+		{
+			level: 28,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.templeOfPrenssor,
+		},
+		{
+			level: 30,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.templeOfPrenssor,
+		},
+		{
+			level: 32,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.templeOfPrenssor,
+		},
+		{
+			level: 34,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.templeOfPrenssor,
+		},
+		{
+			level: 36,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.templeOfPrenssor,
+		},
+		{
+			level: 38,
+			bossName: 'Himber',
+			description: '',
+			type: QUEST_TYPES.kill,
+			size: MAP_SIZES.medium,
+			zone: ZONES.templeOfPrenssor,
+		},
+		{
+			level: 40,
 			bossName: 'Himber',
 			description: '',
 			type: QUEST_TYPES.kill,
