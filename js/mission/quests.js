@@ -486,7 +486,7 @@ var quests;
 		// Temple of Prenssor Quests
 		{
 			level: 26,
-			bossName: 'Himber',
+			bossName: 'Adjudicator Vizk',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -494,7 +494,7 @@ var quests;
 		},
 		{
 			level: 28,
-			bossName: 'Himber',
+			bossName: 'Magistrate Kuthok',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -502,7 +502,7 @@ var quests;
 		},
 		{
 			level: 30,
-			bossName: 'Himber',
+			bossName: 'Roggok',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -510,7 +510,7 @@ var quests;
 		},
 		{
 			level: 32,
-			bossName: 'Himber',
+			bossName: 'Krushilgreth',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -518,7 +518,7 @@ var quests;
 		},
 		{
 			level: 34,
-			bossName: 'Himber',
+			bossName: 'Emperor Gox',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -526,7 +526,7 @@ var quests;
 		},
 		{
 			level: 36,
-			bossName: 'Himber',
+			bossName: 'Archon Biltoth',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -534,7 +534,7 @@ var quests;
 		},
 		{
 			level: 38,
-			bossName: 'Himber',
+			bossName: 'Champion Drazzok',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -542,7 +542,7 @@ var quests;
 		},
 		{
 			level: 40,
-			bossName: 'Himber',
+			bossName: 'Avatar of Terror',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
