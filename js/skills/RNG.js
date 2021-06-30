@@ -94,7 +94,7 @@
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
 		hit = stats.rangedDamage(tgt, data.critBonus[my.skills[index]])
-		console.info('trueshot', data);
+		// console.info('trueshot', data);
 		damages.push({
 			...hit,
 			key: 'trueshotStrike',

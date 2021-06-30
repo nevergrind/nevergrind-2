@@ -140,7 +140,7 @@
 							yAdjust: (i * 50) - 100
 						})
 						if (i === 0 || i === 4) {
-							console.info('storm')
+							// console.info('storm')
 							audio.playSound('wind-fast', 'combat', vol)
 						}
 					})
