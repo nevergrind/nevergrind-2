@@ -616,7 +616,7 @@ var quests;
 		// Anuran Ruins Quests
 		{
 			level: 34,
-			bossName: 'Himber',
+			bossName: 'Assassin Shex',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -624,7 +624,7 @@ var quests;
 		},
 		{
 			level: 36,
-			bossName: 'Himber',
+			bossName: 'Gazer Nazozeth',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -632,7 +632,7 @@ var quests;
 		},
 		{
 			level: 38,
-			bossName: 'Himber',
+			bossName: 'Minister Isizz',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -640,7 +640,7 @@ var quests;
 		},
 		{
 			level: 40,
-			bossName: 'Himber',
+			bossName: 'Tracker Zydius',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -648,7 +648,7 @@ var quests;
 		},
 		{
 			level: 42,
-			bossName: 'Himber',
+			bossName: 'Sentinel Urgyts',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -656,7 +656,7 @@ var quests;
 		},
 		{
 			level: 44,
-			bossName: 'Himber',
+			bossName: 'Caretaker Mystis',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -664,7 +664,7 @@ var quests;
 		},
 		{
 			level: 46,
-			bossName: 'Himber',
+			bossName: 'Avatar Gresgrog',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -672,7 +672,7 @@ var quests;
 		},
 		{
 			level: 48,
-			bossName: 'Himber',
+			bossName: 'Arch Magus Gurka',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -680,7 +680,7 @@ var quests;
 		},
 		{
 			level: 50,
-			bossName: 'Himber',
+			bossName: 'Toadlok King Frogold',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
