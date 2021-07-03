@@ -32,10 +32,10 @@ var button;
 	let name, hit
 	let mySwingSpeed = 0
 	const POTION_COOLDOWN = 60
-	const GlobalCooldownDuration = 2.5
-	const HybridAutoAttackers = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER, JOB.BARD]
+	const GLOBAL_COOLDOWN_DURATION = 2.5
+	const HYBRID_AUTO_ATTACKERS = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER, JOB.BARD]
 	let damages
-	const ButtonFlash = {
+	const BUTTON_FLASH = {
 		startAt: {
 			scale: 1,
 			opacity: 1,
@@ -188,7 +188,7 @@ var button;
 		})
 	}
 	function getCooldownSpeed() {
-		return GlobalCooldownDuration * stats.getSkillSpeed()
+		return GLOBAL_COOLDOWN_DURATION * stats.getSkillSpeed()
 	}
 	function triggerSkill(index) {
 		if (my.hp <= 0) return
@@ -333,7 +333,7 @@ var button;
 		}
 	}
 	function cannotAutoAttack() {
-		return (!HybridAutoAttackers.includes(my.job) && timers.castBar < 1) ||
+		return (!HYBRID_AUTO_ATTACKERS.includes(my.job) && timers.castBar < 1) ||
 			!my.targetIsMob ||
 			my.buffFlags.frozenBarrier ||
 			my.isStunned()
@@ -353,7 +353,7 @@ var button;
 			el = '#skill-timer-secondary-rotate'
 		}
 
-		if (!HybridAutoAttackers.includes(my.job) && timers.castBar < 1) {
+		if (!HYBRID_AUTO_ATTACKERS.includes(my.job) && timers.castBar < 1) {
 			timers[key + CALL].kill()
 			timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
 			return
@@ -385,7 +385,7 @@ var button;
 		timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
 	}
 	function pauseAutoAttack() {
-		if (!HybridAutoAttackers.includes(my.job)) {
+		if (!HYBRID_AUTO_ATTACKERS.includes(my.job)) {
 			timers['primaryAttack' + CYCLE].pause()
 			timers['secondaryAttack' + CYCLE].pause()
 			timers['primaryAttack' + CALL].pause()
@@ -452,7 +452,7 @@ var button;
 		}
 		else {
 			// button flash
-			TweenMax.to(o.el, .5, ButtonFlash)
+			TweenMax.to(o.el, .5, BUTTON_FLASH)
 			if (typeof o.index === 'number') {
 				// complete reset in actuality to avoid collision with globalCooldown
 				timers.skillCooldowns[o.index] = 1
