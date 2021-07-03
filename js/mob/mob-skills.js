@@ -155,10 +155,10 @@ mobSkills = {};
 		[JOB.WIZARD]: [
 			{ chance: .02, key: 'slam', },
 			{ chance: .07, key: 'fireBolt' }, // FIRE
-			{ chance: .13, key: 'iceBolt' }, // ICE CHILL
-			{ chance: .19, key: 'magicMissiles' }, // ARCANE SILENCE
-			{ chance: .25, key: 'lightningBolt' }, // LIGHTNING PARALYZE
-			{ chance: .3, key: 'fireball' }, // FIRE
+			{ chance: .14, key: 'iceBolt' }, // ICE CHILL
+			{ chance: .21, key: 'magicMissiles' }, // ARCANE SILENCE
+			{ chance: .28, key: 'lightningBolt' }, // LIGHTNING PARALYZE
+			{ chance: .33, key: 'fireball' }, // FIRE
 		],
 	}
 	let row

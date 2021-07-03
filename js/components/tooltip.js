@@ -42,7 +42,7 @@ var tooltip;
 	function getTooltipName(obj) {
 		// console.info('getTooltipName', obj)
 		return '<div style="border: 1px ridge #013"></div>' +
-		'<div class="tooltip-name-bg" class="flex-column flex-center align-center">' +
+		'<div class="tooltip-name-bg flex-column flex-center align-center">' +
 			'<div class="tooltip-name item-' + _.kebabCase(obj.rarity) + '">' +
 				(obj.unidentified ? obj.baseName : obj.name) +
 			'</div>' +
@@ -371,7 +371,7 @@ var tooltip;
 		// console.info('getSkillHtml config', config)
 		skillHtml = `
 		<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">
-			<div class="tooltip-name-bg" class="flex-column flex-center align-center">
+			<div class="tooltip-name-bg flex-column flex-center align-center">
 				<div class="tooltip-name" 
 				style="font-size: 1.125rem">${config.name}</div>
 			</div>
