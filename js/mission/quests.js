@@ -689,7 +689,7 @@ var quests;
 		// Galeblast Fortress Quests
 		{
 			level: 37,
-			bossName: 'Himber',
+			bossName: 'Bishop Goktal',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -697,7 +697,7 @@ var quests;
 		},
 		{
 			level: 39,
-			bossName: 'Himber',
+			bossName: 'Pontiff Kramorx',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -705,7 +705,7 @@ var quests;
 		},
 		{
 			level: 41,
-			bossName: 'Himber',
+			bossName: 'Ambassador Volsork',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -713,7 +713,7 @@ var quests;
 		},
 		{
 			level: 43,
-			bossName: 'Himber',
+			bossName: 'Magnate Korreac',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -721,7 +721,7 @@ var quests;
 		},
 		{
 			level: 45,
-			bossName: 'Himber',
+			bossName: 'Goliath Azaruch',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -729,7 +729,7 @@ var quests;
 		},
 		{
 			level: 47,
-			bossName: 'Himber',
+			bossName: 'Champion Krokkos',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -737,7 +737,7 @@ var quests;
 		},
 		{
 			level: 49,
-			bossName: 'Himber',
+			bossName: 'Vizier Kongumen Divorn',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -745,7 +745,7 @@ var quests;
 		},
 		{
 			level: 51,
-			bossName: 'Himber',
+			bossName: 'King Margrave Kalgresh',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -753,7 +753,7 @@ var quests;
 		},
 		{
 			level: 53,
-			bossName: 'Himber',
+			bossName: 'Matron Maelentia',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
