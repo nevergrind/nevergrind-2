@@ -239,7 +239,7 @@ let mobs = [];
 	 * @returns {boolean}
 	 */
 	function isUniqueTier(rand) {
-		return quests[mission.id].level >= 5 && rand === 100 ||
+		return mission.getQuestData(mission.id, mission.questId).level >= 5 && rand === 100 ||
 			Config.forceUnique
 	}
 
@@ -279,8 +279,8 @@ let mobs = [];
 
 		// no results? just in case..
 		if (!results.length) {
-			console.warn("THIS SHOULD NOT HAPPEN!")
 			results = [mob.data[zoneName][0]]
+			console.warn("THIS SHOULD NOT HAPPEN!", results)
 		}
 
 		// post-processing
@@ -294,11 +294,13 @@ let mobs = [];
 		else {
 			// regular mob - set based on level
 			results.forEach((r, i) => {
+				// constrain mob level to quest max - only name/tier queriest can bypass this limit
 				r.level = Math.min(q.level, quests[mission.id].level)
 				if (r.level < zones[mission.id].level) {
+					// can't go lower than the zone minimum
 					r.level = zones[mission.id].level
 				}
-				console.info('results level', r.level, q)
+				// console.info('results level', r.level, q)
 			})
 		}
 
@@ -320,7 +322,7 @@ let mobs = [];
 				// only should return normal mobs (no uniques or bosses)
 				return false
 			}
-			///////////////
+
 			let valid = false
 			if (q.level && q.img) {
 				// by level and img
@@ -332,6 +334,7 @@ let mobs = [];
 			}
 			else if (q.level) {
 				// by level only
+				// console.info('filterNormalMobs', m.minLevel, q.level, m.maxLevel)
 				if (m.minLevel <= q.level && q.level <= m.maxLevel) valid = true
 				else valid = false
 			}

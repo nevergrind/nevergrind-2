@@ -21,6 +21,7 @@ var mission;
 		getZoneKey,
 		getZoneImg,
 		isQuestCompleted,
+		getQuestData,
 		getTitle,
 		getRewards,
 	};
@@ -78,7 +79,8 @@ var mission;
 
 	}
 	function getMissionRowHtml(zone) {
-		var html = '';
+		let html = '';
+		let questId = 0
 		zones[zone.id].missions.forEach((quest, questIndex) => {
 			const levelDiffClass = combat.considerClass[combat.getLevelDifferenceIndex(quests[questIndex].level)]
 			html += '<div class="mission-quest-item ellipsis ' + levelDiffClass +'" '+
@@ -86,6 +88,7 @@ var mission;
 				'data-quest="'+ questIndex +'">' +
 				mission.getTitle(zone.id, questIndex) +
 			'</div>'
+			questId++
 		})
 
 		if (!html) {
@@ -207,7 +210,7 @@ var mission;
 				test.setupMissionData()
 			}
 			if (!_.size(dungeon.map)) {
-				dungeon.map = Grid.createMap(quests[mission.questId].size)
+				dungeon.map = Grid.createMap(mission.getQuestData(mission.id, mission.questId).size)
 				dungeon.createHallwayMobs()
 				dungeon.map.rooms.forEach(dungeon.getRoomMobCount)
 				dungeon.setBossRoom()
@@ -255,7 +258,7 @@ var mission;
 		delayedCall(questDelay, dungeon.rxGo)
 	}
 	function isQuestCompleted() {
-		const type = quests[mission.id].type
+		const type = mission.getQuestData(mission.id, mission.questId).type
 		if (type === QUEST_TYPES.kill) {
 			return !dungeon.map.rooms.find(r => r.boss).isAlive
 		}
@@ -271,6 +274,16 @@ var mission;
 		else {
 			return false
 		}
+	}
+
+	/**
+	 * Returns the quest data object based on zone and quest index
+	 * @param zoneId
+	 * @param questId
+	 * @returns {*}
+	 */
+	function getQuestData(zoneId, questId) {
+		return zones[zoneId].missions[questId]
 	}
 
 	/**
@@ -310,25 +323,26 @@ var mission;
 	}
 
 	function getRewards() {
-		const type = quests[mission.id].type
-		const size = quests[mission.id].size
+		const questData = mission.getQuestData(mission.id, mission.questId)
+		const type = questData.type
+		const size = questData.size
 		let exp = 0
 		let gold = 0
 		if (type === QUEST_TYPES.kill) {
-			gold = getQuestGold(quests[mission.id].level) * .5
-			exp = getQuestExp(quests[mission.id].level) * .75
+			gold = getQuestGold(questData.level) * .5
+			exp = getQuestExp(questData.level) * .75
 		}
 		else if (type === QUEST_TYPES.explore) {
-			gold = getQuestGold(quests[mission.id].level) * 1.5
-			exp = getQuestExp(quests[mission.id].level)
+			gold = getQuestGold(questData.level) * 1.5
+			exp = getQuestExp(questData.level)
 		}
 		else if (type === QUEST_TYPES.find) {
-			gold = getQuestGold(quests[mission.id].level) * 1.25
-			exp = getQuestExp(quests[mission.id].level) * 1.25
+			gold = getQuestGold(questData.level) * 1.25
+			exp = getQuestExp(questData.level) * 1.25
 		}
 		else if (type === QUEST_TYPES.slay) {
-			gold = getQuestGold(quests[mission.id].level)
-			exp = getQuestExp(quests[mission.id].level) * 1.5
+			gold = getQuestGold(questData.level)
+			exp = getQuestExp(questData.level) * 1.5
 		}
 
 		// NOTE: exp value 6-1275

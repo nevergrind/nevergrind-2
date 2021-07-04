@@ -900,9 +900,9 @@ var test;
 	function setupMissionData() {
 		mission.inProgress = true
 		// TODO: something broken here lol
-		const zoneName = zones.find(z => z.id === Config.defaultZone).name
+		// const zoneName = zones.find(z => z.id === Config.defaultZone).name
 		mission.id = Config.defaultZone
-		mission.questId = quests.findIndex(q => q.zone === zoneName)
+		mission.questId = 0
 	}
 	/*
 	https://greensock.com/docs/v2/Plugins/BezierPlugin

@@ -9,7 +9,7 @@ const Config = {
 	guaranteedLoot: false,
 	deathEnabled: true,
 	walkFast: false,
-	defaultZone: zones.find(z => z.name === ZONES.templeOfPrenssor).id,
+	defaultZone: zones.find(z => z.name === ZONES.ashenflowPeak).id,
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
 	forceUnique: false,
