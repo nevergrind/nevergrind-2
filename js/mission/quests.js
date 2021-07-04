@@ -762,7 +762,7 @@ var quests;
 		// Ashenflow Peak Quests
 		{
 			level: 37,
-			bossName: 'Himber',
+			bossName: 'Sergeant Slegs',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -770,7 +770,7 @@ var quests;
 		},
 		{
 			level: 39,
-			bossName: 'Himber',
+			bossName: 'Alchemist Forzogz',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -778,7 +778,7 @@ var quests;
 		},
 		{
 			level: 41,
-			bossName: 'Himber',
+			bossName: 'Captain Blemrots',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -786,7 +786,7 @@ var quests;
 		},
 		{
 			level: 43,
-			bossName: 'Himber',
+			bossName: 'General Gerx',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -794,7 +794,7 @@ var quests;
 		},
 		{
 			level: 45,
-			bossName: 'Himber',
+			bossName: 'Dark Templar Zur Emberflare',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -802,7 +802,7 @@ var quests;
 		},
 		{
 			level: 47,
-			bossName: 'Himber',
+			bossName: 'King Grolgak Rockflare',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -810,7 +810,7 @@ var quests;
 		},
 		{
 			level: 49,
-			bossName: 'Himber',
+			bossName: 'Arch Mage Kreuzius',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -818,7 +818,7 @@ var quests;
 		},
 		{
 			level: 51,
-			bossName: 'Himber',
+			bossName: 'Ashenflow King Chigowitz',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
@@ -826,7 +826,7 @@ var quests;
 		},
 		{
 			level: 53,
-			bossName: 'Himber',
+			bossName: 'Lord Szarthax',
 			description: '',
 			type: QUEST_TYPES.kill,
 			size: MAP_SIZES.medium,
