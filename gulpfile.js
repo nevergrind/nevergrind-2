@@ -260,7 +260,7 @@ function buildNg2(isSdk) {
 
 	// sound & music
 	// console.info("Copying sound and music...");
-	gulp.src(['./sound/*']).pipe(gulp.dest('./build-ng2/sound'));
+	gulp.src(['./sound/**/*']).pipe(gulp.dest('./build-ng2/sound'));
 	gulp.src(['./music/*']).pipe(gulp.dest('./build-ng2/music'));
 
 	console.info("Copying images...");

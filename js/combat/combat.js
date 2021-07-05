@@ -151,14 +151,14 @@ var combat;
 				d.damage = 0
 				d.missed = true
 				combat.popupDamage(d.index, 'MISS!')
-					audio.playSound('miss', 'combat')
+				audio.playSound('miss', 'combat')
 				return d
 			}
 			if (rand() * 100 < mob.dodgeChance(d.index)) {
 				d.damage = 0
 				d.missed = true
 				combat.popupDamage(d.index, 'DODGE!')
-					audio.playSound('miss', 'combat')
+				audio.playSound('miss', 'combat')
 				return d
 			}
 			if (!d.isPiercing) {
@@ -724,12 +724,14 @@ var combat;
 		my.set(PROP.HP, 0)
 		bar.updateBar(PROP.HP, my)
 		timers.clearMy()
+		battle.killAllBattleTimers()
 		autoAttackDisable()
 		spell.cancelSpell()
 		battle.subtractExpPenalty()
 		battle.reckonGXL()
 		animateMyDeath()
 		party.memberDied(0)
+		audio.fadeMusic()
 	}
 	function triggerOnMyDeath() {
 		// on death - must be done before health is subtracted
@@ -980,7 +982,8 @@ var combat;
 
 		if (typeof hits[0] === 'object') {
 			if (hits[0].isParalyzed) {
-				chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', CHAT.WARNING)
+				// chat.log(ng.getArticle(data.i, true) + ' ' + mobs[data.i].name + ' is paralyzed!', CHAT.WARNING)
+				combat.popupDamage(data.i, 'PARALYZED!')
 			}
 			else {
 				if (hits[0].isHeal) processHealToMob(data.i, hits)
@@ -1111,7 +1114,8 @@ var combat;
 			// chat.log(_.startCase(hit.key) + ' hits YOU for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
 			hit.damage = hitAmount
 			combat.popupDamage(hit.row, hit.damage, {targetMob: false, isDot: true, damageType: hit.damageType})
-			processDamageToMe(index, [_.omit(hit, 'duration')])
+			// console.info('HIT', hit, index)
+			processDamageToMe(party.getIndexByRow(hit.row), [_.omit(hit, 'duration')])
 		}
 		function processDamageToMe(index, hits) {
 			// NOTE should be all from ONE mob of the same attack TYPE, but MANY possible PC targets
@@ -1302,6 +1306,7 @@ var combat;
 				audio.playerHit(totalDamage, 0)
 				// damageTakenToMana vulpineMp
 				vulpineMp += ~~(totalDamage * (stats.damageTakenToMana() / resourceLeechDivider))
+				// console.info('IND', index)
 				drainMp = mobs[index].traits.soulDrain ? totalDamage : 0
 				totalMpChange = vulpineMp - drainMp
 				if (totalMpChange !== 0) {
@@ -2287,6 +2292,12 @@ var combat;
 			}
 		}
 	}
+
+	/**
+	 * returns the considerClass index - determines the color of names, quests, etc
+	 * @param level
+	 * @returns {number}
+	 */
 	function getLevelDifferenceIndex(level) {
 		var resp = 0
 		if (level >= my.level + 3) resp = 6

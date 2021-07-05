@@ -81,8 +81,11 @@ var mission;
 	function getMissionRowHtml(zone) {
 		let html = '';
 		let questId = 0
+		let levelDiffClass
+		let considerIndex
 		zones[zone.id].missions.forEach((quest, questIndex) => {
-			const levelDiffClass = combat.considerClass[combat.getLevelDifferenceIndex(quests[questIndex].level)]
+			considerIndex = combat.getLevelDifferenceIndex(mission.getQuestData(zone.id, questIndex).level)
+			levelDiffClass = combat.considerClass[considerIndex]
 			html += '<div class="mission-quest-item ellipsis ' + levelDiffClass +'" '+
 				'data-id="'+ zone.id +'" ' +
 				'data-quest="'+ questIndex +'">' +

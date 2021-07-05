@@ -324,7 +324,6 @@ var battle;
 		if (combat.isBattleOver()) {
 			// nothing in this room
 			map.inCombat = false
-			audio.playAmbientLoop()
 			map.show(1.5)
 		}
 		else {
@@ -398,12 +397,12 @@ var battle;
 			}*/
 			// console.info('levels', minLevel, maxLevel)
 			var mobSlot
-			console.info('totalMobs', totalMobs)
+			// console.info('totalMobs', totalMobs)
 			for (i=0; i<totalMobs; i++) {
 				let q = {
 					level: mission.getQuestData(mission.id, mission.questId).level
 				}
-				console.info('Q LEVEL', q.level)
+				// console.info('Q LEVEL', q.level)
 				const maxLevel = q.level
 				const minLevel = Math.max(1, ~~(maxLevel * .7))
 				const tierLotto = _.random(1, 100)
@@ -901,7 +900,6 @@ var battle;
 
 	function removeAllBuffs() {
 		for (var key in my.buffFlags) {
-			console.info()
 			if (typeof my.buffs[key] === 'object') {
 				if (my.buffs[key].duration > 0) {
 					// console.info('regular key', key)
@@ -922,7 +920,7 @@ var battle;
 	}
 
 	function killAllBattleTimers() {
-		killMobBuffTimers()
+		removeAllBuffs()
 		killTargetBuffTimers()
 		killMyBuffTimers()
 		querySelector('#mob-target-buffs').innerHTML = ''
@@ -930,14 +928,16 @@ var battle;
 	}
 	function killMyBuffTimers() {
 		for (key in my.buffIconTimers) {
-			if (my.buffIconTimers[key] === 'object') {
+			if (typeof my.buffIconTimers[key] === 'object') {
 				my.buffIconTimers[key].kill()
-				my.buffIconTimers[key + 'remove'].kill()
 			}
 		}
 		for (key in my.buffs) {
 			my.buffs[key].timer.kill()
 			my.buffs[key].duration = 0
+			if (typeof my.buffs[key].hotTicks === 'object') {
+				my.buffs[key].hotTicks.kill()
+			}
 
 		}
 		for (key in my.buffFlags) {

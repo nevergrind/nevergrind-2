@@ -524,7 +524,6 @@ let map;
 			}
 			delayedCall(1.5, () => {
 				audio.fadeMusic()
-				audio.playAmbientLoop()
 			})
 		}
 		else {
@@ -538,7 +537,7 @@ let map;
 			// return to dungeon hallway
 			!isRespawn && delayedCall(4, dungeon.go, [true])
 			delayedCall(1.5, () => {
-				audio.playAmbientLoop()
+				audio.fadeMusic()
 			})
 			!isRespawn && map.show(4)
 		}
