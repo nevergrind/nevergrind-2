@@ -126,7 +126,10 @@ var combat;
 		return chance
 	}
 	function isValidTarget() {
-		if (my.targetIsMob) return my.target >= 0 && my.target < mob.max
+		if (my.targetIsMob) {
+
+			return my.target >= 0 && my.target < mob.max
+		}
 		else return my.target >= 0
 	}
 
@@ -166,7 +169,7 @@ var combat;
 					if (rand() * 100 < mob.riposteChance(d.index)) {
 						d.damage = 0
 						d.missed = true
-						combat.txDamageHero(d.index, [ mob.autoAttack(d.index, my.row, true) ])
+						combat.txDamageHero(d.index, [ mobSkills.autoAttack(d.index, my.row, true) ])
 						combat.popupDamage(d.index, 'RIPOSTE!')
 						audio.playSound('riposte', 'combat')
 						return d
@@ -1076,6 +1079,7 @@ var combat;
 				// console.info('processDotToMe', hit)
 
 				// NOTE: HoT and DoT
+				hit.index = index // let's add mob index to object just in case...
 				my.buffs[keyRow].hotTicks = TweenMax.to(EmptyObject, 3, {
 					repeat: hit.ticks,
 					onRepeat: onDotTickToMe,
@@ -1113,9 +1117,14 @@ var combat;
 			// console.info('hitAmount b4', hitAmount, hit)
 			// chat.log(_.startCase(hit.key) + ' hits YOU for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
 			hit.damage = hitAmount
-			combat.popupDamage(hit.row, hit.damage, {targetMob: false, isDot: true, damageType: hit.damageType})
-			// console.info('HIT', hit, index)
-			processDamageToMe(party.getIndexByRow(hit.row), [_.omit(hit, 'duration')])
+			combat.popupDamage(hit.row, hit.damage, {
+				targetMob: false,
+				isDot: true,
+				damageType: hit.damageType
+			})
+			const index = party.getIndexByRow(hit.row)
+			// console.info('HIT', index, hit.key, hit)
+			processDamageToMe(hit.index, [_.omit(hit, 'duration')])
 		}
 		function processDamageToMe(index, hits) {
 			// NOTE should be all from ONE mob of the same attack TYPE, but MANY possible PC targets
@@ -1303,7 +1312,10 @@ var combat;
 					hpMax: my.hpMax,
 				}
 				animatePlayerFramesBg()
-				audio.playerHit(totalDamage, 0)
+				if (!hits[0].ticks) {
+					// Don't do this stuff for DoTs
+					audio.playerHit(totalDamage, 0)
+				}
 				// damageTakenToMana vulpineMp
 				vulpineMp += ~~(totalDamage * (stats.damageTakenToMana() / resourceLeechDivider))
 				// console.info('IND', index)

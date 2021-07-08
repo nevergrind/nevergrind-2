@@ -19,7 +19,8 @@ mobs.images = {
 		clickDeadH: 200,
 		anchorY: .8,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.iceGolem]: {
 		imgW: 1200,
@@ -31,7 +32,7 @@ mobs.images = {
 		yoyo: false,
 		cache: [],
 		frameSpeed: .045,
-		barAliveBottom: 580,
+		barAliveBottom: 480,
 		barDeathBottom: 300,
 		clickAliveY: 40,
 		clickAliveW: 300,
@@ -107,7 +108,8 @@ mobs.images = {
 		clickDeadH: 200,
 		anchorY: .822,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.spider]: {
 		imgW: 1000,
@@ -129,7 +131,8 @@ mobs.images = {
 		clickDeadH: 180,
 		anchorY: .754,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.wolf]: {
 		imgW: 1000,
@@ -283,7 +286,8 @@ mobs.images = {
 		clickDeadH: 250,
 		anchorY: .9166,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.dragonFire]: {
 		imgW: 2900,
@@ -305,7 +309,8 @@ mobs.images = {
 		clickDeadH: 500,
 		anchorY: .848,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.dragonPoison]: {
 		imgW: 2500,
@@ -327,7 +332,8 @@ mobs.images = {
 		clickDeadH: 300,
 		anchorY: .8533,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.dragonFrost]: {
 		imgW: 2900,
@@ -349,7 +355,8 @@ mobs.images = {
 		clickDeadH: 400,
 		anchorY: .857,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.dragonPlains]: {
 		imgW: 3000,
@@ -371,7 +378,8 @@ mobs.images = {
 		clickDeadH: 330,
 		anchorY: .848,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.dragonWater]: {
 		imgW: 3000,
@@ -393,7 +401,8 @@ mobs.images = {
 		clickDeadH: 330,
 		anchorY: .791,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.dragonForest]: {
 		imgW: 3000,
@@ -415,7 +424,8 @@ mobs.images = {
 		clickDeadH: 330,
 		anchorY: .86,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.dragonDesert]: {
 		imgW: 3000,
@@ -437,7 +447,8 @@ mobs.images = {
 		clickDeadH: 330,
 		anchorY: .824,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.ghoul]: {
 		imgW: 900,
@@ -790,7 +801,8 @@ mobs.images = {
 		clickDeadH: 250,
 		anchorY: .875,
 		enableSecondary: false,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.fungoid]: {
 		imgW: 1000,
@@ -944,7 +956,8 @@ mobs.images = {
 		clickDeadH: 250,
 		anchorY: .831,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.lion]: {
 		imgW: 900,
@@ -1010,7 +1023,8 @@ mobs.images = {
 		clickDeadH: 240,
 		anchorY: .843,
 		enableSecondary: true,
-		enableSpecial: false
+		enableSpecial: false,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.lioness]: {
 		imgW: 900,
@@ -1044,7 +1058,7 @@ mobs.images = {
 		yoyo: false,
 		cache: [],
 		frameSpeed: .05,
-		barAliveBottom: 470,
+		barAliveBottom: 370,
 		barDeathBottom: 320,
 		clickAliveY: 50,
 		clickAliveW: 240,
@@ -1066,7 +1080,7 @@ mobs.images = {
 		yoyo: false,
 		cache: [],
 		frameSpeed: .05,
-		barAliveBottom: 470,
+		barAliveBottom: 370,
 		barDeathBottom: 320,
 		clickAliveY: 50,
 		clickAliveW: 240,
@@ -1110,7 +1124,7 @@ mobs.images = {
 		yoyo: false,
 		cache: [],
 		frameSpeed: .05,
-		barAliveBottom: 800,
+		barAliveBottom: 660,
 		barDeathBottom: 370,
 		clickAliveY: 50,
 		clickAliveW: 350,
@@ -1120,7 +1134,8 @@ mobs.images = {
 		clickDeadH: 400,
 		anchorY: .8233,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.iceGiant]: {
 		imgW: 1400,
@@ -1132,7 +1147,7 @@ mobs.images = {
 		yoyo: false,
 		cache: [],
 		frameSpeed: .06,
-		barAliveBottom: 800,
+		barAliveBottom: 660,
 		barDeathBottom: 370,
 		clickAliveY: 50,
 		clickAliveW: 350,
@@ -1142,7 +1157,8 @@ mobs.images = {
 		clickDeadH: 400,
 		anchorY: .8225,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.fireGiant]: {
 		imgW: 1400,
@@ -1154,7 +1170,7 @@ mobs.images = {
 		yoyo: false,
 		cache: [],
 		frameSpeed: .06,
-		barAliveBottom: 800,
+		barAliveBottom: 660,
 		barDeathBottom: 370,
 		clickAliveY: 50,
 		clickAliveW: 350,
@@ -1164,7 +1180,8 @@ mobs.images = {
 		clickDeadH: 400,
 		anchorY: .82,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.spectre]: {
 		imgW: 1500,
@@ -1186,7 +1203,8 @@ mobs.images = {
 		clickDeadH: 150,
 		anchorY: .85,
 		enableSecondary: true,
-		enableSpecial: true
+		enableSpecial: true,
+		extraSlots: true,
 	},
 	[MOB_IMAGES.angler]: {
 		imgW: 1500,

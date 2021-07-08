@@ -72,6 +72,7 @@ var battle;
 		getMaxMobCount,
 		getRandomMobCount,
 		handleMobClick,
+		getMobLevelByQuest,
 	}
 	let index, buffHtml, tierHtml, traitHtml, buffEl, key, keyRow, el, i
 	let tgt = {}
@@ -241,12 +242,12 @@ var battle;
 	function handleMobEnter() {
 		index = this.getAttribute('index') * 1
 		my.hoverTarget = index
-		if (my.target !== index) querySelector('#mob-details-' + index).classList.add('block-imp')
+		// if (my.target !== index) querySelector('#mob-details-' + index).classList.add('block-imp')
 	}
 	function handleMobLeave() {
 		index = this.getAttribute('index') * 1
 		my.hoverTarget = -1
-		if (my.target !== index) querySelector('#mob-details-' + index).classList.remove('block-imp')
+		// if (my.target !== index) querySelector('#mob-details-' + index).classList.remove('block-imp')
 	}
 	function go(data, isRespawn = false) {
 		if (!isRespawn) {
@@ -354,6 +355,34 @@ var battle;
 		querySelector('#scene-battle').appendChild(battle.layer.view)
 		combat.updateCanvasLayer()
 	}
+
+	/**
+	 * Gets random mob level by quest level
+	 * @returns {number}
+	 */
+	function getMobLevelByQuest() {
+		const maxLevel = mission.getQuestData(mission.id, mission.questId).level
+		// console.info('getMobLevelByQuest', mission.id, mission.questId, maxLevel)
+		let minLevel
+		if (maxLevel < 10) {
+			minLevel = Math.max(1, ~~(maxLevel * .65))
+		}
+		else if (maxLevel < 20) {
+			minLevel = Math.max(1, ~~(maxLevel * .75))
+		}
+		else if (maxLevel < 25) {
+			minLevel = Math.max(1, ~~(maxLevel * .8))
+		}
+		else if (maxLevel < 30) {
+			minLevel = Math.max(1, ~~(maxLevel * .85))
+		}
+		else {
+			minLevel = Math.max(1, ~~(maxLevel * .9))
+		}
+		if (minLevel < 1) minLevel = 1
+		return _.random(minLevel, maxLevel)
+	}
+
 	function setupMobs(config) {
 		// console.info('setupMobs', config)
 		if (typeof config === 'object') {
@@ -369,7 +398,8 @@ var battle;
 			console.warn('LEADER SETUP MOBS')
 			// leader
 			/*let minLevel = Math.max(~~(mission.getQuestData(mission.id, mission.questId).level * .7), 1)
-			let maxLevel = mission.getQuestData(mission.id, mission.questId).level*/
+			*/
+			let maxLevel = mission.getQuestData(mission.id, mission.questId).level
 
 			// maps[dungeon.map.id].rooms[map.roomId].mobs
 			let totalMobs
@@ -382,13 +412,12 @@ var battle;
 				totalMobs = battle.getRandomMobCount()
 			}
 
-			let availableSlots = []
 			// this will limit mobs to front row for early missions
-			let maxMobs = mission.getQuestData(mission.id, mission.questId).level <= 10 ? 5 : mob.max
+			// let maxMobs = mission.getQuestData(mission.id, mission.questId).level <= 10 ? 5 : mob.max
+			let maxMobs = 5
 			mob.txData = []
 			for (var i=0; i<maxMobs; i++) {
 				mob.txData.push({})
-				availableSlots.push(i)
 			}
 
 			// full room for testing
@@ -396,56 +425,44 @@ var battle;
 				totalMobs = 9
 			}*/
 			// console.info('levels', minLevel, maxLevel)
-			var mobSlot
+			let mobSlot
 			// console.info('totalMobs', totalMobs)
 			for (i=0; i<totalMobs; i++) {
 				let q = {
-					level: mission.getQuestData(mission.id, mission.questId).level
+					level: battle.getMobLevelByQuest()
 				}
-				// console.info('Q LEVEL', q.level)
-				const maxLevel = q.level
-				const minLevel = Math.max(1, ~~(maxLevel * .7))
+				if (my.level < 2) {
+					if (q.level > my.level) q.level = my.level
+				}
 				const tierLotto = _.random(1, 100)
-				q = {
-					level: _.random(minLevel, maxLevel)
-				}
 
-				if (dungeon.map.rooms[map.roomId].boss) {
+				if (dungeon.map.rooms[map.roomId].boss &&
+					i === 0) {
 					// boss room logic
-					if (i === 0) {
-						mobSlot = 2
-						q.name = mission.getQuestData(mission.id, mission.questId).bossName
-					}
-					else {
-						mobSlot = _.random(0, availableSlots.length - 1)
-						// cannot alter q here - must be a regular mob
-					}
+					q.name = mission.getQuestData(mission.id, mission.questId).bossName
 				}
 				else {
-					if (i) {
-						mobSlot = _.random(0, availableSlots.length - 1)
-					}
-					else {
-						mobSlot = 2
+					if (i === 0) {
 						// add hallway query data for main mob only
 						if (!map.inRoom) {
 							// add hallway query for 0 index only
 							const entityProps = getNearestHallwayEntity()
 							dungeon.mobKeys.forEach(key => {
 								if (key === 'img' ||
+									key === 'level' ||
 									key === 'tier' && entityProps[key] === MOB_TYPES.unique) {
 									// only update the query for these conditions
 									q[key] = entityProps[key]
 								}
 							})
-							console.info('entityProps', entityProps)
+							/*console.warn('entityProps', entityProps)
+							console.warn('query', q)*/
 						}
 					}
 					// is it a unique?
 					if (mob.isUniqueTier(tierLotto)) {
 						q.tier = MOB_TIERS.unique
 					}
-
 					// is it a champion?
 				}
 				// tries to find by name first and then by img
@@ -468,24 +485,95 @@ var battle;
 						mobConfig.traits[getChampionKey()] = true
 					}
 				}
+				// slot determination
+				if (i === 0) {
+					mobSlot = 2
+				}
+				else {
+					mobSlot = getAvailableSlot(mobConfig)
+				}
 
-				console.info('setupMobs', _.cloneDeep(mobConfig))
-				mob.setMob(availableSlots[mobSlot], mobConfig)
-				_.remove(availableSlots, val => val === availableSlots[mobSlot])
+				// console.info('setupMobs', _.cloneDeep(mobConfig))
+
+				if (typeof mobSlot === 'number') {
+					// fails to set the mob if there's no room found
+					mob.setMob(mobSlot, mobConfig)
+				}
 			}
 		}
 	}
+
+	/**
+	 * Get available battle slot by mob jobs - try to put casters in the back
+	 * @param mobConfig
+	 * @param availableSlots
+	 * @returns {number}
+	 */
+	function getAvailableSlot(mobConfig) {
+		let extraSlots = Boolean(mobs.images[mobConfig.img].extraSlots)
+		const availableSlots = []
+		let prevMob, nextMob
+		mobs.forEach(processAvailabilityBySlot)
+		let totalSlots = availableSlots.length - 1
+		// console.info('availableSlots', availableSlots)
+		return availableSlots[_.random(0, totalSlots)]
+		/////////////////////////
+		function processAvailabilityBySlot(_mob, index) {
+			prevMob = mobs[index - 1]
+			nextMob = mobs[index + 1]
+			if (extraSlots) {
+				if (!_mob.name) {
+					if (index <= 4) {
+						if (
+							(index === 0 || !_.get(prevMob, 'name')) &&
+							(index === 4 || !_.get(nextMob, 'name'))
+						) {
+							availableSlots.push(index)
+						}
+					}
+					else {
+						if (
+							(index === 5 || !_.get(prevMob, 'name')) &&
+							(index === 8 || !_.get(nextMob, 'name'))
+						) {
+							availableSlots.push(index)
+						}
+					}
+				}
+			}
+			else {
+				if (!_mob.name) {
+					if (index <= 4) {
+						if (
+							(index === 0 || !_.get(prevMob, 'extraSlots')) &&
+							(index === 4 || !_.get(nextMob, 'extraSlots'))
+						) {
+							availableSlots.push(index)
+						}
+					}
+					else {
+						if (
+							(index === 5 || !_.get(prevMob, 'extraSlots')) &&
+							(index === 8 || !_.get(nextMob, 'extraSlots'))
+						) {
+							availableSlots.push(index)
+						}
+					}
+				}
+			}
+		}
+	}
+
+
 	function getNearestHallwayEntity() {
 		const aliveEntitiesInHallway = dungeon.map.hallways[map.hallwayId].entities.filter(e => e.isAlive)
-		let entity = {}
 		if (map.compass < 2) {
 			// north/east
-			entity = _.first(aliveEntitiesInHallway)
+			return _.first(aliveEntitiesInHallway)
 		} else {
 			// south/west
-			entity = _.last(aliveEntitiesInHallway)
+			return _.last(aliveEntitiesInHallway)
 		}
-		return entity
 	}
 	function getChampionKey() {
 		return _.sample(Object.keys(MOB_TRAITS))
@@ -498,31 +586,32 @@ var battle;
 	function getMinMobCount() {
 		questData = mission.getQuestData(mission.id, mission.questId)
 		if (map.inRoom) {
-			if (questData.level < 5) return 2
-			else if (questData.level < 10) return 2
-			else if (questData.level < 20) return 3
-			else if (questData.level < 30) return 4
-			else return 5
-		}
-		else {
 			if (questData.level < 5) return 1
 			else if (questData.level < 10) return 2
-			else if (questData.level < 20) return 3
-			else if (questData.level < 30) return 3
-			else return 4
+			else if (questData.level < 20) return 2
+			else if (questData.level < 30) return 2
+			else return 2
+		}
+		else {
+			// hallways
+			if (questData.level < 5) return 1
+			else if (questData.level < 10) return 1
+			else if (questData.level < 20) return 1
+			else if (questData.level < 30) return 2
+			else return 2
 		}
 	}
 	function getMaxMobCount() {
 		questData = mission.getQuestData(mission.id, mission.questId)
 		let ambushBonus = 0
-		if (map.inRoom && Math.random() > .9) ambushBonus = 1
-		if (questData.level < 5) return 2
-		else if (questData.level < 10) return 3 + ambushBonus
-		else if (questData.level < 15) return 4 + ambushBonus
-		else if (questData.level < 20) return 5 + ambushBonus
-		else if (questData.level < 25) return 6 + ambushBonus
-		else if (questData.level < 30) return 7 + ambushBonus
-		else return 8 + ambushBonus
+		// if (map.inRoom && Math.random() > .9) ambushBonus = 1
+		if (questData.level < 5) return 1
+		else if (questData.level < 10) return 2 + ambushBonus
+		else if (questData.level < 15) return 3 + ambushBonus
+		else if (questData.level < 20) return 3 + ambushBonus
+		else if (questData.level < 25) return 3 + ambushBonus
+		else if (questData.level < 30) return 4 + ambushBonus
+		else return 4 + ambushBonus
 	}
 	function loadTextures() {
 		if (_.size(mob.textures) === 0) {
@@ -872,8 +961,9 @@ var battle;
 				my.buffIconTimers[keyRow + '-remove'].kill()
 			}
 		}
-		if (typeof my.buffs[key] === 'object'
-			&& buffs[key].stacks) {
+		if (typeof my.buffs[key] === 'object' &&
+			typeof buffs[key] === 'object' &&
+			buffs[key].stacks) {
 			my.buffs[key].stacks = 0
 		}
 		buffEl = querySelector('#mybuff-' + keyRow)
@@ -933,7 +1023,9 @@ var battle;
 			}
 		}
 		for (key in my.buffs) {
-			my.buffs[key].timer.kill()
+			if (typeof my.buffs[key] === 'object') {
+				my.buffs[key].timer.kill()
+			}
 			my.buffs[key].duration = 0
 			if (typeof my.buffs[key].hotTicks === 'object') {
 				my.buffs[key].hotTicks.kill()

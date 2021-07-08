@@ -900,8 +900,8 @@ var test;
 	function setupMissionData() {
 		mission.inProgress = true
 		// TODO: something broken here lol
-		// const zoneName = zones.find(z => z.id === Config.defaultZone).name
-		mission.id = Config.defaultZone
+		// const zoneName = zones.find(z => z.id === Config.defaultPageUpZone).name
+		mission.id = Config.defaultPageUpZone
 		mission.questId = 0
 	}
 	/*

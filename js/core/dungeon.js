@@ -30,6 +30,7 @@ var dungeon;
 	dungeon = {
 		mobKeys: [
 			'img',
+			'level',
 			'tier',
 			'size'
 		],
@@ -347,11 +348,14 @@ var dungeon;
 			h.entities = []
 			for (var i=0; i<mobLen; i++) {
 				if (Math.random() > .33) {
-					const query = { level: _.random(Math.max(1, minLevel), maxLevel) }
+					const query = {
+						level: battle.getMobLevelByQuest()
+					}
 					if (mob.isUniqueTier(_.random(1, 100))) {
 						query.tier = MOB_TIERS.unique
 					}
-					let mobData = _.pick(mob.getRandomMobByZone(query, zones[mission.id].name), dungeon.mobKeys)
+					const randomMob = mob.getRandomMobByZone(query, zones[mission.id].name)
+					let mobData = _.pick(randomMob, dungeon.mobKeys)
 					h.entities.push({
 						isAlive: true,
 						distance: _.random(MOB_DISTANCE[i].min, MOB_DISTANCE[i].max) * -1,
@@ -492,7 +496,7 @@ var dungeon;
 		}
 	}
 
-	const ROOM_TRANSITION_DURATION = 1
+	const ROOM_TRANSITION_DURATION = .8
 	function rxEnterRoomBackward() {
 		audio.playEnterDoor()
 		map.inRoom = true
@@ -525,7 +529,7 @@ var dungeon;
 			})
 			TweenMax.to('#scene-dungeon', ROOM_TRANSITION_DURATION, {
 				startAt: { transformOrigin: '50% 80%' },
-				scale: 1.5,
+				scale: 1.2,
 				ease: Back.easeOut,
 				onComplete: () => {
 					TweenMax.set('#scene-dungeon', {

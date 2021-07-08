@@ -469,14 +469,14 @@ tbody { border: 0 }
 	justify-content: center;
 	text-align: center;
 	overflow: hidden;
-	top: 5rem;
+	font-size: 1.2rem;
+	top: 10rem;
 	left: 0;
 	right: 0;
 	margin: 0 auto;
 	width: 80%;
 	max-width: 800px;
 	padding: 0 8%;
-	font-size: 1rem;
 	line-height: 1.3;
 	color: #fff;
 	border-width: 0;
@@ -605,7 +605,8 @@ tbody { border: 0 }
 .mob-back-row { bottom: 29.63%; }
 .mob-details {
 	position: absolute;
-	display: none;
+	display: flex;
+	flex-direction: column;
 	left: -5.5rem;
 	width: 10rem;
 	cursor: url('cursor/pointer.png'), pointer;

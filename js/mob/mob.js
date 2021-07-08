@@ -279,11 +279,11 @@ let mobs = [];
 
 		// no results? just in case..
 		if (!results.length) {
+			console.warn("THIS SHOULD NOT HAPPEN!", _.cloneDeep(results))
 			results = [mob.data[zoneName][0]]
-			console.warn("THIS SHOULD NOT HAPPEN!", results)
 		}
 
-		// post-processing
+		// post-processing - set level of result mobs
 		if (q.name || q.tier) {
 			// set random level based on range
 			// bosses, champs, uniques are set by mob, not by zone's average spread
@@ -295,12 +295,14 @@ let mobs = [];
 			// regular mob - set based on level
 			results.forEach((r, i) => {
 				// constrain mob level to quest max - only name/tier queriest can bypass this limit
-				r.level = Math.min(q.level, quests[mission.id].level)
+				r.level = _.random(r.minLevel, r.maxLevel)
+				// console.info('results level', r.level, maxQuestLevel, q)
+				// r.level = q.level
+				// r.level = Math.min(q.level, maxQuestLevel)
 				if (r.level < zones[mission.id].level) {
 					// can't go lower than the zone minimum
 					r.level = zones[mission.id].level
 				}
-				// console.info('results level', r.level, q)
 			})
 		}
 
@@ -331,12 +333,24 @@ let mobs = [];
 					valid = true
 				}
 				else valid = false
+				/*if (valid) {
+					console.info('valid', q.img, q.level, m.img, m.minLevel, m.maxLevel)
+				}
+				else {
+					console.warn('invalid', q.img, q.level, m.img, m.minLevel, m.maxLevel)
+				}*/
 			}
 			else if (q.level) {
 				// by level only
 				// console.info('filterNormalMobs', m.minLevel, q.level, m.maxLevel)
 				if (m.minLevel <= q.level && q.level <= m.maxLevel) valid = true
 				else valid = false
+				/*if (valid) {
+					console.info('valid L', q.level, m.img, m.minLevel, m.maxLevel)
+				}
+				else {
+					console.warn('invalid L', q.level, m.img, m.minLevel, m.maxLevel)
+				}*/
 			}
 			else if (q.img) {
 				// by img only
@@ -454,7 +468,7 @@ let mobs = [];
 		m.shadow.x = x
 		m.shadow.y = y
 		m.shadow.width = width
-		m.shadow.height = i<= 4 ? height * .67 : height * .5
+		m.shadow.height = i<= 4 ? height * .5 : height * .33
 		m.shadow.interactive = false
 		m.shadow.buttonMode = false
 		m.shadow.zIndex = ask.LAYER_MOB_GROUND // layer - i // don't think I want - i at all
@@ -491,6 +505,7 @@ let mobs = [];
 		el = querySelector('#mob-name-' + i)
 		el.innerHTML = mobs[i].name;
 		el.className = 'mob-name text-shadow3'
+		// console.info('updateMobName', i, mobs[i].level)
 		el.classList.add(combat.considerClass[combat.getLevelDifferenceIndex(mobs[i].level)])
 	}
 	function setClickBox(m, i) {
@@ -530,13 +545,13 @@ let mobs = [];
 	function setSrc(i) {
 		mobs[i].frame = ~~mobs[i].frame
 		if (mobs[i].frame !== mobs[i].lastFrame) {
-			if (typeof mob.textures[mobs[i].img] === 'object') {
+			if (mobs[i].img && typeof mob.textures[mobs[i].img] === 'object') {
 				mobs[i].shadow.texture = mobs[i].sprite.texture = mob.textures[mobs[i].img][mobs[i].frame]
 				mobs[i].lastFrame = mobs[i].frame
 			}
 			else {
 				console.warn('setSrc', i, mobs[i].img)
-				dungeon.preloadCombatAssets()
+				// dungeon.preloadCombatAssets()
 			}
 		}
 	}
@@ -602,9 +617,8 @@ let mobs = [];
 			return {
 				pixi: {
 					brightness: 0,
-					alpha: .4,
-					blur: 5,
-					skewX: -50,
+					alpha: .25,
+					skewX: -60,
 				},
 			}
 		}
@@ -692,46 +706,45 @@ let mobs = [];
 		}
 		// keep it going for all in case some else takes over leader
 		timers.mobAttack[i] = delayedCall(getMobAttackSpeed(i), mob.attack, [i])
-		//////////////////////////////////////////////////
-		function getMobTargetRow(slot) {
-			mostHatedRow = []
-			mostHatedValue = null
-			for (row in mobs[slot].hate) {
-				row *= 1
-				val = mobs[slot].hate[row]
-				index = party.getIndexByRow(row)
-				// console.info(row, index, val)
-				if (typeof party.presence[index] === 'object' &&
-					party.presence[index].hp > 0) {
-					if (mostHatedValue === null) {
-						// first one is always added
-						mostHatedValue = val
+	}
+	function getMobTargetRow(slot) {
+		mostHatedRow = []
+		mostHatedValue = null
+		for (row in mobs[slot].hate) {
+			row *= 1
+			val = mobs[slot].hate[row]
+			index = party.getIndexByRow(row)
+			// console.info(row, index, val)
+			if (typeof party.presence[index] === 'object' &&
+				party.presence[index].hp > 0) {
+				if (mostHatedValue === null) {
+					// first one is always added
+					mostHatedValue = val
+					mostHatedRow.push(row)
+				}
+				else {
+					if (val === mostHatedValue) {
+						// tie
 						mostHatedRow.push(row)
 					}
-					else {
-						if (val === mostHatedValue) {
-							// tie
-							mostHatedRow.push(row)
-						}
-						else if (val > mostHatedValue) {
-							// exceeds - new array with only that row
-							mostHatedValue = val
-							mostHatedRow = [row]
-						}
+					else if (val > mostHatedValue) {
+						// exceeds - new array with only that row
+						mostHatedValue = val
+						mostHatedRow = [row]
 					}
 				}
 			}
-			// set the host row
-			len = mostHatedRow.length
-			if (!len) mostHatedRow = -1
-			else if (len === 1) mostHatedRow = mostHatedRow[0]
-			else if (len > 1) {
-				// party members tied for hate - pick a random target among them
-				index = _.random(0, mostHatedRow.length - 1)
-				mostHatedRow = mostHatedRow[index]
-			}
-			return mostHatedRow *= 1
 		}
+		// set the host row
+		len = mostHatedRow.length
+		if (!len) mostHatedRow = -1
+		else if (len === 1) mostHatedRow = mostHatedRow[0]
+		else if (len > 1) {
+			// party members tied for hate - pick a random target among them
+			index = _.random(0, mostHatedRow.length - 1)
+			mostHatedRow = mostHatedRow[index]
+		}
+		return mostHatedRow *= 1
 	}
 	function animateAttack(i, row, isSecondary = false) {
 		if (mobs[i].isDead) return
