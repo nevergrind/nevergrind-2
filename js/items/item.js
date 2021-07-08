@@ -134,6 +134,10 @@ var loot = {};
 		.on('click', '.loot-confirm', handleLootConfirm)
 		.on('click', '.loot-cancel', handleLootCancel)
 
+	const lootTimestamps = []
+	for (var i=0; i<mob.max; i++) {
+		lootTimestamps[i] = Date.now()
+	}
 	const identifyScroll = {
 		name: 'Identification Scroll',
 		use: true,
@@ -924,8 +928,8 @@ var loot = {};
 	 * @param bonus
 	 * @returns {string}
 	 */
-	function getRarity(bonus = 0, tier = 'normal') {
-		var resp = 'normal'
+	function getRarity(bonus = 0, tier = ITEM_RARITY.normal) {
+		var resp = ITEM_RARITY.normal
 		var randBase = _.random(1, 100)
 		var rand = randBase + bonus
 		// unique bonuses are halved
@@ -933,13 +937,13 @@ var loot = {};
 
 		// console.info('getRarity', bonus, rand);
 		if (uniqueRand >= 98) {
-			resp = 'unique'
+			resp = ITEM_RARITY.unique
 		}
 		else if (rand >= 75) {
-			resp = 'rare'
+			resp = ITEM_RARITY.rare
 		}
 		else if (rand >= 20 || tierGuaranteesMagic(tier)) {
-			resp = 'magic'
+			resp = ITEM_RARITY.magic
 		}
 		return resp;
 	}
@@ -968,7 +972,6 @@ var loot = {};
 		let index = this.id.split('-')[2]
 		// console.info('handleLootConfirm', index)
 		item.getLoot(index)
-		item.hideLootMenu(index)
 		audio.playSound('item-cloth', 'item', 1, 100)
 	}
 	function handleLootCancel() {
@@ -983,12 +986,14 @@ var loot = {};
 	 * @param config
 	 */
 	function getLoot(index) {
-		// console.info('getLoot', drop)
+		// console.info('getLoot', items.loot[index])
+		const drop = items.loot[index]
 		var slot = getFirstAvailableInvSlot()
 		if (slot === -1) {
 			chat.log('You have no room in your inventory!')
 			return
 		}
+		item.hideLootMenu(index)
 		item.lootTimers[index].kill()
 		handleDragStart()
 		$.post(app.url + 'item/loot-item.php', {
@@ -1009,10 +1014,13 @@ var loot = {};
 
 	/**
 	 * Generates loot based on mob tier upon death
+	 * timestamps guarantee prevention of multi-drop bug
 	 * @param index
 	 */
 	function findLoot(index, forceQuantity = 0) {
-		var totalLoot = forceQuantity ? forceQuantity : getFindLootCount(mobs[index].tier)
+		const now = Date.now()
+		if (now - lootTimestamps[index] < 1000) return
+		const totalLoot = forceQuantity ? forceQuantity : getFindLootCount(mobs[index].tier)
 		// console.info('findLoot', index, totalLoot)
 		for (var i=0; i<totalLoot; i++) {
 			var config = {
@@ -1024,8 +1032,16 @@ var loot = {};
 			items.loot.push(_item)
 			addLoot(items.loot.length - 1)
 		}
+		lootTimestamps[index] = now
 	}
 
+	const lootDurations = {
+		[ITEM_RARITY.normal]: 30,
+		[ITEM_RARITY.magic]: 30,
+		[ITEM_RARITY.rare]: 60,
+		[ITEM_RARITY.set]: 90,
+		[ITEM_RARITY.unique]: 90,
+	}
 	function addLoot(index) {
 		// console.info('addLoot', index)
 		let html = `
@@ -1064,7 +1080,7 @@ var loot = {};
 		const tween = {
 			width: 0
 		}
-		item.lootTimers[index] = TweenMax.to(tween, 30, {
+		item.lootTimers[index] = TweenMax.to(tween, lootDurations[items.loot[index].rarity], {
 			width: 100,
 			ease: Power0.easeIn,
 			onUpdate: setLootBarWidth,
@@ -1209,7 +1225,7 @@ var loot = {};
 		drop.rarity = rarity
 		drop.itemType = itemSlot
 		// magic
-		if (rarity === 'unique') {
+		if (rarity === ITEM_RARITY.unique) {
 			len = getUniqueItemCount(drop);
 			// console.info('getUniqueItemCount', len);
 			if (len) {
@@ -1217,11 +1233,11 @@ var loot = {};
 			}
 			else {
 				// no base item found - downgrade to rare
-				drop.rarity = rarity = 'rare'
+				drop.rarity = rarity = ITEM_RARITY.rare
 			}
 		}
 
-		if (rarity === 'magic' || rarity === 'rare') {
+		if (rarity === ITEM_RARITY.magic || rarity === ITEM_RARITY.rare) {
 			preProcessDrop(drop)
 			deleteWeaponSpecificProps(drop.itemType)
 			// determine keys
@@ -1229,11 +1245,11 @@ var loot = {};
 			suffixKeys = Object.keys(itemObj.suffix)
 
 			// console.info('rarity', rarity)
-			if (rarity === 'magic') processMagicDrop(drop)
-			else if (rarity === 'rare') processRareDrop(drop)
+			if (rarity === ITEM_RARITY.magic) processMagicDrop(drop)
+			else if (rarity === ITEM_RARITY.rare) processRareDrop(drop)
 			// post-process item
 		}
-		if (!config.store && rarity !== 'normal') {
+		if (!config.store && rarity !== ITEM_RARITY.normal) {
 			drop.unidentified = true
 		}
 		postProcessDrop(drop)
@@ -1370,7 +1386,7 @@ var loot = {};
 	}
 
 	function filterKeys(key) {
-		if (rarity === 'normal') {
+		if (rarity === ITEM_RARITY.normal) {
 			return !slotRequiresMagic.includes(key)
 		}
 		else {

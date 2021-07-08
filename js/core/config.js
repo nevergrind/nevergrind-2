@@ -8,6 +8,7 @@ const Config = {
 	guaranteedLoot: false,
 	deathEnabled: true,
 	walkFast: true,
+	enablePageUpZoning: false,
 	defaultPageUpZone: zones.find(z => z.name === ZONES.ashenflowPeak).id,
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
@@ -19,4 +20,5 @@ if (app.isApp) {
 	Config.deathEnabled = true
 	Config.walkFast = false
 	Config.autoAcceptPartyInvites = false
+	Config.enablePageUpZoning = false
 }

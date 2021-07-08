@@ -47,7 +47,7 @@ var tooltip;
 				(obj.unidentified ? obj.baseName : obj.name) +
 			'</div>' +
 			(obj.unidentified ? '' : (
-				obj.rarity === 'unique'
+				obj.rarity === ITEM_RARITY.unique
 				? '<div class="item-' + _.kebabCase(obj.rarity) + '" style="font-size: .8rem">' + obj.baseName + '</div>'
 				: ''
 			)) +

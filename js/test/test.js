@@ -193,8 +193,8 @@ var test;
 	 */
 	function getItem(level = 50, rarity = undefined, itemSlot = '', itemName = '') {
 		if (itemName) { level = 50 } // because it needs to select any item
-		if (itemSlot === ITEM_TYPE.RINGS || itemSlot === ITEM_TYPE.AMULETS && rarity === 'normal') {
-			rarity = 'magic'
+		if (itemSlot === ITEM_TYPE.RINGS || itemSlot === ITEM_TYPE.AMULETS && rarity === ITEM_RARITY.normal) {
+			rarity = ITEM_RARITY.magic
 		}
 		rarity = rarity || item.getRarity();
 		var drop = item.getItem({
@@ -230,11 +230,11 @@ var test;
 			});
 		}
 	}
-	function lootItems(count = 16, rarity = 'unique', itemSlot = '', itemName = '', store = true) {
+	function lootItems(count = 16, rarity = ITEM_RARITY.unique, itemSlot = '', itemName = '', store = true) {
 		for (var i=0; i<count; i++) {
 			item.getLoot({
 				mobLevel: 50,
-				rarity: (rarity ? rarity : 'unique'),
+				rarity: (rarity ? rarity : ITEM_RARITY.unique),
 				itemSlot: itemSlot,
 				itemName: itemName,
 				store: store,
@@ -537,7 +537,7 @@ var test;
 	function getTestLootItemWeapon(itemSlot = ITEM_TYPE.ONE_HAND_BLUNTS) {
 		return item.getLoot({
 			store: true,
-			rarity: 'unique',
+			rarity: ITEM_RARITY.unique,
 			mobLevel: 50,
 			itemSlot: itemSlot,
 		})

@@ -376,3 +376,10 @@ const QUEST_MOBS = Object.freeze({
 	prophetUrzoth: 'Prophet Urzoth',
 	sergeantGrug: 'Sergeant Grug',
 })*/
+ITEM_RARITY = Object.freeze({
+	normal: 'normal',
+	magic: 'magic',
+	rare: 'rare',
+	set: 'set',
+	unique: 'unique'
+})

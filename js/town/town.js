@@ -247,7 +247,7 @@ var town;
 			}
 
 			for (i = 0; i<item.MAX_SLOTS[type]; i++) {
-				rarity = _.random(0, 7) < 7 ? 'magic' : 'rare'
+				rarity = _.random(0, 7) < 7 ? ITEM_RARITY.magic : ITEM_RARITY.rare
 				itemIndex = _.random(0, itemTypesForSale[type].length - 1)
 				storeItems[i] = item.getItem({
 					store: true,

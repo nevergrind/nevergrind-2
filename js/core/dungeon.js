@@ -338,18 +338,13 @@ var dungeon;
 	function createHallwayMobs() {
 		// up to 2 mobs per 9600 length hallway
 		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
-		// max limited by quest
-		const questData = mission.getQuestData(mission.id, mission.questId)
-		const maxLevel = questData.level
-		// min limited by zone
-		const minZoneLevel = zones[mission.id].level
-		const minLevel = ~~(Math.max(minZoneLevel, questData.level * .7))
+		let minZoneLevel = zones.find(z => z.name === zones[mission.id].name).level
 		dungeon.map.hallways.forEach((h, hIndex) => {
 			h.entities = []
 			for (var i=0; i<mobLen; i++) {
 				if (Math.random() > .33) {
 					const query = {
-						level: battle.getMobLevelByQuest()
+						level: battle.getMobLevelByQuest(minZoneLevel)
 					}
 					if (mob.isUniqueTier(_.random(1, 100))) {
 						query.tier = MOB_TIERS.unique

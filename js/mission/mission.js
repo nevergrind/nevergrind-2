@@ -106,7 +106,7 @@ var mission;
 		var id = this.dataset.id * 1
 		var questId = this.dataset.quest * 1
 		if (id >= 0 && party.presence[0].isLeader) {
-			// console.info("QUEST SELECTED: ", id, questId, title)
+			console.info("QUEST SELECTED: ", id, questId, title)
 			mission.id = id
 			mission.questId = questId
 			// console.info("zone name: ", zones[mission.id].name)
@@ -208,7 +208,7 @@ var mission;
 			mission.inProgress = true
 			mission.isCompleted = false
 			// test mission defaults for fast test mission start-up
-			if (!app.isApp && !mission.id) {
+			if (!app.isApp && !mission.id && Config.enablePageUpZoning) {
 				// setup some mission data
 				test.setupMissionData()
 			}

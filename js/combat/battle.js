@@ -182,6 +182,7 @@ var battle;
 		return battle.expThreshold[my.level + 1]
 	}
 	function addGold(gold, isQuestGold) {
+		gold = ~~gold
 		if (my.gold + gold > trade.MAX_GOLD) {
 			gold = trade.MAX_GOLD - my.gold
 		}
@@ -360,9 +361,8 @@ var battle;
 	 * Gets random mob level by quest level
 	 * @returns {number}
 	 */
-	function getMobLevelByQuest() {
+	function getMobLevelByQuest(minZoneLevel) {
 		const maxLevel = mission.getQuestData(mission.id, mission.questId).level
-		// console.info('getMobLevelByQuest', mission.id, mission.questId, maxLevel)
 		let minLevel
 		if (maxLevel < 10) {
 			minLevel = Math.max(1, ~~(maxLevel * .65))
@@ -380,6 +380,8 @@ var battle;
 			minLevel = Math.max(1, ~~(maxLevel * .9))
 		}
 		if (minLevel < 1) minLevel = 1
+		minLevel = Math.max(minLevel, minZoneLevel)
+		// console.info('getMobLevelByQuest', minLevel, maxLevel)
 		return _.random(minLevel, maxLevel)
 	}
 
@@ -426,15 +428,16 @@ var battle;
 			}*/
 			// console.info('levels', minLevel, maxLevel)
 			let mobSlot
+			let minZoneLevel = zones.find(z => z.name === zones[mission.id].name).level
 			// console.info('totalMobs', totalMobs)
 			for (i=0; i<totalMobs; i++) {
 				let q = {
-					level: battle.getMobLevelByQuest()
+					level: battle.getMobLevelByQuest(minZoneLevel)
 				}
 				if (my.level < 2) {
 					if (q.level > my.level) q.level = my.level
 				}
-				const tierLotto = _.random(1, 100)
+				let tierLotto = _.random(1, 100)
 
 				if (dungeon.map.rooms[map.roomId].boss &&
 					i === 0) {
@@ -473,8 +476,9 @@ var battle;
 				}
 
 				// MOB_TIERS - add champion, unique, boss traits
+				// console.info('asdfasdf', mobConfig.tier, maxLevel, tierLotto)
 				if (!Config.forceUnique &&
-					q.tier === MOB_TIERS.normal &&
+					mobConfig.tier === MOB_TIERS.normal &&
 					tierLotto >= 97 &&
 					tierLotto <= 99 &&
 					maxLevel >= 5) {
@@ -509,14 +513,37 @@ var battle;
 	 * @param availableSlots
 	 * @returns {number}
 	 */
+	const FRONT_ROW_JOBS = [
+		JOB.WARRIOR,
+		JOB.MONK,
+		JOB.ROGUE,
+		JOB.CRUSADER,
+		JOB.SHADOW_KNIGHT,
+	]
+	const BACK_ROW_JOBS = [
+		JOB.WIZARD,
+		JOB.TEMPLAR,
+		JOB.WARLOCK,
+		JOB.ENCHANTER,
+		JOB.SHADOW_KNIGHT,
+	]
 	function getAvailableSlot(mobConfig) {
 		let extraSlots = Boolean(mobs.images[mobConfig.img].extraSlots)
-		const availableSlots = []
+		let availableSlots = []
 		let prevMob, nextMob
 		mobs.forEach(processAvailabilityBySlot)
-		let totalSlots = availableSlots.length - 1
-		// console.info('availableSlots', availableSlots)
-		return availableSlots[_.random(0, totalSlots)]
+		if (FRONT_ROW_JOBS.includes(mobConfig.job)) {
+			if (availableSlots.some(byFrontRow)) {
+				availableSlots = availableSlots.filter(byFrontRow)
+			}
+		}
+		else if (BACK_ROW_JOBS.includes(mobConfig.job)) {
+			if (availableSlots.some(byBackRow)) {
+				availableSlots = availableSlots.filter(byBackRow)
+			}
+		}
+		console.info('availableSlots', availableSlots)
+		return _.sample(availableSlots)
 		/////////////////////////
 		function processAvailabilityBySlot(_mob, index) {
 			prevMob = mobs[index - 1]
@@ -563,7 +590,12 @@ var battle;
 			}
 		}
 	}
-
+	function byFrontRow(v) {
+		return v <= 4
+	}
+	function byBackRow(v) {
+		return v >= 5
+	}
 
 	function getNearestHallwayEntity() {
 		const aliveEntitiesInHallway = dungeon.map.hallways[map.hallwayId].entities.filter(e => e.isAlive)

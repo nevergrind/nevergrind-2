@@ -55,6 +55,7 @@ let map;
 		drawMap,
 		setRoom0,
 		animateTorch,
+		pingMap,
 	}
 
 	let torch = {
@@ -323,7 +324,7 @@ let map;
 		else if (y > map.height) y = map.height
 		map.cameraX = x
 		map.cameraY = y
-		console.warn('centerCameraAt', map.cameraX, map.cameraY)
+		// console.warn('centerCameraAt', map.cameraX, map.cameraY)
 		map.scale = SCALE_DEFAULT
 		map.setCameraPosition(1)
 	}
@@ -451,9 +452,13 @@ let map;
 		applyBounds()
 		let rooms = ['#room-' + map.roomId]
 		let halls = []
+		let visibilityChangeCount = 0
 		dungeon.map.rooms[map.roomId].visible = true
 		dungeon.map.rooms[map.roomId].connects.forEach(roomId => {
 			rooms.push('#room-' + roomId)
+			if (!dungeon.map.rooms[roomId].visible) {
+				visibilityChangeCount++
+			}
 			dungeon.map.rooms[roomId].visible = true
 			let hallIndex = dungeon.map.hallways.findIndex(h => {
 				return h.connects.includes(roomId) && h.connects.includes(map.roomId)
@@ -472,6 +477,33 @@ let map;
 			startAt: { visibility: 'visible' },
 			delay: 1,
 			opacity: 1
+		})
+		if (visibilityChangeCount) {
+			for (let i=0; i<visibilityChangeCount; i++) {
+				!function(i) {
+					delayedCall(.6 + (i * .25), map.pingMap)
+				}(i)
+			}
+		}
+	}
+	function pingMap() {
+		const el = createElement('div')
+		el.className = 'map-ping'
+		el.style.left = map.dotX + 'px'
+		el.style.top = map.dotY + 'px'
+		el.style.opacity = 1;
+		querySelector('#mini-map-drag').appendChild(el)
+		const dur = 1.5
+		TweenMax.to(el, dur, {
+			scale: 1,
+			ease: Power1.easeOut,
+		})
+		TweenMax.to(el, dur * .25, {
+			delay: dur * .5,
+			opacity: 0,
+			onComplete: () => {
+				el.parentNode.removeChild(el)
+			}
 		})
 	}
 	function revealMap() {
