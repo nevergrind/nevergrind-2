@@ -56,6 +56,7 @@ let map;
 		setRoom0,
 		animateTorch,
 		pingMap,
+		roomCleared,
 	}
 
 	let torch = {
@@ -142,7 +143,7 @@ let map;
 		})
 	}
 	function drawMap() {
-		util.removeElements(querySelectorAll('.map-room, .map-hallway'))
+		util.removeElements(querySelectorAll('.map-room, .map-hallway, .map-cleared'))
 		map.miniMapDrag.style.width = map.width + 'px'
 		map.miniMapDrag.style.height = map.height + 'px'
 		dungeon.map.rooms.forEach(createRoom)
@@ -491,7 +492,7 @@ let map;
 		el.className = 'map-ping'
 		el.style.left = map.dotX + 'px'
 		el.style.top = map.dotY + 'px'
-		el.style.opacity = 1;
+		el.style.opacity = 1
 		querySelector('#mini-map-drag').appendChild(el)
 		const dur = 1.5
 		TweenMax.to(el, dur, {
@@ -532,11 +533,30 @@ let map;
 		else if (roomTo.x < room.x) map.compass = 3
 		else map.compass = 1
 	}
+	function roomCleared() {
+		const el = createElement('img')
+		el.className = 'map-cleared'
+		el.style.left = map.dotX + 'px'
+		el.style.top = map.dotY + 'px'
+		el.src = 'images/map/map-cleared.png'
+		querySelector('#mini-map-drag').appendChild(el)
+		delayedCall(4, () => {
+			TweenMax.to(el, 1.5, {
+				opacity: 1,
+				ease: Power2.easeOut,
+			})
+		})
+	}
 	function endCombat(isRespawn = false) { // clear room or hallway
 		// map stuff
 		if (map.inRoom) {
 			// in a room
-			if (!isRespawn) dungeon.map.rooms[map.roomId].isAlive = false
+			if (!isRespawn) {
+				if (dungeon.map.rooms[map.roomId].isAlive) {
+					dungeon.map.rooms[map.roomId].isAlive = false
+					map.roomCleared()
+				}
+			}
 			/*
 			// why was this here? I dunno
 			TweenMax.set('#room-' + map.roomId, {

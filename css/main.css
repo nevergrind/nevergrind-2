@@ -1700,6 +1700,30 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 	visibility: hidden;
 	opacity: 0;
 }
+.map-cleared {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: translate(-50%, -50%);
+	width: 40px;
+	height: 40px;
+	opacity: 0;
+	z-index: 2;
+	pointer-events: none;
+}
+.map-ping {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: translate(-50%, -50%) scale(0);
+	filter: brightness(2);
+	width: 300px;
+	height: 300px;
+	border: 2px groove #fea;
+	box-shadow: 0 0 10px #fea, 0 0 10px #fea inset, 0 0 30px #ed88 inset;
+	border-radius: 50%;
+	z-index: 0;
+}
 .boss-room {
 	color: #111!important;
 	background: #911!important;
@@ -3884,17 +3908,4 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	z-index: 2;
 	filter: blur(10px);
 	pointer-events: none;
-}
-.map-ping {
-	position: absolute;
-	top: 0;
-	left: 0;
-	transform: translate(-50%, -50%) scale(0);
-	filter: brightness(2);
-	width: 300px;
-	height: 300px;
-	border: 2px groove #fea;
-	box-shadow: 0 0 10px #fea, 0 0 10px #fea inset, 0 0 30px #ed88 inset;
-	border-radius: 50%;
-	z-index: 0;
 }
