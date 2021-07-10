@@ -57,6 +57,7 @@ var chat;
 		getPrefix,
 		focusChatInput,
 		focusChatBlur,
+		clearChatLog,
 	}
 	var el, helpHtml;
 	var resp;
@@ -204,7 +205,7 @@ var chat;
 	function log(msg, className) {
 		// report to chat-log
 		if (msg){
-			console.info('childElementCount', chat.chatLogEl.childElementCount)
+			// console.info('childElementCount', chat.chatLogEl.childElementCount)
 			while (chat.chatLogEl.childElementCount >= 50) {
 				chat.chatLogEl.removeChild(chat.chatLogEl.firstChild)
 			}
@@ -277,7 +278,7 @@ var chat;
 		else if (msgLower === '/camp') chat.camp({bypass: false})
 		else if (msgLower === '/played') game.played()
 		else if (msgLower.startsWith('/join')) chat.joinChannel(joinParse(msg))
-		else if (msgLower === '/clear') clearChatLog()
+		else if (msgLower === '/clear') chat.clearChatLog()
 		else if (msgLower === '/who' || msgLower === '/') who.all()
 		else if (msgLower.startsWith('/who ') && msgLower.length > 5 ||
 			msgLower.startsWith('/ ') && msgLower.length > 2) {
@@ -311,11 +312,12 @@ var chat;
 				chat.log('You feel your grip on sanity weaken. Was I just whispering to myself?', CHAT.WARNING)
 			}
 		}
-		else if (msgLower.startsWith('/')) {
+		else if (msgLower.startsWith('/') && !msgLower.startsWith('/broadcast')) {
 			chat.log('Command not found. Try /h or /help to check the list of valid commands.', CHAT.WARNING)
 		}
 		else {
 			if (msg) {
+				console.info('msgLower', msg, msgLower)
 				var o = chat.getMsgObject(msg);
 				if (o.msg[0] !== '/') {
 					// console.info(o)
@@ -327,7 +329,7 @@ var chat;
 							chat.log('You cannot communicate to town while in a dungeon.', CHAT.WARNING)
 						}
 						else {
-							socket.publish(_.toLower(o.category), {
+							socket.publish(o.category, {
 								job: my.job,
 								name: my.name,
 								level: my.level,
@@ -360,7 +362,7 @@ var chat;
 		};
 		var parse = chat.parseMsg(msg);
 		var a = msg.split(" ");
-
+		console.info('parse', parse)
 		a.shift();
 		var shortCommandMsg = a.join(" ");
 

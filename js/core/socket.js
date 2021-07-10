@@ -35,8 +35,8 @@ var socket;
 		socket.subs[sub.topic] = sub;
 	}
 	function publish(topic, obj, exclude) {
-		topic = _.toLower(topic)
-		// console.info('publishing: ', topic, obj);
+		topic = topic.toLowerCase()
+		console.info('publishing: ', topic, obj);
 		if (typeof socket.session === 'object') {
 			socket.published++
 			broadcasts.push(Date.now())

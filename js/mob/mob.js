@@ -371,14 +371,17 @@ let mobs = [];
 			results[0].tier === MOB_TIERS.unique &&
 			mobs.filter(m => m.name === results[0].name).length > 0
 	}
+
 	function getMobGold(config) {
 		goldFound = 0
-		if (rand() > .3) goldFound = 0
-		else {
+		if (config.mobType !== MOB_TYPES.BEAST) {
 			// @1 2-5
 			// @25 14-53
 			// @1 26-103
 			goldFound = ~~_.random(2 + ~~(config.level * .5), 3 + config.level * 2)
+			if (Math.random() > .9) {
+				goldFound += 5
+			}
 		}
 		return goldFound
 	}

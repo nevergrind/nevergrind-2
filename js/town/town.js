@@ -639,7 +639,7 @@ var town;
 	}
 	function setStoreGold(newV) {
 		if (!item.lastDragEvent.ctrlKey) {
-			console.info('animating to:', newV)
+			// console.info('animating to:', newV)
 			obj = {
 				value: _.clone(item.goldValue)
 			}
@@ -653,7 +653,7 @@ var town;
 	}
 	function updateStoreGold(obj) {
 		goldEl = querySelector('#town-value')
-		console.info('updateStoreGold', obj)
+		// console.info('updateStoreGold', obj)
 		if (goldEl !== null) goldEl.textContent = floor(obj.value)
 	}
 	function showMerchantMsg() {

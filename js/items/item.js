@@ -2101,7 +2101,7 @@ var loot = {};
 
 
 	function handleSellSuccess() {
-		querySelector('#various-description').innerHTML = 'Thank you for selling ' + getItemNameString(item.dragData) + ' for ' + tooltip.goldValue + ' gold!'
+		querySelector('#various-description').innerHTML = 'Thank you for selling ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!'
 		handleDestroySuccess(true)
 		tooltip.goldValue = 0
 		audio.playSound('gold')

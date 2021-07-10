@@ -135,6 +135,7 @@ var dungeon;
 		audio.playAmbientLoop()
 		town.closeVarious()
 		tavern.leaders = ''
+		chat.clearChatLog()
 		game.showScene('scene-dungeon')
 
 		// coming out of battle - save!

@@ -3,7 +3,7 @@ require 'header.php';
 require 'db.php';
 
 // steam data if applicable
-$version = '2021.0.1.0';
+$version = '2021.0.1.1';
 if ($_POST['version'] !== $version) {
 	exit("Nevergrind Online is currently being upgraded. We'll be right back!");
 }
