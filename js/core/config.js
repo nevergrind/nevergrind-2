@@ -7,7 +7,7 @@ const Config = {
 	consoleDisabled: false,
 	guaranteedLoot: false,
 	deathEnabled: true,
-	walkFast: true,
+	walkFast: false,
 	enablePageUpZoning: false,
 	defaultPageUpZone: zones.find(z => z.name === ZONES.ashenflowPeak).id,
 	showMapNumbers: false,

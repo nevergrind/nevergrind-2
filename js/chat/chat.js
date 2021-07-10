@@ -51,7 +51,6 @@ var chat;
 		joinDefault,
 		joinChangeCallback,
 		publishRemove,
-		clearLog,
 		sizeDungeon,
 		sizeTown,
 		prepare,
@@ -205,6 +204,7 @@ var chat;
 	function log(msg, className) {
 		// report to chat-log
 		if (msg){
+			console.info('childElementCount', chat.chatLogEl.childElementCount)
 			while (chat.chatLogEl.childElementCount >= 50) {
 				chat.chatLogEl.removeChild(chat.chatLogEl.firstChild)
 			}
@@ -216,10 +216,13 @@ var chat;
 			el.innerHTML = msg
 			chat.chatLogEl.appendChild(el)
 			chat.scrollBottom()
-			TweenMax.to(el, .2, {
-				delay: 20,
-				opacity: 0
-			})
+			if (ng.view !== 'town') {
+				TweenMax.to(el, .2, {
+					delay: 20,
+					opacity: 0
+				})
+			}
+
 		}
 	}
 	function updateHistory(msg) {
@@ -470,9 +473,6 @@ var chat;
 			chat.chatLogEl.scrollTop = chat.chatLogEl.scrollHeight;
 		}
 	}
-	function clearLog() {
-		chat.chatLogEl.innerHTML = '';
-	}
 	function setHeader() {
 		// or chat.presence.length ?
 		query.el('#chat-header').innerHTML =
@@ -492,7 +492,7 @@ var chat;
 					$.post(app.url + 'chat/set-channel.php', {
 						channel: channel
 					}).done(function (data) {
-						!keepLog && clearLog()
+						!keepLog && clearChatLog()
 						// console.log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>')
 						joinChangeCallback(data)
 					});

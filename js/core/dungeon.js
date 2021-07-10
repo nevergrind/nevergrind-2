@@ -84,14 +84,13 @@ var dungeon;
 		rxGo,
 		init,
 		html,
-		enterCombat,
 		walkForward,
 		walkBackward,
 		walkStop,
 		setGridPosition,
 		getWalkDurationEnd,
 		getWalkDurationStart,
-		animateEntities,
+		updateEntityPositions,
 		getWalkProgress,
 		getWalkProgressToGo,
 		getEntityDistanceFromMe,
@@ -115,9 +114,9 @@ var dungeon;
 	const CLOSEST_MOB_DISTANCE = -200
 	const MOB_DUNGEON_SIZE = 1.6 // this should equate to about scale 1 in combat (?)
 	const MAX_BLUR = 3
-	$('#scene-dungeon')
+	/*$('#scene-dungeon')
 		.on('mousedown', handleClickDungeon)
-		.on('mouseup', handleClickDungeonUp)
+		.on('mouseup', handleClickDungeonUp)*/
 	///////////////////////////////////////
 	function go(force) {
 		if (!force && ng.view === 'dungeon') return
@@ -133,6 +132,7 @@ var dungeon;
 	function goTasks() {
 		// cleanup sort of activities when going into dungeon
 		audio.fadeMusic()
+		audio.playAmbientLoop()
 		town.closeVarious()
 		tavern.leaders = ''
 		game.showScene('scene-dungeon')
@@ -236,7 +236,7 @@ var dungeon;
 		cache.preloadPlayerAsk()
 	}
 	function init() {
-		dungeon.distancePerSecond = Config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .2
+		dungeon.distancePerSecond = Config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .4
 		if (zones[mission.id].mobs.length) {
 			zones[mission.id].mobs.forEach(v => {
 				cache.preloadMob(_.kebabCase(v))
@@ -256,7 +256,7 @@ var dungeon;
 			combat.updateCanvasLayer()
 		}
 		setDungeonEntities()
-		dungeon.animateEntities()
+		dungeon.updateEntityPositions()
 		button.setAll()
 		chat.scrollBottom()
 	}
@@ -440,12 +440,14 @@ var dungeon;
 			}, dungeon.distanceEnd)
 		}
 	}
+
+	let roomTransitionTimestamp = Date.now()
 	function setGridPosition() {
 		// position updates
 		map.updatePosition()
 
 		// animate
-		dungeon.animateEntities()
+		dungeon.updateEntityPositions()
 		if (dungeon.isDungeon) {
 			dungeon.tilesFloor.forEach(positionGridTile)
 			dungeon.tilesCeiling.forEach(positionGridTile)
@@ -460,13 +462,16 @@ var dungeon;
 		// room/battle checks
 		if (dungeon.distanceCurrent <= 0) {
 			// go backwards to roomId
-			dungeon.walkStop()
-			if (party.presence[0].isLeader) {
-				rxEnterRoomBackward()
-				socket.publish('party' + my.partyId, {
-					route: 'p->enterRoomBackward',
-				}, true)
-				battle.go()
+			if (Date.now() - roomTransitionTimestamp > SCENE_CHANGE_DURATION) {
+				roomTransitionTimestamp = Date.now()
+				dungeon.walkStop()
+				if (party.presence[0].isLeader) {
+					rxEnterRoomBackward()
+					socket.publish('party' + my.partyId, {
+						route: 'p->enterRoomBackward',
+					}, true)
+					battle.go()
+				}
 			}
 		}
 		else if (dungeon.distanceCurrent >= Math.min(
@@ -474,24 +479,29 @@ var dungeon;
 			dungeon.closestEntity
 		)) {
 			// going forwards
-			dungeon.walkStop()
-			if (party.presence[0].isLeader) {
-				map.inRoom = dungeon.distanceCurrent >= dungeon.distanceEnd
-				rxEnterRoomForward({
-					roomToId: map.roomToId,
-					inRoom: map.inRoom,
-				})
-				socket.publish('party' + my.partyId, {
-					route: 'p->enterRoomForward',
-					inRoom: map.inRoom,
-					roomToId: map.roomToId,
-				}, true)
-				delayedCall(ROOM_TRANSITION_DURATION, battle.go)
+
+			if (Date.now() - roomTransitionTimestamp > SCENE_CHANGE_DURATION) {
+				roomTransitionTimestamp = Date.now()
+				dungeon.walkStop()
+				if (party.presence[0].isLeader) {
+					map.inRoom = dungeon.distanceCurrent >= dungeon.distanceEnd
+					rxEnterRoomForward({
+						roomToId: map.roomToId,
+						inRoom: map.inRoom,
+					})
+					socket.publish('party' + my.partyId, {
+						route: 'p->enterRoomForward',
+						inRoom: map.inRoom,
+						roomToId: map.roomToId,
+					}, true)
+					delayedCall(ROOM_TRANSITION_DURATION, battle.go)
+				}
 			}
 		}
 	}
 
 	const ROOM_TRANSITION_DURATION = .8
+	const SCENE_CHANGE_DURATION = 5000
 	function rxEnterRoomBackward() {
 		audio.playEnterDoor()
 		map.inRoom = true
@@ -555,7 +565,7 @@ var dungeon;
 			return ((-dungeon.distanceEnd - dungeon.entities[map.hallwayId][index].distance) + dungeon.distanceCurrent)
 		}
 	}
-	function animateEntities() {
+	function updateEntityPositions() {
 		dungeon.entities[map.hallwayId].forEach(positionEntity)
 	}
 	function positionEntity(entity, index) {
@@ -581,13 +591,10 @@ var dungeon;
 	function html() {
 		return '';
 	}
-	function enterCombat() {
-		// console.info("ENTERING COMBAT")
-	}
 	function centerY(index, race) {
 		return BOTTOM_PLAYER - 180
 	}
-	function handleClickDungeon(e) {
+	/*function handleClickDungeon(e) {
 		if (party.presence[0].isLeader) {
 			if (e.shiftKey || (e.clientY / window.innerHeight > .85)) dungeon.walkBackward()
 			else dungeon.walkForward()
@@ -597,7 +604,7 @@ var dungeon;
 		if (party.presence[0].isLeader) {
 			dungeon.walkStop()
 		}
-	}
+	}*/
 	// moving functions
 	function getWalkProgress() {
 		return dungeon.distanceCurrent / dungeon.distanceEnd
@@ -620,7 +627,10 @@ var dungeon;
 		return blurValue
 	}
 	function walkForward() {
-		if (ng.view !== 'dungeon' || map.menuPrompt) return
+		if (ng.view !== 'dungeon' || map.menuPrompt || dungeon.walking !== 0) {
+			return
+		}
+		dungeon.walking = 1
 		if (dungeon.getWalkProgress() >= 0 &&
 			dungeon.getWalkProgress() < 1) {
 			if (party.presence[0].isLeader) {
@@ -644,7 +654,8 @@ var dungeon;
 		})
 	}
 	function walkBackward() {
-		if (ng.view !== 'dungeon' || map.menuPrompt) return
+		if (ng.view !== 'dungeon' || map.menuPrompt || dungeon.walking !== 0) return
+		dungeon.walking = -1
 		if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
 			if (party.presence[0].isLeader) {
 				audio.startWalk()
@@ -666,6 +677,7 @@ var dungeon;
 			onUpdate: dungeon.setGridPosition,
 			onComplete: dungeon.walkStop,
 		})
+		console.info('//////rxWalkBackward', dungeon.walking)
 	}
 	function walkStop() {
 		if (party.presence[0].isLeader) {

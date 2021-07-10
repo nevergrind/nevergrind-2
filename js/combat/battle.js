@@ -1055,7 +1055,8 @@ var battle;
 			}
 		}
 		for (key in my.buffs) {
-			if (typeof my.buffs[key] === 'object') {
+			if (typeof my.buffs[key] === 'object' &&
+				typeof my.buffs[key].timer === 'object') {
 				my.buffs[key].timer.kill()
 			}
 			my.buffs[key].duration = 0

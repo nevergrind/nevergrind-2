@@ -34,7 +34,7 @@ $stmt = $db->prepare('update `accounts` set last_login=now() where row=?');
 $stmt->bind_param('i', $row);
 $stmt->execute();
 // login success
-$_SESSION['account'] = $row;
+$_SESSION['account'] = $row; // this ain't it
 $r['success'] = true;
 $r['account'] = $account;
 echo json_encode($r);

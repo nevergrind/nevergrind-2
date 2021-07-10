@@ -401,6 +401,12 @@ var stats = {};
 	function archery(fresh) {
 		if (fresh || typeof stats.memo.archery === 'undefined') {
 			stats.memo.archery = getStatTotal(PROP.ARCHERY) + getEqTotal(PROP.ALL_SKILLS)
+			if (my.race === RACE.HALF_ELF) {
+				stats.memo.archery += 5
+			}
+			else if (my.race === RACE.WOOD_ELF) {
+				stats.memo.archery += 10
+			}
 		}
 		return stats.memo.archery
 	}
@@ -536,6 +542,9 @@ var stats = {};
 	function addIce(fresh) {
 		if (fresh || typeof stats.memo.addIce === 'undefined') {
 			stats.memo.addIce = getEqTotal(PROP.ADD_ICE)
+			if (my.race === RACE.BARBARIAN) {
+				stats.memo.addIce += 5
+			}
 		}
 		return stats.memo.addIce
 	}
@@ -560,18 +569,27 @@ var stats = {};
 	function addSpellLightning(fresh) {
 		if (fresh || typeof stats.memo.addSpellLightning === 'undefined') {
 			stats.memo.addSpellLightning = getEqTotal(PROP.ADD_SPELL_LIGHTNING)
+			if (my.race === RACE.WOOD_ELF) {
+				stats.memo.addSpellLightning += 3
+			}
 		}
 		return stats.memo.addSpellLightning
 	}
 	function addSpellFire(fresh) {
 		if (fresh || typeof stats.memo.addSpellFire === 'undefined') {
 			stats.memo.addSpellFire = getEqTotal(PROP.ADD_SPELL_FIRE)
+			if (my.race === RACE.WOOD_ELF) {
+				stats.memo.addSpellFire += 3
+			}
 		}
 		return stats.memo.addSpellFire
 	}
 	function addSpellIce(fresh) {
 		if (fresh || typeof stats.memo.addSpellIce === 'undefined') {
 			stats.memo.addSpellIce = getEqTotal(PROP.ADD_SPELL_ICE)
+			if (my.race === RACE.WOOD_ELF) {
+				stats.memo.addSpellIce += 3
+			}
 		}
 		return stats.memo.addSpellIce
 	}
@@ -1240,7 +1258,7 @@ var stats = {};
 	}
 	function alterationMax(fresh) {
 		if (fresh || typeof stats.memo.alterationMax === 'undefined') {
-			base = my.race === RACE.DWARF || my.race === RACE.SERAPH ? 5 : 0
+			base = (my.race === RACE.DWARF || my.race === RACE.SERAPH) ? 5 : 0
 			if (allCasterJobs.includes(my.job)) stats.memo.alterationMax = base + my.level * 5
 			else if (HybridJobs.includes(my.job)) stats.memo.alterationMax = base + my.level * 5
 			else stats.memo.alterationMax = 0
@@ -1347,24 +1365,36 @@ var stats = {};
 	// troll 9, normal 5
 	function baseHpRegen(fresh) {
 		if (fresh || typeof stats.memo.baseHpRegen === 'undefined') {
-			stats.memo.baseHpRegen = (my.race === RACE.TROLL ? 4 : 2) +
-				(my.level * (my.race === RACE.TROLL ? .12 : .08))
+			if (my.race === RACE.TROLL) {
+				stats.memo.baseHpRegen = 4 + (my.level * .12)
+			}
+			else {
+				stats.memo.baseHpRegen = 2 + (my.level * .08)
+			}
 		}
 		return stats.memo.baseHpRegen
 	}
 	// high elf 16, normal 10
 	function baseMpRegen(fresh) {
 		if (fresh || typeof stats.memo.baseMpRegen === 'undefined') {
-			stats.memo.baseMpRegen = (my.race === RACE.HIGH_ELF ? 4 : 2) +
-				(my.level * (my.race === RACE.HIGH_ELF ? .24 : .16))
+			if (my.race === RACE.HIGH_ELF) {
+				stats.memo.baseMpRegen = (4 + (my.level * .24))
+			}
+			else {
+				stats.memo.baseMpRegen = (2 + (my.level * .16))
+			}
 		}
 		return stats.memo.baseMpRegen
 	}
 	// human 16, normal 10
 	function baseSpRegen(fresh) {
 		if (fresh || typeof stats.memo.baseSpRegen === 'undefined') {
-			stats.memo.baseSpRegen = (my.race === RACE.HUMAN ? 4 : 2) +
-				(my.level * (my.race === RACE.HUMAN ? .24 : .16))
+			if (my.race === RACE.HUMAN) {
+				stats.memo.baseSpRegen = (4 + (my.level * .24))
+			}
+			else {
+				stats.memo.baseSpRegen = (2 + (my.level * .16))
+			}
 		}
 		return stats.memo.baseSpRegen
 	}
@@ -1484,6 +1514,9 @@ var stats = {};
 	function leech(fresh) {
 		if (fresh || typeof stats.memo.leech === 'undefined') {
 			stats.memo.leech = getEqTotal(PROP.LEECH)
+			if (my.race === RACE.DARK_ELF) {
+				stats.memo.leech += 3
+			}
 			if (my.buffFlags.vampiricAllure) {
 				stats.memo.leech += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]
 			}
@@ -1557,6 +1590,9 @@ var stats = {};
 			if (my.buffFlags.guardianAngel) {
 				stats.memo.resistFear += buffs.guardianAngel.resistFear
 			}
+			if (my.race === RACE.HUMAN) {
+				stats.memo.resistFear += 15
+			}
 			if (stats.memo.resistFear > 50) {
 				stats.memo.resistFear = 50
 			}
@@ -1567,6 +1603,9 @@ var stats = {};
 		// can't do anything
 		if (fresh || typeof stats.memo.resistStun === 'undefined') {
 			stats.memo.resistStun = getEqTotal(PROP.RESIST_STUN)
+			if (my.race === RACE.ORC) {
+				stats.memo.resistStun += 15
+			}
 			if (stats.memo.resistStun > 50) {
 				stats.memo.resistStun = 50
 			}
@@ -1579,6 +1618,9 @@ var stats = {};
 			stats.memo.resistSilence = getEqTotal(PROP.RESIST_SILENCE)
 			if (my.buffFlags.manaShell) {
 				stats.memo.resistSilence += buffs.manaShell.silence[my.buffs.manaShell.level]
+			}
+			if (my.race === RACE.GNOME) {
+				stats.memo.resistSilence += 15
 			}
 			if (stats.memo.resistSilence > 50) {
 				stats.memo.resistSilence = 50

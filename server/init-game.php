@@ -53,18 +53,20 @@ if (empty($_SESSION['account']) &&
 	}
 
 	// who owns this steamid?
-	$stmt = $db->prepare("select account, steamid from accounts where steamid=?");
+	$stmt = $db->prepare("select row, account, steamid from accounts where steamid=?");
 	$stmt->bind_param('s', $json->steamid);
 	$stmt->execute();
 	$stmt->store_result();
 
 	if ($stmt->num_rows){
 		// found an account.. is it mine?
-		$stmt->bind_result($dbAccount, $dbSteamid);
+		$stmt->bind_result($dbRow, $dbAccount, $dbSteamid);
+		$dbRow = null;
 		$db_account = null;
 		$db_steamid = '';
 		while ($stmt->fetch()){
 			// account name conflict - enter an account name
+			$db_row = $dbRow;
 			$db_account = $dbAccount;
 			$db_steamid = $dbSteamid;
 		}
@@ -78,7 +80,7 @@ if (empty($_SESSION['account']) &&
 				strlen($db_account) > 1) {
 				// matches what the ticket returned and what was posted
 				// account exists and matches static id - steam login SUCCESS!
-				$_SESSION['account'] = $db_account;
+				$_SESSION['account'] = $db_row;
 			}
 			else {
 				exit("Unable to verify your Steam account.");
@@ -144,14 +146,16 @@ if (empty($_SESSION['account']) &&
 		$stmt = $db->prepare($query);
 		$stmt->bind_param('ss', $screenName, $steamid);
 		$stmt->execute();
-		$_SESSION['account'] = $screenName;
+		$_SESSION['account'] = mysqli_insert_id($db);
 		$r['isNewAccount'] = 1;
 	}
 }
 
+
 // game data
 if (isset($_SESSION['account'])) {
 	$r['id'] = $_SESSION['account'];
+	error_log('init-game:' . $_SESSION['account']);
 	require 'create/load-all-characters.php';
 }
 

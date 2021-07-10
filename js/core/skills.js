@@ -1500,7 +1500,7 @@ var skills;
 				damageType: DAMAGE_TYPE.LIGHTNING,
 				castTime: 2.5,
 				cooldownTime: 0,
-				description: config => 'Strike your target dealing '+ config.damageString +' lightning damage. Bebuffs your target with Debased Mind, which reduces arcane resistance by '+ ng.toPercent(buffs.mindBlitzEffect.reduceArcaneResist) +'% for '+ ng.toMinSecs(buffs.mindBlitzEffect.duration) +'.',
+				description: config => 'Strike your target dealing '+ config.damageString +' lightning damage. Debuffs your target with Debased Mind, which reduces arcane resistance by '+ ng.toPercent(buffs.mindBlitzEffect.reduceArcaneResist) +'% for '+ ng.toMinSecs(buffs.mindBlitzEffect.duration) +'.',
 			}, {
 				name: 'Subversion',
 				img: 'ENC-4',
@@ -2537,17 +2537,17 @@ var skills;
 		else {
 			if (config.isMob) {
 				if (!my.targetIsMob) {
-					chat.log('You must target a mob with this skill.', CHAT.WARNING)
+					ng.msg('You must target a mob with this skill.', CHAT.WARNING)
 					return true
 				}
 			}
 			else {
 				if (my.targetIsMob) {
-					chat.log('You must target a player with this skill.', CHAT.WARNING)
+					ng.msg('You must target a player with this skill.', CHAT.WARNING)
 					return true
 				}
 				if (config.targetOther && my.target === my.row) {
-					chat.log('You must target a party member with this skill.', CHAT.WARNING)
+					ng.msg('You must target a party member with this skill.', CHAT.WARNING)
 					return true
 				}
 			}

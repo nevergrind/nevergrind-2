@@ -849,12 +849,12 @@ animation: town-repeat-bg 90s linear infinite;*/
 	bottom: 11rem;
 	left: .5rem;
 	width: 21rem;
-	height: 48rem;
+	height: 39.5rem;
 	flex-flow: column nowrap;
 	flex: 1;
 	overflow: hidden;
 	line-height: 1.5;
-	font-size: 1rem;
+	font-size: .8rem;
 	word-wrap: break-word;
 	word-break: break-word;
 	margin: .1rem 0;
