@@ -7,13 +7,14 @@ const Config = {
 	consoleDisabled: false,
 	guaranteedLoot: false,
 	deathEnabled: true,
-	walkFast: false,
+	walkFast: true,
 	enablePageUpZoning: false,
 	defaultPageUpZone: zones.find(z => z.name === ZONES.ashenflowPeak).id,
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
 	forceUnique: false,
 	forceChampion: false,
+	testMob: true
 }
 if (app.isApp) {
 	Config.consoleDisabled = true
@@ -21,4 +22,5 @@ if (app.isApp) {
 	Config.walkFast = false
 	Config.autoAcceptPartyInvites = false
 	Config.enablePageUpZoning = false
+	Config.testMob = false
 }

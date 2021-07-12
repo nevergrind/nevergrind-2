@@ -59,7 +59,8 @@ var dungeon;
 		ceiling: {},
 		sky: {},
 		entities: [[{}]],
-		closestEntity: 0, // cached closest alive entity
+		closestEntity: {}, // for sfx reference
+		closestEntityDistance: 0, // cached closest alive entity
 		closestEntityIndex: -1, // wall or indexed mob
 		endWall: {},
 		tickUpdate: {},
@@ -71,6 +72,7 @@ var dungeon;
 		gridSize: GRID_SIZE,
 		gridDuration: 2,
 		walking: 0,
+		walkDisabled: false,
 		distanceStart: 0,
 		distanceCurrent: 0,
 		hallwayTileLength: HALLWAY_TILE_LENGTH,
@@ -104,7 +106,7 @@ var dungeon;
 		rxWalkBackward,
 		rxWalkStop,
 		createHallwayMobs,
-		getRoomMobCount,
+		setRoomType,
 		setBossRoom,
 		preloadCombatAssets,
 		rxEnterRoomForward,
@@ -134,8 +136,6 @@ var dungeon;
 		audio.fadeMusic()
 		audio.playAmbientLoop()
 		town.closeVarious()
-		tavern.leaders = ''
-		chat.clearChatLog()
 		game.showScene('scene-dungeon')
 
 		// coming out of battle - save!
@@ -147,8 +147,15 @@ var dungeon;
 		if (ng.view === 'town') {
 			expanse.killAllTweens()
 			chat.publishRemove()
+			chat.clearChatLog()
+			// clear any town-based channels
+			for (var key in socket.subs) {
+				if (key.startsWith('ng2')) {
+					console.info('unsubscribed from', key)
+					socket.unsubscribe(key)
+				}
+			}
 		}
-		if (my.channel) socket.unsubscribe(chat.getChannel())
 
 		// set new channel data
 		my.channel = ''
@@ -156,6 +163,7 @@ var dungeon;
 		if (chat.modeCommand === '/say') {
 			chat.modeChange(CHAT.PARTY)
 		}
+		/////////////////////////// scene change
 		chat.sizeDungeon()
 		ng.setScene('dungeon')
 		dungeon.init()
@@ -179,10 +187,7 @@ var dungeon;
 			delay: .5,
 			filter: 'brightness(1)'
 		})
-		battle.reckonGXL()
-		mob.earnedExp = 0
-		mob.earnedGold = 0
-		mob.leveledUp = false
+		battle.reckonGXL() // after battle
 		// draw players
 		player.show()
 		mobSkills.initFilter()
@@ -192,26 +197,28 @@ var dungeon;
 
 		ng.unlock()
 	}
-	function getRoomMobCount(h, index) {
+	function setRoomType(room, index) {
 		// room zero never has mobs
 		if (index === 0) {
-			h.isAlive = false
+			room.isAlive = false
 		}
 		else {
-			let r = Math.random()
-			h.isAlive = false
-			if (r > .95) {
-				h.isTreasure = true
-			}
-			else if (r > .9) {
-				h.isRelic = true
-			}
-			else if (r > .8) {
-				h.isAlive = false
-			}
-			else {
-				// 80% chance for combat room
-				h.isAlive = true
+			if (!room.boss) {
+				let roll = Math.random()
+				room.isAlive = false
+				if (roll > .95) {
+					room.isTreasure = true
+				}
+				else if (roll > .9) {
+					room.isRelic = true
+				}
+				else if (roll > .8) {
+					room.isAlive = false
+				}
+				else {
+					// 80% chance for combat room
+					room.isAlive = true
+				}
 			}
 		}
 	}
@@ -253,7 +260,7 @@ var dungeon;
 			dungeon.entities = [[]]
 			map.init()
 			dungeon.initCanvas()
-			player.initCanvas()
+			player.initCanvas() // abandoned idea
 			combat.updateCanvasLayer()
 		}
 		setDungeonEntities()
@@ -423,10 +430,12 @@ var dungeon;
 		setClosestEntity()
 	}
 	function setClosestEntity() {
-		dungeon.closestEntity = dungeon.distanceEnd
+		dungeon.closestEntity = {}
+		dungeon.closestEntityDistance = dungeon.distanceEnd
 		dungeon.closestEntityIndex = -1 // door
 		if (dungeon.entities[map.hallwayId].length) {
-			dungeon.closestEntity = dungeon.entities[map.hallwayId].reduce((acc, entity, index) => {
+			// distance
+			dungeon.closestEntityDistance = dungeon.entities[map.hallwayId].reduce((acc, entity, index) => {
 				// higher number is closer (confusing)
 				let distance = -entity.distance
 				if (map.compass >= 2) {
@@ -435,6 +444,7 @@ var dungeon;
 				// console.info('setClosestEntity', distance, acc)
 				if (entity.isAlive && distance < acc) {
 					acc = distance + CLOSEST_MOB_DISTANCE
+					dungeon.closestEntity = entity
 					dungeon.closestEntityIndex = index
 				}
 				return acc
@@ -444,6 +454,10 @@ var dungeon;
 
 	let roomTransitionTimestamp = Date.now()
 	function setGridPosition() {
+		if (map.menuPrompt) {
+			map.handleMapNo()
+		}
+		if (dungeon.walkDisabled) return
 		// position updates
 		map.updatePosition()
 
@@ -459,11 +473,13 @@ var dungeon;
 		else {
 			dungeon.tiling.tilePosition.y = dungeon.distanceCurrent
 		}
+		// console.info("WALKING FORWARD...", performance.now())
 
 		// room/battle checks
 		if (dungeon.distanceCurrent <= 0) {
 			// go backwards to roomId
-			if (Date.now() - roomTransitionTimestamp > SCENE_CHANGE_DURATION) {
+			if (allowSceneTransition()) {
+				dungeon.walkDisabled = true // to prevent walking
 				roomTransitionTimestamp = Date.now()
 				dungeon.walkStop()
 				if (party.presence[0].isLeader) {
@@ -477,11 +493,12 @@ var dungeon;
 		}
 		else if (dungeon.distanceCurrent >= Math.min(
 			dungeon.distanceEnd,
-			dungeon.closestEntity
+			dungeon.closestEntityDistance
 		)) {
-			// going forwards
-
-			if (Date.now() - roomTransitionTimestamp > SCENE_CHANGE_DURATION) {
+			// going forwards to room or hall battle
+			if (allowSceneTransition()) {
+				// console.warn("TRANSIT...", performance.now())
+				dungeon.walkDisabled = true // to prevent walking
 				roomTransitionTimestamp = Date.now()
 				dungeon.walkStop()
 				if (party.presence[0].isLeader) {
@@ -501,8 +518,12 @@ var dungeon;
 		}
 	}
 
+	const SCENE_CHANGE_DURATION = 500
+	function allowSceneTransition() {
+		return (Date.now() - roomTransitionTimestamp) > SCENE_CHANGE_DURATION
+	}
+
 	const ROOM_TRANSITION_DURATION = .8
-	const SCENE_CHANGE_DURATION = 5000
 	function rxEnterRoomBackward() {
 		audio.playEnterDoor()
 		map.inRoom = true
@@ -513,7 +534,7 @@ var dungeon;
 			// entered room
 			TweenMax.to('#scene-dungeon', ROOM_TRANSITION_DURATION, {
 				startAt: { transformOrigin: '50% 50%' },
-				scale: 2.5,
+				scale: 1.5,
 				filter: 'brightness(0)',
 				ease: Power2.easeOut,
 				onComplete: () => {
@@ -535,8 +556,8 @@ var dungeon;
 			})
 			TweenMax.to('#scene-dungeon', ROOM_TRANSITION_DURATION, {
 				startAt: { transformOrigin: '50% 80%' },
-				scale: 1.2,
-				ease: Back.easeOut,
+				scale: 1.25,
+				ease: Power2.easeOut,
 				onComplete: () => {
 					TweenMax.set('#scene-dungeon', {
 						transformOrigin: '50% 50%',
@@ -546,7 +567,9 @@ var dungeon;
 				}
 			})
 			map.inRoom = false
-			audio.playSound('sword-sharpen', 'combat')
+			const mobData = mob.type[dungeon.closestEntity.img]
+			audio.playSound(mobData.sfxSpecial || mobData.sfxIdle || mobData.sfxAttack, 'mobs')
+			// audio.playSound('sword-sharpen', 'combat')
 		}
 	}
 	function positionGridTile(tile) {
@@ -678,7 +701,7 @@ var dungeon;
 			onUpdate: dungeon.setGridPosition,
 			onComplete: dungeon.walkStop,
 		})
-		console.info('//////rxWalkBackward', dungeon.walking)
+		// console.info('//////rxWalkBackward', dungeon.walking)
 	}
 	function walkStop() {
 		if (party.presence[0].isLeader) {
@@ -691,6 +714,7 @@ var dungeon;
 		}
 	}
 	function rxWalkStop() {
+		console.info('rxWalkStop')
 		dungeon.walking = 0
 		dungeon.walkTween.pause()
 		clearInterval(dungeon.walkSoundInterval)

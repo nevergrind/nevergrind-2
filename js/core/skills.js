@@ -2536,20 +2536,22 @@ var skills;
 		}
 		else {
 			if (config.isMob) {
-				if (!my.targetIsMob) {
-					ng.msg('You must target a mob with this skill.', CHAT.WARNING)
+				if (!my.targetIsMob || my.target === -1) {
+					ng.msg('You must target a mob with this skill.')
 					return true
 				}
 			}
 			else {
-				if (my.targetIsMob) {
-					ng.msg('You must target a player with this skill.', CHAT.WARNING)
+				console.info('config', config)
+				if (my.targetIsMob || my.target === -1) {
+					console.info('config', config)
+					ng.msg('You must target a player with this skill.')
 					return true
 				}
-				if (config.targetOther && my.target === my.row) {
+				/*if (config.targetOther && my.target === my.row) {
 					ng.msg('You must target a party member with this skill.', CHAT.WARNING)
 					return true
-				}
+				}*/
 			}
 			if (config.fixTarget) {
 				if (config.isMob) my.fixTarget()
@@ -2557,34 +2559,34 @@ var skills;
 					my.partyTarget(0)
 				}
 				if (my.target === -1) {
-					chat.log('There are no valid targets for this skill.', CHAT.WARNING)
+					ng.msg('There are no valid targets for this skill.')
 					return true
 				}
 			}
 			if (my.target === -1) {
-				chat.log('You must select a target to use this skill.', CHAT.WARNING)
+				ng.msg('You must select a target to use this skill.')
 				return true
 			}
 		}
 
 		if (!config.oocEnabled &&
 			!map.inCombat) {
-			chat.log('You cannot use this skill out of combat.', CHAT.WARNING)
+			ng.msg('You cannot use this skill out of combat.')
 			return true
 		}
 		if (config.requiresFrontRow && my.target > 4) {
-			chat.log('This skill can only target the front row!', CHAT.WARNING)
+			ng.msg('This skill can only target the front row!')
 			return true
 		}
 		if (config.mpCost) {
 			if (config.mpCost > my.mp) {
-				chat.log('Not enough mana for ' + config.name + '!', CHAT.WARNING)
+				ng.msg('Not enough mana for ' + config.name + '!')
 				return true
 			}
 		}
 		if (config.spCost) {
 			if (config.spCost > my.sp) {
-				chat.log('Not enough spirit for ' + config.name + '!', CHAT.WARNING)
+				ng.msg('Not enough spirit for ' + config.name + '!')
 				return true
 			}
 		}

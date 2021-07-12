@@ -596,16 +596,19 @@ var audio;
 			}
 		}
 	}
+
 	function stopAmbient() {
 		bgamb1Element.pause()
 		bgamb2Element.pause()
 		audio.isAmbientPlaying = false
 	}
+
 	function playAmbientLoop() {
 		audio.playAmbient(_.kebabCase(zones[mission.id].name))
 	}
+
 	function playAmbient(foo) {
-		console.info('playAmbient', audio.isAmbientPlaying)
+		// console.info('playAmbient', audio.isAmbientPlaying)
 		if (audio.isAmbientPlaying) return
 		audio.ambientTrackPlaying = 1
 		bgamb1Element.setAttribute('type', 'audio/mp3')
@@ -617,8 +620,9 @@ var audio;
 		bgamb2Element.volume = (ng.config.musicVolume / 100) * audio.ambientVolume
 		bgamb2Element.setAttribute('type', 'audio/mp3')
 		bgamb2Element.src = 'sound/ambient/' + foo + '.mp3'
-		console.info('playAmbient SUCCESS', audio.isAmbientPlaying)
+		// console.info('playAmbient SUCCESS', audio.isAmbientPlaying)
 	}
+
 	function fadeAmbientOut(el) {
 		var x = { vol: ng.config.musicVolume / 100 * audio.ambientVolume }
 		TweenMax.to(x, AMBIENT_BUFFER, {
@@ -719,7 +723,7 @@ var audio;
 		sfx.play()
 	}
 	function playEquipmentSound(data) {
-		console.info('playEquipmentSound', data)
+		// console.info('playEquipmentSound', data)
 		if (data.itemType === 'helms') audio.playSound('item-shield', 'item')
 		else if (data.armorType === 'cloth') audio.playSound('item-cloth', 'item')
 		else if (data.armorType === 'leather') audio.playSound('item-leather', 'item')

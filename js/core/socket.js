@@ -36,7 +36,7 @@ var socket;
 	}
 	function publish(topic, obj, exclude) {
 		topic = topic.toLowerCase()
-		console.info('publishing: ', topic, obj);
+		// console.info('publishing: ', topic, obj);
 		if (typeof socket.session === 'object') {
 			socket.published++
 			broadcasts.push(Date.now())
@@ -58,7 +58,7 @@ var socket;
 		}
 	}
 	function unsubscribe(channel) {
-		channel = _.toLower(channel);
+		channel = channel.toLowerCase()
 		if (typeof socket.subs[channel] === 'object') {
 			try {
 				// console.warn('Trying to unsubscribe from:', channel);

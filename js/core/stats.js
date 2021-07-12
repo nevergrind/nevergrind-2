@@ -425,7 +425,7 @@ var stats = {};
 	function missChance(index, weaponSkill, hitBonus = 0) {
 		chance = .2
 		// 24 is about how much attack you get per level (21.6?)
-		chance += ((mobs[index].level * 24) - attack(weaponSkill).value) / 2400
+		chance += ((mobs[index].level * 24) - stats.attack(weaponSkill).value) / 2400
 		if (my.level < mobs[index].level) {
 			chance += ((mobs[index].level - my.level) / 40)
 		}
@@ -1347,8 +1347,13 @@ var stats = {};
 	function spMax(fresh) {
 		if (fresh || typeof stats.memo.spMax === 'undefined') {
 			baseResource = (spBase +
-				((stats.cha().value * spTier[my.job]) * (my.level / 50) +
-				(my.level * (spTier[my.job] * 2.5)))
+				(
+					(
+						(stats.wis().value * spTier[my.job] * .5) +
+						(stats.cha().value * spTier[my.job] * .5)
+					) * (my.level / 50) +
+					(my.level * (spTier[my.job] * 2.5))
+				)
 			)
 			stats.memo.spMax = ~~(baseResource * spPercentBonus() + getEqTotal(PROP.SP))
 		}
@@ -1434,7 +1439,7 @@ var stats = {};
 		if (fresh || typeof stats.memo.spRegen === 'undefined') {
 			stats.memo.spRegen = ~~(baseSpRegen() + getEqTotal(PROP.SP_REGEN))
 			if (my.buffFlags.conviction) {
-				stats.memo.mpRegen += buffs.conviction.spRegen[my.buffs.conviction.level]
+				stats.memo.spRegen += buffs.conviction.spRegen[my.buffs.conviction.level]
 			}
 		}
 		return stats.memo.spRegen
@@ -1515,7 +1520,7 @@ var stats = {};
 		if (fresh || typeof stats.memo.leech === 'undefined') {
 			stats.memo.leech = getEqTotal(PROP.LEECH)
 			if (my.race === RACE.DARK_ELF) {
-				stats.memo.leech += 3
+				stats.memo.leech += 5
 			}
 			if (my.buffFlags.vampiricAllure) {
 				stats.memo.leech += buffs.vampiricAllure.leech[my.buffs.vampiricAllure.level]

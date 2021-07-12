@@ -94,7 +94,7 @@ var test;
 		}
 	}
 	function socketSub() {
-		socket.subscribe('test', testRx);
+		// socket.subscribe('test', testRx);
 		//////////////////////////
 		function testRx(arr, obj) {
 			arr = typeof arr[0] === 'object' ?

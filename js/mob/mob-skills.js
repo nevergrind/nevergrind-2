@@ -436,14 +436,14 @@ mobSkills = {};
 			key: 'slam',
 			effect: 'stun',
 			duration: 3,
-			damage: ~~_.random(ceil(mobs[i].attack * .6), mobs[i].attack * 1.2),
+			damage: ~~_.random(ceil(mobs[i].attack * getScaledValue(i, .6)), mobs[i].attack * getScaledValue(i, 1.2)),
 		}
 	}
 	function divineJudgment(i, row) {
 		return {
 			row: row,
 			key: 'divineJudgment',
-			damage: ~~_.random(ceil(mobs[i].int * 1.5), mobs[i].int * 1.7),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 1.5)), mobs[i].int * getScaledValue(i, 1.7)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -452,7 +452,7 @@ mobSkills = {};
 			isHeal: true,
 			index: tgt,
 			key: 'divineGrace',
-			damage: ~~_.random(ceil(mobs[i].int * 18), mobs[i].int * 20),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 18)), mobs[i].int * getScaledValue(i, 20)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -461,7 +461,7 @@ mobSkills = {};
 			isHeal: true,
 			index: tgt,
 			key: 'layHands',
-			damage: ~~_.random(ceil(mobs[i].int * 70), mobs[i].int * 75),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 70)), mobs[i].int * getScaledValue(i, 75)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -471,7 +471,7 @@ mobSkills = {};
 			key: 'bloodTerror',
 			effect: 'fear',
 			ticks: 7,
-			damage: mobs[i].int * 3.3,
+			damage: mobs[i].int * getScaledValue(i, 3.3),
 			damageType: DAMAGE_TYPE.BLOOD,
 		}
 	}
@@ -480,7 +480,7 @@ mobSkills = {};
 			row: row,
 			key: 'decayingDoom',
 			ticks: 12,
-			damage: mobs[i].int * 5.8,
+			damage: mobs[i].int * getScaledValue(i, 5.8),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -488,7 +488,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'harmTouch',
-			damage: ~~_.random(ceil(mobs[i].int * 8.6), mobs[i].int * 9),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 8.6)), mobs[i].int * getScaledValue(i, 9)),
 			damageType: DAMAGE_TYPE.VOID,
 		}
 	}
@@ -496,14 +496,14 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'craneKick',
-			damage: ~~_.random(ceil(mobs[i].attack * 1.6), mobs[i].attack * 1.8),
+			damage: ~~_.random(ceil(mobs[i].attack * getScaledValue(i, 1.6)), mobs[i].attack * getScaledValue(i, 1.8)),
 		}
 	}
 	function hadoken(i, row) {
 		return {
 			row: row,
 			key: 'hadoken',
-			damage: ~~_.random(ceil(mobs[i].int * 1.8), mobs[i].int * 2),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 1.8)), mobs[i].int * getScaledValue(i, 2)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -511,7 +511,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'dragonPunch',
-			damage: ~~_.random(ceil(mobs[i].attack * 1.6), mobs[i].attack * 2.4),
+			damage: ~~_.random(ceil(mobs[i].attack * getScaledValue(i, 1.6)), mobs[i].attack * getScaledValue(i, 2.4)),
 			damageType: DAMAGE_TYPE.FIRE,
 		}
 	}
@@ -520,7 +520,7 @@ mobSkills = {};
 			row: row,
 			key: 'backstab',
 			isPiercing: true,
-			damage: ~~_.random(ceil(mobs[i].attack * 1.9), mobs[i].attack * 2.2),
+			damage: ~~_.random(ceil(mobs[i].attack * getScaledValue(i, 1.9)), mobs[i].attack * getScaledValue(i, 2.2)),
 		}
 	}
 	function widowStrike(i, row) {
@@ -528,7 +528,7 @@ mobSkills = {};
 			row: row,
 			key: 'widowStrike',
 			ticks: 12,
-			damage: mobs[i].int * 6.2,
+			damage: mobs[i].int * getScaledValue(i, 6.2),
 			damageType: DAMAGE_TYPE.POISON,
 		}
 	}
@@ -537,7 +537,7 @@ mobSkills = {};
 			row: row,
 			key: 'trueshotStrike',
 			isPiercing: true,
-			damage: ~~_.random(ceil(mobs[i].attack * 1.9), mobs[i].attack * 2.2),
+			damage: ~~_.random(ceil(mobs[i].attack * getScaledValue(i, 1.9)), mobs[i].attack * getScaledValue(i, 2.2)),
 		}
 	}
 	function burningEmbers(i, row) {
@@ -545,7 +545,7 @@ mobSkills = {};
 			row: row,
 			key: 'burningEmbers',
 			ticks: 9,
-			damage: mobs[i].int * 4.8,
+			damage: mobs[i].int * getScaledValue(i, 4.8),
 			damageType: DAMAGE_TYPE.FIRE,
 		}
 	}
@@ -553,7 +553,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'shockNova',
-			damage: ~~_.random(ceil(mobs[i].int * 1.1), mobs[i].int * 1.25),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 1.1)), mobs[i].int * getScaledValue(i, 1.25)),
 			damageType: DAMAGE_TYPE.LIGHTNING,
 		}
 	}
@@ -561,7 +561,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'bellow',
-			damage: ~~_.random(ceil(mobs[i].int * 1.5), mobs[i].int * 1.65),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 1.5)), mobs[i].int * getScaledValue(i, 1.65)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -571,7 +571,7 @@ mobSkills = {};
 			key: 'creepingChords',
 			effect: 'paralyze',
 			ticks: 7,
-			damage: mobs[i].int * 3.1,
+			damage: mobs[i].int * getScaledValue(i, 3.1),
 			damageType: DAMAGE_TYPE.LIGHTNING,
 		}
 	}
@@ -579,7 +579,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'starfire',
-			damage: ~~_.random(ceil(mobs[i].int * 2.25), mobs[i].int * 2.4),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.25)), mobs[i].int * getScaledValue(i, 2.4)),
 			damageType: DAMAGE_TYPE.FIRE,
 		}
 	}
@@ -590,7 +590,7 @@ mobSkills = {};
 			effect: 'silence',
 			interval: .1,
 			duration: 5,
-			damage: ~~_.random(ceil(mobs[i].int * .77), mobs[i].int * .82),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, .77)), mobs[i].int * getScaledValue(i, .82)),
 			damageType: DAMAGE_TYPE.LIGHTNING,
 		}
 	}
@@ -601,7 +601,7 @@ mobSkills = {};
 			effect: 'chill',
 			interval: .33,
 			duration: 8,
-			damage: ~~_.random(ceil(mobs[i].int * .62), mobs[i].int * .66),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, .62)), mobs[i].int * getScaledValue(i, .66)),
 			damageType: DAMAGE_TYPE.ICE,
 		}
 	}
@@ -610,7 +610,7 @@ mobSkills = {};
 			isHeal: true,
 			index: tgt,
 			key: 'naturesTouch',
-			damage: ~~_.random(ceil(mobs[i].int * 23), mobs[i].int * 25),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 23)), mobs[i].int * getScaledValue(i, 25)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -618,7 +618,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'smite',
-			damage: ~~_.random(ceil(mobs[i].int * 2.1), mobs[i].int * 2.25),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.1)), mobs[i].int * getScaledValue(i, 2.25)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -628,7 +628,7 @@ mobSkills = {};
 			key: 'forceOfGlory',
 			effect: 'stun',
 			duration: 5,
-			damage: ~~_.random(ceil(mobs[i].int * 2.5), mobs[i].int * 2.6),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.5)), mobs[i].int * getScaledValue(i, 2.6)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -637,7 +637,7 @@ mobSkills = {};
 			isHeal: true,
 			index: tgt,
 			key: 'divineLight',
-			damage: ~~_.random(ceil(mobs[i].int * 28), mobs[i].int * 30),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 28)), mobs[i].int * getScaledValue(i, 30)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -647,7 +647,7 @@ mobSkills = {};
 			key: 'frostRift',
 			effect: 'chill',
 			duration: 12,
-			damage: ~~_.random(ceil(mobs[i].int * 1.65), mobs[i].int * 1.8),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 1.65)), mobs[i].int * getScaledValue(i, 1.8)),
 			damageType: DAMAGE_TYPE.ICE,
 		}
 	}
@@ -656,7 +656,7 @@ mobSkills = {};
 			row: row,
 			key: 'scourge',
 			ticks: 9,
-			damage: mobs[i].int * 4.8,
+			damage: mobs[i].int * getScaledValue(i, 4.8),
 			damageType: DAMAGE_TYPE.BLOOD,
 		}
 	}
@@ -665,7 +665,7 @@ mobSkills = {};
 			row: row,
 			key: 'affliction',
 			ticks: 12,
-			damage: mobs[i].int * 5.4,
+			damage: mobs[i].int * getScaledValue(i, 5.4),
 			damageType: DAMAGE_TYPE.POISON,
 		}
 	}
@@ -674,7 +674,7 @@ mobSkills = {};
 			isHeal: true,
 			index: tgt,
 			key: 'mysticalGlow',
-			damage: ~~_.random(ceil(mobs[i].int * 22), mobs[i].int * 26),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 22)), mobs[i].int * getScaledValue(i, 26)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -682,7 +682,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'venomBolt',
-			damage: ~~_.random(ceil(mobs[i].int * 2.25), mobs[i].int * 2.45),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.25)), mobs[i].int * getScaledValue(i, 2.45)),
 			damageType: DAMAGE_TYPE.POISON,
 		}
 	}
@@ -691,7 +691,7 @@ mobSkills = {};
 			row: row,
 			key: 'engulfingDarkness',
 			ticks: 12,
-			damage: mobs[i].int * 6.9,
+			damage: mobs[i].int * getScaledValue(i, 6.9),
 			damageType: DAMAGE_TYPE.POISON,
 		}
 	}
@@ -700,7 +700,7 @@ mobSkills = {};
 			row: row,
 			key: 'bloodFire',
 			ticks: 15,
-			damage: mobs[i].int * 8.25,
+			damage: mobs[i].int * getScaledValue(i, 8.25),
 			damageType: DAMAGE_TYPE.FIRE,
 		}
 	}
@@ -710,7 +710,7 @@ mobSkills = {};
 			key: 'panicStrike',
 			effect: 'fear',
 			duration: 24,
-			damage: ~~_.random(ceil(mobs[i].int * 2.25), mobs[i].int * 2.4),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.25)), mobs[i].int * getScaledValue(i, 2.4)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -720,7 +720,7 @@ mobSkills = {};
 			key: 'gravityFlux',
 			effect: 'stun',
 			duration: .5,
-			damage: ~~_.random(ceil(mobs[i].int * 2.35), mobs[i].int * 2.5),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.35)), mobs[i].int * getScaledValue(i, 2.5)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -730,7 +730,7 @@ mobSkills = {};
 			key: 'mindBlitz',
 			effect: 'silence',
 			duration: 7,
-			damage: ~~_.random(ceil(mobs[i].int * 2.16), mobs[i].int * 2.3),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.16)), mobs[i].int * getScaledValue(i, 2.3)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -740,7 +740,7 @@ mobSkills = {};
 			key: 'staticSuffocation',
 			ticks: 8,
 			effect: 'paralyze',
-			damage: mobs[i].int * 4.8,
+			damage: mobs[i].int * getScaledValue(i, 4.8),
 			damageType: DAMAGE_TYPE.LIGHTNING,
 		}
 	}
@@ -749,7 +749,7 @@ mobSkills = {};
 			row: row,
 			key: 'subversion',
 			ticks: 12,
-			damage: mobs[i].int * 6.3,
+			damage: mobs[i].int * getScaledValue(i, 6.3),
 			damageType: DAMAGE_TYPE.POISON,
 		}
 	}
@@ -757,7 +757,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'lavaBolt',
-			damage: ~~_.random(ceil(mobs[i].int * 2.33), mobs[i].int * 2.48),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.33)), mobs[i].int * getScaledValue(i, 2.48)),
 			damageType: DAMAGE_TYPE.FIRE,
 		}
 	}
@@ -768,7 +768,7 @@ mobSkills = {};
 			effect: 'paralyze',
 			duration: 6,
 			interval: .75,
-			damage: mobs[i].int * .7,
+			damage: mobs[i].int * getScaledValue(i, .7),
 			damageType: DAMAGE_TYPE.LIGHTNING,
 		}
 	}
@@ -778,7 +778,7 @@ mobSkills = {};
 			key: 'arclight',
 			ticks: 6,
 			effect: 'paralyze',
-			damage: mobs[i].int * 4.2,
+			damage: mobs[i].int * getScaledValue(i, 4.2),
 			damageType: DAMAGE_TYPE.LIGHTNING,
 		}
 	}
@@ -788,7 +788,7 @@ mobSkills = {};
 			key: 'glacialSpike',
 			effect: 'chill',
 			duration: 10,
-			damage: ~~_.random(ceil(mobs[i].int * 2.25), mobs[i].int * 2.38),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.25)), mobs[i].int * getScaledValue(i, 2.38)),
 			damageType: DAMAGE_TYPE.ICE,
 		}
 	}
@@ -796,7 +796,7 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'fireBolt',
-			damage: ~~_.random(ceil(mobs[i].int * 2.36), mobs[i].int * 2.52),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.36)), mobs[i].int * getScaledValue(i, 2.52)),
 			damageType: DAMAGE_TYPE.FIRE,
 		}
 	}
@@ -806,7 +806,7 @@ mobSkills = {};
 			key: 'iceBolt',
 			effect: 'chill',
 			duration: 6,
-			damage: ~~_.random(ceil(mobs[i].int * 2.1), mobs[i].int * 2.24),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.1)), mobs[i].int * getScaledValue(i, 2.24)),
 			damageType: DAMAGE_TYPE.ICE,
 		}
 	}
@@ -817,7 +817,7 @@ mobSkills = {};
 			effect: 'silence',
 			interval: 1,
 			duration: 3,
-			damage: ~~_.random(ceil(mobs[i].int * .66), mobs[i].int * .72),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, .66)), mobs[i].int * getScaledValue(i, .72)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -827,7 +827,7 @@ mobSkills = {};
 			key: 'lightningBolt',
 			effect: 'paralyze',
 			duration: 9,
-			damage: ~~_.random(ceil(mobs[i].int * 2.4), mobs[i].int * 2.6),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.4)), mobs[i].int * getScaledValue(i, 2.6)),
 			damageType: DAMAGE_TYPE.LIGHTNING,
 		}
 	}
@@ -835,9 +835,22 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'fireball',
-			damage: ~~_.random(ceil(mobs[i].int * 2.8), mobs[i].int * 3),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.8)), mobs[i].int * getScaledValue(i, 3)),
 			damageType: DAMAGE_TYPE.FIRE,
 		}
+	}
+
+	/**
+	 * only uses half value at level 1
+	 * uses full value at level 50
+	 * 150% value at level 99
+	 * @param index
+	 * @param value
+	 * @returns {number}
+	 */
+	function getScaledValue(index, value) {
+		value = value * .5
+		return ~~(((mobs[index].level / 50) * value) + value)
 	}
 
 	// @ 1 3 + (10 * 1.66) = 4
@@ -874,8 +887,9 @@ mobSkills = {};
 	function modifyMobStatsByClass(config) {
 		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR
 		// base resources
-		const hpPerLevel = (config.level - 1) * (60 + ((config.level / 50) * 160))
-		config.hp = (~~((50 + (hpPerLevel * config.hp))) * party.presence.length)
+		const baseHpValue = (config.level - 1) * (60 + ((config.level / 50) * 160))
+		config.hp = (~~((50 + (baseHpValue * config.hp))) * party.presence.length)
+		// console.info('level, baseHpValue, hp', config.level, baseHpValue)
 		if (config.level < 20) {
 			const hpPenalty = .2125 + ((config.level / 20) * .75)
 			config.hp = Math.round(config.hp * hpPenalty)
@@ -1216,39 +1230,39 @@ mobSkills = {};
 		row = party.getIndexByRow(data.row)
 		party.presence[row].isChilled = true
 		if (!my.isFrozen()) {
-			TweenMax.to(players[row].sprite, .5, filter.chill)
+			// TweenMax.to(players[row].sprite, .5, filter.chill)
 		}
 	}
 	function animateThaw(data) {
 		row = party.getIndexByRow(data.row)
 		party.presence[row].isChilled = false
 		if (!party.isChilled(data.row) && !party.isFrozen(data.row)) {
-			TweenMax.to(players[row].sprite, .5, filter.default)
+			// TweenMax.to(players[row].sprite, .5, filter.default)
 		}
 	}
 	function animateFreeze(data) {
 		row = party.getIndexByRow(data.row)
 		party.presence[row].isFrozen = true
-		TweenMax.set(players[row].sprite, filter.freeze)
+		// TweenMax.set(players[row].sprite, filter.freeze)
 	}
 	function animateFreezeThaw(data) {
 		row = party.getIndexByRow(data.row)
 		party.presence[row].isFrozen = false
-		TweenMax.to(players[row].sprite, .5,
+		/*TweenMax.to(players[row].sprite, .5,
 			party.isChilled(data.row) ?
 				filter.chill : filter.default
-		)
+		)*/
 	}
 	function applyEffectFilter(row) {
 		row = party.getIndexByRow(row)
 		if (party.presence[row].isFrozen) {
-			TweenMax.set(players[row].sprite, filter.freeze)
+			// TweenMax.set(players[row].sprite, filter.freeze)
 		}
 		else if (party.presence[row].isChilled) {
-			TweenMax.set(players[row].sprite, filter.chill)
+			// TweenMax.set(players[row].sprite, filter.chill)
 		}
 		else {
-			TweenMax.set(players[row].sprite, filter.default)
+			// TweenMax.set(players[row].sprite, filter.default)
 		}
 	}
 
@@ -1359,9 +1373,9 @@ mobSkills = {};
 		party.presence.forEach((p, i) => {
 			// filters only work on self for now
 			if (my.row === p.row) {
-				if (my.isFrozen()) TweenMax.to(players[i].sprite, .5, filter.freeze)
+				/*if (my.isFrozen()) TweenMax.to(players[i].sprite, .5, filter.freeze)
 				else if (my.isChilled()) TweenMax.to(players[i].sprite, .5, filter.chill)
-				else TweenMax.to(players[i].sprite, .5, filter.default)
+				else TweenMax.to(players[i].sprite, .5, filter.default)*/
 			}
 		})
 	}

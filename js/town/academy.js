@@ -61,6 +61,7 @@ var academy;
 			setAcademyGold()
 			ng.splitText('various-description', 'Congratulations, '+ my.name +'. You have completed your training for ' + skills.skillNames[selected.index] + ', Rank '+ selected.rank +'!')
 		}
+		button.updateBtnEnabled()
 	}
 	function handleRankClick(e) {
 		selected = {

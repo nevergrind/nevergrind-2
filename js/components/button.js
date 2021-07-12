@@ -23,6 +23,7 @@ var button;
 		processSkillTimers,
 		init,
 		getPunchDps,
+		updateBtnEnabled,
 		hpPotion: -1,
 		mpPotion: -1,
 		spPotion: -1,
@@ -204,11 +205,11 @@ var button;
 				}
 			}
 			else {
-				chat.log('This skill is not defined:' + name, CHAT.WARNING)
+				ng.msg('This skill is not defined:' + name)
 			}
 		}
 		else if (ng.view === 'town') {
-			chat.log('You cannot cast in town.', CHAT.WARNING)
+			ng.msg('You cannot cast in town.')
 		}
 	}
 	function handleSkillButtonClick() {
@@ -327,10 +328,9 @@ var button;
 			}
 		}
 		startSwing('secondaryAttack')
-		///////////////////////////
-		function successfulDualWield() {
-			return my.dualWield / 350
-		}
+	}
+	function successfulDualWield() {
+		return my.dualWield / 350
 	}
 	function cannotAutoAttack() {
 		return (!HYBRID_AUTO_ATTACKERS.includes(my.job) && timers.castBar < 1) ||
@@ -613,6 +613,7 @@ var button;
 			querySelector('#button-wrap').innerHTML = s;
 			button.initialized = true
 			battle.drawExpBar(0, 0)
+			console.warn('SKILL BAR DRAWN')
 		}
 		updateBtnEnabled()
 	}

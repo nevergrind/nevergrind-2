@@ -16,7 +16,7 @@ var quests;
 			bossName: 'Peon Hegug',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.salubrinHaven,
 		},
 		{
@@ -24,7 +24,7 @@ var quests;
 			bossName: 'Centurion Shiloh',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.salubrinHaven,
 		},
 		{
@@ -49,7 +49,7 @@ var quests;
 			bossName: 'Fain the Mauler',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.tendolinPassage,
 		},
 		{
@@ -57,7 +57,7 @@ var quests;
 			bossName: 'Frizzle the Insane',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.tendolinPassage,
 		},
 		{
@@ -82,7 +82,7 @@ var quests;
 			bossName: 'Kyrgiarr Dreckhand',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.greenthornCavern,
 		},
 		{
@@ -98,7 +98,7 @@ var quests;
 			bossName: 'Vyrg Dampclub',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.greenthornCavern,
 		},
 		{
@@ -114,7 +114,7 @@ var quests;
 			bossName: 'Troto Rotgrinder',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.greenthornCavern,
 		},
 		{
@@ -131,7 +131,7 @@ var quests;
 			bossName: 'Disciple Bashag',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.lanfeldRefuge,
 		},
 		{
@@ -147,7 +147,7 @@ var quests;
 			bossName: 'Warlord Turbag',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.lanfeldRefuge,
 		},
 		{
@@ -171,7 +171,7 @@ var quests;
 			bossName: 'Captain Urzoth',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.lanfeldRefuge,
 		},
 		{
@@ -196,7 +196,7 @@ var quests;
 			bossName: 'Shockflayer the Tainted',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.rivenGrotto,
 		},
 		{
@@ -212,7 +212,7 @@ var quests;
 			bossName: 'Reclusive Magi of Riven',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.rivenGrotto,
 		},
 		{
@@ -228,7 +228,7 @@ var quests;
 			bossName: 'Oracle of Riven',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.rivenGrotto,
 		},
 		{
@@ -244,7 +244,7 @@ var quests;
 			bossName: 'Plagueweaver the Untamed',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.rivenGrotto,
 		},
 		{
@@ -252,7 +252,7 @@ var quests;
 			bossName: 'King of Riven Grotto',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.rivenGrotto,
 		},
 		// Bastille Citadel Quests
@@ -261,7 +261,7 @@ var quests;
 			bossName: 'Custodian Gimzits',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.bastilleCitadel,
 		},
 		{
@@ -277,7 +277,7 @@ var quests;
 			bossName: 'Harvester Rotpincer',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.bastilleCitadel,
 		},
 		{
@@ -301,7 +301,7 @@ var quests;
 			bossName: 'Commander Koning',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.bastilleCitadel,
 		},
 		{
@@ -309,7 +309,7 @@ var quests;
 			bossName: 'Chief Warden Bruizard',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.bastilleCitadel,
 		},
 		// Kordata Cove Quests
@@ -318,7 +318,7 @@ var quests;
 			bossName: 'Spearmaster Dimas',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.kordataCove,
 		},
 		{
@@ -334,7 +334,7 @@ var quests;
 			bossName: 'Umber',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.kordataCove,
 		},
 		{
@@ -358,7 +358,7 @@ var quests;
 			bossName: 'Prime Occultist Kattra',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.kordataCove,
 		},
 		{
@@ -366,7 +366,7 @@ var quests;
 			bossName: 'King Krama',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.kordataCove,
 		},
 		// Sylong Sanctuary Quests
@@ -375,7 +375,7 @@ var quests;
 			bossName: 'Trainer Grudor',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.sylongSanctuary,
 		},
 		{
@@ -391,7 +391,7 @@ var quests;
 			bossName: 'Hierophant Suprak',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.sylongSanctuary,
 		},
 		{
@@ -415,7 +415,7 @@ var quests;
 			bossName: 'Arch Bishop Griven',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.sylongSanctuary,
 		},
 		{
@@ -423,7 +423,7 @@ var quests;
 			bossName: 'Baron of Sylong',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.sylongSanctuary,
 		},
 		// Thule Crypt Quests
@@ -432,7 +432,7 @@ var quests;
 			bossName: 'Undead Knight of Thule',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.thuleCrypt,
 		},
 		{
@@ -448,7 +448,7 @@ var quests;
 			bossName: 'Doctor Grelzn',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.thuleCrypt,
 		},
 		{
@@ -464,7 +464,7 @@ var quests;
 			bossName: 'Prince Heparot',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.thuleCrypt,
 		},
 		{
@@ -480,7 +480,7 @@ var quests;
 			bossName: 'Thulian Wraith Lord',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.thuleCrypt,
 		},
 		// Temple of Prenssor Quests
@@ -489,7 +489,7 @@ var quests;
 			bossName: 'Adjudicator Vizk',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.templeOfPrenssor,
 		},
 		{
@@ -505,7 +505,7 @@ var quests;
 			bossName: 'Roggok',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.templeOfPrenssor,
 		},
 		{
@@ -521,7 +521,7 @@ var quests;
 			bossName: 'Emperor Gox',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.templeOfPrenssor,
 		},
 		{
@@ -537,7 +537,7 @@ var quests;
 			bossName: 'Champion Drazzok',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.templeOfPrenssor,
 		},
 		{
@@ -545,7 +545,7 @@ var quests;
 			bossName: 'Avatar of Terror',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.templeOfPrenssor,
 		},
 		// Fahnir Citadel Quests
@@ -554,7 +554,7 @@ var quests;
 			bossName: 'Desiccator Lauden',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.fahlnirCitadel,
 		},
 		{
@@ -570,7 +570,7 @@ var quests;
 			bossName: 'Royal Guard Stolgazz',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.fahlnirCitadel,
 		},
 		{
@@ -594,7 +594,7 @@ var quests;
 			bossName: 'Baron Lucien',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.fahlnirCitadel,
 		},
 		{
@@ -610,7 +610,7 @@ var quests;
 			bossName: 'Lord Solomon Fahlnir',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.fahlnirCitadel,
 		},
 		// Anuran Ruins Quests
@@ -619,7 +619,7 @@ var quests;
 			bossName: 'Assassin Shex',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.anuranRuins,
 		},
 		{
@@ -635,7 +635,7 @@ var quests;
 			bossName: 'Minister Isizz',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.anuranRuins,
 		},
 		{
@@ -659,7 +659,7 @@ var quests;
 			bossName: 'Caretaker Mystis',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.anuranRuins,
 		},
 		{
@@ -675,7 +675,7 @@ var quests;
 			bossName: 'Arch Magus Gurka',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.anuranRuins,
 		},
 		{
@@ -683,7 +683,7 @@ var quests;
 			bossName: 'Toadlok King Frogold',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.anuranRuins,
 		},
 		// Galeblast Fortress Quests
@@ -692,7 +692,7 @@ var quests;
 			bossName: 'Bishop Goktal',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.galeblastFortress,
 		},
 		{
@@ -708,7 +708,7 @@ var quests;
 			bossName: 'Ambassador Volsork',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.galeblastFortress,
 		},
 		{
@@ -732,7 +732,7 @@ var quests;
 			bossName: 'Champion Krokkos',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.galeblastFortress,
 		},
 		{
@@ -748,7 +748,7 @@ var quests;
 			bossName: 'King Margrave Kalgresh',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.galeblastFortress,
 		},
 		{
@@ -756,7 +756,7 @@ var quests;
 			bossName: 'Matron Maelentia',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.galeblastFortress,
 		},
 		// Ashenflow Peak Quests
@@ -765,7 +765,7 @@ var quests;
 			bossName: 'Sergeant Slegs',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.ashenflowPeak,
 		},
 		{
@@ -781,7 +781,7 @@ var quests;
 			bossName: 'Captain Blemrots',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.ashenflowPeak,
 		},
 		{
@@ -797,7 +797,7 @@ var quests;
 			bossName: 'Dark Templar Zur Emberflare',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.small,
 			zone: ZONES.ashenflowPeak,
 		},
 		{
@@ -821,7 +821,7 @@ var quests;
 			bossName: 'Ashenflow King Chigowitz',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.ashenflowPeak,
 		},
 		{
@@ -829,7 +829,7 @@ var quests;
 			bossName: 'Lord Szarthax',
 			description: '',
 			type: QUEST_TYPES.kill,
-			size: MAP_SIZES.medium,
+			size: MAP_SIZES.large,
 			zone: ZONES.ashenflowPeak,
 		},
 	]

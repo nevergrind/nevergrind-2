@@ -161,6 +161,7 @@ const jsFiles = [
 	'core/css',
 	'core/config',
 	'core/loading',
+	'core/patch',
 	'core/init', // should be last one
 	'build/endWrap',
 ].map((file) => './js/' + file + '.js')

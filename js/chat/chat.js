@@ -37,7 +37,6 @@ var chat;
 		modeChange,
 		modeSet,
 		updateHistory,
-		help,
 		sendMsg,
 		parseMsg,
 		getMsgObject,
@@ -58,46 +57,10 @@ var chat;
 		focusChatInput,
 		focusChatBlur,
 		clearChatLog,
+		help,
 	}
-	var el, helpHtml;
-	var resp;
+	var el;
 	/** private */
-	const helpArr = [
-		'<div class="chat-help-header">General Chat Channels:</div>',
-		'<div data-id="general chat" class="chat-help">/say or /s : Say a message in your current town channel : /say hail</div>',
-		'<div data-id="general town chat" class="chat-help">/town : An alias for /say : /town hail</div>',
-		'<div data-id="general chat private whisper send receive" class="chat-help">@ : Send a private message by name : @bob hi</div>',
-		'<div class="chat-help-header">Guild Commands</div>',
-		'<div data-id="organize clan" class="chat-help">/guild or /g: Message your guild : /guild hail</div>',
-		'<div data-id="guild" class="chat-help">/ginvite: Invite a player to your guild: /ginvite Bob</div>',
-		'<div data-id="guild boot" class="chat-help">/gpromote: Promote a member to Officer: /gpromote Bob</div>',
-		'<div data-id="guild fire" class="chat-help">/gdemote: Demote an officer to a member: /gdemote Bob</div>',
-		'<div data-id="guild dictator" class="chat-help">/gleader: Promote a guild member to leader: /gleader Bob</div>',
-		'<div data-id="guild kick" class="chat-help">/gboot: Boot a member from the guild: /gboot Bob</div>',
-		'<div data-id="guild" class="chat-help">/motd: Set a new message of the day: /motd message</div>',
-		'<div data-id="guild" class="chat-help">/gquit: Leave your guild: /gquit</div>',
-		'<div class="chat-help-header">Party Commands</div>',
-		'<div data-id="group" class="chat-help">/party or /p : Message your party : /party hail</div>',
-		'<div data-id="party group" class="chat-help">/invite: Invite a player to your party : /invite Bob</div>',
-		'<div data-id="party group" class="chat-help">/disband: Leave your party</div>',
-		'<div data-id="party group" class="chat-help">/promote: Promote a player in your party to leader : /promote Bob</div>',
-		'<div data-id="party group" class="chat-help">/boot: Boot a player from the party: /boot Bob</div>',
-		'<div class="chat-help-header">Social Commands:</div>',
-		'<div data-id="social friend fren buddy" class="chat-help">/flist or /friends : Show your friends\' online status</div>',
-		'<div data-id="social friend fren buddy" class="chat-help">/friend add : Add a friend : /friend add Bob</div>',
-		'<div data-id="social friend fren buddy" class="chat-help">/friend remove : Remove a friend : /friend remove Bob</div>',
-		'<div data-id="social ignore" class="chat-help">/ignore : Show your ignore list</div>',
-		'<div data-id="social ignore" class="chat-help">/ignore add : Add someone to your ignore list</div>',
-		'<div data-id="social ignore" class="chat-help">/ignore remove : Remove someone from your ignore list</div>',
-		'<div data-id="" class="chat-help">/who or / : Show all players currently playing</div>',
-		'<div data-id="social" class="chat-help">/who filters : Show current players by class, race, level range, name : /who 5 10 dwarf cleric</div>',
-		'<div class="chat-help-header">Miscellaneous Commands:</div>',
-		'<div data-id="misc private" class="chat-help">/join channel : Join a channel : /join bros</div>',
-		'<div data-id="misc" class="chat-help">/clear: clear the chat log</div>',
-		'<div data-id="misc" class="chat-help">/played: Show character creation, session duration, and total playtime</div>',
-		'<div data-id="misc" class="chat-help">/me : Send an emote to your current chat channel : /me waves</div>',
-		'<div data-id="misc" class="chat-help">/camp: Exit the game.</div>',
-	]
 
 	/** public */
 	function getChannel() {
@@ -237,22 +200,9 @@ var chat;
 		chat.history.push(o);
 		chat.historyIndex = chat.history.length;
 	}
-	function help(filter) {
-		if (filter) log('<div class="chat-warning">Showing help results for <b>/help '+ filter +'</b>:</div>')
-		console.log(chat.divider)
-		helpHtml = ''
-		for (var i=0, len=helpArr.length; i<len; i++) {
-			if (filter) {
-				if (helpArr[i].toLowerCase().includes(filter)) {
-					helpHtml += helpArr[i]
-				}
-			}
-			else {
-				helpHtml += helpArr[i]
-			}
-		}
-		if (!helpHtml) log('<div class="chat-warning">No help found for ' + filter + '.</div>')
-		else log(helpHtml)
+	function help() {
+		bar.toggleOptions('help')
+		$('#option-help').trigger('click')
 	}
 	function sendMsg(input) {
 		var msg = input || query.el('#chat-input').value.trim(),
@@ -260,9 +210,9 @@ var chat;
 
 		// bypass via ENTER or chat has focus
 		if (msg === '/h' || msg.startsWith('/help')) {
-			var filter = msg.split(' ')
-			if (filter[1] && filter[1].length) chat.help(filter[1].toLowerCase())
-			else chat.help()
+			/*var filter = msg.split(' ')
+			if (filter[1] && filter[1].length) chat.help(filter[1].toLowerCase())*/
+			chat.help()
 		}
 		else if (msgLower.startsWith('/motd')) guild.motd(guild.motdParse(msg))
 		else if (msgLower.startsWith('/gleader')) guild.leader(party.parse(msg))
@@ -489,11 +439,12 @@ var chat;
 	function joinChannel(channel, bypass, keepLog) {
 		if (ng.view === 'town' || bypass) {
 			if (channel) {
+				console.info('joinChannel', channel)
 				// remove from channel
 				if (channel !== my.channel) {
 					$.post(app.url + 'chat/set-channel.php', {
 						channel: channel
-					}).done(function (data) {
+					}).done(data => {
 						!keepLog && clearChatLog()
 						// console.log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>')
 						joinChangeCallback(data)
@@ -501,6 +452,7 @@ var chat;
 				}
 			}
 			else {
+			console.info('joinChannel joinDefault')
 				chat.joinDefault();
 			}
 		}

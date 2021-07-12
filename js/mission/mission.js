@@ -24,6 +24,7 @@ var mission;
 		getQuestData,
 		getTitle,
 		getRewards,
+		getSize,
 	};
 	var questHtml
 	var that = {}
@@ -89,7 +90,7 @@ var mission;
 			html += '<div class="mission-quest-item ellipsis ' + levelDiffClass +'" '+
 				'data-id="'+ zone.id +'" ' +
 				'data-quest="'+ questIndex +'">' +
-				mission.getTitle(zone.id, questIndex) +
+				mission.getTitle(zone.id, questIndex) + ' ('+ mission.getSize(zone.id, questIndex) +')' +
 			'</div>'
 			questId++
 		})
@@ -191,12 +192,12 @@ var mission;
 			onComplete: () => {
 				// rejoin main chat
 				town.go()
-				chat.joinChannel('town', 1, true)
-				game.getPresence()
-				delayedCall(.5, () => {
+				/*chat.joinChannel('town', 1, true)
+				game.getPresence()*/
+				/*delayedCall(.5, () => {
 					game.updateChat()
 					chat.modeChange(CHAT.SAY)
-				})
+				})*/
 				ng.unlock()
 			}
 		})
@@ -215,8 +216,8 @@ var mission;
 			if (!_.size(dungeon.map)) {
 				dungeon.map = Grid.createMap(mission.getQuestData(mission.id, mission.questId).size)
 				dungeon.createHallwayMobs()
-				dungeon.map.rooms.forEach(dungeon.getRoomMobCount)
 				dungeon.setBossRoom()
+				dungeon.map.rooms.forEach(dungeon.setRoomType)
 				map.init(dungeon.map)
 			}
 			console.info('embark', mission.id, mission.questId)
@@ -312,6 +313,10 @@ var mission;
 		else return ''
 	}
 
+	function getSize(zoneId, questId) {
+		return zones[zoneId].missions[questId].size
+	}
+
 	function getQuestExp(level) {
 		// @1 6 @50 1275
 		let expMultiplier = Math.max(.06 - (level * .01), .01)
@@ -355,12 +360,12 @@ var mission;
 			// do nothing
 		}
 		else if (size === MAP_SIZES.medium) {
-			exp = exp * 1.35
-			gold = gold * 1.35
-		}
-		else if (size === MAP_SIZES.large) {
 			exp = exp * 2
 			gold = gold * 2
+		}
+		else if (size === MAP_SIZES.large) {
+			exp = exp * 4
+			gold = gold * 4
 		}
 		gold = ~~gold
 		exp = ~~exp

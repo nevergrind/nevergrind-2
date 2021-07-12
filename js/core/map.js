@@ -38,7 +38,6 @@ let map;
 		wheelZoomIn,
 		wheelZoomOut,
 		applyBounds,
-		centerMap,
 		centerCameraAt,
 		updatePosition,
 		setCompass,
@@ -57,6 +56,7 @@ let map;
 		animateTorch,
 		pingMap,
 		roomCleared,
+		handleMapNo,
 	}
 
 	let torch = {
@@ -99,7 +99,7 @@ let map;
 	$('#mini-map-leave').on('click', handleLeave)
 	$('#quest-completed').on('click', handleQuestCompleted)
 	$('#mini-map-prompt-btn-yes').on('click', handleMapYes)
-	$('#mini-map-prompt-btn-no').on('click', handleMapNo)
+	$('#mini-map-prompt-btn-no').on('click', map.handleMapNo)
 	$(map.miniMapDrag).on('click', '.map-room', handleRoomClick)
 
 	function init() {
@@ -274,12 +274,12 @@ let map;
 	function throwUpdate() {
 		map.applyBounds()
 	}
-	function centerMap() {
+	/*function centerMap() {
 		map.cameraX = (map.width * .5) - PARENT_WIDTH_HALF * -1
 		map.cameraY = (map.height * .5) - PARENT_HEIGHT_HALF * -1
 		map.scale = SCALE_DEFAULT
 		map.setCameraPosition(1)
-	}
+	}*/
 	/*function setOrigin(t) {
 		TweenMax.set(map.miniMapDrag, {
 			transformOrigin: t.x + 'px ' + t.y + 'px',
@@ -326,10 +326,13 @@ let map;
 		map.cameraX = x
 		map.cameraY = y
 		// console.warn('centerCameraAt', map.cameraX, map.cameraY)
-		map.scale = SCALE_DEFAULT
+		// map.scale = SCALE_DEFAULT
 		map.setCameraPosition(1)
 	}
-	function handleCenterParty() {
+	function handleCenterParty(setScale = true) {
+		if (setScale) {
+			map.scale = SCALE_DEFAULT
+		}
 		map.centerCameraAt(map.dotX, map.dotY)
 	}
 	function handleLeave() {
@@ -454,6 +457,7 @@ let map;
 		let rooms = ['#room-' + map.roomId]
 		let halls = []
 		let visibilityChangeCount = 0
+		const originalRoomVisibility = dungeon.map.rooms[map.roomId].visible
 		dungeon.map.rooms[map.roomId].visible = true
 		dungeon.map.rooms[map.roomId].connects.forEach(roomId => {
 			rooms.push('#room-' + roomId)
@@ -486,13 +490,24 @@ let map;
 				}(i)
 			}
 		}
+		else {
+			if (!originalRoomVisibility) {
+				delayedCall(.6, () => {
+					map.pingMap(true)
+				})
+			}
+
+		}
 	}
-	function pingMap() {
+	function pingMap(redFilter = false) {
 		const el = createElement('div')
 		el.className = 'map-ping'
 		el.style.left = map.dotX + 'px'
 		el.style.top = map.dotY + 'px'
 		el.style.opacity = 1
+		if (redFilter) {
+			el.style.filter = 'hue-rotate(300deg) saturate(50)'
+		}
 		querySelector('#mini-map-drag').appendChild(el)
 		const dur = 1.5
 		TweenMax.to(el, dur, {
@@ -636,7 +651,7 @@ let map;
 			map.questName.textContent = mission.getTitle(mission.id, mission.questId)
 		}
 		animateTorch()
-		handleCenterParty()
+		handleCenterParty(false)
 		delayedCall(delay, map.revealRoom)
 	}
 	function hide() {

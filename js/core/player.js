@@ -40,7 +40,7 @@ let players = []; // player sprites
 		// init
 		if (!players.length) {
 			for (var i=0; i<party.maxPlayers; i++) {
-				initPlayerSprite(i)
+				// initPlayerSprite(i)
 			}
 		}
 		// and update status if player is present
@@ -48,7 +48,7 @@ let players = []; // player sprites
 	}
 	function initPlayerSprite(i) {
 		// console.info('initPlayerSprite')
-		let id = ask.getAskId()
+		/*let id = ask.getAskId()
 		players[i] = {}
 		players[i].askId = id
 		const texture = PIXI.Texture.from(`images/players/default.png`)
@@ -71,18 +71,18 @@ let players = []; // player sprites
 		}
 		players[i].sprite.alpha = 0
 
-		ask.addChild(players[i].sprite, false)
+		ask.addChild(players[i].sprite, false)*/
 	}
 	function updatePlayerSprite(i, alpha) {
 		// this may change appearance depending on players leaving/joining etc
-		players[i].sprite.texture = player.textures[0]
+		// players[i].sprite.texture = player.textures[0]
 		// players[i].sprite.alpha = alpha
 	}
 	function updateAllPlayerSprites() {
-		players.forEach((p, i) => {
+		/*players.forEach((p, i) => {
 			if (party.aliveByIndex(i)) updatePlayerSprite(i, 1)
 			else updatePlayerSprite(i, 0)
-		})
+		})*/
 	}
 	function show() {
 		TweenMax.set(querySelector('#scene-players'), {

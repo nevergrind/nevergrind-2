@@ -38,7 +38,7 @@ var popover;
 			'inv-resist-ice': 'Resist Ice',
 			'bar-msg-sec': 'Messages Sent Per Second',
 			'bar-average-ping': 'Last and Average Ping',
-			'bar-camp': 'Camp and Exit',
+			'bar-camp': 'Camp and Return to Title Screen',
 			'bar-stats': '['+ _.capitalize(ng.config.hotkey.characterStats) +'] Character Sheet',
 			'bar-inventory': '['+ _.capitalize(ng.config.hotkey.inventory) +'] Inventory',
 			'bar-options': '[ESC] Options',
@@ -53,6 +53,14 @@ var popover;
 			'quest-completed': 'Click to Return to Town',
 			'loot-confirm': 'Loot Item',
 			'loot-cancel': 'Dismiss Loot',
+			'create-attr-str': 'Strength boosts the power of melee attacks and your chance to hit.',
+			'create-attr-sta': 'Stamina boosts your maximum health.',
+			'create-attr-agi': 'Agility boosts your dodge and natural armor values.',
+			'create-attr-dex': 'Dexterity boosts your parry, riposte, and critical hit rate.',
+			'create-attr-wis': 'Wisdom boosts your maximum spirit and the power of conjuration spells.',
+			'create-attr-int': 'Intelligence boosts your maximum mana and the power of evocation spells.',
+			'create-attr-cha': 'Charisma boosts maximum spirit and the power of alteration spells.',
+			version: 'View Patch Notes',
 		}
 		if (id.startsWith('skill-')) {
 			if (id === 'skill-primary-attack-btn') html = 'Primary Attack'
@@ -64,13 +72,21 @@ var popover;
 			}
 		}
 		else if (id.startsWith('buff-')) {
+			// mob buff icons
 			buffName = _.camelCase(id.split('-')[1])
 			// console.info('buffName', buffName)
 			html = buffs[buffName].name
 		}
 		else if (id.startsWith('mybuff-')) {
+			// my buff icons
 			buffName = _.camelCase(id.split('-')[1])
 			html = buffs[buffName].name || _.startCase(buffName)
+		}
+		else if (id.startsWith('bar-avatar-')) {
+			id = id.split('-')[2] * 1
+			const partyMember = party.presence[party.getIndexByRow(id)]
+			console.info('id player', id, partyMember)
+			html = partyMember.level + ' ' + ng.toJobLong(partyMember.job)
 		}
 		else {
 			if (id === 'potion-hp') {

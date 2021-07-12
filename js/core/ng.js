@@ -1,6 +1,6 @@
 // ng.js
 var ng;
-!function($, TweenMax, SplitText, _, undefined) {
+!function($, TweenMax, SplitText, _, Power2, undefined) {
 	ng = {
 		noop,
 		flashNgoLogo,
@@ -436,19 +436,22 @@ var ng;
 
 	function msg(msg, d) {
 		query.el('#msg').innerHTML = msg;
-		TweenMax.killTweensOf(query.el('#msg'))
-		TweenMax.set(query.el('#msg'), {
-			overwrite: 1,
+		// TweenMax.killTweensOf(query.el('#msg'))
+		TweenMax.to('#msg', .15, {
+			startAt: { scale: 1.1 },
 			scale: 1,
+			overwrite: 1,
+			opacity: 1,
+			ease: Power2.easeOut,
 		})
-		if (d === 0) return
+		if (d === 0) return // server errors
 		if (typeof d === 'undefined' || d < 1 ){ d = 2 }
 		msgTimer.kill()
 		msgTimer = delayedCall(d, msgComplete)
 	}
 	function msgComplete() {
-		TweenMax.to(query.el('#msg'), 0, {
-			scale: 0,
+		TweenMax.to('#msg', .15, {
+			opacity: 0,
 			ease: Power2.easeOut
 		})
 	}
@@ -708,11 +711,11 @@ var ng;
 				ease: Power1.easeOut,
 				onComplete: flashNgoLogo
 			})
-			TweenMax.staggerTo(new SplitText(query.el('#version')).chars, .5, {
+			/*TweenMax.staggerTo(new SplitText(query.el('#version')).chars, .5, {
 				delay: 5,
 				rotationY: 90,
 				alpha: 0
-			}, .05);
+			}, .05);*/
 		}
 		// console.info('init-game', r)
 
@@ -856,4 +859,4 @@ var ng;
 	}
 	// do nothing!
 	function noop() {}
-}($, TweenMax, SplitText, _)
+}($, TweenMax, SplitText, _, Power2)

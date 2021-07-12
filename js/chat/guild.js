@@ -295,9 +295,9 @@ var guild;
 	}
 	function setGuildList(data) {
 		html = ''
-		guild.memberList = data.memberList;
-		html += '<tbody>';
-		guild.memberList.forEach(getGuildRow);
+		guild.memberList = data.memberList
+		html += '<tbody>'
+		guild.memberList.forEach(getGuildRow)
 		html += '</tbody>'
 		$("#aside-guild-members").html(html)
 		getElementById('guild-member-count').textContent = guild.memberList.length
@@ -308,7 +308,7 @@ var guild;
 			'<td>' + v.level + '</td>' +
 			'<td style="width: 40%">' + v.name + '</td>' +
 			'<td style="width: 20%">' + v.race + '</td>' +
-			'<td class="chat-'+ v.job +'">' + ng.toJobLong(v.job) + '</td>' +
+			'<td class="chat-'+ v.job +'">' + v.job + '</td>' +
 		'</tr>'
 	}
 	function getGuildStar(rank) {

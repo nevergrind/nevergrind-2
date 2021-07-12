@@ -378,7 +378,9 @@ var tooltip;
 			<div id="tooltip-item-stat-wrap" class="text-center" style="border: .1rem ridge #013">
 				<div style="padding: .2rem">`
 				if (config.index !== void 0) {
-					skillHtml += `<div class="${rank === 0 ? 'chat-danger' : 'chat-gold'}">Current Rank: ${rank}</div>`
+					skillHtml += `<div class="${rank === 0 ? 'chat-danger' : 'chat-gold'}">
+						Current Rank: ${rank}
+					</div>`
 				}
 				if (typeof config.mp === 'function') {
 					skillHtml += `<div style="color: #3bf">Mana Cost: ${config.mp(minRank)}</div>`

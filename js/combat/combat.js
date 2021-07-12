@@ -399,6 +399,9 @@ var combat;
 		// console.info('updateHate hate val', o.hate)
 		if (o.isHeal) {
 			mobs[o.index].hp += o.damage
+			if (mobs[o.index].hp > mobs[o.index].hpMax) {
+				mobs[o.index].hp = mobs[o.index].hpMax
+			}
 		}
 		else {
 			mobs[o.index].hp -= o.damage
@@ -731,7 +734,7 @@ var combat;
 		autoAttackDisable()
 		spell.cancelSpell()
 		battle.subtractExpPenalty()
-		battle.reckonGXL()
+		battle.reckonGXL() // death
 		animateMyDeath()
 		party.memberDied(0)
 		audio.fadeMusic()

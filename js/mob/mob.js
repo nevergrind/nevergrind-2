@@ -303,6 +303,11 @@ let mobs = [];
 					// can't go lower than the zone minimum
 					r.level = zones[mission.id].level
 				}
+				else if (my.level <= 2 &&
+					r.level > zones[mission.id].missions[mission.questId].level) {
+					// restrict level for first few missions to max quest level
+					r.level = zones[mission.id].missions[mission.questId].level
+				}
 			})
 		}
 
@@ -374,13 +379,17 @@ let mobs = [];
 
 	function getMobGold(config) {
 		goldFound = 0
+		console.info('getMobGold', config.mobType, MOB_TYPES.BEAST)
 		if (config.mobType !== MOB_TYPES.BEAST) {
 			// @1 2-5
 			// @25 14-53
 			// @1 26-103
 			goldFound = ~~_.random(2 + ~~(config.level * .5), 3 + config.level * 2)
-			if (Math.random() > .9) {
+			if (Math.random() > .66) {
 				goldFound += 5
+			}
+			if (Math.random() > .9) {
+				goldFound += 10
 			}
 		}
 		return goldFound
@@ -411,8 +420,8 @@ let mobs = [];
 			mobConfig = {
 				...mobConfig,
 				...mob.type[mobConfig.img],
-				gold: getMobGold(mobConfig),
 			}
+			mobConfig.gold = getMobGold(mobConfig)
 			// mob class
 			mobSkills.modifyMobStatsByClass(mobConfig)
 			// mob tier, traits
@@ -420,7 +429,8 @@ let mobs = [];
 			// post-processing on config
 			mobConfig.hpMax = mobConfig.hp
 
-			// console.info('mobConfig omit some props?', mobConfig)
+			// console.info('mobConfig txData', mobConfig)
+
 			mob.txData[i] = _.omit(mobConfig, KEYS.MOB_OMIT)
 		}
 		// console.info('p->goBattle', mobConfig)
@@ -432,7 +442,7 @@ let mobs = [];
 			...mobConfig,
 		}
 		// console.info('mobConfig', _.cloneDeep(mobConfig))
-		console.info('setMob', mobs[i].level, _.cloneDeep(mobs[i]))
+		// console.info('setMob', mobs[i].level, _.cloneDeep(mobs[i]))
 		// start attack cycle
 		timers.mobAttack[i].kill()
 		timers.mobAttack[i] = delayedCall(Math.random() * 2 + 2, mob.attack, [i])
@@ -454,7 +464,7 @@ let mobs = [];
 		if (!m.img) return
 		// set dom
 		const scaleByLayer = i <= 4 ? 1 : .925
-		// console.info('m', m)
+		// console.info('m', _.cloneDeep(m))
 		const finalSize = m.size + ((m.level - m.minLevel) / 100)
 		m.size = finalSize
 		// console.info('finalSize', finalSize)
@@ -896,6 +906,7 @@ let mobs = [];
 		mob.earnedExp += battle.addExp(mob.getMobExp(i))
 		// death sound effect
 		audio.playSound(mobs[i].sfxDeath, 'mobs')
+		battle.reckonGXL() // killed a mob
 	}
 
 	function resourceTick() {
@@ -912,7 +923,6 @@ let mobs = [];
 				})
 			}
 		}
-		//////////////////////////////
 	}
 	function processMobResourceTick(m, index, tickData) {
 		if (mob.isAlive(index)) {

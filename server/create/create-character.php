@@ -49,8 +49,8 @@
 	}
 	// max is 8
 	if ($_SERVER['SERVER_NAME'] !== 'localhost'){
-		if ($totalCharacters >= 8){
-			exit('Eight is the maximum number of characters you can have!');
+		if ($totalCharacters >= 100){
+			exit('The maximum number of characters you can have is 100!');
 		}
 	}
 

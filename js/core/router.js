@@ -36,12 +36,8 @@ var router;
 			// console.info('chat.presence', data.row, chat.presence);
 			game.upsertRoom(data)
 		}
-		else if (r === 'chat->remove') {
-			game.removePlayer(data)
-		}
-		else if (r === 'chat->getPresence') {
-			game.updateChat()
-		}
+		else if (r === 'chat->remove') game.removePlayer(data)
+		else if (r === 'chat->getPresence') game.updateChat()
 	}
 	function toParty(data, r) {
 		if (r === 'p->hb') game.heartbeatReceivedParty(data)

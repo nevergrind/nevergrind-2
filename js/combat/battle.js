@@ -73,6 +73,7 @@ var battle;
 		getRandomMobCount,
 		handleMobClick,
 		getMobLevelByQuest,
+		nextLevel,
 	}
 	let index, buffHtml, tierHtml, traitHtml, buffEl, key, keyRow, el, i
 	let tgt = {}
@@ -126,8 +127,12 @@ var battle;
 	function reckonGXL() {
 		if (mob.earnedExp !== 0 || mob.earnedGold > 0) battle.upsertGX()
 		if (mob.leveledUp) battle.upsertLevel()
+		mob.earnedExp = 0
+		mob.earnedGold = 0
+		mob.leveledUp = false
 	}
 	function upsertGX() {
+		console.info('upsertGX', mob.earnedExp, mob.earnedGold)
 		$.post(app.url + 'character/upsert-gx.php', {
 			gold: mob.earnedGold,
 			exp: mob.earnedExp,
@@ -141,6 +146,7 @@ var battle;
 	function addExp(exp, isQuestExp) {
 		leveled = false // to determine UI updates
 		if (my.exp + exp > battle.expThreshold[MaxHeroLevel]) {
+			// max possible exp value
 			exp = battle.expThreshold[MaxHeroLevel] - my.exp
 		}
 		my.exp += exp
@@ -151,8 +157,13 @@ var battle;
 			else {
 				chat.log('You earned experience!', 'chat-exp')
 			}
+			TweenMax.to(query.el('#exp-bar'), .3, {
+				startAt: { filter: 'saturate(2) brightness(2)' },
+				filter: 'saturate(1) brightness(1)',
+				repeat: 1,
+			})
 		}
-		while (my.exp >= nextLevel()) {
+		while (my.exp >= battle.nextLevel()) {
 			// you leveled! Wow! (possibly multiple times if you cheated!?)
 			mob.leveledUp = leveled = true
 			my.level++
@@ -175,8 +186,9 @@ var battle;
 		return exp
 	}
 	function getExpBarRatio() {
-		ratio = -(1 - ((my.exp - battle.expThreshold[my.level]) / nextLevel())) * 100
-		return ratio
+		const expThisLevel = my.exp - battle.expThreshold[my.level]
+		const expNeeded = battle.nextLevel() - battle.expThreshold[my.level]
+		return -(1 - (expThisLevel / expNeeded)) * 100
 	}
 	function nextLevel() {
 		return battle.expThreshold[my.level + 1]
@@ -204,11 +216,6 @@ var battle;
 		dur = typeof dur === 'number' ? dur : duration * 1.5
 		TweenMax.to(query.el('#exp-bar'), duration, {
 			x: getExpBarRatio() + '%',
-		})
-		TweenMax.to(query.el('#exp-bar'), dur, {
-			startAt: { filter: 'saturate(2) brightness(2)' },
-			filter: 'saturate(1) brightness(1)',
-			repeat: 1,
 		})
 	}
 	function getSplashTarget(shift, tgt) {
@@ -251,6 +258,7 @@ var battle;
 		// if (my.target !== index) querySelector('#mob-details-' + index).classList.remove('block-imp')
 	}
 	function go(data, isRespawn = false) {
+		dungeon.walkDisabled = false // enable walking
 		if (!isRespawn) {
 			if (typeof data === 'object') {
 				// party member receiving data
@@ -316,7 +324,7 @@ var battle;
 		party.combatStartLength = party.totalPlayers()
 
 		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer() && !isRespawn) {
-			console.info('p->goBattle txData!', mob.txData)
+			// console.info('p->goBattle txData!', mob.txData)
 			socket.publish('party' + my.partyId, {
 				route: 'p->goBattle',
 				config: mob.txData // from setupMobs
@@ -388,7 +396,7 @@ var battle;
 	function setupMobs(config) {
 		// console.info('setupMobs', config)
 		if (typeof config === 'object') {
-			console.warn('FOLLOWER SETUP MOBS')
+			console.warn('FOLLOWER SETUP MOBS', config)
 			// followers
 			config.forEach((mobData, index) => {
 				if (mobData.name) {
@@ -416,7 +424,7 @@ var battle;
 
 			// this will limit mobs to front row for early missions
 			// let maxMobs = mission.getQuestData(mission.id, mission.questId).level <= 10 ? 5 : mob.max
-			let maxMobs = 5
+			let maxMobs = mob.max
 			mob.txData = []
 			for (var i=0; i<maxMobs; i++) {
 				mob.txData.push({})
@@ -439,7 +447,9 @@ var battle;
 				}
 				let tierLotto = _.random(1, 100)
 
-				if (dungeon.map.rooms[map.roomId].boss &&
+				if (map.inRoom &&
+					dungeon.map.rooms[map.roomId].boss &&
+					dungeon.map.rooms[map.roomId].isAlive &&
 					i === 0) {
 					// boss room logic
 					q.name = mission.getQuestData(mission.id, mission.questId).bossName
@@ -469,6 +479,9 @@ var battle;
 					// is it a champion?
 				}
 				// tries to find by name first and then by img
+				if (Config.testMob) {
+					// q.name = 'Centurion Shiloh'
+				}
 				let mobConfig = {
 					traits: {},
 					expPerLevel: 3,
@@ -619,31 +632,41 @@ var battle;
 		questData = mission.getQuestData(mission.id, mission.questId)
 		if (map.inRoom) {
 			if (questData.level < 5) return 1
-			else if (questData.level < 10) return 2
+			else if (questData.level < 10) return 1
 			else if (questData.level < 20) return 2
 			else if (questData.level < 30) return 2
-			else return 2
+			else return 3
 		}
 		else {
 			// hallways
 			if (questData.level < 5) return 1
 			else if (questData.level < 10) return 1
-			else if (questData.level < 20) return 1
+			else if (questData.level < 20) return 2
 			else if (questData.level < 30) return 2
 			else return 2
 		}
 	}
 	function getMaxMobCount() {
 		questData = mission.getQuestData(mission.id, mission.questId)
-		let ambushBonus = 0
-		// if (map.inRoom && Math.random() > .9) ambushBonus = 1
-		if (questData.level < 5) return 1
-		else if (questData.level < 10) return 2 + ambushBonus
-		else if (questData.level < 15) return 3 + ambushBonus
-		else if (questData.level < 20) return 3 + ambushBonus
-		else if (questData.level < 25) return 3 + ambushBonus
-		else if (questData.level < 30) return 4 + ambushBonus
-		else return 4 + ambushBonus
+		if (map.inRoom) {
+			if (questData.level < 5) return 1
+			else if (questData.level < 10) return 2
+			else if (questData.level < 15) return 3
+			else if (questData.level < 20) return 3
+			else if (questData.level < 25) return 3
+			else if (questData.level < 30) return 4
+			else return 4
+		}
+		else {
+			// hallways
+			if (questData.level < 5) return 1
+			else if (questData.level < 10) return 2
+			else if (questData.level < 15) return 2
+			else if (questData.level < 20) return 3
+			else if (questData.level < 25) return 3
+			else if (questData.level < 30) return 3
+			else return 3
+		}
 	}
 	function loadTextures() {
 		if (_.size(mob.textures) === 0) {

@@ -4,23 +4,8 @@ var tavern;
 	tavern = {
 		activeTab: 'tavern-missions',
 		html: '',
-		leaders: {
-			ALL: void 0,
-			[JOB.WARRIOR]: void 0,
-			[JOB.CRUSADER]: void 0,
-			[JOB.SHADOW_KNIGHT]: void 0,
-			[JOB.MONK]: void 0,
-			[JOB.ROGUE]: void 0,
-			[JOB.RANGER]: void 0,
-			[JOB.BARD]: void 0,
-			[JOB.DRUID]: void 0,
-			[JOB.CLERIC]: void 0,
-			[JOB.SHAMAN]: void 0,
-			[JOB.WARLOCK]: void 0,
-			[JOB.ENCHANTER]: void 0,
-			[JOB.TEMPLAR]: void 0,
-			[JOB.WIZARD]: void 0,
-		},
+		leaders: getDefaultLeaders(),
+		getDefaultLeaders,
 		getBodyHtml,
 		init,
 	}
@@ -43,7 +28,7 @@ var tavern;
 			chat: 'There is a robust chat system that you can use whilst in Vandamor. There are dedicated channels for town, party, and even your guild (if applicable). While in town, you can change channels to any channel name using commands in the chat module. Create a private channel and send your friends a private message to have them join you! Each chat room in town even features presence detection so that it\'s easy to see who can see your messages. Chat messages do not retain history, so you must be present in order to see any chat messages. Try typing /help to see a complete list of commands!',
 			friends: 'You never know who you\'ll meet in the world of Vandamor. It ranges from the good, bad, and the ugly! When you meet someone that you want to play with again, add them to your friends list and you will receive notifications when they come online! Try typing /help friend to see all friend commands!',
 			ignore: 'Some adventurers out there may become a nuisance. Thankfully you can ignore them in your chat module with an ignore command. Try using /help ignore for a complete list of commands.',
-			inventory: 'Your inventory has 16 slots for items that you would like to carry. Items, potions, and even gold will take up valuable inventory space. Be mindful of what treasures you loot since you will run out of bag space quickly!',
+			inventory: 'Your inventory has 16 slots for items that you would like to carry. Items, potions, and scrolls will take up valuable inventory space. Be mindful of what treasures you loot since you will run out of bag space quickly!',
 			missions: 'Edenburg\'s King has a variety of missions, from the trivial to the impossible, for adventurers such as yourself. There is a curious amount of danger afoot outside of our castle walls. Some days it feels as though we are under siege. Thanks to brave adventurers like yourself, '+ my.name +', we have been able to keep our supply routes open to neighboring cities.',
 			academy: 'At the academy you can train your spells or skills as you level up. Both warriors and wizards alike will find specialists ready to transfer their specialized knowledge to students of warfare. The training is taxpayer subsidized by the King\'s Warfare Chancellory, though it will still cost you a hefty amount of gold to be trained as independent soldiers of fortune seeking gold and glory under the banner of the King.',
 			merchant: 'The merchant carries the widest selection of items among all stores in Edenburg, though it is the only store that sells leather armor. Aside from cloth, mail, and plate armor, the merchant sells all equipment sold at the apothecary and the blacksmith. This could make it more difficult to find specific items you are looking for, but it\'s not a bad idea to check what the merchant has in stock that day.',
@@ -133,9 +118,7 @@ var tavern;
 			ng.splitText('various-description', 'Edenburg\'s royal scribes do their best to maintain an updated list of the most accomplished adventurers in the Kingdom. We maintain an overall list and a separate list by class.')
 			html = leaderboardHtml()
 			avatar = 'human-female-3'
-			if (!tavern.leaders[selectedLeaderboard]) {
-				getLeaders()
-			}
+			getLeaders()
 		}
 		/*ng.splitText('various-description', 'The King has ordered that we carefully track all weapons and armor in the Kingdom. These records are public knowledge and may be reviewed for legal or educational purposes.')*/
 		setDescriptionStyle()
@@ -209,9 +192,9 @@ var tavern;
 			'<div data-id="Mitigation" class="tavern-tips">Physical and Magical Mitigation</div>' +
 			'<div data-id="Enhance Spell Damage" class="tavern-tips">Enhance Spell Damage</div>' +
 			'<div data-id="Resist Effects" class="tavern-tips">Resist Effects</div>' +
-			'<div data-id="Reduce Healing" class="tavern-tips">Reduce Healing</div>' +
+			/*'<div data-id="Reduce Healing" class="tavern-tips">Reduce Healing</div>' +
 			'<div data-id="Rest In Peace" class="tavern-tips">Rest In Peace</div>' +
-			'<div data-id="Slows Target" class="tavern-tips">Slows Target</div>' +
+			'<div data-id="Slows Target" class="tavern-tips">Slows Target</div>' +*/
 			'<div data-id="Reduce Target Armor" class="tavern-tips">Reduce Target Armor</div>' +
 			'<div data-id="Ignore Target Armor" class="tavern-tips">Ignore Target Armor</div>' +
 			'<div data-id="Resources on Kill" class="tavern-tips">Resources on Kill</div>' +
@@ -254,10 +237,7 @@ var tavern;
 		}
 		this.classList.add('active')
 		selectedLeaderboard = this.id
-		if (typeof tavern.leaders[selectedLeaderboard] === 'undefined') {
-			getLeaders(selectedLeaderboard)
-		}
-		else querySelector('#tavern-leaderboard-body').innerHTML = leaderboardBodyHtml(tavern.leaders[selectedLeaderboard])
+		getLeaders(selectedLeaderboard)
 		audio.playSound('click-3')
 	}
 	function getLeaders(job) {
@@ -274,8 +254,6 @@ var tavern;
 		}
 	}
 	function setLeaderboardData(data) {
-		// console.info('getLeaders', data)
-		tavern.leaders[selectedLeaderboard] = data.leaderboard
 		querySelector('#tavern-leaderboard-body').innerHTML = leaderboardBodyHtml(data.leaderboard)
 	}
 	function leaderboardHtml() {
@@ -299,14 +277,29 @@ var tavern;
 					'</tr>' +
 				'</thead>' +
 				'<tbody id="tavern-leaderboard-body">' +
-					leaderboardBodyHtml(tavern.leaders[selectedLeaderboard]) +
+					leaderboardBodyHtml() +
 				'</tbody>' +
 			'</table>' +
 		'</div>'
 		return html
 	}
-	function heroesHtml() {
-		html = '<div>Heroes Tip Html</div>'
-		return html
+	function getDefaultLeaders() {
+		return {
+			ALL: void 0,
+			[JOB.WARRIOR]: void 0,
+			[JOB.CRUSADER]: void 0,
+			[JOB.SHADOW_KNIGHT]: void 0,
+			[JOB.MONK]: void 0,
+			[JOB.ROGUE]: void 0,
+			[JOB.RANGER]: void 0,
+			[JOB.BARD]: void 0,
+			[JOB.DRUID]: void 0,
+			[JOB.CLERIC]: void 0,
+			[JOB.SHAMAN]: void 0,
+			[JOB.WARLOCK]: void 0,
+			[JOB.ENCHANTER]: void 0,
+			[JOB.TEMPLAR]: void 0,
+			[JOB.WIZARD]: void 0,
+		}
 	}
 }($, _);

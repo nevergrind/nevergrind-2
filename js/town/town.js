@@ -105,6 +105,7 @@ var town;
 		if (!create.selected) return
 
 		audio.playMusic('eq-training', .5, 1500)
+		$('#version, #patch-notes').remove()
 		clearTimeout(game.session.timer)
 		game.showScene('scene-town');
 		ng.lock(1);
@@ -163,7 +164,6 @@ var town;
 			chat.init()
 
 			getElementById('scene-town').innerHTML = getTownHtml()
-
 
 			if (socket.enabled) {
 				town.socketReady()

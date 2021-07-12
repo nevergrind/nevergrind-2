@@ -2330,13 +2330,17 @@ var loot = {};
 			}
 		}
 		if (selling) {
+			// gold bonus by rarity
+			if (item.rarity === ITEM_RARITY.magic) value += 10
+			else if (item.rarity === ITEM_RARITY.rare) value += 20
+			else if (item.rarity === ITEM_RARITY.set) value += 35
+			else if (item.rarity === ITEM_RARITY.unique) value += 65
+
 			// handle minimum values for rings, amulets, charms
 			if (item.itemType === ITEM_TYPE.RINGS ||
 				item.itemType === ITEM_TYPE.AMULETS ||
 				item.itemType === ITEM_TYPE.CHARMS) {
-				if (value < 20) {
-					value = 20
-				}
+				value += 20
 			}
 		}
 		else {

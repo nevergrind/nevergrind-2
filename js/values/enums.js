@@ -262,7 +262,7 @@ const KEYS = Object.freeze({
 	ID: ['id'],
 	INDEX: ['index'],
 	RANK: ['rank'],
-	MOB_OMIT: [ 'maxLevel', 'minLevel', ],
+	MOB_OMIT: [ 'maxLevel' ],
 	SET_FACE: [ 'gender', 'race', 'face' ],
 	ITEM_ENTER: [ 'index', 'type' ],
 	PLAYER_CLICK: [ 'row', 'name' ],

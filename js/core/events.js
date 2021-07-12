@@ -150,14 +150,14 @@
 			return
 		}
 		// local only
-		if (!app.isApp) {
+		/*if (!app.isApp) {
 			if (!chat.hasFocus && ng.view !== 'title') {
 				// key input view router
 				if (key === 'PageDown') battle.go()
 				else if (key === 'Home') town.go()
 				else if (key === 'PageUp') mission.embark()
 			}
-		}
+		}*/
 
 		if (e.altKey) {
 			// ALT key functions
