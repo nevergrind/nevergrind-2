@@ -250,7 +250,7 @@ var create;
 			err = 'You must spend all of your ability points!';
 		}
 		if (err){
-			ng.msg(err);
+			ng.msg(err, undefined, COLORS.yellow);
 			ng.unlock();
 		}
 		else {
@@ -270,7 +270,7 @@ var create;
 				$("#create-character-back").trigger('click')
 				audio.save()
 			}).fail(r => {
-				ng.msg(r.responseText, 8)
+				ng.msg(r.responseText, 8, undefined, COLORS.yellow)
 				ng.unlock()
 			});
 		}
@@ -288,7 +288,7 @@ var create;
 			modal.hide();
 			ng.initGame();
 		}).fail(r => {
-			ng.msg(r.responseText, 8);
+			ng.msg(r.responseText, 8, undefined, COLORS.yellow);
 			ng.unlock();
 		})
 	}

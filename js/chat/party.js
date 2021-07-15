@@ -33,6 +33,7 @@ var party;
 		disband,
 		hasMoreThanOnePlayer,
 		getIndexByRow,
+		getIndexByName,
 		getNameByRow,
 		isSomeoneAlive,
 		isAlive,
@@ -82,6 +83,9 @@ var party;
 	}
 	function getIndexByRow(row) {
 		return party.presence.findIndex(member => member.row === row)
+	}
+	function getIndexByName(name) {
+		return party.presence.findIndex(member => member.name === name)
 	}
 	function getNameByRow(row) {
 		return _.find(party.presence, {
@@ -147,17 +151,20 @@ var party;
 		if (index >= 0) {
 			for (var key in data) {
 				if (resourceKeys.includes(key)) {
-					player[key] = data[key]
 					if (key === PROP.HP) updateHp = true
 					else if (key === PROP.MP) updateMp = true
 					else if (key === PROP.SP) updateSp = true
+
+					player[key] = data[key]
 				}
 			}
 			updateHp && bar.updateBar(PROP.HP, data)
 			updateMp && bar.updateBar(PROP.MP, data)
 			updateSp && bar.updateBar(PROP.SP, data)
 
-			if (updateHp && data.hp <= 0) {
+			if (updateHp &&
+				data.hp <= 0 &&
+				!party.presence.isDead) {
 				party.memberDied(index)
 			}
 		}
@@ -198,12 +205,12 @@ var party;
 	 * Triggers a team revival at room 0
 	 */
 	function rxCheckWipe() {
-		// console.info('everyone dead????', !party.isSomeoneAlive())
 		if (!party.isSomeoneAlive()) {
-			// console.info('everyone is dead... respawn!')
+			console.warn('TOTAL WIPE')
 			if (party.presence[0].isLeader) {
 				// everyone is dead and I'm the leader... kill mob attacks
-				mob.killAttacks(true)
+				console.warn('TOTAL WIPE AND I AM LEADER')
+				mob.killAllAttacks(true)
 			}
 			party.respawn()
 		}
@@ -247,7 +254,7 @@ var party;
 				console.warn('reviveAlly!', p.row, p)
 				p.isDead = false
 				if (p.row === my.row) {
-					console.info('isPartyWipe', isPartyWipe)
+					// console.info('isPartyWipe', isPartyWipe)
 					if (isPartyWipe) {
 						my.set(PROP.HP, p.hpMax)
 						my.set(PROP.MP, p.mpMax)
@@ -554,7 +561,11 @@ var party;
 	function promote(name) {
 		// console.info('/promote ', name);
 		// must be leader or bypass by auto-election when leader leaves
-		var id = party.getNameByRow(name)
+		if (ng.view !== 'town') {
+			chat.log('You must be in town to change the party leader!', CHAT.WARNING)
+			return
+		}
+		var id = party.getIndexByName(name)
 
 		if (party.presence[0].isLeader) {
 			if (id >= 1) {
@@ -574,7 +585,7 @@ var party;
 		}
 	}
 	function promoteReceived(data) {
-		var index = party.getNameByRow(data.name)
+		var index = party.getIndexByName(data.name)
 		if (index >= 0) {
 			chat.log(data.name + " has been promoted to party leader.", CHAT.WARNING)
 			// console.warn('index', index)

@@ -85,7 +85,7 @@ var popover;
 		else if (id.startsWith('bar-avatar-')) {
 			id = id.split('-')[2] * 1
 			const partyMember = party.presence[party.getIndexByRow(id)]
-			console.info('id player', id, partyMember)
+			// console.info('id player', id, partyMember)
 			html = partyMember.level + ' ' + ng.toJobLong(partyMember.job)
 		}
 		else {

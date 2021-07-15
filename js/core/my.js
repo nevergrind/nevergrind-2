@@ -180,16 +180,16 @@ var my;
 		return my.buffFlags.freeze
 	}
 	function stunMsg() {
-		ng.msg('You are stunned!')
+		ng.msg('You are stunned!', undefined, COLORS.red)
 	}
 	function fearMsg() {
-		ng.msg('You are feared!')
+		ng.msg('You are feared!', undefined, COLORS.red)
 	}
 	function paralyzeMsg() {
-		ng.msg('You are paralyzed!')
+		ng.msg('You are paralyzed!', undefined, COLORS.red)
 	}
 	function silenceMsg() {
-		ng.msg('You are silenced!')
+		ng.msg('You are silenced!', undefined, COLORS.red)
 	}
 	function isPunching(slot) {
 		return !(typeof items.eq[slot] === 'object' && items.eq[slot].name)
@@ -200,7 +200,7 @@ var my;
 	 * also synchronizes the values in party.presence
 	 * @param key
 	 * @param val
-	 * @param increment
+	 * @param increment - increase or decrease by val (instead of absolute value)
 	 */
 	function set(key, val, increment) {
 		if (increment) {
@@ -215,15 +215,24 @@ var my;
 			if (my.hp > my.hpMax) {
 				my.hp = my.hpMax
 			}
+			else if (my.hp < 0) {
+				my.hp = 0
+			}
 		}
 		else if (key === PROP.MP) {
 			if (my.mp > my.mpMax) {
 				my.mp = my.mpMax
 			}
+			else if (my.mp < 0) {
+				my.mp = 0
+			}
 		}
 		else if (key === PROP.SP) {
 			if (my.sp > my.spMax) {
 				my.sp = my.spMax
+			}
+			else if (my.sp < 0) {
+				my.sp = 0
 			}
 		}
 		// sync party presence values
@@ -317,14 +326,19 @@ var my;
 			});
 		}
 	}*/
+	let regenTick
 	function resourceTick(type) {
 		// hpRegen mpRegen spRegen
 		if (my.hp > 0 && !my.buffFlags.frozen) {
 			if (type === PROP.HP) {
-				my.set(PROP.HP, my.hp + stats.hpRegen())
+				regenTick = stats.hpRegen()
+				if (combat.isBattleOver()) regenTick += (my.hpMax * .06)
+				my.set(PROP.HP, my.hp + regenTick)
 			}
 			else if (type === PROP.MP) {
-				my.set(PROP.MP, my.mp + stats.mpRegen())
+				regenTick = stats.mpRegen()
+				if (combat.isBattleOver()) regenTick += (my.mpMax * .11)
+				my.set(PROP.MP, my.mp + regenTick)
 			}
 			else if (type === PROP.SP) {
 				my.set(PROP.SP, my.sp + stats.spRegen())

@@ -116,9 +116,7 @@ var dungeon;
 	const CLOSEST_MOB_DISTANCE = -200
 	const MOB_DUNGEON_SIZE = 1.6 // this should equate to about scale 1 in combat (?)
 	const MAX_BLUR = 3
-	/*$('#scene-dungeon')
-		.on('mousedown', handleClickDungeon)
-		.on('mouseup', handleClickDungeonUp)*/
+	$('#scene-dungeon').on('mousedown', handleClickDungeon)
 	///////////////////////////////////////
 	function go(force) {
 		if (!force && ng.view === 'dungeon') return
@@ -141,7 +139,7 @@ var dungeon;
 		// coming out of battle - save!
 		// TODO: change this to update gold+exp+level too later
 		if (ng.view === 'battle') {
-			mob.killAttacks()
+			mob.killAllAttacks()
 			my.saveCharacterData()
 		}
 		if (ng.view === 'town') {
@@ -347,6 +345,7 @@ var dungeon;
 		// up to 2 mobs per 9600 length hallway
 		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
 		let minZoneLevel = zones.find(z => z.name === zones[mission.id].name).level
+		console.info("START")
 		dungeon.map.hallways.forEach((h, hIndex) => {
 			h.entities = []
 			for (var i=0; i<mobLen; i++) {
@@ -618,17 +617,12 @@ var dungeon;
 	function centerY(index, race) {
 		return BOTTOM_PLAYER - 180
 	}
-	/*function handleClickDungeon(e) {
+	function handleClickDungeon(e) {
 		if (party.presence[0].isLeader) {
-			if (e.shiftKey || (e.clientY / window.innerHeight > .85)) dungeon.walkBackward()
-			else dungeon.walkForward()
+			dungeon.walkForward()
+			// if (e.shiftKey || (e.clientY / window.innerHeight > .85)) dungeon.walkBackward()
 		}
 	}
-	function handleClickDungeonUp() {
-		if (party.presence[0].isLeader) {
-			dungeon.walkStop()
-		}
-	}*/
 	// moving functions
 	function getWalkProgress() {
 		return dungeon.distanceCurrent / dungeon.distanceEnd
@@ -651,13 +645,13 @@ var dungeon;
 		return blurValue
 	}
 	function walkForward() {
-		if (ng.view !== 'dungeon' || map.menuPrompt || dungeon.walking !== 0) {
+		if (ng.view !== 'dungeon' || map.menuPrompt || !party.presence[0].isLeader) {
 			return
 		}
-		dungeon.walking = 1
-		if (dungeon.getWalkProgress() >= 0 &&
-			dungeon.getWalkProgress() < 1) {
-			if (party.presence[0].isLeader) {
+		if (dungeon.walking === 0) {
+			dungeon.walking = 1
+			if (dungeon.getWalkProgress() >= 0 &&
+				dungeon.getWalkProgress() < 1) {
 				if (party.hasMoreThanOnePlayer()) {
 					socket.publish('party' + my.partyId, {
 						route: 'p->walkForward',
@@ -666,6 +660,10 @@ var dungeon;
 				dungeon.rxWalkForward()
 			}
 		}
+		else {
+			dungeon.walkStop()
+		}
+
 	}
 	function rxWalkForward() {
 		dungeon.walking = 1
@@ -678,10 +676,12 @@ var dungeon;
 		})
 	}
 	function walkBackward() {
-		if (ng.view !== 'dungeon' || map.menuPrompt || dungeon.walking !== 0) return
-		dungeon.walking = -1
-		if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
-			if (party.presence[0].isLeader) {
+		if (ng.view !== 'dungeon' || map.menuPrompt || !party.presence[0].isLeader) {
+			return
+		}
+		if (dungeon.walking === 0) {
+			dungeon.walking = -1
+			if (dungeon.getWalkProgress() > 0 && dungeon.getWalkProgress() < 1) {
 				audio.startWalk()
 				if (party.hasMoreThanOnePlayer()) {
 					socket.publish('party' + my.partyId, {
@@ -690,6 +690,9 @@ var dungeon;
 				}
 				dungeon.rxWalkBackward()
 			}
+		}
+		else {
+			walkStop()
 		}
 	}
 	function rxWalkBackward() {
@@ -714,7 +717,7 @@ var dungeon;
 		}
 	}
 	function rxWalkStop() {
-		console.info('rxWalkStop')
+		// console.info('rxWalkStop')
 		dungeon.walking = 0
 		dungeon.walkTween.pause()
 		clearInterval(dungeon.walkSoundInterval)

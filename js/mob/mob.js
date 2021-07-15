@@ -35,7 +35,7 @@ let mobs = [];
 		animateSpecial,
 		animateDeath,
 		getMobAttackSpeed,
-		killAttacks,
+		killAllAttacks,
 		missChance,
 		dodgeChance,
 		parryChance,
@@ -295,8 +295,12 @@ let mobs = [];
 			// regular mob - set based on level
 			results.forEach((r, i) => {
 				// constrain mob level to quest max - only name/tier queriest can bypass this limit
+				const maxQuestLevel = mission.getQuestData(mission.id, mission.questId).level
 				r.level = _.random(r.minLevel, r.maxLevel)
-				// console.info('results level', r.level, maxQuestLevel, q)
+				if (r.level > maxQuestLevel) {
+					r.level = maxQuestLevel
+				}
+				// console.info('mob level', r.level, maxQuestLevel, q)
 				// r.level = q.level
 				// r.level = Math.min(q.level, maxQuestLevel)
 				if (r.level < zones[mission.id].level) {
@@ -304,9 +308,9 @@ let mobs = [];
 					r.level = zones[mission.id].level
 				}
 				else if (my.level <= 2 &&
-					r.level > zones[mission.id].missions[mission.questId].level) {
-					// restrict level for first few missions to max quest level
-					r.level = zones[mission.id].missions[mission.questId].level
+					r.level > my.level) {
+					// restrict level for first few missions to player level
+					r.level = my.level
 				}
 			})
 		}
@@ -330,14 +334,14 @@ let mobs = [];
 				return false
 			}
 
-			let valid = false
+			// console.info('q?', q.level, q.img)
 			if (q.level && q.img) {
 				// by level and img
 				if (m.img === q.img &&
 					m.minLevel <= q.level && q.level <= m.maxLevel) {
-					valid = true
+					return true
 				}
-				else valid = false
+				else return false
 				/*if (valid) {
 					console.info('valid', q.img, q.level, m.img, m.minLevel, m.maxLevel)
 				}
@@ -348,8 +352,8 @@ let mobs = [];
 			else if (q.level) {
 				// by level only
 				// console.info('filterNormalMobs', m.minLevel, q.level, m.maxLevel)
-				if (m.minLevel <= q.level && q.level <= m.maxLevel) valid = true
-				else valid = false
+				if (m.minLevel <= q.level && q.level <= m.maxLevel) return true
+				else return false
 				/*if (valid) {
 					console.info('valid L', q.level, m.img, m.minLevel, m.maxLevel)
 				}
@@ -359,10 +363,9 @@ let mobs = [];
 			}
 			else if (q.img) {
 				// by img only
-				if (m.img === q.img) valid = true
-				else valid = false
+				if (m.img === q.img) return true
+				else return false
 			}
-			return valid
 		}
 	}
 
@@ -379,12 +382,15 @@ let mobs = [];
 
 	function getMobGold(config) {
 		goldFound = 0
-		console.info('getMobGold', config.mobType, MOB_TYPES.BEAST)
+		// console.info('getMobGold', config.mobType, MOB_TYPES.BEAST)
 		if (config.mobType !== MOB_TYPES.BEAST) {
 			// @1 2-5
 			// @25 14-53
 			// @1 26-103
 			goldFound = ~~_.random(2 + ~~(config.level * .5), 3 + config.level * 2)
+			if (Math.random() > .33) {
+				goldFound += 5
+			}
 			if (Math.random() > .66) {
 				goldFound += 5
 			}
@@ -444,7 +450,7 @@ let mobs = [];
 		// console.info('mobConfig', _.cloneDeep(mobConfig))
 		// console.info('setMob', mobs[i].level, _.cloneDeep(mobs[i]))
 		// start attack cycle
-		timers.mobAttack[i].kill()
+		timers.mobAttack[i].pause()
 		timers.mobAttack[i] = delayedCall(Math.random() * 2 + 2, mob.attack, [i])
 		mobs[i].hate = {}
 		party.presence.forEach(member => {
@@ -705,18 +711,19 @@ let mobs = [];
 					audio.playSound(mobs[i].sfxHit, 'mobs')
 				}
 			}
-
 		}
 	}
 
 	function attack(i) {
-		timers.mobAttack[i].kill()
+		// console.info('mobAttack START', mobs[i].name, mobs[i].isDead)
+		timers.mobAttack[i].pause()
 		if (!mobs[i].name || mobs[i].isDead) return
 
 		if (party.presence[0].isLeader && party.isSomeoneAlive()) {
 			// only party leader should trigger attacks
 			mobSkills.decideSkill(i, getMobTargetRow(i))
 		}
+		// console.info('mobAttack END!', i)
 		// keep it going for all in case some else takes over leader
 		timers.mobAttack[i] = delayedCall(getMobAttackSpeed(i), mob.attack, [i])
 	}
@@ -975,11 +982,10 @@ let mobs = [];
 			mobs[index].buffFlags.affliction
 		)
 	}
-	function killAttacks(continueIdling) {
+	function killAllAttacks(continueIdling) {
 		mobs.forEach((m, i) => {
-			timers.mobAttack[i].kill()
+			timers.mobAttack[i].pause()
 			!continueIdling && typeof mobs[i].animation === 'object' && mobs[i].animation.pause()
-
 		})
 	}
 	function missChance(index) {

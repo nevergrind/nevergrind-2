@@ -21,7 +21,7 @@ var login;
 			login.focusInput = true;
 		}).on('blur', function() {
 			login.focusInput = false;
-		}).on('keydown', function(e){
+		}).on('keydown', e => {
 			// hit enter
 			// console.info(e, e.keyCode);
 			if(e.keyCode === 13){

@@ -2,10 +2,12 @@
 	var i
 	var key
 	let _keyup
+	let keyDownActive = false
 	// window
 
 	// document events
 	document.addEventListener('DOMContentLoaded', readyFn)
+	const bodyFontSize = getComputedStyle(getElementById('body')).fontSize
 
 	//////////////////////////////////////////////
 	function readyFn() {
@@ -15,7 +17,8 @@
 		$(window)
 			.on('resize', resize)
 			.on('load', windowResized)
-			.on(ITEM_TYPE.FOCUS, focus)
+			.on('focus', windowFocus)
+			.on('blur', handleWindowBlur)
 			.on('contextmenu', handleContextMenu)
 			.focus(windowResized)
 
@@ -24,8 +27,6 @@
 			.on('click', mousedown)
 			.on('keydown', keydown)
 			.on('keyup', keyup)
-
-		$('#chat-input').on('blur', chat.focusChatBlur)
 
 		$('#root-options')
 			.on('click', '#app-exit', bar.appExit)
@@ -40,7 +41,7 @@
 		// delegated events
 		$('body')
 			.on('dragstart', 'img', dragStart)
-			.on(ITEM_TYPE.FOCUS, 'input', chatInputFocus)
+			.on('focus', 'input', chatInputFocus)
 			.on('blur', 'input', chatInputBlur)
 			.on('click', '.close-menu', bar.handleCloseMenu)
 			.on('mouseenter', '.item-slot, .skill-btn-tooltip', tooltip.handleEnter)
@@ -72,6 +73,15 @@
 			.on('click', '.player-resource-column', bar.handlePlayerClick)
 
 	}
+	///////////////////////////
+	function handleWindowBlur() {
+		// console.info('handleWindowBlur')
+		if (ng.view === 'dungeon') {
+			if (dungeon.walking) {
+				dungeon.walkStop()
+			}
+		}
+	}
 
 	function handleContextMenu() {
 		if (app.isApp) return false // disable context menus
@@ -80,7 +90,7 @@
 		chat.hasFocus = 1;
 	}
 	function chatInputBlur() {
-		chat.hasFocus = 0;
+		chat.hasFocus = 0
 	}
 	function readyFire() {
 		ng.initGame()
@@ -89,8 +99,14 @@
 		audio.events()
 		// window.onbeforeunload = chat.camp
 	}
-	function focus() {
-		windowResized();
+	function windowFocus() {
+		if (ng.view !== 'title') {
+			if (querySelector('#chat-input').value.length &&
+				!chat.inputHasFocus) {
+				chat.focusChatInput()
+			}
+		}
+		windowResized()
 	}
 	function dragStart(e) {
 		e.preventDefault()
@@ -107,7 +123,7 @@
 		if (chat.initialized) {
 			chat.scrollBottom()
 		}
-		ng.responsiveRatio = parseInt(getComputedStyle(getElementById('body')).fontSize, 10) / 20
+		ng.responsiveRatio = parseInt(bodyFontSize, 10) / 20
 	}
 	function mousedown(e) {
 		if (context.isOpen) {
@@ -134,10 +150,12 @@
 	}
 
 	function keydown(e) {
+		// console.info('e: ', e)
+		if (e.originalEvent.repeat || keyDownActive) return
 		key = e.key
+		// console.info('key: ', key)
 
 		ng.lastKey = key
-		// console.info('key: ', key)
 		// trying to bind a new hotkey
 		if (bar.hotkeyId) {
 			if (bar.hotkeyWhitelist.includes(key)) {
@@ -145,7 +163,7 @@
 			}
 			else {
 				if (key === 'Shift' || key === 'Control' || key === 'Alt') {}
-				else ng.msg('You cannot bind to that hotkey!', 1)
+				else ng.msg('You cannot bind to that hotkey!', 1, undefined, COLORS.red)
 			}
 			return
 		}
@@ -183,7 +201,10 @@
 			if (key === 'Escape') { // ESC
 				if (item.dragType) item.resetDrop()
 				else if (my.target >= 0) my.targetCleared()
-				else bar.toggleOptions()
+				else {
+					bar.toggleOptions()
+					return false
+				}
 			}
 			else if (key === ' ') bar.optionsClose()
 
@@ -195,18 +216,12 @@
 				}
 			}
 			else {
-				/*if (ng.view !== 'title' && chat.typingKeys.includes(key)) {
-					if (!chat.hasFocus && !guild.hasFocus && chat.focusKeys.includes(key)) {
-						var z = $("#chat-input");
-						var txt = z.val();
-						!txt && chat.focusChatInput()
-						// console.warn('canceling', key)
-						return;
-					}
-				}*/
-
 				if (chat.hasFocus) {
 					// always works town, dungeon and combat (focused)
+					if (key === 'Escape') {
+						querySelector('#chat-input').blur()
+						return false;
+					}
 					if (chat.modeChange()) {
 						// changing chat mode - matches possible mode change
 						return false;
@@ -321,15 +336,14 @@
 	}
 
 	function keyup(e) {
+		/*keyDownActive = false
 		_keyup = e.key
 		if (ng.view === 'dungeon') {
 			if (!map.inRoom) {
 				if (key === ng.config.hotkey.walkForward) dungeon.walkStop()
 				else if (key === ng.config.hotkey.walkBackward) dungeon.walkStop()
-
 			}
-
-		}
+		}*/
 	}
 })(_, $, parseInt, getComputedStyle);
 

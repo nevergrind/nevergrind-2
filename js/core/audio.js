@@ -532,13 +532,9 @@ var audio;
 	///////////////////////////////////////////
 
 	function init(){
-		var config = localStorage.getItem('config');
+		var config = localStorage.getItem('config')
 
-		if (typeof config !== 'string') {
-			// is null - inits to default ng.config
-			audio.save()
-		}
-		else {
+		if (typeof config === 'string') {
 			// previous data found. put config on top of default
 			const savedConfig = JSON.parse(config)
 			const defaultConfig = ng.getDefaultOptions()
@@ -546,6 +542,7 @@ var audio;
 				...defaultConfig,
 				...savedConfig,
 			}
+			cleanupOldHotkeys()
 			for (key in defaultConfig.hotkey) {
 				ng.config.hotkey[key] = defaultConfig.hotkey[key]
 			}
@@ -553,8 +550,15 @@ var audio;
 				ng.config.hotkey[key] = savedConfig.hotkey[key]
 			}
 		}
+		else {
+			// is null - inits to default ng.config
+			audio.save()
+		}
 
 		audio.playMusic('intro', .5)
+	}
+	function cleanupOldHotkeys() {
+		if (ng.config.hotkey.bank) delete ng.config.hotkey?.bank
 	}
 	function save() {
 		// somehow my app config data ended up in here lul

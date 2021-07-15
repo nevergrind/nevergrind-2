@@ -232,13 +232,7 @@ var test;
 	}
 	function lootItems(count = 16, rarity = ITEM_RARITY.unique, itemSlot = '', itemName = '', store = true) {
 		for (var i=0; i<count; i++) {
-			item.getLoot({
-				mobLevel: 50,
-				rarity: (rarity ? rarity : ITEM_RARITY.unique),
-				itemSlot: itemSlot,
-				itemName: itemName,
-				store: store,
-			})
+			item.findLoot(2, undefined, 50)
 		}
 	}
 	function opacity(count) {

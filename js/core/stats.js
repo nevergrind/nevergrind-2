@@ -1634,6 +1634,11 @@ var stats = {};
 		return stats.memo.resistSilence
 	}
 
+	/**
+	 * Auto attack speed
+	 * @param slot
+	 * @returns {number}
+	 */
 	function getAttackSpeed(slot) {
 		// weapon or punch speed?
 		speed = my.isPunching(slot)
@@ -1655,6 +1660,11 @@ var stats = {};
 		// console.info('attackSpeed', speedHaste)
 		return speed * speedHaste
 	}
+
+	/**
+	 * GCD speed
+	 * @returns {number}
+	 */
 	function getSkillSpeed() {
 		skillHaste = 1
 		if (my.buffFlags.frenzy) skillHaste -= buffs.frenzy.skillHaste[my.buffs.frenzy.level]
@@ -1668,14 +1678,20 @@ var stats = {};
 		return skillHaste
 	}
 
+	/**
+	 * casting haste speed
+	 * @returns {number}
+	 */
 	function getCastingSpeed() {
 		castHaste = 1
+		// console.info('getCastingSpeed', castHaste)
 		if (my.buffFlags.celestialFrenzy) castHaste -= buffs.celestialFrenzy.castingHaste
 		if (my.buffFlags.melodyOfMana) castHaste -= buffs.melodyOfMana.castingHaste
 		if (castHaste < .5) castHaste = .5
 		else if (castHaste > 2) castHaste = 2
 		// console.info('getCastingSpeed', spell.castTime * castHaste)
 		// if (!app.isApp) spell.castTime = 1
+		// console.info('getCastingSpeed', castHaste)
 		return spell.castTime * castHaste
 	}
 })($, TweenMax, _);

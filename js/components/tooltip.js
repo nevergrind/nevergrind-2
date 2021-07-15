@@ -463,6 +463,9 @@ var tooltip;
 				if (config.isBlighted) {
 					skillHtml += `<div class="chat-skill">+50% damage to demons or undead</div>`
 				}
+				if (config.knockback) {
+					skillHtml += `<div class="chat-skill">+${config.knockback}% knockback resistance</div>`
+				}
 				////////////////////////////////////////////////////////////////////
 				if (config.hpMax) {
 					skillHtml += `<div class="chat-skill">Health: ${config.hpMax[minRank]}</div>`
@@ -492,7 +495,7 @@ var tooltip;
 					skillHtml += `<div class="chat-skill">Charisma: ${config.cha[minRank]}</div>`
 				}
 				if (config.hpRegen) {
-					skillHtml += `<div class="chat-skill">Health Regen: ${config.hpRegen[minRank]}</div>`
+					skillHtml += `<div class="chat-skill">Health Regen: ${config.name === 'Lich Form' ? '-' : ''}${config.hpRegen[minRank]}</div>`
 				}
 				if (config.hpPercent) {
 					skillHtml += `<div class="chat-skill">Health Percent Bonus: ${ng.toPercent(config.hpPercent[minRank])}%</div>`
@@ -551,8 +554,8 @@ var tooltip;
 				if (config.resistStun) {
 					skillHtml += `<div class="chat-skill">Resist Stun: ${config.resistStun[minRank]}</div>`
 				}
-				if (config.resistSilence) {
-					skillHtml += `<div class="chat-skill">Resist Silence: ${config.resistSilence[minRank]}</div>`
+				if (config.silence) {
+					skillHtml += `<div class="chat-skill">Resist Silence: ${config.silence[minRank]}</div>`
 				}
 				if (config.reduceBloodResist) {
 					skillHtml += `<div class="chat-skill">Reduce Blood Resistance: ${ng.toPercent(config.reduceBloodResist)}%</div>`

@@ -372,6 +372,7 @@ let skill = {};
 		}
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
+		button.triggerGlobalCooldown()
 	}
 
 }($, _, TweenMax);

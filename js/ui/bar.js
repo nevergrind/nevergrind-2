@@ -653,35 +653,37 @@ var bar;
 
 	function setWindowSize(event) {
 		id = event.currentTarget.dataset.id
-		// console.info('setWindowSize', id)
+		if (id === ng.config.display) return
+
+		console.info('setWindowSize', id)
 		if (app.isApp) {
 			var gui = require('nw.gui');
 			var win = gui.Window.get();
 			// ??????? reasons
 			setTimeout(() => {
 				if (id === 'Full Screen') {
-					!win.isFullscreen && win.enterFullscreen();
+					!win.isFullscreen && win.enterFullscreen()
 				}
 				else if (id === '1920x1080') {
-					win.isFullscreen && win.leaveFullscreen();
-					win.resizeTo(MaxWidth, MaxHeight);
-					win.maximize();
+					win.isFullscreen && win.leaveFullscreen()
+					win.resizeTo(1920, 1080)
+					win.maximize()
 				}
 				else if (id === '1600x900') {
-					win.isFullscreen && win.leaveFullscreen();
-					win.resizeTo(1600, 900);
+					win.isFullscreen && win.leaveFullscreen()
+					win.resizeTo(1600, 900)
 				}
 				else if (id === '1366x768') {
-					win.isFullscreen && win.leaveFullscreen();
-					win.resizeTo(1366, 768);
+					win.isFullscreen && win.leaveFullscreen()
+					win.resizeTo(1366, 768)
 				}
 				else if (id === '1440x900') {
-					win.isFullscreen && win.leaveFullscreen();
-					win.resizeTo(1440, 900);
+					win.isFullscreen && win.leaveFullscreen()
+					win.resizeTo(1440, 900)
 				}
 				else if (id === '1280x720') {
-					win.isFullscreen && win.leaveFullscreen();
-					win.resizeTo(1280, 720);
+					win.isFullscreen && win.leaveFullscreen()
+					win.resizeTo(1280, 720)
 				}
 				else {
 					// just in case do this
@@ -746,7 +748,7 @@ var bar;
 			var camelKey = _.findKey(ng.config.hotkey, hotkey => hotkey === key)
 			// console.info('keys: ', bar.hotkeyId, camelKey)
 			if (_.camelCase(bar.hotkeyId) === camelKey) stopListeningForHotkey()
-			else ng.msg('This key is already assigned: ' + _.startCase(camelKey))
+			else ng.msg('This key is already assigned: ' + _.startCase(camelKey), undefined, COLORS.yellow)
 			audio.playSound('beep-3')
 		}
 		else {

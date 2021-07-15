@@ -96,6 +96,7 @@
 		}
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
+		button.triggerGlobalCooldown()
 	}
 	function doomThrust(index, data) {
 		// check constraints
@@ -387,6 +388,7 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage(spell.config.target),
 		}])
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	let maxRemphan = 0
 	function getHighestMarkOfRemphan(index) {

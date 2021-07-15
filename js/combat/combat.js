@@ -38,7 +38,7 @@ var combat;
 		processStatBuffsToMe,
 		showQuestMsg,
 		showDeathMsg,
-		animateMyDeath,
+		animateDeathFilter,
 		resetDeathFilter,
 		MAX_DAMAGE: 999999999,
 		textId: 0,
@@ -367,7 +367,8 @@ var combat;
 		el.classList.remove('active')
 	}
 	function resetTimersAndUI() {
-		mob.killAttacks(true)
+		// console.info('resetTimersAndUI killAllAttacks')
+		mob.killAllAttacks(true)
 		mob.hideMobTargets()
 		battle.hideTarget()
 		battle.killMobBuffTimers()
@@ -726,16 +727,17 @@ var combat;
 	 * multiplayer handling happens in party.upsertPartyResource() checks
 	 */
 	function selfDied() {
-		console.warn('You died!')
 		my.set(PROP.HP, 0)
 		bar.updateBar(PROP.HP, my)
 		timers.clearMy()
-		battle.killAllBattleTimers()
+		if (!party.isSomeoneAlive()) {
+			battle.killAllBattleTimers()
+		}
 		autoAttackDisable()
 		spell.cancelSpell()
 		battle.subtractExpPenalty()
 		battle.reckonGXL() // death
-		animateMyDeath()
+		animateDeathFilter()
 		party.memberDied(0)
 		audio.fadeMusic()
 	}
@@ -747,21 +749,23 @@ var combat;
 		}
 	}
 	// damage hero functions
-	function updateMyResource(type, addValue, bypassDeath) {
+	function updateMyResource(type, addValue) {
 		/**
 		 * when hero's hp, mp, sp increments or decrements
 		 */
-		if (my.hp <= 0 && !bypassDeath) {
+		if (my.hp <= 0) {
 			// console.warn('updateMyResource you are dead - no action taken')
 			return
 		}
 		if (type === PROP.HP) {
-			if (my.hp + addValue <= 0) triggerOnMyDeath()
+			if (my.hp + addValue <= 0) {
+				triggerOnMyDeath()
+			}
 		}
 		my.set(type, addValue, true)
 		// sanity check
-		if (my[type] < 0) my.set(type, 0)
-		else if (my[type] > my[type + 'Max']) my.set(type, my[type + 'Max'])
+		/*if (my[type] < 0) my.set(type, 0)
+		else if (my[type] > my[type + 'Max']) my.set(type, my[type + 'Max'])*/
 		// special cases
 		if (type === PROP.HP) {
 			if (my.hp <= 0) {
@@ -785,7 +789,7 @@ var combat;
 				my.buffFlags.sealOfSanctuary) {
 				combat.popupDamage(d.row, 'INVULNERABLE!', {targetMob: false})
 				if (my.buffFlags.frozenBarrier) {
-					audio.playSound('blue3', 'combat')
+					audio.playSound('blue3', 'spells')
 				}
 				else {
 					audio.playSound('invulnerable', 'combat')
@@ -877,6 +881,9 @@ var combat;
 				amountReduced -= buffs.mendingAura.damageReduced[my.buffs['mendingAura-' + my.row].level]
 				// chat.log(buffs.mendingAura.msgReduced, CHAT.HEAL)
 				// combat.popupDamage(d.row, 'MENDING AURA', {targetMob: false})
+			}
+			if (my.buffFlags.lichForm) {
+				amountReduced -= buffs.lichForm.damageReduced[my.buffs.lichForm.level]
 			}
 			if (mob.isFeared(index)) amountReduced -= .5
 			if (my.buffFlags.prowl) amountReduced -= .5
@@ -1322,7 +1329,7 @@ var combat;
 				// damageTakenToMana vulpineMp
 				vulpineMp += ~~(totalDamage * (stats.damageTakenToMana() / resourceLeechDivider))
 				// console.info('IND', index)
-				drainMp = mobs[index].traits.soulDrain ? totalDamage : 0
+				drainMp = mobs[index].traits.soulDrain ? ceil(totalDamage * .1) : 0
 				totalMpChange = vulpineMp - drainMp
 				if (totalMpChange !== 0) {
 					updateMyResource(PROP.MP, totalMpChange)
@@ -1330,7 +1337,7 @@ var combat;
 				}
 				// damageTakenToSpirit - sp drain
 				vulpineSp += ~~(totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider))
-				drainSp = mobs[index].traits.spiritDrain ? totalDamage : 0
+				drainSp = mobs[index].traits.spiritDrain ? ceil(totalDamage * .1) : 0
 				totalSpChange = vulpineSp - drainSp
 				if (totalSpChange !== 0) {
 					updateMyResource(PROP.SP, totalSpChange)
@@ -1636,8 +1643,9 @@ var combat;
 		}
 		const basicText = new PIXI.Text(o.isHeal ? '+' + damage + '' : damage + '', getPopupTextStyle(o))
 		basicText.anchor.set(.5)
+		// console.info('HEAL', o.isHeal, o.key)
 		if (o.isHeal) {
-			if (o.key === 'Lay Hands') mobs[o.healedBy].usedLayHands = true
+			if (o.key === 'layHands') mobs[o.healedBy].usedLayHands = true
 			else mobs[o.healedBy].healCount++
 		}
 		else {
@@ -1987,14 +1995,14 @@ var combat;
 		else if (key === 'sealOfRedemption') {
 			stats.resistBlood(true)
 			bar.updateAllResistsDOM()
-			my.set(PROP.HP_MAX, stats.hpMax())
+			my.set(PROP.HP_MAX, stats.hpMax(true))
 			bar.updateBar(PROP.HP, my)
 			txHpChange()
 		}
 		else if (key === 'zealousResolve') {
 			stats.armor(true)
 			updateCharStatColOne()
-			my.set(PROP.HP_MAX, stats.hpMax())
+			my.set(PROP.HP_MAX, stats.hpMax(true))
 			bar.updateBar(PROP.HP, my)
 			txHpChange()
 		}
@@ -2026,7 +2034,7 @@ var combat;
 			bustAttack()
 			updateCharStatColTwo()
 			stats.hpRegen(true)
-			my.set(PROP.HP_MAX, stats.hpMax())
+			my.set(PROP.HP_MAX, stats.hpMax(true))
 			bar.updateBar(PROP.HP, my)
 			txHpChange()
 		}
@@ -2034,6 +2042,8 @@ var combat;
 			stats.leech(true)
 			stats.wraith(true)
 			stats.cha(true)
+			my.set(PROP.SP_MAX, stats.spMax(true))
+			bar.updateBar(PROP.SP, my)
 			updateCharStatColTwo()
 		}
 		else if (key === 'borealTalisman') {
@@ -2041,6 +2051,8 @@ var combat;
 			bustSta()
 			txHpChange()
 			bustAttack()
+			my.set(PROP.HP_MAX, stats.hpMax(true))
+			bar.updateBar(PROP.HP, my)
 			updateCharStatColTwo()
 			bar.updateAllResistsDOM()
 			updateCharStatColOne()
@@ -2068,21 +2080,23 @@ var combat;
 		else if (key === 'clarity') {
 			stats.intel(true)
 			updateCharStatColTwo()
-			my.set(PROP.MP_MAX, stats.mpMax())
+			my.set(PROP.MP_MAX, stats.mpMax(true))
+			my.set(PROP.SP_MAX, stats.spMax(true))
 			bar.updateBar(PROP.MP, my)
+			bar.updateBar(PROP.SP, my)
 			txMpChange()
 		}
 		else if (key === 'conviction') {
 			stats.cha(true)
 			updateCharStatColTwo()
-			my.set(PROP.SP_MAX, stats.spMax())
+			my.set(PROP.SP_MAX, stats.spMax(true))
 			bar.updateBar(PROP.SP, my)
 			txSpChange()
 		}
 		else if (key === 'celestialFrenzy') {
 			stats.cha(true)
 			updateCharStatColTwo()
-			my.set(PROP.SP_MAX, stats.spMax())
+			my.set(PROP.SP_MAX, stats.spMax(true))
 			bar.updateBar(PROP.SP, my)
 			txSpChange()
 		}
@@ -2310,21 +2324,30 @@ var combat;
 
 	/**
 	 * returns the considerClass index - determines the color of names, quests, etc
+	 * at level 19 you can get exp from an 11
+	 * at level 21 you can get exp from a 12
 	 * @param level
 	 * @returns {number}
 	 */
 	function getLevelDifferenceIndex(level) {
-		var resp = 0
-		if (level >= my.level + 3) resp = 6
-		else if (level > my.level) resp = 5
-		else if (level === my.level) resp = 4
-		else if (level >= ~~(my.level * .88) ) resp = 3
-		else if (level >= ~~(my.level * .77) ) resp = 2
-		else if (level >= ~~(my.level * .66) ) resp = 1
-		return resp
+		if (level >= my.level + 3) return 6 // red
+		else if (level > my.level) return 5 // yellow
+		else if (level === my.level) return 4 // white
+		if (my.level <= 20) {
+			// wider exp ranges
+			if (level >= (my.level - 2) ) return 3 // dark blue
+			else if (level >= (my.level - 4) ) return 2 // light blue
+			else if (level >= (my.level - 8) ) return 1 // green
+		}
+		else {
+			if (level >= ~~(my.level * .85) ) return 3 // dark blue
+			else if (level >= ~~(my.level * .7) ) return 2 // light blue
+			else if (level >= ~~(my.level * .6) ) return 1 // green
+		}
+		return 0 // gray
 	}
 
-	function animateMyDeath() {
+	function animateDeathFilter() {
 		TweenMax.to('#scene-battle', 1, {
 			startAt: { filter: FILTER_ALIVE },
 			filter: FILTER_DEAD

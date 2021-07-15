@@ -350,7 +350,7 @@ let map;
 			})
 		}
 		else {
-			ng.msg('Only the party leader can make that decision.')
+			ng.msg('Only the party leader can make that decision.', undefined, COLORS.yellow)
 		}
 	}
 	function handleMapYes() {
@@ -446,10 +446,11 @@ let map;
 	 * Determine if mobs have respawned based on timer
 	 * @returns {boolean}
 	 */
-	const MOB_RESPAWN_TIME = 300000 // 5 minutes
+	const mobRespawnTime = 900000 // 15 minutes
 	function triggerHallwayMobRespawn() {
+		const now = Date.now()
 		return dungeon.map.hallways[map.hallwayId].entities.every(e =>
-			!e.isAlive && (Date.now() - e.timestamp) > MOB_RESPAWN_TIME
+			(!e.isAlive && ((now - e.timestamp) > mobRespawnTime))
 		)
 	}
 	function revealRoom() {

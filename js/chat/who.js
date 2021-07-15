@@ -1,8 +1,8 @@
 var who;
-(function() {
+(function(_) {
 	who = {
 		listThrottled: false,
-		listThrottleExpire: 1000,
+		listThrottleExpire: 3,
 		listId: 0,
 		results: 0,
 		maxResults: 30,
@@ -21,26 +21,29 @@ var who;
 	/////////////////////////////////////////////////////////
 
 	function all() {
-		if (who.listThrottled) return;
+		if (who.listThrottled) {
+			chat.log('Your /who command powers are still recharging...', CHAT.WARNING)
+			return
+		}
 		// Increment local values
-		chat.log('<div class="chat-warning">Checking for other players...</div>');
-		who.listThrottled = true;
-		who.listId++;
-		who.results = 0;
+		chat.log('<div class="chat-warning">Checking for other players...</div>')
+		who.listThrottled = true
+		who.listId++
+		who.results = 0
 		delayedCall(who.listThrottleExpire, () => {
-			who.listThrottled = false;
-		});
+			who.listThrottled = false
+		})
 
 		// request response from friends
 		socket.publish('allbroadcast', {
 			name: my.name,
 			route: 'all->who'
 		})
-		title = 'Total players in Vandamor';
+		title = 'Total players in Vandamor'
 		chat.log(chat.divider +
 			'<div>' + title + ': <span id="who-all-'+ who.listId + '">0</span></div>',
 			CHAT.WARNING
-		);
+		)
 	}
 	function allRequest(data) {
 		// console.warn('allRequest', data);
@@ -54,8 +57,8 @@ var who;
 		})
 	}
 	function presenceReceived(data) {
-		who.results++;
-		// console.warn('presenceReceived', who.results, data);
+		who.results++
+		// console.warn('presenceReceived', who.results, data)
 		if (who.results < who.maxResults) {
 			chat.log(
 				'<div class="chat-whisper">[' +
@@ -64,7 +67,7 @@ var who;
 					guild.format(data.guild) +
 				'</div>'
 			)
-			getElementById('who-all-' + who.listId).textContent = who.results;
+			getElementById('who-all-' + who.listId).textContent = who.results
 		}
 	}
 	function parse(msg) {
@@ -76,18 +79,53 @@ var who;
 			minLevel: 0,
 			maxLevel: 0
 		};
+
+		// pre-process two-word races, jobs
+		msg = msg.toLowerCase()
+		if (msg.includes('dark elf')) {
+			filterObj.race = 'dark elf'
+			msg = msg.split('dark elf').join(' ')
+		}
+		else if (msg.includes('half elf')) {
+			filterObj.race = 'half elf'
+			msg = msg.split('half elf').join(' ')
+		}
+		else if (msg.includes('high elf')) {
+			filterObj.race = 'high elf'
+			msg = msg.split('high elf').join(' ')
+		}
+		else if (msg.includes('wood elf')) {
+			filterObj.race = 'wood elf'
+			msg = msg.split('wood elf').join(' ')
+		}
+		// pre-process two-word jobs
+		if (msg.includes('shadow knight')) {
+			filterObj.race = 'shadow knight'
+			msg = msg.split('shadow knight').join(' ')
+		}
+
 		filters = _.compact(msg.split(' '));
-		filters.shift();
-		filters.map(filter => filter.toLowerCase());
+		filters.shift() // get rid of slash
+		// filters.map(filter => filter.toLowerCase()) // all lower
 		// look for job
 		ng.jobs.forEach(job => {
-			job = job.toLowerCase();
+			job = job.toLowerCase()
 			if (filters.includes(job)) {
 				filterObj.job = job;
 				index = filters.indexOf(job);
 				_.pullAt(filters, [ index ]);
 			}
 		})
+		if (!filterObj.job) {
+			Object.values(ng.jobShort).forEach(job => {
+				job = job.toLowerCase()
+				if (filters.includes(job)) {
+					filterObj.job = job;
+					index = filters.indexOf(job);
+					_.pullAt(filters, [ index ]);
+				}
+			})
+		}
 		// look for race
 		ng.races.forEach(race => {
 			race = race.toLowerCase();
@@ -102,14 +140,14 @@ var who;
 			if (!filterObj.minLevel) {
 				// check for minLevel first
 				if (filters.includes(level)) {
-					filterObj.minLevel = level;
+					filterObj.minLevel = level * 1;
 					index = filters.indexOf(level);
 					_.pullAt(filters, [ index ]);
 				}
 			}
 			else {
 				if (filters.includes(level)) {
-					filterObj.maxLevel = level;
+					filterObj.maxLevel = level * 1;
 					index = filters.indexOf(level);
 					_.pullAt(filters, [ index ]);
 				}
@@ -175,7 +213,7 @@ var who;
 		}
 	}
 	function matchesFilters(data) {
-		return (data.job ? (data.job === ng.toJobLong(my.job).toLowerCase()) : true) &&
+		return (data.job ? (data.job === ng.toJobLong(my.job).toLowerCase() || data.job === my.job.toLowerCase()) : true) &&
 			(data.race ? (data.race === my.race.toLowerCase()) : true) &&
 			// only min level... need exact match
 			((data.minLevel && !data.maxLevel) ? (my.level === +data.minLevel) : true) &&
@@ -190,4 +228,4 @@ var who;
 				)
 			) : true)
 	}
-})();
+})(_);

@@ -5,6 +5,14 @@ const CHAT = Object.freeze( {
 	ALERT: 'chat-alert',
 	HEAL: 'chat-heal',
 })
+const COLORS = Object.freeze( {
+	white: '#fff',
+	red: '#f22',
+	yellow: '#ff0',
+	teal: '#5ff',
+	orange: '#f80',
+	green: '#2f2',
+})
 const CSS = Object.freeze({
 	CASTBAR_ZERO: { castBar: 0 },
 	X_ZERO: { x: '-100%' },

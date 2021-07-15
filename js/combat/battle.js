@@ -389,10 +389,11 @@ var battle;
 		}
 		if (minLevel < 1) minLevel = 1
 		minLevel = Math.max(minLevel, minZoneLevel)
-		// console.info('getMobLevelByQuest', minLevel, maxLevel)
+		// console.info('getMobLevelByQuest', minLevel +'-'+ maxLevel)
 		return _.random(minLevel, maxLevel)
 	}
 
+	let mobCount = 0
 	function setupMobs(config) {
 		// console.info('setupMobs', config)
 		if (typeof config === 'object') {
@@ -468,8 +469,8 @@ var battle;
 									q[key] = entityProps[key]
 								}
 							})
-							/*console.warn('entityProps', entityProps)
-							console.warn('query', q)*/
+							console.warn('entityProps', entityProps)
+							console.warn('query', q)
 						}
 					}
 					// is it a unique?
@@ -479,13 +480,14 @@ var battle;
 					// is it a champion?
 				}
 				// tries to find by name first and then by img
-				if (Config.testMob) {
-					// q.name = 'Centurion Shiloh'
-				}
+				/*if (Config.testMob && !mobCount) {
+					q.name = 'Gyz Tamebeam'
+				}*/
+				mobCount++
 				let mobConfig = {
+					...mob.getRandomMobByZone(q),
 					traits: {},
 					expPerLevel: 3,
-					...mob.getRandomMobByZone(q),
 				}
 
 				// MOB_TIERS - add champion, unique, boss traits
@@ -555,7 +557,7 @@ var battle;
 				availableSlots = availableSlots.filter(byBackRow)
 			}
 		}
-		console.info('availableSlots', availableSlots)
+		// console.info('availableSlots', availableSlots)
 		return _.sample(availableSlots)
 		/////////////////////////
 		function processAvailabilityBySlot(_mob, index) {

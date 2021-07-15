@@ -29,7 +29,8 @@ var chat;
 		],
 		modeCommand: '/say',
 		modeName: '',
-		focusKeys: 'Enter/',
+		focusKeys: ['/', 'Enter'],
+		inputHasFocus: false,
 		chatLogEl: querySelector('#chat-log'),
 		log,
 		init,
@@ -55,12 +56,74 @@ var chat;
 		prepare,
 		getPrefix,
 		focusChatInput,
-		focusChatBlur,
 		clearChatLog,
 		help,
 	}
 	var el;
-	/** private */
+	/*
+	border: 1px solid #048;
+	background: rgba(0,0,0,.6);
+	 */
+	$('#chat-input').on('blur', handleChatInputBlur)
+		.on('focus', handleChatInputFocus)
+
+	$('#chat-input-wrap').on('mouseenter', handleChatInputEnter)
+		.on('mouseleave focus', handleChatInputLeave)
+
+	function handleChatInputBlur() {
+		if (querySelector('#chat-input').value.length) {
+			// do nothing
+		}
+		else {
+			TweenMax.to('#chat-input-wrap', .15, {
+				opacity: 0
+			})
+			TweenMax.to('#chat-input', .15, {
+				background: 'rgba(0,0,0,0)',
+				border: '1px solid #0000'
+			})
+		}
+		chat.inputHasFocus = false
+	}
+
+	/**
+	 * force user's focus to input
+	 */
+	function focusChatInput() {
+		query.el('#chat-input').focus()
+	}
+	function handleChatInputFocus() {
+		TweenMax.set('#chat-input-wrap', {
+			opacity: 1
+		})
+		TweenMax.set('#chat-input', {
+			background: '#000a',
+			border: '1px solid #048',
+		})
+		chat.inputHasFocus = true
+	}
+	// opacity
+	function handleChatInputEnter() {
+		if (!chat.inputHasFocus) {
+			TweenMax.to('#chat-input-wrap', .15, {
+				opacity: 1
+			})
+			TweenMax.to('#chat-input', .15, {
+				background: '#0006'
+			})
+		}
+	}
+	function handleChatInputLeave() {
+		if (querySelector('#chat-input').value.length ||
+			chat.inputHasFocus) {
+			// do nothing
+		}
+		else {
+			TweenMax.to('#chat-input-wrap', .15, {
+				opacity: 0
+			})
+		}
+	}
 
 	/** public */
 	function getChannel() {
@@ -292,8 +355,8 @@ var chat;
 				}
 			}
 		}
-		chat.updateHistory(msg);
-		chat.clearInput();
+		chat.updateHistory(msg)
+		chat.clearInput()
 	}
 	function parseMsg(msg) {
 		var arr = msg.replace(/ +/g, " ").split(" ");
@@ -530,14 +593,6 @@ var chat;
 		el = createElement('div');
 		el.innerHTML = html;
 		return el.textContent || el.innerText || '';
-	}
-
-	function focusChatInput() {
-		query.el('#chat-input').focus()
-		querySelector('#chat-input-wrap').classList.add('opaque')
-	}
-	function focusChatBlur() {
-		querySelector('#chat-input-wrap').classList.remove('opaque')
 	}
 
 })(TweenMax, _, $);

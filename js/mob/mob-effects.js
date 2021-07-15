@@ -75,7 +75,7 @@ var mobEffects;
 	}
 	function stagger(i) {
 		// console.info('mobEffects STAGGERED!', i)
-		timers.mobAttack[i].kill()
+		timers.mobAttack[i].pause()
 		timers.mobAttack[i] = delayedCall(mob.getMobAttackSpeed(i), mob.attack, [i])
 		mob.animateHit(i, true, combat.MAX_DAMAGE)
 	}

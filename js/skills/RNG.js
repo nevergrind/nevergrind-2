@@ -254,6 +254,7 @@
 			...stats.spellDamage(spell.config.target)
 		})
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function shockNova(index, data) {
 		if (timers.castBar < 1) return
@@ -305,6 +306,7 @@
 			...stats.spellDamage(spell.config.target)
 		})
 		combat.txDamageMob(damages)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function fungalGrowth(index, data) {
 		if (timers.castBar < 1) return

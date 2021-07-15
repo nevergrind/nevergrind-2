@@ -182,48 +182,8 @@ function minifyJs() {
 		.pipe(gulp.dest('./js'))
 		//.pipe(uglify()) // needs update?
 		.pipe(rename('ngo.min.js'))
+		//.pipe(stripDebug())
 		.pipe(gulp.dest('./js'));
-}
-function minifyPng() {
-	var img = 'dragon-fire'
-	return imagemin(['./mobs/'+ img +'/*'], './mobs/'+ img +'/', {
-		use: [imageminPngquant({
-			floyd: 1,
-			nofs: true, // disable FS
-			quality: '90',
-			speed: 1
-		})]
-	}).then(function(){
-		console.info("Images minified with quant: " + img)
-	});
-}
-function resizePng() {
-	// Resize images - set width and height
-	// optimize via quant
-	var img = 'toadlok'
-	var promise = new Promise((resolve) => {
-		gulp.src('./mobs-huge/' + img + '/*')
-			.pipe(imageResize({
-				imageMagick: true,
-				width: 3000,
-				height: 1500
-			}))
-			.pipe(gulp.dest('./mobs/' + img + '/'))
-			.on('end', resolve)
-	});
-
-	promise.then(function(data){
-		imagemin(['./mobs/'+ img +'/*'], './mobs/'+ img +'/', {
-			use: [imageminPngquant({
-				floyd: 1,
-				nofs: true, // disable FS
-				quality: '90',
-				speed: 1
-			})]
-		}).then(function(){
-			console.info("Images minified with quant: " + img)
-		});
-	});
 }
 function cleanNg2() {
 	console.info("Cleaning out ng2 build directory...");
@@ -276,16 +236,6 @@ function buildNg2(isSdk) {
 function defaultTask() {
 	gulp.run('minify-css', 'minify-ng2-js');
 }
-function renameExe() {
-	const from = 'nw.exe'
-	const to = 'nevergrind-online.exe'
-	console.log('renaming from ' + from + ' to ' + to)
-	gulp.src("./build-ng2/" + from)
-		.pipe(clean())
-		.pipe(rename(to))
-		.pipe(gulp.dest("./build-ng2"))
-		.on('end', createBinFile)
-}
 function createBinFile() {
 	console.info('Creating bin file...')
 	const path = 'C:/xampp/htdocs/ng2/build-ng2/'
@@ -303,6 +253,57 @@ function createBinFile() {
 			'C:/Users/maelf/AppData/Local/nevergrind-online'
 		], { force: true })
 		// delete old local build folder in user folder (gets rid of old nw.js data)
+	});
+}
+function renameExe() {
+	const from = 'nw.exe'
+	const to = 'nevergrind-online.exe'
+	console.log('renaming from ' + from + ' to ' + to)
+	gulp.src("./build-ng2/" + from)
+		.pipe(clean())
+		.pipe(rename(to))
+		.pipe(gulp.dest("./build-ng2"))
+		.on('end', createBinFile)
+}
+function minifyPng() {
+	var img = 'dragon-fire'
+	return imagemin(['./mobs/'+ img +'/*'], './mobs/'+ img +'/', {
+		use: [imageminPngquant({
+			floyd: 1,
+			nofs: true, // disable FS
+			quality: '90',
+			speed: 1
+		})]
+	}).then(function(){
+		console.info("Images minified with quant: " + img)
+	});
+}
+function resizePng() {
+	// Resize images - set width and height
+	// optimize via quant
+	var img = 'toadlok'
+	var promise = new Promise((resolve) => {
+		gulp.src('./mobs-huge/' + img + '/*')
+			.pipe(imageResize({
+				imageMagick: true,
+				width: 3000,
+				height: 1500
+			}))
+			.pipe(gulp.dest('./mobs/' + img + '/'))
+			.on('end', resolve)
+	});
+
+	promise.then(function(data){
+		imagemin(['./mobs/'+ img +'/*'], './mobs/'+ img +'/', {
+			use: [imageminPngquant({
+				floyd: 1,
+				nofs: true, // disable FS
+				quality: '90',
+				speed: 1
+			})]
+		}).then(function(){
+			console.info("Images minified with quant: " + img)
+		});
 	});
 }
 function resizeSprite() {

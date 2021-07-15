@@ -46,7 +46,6 @@ var ng;
 			hotkey: {
 				characterStats: 'c',
 				inventory: 'i',
-				bank: 'b',
 				autoAttack: 'a',
 				walkForward: 'w',
 				walkBackward: 's',
@@ -321,7 +320,7 @@ var ng;
 	///////////////////////////////
 	function init() {
 		if (Config.consoleDisabled) {
-			console.debug = console.log = console.warn = console.info = ng.noop
+			// console.debug = console.log = console.warn = console.info = ng.noop
 		}
 		$.ajaxSetup({
 			type: 'POST',
@@ -349,7 +348,6 @@ var ng;
 			hotkey: {
 				characterStats: 'c',
 				inventory: 'i',
-				bank: 'b',
 				autoAttack: 'a',
 				walkForward: 'w',
 				walkBackward: 's',
@@ -434,11 +432,14 @@ var ng;
 		}
 	}
 
-	function msg(msg, d) {
+	function msg(msg, d, color = '#fff') {
 		query.el('#msg').innerHTML = msg;
 		// TweenMax.killTweensOf(query.el('#msg'))
 		TweenMax.to('#msg', .15, {
-			startAt: { scale: 1.1 },
+			startAt: {
+				scale: 1.1,
+				color: color
+			},
 			scale: 1,
 			overwrite: 1,
 			opacity: 1,
@@ -480,7 +481,7 @@ var ng;
 			localStorage.removeItem('token');
 			setTimeout(reloadGame, 250);
 		}).fail(function() {
-			ng.msg("Logout failed.");
+			ng.msg("Logout failed.", undefined, COLORS.yellow);
 		});
 	}
 	function dimRetAttr(val) {
@@ -628,12 +629,12 @@ var ng;
 							ng.unlock()
 						}).fail(function (data) {
 							// console.warn(data.responseText)
-							data.responseText && ng.msg(data.responseText, 12)
+							data.responseText && ng.msg(data.responseText, 12, undefined, COLORS.yellow)
 						});
 					});
 				}
 				else {
-					ng.msg('Unable to find your Steam credentials! Are you sure Steam is running? Contact support@nevergrind.com for assistance!', 999)
+					ng.msg('Unable to find your Steam credentials! Are you sure Steam is running? Contact support@nevergrind.com for assistance!', 99999, COLORS.yellow)
 				}
 			}
 			else {
@@ -649,7 +650,7 @@ var ng;
 					ng.unlock()
 				}).fail(function (data) {
 					// console.warn(data.responseText)
-					data.responseText && ng.msg(data.responseText, 12)
+					data.responseText && ng.msg(data.responseText, 999, COLORS.yellow)
 				})
 			}
 
@@ -659,7 +660,7 @@ var ng;
 				version: app.version
 			}).done(handleInitGame)
 				.fail(function(err) {
-					ng.msg(err.responseText, 0)
+					ng.msg(err.responseText, 0, COLORS.yellow)
 				});
 		}
 	}
@@ -823,14 +824,16 @@ var ng;
 	}
 	function toMinSecs(seconds) {
 		let m = ~~(seconds / 60)
+		// minutes
 		let minMsg = m === 0
 			? ''
 			: m === 1 ? '1 minute' : m + ' minutes'
 		let s = seconds % 60
-		if (m >= 1 && s !== 0) minMsg += ', '
+		if (m >= 1 && s !== 0) minMsg += ' and '
+		// seconds
 		let secMsg = s === 0
 			? ''
-			: s === 1 ? '1 second': s + ' seconds'
+			: s === 1 ? '1 second' : s + ' seconds'
 		return minMsg + secMsg
 	}
 	function toPercent(decimal) {

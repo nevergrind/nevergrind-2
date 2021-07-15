@@ -115,7 +115,7 @@ var trade;
 		// console.info('tradeConfirm tradeFrom', items.tradeFrom)
 		// console.info('valid?', isTradeValid())
 		if (my.gold - trade.gold + trade.data.gold > trade.MAX_GOLD) {
-			ng.msg('This trade would put you over the gold limit! It is illegal to have that much gold!')
+			ng.msg('This trade would put you over the gold limit! It is illegal to have that much gold!', undefined, COLORS.yellow)
 			return
 		}
 		trade.confirmed = true
@@ -168,12 +168,12 @@ var trade;
 		if (val < 0) {
 			val = 0
 			el.val(val)
-			ng.msg('It\'s not possible to send a negative amount of gold. What kind of financial system do you think this is?', 8)
+			ng.msg('It\'s not possible to send a negative amount of gold. What kind of financial system do you think this is?', 8, COLORS.yellow)
 		}
 		else if (val > max) {
 			val = max
 			el.val(max)
-			ng.msg('The maximum amount of gold you can send is ' + max + '. This value may change based on trade conditions.', 8)
+			ng.msg('The maximum amount of gold you can send is ' + max + '. This value may change based on trade conditions.', 8, COLORS.yellow)
 		}
 		if (val > my.gold) val = my.gold
 		trade.gold = val

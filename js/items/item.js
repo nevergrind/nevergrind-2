@@ -108,7 +108,10 @@ var loot = {};
 	var html, key, value, mobName, buyItemSlot, filteredItems, itemObj, rarity, keys, filteredKeys, itemSlot, filteredItemsIndex, drop, len, prefixKeys, suffixKeys, possibleItems, itemIndexArray, i, itemIndex, uniqueItem, deletedProps, newSpeed, newArmor, newMinDamage, newMaxDamage, prefix, suffix, prefixVal, suffixVal, prefixName, suffixName, itemTypeMultiplier, tc, prefixMax, suffixMax, getPrefixSuffixComboType, rareKeys, numberOfProps, props, propType, val, potionValue
 
 	const MAX_TREASURE_CLASS = 45
-	const potionRecovers = [20,40,80,160,320,640]
+
+	const potionHealDuration = 6
+	// const potionRecovers = [20,40,80,160,320,640]
+	const potionRecovers = [60,100,175,300,500,840]
 	const potionMap = {
 		[JOB.WARRIOR]: { hp: 2, mp: 1, sp: 1 },
 		[JOB.SHADOW_KNIGHT]: { hp: 2, mp: 1.5, sp: 1 },
@@ -884,6 +887,8 @@ var loot = {};
 		shields: ['Badge', 'Emblem', 'Guard', 'Mark', 'Rock', 'Tower', 'Ward', 'Wing', 'Bulwark', 'Bastion', 'Redoubt', 'Citadel'],
 		charms: ['Breaker', 'Chant', 'Cry', 'Song', 'Star', 'Talisman', 'Torc', 'Memento'],
 	}
+
+	const lootCooldown = 1000
 	/////////////////////////////////////////////////////////////////
 
 	function getPotionUseMessage(obj) {
@@ -961,12 +966,10 @@ var loot = {};
 		}
 	}
 	function getFirstAvailableInvSlot() {
-		var index = items.inv.findIndex(slot => !slot.name)
-		if (index > -1) items.inv[index].name = 'Loading'
-		return index
+		return items.inv.findIndex(slot => !slot.name)
 	}
-	function getFirstUnidentifiedItemSlot() {
-		return items.inv.findIndex(slot => slot.unidentified)
+	function getFirstUnidentifiedItemSlotByType(slotType) {
+		return items[slotType].findIndex(slot => slot.unidentified)
 	}
 	function handleLootConfirm() {
 		let index = this.id.split('-')[2]
@@ -1011,20 +1014,19 @@ var loot = {};
 			items.inv[slot] = {}
 		}).always(handleDropAlways)
 	}
-
 	/**
 	 * Generates loot based on mob tier upon death
 	 * timestamps guarantee prevention of multi-drop bug
 	 * @param index
 	 */
-	function findLoot(index, forceQuantity = 0) {
+	function findLoot(index, forceQuantity = 0, mockLevel) {
 		const now = Date.now()
-		if (now - lootTimestamps[index] < 1000) return
-		const totalLoot = forceQuantity ? forceQuantity : getFindLootCount(mobs[index].tier)
+		if (now - lootTimestamps[index] < lootCooldown) return // cringe method to avoid double loot
+		let totalLoot = forceQuantity ? forceQuantity : getFindLootCount(index)
 		// console.info('findLoot', index, totalLoot)
 		for (var i=0; i<totalLoot; i++) {
 			var config = {
-				mobLevel: mobs[index].level,
+				mobLevel: mockLevel || mobs[index].level,
 				bonus: item.getBonus(mobs[index].tier),
 				tier: mobs[index].tier
 			}
@@ -1115,19 +1117,24 @@ var loot = {};
 	 * @param index
 	 * @returns {number}
 	 */
-	function getFindLootCount(tier) {
+	function getFindLootCount(index) {
 		let resp = 0
 		const rand = Math.random()
-		if (tier === MOB_TIERS.normal) {
-			resp = rand > .93 ? 1 : 0
+		if (mobs[index].tier === MOB_TIERS.normal) {
+			if (mobs[index].mobType === MOB_TYPES.BEAST) {
+				resp = rand > .87 ? 1 : 0
+			}
+			else {
+				resp = rand > .93 ? 1 : 0
+			}
 		}
-		else if (tier === MOB_TIERS.champion) {
+		else if (mobs[index].tier === MOB_TIERS.champion) {
 			resp = 2
 		}
-		else if (tier === MOB_TIERS.unique) {
-			resp = 1
+		else if (mobs[index].tier === MOB_TIERS.unique) {
+			resp = 2
 		}
-		else if (tier === MOB_TIERS.boss) {
+		else if (mobs[index].tier === MOB_TIERS.boss) {
 			if (rand > .99) resp = 1
 			else if (rand > .75) resp = 2
 			else if (rand > .45) resp = 3
@@ -1219,8 +1226,9 @@ var loot = {};
 		// check defense range
 		if (drop.minArmor) {
 			drop.armor = _.random(drop.minArmor, drop.maxArmor)
-			delete drop.minArmor
-			delete drop.maxArmor
+			drop = _.omit(drop, ['minArmor', 'maxArmor'])
+			/*delete drop.minArmor
+			delete drop.maxArmor*/
 		}
 		drop.rarity = rarity
 		drop.itemType = itemSlot
@@ -1455,6 +1463,11 @@ var loot = {};
 				PROP.HAND_TO_HAND,
 				PROP.TWO_HAND_SLASH,
 				PROP.TWO_HAND_BLUNT,
+			]
+		}
+		else if (itemType === ITEM_TYPE.CHARMS) {
+			deletedProps = [
+				PROP.ARCHERY
 			]
 		}
 		deletedProps.forEach(deleteItemProp)
@@ -1749,7 +1762,7 @@ var loot = {};
 				// console.warn('isDragging a ', item.dragType, type)
 				if (myItemTypes.includes(type)) {
 					// dropped to store slot
-					ng.msg('You must purchase that item before putting it in your inventory!', 4)
+					ng.msg('You must purchase that item before putting it in your inventory!', 4, COLORS.yellow)
 				}
 				resetDrop()
 				return
@@ -1891,7 +1904,7 @@ var loot = {};
 
 	function eqDropValid(_item, eqType, itemLevel, unidentified) {
 		if (unidentified) {
-			chat.log('You cannot equip unidentified items! Try buying an Identify Scroll from the merchant.', CHAT.WARNING)
+			chat.log('You cannot equip unidentified items! Try buying an Identify Scroll at the apothecary.', CHAT.WARNING)
 			return false
 		}
 		// console.info('itemLevel', my.level, itemLevel)
@@ -1966,7 +1979,7 @@ var loot = {};
 		toast.hideDestroyToast()
 	}
 	function handleDropFail(r) {
-		ng.msg(r.responseText, 8);
+		ng.msg(r.responseText, 8, COLORS.yellow);
 		resetDrop()
 		audio.playSound('beep-3')
 	}
@@ -1997,12 +2010,12 @@ var loot = {};
 
 	function dropItem(event) {
 		if (!item.dragType) {
-			ng.msg('Select an item to destroy first.', 3)
+			ng.msg('Select an item to destroy first.', 3, COLORS.yellow)
 			audio.playSound('beep-3')
 			return
 		}
 		if (!myItemTypes.includes(item.dragType)) {
-			ng.msg('You can\'t destroy items that don\'t belong to you!', 4)
+			ng.msg('You can\'t destroy items that don\'t belong to you!', 4, COLORS.yellow)
 			resetDrop()
 			audio.playSound('beep-3')
 			return
@@ -2124,26 +2137,50 @@ var loot = {};
 		button.updatePotionPanel()
 		audio.playSound('click-4')
 	}
+
+	/**
+	 * Right-click item slot does many things!
+	 * @param event
+	 * @returns {boolean}
+	 */
 	function handleItemSlotContextClick(event) {
 		if (item.awaitingDrop || item.isDragging) return false
 		var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
-		if (items[type][index].use) {
+		if (type === 'bank' && items[type][index].use) {
+			// should send item to inventory
+			chat.log('You cannot use items in your bank!', CHAT.WARNING)
+		}
+		else if (type === 'inv' && items[type][index].use) {
 			useItem(type, index)
 		}
 		else {
 			resetDrop()
 			item.isContextClick = true
 			toggleDrag(event)
-			if (item.dragData.name) {
+			let dataset
+			if (type === 'bank') {
+				dataset = {
+					index: getFirstAvailableInvSlot(),
+					type: 'inv',
+					eqType: equipmentEqTypeIndex[item.dragData.itemType]
+				}
+			}
+			else {
+				dataset = {
+					index: getEqIndexByType(item.dragData),
+					type: 'eq',
+					eqType: equipmentEqTypeIndex[item.dragData.itemType]
+				}
+			}
+			console.info('dataset', type, dataset)
+			if (type === 'bank' && dataset.index === -1) {
+				chat.log('You have no room in your inventory!', CHAT.WARNING)
+				return false
+			}
+			if (item.dragData.name && dataset.index >= 0) {
 				// console.info(item.dragData, item.dragType, item.dragSlot)
 				toggleDrag({
-					currentTarget: {
-						dataset: {
-							index: getEqIndexByType(item.dragData),
-							type: 'eq',
-							eqType: equipmentEqTypeIndex[item.dragData.itemType]
-						}
-					}
+					currentTarget: { dataset: dataset }
 				})
 			}
 		}
@@ -2159,6 +2196,10 @@ var loot = {};
 
 			// console.info('dragData', item.dragData)
 			if (item.dragData.itemType === 'potion') {
+				if (ng.view === 'town') {
+					chat.log('You cannot drink potions in town!', CHAT.WARNING)
+					return
+				}
 				if (timers[item.dragData.itemSubType + 'Potion'] < 1) {
 					chat.log('You cannot use that potion yet!', CHAT.WARNING)
 					return
@@ -2205,7 +2246,7 @@ var loot = {};
 			return
 		}
 		if (!myItemTypes.includes(item.dragType)) {
-			ng.msg('You can\'t identify items that don\'t belong to you!', 4)
+			ng.msg('You can\'t identify items that don\'t belong to you!', 4, COLORS.yellow)
 			resetDrop()
 			return
 		}
@@ -2218,16 +2259,17 @@ var loot = {};
 		identifyItem(index, 'inv', item.dragSlot, item.dragType)
 	}
 	function identifyItem(scrollIndex, scrollType, itemSlot, itemType) {
+		console.info('identifyItem', scrollIndex, scrollType, itemSlot, itemType);
 		if (typeof itemSlot === 'undefined') {
-			itemSlot = getFirstUnidentifiedItemSlot()
+			itemSlot = getFirstUnidentifiedItemSlotByType(itemType)
 		}
-		// console.warn('identify item!', itemSlot)
+		console.warn('identify item!', itemSlot)
 		if (itemSlot === -1) {
 			chat.log('You have no items that need to be identified.', CHAT.WARNING)
 			resetDrop()
 			return
 		}
-		var newItem = _.cloneDeep(items.inv[itemSlot])
+		var newItem = _.cloneDeep(items[itemType][itemSlot])
 		newItem.unidentified = false
 
 		if (items[itemType][itemSlot].row &&
@@ -2260,14 +2302,15 @@ var loot = {};
 		}
 		handleDestroySuccess(true)
 	}
+
 	function expendPotion(type, index) {
 		// type and potion size
 		var obj = { value: 0 }
 		var lastValue = 0
 		var diff = 0
-		TweenMax.to(obj, 6, {
+		TweenMax.to(obj, potionHealDuration, {
 			value: potionRecoveryByJob(type, index),
-			ease: SteppedEase.config(60),
+			ease: SteppedEase.config(POTION_COOLDOWN),
 			onUpdate: parseDifference,
 		})
 		audio.playSound('potion-used')

@@ -96,7 +96,7 @@ var town;
 		my.target = -1
 		my.targetIsMob = true
 		battle.hideTarget()
-		mob.killAttacks()
+		mob.killAllAttacks()
 		dungeon.map = {} // reset map data so it can be initialized next embark
 		dungeon.killEntityTweens()
 		audio.stopAmbient()

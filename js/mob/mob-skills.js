@@ -884,16 +884,31 @@ mobSkills = {};
 		// adjusts value based on what it is at max level
 		return config.level * val / mob.maxLevel
 	}
+
+	function getMobasdfasdf() {
+
+	}
+	/* mob health by level test code
+	var a = [];
+	for (var i=1; i<=99; i++) {
+		var x = ~~(50 + (i - 1) * (20 + ((i / 40) * 80)))
+		a.push(x)
+		var diff = 0
+		if (typeof a[i - 2] === 'number') {
+			diff = a[i - 1] - a[i - 2]
+		}
+		console.info(i, x, diff)
+	}
+	 */
 	function modifyMobStatsByClass(config) {
 		//if (typeof config.job === 'undefined') config.job = JOB.WARRIOR
 		// base resources
-		const baseHpValue = (config.level - 1) * (60 + ((config.level / 50) * 160))
-		config.hp = (~~((50 + (baseHpValue * config.hp))) * party.presence.length)
-		// console.info('level, baseHpValue, hp', config.level, baseHpValue)
-		if (config.level < 20) {
-			const hpPenalty = .2125 + ((config.level / 20) * .75)
-			config.hp = Math.round(config.hp * hpPenalty)
-		}
+		const baseHpValue = 40
+		const addedHpByLevel = (config.level - 1) * (25 + ((config.level / 33) * 75))
+		const totalMobByLevelJob = (baseHpValue + addedHpByLevel) * config.hp
+		const partyMultiplier = (1 + ((party.presence.length - 1) * .8))
+		config.hp = ~~(totalMobByLevelJob * partyMultiplier)
+		console.info('mob health: ', config.hp, config)
 		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)
 		//config.spMax = config.sp = ~~(10 + ((config.level - 1) * 15) * config.sp)
 		config.attack = ~~(3 + (config.level * 1.66))

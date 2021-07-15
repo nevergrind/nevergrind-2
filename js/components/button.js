@@ -32,7 +32,6 @@ var button;
 	}
 	let name, hit
 	let mySwingSpeed = 0
-	const POTION_COOLDOWN = 60
 	const GLOBAL_COOLDOWN_DURATION = 2.5
 	const HYBRID_AUTO_ATTACKERS = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER, JOB.BARD]
 	let damages
@@ -205,11 +204,11 @@ var button;
 				}
 			}
 			else {
-				ng.msg('This skill is not defined:' + name)
+				ng.msg('This skill is not defined:' + name, undefined, COLORS.yellow)
 			}
 		}
 		else if (ng.view === 'town') {
-			ng.msg('You cannot cast in town.')
+			ng.msg('You cannot cast in town.', undefined, COLORS.yellow)
 		}
 	}
 	function handleSkillButtonClick() {
@@ -530,12 +529,19 @@ var button;
 
 	function handlePotionSlotContextClick(event) {
 		let type = this.id.split('-')[1]
-		if (button[type + 'Potion'] < 0) return
-		let index = items.inv.findIndex(i =>
-			i.itemSubType === type && i.imgIndex === button[type + 'Potion'])
+		if (ng.view === 'town') {
+			chat.log('You cannot drink potions in town!', CHAT.WARNING)
+			return false
+		}
+		else if (my.hp > 0) {
+			// can only use potion if alive...
+			if (button[type + 'Potion'] < 0) return
+			let index = items.inv.findIndex(i =>
+				i.itemSubType === type && i.imgIndex === button[type + 'Potion'])
 
-		if (index > -1 && items.inv[index].use) {
-			item.useItem('inv', index)
+			if (index > -1 && items.inv[index].use) {
+				item.useItem('inv', index)
+			}
 		}
 		return false // context disabled
 	}

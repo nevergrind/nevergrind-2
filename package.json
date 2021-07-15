@@ -1,7 +1,7 @@
 {
   "name": "nevergrind-online",
   "main": "index.html",
-  "version": "0.0.49",
+  "version": "0.1.4",
   "description": "multiplayer-cooperative-rpg",
   "product_string": "Nevergrind Online",
   "nodejs": true,

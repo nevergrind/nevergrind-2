@@ -89,7 +89,7 @@ var guild;
 		}).fail(function(data){
 			// console.info(data);
 			$("#guild-input").focus();
-			ng.msg(data.responseText);
+			ng.msg(data.responseText, undefined, COLORS.yellow);
 		}).always(function(){
 			ng.unlock();
 		});

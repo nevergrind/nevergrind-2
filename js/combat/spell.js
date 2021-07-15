@@ -46,9 +46,14 @@ var spell;
 		// console.info('channelSuccessful', spellType)
 		if (!spellType) return true
 		success = .6 - ((fizzleMaxed[my.skills[spell.index]] - my[spellType]) / 100)
-		if (my.buffFlags.manaShell) success += .1
+		if (my.buffFlags.manaShell) {
+			success += .1
+		}
+		if (my.buffFlags.lichForm) {
+			success += .15
+		}
 		// constraints
-		 // max 50% chance to channel (60 with wiz buff)
+		 // max 50% chance to channel (60 with wiz buff, 65 with wlk, 75 with both)
 		if (success > getMaxChannelChance()) success = getMaxChannelChance()
 		else if (success < 0) success = 0 // at worst 0% chance requires 60+ diff
 

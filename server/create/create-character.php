@@ -181,6 +181,14 @@
 		$stmt->execute();
 	}
 
+	if ($f['job'] === 'Warrior' || $f['job'] === 'Shadow Knight' || $f['job'] === 'Crusader') {
+		$data = json_encode('{"slots":["secondary"],"armor":4,"rarity":"normal","itemLevel":1,"imgIndex":0,"itemType":"shields","blockRate":10}');
+		$query = 'insert into `items` (owner_id, slot, name, data) VALUES (?, 13, "Training Shield", '. $data .')';
+		$stmt = $db->prepare($query);
+		$stmt->bind_param('i', $character_id);
+		$stmt->execute();
+	}
+
 	// echo something for fun
 	$r['hero'] = $f;
 	$r['id'] = $character_id;

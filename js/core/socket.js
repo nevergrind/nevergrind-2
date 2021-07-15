@@ -46,8 +46,8 @@ var socket;
 			socket.msgPerSec = (len / secs).toFixed(1)
 			// console.info('msgPerSec', socket.msgPerSec)
 
-			// name channels are always exclusionary broadcasts
-			if (topic.startsWith('name')) exclude = true
+			// name channels are always exclusionary broadcasts (bad assumption)
+			// if (topic.startsWith('name')) exclude = true
 
 			socket.session.publish(
 				topic,

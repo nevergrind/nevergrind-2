@@ -519,7 +519,7 @@ mob.type = {
 		sfxAttack: 'rhino-attack',
 		sfxHit: 'rhino-hit',
 		sfxDeath: 'rhino-death',
-		sfxIdle: 'rhino-idle',
+		sfxIdle: undefined,
 		sfxSpecial: undefined,
 	},
 	[MOB_IMAGES.kobold]: {
