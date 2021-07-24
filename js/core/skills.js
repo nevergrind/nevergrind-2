@@ -1774,7 +1774,7 @@ var skills;
 				spellVariance: .9,
 				spellType: PROP.EVOCATION,
 				damageType: DAMAGE_TYPE.ICE,
-				castTime: 1.5,
+				castTime: 2.2,
 				cooldownTime: 0,
 				description: config => 'Blast your target dealing '+ config.damageString +' ice damage. Reduces threat and chills your target for '+ ng.toMinSecs(buffs.iceBolt.chillDuration) +'.',
 			}, {

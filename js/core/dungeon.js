@@ -147,7 +147,6 @@ var dungeon;
 		if (ng.view === 'town') {
 			expanse.killAllTweens()
 			chat.publishRemove()
-			chat.clearChatLog()
 			// clear any town-based channels
 			for (var key in socket.subs) {
 				if (key.startsWith('ng2')) {

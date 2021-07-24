@@ -528,11 +528,11 @@ let mobs = [];
 	function updateMobName(i) {
 		el = querySelector('#mob-name-' + i)
 		el.innerHTML = mobs[i].name
-		el.className = 'mob-name text-shadow3 ' + battle.getMobClassNameByTier(i)
+		el.className = 'mob-name text-shadow3 ' + battle.getMobClassNameByLevel(i)
 		// console.info('updateMobName', i, mobs[i].level)
 		// el.classList.add()
 		el = querySelector('#mob-level-' + i)
-		el.className = battle.getMobClassNameByLevel(i)
+		el.className = battle.getMobClassNameByLevel(i) +' '+ battle.getMobClassNameByTier(i)
 		el.textContent = mobs[i].level
 	}
 	function setClickBox(m, i) {

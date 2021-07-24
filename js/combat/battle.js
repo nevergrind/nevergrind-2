@@ -780,8 +780,8 @@ var battle;
 			if (my.targetIsMob) {
 				tgt = {
 					// combat.considerClassBg[combat.getLevelDifferenceIndex(mobs[my.target].level)]
-					bgClass: battle.getMobClassNameByLevel(my.target),
-					nameClass: getMobClassNameByTier(my.target),
+					bgClass: battle.getMobClassNameByLevel(my.target) +' text-shadow3',
+					nameClass: battle.getMobClassNameByLevel(my.target) +' '+ battle.getMobClassNameByTier(my.target),
 					level: mobs[my.target].level,
 					name: mobs[my.target].name,
 					tier: mobs[my.target].tier,
@@ -793,7 +793,7 @@ var battle;
 			}
 			else {
 				tgt = {
-					bgClass: 'con-white-bg',
+					bgClass: 'con-white text-shadow3',
 					nameClass: 'con-white',
 					level: party.presence[party.getIndexByRow(my.target)].level,
 					name: party.getNameByRow(my.target),
@@ -805,6 +805,7 @@ var battle;
 					resists: '',
 				}
 			}
+			// battle.getMobClassNameByLevel(i) +' '+ battle.getMobClassNameByTier(i)
 			// console.info('tgt', tgt)
 			// level
 			querySelector('#mob-target-level').className = tgt.bgClass
@@ -847,7 +848,7 @@ var battle;
 		return html.join(' ')
 	}
 	function getMobClassNameByLevel(tgt) {
-		return 'mob-level ' + combat.considerClassBg[combat.getLevelDifferenceIndex(mobs[tgt].level)]
+		return 'mob-level ' + combat.considerClass[combat.getLevelDifferenceIndex(mobs[tgt].level)]
 	}
 	function getMobClassNameByTier(tgt) {
 		return 'mob-tier-'+ mobs[tgt].tier

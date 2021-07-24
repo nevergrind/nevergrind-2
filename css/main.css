@@ -632,7 +632,7 @@ tbody { border: 0 }
 	z-index: 2
 }
 .mob-details.targeted .mob-name {
-	box-shadow: 0 0 0 1rem #f228 inset;
+	/*box-shadow: 0 0 0 1rem #f228 inset;*/
 	animation: repeat-mob-name .12s ease-out infinite;
 }
 @keyframes repeat-mob-name {
@@ -679,12 +679,9 @@ tbody { border: 0 }
 	pointer-events: none;
 }
 .mob-level {
-	border: 1px solid #0a0a0a;
-	font-size: .75rem;
-	padding: 1px 0;
-	color: #000;
+	color: #fff;
+	font-size: .9rem;
 	text-align: center;
-	min-width: 1rem;
 	line-height: 1.2;
 }
 .mob-name {
@@ -1373,15 +1370,13 @@ background-clip: content-box;
 }
 
 .capitalize { text-transform: capitalize }
+
 .item-normal { color: #fff; }
 .item-magic { color: #2a9aff; }
-.mob-tier-normal { color: #3aff7a; }
-.mob-tier-champion { color: #0a6aea }
-.mob-tier-boss { color: #ff1a1a; }
 .item-magic-alt { color: #487af8 }
-.item-rare, .mob-tier-conqueror { color: #ff0; }
+.item-rare { color: #ff0; }
 .item-set { color: #00c400; }
-.item-unique, .mob-tier-unique { color: #baaa7a; /*908858 b5a170*/}
+.item-unique { color: #baaa7a; /*908858 b5a170*/}
 .item-runic { color: #ad68f8; }
 .item-legendary { color: #ffa500; }
 .item-restricted { color: #f55; }
@@ -1519,6 +1514,142 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 }
 
 .mission-zone-headers:hover { background: #048; }
+
+.mob-tier-normal {
+	text-shadow: 1px 1px #000, -1px 0 #000, 1px 0 #000, -1px 1px #000, 1px -1px #000, -1px -1px #000;
+}
+.mob-tier-champion {
+	text-shadow: 1px 1px #000, -1px 0 #000, 1px 0 #000, -1px 1px #000, 1px -1px #000, -1px -1px #000,
+		2px 2px #0a6aea,
+		2px 1px #0a6aea,
+		2px 0px #0a6aea,
+		2px -1px #0a6aea,
+		2px -2px #0a6aea,
+		1px -2px #0a6aea,
+		0px -2px #0a6aea,
+		-1px -2px #0a6aea,
+		-2px -2px #0a6aea,
+		-2px -1px #0a6aea,
+		-2px 0px #0a6aea,
+		-2px 1px #0a6aea,
+		-2px 2px #0a6aea,
+		-1px 2px #0a6aea,
+		0px 2px #0a6aea,
+		1px 2px #0a6aea,
+
+		3px 3px #0a6aea,
+		3px 2px #0a6aea,
+		3px 1px #0a6aea,
+		3px 0px #0a6aea,
+		3px -1px #0a6aea,
+		3px -2px #0a6aea,
+		3px -3px #0a6aea,
+		2px -3px #0a6aea,
+		1px -3px #0a6aea,
+		0px -3px #0a6aea,
+		-1px -3px #0a6aea,
+		-2px -3px #0a6aea,
+		-3px -3px #0a6aea,
+		-3px -2px #0a6aea,
+		-3px -1px #0a6aea,
+		-3px 0px #0a6aea,
+		-3px 1px #0a6aea,
+		-3px 2px #0a6aea,
+		-3px 3px #0a6aea,
+		-2px 3px #0a6aea,
+		-1px 3px #0a6aea,
+		0px 3px #0a6aea,
+		1px 3px #0a6aea,
+		2px 3px #0a6aea;
+}
+.mob-tier-unique {
+	text-shadow: 1px 1px #000, -1px 0 #000, 1px 0 #000, -1px 1px #000, 1px -1px #000, -1px -1px #000,
+		2px 2px #baaa7a,
+		2px 1px #baaa7a,
+		2px 0px #baaa7a,
+		2px -1px #baaa7a,
+		2px -2px #baaa7a,
+		1px -2px #baaa7a,
+		0px -2px #baaa7a,
+		-1px -2px #baaa7a,
+		-2px -2px #baaa7a,
+		-2px -1px #baaa7a,
+		-2px 0px #baaa7a,
+		-2px 1px #baaa7a,
+		-2px 2px #baaa7a,
+		-1px 2px #baaa7a,
+		0px 2px #baaa7a,
+		1px 2px #baaa7a,
+
+		3px 3px #baaa7a,
+		3px 2px #baaa7a,
+		3px 1px #baaa7a,
+		3px 0px #baaa7a,
+		3px -1px #baaa7a,
+		3px -2px #baaa7a,
+		3px -3px #baaa7a,
+		2px -3px #baaa7a,
+		1px -3px #baaa7a,
+		0px -3px #baaa7a,
+		-1px -3px #baaa7a,
+		-2px -3px #baaa7a,
+		-3px -3px #baaa7a,
+		-3px -2px #baaa7a,
+		-3px -1px #baaa7a,
+		-3px 0px #baaa7a,
+		-3px 1px #baaa7a,
+		-3px 2px #baaa7a,
+		-3px 3px #baaa7a,
+		-2px 3px #baaa7a,
+		-1px 3px #baaa7a,
+		0px 3px #baaa7a,
+		1px 3px #baaa7a,
+		2px 3px #baaa7a;
+}
+.mob-tier-boss {
+	text-shadow: 1px 1px #000, -1px 0 #000, 1px 0 #000, -1px 1px #000, 1px -1px #000, -1px -1px #000,
+		2px 2px #ff1a1a,
+		2px 1px #ff1a1a,
+		2px 0px #ff1a1a,
+		2px -1px #ff1a1a,
+		2px -2px #ff1a1a,
+		1px -2px #ff1a1a,
+		0px -2px #ff1a1a,
+		-1px -2px #ff1a1a,
+		-2px -2px #ff1a1a,
+		-2px -1px #ff1a1a,
+		-2px 0px #ff1a1a,
+		-2px 1px #ff1a1a,
+		-2px 2px #ff1a1a,
+		-1px 2px #ff1a1a,
+		0px 2px #ff1a1a,
+		1px 2px #ff1a1a,
+
+		3px 3px #ff1a1a,
+		3px 2px #ff1a1a,
+		3px 1px #ff1a1a,
+		3px 0px #ff1a1a,
+		3px -1px #ff1a1a,
+		3px -2px #ff1a1a,
+		3px -3px #ff1a1a,
+		2px -3px #ff1a1a,
+		1px -3px #ff1a1a,
+		0px -3px #ff1a1a,
+		-1px -3px #ff1a1a,
+		-2px -3px #ff1a1a,
+		-3px -3px #ff1a1a,
+		-3px -2px #ff1a1a,
+		-3px -1px #ff1a1a,
+		-3px 0px #ff1a1a,
+		-3px 1px #ff1a1a,
+		-3px 2px #ff1a1a,
+		-3px 3px #ff1a1a,
+		-2px 3px #ff1a1a,
+		-1px 3px #ff1a1a,
+		0px 3px #ff1a1a,
+		1px 3px #ff1a1a,
+		2px 3px #ff1a1a;
+}
 
 .con-grey { color: #777; }
 .con-green { color: #292; }
@@ -3860,6 +3991,7 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 #mob-target-name {
 	font-size: 1rem;
 	position: relative;
+	margin: 0 2px 1px;
 	z-index: 2;
 }
 #mob-target-percent {
@@ -3873,13 +4005,9 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	width: 3rem;
 }
 #mob-target-level {
-	margin-right: .2rem;
-	font-size: .75rem;
-	padding: 1px;
-	border: 1px solid #0a0a0a;
-	color: #000;
-	min-width: 1rem;
-	text-shadow: none;
+	margin-right: .4rem;
+	line-height: 1.2;
+	font-size: .85rem;
 	z-index: 2;
 }
 #mob-target-percent { right: 0rem; }

@@ -74,7 +74,7 @@ mobSkills = {};
 		fireball,
 		initFilter,
 		[JOB.WARRIOR]: [
-			{ chance: .05, key: 'slam' }, // STUN
+			{ chance: .99, key: 'slam' }, // STUN
 		],
 		[JOB.CRUSADER]: [
 			{ chance: .04, key: 'slam' },
@@ -156,6 +156,7 @@ mobSkills = {};
 	const mobFearCooldown = 30000
 	const mobParalyzeCooldown = 30000
 	const mobSilenceCooldown = 30000
+	const mobHarmTouchCooldown = 12000
 	const filter = {
 		freeze: { pixi: {
 			colorize: '#0ff',
@@ -212,9 +213,12 @@ mobSkills = {};
 
 			// harm touch
 			if (mobs[index].job === JOB.SHADOW_KNIGHT &&
-				!mobs[index].usedHarmTouch
-				&& rand() < .1666) {
+				!mobs[index].usedHarmTouch &&
+				// have any mobs used harm touch recently?
+				timers.mobEffects.every(eff => (now - eff.harmTouchTimestamp) > mobHarmTouchCooldown) &&
+				rand() < .1666) {
 				mobDamages = [mobSkills.harmTouch(index, row)]
+				timers.mobEffects[index].harmTouchTimestamp = now
 			}
 			// lay hands
 			else if (mobs[index].job === JOB.CRUSADER &&
