@@ -1,5 +1,5 @@
 mobSkills = {};
-!function($, _, TweenMax, Linear, Math, Array, Power0, undefined) {
+!function($, _, TweenMax, Linear, Math, Array, Power0, Date, undefined) {
 	mobSkills = {
 		dots: {},
 		decideSkill,
@@ -74,95 +74,88 @@ mobSkills = {};
 		fireball,
 		initFilter,
 		[JOB.WARRIOR]: [
-			{ chance: .07, key: 'slam' }, // STUN
-			/*{ chance: .5, key: 'venomBolt' },*/ // TEST
+			{ chance: .05, key: 'slam' }, // STUN
 		],
 		[JOB.CRUSADER]: [
-			{ chance: .05, key: 'slam' },
+			{ chance: .04, key: 'slam' },
 			{ chance: .12, key: 'divineJudgment' },
 			{ chance: 0, key: 'divineGrace', maxHeal: 1 },
 			{ chance: 0, key: 'layHands' },
 		],
 		[JOB.SHADOW_KNIGHT]: [
-			{ chance: .05, key: 'slam' },
+			{ chance: .04, key: 'slam' },
 			{ chance: .11, key: 'bloodTerror' }, // BLOOD - FEAR
 			{ chance: .16, key: 'decayingDoom' }, // ARCANE - ARMOR
 			{ chance: 0, key: 'harmTouch' }, // VOID
 		],
 		[JOB.MONK]: [
-			{ chance: .02, key: 'slam', },
-			{ chance: .09, key: 'craneKick' },
-			{ chance: .17, key: 'hadoken' }, // ARCANE
-			{ chance: .25, key: 'dragonPunch' }, // FIRE
+			{ chance: .05, key: 'craneKick' },
+			{ chance: .10, key: 'hadoken' }, // ARCANE
+			{ chance: .15, key: 'dragonPunch' }, // FIRE
 		],
 		[JOB.ROGUE]: [
-			{ chance: .05, key: 'slam', },
-			{ chance: .15, key: 'backstab' },
-			{ chance: .25, key: 'widowStrike' }, // POISON
+			{ chance: .1, key: 'backstab' },
+			{ chance: .15, key: 'widowStrike' }, // POISON
 		],
 		[JOB.RANGER]: [
-			{ chance: .02, key: 'slam', },
-			{ chance: .09, key: 'trueshotStrike' },
-			{ chance: .15, key: 'burningEmbers' }, // FIRE ARMOR
-			{ chance: .19, key: 'shockNova' }, // LIGHTNING
+			{ chance: .07, key: 'trueshotStrike' },
+			{ chance: .12, key: 'burningEmbers' }, // FIRE ARMOR
+			{ chance: .16, key: 'shockNova' }, // LIGHTNING
 		],
 		[JOB.BARD]: [ // should boost regen and resists too?
-			{ chance: .05, key: 'slam', },
-			{ chance: .14, key: 'bellow' }, // ARCANE
-			{ chance: .2, key: 'creepingChords' }, // LIGHTNING PARALYZE
+			{ chance: .10, key: 'bellow' }, // ARCANE
+			{ chance: .15, key: 'creepingChords' }, // LIGHTNING PARALYZE
 		],
 		[JOB.DRUID]: [
-			{ chance: .03, key: 'slam', },
-			{ chance: .13, key: 'starfire' }, // FIRE
-			{ chance: .19, key: 'lightningBlast' }, // LIGHTNING SILENCE?
-			{ chance: .24, key: 'blizzard' }, // ICE CHILL?
+			{ chance: .1, key: 'starfire' }, // FIRE
+			{ chance: .15, key: 'lightningBlast' }, // LIGHTNING SILENCE?
+			{ chance: .2, key: 'blizzard' }, // ICE CHILL?
 			{ chance: 0, key: 'naturesTouch', maxHeal: 2 }, // ARCANE
 		],
 		[JOB.CLERIC]: [
-			{ chance: .03, key: 'slam', },
-			{ chance: .15, key: 'smite' }, // ARCANE
-			{ chance: .2, key: 'forceOfGlory' }, // ARCANE STUN?
+			{ chance: .1, key: 'smite' }, // ARCANE
+			{ chance: .15, key: 'forceOfGlory' }, // ARCANE STUN?
 			{ chance: 0, key: 'divineLight', maxHeal: 3 },
 		],
 		[JOB.SHAMAN]: [
-			{ chance: .03, key: 'slam', },
-			{ chance: .13, key: 'frostRift' }, // ICE CHILL
-			{ chance: .18, key: 'scourge' }, // BLOOD
-			{ chance: .24, key: 'affliction' }, // POISON
+			{ chance: .1, key: 'frostRift' }, // ICE CHILL
+			{ chance: .15, key: 'scourge' }, // BLOOD
+			{ chance: .2, key: 'affliction' }, // POISON
 			{ chance: 0, key: 'mysticalGlow', maxHeal: 2 },
 		],
 		[JOB.WARLOCK]: [
-			{ chance: .02, key: 'slam', },
-			{ chance: .08, key: 'venomBolt' }, // POISON
-			{ chance: .16, key: 'engulfingDarkness' }, // POISON
-			{ chance: .24, key: 'bloodFire' }, // FIRE
-			{ chance: .3, key: 'panicStrike' }, // ARCANE FEAR
+			{ chance: .06, key: 'venomBolt' }, // POISON
+			{ chance: .12, key: 'engulfingDarkness' }, // POISON
+			{ chance: .19, key: 'bloodFire' }, // FIRE
+			{ chance: .25, key: 'panicStrike' }, // ARCANE FEAR
 		],
 		[JOB.ENCHANTER]: [
-			{ chance: .02, key: 'slam', },
-			{ chance: .08, key: 'gravityFlux' }, // ARCANE STUN (brief)
-			{ chance: .14, key: 'mindBlitz' }, // ARCANE SILENCE?
-			{ chance: .24, key: 'staticSuffocation' }, // LIGHTNING PARALYZE
-			{ chance: .3, key: 'subversion' }, // POISON
+			{ chance: .06, key: 'gravityFlux' }, // ARCANE STUN (brief)
+			{ chance: .12, key: 'mindBlitz' }, // ARCANE SILENCE?
+			{ chance: .19, key: 'staticSuffocation' }, // LIGHTNING PARALYZE
+			{ chance: .25, key: 'subversion' }, // POISON
 		],
 		[JOB.TEMPLAR]: [
-			{ chance: .02, key: 'slam', },
-			{ chance: .09, key: 'lavaBolt', }, // FIRE
-			{ chance: .16, key: 'staticStorm' }, // LIGHTNING SILENCE?
-			{ chance: .23, key: 'arclight' }, // LIGHTNING PARALYZE
-			{ chance: .3, key: 'glacialSpike' }, // ICE CHILL?
+			{ chance: .06, key: 'lavaBolt', }, // FIRE
+			{ chance: .12, key: 'staticStorm' }, // LIGHTNING SILENCE?
+			{ chance: .19, key: 'arclight' }, // LIGHTNING PARALYZE
+			{ chance: .25, key: 'glacialSpike' }, // ICE CHILL?
 		],
 		[JOB.WIZARD]: [
-			{ chance: .02, key: 'slam', },
-			{ chance: .07, key: 'fireBolt' }, // FIRE
-			{ chance: .14, key: 'iceBolt' }, // ICE CHILL
-			{ chance: .21, key: 'magicMissiles' }, // ARCANE SILENCE
-			{ chance: .28, key: 'lightningBolt' }, // LIGHTNING PARALYZE
-			{ chance: .33, key: 'fireball' }, // FIRE
+			{ chance: .05, key: 'fireBolt' }, // FIRE
+			{ chance: .1, key: 'iceBolt' }, // ICE CHILL
+			{ chance: .15, key: 'magicMissiles' }, // ARCANE SILENCE
+			{ chance: .2, key: 'lightningBolt' }, // LIGHTNING PARALYZE
+			{ chance: .25, key: 'fireball' }, // FIRE
 		],
 	}
 	let row
 	let mobDamage = {}, mobDamages
+	const mobHealCooldown = 20000
+	const mobStunCooldown = 24000
+	const mobFearCooldown = 30000
+	const mobParalyzeCooldown = 30000
+	const mobSilenceCooldown = 30000
 	const filter = {
 		freeze: { pixi: {
 			colorize: '#0ff',
@@ -200,6 +193,8 @@ mobSkills = {};
 	}
 	function decideSkill(index, row) {
 		if (row <= 0) return // player row not found?
+
+		const now = Date.now()
 		if (mob.isParalyzed(index) && rand() > ParalyzeRate) {
 			mobDamages = [{
 				row: row,
@@ -232,6 +227,7 @@ mobSkills = {};
 			else if (typeof jobHealData === 'object' &&
 				typeof jobHealData.maxHeal === 'number' &&
 				mobs[index].healCount < jobHealData.maxHeal &&
+				(now - timers.mobEffects[index].healTimestamp) > mobHealCooldown &&
 				rand() < .1 &&
 				injuredMobLen >= 1) {
 				// must have a heal spell, be below heal count max, and find an injured mob
@@ -247,6 +243,7 @@ mobSkills = {};
 				else if (mobs[index].job === JOB.SHAMAN) {
 					mobDamages = [mobSkills.mysticalGlow(index, getHealTarget())]
 				}
+				timers.mobEffects[index].healTimestamp = now
 			}
 			// DoTs and DDs
 			else {
@@ -381,6 +378,39 @@ mobSkills = {};
 					else if (skillData.key === 'fireball') {
 						mobDamages = [mobSkills.fireball(index, row)]
 					}
+					// check if it violates timestamp and reset mobDamages if it's too early
+					if (mobDamages[0].effect === 'stun') {
+						if (now - timers.mobEffects[index].stunTimestamp > mobStunCooldown) {
+							timers.mobEffects[index].stunTimestamp = now
+						}
+						else {
+							mobDamages = []
+						}
+					}
+					else if (mobDamages[0].effect === 'fear') {
+						if (now - timers.mobEffects[index].fearTimestamp > mobFearCooldown) {
+							timers.mobEffects[index].fearTimestamp = now
+						}
+						else {
+							mobDamages = []
+						}
+					}
+					else if (mobDamages[0].effect === 'paralyze') {
+						if (now - timers.mobEffects[index].paralyzeTimestamp > mobParalyzeCooldown) {
+							timers.mobEffects[index].paralyzeTimestamp = now
+						}
+						else {
+							mobDamages = []
+						}
+					}
+					else if (mobDamages[0].effect === 'silence') {
+						if (now - timers.mobEffects[index].silenceTimestamp > mobSilenceCooldown) {
+							timers.mobEffects[index].silenceTimestamp = now
+						}
+						else {
+							mobDamages = []
+						}
+					}
 				}
 				else {
 					// auto attack
@@ -400,16 +430,22 @@ mobSkills = {};
 				let indexRow = index +'-'+ row +'-'+ mobDamages[0].key
 				let duration = mobDamages[0].ticks * 3000
 				if (typeof mobSkills.dots[indexRow] === 'number' &&
-					Date.now() - mobSkills.dots[indexRow] < duration) {
+					now - mobSkills.dots[indexRow] < duration) {
 					// not long enough - do a single attack
 					regularAttack()
 				}
 				else {
-					mobSkills.dots[indexRow] = Date.now()
+					mobSkills.dots[indexRow] = now
 				}
 			}
 		}
 		mobDamages.forEach((dam, i) => {
+			if (dam.isHeal) {
+				if (mobs[index].buffFlags.stasisField) {
+					// reduces power of a heal on a mob in stasis
+					dam.damage = ~~(dam.damage * buffs.stasisField.pveMitigationRatio)
+				}
+			}
 			dam.damage = _.max([1, round(dam.damage)])
 			if (!i) combat.txDamageHero(index, dam)
 			else {
@@ -450,6 +486,7 @@ mobSkills = {};
 	function divineGrace(i, tgt) {
 		return {
 			isHeal: true,
+			healedBy: i,
 			index: tgt,
 			key: 'divineGrace',
 			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 18)), mobs[i].int * getScaledValue(i, 20)),
@@ -459,6 +496,7 @@ mobSkills = {};
 	function layHands(i, tgt) {
 		return {
 			isHeal: true,
+			healedBy: i,
 			index: tgt,
 			key: 'layHands',
 			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 70)), mobs[i].int * getScaledValue(i, 75)),
@@ -608,6 +646,7 @@ mobSkills = {};
 	function naturesTouch(i, tgt) {
 		return {
 			isHeal: true,
+			healedBy: i,
 			index: tgt,
 			key: 'naturesTouch',
 			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 23)), mobs[i].int * getScaledValue(i, 25)),
@@ -627,7 +666,7 @@ mobSkills = {};
 			row: row,
 			key: 'forceOfGlory',
 			effect: 'stun',
-			duration: 5,
+			duration: 4,
 			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.5)), mobs[i].int * getScaledValue(i, 2.6)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
@@ -635,6 +674,7 @@ mobSkills = {};
 	function divineLight(i, tgt) {
 		return {
 			isHeal: true,
+			healedBy: i,
 			index: tgt,
 			key: 'divineLight',
 			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 28)), mobs[i].int * getScaledValue(i, 30)),
@@ -672,6 +712,7 @@ mobSkills = {};
 	function mysticalGlow(i, tgt) {
 		return {
 			isHeal: true,
+			healedBy: i,
 			index: tgt,
 			key: 'mysticalGlow',
 			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 22)), mobs[i].int * getScaledValue(i, 26)),
@@ -709,7 +750,7 @@ mobSkills = {};
 			row: row,
 			key: 'panicStrike',
 			effect: 'fear',
-			duration: 24,
+			duration: 15,
 			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 2.25)), mobs[i].int * getScaledValue(i, 2.4)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
@@ -816,7 +857,7 @@ mobSkills = {};
 			key: 'magicMissiles',
 			effect: 'silence',
 			interval: 1,
-			duration: 3,
+			duration: 4,
 			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, .66)), mobs[i].int * getScaledValue(i, .72)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
@@ -908,7 +949,7 @@ mobSkills = {};
 		const totalMobByLevelJob = (baseHpValue + addedHpByLevel) * config.hp
 		const partyMultiplier = (1 + ((party.presence.length - 1) * .8))
 		config.hp = ~~(totalMobByLevelJob * partyMultiplier)
-		console.info('mob health: ', config.hp, config)
+		// console.info('mob health: ', config.hp, config)
 		//config.mpMax = config.mp = ~~(10 + ((config.level - 1) * 15) * config.mp)
 		//config.spMax = config.sp = ~~(10 + ((config.level - 1) * 15) * config.sp)
 		config.attack = ~~(3 + (config.level * 1.66))
@@ -1283,8 +1324,6 @@ mobSkills = {};
 
 
 	function stunPlayerEffectRx(buff) {
-		buff.duration = my.stunMod(buff.duration, 'stun')
-		if (!my.stunTimeValid(buff.duration)) return
 		spell.cancelSpell()
 		button.pauseAutoAttack()
 		my.stunTimer = TweenMax.to(timers, buff.duration, {
@@ -1296,7 +1335,7 @@ mobSkills = {};
 		mobSkills.txPlayerEffect({
 			row: my.row,
 			duration: buff.duration,
-			key: 'stun',
+			key: buff.effect,
 		})
 	}
 	function fearPlayerEffectRx(buff) {
@@ -1309,7 +1348,7 @@ mobSkills = {};
 		mobSkills.txPlayerEffect({
 			row: my.row,
 			duration: buff.duration,
-			key: 'fear',
+			key: buff.effect,
 		})
 	}
 	function paralyzePlayerEffectRx(buff) {
@@ -1322,12 +1361,10 @@ mobSkills = {};
 		mobSkills.txPlayerEffect({
 			row: my.row,
 			duration: buff.duration,
-			key: 'paralyze',
+			key: buff.effect,
 		})
 	}
 	function silencePlayerEffectRx(buff) {
-		buff.duration = my.stunMod(buff.duration, 'silence')
-		if (!my.silenceTimeValid(buff.duration)) return
 		my.silenceTimer = TweenMax.to(timers, buff.duration, {
 			startAt: { silenceTimer: 0 },
 			silenceTimer: 1,
@@ -1336,7 +1373,7 @@ mobSkills = {};
 		mobSkills.txPlayerEffect({
 			row: my.row,
 			duration: buff.duration,
-			key: 'silence',
+			key: buff.effect,
 		})
 	}
 	function chillPlayerEffectRx(buff) {
@@ -1351,7 +1388,7 @@ mobSkills = {};
 		mobSkills.txPlayerEffect({
 			row: my.row,
 			duration: buff.duration,
-			key: 'chill',
+			key: buff.effect,
 		})
 	}
 	function chillPlayerComplete(buff) {
@@ -1373,7 +1410,7 @@ mobSkills = {};
 		mobSkills.txPlayerEffect({
 			row: my.row,
 			duration: buff.duration,
-			key: 'freeze',
+			key: buff.effect,
 		})
 	}
 	function freezePlayerComplete(buff) {
@@ -1394,4 +1431,4 @@ mobSkills = {};
 			}
 		})
 	}
-}($, _, TweenMax, Linear, Math, Array, Power0);
+}($, _, TweenMax, Linear, Math, Array, Power0, Date);

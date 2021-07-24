@@ -2,6 +2,7 @@ var stats = {};
 (function($, TweenMax, _, undefined) {
 	stats = {
 		memo: {},
+		clearCache,
 		enhancedDamageToHumanoids,
 		enhancedDamageToBeasts,
 		enhancedDamageToUndead,
@@ -44,6 +45,7 @@ var stats = {};
 		secondaryAutoAttackDamage,
 		rangedDamage,
 		getResistPercent,
+		resistAll,
 		resistBlood,
 		resistPoison,
 		resistArcane,
@@ -121,9 +123,12 @@ var stats = {};
 		min: 0,
 		max: 0,
 		damage: 0,
+		isCrit: false,
+		enhancedDamage: 1,
+		isPiercing: false,
+		isRanged: true,
 		weaponSkill: 'Archery',
 		damageType: DAMAGE_TYPE.PHYSICAL,
-		isCrit: false
 	}
 	const hpTier = {
 		[JOB.WARRIOR]: 10,
@@ -317,18 +322,18 @@ var stats = {};
 
 	function attack(type, fresh) {
 		type = type || items.eq[12].weaponSkill
+
+
 		if (fresh || typeof stats.memo.attack === 'undefined') {
 			stats.memo.attack = setStat(getEqTotal(PROP.ATTACK) + (str().value * .35))
 			// console.info('stats.missChance', type, ~~stats.memo.attack)
+			// special percentage bonuses - should only affect base (not buffs)
 			// buffs
 			if (my.buffFlags.spiritOfTheHunter) {
 				stats.memo.attack.value += buffs.spiritOfTheHunter.attackBonus[my.buffs.spiritOfTheHunter.level]
 			}
 			if (my.buffFlags.talismanOfTreachery) {
 				stats.memo.attack.value += buffs.talismanOfTreachery.attackBonus[my.buffs.talismanOfTreachery.level]
-			}
-			if (my.buffFlags.branchSpirit) {
-				stats.memo.attack.value += (my.buffs.branchSpirit.damage * buffs.branchSpirit.attackRatio)
 			}
 			setColor(stats.memo.attack)
 		}
@@ -343,9 +348,14 @@ var stats = {};
 		else if (type === 'Archery') dynamicAttackBonus += (archery() * 2.66)
 		else if (type === LABEL.HAND_TO_HAND) dynamicAttackBonus += (handToHand() * 2.66)
 
+		let attackBonus = 1
+		if (my.buffFlags.branchSpirit) {
+			attackBonus += .2
+		}
+
 		return {
 			baseValue: round(stats.memo.attack.baseValue + dynamicAttackBonus),
-			value: round(stats.memo.attack.value + dynamicAttackBonus),
+			value: round((stats.memo.attack.value + dynamicAttackBonus) * attackBonus),
 			color: stats.memo.color
 		}
 		//else atk += (handToHand() * (my.job === JOB.MONK ? 2.66 : .33))
@@ -658,11 +668,22 @@ var stats = {};
 			? LABEL.HAND_TO_HAND
 			: items.eq[slot].weaponSkill
 	}
+
+	/**
+	 * Spell damage processing
+	 * @param index
+	 * @param critMod
+	 * @param config
+	 * @returns {{damage: number, min: number, max: number, isCrit: (*|boolean)}}
+	 */
 	function spellDamage(index = 0, critMod = 0, config) {
 		if (!config) config = { ...spell.data }
-		max = config.spellDamage(my.skills[config.index])
+		let min
+		let max = config.spellDamage(my.skills[config.index])
 		// enhance by type % and ALL%
-		enhanceDamage = 0
+		let enhanceDamage = 0
+		let addedDamage = 0
+
 		if (config.damageType === DAMAGE_TYPE.BLOOD) enhanceDamage = enhanceBlood()
 		else if (config.damageType === DAMAGE_TYPE.POISON) enhanceDamage = enhancePoison()
 		else if (config.damageType === DAMAGE_TYPE.ARCANE) enhanceDamage = enhanceArcane()
@@ -685,7 +706,6 @@ var stats = {};
 
 		max = max * (1 + (enhanceDamage / 100))
 		// add spell damage by type and ALL
-		addedDamage = 0
 		if (config.damageType === DAMAGE_TYPE.BLOOD) addedDamage = addSpellBlood()
 		else if (config.damageType === DAMAGE_TYPE.POISON) addedDamage = addSpellPoison()
 		else if (config.damageType === DAMAGE_TYPE.ARCANE) addedDamage = addSpellArcane()
@@ -694,7 +714,7 @@ var stats = {};
 		else if (config.damageType === DAMAGE_TYPE.ICE) addedDamage = addSpellIce()
 		addedDamage += addSpellAll()
 
-		if (my.buffFlags.mirrorImage) {
+		if (my.buffFlags.mirrorImage && !config.isTooltip) {
 			addedDamage += my.buffs.mirrorImage.damage
 		}
 
@@ -702,11 +722,16 @@ var stats = {};
 		min = max * config.spellVariance
 		// console.info('spellDamage 2', min, max)
 		// crit?
-		isCrit = mob.isAlive(index) && ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
+		let isCrit = mob.isAlive(index) && ((critMod / 100) + critFromBuffBonus(index) + stats.critChance()) > rand()
 
 		if (isCrit) {
 			min *= 1.5
 			max *= 1.5
+		}
+		if (my.isFeared()) {
+			// DoTs were already calculated
+			min *= .5
+			max *= .5
 		}
 
 		if (min < 1) min = 1
@@ -719,6 +744,14 @@ var stats = {};
 			isCrit: isCrit,
 		}
 	}
+
+	/**
+	 * Melee damage processing
+	 * @param index
+	 * @param critMod
+	 * @param skipSkillChecks
+	 * @returns {{damage: number, weaponSkill: (string), min: number, max: number, isCrit: (*|boolean), enhancedDamage: number, damageType: string}}
+	 */
 	function skillDamage(index = 0, critMod = 0, skipSkillChecks = false) {
 		// normalized damage for skills
 		min = 1
@@ -771,6 +804,11 @@ var stats = {};
 				max *= 1.5
 			}
 		}
+		if (my.isFeared()) {
+			// DoTs were already calculated
+			min *= .5
+			max *= .5
+		}
 
 		if (!skipSkillChecks) {
 			combat.levelSkillCheck(weaponSkill)
@@ -786,6 +824,13 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
+
+	/**
+	 * Primary auto attack damage processing
+	 * @param index
+	 * @param skipSkillCheck
+	 * @returns {{damage: number, weaponSkill: string, min: number, max: number, isCrit: boolean, enhancedDamage: number, damageType: string}}
+	 */
 	function primaryAutoAttackDamage(index = 0, skipSkillCheck = false) {
 		min = 1
 		max = 1
@@ -820,6 +865,11 @@ var stats = {};
 				max *= 1.5
 			}
 		}
+		if (my.isFeared()) {
+			// DoTs were already calculated
+			min *= .5
+			max *= .5
+		}
 
 		if (!skipSkillCheck) {
 			combat.levelSkillCheck(weaponSkill)
@@ -835,6 +885,13 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
+
+	/**
+	 * Secondary auto attack damage processing
+	 * @param index
+	 * @param skipSkillCheck
+	 * @returns {{damage: number, weaponSkill: string, min: number, max: number, isCrit: boolean, enhancedDamage: number, damageType: string}|{damage: number, min: number, max: number, isCrit: boolean, damageType: string}}
+	 */
 	function secondaryAutoAttackDamage(index = 0, skipSkillCheck = false) {
 		if (!my.dualWield) return FailedWeaponDamage
 		min = 1
@@ -863,6 +920,11 @@ var stats = {};
 			min *= 1.5
 			max *= 1.5
 		}
+		if (my.isFeared()) {
+			// DoTs were already calculated
+			min *= .5
+			max *= .5
+		}
 
 		if (!skipSkillCheck) {
 			combat.levelSkillCheck(weaponSkill)
@@ -878,13 +940,36 @@ var stats = {};
 			damageType: DAMAGE_TYPE.PHYSICAL,
 		}
 	}
+
+	/**
+	 * Ranged attack damage processing
+	 * @param index
+	 * @param critMod
+	 * @param skipSkillCheck
+	 * @returns {{damage: number, weaponSkill: string, min: number, max: number, isCrit: (*|boolean), isPiercing: boolean, enhancedDamage: number, damageType: string, isRanged: boolean}|{damage: number, weaponSkill: string, min: number, max: number, isCrit: boolean, damageType: string}}
+	 */
 	function rangedDamage(index = 0, critMod = 0, skipSkillCheck = false) {
 		min = 1
 		max = 1
 		atk = attack('Archery').value
-		if (!my.archery || items.eq[14].itemType !== ITEM_TYPE.BOWS) return failedRangeDamage
+		if (!my.archery || items.eq[14].itemType !== ITEM_TYPE.BOWS) {
+			if (my.job === JOB.RANGER) {
+				min = 1 + ~~(my.level * .1)
+				max = 2 + ~~(my.level * .5)
+				dps = tooltip.getDps({
+					minDamage: min,
+					maxDamage: max,
+					speed: 4
+				})
+			}
+			else {
+				return failedRangeDamage
+			}
+		}
+		else {
+			dps = tooltip.getDps(items.eq[14])
+		}
 
-		dps = tooltip.getDps(items.eq[14])
 		max = dps * 1.5
 		min = max * .8
 
@@ -895,6 +980,11 @@ var stats = {};
 		if (isCrit) {
 			min *= 2
 			max *= 2
+		}
+		if (my.isFeared()) {
+			// DoTs were already calculated
+			min *= .5
+			max *= .5
 		}
 
 		if (!skipSkillCheck) combat.levelSkillCheck('Archery')
@@ -911,7 +1001,7 @@ var stats = {};
 		}
 	}
 
-	function getResistPercent(type) {
+	function getResistPercent(type, getUiValue = false) {
 		resistPercent = 1
 		if (type === DAMAGE_TYPE.BLOOD) resistPercent = 1 - (resistBlood() / ResistCap)
 		else if (type === DAMAGE_TYPE.POISON) resistPercent = 1 - (resistPoison() / ResistCap)
@@ -920,6 +1010,9 @@ var stats = {};
 		else if (type === DAMAGE_TYPE.FIRE) resistPercent = 1 - (resistFire() / ResistCap)
 		else if (type === DAMAGE_TYPE.ICE) resistPercent = 1 - (resistIce() / ResistCap)
 		if (resistPercent < .25) resistPercent = .25
+		if (getUiValue) {
+			resistPercent = round((1 - resistPercent) * 100)
+		}
 		return resistPercent
 	}
 	function resistAll() {
@@ -947,7 +1040,9 @@ var stats = {};
 			if (my.buffFlags.sealOfRedemption) {
 				stats.memo.resistBlood += buffs.sealOfRedemption.resistBlood[my.buffs.sealOfRedemption.level]
 			}
+
 			stats.memo.resistBlood = round(stats.memo.resistBlood)
+			if (stats.memo.resistBlood > 75) stats.memo.resistBlood = 75
 		}
 		return stats.memo.resistBlood
 	}
@@ -957,12 +1052,17 @@ var stats = {};
 			if (my.buffFlags.profaneSpirit) {
 				stats.memo.resistPoison += buffs.profaneSpirit.resistPoison[my.buffs.profaneSpirit.level]
 			}
+
+			stats.memo.resistPoison = round(stats.memo.resistPoison)
+			if (stats.memo.resistPoison > 75) stats.memo.resistPoison = 75
 		}
 		return stats.memo.resistPoison
 	}
 	function resistArcane(fresh) {
 		if (fresh || typeof stats.memo.resistArcane === 'undefined') {
 			stats.memo.resistArcane = getStatTotal(PROP.RESIST_ARCANE) + getEqTotal(PROP.RESIST_ALL) + resistAll()
+			stats.memo.resistArcane = round(stats.memo.resistArcane)
+			if (stats.memo.resistArcane > 75) stats.memo.resistArcane = 75
 		}
 		return stats.memo.resistArcane
 	}
@@ -972,6 +1072,9 @@ var stats = {};
 			if (my.buffFlags.phaseBlade) {
 				stats.memo.resistLightning += buffs.phaseBlade.resistLightning[my.buffs.phaseBlade.level]
 			}
+
+			stats.memo.resistLightning = round(stats.memo.resistLightning)
+			if (stats.memo.resistLightning > 75) stats.memo.resistLightning = 75
 		}
 		return stats.memo.resistLightning
 	}
@@ -981,6 +1084,9 @@ var stats = {};
 			if (my.buffFlags.moltenAegis) {
 				stats.memo.resistFire += buffs.moltenAegis.resistFire[my.buffs.moltenAegis.level]
 			}
+
+			stats.memo.resistFire = round(stats.memo.resistFire)
+			if (stats.memo.resistFire > 75) stats.memo.resistFire = 75
 		}
 		return stats.memo.resistFire
 	}
@@ -990,6 +1096,9 @@ var stats = {};
 			if (my.buffFlags.borealTalisman) {
 				stats.memo.resistIce += buffs.borealTalisman.resistIce[my.buffs.borealTalisman.level]
 			}
+
+			stats.memo.resistIce = round(stats.memo.resistIce)
+			if (stats.memo.resistIce > 75) stats.memo.resistIce = 75
 		}
 		return stats.memo.resistIce
 	}
@@ -1690,8 +1799,12 @@ var stats = {};
 		if (castHaste < .5) castHaste = .5
 		else if (castHaste > 2) castHaste = 2
 		// console.info('getCastingSpeed', spell.castTime * castHaste)
-		// if (!app.isApp) spell.castTime = 1
+		// if (!Config.enableFastCast) spell.castTime = 1
 		// console.info('getCastingSpeed', castHaste)
 		return spell.castTime * castHaste
+	}
+
+	function clearCache() {
+		stats.memo = {}
 	}
 })($, TweenMax, _);

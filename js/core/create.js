@@ -62,7 +62,7 @@ var create;
 				[RACE.HIGH_ELF]: 'High Elves live in Kaedorn, a walled kingdom ruled by a monarchy for thousands of years. Despite their resemblance to Wood Elves, their strengths are in spellcasting due to their diligent study of magic. They regenerate magic faster than any other race and have a strong bonus to evocation spells.',
 				[RACE.HUMAN]: 'Humans are an fearless, intrepid race hailing from Edenberg, the imperial capital of Vandamor. Despite their balanced attributes, their fearless leadership is legendary throughout Vandamor. Humans are highly resistant to fear, have strong spirit regeneration, and a bonus to slashing weapons.',
 				[RACE.ORC]: 'Orcs hail from Gorgek, a city on an isolated peninsula of southern Vandamor. A brutish and fierce race, orcs have the highest strength and stamina among all races. They have a passive stun resist bonus which helps them fight back in the face of overwhelming odds. Orcs also enjoy a healthy bonus to using two-handed weapons.',
-				[RACE.TROLL]: 'Trolls are a savage race from the swaps of Slagnon. Their strength and stamina is second only to Orcs. They uniquely regenerate health faster than any other race, but they are weak to fire magic. Trolls also have a strong bonus to conjuration spells.',
+				[RACE.TROLL]: 'Trolls are a savage race from the swaps of Slagnon. Their exceptional strength and stamina makes them formidable warriors on the front-line. They uniquely regenerate health faster than any other race, but they are weak against fire magic. Trolls also have a strong bonus to conjuration spells.',
 				[RACE.WOOD_ELF]: 'Wood Elves are a race from the city of Artremia. Their knowledge of the great outdoors is unmatched, giving them strong archery, ice resistance, fire resistance, and lightning resistance. They also have a bonus to all fire, ice, and lightning magic spells.'
 			},
 			job: {
@@ -124,7 +124,7 @@ var create;
 		audio.playSound('click-17')
 	}
 	function selectClass() {
-		if (!$(this).get(0).className.includes('disabled')){
+		if (!this.className.includes('disabled')) {
 			var job = $(this).text();
 			if (job === create.form.job) return
 			$('.select-class').removeClass('active');
@@ -308,27 +308,16 @@ var create;
 		getElementById(key + '-value').innerHTML = create.form[key] = val;
 		// details
 		ng.splitText('create-details', create.msg(key, val));
-		if (key === 'job'){
-			//getElementById('type-value').innerHTML = create.types[val];
-		}
-		// resists
-		ng.resists.forEach(function(v){
-			//getElementById(_.kebabCase(v) + '-value').innerHTML = create.getResist(v, create.form)
-		});
-		// dungeon
-		ng.dungeon.forEach(function(v){
-			//getElementById(v + '-value').innerHTML = create.getDungeon(v);
-		});
 		// reset attr
-		if (key !== 'gender' && create.form.race){
+		if (key !== 'gender' && create.form.race) {
 			var raceAttr = _.cloneDeep(create.getRaceAttrs(create.form.race));
 			var jobAttr = _.cloneDeep(create.getJobAttrs(create.form.job));
-			jobAttr.forEach(function(v, i){
+			jobAttr.forEach((v, i) => {
 				raceAttr[i] += v;
 			});
 			// set initial attr values
 			$(".create-attr-value").removeClass('active');
-			ng.attrs.forEach(function(v, i){
+			ng.attrs.forEach((v, i) => {
 				var e = getElementById('create-points-' + v);
 				e.innerHTML = create.form[v] = create.base[v] = raceAttr[i];
 				if (jobAttr[i]){
@@ -342,63 +331,64 @@ var create;
 
 	function getResist(type, obj) {
 		// gender and race
-		var v = 15
+		var v = 0
 		var {gender, race} = obj
-		if (typeof gender === 'number') gender = gender ? 'Female' : 'Male' // normalize to string
+		if (typeof gender === 'number') {
+			gender = gender ? 'Female' : 'Male'
+		}
 
-		// console.info('obj gender', gender, race)
-		if (type === PROP.RESIST_BLOOD){
+		if (type === PROP.RESIST_BLOOD) {
 			if (gender === 'Female'){
-				v += 5;
+				v += 2;
 			}
-			if (race === RACE.DARK_ELF){
-				v += 10;
+			if (race === RACE.DARK_ELF) {
+				v += 3;
 			}
 		}
 		else if (type === PROP.RESIST_POISON){
 			if (gender === 'Female'){
-				v += 5;
+				v += 2;
 			}
 			if (race === RACE.DWARF){
-				v += 10;
+				v += 3;
 			}
 		}
 		else if (type === PROP.RESIST_ARCANE){
 			if (gender === 'Male'){
-				v += 5;
+				v += 2;
 			}
 			if (race === RACE.SERAPH){
-				v += 25;
+				v += 6;
 			}
 			else if (race === RACE.DARK_ELF || race === RACE.DWARF){
-				v += 10;
+				v += 3;
 			}
 		}
 		else if (type === PROP.RESIST_LIGHTNING){
 			if (race === RACE.GNOME){
-				v += 20;
+				v += 5;
 			}
 			else if (race === RACE.WOOD_ELF){
-				v += 10;
+				v += 3;
 			}
 		}
 		else if (type === PROP.RESIST_FIRE){
 			if (race === RACE.TROLL){
-				v -= 10;
+				v -= 5;
 			}
 			else if (race === RACE.WOOD_ELF){
-				v += 10;
+				v += 3;
 			}
 		}
 		else if (type === PROP.RESIST_ICE){
 			if (gender === 'Male'){
-				v += 5;
+				v += 2;
 			}
 			if (race === RACE.BARBARIAN){
-				v += 25;
+				v += 6;
 			}
 			else if (race === RACE.WOOD_ELF){
-				v += 10;
+				v += 3;
 			}
 		}
 		return v;
@@ -577,18 +567,22 @@ var create;
 		var ids = '',
 			jobs = create.getPossibleJobs(race),
 			len = jobs.length;
-		jobs.forEach(function(v, i){
+		jobs.forEach((v, i) => {
 			ids += '#create-' + v.split(' ').join('-');
 			if (i < len-1){
 				ids += ', ';
 			}
-		});
+		})
+		// need to wipe so that you can click the same job again
+		create.form.job = ''
 		$(ids).removeClass('disabled');
 		// add active to selection
 		var e = $(".select-class:not(.disabled)"),
 			len = e.length;
-		e = e.eq(~~(rand() * len));
-		e.length && e.trigger('click');
+		// LMAO
+		const roll = ~~(rand() * (len - 1))
+		e = e.eq(roll)
+		e.length && e.trigger('click')
 	}
 	function getEmptyForm() {
 		return {

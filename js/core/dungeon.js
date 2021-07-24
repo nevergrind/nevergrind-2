@@ -65,8 +65,9 @@ var dungeon;
 		endWall: {},
 		tickUpdate: {},
 		hallwayPlayerStart: PLAYER_HALLWAY_START,
-		centerX: [960, 1248, 672, 1536, 384],
-		headY: BOTTOM_PLAYER - 240, // center is 180 - old head is 280
+		// centerX: [960, 1248, 672, 1536, 384],
+		centerX: [960, 1122, 798, 1284, 636],
+		headY: BOTTOM_PLAYER - 280,
 		bottomY: BOTTOM_PLAYER,
 		gridElementY: {},
 		gridSize: GRID_SIZE,
@@ -117,6 +118,7 @@ var dungeon;
 	const MOB_DUNGEON_SIZE = 1.6 // this should equate to about scale 1 in combat (?)
 	const MAX_BLUR = 3
 	$('#scene-dungeon').on('mousedown', handleClickDungeon)
+		.on('mouseup', handleClickDungeonUp)
 	///////////////////////////////////////
 	function go(force) {
 		if (!force && ng.view === 'dungeon') return
@@ -169,11 +171,8 @@ var dungeon;
 
 		combat.autoAttackDisable()
 		// reset some combat data
-		mobs.forEach((m, i) => {
-			mobs[i].name = ''
-			mobs[i].hp = 0
-		})
-		combat.resetTimersAndUI()
+		mob.initMobData()
+		combat.resetTimersAndUI(true)
 
 		TweenMax.to('#scene-dungeon', .5, {
 			startAt: { filter: 'brightness(0)' },
@@ -185,7 +184,6 @@ var dungeon;
 			delay: .5,
 			filter: 'brightness(1)'
 		})
-		battle.reckonGXL() // after battle
 		// draw players
 		player.show()
 		mobSkills.initFilter()
@@ -345,7 +343,6 @@ var dungeon;
 		// up to 2 mobs per 9600 length hallway
 		let mobLen = ~~(dungeon.hallwayTileLength / 2.5)
 		let minZoneLevel = zones.find(z => z.name === zones[mission.id].name).level
-		console.info("START")
 		dungeon.map.hallways.forEach((h, hIndex) => {
 			h.entities = []
 			for (var i=0; i<mobLen; i++) {
@@ -567,6 +564,7 @@ var dungeon;
 			})
 			map.inRoom = false
 			const mobData = mob.type[dungeon.closestEntity.img]
+			map.hide(ROOM_TRANSITION_DURATION * .5)
 			audio.playSound(mobData.sfxSpecial || mobData.sfxIdle || mobData.sfxAttack, 'mobs')
 			// audio.playSound('sword-sharpen', 'combat')
 		}
@@ -615,12 +613,26 @@ var dungeon;
 		return '';
 	}
 	function centerY(index, race) {
-		return BOTTOM_PLAYER - 180
+		return BOTTOM_PLAYER - 220
+	}
+	function isWithinWalkClickRegion(e) {
+		return e.clientY / window.innerHeight > .2 &&
+				e.clientY / window.innerHeight < .8 &&
+				e.clientX / window.innerWidth > .2 &&
+				e.clientX / window.innerWidth < .8
 	}
 	function handleClickDungeon(e) {
 		if (party.presence[0].isLeader) {
-			dungeon.walkForward()
-			// if (e.shiftKey || (e.clientY / window.innerHeight > .85)) dungeon.walkBackward()
+			if (isWithinWalkClickRegion(e)) {
+				dungeon.walkForward()
+			}
+		}
+	}
+	function handleClickDungeonUp(e) {
+		if (party.presence[0].isLeader) {
+			if (isWithinWalkClickRegion(e)) {
+				dungeon.walkStop()
+			}
 		}
 	}
 	// moving functions
@@ -636,13 +648,6 @@ var dungeon;
 	}
 	function getWalkDurationStart() {
 		return dungeon.distanceCurrent / dungeon.distancePerSecond
-	}
-	function getBlurValue(distance) {
-		distance = ((distance * -1) - 1500)
-		if (distance < 0) distance = 0
-		blurValue = distance / 5000
-		if (blurValue > MAX_BLUR) blurValue = MAX_BLUR
-		return blurValue
 	}
 	function walkForward() {
 		if (ng.view !== 'dungeon' || map.menuPrompt || !party.presence[0].isLeader) {

@@ -232,7 +232,8 @@ var test;
 	}
 	function lootItems(count = 16, rarity = ITEM_RARITY.unique, itemSlot = '', itemName = '', store = true) {
 		for (var i=0; i<count; i++) {
-			item.findLoot(2, undefined, 50)
+			// item.findLoot(2, undefined, 50)
+			item.findLoot(2, 6)
 		}
 	}
 	function opacity(count) {

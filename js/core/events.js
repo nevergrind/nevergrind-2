@@ -2,7 +2,6 @@
 	var i
 	var key
 	let _keyup
-	let keyDownActive = false
 	// window
 
 	// document events
@@ -12,7 +11,7 @@
 	//////////////////////////////////////////////
 	function readyFn() {
 		// console.info("document ready...");
-		delayedCall(.1, readyFire);
+		delayedCall(.1, readyFire)
 
 		$(window)
 			.on('resize', resize)
@@ -40,12 +39,13 @@
 
 		// delegated events
 		$('body')
+			.on('click', '#hearth', map.handleHearthClick)
 			.on('dragstart', 'img', dragStart)
-			.on('focus', 'input', chatInputFocus)
+			.on('focus', 'input', chatInputFocus) // any input does this
 			.on('blur', 'input', chatInputBlur)
 			.on('click', '.close-menu', bar.handleCloseMenu)
-			.on('mouseenter', '.item-slot, .skill-btn-tooltip', tooltip.handleEnter)
-			.on('mouseleave', '.item-slot, .skill-btn-tooltip', tooltip.handleLeave)
+			.on('mouseenter', '.item-slot, .skill-btn-tooltip', tooltip.handleTooltipEnter)
+			.on('mouseleave', '.item-slot, .skill-btn-tooltip', tooltip.handleTooltipLeave)
 			.on('contextmenu', '.item-slot-inv, .item-slot-bank', item.handleItemSlotContextClick)
 			.on('contextmenu', '.potion-slot', button.handlePotionSlotContextClick)
 			.on('click', '.item-slot', item.toggleDrag)
@@ -83,7 +83,8 @@
 		}
 	}
 
-	function handleContextMenu() {
+	function handleContextMenu(e) {
+		console.info('handleContext', e)
 		if (app.isApp) return false // disable context menus
 	}
 	function chatInputFocus() {
@@ -97,13 +98,22 @@
 		ng.events()
 		create.events()
 		audio.events()
+		TweenMax.to('#scene-title', .5, {
+			startAt: {
+				filter: 'brightness(0)',
+				visibility: 'visible',
+				display: 'flex'
+			},
+			filter: 'brightness(1)',
+			ease: Back.easeOut
+		})
 		// window.onbeforeunload = chat.camp
 	}
 	function windowFocus() {
 		if (ng.view !== 'title') {
-			if (querySelector('#chat-input').value.length &&
-				!chat.inputHasFocus) {
-				chat.focusChatInput()
+			if (!chat.inputHasFocus &&
+				querySelector('#chat-input').value.length) {
+				// chat.focusChatInput()
 			}
 		}
 		windowResized()
@@ -151,7 +161,7 @@
 
 	function keydown(e) {
 		// console.info('e: ', e)
-		if (e.originalEvent.repeat || keyDownActive) return
+		if (e.originalEvent.repeat) return
 		key = e.key
 		// console.info('key: ', key)
 
@@ -176,19 +186,15 @@
 				else if (key === 'PageUp') mission.embark()
 			}
 		}*/
-
+		// console.info('e.metaKey', e.metaKey)
 		if (e.altKey) {
 			// ALT key functions
-			return false;
+			return false
 		}
 		else if (e.ctrlKey){
 			// CTRL key functions
-			if (key === 'r'){
-				// ctrl+r refresh
-				chat.reply();
-				return false;
-			}
-			else if (!chat.hasFocus) {
+			if (key === 'r') return false
+			if (!chat.hasFocus) {
 				// no "select all" of webpage elements
 				if (key === 'a' || key === 'f') {
 					e.preventDefault();
@@ -199,7 +205,10 @@
 			// normal key functions
 			// literally in any view
 			if (key === 'Escape') { // ESC
-				if (item.dragType) item.resetDrop()
+				if (chat.inputHasFocus) {
+					// do nothing... trust me - needs to go to ESC below
+				}
+				else if (item.dragType) item.resetDrop()
 				else if (my.target >= 0) my.targetCleared()
 				else {
 					bar.toggleOptions()
@@ -216,15 +225,17 @@
 				}
 			}
 			else {
+				// console.info('focus?', chat.hasFocus, chat.inputHasFocus, key)
 				if (chat.hasFocus) {
 					// always works town, dungeon and combat (focused)
-					if (key === 'Escape') {
-						querySelector('#chat-input').blur()
-						return false;
+					if (key === 'Escape' &&
+						chat.inputHasFocus) {
+						query.el('#chat-input').blur()
+						return false
 					}
 					if (chat.modeChange()) {
 						// changing chat mode - matches possible mode change
-						return false;
+						return false
 					}
 					// has chat focus
 					if (key === 'ArrowUp') {
@@ -254,7 +265,17 @@
 				}
 				else {
 					// always works town, dungeon and combat (non-focused)
-					if (key === ng.config.hotkey.characterStats) bar.toggleCharacterStats()
+					// ctrl+r refresh
+					// console.info(key, chat.inputHasFocus)
+					if (key === 'r') {
+						chat.reply()
+						return false
+					}
+					else if (key === 't' && !chat.inputHasFocus) {
+						chat.focusChatInput()
+						return false
+					}
+					else if (key === ng.config.hotkey.characterStats) bar.toggleCharacterStats()
 					else if (key === ng.config.hotkey.inventory) bar.toggleInventory()
 					else if (key === ' ') bar.closeAllWindows()
 
@@ -275,6 +296,7 @@
 					// dungeon & combat specific
 					if (!chat.hasFocus) {
 						if (chat.focusKeys.includes(key)) chat.focusChatInput()
+						else if (key === 'z') dungeon.walkForward()
 						else if (key === ng.config.hotkey.walkForward) dungeon.walkForward()
 						else if (key === ng.config.hotkey.walkBackward) dungeon.walkBackward()
 						else if (key === ' ') spell.cancelSpell()
@@ -304,31 +326,7 @@
 			}
 
 			// prevent default behaviors in all scenes
-			if (key === 'Tab') {
-				e.preventDefault()
-				return false
-			}
-			else if (key === 'F1') {
-				e.preventDefault()
-				return false
-			}
-			else if (key === 'F2') {
-				e.preventDefault()
-				return false
-			}
-			else if (key === 'F3') {
-				e.preventDefault()
-				return false
-			}
-			else if (key === 'F4') {
-				e.preventDefault()
-				return false
-			}
-			else if (key === 'F5') {
-				e.preventDefault()
-				return false
-			}
-			else if (key === 'F6') {
+			if (key === 'Tab' || key === 'F1' || key === 'F2' || key === 'F3' || key === 'F4' || key === 'F5' || key === 'F6') {
 				e.preventDefault()
 				return false
 			}
@@ -336,14 +334,17 @@
 	}
 
 	function keyup(e) {
-		/*keyDownActive = false
-		_keyup = e.key
+		// if (e.originalEvent.repeat) return
+		if (e.metaKey) {
+			e.preventDefault()
+			return false
+		}
 		if (ng.view === 'dungeon') {
 			if (!map.inRoom) {
-				if (key === ng.config.hotkey.walkForward) dungeon.walkStop()
-				else if (key === ng.config.hotkey.walkBackward) dungeon.walkStop()
+				if (e.key === ng.config.hotkey.walkForward) dungeon.walkStop()
+				else if (e.key === ng.config.hotkey.walkBackward) dungeon.walkStop()
 			}
-		}*/
+		}
 	}
 })(_, $, parseInt, getComputedStyle);
 

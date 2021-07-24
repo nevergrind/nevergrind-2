@@ -43,6 +43,8 @@
 	}
 	function fissureCompleted() {
 		let originalTarget = my.target
+		const spellType = spell.data.spellType
+		const damageType = spell.data.damageType
 		for (var j=0; j<5; j++) {
 			!function(j) {
 				delayedCall((j + 1) * 1.5, () => {
@@ -53,8 +55,8 @@
 						damages.push({
 							key: 'fissure',
 							index: tgt,
-							spellType: spell.data.spellType,
-							damageType: spell.data.damageType,
+							spellType: spellType,
+							damageType: damageType,
 							...stats.spellDamage(tgt),
 						})
 					}
@@ -98,6 +100,8 @@
 	}
 	function blizzardCompleted() {
 		let originalTarget = my.target
+		const spellType = spell.data.spellType
+		const damageType = spell.data.damageType
 		for (var j=0; j<5; j++) {
 			!function(j) {
 				delayedCall((j + 1) * 1.5, () => {
@@ -108,8 +112,8 @@
 						damages.push({
 							key: 'blizzard',
 							index: tgt,
-							spellType: spell.data.spellType,
-							damageType: spell.data.damageType,
+							spellType: spellType,
+							damageType: damageType,
 							buffs: [{
 								i: tgt,
 								row: my.row, // this identifies unique buff state/icon
@@ -366,7 +370,7 @@
 			key: 'branchSpirit',
 			spellType: spell.data.spellType,
 			level: my.skills[spell.config.skillIndex],
-			...stats.spellDamage(spell.config.target, -100)
+			damage: 0,
 		})
 		combat.txBuffHero(damages)
 	}

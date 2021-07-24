@@ -19,8 +19,8 @@ var tooltip;
 		getTooltipName,
 		hide,
 		show,
-		handleEnter,
-		handleLeave,
+		handleTooltipEnter,
+		handleTooltipLeave,
 		conditionalHide,
 		getDps,
 		isRangedOrMelee,
@@ -33,6 +33,7 @@ var tooltip;
 	var useHtml = ''
 	let hit
 	const divider = '<hr class="fancy-hr" style="margin: .2rem 0">'
+	const dividerGold = '<hr class="fancy-gold-hr" style="margin: .2rem 0">'
 	//////////////////////////////////////////////////
 	/**
 	 * returns column ridge plus item name HTML
@@ -87,17 +88,17 @@ var tooltip;
 				// plus all
 				getGenericStatHtml(obj.allSkills, 'All Skills') +
 				getGenericStatHtml(obj.allStats, 'All Stats') +
-				getGenericStatHtml(obj.resistAll, 'All Resistances') +
+				getGenericPercentStatHtml(obj.resistAll, 'All Resistances') +
 				getGenericStatHtml(obj.addSpellAll, 'All Spell Power') +
 				getGenericPercentStatHtml(obj.enhanceAll, 'All Spell Damage') +
 				// resists
-				getGenericStatHtml(obj.resistBlood, 'Resist Blood') +
-				getGenericStatHtml(obj.resistPoison, 'Resist Poison') +
-				getGenericStatHtml(obj.resistArcane, 'Resist Arcane') +
-				getGenericStatHtml(obj.resistLightning, 'Resist Lightning') +
-				getGenericStatHtml(obj.resistFire, 'Resist Fire') +
-				getGenericStatHtml(obj.resistIce, 'Resist Ice') +
-				getGenericStatHtml(obj.resistPhysical, 'Resist Physical') +
+				getGenericPercentStatHtml(obj.resistBlood, 'Resist Blood') +
+				getGenericPercentStatHtml(obj.resistPoison, 'Resist Poison') +
+				getGenericPercentStatHtml(obj.resistArcane, 'Resist Arcane') +
+				getGenericPercentStatHtml(obj.resistLightning, 'Resist Lightning') +
+				getGenericPercentStatHtml(obj.resistFire, 'Resist Fire') +
+				getGenericPercentStatHtml(obj.resistIce, 'Resist Ice') +
+				getGenericPercentStatHtml(obj.resistPhysical, 'Resist Physical') +
 				// spell power
 				getGenericStatHtml(obj.addSpellBlood, 'Blood Spell Power') +
 				getGenericStatHtml(obj.addSpellPoison, 'Poison Spell Power') +
@@ -364,392 +365,431 @@ var tooltip;
 		tooltipEl.innerHTML = ''
 	}
 
-	let skillHtml = ''
 	function getSkillHtml(config) {
-		let rank = my.skills[config.index]
-		let minRank = rank > 0 ? rank : 1
+		// config.isAcademy???
+		const rank = my.skills[config.index]
+		const nextRank = rank + 1
+		let showedCurrentRank = false
 		// console.info('getSkillHtml config', config)
-		skillHtml = `
+		let skillHtml = `
 		<div style="margin: .1rem; border: .1rem ridge #048; padding: .1rem; border-radius: 4px">
 			<div class="tooltip-name-bg flex-column flex-center align-center">
 				<div class="tooltip-name" 
 				style="font-size: 1.125rem">${config.name}</div>
 			</div>
 			<div id="tooltip-item-stat-wrap" class="text-center" style="border: .1rem ridge #013">
-				<div style="padding: .2rem">`
-				if (config.index !== void 0) {
-					skillHtml += `<div class="${rank === 0 ? 'chat-danger' : 'chat-gold'}">
-						Current Rank: ${rank}
-					</div>`
-				}
-				if (typeof config.mp === 'function') {
-					skillHtml += `<div style="color: #3bf">Mana Cost: ${config.mp(minRank)}</div>`
-				}
-				else if (typeof config.sp === 'function') {
-					skillHtml += `<div style="color: #2c2">Spirit Cost: ${config.sp(minRank)}</div>`
-				}
-				if (typeof config.hate === 'number' && config.hate !== 0) {
-					skillHtml += `<div class="chat-warning">Threat: ${ng.toPercent(config.hate)}%</div>`
-				}
-				if (config.enhancedDamage && config.enhancedDamage[minRank]) {
-					skillHtml += `<div>Enhanced Damage: ${ng.toPercent(config.enhancedDamage[minRank])}%</div>`
-				}
-				if (config.hitBonus && config.hitBonus[minRank]) {
-					skillHtml += `<div>Hit Modifier: ${config.hitBonus[minRank]}%</div>`
-				}
-				if (config.critBonus && config.critBonus[minRank]) {
-					skillHtml += `<div>Crit Modifier: ${config.critBonus[minRank]}%</div>`
-				}
-				if (config.castTime) {
-					skillHtml += `<div>Cast Time: ${ng.toMinSecs(config.castTime)}</div>`
-				}
-				if (config.cooldownTime) {
-					skillHtml += `<div>Cooldown: ${ng.toMinSecs(config.cooldownTime)}</div>`
-				}
-				if (config.duration) {
-					skillHtml += `<div>Duration: ${ng.toMinSecs(config.duration)}</div>`
-				}
-				if (config.spellType) {
-					skillHtml += `<div>Spell Type: ${_.capitalize(config.spellType)}</div>`
-				}
-				if (config.damageType) {
-					skillHtml += `<div class="damage-${config.damageType}">Element: ${_.capitalize(config.damageType)}</div>`
-				}
-				///////////////////////////////////////////////////////////////////////////
-				if (config.requiresFrontRow) {
-					skillHtml += `<div class="chat-skill">Requires Front Row Target</div>`
-				}
-				if (config.staggers) {
-					skillHtml += `<div class="chat-skill">Staggers Target</div>`
-				}
-				if (config.cannotResist) {
-					skillHtml += `<div class="chat-skill">Cannot Be Resisted</div>`
-				}
-				if (config.damageReduced) {
-					skillHtml += `<div class="chat-skill">Physical Damage Reduced: ${ng.toPercent(config.damageReduced[minRank])}%</div>`
-				}
-				if (config.stunDuration) {
-					skillHtml += `<div class="chat-skill">Stuns target for ${ng.toMinSecs(config.stunDuration)}</div>`
-				}
-				if (config.freezeDuration) {
-					skillHtml += `
-						<div class="chat-skill">Freezes target for ${ng.toMinSecs(config.freezeDuration)}</div>
-					`
-				}
-				if (config.chillDuration) {
-					skillHtml += `
-						<div class="chat-skill">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>
-						<div class="chat-skill">Chilled targets attack 20% slower</div>
-					`
-				}
-				if (config.paralyzeDuration) {
-					skillHtml += `
-						<div class="chat-skill">Paralyzes target for ${ng.toMinSecs(config.paralyzeDuration)}</div>
-						<div class="chat-skill">Paralyzed targets fail 50% of their attacks</div>
-					`
-				}
-				if (config.fearDuration) {
-					skillHtml += `
-						<div class="chat-skill">Fears target for ${ng.toMinSecs(config.fearDuration)}</div>
-						<div class="chat-skill">Feared targets have a 50% damage penalty</div>
-					`
-				}
-				if (config.isRanged) {
-					skillHtml += `<div class="chat-skill">Ranged: Full damage to back row</div>`
-				}
-				if (config.isPiercing) {
-					skillHtml += `<div class="chat-skill">Piercing: Cannot be parried or riposted</div>`
-				}
-				if (config.isBlighted) {
-					skillHtml += `<div class="chat-skill">+50% damage to demons or undead</div>`
-				}
-				if (config.knockback) {
-					skillHtml += `<div class="chat-skill">+${config.knockback}% knockback resistance</div>`
-				}
-				////////////////////////////////////////////////////////////////////
-				if (config.hpMax) {
-					skillHtml += `<div class="chat-skill">Health: ${config.hpMax[minRank]}</div>`
-				}
-				if (config.armor) {
-					skillHtml += `<div class="chat-skill">Armor: ${config.armor[minRank]}</div>`
-				}
-				if (config.str) {
-					skillHtml += `<div class="chat-skill">Strength: ${config.str[minRank]}</div>`
-				}
-				if (config.sta) {
-					skillHtml += `<div class="chat-skill">Stamina: ${config.sta[minRank]}</div>`
-				}
-				if (config.agi) {
-					skillHtml += `<div class="chat-skill">Agility: ${config.agi[minRank]}</div>`
-				}
-				if (config.dex) {
-					skillHtml += `<div class="chat-skill">Dexterity: ${config.dex[minRank]}</div>`
-				}
-				if (config.wis) {
-					skillHtml += `<div class="chat-skill">Wisdom: ${config.wis[minRank]}</div>`
-				}
-				if (config.intel) {
-					skillHtml += `<div class="chat-skill">Intelligence: ${config.intel[minRank]}</div>`
-				}
-				if (config.cha) {
-					skillHtml += `<div class="chat-skill">Charisma: ${config.cha[minRank]}</div>`
-				}
-				if (config.hpRegen) {
-					skillHtml += `<div class="chat-skill">Health Regen: ${config.name === 'Lich Form' ? '-' : ''}${config.hpRegen[minRank]}</div>`
-				}
-				if (config.hpPercent) {
-					skillHtml += `<div class="chat-skill">Health Percent Bonus: ${ng.toPercent(config.hpPercent[minRank])}%</div>`
-				}
-				if (config.mpRegen) {
-					skillHtml += `<div class="chat-skill">Mana Regen: ${config.mpRegen[minRank]}</div>`
-				}
-				if (config.mpPercent) {
-					skillHtml += `<div class="chat-skill">Mana Percent Bonus: ${ng.toPercent(config.mpPercent[minRank])}%</div>`
-				}
-				if (config.spRegen) {
-					skillHtml += `<div class="chat-skill">Spirit Regen: ${config.spRegen[minRank]}</div>`
-				}
-				if (config.spPercent) {
-					skillHtml += `<div class="chat-skill">Spirit Percent Bonus: ${ng.toPercent(config.spPercent[minRank])}%</div>`
-				}
-				if (config.resistPoison) {
-					skillHtml += `<div class="chat-skill">Resist Poison: ${config.resistPoison[minRank]}</div>`
-				}
-				if (config.resistBlood) {
-					skillHtml += `<div class="chat-skill">Resist Blood: ${config.resistBlood[minRank]}</div>`
-				}
-				if (config.resistArcane) {
-					skillHtml += `<div class="chat-skill">Resist Arcane: ${config.resistArcane[minRank]}</div>`
-				}
-				if (config.resistLightning) {
-					skillHtml += `<div class="chat-skill">Resist Lightning: ${config.resistLightning[minRank]}</div>`
-				}
-				if (config.resistFire) {
-					skillHtml += `<div class="chat-skill">Resist Fire: ${config.resistFire[minRank]}</div>`
-				}
-				if (config.resistIce) {
-					skillHtml += `<div class="chat-skill">Resist Ice: ${config.resistIce[minRank]}</div>`
-				}
-				if (config.resistAll) {
-					if (config.name === 'Faded Strike') {
-						skillHtml += `<div class="chat-skill">
-							Resist All: ${round(config.resistAll[minRank] * config.ratioByStack[1])} to ${config.resistAll[minRank]}
-						</div>`
-					}
-					else {
-						skillHtml += `<div class="chat-skill">Resist All: ${config.resistAll[minRank]}</div>`
-					}
-				}
-				if (config.resistPerStack) {
-					skillHtml += `<div class="chat-skill">Resist All: ${config.resistPerStack}% to ${config.resistPerStack * 5}%</div>`
-				}
-				if (config.resistParalyze) {
-					skillHtml += `<div class="chat-skill">Resist Paralyze: ${config.resistParalyze[minRank]}</div>`
-				}
-				if (config.resistFear) {
-					skillHtml += `<div class="chat-skill">
-						Resist Fear: ${typeof config.resistFear === 'number' ? config.resistFear : config.resistFear[minRank]}
-					</div>`
-				}
-				if (config.resistStun) {
-					skillHtml += `<div class="chat-skill">Resist Stun: ${config.resistStun[minRank]}</div>`
-				}
-				if (config.silence) {
-					skillHtml += `<div class="chat-skill">Resist Silence: ${config.silence[minRank]}</div>`
-				}
-				if (config.reduceBloodResist) {
-					skillHtml += `<div class="chat-skill">Reduce Blood Resistance: ${ng.toPercent(config.reduceBloodResist)}%</div>`
-				}
-				if (config.reducePoisonResist) {
-					skillHtml += `<div class="chat-skill">Reduce Poison Resistance: ${ng.toPercent(config.reducePoisonResist)}%</div>`
-				}
-				if (config.reduceArcaneResist) {
-					skillHtml += `<div class="chat-skill">Reduce Arcane Resistance: ${ng.toPercent(config.reduceArcaneResist)}%</div>`
-				}
-				if (config.reduceLightningResist) {
-					skillHtml += `<div class="chat-skill">Reduce Lightning Resistance: ${ng.toPercent(config.reduceLightningResist)}%</div>`
-				}
-				if (config.reduceFireResist) {
-					skillHtml += `<div class="chat-skill">Reduce Fire Resistance: ${ng.toPercent(config.reduceFireResist)}%</div>`
-				}
-				if (config.reduceIceResist) {
-					skillHtml += `<div class="chat-skill">Reduce Ice Resistance: ${ng.toPercent(config.reduceIceResist)}%</div>`
-				}
-				if (config.reduceAllResists) {
-					skillHtml += `<div class="chat-skill">Reduce All Resists: ${ng.toPercent(config.reduceAllResists[minRank])}%</div>`
-				}
-				if (config.mitigation) {
-					skillHtml += `<div class="chat-skill">Damage Reduced: ${config.mitigation[minRank]}</div>`
-				}
-				if (config.evpMitigation) {
-					skillHtml += `<div class="chat-skill">Damage Reduced: ${config.evpMitigation[minRank]}</div>`
-				}
-				if (config.slowPercent) {
-					skillHtml += `<div class="chat-skill">Slows Target ${ng.toPercent(config.slowPercent)}%</div>`
-				}
-				if (config.debuffArmor) {
-					skillHtml += `<div class="chat-skill">Debuff Armor: ${ng.toPercent(config.debuffArmor)}%</div>`
-				}
-				if (config.buffHitBonus) {
-					skillHtml += `<div class="chat-skill">
-						Hit Bonus: ${ng.toPercent(
-					typeof config.buffHitBonus === 'number' ? config.buffHitBonus : config.buffHitBonus[minRank]
-					)}%</div>`
-				}
-				if (config.buffCritBonus) {
-					skillHtml += `<div class="chat-skill">Crit Bonus: ${ng.toPercent(config.buffCritBonus[minRank])}%</div>`
-				}
-				if (config.dodgeChance) {
-					skillHtml += `<div class="chat-skill">
-						Dodge: ${ng.toPercent(config.dodgeChance[minRank] * config.ratioByStack[1])} to ${ng.toPercent(config.dodgeChance[minRank])}%
-					</div>`
-				}
-				if (config.debuffDodge) {
-					skillHtml += `<div class="chat-skill">
-						Debuff Dodge: ${config.debuffDodge[minRank]}%
-					</div>`
-				}
-				if (config.addPoison) {
-					skillHtml += `<div class="chat-skill">Added Poison Damage: ${config.addPoison[minRank]}</div>`
-				}
-				if (config.addBlood) {
-					skillHtml += `<div class="chat-skill">Added Blood Damage: ${config.addBlood[minRank]}</div>`
-				}
-				if (config.addArcane) {
-					skillHtml += `<div class="chat-skill">Added Arcane Damage: ${config.addArcane[minRank]}</div>`
-				}
-				if (config.addLightning) {
-					skillHtml += `<div class="chat-skill">Added Lightning Damage: ${config.addLightning[minRank]}</div>`
-				}
-				if (config.addFire) {
-					skillHtml += `<div class="chat-skill">Added Fire Damage: ${config.addFire[minRank]}</div>`
-				}
-				if (config.addIce) {
-					skillHtml += `<div class="chat-skill">Added Ice Damage: ${config.addIce[minRank]}</div>`
-				}
-				if (config.attackBonus) {
-					skillHtml += `<div class="chat-skill">Attack Bonus: ${config.attackBonus[minRank]}</div>`
-				}
-				if (config.addSpellAll) {
-					skillHtml += `<div class="chat-skill">Added Spell Power: ${config.addSpellAll[minRank]}</div>`
-				}
-				if (config.bonusDamage) {
-					skillHtml += `<div class="chat-skill">
-						Physical Damage Bonus: ${ng.toPercent(typeof config.bonusDamage === 'number' ? 
-							config.bonusDamage : config.bonusDamage[minRank]
-					)}%</div>`
-				}
-				if (config.reduceHitRate) {
-					if (config.name === 'Suppressing Volley') {
-						skillHtml += `<div class="chat-skill">Reduce Hit Rate: ${ng.toPercent(config.reduceHitRate[1])} to ${ng.toPercent(config.reduceHitRate[5])}%</div>`
-					}
-					else {
-						skillHtml += `<div class="chat-skill">Reduce Hit Rate: ${ng.toPercent(config.reduceHitRate)}%</div>`
-					}
-				}
-				if (config.reduceDamage) {
-						skillHtml += `<div class="chat-skill">Reduce Damage: ${ng.toPercent(config.reduceDamage)}%</div>`
-				}
-				if (config.enhancePnB) {
-					skillHtml += `
-						<div class="chat-skill">Enhance Poison Damage by ${buffs.lichForm.enhancePnB[rank]}%</div>
-						<div class="chat-skill">Enhance Blood Damage by ${buffs.lichForm.enhancePnB[rank]}%</div>
-					`
-				}
-				if (config.attackHaste) {
-					if (config.name === 'Rising Furor') {
-						skillHtml += `<div class="chat-skill">
-							Attack Haste: ${ng.toPercent(config.attackHaste[1])}% to ${ng.toPercent(config.attackHaste[5])}%
-						</div>`
-					}
-					else {
-						skillHtml += `<div class="chat-skill">
-							Attack Haste: ${ng.toPercent(
-						Array.isArray(config.attackHaste) ? config.attackHaste[minRank] : config.attackHaste
-							)}%
-						</div>`
-					}
-				}
-				if (config.skillHaste) {
-					if (config.name === 'Hyper Strike') {
-						skillHtml += `<div class="chat-skill">
-							Skill Haste: ${ng.toPercent(config.skillHaste[1])}% to ${ng.toPercent(config.skillHaste[5])}% 
-						</div>`
-					}
-					else {
-						skillHtml += `<div class="chat-skill">
-							Skill Haste: ${ng.toPercent(
-								Array.isArray(config.skillHaste) ? config.skillHaste[minRank] : config.skillHaste
-							)}%
-						</div>`
-					}
-				}
-				if (config.castingHaste) {
-					skillHtml += `<div class="chat-skill">
-						Casting Haste: ${ng.toPercent(
-							Array.isArray(config.castingHaste) ? config.castingHaste[minRank] : config.castingHaste
-						)}%
-					</div>`
-				}
-				//////////////////////////////////////////////////
-				if (config.index !== void 0) {
-					skillHtml += divider
-				}
-				// hit damage
-				hit = {}
-				if (isRangedOrMelee(config)) {
-					// console.info('is ranged or skill', config)
-					// TODO: Something off here with physical damage calc
-					if (config.isRangedDamage) {
-						hit = skills.enhanceHit(
-							stats.rangedDamage(-1, -100, true),
-							config.enhancedDamage[minRank]
-						)
-					}
-					else {
-						hit = skills.enhanceHit(
-							stats.skillDamage(-1, -100, true),
-							config.enhancedDamage[minRank]
-						)
-					}
-				}
-				else if (isSpell(config)) {
-					hit = stats.spellDamage(-1, -100, config)
-					// console.info('spell damage', hit)
-				}
-				else {
-					// console.info('no damage found', config)
-				}
-				if (hit.min) {
-					if (!config.isBuff) {
-						config.damageString = getDamageRange(hit)
-						/*skillHtml += `<div>
-							${config.isHeal ? `Heal` : config.isShield ? `Shield Health` : `Damage`}: ${config.damageString}
-						</div>`*/
-					}
-				}
-				config.rank = rank
-				skillHtml += `
-					<div style="color: gold">
-						${typeof config.description === 'string' ? config.description : config.description(config)}
-					</div>
-				</div>
+		`
+		if (rank > 0 || config.isAutoAttack) {
+			showedCurrentRank = true
+			skillHtml += getSkillTooltipHtml({
+				rank: rank,
+				minRank: rank > 0 ? rank : 1,
+				config: config
+			})
+		}
+		if (config.isAcademy && nextRank <= MAX_SKILL_LEVEL) {
+			if (showedCurrentRank) {
+				skillHtml += dividerGold
+			}
+			config.isRankUp = true
+			skillHtml += getSkillTooltipHtml({
+				rank: nextRank,
+				minRank: nextRank,
+				config: config
+			})
+		}
+		skillHtml += `
 			</div>
 		</div>
 		`
 		return skillHtml
+	}
+	function getSkillTooltipHtml({ rank, minRank, config }) {
+		const isNextRank = rank > my.skills[config.index]
+		let html = `<div style="padding: .2rem; ${config.isRankUp ? 'background: #ff01' : ''}">`
+		if (config.index !== void 0) {
+			html += `<div class="${rank === 0 ? 'chat-danger' : 'chat-gold'}">
+				${isNextRank ? 'Next' : 'Current'} Rank: ${rank}
+			</div>`
+		}
+		if (typeof config.mp === 'function') {
+			html += `<div style="color: #3bf">Mana Cost: ${config.mp(minRank)}</div>`
+		}
+		else if (typeof config.sp === 'function') {
+			html += `<div style="color: #2c2">Spirit Cost: ${config.sp(minRank)}</div>`
+		}
+		if (typeof config.hate === 'number' && config.hate !== 0) {
+			html += `<div class="chat-warning">Threat: ${ng.toPercent(config.hate)}%</div>`
+		}
+		if (config.enhancedDamage && config.enhancedDamage[minRank]) {
+			html += `<div>Enhanced Damage: ${ng.toPercent(config.enhancedDamage[minRank])}%</div>`
+		}
+		if (config.hitBonus && config.hitBonus[minRank]) {
+			html += `<div>Hit Modifier: ${config.hitBonus[minRank]}%</div>`
+		}
+		if (config.critBonus && config.critBonus[minRank]) {
+			html += `<div>Crit Modifier: ${config.critBonus[minRank]}%</div>`
+		}
+		if (config.castTime) {
+			html += `<div>Cast Time: ${ng.toMinSecs(config.castTime)}</div>`
+		}
+		if (config.cooldownTime) {
+			html += `<div>Cooldown: ${ng.toMinSecs(config.cooldownTime)}</div>`
+		}
+		if (config.duration) {
+			html += `<div>Duration: ${ng.toMinSecs(config.duration)}</div>`
+		}
+		if (config.spellType) {
+			html += `<div>Spell Type: ${_.capitalize(config.spellType)}</div>`
+		}
+		if (config.damageType) {
+			html += `<div class="damage-${config.damageType}">Element: ${_.capitalize(config.damageType)}</div>`
+		}
+		///////////////////////////////////////////////////////////////////////////
+		if (config.requiresFrontRow) {
+			html += `<div class="chat-skill">Requires Front Row Target</div>`
+		}
+		if (config.staggers) {
+			html += `<div class="chat-skill">Staggers Target</div>`
+		}
+		if (config.cannotResist) {
+			html += `<div class="chat-skill">Cannot Be Resisted</div>`
+		}
+		if (config.damageReduced) {
+			html += `<div class="chat-skill">Physical Damage Reduced: ${ng.toPercent(config.damageReduced[minRank])}%</div>`
+		}
+		if (config.stunDuration) {
+			html += `<div class="chat-skill">Stuns target for ${ng.toMinSecs(config.stunDuration)}</div>`
+		}
+		if (config.freezeDuration) {
+			html += `
+				<div class="chat-skill">Freezes target for ${ng.toMinSecs(config.freezeDuration)}</div>
+			`
+		}
+		if (config.chillDuration) {
+			html += `
+				<div class="chat-skill">Chills target for ${ng.toMinSecs(config.chillDuration)}</div>
+				<div class="chat-skill">Chilled targets attack 20% slower</div>
+			`
+		}
+		if (config.paralyzeDuration) {
+			html += `
+				<div class="chat-skill">Paralyzes target for ${ng.toMinSecs(config.paralyzeDuration)}</div>
+				<div class="chat-skill">Paralyzed targets fail 50% of their attacks</div>
+			`
+		}
+		if (config.fearDuration) {
+			html += `
+				<div class="chat-skill">Fears target for ${ng.toMinSecs(config.fearDuration)}</div>
+				<div class="chat-skill">Feared targets have a 50% damage penalty</div>
+			`
+		}
+		if (config.isRanged) {
+			html += `<div class="chat-skill">Ranged: Full damage to back row</div>`
+		}
+		if (config.isPiercing) {
+			html += `<div class="chat-skill">Piercing: Cannot be parried or riposted</div>`
+		}
+		if (config.isBlighted) {
+			html += `<div class="chat-skill">+50% damage to demons or undead</div>`
+		}
+		if (config.knockback) {
+			html += `<div class="chat-skill">+${config.knockback}% knockback resistance</div>`
+		}
+		////////////////////////////////////////////////////////////////////
+		if (config.hpMax) {
+			html += `<div class="chat-skill">Health: ${config.hpMax[minRank]}</div>`
+		}
+		if (config.armor) {
+			html += `<div class="chat-skill">Armor: ${config.armor[minRank]}</div>`
+		}
+		if (config.str) {
+			html += `<div class="chat-skill">Strength: ${config.str[minRank]}</div>`
+		}
+		if (config.sta) {
+			html += `<div class="chat-skill">Stamina: ${config.sta[minRank]}</div>`
+		}
+		if (config.agi) {
+			html += `<div class="chat-skill">Agility: ${config.agi[minRank]}</div>`
+		}
+		if (config.dex) {
+			html += `<div class="chat-skill">Dexterity: ${config.dex[minRank]}</div>`
+		}
+		if (config.wis) {
+			html += `<div class="chat-skill">Wisdom: ${config.wis[minRank]}</div>`
+		}
+		if (config.intel) {
+			html += `<div class="chat-skill">Intelligence: ${config.intel[minRank]}</div>`
+		}
+		if (config.cha) {
+			html += `<div class="chat-skill">Charisma: ${config.cha[minRank]}</div>`
+		}
+		if (config.hpRegen) {
+			html += `<div class="chat-skill">Health Regen: ${config.name === 'Lich Form' ? '-' : ''}${config.hpRegen[minRank]}</div>`
+		}
+		if (config.hpPercent) {
+			html += `<div class="chat-skill">Health Percent Bonus: ${ng.toPercent(config.hpPercent[minRank])}%</div>`
+		}
+		if (config.mpRegen) {
+			html += `<div class="chat-skill">Mana Regen: ${config.mpRegen[minRank]}</div>`
+		}
+		if (config.mpPercent) {
+			html += `<div class="chat-skill">Mana Percent Bonus: ${ng.toPercent(config.mpPercent[minRank])}%</div>`
+		}
+		if (config.spRegen) {
+			html += `<div class="chat-skill">Spirit Regen: ${config.spRegen[minRank]}</div>`
+		}
+		if (config.spPercent) {
+			html += `<div class="chat-skill">Spirit Percent Bonus: ${ng.toPercent(config.spPercent[minRank])}%</div>`
+		}
+		if (config.resistPoison) {
+			html += `<div class="chat-skill">Resist Poison: ${config.resistPoison[minRank]}%</div>`
+		}
+		if (config.resistBlood) {
+			html += `<div class="chat-skill">Resist Blood: ${config.resistBlood[minRank]}%</div>`
+		}
+		if (config.resistArcane) {
+			html += `<div class="chat-skill">Resist Arcane: ${config.resistArcane[minRank]}%</div>`
+		}
+		if (config.resistLightning) {
+			html += `<div class="chat-skill">Resist Lightning: ${config.resistLightning[minRank]}%</div>`
+		}
+		if (config.resistFire) {
+			html += `<div class="chat-skill">Resist Fire: ${config.resistFire[minRank]}%</div>`
+		}
+		if (config.resistIce) {
+			html += `<div class="chat-skill">Resist Ice: ${config.resistIce[minRank]}%</div>`
+		}
+		if (config.resistAll) {
+			if (config.name === 'Faded Strike') {
+				html += `<div class="chat-skill">
+					Resist All: ${round(config.resistAll[minRank] * config.ratioByStack[1])} to ${config.resistAll[minRank]}%
+				</div>`
+			}
+			else {
+				html += `<div class="chat-skill">Resist All: ${config.resistAll[minRank]}</div>`
+			}
+		}
+		if (config.resistPerStack) {
+			html += `<div class="chat-skill">Resist All: ${config.resistPerStack}% to ${config.resistPerStack * 5}%</div>`
+		}
+		if (config.resistParalyze) {
+			html += `<div class="chat-skill">Resist Paralyze: ${config.resistParalyze[minRank]}</div>`
+		}
+		if (config.resistFear) {
+			html += `<div class="chat-skill">
+				Resist Fear: ${typeof config.resistFear === 'number' ? config.resistFear : config.resistFear[minRank]}
+			</div>`
+		}
+		if (config.resistStun) {
+			html += `<div class="chat-skill">Resist Stun: ${config.resistStun[minRank]}</div>`
+		}
+		if (config.silence) {
+			html += `<div class="chat-skill">Resist Silence: ${config.silence[minRank]}</div>`
+		}
+		if (config.reduceBloodResist) {
+			html += `<div class="chat-skill">Reduce Blood Resistance: ${ng.toPercent(config.reduceBloodResist)}%</div>`
+		}
+		if (config.reducePoisonResist) {
+			html += `<div class="chat-skill">Reduce Poison Resistance: ${ng.toPercent(config.reducePoisonResist)}%</div>`
+		}
+		if (config.reduceArcaneResist) {
+			html += `<div class="chat-skill">Reduce Arcane Resistance: ${ng.toPercent(config.reduceArcaneResist)}%</div>`
+		}
+		if (config.reduceLightningResist) {
+			html += `<div class="chat-skill">Reduce Lightning Resistance: ${ng.toPercent(config.reduceLightningResist)}%</div>`
+		}
+		if (config.reduceFireResist) {
+			html += `<div class="chat-skill">Reduce Fire Resistance: ${ng.toPercent(config.reduceFireResist)}%</div>`
+		}
+		if (config.reduceIceResist) {
+			html += `<div class="chat-skill">Reduce Ice Resistance: ${ng.toPercent(config.reduceIceResist)}%</div>`
+		}
+		if (config.reduceAllResists) {
+			html += `<div class="chat-skill">Reduce All Resists: ${ng.toPercent(config.reduceAllResists[minRank])}%</div>`
+		}
+		if (config.mitigation) {
+			html += `<div class="chat-skill">Damage Reduced: ${config.mitigation[minRank]}</div>`
+		}
+		if (config.evpMitigation) {
+			html += `<div class="chat-skill">Damage Reduced: ${config.evpMitigation[minRank]}</div>`
+		}
+		if (config.slowPercent) {
+			html += `<div class="chat-skill">Slows Target ${ng.toPercent(config.slowPercent)}%</div>`
+		}
+		if (config.debuffArmor) {
+			html += `<div class="chat-skill">Debuff Armor: ${ng.toPercent(config.debuffArmor)}%</div>`
+		}
+		if (config.buffHitBonus) {
+			html += `<div class="chat-skill">
+				Hit Bonus: ${ng.toPercent(
+			typeof config.buffHitBonus === 'number' ? config.buffHitBonus : config.buffHitBonus[minRank]
+			)}%</div>`
+		}
+		if (config.buffCritBonus) {
+			html += `<div class="chat-skill">Crit Bonus: ${ng.toPercent(config.buffCritBonus[minRank])}%</div>`
+		}
+		if (config.dodgeChance) {
+			html += `<div class="chat-skill">
+				Dodge: ${ng.toPercent(config.dodgeChance[minRank] * config.ratioByStack[1])} to ${ng.toPercent(config.dodgeChance[minRank])}%
+			</div>`
+		}
+		if (config.debuffDodge) {
+			html += `<div class="chat-skill">
+				Debuff Dodge: ${config.debuffDodge[minRank]}%
+			</div>`
+		}
+		if (config.addPoison) {
+			html += `<div class="chat-skill">Added Poison Damage: ${config.addPoison[minRank]}</div>`
+		}
+		if (config.addBlood) {
+			html += `<div class="chat-skill">Added Blood Damage: ${config.addBlood[minRank]}</div>`
+		}
+		if (config.addArcane) {
+			html += `<div class="chat-skill">Added Arcane Damage: ${config.addArcane[minRank]}</div>`
+		}
+		if (config.addLightning) {
+			html += `<div class="chat-skill">Added Lightning Damage: ${config.addLightning[minRank]}</div>`
+		}
+		if (config.addFire) {
+			html += `<div class="chat-skill">Added Fire Damage: ${config.addFire[minRank]}</div>`
+		}
+		if (config.addIce) {
+			html += `<div class="chat-skill">Added Ice Damage: ${config.addIce[minRank]}</div>`
+		}
+		if (config.attackBonus) {
+			html += `<div class="chat-skill">Attack Bonus: ${config.attackBonus[minRank]}</div>`
+		}
+		if (config.addSpellAll) {
+			html += `<div class="chat-skill">Added Spell Power: ${config.addSpellAll[minRank]}</div>`
+		}
+		if (config.bonusDamage) {
+			html += `<div class="chat-skill">
+				Physical Damage Bonus: ${ng.toPercent(typeof config.bonusDamage === 'number' ? 
+					config.bonusDamage : config.bonusDamage[minRank]
+			)}%</div>`
+		}
+		if (config.reduceHitRate) {
+			if (config.name === 'Suppressing Volley') {
+				html += `<div class="chat-skill">Reduce Hit Rate: ${ng.toPercent(config.reduceHitRate[1])} to ${ng.toPercent(config.reduceHitRate[5])}%</div>`
+			}
+			else {
+				html += `<div class="chat-skill">Reduce Hit Rate: ${ng.toPercent(config.reduceHitRate)}%</div>`
+			}
+		}
+		if (config.reduceDamage) {
+				html += `<div class="chat-skill">Reduce Damage: ${ng.toPercent(config.reduceDamage)}%</div>`
+		}
+		if (config.enhancePnB) {
+			html += `
+				<div class="chat-skill">Enhance Poison Damage by ${buffs.lichForm.enhancePnB[rank]}%</div>
+				<div class="chat-skill">Enhance Blood Damage by ${buffs.lichForm.enhancePnB[rank]}%</div>
+			`
+		}
+		if (config.attackHaste) {
+			if (config.name === 'Rising Furor') {
+				html += `<div class="chat-skill">
+					Attack Haste: ${ng.toPercent(config.attackHaste[1])}% to ${ng.toPercent(config.attackHaste[5])}%
+				</div>`
+			}
+			else {
+				html += `<div class="chat-skill">
+					Attack Haste: ${ng.toPercent(
+				Array.isArray(config.attackHaste) ? config.attackHaste[minRank] : config.attackHaste
+					)}%
+				</div>`
+			}
+		}
+		if (config.skillHaste) {
+			if (config.name === 'Hyper Strike') {
+				html += `<div class="chat-skill">
+					Skill Haste: ${ng.toPercent(config.skillHaste[1])}% to ${ng.toPercent(config.skillHaste[5])}% 
+				</div>`
+			}
+			else {
+				html += `<div class="chat-skill">
+					Skill Haste: ${ng.toPercent(
+						Array.isArray(config.skillHaste) ? config.skillHaste[minRank] : config.skillHaste
+					)}%
+				</div>`
+			}
+		}
+		if (config.castingHaste) {
+			html += `<div class="chat-skill">
+				Casting Haste: ${ng.toPercent(
+					Array.isArray(config.castingHaste) ? config.castingHaste[minRank] : config.castingHaste
+				)}%
+			</div>`
+		}
+		if (config.index !== void 0) {
+			html += divider
+		}
+		//////////////////////////////////////////////////
+
+		// hit damage
+		hit = {}
+		if (isRangedOrMelee(config)) {
+			// console.info('is ranged or skill', config)
+			// TODO: Something off here with physical damage calc?
+			if (config.isRangedDamage) {
+				hit = skills.enhanceHit(
+					stats.rangedDamage(-1, -100, true),
+					config.enhancedDamage[minRank]
+				)
+			}
+			else {
+				hit = skills.enhanceHit(
+					stats.skillDamage(-1, -100, true),
+					config.enhancedDamage[minRank]
+				)
+			}
+		}
+		else if (isSpell(config)) {
+			hit = stats.spellDamage(-1, -100, config)
+			// console.info('spell damage', hit)
+		}
+		else {
+			// no damage found
+		}
+		if (typeof hit.min === 'number') {
+			if (!config.isBuff) {
+				// console.info('config', hit.damageType, config.addDamageBypass)
+				config.damageString = getDamageRange(
+					hit,
+					hit.damageType === DAMAGE_TYPE.PHYSICAL || config.addDamageBypass
+				)
+				/*html += `<div>
+					${config.isHeal ? `Heal` : config.isShield ? `Shield Health` : `Damage`}: ${config.damageString}
+				</div>`*/
+			}
+		}
+		/*console.info('hit', hit)
+		console.info('config', config)*/
+		config.rank = rank
+		html += `
+			<div style="color: gold">
+				${typeof config.description === 'string' ? config.description : config.description(config)}
+			</div>
+		</div>
+		`
+		return html
 	}
 	function isRangedOrMelee(config) {
 		return config.isMelee || Array.isArray(config.hitBonus) && config.hitBonus.some(v => v !== 0)
 	}
 	function isSpell(config) {
 		return typeof config.spellDamage === 'function' &&
-			config.castTime > 0 &&
+			config.castTime >= 0 &&
 			!config.isBuff
 	}
-	function getDamageRange(hit) {
+	function getDamageRange(hit, addDamageBonusToMelee = false) {
 		let min = _.max([1, round(hit.min)])
 		let max = _.max([1, round(hit.max)])
+		if (addDamageBonusToMelee) {
+			let addedDamage = combat.getAddedDamage(-1)
+			min += addedDamage
+			max += addedDamage
+		}
 		return min === max ? min : min +'-'+ max
 	}
 	function showSkill(config) {
@@ -762,28 +802,35 @@ var tooltip;
 		tooltipEl.style.transform = 'translate(0%, 0%)'
 		setTooltipVisible(.5)
 	}
-	function handleEnter(event) {
+	function handleTooltipEnter(event) {
 		if (map.isDragging) return
 		if (event.currentTarget.id === ('skill-primary-attack-btn')) {
 			let hit = stats.primaryAutoAttackDamage(0, true)
 			showSkill({
 				name: 'Primary Attack',
-				description: config => '<div>'+ getWord(12) +' dealing '+ getDamageRange(hit) +' physical damage.</div>'
+				isAutoAttack: true,
+				isAcademy: false,
+				description: config => '<div>'+ getWord(12) +' dealing '+ getDamageRange(hit, true) +' physical damage.</div>'
 			})
 		}
 		else if (event.currentTarget.id === ('skill-secondary-attack-btn')) {
 			let hit = stats.secondaryAutoAttackDamage(0, true)
 			showSkill({
 				name: 'Secondary Attack',
-				description: config => '<div>'+ getWord(13) +' dealing '+ getDamageRange(hit) +' physical damage. The dual wield skill makes this skill succeed more often.</div>'
+				isAutoAttack: true,
+				isAcademy: false,
+				description: config => '<div>'+ getWord(13) +' dealing '+ getDamageRange(hit, true) +' physical damage. The dual wield skill makes this skill succeed more often.</div>'
 			})
 		}
 		else if (event.currentTarget.id.startsWith('skill') || event.currentTarget.id.startsWith('academy')) {
 			var index = _.last(event.currentTarget.id.split('-'))
 			var skillData = skills[my.job][index]
 			var buffData = buffs[_.camelCase(skills[my.job][index].name)]
+			// skill or academy
 			showSkill({
 				index: index,
+				isTooltip: true,
+				isAcademy: event.currentTarget.id.startsWith('academy'),
 				...skillData,
 				...buffData,
 			})
@@ -804,7 +851,7 @@ var tooltip;
 				'Attack with your '+ (slot === 12 ? 'primary' : 'secondary') +' weapon'
 		}
 	}
-	function handleLeave(event) {
+	function handleTooltipLeave(event) {
 		if (event.currentTarget.id.startsWith('skill') || event.currentTarget.id.startsWith('academy')) {
 			tooltip.hide()
 		}

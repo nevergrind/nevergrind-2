@@ -146,8 +146,8 @@ loot.gloves = {
 			hpKill: 2,
 			mpKill: 2,
 			defense: 1,
-			resistPoison: [7, 10],
-			resistFire: [7, 10],
+			resistPoison: [7, 10].map(util.divideBy4),
+			resistFire: [7, 10].map(util.divideBy4),
 		}, {
 			name: 'Cloth Gloves',
 			newName: 'Dusty Bloodstained Gloves',
@@ -156,7 +156,7 @@ loot.gloves = {
 			intel: [8, 12],
 			evocation: [2, 3],
 			resistArcane: 9,
-			resistBlood: 20,
+			resistBlood: 5,
 			resistLightning: 9,
 		}, {
 			name: 'Woven Gloves',
@@ -166,8 +166,8 @@ loot.gloves = {
 			intel: 12,
 			mpKill: 3,
 			enhanceIce: [2, 4],
-			resistIce: [11, 15],
-			resistArcane: [6, 10],
+			resistIce: [11, 15].map(util.divideBy4),
+			resistArcane: [6, 10].map(util.divideBy4),
 		}, {
 			name: 'Mesh Gloves',
 			newName: 'Luminescent Touch',
@@ -186,7 +186,7 @@ loot.gloves = {
 			oneHandBlunt: [2, 3],
 			leech: [3, 5],
 			defense: [1, 2],
-			resistBlood: 25,
+			resistBlood: 6,
 			addSpellBlood: [4, 7],
 		}, {
 			name: 'Drakescale Gloves',
@@ -207,7 +207,7 @@ loot.gloves = {
 			leech: [3, 4],
 			offense: [2, 3],
 			parry: 3,
-			resistLightning: [12, 16],
+			resistLightning: [12, 16].map(util.divideBy4),
 		}, {
 			name: 'Studded Gloves',
 			newName: 'Impskin Gloves',
@@ -216,8 +216,8 @@ loot.gloves = {
 			wis: 12,
 			intel: 12,
 			leech: 2,
-			resistPoison: [8, 15],
-			resistFire: [8, 15],
+			resistPoison: [8, 15].map(util.divideBy4),
+			resistFire: [8, 15].map(util.divideBy4),
 		}, {
 			name: 'Lamellar Gloves',
 			newName: 'Merchant\'s Guards',
@@ -256,8 +256,8 @@ loot.gloves = {
 			addSpellIce: [4, 8],
 			hp: [12, 16],
 			mp: [25, 34],
-			resistFire: 25,
-			resistLightning: 10,
+			resistFire: 6,
+			resistLightning: 3,
 		}, {
 			name: 'Cobalt Gauntlets',
 			newName: 'Frostburn Grips',
@@ -300,7 +300,7 @@ loot.gloves = {
 			twoHandSlash: [2, 4],
 			twoHandBlunt: [2, 4],
 			crit: [15, 20],
-			resistBlood: [15, 20],
+			resistBlood: [15, 20].map(util.divideBy4),
 			resistFear: [6, 9],
 		},
 	]

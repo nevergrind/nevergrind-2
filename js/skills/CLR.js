@@ -12,10 +12,12 @@
 		bindingGrace,
 		sealOfRedemption,
 		zealousResolve,
+		completedSmites: 0
 	}
 	///////////////////////////////////////////
 	let i, splashIndex, tgt, hit, hate, damage
 	let damages = []
+	let completedSmites = 0
 	///////////////////////////////////////////
 	function smite(index, data) {
 		if (timers.castBar < 1) return
@@ -33,6 +35,7 @@
 			damageType: spell.data.damageType,
 			...stats.spellDamage(spell.config.target)
 		}])
+		skill.CLR.completedSmites++
 	}
 
 	function deliverance(index, data) {

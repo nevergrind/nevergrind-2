@@ -45,24 +45,24 @@
 		let tgt = my.target
 		for (var i=0; i<3; i++) {
 			!function(i) {
+				damages = []
+				dam = {
+					key: 'thunderclap',
+					index: tgt,
+					spellType: spell.data.spellType,
+					damageType: spell.data.damageType,
+					...stats.spellDamage(tgt),
+				}
+				if (i === 2) {
+					dam.buffs = [{
+						i: tgt, // target
+						row: my.row, // this identifies unique buff state/icon
+						key: 'stun', // this sets the flag,
+						duration: buffs.thunderclap.stunDuration,
+					}]
+				}
+				damages.push(dam)
 				delayedCall(i * .1, () => {
-					damages = []
-					dam = {
-						key: 'thunderclap',
-						index: tgt,
-						spellType: spell.data.spellType,
-						damageType: spell.data.damageType,
-						...stats.spellDamage(tgt),
-					}
-					if (i === 2) {
-						dam.buffs = [{
-							i: tgt, // target
-							row: my.row, // this identifies unique buff state/icon
-							key: 'stun', // this sets the flag,
-							duration: buffs.thunderclap.stunDuration,
-						}]
-					}
-					damages.push(dam)
 					combat.txDamageMob(damages)
 				})
 			}(i)
@@ -81,6 +81,8 @@
 		let originalTarget = my.target
 		let firstTargets = [-2, -1, 0, 1, 2]
 		let tgts = []
+		const spellType = spell.data.spellType
+		const damageType = spell.data.damageType
 
 		for (var i=0; i<15; i++) {
 			!function(i) {
@@ -98,8 +100,8 @@
 					combat.txDamageMob([{
 						key: 'frozenOrb',
 						index: tgt,
-						spellType: spell.data.spellType,
-						damageType: spell.data.damageType,
+						spellType: spellType,
+						damageType: damageType,
 						...stats.spellDamage(tgt),
 						buffs: [{
 							i: tgt, // target
@@ -133,8 +135,8 @@
 		// damage
 		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		const damagesDebuff = []
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'staticStorm',
 				index: tgt,
@@ -143,22 +145,17 @@
 				...stats.spellDamage(tgt),
 				effects: { stagger: spell.data.staggers },
 			})
-		}
-		combat.txDamageMob(damages)
-		// debuff component
-		splashIndex = -1
-		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
-			damages.push({
+			// debuff component
+			damagesDebuff.push({
 				key: 'staticStormDebuff',
 				index: tgt,
 				spellType: spell.data.spellType,
 				damageType: spell.data.damageType,
 				damage: 0,
 			})
-		}
-		combat.txDotMob(damages)
+		})
+		combat.txDamageMob(damages)
+		combat.txDotMob(damagesDebuff)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function fireWall(index, data) {

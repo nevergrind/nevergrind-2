@@ -727,7 +727,7 @@ var audio;
 		sfx.play()
 	}
 	function playEquipmentSound(data) {
-		// console.info('playEquipmentSound', data)
+		// console.info('playEquipmentSound', data.itemType, data.armorType, data)
 		if (data.itemType === 'helms') audio.playSound('item-shield', 'item')
 		else if (data.armorType === 'cloth') audio.playSound('item-cloth', 'item')
 		else if (data.armorType === 'leather') audio.playSound('item-leather', 'item')
@@ -742,6 +742,8 @@ var audio;
 		else if (data.itemType === 'twoHandSlashers') audio.playSound('item-weapon', 'item')
 		else if (data.itemType === 'oneHandBlunts') audio.playSound('item-shield', 'item')
 		else if (data.itemType === 'twoHandBlunts') audio.playSound('item-shield', 'item')
+		else if (data.itemType === 'staves') audio.playSound('item-shield', 'item')
+		else if (data.itemType === 'focus') audio.playSound('item-accessory', 'item')
 		else if (data.itemType === 'potion') audio.playSound('item-potion', 'item')
 		else if (data.itemType === 'scroll') audio.playSound('item-scroll', 'item')
 	}

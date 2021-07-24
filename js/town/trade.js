@@ -6,7 +6,8 @@ var trade;
 		gold: 0,
 		initiator: false,
 		confirmed: false,
-		MAX_GOLD: 4294967295,
+		// MAX_GOLD: 4294967295,
+		MAX_GOLD: 100000000,
 		droppedItem,
 		init,
 		canTrade,
@@ -43,12 +44,20 @@ var trade;
 		.on('click', '#trade-cancel', tradeCancelled)
 	///////////////////////////////////////////
 	function droppedItem() {
+		if (item.dragType === 'inv' &&
+			(item.dropType === 'apothecary' ||
+			item.dropType === 'blacksmith' ||
+			item.dropType === 'merchant')) {
+			// can't drop inv item to store
+			item.resetDrop()
+			return
+		}
 		// console.warn('trade dropToOtherSlots ', item.dropType, ' is client side only. Skipping update-item.php')
 
-		// console.info('trade drag', item.dragType, item.dragSlot, item.dragData)
+		console.info('trade drag', item.dragType, item.dragSlot, item.dragData)
 
-		// console.info('trade drop', item.dropType, item.dropSlot, item.dropData)
-		querySelector('#' + item.dropType + '-name-' + item.dropSlot).innerHTML = item.getItemNameString(item.dragData, item.dragData.name, true)
+		console.info('trade drop', item.dropType, item.dropSlot, item.dropData)
+		ng.html('#' + item.dropType + '-name-' + item.dropSlot, item.getItemNameString(item.dragData, item.dragData.name, true))
 		// broadcast to tradeFrom
 
 		updateTrade({
@@ -61,8 +70,8 @@ var trade;
 		bar.updateItemSwapDOM()
 		item.resetDrop()
 		// console.warn('lastDragEvent', item.lastDragEvent)
-		if (item.isContextClick) tooltip.handleEnter(item.lastDragEvent)
-		else tooltip.handleEnter(item.lastDropEvent)
+		if (item.isContextClick) tooltip.handleTooltipEnter(item.lastDragEvent)
+		else tooltip.handleTooltipEnter(item.lastDropEvent)
 	}
 	function updateTrade(data, slot) {
 		tradeData = {
@@ -77,7 +86,7 @@ var trade;
 		// console.warn('tradeTo', obj)
 		items.tradeTo[obj.slot] = obj.data.tradeTo
 		bar.updateItemSlotDOM('tradeTo', obj.slot)
-		querySelector('#tradeTo-name-' + obj.slot).innerHTML = item.getItemNameString(obj.data.tradeTo, obj.data.tradeTo.name, true)
+		ng.html('#tradeTo-name-' + obj.slot, item.getItemNameString(obj.data.tradeTo, obj.data.tradeTo.name, true))
 	}
 	function rxTradeUpdate(obj) {
 		// console.info('trade rxTradeUpdate', obj.data)
@@ -118,6 +127,7 @@ var trade;
 			ng.msg('This trade would put you over the gold limit! It is illegal to have that much gold!', undefined, COLORS.yellow)
 			return
 		}
+
 		trade.confirmed = true
 		updateTrade({
 			confirmed: true,
@@ -163,19 +173,24 @@ var trade;
 	function goldChange() {
 		el = $(this)
 		val = el.val() * 1
+		console.info('goldChanged', val, my.gold)
 		max = maxGoldSend()
 		// console.info('val', val)
 		if (val < 0) {
 			val = 0
 			el.val(val)
-			ng.msg('It\'s not possible to send a negative amount of gold. What kind of financial system do you think this is?', 8, COLORS.yellow)
+			chat.log('It\'s not possible to send a negative amount of gold. What kind of financial system do you think this is?', CHAT.WARNING)
+			return
+		}
+		else if (val > my.gold) {
+			val = my.gold
+			el.val(val)
 		}
 		else if (val > max) {
 			val = max
-			el.val(max)
-			ng.msg('The maximum amount of gold you can send is ' + max + '. This value may change based on trade conditions.', 8, COLORS.yellow)
+			el.val(val)
+			chat.log('The Royal Trade Commission has determined that the maximum amount of gold you can send is ' + max + '. This value may change based on trade conditions.', CHAT.WARNING)
 		}
-		if (val > my.gold) val = my.gold
 		trade.gold = val
 		// console.info('final val', val)
 		tradeChanged()
@@ -409,7 +424,8 @@ var trade;
 		return !!(trade.gold || trade.data.gold || totalItems('tradeTo') || totalItems('tradeFrom'))
 	}
 	function maxGoldSend() {
-		return trade.MAX_GOLD - trade.data.goldTotal + trade.data.gold
+		// return trade.MAX_GOLD - trade.data.goldTotal + trade.data.gold
+		return trade.MAX_GOLD
 	}
 	function tradeExpired(name) {
 		chat.log('Your trade request with ' + name + ' expired.', CHAT.WARNING)

@@ -18,12 +18,12 @@ var battle;
 		],
 		earnedExpRatio: [
 			0, // grey
-			.4,
+			.4, // 40%
 			.6,
 			.8,
 			1,
-			1.1,
-			1.2, // red
+			1.1, // 110%
+			1.2, // red 120%
 		],
 		/* exp formula
 		var arr = [100];
@@ -40,6 +40,7 @@ var battle;
 		getExpBarRatio,
 		nextLevel,
 		getSplashTarget,
+		getConeTargets,
 		getRandomTarget,
 		go,
 		show,
@@ -61,11 +62,9 @@ var battle;
 		killTargetBuffTimers,
 		killMyBuffTimers,
 		drawExpBar,
-		addExp,
 		addGold,
 		upsertGX,
 		upsertLevel,
-		reckonGXL,
 		subtractExpPenalty,
 		getDeathPenaltyRatio,
 		getMinMobCount,
@@ -73,7 +72,8 @@ var battle;
 		getRandomMobCount,
 		handleMobClick,
 		getMobLevelByQuest,
-		nextLevel,
+		getMobClassNameByTier,
+		getMobClassNameByLevel,
 	}
 	let index, buffHtml, tierHtml, traitHtml, buffEl, key, keyRow, el, i
 	let tgt = {}
@@ -118,72 +118,69 @@ var battle;
 		}
 		// console.info('penalty', penalty)
 		if (penalty) {
-			mob.earnedExp -= penalty
-			my.exp -= penalty
-			chat.log('You lost experience!', 'chat-exp')
-			battle.drawExpBar(0, 4.5)
+			battle.upsertGX(-penalty)
 		}
 	}
-	function reckonGXL() {
-		if (mob.earnedExp !== 0 || mob.earnedGold > 0) battle.upsertGX()
-		if (mob.leveledUp) battle.upsertLevel()
-		mob.earnedExp = 0
-		mob.earnedGold = 0
-		mob.leveledUp = false
-	}
-	function upsertGX() {
-		console.info('upsertGX', mob.earnedExp, mob.earnedGold)
+
+	function upsertGX(exp, gold, isQuestExp = false) {
+		let leveled = false // to determine UI updates
+		// console.info('upsertGX', mob.earnedExp, mob.earnedGold)
 		$.post(app.url + 'character/upsert-gx.php', {
-			gold: mob.earnedGold,
-			exp: mob.earnedExp,
+			exp: exp,
+			gold: gold,
+		}).done(() => {
+			if (my.exp + exp > battle.expThreshold[MAX_HERO_LEVEL]) {
+				// max possible exp value
+				exp = battle.expThreshold[MAX_HERO_LEVEL] - my.exp
+			}
+			my.exp += exp
+			if (exp > 0) {
+				if (isQuestExp) {
+					chat.log('You earned quest experience!', 'chat-exp')
+				}
+				else {
+					chat.log('You earned experience!', 'chat-exp')
+				}
+				TweenMax.to(query.el('#exp-bar'), .3, {
+					startAt: { filter: 'saturate(2) brightness(2)' },
+					filter: 'saturate(1) brightness(1)',
+					repeat: 1,
+				})
+			}
+			else if (exp < 0) {
+				chat.log('You lost experience!', 'chat-exp')
+			}
+
+			while (my.exp >= battle.nextLevel()) {
+				// you leveled! Wow! (possibly multiple times if you cheated!?)
+				leveled = true
+				my.level++
+				chat.log('You have reached level ' + my.level + '!', 'chat-level')
+				stats.clearCache()
+				button.updateWeaponPanel() // could be dual wielding now
+				button.updatePotionPanel()
+				if (bar.windowsOpen.character) {
+					ng.html('#char-sheet-level', my.level)
+				}
+				audio.playSound('ding')
+			}
+			if (leveled) {
+				for (var i=0; i<mob.max; i++) {
+					mob.updateMobName(i)
+				}
+				battle.updateTarget()
+				battle.upsertLevel()
+			}
+			if (exp !== 0) {
+				// must be down here in case they leveled
+				battle.drawExpBar()
+			}
 		})
 	}
 	function upsertLevel() {
 		$.post(app.url + 'character/upsert-level.php', {
 			level: my.level,
 		})
-	}
-	function addExp(exp, isQuestExp) {
-		leveled = false // to determine UI updates
-		if (my.exp + exp > battle.expThreshold[MaxHeroLevel]) {
-			// max possible exp value
-			exp = battle.expThreshold[MaxHeroLevel] - my.exp
-		}
-		my.exp += exp
-		if (exp) {
-			if (isQuestExp) {
-				chat.log('You earned quest experience!', 'chat-exp')
-			}
-			else {
-				chat.log('You earned experience!', 'chat-exp')
-			}
-			TweenMax.to(query.el('#exp-bar'), .3, {
-				startAt: { filter: 'saturate(2) brightness(2)' },
-				filter: 'saturate(1) brightness(1)',
-				repeat: 1,
-			})
-		}
-		while (my.exp >= battle.nextLevel()) {
-			// you leveled! Wow! (possibly multiple times if you cheated!?)
-			mob.leveledUp = leveled = true
-			my.level++
-			chat.log('You have reached level ' + my.level + '!', 'chat-level')
-			stats.memo = {}
-			button.updateWeaponPanel() // could be dual wielding now
-			button.updatePotionPanel()
-			audio.playSound('ding')
-		}
-		if (leveled) {
-			for (var i=0; i<mob.max; i++) {
-				mob.updateMobName(i)
-			}
-			battle.updateTarget()
-		}
-		if (exp) {
-			// must be down here in case they leveled
-			battle.drawExpBar()
-		}
-		return exp
 	}
 	function getExpBarRatio() {
 		const expThisLevel = my.exp - battle.expThreshold[my.level]
@@ -225,6 +222,50 @@ var battle;
 		index = splashOrder[index + shift]
 		return splashOrder.includes(index) ? index : -1
 	}
+
+	/**
+	 * Returns an array of valid targets based on original target - spread 5
+	 * @param tgt
+	 */
+	function getConeTargets(tgt = my.target, maxLength = 3) {
+		if (typeof tgt === 'undefined') return
+		// const splashOrder = [0, 5, 1, 6, 2, 7, 3, 8, 4]
+
+		// _.findIndex(splashOrder, val => val === tgt)
+		const mainSplashIndex = splashOrder.findIndex(t => t === tgt) // 4 for center
+		// console.info('mainSplashIndex', mainSplashIndex)
+		const tgts = []
+		if (mob.isAlive(splashOrder[mainSplashIndex])) {
+			tgts.push(splashOrder[mainSplashIndex])
+		}
+		const frontConeTargets = [-2, 2]
+		const backConeTargets = [-1, 1]
+		for (var i=0; i<2; i++) {
+			// get random index and remove it
+			let index = _.sample(frontConeTargets)
+			_.remove(frontConeTargets, t => t === index)
+			// check if alive by splashOrder
+			const splashIndex = splashOrder[mainSplashIndex + index]
+			// console.info('splashIndex', splashIndex, splashOrder.findIndex(t => t === splashIndex))
+			if (mob.isAlive(splashIndex) && tgts.length < maxLength) {
+				tgts.push(splashIndex)
+			}
+		}
+
+		for (var i=0; i<2; i++) {
+			// get random index and remove it
+			let index = _.sample(backConeTargets)
+			_.remove(backConeTargets, t => t === index)
+			// check if alive by splashOrder
+			const splashIndex = splashOrder[mainSplashIndex + index]
+			// console.info('splashIndex', splashIndex, splashOrder.findIndex(t => t === splashIndex))
+			if (mob.isAlive(splashIndex) && tgts.length < maxLength) {
+				tgts.push(splashIndex)
+			}
+		}
+		console.info('getConeTargets', tgts);
+		return tgts
+	}
 	function getAllAliveMobs() {
 		return mobs.reduce((acc, val, ind) => {
 			if (mob.isAlive(ind)) acc.push(ind)
@@ -263,19 +304,16 @@ var battle;
 			if (typeof data === 'object') {
 				// party member receiving data
 			}
-			else if (ng.view === 'battle') return
+			else if (ng.view === 'battle') {
+				// huh?
+				return
+			}
 		}
-		town.closeVarious()
 		item.resetDrop()
-		chat.sizeDungeon()
 		mob.init()
 		dungeon.killEntityTweens()
-		game.showScene('scene-battle')
-		if (chat.modeCommand === '/say') {
-			chat.modeChange(CHAT.PARTY)
-		}
-
-		ng.setScene('battle')
+		town.closeVarious()
+		chat.sizeDungeon()
 		TweenMax.to('#scene-battle', .5, {
 			startAt: { filter: 'brightness(0)' },
 			delay: .5,
@@ -286,6 +324,12 @@ var battle;
 			delay: .5,
 			filter: 'brightness(1)'
 		})
+		game.showScene('scene-battle')
+		if (chat.modeCommand === '/say') {
+			chat.modeChange(CHAT.PARTY)
+		}
+
+		ng.setScene('battle')
 		my.channel = ''
 		if (!mob.initialized) {
 			// initialization things only
@@ -300,7 +344,7 @@ var battle;
 		})
 		button.setAll()
 		initBattleLayer()
-		player.updateAllPlayerSprites()
+		player.updateAllPlayerSprites() // does nothing right now
 
 		// add this to test out mob placement etc;
 		// also required to configure the mobs images array properly
@@ -316,15 +360,19 @@ var battle;
 		}
 
 		// set to center target
-		my.target = 2
-		my.targetIsMob = true
-		combat.targetChanged()
-		my.fixTarget()
+		console.info('p->goBattle txData!', mob.txData)
+		if (my.target === -1 && mob.txData.some(m => m.name)) {
+			my.target = 2
+			my.targetIsMob = true
+			combat.targetChanged()
+			my.fixTarget()
+		}
 		battle.updateTarget()
 		party.combatStartLength = party.totalPlayers()
 
-		if (party.presence[0].isLeader && party.hasMoreThanOnePlayer() && !isRespawn) {
-			// console.info('p->goBattle txData!', mob.txData)
+		if (party.presence[0].isLeader &&
+			party.hasMoreThanOnePlayer() &&
+			!isRespawn) {
 			socket.publish('party' + my.partyId, {
 				route: 'p->goBattle',
 				config: mob.txData // from setupMobs
@@ -443,9 +491,13 @@ var battle;
 				let q = {
 					level: battle.getMobLevelByQuest(minZoneLevel)
 				}
+				if (Config.enableMobTestClass) {
+					q.job = JOB.SHADOW_KNIGHT
+				}
+				/* ill-fated idea ... maybe for only first 2 dungeons?
 				if (my.level < 2) {
 					if (q.level > my.level) q.level = my.level
-				}
+				}*/
 				let tierLotto = _.random(1, 100)
 
 				if (map.inRoom &&
@@ -470,7 +522,6 @@ var battle;
 								}
 							})
 							console.warn('entityProps', entityProps)
-							console.warn('query', q)
 						}
 					}
 					// is it a unique?
@@ -484,24 +535,32 @@ var battle;
 					q.name = 'Gyz Tamebeam'
 				}*/
 				mobCount++
+				console.warn('query', q)
+				const randomMob = mob.getRandomMobByZone(q)
+				// console.info('randomMob', randomMob)
 				let mobConfig = {
-					...mob.getRandomMobByZone(q),
+					...randomMob,
 					traits: {},
 					expPerLevel: 3,
 				}
 
 				// MOB_TIERS - add champion, unique, boss traits
-				// console.info('asdfasdf', mobConfig.tier, maxLevel, tierLotto)
-				if (!Config.forceUnique &&
-					mobConfig.tier === MOB_TIERS.normal &&
-					tierLotto >= 97 &&
-					tierLotto <= 99 &&
-					maxLevel >= 5) {
-					// is champion - get random key
-					// TODO: For now this only supports one total trait
-					mobConfig.tier = MOB_TIERS.champion
-					if (_.size(mobConfig.traits) === 0) {
-						mobConfig.traits[getChampionKey()] = true
+				if (everyMobsNormal()) {
+					// only one mob can be non-normal
+					if (mob.isUniqueTier(tierLotto) && randomMob.tier === MOB_TIERS.unique) {
+						// unique mobs
+						mobConfig.tier = MOB_TIERS.unique
+						mobConfig.traits = randomMob.traits
+					}
+					else if (mobConfig.tier === MOB_TIERS.normal &&
+						tierLotto >= 97 && tierLotto <= 99 &&
+						maxLevel >= 5 || Config.forceChampion) {
+						// champion mobs - get random key
+						// TODO: For now this only supports one total trait
+						mobConfig.tier = MOB_TIERS.champion
+						if (_.size(mobConfig.traits) === 0) {
+							mobConfig.traits[getChampionKey()] = true
+						}
 					}
 				}
 				// slot determination
@@ -520,6 +579,14 @@ var battle;
 				}
 			}
 		}
+	}
+
+	/**
+	 * Are any mobs champions, uniques, bosses, etc?
+	 * @returns {boolean}
+	 */
+	function everyMobsNormal() {
+		return mobs.every(m => m.tier === 'normal')
 	}
 
 	/**
@@ -632,42 +699,53 @@ var battle;
 	let questData = {}
 	function getMinMobCount() {
 		questData = mission.getQuestData(mission.id, mission.questId)
-		if (map.inRoom) {
-			if (questData.level < 5) return 1
-			else if (questData.level < 10) return 1
-			else if (questData.level < 20) return 2
-			else if (questData.level < 30) return 2
-			else return 3
+		if (mission.isHeroicQuest) {
+
 		}
 		else {
-			// hallways
-			if (questData.level < 5) return 1
-			else if (questData.level < 10) return 1
-			else if (questData.level < 20) return 2
-			else if (questData.level < 30) return 2
-			else return 2
+			if (map.inRoom) {
+				if (questData.level < 5) return 1
+				else if (questData.level < 10) return 1
+				else if (questData.level < 20) return 2
+				else if (questData.level < 30) return 2
+				else return 3
+			}
+			else {
+				// hallways
+				if (questData.level < 5) return 1
+				else if (questData.level < 10) return 1
+				else if (questData.level < 20) return 2
+				else if (questData.level < 30) return 2
+				else return 2
+			}
+
 		}
 	}
 	function getMaxMobCount() {
 		questData = mission.getQuestData(mission.id, mission.questId)
-		if (map.inRoom) {
-			if (questData.level < 5) return 1
-			else if (questData.level < 10) return 2
-			else if (questData.level < 15) return 3
-			else if (questData.level < 20) return 3
-			else if (questData.level < 25) return 3
-			else if (questData.level < 30) return 4
-			else return 4
+		if (mission.isHeroicQuest) {
+
 		}
 		else {
-			// hallways
-			if (questData.level < 5) return 1
-			else if (questData.level < 10) return 2
-			else if (questData.level < 15) return 2
-			else if (questData.level < 20) return 3
-			else if (questData.level < 25) return 3
-			else if (questData.level < 30) return 3
-			else return 3
+			if (map.inRoom) {
+				if (questData.level < 5) return 1
+				else if (questData.level < 10) return 2
+				else if (questData.level < 15) return 2
+				else if (questData.level < 20) return 3
+				else if (questData.level < 25) return 3
+				else if (questData.level < 30) return 3
+				else return 3
+			}
+			else {
+				// hallways
+				if (questData.level < 5) return 1
+				else if (questData.level < 10) return 2
+				else if (questData.level < 15) return 2
+				else if (questData.level < 20) return 2
+				else if (questData.level < 25) return 2
+				else if (questData.level < 30) return 3
+				else return 3
+			}
 		}
 	}
 	function loadTextures() {
@@ -693,37 +771,58 @@ var battle;
 		query.el('#mob-target-wrap').style.display = 'none'
 	}
 
+	/**
+	 * Draws the DOM target based on index and target type
+	 * @param drawInstant
+	 */
 	function updateTarget(drawInstant) {
 		if (combat.isValidTarget()) {
 			if (my.targetIsMob) {
 				tgt = {
-					class: combat.considerClass[combat.getLevelDifferenceIndex(mobs[my.target].level)],
+					// combat.considerClassBg[combat.getLevelDifferenceIndex(mobs[my.target].level)]
+					bgClass: battle.getMobClassNameByLevel(my.target),
+					nameClass: getMobClassNameByTier(my.target),
+					level: mobs[my.target].level,
 					name: mobs[my.target].name,
 					tier: mobs[my.target].tier,
 					hp: ceil(100 - bar.getRatio(PROP.HP, mobs[my.target])),
 					traits: getMobTargetTierAndTraitsHtml(),
 					buffs: getMobTargetBuffsHtml(),
+					resists: getMobResists(my.target)
 				}
 			}
 			else {
 				tgt = {
-					class: 'con-white',
+					bgClass: 'con-white-bg',
+					nameClass: 'con-white',
+					level: party.presence[party.getIndexByRow(my.target)].level,
 					name: party.getNameByRow(my.target),
 					tier: MOB_TIERS.normal,
 					hp: ceil(100 - bar.getRatio(PROP.HP, party.presence[party.getIndexByRow(my.target)])),
 					traits: 'Player',
 					mobType: 'humanoid',
 					buffs: '',
+					resists: '',
 				}
+			}
+			// console.info('tgt', tgt)
+			// level
+			querySelector('#mob-target-level').className = tgt.bgClass
+			querySelector('#mob-target-level').textContent = tgt.level
+			// name
+			querySelector('#mob-target-name').className = tgt.nameClass
+			querySelector('#mob-target-name').textContent = tgt.name
+			// plate
+			querySelector('#mob-target-hp-plate').className = 'mob-plate-' + tgt.tier
+			querySelector('#mob-target-hp-plate').src = 'images/ui/bar-' + tgt.tier + '.png'
+			// percent, traits, buffs
+			querySelector('#mob-target-percent').textContent = tgt.hp + '%'
+			querySelector('#mob-target-traits').innerHTML = tgt.traits
+			querySelector('#mob-target-buffs').innerHTML = tgt.buffs
+			querySelector('#mob-target-resists').innerHTML = tgt.resists
+			if (tgt.resists) {
 
 			}
-			query.el('#mob-target-name').className = tgt.class
-			query.el('#mob-target-name').textContent = tgt.name
-			query.el('#mob-target-hp-plate').className = 'mob-plate-' + tgt.tier
-			query.el('#mob-target-hp-plate').src = 'images/ui/bar-' + tgt.tier + '.png'
-			query.el('#mob-target-percent').textContent = tgt.hp + '%'
-			query.el('#mob-target-traits').innerHTML = tgt.traits
-			querySelector('#mob-target-buffs').innerHTML = tgt.buffs
 			showTarget()
 		}
 		else {
@@ -735,14 +834,33 @@ var battle;
 			mob.drawMobBar(my.target, drawInstant)
 		}
 	}
+	function getMobResists(tgt) {
+		let html = []
+		for (var key in mobs[tgt].resist) {
+			if (mobs[tgt].resist[key] <= 0) {
+				html.push(key + ' immune')
+			}
+			else if (mobs[tgt].resist[key] < 1) {
+				html.push(key + ' resistant')
+			}
+		}
+		return html.join(' ')
+	}
+	function getMobClassNameByLevel(tgt) {
+		return 'mob-level ' + combat.considerClassBg[combat.getLevelDifferenceIndex(mobs[tgt].level)]
+	}
+	function getMobClassNameByTier(tgt) {
+		return 'mob-tier-'+ mobs[tgt].tier
+	}
 	function getMobTargetTierAndTraitsHtml() {
 		// remove trailing s from value
 		if (typeof mobs[my.target].img === 'undefined') return
 		// mobType + type e.g. Humanoid Champion
+
 		// type and tier
-		tierHtml = '<div class="mob-types mob-tier-'+ mobs[my.target].tier +'">' +
+		tierHtml = '<div class="mob-types capitalize">' +
+			(mobs[my.target].tier === 'normal' ? '' : ' ' + mobs[my.target].tier) + ' ' +
 			mob.type[mobs[my.target].img].mobType +
-			(mobs[my.target].tier === 'normal' ? '' : ' ' + mobs[my.target].tier) +
 		'</div>'
 		// traits
 		traitHtml = []
@@ -959,12 +1077,11 @@ var battle;
 				my.buffIconTimers[keyRow] = delayedCall(duration - FLASH_DURATION, flashMyBuff, [key, keyRow])
 			}
 		}
-		///////////////////////////////////////////////////
-		function flashMyBuff(key, keyRow) {
-			// console.info('flashMyBuff', key)
-			my.buffIconTimers[keyRow] = TweenMax.to('#mybuff-' + keyRow, .5, FLASH_BUFF_OBJ)
-			my.buffIconTimers[keyRow + '-remove'] = delayedCall(my.buffs[keyRow].duration, removeMyBuffIcon, [key, keyRow])
-		}
+	}
+	function flashMyBuff(key, keyRow) {
+		// console.info('flashMyBuff', key)
+		my.buffIconTimers[keyRow] = TweenMax.to('#mybuff-' + keyRow, .5, FLASH_BUFF_OBJ)
+		my.buffIconTimers[keyRow + '-remove'] = delayedCall(my.buffs[keyRow].duration, removeMyBuffIcon, [key, keyRow])
 	}
 	function removeMyBuffFlag(keyRow, skipMsgCheck = false) {
 		/**
@@ -999,11 +1116,10 @@ var battle;
 				}
 			}
 		}
-		///////////////////////////////////////////
-		function getBuffKey(keyRow) {
-			if (keyRow.includes('-')) keyRow = keyRow.split('-')[0]
-			return keyRow
-		}
+	}
+	function getBuffKey(keyRow) {
+		if (keyRow.includes('-')) keyRow = keyRow.split('-')[0]
+		return keyRow
 	}
 	function removeMyBuffIcon(key, keyRow) {
 		/**
@@ -1027,6 +1143,12 @@ var battle;
 		if (buffEl !== null) buffEl.parentNode.removeChild(buffEl)
 	}
 
+	/**
+	 * Remove the duration and damage if it exists, set the level to 0
+	 * Remove the buffFlag and the icon
+	 * @param key
+	 * @param keyRow
+	 */
 	function removeBuff(key, keyRow) {
 		/**
 		 * removes flag and icon - Used for pre-emptive removal before the timer is done
@@ -1048,7 +1170,8 @@ var battle;
 	function removeAllBuffs() {
 		for (var key in my.buffFlags) {
 			if (typeof my.buffs[key] === 'object') {
-				if (my.buffs[key].duration > 0) {
+				if (my.buffs[key].duration > 0
+					|| my.buffs[key].damage > 0) {
 					// console.info('regular key', key)
 					removeBuff(key)
 				}
@@ -1138,13 +1261,16 @@ var battle;
 		for (var i=0; i<mob.max; i++){
 			s += '<div id="mob-wrap-' +i+ '" class="mob-wrap' + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
 				'<div id="mob-details-' +i+ '" class="mob-details" index="' + i + '">' +
-					'<div id="mob-name-' +i+ '" class="mob-name text-shadow3"></div>' +
+					'<div class="flex-row flex-center" style="margin-bottom: .25rem">' +
+						'<div id="mob-level-'+ i +'"></div>' +
+						'<div id="mob-name-' +i+ '" class="mob-name text-shadow3"></div>' +
+						'<img id="mob-target-avatar-' +i+ '" class="mob-target-avatar" src="'+ my.avatar +'">' +
+					'</div>' +
 					'<div class="flex-center">'+
 						'<div id="mob-bar-' +i+ '" class="mob-bar">' +
 							'<div id="mob-health-' +i+ '" class="mob-health"></div>' +
 							'<div class="mob-health-grid"></div>' +
 						'</div>' +
-						'<img id="mob-target-avatar-' +i+ '" class="mob-target-avatar" src="'+ my.avatar +'">' +
 					'</div>' +
 				'</div>' +
 				'<div id="mob-alive-' +i+ '" class="mob-alive" index="' + i + '"></div>' +

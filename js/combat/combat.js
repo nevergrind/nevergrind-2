@@ -42,6 +42,15 @@ var combat;
 		resetDeathFilter,
 		MAX_DAMAGE: 999999999,
 		textId: 0,
+		considerClassBg: [
+			'con-grey-bg',
+			'con-green-bg',
+			'con-low-blue-bg',
+			'con-high-blue-bg',
+			'con-white-bg',
+			'con-yellow-bg',
+			'con-red-bg',
+		],
 		considerClass: [
 			'con-grey',
 			'con-green',
@@ -59,6 +68,12 @@ var combat;
 	const FILTER_ALIVE = 'contrast(1) brightness(1) sepia(0)'
 	const FILTER_DEAD = 'contrast(1.5) brightness(.5) sepia(1)'
 	const FILTER_PADDING = 200
+	const effectsWithDiminishingReturns = [
+		'stun',
+		'fear',
+		'paralyze',
+		'silence',
+	]
 
 	let duration = 0
 
@@ -105,7 +120,7 @@ var combat;
 				my[name] < stats.getPropMax(name)) { //TODO: Dynamic max
 				if (rand() < skillLevelChance(name)) {
 					my[name]++
-					stats.memo = {}
+					stats.clearCache()
 					chat.log('You got better at ' +skills.getName(name) + '! (' + my[name] + ')', 'chat-skill')
 					if (bar.windowsOpen.character) {
 						if (bar.activeTab === 'character') {
@@ -165,22 +180,21 @@ var combat;
 				return d
 			}
 			if (!d.isPiercing) {
-				if (timers.castBar < 1) {
-					if (rand() * 100 < mob.riposteChance(d.index)) {
-						d.damage = 0
-						d.missed = true
-						combat.txDamageHero(d.index, [ mobSkills.autoAttack(d.index, my.row, true) ])
-						combat.popupDamage(d.index, 'RIPOSTE!')
-						audio.playSound('riposte', 'combat')
-						return d
-					}
-					else if (rand() * 100 < mob.parryChance(d.index)) {
-						d.damage = 0
-						d.missed = true
-						combat.popupDamage(d.index, 'PARRY!')
-						audio.playSound('parry', 'combat')
-						return d
-					}
+				if (rand() * 100 < mob.riposteChance(d.index)) {
+					// mob ripostes
+					d.damage = 0
+					d.missed = true
+					combat.txDamageHero(d.index, [ mobSkills.autoAttack(d.index, my.row, true) ])
+					combat.popupDamage(d.index, 'RIPOSTE!')
+					audio.playSound('riposte', 'combat')
+					return d
+				}
+				else if (rand() * 100 < mob.parryChance(d.index)) {
+					d.damage = 0
+					d.missed = true
+					combat.popupDamage(d.index, 'PARRY!')
+					audio.playSound('parry', 'combat')
+					return d
 				}
 			}
 			// mob type bonuses
@@ -215,7 +229,7 @@ var combat;
 				if (d.key === 'shadowBreak') {
 					mobs[d.index].armor += .01
 				}
-				if (mobs[d.index].armor > 1) mobs[d.index].armor = 1
+				if (mobs[d.index].armor > 1.25) mobs[d.index].armor = 1.25
 			}
 			if (mobs[d.index].armor > 1) mobs[d.index].armor = 1
 			// modify mob armor for all (buffs)
@@ -245,8 +259,6 @@ var combat;
 			}
 			if (reducedDamage < .2) reducedDamage = .2
 			d.damage *= reducedDamage
-			// +add elemental damage
-			d.damage += getAddedDamage(d.index)
 			// console.warn('4 added', getAddedDamage(d.index), d.damage)
 			// effects
 			if (mobs[d.index].buffFlags.vampiricGaze) {
@@ -260,6 +272,10 @@ var combat;
 			// console.warn('1 enhancedDamage', d.enhancedDamage)
 			if (!d.enhancedDamage) d.enhancedDamage = 1
 			// console.warn('2 enhancedDamage', d.enhancedDamage)
+			if (d.key === 'deliverance' &&
+				timers.mobEffects[d.index].stunDuration > 0) {
+				d.enhancedDamage += .5
+			}
 			if (mobs[d.index].mobType === MOB_TYPES.UNDEAD) {
 				if (d.isBlighted) {
 					d.enhancedDamage += .5
@@ -276,17 +292,15 @@ var combat;
 			d.damage *= d.enhancedDamage
 			if (!d.cannotResist) d.damage *= mob.getMobResist(d)
 		}
+		// +add elemental damage
+		if (d.damageType === DAMAGE_TYPE.PHYSICAL || d.addDamageBypass) {
+			d.damage += getAddedDamage(d.index)
+		}
 
 		// final mods that affect all
 		if (mobs[d.index].buffFlags.stasisField) {
 			// console.info('stasisField', buffs.stasisField.pveMitigationRatio)
 			d.damage *= buffs.stasisField.pveMitigationRatio
-		}
-		if (my.isFeared()) {
-			// DoTs were already calculated
-			if (!d.isDot) {
-				d.damage *= .5
-			}
 		}
 		// final sanity checks
 		if (d.damage <= 0) d.damage = 0
@@ -338,12 +352,19 @@ var combat;
 	}
 	function getAddedDamage(index) {
 		totalAddedDamage = 0
-		totalAddedDamage += stats.addBlood() * mobs[index].resist.blood
-		totalAddedDamage += stats.addPoison() * mobs[index].resist.poison
-		totalAddedDamage += stats.addArcane() * mobs[index].resist.arcane
-		totalAddedDamage += stats.addLightning() * mobs[index].resist.lightning
-		totalAddedDamage += stats.addFire() * mobs[index].resist.fire
-		totalAddedDamage += stats.addIce() * mobs[index].resist.ice
+		if (index === -1) {
+			totalAddedDamage = totalAddedDamage + stats.addBlood() + stats.addPoison() + stats.addArcane() + stats.addLightning() + stats.addFire() + stats.addIce()
+		}
+		else {
+			totalAddedDamage = (totalAddedDamage +
+				(stats.addBlood() * mobs[index].resist.blood) +
+				(stats.addPoison() * mobs[index].resist.poison) +
+				(stats.addArcane() * mobs[index].resist.arcane) +
+				(stats.addLightning() * mobs[index].resist.lightning) +
+				(stats.addFire() * mobs[index].resist.fire) +
+				(stats.addIce() * mobs[index].resist.ice)
+			)
+		}
 		// console.info('getAddedDamage 3', index, totalAddedDamage)
 		return totalAddedDamage
 	}
@@ -352,8 +373,7 @@ var combat;
 		else autoAttackDisable()
 	}
 	function autoAttackEnable() {
-		if (ng.view !== 'battle' ||
-			my.hp <= 0) return
+		if (ng.view !== 'battle' || my.hp <= 0 || !map.inCombat) return
 		my.isAutoAttacking = true
 		button.primaryAttack()
 		button.secondaryAttack()
@@ -366,11 +386,13 @@ var combat;
 		el = querySelector('#auto-attack-flash')
 		el.classList.remove('active')
 	}
-	function resetTimersAndUI() {
+	function resetTimersAndUI(skipHideUI = false) {
 		// console.info('resetTimersAndUI killAllAttacks')
 		mob.killAllAttacks(true)
 		mob.hideMobTargets()
-		battle.hideTarget()
+		if (!skipHideUI) {
+			battle.hideTarget()
+		}
 		battle.killMobBuffTimers()
 		battle.killTargetBuffTimers()
 	}
@@ -444,10 +466,10 @@ var combat;
 		}
 	}
 	function processLeech(leechValue) {
-		leechValue = processHeal(leechValue)
+		// leechValue = processHeal(leechValue)
 		leechHp += leechValue
+		// console.info('processLeech', leechHp, leechValue)
 		if (leechHp >= 1) {
-			// console.info('processLeech', leechHp)
 			updateMyResource(PROP.HP, ~~leechHp)
 			leechHp = leechHp % 1
 		}
@@ -552,10 +574,12 @@ var combat;
 		}
 		if (myDamage) {
 			if (stats.leech()) {
-				processLeech(myDamage * (stats.leech() / resourceLeechDivider))
+				// processLeech(myDamage * (stats.leech() / resourceLeechDivider))
+				processLeech((stats.leech() * .1))
 			}
 			if (stats.wraith()) {
-				processWraith(myDamage * (stats.wraith() / resourceLeechDivider))
+				// processWraith(myDamage * (stats.wraith() / resourceLeechDivider))
+				processWraith((stats.wraith() * .1))
 			}
 		}
 		if (damageArr.length) {
@@ -727,6 +751,7 @@ var combat;
 	 * multiplayer handling happens in party.upsertPartyResource() checks
 	 */
 	function selfDied() {
+		my.targetCleared()
 		my.set(PROP.HP, 0)
 		bar.updateBar(PROP.HP, my)
 		timers.clearMy()
@@ -736,7 +761,6 @@ var combat;
 		autoAttackDisable()
 		spell.cancelSpell()
 		battle.subtractExpPenalty()
-		battle.reckonGXL() // death
 		animateDeathFilter()
 		party.memberDied(0)
 		audio.fadeMusic()
@@ -776,6 +800,13 @@ var combat;
 		}
 		bar.updateBar(type, my)
 	}
+
+	/**
+	 * processDamagesToMe calls this to determine how much damage was actually done
+	 * @param index
+	 * @param d
+	 * @returns {{isPiercing}|*}
+	 */
 	function processDamagesHero(index, d) {
 		if (my.hp <= 0) {
 			d.damage = 0
@@ -783,20 +814,19 @@ var combat;
 		}
 		// check for things that immediately set to 0
 		// check invulnerable
-		if (!d.ticks) {
-			if (my.buffFlags.frozenBarrier ||
-				my.buffFlags.jumpStrike ||
-				my.buffFlags.sealOfSanctuary) {
-				combat.popupDamage(d.row, 'INVULNERABLE!', {targetMob: false})
-				if (my.buffFlags.frozenBarrier) {
-					audio.playSound('blue3', 'spells')
-				}
-				else {
-					audio.playSound('invulnerable', 'combat')
-				}
-				d.damage = 0
-				return d
+		if (my.isInvulnerable()) {
+			combat.popupDamage(d.row, 'INVULNERABLE!', {targetMob: false})
+			if (my.buffFlags.frozenBarrier) {
+				audio.playSound('blue3', 'spells')
 			}
+			else {
+				audio.playSound('invulnerable', 'combat')
+			}
+			d.damage = 0
+			return d
+		}
+		// not dots
+		if (!d.ticks) {
 			// check miss
 			// NOTE: Only mob's auto attack can miss
 			if (d.key === 'autoAttack' &&
@@ -1012,18 +1042,17 @@ var combat;
 		/////////////////////////////////////////////////////////////////////
 		function processHealToMob(index, hits) {
 			// animate mob
-			mob.animateSpecial(index)
+			mob.animateSpecial(hits[0].healedBy)
 			// animate particles of tx and rx
 			hits.filter(filterImpossibleMobTargets).forEach(hit => {
-				console.info('hit', hit);
-				if (hit.key === 'divineGrace') ask.mobDivineGrace(index, hit.index)
-				else if (hit.key === 'layHands') ask.mobLayHands(index, hit.index)
-				else if (hit.key === 'naturesTouch') ask.mobNaturesTouch(index, hit.index)
-				else if (hit.key === 'divineLight') ask.mobDivineLight(index, hit.index)
-				else if (hit.key === 'mysticalGlow') ask.mobMysticalGlow(index, hit.index)
-				hit.healedBy = index
+				// final mods that affect all
+				if (hit.key === 'divineGrace') ask.mobDivineGrace(hit.healedBy, hit.index)
+				else if (hit.key === 'layHands') ask.mobLayHands(hit.healedBy, hit.index)
+				else if (hit.key === 'naturesTouch') ask.mobNaturesTouch(hit.healedBy, hit.index)
+				else if (hit.key === 'divineLight') ask.mobDivineLight(hit.healedBy, hit.index)
+				else if (hit.key === 'mysticalGlow') ask.mobMysticalGlow(hit.healedBy, hit.index)
 				updateMobHp(hit)
-				chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' casts <b>'+ _.startCase(hit.key) +'</b> and restores '+ hit.damage +' health to ' + ng.getArticle(hit.index) + ' ' + mobs[hit.index].name +'!', CHAT.HEAL)
+				chat.log(ng.getArticle(hit.healedBy, true) + ' ' + mobs[hit.healedBy].name + ' casts <b>'+ _.startCase(hit.key) +'</b> and restores '+ hit.damage +' health to ' + ng.getArticle(hit.index) + ' ' + mobs[hit.index].name +'!', CHAT.HEAL)
 			})
 		}
 		function processDotToMe(index, hits) {
@@ -1125,17 +1154,18 @@ var combat;
 		}
 		function onDotTickToMe(hit, hitAmount) {
 			// console.info('hitAmount b4', hitAmount, hit)
-			// chat.log(_.startCase(hit.key) + ' hits YOU for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
+			chat.log(_.startCase(hit.key) + ' hits YOU for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
 			hit.damage = hitAmount
-			combat.popupDamage(hit.row, hit.damage, {
-				targetMob: false,
-				isDot: true,
-				damageType: hit.damageType
-			})
-			const index = party.getIndexByRow(hit.row)
+			// const index = party.getIndexByRow(hit.row)
 			// console.info('HIT', index, hit.key, hit)
 			processDamageToMe(hit.index, [_.omit(hit, 'duration')])
 		}
+
+		/**
+		 * What the fuck is this vs ToHero
+		 * @param index
+		 * @param hits
+		 */
 		function processDamageToMe(index, hits) {
 			// NOTE should be all from ONE mob of the same attack TYPE, but MANY possible PC targets
 			// always animate
@@ -1262,7 +1292,7 @@ var combat;
 					// messaging
 					if (hit.isPiercing && hit.key === 'autoAttack') {
 						combat.lastMobHitMeName = ng.getArticle(index, true) + ' ' + mobs[index].name
-						// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' ripostes and hits YOU for ' + hit.damage + ' damage!', CHAT.ALERT)
 						combat.popupDamage(hit.row, hit.damage, {targetMob: false})
 					}
 					else {
@@ -1282,15 +1312,27 @@ var combat;
 					// M A G I C
 					// messaging
 					// console.info('hit', hit)
-					if (!hit.ticks) {
-						// not a DoT spell
-						// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' strikes YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' ' + (hit.damageType === DAMAGE_TYPE.VOID ? '' : hit.damageType) + ' damage!', CHAT.ALERT)
-						combat.popupDamage(hit.row, hit.damage, {targetMob: false, damageType: hit.damageType})
-						// effects
-						if (hit.key === 'harmTouch') {
-							mobs[index].usedHarmTouch = true
-						}
+					// if (!hit.ticks) {
+					// not a DoT spell
+
+					if (mobs[index].name) {
+						chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name +
+							' strikes YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' ' +
+							(hit.damageType === DAMAGE_TYPE.VOID ? '' : hit.damageType) + ' damage!', CHAT.ALERT)
 					}
+					else {
+						chat.log('<b>'+ _.startCase(hit.key) +'</b>' + ' hits YOU for ' + hit.damage + ' ' +
+							(hit.damageType === DAMAGE_TYPE.VOID ? '' : hit.damageType) + ' damage!', CHAT.ALERT)
+					}
+					combat.popupDamage(hit.row, hit.damage, {
+						targetMob: false,
+						damageType: hit.damageType
+					})
+					// effects
+					if (hit.key === 'harmTouch') {
+						mobs[index].usedHarmTouch = true
+					}
+					// }
 					// DIRECT DAMAGE BUFFS ONLY (DoTs go above)
 					if (hit.duration) {
 						if (hit.effect === 'stun') {
@@ -1327,23 +1369,25 @@ var combat;
 					audio.playerHit(totalDamage, 0)
 				}
 				// damageTakenToMana vulpineMp
-				vulpineMp += ~~(totalDamage * (stats.damageTakenToMana() / resourceLeechDivider))
-				// console.info('IND', index)
-				drainMp = mobs[index].traits.soulDrain ? ceil(totalDamage * .1) : 0
-				totalMpChange = vulpineMp - drainMp
-				if (totalMpChange !== 0) {
-					updateMyResource(PROP.MP, totalMpChange)
-					vulpineMp = vulpineMp % 1
+				if (typeof mobs[index].traits === 'object') {
+					vulpineMp += ~~(stats.damageTakenToMana() * .1)
+					// console.info('IND', index)
+					drainMp = mobs[index]?.traits.soulDrain ? ceil(1 + mobs[index].level * .25) : 0
+					totalMpChange = vulpineMp - drainMp
+					if (totalMpChange !== 0) {
+						updateMyResource(PROP.MP, totalMpChange)
+						vulpineMp = vulpineMp % 1
+					}
+					// damageTakenToSpirit - sp drain
+					vulpineSp += ~~(stats.damageTakenToSpirit() * 1)
+					drainSp = mobs[index]?.traits.spiritDrain ? ceil(1 + mobs[index].level * .25) : 0
+					totalSpChange = vulpineSp - drainSp
+					if (totalSpChange !== 0) {
+						updateMyResource(PROP.SP, totalSpChange)
+						vulpineSp = vulpineSp % 1
+					}
+					game.txPartyResources(obj)
 				}
-				// damageTakenToSpirit - sp drain
-				vulpineSp += ~~(totalDamage * (stats.damageTakenToSpirit() / resourceLeechDivider))
-				drainSp = mobs[index].traits.spiritDrain ? ceil(totalDamage * .1) : 0
-				totalSpChange = vulpineSp - drainSp
-				if (totalSpChange !== 0) {
-					updateMyResource(PROP.SP, totalSpChange)
-					vulpineSp = vulpineSp % 1
-				}
-				game.txPartyResources(obj)
 			}
 		}
 	}
@@ -1356,11 +1400,11 @@ var combat;
 
 		combat.lastMobHitMeName = ng.getArticle(index, true) + ' ' + mobs[index].name
 		if (hit.key === 'autoAttack') {
-			// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
+			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
 			combat.popupDamage(hit.row, hit.damage, {targetMob: false})
 		}
 		else {
-			// chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
+			chat.log(ng.getArticle(index, true) + ' ' + mobs[index].name + ' hits YOU with <b>'+ _.startCase(hit.key) +'</b> for ' + hit.damage + ' damage!'+ blockMsg, CHAT.ALERT)
 			combat.popupDamage(hit.row, hit.damage, {targetMob: false})
 		}
 	}
@@ -1411,12 +1455,12 @@ var combat;
 		else if (o.isHeal) {
 			text.fill = '#fff'
 			text.stroke = '#0a0'
-			text.strokeThickness = 6
+			text.strokeThickness = 3
 			text.dropShadowColor = '#080'
 		}
 
 		if (o.isCrit) {
-			text.strokeThickness = 6
+			text.strokeThickness = 5
 			text.fontSize = 36
 			text.fontWeight = 'bold'
 			text.dropShadowColor = '#fff'
@@ -1644,13 +1688,15 @@ var combat;
 		const basicText = new PIXI.Text(o.isHeal ? '+' + damage + '' : damage + '', getPopupTextStyle(o))
 		basicText.anchor.set(.5)
 		// console.info('HEAL', o.isHeal, o.key)
-		if (o.isHeal) {
-			if (o.key === 'layHands') mobs[o.healedBy].usedLayHands = true
-			else mobs[o.healedBy].healCount++
-		}
-		else {
-			if (o.targetMob) {
-				mobs[index].hitCount++
+		if (o.targetMob) {
+			if (o.isHeal) {
+				if (o.key === 'layHands') mobs[o.healedBy].usedLayHands = true
+				else mobs[o.healedBy].healCount++
+			}
+			else {
+				if (o.targetMob) {
+					mobs[index].hitCount++
+				}
 			}
 		}
 
@@ -1668,27 +1714,40 @@ var combat;
 
 		if (o.isHeal) {
 			// heal
-			duration = TEXT_DURATION * 2
-			TweenMax.to(basicText, duration, {
-				y: '-=' + TEXT_DISTANCE_Y * 1.5 + '',
-				ease: Power2.easeOut,
-				onComplete: ask.removeImg,
-				onCompleteParams: [ basicText.id, o.targetMob ],
-			})
+			if (o.targetMob) {
+				duration = TEXT_DURATION * 2
+				TweenMax.to(basicText, duration, {
+					y: '-=' + TEXT_DISTANCE_Y * 1.5 + '',
+					ease: Power2.easeOut,
+					onComplete: ask.removeImg,
+					onCompleteParams: [ basicText.id, o.targetMob ],
+				})
+			}
+			else {
+				// heal player DoT
+				duration = TEXT_DURATION * 2
+				TweenMax.to(basicText, duration, {
+					y: '-=' + (TEXT_DISTANCE_Y * .6) + '',
+					onComplete: ask.removeImg,
+					onCompleteParams: [ basicText.id, o.targetMob ],
+					ease: Power2.easeOut
+				})
+				ask.fadeOut(basicText, duration, duration * .1)
+			}
 		}
 		else if (o.isDot) {
-			// dot
-			duration = TEXT_DURATION
-			TweenMax.to(basicText, duration, {
-				y: o.targetMob ? ('-=' + TEXT_DISTANCE_Y * 1.5 + '') : ('-=' + TEXT_DISTANCE_Y * .75 + ''),
-				ease: Power2.easeOut,
-				onComplete: ask.removeImg,
-				onCompleteParams: [ basicText.id, o.targetMob ],
-			})
-			if (o.targetMob && 
-				buffs[o.key].damageType === DAMAGE_TYPE.BLOOD) {
-				ask.bloodDrop(index, 16)
-			}
+			// dot or dot
+				duration = TEXT_DURATION
+				TweenMax.to(basicText, duration, {
+					y: o.targetMob ? ('-=' + TEXT_DISTANCE_Y * 1.5 + '') : ('-=' + TEXT_DISTANCE_Y * .75 + ''),
+					ease: Power2.easeOut,
+					onComplete: ask.removeImg,
+					onCompleteParams: [ basicText.id, o.targetMob ],
+				})
+				if (o.targetMob &&
+					buffs[o.key].damageType === DAMAGE_TYPE.BLOOD) {
+					ask.bloodDrop(index, 16)
+				}
 		}
 		else {
 			// damage
@@ -1792,11 +1851,13 @@ var combat;
 			// console.info('insta heal!', heal.damage)
 			if (heal.damage > 0) {
 				chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
+				combat.popupDamage(heal.index, heal.damage, {isHeal: true, targetMob: false})
 				updateMyResource(PROP.HP, heal.damage)
 				// let everyone know I got the heal
 				game.txPartyResources({
 					hp: my.hp,
 					hpMax: my.hpMax,
+					healAmount: heal.damage
 				})
 			}
 		}
@@ -1845,8 +1906,9 @@ var combat;
 				onRepeat: onHotTick,
 				onRepeatParams: [heal, healAmount],
 			})
-			battle.addMyBuff(heal.key, keyRow)
 			// console.info('dot heal!', heal.damage)
+			battle.addMyBuff(heal.key, keyRow)
+			// HoT initially applies message
 			chat.log(buffs[heal.key].msg(heal), CHAT.HEAL)
 		}
 		ask.processAnimations(heal)
@@ -1863,6 +1925,7 @@ var combat;
 		healAmount = processHeal(healAmount)
 		// console.info('onHotTick', buff)
 		// chat.log(buffs[buff.key].name + ' heals you for ' + healAmount + ' health.', CHAT.HEAL)
+		combat.popupDamage(buff.index, healAmount, {isHeal: true, targetMob: false})
 		updateMyResource(PROP.HP, healAmount)
 	}
 
@@ -1909,7 +1972,9 @@ var combat;
 					}
 				}
 				battle.lastBuffAlreadyActive = my.buffFlags[key]
+
 				if (typeof buffs[key].msg === 'function') {
+					// buff initially applied to you
 					chat.log(buffs[key].msg(), CHAT.HEAL)
 				}
 				if (buffs[key].stacks === void 0) {
@@ -1922,9 +1987,15 @@ var combat;
 					stacks: previousStack
 				}
 				// optional keys
-				if (buff.level) my.buffs[key].level = buff.level
+				if (buff.level) {
+					my.buffs[key].level = buff.level
+				}
 				// sets shield type damage absorption shimmeringOrb, guardianAngel, sereneSigil etc
-				if (buff.damage) my.buffs[key].damage = buff.damage
+				// console.info('buff damage', key, buff.damage)
+				if (buff.damage) {
+					my.buffs[key].damage = buff.damage
+				}
+
 				if (buffs[key].stacks) {
 					if (typeof my.buffs[key].stacks === 'number') {
 						if (my.buffs[key].stacks < buffs[key].stacks) {
@@ -1934,11 +2005,28 @@ var combat;
 					else my.buffs[key].stacks = 1
 				}
 
+				// conditional checks for dimRet effects
+				if (effectsWithDiminishingReturns.includes(buff.effect)) {
+					buff.duration = my.getDiminishingStatusDurationByType(buff.duration, buff.effect)
+					if (buff.effect === 'stun') {
+						if (!my.stunTimeValid(buff.duration)) return
+					}
+					else if (buff.effect === 'fear') {
+						if (!my.fearTimeValid(buff.duration)) return
+					}
+					else if (buff.effect === 'paralyze') {
+						if (!my.paralyzeTimeValid(buff.duration)) return
+					}
+					else if (buff.effect === 'silence') {
+						if (!my.silenceTimeValid(buff.duration)) return
+					}
+				}
+
 				// not timer based - my.buffFlags[key] must be set to false via depletion
 				let duration = typeof buff.duration === 'number' ?
 					buff.duration : buffs[buff.key].duration
 				if (typeof duration === 'number') {
-					// timer based
+					// timer based - what is this shit?
 					// console.warn('adding buff - dur:', duration)
 					my.buffs[key].duration = duration
 					my.buffs[key].timer = TweenMax.to(my.buffs[key], duration, {
@@ -2257,10 +2345,10 @@ var combat;
 		})
 	}
 	function animatePlayerFramesBg() {
-		TweenMax.to('#bar-card-bg-' + my.row, .5, {
+		/*TweenMax.to('#bar-card-bg-' + my.row, .5, {
 			startAt: { opacity: .5 },
 			opacity: 0
-		})
+		})*/
 	}
 	function updateCanvasLayer() {
 		// called via resizeAll method
@@ -2279,9 +2367,8 @@ var combat;
 			player.layer.view.style.width = w + 'px'
 			player.layer.view.style.height = h + 'px'
 		}
-
-
 	}
+
 	function targetChanged() {
 		if (my.hp <= 0) return
 		if (my.targetIsMob) targetChangedToMob()
@@ -2289,36 +2376,36 @@ var combat;
 		// console.info('targetChanged my.target =>', my.target, my.targetIsMob)
 		battle.updateTarget(true)
 		////////////////////////////////////////
-		function targetChangedToPlayer() {
-			// remove mob targeting
-			index = 0
-			for (el of querySelectorAll('.mob-details')) {
-				if (index++ !== my.hoverTarget) el.classList.remove('targeted', 'block-imp')
-			}
-			// remove player
-			for (el of querySelectorAll('.player-targeted')) {
-				el.classList.remove('player-targeted')
-			}
-			if (my.target === -1) {
-				battle.hideTarget()
-			}
-			else {
-				el = querySelector('#bar-player-wrap-' + my.target)
-				el.classList.add('player-targeted')
-			}
+	}
+	function targetChangedToPlayer() {
+		// remove mob targeting
+		for (el of querySelectorAll('.mob-details')) {
+			// if (index++ !== my.hoverTarget)
+			el.classList.remove('targeted')
 		}
-		function targetChangedToMob() {
-			index = 0
-			for (el of querySelectorAll('.mob-details')) {
-				if (index++ !== my.hoverTarget) el.classList.remove('targeted', 'block-imp')
-				else el.classList.remove('targeted')
-			}
-			for (el of querySelectorAll('.player-targeted')) {
-				el.classList.remove('player-targeted')
-			}
-			if (combat.isValidTarget()){
-				querySelector('#mob-details-' + my.target).classList.add('targeted', 'block-imp')
-			}
+		for (el of querySelectorAll('.player-targeted')) {
+			el.classList.remove('player-targeted')
+		}
+		if (my.target === -1) {
+			// why? I thought we changed to a player
+			battle.hideTarget()
+		}
+		else {
+			el = querySelector('#bar-player-wrap-' + my.target)
+			el.classList.add('player-targeted')
+		}
+	}
+	function targetChangedToMob() {
+		// remove mob targeting
+		for (el of querySelectorAll('.mob-details')) {
+			el.classList.remove('targeted')
+		}
+		// remove player
+		for (el of querySelectorAll('.player-targeted')) {
+			el.classList.remove('player-targeted')
+		}
+		if (combat.isValidTarget()){
+			querySelector('#mob-details-' + my.target).classList.add('targeted')
 		}
 	}
 

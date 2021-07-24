@@ -27,14 +27,22 @@ if (isset($_SESSION['guildId']) ) {
 	$stmt->execute();
 
 	// notify guild members
-	require '../zmq.php';
-	$zmq = [];
-	if (!isset($_POST['action'])) {
-		$zmq['msg'] = $_SESSION['name'] . ' has left '. $_SESSION['guildName'] .'.';
+	if ($totalMembers > 1) {
+		require '../zmq.php';
+		$zmq = [];
+		if (!isset($_POST['action'])) {
+			$zmq['msg'] = $_SESSION['name'] . ' has left '. $_SESSION['guildName'] .'.';
+		}
+		$zmq['route'] = 'guild->quit';
+		$zmq['category'] = 'guild'. $_SESSION['guildId'];
+		$socket->send(json_encode($zmq));
 	}
-	$zmq['route'] = 'guild->quit';
-	$zmq['category'] = 'guild'. $_SESSION['guildId'];
-	$socket->send(json_encode($zmq));
+	else {
+		// delete the guild!
+		$stmt = $db->prepare('delete from `guilds` where row=?');
+		$stmt->bind_param('i', $_SESSION['guildId']);
+		$stmt->execute();
+	}
 
 	// set guild session values
 	require '../session/init-guild.php';

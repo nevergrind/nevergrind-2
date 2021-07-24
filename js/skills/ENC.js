@@ -102,8 +102,7 @@
 	function subversionCompleted() {
 		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'subversion',
 				index: tgt,
@@ -111,7 +110,7 @@
 				damageType: spell.data.damageType,
 				...stats.spellDamage(tgt, -100)
 			})
-		}
+		})
 		combat.txDotMob(damages)
 	}
 	function colorShift(index, data) {
@@ -302,10 +301,9 @@
 		spell.startCasting(index, data, enthrallCompleted)
 	}
 	function enthrallCompleted() {
-		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		const damagesDot = []
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'enthrall',
 				index: tgt,
@@ -313,22 +311,17 @@
 				damageType: spell.data.damageType,
 				...stats.spellDamage(tgt),
 			})
-		}
-		combat.txDamageMob(damages)
-		// AE DoT damage
-		splashIndex = -1
-		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
-			damages.push({
+			// AE DoT damage
+			damagesDot.push({
 				key: 'enthrall',
 				index: tgt,
 				damageType: spell.data.damageType,
 				spellType: spell.data.spellType,
 				damage: 0
 			})
-		}
-		combat.txDotMob(damages)
+		})
+		combat.txDamageMob(damages)
+		combat.txDotMob(damagesDot)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 }($, _, TweenMax);

@@ -1,7 +1,7 @@
 {
   "name": "nevergrind-online",
   "main": "index.html",
-  "version": "0.1.4",
+  "version": "0.2.3",
   "description": "multiplayer-cooperative-rpg",
   "product_string": "Nevergrind Online",
   "nodejs": true,
@@ -23,7 +23,7 @@
   ],
   "window": {
     "title": "Nevergrind Online",
-    "icon": "img2/nevergrind.png",
+    "icon": "images/ngo.jpg",
     "toolbar": true,
     "frame": true,
     "position": "center",
@@ -55,7 +55,7 @@
     "linux",
     "mac"
   ],
-  "chromium-args": "--allow-file-access-from-files --enable-experimental-web-platform-features --disable-raf-throttling --disable-extensions-http-throttling --num-raster-threads=4 --autoplay-policy=no-user-gesture-required --disable-accelerated-video",
+  "chromium-args": "--allow-file-access-from-files --enable-experimental-web-platform-features --disable-raf-throttling --disable-extensions-http-throttling --num-raster-threads=4 --autoplay-policy=no-user-gesture-required --disable-accelerated-video --enable-emoji-context-menu=false",
   "requires": true,
   "lockfileVersion": 1,
   "dependencies": {

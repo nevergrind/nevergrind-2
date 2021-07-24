@@ -3,6 +3,7 @@ var util;
 	util = {
 		bezierDefaults: {},
 		init,
+		divideBy4,// all spell resists
 		toRadiansSin,
 		toRadiansCos,
 		toDegrees,
@@ -25,6 +26,9 @@ var util;
 			xEnd: dungeon.centerX[0],
 			yEnd: ask.centerY(0, false)
 		}
+	}
+	function divideBy4(v) {
+		return v === 0 ? 0 : Math.max(1, round(v * .25))
 	}
 	function removeElements(els) {
 		len = els.length

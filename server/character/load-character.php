@@ -39,7 +39,6 @@ if ($i) {
 	$_SESSION['row'] = $r['characterData']['row'];
 	$_SESSION['name'] = $r['characterData']['name'];
 
-	error_log('load-char: ' . $_SESSION['name']);
 	// get equipment
 	require '../item/get-player-items.php';
 

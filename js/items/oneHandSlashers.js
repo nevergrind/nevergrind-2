@@ -101,7 +101,7 @@ loot.oneHandSlashers = {
 			allStats: [3, 5],
 			sp: [10, 20],
 			mpKill: 4,
-			resistIce: [20, 30],
+			resistIce: [20, 30].map(util.divideBy4),
 			addIce: [4, 7],
 		}, {
 			name: 'Axe',

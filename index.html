@@ -13,7 +13,7 @@
 
 <script>
 var app = {
-	version: '0.1.4', // search: $version
+	version: '0.2.3', // search: $version
 	initialized: 0,
 	isApp: location.protocol === 'chrome-extension:',
 	account: '',
@@ -146,13 +146,13 @@ app.socketUrl = app.isApp ?
 							<div class="select-gender-col">
 								<div id="Male" class="select-radial select-gender active" data-gender="Male"></div>
 							</div>
-							<div class="select-gender" data-gender="Male" style="padding-left: .5rem">Male</div>
+							<div class="select-gender pointer" data-gender="Male" style="padding-left: .5rem">Male</div>
 						</div>
 						<div class="flex align-center pad-4" style="margin-left: .5rem">
 							<div class="select-gender-col">
 								<div id="Female" class="select-radial select-gender" data-gender="Female"></div>
 							</div>
-							<div class="select-gender" data-gender="Female" style="padding-left: .5rem">Female</div>
+							<div class="select-gender pointer" data-gender="Female" style="padding-left: .5rem">Female</div>
 						</div>
 					</div>
 				</div>
@@ -482,20 +482,6 @@ app.socketUrl = app.isApp ?
 	<span class="popover-icons"></span>
 </div>
 
-<div id="chat-log" class="text-shadow"></div>
-
-<div id="chat-input-wrap">
-	<div id="chat-input-mode" class="chat-pink no-select">
-		<span id="chat-mode-msg" class="ellipsis">To town:</span>
-	</div>
-	<input id="chat-input"
-		   type="text"
-		   maxlength="240"
-		   autocomplete="off"
-		   placeholder="Hit enter to chat"
-		   spellcheck="false" />
-</div>
-
 <div id="chat-present-wrap" class="no-select">
 	<div id="chat-header">&nbsp;</div>
 	<div id="chat-room"></div>
@@ -503,7 +489,6 @@ app.socketUrl = app.isApp ?
 
 <div id="scene-players" class="scene none no-select no-pointer" style="z-index: 2"></div>
 <div id="bar-wrap" class="no-select text-shadow"></div>
-<div id="button-wrap" class="no-select text-shadow"></div>
 <div id="mini-map" class="text-shadow no-select">
 	<div id="mini-map-confirm-wrap" class="flex-column flex-center">
 		<div id="mini-map-prompt-border">
@@ -521,23 +506,47 @@ app.socketUrl = app.isApp ?
 	</div>
 	<div id="mini-map-bg">
 		<div id="mini-map-button-parent" class="flex-row">
-			<img id="mini-map-party" src="images/map/map-center.png" class="map-btn popover-icons">
-			<img id="mini-map-leave" src="images/map/map-town.png" class="map-btn popover-icons">
+			<img id="hearth" src="images/map/map-town.png" class="map-btn popover-icons">
+			<img id="mini-map-party" src="images/map/map-town.png" class="map-btn popover-icons" style="filter: hue-rotate(180deg)">
 		</div>
 		<div id="mini-map-drag-parent">
 			<div id="mini-map-drag">
-				<img id="mini-map-dot" class="mini-map-entity" src="images/map/torch-1.png">
+				<div id="mini-map-dot" class="mini-map-entity">
+					<div id="mini-map-dot-torch"></div>
+				</div>
 				<!--<img id="mini-map-fog" class="mini-map-entity" src="images/dungeon/fog.png" />-->
 			</div>
 		</div>
 	</div>
 </div>
+
+<div id="footer-ui-component">
+	<div id="chat-component">
+		<div id="chat-log" class="text-shadow"></div>
+		<div id="chat-input-wrap">
+			<div id="chat-input-mode" class="chat-pink no-select">
+				<span id="chat-mode-msg" class="ellipsis">To town:</span>
+			</div>
+			<input id="chat-input"
+				   type="text"
+				   maxlength="240"
+				   autocomplete="off"
+				   placeholder="Hit enter to chat"
+				   spellcheck="false" />
+		</div>
+	</div>
+	<div id="button-wrap" class="no-select text-shadow"></div>
+</div>
+
 <div id="tooltip-skill" class="no-pointer no-select text-shadow">
 	<div id="tooltip-skill-name"></div>
 	<div id="tooltip-skill-description"></div>
 </div>
 <div id="mob-target-wrap" class="text-shadow">
-	<div id="mob-target-name" class=""></div>
+	<div class="flex-row flex-center">
+		<div id="mob-target-level" class="mob-level"></div>
+		<div id="mob-target-name"></div>
+	</div>
 	<div id="mob-target-bar-wrap">
 		<div id="mob-target-hp-wrap">
 			<div id="mob-target-hp"></div>
@@ -549,6 +558,7 @@ app.socketUrl = app.isApp ?
 	<div id="mob-target-percent">0%</div>
 	<div id="mob-target-details">
 		<div id="mob-target-traits"></div>
+		<div id="mob-target-resists"></div>
 		<div id="mob-target-buffs"></div>
 	</div>
 </div>
@@ -612,7 +622,8 @@ app.socketUrl = app.isApp ?
 			// 'libs/pixi-spine',
 			'libs/pixi-projection.min',
 			'libs/gsap/TweenMax2.min',
-			// gsap/TweenMax3.min
+			// 'libs/gsap/EasePack.min',
+			// 'libs/gsap/TweenMax3.min',
 			'libs/gsap/PixiPlugin-v2.min',
 			// gsap/PixiPlugin-v3.min
 			'libs/gsap/SplitText.min',

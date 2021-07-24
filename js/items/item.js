@@ -304,13 +304,13 @@ var loot = {};
 	}
 	const saleValues = {
 		cost: 1,
-		resistBlood: 2,
-		resistPoison: 2,
-		resistArcane: 2,
-		resistLightning: 2,
-		resistFire: 2,
-		resistIce: 2,
-		resistAll: 18,
+		resistBlood: 8,
+		resistPoison: 8,
+		resistArcane: 8,
+		resistLightning: 8,
+		resistFire: 8,
+		resistIce: 8,
+		resistAll: 72,
 		enhancedArmor: .1,
 		enhancedDamage: .2,
 		addSpellBlood: .5,
@@ -455,46 +455,46 @@ var loot = {};
 	item.eqSlotKeys = Object.keys(item.eqSlots)
 	var prefixNames = {
 		resistBlood: function(val, multi) {
-			if (val <= 10 * multi) { return 'Ruddy' }
-			else if (val <= 20 * multi) { return 'Crimson' }
-			else if (val <= 30 * multi) { return 'Burgundy' }
+			if (val <= 2 * multi) { return 'Ruddy' }
+			else if (val <= 5 * multi) { return 'Crimson' }
+			else if (val <= 8 * multi) { return 'Burgundy' }
 			else { return 'Scarlet' }
 		},
 		resistPoison: function(val, multi) {
-			if (val <= 10 * multi) { return 'Beryl' }
-			else if (val <= 20 * multi) { return 'Viridian' }
-			else if (val <= 30 * multi) { return 'Jade' }
+			if (val <= 2 * multi) { return 'Beryl' }
+			else if (val <= 5 * multi) { return 'Viridian' }
+			else if (val <= 8 * multi) { return 'Jade' }
 			else { return 'Emerald' }
 		},
 		resistArcane: function(val, multi) {
-			if (val <= 10 * multi) { return 'Quartz' }
-			else if (val <= 20 * multi) { return 'Opal' }
-			else if (val <= 30 * multi) { return 'Beryl' }
+			if (val <= 2 * multi) { return 'Quartz' }
+			else if (val <= 5 * multi) { return 'Opal' }
+			else if (val <= 8 * multi) { return 'Beryl' }
 			else { return 'Sphene' }
 		},
 		resistLightning: function(val, multi) {
-			if (val <= 10 * multi) { return 'Tangerine' }
-			else if (val <= 20 * multi) { return 'Ocher' }
-			else if (val <= 30 * multi) { return 'Coral' }
+			if (val <= 2 * multi) { return 'Tangerine' }
+			else if (val <= 5 * multi) { return 'Ocher' }
+			else if (val <= 8 * multi) { return 'Coral' }
 			else { return 'Amber' }
 		},
 		resistFire: function(val, multi) {
-			if (val <= 10 * multi) { return 'Crimson' }
-			else if (val <= 20 * multi) { return 'Russet' }
-			else if (val <= 30 * multi) { return 'Garnet' }
+			if (val <= 2 * multi) { return 'Crimson' }
+			else if (val <= 5 * multi) { return 'Russet' }
+			else if (val <= 8 * multi) { return 'Garnet' }
 			else { return 'Ruby' }
 		},
 		resistIce: function(val, multi) {
-			if (val <= 10 * multi) { return 'Azure' }
-			else if (val <= 20 * multi) { return 'Lapis' }
-			else if (val <= 30 * multi) { return 'Cobalt' }
+			if (val <= 2 * multi) { return 'Azure' }
+			else if (val <= 5 * multi) { return 'Lapis' }
+			else if (val <= 8 * multi) { return 'Cobalt' }
 			else { return 'Sapphire' }
 		},
 		resistAll: function(val, multi) {
-			if (val <= 7 * multi) { return 'Shimmering' }
-			else if (val <= 11 * multi) { return 'Rainbow' }
-			else if (val <= 15 * multi) { return 'Scintillating' }
-			else if (val <= 20 * multi) { return 'Prismatic' }
+			if (val <= 2 * multi) { return 'Shimmering' }
+			else if (val <= 3 * multi) { return 'Rainbow' }
+			else if (val <= 4 * multi) { return 'Scintillating' }
+			else if (val <= 5 * multi) { return 'Prismatic' }
 			else { return 'Chromatic' }
 		},
 		addSpellBlood: function(val, multi) {
@@ -822,6 +822,8 @@ var loot = {};
 		oneHandBlunt: 1,
 		piercing: 1,
 		archery: 1,
+		dualWield: 1,
+		doubleAttack: 1,
 		handToHand: 1,
 		twoHandSlash: 1,
 		twoHandBlunt: 1,
@@ -1149,6 +1151,7 @@ var loot = {};
 		return resp
 	}
 
+	let highestPropLevelReq = 0
 	/**
 	 * generates an item based on config input
 	 * can also generate items for the store
@@ -1167,6 +1170,7 @@ var loot = {};
 		 * itemName: forces specific sub item based on base name
 		 * armorTypes: filter by armorType for armor slots
 		 */
+		highestPropLevelReq = 0
 		if (!config) config = { mobLevel: 1 }
 		if (config.bonus === void 0) config.bonus = 0
 		if (config.mobLevel === void 0) config.mobLevel = 1
@@ -1343,14 +1347,19 @@ var loot = {};
 			suffixVal = _.random(minValue[suffix], suffixMax)
 			suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
 		}
+		// TODO: this is going to suck - level reqs for rares etc
+		/*console.info('prefixMax', prefixVal+'/'+prefixMax, prefixName)
+		console.info('suffixVal', suffixVal+'/'+suffixMax, suffixName)*/
+		/**/
+		// highestPropLevelReq
 
-		if (app.isApp) {
+		/*if (Config.easeMagicItemTesting) {
 			// for better testing on all combos
 			prefixVal = _.random(minValue[prefix], prefixMax);
 			prefixName = prefixNames[prefix](prefixVal, itemTypeMultiplier)
 			suffixVal = _.random(minValue[suffix], suffixMax)
 			suffixName = suffixNames[suffix](suffixVal, itemTypeMultiplier)
-		}
+		}*/
 
 		// assign property values
 		if (prefixVal) {
@@ -1609,10 +1618,10 @@ var loot = {};
 
 		// always pull out prop key
 		_.pull(rareKeys, key)
+		//////////////////////////
 	}
 	function setMaxPropValue(obj, key, tc) {
-		// console.info('set max', obj)
-		// console.info('setMaxPropValue', obj[key], key, tc)
+		// console.info('set max', key)
 		var val = (obj[key] * (tc / MAX_TREASURE_CLASS)) - minValue[key]
 		if (val < minValue[key]) val = minValue[key]
 		return _.round(val)
@@ -1774,7 +1783,7 @@ var loot = {};
 				// check for same item
 				resetDrop()
 				toast.hideDestroyToast()
-				tooltip.handleEnter(event)
+				tooltip.handleTooltipEnter(event)
 				return
 			}
 			item.dropData = items[type][index]
@@ -1807,7 +1816,7 @@ var loot = {};
 				else trade.droppedItem()
 			}
 			else {
-				// update
+				// update to empty slot
 				if (myItemTypes.includes(item.dropType)) {
 					handleDragStart()
 					toast.hideDestroyToast()
@@ -1825,7 +1834,7 @@ var loot = {};
 		}
 		else {
 			item.lastDragEvent = event
-			tooltip.handleLeave(event)
+			tooltip.handleTooltipLeave(event)
 			item.dragEqType = event.currentTarget.dataset.eqType
 			// console.info('dragEQ dragEqType', event.currentTarget.dataset)
 			// drag
@@ -1850,16 +1859,21 @@ var loot = {};
 		}
 	}
 	function handleDropSuccess() {
+		audio.playEquipmentSound(item.dragData)
+		if (item.dropSlot === -1 && item.dragSlot === -1) {
+			// item.resetDrop was called - windows are closed
+			return
+		}
+		// console.info('slots', item.dropSlot, item.dragSlot)
 		items[item.dropType][item.dropSlot] = item.dragData
 		items[item.dragType][item.dragSlot] = item.dropData
-		audio.playEquipmentSound(item.dragData)
 		bar.updateItemSwapDOM()
-		resetDrop()
 		button.updateWeaponPanel()
 		button.updatePotionPanel()
+		resetDrop()
 		// console.warn('lastDragEvent', item.lastDragEvent)
-		if (item.isContextClick) tooltip.handleEnter(item.lastDragEvent)
-		else tooltip.handleEnter(item.lastDropEvent)
+		if (item.isContextClick) tooltip.handleTooltipEnter(item.lastDragEvent)
+		else tooltip.handleTooltipEnter(item.lastDropEvent)
 	}
 
 	function showCursorImg(type, index) {
@@ -2057,7 +2071,7 @@ var loot = {};
 			name: item.dragData.name,
 			data: JSON.stringify(_.omit(item.dragData, KEYS.NAME)),
 		}).done(data => {
-			querySelector('#various-description').innerHTML = 'Thank you for buying ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!'
+			ng.html('#various-description', 'Thank you for buying ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!')
 			processNewItemToInv({
 				slot: buyItemSlot,
 				itemData: _.cloneDeep(item.dragData),
@@ -2114,7 +2128,7 @@ var loot = {};
 
 
 	function handleSellSuccess() {
-		querySelector('#various-description').innerHTML = 'Thank you for selling ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!'
+		ng.html('#various-description', 'Thank you for selling ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!')
 		handleDestroySuccess(true)
 		tooltip.goldValue = 0
 		audio.playSound('gold')
@@ -2125,6 +2139,7 @@ var loot = {};
 		if (!suppressDestroyMsg) {
 			chat.log('You destroyed ' + item.getItemNameString(item.dragData))
 		}
+		console.warn('handleDestroySuccess watch for -1 slot', item.dragType, item.dragSlot)
 		items[item.dragType][item.dragSlot] = {}
 		bar.updateItemSwapDOM()
 		resetDrop()
@@ -2148,17 +2163,25 @@ var loot = {};
 		var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
 		if (type === 'bank' && items[type][index].use) {
 			// should send item to inventory
-			chat.log('You cannot use items in your bank!', CHAT.WARNING)
+			// ng.msg('You cannot use items in your bank!', undefined, COLORS.yellow)
+			moveItem()
 		}
 		else if (type === 'inv' && items[type][index].use) {
 			useItem(type, index)
 		}
 		else {
+			moveItem()
+		}
+		return false // context disabled
+		////////////////////////////////
+		function moveItem() {
 			resetDrop()
 			item.isContextClick = true
 			toggleDrag(event)
 			let dataset
 			if (type === 'bank') {
+				// move item from bank to inv
+				bar.openInventory()
 				dataset = {
 					index: getFirstAvailableInvSlot(),
 					type: 'inv',
@@ -2166,13 +2189,13 @@ var loot = {};
 				}
 			}
 			else {
+				// move item from inv to eq
 				dataset = {
 					index: getEqIndexByType(item.dragData),
 					type: 'eq',
 					eqType: equipmentEqTypeIndex[item.dragData.itemType]
 				}
 			}
-			console.info('dataset', type, dataset)
 			if (type === 'bank' && dataset.index === -1) {
 				chat.log('You have no room in your inventory!', CHAT.WARNING)
 				return false
@@ -2184,7 +2207,6 @@ var loot = {};
 				})
 			}
 		}
-		return false // context disabled
 	}
 	function useItem(type, index) {
 		// console.warn('useItem', index, type, items[type][index])
@@ -2197,11 +2219,11 @@ var loot = {};
 			// console.info('dragData', item.dragData)
 			if (item.dragData.itemType === 'potion') {
 				if (ng.view === 'town') {
-					chat.log('You cannot drink potions in town!', CHAT.WARNING)
+					ng.msg('You cannot drink potions in town!', undefined, COLORS.yellow)
 					return
 				}
 				if (timers[item.dragData.itemSubType + 'Potion'] < 1) {
-					chat.log('You cannot use that potion yet!', CHAT.WARNING)
+					ng.msg('You cannot use that potion yet!', undefined, COLORS.yellow)
 					return
 				}
 				handleDragStart()
@@ -2374,10 +2396,13 @@ var loot = {};
 		}
 		if (selling) {
 			// gold bonus by rarity
-			if (item.rarity === ITEM_RARITY.magic) value += 10
-			else if (item.rarity === ITEM_RARITY.rare) value += 20
-			else if (item.rarity === ITEM_RARITY.set) value += 35
-			else if (item.rarity === ITEM_RARITY.unique) value += 65
+			if (!item.unidentified) {
+				// identified item bonus
+				if (item.rarity === ITEM_RARITY.magic) value += 10
+				else if (item.rarity === ITEM_RARITY.rare) value += 20
+				else if (item.rarity === ITEM_RARITY.set) value += 35
+				else if (item.rarity === ITEM_RARITY.unique) value += 65
+			}
 
 			// handle minimum values for rings, amulets, charms
 			if (item.itemType === ITEM_TYPE.RINGS ||

@@ -140,10 +140,8 @@
 		spell.startCasting(index, data, hauntingVisionCompleted)
 	}
 	function hauntingVisionCompleted() {
-		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'hauntingVision',
 				index: tgt,
@@ -157,7 +155,7 @@
 					duration: buffs.hauntingVision.fearDuration,
 				}],
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
@@ -170,10 +168,8 @@
 		spell.startCasting(index, data, icingDeathCompleted)
 	}
 	function icingDeathCompleted() {
-		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'icingDeath',
 				index: tgt,
@@ -187,7 +183,7 @@
 					duration: buffs.icingDeath.chillDuration,
 				}],
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}

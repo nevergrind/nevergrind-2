@@ -1,8 +1,9 @@
 var whisper;
-(function() {
+(function(_) {
 	whisper = {
 		listen,
-		route
+		route,
+		sendTimer: delayedCall(0, () => {})
 	};
 	var r;
 	////////////////////////////////////////////////
@@ -13,15 +14,16 @@ var whisper;
 	function route(data, obj) {
 		data = router.normalizeInput(data, obj)
 		r = data.action
+		console.info('route', data)
 		if (r === 'party') {
 			router.party(data, data.route)
 		}
 		else if (r === 'send') {
-			// console.info('Sent whisper: ', data)
+			console.info('Sent whisper: ', data)
 			// report message
 			router.toTown(data, data.route)
 			chat.lastWhisper.name = data.name
-			// console.info('data send', data)
+			console.info('data send', data)
 			// callback to sender
 			socket.publish('name' + _.toLower(data.name), {
 				job: my.job,
@@ -40,10 +42,11 @@ var whisper;
 					name: data.name
 				}
 			}
-			// console.info('data receive', _.cloneDeep(data))
+			console.info('data receive', _.cloneDeep(data))
 			data.msg = 'To ' + chat.getPrefix(data) + ': ' + data.msg;
 			// router.toTown(data, 'chat->log');
 			chat.log(data.msg, data.class)
+			whisper.sendTimer.pause()
 		}
 		// guild invite
 		else if (r === 'guild-invite') {
@@ -97,4 +100,4 @@ var whisper;
 		else if (r === 'trade-send-slots') trade.rxSlotsAndSend(data)
 		else if (r === 'trade-update-inventory') trade.rxUpdateInventory(data)
 	}
-})();
+})(_);

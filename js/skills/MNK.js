@@ -171,6 +171,7 @@
 				index: tgt,
 				hitBonus: data.hitBonus[my.skills[index]],
 				damageType: DAMAGE_TYPE.ARCANE,
+				addDamageBypass: data.addDamageBypass,
 				enhancedDamage: enhancedDamage,
 			}
 			damages.push(hit)
@@ -196,6 +197,7 @@
 			key: 'hadoken',
 			index: my.target,
 			damageType: DAMAGE_TYPE.ARCANE,
+			addDamageBypass: data.addDamageBypass,
 			isRanged: data.isRanged,
 			enhancedDamage: enhancedDamage,
 		}
@@ -260,6 +262,7 @@
 				key: 'dragonPunch',
 				index: my.target,
 				damageType: DAMAGE_TYPE.FIRE,
+				addDamageBypass: data.addDamageBypass,
 				enhancedDamage: enhancedDamage,
 			}
 			if (i < 2) hit.damage *= buffs.dragonPunch.damageModifier
@@ -362,7 +365,6 @@
 
 		// process skill data
 		hit = stats.spellDamage(my.row, -100)
-		console.info('hit', _.clone(hit))
 		spell.data = skills.MNK[index]
 		combat.txHotHero([{
 			index: my.row,

@@ -156,13 +156,10 @@
 		spell.startCasting(index, data, glacialShardCompleted)
 	}
 	function glacialShardCompleted() {
-		let originalTarget = spell.config.target
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
-		let splashIndex = -1
 		damages = []
-		for (var i=0; i<3; i++) {
-			let tgt = battle.getSplashTarget(splashIndex++, originalTarget)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'glacialShard',
 				index: tgt,
@@ -176,7 +173,7 @@
 					duration: buffs.glacialShard.freezeDuration,
 				}],
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}

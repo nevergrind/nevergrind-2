@@ -2,6 +2,7 @@ var mission;
 (function(TweenMax, $, _, undefined) {
 	mission = {
 		inProgress: false,
+		isHeroicQuest: false,
 		isCompleted: false, // assure the victory screen is only shown once
 		data: {},
 		loaded: 0,
@@ -319,8 +320,9 @@ var mission;
 
 	function getQuestExp(level) {
 		// @1 6 @50 1275
-		let expMultiplier = Math.max(.06 - (level * .01), .01)
-		let exp = battle.expThreshold[level + 1] * expMultiplier
+		/*let expMultiplier = Math.max(.06 - (level * .001), .015)
+		let exp = battle.expThreshold[level + 1] * expMultiplier*/
+		let exp = mob.getMobExp(level, 3)
 		// penalize for party members that are much higher
 		if (party.expBrokenByAll()) exp = 0
 		return exp
@@ -353,7 +355,7 @@ var mission;
 			exp = getQuestExp(questData.level) * 1.5
 		}
 
-		// NOTE: exp value 6-1275
+		// NOTE: exp value ?
 		// NOTE: gold value 20-265
 		// map size
 		if (size === MAP_SIZES.small) {
@@ -365,16 +367,13 @@ var mission;
 		}
 		else if (size === MAP_SIZES.large) {
 			exp = exp * 4
-			gold = gold * 4
+			gold = gold * 3
 		}
 		gold = ~~gold
 		exp = ~~exp
 		// add exp and gold values
-		if (gold) {
-			mob.earnedGold += battle.addGold(gold, true)
-		}
-		if (exp) {
-			mob.earnedExp += battle.addExp(exp, true)
+		if (gold > 0 || exp > 0) {
+			battle.upsertGX(exp, gold, true)
 		}
 	}
 })(TweenMax, $, _);

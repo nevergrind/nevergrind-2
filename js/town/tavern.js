@@ -115,6 +115,7 @@ var tavern;
 			avatar = 'dark-elf-female-0'
 		}
 		else if (tavern.activeTab === 'tavern-leaderboard') {
+			selectedLeaderboard = 'ALL'
 			ng.splitText('various-description', 'Edenburg\'s royal scribes do their best to maintain an updated list of the most accomplished adventurers in the Kingdom. We maintain an overall list and a separate list by class.')
 			html = leaderboardHtml()
 			avatar = 'human-female-3'

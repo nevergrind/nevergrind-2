@@ -38,7 +38,7 @@ var timers;
 		clearMy,
 		clearMob,
 	}
-	const MobTimerKeys = [
+	const mobTimerKeys = [
 		'mobAttack',
 		'mobStunTimer',
 		'mobStunTween',
@@ -54,6 +54,11 @@ var timers;
 		fearDuration: 0,
 		paralyzeDuration: 0,
 		stasisDuration: 0,
+		stunTimestamp: 0,
+		fearTimestamp: 0,
+		paralyzeTimestamp: 0,
+		silenceTimestamp: 0,
+		healTimestamp: 0,
 	}
 	///////////////////////////////////////////
 	function init() {
@@ -64,7 +69,7 @@ var timers;
 		}
 		for (var i=0; i<mob.max; i++) {
 			// skill cooldowns
-			MobTimerKeys.forEach(key => {
+			mobTimerKeys.forEach(key => {
 				timers[key][i] = delayedCall(0, '')
 			})
 			timers.mobEffects[i] = {
@@ -73,7 +78,7 @@ var timers;
 		}
 	}
 	function clearMob(i) {
-		MobTimerKeys.forEach(key => {
+		mobTimerKeys.forEach(key => {
 			timers[key][i].kill()
 		})
 		timers.mobEffects[i] = {

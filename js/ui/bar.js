@@ -123,7 +123,7 @@ var bar;
 			}*/
 			// html += '</div>'
 			// el.innerHTML = html
-			el.style.display = 'block'
+			el.style.display = 'flex'
 
 			bar.dom.lag = getElementById('bar-lag')
 			bar.dom.inventory = getElementById('inventory')
@@ -136,7 +136,8 @@ var bar;
 				.on('click', '#bar-options', toggleOptions)
 
 			$("#bar-wrap")
-				.on('click contextmenu', '.bar-avatar', handleClickPartyContextMenu)
+				.on('click', '.bar-player-wrap', handleClickPartyAvatar)
+				.on('contextmenu', '.bar-avatar-wrap', handleContextPartyAvatar)
 		}
 	}
 	function appExit() {
@@ -154,9 +155,15 @@ var bar;
 		})
 	}
 
-	function handleClickPartyContextMenu() {
+	function handleClickPartyAvatar(e) {
 		id = this.id
-		arr = id.split("-")
+		arr = id.split('-')
+		my.partyTarget(party.getIndexByRow(arr[arr.length - 1] * 1))
+	}
+
+	function handleContextPartyAvatar(e) {
+		id = this.id
+		arr = id.split('-')
 		context.player.row = arr[arr.length - 1] * 1
 		slot = party.getIndexByRow(context.player.row)
 		context.player.name = party.presence[slot].name
@@ -164,6 +171,7 @@ var bar;
 	}
 
 	function toggleCharacterStats() {
+		if (item.awaitingDrop) return
 		bar.windowsOpen.character = !bar.windowsOpen.character
 		if (bar.windowsOpen.character) bar.activeTab = 'character'
 		tooltip.conditionalHide()
@@ -193,7 +201,7 @@ var bar;
 			'<img data-id="character-stats" class="close-menu" src="images/ui/close.png">' +
 		'</div>' +
 		'<div class="text-center" style="'+ css.raceJobRow +'">' +
-			'<div>Level '+ my.level +' '+ my.race +' '+ my.jobLong +'</div>' +
+			'<div>Level <span id="char-sheet-level">'+ my.level +'</span> '+ my.race +' '+ my.jobLong +'</div>' +
 			getPlayerGuildDescription() +
 		'</div>';
 		if (bar.activeTab === 'character') html += getCharacterHtml()
@@ -306,13 +314,14 @@ var bar;
 	}
 
 	function toggleInventory() {
+		if (item.awaitingDrop) return
 		// open all bags in the bottom-right corner
 		bar.windowsOpen.inventory = !bar.windowsOpen.inventory
 		tooltip.conditionalHide()
 		updateInventoryDOM()
 	}
 
-	function updateInventoryDOM() {
+	function updateInventoryDOM(suppressSfx) {
 		if (bar.windowsOpen.inventory) {
 			bar.dom.inventory.innerHTML = getInventoryHtml()
 			bar.dom.inventory.style.display = 'flex'
@@ -321,7 +330,9 @@ var bar;
 			bar.dom.inventory.innerHTML = ''
 			bar.dom.inventory.style.display = 'none'
 		}
-		audio.playSound('bag-open', '', 1, 250)
+		if (!suppressSfx) {
+			audio.playSound('bag-open', '', 1, 250)
+		}
 	}
 
 	function updateInventoryGold() {
@@ -374,7 +385,7 @@ var bar;
 		return html
 	}
 
-	function updateCharacterDOM() {
+	function updateCharacterDOM(suppressSfx) {
 		if (bar.windowsOpen.character) {
 			querySelector('#bar-character-stats').innerHTML = getCharacterStatsHtml()
 			querySelector('#bar-character-stats').style.display = 'flex'
@@ -388,7 +399,9 @@ var bar;
 			querySelector('#bar-character-stats').innerHTML = ''
 			querySelector('#bar-character-stats').style.display = 'none'
 			hideBarText()
-			audio.playSound('click-22', '', 1, 250)
+			if (!suppressSfx) {
+				audio.playSound('click-22', '', 1, 250)
+			}
 		}
 	}
 
@@ -398,7 +411,7 @@ var bar;
 		// console.info('//////////// updateItemSwapDOM', item.dropType, item.dragType)
 		if ([item.dropType, item.dragType].includes('eq')) {
 			// console.info('update char stats')
-			stats.memo = {}
+			stats.clearCache()
 			updateCharStatPanels()
 			game.updateParty()
 		}
@@ -415,12 +428,12 @@ var bar;
 
 	function updateAllResistsDOM() {
 		if (bar.windowsOpen.character) {
-			ng.html('#inv-resist-blood', stats.resistBlood())
-			ng.html('#inv-resist-poison', stats.resistPoison())
-			ng.html('#inv-resist-arcane', stats.resistArcane())
-			ng.html('#inv-resist-lightning', stats.resistLightning())
-			ng.html('#inv-resist-fire', stats.resistFire())
-			ng.html('#inv-resist-ice', stats.resistIce())
+			ng.html('#inv-resist-blood', stats.getResistPercent(DAMAGE_TYPE.BLOOD, true))
+			ng.html('#inv-resist-poison', stats.getResistPercent(DAMAGE_TYPE.POISON, true))
+			ng.html('#inv-resist-arcane', stats.getResistPercent(DAMAGE_TYPE.ARCANE, true))
+			ng.html('#inv-resist-lightning', stats.getResistPercent(DAMAGE_TYPE.LIGHTNING, true))
+			ng.html('#inv-resist-fire', stats.getResistPercent(DAMAGE_TYPE.FIRE, true))
+			ng.html('#inv-resist-ice', stats.getResistPercent(DAMAGE_TYPE.ICE, true))
 		}
 	}
 
@@ -500,7 +513,7 @@ var bar;
 		initDraggableAudioDials()
 	}
 	function optionsClose() {
-		querySelector('#root-options').innerHTML = ''
+		ng.html('#root-options', '')
 		querySelector('#root-options').style.display = 'none'
 	}
 	function handleDragMusicEnd() {
@@ -623,6 +636,14 @@ var bar;
 				getOptionsGeneralHtml() +
 			'</div>' +
 		'</div>' +
+		'<div id="options-app-controls" class="flex-column space-between text-shadow3" style="'+ css.optionFooter +'">' +
+			'<div class="flex-center" class="option-button">' +
+				'<div id="app-reset">Reset Game</div>' +
+			'</div>' +
+			'<div class="flex-center" class="option-button">' +
+				'<div id="app-exit">Exit Game</div>' +
+			'</div>' +
+		'</div>' +
 		'<div id="options-footer" class="flex space-between" style="'+ css.optionFooter +'">'+
 			'<div id="options-default" class="option-button">'+
 				'<div style="'+ css.optionBtnLabel +'">Default Settings</div>'+
@@ -664,33 +685,25 @@ var bar;
 				if (id === 'Full Screen') {
 					!win.isFullscreen && win.enterFullscreen()
 				}
-				else if (id === '1920x1080') {
-					win.isFullscreen && win.leaveFullscreen()
-					win.resizeTo(1920, 1080)
-					win.maximize()
-				}
-				else if (id === '1600x900') {
-					win.isFullscreen && win.leaveFullscreen()
-					win.resizeTo(1600, 900)
-				}
-				else if (id === '1366x768') {
-					win.isFullscreen && win.leaveFullscreen()
-					win.resizeTo(1366, 768)
-				}
-				else if (id === '1440x900') {
-					win.isFullscreen && win.leaveFullscreen()
-					win.resizeTo(1440, 900)
-				}
-				else if (id === '1280x720') {
-					win.isFullscreen && win.leaveFullscreen()
-					win.resizeTo(1280, 720)
-				}
 				else {
-					// just in case do this
-					id = 'Full Screen';
-					!win.isFullscreen && win.enterFullScreen();
+					win.isFullscreen && win.leaveFullscreen()
+					if (id === '1920x1080') {
+						win.resizeTo(1920, 1080)
+					}
+					else if (id === '1600x900') {
+						win.resizeTo(1600, 900)
+					}
+					else if (id === '1366x768') {
+						win.resizeTo(1366, 768)
+					}
+					else if (id === '1440x900') {
+						win.resizeTo(1440, 900)
+					}
+					else if (id === '1280x720') {
+						win.resizeTo(1280, 720)
+					}
 				}
-				// always do this
+				// always do this for some reason
 			}, 100);
 		}
 		$('#window-size-value').text(id);
@@ -730,12 +743,6 @@ var bar;
 				'<div class="options-volume"></div>' +
 			'</div>' +
 			'<div id="options-music-value" style="'+ css.volumeColumns +'">'+ ng.config.musicVolume +'</div>' +
-		'</div>' +
-		'<div class="flex-center">' +
-			'<div id="app-reset">Reset Game</div>' +
-		'</div>' +
-		'<div class="flex-center">' +
-			'<div id="app-exit">Exit Game</div>' +
 		'</div>' +
 		'</div>'
 
@@ -884,11 +891,16 @@ var bar;
 	}
 
 	function closeAllWindows() {
+		if (item.awaitingDrop) return
+		let anyOpen = false
 		_.each(bar.windowsOpen, (val, key) => {
+			if (bar.windowsOpen[key]) {
+				anyOpen = true
+			}
 			bar.windowsOpen[key] = false
 		})
-		updateCharacterDOM()
-		updateInventoryDOM()
+		updateCharacterDOM(true)
+		updateInventoryDOM(true)
 		updateOptionsDOM()
 		if (town.openVariousWindow !== 'Trade') {
 			town.closeVarious()
@@ -897,6 +909,9 @@ var bar;
 		toast.removeToast()
 		item.resetDrop()
 		tooltip.hide()
+		if (anyOpen) {
+			audio.playSound('click-22', '', 1, 250)
+		}
 	}
 
 	function showBarMenuPopover() {
@@ -917,7 +932,7 @@ var bar;
 	}
 
 	function addPlayer(player, index) {
-		if (typeof bar.dom[index] === 'undefined') {
+		if (typeof bar.dom[index] === 'undefined' || Config.mockFullParty) {
 			var el = createElement('div');
 			el.id = 'bar-player-wrap-' + index;
 			el.className = 'bar-player-wrap';
@@ -929,28 +944,32 @@ var bar;
 	function getPlayerBarHtml(player, index) {
 		player = player || {};
 		html = '';
+		let partyIndex = party.presence.findIndex(p => p.row === player.row)
 		// job icon
 		// console.info('getPlayerBarHtml', player)
 		// red background
-		if (my.row === index) html += '<div id="bar-card-bg-'+ index +'" class="bar-card-bg"></div>'
-		let partyIndex = party.presence.findIndex(p => p.row === player.row)
-		html +=
+		// if (my.row === index) html += '<div id="bar-card-bg-'+ index +'" class="bar-card-bg"></div>'
 		// party bands
-		'<div class="flex-row">' +
-			'<div id="bar-is-leader-'+ index +'" class="flex-max party-band bar-is-leader '+ (player.isLeader ? 'block' : 'none') +'"></div>' +
+		/*'<div class="flex-row">' +
 			'<div class="flex-max party-band" style="background: '+ party.color[partyIndex] +'"></div>' +
+		'</div>' +*/
+		// console.info('player',player)
+		html +=
+
+		// '<div class="party-square"></div>' +
+		// name row
+		'<div id="bar-name-'+ index +'" '+
+			'class="bar-hp-name ellipsis text-shadow3 '+ (player.isLeader ? 'chat-gold' : '') +'" '+
+			'style="background: '+ party.color[partyIndex] +'">' +
+			(player.name || '') +
 		'</div>' +
 		// avatar
-		'<div class="flex-column flex-center">' +
+		'<div id="avatar-wrap-'+ index +'" class="bar-avatar-wrap flex-column flex-center" style="position: relative">' +
+			'<img id="bar-avatar-job-'+ index+'" class="bar-job-icon" src="images/ui/job-'+ player.job +'.png">' +
 			'<img id="bar-avatar-'+ index +'" class="bar-avatar popover-icons" src="'+ player.avatar +'">' +
 		'</div>' +
 		// bars
-		'<div id="player-resource-'+ index +'" '+
-			'class="flex-column '+ (!index ? 'bar-col-data' : 'bar-col-data-sm') +' player-resource-column">' +
-			'<div id="bar-name-'+ index +'" class="bar-hp-name ellipsis text-shadow3 '+ (player.isLeader ? 'chat-gold' : '') +'">'+
-				(player.name || '') +
-			'</div>' +
-			'<div>' +
+		'<div id="player-resource-'+ index +'" class="flex-column bar-col-data player-resource-column">' +
 			'<div id="bar-hp-wrap-'+ index +'" class="bar-any-wrap">' +
 				'<div id="bar-hp-fg-'+ index +'" class="bar-hp-fg"></div>' +
 				'<div id="bar-hp-text-'+ index +'" class="flex-center bar-text text-shadow3">0/0</div>' +
@@ -964,9 +983,8 @@ var bar;
 				'<div id="bar-sp-fg-'+ index +'" class="bar-sp-fg"></div>' +
 				'<div id="bar-sp-text-'+ index +'" class="flex-center bar-text text-shadow3">0/0</div>' +
 			'</div>' +
-			'</div>' +
-		'</div>';
-		return html;
+		'</div>'
+		return html
 	}
 
 	/**
@@ -1117,12 +1135,12 @@ var bar;
 					// '<img id="inv-avatar-bg2" class="inv-avatar-bg" src="images/avatar-bg/'+ my.job +'.png">' +
 					'<img id="inv-avatar-img" src="'+ my.getAvatarUrl() +'">' +
 					'<div id="inv-resist-wrap" class="text-shadow3">'+
-						'<div id="inv-resist-blood" class="inv-resist-icon popover-icons">' + + stats.resistBlood() + '</div>' +
-						'<div id="inv-resist-poison" class="inv-resist-icon popover-icons">' + stats.resistPoison() + '</div>' +
-						'<div id="inv-resist-arcane" class="inv-resist-icon popover-icons">' + stats.resistArcane() + '</div>' +
-						'<div id="inv-resist-lightning" class="inv-resist-icon popover-icons">' + stats.resistLightning() + '</div>' +
-						'<div id="inv-resist-fire" class="inv-resist-icon popover-icons">' + stats.resistFire() + '</div>' +
-						'<div id="inv-resist-ice" class="inv-resist-icon popover-icons">' + stats.resistIce() + '</div>' +
+						'<div id="inv-resist-blood" class="inv-resist-icon popover-icons">' + stats.getResistPercent(DAMAGE_TYPE.BLOOD, true) + '</div>' +
+						'<div id="inv-resist-poison" class="inv-resist-icon popover-icons">' + stats.getResistPercent(DAMAGE_TYPE.POISON, true) + '</div>' +
+						'<div id="inv-resist-arcane" class="inv-resist-icon popover-icons">' + stats.getResistPercent(DAMAGE_TYPE.ARCANE, true) + '</div>' +
+						'<div id="inv-resist-lightning" class="inv-resist-icon popover-icons">' + stats.getResistPercent(DAMAGE_TYPE.LIGHTNING, true) + '</div>' +
+						'<div id="inv-resist-fire" class="inv-resist-icon popover-icons">' + stats.getResistPercent(DAMAGE_TYPE.FIRE, true) + '</div>' +
+						'<div id="inv-resist-ice" class="inv-resist-icon popover-icons">' + stats.getResistPercent(DAMAGE_TYPE.ICE, true) + '</div>' +
 					'</div>' +
 				'</div>' +
 				'<div class="flex" style="font-size: .8rem">'+

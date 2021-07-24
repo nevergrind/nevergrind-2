@@ -1,5 +1,5 @@
 
-var zones = [{
+var zones = Object.freeze([{
 		id: 0,
 		name: ZONES.salubrinHaven,
 		level: 1,
@@ -125,4 +125,4 @@ var zones = [{
 		missions: quests.filter(q => q.zone === ZONES.ashenflowPeak),
 		mobs: mob.data[ZONES.ashenflowPeak].reduce(mob.getMobImagesByZone, [])
 	},
-];
+])

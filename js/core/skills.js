@@ -2,7 +2,6 @@ var skills;
 !function($, _, TweenMax, Object, undefined) {
 	let skillValues = []
 	let lvl = 0
-	const MaxSkillLevel = 7
 	const AllZeroes = [0,0,0,0,0,0,0,0]
 
 	skills = {
@@ -171,6 +170,7 @@ var skills;
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(1, .5),
 				cooldownTime: 10,
+				addDamageBypass: true,
 				description: config => 'Strike your target dealing '+ config.damageString +' physical damage and blast up to four nearby targets dealing '+ modifiedDamageString(config.damageString, .5) +'  arcane damage. Buffs yourself with +1 stack of Consecrate up to five stacks. Consecrate buffs all resists while active.',
 			}, {
 				name: 'Seal of Damnation',
@@ -315,7 +315,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 20,
-				description: config => 'Summon astral blades that repeatedly strike a cone of five targets dealing '+ config.damageString +' arcane damage.',
+				description: config => 'Summon astral blades that repeatedly strikes up to five targets dealing '+ config.damageString +' arcane damage.',
 			}, {
 				name: 'Ravaging Plague',
 				img: 'SHD-6',
@@ -408,7 +408,7 @@ var skills;
 				critBonus: getSkillValues(1, .5),
 				requiresFrontRow: true,
 				cooldownTime: 0,
-				description: config => 'Melee up to three front-row targets with a horizontal slice dealing '+ config.damageString +'  physical damage.',
+				description: config => 'Melee up to three adjacent front-row targets with a horizontal slice dealing '+ config.damageString +'  physical damage.',
 			}, {
 				name: 'Explosive Shot',
 				img: 'RNG-2',
@@ -416,7 +416,9 @@ var skills;
 				enhancedDamage: getSkillValues(.8, .1),
 				hitBonus: getSkillValues(-5, .5),
 				critBonus: getSkillValues(1.5, .5),
+				damageType: DAMAGE_TYPE.FIRE,
 				cooldownTime: 20,
+				addDamageBypass: true,
 				isRanged: true,
 				isRangedDamage: true,
 				description: config => 'Launch an explosive fire arrow that bursts into flames hitting a cone of three targets for '+ config.damageString +' fire damage.',
@@ -457,7 +459,7 @@ var skills;
 				img: 'RNG-6',
 				mp: level => spellValues.suppressingVolleyMana[level],
 				enhancedDamage: getSkillValues(.45, .05),
-				hitBonus: getSkillValues(-91.5, .5),
+				hitBonus: getSkillValues(-1.5, .5),
 				critBonus: getSkillValues(-1.5, .5),
 				cooldownTime: 12,
 				isRanged: true,
@@ -513,11 +515,17 @@ var skills;
 				img: 'RNG-11',
 				sp: level => spellValues.shimmeringOrbMana[level],
 				spellDamage: level => spellValues.shimmeringOrb[level],
+				damageType: DAMAGE_TYPE.ARCANE,
 				spellVariance: 1,
 				spellType: PROP.CONJURATION,
 				castTime: 4,
 				cooldownTime: 5,
-				description: config => 'Buff your target with a shimmering orb that mitigates damage on your target until the shield is depleted.',
+				description: config => {
+					/*
+					description: config => 'Buffs you with a magical shield that absorbs '+ config.damageString +' damage. It reduces '+ config.mitigation[config.rank] +' damage per hit from all attacks until the shield is depleted. While active you are immune to spell channeling knockback.',
+					 */
+					return 'Buff your target with a shimmering orb that mitigates '+ config.mitigation[config.rank] +' damage per hit on your target until the shield is depleted. The orb absorbs up to ' + config.damageString + ' total damage. Your target is immune to silence while active.'
+				},
 			}, {
 				name: 'Spirit of the Hunter',
 				img: 'RNG-12',
@@ -575,6 +583,7 @@ var skills;
 				enhancedDamage: getSkillValues(.36, .04),
 				hitBonus: getSkillValues(-5.5, .5),
 				critBonus: getSkillValues(6.5, .5),
+				addDamageBypass: true,
 				cooldownTime: 21,
 				damageType: DAMAGE_TYPE.ARCANE,
 				description: config => 'Focus and explode with arcane energy hitting all targets for '+ config.damageString +' arcane damage.',
@@ -585,6 +594,7 @@ var skills;
 				enhancedDamage: getSkillValues(.88, .09),
 				critBonus: getSkillValues(2, .5),
 				cooldownTime: 12,
+				addDamageBypass: true,
 				isRanged: true,
 				damageType: DAMAGE_TYPE.FIRE,
 				isMelee: true,
@@ -607,6 +617,7 @@ var skills;
 				critBonus: getSkillValues(3.5, .5),
 				cooldownTime: 16,
 				damageType: DAMAGE_TYPE.FIRE,
+				addDamageBypass: true,
 				staggers: true,
 				isMelee: true,
 				description: config => 'Unleash a flaming uppercut on a front-row target hitting twice for '+ modifiedDamageString(config.damageString, config.damageModifier) +' and once for '+ config.damageString +' fire damage.',
@@ -635,7 +646,6 @@ var skills;
 				sp: level => spellValues.mendingAuraMana[level],
 				spellDamage: level => spellValues.mendingAura[level] + (my.level * .5),
 				spellVariance: .95,
-				spellType: PROP.ALTERATION,
 				damageType: DAMAGE_TYPE.ARCANE,
 				enhancedDamage: getSkillValues(.5, .1),
 				hitBonus: AllZeroes,
@@ -687,7 +697,7 @@ var skills;
 				hitBonus: getSkillValues(4.5, .5),
 				critBonus: getSkillValues(1, .5),
 				cooldownTime: 8,
-				description: config => 'Strike your target and deal '+ config.damageString +' physical damage. On successful hits, earn +1 stack to Furor which buffs  attack haste up to five stacks.',
+				description: config => 'Strike your target and deal '+ config.damageString +' physical damage. On successful hits, earn +1 stack to Furor which buffs attack haste up to five stacks.',
 			}, {
 				name: 'Lacerate',
 				img: 'ROG-5',
@@ -702,7 +712,7 @@ var skills;
 				img: 'ROG-6',
 				mp: level => spellValues.backstabMana[level],
 				enhancedDamage: getSkillValues(1.62, .12),
-				hitBonus: getSkillValues(-4.5, .5),
+				hitBonus: getSkillValues(2.5, .5),
 				critBonus: getSkillValues(1.5, .5),
 				cooldownTime: 16,
 				isRanged: true,
@@ -745,6 +755,7 @@ var skills;
 				cooldownTime: 10,
 				isRanged: true,
 				isPiercing: true,
+				addDamageBypass: true,
 				damageType: DAMAGE_TYPE.FIRE,
 				description: config => 'Apply explosive powder to your weapon to strike your target for '+ config.damageString +' fire damage. Disorients your target, reducing your threat and its dodge chance for '+ ng.toMinSecs(buffs.flashStrike.duration) +'.',
 			}, {
@@ -857,7 +868,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 9,
-				description: config => 'Hits a random target twice dealing '+ config.damageString +' arcane and cold damage. Chills your target for '+ ng.toMinSecs(buffs.tornado.chillDuration) +'.',
+				description: config => 'Hits a random target twice dealing '+ config.damageString +' arcane and ice damage. Chills your target for '+ ng.toMinSecs(buffs.tornado.chillDuration) +'.',
 			}, {
 				name: 'Nature\'s Touch',
 				img: 'DRU-9',
@@ -915,7 +926,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: config => 'Strike your target dealing '+ config.damageString +' arcane damage on your target.',
+				description: config => 'Strike your target dealing '+ config.damageString +' arcane damage on your target. Each cast of Smite will make the next cast of Deliverance 0.5 seconds faster.',
 			}, {
 				name: 'Deliverance',
 				img: 'CLR-2',
@@ -925,9 +936,9 @@ var skills;
 				spellType: PROP.EVOCATION,
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 2,
-				cooldownTime: 6,
+				cooldownTime: 12,
 				isBlighted: true,
-				description: config => 'Deal '+ config.damageString +' fire damage to your target that does bonus 50% damage to demons and undead.',
+				description: config => 'Deal '+ config.damageString +' fire damage to your target. Deals an additional 50% damage to demons and undead. If your target is stunned you deal an additional 50% damage.',
 			}, {
 				name: 'Condemnation',
 				img: 'CLR-3',
@@ -1352,7 +1363,7 @@ var skills;
 				damageType: DAMAGE_TYPE.BLOOD,
 				castTime: 3,
 				cooldownTime: 0,
-				description: config => 'Scorch your target dealing '+ config.damageString +' blood damage and deal an additional '+ modifiedDamageString(config.damageString, config.dotModifier) +' fire damage over time for '+ ng.toMinSecs(buffs.bloodFire.duration) +'. Debuffs target\'s armor by '+ ng.toPercent(buffs.bloodFire.debuffArmor) +'%.',
+				description: config => 'Scorch your target dealing '+ config.damageString +' blood damage and deal an additional '+ modifiedDamageString(config.damageString, config.dotModifier) +' blood damage over time for '+ ng.toMinSecs(buffs.bloodFire.duration) +'. Debuffs target\'s armor by '+ ng.toPercent(buffs.bloodFire.debuffArmor) +'%.',
 			}, {
 				name: 'Demonic Pact',
 				img: 'WLK-4',
@@ -1520,7 +1531,7 @@ var skills;
 				spellVariance: .8,
 				spellType: PROP.EVOCATION,
 				damageType: DAMAGE_TYPE.ARCANE,
-				castTime: 2,
+				castTime: 1.5,
 				cooldownTime: 30,
 				description: config => 'Blast all targets with a nova dealing '+ config.damageString +' arcane damage. Reduces hate and stuns all targets for '+ ng.toMinSecs(buffs.colorShift.stunDuration) +'.',
 			}, {
@@ -1543,7 +1554,7 @@ var skills;
 				spellVariance: 1,
 				spellType: PROP.CONJURATION,
 				damageType: DAMAGE_TYPE.ARCANE,
-				castTime: 3,
+				castTime: 1.5,
 				cooldownTime: 60,
 				isBuff: true,
 				description: config => 'Seal your target in a stasis field. All damage from and to your target is heavily reduced for '+ ng.toMinSecs(buffs.stasisField.duration) +'.',
@@ -1566,7 +1577,7 @@ var skills;
 				spellVariance: 1,
 				spellType: PROP.ALTERATION,
 				damageType: DAMAGE_TYPE.ARCANE,
-				castTime: 4.5,
+				castTime: 4,
 				cooldownTime: 0,
 				isShield: true,
 				description: config => 'Buffs you with a magical shield that absorbs '+ config.damageString +' damage. It reduces '+ config.mitigation[config.rank] +' damage per hit from all attacks until the shield is depleted. While active you are immune to spell channeling knockback.',
@@ -1640,7 +1651,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 16,
-				description: config => 'An area effect spell that strikes a cone of five targets dealing '+ config.damageString +' cold damage at intervals.',
+				description: config => 'An area effect spell that strikes up to five targets dealing '+ config.damageString +' ice damage at intervals.',
 			}, {
 				name: 'Static Storm',
 				img: 'TMP-4',
@@ -1674,7 +1685,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ICE,
 				castTime: 4,
 				cooldownTime: 30,
-				description: config => 'Freeze your target for '+ buffs.glacialSpike.freezeDuration +' seconds and inflict '+ config.damageString +' cold damage. Splash damage hits nearby targets for half damage and chills them for '+ buffs.glacialSpike.chillDuration +' seconds.',
+				description: config => 'Freeze your target for '+ buffs.glacialSpike.freezeDuration +' seconds and inflict '+ config.damageString +' ice damage. Splash damage hits up to four nearby targets for half damage and chills them for '+ buffs.glacialSpike.chillDuration +' seconds.',
 			}, {
 				name: 'Primordial Sludge',
 				img: 'TMP-7',
@@ -1763,7 +1774,7 @@ var skills;
 				spellVariance: .9,
 				spellType: PROP.EVOCATION,
 				damageType: DAMAGE_TYPE.ICE,
-				castTime: 2.5,
+				castTime: 1.5,
 				cooldownTime: 0,
 				description: config => 'Blast your target dealing '+ config.damageString +' ice damage. Reduces threat and chills your target for '+ ng.toMinSecs(buffs.iceBolt.chillDuration) +'.',
 			}, {
@@ -1807,9 +1818,9 @@ var skills;
 				spellVariance: .825,
 				spellType: PROP.CONJURATION,
 				damageType: DAMAGE_TYPE.LIGHTNING,
-				castTime: 3.5,
+				castTime: 3,
 				cooldownTime: 12,
-				description: config => 'A lightning bolt crackles through a row to your target dealing '+ config.damageString +' lightning damage.',
+				description: config => 'A lightning bolt crackles through a cone of five targets dealing '+ config.damageString +' lightning damage.',
 			}, {
 				name: 'Frost Nova',
 				img: 'WIZ-7',
@@ -1831,7 +1842,7 @@ var skills;
 				damageType: DAMAGE_TYPE.FIRE,
 				castTime: 5,
 				cooldownTime: 45,
-				description: config => 'Hits a cone of five targets dealing '+ config.damageString +' fire damage. Burning flames in the meteor\'s wake cause additional direct fire damage at intervals over '+ ng.toMinSecs(buffs.meteorStrike.duration) +'.',
+				description: config => 'Hits up to five targets dealing '+ config.damageString +' fire damage. Burning flames in the meteor\'s wake cause additional direct fire damage at intervals over '+ ng.toMinSecs(buffs.meteorStrike.duration) +'.',
 			}, {
 				name: 'Frozen Barrier',
 				img: 'WIZ-9',
@@ -1873,7 +1884,7 @@ var skills;
 				spellVariance: .875,
 				spellType: PROP.ALTERATION,
 				damageType: DAMAGE_TYPE.ICE,
-				castTime: 3,
+				castTime: 2.5,
 				cooldownTime: 30,
 				description: config => 'Strike your target dealing '+ config.damageString +' ice damage that reduces threat and freezes your target for '+ ng.toMinSecs(config.freezeDuration) +'.',
 			},
@@ -2158,7 +2169,9 @@ var skills;
 	// shm: 23/21 // clr: 624/727 dru: 584/708
 	// nec: 27/16 // wiz: 812/416
 					  // [0, 4, 8, 12, 15, 18, 20, 22]
-	const baseManaTier = [0, 4, 6, 10, 22, 45, 78, 100]
+	// [0, 4, 6, 10, 22, 45, 78, 100] // old value
+	// [0, 4, 6, 9, 15, 22, 31, 40] old value 2
+	const baseManaTier = [0, 4, 6, 9, 13, 18, 24, 30]
 	function getManaTier(multiplier) {
 		return baseManaTier.map(v => round(v * multiplier))
 	}
@@ -2498,10 +2511,7 @@ var skills;
 			isMob: true,
 		}
 	}
-	function cannotCast() {
-		return my.buffFlags.silenced ||
-			my.buffFlags.frozenBarrier
-	}
+
 	function notReady(config, skillData = {}) {
 		if (timers.castBar < 1 ||
 			(config.global && timers.globalCooldown < 1) ||
@@ -2544,7 +2554,7 @@ var skills;
 			else {
 				// console.info('config', config)
 				if (my.targetIsMob || my.target === -1) {
-					console.info('config', config)
+					// console.info('config', config)
 					ng.msg('You must target a player with this skill.', undefined, COLORS.red)
 					return true
 				}
@@ -2597,7 +2607,7 @@ var skills;
 
 	function getSkillValues(start, increment) {
 		skillValues = [0, start]
-		for (lvl=2; lvl<=MaxSkillLevel; lvl++) {
+		for (lvl=2; lvl<=MAX_SKILL_LEVEL; lvl++) {
 			start = +((start + increment).toFixed(2))
 			skillValues.push(start)
 		}

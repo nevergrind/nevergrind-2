@@ -53,9 +53,7 @@
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		splashIndex = -1
-		for (var i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			hit = stats.skillDamage(tgt, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
@@ -65,7 +63,7 @@
 				hitBonus: data.hitBonus[my.skills[index]],
 				effects: { stagger: skills.CRU[1].staggers },
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
@@ -118,6 +116,7 @@
 				key: 'consecrate',
 				index: tgt,
 				damageType: originalTarget === tgt ? DAMAGE_TYPE.PHYSICAL : DAMAGE_TYPE.ARCANE,
+				addDamageBypass: data.addDamageBypass,
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})
@@ -125,7 +124,7 @@
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
-
+		// self buff
 		combat.txBuffHero([{
 			key: 'consecrateBuff',
 			index: my.row,

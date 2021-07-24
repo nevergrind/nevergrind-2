@@ -2,14 +2,14 @@
 mob.type = {
 	[MOB_IMAGES.balrog]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DEMON,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: .7,
 			ice: 1,
 		},
 		sfxAttack: 'balrog-attack',
@@ -20,15 +20,15 @@ mob.type = {
 	},
 	[MOB_IMAGES.iceGolem]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
-			blood: 1,
+			blood: .85,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
 			fire: 1,
-			ice: 1,
+			ice: .85,
 		},
 		sfxAttack: 'golem-attack',
 		sfxHit: 'golem-hit',
@@ -38,10 +38,10 @@ mob.type = {
 	},
 	[MOB_IMAGES.stoneGolem]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
-			blood: 1,
+			blood: .85,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
@@ -56,10 +56,10 @@ mob.type = {
 	},
 	[MOB_IMAGES.ironGolem]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
-			blood: 1,
+			blood: .85,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
@@ -74,7 +74,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.treant]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
@@ -92,7 +92,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.spider]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -110,7 +110,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.wolf]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -128,7 +128,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.wolfArctic]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -136,7 +136,7 @@ mob.type = {
 			arcane: 1,
 			lightning: 1,
 			fire: 1,
-			ice: 1,
+			ice: .7,
 		},
 		sfxAttack: 'wolf-attack',
 		sfxHit: 'wolf-hit',
@@ -146,7 +146,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.rat]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -164,7 +164,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.snake]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -182,7 +182,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.dragonkin]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
@@ -200,14 +200,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.lizardman]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: .85,
 			ice: 1,
 		},
 		sfxAttack: 'lizardman-attack',
@@ -218,7 +218,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.dragon]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
@@ -236,14 +236,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.dragonFire]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: .7,
 			ice: 1,
 		},
 		sfxAttack: 'dragon-attack',
@@ -254,11 +254,11 @@ mob.type = {
 	},
 	[MOB_IMAGES.dragonPoison]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
-			poison: 1,
+			poison: .7,
 			arcane: 1,
 			lightning: 1,
 			fire: 1,
@@ -272,7 +272,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.dragonFrost]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
@@ -280,7 +280,7 @@ mob.type = {
 			arcane: 1,
 			lightning: 1,
 			fire: 1,
-			ice: 1,
+			ice: .7,
 		},
 		sfxAttack: 'dragon-attack',
 		sfxHit: 'dragon-hit',
@@ -290,7 +290,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.dragonPlains]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
@@ -308,7 +308,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.dragonWater]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
@@ -326,7 +326,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.dragonForest]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
@@ -344,7 +344,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.dragonDesert]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DRAGONKIN,
 		resist: {
 			blood: 1,
@@ -362,14 +362,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.ghoul]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: 1.1,
 			ice: 1,
 		},
 		sfxAttack: 'ghoul-attack',
@@ -380,14 +380,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.mummy]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: 1.1,
 			ice: 1,
 		},
 		sfxAttack: 'zombie-attack',
@@ -398,14 +398,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.skeleton]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: 1.1,
 			ice: 1,
 		},
 		sfxAttack: 'skeleton-attack',
@@ -416,14 +416,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.zombie]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: 1.1,
 			ice: 1,
 		},
 		sfxAttack: 'zombie-attack',
@@ -434,14 +434,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.vampire]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.UNDEAD,
 		resist: {
-			blood: 1,
+			blood: .85,
 			poison: 1,
-			arcane: 1,
+			arcane: .85,
 			lightning: 1,
-			fire: 1,
+			fire: 1.1,
 			ice: 1,
 		},
 		sfxAttack: 'vampire-attack',
@@ -452,7 +452,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.goblin]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
@@ -470,14 +470,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.goblinFire]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: .85,
 			ice: 1,
 		},
 		sfxAttack: 'goblin-attack',
@@ -488,7 +488,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.goblinIce]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
@@ -496,7 +496,7 @@ mob.type = {
 			arcane: 1,
 			lightning: 1,
 			fire: 1,
-			ice: 1,
+			ice: .85,
 		},
 		sfxAttack: 'goblin-attack',
 		sfxHit: 'goblin-hit',
@@ -506,7 +506,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.hobgoblin]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
@@ -524,7 +524,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.kobold]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
@@ -542,7 +542,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.orc]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
@@ -560,13 +560,13 @@ mob.type = {
 	},
 	[MOB_IMAGES.griffon]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
-			arcane: 1,
-			lightning: 1,
+			arcane: .85,
+			lightning: .85,
 			fire: 1,
 			ice: 1,
 		},
@@ -578,13 +578,13 @@ mob.type = {
 	},
 	[MOB_IMAGES.harpy]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
-			lightning: 1,
+			lightning: .85,
 			fire: 1,
 			ice: 1,
 		},
@@ -592,11 +592,11 @@ mob.type = {
 		sfxHit: 'harpy-hit',
 		sfxDeath: 'harpy-death',
 		sfxIdle: undefined,
-		sfxSpecial: 'harpy-special',
+		sfxSpecial: undefined,
 	},
 	[MOB_IMAGES.werewolf]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
@@ -614,7 +614,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.centaur]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
@@ -632,14 +632,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.cerberus]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: .7,
 			ice: 1,
 		},
 		sfxAttack: 'cerberus-attack',
@@ -650,11 +650,11 @@ mob.type = {
 	},
 	[MOB_IMAGES.fungoid]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
-			poison: 1,
+			poison: .7,
 			arcane: 1,
 			lightning: 1,
 			fire: 1,
@@ -668,12 +668,12 @@ mob.type = {
 	},
 	[MOB_IMAGES.gargoyle]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
-			arcane: 1,
+			arcane: .85,
 			lightning: 1,
 			fire: 1,
 			ice: 1,
@@ -686,7 +686,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.beetle]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -704,14 +704,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.imp]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.DEMON,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: .85,
 			ice: 1,
 		},
 		sfxAttack: 'imp-attack',
@@ -722,7 +722,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.minotaur]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
@@ -740,13 +740,13 @@ mob.type = {
 	},
 	[MOB_IMAGES.aviak]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
-			lightning: 1,
+			lightning: .85,
 			fire: 1,
 			ice: 1,
 		},
@@ -758,7 +758,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.elephant]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -776,7 +776,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.lion]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -794,14 +794,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.crocodile]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: .85,
 			ice: 1,
 		},
 		sfxAttack: 'crocodile-attack',
@@ -812,7 +812,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.rhino]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -830,7 +830,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.lioness]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -848,7 +848,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.bear]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -866,7 +866,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.bearPolar]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
@@ -874,7 +874,7 @@ mob.type = {
 			arcane: 1,
 			lightning: 1,
 			fire: 1,
-			ice: 1,
+			ice: .7,
 		},
 		sfxAttack: 'bear-attack',
 		sfxHit: 'bear-hit',
@@ -884,14 +884,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.toadlok]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
-			poison: .7,
+			poison: .85,
 			arcane: 1,
 			lightning: 1,
-			fire: .7,
+			fire: .85,
 			ice: 1,
 		},
 		sfxAttack: 'toadlok-attack',
@@ -902,10 +902,10 @@ mob.type = {
 	},
 	[MOB_IMAGES.giant]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.GIANT,
 		resist: {
-			blood: 1,
+			blood: .85,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
@@ -920,7 +920,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.iceGiant]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.GIANT,
 		resist: {
 			blood: 1,
@@ -928,7 +928,7 @@ mob.type = {
 			arcane: 1,
 			lightning: 1,
 			fire: 1,
-			ice: 1,
+			ice: .7,
 		},
 		sfxAttack: 'giant-attack',
 		sfxHit: 'giant-hit',
@@ -938,14 +938,14 @@ mob.type = {
 	},
 	[MOB_IMAGES.fireGiant]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.GIANT,
 		resist: {
 			blood: 1,
 			poison: 1,
 			arcane: 1,
 			lightning: 1,
-			fire: 1,
+			fire: .7,
 			ice: 1,
 		},
 		sfxAttack: 'giant-attack',
@@ -956,12 +956,12 @@ mob.type = {
 	},
 	[MOB_IMAGES.spectre]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.UNDEAD,
 		resist: {
 			blood: 1,
 			poison: 1,
-			arcane: 1,
+			arcane: .85,
 			lightning: 1,
 			fire: 1,
 			ice: 1,
@@ -974,7 +974,7 @@ mob.type = {
 	},
 	[MOB_IMAGES.angler]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.HUMANOID,
 		resist: {
 			blood: 1,
@@ -992,12 +992,12 @@ mob.type = {
 	},
 	[MOB_IMAGES.evilEye]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
-			arcane: 1,
+			arcane: .85,
 			lightning: 1,
 			fire: 1,
 			ice: 1,
@@ -1010,13 +1010,13 @@ mob.type = {
 	},
 	[MOB_IMAGES.unicorn]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.MYSTICAL,
 		resist: {
 			blood: 1,
 			poison: 1,
-			arcane: 1,
-			lightning: 1,
+			arcane: .85,
+			lightning: .7,
 			fire: 1,
 			ice: 1,
 		},
@@ -1028,11 +1028,11 @@ mob.type = {
 	},
 	[MOB_IMAGES.scorpion]: {
 		hp: 1,
-		armor: .8,
+		armor: 1,
 		mobType: MOB_TYPES.BEAST,
 		resist: {
 			blood: 1,
-			poison: 1,
+			poison: .85,
 			arcane: 1,
 			lightning: 1,
 			fire: 1,

@@ -2,6 +2,7 @@ var my;
 !function($, _, TweenMax, Date, undefined) {
 	my = {
 		//hud,
+		isInvulnerable,
 		targetCleared,
 		stunTimeValid,
 		fearTimeValid,
@@ -78,7 +79,7 @@ var my;
 		buffs: {},
 		buffFlags: {},
 		buffIconTimers: {},
-		stunMod,
+		getDiminishingStatusDurationByType,
 		effects: {
 			stun: { time: 0, count: 0, },
 			fear: { time: 0, count: 0, },
@@ -98,7 +99,7 @@ var my;
 	let time = 0
 	////////////////////////////////////
 	// time valid check
-	function stunMod(duration, type) {
+	function getDiminishingStatusDurationByType(duration, type) {
 		time = Date.now()
 		if (time - my.effects[type].time > EFFECT_COOLDOWN) {
 			my.effects[type].time = time
@@ -110,49 +111,58 @@ var my;
 			if (my.effects[type].count === 1) duration = duration * .66
 			else duration = duration * .33
 		}
+		// console.info('getDiminishingStatusDurationByType d', duration)
 		return duration
 	}
 	function stunTimeValid(duration) {
+		// console.info('stunTimeValid', typeof my.buffs.stun, duration, my.buffs?.stun?.duration)
 		return typeof my.buffs.stun === 'undefined' ||
-			typeof my.buffs.stun === 'object' && duration >= my.buffs.stun.duration
+			typeof my.buffs.stun?.duration === 'undefined' ||
+			(typeof my.buffs.stun === 'object' && duration >= my.buffs.stun.duration)
 	}
 	function fearTimeValid(duration) {
 		return typeof my.buffs.fear === 'undefined' ||
-			typeof my.buffs.fear === 'object' && duration >= my.buffs.fear.duration
+			typeof my.buffs.fear?.duration === 'undefined' ||
+			(typeof my.buffs.fear === 'object' && duration >= my.buffs.fear.duration)
 	}
 	function paralyzeTimeValid(duration) {
 		return typeof my.buffs.paralyze === 'undefined' ||
-			typeof my.buffs.paralyze === 'object' && duration >= my.buffs.paralyze.duration
+			typeof my.buffs.paralyze?.duration === 'undefined' ||
+			(typeof my.buffs.paralyze === 'object' && duration >= my.buffs.paralyze.duration)
 	}
 	function silenceTimeValid(duration) {
 		return typeof my.buffs.silence === 'undefined' ||
-			typeof my.buffs.silence === 'object' && duration >= my.buffs.silence.duration
+			typeof my.buffs.silence?.duration === 'undefined' ||
+			(typeof my.buffs.silence === 'object' && duration >= my.buffs.silence.duration)
 	}
 	function chillTimeValid(duration) {
 		return typeof my.buffs.chill === 'undefined' ||
-			typeof my.buffs.chill === 'object' && duration >= my.buffs.chill.duration
+			typeof my.buffs.chill?.duration === 'undefined' ||
+			(typeof my.buffs.chill === 'object' && duration >= my.buffs.chill.duration)
 	}
 	function freezeTimeValid(duration) {
 		return typeof my.buffs.freeze === 'undefined' ||
-			typeof my.buffs.freeze === 'object' && duration >= my.buffs.freeze.duration
+			typeof my.buffs?.freeze?.duration === 'undefined' ||
+			(typeof my.buffs.freeze === 'object' && duration >= my.buffs.freeze.duration)
 	}
 	// effect resist checks
 	function stunCheck() {
-		return _.random(1, 100) > stats.resistStun()
+		return !my.isInvulnerable() && _.random(1, 100) > stats.resistStun()
 	}
 	function fearCheck() {
-		return _.random(1, 100) > stats.resistFear()
+		return !my.isInvulnerable() && _.random(1, 100) > stats.resistFear()
 	}
 	function paralyzeCheck() {
-		return _.random(1, 100) > stats.resistParalyze()
+		return !my.isInvulnerable() && _.random(1, 100) > stats.resistParalyze()
 	}
 	function paralyzeCheckRoll(val) {
-		return my.isParalyzed() &&
+		return !my.isInvulnerable() && my.isParalyzed() &&
 			rand() > (val || ParalyzeRate) &&
 			_.random(0, 100) > stats.resistParalyze()
 	}
 	function silenceCheck() {
-		return _.random(1, 100) > stats.resistSilence()
+		return !my.buffFlags.shimmeringOrb &&
+			_.random(1, 100) > stats.resistSilence()
 	}
 	function chillCheck() {
 		return true
@@ -178,6 +188,11 @@ var my;
 	}
 	function isFrozen() {
 		return my.buffFlags.freeze
+	}
+	function isInvulnerable() {
+		return my.buffFlags.frozenBarrier ||
+			my.buffFlags.jumpStrike ||
+			my.buffFlags.sealOfSanctuary
 	}
 	function stunMsg() {
 		ng.msg('You are stunned!', undefined, COLORS.red)
@@ -243,19 +258,21 @@ var my;
 		}
 	}
 	function fixTarget() {
-		if (typeof mobs[my.target] === 'undefined' || !mob.isAlive(my.target)) {
-			tabTarget({ shiftKey: false })
+		if (my.targetIsMob) {
+			if (typeof mobs[my.target] === 'undefined' || !mob.isAlive(my.target)) {
+				tabTarget({ shiftKey: false })
+			}
 		}
 	}
 	function setTarget(i) {
-		if (timers.castBar < 1 || my.hp <= 0) return
+		if (my.hp <= 0) return
 		my.target = i
 		my.targetIsMob = true
 		if (!mobs[my.target].name) fixTarget()
 		else combat.targetChanged()
 	}
 	function tabTarget(event, tries = 0) {
-		if (ng.view !== 'battle' || timers.castBar < 1 || my.hp <= 0) return
+		if (ng.view !== 'battle' || my.hp <= 0) return
 
 		if (my.target >= mob.max) {
 			// out of range - from player to mob target
@@ -287,21 +304,24 @@ var my;
 		combat.targetChanged()
 	}
 	function partyTarget(index, toggleEnabled = true) {
-		if (timers.castBar < 1) return
-		if (typeof party.presence[index] === 'object' &&
-			party.presence[index].row >= 0) {
-			my.targetIsMob = false
-			if (toggleEnabled && my.target === party.presence[index].row) my.target = -1
-			else my.target = party.presence[index].row
-			combat.targetChanged()
-		}
-		else {
-			chat.log('Target failed! Player not found.', CHAT.WARNING)
+		if (ng.view === 'dungeon' ||
+			ng.view === 'battle') {
+			// if (timers.castBar < 1) return
+			if (typeof party.presence[index] === 'object' &&
+				party.presence[index].row >= 0) {
+				my.targetIsMob = false
+				if (toggleEnabled && my.target === party.presence[index].row) my.target = -1
+				else my.target = party.presence[index].row
+				combat.targetChanged()
+			}
+			else {
+				chat.log('Target failed! Player not found.', CHAT.WARNING)
+			}
 		}
 	}
 	function getResistObject() {
 		var resp = {}
-		ng.resists.forEach(function(type) {
+		ng.resists.forEach(type => {
 			resp[type] = create.getResist(type, my)
 		})
 		return resp

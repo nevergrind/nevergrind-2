@@ -67,6 +67,7 @@ var router;
 		else if (r === 'p->buff') combat.rxBuffHero(data)
 		else if (r === 'p->casting') party.casting(data)
 		else if (r === 'p->checkWipe') party.rxCheckWipe(data)
+		else if (r === 'p->roomCleared') map.rxRoomCleared(data)
 	}
 	function toGuild(data, route) {
 		if (route === 'guild->hasJoined') guild.hasJoined(data)

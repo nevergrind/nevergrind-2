@@ -62,8 +62,6 @@ let mobs = [];
 		element: {},
 		centerX: [192,576,960,1344,1728,384,768,1152,1536],
 		bottomY: [240,240,240,240,240,340,340,340,340],
-		earnedExp: 0,
-		earnedGold: 0,
 		leveledUp: false,
 	};
 	var percent, row, val, mostHatedRow, mostHatedValue, index, mobDamages, len, el, chance
@@ -307,11 +305,11 @@ let mobs = [];
 					// can't go lower than the zone minimum
 					r.level = zones[mission.id].level
 				}
-				else if (my.level <= 2 &&
+				/*else if (my.level <= 2 &&
 					r.level > my.level) {
 					// restrict level for first few missions to player level
 					r.level = my.level
-				}
+				}*/
 			})
 		}
 
@@ -335,7 +333,12 @@ let mobs = [];
 			}
 
 			// console.info('q?', q.level, q.img)
-			if (q.level && q.img) {
+			if (q.job) {
+				// test only?
+				if (m.job === q.job) return true
+				else return false
+			}
+			else if (q.level && q.img) {
 				// by level and img
 				if (m.img === q.img &&
 					m.minLevel <= q.level && q.level <= m.maxLevel) {
@@ -400,27 +403,29 @@ let mobs = [];
 		}
 		return goldFound
 	}
-	function getMobExp(index) {
-		let exp = mobs[index].level * mobs[index].expPerLevel
+	function getMobExp(level, multiplier) {
+		let exp = level * multiplier
 		// how many were in party when combat started?
 		exp = exp * party.combatStartLength
-		if (party.combatStartLength === 5) exp = exp * 1.1 // 10% exp bonus for a full group
+		if (party.combatStartLength === party.maxPlayers) exp = exp * 1.1 // 10% exp bonus for a full group
 
 		// adjusted for being too high or low level
-		let ratioIndex = combat.getLevelDifferenceIndex(mobs[index].level)
+		let ratioIndex = combat.getLevelDifferenceIndex(level)
 		exp = round(exp * battle.earnedExpRatio[ratioIndex])
+		const maxExp = ~~((battle.nextLevel() - battle.expThreshold[my.level]) * .1)
+		// sanity check value
+		if (exp < 1) exp = 1
+		else if (exp > maxExp) exp = maxExp
 
 		// penalize for party members that are much higher
 		if (party.expBrokenByAll()) exp = 0
+		// console.info('exp:', exp)
 		return exp
 	}
 	function isAnyMobAlive() {
 		return mobs.some(mob => mob.hp > 0)
 	}
 	function setMob(i, mobConfig, dataFromLeader) {
-		mob.earnedExp = 0
-		mob.earnedGold = 0
-		mob.leveledUp = false
 		if (!dataFromLeader) {
 			// leader gets this
 			mobConfig = {
@@ -522,10 +527,13 @@ let mobs = [];
 	}
 	function updateMobName(i) {
 		el = querySelector('#mob-name-' + i)
-		el.innerHTML = mobs[i].name;
-		el.className = 'mob-name text-shadow3'
+		el.innerHTML = mobs[i].name
+		el.className = 'mob-name text-shadow3 ' + battle.getMobClassNameByTier(i)
 		// console.info('updateMobName', i, mobs[i].level)
-		el.classList.add(combat.considerClass[combat.getLevelDifferenceIndex(mobs[i].level)])
+		// el.classList.add()
+		el = querySelector('#mob-level-' + i)
+		el.className = battle.getMobClassNameByLevel(i)
+		el.textContent = mobs[i].level
 	}
 	function setClickBox(m, i) {
 		// alive box
@@ -564,15 +572,26 @@ let mobs = [];
 	function setSrc(i) {
 		mobs[i].frame = ~~mobs[i].frame
 		if (mobs[i].frame !== mobs[i].lastFrame) {
-			if (mobs[i].img && typeof mob.textures[mobs[i].img] === 'object') {
-				mobs[i].shadow.texture = mobs[i].sprite.texture = mob.textures[mobs[i].img][mobs[i].frame]
-				mobs[i].lastFrame = mobs[i].frame
+			// prob should do this on prod
+			if (Config.safeAnimate) {
+				setFrame(i)
 			}
 			else {
-				console.warn('setSrc', i, mobs[i].img)
-				// dungeon.preloadCombatAssets()
+				// for finding problems on dev
+				if (mobs[i].img && typeof mob.textures[mobs[i].img] === 'object') {
+					setFrame(i)
+				}
+				else {
+					console.warn('setSrc', i, mobs[i].img)
+					dungeon.preloadCombatAssets()
+				}
+
 			}
 		}
+	}
+	function setFrame(i) {
+		mobs[i].shadow.texture = mobs[i].sprite.texture = mob.textures[mobs[i].img][mobs[i].frame]
+		mobs[i].lastFrame = mobs[i].frame
 	}
 	function resetIdle(i) {
 		mobs[i].isAnimationActive = false
@@ -908,12 +927,11 @@ let mobs = [];
 		if (spKillVal) {
 			combat.updateMyResource(PROP.SP, spKillVal)
 		}
-		mob.earnedGold += battle.addGold(mobs[i].gold)
-		// earn mob exp -
-		mob.earnedExp += battle.addExp(mob.getMobExp(i))
 		// death sound effect
 		audio.playSound(mobs[i].sfxDeath, 'mobs')
-		battle.reckonGXL() // killed a mob
+		battle.upsertGX(
+			mob.getMobExp(mobs[i].level, mobs[i].expPerLevel),
+			battle.addGold(mobs[i].gold))
 	}
 
 	function resourceTick() {
@@ -932,7 +950,9 @@ let mobs = [];
 		}
 	}
 	function processMobResourceTick(m, index, tickData) {
-		if (mob.isAlive(index)) {
+		// only bloodlusted mobs regen - helps AE spells and reduces net lag
+		if (mob.isAlive(index) &&
+			m.traits.bloodlusted) {
 			hpTick = m.traits.bloodlusted ? m.level * 3 : 0
 			// console.info('hpTick', hpTick)
 			if (m.level >= 5 &&

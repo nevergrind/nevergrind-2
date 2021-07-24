@@ -61,20 +61,19 @@
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		let splashIndex = -1
-		let tgt
-		for (var i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			hit = stats.rangedDamage(tgt, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
 				key: 'explosiveShot',
 				index: tgt,
+				addDamageBypass: data.addDamageBypass,
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
-				damageType: spell.data.damageType,
+				damageType: data.damageType,
 			})
-		}
+			console.info('damages', damages)
+		})
 		combat.txDamageMob(damages)
 
 		// animate timers
@@ -194,10 +193,7 @@
 		// process skill data
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		let splashIndex = -1
-		let tgt
-		for (var i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			hit = stats.rangedDamage(tgt, data.critBonus[my.skills[index]])
 			damages.push({
 				...hit,
@@ -211,7 +207,7 @@
 					key: 'suppressingVolley', // this sets the flag
 				}],
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		// animate timers
 		spell.triggerSkillCooldown(index, data)

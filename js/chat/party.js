@@ -5,12 +5,12 @@ var party;
 		prefix: (sessionStorage.getItem('reloads') ? +sessionStorage.getItem('reloads') : 1),
 		presence: [],
 		color: [
-			'#e11',
-			'#05b',
-			'#dd0',
-			'#080',
-			'#0dd',
-			'#a0f',
+			'#ad1611',
+			'#15a',
+			'#991',
+			'#161',
+			'#ad1789',
+			'#b51',
 		],
 		combatStartLength: 1,
 		maxPlayers: 5,
@@ -162,10 +162,14 @@ var party;
 			updateMp && bar.updateBar(PROP.MP, data)
 			updateSp && bar.updateBar(PROP.SP, data)
 
-			if (updateHp &&
-				data.hp <= 0 &&
-				!party.presence.isDead) {
-				party.memberDied(index)
+			if (updateHp) {
+				if (typeof data.healAmount === 'number' &&
+					data.healAmount) {
+					combat.popupDamage(data.row, data.healAmount, {isHeal: true, targetMob: false})
+				}
+				if (data.hp <= 0 && !party.presence.isDead) {
+					party.memberDied(index)
+				}
 			}
 		}
 	}
@@ -323,6 +327,11 @@ var party;
 				});
 				var len = party.presence.length - 1
 				bar.addPlayer(party.presence[len], data.row)
+				if (Config.mockFullParty) {
+					for (var i=0; i<Config.mockFullPartySize - 1; i++) {
+						bar.addPlayer(party.presence[len], data.row)
+					}
+				}
 				checkUpdateBars(data, party.presence[len])
 				bar.updatePlayerBar(data)
 				player.updateAllPlayerSprites()
@@ -476,7 +485,7 @@ var party;
 		}
 		else {
 			if (my.name === name) {
-				chat.log('You cannot boot yourself! Try disbanding instead.');
+				chat.log('You cannot boot yourself! Try disbanding instead.', CHAT.WARNING);
 			}
 			else {
 				// must be leader or bypass by auto-election when leader leaves

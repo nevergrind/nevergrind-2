@@ -229,6 +229,7 @@ var button;
 			+ (isPrimary ? '' : 'Secondary')
 	}
 	function primaryAttack(isPiercing, index) {
+		// console.info('primaryAttack', Date.now())
 		// piercing is a riposte
 		if (isPiercing) {
 			if (ng.view !== 'battle' || my.hp <= 0) return
@@ -247,7 +248,9 @@ var button;
 				return
 			}
 		}
+		// console.info('primaryAttack SWING!', Date.now())
 
+		// this seems retarded?
 		if (typeof index === 'undefined') {
 			// ripostes target index - makes it possible to riposte while targeting party
 			my.fixTarget()
@@ -332,8 +335,7 @@ var button;
 		return my.dualWield / 350
 	}
 	function cannotAutoAttack() {
-		return (!HYBRID_AUTO_ATTACKERS.includes(my.job) && timers.castBar < 1) ||
-			!my.targetIsMob ||
+		return !my.targetIsMob ||
 			my.buffFlags.frozenBarrier ||
 			my.isStunned()
 	}
@@ -352,11 +354,12 @@ var button;
 			el = '#skill-timer-secondary-rotate'
 		}
 
-		if (!HYBRID_AUTO_ATTACKERS.includes(my.job) && timers.castBar < 1) {
+		// cannot start swing if casting
+		/*if (timers.castBar < 1) {
 			timers[key + CALL].kill()
 			timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
 			return
-		}
+		}*/
 
 		TweenMax.set(el, CSS.DISPLAY_BLOCK)
 		let o = {
@@ -384,18 +387,18 @@ var button;
 		timers[key + CALL] = delayedCall(mySwingSpeed, button[key])
 	}
 	function pauseAutoAttack() {
-		if (!HYBRID_AUTO_ATTACKERS.includes(my.job)) {
+		/*if (!HYBRID_AUTO_ATTACKERS.includes(my.job)) {
 			timers['primaryAttack' + CYCLE].pause()
 			timers['secondaryAttack' + CYCLE].pause()
 			timers['primaryAttack' + CALL].pause()
 			timers['secondaryAttack' + CALL].pause()
-		}
+		}*/
 	}
 	function resumeAutoAttack() {
-		timers['primaryAttack' + CYCLE].resume()
+		/*timers['primaryAttack' + CYCLE].resume()
 		timers['secondaryAttack' + CYCLE].resume()
 		timers['primaryAttack' + CALL].resume()
-		timers['secondaryAttack' + CALL].resume()
+		timers['secondaryAttack' + CALL].resume()*/
 	}
 	function getPunchDps(min, max) {
 		return (((min + max) / 2) / button.autoAttackSpeed)
@@ -491,8 +494,7 @@ var button;
 		return str
 	}
 	function updateWeaponPanel() {
-		let el = querySelector('#main-attack-wrap')
-		if (!!el) el.innerHTML = getWeaponButtonHtml()
+		ng.html('#main-attack-wrap', getWeaponButtonHtml())
 	}
 	function getPotionPanelHtml() {
 		return `
@@ -530,7 +532,7 @@ var button;
 	function handlePotionSlotContextClick(event) {
 		let type = this.id.split('-')[1]
 		if (ng.view === 'town') {
-			chat.log('You cannot drink potions in town!', CHAT.WARNING)
+			ng.msg('You cannot drink potions in town!', undefined, COLORS.yellow)
 			return false
 		}
 		else if (my.hp > 0) {
@@ -574,13 +576,30 @@ var button;
 			var s = '';
 			// base attack buttons
 			s += `
-			<div id="main-attack-wrap">
-				${getWeaponButtonHtml()}
-			</div>
-			<div id="potion-wrap" class="text-shadow">
-				${getPotionPanelHtml()}
-			</div>
 			<div id="skill-col">
+				<div id="skill-util-wrap">
+					<div id="main-attack-wrap">
+						${getWeaponButtonHtml()}
+					</div>
+					<div id="potion-wrap" class="text-shadow">
+						${getPotionPanelHtml()}
+					</div>
+				</div>
+				<div id="status-panel-wrap" class="no-pointer">
+					<div id="cast-bar-wrap" class="flex-column no-pointer">
+						<div id="cast-bar-base" class="flex-column flex-max stag-blue">
+							<div id="cast-bar-flex">
+								<img id="cast-bar-icon" />
+								<div id="cast-bar-parent">
+									<div id="cast-bar">
+										<img id="cast-bar-glow" src="images/ui/cast-bar-glow.png">
+									</div>
+									<div id="cast-bar-name" class="text-shadow3"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div id="exp-bar-wrap">
 					<div id="exp-bar"></div>
 					<div id="exp-bar-grid"></div>
@@ -599,27 +618,12 @@ var button;
 			}
 			s += `</div>
 			</div>
-			<div id="status-panel-wrap" class="no-pointer">
-				<div id="cast-bar-wrap" class="flex-column no-pointer">
-					<div id="cast-bar-base" class="flex-column flex-max stag-blue">
-						<div id="cast-bar-flex">
-							<img id="cast-bar-icon" />
-							<div id="cast-bar-parent">
-								<div id="cast-bar">
-									<img id="cast-bar-glow" src="images/ui/cast-bar-glow.png">
-								</div>
-								<div id="cast-bar-name" class="text-shadow3"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
 			`
 
 			querySelector('#button-wrap').innerHTML = s;
 			button.initialized = true
 			battle.drawExpBar(0, 0)
-			console.warn('SKILL BAR DRAWN')
+			// console.warn('SKILL BAR DRAWN')
 		}
 		updateBtnEnabled()
 	}

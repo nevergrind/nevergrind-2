@@ -89,7 +89,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 10,
 			job: JOB.RANGER,
 			mitigation: [0, 2, 4, 7, 9, 12, 15, 19],
-			isBuff: true,
+			// isBuff: true,
 			msg: () => 'A luminescent aura wraps you in a protective shell.',
 			fadeMsg: 'The luminescent aura fades.'
 		},
@@ -163,7 +163,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.CLERIC,
 			duration: 720,
 			hpMax: [0, 45, 90, 135, 180, 225, 270, 315],
-			resistBlood: [0, 16, 28, 40, 52, 64, 76, 88],
+			resistBlood: [0, 16, 28, 40, 52, 64, 76, 88].map(util.divideBy4),
 			msg: () => 'Your forehead is emblazoned with a crimson seal.',
 			fadeMsg: 'Your crimson seal fades.'
 		},
@@ -189,7 +189,6 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 24,
 			spellType: '',
 			bonusDamage: .05,
-			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		ruptureDot: {
 			name: 'Rupture',
@@ -310,7 +309,7 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 720,
 			hate: 0,
 			silence: [0, 3, 5, 7, 9, 11, 13, 15],
-			resistAll: [0, 10, 15, 20, 25, 30, 35, 40],
+			resistAll: [0, 10, 15, 20, 25, 30, 35, 40].map(util.divideBy4),
 			knockback: 10,
 			isBuff: true,
 			msg: () => 'You are protected by a mana shell.',
@@ -537,7 +536,7 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 900,
 			str: [0, 8, 12, 16, 20, 24, 28, 32],
 			sta: [0, 15, 20, 25, 30, 35, 40, 45],
-			resistIce: [0, 16, 28, 40, 52, 64, 76, 88],
+			resistIce: [0, 16, 28, 40, 52, 64, 76, 88].map(util.divideBy4),
 			msg: () => 'A boreal talisman imbues your spirit.',
 			fadeMsg: 'The boreal talisman fades.'
 		},
@@ -594,7 +593,7 @@ let buffs; // buff data for use with skill/spells/icons
 			img: 5,
 			job: JOB.WARLOCK,
 			hate: -1,
-			chillDuration: 6,
+			chillDuration: 20,
 			damageType: DAMAGE_TYPE.ICE,
 		},
 		curseOfShadows: {
@@ -660,7 +659,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.WARLOCK,
 			duration: 900,
 			addPoison: [0, 2, 3, 4, 5, 6, 7, 8],
-			resistPoison: [0, 16, 28, 40, 52, 64, 76, 88],
+			resistPoison: [0, 16, 28, 40, 52, 64, 76, 88].map(util.divideBy4),
 			msg: () => 'A profane aura imbues your spirit.',
 			fadeMsg: 'The profane aura fades.'
 		},
@@ -711,7 +710,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.ENCHANTER,
 			duration: 300,
 			addLightning: [0, 3, 6, 9, 12, 15, 18, 21],
-			resistLightning: [0, 12, 20, 28, 36, 44, 52, 60],
+			resistLightning: [0, 12, 20, 28, 36, 44, 52, 60].map(util.divideBy4),
 			msg: () => 'Your weapons are enchanted with phased energy.',
 			fadeMsg: 'The phased energy fades.'
 		},
@@ -726,7 +725,7 @@ let buffs; // buff data for use with skill/spells/icons
 			isDebuff: true,
 			damageType: DAMAGE_TYPE.ARCANE,
 			pveMitigationRatio: .1,
-			evpMitigation: [0, 7, 15, 25, 34, 42, 51, 60],
+			evpMitigation: [0, 11, 18, 31, 46, 62, 79, 96],
 		},
 		shiftingEther: {
 			name: 'Shifting Ether',
@@ -866,7 +865,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.TEMPLAR,
 			duration: 420,
 			addFire: [0, 2, 4, 6, 8, 10, 12, 15],
-			resistFire: [0, 12, 24, 36, 48, 64, 80, 96],
+			resistFire: [0, 12, 24, 36, 48, 64, 80, 96].map(util.divideBy4),
 			msg: () => 'Your weapons shimmer with molten energy.',
 			fadeMsg: 'Your molten shimmer fades.'
 		},
@@ -1004,7 +1003,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.BARD,
 			hate: .9,
 			armor: [0, 12, 24, 36, 48, 60, 72, 84],
-			resistAll: [0, 10, 25, 40, 55, 70, 85, 100],
+			resistAll: [0, 10, 25, 40, 55, 70, 85, 100].map(util.divideBy4),
 			duration: 30,
 			msg: () => 'A chromatic sonata shields you from magic.',
 			fadeMsg: 'The chromatic sonata fades.',
@@ -1022,7 +1021,7 @@ let buffs; // buff data for use with skill/spells/icons
 			hate: 2,
 			duration: 30,
 			stacks: 5,
-			resistPerStack: 4,
+			resistPerStack: 1,
 			msg: () => 'Holy light consecrates the ground you stand on.',
 			fadeMsg: 'The consecration fades.'
 		},
@@ -1109,7 +1108,6 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 12,
 			interval: 3,
 			duration: 36,
-			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		doomThrustDot: {
 			name: 'Doom Thrust',
@@ -1241,7 +1239,6 @@ let buffs; // buff data for use with skill/spells/icons
 			duration: 12,
 			spellType: '',
 			dotModifier: .44,
-			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		tigerStrikeDot: {
 			name: 'Tiger Strike',
@@ -1359,7 +1356,7 @@ let buffs; // buff data for use with skill/spells/icons
 			job: JOB.MONK,
 			enhanceHealing: .25,
 			addHealPower: [0, 1, 1, 2, 2, 3, 3, 4],
-			resistAll: [0, 20, 30, 40, 50, 60, 70, 80],
+			resistAll: [0, 20, 30, 40, 50, 60, 70, 80].map(util.divideBy4),
 			duration: 90,
 			msg: () => 'Chromatic energy protects you from harm.',
 			fadeMsg: 'The chromatic barrier fades.'
@@ -1380,7 +1377,7 @@ let buffs; // buff data for use with skill/spells/icons
 			interval: 30,
 			duration: 45,
 			chillDuration: 7,
-			resistAll: [0, 12, 20, 28, 36, 44, 52, 60],
+			resistAll: [0, 12, 20, 28, 36, 44, 52, 60].map(util.divideBy4),
 			ratioByStack: [0, .2, .4, .6, .8, 1],
 			dodgeChance: [0, .03, .038, .046, .054, .062, .07, .077],
 			msg: () => 'Your silhouette is obscured by a frost rift.',
@@ -1395,7 +1392,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 1,
 			interval: 30,
 			duration: 45,
-			resistAll: [0, 12, 20, 28, 36, 44, 52, 60],
+			resistAll: [0, 12, 20, 28, 36, 44, 52, 60].map(util.divideBy4),
 			ratioByStack: [0, .2, .4, .6, .8, 1],
 			dodgeChance: [0, .03, .038, .046, .054, .062, .07, .077],
 			msg: () => 'Your silhouette is obscured by a frost rift.',
@@ -1409,7 +1406,7 @@ let buffs; // buff data for use with skill/spells/icons
 			stacks: 5,
 			ticks: 1,
 			interval: 30,
-			duration: 30,
+			duration: 45,
 			attackHaste: [0, .1, .15, .2, .25, .3],
 			msg: () => 'A surging furor courses through your veins.',
 			fadeMsg: 'The furor fades.'
@@ -1422,7 +1419,7 @@ let buffs; // buff data for use with skill/spells/icons
 			stacks: 5,
 			ticks: 1,
 			interval: 30,
-			duration: 30,
+			duration: 45,
 			attackHaste: [0, .1, .15, .2, .25, .3],
 			msg: () => 'A surging furor courses through your veins.',
 			fadeMsg: 'The furor fades.'
@@ -1436,7 +1433,6 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 10,
 			interval: 3,
 			duration: 30,
-			damageType: DAMAGE_TYPE.BLOOD,
 		},
 		lacerateDot: {
 			name: 'Lacerate',
@@ -1459,7 +1455,6 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 8,
 			interval: 3,
 			duration: 24,
-			damageType: DAMAGE_TYPE.POISON,
 		},
 		widowStrikeDot: {
 			name: 'Widow Venom',

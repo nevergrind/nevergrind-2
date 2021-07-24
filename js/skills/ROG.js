@@ -68,11 +68,8 @@
 		button.triggerGlobalCooldown()
 	}
 	function sonicStrikeHit(damage) {
-		let originalTarget = damage.index
-		splashIndex = -1
 		damages = []
-		for (var i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++, originalTarget)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			hit = stats.skillDamage(tgt, skills.ROG[1].critBonus[my.skills[damage.index]])
 			hit.damage *= buffs.sonicStrike.novaDamage
 			damages.push({
@@ -82,7 +79,7 @@
 				damageType: DAMAGE_TYPE.ARCANE,
 				effects: { stagger: skills.ROG[1].staggers },
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 	}
 	function fadedStrike(index, data) {
@@ -324,6 +321,7 @@
 			isPiercing: data.isPiercing,
 			enhancedDamage: enhancedDamage,
 			damageType: data.damageType,
+			addDamageBypass: data.addDamageBypass,
 			hitBonus: data.hitBonus[my.skills[index]],
 			buffs: [{
 				i: my.target, // target

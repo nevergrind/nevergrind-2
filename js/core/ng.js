@@ -35,6 +35,7 @@ var ng;
 		characterData: [],
 		selectIndex: 0,
 		initialized: false,
+		totalCharacters: 0,
 		config: {
 			display: 'Full Screen',
 			lang: 'English',
@@ -433,6 +434,11 @@ var ng;
 	}
 
 	function msg(msg, d, color = '#fff') {
+		if (typeof d === 'string') {
+			// this is dumb but ok
+			color = d
+			d = 3
+		}
 		query.el('#msg').innerHTML = msg;
 		// TweenMax.killTweensOf(query.el('#msg'))
 		TweenMax.to('#msg', .15, {
@@ -446,7 +452,7 @@ var ng;
 			ease: Power2.easeOut,
 		})
 		if (d === 0) return // server errors
-		if (typeof d === 'undefined' || d < 1 ){ d = 2 }
+		if (typeof d === 'undefined' || d < 1 ){ d = 3 }
 		msgTimer.kill()
 		msgTimer = delayedCall(d, msgComplete)
 	}
@@ -602,19 +608,19 @@ var ng;
 		if (app.isApp) {
 			if (!ng.initialized) {
 				ng.lock();
-				ng.msg('Communicating with Steam...', 1)
+				ng.msg('Communicating with Steam...', 3)
 				// app login, check for steam ticket
 				var greenworks = require('./greenworks');
 				if (greenworks.initAPI()) {
 
 					greenworks.init()
 					var details = greenworks.getSteamId()
-					ng.msg('Verifying Steam Credentials...')
+					ng.msg('Verifying Steam Credentials...', 3)
 
 					steam.screenName = details.screenName
 					steam.steamId = details.steamId
 					// console.info('steam', steam)
-					greenworks.getAuthSessionTicket(function (data) {
+					greenworks.getAuthSessionTicket(data => {
 						steam.handle = data.handle;
 						steam.ticket = data.ticket.toString('hex')
 						$.post(app.url + 'init-game.php', {
@@ -623,11 +629,11 @@ var ng;
 							steamId: steam.steamId,
 							channel: my.channel,
 							ticket: steam.ticket,
-						}).done(function (data) {
+						}).done(data => {
 							greenworks.cancelAuthTicket(steam.handle)
 							handleInitGame(data)
 							ng.unlock()
-						}).fail(function (data) {
+						}).fail(data => {
 							// console.warn(data.responseText)
 							data.responseText && ng.msg(data.responseText, 12, undefined, COLORS.yellow)
 						});
@@ -644,11 +650,10 @@ var ng;
 					steamId: steam.steamId,
 					channel: my.channel,
 					ticket: steam.ticket
-				}).done(function (data) {
-					console.info('initGame', data)
+				}).done(data => {
 					handleInitGame(data)
 					ng.unlock()
-				}).fail(function (data) {
+				}).fail(data => {
 					// console.warn(data.responseText)
 					data.responseText && ng.msg(data.responseText, 999, COLORS.yellow)
 				})
@@ -659,7 +664,7 @@ var ng;
 			$.post(app.url + 'init-game.php', {
 				version: app.version
 			}).done(handleInitGame)
-				.fail(function(err) {
+				.fail(err => {
 					ng.msg(err.responseText, 0, COLORS.yellow)
 				});
 		}
@@ -674,6 +679,7 @@ var ng;
 		});
 	}
 	function handleInitGame(r) {
+		ng.msg('') // clear msg
 		/*
 		$.get('https://nevergrind.com/php/nwjs.php').done((data) => {
 			// console.info('nwjs.php data', JSON.parse(data))
@@ -735,15 +741,6 @@ var ng;
 		if (!app.initialized) {
 			app.initialized = 1
 			keepAlive()
-			TweenMax.to('#scene-title', .5, {
-				startAt: {
-					filter: 'brightness(0)',
-					visibility: 'visible',
-					display: 'flex'
-				},
-				filter: 'brightness(1)',
-				ease: Back.easeOut
-			})
 		}
 
 		/*if (typeof r.characterData === 'object' &&
@@ -770,6 +767,7 @@ var ng;
 	}
 	function displayCharacter(r) {
 		ng.characterData = r
+		ng.totalCharacters = ng.characterData.length
 		create.selected = 0
 		ng.selectIndex = getSelectedRowIndex(r)
 		updateCharacterCard()
@@ -790,7 +788,7 @@ var ng;
 						'<div class="ch-card-details">'+ ng.toJobLong(d.job) +'</div>' +
 					'</div>' +
 					'<img class="title-icon" src="images/ui/job-'+ d.job +'.png" style="">' +
-					'<div id="ch-index" class="text-shadow">'+ (ng.selectIndex + 1) +'</div>' +
+					'<div id="ch-index" class="text-shadow">'+ (ng.selectIndex + 1) +'/' + ng.totalCharacters +'</div>' +
 				'</div>' +
 				'<div id="title-select-up" class="title-select-col flex-center">'+
 					'<img class="title-select-chevron" src="images/ui/chevron-right.png">' +

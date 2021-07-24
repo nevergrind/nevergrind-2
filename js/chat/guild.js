@@ -84,13 +84,14 @@ var guild;
 			chat.log('Type /help to view guild commands', CHAT.WARNING);
 			guild.listen();
 			// redraw the #various-wrap with new option
-			town.updateVariousDOM();
-			guild.getMembers();
-		}).fail(function(data){
+			town.updateVariousDOM()
+			guild.getMembers()
+			guild.hasFocus = false
+		}).fail(data => {
 			// console.info(data);
 			$("#guild-input").focus();
 			ng.msg(data.responseText, undefined, COLORS.yellow);
-		}).always(function(){
+		}).always(() => {
 			ng.unlock();
 		});
 	}
@@ -138,15 +139,20 @@ var guild;
 		chat.log(z.msg, CHAT.WARNING);
 	}
 	function disband() {
-		if (!my.guild.id) return;
-		// console.info("Quitting guild!");
+		if (!my.guild.id) {
+			chat.log('You are not in a guild!', CHAT.WARNING);
+			return;
+		}
 		var o = my.guild;
-		$.get(app.url + 'guild/disband.php').done(function(data){
+		$.get(app.url + 'guild/disband.php').done(data => {
 			my.guild = guild.Guild(); // nice!
 			// console.info("guild.disband() response ", data);
 			chat.log("You have disbanded the guild: "+ o.name, CHAT.WARNING);
 			socket.unsubscribe('guild'+ o.id);
-		}).fail(function(data){
+			if (town.openVariousWindow === 'Guild Hall') {
+				town.closeVarious()
+			}
+		}).fail(data => {
 			chat.log(data.responseText, CHAT.WARNING);
 		});
 	}
@@ -299,8 +305,8 @@ var guild;
 		html += '<tbody>'
 		guild.memberList.forEach(getGuildRow)
 		html += '</tbody>'
-		$("#aside-guild-members").html(html)
-		getElementById('guild-member-count').textContent = guild.memberList.length
+		ng.html('#aside-guild-members', html)
+		ng.html('#guild-member-count', guild.memberList.length)
 	}
 	function getGuildRow(v) {
 		html += '<tr class="guild-member-row">' +

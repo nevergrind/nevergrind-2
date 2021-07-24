@@ -88,14 +88,15 @@
 		let damageType = spell.data.damageType
 		for (var i=0; i<3; i++) {
 			!function(i) {
+				const damages = {
+					key: 'magicMissiles',
+					index: tgt,
+					spellType: spellType,
+					damageType: damageType,
+					...stats.spellDamage(tgt)
+				}
 				delayedCall(i * .5, () => {
-					combat.txDamageMob([{
-						key: 'magicMissiles',
-						index: tgt,
-						spellType: spellType,
-						damageType: damageType,
-						...stats.spellDamage(tgt)
-					}])
+					combat.txDamageMob([damages])
 				})
 			}(i)
 		}
@@ -111,8 +112,7 @@
 	function fireballCompleted() {
 		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'fireball',
 				index: tgt,
@@ -120,7 +120,7 @@
 				damageType: spell.data.damageType,
 				...stats.spellDamage(tgt),
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
@@ -133,35 +133,21 @@
 		spell.startCasting(index, data, chainLightningCompleted)
 	}
 	function chainLightningCompleted() {
-		let i = 0
-		let tgt = spell.config.target
-		let isFrontRow = tgt <= 4
-		let increment
-		if (isFrontRow) increment = tgt <= 2
-		else increment = tgt <= 6
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
 
-		while (
-			isFrontRow && tgt >= 0 && tgt <= 4 ||
-			!isFrontRow && tgt >= 5 && tgt <= mob.max - 1
-		) {
-			!function(tgt, i) {
-				delayedCall(i * .125, () => {
-					combat.txDamageMob([{
-						key: 'chainLightning',
-						index: tgt,
-						spellType: spellType,
-						damageType: damageType,
-						...stats.spellDamage(tgt)
-					}])
-				})
-			}(tgt, i)
-
-			i++
-			if (increment) tgt++
-			else tgt--
-		}
+		battle.getConeTargets(my.target, 5).forEach((tgt, i) => {
+			const damages = {
+				key: 'chainLightning',
+				index: tgt,
+				spellType: spellType,
+				damageType: damageType,
+				...stats.spellDamage(tgt)
+			}
+			delayedCall(i * .125, () => {
+				combat.txDamageMob([damages])
+			})
+		})
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function frostNova(index, data) {
@@ -214,34 +200,36 @@
 			index: tgt,
 			key: 'meteorLaunch',
 		})
-		delayedCall(2, () => {
-			if (mob.isAlive(tgt)) {
-				let damages = []
-				damages.push({
-					key: 'meteor',
-					index: tgt,
-					spellType: spellType,
-					damageType: damageType,
-					...stats.spellDamage(tgt)
-				})
-				combat.txDamageMob(damages)
-				// AE DoT damage
-				splashIndex = -2
-				damages = []
+
+		if (mob.isAlive(tgt)) {
+			const damages = []
+			damages.push({
+				key: 'meteor',
+				index: tgt,
+				spellType: spellType,
+				damageType: damageType,
+				...stats.spellDamage(tgt)
+			})
+			// AE DoT damage
+			splashIndex = -2
+			const dotDamages = []
+			delayedCall(2, () => {
 				for (var i=0; i<5; i++) {
 					tgt = battle.getSplashTarget(splashIndex++)
-					damages.push({
+					dotDamages.push({
 						key: 'meteorStrike',
 						index: tgt,
-						damageType: spell.data.damageType,
+						damageType: damageType,
 						...stats.spellDamage(tgt, -100)
 					})
-					damages[i].damage = round(damages[i].damage * .35)
-					if (damages[i].damage < 1) damages[i].damage = 1
+					dotDamages[i].damage = round(dotDamages[i].damage * .35)
+					if (dotDamages[i].damage < 1) dotDamages[i].damage = 1
 				}
-				combat.txDotMob(damages)
-			}
-		})
+				combat.txDamageMob(damages)
+				combat.txDotMob(dotDamages)
+			})
+		}
+
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function frozenBarrier(index, data) {
@@ -290,7 +278,12 @@
 		spell.startCasting(index, data, mirrorImageCompleted)
 	}
 	function mirrorImageCompleted() {
-		damages = []
+		let damages = []
+		if (typeof my.buffs.mirrorImage === 'object' &&
+			typeof my.buffs.mirrorImage.damage === 'number' &&
+			my.buffs.mirrorImage.damage >= 1) {
+			my.buffs.mirrorImage.damage = 0
+		}
 		damages.push({
 			index: my.row,
 			key: 'mirrorImage',

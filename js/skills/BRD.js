@@ -48,10 +48,8 @@
 		spell.startCasting(index, data, sonicBoomCompleted)
 	}
 	function sonicBoomCompleted() {
-		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'sonicBoom',
 				index: tgt,
@@ -65,7 +63,7 @@
 					duration: buffs.sonicBoom.stunDuration,
 				}],
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
@@ -80,8 +78,7 @@
 	function euphonicDirgeCompleted() {
 		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'euphonicDirge',
 				index: tgt,
@@ -89,7 +86,7 @@
 				damageType: spell.data.damageType,
 				...stats.spellDamage(tgt, -100)
 			})
-		}
+		})
 		combat.txDotMob(damages)
 	}
 	function subvertedSymphony(index, data) {
@@ -103,8 +100,7 @@
 	function subvertedSymphonyCompleted() {
 		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'subvertedSymphony',
 				index: tgt,
@@ -112,7 +108,7 @@
 				damageType: spell.data.damageType,
 				...stats.spellDamage(tgt, -100)
 			})
-		}
+		})
 		combat.txDotMob(damages)
 	}
 	function crashingChords(index, data) {

@@ -68,15 +68,6 @@ var ask;
 	}
 
 	let coord
-	let val, el
-	const fadeIn = {
-		startAt: { alpha: 0 },
-		alpha: 1
-	}
-	const fadeOut = {
-		startAt: { alpha: 1 },
-		alpha: 0
-	}
 	const particleSmallDefaults = {
 		targetMob: true,
 		loops: 1,

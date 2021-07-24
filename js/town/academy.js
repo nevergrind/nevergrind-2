@@ -15,7 +15,8 @@ var academy;
 		cost: 0
 	}
 	let lastCost = 0
-	const trainCosts = [0, 100, 250, 625, 1500, 3750, 9000, 22500]
+	// const trainCosts = [0, 100, 250, 625, 1500, 3750, 9000, 22500]
+	const trainCosts = [0, 50, 150, 325, 675, 1200, 1875, 2925]
 	const reqLevel = [0, 1, 6, 12, 18, 24, 30, 39, 49] // [0, 5, 30, 60, 90, 120, 150, 195, 245]
 	// [7,7,7,7,7,7,7,7,7,7,7,7]
 	// [0,0,0,0,0,0,0,0,0,0,0,0]
@@ -55,9 +56,13 @@ var academy;
 		my.skills[selected.index] = selected.rank
 		town.setMyGold(my.gold - selected.cost)
 		audio.playSound('upgrade')
-		selected.cost = 0
+		// selected.cost = 0
+		selected.rank = selected.rank + 1
+		selected.cost = trainCosts[selected.rank]
 		if (town.openVariousWindow === 'Academy') {
 			querySelector('#academy-skill-' + selected.index).innerHTML = getSkillRowHtml(selected.index)
+			const el = querySelector('#academy-train-' + selected.index)
+			if (el !== null) el.classList.add('active')
 			setAcademyGold()
 			ng.splitText('various-description', 'Congratulations, '+ my.name +'. You have completed your training for ' + skills.skillNames[selected.index] + ', Rank '+ selected.rank +'!')
 		}
@@ -147,6 +152,7 @@ var academy;
 			// col 3
 			'<div class="flex-column flex-center text-center" style="width: 4rem">'
 				if (!hasLevelRequired(nextRank)) {
+					console.info('nextRank', nextRank)
 					row += '<div class="academy-skill-next" style="color: #f22">'+
 						'<div>Requires</div>'+
 						'<div>Level '+ reqLevel[nextRank] +'</div>' +
@@ -178,7 +184,7 @@ var academy;
 				if (hasLevelRequired(nextRank)) {
 					if (nextRank <= 7) {
 						row += '<div class="academy-train-label">Train</div>'+
-							'<img data-index="'+ i +'" data-rank="'+ nextRank +'" class="academy-swords academy-train" src="images/ui/academy-swords.png">'
+							'<img id="academy-train-'+ i +'" data-index="'+ i +'" data-rank="'+ nextRank +'" class="academy-swords academy-train" src="images/ui/academy-swords.png">'
 					}
 					else {
 						row += '<div class="academy-train-label">Maxed</div>'+

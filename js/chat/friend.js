@@ -1,8 +1,8 @@
 var friend;
-(function() {
+(function(_, $) {
 	friend = {
 		listThrottled: false,
-		listThrottleExpire: 1000,
+		listThrottleExpire: 15,
 		listId: 0,
 		parse,
 		init,
@@ -24,13 +24,16 @@ var friend;
 	}
 	function init() {
 		ng.friends = ng.friends || [];
-		$.get(app.url + 'chat/friend-get.php').done(function(data){
+		$.get(app.url + 'chat/friend-get.php').done(data => {
 			ng.friends = _.map(data, _.capitalize);
 		});
 	}
 	function list() {
-		if (friend.listThrottled) return;
-		chat.log('<div class="chat-warning">Checking friends list...</div>');
+		if (friend.listThrottled) {
+			chat.log('Your friend list command is still recharging!', CHAT.WARNING)
+			return
+		}
+		chat.log('<div class="chat-warning">Checking friends list...</div>')
 		if (ng.friends.length){
 			friend.listThrottled = true;
 			friend.listId++;
@@ -39,7 +42,7 @@ var friend;
 			});
 
 			// request response from friends
-			ng.friends.forEach(function(name) {
+			ng.friends.forEach(name => {
 				socket.publish('name' + name, {
 					name: my.name,
 					action: 'friend->getPresence',
@@ -115,7 +118,7 @@ var friend;
 			ng.friends.includes(name)) {
 			$.post(app.url + 'chat/friend-remove.php', {
 				friend: name
-			}).done(function(data){
+			}).done(data => {
 				if (data.error) {
 					chat.log(data.error, CHAT.WARNING);
 				}
@@ -139,4 +142,4 @@ var friend;
 			chat.log(data.name + ' has gone offline.', CHAT.WARNING);
 		}
 	}
-})();
+})(_, $);

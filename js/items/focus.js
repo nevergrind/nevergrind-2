@@ -107,8 +107,8 @@ loot.focus = {
 			mp: [25, 35],
 			conjuration: [2, 3],
 			mpKill: [5, 8],
-			resistArcane: 20,
-			resistLightning: 30,
+			resistArcane: 5,
+			resistLightning: 7,
 			addSpellIce: [14, 25],
 			addSpellLightning: [20, 30],
 		}, {
@@ -134,7 +134,7 @@ loot.focus = {
 			agi: [6, 9],
 			mpRegen: [3, 5],
 			resistSilence: 10,
-			resistPoison: 10,
+			resistPoison: 3,
 			addSpellFire: [22, 34],
 			addSpellIce: [22, 34],
 		}, {
@@ -162,8 +162,8 @@ loot.focus = {
 			addSpellBlood: [25, 36],
 			addSpellPoison: [33, 44],
 			resistSilence: 9,
-			resistPoison: 25,
-			resistArcane: 10,
+			resistPoison: 6,
+			resistArcane: 2,
 		}, {
 			name: 'Emblazoned Orb',
 			newName: 'Glowing Black Stone',
@@ -177,7 +177,7 @@ loot.focus = {
 			evocation: [3, 4],
 			resistStun: 8,
 			resistSilence: 15,
-			resistArcane: 45,
+			resistArcane: 11,
 		}, {
 			name: 'Idol',
 			newName: 'Pearl Fahlnir Totem',

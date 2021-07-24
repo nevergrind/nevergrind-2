@@ -147,6 +147,7 @@ var town;
 			initItemData(data.inv, 'inv')
 			initItemData(data.eq, 'eq')
 
+			// temporary solution from long ago?
 			if (typeof my.handToHand === 'undefined') {
 				my.handToHand = 1
 				my.saveCharacterData()
@@ -154,7 +155,9 @@ var town;
 			// skills
 			my.initSkills()
 
+			// sets max values only because hp isn't defined yet
 			stats.setAllResources()
+			// yes this is needed - hp not defined yet
 			my.set(PROP.HP, my.hpMax)
 			my.set(PROP.MP, my.mpMax)
 			my.set(PROP.SP, my.spMax)
@@ -333,7 +336,7 @@ var town;
 			items.bank[key].name = data.bank[key].name
 		}
 		town.isBankInitialized = true
-		querySelector('#bank-slot-wrap').innerHTML = bankSlotHtml()
+		ng.html('#bank-slot-wrap', bankSlotHtml())
 	}
 
 	function openVarious(event) {
@@ -349,6 +352,7 @@ var town;
 		}
 	}
 	function closeVarious() {
+		if (item.awaitingDrop) return
 		if (town.openVariousWindow === 'Trade' &&
 			trade.data.name) {
 			chat.log('You closed the trade window.')

@@ -24,6 +24,7 @@ let map;
 		questHeader: querySelector('#quest-header'),
 		questName: querySelector('#quest-name'),
 		dot: querySelector('#mini-map-dot'),
+		dotTorch: querySelector('#mini-map-dot-torch'),
 		// fog: querySelector('#mini-map-fog'),
 		miniMapDrag: querySelector('#mini-map-drag'),
 		miniMapParent: querySelector('#mini-map-drag-parent'),
@@ -31,6 +32,7 @@ let map;
 		dragHeight: 0,
 		dragMap: {},
 		fogTween: {},
+		handleHearthClick,
 		init,
 		setMapScale,
 		setCameraPosition,
@@ -56,6 +58,7 @@ let map;
 		animateTorch,
 		pingMap,
 		roomCleared,
+		rxRoomCleared,
 		handleMapNo,
 	}
 
@@ -96,7 +99,6 @@ let map;
 	///////////////////////////////////////////
 	$('#mini-map-drag').on('wheel', handleWheel)
 	$('#mini-map-party').on('click', handleCenterParty)
-	$('#mini-map-leave').on('click', handleLeave)
 	$('#quest-completed').on('click', handleQuestCompleted)
 	$('#mini-map-prompt-btn-yes').on('click', handleMapYes)
 	$('#mini-map-prompt-btn-no').on('click', map.handleMapNo)
@@ -125,7 +127,6 @@ let map;
 
 		// set dynamic style
 		map.drawMap()
-		cache.preloadTorch()
 		map.animateTorch()
 	}
 	function setRoom0() {
@@ -335,7 +336,19 @@ let map;
 		}
 		map.centerCameraAt(map.dotX, map.dotY)
 	}
-	function handleLeave() {
+	function handleHearthClick() {
+		if (ng.view === 'town') {
+			ng.msg('You can\'t hearth while in town', COLORS.yellow)
+			return
+		}
+		else if (map.inCombat) {
+			ng.msg('You can\'t hearth while in combat', COLORS.yellow)
+			return
+		}
+		if (map.menuPrompt) {
+			// already open
+			return
+		}
 		if (party.presence[0].isLeader) {
 			map.menuPrompt = true
 			querySelector('#mini-map-confirm-wrap').style.visibility = 'visible'
@@ -391,6 +404,8 @@ let map;
 		}
 	}
 	function enterRoom(roomId) {
+		// TODO: had a bug here
+		// Cannot read property 14 of undefined
 		map.inRoom = true
 		map.roomId = roomId
 		map.roomX = dungeon.map.rooms[roomId].x
@@ -550,10 +565,17 @@ let map;
 		else map.compass = 1
 	}
 	function roomCleared() {
+		socket.publish('party' + my.partyId, {
+			route: 'p->roomCleared',
+			dotX: map.dotX,
+			dotY: map.dotY,
+		})
+	}
+	function rxRoomCleared(data) {
 		const el = createElement('img')
 		el.className = 'map-cleared'
-		el.style.left = map.dotX + 'px'
-		el.style.top = map.dotY + 'px'
+		el.style.left = data.dotX + 'px'
+		el.style.top = data.dotY + 'px'
 		el.src = 'images/map/map-cleared.png'
 		querySelector('#mini-map-drag').appendChild(el)
 		delayedCall(4, () => {
@@ -655,12 +677,16 @@ let map;
 		handleCenterParty(false)
 		delayedCall(delay, map.revealRoom)
 	}
-	function hide() {
+	function hide(duration = 0) {
 		map.isShown = false
-		TweenMax.set('#mini-map', {
-			visibility: 'hidden',
+		TweenMax.to('#mini-map', duration, {
 			opacity: 0,
 			scale: 0,
+			onComplete: () => {
+				TweenMax.set('#mini-map', {
+					visibility: 'hidden'
+				})
+			}
 		})
 		killTorchTween()
 	}
@@ -715,10 +741,14 @@ let map;
 			torchGlow.tween.kill()
 		}
 	}
+	let torchOffset = 0
 	function setTorchFrame() {
 		if (torch.lastFrame !== ~~torch.frame) {
 			torch.lastFrame = ~~torch.frame
-			map.dot.src = 'images/map/torch-' + torch.lastFrame + '.png'
+			torchOffset = torch.lastFrame * -64
+			if (!map.inCombat) {
+				map.dotTorch.style.backgroundPosition = torchOffset +'px '
+			}
 		}
 	}
 	function setTorchRadius() {

@@ -29,7 +29,7 @@ var chat;
 		],
 		modeCommand: '/say',
 		modeName: '',
-		focusKeys: ['/', 'Enter'],
+		focusKeys: ['/', 'Enter', 't'],
 		inputHasFocus: false,
 		chatLogEl: querySelector('#chat-log'),
 		log,
@@ -58,14 +58,17 @@ var chat;
 		focusChatInput,
 		clearChatLog,
 		help,
+		handleChatInputFocus,
+		handleChatInputBlur,
 	}
+	const maxLogMessages = 400
 	var el;
 	/*
 	border: 1px solid #048;
 	background: rgba(0,0,0,.6);
 	 */
-	$('#chat-input').on('blur', handleChatInputBlur)
-		.on('focus', handleChatInputFocus)
+	$('#chat-input').on('blur', chat.handleChatInputBlur)
+		.on('focus', chat.handleChatInputFocus)
 
 	$('#chat-input-wrap').on('mouseenter', handleChatInputEnter)
 		.on('mouseleave focus', handleChatInputLeave)
@@ -75,13 +78,13 @@ var chat;
 			// do nothing
 		}
 		else {
-			TweenMax.to('#chat-input-wrap', .15, {
+			/*TweenMax.to('#chat-input-wrap', 0, {
 				opacity: 0
 			})
-			TweenMax.to('#chat-input', .15, {
+			TweenMax.to('#chat-input', 0, {
 				background: 'rgba(0,0,0,0)',
 				border: '1px solid #0000'
-			})
+			})*/
 		}
 		chat.inputHasFocus = false
 	}
@@ -93,35 +96,34 @@ var chat;
 		query.el('#chat-input').focus()
 	}
 	function handleChatInputFocus() {
-		TweenMax.set('#chat-input-wrap', {
+		/*TweenMax.set('#chat-input-wrap', {
 			opacity: 1
 		})
 		TweenMax.set('#chat-input', {
 			background: '#000a',
 			border: '1px solid #048',
-		})
+		})*/
 		chat.inputHasFocus = true
 	}
 	// opacity
 	function handleChatInputEnter() {
 		if (!chat.inputHasFocus) {
-			TweenMax.to('#chat-input-wrap', .15, {
+			/*TweenMax.to('#chat-input-wrap', .1, {
 				opacity: 1
 			})
-			TweenMax.to('#chat-input', .15, {
+			TweenMax.to('#chat-input', .1, {
 				background: '#0006'
-			})
+			})*/
 		}
 	}
 	function handleChatInputLeave() {
-		if (querySelector('#chat-input').value.length ||
-			chat.inputHasFocus) {
+		if (chat.inputHasFocus || querySelector('#chat-input').value.length) {
 			// do nothing
 		}
 		else {
-			TweenMax.to('#chat-input-wrap', .15, {
+			/*TweenMax.to('#chat-input-wrap', .15, {
 				opacity: 0
-			})
+			})*/
 		}
 	}
 
@@ -201,8 +203,7 @@ var chat;
 	function init() {
 		// default initialization of chat
 		if (!chat.initialized) {
-			querySelector('#chat-log').style.display = 'flex'
-			querySelector('#chat-input-wrap').style.display = 'flex'
+			querySelector('#footer-ui-component').style.display = 'flex'
 			chat.initialized = 1;
 			// show
 			// prevents auto scroll while scrolling
@@ -228,27 +229,28 @@ var chat;
 		// console.info(event)
 		context.setChatMenuHtml()
 	}
+
 	function log(msg, className) {
 		// report to chat-log
 		if (msg){
 			// console.info('childElementCount', chat.chatLogEl.childElementCount)
-			while (chat.chatLogEl.childElementCount >= 50) {
+			while (chat.chatLogEl.childElementCount >= maxLogMessages) {
 				chat.chatLogEl.removeChild(chat.chatLogEl.firstChild)
 			}
 			var el = createElement('div')
 			el.classList.add('chat-all')
-			if (className){
+			if (className) {
 				el.classList.add(className)
 			}
 			el.innerHTML = msg
 			chat.chatLogEl.appendChild(el)
 			chat.scrollBottom()
-			if (ng.view !== 'town') {
+			/*if (ng.view !== 'town') {
 				TweenMax.to(el, .2, {
 					delay: 20,
 					opacity: 0
 				})
-			}
+			}*/
 
 		}
 	}
@@ -256,12 +258,12 @@ var chat;
 		var o = {
 			msg: msg,
 			mode: chat.modeCommand
-		};
-		if (chat.modeCommand === '@') {
-			o.name = chat.modeName;
 		}
-		chat.history.push(o);
-		chat.historyIndex = chat.history.length;
+		if (chat.modeCommand === '@') {
+			o.name = chat.modeName
+		}
+		chat.history.push(o)
+		chat.historyIndex = chat.history.length
 	}
 	function help() {
 		bar.toggleOptions('help')
@@ -308,29 +310,39 @@ var chat;
 			// whisper
 			if (my.name !== chat.modeName) {
 				if (ng.ignore.includes(chat.modeName)) {
-					console.log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring them.', CHAT.WARNING);
+					chat.log('You sent ' + chat.modeName + ' a whisper, but you are currently ignoring them.', CHAT.WARNING)
 				}
-				// console.info('@ send', msg)
-				socket.publish('name' + _.toLower(chat.modeName), {
-					job: my.job,
-					name: my.name,
-					level: my.level,
-					action: 'send',
-					msg: msg,
-					route: 'chat->log',
-					class: 'chat-whisper'
-				})
+				if (msg) {
+					socket.publish('name' + _.toLower(chat.modeName), {
+						job: my.job,
+						name: my.name,
+						level: my.level,
+						action: 'send',
+						msg: msg,
+						route: 'chat->log',
+						class: 'chat-whisper'
+					})
+					whisper.sendTimer = delayedCall(1.5, () => {
+						chat.log('Your message to ' + chat.modeName + ' was not delivered successfully.', CHAT.WARNING)
+					})
+				}
+				else {
+					chat.log('You whispered too quietly! Don\'t be shy!', CHAT.WARNING)
+				}
 			}
 			else {
 				chat.log('You feel your grip on sanity weaken. Was I just whispering to myself?', CHAT.WARNING)
 			}
 		}
-		else if (msgLower.startsWith('/') && !msgLower.startsWith('/broadcast')) {
+		else if (msgLower.startsWith('/') &&
+			( !msgLower.startsWith('/broadcast') && !msgLower.startsWith('/campall') )
+		) {
+			// no idea why this is here
 			chat.log('Command not found. Try /h or /help to check the list of valid commands.', CHAT.WARNING)
 		}
 		else {
 			if (msg) {
-				console.info('msgLower', msg, msgLower)
+				// console.info('msgLower', msg, msgLower)
 				var o = chat.getMsgObject(msg);
 				if (o.msg[0] !== '/') {
 					// console.info(o)
@@ -342,6 +354,7 @@ var chat;
 							chat.log('You cannot communicate to town while in a dungeon.', CHAT.WARNING)
 						}
 						else {
+							// console.info('asdf', o)
 							socket.publish(o.category, {
 								job: my.job,
 								name: my.name,
@@ -375,7 +388,7 @@ var chat;
 		};
 		var parse = chat.parseMsg(msg);
 		var a = msg.split(" ");
-		console.info('parse', parse)
+		// console.info('parse', parse)
 		a.shift();
 		var shortCommandMsg = a.join(" ");
 
@@ -410,6 +423,11 @@ var chat;
 			o.msg = parse.command;
 			o.class = 'chat-broadcast';
 		}
+		else if (parse.first === '/campall'){
+			o.category = 'allbroadcast'
+			o.msg = ''
+			o.class = 'chat-camp'
+		}
 		return o;
 	}
 	function clearInput() {
@@ -433,6 +451,11 @@ var chat;
 			})
 		}
 	}
+
+	/**
+	 * called via exit game, reset game, camp
+	 * @param event
+	 */
 	function camp(event = {}) {
 		if (chat.isCamped) return;
 		if (!event.bypass && map.inCombat) {
@@ -450,6 +473,9 @@ var chat;
 			if (party.hasMoreThanOnePlayer()) {
 				// boot from party
 				party.disband()
+			}
+			if (trade.data.name) {
+				town.closeVarious()
 			}
 			// notify friends
 			socket.publish('friend' + my.name, {

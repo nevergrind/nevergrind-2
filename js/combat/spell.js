@@ -100,8 +100,14 @@ var spell;
 		spell.callbackFn = callbackFn
 		spell.index = index
 		spell.data = data
+		let castTimeReduction = 0
 		// console.info('startCasting', spell.data)
-		spell.castTime = data.castTime
+		if (spell.data.img.startsWith('CLR') && spell.data.name !== 'Smite') {
+			castTimeReduction = (skill.CLR.completedSmites * .5)
+			skill.CLR.completedSmites = 0
+		}
+		const castSpeed = Math.max(data.castTime - (castTimeReduction), .5)
+		spell.castTime = castSpeed
 		querySelector('#cast-bar-wrap').style.opacity = 1
 		TweenMax.set(querySelector('#cast-bar'), CSS.X_ZERO)
 		spell.timer = TweenMax.to(timers, stats.getCastingSpeed(), {
@@ -112,7 +118,7 @@ var spell;
 			onComplete: spellComplete,
 			onCompleteParams: [spell.callbackFn]
 		})
-		if (!spell.config.cannotFizzle) {
+		if (castSpeed > .5 && !spell.config.cannotFizzle) {
 			checkSpellFizzle()
 		}
 
@@ -255,6 +261,7 @@ var spell;
 		expendSpellResources()
 	}
 	function triggerSkillCooldown(index, data) {
+		if (Config.disableCooldowns) return
 		timers.skillCooldowns[index] = 0
 		timers.skillCooldownTimers[index].kill()
 		button.processSkillTimers(index, data || skills.lastData)

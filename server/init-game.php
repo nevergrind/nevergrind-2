@@ -3,7 +3,7 @@ require 'header.php';
 require 'db.php';
 
 // steam data if applicable
-$version = '0.1.4';
+$version = '0.2.3';
 if ($_POST['version'] !== $version) {
 	exit("Nevergrind Online is currently being upgraded. We'll be right back!");
 }
@@ -155,7 +155,6 @@ if (empty($_SESSION['account']) &&
 // game data
 if (isset($_SESSION['account'])) {
 	$r['id'] = $_SESSION['account'];
-	error_log('init-game:' . $_SESSION['account']);
 	require 'create/load-all-characters.php';
 	$stmt = $db->prepare('update `accounts` set last_login=now() where row=?');
 	$stmt->bind_param('i', $r['id']);

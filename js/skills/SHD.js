@@ -83,9 +83,7 @@
 
 		enhancedDamage = data.enhancedDamage[my.skills[index]]
 		damages = []
-		splashIndex = -1
-		for (var i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				...stats.skillDamage(tgt, data.critBonus[my.skills[index]]),
 				key: 'crescentCleave',
@@ -93,7 +91,7 @@
 				enhancedDamage: enhancedDamage,
 				hitBonus: data.hitBonus[my.skills[index]],
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(index, data)
 		button.triggerGlobalCooldown()
@@ -140,6 +138,8 @@
 	function astralBladeCompleted() {
 		let originalTarget = my.target
 		let firstTargets = [-2, -1, 0, 1, 2]
+		const spellType = spell.data.spellType
+		const damageType = spell.data.damageType
 		for (var i=0; i<12; i++) {
 			!function(i) {
 				let splashIndex
@@ -157,8 +157,8 @@
 					combat.txDamageMob([{
 						key: 'astralBlade',
 						index: tgt,
-						spellType: spell.data.spellType,
-						damageType: spell.data.damageType,
+						spellType: spellType,
+						damageType: damageType,
 						...stats.spellDamage(tgt),
 					}])
 				})
