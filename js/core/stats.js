@@ -322,7 +322,9 @@ var stats = {};
 
 	function attack(type, fresh) {
 		type = type || items.eq[12].weaponSkill
-
+		if (typeof type === 'undefined') {
+			type = 'Hand-to-hand'
+		}
 
 		if (fresh || typeof stats.memo.attack === 'undefined') {
 			stats.memo.attack = setStat(getEqTotal(PROP.ATTACK) + (str().value * .35))
@@ -340,13 +342,13 @@ var stats = {};
 		// NOTE: parts below are dynamic by type - those parts are never cached
 		dynamicAttackBonus = (offense() * 1.66)
 		// by weapon type
-		if (type === LABEL.ONE_HAND_SLASH) dynamicAttackBonus += (oneHandSlash() * 2.66)
+		if (type === 'One-hand Slash') dynamicAttackBonus += (oneHandSlash() * 2.66)
 		else if (type === 'One-hand Blunt') dynamicAttackBonus += (oneHandBlunt() * 2.66)
 		else if (type === 'Piercing') dynamicAttackBonus += (piercing() * 2.66)
 		else if (type === 'Two-hand Slash') dynamicAttackBonus += (twoHandSlash() * 2.66)
 		else if (type === 'Two-hand Blunt') dynamicAttackBonus += (twoHandBlunt() * 2.66)
 		else if (type === 'Archery') dynamicAttackBonus += (archery() * 2.66)
-		else if (type === LABEL.HAND_TO_HAND) dynamicAttackBonus += (handToHand() * 2.66)
+		else if (type === 'Hand-to-hand') dynamicAttackBonus += (handToHand() * 2.66)
 
 		let attackBonus = 1
 		if (my.buffFlags.branchSpirit) {
@@ -676,10 +678,14 @@ var stats = {};
 	 * @param config
 	 * @returns {{damage: number, min: number, max: number, isCrit: (*|boolean)}}
 	 */
-	function spellDamage(index = 0, critMod = 0, config) {
+	function spellDamage(index = 0, critMod = 0, config, isRankUp = false) {
 		if (!config) config = { ...spell.data }
+		let spellRank = isRankUp ?
+			Math.min(MAX_SKILL_LEVEL, my.skills[config.index] + 1) :
+			my.skills[config.index]
+		// console.info('spellRank', isRankUp, spellRank)
 		let min
-		let max = config.spellDamage(my.skills[config.index])
+		let max = config.spellDamage(spellRank)
 		// enhance by type % and ALL%
 		let enhanceDamage = 0
 		let addedDamage = 0

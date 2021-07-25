@@ -63,7 +63,7 @@ var battle;
 		killMyBuffTimers,
 		drawExpBar,
 		addGold,
-		upsertGX,
+		upsertGoldExp,
 		upsertLevel,
 		subtractExpPenalty,
 		getDeathPenaltyRatio,
@@ -118,22 +118,23 @@ var battle;
 		}
 		// console.info('penalty', penalty)
 		if (penalty) {
-			battle.upsertGX(-penalty)
+			battle.upsertGoldExp(-penalty, 0)
 		}
 	}
 
-	function upsertGX(exp, gold, isQuestExp = false) {
+	function upsertGoldExp(exp = 0, gold = 0, isQuestExp = false) {
 		let leveled = false // to determine UI updates
-		// console.info('upsertGX', mob.earnedExp, mob.earnedGold)
+		// console.info('upsertGoldExp', mob.earnedExp, mob.earnedGold)
+		if (my.exp + exp > battle.expThreshold[MAX_HERO_LEVEL]) {
+			// max possible exp value
+			exp = battle.expThreshold[MAX_HERO_LEVEL] - my.exp
+		}
 		$.post(app.url + 'character/upsert-gx.php', {
 			exp: exp,
 			gold: gold,
 		}).done(() => {
-			if (my.exp + exp > battle.expThreshold[MAX_HERO_LEVEL]) {
-				// max possible exp value
-				exp = battle.expThreshold[MAX_HERO_LEVEL] - my.exp
-			}
 			my.exp += exp
+			// console.info('upsertGoldExp', exp, gold)
 			if (exp > 0) {
 				if (isQuestExp) {
 					chat.log('You earned quest experience!', 'chat-exp')
@@ -196,7 +197,7 @@ var battle;
 			gold = trade.MAX_GOLD - my.gold
 		}
 		if (gold) {
-			my.gold += gold
+			// my.gold += gold // added after server success
 			if (isQuestGold) {
 				chat.log('You quest reward is ' + gold + ' gold!', 'chat-gold')
 			}
@@ -210,7 +211,7 @@ var battle;
 	}
 	function drawExpBar(duration, dur) {
 		duration = typeof duration === 'number' ? duration : .3
-		dur = typeof dur === 'number' ? dur : duration * 1.5
+		// dur = typeof dur === 'number' ? dur : duration * 1.5
 		TweenMax.to(query.el('#exp-bar'), duration, {
 			x: getExpBarRatio() + '%',
 		})
@@ -492,7 +493,7 @@ var battle;
 					level: battle.getMobLevelByQuest(minZoneLevel)
 				}
 				if (Config.enableMobTestClass) {
-					q.job = JOB.SHADOW_KNIGHT
+					q.job = JOB.CRUSADER
 				}
 				/* ill-fated idea ... maybe for only first 2 dungeons?
 				if (my.level < 2) {
@@ -780,7 +781,7 @@ var battle;
 			if (my.targetIsMob) {
 				tgt = {
 					// combat.considerClassBg[combat.getLevelDifferenceIndex(mobs[my.target].level)]
-					bgClass: battle.getMobClassNameByLevel(my.target) +' text-shadow3',
+					levelClass: battle.getMobClassNameByLevel(my.target) +' text-shadow3',
 					nameClass: battle.getMobClassNameByLevel(my.target) +' '+ battle.getMobClassNameByTier(my.target),
 					level: mobs[my.target].level,
 					name: mobs[my.target].name,
@@ -793,7 +794,7 @@ var battle;
 			}
 			else {
 				tgt = {
-					bgClass: 'con-white text-shadow3',
+					levelClass: 'con-white text-shadow3',
 					nameClass: 'con-white',
 					level: party.presence[party.getIndexByRow(my.target)].level,
 					name: party.getNameByRow(my.target),
@@ -808,7 +809,7 @@ var battle;
 			// battle.getMobClassNameByLevel(i) +' '+ battle.getMobClassNameByTier(i)
 			// console.info('tgt', tgt)
 			// level
-			querySelector('#mob-target-level').className = tgt.bgClass
+			querySelector('#mob-target-level').className = tgt.levelClass
 			querySelector('#mob-target-level').textContent = tgt.level
 			// name
 			querySelector('#mob-target-name').className = tgt.nameClass
@@ -848,7 +849,7 @@ var battle;
 		return html.join(' ')
 	}
 	function getMobClassNameByLevel(tgt) {
-		return 'mob-level ' + combat.considerClass[combat.getLevelDifferenceIndex(mobs[tgt].level)]
+		return combat.considerClass[combat.getLevelDifferenceIndex(mobs[tgt].level)]
 	}
 	function getMobClassNameByTier(tgt) {
 		return 'mob-tier-'+ mobs[tgt].tier
@@ -1262,7 +1263,7 @@ var battle;
 		for (var i=0; i<mob.max; i++){
 			s += '<div id="mob-wrap-' +i+ '" class="mob-wrap' + (i > 4 ? ' mob-back-row' : ' mob-front-row') +'">' +
 				'<div id="mob-details-' +i+ '" class="mob-details" index="' + i + '">' +
-					'<div class="flex-row flex-center" style="margin-bottom: .25rem">' +
+					'<div class="flex-row flex-center" style="position: relative; margin-bottom: .25rem">' +
 						'<div id="mob-level-'+ i +'"></div>' +
 						'<div id="mob-name-' +i+ '" class="mob-name text-shadow3"></div>' +
 						'<img id="mob-target-avatar-' +i+ '" class="mob-target-avatar" src="'+ my.avatar +'">' +

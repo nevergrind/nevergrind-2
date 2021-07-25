@@ -70,7 +70,12 @@ var bar;
 		},
 		hotkeyId: '',
 		hotkeyElement: {},
-		hotkeyWhitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`~1234567890!@#$%^&*()-_=+[{]}\\|;:\'",<.>/?InsertDeleteHomeEndPageUpPageDownF1F2F3F4F5F6F7F8F9F10F11F12ArrowUpArrowDownArrowLeftArrowRightTab',
+		hotkeyWhitelist: [
+			'A', 'B', 'C', 'D', 'E', 'F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+			'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+			'`','~','-','_','=','+','[',']','{','}','\\','|',',','<','.','>',';',':','\'','"','?','/',
+			'Insert','Delete','Home','End','PageUp','PageDown','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'
+		],
 		optionSelected: 'General',
 		activeTab: 'character',
 	};
@@ -405,9 +410,19 @@ var bar;
 		}
 	}
 
-	function updateItemSwapDOM() {
-		item.dragType && bar.updateItemSlotDOM(item.dragType, item.dragSlot)
-		item.dropType && bar.updateItemSlotDOM(item.dropType, item.dropSlot)
+	/**
+	 * Sometimes I have to define itemData manually because the dragData was lost
+	 * @param itemData
+	 */
+	function updateItemSwapDOM(itemData) {
+		if (itemData) {
+			itemData.dragType && bar.updateItemSlotDOM(itemData.dragType, itemData.dragSlot)
+			itemData.dropType && bar.updateItemSlotDOM(itemData.dropType, itemData.dropSlot)
+		}
+		else {
+			item.dragType && bar.updateItemSlotDOM(item.dragType, item.dragSlot)
+			item.dropType && bar.updateItemSlotDOM(item.dropType, item.dropSlot)
+		}
 		// console.info('//////////// updateItemSwapDOM', item.dropType, item.dragType)
 		if ([item.dropType, item.dragType].includes('eq')) {
 			// console.info('update char stats')
@@ -465,7 +480,7 @@ var bar;
 		return ratio * 100
 	}
 	function updateBar(type, data) {
-		percent = getRatio(type, data)
+		percent = bar.getRatio(type, data)
 		if (type === PROP.HP) {
 			TweenMax.to(querySelector('#bar-hp-fg-' + data.row), .1, { x: '-' + percent + '%' })
 			querySelector('#bar-hp-text-' + data.row).textContent = ~~data.hp + '/' + data.hpMax
@@ -606,9 +621,6 @@ var bar;
 			bar.hotkeyId = ''
 			querySelector('#options-content').innerHTML = getOptionsHotkeysHtml()
 		}
-		else if (event.currentTarget.id === 'option-help') {
-			querySelector('#options-content').innerHTML = getHelpHtml()
-		}
 		querySelectorAll('.option-category').forEach(el => {
 			el.className = 'option-category'
 		})
@@ -629,7 +641,6 @@ var bar;
 				'<div id="option-general" class="option-category active" style="'+ css.optionCategory +'">General</div>' +
 				'<div id="option-ui" class="option-category" style="'+ css.optionCategory +'">User Interface</div>' +
 				'<div id="option-hotkeys" class="option-category" style="'+ css.optionCategory +'">Hotkeys</div>' +
-				'<div id="option-help" class="option-category" style="'+ css.optionCategory +'">Chat Commands</div>' +
 			'</div>' +
 			'<div id="options-content" class="flex-column flex-max options-column">' +
 				// TODO: content goes here!!
@@ -819,46 +830,6 @@ var bar;
 		'</div>'
 
 		return str
-	}
-
-	function getHelpHtml() {
-		return [
-		'<div class="chat-help-header">General Chat Channels:</div>',
-		'<div data-id="general chat" class="chat-help">/say or /s : Say a message in your current town channel : /say hail</div>',
-		'<div data-id="general town chat" class="chat-help">/town : An alias for /say : /town hail</div>',
-		'<div data-id="general chat private whisper send receive" class="chat-help">@ : Send a private message by name : @bob hi</div>',
-		'<div class="chat-help-header">Guild Commands</div>',
-		'<div data-id="organize clan" class="chat-help">/guild or /g: Message your guild : /guild hail</div>',
-		'<div data-id="guild" class="chat-help">/ginvite: Invite a player to your guild: /ginvite Bob</div>',
-		'<div data-id="guild boot" class="chat-help">/gpromote: Promote a member to Officer: /gpromote Bob</div>',
-		'<div data-id="guild fire" class="chat-help">/gdemote: Demote an officer to a member: /gdemote Bob</div>',
-		'<div data-id="guild dictator" class="chat-help">/gleader: Promote a guild member to leader: /gleader Bob</div>',
-		'<div data-id="guild kick" class="chat-help">/gboot: Boot a member from the guild: /gboot Bob</div>',
-		'<div data-id="guild" class="chat-help">/motd: Set a new message of the day: /motd message</div>',
-		'<div data-id="guild" class="chat-help">/gquit: Leave your guild: /gquit</div>',
-		'<div class="chat-help-header">Party Commands</div>',
-		'<div data-id="group" class="chat-help">/party or /p : Message your party : /party hail</div>',
-		'<div data-id="party group" class="chat-help">/invite: Invite a player to your party : /invite Bob</div>',
-		'<div data-id="party group" class="chat-help">/disband: Leave your party</div>',
-		'<div data-id="party group" class="chat-help">/promote: Promote a player in your party to leader : /promote Bob</div>',
-		'<div data-id="party group" class="chat-help">/boot: Boot a player from the party: /boot Bob</div>',
-		'<div class="chat-help-header">Social Commands:</div>',
-		'<div data-id="social friend fren buddy" class="chat-help">/flist or /friends : Show your friends\' online status</div>',
-		'<div data-id="social friend fren buddy" class="chat-help">/friend add : Add a friend : /friend add Bob</div>',
-		'<div data-id="social friend fren buddy" class="chat-help">/friend remove : Remove a friend : /friend remove Bob</div>',
-		'<div data-id="social ignore" class="chat-help">/ignore : Show your ignore list</div>',
-		'<div data-id="social ignore" class="chat-help">/ignore add : Add someone to your ignore list</div>',
-		'<div data-id="social ignore" class="chat-help">/ignore remove : Remove someone from your ignore list</div>',
-		'<div data-id="" class="chat-help">/who or / : Show all players currently playing</div>',
-		'<div data-id="social" class="chat-help">/who filters : Show current players by class, race, level range, name : /who 5 10 dwarf cleric</div>',
-		'<div class="chat-help-header">Miscellaneous Commands:</div>',
-		'<div data-id="misc private" class="chat-help">/join channel : Join a channel : /join bros</div>',
-		'<div data-id="misc" class="chat-help">/clear: clear the chat log</div>',
-		'<div data-id="misc" class="chat-help">/played: Show character creation, session duration, and total playtime</div>',
-		'<div data-id="misc" class="chat-help">/me : Send an emote to your current chat channel : /me waves</div>',
-		'<div data-id="misc" class="chat-help">/camp: Exit the game.</div>',
-	].join('')
-
 	}
 
 	function toggleFastDestroy() {
@@ -1195,7 +1166,7 @@ var bar;
 		'</div>' +
 		'<div class="flex space-between">' +
 			'<div style="color: gold">Damage:</div>'+
-			'<div>'+ round(hit.min) + '–' + round(hit.max) +'</div>' +
+			'<div>'+ tooltip.getDamageRange(hit, true) +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
 			'<div style="color: gold">Wisdom:</div>'+

@@ -65,6 +65,7 @@ var academy;
 			if (el !== null) el.classList.add('active')
 			setAcademyGold()
 			ng.splitText('various-description', 'Congratulations, '+ my.name +'. You have completed your training for ' + skills.skillNames[selected.index] + ', Rank '+ selected.rank +'!')
+			my.saveCharacterData() // trained skill
 		}
 		button.updateBtnEnabled()
 	}

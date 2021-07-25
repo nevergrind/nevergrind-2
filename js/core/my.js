@@ -217,12 +217,16 @@ var my;
 	 * @param val
 	 * @param increment - increase or decrease by val (instead of absolute value)
 	 */
-	function set(key, val, increment) {
+	function set(key, val, increment, isRevive = false) {
+		if (party.presence[0]?.isDead && !isRevive) return
+
 		if (increment) {
-			party.presence[0][key] = my[key] += val
+			party.presence[0][key] = my[key] = my[key] + val
 		}
 		else {
-			if (typeof party.presence[0] === 'object') party.presence[0][key] = val
+			if (typeof party.presence[0] === 'object') {
+				party.presence[0][key] = val
+			}
 			my[key] = val
 		}
 
@@ -230,8 +234,15 @@ var my;
 			if (my.hp > my.hpMax) {
 				my.hp = my.hpMax
 			}
-			else if (my.hp < 0) {
-				my.hp = 0
+			else if (my.hp <= 0) {
+				if (mob.isAnyMobAlive()) {
+					// allows for processing to selfDied and memberDied
+					my.hp = 0
+				}
+				else {
+					// cannot die if all mobs are dead
+					my.hp = 1
+				}
 			}
 		}
 		else if (key === PROP.MP) {
@@ -313,6 +324,7 @@ var my;
 				if (toggleEnabled && my.target === party.presence[index].row) my.target = -1
 				else my.target = party.presence[index].row
 				combat.targetChanged()
+				mob.drawTargetBar(bar.getRatio(PROP.HP), true)
 			}
 			else {
 				chat.log('Target failed! Player not found.', CHAT.WARNING)
@@ -349,7 +361,7 @@ var my;
 	let regenTick
 	function resourceTick(type) {
 		// hpRegen mpRegen spRegen
-		if (my.hp > 0 && !my.buffFlags.frozen) {
+		if (my.hp >= 1 && !my.buffFlags.frozen) {
 			if (type === PROP.HP) {
 				regenTick = stats.hpRegen()
 				if (combat.isBattleOver()) regenTick += (my.hpMax * .06)

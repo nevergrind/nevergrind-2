@@ -237,7 +237,7 @@ let mobs = [];
 	 * @returns {boolean}
 	 */
 	function isUniqueTier(rand) {
-		return mission.getQuestData(mission.id, mission.questId).level >= 5 && rand === 100 ||
+		return mission.getQuestData(mission.id, mission.questId).level >= 3 && rand === 100 ||
 			Config.forceUnique
 	}
 
@@ -260,7 +260,7 @@ let mobs = [];
 		}
 		else if (q.tier === MOB_TIERS.unique) {
 			// by tier (random unique) - must be within the mob range
-			results = mob.data[zoneName].filter(isQuestMobWithinRange)
+			results = mob.data[zoneName].filter(isUniqueMobByQuery)
 			/*console.info('q', q)
 			console.info('results', results)*/
 			if (results.length) {
@@ -321,10 +321,16 @@ let mobs = [];
 			...randomMob,
 		}
 		///////////////////////////////
-		function isQuestMobWithinRange(m) {
-			return !m.questOnly &&
-			m.tier === q.tier &&
-			m.minLevel <= q.level && q.level <= m.maxLevel
+		function isUniqueMobByQuery(m) {
+			if (q.level) {
+				return !m.questOnly &&
+					m.tier === q.tier &&
+					m.minLevel <= q.level && q.level <= m.maxLevel
+			}
+			else {
+				return !m.questOnly &&
+				m.tier === q.tier
+			}
 		}
 		function filterNormalMobs(m) {
 			if (m.tier || m.questOnly) {
@@ -418,8 +424,8 @@ let mobs = [];
 		else if (exp > maxExp) exp = maxExp
 
 		// penalize for party members that are much higher
-		if (party.expBrokenByAll()) exp = 0
-		// console.info('exp:', exp)
+		if (party.expBrokenByAll() || my.level === MAX_HERO_LEVEL) exp = 0
+		// console.info('getMobExp:', exp)
 		return exp
 	}
 	function isAnyMobAlive() {
@@ -430,7 +436,7 @@ let mobs = [];
 			// leader gets this
 			mobConfig = {
 				...mobConfig,
-				...mob.type[mobConfig.img],
+				..._.cloneDeep(mob.type[mobConfig.img]),
 			}
 			mobConfig.gold = getMobGold(mobConfig)
 			// mob class
@@ -449,8 +455,8 @@ let mobs = [];
 		// combine/assign image object props to mobs[index]
 		mobs[i] = {
 			...mobs[i],
-			...mobs.images[mobConfig.img],
-			...mobConfig,
+			..._.cloneDeep(mobs.images[mobConfig.img]),
+			..._.cloneDeep(mobConfig),
 		}
 		// console.info('mobConfig', _.cloneDeep(mobConfig))
 		// console.info('setMob', mobs[i].level, _.cloneDeep(mobs[i]))
@@ -528,11 +534,11 @@ let mobs = [];
 	function updateMobName(i) {
 		el = querySelector('#mob-name-' + i)
 		el.innerHTML = mobs[i].name
-		el.className = 'mob-name text-shadow3 ' + battle.getMobClassNameByLevel(i)
+		el.className = 'mob-name text-shadow3 ' + battle.getMobClassNameByLevel(i)+' '+ battle.getMobClassNameByTier(i)
 		// console.info('updateMobName', i, mobs[i].level)
 		// el.classList.add()
 		el = querySelector('#mob-level-' + i)
-		el.className = battle.getMobClassNameByLevel(i) +' '+ battle.getMobClassNameByTier(i)
+		el.className = 'mob-level ' + battle.getMobClassNameByLevel(i) + ' text-shadow3'
 		el.textContent = mobs[i].level
 	}
 	function setClickBox(m, i) {
@@ -929,7 +935,7 @@ let mobs = [];
 		}
 		// death sound effect
 		audio.playSound(mobs[i].sfxDeath, 'mobs')
-		battle.upsertGX(
+		battle.upsertGoldExp(
 			mob.getMobExp(mobs[i].level, mobs[i].expPerLevel),
 			battle.addGold(mobs[i].gold))
 	}
@@ -980,8 +986,10 @@ let mobs = [];
 		data.d.forEach(getMobRegen)
 		//////////////////
 		function getMobRegen(tick) {
-			mobs[tick.i].hp += tick.h
-			drawMobBar(tick.i)
+			if (mob.isAlive(tick.i)) {
+				mobs[tick.i].hp += tick.h
+				drawMobBar(tick.i)
+			}
 		}
 	}
 	function isParalyzed(index) {

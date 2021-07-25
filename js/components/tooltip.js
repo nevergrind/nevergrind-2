@@ -16,6 +16,7 @@ var tooltip;
 		isOpen: 0,
 		openDate: 0,
 		goldValue: 1,
+		getDamageRange,
 		getTooltipName,
 		hide,
 		show,
@@ -384,18 +385,19 @@ var tooltip;
 			skillHtml += getSkillTooltipHtml({
 				rank: rank,
 				minRank: rank > 0 ? rank : 1,
-				config: config
+				config: config,
+				isRankUp: false
 			})
 		}
 		if (config.isAcademy && nextRank <= MAX_SKILL_LEVEL) {
 			if (showedCurrentRank) {
 				skillHtml += dividerGold
 			}
-			config.isRankUp = true
 			skillHtml += getSkillTooltipHtml({
 				rank: nextRank,
 				minRank: nextRank,
-				config: config
+				config: config,
+				isRankUp: true
 			})
 		}
 		skillHtml += `
@@ -404,9 +406,9 @@ var tooltip;
 		`
 		return skillHtml
 	}
-	function getSkillTooltipHtml({ rank, minRank, config }) {
+	function getSkillTooltipHtml({ rank, minRank, config, isRankUp }) {
 		const isNextRank = rank > my.skills[config.index]
-		let html = `<div style="padding: .2rem; ${config.isRankUp ? 'background: #ff01' : ''}">`
+		let html = `<div style="padding: .2rem; ${isRankUp ? 'background: #ff01' : ''}">`
 		if (config.index !== void 0) {
 			html += `<div class="${rank === 0 ? 'chat-danger' : 'chat-gold'}">
 				${isNextRank ? 'Next' : 'Current'} Rank: ${rank}
@@ -745,8 +747,9 @@ var tooltip;
 			}
 		}
 		else if (isSpell(config)) {
-			hit = stats.spellDamage(-1, -100, config)
-			// console.info('spell damage', hit)
+			hit = stats.spellDamage(-1, -100, config, isRankUp)
+			/*console.info('hit', isRankUp, hit)
+			console.info('config', config)*/
 		}
 		else {
 			// no damage found
@@ -763,8 +766,6 @@ var tooltip;
 				</div>`*/
 			}
 		}
-		/*console.info('hit', hit)
-		console.info('config', config)*/
 		config.rank = rank
 		html += `
 			<div style="color: gold">
@@ -844,12 +845,11 @@ var tooltip;
 				tooltip.show(items[type][index], querySelector('#' + type + '-slot-img-' + index), type)
 			}
 		}
-		//////////////////////////
-		function getWord(slot) {
-			return typeof items.eq[slot].itemType === 'undefined' ?
-				'Punch with your fist' :
-				'Attack with your '+ (slot === 12 ? 'primary' : 'secondary') +' weapon'
-		}
+	}
+	function getWord(slot) {
+		return typeof items.eq[slot].itemType === 'undefined' ?
+			'Punch with your fist' :
+			'Attack with your '+ (slot === 12 ? 'primary' : 'secondary') +' weapon'
 	}
 	function handleTooltipLeave(event) {
 		if (event.currentTarget.id.startsWith('skill') || event.currentTarget.id.startsWith('academy')) {

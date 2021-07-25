@@ -29,6 +29,7 @@ var dungeon;
 	]
 	dungeon = {
 		mobKeys: [
+			'name',
 			'img',
 			'level',
 			'tier',
@@ -139,10 +140,12 @@ var dungeon;
 		game.showScene('scene-dungeon')
 
 		// coming out of battle - save!
-		// TODO: change this to update gold+exp+level too later
 		if (ng.view === 'battle') {
 			mob.killAllAttacks()
-			my.saveCharacterData()
+			if (combat.skillLeveledUp) {
+				my.saveCharacterData()
+				combat.skillLeveledUp = false
+			}
 		}
 		if (ng.view === 'town') {
 			expanse.killAllTweens()
@@ -346,7 +349,7 @@ var dungeon;
 			h.entities = []
 			for (var i=0; i<mobLen; i++) {
 				if (Math.random() > .33) {
-					const query = {
+					let query = {
 						level: battle.getMobLevelByQuest(minZoneLevel)
 					}
 					if (mob.isUniqueTier(_.random(1, 100))) {

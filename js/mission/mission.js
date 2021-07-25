@@ -373,7 +373,7 @@ var mission;
 		exp = ~~exp
 		// add exp and gold values
 		if (gold > 0 || exp > 0) {
-			battle.upsertGX(exp, gold, true)
+			battle.upsertGoldExp(exp, gold, true)
 		}
 	}
 })(TweenMax, $, _);

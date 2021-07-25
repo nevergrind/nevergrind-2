@@ -1,6 +1,7 @@
 (function(_, $, parseInt, getComputedStyle, undefined) {
 	var i
 	var key
+	var keyCode
 	let _keyup
 	// window
 
@@ -160,10 +161,8 @@
 	}
 
 	function keydown(e) {
-		// console.info('e: ', e)
 		if (e.originalEvent.repeat) return
 		key = e.key
-		// console.info('key: ', key)
 
 		ng.lastKey = key
 		// trying to bind a new hotkey
@@ -173,7 +172,7 @@
 			}
 			else {
 				if (key === 'Shift' || key === 'Control' || key === 'Alt') {}
-				else ng.msg('You cannot bind to that hotkey!', 1, undefined, COLORS.red)
+				else ng.msg('You cannot bind to that hotkey!', 2, undefined, COLORS.red)
 			}
 			return
 		}

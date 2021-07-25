@@ -260,14 +260,14 @@ var party;
 				if (p.row === my.row) {
 					// console.info('isPartyWipe', isPartyWipe)
 					if (isPartyWipe) {
-						my.set(PROP.HP, p.hpMax)
-						my.set(PROP.MP, p.mpMax)
-						my.set(PROP.SP, p.spMax)
+						my.set(PROP.HP, p.hpMax, false, true)
+						my.set(PROP.MP, p.mpMax, false, true)
+						my.set(PROP.SP, p.spMax, false, true)
 					}
 					else {
-						my.set(PROP.HP, 1)
-						my.set(PROP.MP, 1)
-						my.set(PROP.SP, 1)
+						my.set(PROP.HP, 1, false, true)
+						my.set(PROP.MP, 1, false, true)
+						my.set(PROP.SP, 1, false, true)
 					}
 				}
 				else {

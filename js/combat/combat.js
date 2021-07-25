@@ -5,6 +5,7 @@ var combat;
 		questBg: {},
 		questText: {},
 		deathText: {},
+		skillLeveledUp: false,
 		txHpChange,
 		txMpChange,
 		txSpChange,
@@ -130,19 +131,19 @@ var combat;
 							querySelector('#inv-skills-wrap').innerHTML = bar.getSkillBarHtml()
 						}
 					}
+					combat.skillLeveledUp = true
 				}
 			}
 		}
 	}
 	function skillLevelChance(name) {
-		// from 20% at 1 down to about 1% at 140+
-		chance = (20 - (my[name] / 10)) / 100
-		if (chance < .01) chance = .01 // beyond 140 skill has a 1/100 chance
+		// from 90% at 1 down to about 6% at 250+
+		chance = (90 - (my[name] / 3)) / 100
+		if (chance < .01) chance = .01
 		return chance
 	}
 	function isValidTarget() {
 		if (my.targetIsMob) {
-
 			return my.target >= 0 && my.target < mob.max
 		}
 		else return my.target >= 0
@@ -439,18 +440,23 @@ var combat;
 		mob.updateHate(o)
 		mob.drawMobBar(o.index)
 		if (!o.isHeal && mobs[o.index].hp <= 0) {
-			// mob has been killed
-			if (timers.castBar < 1
-				&& my.target === o.index) {
-				spell.cancelSpell()
-			}
-			item.findLoot(o.index)
-			mob.animateDeath(o.index)
-			my.fixTarget()
-			if (combat.isBattleOver()) { // mobs slain
-				combat.resetTimersAndUI()
-				map.endCombat()
-				party.reviveDeadAllies(false)
+			if (party.isSomeoneAlive()) {
+				// mob has been killed
+				if (timers.castBar < 1
+					&& my.target === o.index) {
+					if (spell.config.isTargetMob) {
+						// only cancel if your target is a mob
+						spell.cancelSpell()
+					}
+				}
+				item.findLoot(o.index)
+				mob.animateDeath(o.index)
+				my.fixTarget()
+				if (combat.isBattleOver()) { // mobs slain
+					combat.resetTimersAndUI()
+					map.endCombat()
+					party.reviveDeadAllies(false)
+				}
 			}
 		}
 		if (!o.isHeal) {
@@ -794,7 +800,9 @@ var combat;
 		if (type === PROP.HP) {
 			if (my.hp <= 0) {
 				// death
-				if (Config.deathEnabled) selfDied()
+				if (Config.deathEnabled) {
+					selfDied()
+				}
 				else my.set(PROP.HP, my.hpMax) // testing
 			}
 		}

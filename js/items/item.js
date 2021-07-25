@@ -2121,9 +2121,14 @@ var loot = {};
 		$.post(app.url + 'item/destroy-item.php', {
 			row: item.dragData.row,
 			dragType: item.dragType
-		}).done(handleDestroySuccess)
-			.fail(handleDropFail)
-			.always(handleDropAlways)
+		}).done(() => {
+			handleDestroySuccess(false, {
+				dragData: _.cloneDeep(item.dragData),
+				dragType: item.dragType,
+				dragSlot: item.dragSlot
+			})
+		}).fail(handleDropFail)
+		.always(handleDropAlways)
 	}
 
 
@@ -2135,13 +2140,24 @@ var loot = {};
 		town.setMyGold(my.gold + item.goldValue)
 		town.setStoreGold(0)
 	}
-	function handleDestroySuccess(suppressDestroyMsg = false) {
+	function handleDestroySuccess(suppressDestroyMsg = false, itemData) {
 		if (!suppressDestroyMsg) {
-			chat.log('You destroyed ' + item.getItemNameString(item.dragData))
+			if (item.dragData.name) {
+				chat.log('You destroyed ' + item.getItemNameString(item.dragData))
+			}
+			else {
+				chat.log('You destroyed ' + item.getItemNameString(itemData.dragData))
+			}
 		}
-		console.warn('handleDestroySuccess watch for -1 slot', item.dragType, item.dragSlot)
-		items[item.dragType][item.dragSlot] = {}
-		bar.updateItemSwapDOM()
+
+		if (item.dragData.name) {
+			items[item.dragType][item.dragSlot] = {}
+			bar.updateItemSwapDOM()
+		}
+		else {
+			items[itemData.dragType][itemData.dragSlot] = {}
+			bar.updateItemSwapDOM(itemData)
+		}
 		resetDrop()
 		tooltip.conditionalHide()
 		if (trade.data.name) {
