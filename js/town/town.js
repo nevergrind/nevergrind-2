@@ -632,12 +632,13 @@ var town;
 		audio.playSound('click-7')
 	}
 	function setMyGold(newGold) {
-		goldConfig = {
+		let goldConfig = {
 			value: _.clone(my.gold)
 		}
 		TweenMax.to(goldConfig, .3, {
 			value: newGold,
 			onUpdate: bar.updateInventoryGold,
+			onUpdateParams: [goldConfig]
 		})
 		my.gold = newGold
 	}

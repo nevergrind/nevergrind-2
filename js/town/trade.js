@@ -6,7 +6,6 @@ var trade;
 		gold: 0,
 		initiator: false,
 		confirmed: false,
-		// MAX_GOLD: 4294967295,
 		MAX_GOLD: 100000000,
 		droppedItem,
 		init,

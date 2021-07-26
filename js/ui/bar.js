@@ -340,10 +340,15 @@ var bar;
 		}
 	}
 
-	function updateInventoryGold() {
+	function updateInventoryGold(obj) {
 		if (!bar.windowsOpen.inventory) return
 		el = querySelector('#inventory-gold')
-		el.textContent = my.gold
+		if (typeof obj === 'undefined') {
+			el.textContent = my.gold
+		}
+		else {
+			el.textContent = ~~obj.value
+		}
 		TweenMax.to('#inventory-gold-row', 1, {
 			startAt: { filter: 'saturate(3) brightness(3)' },
 			filter: 'saturate(1) brightness(1)'

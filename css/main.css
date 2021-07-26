@@ -4242,6 +4242,9 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	background: #346;
 	border: 1px solid darkgoldenrod;
 }
+#patch-notes-header .close-menu {
+	width: 1.35rem;
+}
 #patch-notes-content {
 	margin-top: 2px;
 	border: 1px solid #357;

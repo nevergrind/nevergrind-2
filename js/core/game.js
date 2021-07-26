@@ -315,7 +315,7 @@ var game;
 	}
 	function playedSend() {
 		updateCachedMinutes()
-		$.get(app.url + 'ping.php')
+		$.get(app.url + 'session/start.php')
 	}
 	function played() {
 		$.post(app.url + 'chat/played.php', {

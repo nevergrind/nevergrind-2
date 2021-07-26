@@ -176,6 +176,10 @@ var battle;
 				// must be down here in case they leveled
 				battle.drawExpBar()
 			}
+
+			if (gold !== 0) {
+				town.setMyGold(my.gold + gold)
+			}
 		})
 	}
 	function upsertLevel() {
@@ -193,11 +197,10 @@ var battle;
 	}
 	function addGold(gold, isQuestGold) {
 		gold = ~~gold
-		if (my.gold + gold > trade.MAX_GOLD) {
-			gold = trade.MAX_GOLD - my.gold
+		if (my.gold + gold > MAX_GOLD) {
+			gold = MAX_GOLD - my.gold
 		}
 		if (gold) {
-			// my.gold += gold // added after server success
 			if (isQuestGold) {
 				chat.log('You quest reward is ' + gold + ' gold!', 'chat-gold')
 			}

@@ -424,7 +424,7 @@ var ng;
 
 	function keepAlive() {
 		clearTimeout(game.session.timer)
-		$.get(app.url + 'session/keep-alive.php')
+		$.get(app.url + 'session/start.php')
 			.always(handleKeepAliveAlways);
 	}
 	function handleKeepAliveAlways() {
@@ -651,11 +651,15 @@ var ng;
 					channel: my.channel,
 					ticket: steam.ticket
 				}).done(data => {
+					console.info('init-game success', data)
 					handleInitGame(data)
 					ng.unlock()
 				}).fail(data => {
+					console.info('init-game failure', data)
 					// console.warn(data.responseText)
 					data.responseText && ng.msg(data.responseText, 999, COLORS.yellow)
+				}).always(data => {
+					console.info('init-game complete', data)
 				})
 			}
 

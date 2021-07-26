@@ -1726,13 +1726,18 @@ var loot = {};
 	}
 
 	function toggleDrag(event) {
-		if (map.inCombat) {
-			chat.log('You cannot adjust your equipment or inventory while in combat!', CHAT.WARNING)
-			return
-		}
 		if (item.awaitingDrop) return
 		var index = event.currentTarget.dataset.index * 1
 		var type = event.currentTarget.dataset.type
+
+		if (map.inCombat) {
+			if (item.dragType === 'eq' || type === 'eq') {
+				chat.log('You cannot adjust your equipment while in combat!', CHAT.WARNING)
+				// item.resetDrop()
+				return
+			}
+		}
+
 		if (trade.data.name) {
 			if (type === 'eq') {
 				if (item.isDragging) chat.log('It would be unseemly to change your clothes while trading.', CHAT.WARNING)
