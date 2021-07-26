@@ -6,26 +6,11 @@ var patch;
 	}
 	const notes = [
 		{text: 'Version 0.2.6', date: 'July 25, 2021', isHeader: true},
+		{text: "Mobs were stunning way more often than intended."},
+
 		{text: "You can now move items and destroy them during combat. Previously this was not allowed. This should make it easier to make rooms for items you want to loot during combat."},
 		{text: "Fixed a bug that caused you to loot negative gold. This only affected characters with an extreme amount of gold beyond the gold limit."},
 		{text: "Your inventory now properly updates with the correct amount of gold after killing a mob. There's even a fancy animation of the number up to its new value. Wow!"},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
 
 		{text: 'Version 0.2.5', date: 'July 25, 2021', isHeader: true},
 		{text: "Changed the color of unique items and mobs to purple."},

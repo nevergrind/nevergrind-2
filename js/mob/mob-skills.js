@@ -74,7 +74,7 @@ mobSkills = {};
 		fireball,
 		initFilter,
 		[JOB.WARRIOR]: [
-			{ chance: .99, key: 'slam' }, // STUN
+			{ chance: .05, key: 'slam' }, // STUN
 		],
 		[JOB.CRUSADER]: [
 			{ chance: .04, key: 'slam' },
