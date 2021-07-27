@@ -5,7 +5,25 @@ var patch;
 		close,
 	}
 	const notes = [
-		{text: 'Version 0.2.6', date: 'July 25, 2021', isHeader: true},
+		{text: 'Version 0.2.6', date: 'July 26, 2021', isHeader: true},
+		{text: "Reduced RNG Shimmering Orb cast time from 4 to 1.5 seconds. Increased its cooldown from 5 to 15 seconds. This will allow them to use it in combat buff more effectively."},
+		{text: "Fixed the tooltips for items with double attack and dual wield properties."},
+		{text: "TMP's Primeval Withering now reduces your target's healing by 65%. This gives Templars a unique ability that other classes don't have! Templars are so cool! Hype!"},
+		{text: "The group experience range is now much more forgiving. You will also receive a message if someone in your party has a player whose level is too high for you to gain experience."},
+		{text: "You will no longer get a Mission Abandoned message upon disbanding a party in town."},
+		{text: "Fixed a bug that caused dungeon hallway textures to not update when you go to a dungeon a second time."},
+		{text: "Maxed skill rows at the academy now have a gold font color."},
+		{text: "Fixed a bug that allowed you to train skills at the academy earlier than intended and made slight adjustments to the levels at which you can level up each rank."},
+		{text: "Reduced the amount of health that champions and unique mobs have."},
+		{text: "When you change chat channels in town, you will now see a message that validates that you successfully changed channels in the chat log."},
+		{text: "The chat input placeholder now indicates what channel you are sending ."},
+		{text: "Debuffed the power of mobs' Harm Touch and made the spell blood-based. Thus you can actually resist it to as well!"},
+		{text: "Buffed the power of mobs' Magic Missile spell a little bit."},
+		{text: "Mobs' riposte now has an internal 8-second cooldown."},
+		{text: "Fixed a display bug that cause the mob unique and champion plates to overlap the target's level."},
+		{text: "."},
+
+		{text: 'Version 0.2.6', date: 'July 26, 2021', isHeader: true},
 		{text: "Mobs were stunning way more often than intended."},
 
 		{text: "You can now move items and destroy them during combat. Previously this was not allowed. This should make it easier to make rooms for items you want to loot during combat."},

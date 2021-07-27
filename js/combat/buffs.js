@@ -854,6 +854,7 @@ let buffs; // buff data for use with skill/spells/icons
 			ticks: 30,
 			interval: 3,
 			duration: 90,
+			reduceHealing: .65,
 			reduceLightningResist: .2,
 			reduceFireResist: .2,
 			reduceIceResist: .2,

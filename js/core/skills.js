@@ -518,12 +518,9 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				spellVariance: 1,
 				spellType: PROP.CONJURATION,
-				castTime: 4,
-				cooldownTime: 5,
+				castTime: 1.5,
+				cooldownTime: 15,
 				description: config => {
-					/*
-					description: config => 'Buffs you with a magical shield that absorbs '+ config.damageString +' damage. It reduces '+ config.mitigation[config.rank] +' damage per hit from all attacks until the shield is depleted. While active you are immune to spell channeling knockback.',
-					 */
 					return 'Buff your target with a shimmering orb that mitigates '+ config.mitigation[config.rank] +' damage per hit on your target until the shield is depleted. The orb absorbs up to ' + config.damageString + ' total damage. Your target is immune to silence while active.'
 				},
 			}, {
@@ -1718,7 +1715,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: config => 'Deals '+ config.damageString +' arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists while active.',
+				description: config => 'Deals '+ config.damageString +' arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists and the power of all healing while active.',
 			}, {
 				name: 'Molten Aegis',
 				img: 'TMP-10',

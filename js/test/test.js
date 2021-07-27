@@ -1,6 +1,7 @@
 var test;
 (function(Linear, TweenMax, TimelineMax, PIXI, $, undefined) {
 	test = {
+		revealMap,
 		setupMissionData,
 		getMob,
 		projectionTest,
@@ -898,6 +899,13 @@ var test;
 		// const zoneName = zones.find(z => z.id === Config.defaultPageUpZone).name
 		mission.id = Config.defaultPageUpZone
 		mission.questId = 0
+	}
+
+	function revealMap() {
+		$('#mini-map-drag *').css({
+			visibility: 'visible',
+			opacity: 1
+		})
 	}
 	/*
 	https://greensock.com/docs/v2/Plugins/BezierPlugin

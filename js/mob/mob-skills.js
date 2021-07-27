@@ -86,7 +86,7 @@ mobSkills = {};
 			{ chance: .04, key: 'slam' },
 			{ chance: .11, key: 'bloodTerror' }, // BLOOD - FEAR
 			{ chance: .16, key: 'decayingDoom' }, // ARCANE - ARMOR
-			{ chance: 0, key: 'harmTouch' }, // VOID
+			{ chance: 0, key: 'harmTouch' }, // BLOOD
 		],
 		[JOB.MONK]: [
 			{ chance: .05, key: 'craneKick' },
@@ -530,8 +530,8 @@ mobSkills = {};
 		return {
 			row: row,
 			key: 'harmTouch',
-			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 8.6)), mobs[i].int * getScaledValue(i, 9)),
-			damageType: DAMAGE_TYPE.VOID,
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, 7.6)), mobs[i].int * getScaledValue(i, 8)),
+			damageType: DAMAGE_TYPE.BLOOD,
 		}
 	}
 	function craneKick(i, row) {
@@ -862,7 +862,7 @@ mobSkills = {};
 			effect: 'silence',
 			interval: 1,
 			duration: 4,
-			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, .66)), mobs[i].int * getScaledValue(i, .72)),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, .82)), mobs[i].int * getScaledValue(i, .89)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}
@@ -1066,7 +1066,7 @@ mobSkills = {};
 	function getTierBase(config) {
 		if (config.tier === MOB_TIERS.champion) {
 			return {
-				hp: 3,
+				hp: 2.5,
 				attack: 1.25,
 				gold: 1.5,
 				expPerLevel: 2,
@@ -1076,7 +1076,7 @@ mobSkills = {};
 		}
 		else if (config.tier === MOB_TIERS.unique) {
 			return {
-				hp: 4,
+				hp: 3,
 				attack: 1.25,
 				gold: 3,
 				expPerLevel: 2,
@@ -1114,10 +1114,10 @@ mobSkills = {};
 			config.speed *= .7
 		}
 		if (config.traits.tough) {
-			if (config.tier === MOB_TIERS.champion) multi.hp = 6
-			else if (config.tier === MOB_TIERS.unique) multi.hp = 8
+			if (config.tier === MOB_TIERS.champion) multi.hp = 5
+			else if (config.tier === MOB_TIERS.unique) multi.hp = 6
 			else if (config.tier === MOB_TIERS.boss) multi.hp = 20
-			else multi.hp = 4 // ????
+			else multi.hp = 4 // ???? this is probably pointless
 		}
 		if (config.traits.bloodlusted) {
 			config.resist.blood -= .5

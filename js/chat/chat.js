@@ -573,7 +573,6 @@ var chat;
 						channel: channel
 					}).done(data => {
 						!keepLog && clearChatLog()
-						// console.log('<span class="chat-warning">Joined channel: ' + data.channel + '</span>')
 						joinChangeCallback(data)
 					});
 				}
@@ -605,6 +604,8 @@ var chat;
 		// add to chat channel
 		chat.presence = [];
 		$('#chat-room').empty()
+		chat.log('Joined channel: ' + data.channel, CHAT.WARNING)
+		query.el('#chat-mode-msg').textContent = 'To ' + my.channel + ':'
 		game.upsertRoom({
 			row: my.row,
 			level: my.level,

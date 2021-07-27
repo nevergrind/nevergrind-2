@@ -119,6 +119,8 @@ var tooltip;
 				getGenericStatHtml(obj.handToHand, 'Hand-to-hand') +
 				getGenericStatHtml(obj.twoHandSlash, 'Two-hand Slash') +
 				getGenericStatHtml(obj.twoHandBlunt, 'Two-hand Blunt') +
+				getGenericStatHtml(obj.dualWield, 'Dual Wield') +
+				getGenericStatHtml(obj.doubleAttack, 'Double Attack') +
 				getGenericStatHtml(obj.dodge, 'Dodge') +
 				getGenericStatHtml(obj.parry, 'Parry') +
 				getGenericStatHtml(obj.riposte, 'Riposte') +
@@ -588,6 +590,9 @@ var tooltip;
 		}
 		if (config.silence) {
 			html += `<div class="chat-skill">Resist Silence: ${config.silence[minRank]}</div>`
+		}
+		if (config.reduceHealing) {
+			html += `<div class="chat-skill">Reduce Healing: ${ng.toPercent(config.reduceHealing)}%</div>`
 		}
 		if (config.reduceBloodResist) {
 			html += `<div class="chat-skill">Reduce Blood Resistance: ${ng.toPercent(config.reduceBloodResist)}%</div>`

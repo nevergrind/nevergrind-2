@@ -1,5 +1,5 @@
 var combat;
-!function($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear, undefined) {
+!function($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear, Date, undefined) {
 	combat = {
 		lastMobHitMeName: '',
 		questBg: {},
@@ -50,6 +50,7 @@ var combat;
 			'con-high-blue-bg',
 			'con-white-bg',
 			'con-yellow-bg',
+			'con-orange-bg',
 			'con-red-bg',
 		],
 		considerClass: [
@@ -59,6 +60,7 @@ var combat;
 			'con-high-blue',
 			'con-white',
 			'con-yellow',
+			'con-orange',
 			'con-red',
 		],
 	}
@@ -150,6 +152,8 @@ var combat;
 	}
 
 	let reducedDamage = 0
+	let now
+	const riposteCooldown = 8000
 	function processDamagesMob(d) {
 		if (typeof mobs[d.index] === 'undefined' ||
 			!mobs[d.index].name
@@ -157,6 +161,7 @@ var combat;
 			d.damage = 0
 			return d
 		}
+		now = Date.now()
 		// console.info('damageType', d.damageType)
 
 		// MAGIC cannot miss, dodge, etc
@@ -181,13 +186,15 @@ var combat;
 				return d
 			}
 			if (!d.isPiercing) {
-				if (rand() * 100 < mob.riposteChance(d.index)) {
+				if ((now - timers.mobEffects[d.index].riposteTimestamp) > riposteCooldown &&
+					rand() * 100 < mob.riposteChance(d.index)) {
 					// mob ripostes
 					d.damage = 0
 					d.missed = true
 					combat.txDamageHero(d.index, [ mobSkills.autoAttack(d.index, my.row, true) ])
 					combat.popupDamage(d.index, 'RIPOSTE!')
 					audio.playSound('riposte', 'combat')
+					timers.mobEffects[d.index].riposteTimestamp = now
 					return d
 				}
 				else if (rand() * 100 < mob.parryChance(d.index)) {
@@ -437,6 +444,7 @@ var combat;
 			mob.animateHit(o.index, false, o.damage)
 		}
 		combat.popupDamage(o.index, o.damage, o)
+		// console.info(o.index, o.damage, o)
 		mob.updateHate(o)
 		mob.drawMobBar(o.index)
 		if (!o.isHeal && mobs[o.index].hp <= 0) {
@@ -852,6 +860,7 @@ var combat;
 				if (!d.isPiercing &&
 					rand() < stats.dodgeChance()) {
 					combat.popupDamage(d.row, 'DODGE!', {targetMob: false})
+					chat.log('You dodged ' + mobs[index].name + '\'s attack!')
 					audio.playSound('miss', 'combat')
 					d.damage = 0
 					return d
@@ -870,6 +879,7 @@ var combat;
 					rand() < stats.riposteChance() || skill.CRU.vengeanceOn) {
 					if (skill.CRU.vengeanceOn) skill.CRU.vengeanceOn = false
 					combat.popupDamage(d.row, 'RIPOSTE!', {targetMob: false})
+					chat.log('You riposted ' + mobs[index].name + '\'s attack!')
 					audio.playSound('riposte', 'combat')
 					button.primaryAttack(true, index)
 					d.damage = 0
@@ -883,6 +893,7 @@ var combat;
 				if (!d.isPiercing &&
 					rand() < stats.parryChance()) {
 					combat.popupDamage(d.row, 'PARRY!', {targetMob: false})
+					chat.log('You parried ' + mobs[index].name + '\'s attack!')
 					audio.playSound('parry', 'combat')
 					d.damage = 0
 					button.startSwing('primaryAttack')
@@ -1048,11 +1059,21 @@ var combat;
 			}
 		}
 		/////////////////////////////////////////////////////////////////////
+		let reducedHealing = 1
 		function processHealToMob(index, hits) {
 			// animate mob
 			mob.animateSpecial(hits[0].healedBy)
 			// animate particles of tx and rx
 			hits.filter(filterImpossibleMobTargets).forEach(hit => {
+				reducedHealing = 1
+				if (mobs[hit.index].buffFlags.primevalWithering) {
+					reducedHealing -= buffs.primevalWithering.reduceHealing
+				}
+				if (reducedHealing < .1) {
+					reducedHealing = .1
+				}
+				hit.damage = Math.max(1, round(hit.damage * reducedHealing))
+
 				// final mods that affect all
 				if (hit.key === 'divineGrace') ask.mobDivineGrace(hit.healedBy, hit.index)
 				else if (hit.key === 'layHands') ask.mobLayHands(hit.healedBy, hit.index)
@@ -1202,10 +1223,6 @@ var combat;
 					}
 					else if (hit.damageType === DAMAGE_TYPE.VOID) {
 						// V O I D
-						mob.animateSpecial(index)
-						if (hit.key === 'harmTouch') {
-							ask.mobHarmTouch(hits[0].row)
-						}
 
 					}
 					else {
@@ -1279,6 +1296,10 @@ var combat;
 						}
 						else if (hit.key === 'fireball') {
 							ask.mobFireball(hits[0].row)
+						}
+						else if (hit.key === 'harmTouch') {
+							mob.animateSpecial(index)
+							ask.mobHarmTouch(hits[0].row)
 						}
 					}
 				}
@@ -2425,7 +2446,8 @@ var combat;
 	 * @returns {number}
 	 */
 	function getLevelDifferenceIndex(level) {
-		if (level >= my.level + 3) return 6 // red
+		if (level >= my.level + 5) return 7 // red
+		if (level >= my.level + 3) return 6 // orange
 		else if (level > my.level) return 5 // yellow
 		else if (level === my.level) return 4 // white
 		if (my.level <= 20) {
@@ -2440,6 +2462,10 @@ var combat;
 			else if (level >= ~~(my.level * .6) ) return 1 // green
 		}
 		return 0 // gray
+		//////////////////////
+		// NO EXP <= 20
+		// <= 20 ? 9 level difference from max level in party
+		// > 20 ? < 60% difference from max level in party
 	}
 
 	function animateDeathFilter() {
@@ -2479,4 +2505,4 @@ var combat;
 		}
 		audio.playSound('invulnerable', 'combat')
 	}
-}($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear);
+}($, _, TweenMax, PIXI, Math, Power0, Power1, Power2, Power3, Linear, Date);

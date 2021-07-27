@@ -23,7 +23,8 @@ var battle;
 			.8,
 			1,
 			1.1, // 110%
-			1.2, // red 120%
+			1.2, // orange 110%
+			1.25, // red 120%
 		],
 		/* exp formula
 		var arr = [100];
@@ -496,7 +497,7 @@ var battle;
 					level: battle.getMobLevelByQuest(minZoneLevel)
 				}
 				if (Config.enableMobTestClass) {
-					q.job = JOB.CRUSADER
+					q.job = JOB.SHADOW_KNIGHT
 				}
 				/* ill-fated idea ... maybe for only first 2 dungeons?
 				if (my.level < 2) {

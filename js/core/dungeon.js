@@ -38,7 +38,6 @@ var dungeon;
 		suppressDoorAudio: true,
 		walkSoundInterval: 0,
 		initialized: 0,
-		isDungeon: true,
 		layer: {},
 		camera: {},
 		bgLayer: {},
@@ -250,6 +249,7 @@ var dungeon;
 		}
 		if (dungeon.initialized) {
 			querySelector('#scene-dungeon').style.display = 'block'
+			redrawHallwayTextures()
 		}
 		else {
 			dungeon.initialized = true
@@ -265,6 +265,14 @@ var dungeon;
 		dungeon.updateEntityPositions()
 		button.setAll()
 		chat.scrollBottom()
+	}
+	function redrawHallwayTextures() {
+		addFloorTiles()
+		addCeilingTiles()
+		addLeftWallTiles()
+		addRightWallTiles()
+		addEndWall()
+		addEntityContainer()
 	}
 	function killEntityTweens() {
 		dungeon.entities.forEach(hallway => {
@@ -292,7 +300,7 @@ var dungeon;
 		dungeon.layer.view.style.zIndex = 1
 		querySelector('#scene-dungeon').appendChild(dungeon.layer.view)
 
-		dungeon.sky = PIXI.Sprite.from('images/dungeon/bg-test-sky.jpg')
+		/*dungeon.sky = PIXI.Sprite.from('images/dungeon/bg-test-sky.jpg')
 		dungeon.sky.zIndex = 1
 		dungeon.layer.stage.addChild(dungeon.sky)
 
@@ -311,20 +319,13 @@ var dungeon;
 			x: 0,
 			y: MaxHeight * .5,
 		}, -1)
-		dungeon.layer.stage.addChild(dungeon.tiling)
+		dungeon.layer.stage.addChild(dungeon.tiling)*/
 
 		dungeon.tilesCeiling = []
 		dungeon.tilesFloor = []
 		dungeon.tilesLeftWall = []
 		dungeon.tilesRightWall = []
-		if (dungeon.isDungeon) {
-			addFloorTiles()
-			addCeilingTiles()
-			addLeftWallTiles()
-			addRightWallTiles()
-			addEndWall()
-			addEntityContainer()
-		}
+		redrawHallwayTextures()
 	}
 	function addEntityContainer() {
 		dungeon.containerEntities = new PIXI.projection.Container2d()
@@ -461,16 +462,11 @@ var dungeon;
 
 		// animate
 		dungeon.updateEntityPositions()
-		if (dungeon.isDungeon) {
-			dungeon.tilesFloor.forEach(positionGridTile)
-			dungeon.tilesCeiling.forEach(positionGridTile)
-			dungeon.tilesLeftWall.forEach(positionGridTileWall)
-			dungeon.tilesRightWall.forEach(positionGridTileWall)
-			setEndWallDistance()
-		}
-		else {
-			dungeon.tiling.tilePosition.y = dungeon.distanceCurrent
-		}
+		dungeon.tilesFloor.map(positionGridTile)
+		dungeon.tilesCeiling.map(positionGridTile)
+		dungeon.tilesLeftWall.map(positionGridTileWall)
+		dungeon.tilesRightWall.map(positionGridTileWall)
+		setEndWallDistance()
 		// console.info("WALKING FORWARD...", performance.now())
 
 		// room/battle checks

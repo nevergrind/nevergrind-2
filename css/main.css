@@ -1668,6 +1668,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 .con-high-blue { color: #29f; }
 .con-white { color: #fff; }
 .con-yellow { color: #ee1; }
+.con-orange { color: #f92; }
 .con-red { color: #d22; }
 
 .con-grey-bg { background: #777; }
@@ -1676,6 +1677,7 @@ background: repeating-linear-gradient(135deg, #001a, #001a 2px, #0016, #0016 5px
 .con-high-blue-bg { background: #29f; }
 .con-white-bg { background: #fff; }
 .con-yellow-bg { background: #ee1; }
+.con-orange-bg { background: #f92; }
 .con-red-bg { background: #d22; }
 
 

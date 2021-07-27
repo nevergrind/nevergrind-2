@@ -133,9 +133,6 @@ let mobs = [];
 	let timeScaleSpeed = 1
 	let tickData = []
 	let hpTick = 0
-	let mpTick = 0
-	let spTick = 0
-	let mobRow = -1
 	let i = 0
 	let resist = 0
 	let resistPenalty = 0
@@ -424,7 +421,7 @@ let mobs = [];
 		else if (exp > maxExp) exp = maxExp
 
 		// penalize for party members that are much higher
-		if (party.expBrokenByAll() || my.level === MAX_HERO_LEVEL) exp = 0
+		if (party.somePlayerBreaksMyExp() || my.level === MAX_HERO_LEVEL) exp = 0
 		// console.info('getMobExp:', exp)
 		return exp
 	}

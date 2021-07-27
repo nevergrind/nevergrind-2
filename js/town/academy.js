@@ -17,7 +17,7 @@ var academy;
 	let lastCost = 0
 	// const trainCosts = [0, 100, 250, 625, 1500, 3750, 9000, 22500]
 	const trainCosts = [0, 50, 150, 325, 675, 1200, 1875, 2925]
-	const reqLevel = [0, 1, 6, 12, 18, 24, 30, 39, 49] // [0, 5, 30, 60, 90, 120, 150, 195, 245]
+	const reqLevel = [0, 1, 9, 15, 22, 30, 39, 49, 49] // [0, 5, 30, 60, 90, 120, 150, 195, 245]
 	// [7,7,7,7,7,7,7,7,7,7,7,7]
 	// [0,0,0,0,0,0,0,0,0,0,0,0]
 
@@ -128,7 +128,11 @@ var academy;
 		html = ''
 		for (i=0; i<academy.TOTAL_SKILLS; i++) {
 			// console.warn('row', i)
-			html += '<div id="academy-skill-'+ i +'" class="academy-row stag-blue">' +
+			html += '<div id="academy-skill-'+ i +'" class="academy-row stag-blue" style="'
+				if (my.skills[i] === MAX_SKILL_LEVEL) {
+					html += 'color : gold'
+				}
+				html += '">' +
 				getSkillRowHtml(i) +
 			'</div>'
 		}
@@ -152,14 +156,7 @@ var academy;
 			row += '</div>' +
 			// col 3
 			'<div class="flex-column flex-center text-center" style="width: 4rem">'
-				if (!hasLevelRequired(nextRank)) {
-					console.info('nextRank', nextRank)
-					row += '<div class="academy-skill-next" style="color: #f22">'+
-						'<div>Requires</div>'+
-						'<div>Level '+ reqLevel[nextRank] +'</div>' +
-					'</div>'
-				}
-				else {
+				if (hasLevelRequired(nextRank)) {
 					if (my.skills[i] === 0) {
 						row += '<div class="academy-skill-next">'+
 							'<div>Learn Skill:</div>'+
@@ -167,7 +164,7 @@ var academy;
 								'<img class="academy-gold-img" src="images/ui/gold-bar.png">'+ trainCosts[nextRank] + '</div>' +
 						'</div>'
 					}
-					else if (nextRank <= 7) {
+					else if (my.skills[i] < 7) {
 						row += '<div class="academy-skill-next">'+
 							'<div>Next Rank:</div>'+
 							'<div class="flex-center">'+
@@ -178,6 +175,12 @@ var academy;
 					else {
 						row += '<div class="academy-skill-next">Skill Maxed</div>'
 					}
+				}
+				else {
+					row += '<div class="academy-skill-next" style="color: #f22">'+
+						'<div>Requires</div>'+
+						'<div>Level '+ reqLevel[nextRank] +'</div>' +
+					'</div>'
 				}
 			row += '</div>' +
 			// col 4
@@ -201,6 +204,7 @@ var academy;
 
 	}
 	function hasLevelRequired(rank) {
+		// console.info('rank', rank)
 		return my.level >= reqLevel[rank]
 	}
 	function getTrainRow() {

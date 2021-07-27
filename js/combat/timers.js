@@ -59,7 +59,8 @@ var timers;
 		paralyzeTimestamp: 0,
 		silenceTimestamp: 0,
 		healTimestamp: 0,
-		harmTouchTimestamp: 0
+		harmTouchTimestamp: 0,
+		riposteTimestamp: 0
 	}
 	///////////////////////////////////////////
 	function init() {

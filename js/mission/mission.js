@@ -324,7 +324,7 @@ var mission;
 		let exp = battle.expThreshold[level + 1] * expMultiplier*/
 		let exp = mob.getMobExp(level, 3)
 		// penalize for party members that are much higher
-		if (party.expBrokenByAll()) exp = 0
+		if (party.somePlayerBreaksMyExp()) exp = 0
 		return exp
 	}
 

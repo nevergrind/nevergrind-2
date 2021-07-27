@@ -47,7 +47,8 @@ var party;
 		respawn,
 		reviveDeadAllies,
 		memberDied,
-		expBrokenByAll,
+		somePlayerBreaksMyExp,
+		checkExperienceNotBroken,
 	};
 	party.prefix++;
 	sessionStorage.setItem('reloads', party.prefix);
@@ -335,6 +336,7 @@ var party;
 				checkUpdateBars(data, party.presence[len])
 				bar.updatePlayerBar(data)
 				player.updateAllPlayerSprites()
+				party.checkExperienceNotBroken()
 			}
 			else {
 				// broadcast and reject join with a boot
@@ -472,11 +474,12 @@ var party;
 	 */
 	function notifyJoin(data) {
 		// console.info('party.notifyJoin ', data);
-		chat.log(data.msg, CHAT.WARNING);
+		chat.log(data.msg, CHAT.WARNING)
 		// refresh party bars
 		socket.publish('party' + my.partyId, {
 			route: 'p->getPresence',
-		});
+		})
+		checkExperienceNotBroken()
 	}
 	function boot(name, bypass) {
 		// console.info('/boot ', name, bypass);
@@ -538,7 +541,9 @@ var party;
 				}
 				party.listen(party.getUniquePartyChannel(true));
 			}
-			chat.log('Mission abandoned!', CHAT.WARNING);
+			if (mission.inProgress) {
+				chat.log('Mission abandoned!', CHAT.WARNING)
+			}
 			mission.rxReturnToTown();
 			mission.resetLocalQuestData();
 		}
@@ -653,22 +658,19 @@ var party;
 
 	/**
 	 * returns if someone in the party is too high level for you to gain exp
+	 * connected to combat.getLevelDifferenceIndex
 	 * @type {boolean}
 	 */
-	let broken = false
-	function expBrokenByAll() {
-		broken = false
-		if (my.level <= 10) {
-			if (party.presence.some(p => p.level > my.level + 4)) {
-				broken = true
-			}
-		}
-		else {
-			// level 20+ uses a percentage instead of a fixed penalty
-			if (party.presence.some(p => p.level > my.level * 1.5)) {
-				broken = true
-			}
-		}
-		return broken
+	function somePlayerBreaksMyExp() {
+		return (my.level <= 20 && party.presence.some(p => p.level > my.level + 8)) ||
+			(my.level > 20 && party.presence.some(p => p.level * .6 > my.level))
 	}
+
+	function checkExperienceNotBroken() {
+		if (somePlayerBreaksMyExp()) {
+			chat.log('At least one player\'s level in your party is too high. You will not gain experience.', CHAT.WARNING)
+		}
+	}
+
+
 })(Date, _, $);
