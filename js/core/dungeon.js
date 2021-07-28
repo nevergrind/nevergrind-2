@@ -37,7 +37,7 @@ var dungeon;
 		],
 		suppressDoorAudio: true,
 		walkSoundInterval: 0,
-		initialized: 0,
+		initialized: false,
 		layer: {},
 		camera: {},
 		bgLayer: {},
@@ -127,9 +127,15 @@ var dungeon;
 		}
 		goTasks()
 	}
+
+	/**
+	 * Only called upon entering dungeon
+	 */
 	function rxGo() {
-		goTasks()
+		const zoneName = mission.getZoneKey()
+		updateDungeonTextures(zoneName)
 		delayedCall(.5, preloadCombatAssets)
+		goTasks()
 	}
 	function goTasks() {
 		// cleanup sort of activities when going into dungeon
@@ -249,7 +255,6 @@ var dungeon;
 		}
 		if (dungeon.initialized) {
 			querySelector('#scene-dungeon').style.display = 'block'
-			redrawHallwayTextures()
 		}
 		else {
 			dungeon.initialized = true
@@ -266,13 +271,15 @@ var dungeon;
 		button.setAll()
 		chat.scrollBottom()
 	}
-	function redrawHallwayTextures() {
-		addFloorTiles()
-		addCeilingTiles()
-		addLeftWallTiles()
-		addRightWallTiles()
-		addEndWall()
+	function initDungeonTextures() {
+		const zoneName = mission.getZoneKey()
+		addFloorTiles(zoneName)
+		addCeilingTiles(zoneName)
+		addLeftWallTiles(zoneName)
+		addRightWallTiles(zoneName)
+		addEndWall(zoneName)
 		addEntityContainer()
+		console.warn('initDungeonTextures')
 	}
 	function killEntityTweens() {
 		dungeon.entities.forEach(hallway => {
@@ -321,11 +328,7 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.tiling)*/
 
-		dungeon.tilesCeiling = []
-		dungeon.tilesFloor = []
-		dungeon.tilesLeftWall = []
-		dungeon.tilesRightWall = []
-		redrawHallwayTextures()
+		initDungeonTextures()
 	}
 	function addEntityContainer() {
 		dungeon.containerEntities = new PIXI.projection.Container2d()
@@ -725,7 +728,7 @@ var dungeon;
 		dungeon.walkTween.pause()
 		clearInterval(dungeon.walkSoundInterval)
 	}
-	function addFloorTiles() {
+	function addFloorTiles(zoneName) {
 		dungeon.containerFloor = new PIXI.projection.Container2d()
 		dungeon.containerFloor.id = 'floor'
 		dungeon.containerFloor.zIndex = 3
@@ -736,7 +739,6 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerFloor)
 
-		const zoneName = mission.getZoneKey()
 		for (var i=0; i<MAX_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-floor.jpg'))
@@ -752,7 +754,7 @@ var dungeon;
 			dungeon.containerFloor.addChild(tile)
 		}
 	}
-	function addCeilingTiles() {
+	function addCeilingTiles(zoneName) {
 		dungeon.containerCeiling = new PIXI.projection.Container2d()
 		dungeon.containerCeiling.zIndex = 1
 		dungeon.containerCeiling.position.set(MaxWidth * .5, 0)
@@ -762,7 +764,6 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerCeiling)
 
-		const zoneName = mission.getZoneKey()
 		for (var i=0; i<MAX_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-ceiling.jpg'))
@@ -780,7 +781,7 @@ var dungeon;
 			dungeon.containerCeiling.addChild(tile)
 		}
 	}
-	function addLeftWallTiles() {
+	function addLeftWallTiles(zoneName) {
 		dungeon.containerLeftWall = new PIXI.projection.Container2d()
 		dungeon.containerLeftWall.zIndex = 1
 		dungeon.containerLeftWall.position.set(0, MaxHeight * .5)
@@ -790,7 +791,6 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerLeftWall)
 
-		const zoneName = mission.getZoneKey()
 		for (var i=0; i<MAX_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-wall.jpg'))
@@ -808,7 +808,7 @@ var dungeon;
 			dungeon.containerLeftWall.addChild(tile)
 		}
 	}
-	function addRightWallTiles() {
+	function addRightWallTiles(zoneName) {
 		dungeon.containerRightWall = new PIXI.projection.Container2d()
 		dungeon.containerRightWall.zIndex = 1
 		dungeon.containerRightWall.position.set(MaxWidth, MaxHeight * .5)
@@ -818,7 +818,6 @@ var dungeon;
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerRightWall)
 
-		const zoneName = mission.getZoneKey()
 		for (var i=0; i<MAX_TILES; i++) {
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-wall-right.jpg'))
@@ -827,17 +826,11 @@ var dungeon;
 			tile.height = MaxHeight
 			tile.position.x = i * MaxWidth * AspectRatio * -1
 			tile.gridIndex = i
-			/*TweenMax.set(tile, {
-				pixi: {
-					tint: '#fda',
-				}
-			})*/
 			dungeon.tilesRightWall.push(tile)
 			dungeon.containerRightWall.addChild(tile)
 		}
 	}
-	function addEndWall() {
-		const zoneName = mission.getZoneKey()
+	function addEndWall(zoneName) {
 		dungeon.endWall = new PIXI.projection.Sprite2d(
 			PIXI.Texture.from('images/dungeon/'+ zoneName +'-door.jpg'))
 		dungeon.endWall.anchor.set(.5, 1)
@@ -846,12 +839,6 @@ var dungeon;
 		dungeon.endWall.position.x = 0
 		dungeon.endWall.width = MaxWidth
 		dungeon.endWall.height = MaxHeight
-		/*TweenMax.set(dungeon.endWall, {
-			pixi: {
-				contrast: 5,
-				brightness: .05
-			}
-		})*/
 		// size and check offset
 		setEndWallDistance()
 		dungeon.containerFloor.addChild(dungeon.endWall)
@@ -861,4 +848,29 @@ var dungeon;
 			y: -dungeon.distanceEnd
 		})
 	}
+
+	function updateDungeonTextures(zoneName) {
+		if (dungeon.initialized) {
+			console.warn('updateDungeonTextures')
+			// floor
+			dungeon.tilesFloor.map(tile => {
+				tile.texture = PIXI.Texture.from('images/dungeon/' + zoneName +'-floor.jpg')
+			})
+			// ceiling
+			dungeon.tilesCeiling.map(tile => {
+				tile.texture = PIXI.Texture.from('images/dungeon/' + zoneName +'-ceiling.jpg')
+			})
+			// left wall
+			dungeon.tilesLeftWall.map(tile => {
+				tile.texture = PIXI.Texture.from('images/dungeon/' + zoneName +'-wall.jpg')
+			})
+			// right wall
+			dungeon.tilesRightWall.map(tile => {
+				tile.texture = PIXI.Texture.from('images/dungeon/' + zoneName +'-wall-right.jpg')
+			})
+			// end wall
+			dungeon.endWall.texture = PIXI.Texture.from('images/dungeon/'+ zoneName +'-door.jpg')
+		}
+	}
+
 })(TweenMax, $, _, Power0, Sine, Power2);

@@ -108,7 +108,7 @@ var mission;
 		var id = this.dataset.id * 1
 		var questId = this.dataset.quest * 1
 		if (id >= 0 && party.presence[0].isLeader) {
-			console.info("QUEST SELECTED: ", id, questId, title)
+			// console.info("QUEST SELECTED: ", id, questId, title)
 			mission.id = id
 			mission.questId = questId
 			// console.info("zone name: ", zones[mission.id].name)
@@ -182,6 +182,14 @@ var mission;
 		map.hide()
 		if (ng.view !== 'town') {
 			chat.log('Returning to town...', CHAT.WARNING)
+			party.presence[0].isDead = false
+
+			my.set(PROP.HP, stats.hpMax(true), false, true)
+			my.set(PROP.MP, stats.mpMax(true), false, true)
+			my.set(PROP.SP, stats.spMax(true), false, true)
+			bar.updateBar(PROP.HP, my)
+			bar.updateBar(PROP.MP, my)
+			bar.updateBar(PROP.SP, my)
 		}
 		ng.lock(1)
 

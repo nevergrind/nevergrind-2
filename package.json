@@ -1,7 +1,7 @@
 {
   "name": "nevergrind-online",
   "main": "index.html",
-  "version": "0.2.6",
+  "version": "0.2.9",
   "description": "multiplayer-cooperative-rpg",
   "product_string": "Nevergrind Online",
   "nodejs": true,
@@ -24,7 +24,7 @@
   "window": {
     "title": "Nevergrind Online",
     "icon": "images/ngo.jpg",
-    "toolbar": true,
+    "toolbar": false,
     "frame": true,
     "position": "center",
     "width": 1920,
@@ -33,7 +33,7 @@
     "min_height": 720,
     "max_width": 1920,
     "max_height": 1080,
-    "resizeable": false,
+    "resizable": false,
     "fullscreen": true
   },
   "permissions": [

@@ -102,7 +102,7 @@
 	function subversionCompleted() {
 		splashIndex = -1
 		damages = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'subversion',
 				index: tgt,
@@ -303,7 +303,7 @@
 	function enthrallCompleted() {
 		damages = []
 		const damagesDot = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'enthrall',
 				index: tgt,

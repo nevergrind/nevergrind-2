@@ -195,6 +195,7 @@
 			...hit
 		})
 		combat.txDotMob(damages)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function decayingDoom(index, data) {
 		if (timers.castBar < 1) return
@@ -225,6 +226,7 @@
 			...hit
 		})
 		combat.txDotMob(damages)
+		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
 	function bloodTerror(index, data) {
 		if (timers.castBar < 1) return

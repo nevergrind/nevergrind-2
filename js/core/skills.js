@@ -325,7 +325,7 @@ var skills;
 				spellType: PROP.EVOCATION,
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
-				cooldownTime: 0,
+				cooldownTime: 12,
 				description: config => 'Blast your target with a plague that deals '+ config.damageString +' poison damage and an additional '+ modifiedDamageString(config.damageString, config.dotModifier) +' poison damage over time for '+ ng.toMinSecs(buffs.ravagingPlague.duration) +'.',
 			}, {
 				name: 'Decaying Doom',
@@ -336,7 +336,7 @@ var skills;
 				spellType: PROP.EVOCATION,
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
-				cooldownTime: 0,
+				cooldownTime: 15,
 				description: config => 'Curse your target with decaying doom that strikes for '+ config.damageString +' arcane damage and deals an additional '+ modifiedDamageString(config.damageString, config.dotModifier) +' arcane damage over time for '+ ng.toMinSecs(buffs.decayingDoom.duration) +'. Debuffs target\'s armor by '+ ng.toPercent(config.debuffArmor) +'% while active.',
 			}, {
 				name: 'Blood Terror',
@@ -1277,7 +1277,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
-				description: config => 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.consonantChain.duration) +'. Slows your target\'s attack speed by '+ ng.toPercent(config.slowPercent) +'% while active.',
+				description: config => 'Deals arcane damage over time for '+ ng.toMinSecs(buffs.consonantChain.duration) +'. Slows your target\'s attack speed by '+ ng.toPercent(config.slowPercent) +'% and reduces their healing by '+ ng.toPercent(config.reduceHealing) +'% while active.',
 			}, {
 				name: 'Litany of Life',
 				img: 'BRD-9',
@@ -1455,6 +1455,7 @@ var skills;
 				img: 'WLK-12',
 				sp: level => spellValues.profaneSpiritMana[level],
 				spellDamage: level => spellValues.profaneSpirit[level] + (my.level),
+				spellVariance: 1,
 				spellType: PROP.ALTERATION,
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 4,
@@ -1715,7 +1716,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3.5,
 				cooldownTime: 0,
-				description: config => 'Deals '+ config.damageString +' arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists and the power of all healing while active.',
+				description: config => 'Deals '+ config.damageString +' arcane damage over time for '+ ng.toMinSecs(buffs.primevalWithering.duration) +'. Debuffs lightning, fire, and ice resists and the power of all healing by '+ ng.toPercent(config.reduceHealing) +'% while active.',
 			}, {
 				name: 'Molten Aegis',
 				img: 'TMP-10',
@@ -2348,7 +2349,7 @@ var skills;
 		engulfingDarknessMana: getManaTier(1.7),
 		engulfingDarkness: [0, 26, 65, 156, 278, 411, 530, 620],
 		profaneSpiritMana: getManaTier(1.4),
-		profaneSpirit: [0, 32, 78, 187, 334, 494, 636, 743],
+		profaneSpirit: [0, 64, 156, 374, 668, 988, 1272, 1486],
 		// SHM
 		frostRiftMana: getManaTier(1.2),
 		frostRift: [0, 15, 37, 89, 159, 235, 303, 354],
@@ -2537,6 +2538,15 @@ var skills;
 			button.triggerGlobalCooldown()
 			return true
 		}
+
+		if (!config.isMob && spell.config.target > 0) {
+			// targeting player
+			if (!party.isAlive(party.presence[party.getIndexByRow(spell.config.target)])) {
+				chat.log('You cannot cast spells on a dead target!', CHAT.WARNING)
+				return true
+			}
+		}
+
 		// targeting
 		if (config.anyTarget) {
 			// A OK

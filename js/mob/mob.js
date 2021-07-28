@@ -2,6 +2,7 @@ var mob;
 let mobs = [];
 (function(TweenMax, $, _, Object, Linear,  PIXI, Sine, Power2, undefined) {
 	mob = {
+		getResistPenalty,
 		isUniqueTier,
 		getMobImagesByZone,
 		getMobResist,
@@ -1080,18 +1081,25 @@ let mobs = [];
 				resist += buffs.righteousRhapsody.reduceAllResists[skill.BRD.getMaxRighteousRhapsody(d.index)]
 			}
 
-			resistPenalty = 0
-			if (mobs[d.index].level > my.level) {
-				// 20% when 3 levels higher
-				resistPenalty = Math.pow(mobs[d.index].level - my.level + 1, 2.16) / 100
-			}
-			resist -= resistPenalty
+			resist -= mob.getResistPenalty(d.index)
 
 			if (resist < .25) resist = .25
 			else if (resist > 2) resist = 2 // cannot lower resists beyond -100%
 		}
 		// console.info('getMobResist after', d.index, d.damageType, resist)
 		return resist
+	}
+
+	/**
+	 * Damage penalty by level difference
+	 * @param index
+	 * @returns {number}
+	 */
+	function getResistPenalty(index) {
+		if (mobs[index].level > my.level) {
+			return Math.pow(mobs[index].level - my.level + 1, 2.16) / 100
+		}
+		else return 0
 	}
 	function getMobImagesByZone(acc, m) {
 		if (m.img && !acc.includes(m.img)) {

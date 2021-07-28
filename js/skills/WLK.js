@@ -141,7 +141,7 @@
 	}
 	function hauntingVisionCompleted() {
 		damages = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'hauntingVision',
 				index: tgt,
@@ -169,7 +169,7 @@
 	}
 	function icingDeathCompleted() {
 		damages = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'icingDeath',
 				index: tgt,
@@ -330,12 +330,19 @@
 		damages = []
 		for (i=0; i<mob.max; i++) {
 			if (mob.isAlive(i)) {
+				let min = ~~(my.buffs.profaneSpirit.damage * spell.data.spellVariance)
+				let max = my.buffs.profaneSpirit.damage
+				let damage = _.random(min, max)
+				let isCrit = (stats.critFromBuffBonus(i) + stats.critChance()) > rand()
 				damages.push({
 					key: 'profaneSpiritExplosion',
 					index: i,
 					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
-					...stats.spellDamage(i)
+					min: min,
+					max: max,
+					damage: damage,
+					isCrit: isCrit,
 				})
 			}
 		}

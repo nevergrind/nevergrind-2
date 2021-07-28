@@ -12,8 +12,9 @@
 <body id="body">
 
 <script>
+// search: $version - only update when it is an essential update because it is sent to server to check for a match
 var app = {
-	version: '0.2.6', // search: $version
+	version: '0.2.6',
 	initialized: 0,
 	isApp: location.protocol === 'chrome-extension:',
 	account: '',

@@ -247,9 +247,11 @@ var combat;
 			if (mobs[d.index].buffFlags.bloodFire) mobArmor += buffs.bloodFire.debuffArmor
 			if (mobs[d.index].buffFlags.subvertedSymphony) mobArmor += buffs.subvertedSymphony.debuffArmor
 			if (mobs[d.index].buffFlags.decayingDoom) mobArmor += buffs.decayingDoom.debuffArmor
+			mobArmor -= mob.getResistPenalty(d.index)
 
-			if (mobArmor > 1) mobArmor = 1
 			// console.info('mobArmor', d.index, mobArmor)
+			if (mobArmor > 1) mobArmor = 1
+			else if (mobArmor < .25) mobArmor = .25
 			d.damage *= mobArmor
 			// console.warn('3', mobArmor, d.damage)
 
@@ -781,9 +783,10 @@ var combat;
 	}
 	function triggerOnMyDeath() {
 		// on death - must be done before health is subtracted
+		// console.warn('triggerOnMyDeath', my.hp, party.presence[0].hp, my.buffFlags.profaneSpirit)
 		if (my.buffFlags.profaneSpirit) {
-			battle.removeBuff('profaneSpirit')
 			skill.WLK.profaneSpiritExplosion()
+			battle.removeBuff('profaneSpirit')
 		}
 	}
 	// damage hero functions
@@ -1059,15 +1062,18 @@ var combat;
 			}
 		}
 		/////////////////////////////////////////////////////////////////////
-		let reducedHealing = 1
 		function processHealToMob(index, hits) {
 			// animate mob
 			mob.animateSpecial(hits[0].healedBy)
 			// animate particles of tx and rx
+			let reducedHealing = 1
 			hits.filter(filterImpossibleMobTargets).forEach(hit => {
 				reducedHealing = 1
 				if (mobs[hit.index].buffFlags.primevalWithering) {
 					reducedHealing -= buffs.primevalWithering.reduceHealing
+				}
+				if (mobs[hit.index].buffFlags.consonantChain) {
+					reducedHealing -= buffs.consonantChain.reduceHealing
 				}
 				if (reducedHealing < .1) {
 					reducedHealing = .1
@@ -1183,7 +1189,7 @@ var combat;
 		}
 		function onDotTickToMe(hit, hitAmount) {
 			// console.info('hitAmount b4', hitAmount, hit)
-			chat.log(_.startCase(hit.key) + ' hits YOU for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
+			// chat.log(_.startCase(hit.key) + ' hits YOU for ' + hitAmount + ' ' + hit.damageType +' damage.', CHAT.ALERT)
 			hit.damage = hitAmount
 			// const index = party.getIndexByRow(hit.row)
 			// console.info('HIT', index, hit.key, hit)

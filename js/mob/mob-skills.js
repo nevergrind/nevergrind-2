@@ -1175,6 +1175,9 @@ mobSkills = {};
 			})
 			combat.txBuffHero(damages)
 		}
+		else {
+			chat.log('You resisted stun!', CHAT.ALERT)
+		}
 	}
 	function fearPlayerTx(duration) {
 		if (my.fearCheck()) {
@@ -1186,6 +1189,9 @@ mobSkills = {};
 				duration: duration,
 			})
 			combat.txBuffHero(damages)
+		}
+		else {
+			chat.log('You resisted fear!', CHAT.ALERT)
 		}
 	}
 	function paralyzePlayerTx(duration) {
@@ -1199,6 +1205,9 @@ mobSkills = {};
 			})
 			combat.txBuffHero(damages)
 		}
+		else {
+			chat.log('You resisted paralyze!', CHAT.ALERT)
+		}
 	}
 	function silencePlayerTx(duration) {
 		if (my.silenceCheck()) {
@@ -1210,6 +1219,9 @@ mobSkills = {};
 				duration: duration,
 			})
 			combat.txBuffHero(damages)
+		}
+		else {
+			chat.log('You resisted silence!', CHAT.ALERT)
 		}
 	}
 	function chillPlayerTx(duration) {
@@ -1234,6 +1246,9 @@ mobSkills = {};
 				duration: duration,
 			})
 			combat.txBuffHero(damages)
+		}
+		else {
+			chat.log('You resisted freeze!', CHAT.ALERT)
 		}
 	}
 

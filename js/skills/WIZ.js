@@ -112,7 +112,7 @@
 	function fireballCompleted() {
 		splashIndex = -1
 		damages = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'fireball',
 				index: tgt,
@@ -136,7 +136,7 @@
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
 
-		battle.getConeTargets(my.target, 5).forEach((tgt, i) => {
+		battle.getConeTargets(spell.config.target, 5).forEach((tgt, i) => {
 			const damages = {
 				key: 'chainLightning',
 				index: tgt,

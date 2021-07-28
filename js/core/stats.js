@@ -2,6 +2,7 @@ var stats = {};
 (function($, TweenMax, _, undefined) {
 	stats = {
 		memo: {},
+		critFromBuffBonus,
 		clearCache,
 		enhancedDamageToHumanoids,
 		enhancedDamageToBeasts,

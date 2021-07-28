@@ -217,7 +217,7 @@ var my;
 	 * @param val
 	 * @param increment - increase or decrease by val (instead of absolute value)
 	 */
-	function set(key, val, increment, isRevive = false) {
+	function set(key, val, increment = false, isRevive = false) {
 		if (party.presence[0]?.isDead && !isRevive) return
 
 		if (increment) {

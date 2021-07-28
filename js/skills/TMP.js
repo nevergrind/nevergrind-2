@@ -136,7 +136,7 @@
 		splashIndex = -1
 		damages = []
 		const damagesDebuff = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'staticStorm',
 				index: tgt,

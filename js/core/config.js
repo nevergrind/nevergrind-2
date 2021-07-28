@@ -11,7 +11,7 @@ const Config = {
 	defaultPageUpZone: zones.find(z => z.name === ZONES.ashenflowPeak).id,
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
-	forceUnique: true,
+	forceUnique: false,
 	forceChampion: false,
 	mockFullParty: false,
 	mockFullPartySize: 5,

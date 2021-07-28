@@ -49,7 +49,7 @@
 	}
 	function sonicBoomCompleted() {
 		damages = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'sonicBoom',
 				index: tgt,
@@ -78,7 +78,7 @@
 	function euphonicDirgeCompleted() {
 		splashIndex = -1
 		damages = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'euphonicDirge',
 				index: tgt,
@@ -100,7 +100,7 @@
 	function subvertedSymphonyCompleted() {
 		splashIndex = -1
 		damages = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'subvertedSymphony',
 				index: tgt,

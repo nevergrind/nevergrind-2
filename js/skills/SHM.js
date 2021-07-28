@@ -159,7 +159,7 @@
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
 		damages = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'glacialShard',
 				index: tgt,
