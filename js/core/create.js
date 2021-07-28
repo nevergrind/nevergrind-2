@@ -108,18 +108,30 @@ var create;
 		$('#portrait-up').on('click', faceUp)
 	}
 	function onClickDelete() {
-		modal.show({
-			key: 'delete-character'
-		});
+		if (ng.characterData.length >= 1) {
+			modal.show({
+				key: 'delete-character'
+			});
+		}
+		else {
+			ng.msg('You don\'t have any characters to delete!', undefined, COLORS.red)
+		}
 		audio.playSound('click-4')
 	}
 	function selectRace() {
-		var race = $(this).text();
+		var race = $(this).text()
 		if (race === create.form.race) return
-		$('.select-race').removeClass('active');
-		$(this).addClass('active');
-		create.setRandomClass(race);
-		create.set('race', race);
+		$('.select-race').removeClass('active')
+		$(this).addClass('active')
+		const possibleJobs = create.getPossibleJobs(race)
+		const jobIndex = possibleJobs.findIndex(j => j === create.form.job)
+		if (jobIndex >= 0) {
+			create.setRandomClass(race, jobIndex)
+		}
+		else {
+			create.setRandomClass(race)
+		}
+		create.set('race', race)
 		setFace()
 		audio.playSound('click-17')
 	}
@@ -559,7 +571,7 @@ var create;
 		var e = $(".select-race:eq("+ ~~(rand() * 12) +")");
 		e.length && e.trigger('click');
 	}
-	function setRandomClass(race) {
+	function setRandomClass(race, jobIndex) {
 		// triggered by clicking race
 		// back to default
 		$(".select-class").removeClass().addClass('select-class disabled');
@@ -575,12 +587,18 @@ var create;
 		})
 		// need to wipe so that you can click the same job again
 		create.form.job = ''
-		$(ids).removeClass('disabled');
+		$(ids).removeClass('disabled')
 		// add active to selection
 		var e = $(".select-class:not(.disabled)"),
 			len = e.length;
 		// LMAO
-		const roll = ~~(rand() * (len - 1))
+		let roll
+		if (jobIndex >= 0) {
+			roll = jobIndex
+		}
+		else {
+			roll = ~~(rand() * (len - 1))
+		}
 		e = e.eq(roll)
 		e.length && e.trigger('click')
 	}

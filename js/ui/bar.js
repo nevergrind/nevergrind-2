@@ -1,6 +1,7 @@
 var bar;
 (function(_, $, Draggable, TweenMax, undefined) {
 	bar = {
+		setWindowSize,
 		showBarMenuPopover,
 		updateInventoryGold,
 		updateInventoryDOM,
@@ -25,7 +26,7 @@ var bar;
 		getItemIconFileNameByObj,
 		getItemSlotHtml,
 		selectOptionCategory,
-		setWindowSize,
+		handleDisplaySizeChange,
 		setDefaultOptions,
 		toggleFastDestroy,
 		toggleShowNetwork,
@@ -681,46 +682,55 @@ var bar;
 		audio.save()
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100
 		audio.playSound('chime-3')
-		setWindowSize({
+		handleDisplaySizeChange({
 			currentTarget: {
 				dataset: { id: ng.config.display }
 			}
 		})
 	}
 
-	function setWindowSize(event) {
-		id = event.currentTarget.dataset.id
-		if (id === ng.config.display) return
-
-		console.info('setWindowSize', id)
+	/**
+	 * Sets window size by string input
+	 * @param value
+	 */
+	function setWindowSize(value) {
 		if (app.isApp) {
 			var gui = require('nw.gui');
 			var win = gui.Window.get();
-			// ??????? reasons
 			setTimeout(() => {
-				if (id === 'Full Screen') {
+				// always do this for some reason???
+				if (value === 'Full Screen') {
 					!win.isFullscreen && win.enterFullscreen()
 				}
 				else {
 					win.isFullscreen && win.leaveFullscreen()
-					if (id === '1920x1080') {
+					if (value === '1920x1080') {
 						win.resizeTo(1920, 1080)
 					}
-					else if (id === '1600x900') {
+					else if (value === '1600x900') {
 						win.resizeTo(1600, 900)
 					}
-					else if (id === '1366x768') {
+					else if (value === '1366x768') {
 						win.resizeTo(1366, 768)
 					}
-					else if (id === '1440x900') {
+					else if (value === '1440x900') {
 						win.resizeTo(1440, 900)
 					}
-					else if (id === '1280x720') {
+					else if (value === '1280x720') {
 						win.resizeTo(1280, 720)
 					}
 				}
-				// always do this for some reason
 			}, 100);
+		}
+	}
+
+	function handleDisplaySizeChange(event) {
+		id = event.currentTarget.dataset.id
+		if (id === ng.config.display) return
+
+		console.info('handleDisplaySizeChange', id)
+		if (app.isApp) {
+			bar.setWindowSize(id)
 		}
 		$('#window-size-value').text(id);
 		ng.config.display = id
@@ -766,15 +776,20 @@ var bar;
 	}
 
 	function setHotkey(key) {
-		// console.info('setHotkey', e)
-		if (_.values(ng.config.hotkey).includes(key)) {
+		console.info('setHotkey', key)
+		if (Object.values(ng.config.hotkey).includes(key)) {
 			var camelKey = _.findKey(ng.config.hotkey, hotkey => hotkey === key)
-			// console.info('keys: ', bar.hotkeyId, camelKey)
-			if (_.camelCase(bar.hotkeyId) === camelKey) stopListeningForHotkey()
-			else ng.msg('This key is already assigned: ' + _.startCase(camelKey), undefined, COLORS.yellow)
+			console.info('keys: ', bar.hotkeyId, camelKey)
+			if (_.camelCase(bar.hotkeyId) === camelKey) {
+				stopListeningForHotkey()
+			}
+			else {
+				ng.msg('This key is already assigned: ' + _.startCase(camelKey), undefined, COLORS.yellow)
+			}
 			audio.playSound('beep-3')
 		}
 		else {
+			console.info('SETTING', _.camelCase(bar.hotkeyId), key)
 			ng.config.hotkey[_.camelCase(bar.hotkeyId)] = key
 			bar.hotkeyElement.textContent = key
 			stopListeningForHotkey()
@@ -826,11 +841,11 @@ var bar;
 		'</div>' +
 		'<div class="flex align-center">' +
 			'<div style="flex-basis: 50%;">Walk Forward</div>' +
-			'<div data-id="auto-attack" class="options-hotkey flex-max">'+ ng.config.hotkey.walkForward +'</div>'+
+			'<div data-id="walk-forward" class="options-hotkey flex-max">'+ ng.config.hotkey.walkForward +'</div>'+
 		'</div>' +
 		'<div class="flex align-center">' +
 			'<div style="flex-basis: 50%;">Walk Backward</div>' +
-			'<div data-id="auto-attack" class="options-hotkey flex-max">'+ ng.config.hotkey.walkBackward +'</div>'+
+			'<div data-id="walk-backward" class="options-hotkey flex-max">'+ ng.config.hotkey.walkBackward +'</div>'+
 		'</div>' +
 		'</div>'
 

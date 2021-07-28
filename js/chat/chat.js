@@ -519,19 +519,26 @@ var chat;
 			socket.publish('friend' + my.name, {
 				name: my.name,
 				route: 'off'
-			}, true);
-			var minutes = game.getCachedMinutes();
-			if (minutes) {
-				$.post(app.url + 'camp.php', {
-					minutes: game.getCachedMinutes()
-				}).done(() => {
-					localStorage.setItem(game.storageId, 0)
-					ng.lock()
-					delayedCall(.5, ng.reloadGame)
-				});
+			}, true)
+
+			if (game.storageId) {
+				ng.lock()
+				storage.get(game.storageId, minutes => {
+					console.info('minutes', minutes)
+					if (minutes) {
+						$.post(app.url + 'camp.php', {
+							minutes: minutes
+						}).done(() => {
+							storage.set(game.storageId, 0)
+							delayedCall(.5, ng.reloadGame)
+						});
+					}
+					else {
+						delayedCall(.5, ng.reloadGame)
+					}
+				})
 			}
 			else {
-				ng.lock()
 				delayedCall(.5, ng.reloadGame)
 			}
 		}

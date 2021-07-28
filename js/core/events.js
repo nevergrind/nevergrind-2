@@ -31,7 +31,7 @@
 		$('#root-options')
 			.on('click', '#app-exit', bar.appExit)
 			.on('click', '#app-reset', bar.appReset)
-			.on('click', '.window-select', bar.setWindowSize)
+			.on('click', '.window-select', bar.handleDisplaySizeChange)
 			.on('click', '#options-okay', bar.toggleOptions)
 			.on('click', '#options-default', bar.setDefaultOptions)
 			.on('click', '#options-fast-destroy', bar.toggleFastDestroy)

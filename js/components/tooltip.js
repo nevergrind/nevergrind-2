@@ -800,7 +800,7 @@ var tooltip;
 	}
 	function showSkill(config) {
 		tooltipEl.innerHTML = getSkillHtml(config)
-		tooltipEl.style.bottom = '.5rem'
+		tooltipEl.style.bottom = '3.5rem'
 		tooltipEl.style.right = '.5rem'
 		// x position
 		tooltipEl.style.top = 'auto'

@@ -39,8 +39,8 @@ var ng;
 		config: {
 			display: 'Full Screen',
 			lang: 'English',
-			musicVolume: 100,
-			soundVolume: 100,
+			musicVolume: 0,
+			soundVolume: 0,
 			fastDestroy: false,
 			showNetwork: true,
 			selectedRowIndex: 0,
@@ -341,8 +341,8 @@ var ng;
 		return {
 			display: 'Full Screen',
 			lang: 'English',
-			musicVolume: 100,
-			soundVolume: 100,
+			musicVolume: 0,
+			soundVolume: 0,
 			fastDestroy: false,
 			showNetwork: true,
 			selectedRowIndex: 0,
@@ -412,14 +412,15 @@ var ng;
 
 	function checkPlayerData() {
 		// ignore list
-		var ignore = localStorage.getItem('ignore');
-		if (ignore !== null){
-			ng.ignore = JSON.parse(ignore);
-		}
-		else {
-			var foo = [];
-			localStorage.setItem('ignore', JSON.stringify(foo));
-		}
+		storage.get('ignore', ignore => {
+			console.info('ignore', ignore)
+			if (Boolean(ignore)) {
+				ng.ignore = JSON.parse(ignore)
+			}
+			else {
+				storage.set('ignore', '[]');
+			}
+		})
 	}
 
 	function keepAlive() {
@@ -483,8 +484,8 @@ var ng;
 		// socket.removePlayer(my.account);
 		$.get(app.url + 'account/logout.php').done(function() {
 			ng.msg("Logout successful");
-			localStorage.removeItem('email');
-			localStorage.removeItem('token');
+			storage.remove('email');
+			storage.remove('token');
 			setTimeout(reloadGame, 250);
 		}).fail(function() {
 			ng.msg("Logout failed.", undefined, COLORS.yellow);
@@ -734,7 +735,9 @@ var ng;
 		if (r.id) {
 			my.accountId = r.id
 			if (!app.isApp) {
-				getElementById('logout').textContent = localStorage.getItem('account')
+				storage.get('account', account => {
+					getElementById('logout').textContent = account
+				})
 			}
 			displayCharacter(r.characterData)
 			checkPlayerData()

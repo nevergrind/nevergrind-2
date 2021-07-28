@@ -7,6 +7,7 @@ var game;
 		session: {
 			timer: 0
 		},
+		storageId: '',
 		pingHistory: [],
 		start: Date.now(),
 		upsertRoom,
@@ -19,7 +20,6 @@ var game;
 		showScene,
 		getPetName,
 		played,
-		getCachedMinutes,
 		initPlayedCache,
 		updateChat,
 		updateParty,
@@ -313,25 +313,29 @@ var game;
 		clearInterval(played.timer)
 		played.timer = setInterval(playedSend, played.interval)
 	}
+
+	/**
+	 * Sent every minute - updates session timestamp and cached local minutes
+	 */
 	function playedSend() {
-		updateCachedMinutes()
+		storage.get(game.storageId, minutes => {
+			minutes++
+			storage.set(game.storageId, minutes)
+		})
 		$.get(app.url + 'session/start.php')
 	}
 	function played() {
-		$.post(app.url + 'chat/played.php', {
-			minutes: getCachedMinutes()
-		}).done(function(r) {
-			chat.log("Character created: " + toCreateString(r.created), CHAT.WARNING)
-			chat.log("Total character playtime: " + game.toPlaytime(r.playtime), 'chat-whisper')
-			localStorage.setItem(game.storageId, 0)
-		});
-	}
-	function updateCachedMinutes() {
-		localStorage.setItem(game.storageId, getCachedMinutes() + 1)
-	}
-	function getCachedMinutes() {
-		return +localStorage.getItem(game.storageId);
+		storage.get(game.storageId, minutes => {
+			console.info('minutes', minutes)
+			$.post(app.url + 'chat/played.php', {
+				minutes: minutes
+			}).done(r => {
+				chat.log("Character created: " + toCreateString(r.created), CHAT.WARNING)
+				chat.log("Total character playtime: " + game.toPlaytime(r.playtime), 'chat-whisper')
+				storage.set(game.storageId, 0)
+			})
 
+		})
 	}
 	function toCreateString(d) {
 		d = new Date(d);
@@ -385,9 +389,11 @@ var game;
 		return dayStr + hourStr + minStr;
 	}
 	function initPlayedCache() {
-		game.storageId = 'played' + my.row;
-		if (localStorage.getItem(game.storageId) === null) {
-			localStorage.setItem(game.storageId, 0);
-		}
+		game.storageId = 'played' + my.row
+		storage.get(game.storageId, data => {
+			if (!Boolean(data)) {
+				storage.set(game.storageId, 0)
+			}
+		})
 	}
 })(TweenMax, clearTimeout, setTimeout, _, $, localStorage);

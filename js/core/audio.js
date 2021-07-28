@@ -532,37 +532,33 @@ var audio;
 	///////////////////////////////////////////
 
 	function init(){
-		var config = localStorage.getItem('config')
+		storage.get('config', config => {
+			if (typeof config === 'object') {
+				// set basic config
+				ng.config = {
+					..._.cloneDeep(ng.getDefaultOptions()),
+					..._.cloneDeep(config),
+				}
+				cleanupOldHotkeys()
 
-		if (typeof config === 'string') {
-			// previous data found. put config on top of default
-			const savedConfig = JSON.parse(config)
-			const defaultConfig = ng.getDefaultOptions()
-			ng.config = {
-				...defaultConfig,
-				...savedConfig,
+				if (app.isApp) {
+					bar.setWindowSize(ng.config.display)
+				}
 			}
-			cleanupOldHotkeys()
-			for (key in defaultConfig.hotkey) {
-				ng.config.hotkey[key] = defaultConfig.hotkey[key]
+			else {
+				// is null - inits to default ng.config
+				audio.save()
 			}
-			for (key in savedConfig.hotkey) {
-				ng.config.hotkey[key] = savedConfig.hotkey[key]
-			}
-		}
-		else {
-			// is null - inits to default ng.config
-			audio.save()
-		}
 
-		audio.playMusic('intro', .5)
+			audio.playMusic('intro', .5)
+		})
 	}
 	function cleanupOldHotkeys() {
 		if (ng.config.hotkey.bank) delete ng.config.hotkey?.bank
 	}
 	function save() {
 		// somehow my app config data ended up in here lul
-		localStorage.setItem('config', JSON.stringify(ng.config))
+		storage.set('config', JSON.stringify(ng.config))
 	}
 	function events() {
 		bgmusicElement.addEventListener('timeupdate', loopMusic)

@@ -51,6 +51,7 @@ const jsFiles = [
 	'values/constants',
 	'util/util',
 	'util/query',
+	'core/storage',
 	'core/alias',
 	'core/login',
 	'core/create',

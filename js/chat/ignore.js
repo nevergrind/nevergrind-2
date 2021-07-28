@@ -8,7 +8,12 @@ var ignore;
 	};
 	//////////////////////////////////////////////////
 	function init() {
-		ng.ignore = JSON.parse(localStorage.getItem('ignore')) || ng.ignore;
+		storage.get('ignore', ignore => {
+			if (Boolean(ignore)) {
+				ng.ignore = ignore
+			}
+		})
+		// ng.ignore = JSON.parse(storage.get('ignore')) || ng.ignore;
 	}
 	function list() {
 		if (ng.ignore.length) {
@@ -26,7 +31,7 @@ var ignore;
 	function add(o) {
 		if (o !== my.name) {
 			ng.ignore.push(o);
-			localStorage.setItem('ignore', JSON.stringify(ng.ignore));
+			storage.set('ignore', JSON.stringify(ng.ignore));
 			chat.log('You have added ' + o + ' to your ignore list.', CHAT.WARNING);
 		}
 	}
@@ -35,7 +40,7 @@ var ignore;
 			var index = ng.ignore.indexOf(o);
 			ng.ignore.splice(index, 1);
 		}
-		localStorage.setItem('ignore', JSON.stringify(ng.ignore));
+		storage.set('ignore', JSON.stringify(ng.ignore));
 		chat.log('You have removed ' + o + ' from your ignore list.', CHAT.WARNING);
 	}
 })();

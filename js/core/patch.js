@@ -5,6 +5,16 @@ var patch;
 		close,
 	}
 	const notes = [
+		{text: 'Version 0.2.8', date: 'July 28, 2021', isHeader: true},
+		{text: "You can no longer open the Delete Character modal when you have no characters."},
+		{text: "Improved the create screen by keeping the class the same if you click a race that also has that class. This makes it easier to compare classes by race."},
+		{text: "Adjusted the default music and sound effect volume to 50. 🎺"},
+		{text: "Full Screen mode can now go up to 3840x2160 mode. I have no idea what that will look like so have fun with that."},
+		{text: "Made improvements to the local settings data which should improve the ability to save data to disk."},
+		{text: "The display size should now change to your preferred display size on launch."},
+		{text: "Moved the skill tooltip so that it doesn't block your potions."},
+		{text: ""},
+
 		{text: 'Version 0.2.8', date: 'July 27, 2021', isHeader: true},
 		{text: "Fixed the resizing behavior of the window. Sometimes it would unintentionally resize to non-standard dimensions."},
 		{text: "Threat on most Bard songs has been reduced."},
@@ -20,14 +30,6 @@ var patch;
 		{text: "Sooo, if you die and then the rest of your party leaves, you will no longer be teleported to town while still dead. From now on the mission will be abandoned and you will revive in town."},
 		{text: "Bard's Consonant Chain now debuffs healing by 50% while active on its target."},
 		{text: "Bard's spirit-based songs had their duration boosted to 45 seconds."},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
 
 		{text: 'Version 0.2.7', date: 'July 27, 2021', isHeader: true},
 		{text: "Reduced RNG Shimmering Orb cast time from 4 to 1.5 seconds. Increased its cooldown from 5 to 15 seconds. This will allow them to use it in combat buff more effectively."},

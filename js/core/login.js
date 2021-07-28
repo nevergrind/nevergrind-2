@@ -1,8 +1,8 @@
 var login;
-(function() {
+(function($) {
 	login = {
 		lock: 0,
-		account: localStorage.getItem('account'),
+		account: '',
 		fadeTimer: new delayedCall(0, ''),
 		focusInput: false,
 		authenticationLock: false,
@@ -16,6 +16,9 @@ var login;
 	};
 	//////////////////////////////
 	function init() {
+		storage.get('account', account => {
+			login.account = account
+		})
 		// events
 		$(".loginInputs").on(ITEM_TYPE.FOCUS, function() {
 			login.focusInput = true;
@@ -101,11 +104,11 @@ var login;
 				login.msg(data);
 			}
 			else {
-				localStorage.setItem('account', account);
+				storage.set('account', account);
 				login.msg("Account Created! Reloading!");
 				delayedCall(.5, ng.reloadGame)
 			}
-		}).fail(function() {
+		}).fail(() => {
 			login.msg("There was a problem communicating with the server.");
 		}).always(function() {
 			login.lock = 0;
@@ -140,7 +143,7 @@ var login;
 		}
 		login.msg("Connecting to server...")
 		login.authenticationLock = true
-		localStorage.setItem('account', account)
+		storage.set('account', account)
 		$.post(app.url + 'account/authenticate.php', {
 			account: account
 		}).done(function(data){
@@ -164,4 +167,4 @@ var login;
 		});
 		$("#logout").remove();
 	}
-})();
+})($);
