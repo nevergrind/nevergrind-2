@@ -21,7 +21,8 @@ const Config = {
 	enablePageUpZoning: false,
 	testMob: true,
 	safeAnimate: false,
-	enableMobTestClass: false // makes it easy to test against specific mob jobs
+	enableMobTestClass: false, // makes it easy to test against specific mob jobs
+	forceMobSkills: false,
 }
 if (app.isApp) {
 	Config.autoAttackEnabled = true
@@ -43,4 +44,5 @@ if (app.isApp) {
 	Config.testMob = false
 	Config.safeAnimate = true
 	Config.enableMobTestClass = false
+	Config.forceMobSkills = false
 }

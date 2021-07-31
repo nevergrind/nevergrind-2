@@ -497,7 +497,7 @@ var battle;
 					level: battle.getMobLevelByQuest(minZoneLevel)
 				}
 				if (Config.enableMobTestClass) {
-					q.job = JOB.SHADOW_KNIGHT
+					q.job = JOB.WIZARD
 				}
 				/* ill-fated idea ... maybe for only first 2 dungeons?
 				if (my.level < 2) {
@@ -544,9 +544,9 @@ var battle;
 				const randomMob = mob.getRandomMobByZone(q)
 				// console.info('randomMob', randomMob)
 				let mobConfig = {
-					...randomMob,
 					traits: {},
 					expPerLevel: 3,
+					...randomMob,
 				}
 
 				// MOB_TIERS - add champion, unique, boss traits
@@ -870,6 +870,7 @@ var battle;
 		'</div>'
 		// traits
 		traitHtml = []
+		// console.info('mobs[my.target].traits', mobs[my.target].traits)
 		for (var traitKey in mobs[my.target].traits) {
 			traitHtml.push('<div class="mob-trait">' + MOB_TRAITS[traitKey] + '</div>')
 		}

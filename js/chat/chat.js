@@ -501,9 +501,6 @@ var chat;
 		}
 		else {
 			chat.isCamped = true;
-			if (ng.view !== 'title') {
-				console.log('Camping...', CHAT.WARNING);
-			}
 			// from town
 			if (ng.view === 'town') {
 				chat.publishRemove()
@@ -523,20 +520,23 @@ var chat;
 
 			if (game.storageId) {
 				ng.lock()
-				storage.get(game.storageId, minutes => {
-					console.info('minutes', minutes)
-					if (minutes) {
-						$.post(app.url + 'camp.php', {
-							minutes: minutes
-						}).done(() => {
-							storage.set(game.storageId, 0)
-							delayedCall(.5, ng.reloadGame)
-						});
-					}
-					else {
-						delayedCall(.5, ng.reloadGame)
-					}
-				})
+				console.info('camp... getting minutes', game.storageId)
+				let minutes = storage.get(game.storageId)
+
+				console.info('minutes', minutes, typeof minutes)
+				if (minutes) {
+					$.post(app.url + 'camp.php', {
+						minutes: minutes
+					}).done(() => {
+						storage.set(game.storageId, '0')
+						delayedCall(.5, ng.reloadGame) // move to always
+					}).always(() => {
+
+					})
+				}
+				else {
+					delayedCall(.5, ng.reloadGame)
+				}
 			}
 			else {
 				delayedCall(.5, ng.reloadGame)

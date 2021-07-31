@@ -1,5 +1,5 @@
 var storage;
-!function($, _, TweenMax, String, localStorage, undefined) {
+!function($, _, TweenMax, String, localStorage, JSON, undefined) {
 	storage = {
 		getPath,
 		get,
@@ -23,43 +23,75 @@ var storage;
 	fs.readFile(path.join(nw.App.dataPath, 'played88'), (err, data) => {
 		console.info('data resp', JSON.parse(data));
 	})
-
 	 */
 
+	/*
+	var path = require('path')
+	var fs = require('fs')
+	var key = 'played8'
+	try {
+		const resp = fs.readFileSync(path.join(nw.App.dataPath, key), (err, data) => {
+			console.info('data resp', JSON.parse(data));
+		})
+		console.info('read resp', JSON.parse(resp))
+	}
+	catch (err) {
+		if (err.code !== 'ENOENT') {
+			throw err;
+		}
+
+
+		// handle it
+		console.info(err.code);
+		fs.writeFileSync(path.join(nw.App.dataPath, 'played8'), '1', (err, data) => {
+
+		})
+	}
+	 */
 	///////////////////////////////////////////
 	/**
 	 * Returns a string based on a key - wrapper for two APIs needed for local & prod
 	 * @param key
 	 * @returns {string}
 	 */
-	function get(key, callback) {
+	function get(key) {
 		if (app.isApp) {
-			console.info('get:', key)
-			fs.readFile(storage.getPath(key), (err, data) => {
-				console.info('Read file object', key, JSON.parse(data))
-				callback(JSON.parse(data))
-			})
+			// console.info('get:', key)
+			try {
+				let val = fs.readFileSync(storage.getPath(key))
+				/*console.info('get value:', val, typeof val)
+				console.info('get value:', typeof JSON.parse(val), JSON.parse(val))*/
+				// if it's a '1' it should parse into a type of number
+				// if it's a string like 'asdf' it should parse into a string
+				// if it's a JSON string, it should convert to an object
+				return JSON.parse(val)
+			}
+			catch (err) {
+				if (err.code !== 'ENOENT') {}
+				// handle or something?
+				return ''
+			}
 		}
 		else {
 			let data = localStorage.getItem(key)
 			if (typeof data === 'string') {
 				try {
 					let resp = JSON.parse(data)
-					console.info('localStorage get', key, resp)
-					callback(resp)
+					// console.info('localStorage string get', key, resp)
+					return resp
 				}
 				catch (err) {
-					console.info('localStorage get', key, data)
-					callback(data)
+					// console.warn('localStorage string get error', key, data)
+					return data
 				}
 			}
 			else if (typeof data === 'number') {
-				console.info('localStorage get', key, data)
-				callback(data)
+				// console.info('localStorage number get', key, data)
+				return data
 			}
 			else {
-				console.info('localStorage get', key, data)
-				callback(undefined)
+				// console.info('localStorage get undefined', key, data)
+				return undefined
 			}
 		}
 	}
@@ -69,29 +101,21 @@ var storage;
 	 * @param key
 	 * @param data
 	 */
-	function set(key, data) {
+	function set(key, value) {
 		if (app.isApp) {
-			console.info('Saving...', key, data)
-			if (typeof data === 'string') {
-				fs.writeFile(storage.getPath(key), data, err => {
-					console.info('Saved string to disk...!', key, data)
-				})
+			console.info('Saving...', key, typeof value, value)
+			if (typeof value === 'string') {
+				fs.writeFileSync(storage.getPath(key), value)
 			}
-			else if (typeof data === 'object') {
-				data = JSON.stringify(data)
-				fs.writeFile(storage.getPath(key), data, err => {
-					console.info('Saved object as string to disk...!', key, data)
-				})
+			else if (typeof value === 'object') {
+				fs.writeFileSync(storage.getPath(key), JSON.stringify(value))
 			}
-			else if (typeof data === 'number') {
-				data = String(data)
-				fs.writeFile(storage.getPath(key), data, err => {
-					console.info('Saved number as string to disk...!', key, data)
-				})
+			else if (typeof value === 'number') {
+				fs.writeFileSync(storage.getPath(key),  String(value))
 			}
 		}
 		else {
-			localStorage.setItem(key, data)
+			localStorage.setItem(key, value)
 		}
 	}
 
@@ -110,8 +134,7 @@ var storage;
 	 * @returns {string}
 	 */
 	function getPath(key) {
-		console.info('getPath key', key)
-		console.info('full path', path.join(nw.App.dataPath, key))
-		return path.join(nw.App.dataPath, key)
+		// console.info('getPath', path.join(nw.App.dataPath, key))
+		return path.join(nw.App.dataPath, key + '.txt')
 	}
-}($, _, TweenMax, String, localStorage);
+}($, _, TweenMax, String, localStorage, JSON);

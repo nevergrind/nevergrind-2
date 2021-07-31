@@ -5,7 +5,28 @@ var patch;
 		close,
 	}
 	const notes = [
-		{text: 'Version 0.2.8', date: 'July 28, 2021', isHeader: true},
+		{text: 'Version 0.2.10', date: 'July 30, 2021', isHeader: true},
+		{text: "If you're targeting a player when you die, the border around the player card will now properly clear."},
+		{text: "All classes now start with four skills unlocked. This should make it easier to experiment with classes to get an idea of what to expect."},
+		{text: "ROG's Mirage Strike buff icon now properly updates the stack count when you take a physical hit."},
+		{text: "Fixed a bug that caused traits to not be assigned to unique mobs."},
+		{text: "Made an adjustment that might help the Steam Overlay play nice with my software. 🤞"},
+		{text: "The character create input now transforms your input to make it clear that only the first letter can be capitalized."},
+		{text: "Fixed a bug that caused a console error when casting a player-targetable spell on a mob."},
+		{text: "BRD songs should no longer cancel if you're casting a song that isn't targeting a mob."},
+		{text: "Fixed a bug that was causing certain mob skills to hit much lower than intended (often hitting for 1)."},
+		{text: "Improved Smart Saving™ of character data when leveling up skills in a hallway."},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+
+		{text: 'Version 0.2.10', date: 'July 28, 2021', isHeader: true},
+		{text: "Fixed getting and setting of local user settings. There were a bunch of issues with my first attempt with that API. Should be much better now! 🐛🐜"},
+		{text: "Fixed the camp functionality which was previously broken by my failed attempts to make things better."},
+
+		{text: 'Version 0.2.9', date: 'July 28, 2021', isHeader: true},
 		{text: "You can no longer open the Delete Character modal when you have no characters."},
 		{text: "Improved the create screen by keeping the class the same if you click a race that also has that class. This makes it easier to compare classes by race."},
 		{text: "Adjusted the default music and sound effect volume to 50. 🎺"},
@@ -13,7 +34,6 @@ var patch;
 		{text: "Made improvements to the local settings data which should improve the ability to save data to disk."},
 		{text: "The display size should now change to your preferred display size on launch."},
 		{text: "Moved the skill tooltip so that it doesn't block your potions."},
-		{text: ""},
 
 		{text: 'Version 0.2.8', date: 'July 27, 2021', isHeader: true},
 		{text: "Fixed the resizing behavior of the window. Sometimes it would unintentionally resize to non-standard dimensions."},

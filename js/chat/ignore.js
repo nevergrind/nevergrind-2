@@ -8,12 +8,10 @@ var ignore;
 	};
 	//////////////////////////////////////////////////
 	function init() {
-		storage.get('ignore', ignore => {
-			if (Boolean(ignore)) {
-				ng.ignore = ignore
-			}
-		})
-		// ng.ignore = JSON.parse(storage.get('ignore')) || ng.ignore;
+		const ignoreList = storage.get('ignore')
+		if (ignoreList.length) {
+			ng.ignore = ignoreList
+		}
 	}
 	function list() {
 		if (ng.ignore.length) {

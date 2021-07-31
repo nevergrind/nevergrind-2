@@ -16,9 +16,7 @@ var login;
 	};
 	//////////////////////////////
 	function init() {
-		storage.get('account', account => {
-			login.account = account
-		})
+		login.account = storage.get('account')
 		// events
 		$(".loginInputs").on(ITEM_TYPE.FOCUS, function() {
 			login.focusInput = true;

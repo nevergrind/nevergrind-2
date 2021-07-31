@@ -1254,6 +1254,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 0,
 				isBuff: true,
+				cancelSpellOnMobDeath: false,
 				description: config => 'Boost the strength, dexterity, and attack haste of all allies for '+ ng.toMinSecs(buffs.battleHymn.duration) +'.',
 			}, {
 				name: 'Militant Cadence',
@@ -1266,6 +1267,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 0,
 				isBuff: true,
+				cancelSpellOnMobDeath: false,
 				description: config => 'Bolster all allies maximum health, mana, and spirit for '+ ng.toMinSecs(buffs.militantCadence.duration) +'.',
 			}, {
 				name: 'Consonant Chain',
@@ -1288,6 +1290,7 @@ var skills;
 				damageType: DAMAGE_TYPE.ARCANE,
 				castTime: 3,
 				cooldownTime: 0,
+				cancelSpellOnMobDeath: false,
 				description: config => 'Boosts the health regeneration of all allies by '+ config.hpRegen[config.rank] +' for '+ ng.toMinSecs(buffs.litanyOfLife.duration) +'.',
 			}, {
 				name: 'Melody of Mana',
@@ -1300,6 +1303,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 0,
 				isBuff: true,
+				cancelSpellOnMobDeath: false,
 				description: config => 'Boosts all allies\' mana regeneration by '+ config.mpRegen[config.rank] +' and casting haste by '+ ng.toPercent(config.castingHaste) +'% for '+ ng.toMinSecs(buffs.melodyOfMana.duration) +'.',
 			}, {
 				name: 'Righteous Rhapsody',
@@ -1324,6 +1328,7 @@ var skills;
 				castTime: 3,
 				cooldownTime: 0,
 				isBuff: true,
+				cancelSpellOnMobDeath: false,
 				description: config => 'Buff all allies\' armor by '+ config.armor[config.rank] +' and all resists by '+ config.resistAll[config.rank] +' for '+ ng.toMinSecs(buffs.chromaticSonata.duration) +'.',
 			},
 		],
@@ -2539,7 +2544,7 @@ var skills;
 			return true
 		}
 
-		if (!config.isMob && spell.config.target > 0) {
+		if (!my.targetIsMob && !config.isMob && spell.config.target > 0) {
 			// targeting player
 			if (!party.isAlive(party.presence[party.getIndexByRow(spell.config.target)])) {
 				chat.log('You cannot cast spells on a dead target!', CHAT.WARNING)

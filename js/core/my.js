@@ -3,7 +3,6 @@ var my;
 	my = {
 		//hud,
 		isInvulnerable,
-		targetCleared,
 		stunTimeValid,
 		fearTimeValid,
 		paralyzeTimeValid,
@@ -37,6 +36,7 @@ var my;
 		setTarget,
 		tabTarget,
 		partyTarget,
+		clearTarget,
 		initSkills,
 		getMyData,
 		saveCharacterData,
@@ -309,11 +309,6 @@ var my;
 			else combat.targetChanged()
 		}
 	}
-	function targetCleared() {
-		my.targetIsMob = false
-		my.target = -1
-		combat.targetChanged()
-	}
 	function partyTarget(index, toggleEnabled = true) {
 		if (ng.view === 'dungeon' ||
 			ng.view === 'battle') {
@@ -330,6 +325,12 @@ var my;
 				chat.log('Target failed! Player not found.', CHAT.WARNING)
 			}
 		}
+	}
+	function clearTarget() {
+		my.target = -1
+		my.targetIsMob = true
+		battle.hideTarget()
+		combat.targetChanged()
 	}
 	function getResistObject() {
 		var resp = {}
@@ -380,7 +381,49 @@ var my;
 	function initSkills() {
 		// console.warn('initSkills', my.skills)
 		if (my.skills === void 0) {
-			my.skills = [1,0,0,0,0,0,0,0,0,0,0,0]
+			if (my.job === JOB.WARRIOR) {
+				my.skills = [1,1,0,1,0,0,0,0,1,0,0,0]
+			}
+			else if (my.job === JOB.CRUSADER) {
+				my.skills = [1,1,0,0,1,0,0,0,0,1,0,0]
+			}
+			else if (my.job === JOB.SHADOW_KNIGHT) {
+				my.skills = [1,0,1,0,0,0,1,0,1,0,0,0]
+			}
+			else if (my.job === JOB.MONK) {
+				my.skills = [1,1,0,1,0,0,0,0,0,1,0,0]
+			}
+			else if (my.job === JOB.RANGER) {
+				my.skills = [1,0,1,0,0,0,0,0,1,1,0,0]
+			}
+			else if (my.job === JOB.ROGUE) {
+				my.skills = [1,0,0,1,0,1,0,0,1,0,0,0]
+			}
+			else if (my.job === JOB.BARD) {
+				my.skills = [1,0,0,0,0,1,0,1,1,0,0,0]
+			}
+			else if (my.job === JOB.DRUID) {
+				my.skills = [1,0,1,0,1,0,0,0,1,0,0,0]
+			}
+			else if (my.job === JOB.CLERIC) {
+				my.skills = [1,0,0,0,0,1,0,0,1,0,1,0]
+			}
+			else if (my.job === JOB.SHAMAN) {
+				my.skills = [1,0,1,1,0,0,0,0,1,0,0,0]
+			}
+			else if (my.job === JOB.WARLOCK) {
+				my.skills = [1,0,1,0,1,0,0,0,1,0,0,0]
+			}
+			else if (my.job === JOB.ENCHANTER) {
+				my.skills = [1,0,0,0,1,0,0,1,0,1,0,0]
+			}
+			else if (my.job === JOB.TEMPLAR) {
+				my.skills = [1,0,1,0,0,0,1,0,1,0,0,0]
+			}
+			else if (my.job === JOB.WIZARD) {
+				my.skills = [1,0,0,1,0,0,1,0,0,0,1,0]
+			}
+
 			saveCharacterData()
 		}
 	}

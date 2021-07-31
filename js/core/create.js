@@ -157,11 +157,14 @@ var create;
 	}
 	function onNameChange(e) {
 		if (create.whitelist.includes(e.key)) {
-			var val = $(this).val().trim();
-			create.form.name = val.replace(/[^A-z]/g, '');
+			let text = this.value.replace(/[^A-z]/g, '').trim()
+			if (text) {
+				text = text[0].toUpperCase() + text.toLowerCase().substr(1).trim()
+			}
+			this.value = create.form.name = text
 		}
 		else {
-			return false;
+			return false
 		}
 	}
 	function subtractAttribute() {

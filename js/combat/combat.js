@@ -5,7 +5,7 @@ var combat;
 		questBg: {},
 		questText: {},
 		deathText: {},
-		skillLeveledUp: false,
+		skillLeveledUpCount: 0,
 		txHpChange,
 		txMpChange,
 		txSpChange,
@@ -133,7 +133,12 @@ var combat;
 							querySelector('#inv-skills-wrap').innerHTML = bar.getSkillBarHtml()
 						}
 					}
-					combat.skillLeveledUp = true
+					combat.skillLeveledUpCount++
+					if (!map.inCombat && combat.skillLeveledUpCount >= 10) {
+						// save char data if you've leveled up skills out of combat 10+ times
+						combat.skillLeveledUpCount = 0
+						my.saveCharacterData()
+					}
 				}
 			}
 		}
@@ -454,7 +459,7 @@ var combat;
 				// mob has been killed
 				if (timers.castBar < 1
 					&& my.target === o.index) {
-					if (spell.config.isTargetMob) {
+					if (spell.config.cancelSpellOnMobDeath) {
 						// only cancel if your target is a mob
 						spell.cancelSpell()
 					}
@@ -767,7 +772,6 @@ var combat;
 	 * multiplayer handling happens in party.upsertPartyResource() checks
 	 */
 	function selfDied() {
-		my.targetCleared()
 		my.set(PROP.HP, 0)
 		bar.updateBar(PROP.HP, my)
 		timers.clearMy()
@@ -801,6 +805,7 @@ var combat;
 		if (type === PROP.HP) {
 			if (my.hp + addValue <= 0) {
 				triggerOnMyDeath()
+				my.clearTarget()
 			}
 		}
 		my.set(type, addValue, true)
@@ -903,8 +908,8 @@ var combat;
 					return d
 				}
 			}
-
-			if (my.buffs.mirageStrikeBuff && my.buffs.mirageStrikeBuff.stacks) {
+			if (my.buffFlags.mirageStrikeBuff &&
+				my.buffs.mirageStrikeBuff.stacks) {
 				skill.ROG.updateMirageStrikeBuff()
 				d.damage = 0
 				return d

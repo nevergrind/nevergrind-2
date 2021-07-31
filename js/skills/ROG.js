@@ -295,7 +295,7 @@
 	function updateMirageStrikeBuff() {
 		my.buffs.mirageStrikeBuff.stacks--
 		if (my.buffs.mirageStrikeBuff.stacks) {
-			el = querySelector('#mybuff-mirageStrike')
+			el = querySelector('#mybuff-mirageStrikeBuff')
 			if (!!el) el.textContent = my.buffs.mirageStrikeBuff.stacks
 			chat.log(buffs.mirageStrikeBuff.fadeMsg, CHAT.HEAL)
 		}

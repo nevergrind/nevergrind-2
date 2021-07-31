@@ -147,9 +147,9 @@ var dungeon;
 		// coming out of battle - save!
 		if (ng.view === 'battle') {
 			mob.killAllAttacks()
-			if (combat.skillLeveledUp) {
+			if (combat.skillLeveledUpCount) {
 				my.saveCharacterData()
-				combat.skillLeveledUp = false
+				combat.skillLeveledUpCount = 0
 			}
 		}
 		if (ng.view === 'town') {

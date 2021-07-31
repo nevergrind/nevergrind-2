@@ -532,26 +532,26 @@ var audio;
 	///////////////////////////////////////////
 
 	function init(){
-		storage.get('config', config => {
-			if (typeof config === 'object') {
-				// set basic config
-				ng.config = {
-					..._.cloneDeep(ng.getDefaultOptions()),
-					..._.cloneDeep(config),
-				}
-				cleanupOldHotkeys()
+		let config = storage.get('config')
 
-				if (app.isApp) {
-					bar.setWindowSize(ng.config.display)
-				}
+		if (typeof config === 'object') {
+			// set basic config
+			ng.config = {
+				..._.cloneDeep(ng.getDefaultOptions()),
+				..._.cloneDeep(config),
 			}
-			else {
-				// is null - inits to default ng.config
-				audio.save()
-			}
+			cleanupOldHotkeys()
 
-			audio.playMusic('intro', .5)
-		})
+			if (app.isApp) {
+				bar.setWindowSize(ng.config.display)
+			}
+		}
+		else {
+			// is null - inits to default ng.config
+			audio.save()
+		}
+
+		audio.playMusic('intro', .5)
 	}
 	function cleanupOldHotkeys() {
 		if (ng.config.hotkey.bank) delete ng.config.hotkey?.bank

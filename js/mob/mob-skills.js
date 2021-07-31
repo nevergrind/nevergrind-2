@@ -211,6 +211,18 @@ mobSkills = {};
 			let jobData = mobSkills[mobs[index].job]
 			let jobHealData = jobData.find(s => s.maxHeal)
 
+			if (Config.forceMobSkills) {
+				// mobSkills.WAR = [ { chance: .99, key: 'slam' } ]
+				mobSkills.WAR = [
+					{ chance: .05, key: 'fireBolt' }, // FIRE
+					{ chance: .1, key: 'iceBolt' }, // ICE CHILL
+					{ chance: .15, key: 'magicMissiles' }, // ARCANE SILENCE
+					{ chance: .2, key: 'lightningBolt' }, // LIGHTNING PARALYZE
+					{ chance: .25, key: 'fireball' }, // FIRE
+				]
+				console.info('jobData', jobData)
+			}
+
 			// harm touch
 			if (mobs[index].job === JOB.SHADOW_KNIGHT &&
 				!mobs[index].usedHarmTouch &&
@@ -258,6 +270,7 @@ mobSkills = {};
 					// find skill names
 					if (skillData.key === 'slam') {
 						mobDamages = [mobSkills.slam(index, row)]
+						console.info('SLAM DAM:', mobDamages[0].damage, mobDamages)
 					}
 					else if (skillData.key === 'divineJudgment') {
 						mobDamages = [mobSkills.divineJudgment(index, row)]
@@ -476,7 +489,10 @@ mobSkills = {};
 			key: 'slam',
 			effect: 'stun',
 			duration: 3,
-			damage: ~~_.random(ceil(mobs[i].attack * getScaledValue(i, .6)), mobs[i].attack * getScaledValue(i, 1.2)),
+			damage: ~~_.random(
+				ceil(mobs[i].attack * getScaledValue(i, .6)),
+				mobs[i].attack * getScaledValue(i, 1.2)
+			),
 		}
 	}
 	function divineJudgment(i, row) {
@@ -895,7 +911,7 @@ mobSkills = {};
 	 */
 	function getScaledValue(index, value) {
 		value = value * .5
-		return ~~(((mobs[index].level / 50) * value) + value)
+		return (((mobs[index].level / 50) * value) + value)
 	}
 
 	// @ 1 3 + (10 * 1.66) = 4

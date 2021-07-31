@@ -592,7 +592,7 @@ var tooltip;
 			html += `<div class="chat-skill">Resist Silence: ${config.silence[minRank]}</div>`
 		}
 		if (config.reduceHealing) {
-			html += `<div class="chat-skill">Reduce Healing: ${ng.toPercent(config.reduceHealing)}%</div>`
+			html += `<div class="chat-skill">Reduce Healing Received: ${ng.toPercent(config.reduceHealing)}%</div>`
 		}
 		if (config.reduceBloodResist) {
 			html += `<div class="chat-skill">Reduce Blood Resistance: ${ng.toPercent(config.reduceBloodResist)}%</div>`

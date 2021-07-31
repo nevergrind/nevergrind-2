@@ -318,23 +318,23 @@ var game;
 	 * Sent every minute - updates session timestamp and cached local minutes
 	 */
 	function playedSend() {
-		storage.get(game.storageId, minutes => {
-			minutes++
-			storage.set(game.storageId, minutes)
-		})
+		let minutes = storage.get(game.storageId)
+		console.info('playedSend 1', typeof minutes, minutes)
+		minutes++
+		console.info('playedSend 2', typeof minutes, minutes)
+		storage.set(game.storageId, minutes)
 		$.get(app.url + 'session/start.php')
 	}
 	function played() {
-		storage.get(game.storageId, minutes => {
-			console.info('minutes', minutes)
-			$.post(app.url + 'chat/played.php', {
-				minutes: minutes
-			}).done(r => {
-				chat.log("Character created: " + toCreateString(r.created), CHAT.WARNING)
-				chat.log("Total character playtime: " + game.toPlaytime(r.playtime), 'chat-whisper')
-				storage.set(game.storageId, 0)
-			})
+		const minutes = storage.get(game.storageId)
 
+		console.info('minutes', minutes, typeof minutes)
+		$.post(app.url + 'chat/played.php', {
+			minutes: minutes
+		}).done(r => {
+			chat.log("Character created: " + toCreateString(r.created), CHAT.WARNING)
+			chat.log("Total character playtime: " + game.toPlaytime(r.playtime), 'chat-whisper')
+			storage.set(game.storageId, '0')
 		})
 	}
 	function toCreateString(d) {
@@ -390,10 +390,11 @@ var game;
 	}
 	function initPlayedCache() {
 		game.storageId = 'played' + my.row
-		storage.get(game.storageId, data => {
-			if (!Boolean(data)) {
-				storage.set(game.storageId, 0)
-			}
-		})
+		const minutes = storage.get(game.storageId)
+
+		console.info('initPlayedCache', minutes, typeof minutes, Boolean(minutes))
+		if (!minutes) {
+			storage.set(game.storageId, '0')
+		}
 	}
 })(TweenMax, clearTimeout, setTimeout, _, $, localStorage);

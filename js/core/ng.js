@@ -39,8 +39,8 @@ var ng;
 		config: {
 			display: 'Full Screen',
 			lang: 'English',
-			musicVolume: 0,
-			soundVolume: 0,
+			musicVolume: 50,
+			soundVolume: 50,
 			fastDestroy: false,
 			showNetwork: true,
 			selectedRowIndex: 0,
@@ -341,8 +341,8 @@ var ng;
 		return {
 			display: 'Full Screen',
 			lang: 'English',
-			musicVolume: 0,
-			soundVolume: 0,
+			musicVolume: 50,
+			soundVolume: 50,
 			fastDestroy: false,
 			showNetwork: true,
 			selectedRowIndex: 0,
@@ -381,6 +381,7 @@ var ng;
 	function reloadGame() {
 		querySelector('#body').innerHTML = ''
 		setTimeout(() => {
+			console.info('reloadGame')
 			location.reload()
 		}, 100)
 	}
@@ -412,15 +413,15 @@ var ng;
 
 	function checkPlayerData() {
 		// ignore list
-		storage.get('ignore', ignore => {
-			console.info('ignore', ignore)
-			if (Boolean(ignore)) {
-				ng.ignore = JSON.parse(ignore)
-			}
-			else {
-				storage.set('ignore', '[]');
-			}
-		})
+		let ignoreList = storage.get('ignore')
+
+		console.info('ignoreList', ignoreList)
+		if (ignoreList.length) {
+			ng.ignore = ignoreList
+		}
+		else {
+			storage.set('ignore', '[]');
+		}
 	}
 
 	function keepAlive() {
@@ -735,9 +736,7 @@ var ng;
 		if (r.id) {
 			my.accountId = r.id
 			if (!app.isApp) {
-				storage.get('account', account => {
-					getElementById('logout').textContent = account
-				})
+				getElementById('logout').textContent = storage.get('account')
 			}
 			displayCharacter(r.characterData)
 			checkPlayerData()

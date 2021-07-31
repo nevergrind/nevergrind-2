@@ -400,7 +400,7 @@ var ask;
 		}
 		// rotate1
 		const img = ask.getImg(o, { targetMob: false })
-		console.info('castAlteration', o)
+		// console.info('castAlteration', o)
 		ask.castingImgIds[o.index].push(img.id)
 		img.width = config.sizeStart
 		img.height = config.sizeStart

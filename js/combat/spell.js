@@ -100,7 +100,7 @@ var spell;
 		spell.callbackFn = callbackFn
 		spell.index = index
 		spell.data = data
-		spell.config.isTargetMob = my.targetIsMob
+		spell.config.cancelSpellOnMobDeath = data.cancelSpellOnMobDeath || my.targetIsMob
 		let castTimeReduction = 0
 		// console.info('startCasting', spell.data)
 		if (spell.data.img.startsWith('CLR') && spell.data.name !== 'Smite') {

@@ -66,14 +66,15 @@ html {
 @media (width: 1366px) { html { font-size: 14px }}
 @media (width: 1600px) { html { font-size: 17px }}
 @media (width: 1440px) { html { font-size: 17px }}
-@media (width: 1920px) { html { font-size: 20px }}
-@media (width: 2560px) { html { font-size: 22px }}
-@media (width: 3840px) { html { font-size: 24px }}
+@media (width: 1900px) { html { font-size: 20px }}
+@media (width: 2560px) { html { font-size: 24px }}
+@media (width: 3840px) { html { font-size: 36px }}
 
 #body {
 	position: absolute;
 	display: flex;
 	flex-direction: column;
+
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -347,8 +348,8 @@ tbody { border: 0 }
 .title-cc-wrap {
 	position: relative;
 	margin: 0 auto;
-	max-width: 1280px;
-	min-width: 360px;
+	max-width: 64rem;
+	min-width: 16rem;
 }
 #title-header {
 	display: flex;
@@ -419,7 +420,7 @@ tbody { border: 0 }
 	right: 0;
 	width: 100%;
 	margin: 0 auto;
-	max-width: 480px;
+	max-width: 24rem;
 	border: .1rem ridge #048;
 	background: #013;
 	z-index: 100;
@@ -2371,9 +2372,8 @@ background-repeat: no-repeat;
  */
 #title-gwen {
 	position: absolute;
-	height: auto;
 	width: auto;
-	max-height: 100%;
+	height: 100%;
 	max-width: 60%;
 	bottom: -13vh;
 	left: 2%;
@@ -3146,6 +3146,7 @@ background-repeat: no-repeat;
 	color: #fff;
 	flex: 1;
 	border: .1rem ridge #048;
+	border-bottom: 1px solid #048;
 	left: .1rem;
 	width: calc(100% - .4rem);
 	background: #000;

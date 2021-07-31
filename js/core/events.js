@@ -1,9 +1,6 @@
 (function(_, $, parseInt, getComputedStyle, undefined) {
-	var i
-	var key
-	var keyCode
-	let _keyup
-	// window
+	let key
+	let keyCode
 
 	// document events
 	document.addEventListener('DOMContentLoaded', readyFn)
@@ -163,6 +160,7 @@
 	function keydown(e) {
 		if (e.originalEvent.repeat) return
 		key = e.key
+		keyCode = e.keyCode
 
 		ng.lastKey = key
 		// trying to bind a new hotkey
@@ -190,7 +188,7 @@
 			// ALT key functions
 			return false
 		}
-		else if (e.ctrlKey){
+		else if (e.ctrlKey) {
 			// CTRL key functions
 			if (key === 'r') return false
 			if (!chat.hasFocus) {
@@ -208,7 +206,7 @@
 					// do nothing... trust me - needs to go to ESC below
 				}
 				else if (item.dragType) item.resetDrop()
-				else if (my.target >= 0) my.targetCleared()
+				else if (my.target >= 0) my.clearTarget()
 				else {
 					bar.toggleOptions()
 					return false

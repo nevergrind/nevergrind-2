@@ -115,7 +115,6 @@ let mobs = [];
 		level: 1,
 		armor: 1,
 		healing: 1,
-		img: [MOB_IMAGES.orc],
 		size: 1,
 		name: 'monster',
 		tier: MOB_TIERS.normal,
@@ -315,7 +314,7 @@ let mobs = [];
 		/*console.info('results', results)
 		console.info('randomMob', randomMob)*/
 		return {
-			...MOB_BASE_CONFIG,
+			..._.cloneDeep(MOB_BASE_CONFIG),
 			...randomMob,
 		}
 		///////////////////////////////
@@ -522,7 +521,7 @@ let mobs = [];
 
 		TweenMax.set(querySelector('#mob-details-' + i), {
 			y: 0,
-			bottom: m.barAliveBottom * m.size
+			bottom: ((m.barAliveBottom * m.size) * .05) + 'rem'
 		})
 		// name
 		updateMobName(i)
