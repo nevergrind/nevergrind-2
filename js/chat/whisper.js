@@ -14,16 +14,16 @@ var whisper;
 	function route(data, obj) {
 		data = router.normalizeInput(data, obj)
 		r = data.action
-		console.info('route', data)
+		// console.info('route', data)
 		if (r === 'party') {
 			router.party(data, data.route)
 		}
 		else if (r === 'send') {
-			console.info('Sent whisper: ', data)
+			// console.info('Sent whisper: ', data)
 			// report message
 			router.toTown(data, data.route)
 			chat.lastWhisper.name = data.name
-			console.info('data send', data)
+			// console.info('data send', data)
 			// callback to sender
 			socket.publish('name' + _.toLower(data.name), {
 				job: my.job,
@@ -42,7 +42,7 @@ var whisper;
 					name: data.name
 				}
 			}
-			console.info('data receive', _.cloneDeep(data))
+			// console.info('data receive', _.cloneDeep(data))
 			data.msg = 'To ' + chat.getPrefix(data) + ': ' + data.msg;
 			// router.toTown(data, 'chat->log');
 			chat.log(data.msg, data.class)

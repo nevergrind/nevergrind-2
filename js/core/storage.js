@@ -102,8 +102,8 @@ var storage;
 	 * @param data
 	 */
 	function set(key, value) {
+		console.info('Saving...', key, value)
 		if (app.isApp) {
-			console.info('Saving...', key, typeof value, value)
 			if (typeof value === 'string') {
 				fs.writeFileSync(storage.getPath(key), value)
 			}

@@ -157,7 +157,7 @@ var my;
 	}
 	function paralyzeCheckRoll(val) {
 		return !my.isInvulnerable() && my.isParalyzed() &&
-			rand() > (val || ParalyzeRate) &&
+			rand() > (val || PARALYZE_RATE) &&
 			_.random(0, 100) > stats.resistParalyze()
 	}
 	function silenceCheck() {

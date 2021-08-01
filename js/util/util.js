@@ -21,8 +21,8 @@ var util;
 			randomness: .25,
 			minRandomX: 100,
 			minRandomY: 100,
-			xStart: MaxWidth * .5,
-			yStart: MaxHeight * .5,
+			xStart: MAX_WIDTH * .5,
+			yStart: MAX_HEIGHT * .5,
 			xEnd: dungeon.centerX[0],
 			yEnd: ask.centerY(0, false)
 		}

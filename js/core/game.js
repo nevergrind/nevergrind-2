@@ -319,9 +319,9 @@ var game;
 	 */
 	function playedSend() {
 		let minutes = storage.get(game.storageId)
-		console.info('playedSend 1', typeof minutes, minutes)
+		// console.info('playedSend 1', typeof minutes, minutes)
 		minutes++
-		console.info('playedSend 2', typeof minutes, minutes)
+		// console.info('playedSend 2', typeof minutes, minutes)
 		storage.set(game.storageId, minutes)
 		$.get(app.url + 'session/start.php')
 	}

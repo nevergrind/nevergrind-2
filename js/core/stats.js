@@ -1010,12 +1010,12 @@ var stats = {};
 
 	function getResistPercent(type, getUiValue = false) {
 		resistPercent = 1
-		if (type === DAMAGE_TYPE.BLOOD) resistPercent = 1 - (resistBlood() / ResistCap)
-		else if (type === DAMAGE_TYPE.POISON) resistPercent = 1 - (resistPoison() / ResistCap)
-		else if (type === DAMAGE_TYPE.ARCANE) resistPercent = 1 - (resistArcane() / ResistCap)
-		else if (type === DAMAGE_TYPE.LIGHTNING) resistPercent = 1 - (resistLightning() / ResistCap)
-		else if (type === DAMAGE_TYPE.FIRE) resistPercent = 1 - (resistFire() / ResistCap)
-		else if (type === DAMAGE_TYPE.ICE) resistPercent = 1 - (resistIce() / ResistCap)
+		if (type === DAMAGE_TYPE.BLOOD) resistPercent = 1 - (resistBlood() / RESIST_CAP)
+		else if (type === DAMAGE_TYPE.POISON) resistPercent = 1 - (resistPoison() / RESIST_CAP)
+		else if (type === DAMAGE_TYPE.ARCANE) resistPercent = 1 - (resistArcane() / RESIST_CAP)
+		else if (type === DAMAGE_TYPE.LIGHTNING) resistPercent = 1 - (resistLightning() / RESIST_CAP)
+		else if (type === DAMAGE_TYPE.FIRE) resistPercent = 1 - (resistFire() / RESIST_CAP)
+		else if (type === DAMAGE_TYPE.ICE) resistPercent = 1 - (resistIce() / RESIST_CAP)
 		if (resistPercent < .25) resistPercent = .25
 		if (getUiValue) {
 			resistPercent = round((1 - resistPercent) * 100)

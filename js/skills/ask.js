@@ -269,7 +269,7 @@ var ask;
 		anchorY: 1,
 		widthEnd: 0,
 		alpha: 1,
-		height: MaxHeight - 200,
+		height: MAX_HEIGHT - 200,
 		duration: .4,
 		ease: Power2.easeOut,
 	}
@@ -359,7 +359,7 @@ var ask;
 			...castEvocationDefaults,
 			...config
 		}
-		ask.castingTweens[o.index].push(TweenMax.to(EmptyObject, .1, {
+		ask.castingTweens[o.index].push(TweenMax.to(EMPTY_OBJECT, .1, {
 			repeat: -1,
 			onRepeat: drawEvocationLines,
 		}))
@@ -419,7 +419,7 @@ var ask;
 			ease: config.ease,
 		}))
 
-		ask.castingTweens[o.index].push(TweenMax.to(EmptyObject, .1, {
+		ask.castingTweens[o.index].push(TweenMax.to(EMPTY_OBJECT, .1, {
 			repeat: -1,
 			onRepeat: drawAlterationLines,
 		}))
@@ -498,7 +498,7 @@ var ask;
 			ease: Power0.easeIn
 		})
 
-		ask.castingTweens[o.index].push(TweenMax.to(EmptyObject, .1, {
+		ask.castingTweens[o.index].push(TweenMax.to(EMPTY_OBJECT, .1, {
 			repeat: -1,
 			onRepeat: drawConjurationLines,
 		}))
@@ -1172,7 +1172,7 @@ var ask;
 	// positioning
 	function bottomY(index, targetMob = true) {
 		if (targetMob) {
-			return MaxHeight
+			return MAX_HEIGHT
 				- mob.bottomY[index]
 				// yPadding not needed because... reasons
 		}
@@ -1211,7 +1211,7 @@ var ask;
 	function getPlayerBottom(index) {
 		return {
 			x: dungeon.centerX[party.getIndexByRow(index)],
-			y: MaxHeight - 80, // bar in the way
+			y: MAX_HEIGHT - 80, // bar in the way
 		}
 	}
 	function positionImgToPlayer(o, img, config) {
@@ -1219,7 +1219,7 @@ var ask;
 		img.x = coord.x
 		// offset from combat bottom
 		if (typeof config === 'object' && config.yPosition) {
-			img.y = MaxHeight - config.yPosition
+			img.y = MAX_HEIGHT - config.yPosition
 		}
 		else {
 			img.y = coord.y

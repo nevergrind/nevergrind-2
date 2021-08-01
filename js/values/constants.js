@@ -1,11 +1,11 @@
 // primitives
 const MAX_HERO_LEVEL = 50
-const MaxWidth = 1920
-const MaxHeight = 1080
-const AspectRatio = MaxWidth / MaxHeight
-const ParalyzeRate = .5
-const ResistCap = 100
-const EmptyObject = {}
+const MAX_WIDTH = 1920
+const MAX_HEIGHT = 1080
+const ASPECT_RATIO = MAX_WIDTH / MAX_HEIGHT
+const PARALYZE_RATE = .5
+const RESIST_CAP = 100
+const EMPTY_OBJECT = {}
 const HALLWAY_WIDTH = 16
 const HALLWAY_LENGTH = 100
 let HALLWAY_START = 0

@@ -31,6 +31,7 @@ var ng;
 		toPercentHeight,
 		html,
 		getArticle,
+		getHotkeyDefaults,
 		// defaults are defined in getDefaultOptions
 		characterData: [],
 		selectIndex: 0,
@@ -44,13 +45,7 @@ var ng;
 			fastDestroy: false,
 			showNetwork: true,
 			selectedRowIndex: 0,
-			hotkey: {
-				characterStats: 'c',
-				inventory: 'i',
-				autoAttack: 'a',
-				walkForward: 'w',
-				walkBackward: 's',
-			}
+			hotkey: getHotkeyDefaults()
 		},
 		responsiveRatio: 1,
 		statMap: {
@@ -337,22 +332,22 @@ var ng;
 		if (ng.view === 'battle') return 5
 		else return 1
 	}
+
+	/**
+	 * Returns the default options object
+	 * @returns {{soundVolume: number, selectedRowIndex: number, showNetwork: boolean, display: string, hotkey: {walkForward: number, characterStats: number, walkBackward: number, inventory: number, reply: number, autoAttack: number}, fastDestroy: boolean, lang: string, musicVolume: number}}
+	 */
 	function getDefaultOptions() {
 		return {
 			display: 'Full Screen',
 			lang: 'English',
 			musicVolume: 50,
-			soundVolume: 50,
+			soundVolume: 40,
+			ambientVolume: 60,
 			fastDestroy: false,
 			showNetwork: true,
 			selectedRowIndex: 0,
-			hotkey: {
-				characterStats: 'c',
-				inventory: 'i',
-				autoAttack: 'a',
-				walkForward: 'w',
-				walkBackward: 's',
-			}
+			hotkey: getHotkeyDefaults()
 		}
 	}
 	function getId() {
@@ -844,10 +839,10 @@ var ng;
 		return round(decimal * 100)
 	}
 	function toPercentWidth(pixels) {
-		return pixels / MaxWidth * 100
+		return pixels / MAX_WIDTH * 100
 	}
 	function toPercentHeight(pixels) {
-		return pixels / MaxHeight * 100
+		return pixels / MAX_HEIGHT * 100
 	}
 	function html(id, html) {
 		el = querySelector(id)
@@ -866,4 +861,41 @@ var ng;
 	}
 	// do nothing!
 	function noop() {}
+
+	/**
+	 * Returns the default hotkey object
+	 * @returns {{walkForward: number, characterStats: number, walkBackward: number, inventory: number, reply: number, autoAttack: number}}
+	 */
+	function getHotkeyDefaults() {
+		return {
+			// general
+			characterStats: 67, // c
+			inventory: 73, // i
+			closeWindows: 32,// space - clear windows
+
+			// social
+			chat: 84, // t - focus chat input
+			reply: 82, // r - reply ??
+
+			// dungeon
+			walkForward: 87, // w
+			walkBackward: 83, // s
+			autoWalk: 90, // z - Auto walk
+
+			// combat
+			autoAttack: 65, // a
+			nextTarget: 9, // tab - change target
+			targetPlayer1: 112, // F1 - target party1
+			targetPlayer2: 113, // F2 - target party2
+			targetPlayer3: 114, // F3 - target party3
+			targetPlayer4: 115, // F4 - target party4
+			targetPlayer5: 116, // F5 - target party5
+
+			// Fixed Controls
+			// ESC - Options
+			// CTRL + left click Fast Buy
+			// CTRL + left click Fast Sell
+			// CTRL + left click Fast Destroy
+		}
+	}
 }($, TweenMax, SplitText, _, Power2)

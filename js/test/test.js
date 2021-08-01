@@ -61,7 +61,7 @@ var test;
 	var pixApp
 	var width
 	var height
-	const ratio = MaxWidth / MaxHeight
+	const ratio = MAX_WIDTH / MAX_HEIGHT
 	///////////////////////////////////
 	function battle() {
 		/**
@@ -327,8 +327,8 @@ var test;
 	}
 	function pixi() {
 		pixApp = new PIXI.Application({
-			width: MaxWidth,
-			height: MaxHeight,
+			width: MAX_WIDTH,
+			height: MAX_HEIGHT,
 			backgroundColor: '#0000'
 		});
 		// console.info('textPix', pixApp)
@@ -360,8 +360,8 @@ var test;
 	}
 	function pixiRenderer() {
 		pixApp = new PIXI.Application({
-			width: MaxWidth,
-			height: MaxHeight,
+			width: MAX_WIDTH,
+			height: MAX_HEIGHT,
 			transparent: true
 		});
 		// console.info('textPix', pixApp)
@@ -390,8 +390,8 @@ var test;
 	function pixiClouds() {
 		var dur = 555;
 		test.pix = new PIXI.Application({
-			width: MaxWidth,
-			height: MaxHeight,
+			width: MAX_WIDTH,
+			height: MAX_HEIGHT,
 			transparent: true
 		});
 		console.info('textPix', test.pix)
@@ -412,12 +412,12 @@ var test;
 		test.pix.stage.addChild(cloud);
 
 		TweenMax.to(cloud, dur / 2, {
-			x: -MaxWidth,
+			x: -MAX_WIDTH,
 			ease: Linear.easeNone,
 			onComplete: function() {
 				TweenMax.to(cloud, dur, {
-					startAt: { x: MaxWidth },
-					x: -MaxWidth,
+					startAt: { x: MAX_WIDTH },
+					x: -MAX_WIDTH,
 					ease: Linear.easeNone,
 					repeat: -1
 				})
@@ -433,7 +433,7 @@ var test;
 		height = window.innerHeight;
 		console.info('pixiResize', width, height)
 		test.pix.view.style.width = window.innerWidth + 'px';
-		test.pix.view.style.height = ~~(517 / MaxHeight * window.innerHeight) + 'px';
+		test.pix.view.style.height = ~~(517 / MAX_HEIGHT * window.innerHeight) + 'px';
 	}
 	function pixiResize() {
 		// wider than default ratio
@@ -472,8 +472,8 @@ var test;
 		const hoverIcon = "url('css/cursor/pointer.png'), auto"
 		if (!test.mob) {
 			test.mob = new PIXI.Application({
-				width: MaxWidth,
-				height: MaxHeight,
+				width: MAX_WIDTH,
+				height: MAX_HEIGHT,
 				transparent: true
 			});
 			test.mob.view.style.position = 'absolute'
@@ -489,8 +489,8 @@ var test;
 		querySelector('body').appendChild(test.mob.view)
 
 		let mobSprite = PIXI.Sprite.from('mobs/'+ mobName +'/1.png')
-		let x = _.random(-480, MaxWidth - 960)
-		let y = _.random(-400, MaxHeight - 800)
+		let x = _.random(-480, MAX_WIDTH - 960)
+		let y = _.random(-400, MAX_HEIGHT - 800)
 		mobSprite.x = x
 		mobSprite.y = y
 		mobSprite.interactive = true
@@ -834,17 +834,17 @@ var test;
 	function addFloorTiles3d() {
 		dungeon.containerFloor = new PIXI.projection.Container2d()
 		dungeon.containerFloor.zIndex = 3
-		dungeon.containerFloor.position.set(MaxWidth * .5, MaxHeight)
+		dungeon.containerFloor.position.set(MAX_WIDTH * .5, MAX_HEIGHT)
 		dungeon.containerFloor.proj.setAxisY({
 			x: 0,
-			y: MaxHeight * .5,
+			y: MAX_HEIGHT * .5,
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerFloor)
 
 
 		dungeon.camera = new PIXI.projection.Camera3d();
 		dungeon.camera.setPlanes(300, 10, 1000, false);
-		dungeon.camera.position.set(MaxWidth * .5, MaxHeight * .5);
+		dungeon.camera.position.set(MAX_WIDTH * .5, MAX_HEIGHT * .5);
 		dungeon.camera.position3d.y = 0; // camera is above the ground
 		dungeon.layer.stage.addChild(dungeon.camera);
 

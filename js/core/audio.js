@@ -7,7 +7,6 @@ var audio;
 		ambientIsFading: false,
 		ambientTrackDuration: 0,
 		isAmbientPlaying: false,
-		ambientVolume: .5,
 		allyVolume: .2,
 		cache: {},
 		musicTimeout: 0,
@@ -536,9 +535,14 @@ var audio;
 
 		if (typeof config === 'object') {
 			// set basic config
+			console.info('_', _.cloneDeep(config))
+			const resetHotkeys = typeof config.hotkey.autoAttack === 'string' || _.size(ng.getHotkeyDefaults()) > _.size(config.hotkey)
 			ng.config = {
 				..._.cloneDeep(ng.getDefaultOptions()),
 				..._.cloneDeep(config),
+			}
+			if (resetHotkeys) {
+				ng.config.hotkey = ng.getDefaultOptions().hotkey
 			}
 			cleanupOldHotkeys()
 
@@ -613,18 +617,18 @@ var audio;
 		audio.ambientTrackPlaying = 1
 		bgamb1Element.setAttribute('type', 'audio/mp3')
 		bgamb1Element.src = 'sound/ambient/' + foo + '.mp3'
-		bgamb1Element.volume = (ng.config.musicVolume / 100) * audio.ambientVolume
+		bgamb1Element.volume = (ng.config.ambientVolume / 100)
 		bgamb1Element.play()
 		audio.isAmbientPlaying = true
 
-		bgamb2Element.volume = (ng.config.musicVolume / 100) * audio.ambientVolume
+		bgamb2Element.volume = (ng.config.ambientVolume / 100)
 		bgamb2Element.setAttribute('type', 'audio/mp3')
 		bgamb2Element.src = 'sound/ambient/' + foo + '.mp3'
 		// console.info('playAmbient SUCCESS', audio.isAmbientPlaying)
 	}
 
 	function fadeAmbientOut(el) {
-		var x = { vol: ng.config.musicVolume / 100 * audio.ambientVolume }
+		var x = { vol: ng.config.ambientVolume / 100 }
 		TweenMax.to(x, AMBIENT_BUFFER, {
 			vol: 0,
 			ease: Power0.easeNone,
@@ -643,7 +647,7 @@ var audio;
 		el.play()
 		var x = { vol: 0 }
 		TweenMax.to(x, AMBIENT_BUFFER, {
-			vol: ng.config.musicVolume / 100 * audio.ambientVolume,
+			vol: ng.config.ambientVolume / 100,
 			ease: Power0.easeNone,
 			onUpdate: () => {
 				// console.info('fadeAmbientIn', x.vol)

@@ -5,6 +5,7 @@
 	// document events
 	document.addEventListener('DOMContentLoaded', readyFn)
 	const bodyFontSize = getComputedStyle(getElementById('body')).fontSize
+	const skillKeyCodes = [49, 50, 51, 52, 53, 54]
 
 	//////////////////////////////////////////////
 	function readyFn() {
@@ -161,16 +162,25 @@
 		if (e.originalEvent.repeat) return
 		key = e.key
 		keyCode = e.keyCode
-
+		// console.info(key, keyCode, e.shiftKey, e.ctrlKey, e)
 		ng.lastKey = key
 		// trying to bind a new hotkey
 		if (bar.hotkeyId) {
-			if (bar.hotkeyWhitelist.includes(key)) {
-				bar.setHotkey(key, e)
+			let result = bar.isValidHotkey(e)
+			if (result.isValid) {
+				bar.setHotkey(keyCode)
 			}
 			else {
-				if (key === 'Shift' || key === 'Control' || key === 'Alt') {}
-				else ng.msg('You cannot bind to that hotkey!', 2, undefined, COLORS.red)
+				if (result.reason) {
+					ng.msg(result.reason, 2, undefined, COLORS.red)
+				}
+				else {
+					// silently fail - shift etc
+				}
+			}
+			if (isPreventDefaultKeys(key)) {
+				e.preventDefault()
+				return false
 			}
 			return
 		}
@@ -190,18 +200,17 @@
 		}
 		else if (e.ctrlKey) {
 			// CTRL key functions
-			if (key === 'r') return false
 			if (!chat.hasFocus) {
 				// no "select all" of webpage elements
-				if (key === 'a' || key === 'f') {
-					e.preventDefault();
+				if (keyCode === 65 || keyCode === 70) { // a or f for select all?
+					e.preventDefault()
 				}
 			}
 		}
 		else {
 			// normal key functions
 			// literally in any view
-			if (key === 'Escape') { // ESC
+			if (keyCode === 27) { // ESC
 				if (chat.inputHasFocus) {
 					// do nothing... trust me - needs to go to ESC below
 				}
@@ -212,9 +221,9 @@
 					return false
 				}
 			}
-			else if (key === ' ') bar.optionsClose()
+			else if (keyCode === ng.config.hotkey.closeWindows) bar.optionsClose()
 
-			if (ng.view === 'title'){
+			if (ng.view === 'title') {
 				// title specific
 				if (!ng.isModalOpen){
 					// any key press focuses on input first
@@ -225,8 +234,8 @@
 				// console.info('focus?', chat.hasFocus, chat.inputHasFocus, key)
 				if (chat.hasFocus) {
 					// always works town, dungeon and combat (focused)
-					if (key === 'Escape' &&
-						chat.inputHasFocus) {
+					if (keyCode === 27 &&
+						chat.inputHasFocus) { // ESC
 						query.el('#chat-input').blur()
 						return false
 					}
@@ -235,7 +244,7 @@
 						return false
 					}
 					// has chat focus
-					if (key === 'ArrowUp') {
+					if (keyCode === 38) {
 						// chat focus history nav up
 						if (chat.history[chat.historyIndex - 1] !== undefined) {
 							var o = chat.history[--chat.historyIndex];
@@ -243,7 +252,7 @@
 							chat.modeChange(o);
 						}
 					}
-					else if (key === 'ArrowDown') {
+					else if (keyCode === 40) {
 						// chat focus history nav down
 						if (chat.history.length === chat.historyIndex + 1) {
 							chat.historyIndex++;
@@ -264,17 +273,18 @@
 					// always works town, dungeon and combat (non-focused)
 					// ctrl+r refresh
 					// console.info(key, chat.inputHasFocus)
-					if (key === 'r') {
+					if (keyCode === ng.config.hotkey.reply) { // r
 						chat.reply()
 						return false
 					}
-					else if (key === 't' && !chat.inputHasFocus) {
+					else if (keyCode === ng.config.hotkey.chat // t
+						&& !chat.inputHasFocus) {
 						chat.focusChatInput()
 						return false
 					}
-					else if (key === ng.config.hotkey.characterStats) bar.toggleCharacterStats()
-					else if (key === ng.config.hotkey.inventory) bar.toggleInventory()
-					else if (key === ' ') bar.closeAllWindows()
+					else if (keyCode === ng.config.hotkey.characterStats) bar.toggleCharacterStats()
+					else if (keyCode === ng.config.hotkey.inventory) bar.toggleInventory()
+					else if (keyCode === ng.config.hotkey.closeWindows) bar.closeAllWindows()
 
 				}
 
@@ -282,7 +292,7 @@
 					// town specific
 					if (!chat.hasFocus) {
 						// if no aside, focus on chat input first
-						chat.focusKeys.includes(key) && chat.focusChatInput()
+						chat.focusKeys.includes(keyCode) && chat.focusChatInput()
 
 						if (guild.hasFocus && key === 'Enter') {
 							guild.create();
@@ -292,54 +302,69 @@
 				else {
 					// dungeon & combat specific
 					if (!chat.hasFocus) {
-						if (chat.focusKeys.includes(key)) chat.focusChatInput()
-						else if (key === 'z') dungeon.walkForward()
-						else if (key === ng.config.hotkey.walkForward) dungeon.walkForward()
-						else if (key === ng.config.hotkey.walkBackward) dungeon.walkBackward()
-						else if (key === ' ') spell.cancelSpell()
-						else if (key === 'F1') my.partyTarget(0)
-						else if (key === 'F2') my.partyTarget(1) // bar-hp-name
-						else if (key === 'F3') my.partyTarget(2)
-						else if (key === 'F4') my.partyTarget(3)
-						else if (key === 'F5') my.partyTarget(4)
-						else if (key === 'F6') my.partyTarget(5)
-						else if ('123456'.includes(key)) button.triggerSkill(+key - 1)
-						else if (key === '!') button.triggerSkill(6)
-						else if (key === '@') button.triggerSkill(7)
-						else if (key === '#') button.triggerSkill(8)
-						else if (key === '$') button.triggerSkill(9)
-						else if (key === '%') button.triggerSkill(10)
-						else if (key === '^') button.triggerSkill(11)
+						if (!e.shiftKey && !e.ctrlKey) {
+							// no shift or ctrl
+							if (chat.focusKeys.includes(keyCode)) chat.focusChatInput()
+							else if (keyCode === ng.config.hotkey.autoWalk) dungeon.walkForward()
+							else if (keyCode === ng.config.hotkey.walkForward) dungeon.walkForward()
+							else if (keyCode === ng.config.hotkey.walkBackward) dungeon.walkBackward()
+							else if (keyCode === ' ') spell.cancelSpell()
+							else if (keyCode === ng.config.hotkey.targetPlayer1) my.partyTarget(0)
+							else if (keyCode === ng.config.hotkey.targetPlayer2) my.partyTarget(1)
+							else if (keyCode === ng.config.hotkey.targetPlayer3) my.partyTarget(2)
+							else if (keyCode === ng.config.hotkey.targetPlayer4) my.partyTarget(3)
+							else if (keyCode === ng.config.hotkey.targetPlayer5) my.partyTarget(4)
+							else if (skillKeyCodes.includes(keyCode)) button.triggerSkill(+key - 1)
+						}
+						else if (e.shiftKey && !e.ctrlKey) {
+							// shift
+							if (keyCode === 49) button.triggerSkill(6)
+							else if (keyCode === 50) button.triggerSkill(7)
+							else if (keyCode === 51) button.triggerSkill(8)
+							else if (keyCode === 52) button.triggerSkill(9)
+							else if (keyCode === 53) button.triggerSkill(10)
+							else if (keyCode === 54) button.triggerSkill(11)
+						}
+						else if (!e.shiftKey && e.ctrlKey) {
+							// ctrl
+						}
 					}
-
 
 					if (ng.view === 'battle') {
 						if (!chat.hasFocus) {
-							if (key === 'Tab') my.tabTarget(e)
-							else if (key === ng.config.hotkey.autoAttack) combat.toggleAutoAttack()
+							if (keyCode === ng.config.hotkey.nextTarget) my.tabTarget(e)
+							else if (keyCode === ng.config.hotkey.autoAttack) combat.toggleAutoAttack()
 						}
 					}
 				}
 			}
 
 			// prevent default behaviors in all scenes
-			if (key === 'Tab' || key === 'F1' || key === 'F2' || key === 'F3' || key === 'F4' || key === 'F5' || key === 'F6') {
-				e.preventDefault()
-				return false
+			if (!app.isApp) {
+				if (isPreventDefaultKeys(key)) {
+					e.preventDefault()
+				}
 			}
 		}
+	}
+
+	const preventDefaultKeys = [
+		'Tab', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', ' '
+	]
+	function isPreventDefaultKeys(key) {
+		return preventDefaultKeys.includes(key)
 	}
 
 	function keyup(e) {
 		// if (e.originalEvent.repeat) return
 		if (e.metaKey) {
-			e.preventDefault()
-			return false
+			/*e.preventDefault()
+			return false*/
 		}
 		if (ng.view === 'dungeon') {
 			if (!map.inRoom) {
-				if (e.key === ng.config.hotkey.walkForward) dungeon.walkStop()
-				else if (e.key === ng.config.hotkey.walkBackward) dungeon.walkStop()
+				if (e.keyCode === ng.config.hotkey.walkForward) dungeon.walkStop()
+				else if (e.keyCode === ng.config.hotkey.walkBackward) dungeon.walkStop()
 			}
 		}
 	}

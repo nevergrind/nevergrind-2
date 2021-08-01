@@ -1159,7 +1159,7 @@ var combat;
 
 				// NOTE: HoT and DoT
 				hit.index = index // let's add mob index to object just in case...
-				my.buffs[keyRow].hotTicks = TweenMax.to(EmptyObject, 3, {
+				my.buffs[keyRow].hotTicks = TweenMax.to(EMPTY_OBJECT, 3, {
 					repeat: hit.ticks,
 					onRepeat: onDotTickToMe,
 					onRepeatParams: [hit, _.max([1, Math.round(hit.damage / hit.ticks)])],
@@ -1526,8 +1526,8 @@ var combat;
 			})
 			combat.questText.id = 'text-' + combat.textId++
 			combat.questText.zIndex = ask.LAYER_PLAYER_ROW_FRONT
-			combat.questText.x = MaxWidth * .5
-			combat.questText.y = MaxHeight * .5
+			combat.questText.x = MAX_WIDTH * .5
+			combat.questText.y = MAX_HEIGHT * .5
 			combat.questText.anchor.set(.5)
 
 			combat.questContainer = new PIXI.Container()
@@ -1628,8 +1628,8 @@ var combat;
 			})
 			combat.deathText.id = 'text-' + combat.textId++
 			combat.deathText.zIndex = ask.LAYER_PLAYER_ROW_FRONT
-			combat.deathText.x = MaxWidth * .5
-			combat.deathText.y = MaxHeight * .5
+			combat.deathText.x = MAX_WIDTH * .5
+			combat.deathText.y = MAX_HEIGHT * .5
 			combat.deathText.anchor.set(.5)
 
 			combat.deathContainer = new PIXI.Container()
@@ -1941,7 +1941,7 @@ var combat;
 			healAmount = Math.round(heal.damage / buffs[heal.key].ticks)
 			// long-term heals synthesize, etc
 			if (buffs[heal.key].minimumValue) healAmount = _.max([buffs[heal.key].minimumValue, healAmount])
-			my.buffs[keyRow].hotTicks = TweenMax.to(EmptyObject, buffs[heal.key].interval, {
+			my.buffs[keyRow].hotTicks = TweenMax.to(EMPTY_OBJECT, buffs[heal.key].interval, {
 				repeat: buffs[heal.key].ticks,
 				onRepeat: onHotTick,
 				onRepeatParams: [heal, healAmount],
@@ -2394,7 +2394,7 @@ var combat;
 		// called via resizeAll method
 		w = window.innerWidth
 		if (dungeon.layer.view !== void 0) {
-			h = ~~(dungeon.layer.screen.height / MaxHeight * window.innerHeight)
+			h = ~~(dungeon.layer.screen.height / MAX_HEIGHT * window.innerHeight)
 			dungeon.layer.view.style.width = w + 'px'
 			dungeon.layer.view.style.height = h + 'px'
 		}
@@ -2403,7 +2403,7 @@ var combat;
 			battle.layer.view.style.height = h + 'px'
 		}
 		if (player.layer.view !== void 0) {
-			h = ~~(player.layer.screen.height / MaxHeight * window.innerHeight)
+			h = ~~(player.layer.screen.height / MAX_HEIGHT * window.innerHeight)
 			player.layer.view.style.width = w + 'px'
 			player.layer.view.style.height = h + 'px'
 		}

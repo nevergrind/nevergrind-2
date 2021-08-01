@@ -43,6 +43,7 @@ var bar;
 		charStatColTwoHtml,
 		updateAllResistsDOM,
 		handlePlayerClick,
+		isValidHotkey,
 		defaultImage: [
 			'helms1',
 			'amulets0',
@@ -71,12 +72,6 @@ var bar;
 		},
 		hotkeyId: '',
 		hotkeyElement: {},
-		hotkeyWhitelist: [
-			'A', 'B', 'C', 'D', 'E', 'F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-			'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-			'`','~','-','_','=','+','[',']','{','}','\\','|',',','<','.','>',';',':','\'','"','?','/',
-			'Insert','Delete','Home','End','PageUp','PageDown','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'
-		],
 		optionSelected: 'General',
 		activeTab: 'character',
 	};
@@ -539,24 +534,11 @@ var bar;
 	}
 	function handleDragMusicEnd() {
 		query.el('#bgmusic').volume = ng.config.musicVolume / 100
-		query.el('#bgamb1').volume = (ng.config.musicVolume / 100) * audio.ambientVolume
-		query.el('#bgamb2').volume = (ng.config.musicVolume / 100) * audio.ambientVolume
-	}
-
-	function handleDragSfx() {
-		val = this.x
-		if (val > MaxHeight) val = MaxHeight
-		if (val < 0) val = 0
-		val = ~~(val / 54 * 5)
-		ng.config.soundVolume = val
-		audio.save()
-		elSfx = querySelector('#options-sfx-value')
-		if (elSfx !== null) {
-			elSfx.textContent = val
-		}
-		audio.playSound('beep-5')
+		query.el('#bgamb1').volume = (ng.config.ambientVolume / 100)
+		query.el('#bgamb2').volume = (ng.config.ambientVolume / 100)
 	}
 	function initDraggableAudioDials() {
+		// sfx
 		Draggable.create('#options-knob-sfx', {
 			type: 'rotation',
 			throwProps: true,
@@ -569,7 +551,7 @@ var bar;
 			onThrowComplete: handleDragSfx,
 			bounds: {
 				minRotation: 0,
-				maxRotation: MaxHeight
+				maxRotation: MAX_HEIGHT
 			}
 		})
 		el = Draggable.get('#options-knob-sfx')
@@ -577,6 +559,7 @@ var bar;
 			rotation: (~~(ng.config.soundVolume / 5) * 54)
 		})
 		el.update()
+		// music
 		Draggable.create('#options-knob-music', {
 			type: 'rotation',
 			throwProps: true,
@@ -589,7 +572,7 @@ var bar;
 			onThrowComplete: handleDragMusic,
 			bounds: {
 				minRotation: 0,
-				maxRotation: MaxHeight
+				maxRotation: MAX_HEIGHT
 			}
 		})
 		el = Draggable.get('#options-knob-music')
@@ -597,11 +580,46 @@ var bar;
 			rotation: (~~(ng.config.musicVolume / 5) * 54)
 		})
 		el.update()
+		// ambient
+		Draggable.create('#options-knob-ambient', {
+			type: 'rotation',
+			throwProps: true,
+			throwResistance: 500,
+			overshootTolerance: 0,
+			maxDuration: 1,
+			snap: volumeSettings,
+			onDrag: handleDragAmbient,
+			onThrowUpdate: handleDragAmbient,
+			onThrowComplete: handleDragAmbient,
+			bounds: {
+				minRotation: 0,
+				maxRotation: MAX_HEIGHT
+			}
+		})
+		el = Draggable.get('#options-knob-ambient')
+		TweenMax.set('#options-knob-ambient', {
+			rotation: (~~(ng.config.ambientVolume / 5) * 54)
+		})
+		el.update()
 	}
 
+
+	function handleDragSfx() {
+		val = this.x
+		if (val > MAX_HEIGHT) val = MAX_HEIGHT
+		if (val < 0) val = 0
+		val = ~~(val / 54 * 5)
+		ng.config.soundVolume = val
+		audio.save()
+		elSfx = querySelector('#options-sfx-value')
+		if (elSfx !== null) {
+			elSfx.textContent = val
+		}
+		// audio.playSound('beep-5')
+	}
 	function handleDragMusic() {
 		val = this.x
-		if (val > MaxHeight) val = MaxHeight
+		if (val > MAX_HEIGHT) val = MAX_HEIGHT
 		if (val < 0) val = 0
 		val = ~~(val / 54 * 5)
 		ng.config.musicVolume = val
@@ -611,7 +629,21 @@ var bar;
 			elMusic.textContent = val
 		}
 		handleDragMusicEnd()
-		audio.playSound('beep-5')
+		// audio.playSound('beep-5')
+	}
+	function handleDragAmbient() {
+		val = this.x
+		if (val > MAX_HEIGHT) val = MAX_HEIGHT
+		if (val < 0) val = 0
+		val = ~~(val / 54 * 5)
+		ng.config.ambientVolume = val
+		audio.save()
+		elMusic = querySelector('#options-ambient-value')
+		if (elMusic !== null) {
+			elMusic.textContent = val
+		}
+		handleDragMusicEnd()
+		// audio.playSound('beep-5')
 	}
 
 	function selectOptionCategory(event) {
@@ -635,7 +667,12 @@ var bar;
 	}
 
 	function getOptionsHtml() {
-		html = '<div class="flex">' +
+		html =
+		'<div style="position: relative; width: 100%">' +
+			'<img data-id="options" class="close-menu" src="images/ui/close.png" ' +
+				'style="transform: translate(50%, -50%)">' +
+		'</div>' +
+		'<div class="flex">' +
 			'<div class="flex-column flex-max">' +
 				'<div style="'+ css.optionsHeader +'">'+
 					'<div style="'+ css.optionsSubHead +'">Options</div>' +
@@ -654,21 +691,14 @@ var bar;
 			'</div>' +
 		'</div>' +
 		'<div id="options-app-controls" class="flex-column space-between text-shadow3" style="'+ css.optionFooter +'">' +
-			'<div class="flex-center" class="option-button">' +
+			'<div class="flex-center option-button">'+
+				'<div id="options-default" >Default Settings</div>'+
+			'</div>' +
+			'<div class="flex-center option-button">' +
 				'<div id="app-reset">Reset Game</div>' +
 			'</div>' +
-			'<div class="flex-center" class="option-button">' +
+			'<div class="flex-center option-button">' +
 				'<div id="app-exit">Exit Game</div>' +
-			'</div>' +
-		'</div>' +
-		'<div id="options-footer" class="flex space-between" style="'+ css.optionFooter +'">'+
-			'<div id="options-default" class="option-button">'+
-				'<div style="'+ css.optionBtnLabel +'">Default Settings</div>'+
-			'</div>' +
-			'<div class="flex">' +
-				'<div id="options-okay" class="option-button">'+
-					'<div style="'+ css.optionBtnLabel +'">Okay</div>'+
-				'</div>' +
 			'</div>' +
 		'</div>'
 		return html
@@ -680,7 +710,7 @@ var bar;
 		bar.hotkeyElement = undefined
 		updateOptionsDOM()
 		audio.save()
-		query.el('#bgmusic').volume = ng.config.musicVolume / 100
+		handleDragMusicEnd()
 		audio.playSound('chime-3')
 		handleDisplaySizeChange({
 			currentTarget: {
@@ -770,45 +800,16 @@ var bar;
 			'</div>' +
 			'<div id="options-music-value" style="'+ css.volumeColumns +'">'+ ng.config.musicVolume +'</div>' +
 		'</div>' +
+		'<div class="flex align-center space-between">' +
+			'<div style="flex: 1">Ambient Volume:</div>' +
+			'<div id="options-knob-ambient">'+
+				'<div class="options-volume"></div>' +
+			'</div>' +
+			'<div id="options-ambient-value" style="'+ css.volumeColumns +'">'+ ng.config.ambientVolume +'</div>' +
+		'</div>' +
 		'</div>'
 
 		return str
-	}
-
-	function setHotkey(key) {
-		console.info('setHotkey', key)
-		if (Object.values(ng.config.hotkey).includes(key)) {
-			var camelKey = _.findKey(ng.config.hotkey, hotkey => hotkey === key)
-			console.info('keys: ', bar.hotkeyId, camelKey)
-			if (_.camelCase(bar.hotkeyId) === camelKey) {
-				stopListeningForHotkey()
-			}
-			else {
-				ng.msg('This key is already assigned: ' + _.startCase(camelKey), undefined, COLORS.yellow)
-			}
-			audio.playSound('beep-3')
-		}
-		else {
-			console.info('SETTING', _.camelCase(bar.hotkeyId), key)
-			ng.config.hotkey[_.camelCase(bar.hotkeyId)] = key
-			bar.hotkeyElement.textContent = key
-			stopListeningForHotkey()
-			audio.save()
-			audio.playSound('click-4')
-		}
-	}
-	function listenForHotkey() {
-		bar.hotkeyId = this.dataset.id
-		bar.hotkeyElement = this;
-		querySelectorAll('.options-hotkey').forEach(el => {
-			el.classList.remove('active')
-		})
-		this.classList.add('active')
-		audio.playSound('click-7')
-	}
-	function stopListeningForHotkey() {
-		bar.hotkeyId = ''
-		bar.hotkeyElement.classList.remove('active')
 	}
 
 	function getOptionsUiHtml() {
@@ -822,33 +823,6 @@ var bar;
 			'<div id="options-show-network" class="ng-boolean">'+ (ng.config.showNetwork ? 'On' : 'Off') +'</div>' +
 		'</div>' +
 		'</div>'
-		return str
-	}
-
-	function getOptionsHotkeysHtml() {
-		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
-		'<div class="flex align-center">' +
-			'<div style="flex-basis: 50%;">Character Stats</div>' +
-			'<div data-id="character-stats" class="options-hotkey flex-max">'+ ng.config.hotkey.characterStats +'</div>'+
-		'</div>' +
-		'<div class="flex align-center">' +
-			'<div style="flex-basis: 50%;">Inventory</div>' +
-			'<div data-id="inventory" class="options-hotkey flex-max">'+ ng.config.hotkey.inventory +'</div>'+
-		'</div>' +
-		'<div class="flex align-center">' +
-			'<div style="flex-basis: 50%;">Auto Attack</div>' +
-			'<div data-id="auto-attack" class="options-hotkey flex-max">'+ ng.config.hotkey.autoAttack +'</div>'+
-		'</div>' +
-		'<div class="flex align-center">' +
-			'<div style="flex-basis: 50%;">Walk Forward</div>' +
-			'<div data-id="walk-forward" class="options-hotkey flex-max">'+ ng.config.hotkey.walkForward +'</div>'+
-		'</div>' +
-		'<div class="flex align-center">' +
-			'<div style="flex-basis: 50%;">Walk Backward</div>' +
-			'<div data-id="walk-backward" class="options-hotkey flex-max">'+ ng.config.hotkey.walkBackward +'</div>'+
-		'</div>' +
-		'</div>'
-
 		return str
 	}
 
@@ -878,6 +852,7 @@ var bar;
 		else if (event.currentTarget.dataset.id === 'inventory') bar.toggleInventory()
 		else if (event.currentTarget.dataset.id === 'various') town.closeVarious()
 		else if (event.currentTarget.dataset.id === 'patch-notes') patch.close()
+		else if (event.currentTarget.dataset.id === 'options') bar.toggleOptions()
 		audio.playSound('click-7')
 	}
 
@@ -1212,6 +1187,527 @@ var bar;
 			const index = party.getIndexByRow(id)
 			my.partyTarget(index, false)
 		}
+	}
 
+
+
+	var keyCodes = [
+		"", // [0]
+		"", // [1]
+		"", // [2]
+		"CANCEL", // [3]
+		"", // [4]
+		"", // [5]
+		"HELP", // [6]
+		"", // [7]
+		"BACKSPACE", // [8]
+		"TAB", // [9]
+		"", // [10]
+		"", // [11]
+		"CLEAR", // [12]
+		"ENTER", // [13]
+		"ENTER_SPECIAL", // [14]
+		"", // [15]
+		"SHIFT", // [16]
+		"CONTROL", // [17]
+		"ALT", // [18]
+		"PAUSE", // [19]
+		"CAPS_LOCK", // [20]
+		"KANA", // [21]
+		"EISU", // [22]
+		"JUNJA", // [23]
+		"FINAL", // [24]
+		"HANJA", // [25]
+		"", // [26]
+		"ESCAPE", // [27]
+		"CONVERT", // [28]
+		"NONCONVERT", // [29]
+		"ACCEPT", // [30]
+		"MODECHANGE", // [31]
+		"SPACE", // [32]
+		"PAGE_UP", // [33]
+		"PAGE_DOWN", // [34]
+		"END", // [35]
+		"HOME", // [36]
+		"LEFT ARROW", // [37]
+		"UP ARROW", // [38]
+		"RIGHT ARROW", // [39]
+		"DOWN ARROW", // [40]
+		"SELECT", // [41]
+		"PRINT", // [42]
+		"EXECUTE", // [43]
+		"PRINTSCREEN", // [44]
+		"INSERT", // [45]
+		"DELETE", // [46]
+		"", // [47]
+		"0", // [48]
+		"1", // [49]
+		"2", // [50]
+		"3", // [51]
+		"4", // [52]
+		"5", // [53]
+		"6", // [54]
+		"7", // [55]
+		"8", // [56]
+		"9", // [57]
+		":", // [58]
+		";", // [59]
+		"<", // [60]
+		"EQUALS", // [61]
+		">", // [62]
+		"?", // [63]
+		"@", // [64]
+		"A", // [65]
+		"B", // [66]
+		"C", // [67]
+		"D", // [68]
+		"E", // [69]
+		"F", // [70]
+		"G", // [71]
+		"H", // [72]
+		"I", // [73]
+		"J", // [74]
+		"K", // [75]
+		"L", // [76]
+		"M", // [77]
+		"N", // [78]
+		"O", // [79]
+		"P", // [80]
+		"Q", // [81]
+		"R", // [82]
+		"S", // [83]
+		"T", // [84]
+		"U", // [85]
+		"V", // [86]
+		"W", // [87]
+		"X", // [88]
+		"Y", // [89]
+		"Z", // [90]
+		"OS_KEY", // [91] Windows Key (Windows) or Command Key (Mac)
+		"", // [92]
+		"CONTEXT_MENU", // [93]
+		"", // [94]
+		"SLEEP", // [95]
+		"NUMPAD0", // [96]
+		"NUMPAD1", // [97]
+		"NUMPAD2", // [98]
+		"NUMPAD3", // [99]
+		"NUMPAD4", // [100]
+		"NUMPAD5", // [101]
+		"NUMPAD6", // [102]
+		"NUMPAD7", // [103]
+		"NUMPAD8", // [104]
+		"NUMPAD9", // [105]
+		"MULTIPLY", // [106]
+		"ADD", // [107]
+		"SEPARATOR", // [108]
+		"SUBTRACT", // [109]
+		"DECIMAL", // [110]
+		"DIVIDE", // [111]
+		"F1", // [112]
+		"F2", // [113]
+		"F3", // [114]
+		"F4", // [115]
+		"F5", // [116]
+		"F6", // [117]
+		"F7", // [118]
+		"F8", // [119]
+		"F9", // [120]
+		"F10", // [121]
+		"F11", // [122]
+		"F12", // [123]
+		"F13", // [124]
+		"F14", // [125]
+		"F15", // [126]
+		"F16", // [127]
+		"F17", // [128]
+		"F18", // [129]
+		"F19", // [130]
+		"F20", // [131]
+		"F21", // [132]
+		"F22", // [133]
+		"F23", // [134]
+		"F24", // [135]
+		"", // [136]
+		"", // [137]
+		"", // [138]
+		"", // [139]
+		"", // [140]
+		"", // [141]
+		"", // [142]
+		"", // [143]
+		"NUM_LOCK", // [144]
+		"SCROLL_LOCK", // [145]
+		"WIN_OEM_FJ_JISHO", // [146]
+		"WIN_OEM_FJ_MASSHOU", // [147]
+		"WIN_OEM_FJ_TOUROKU", // [148]
+		"WIN_OEM_FJ_LOYA", // [149]
+		"WIN_OEM_FJ_ROYA", // [150]
+		"", // [151]
+		"", // [152]
+		"", // [153]
+		"", // [154]
+		"", // [155]
+		"", // [156]
+		"", // [157]
+		"", // [158]
+		"", // [159]
+		"CIRCUMFLEX", // [160]
+		"EXCLAMATION", // [161]
+		"DOUBLE_QUOTE", // [162]
+		"HASH", // [163]
+		"DOLLAR", // [164]
+		"PERCENT", // [165]
+		"AMPERSAND", // [166]
+		"UNDERSCORE", // [167]
+		"OPEN_PAREN", // [168]
+		"CLOSE_PAREN", // [169]
+		"ASTERISK", // [170]
+		"PLUS", // [171]
+		"PIPE", // [172]
+		"HYPHEN_MINUS", // [173]
+		"OPEN_CURLY_BRACKET", // [174]
+		"CLOSE_CURLY_BRACKET", // [175]
+		"TILDE", // [176]
+		"", // [177]
+		"", // [178]
+		"", // [179]
+		"", // [180]
+		"VOLUME_MUTE", // [181]
+		"VOLUME_DOWN", // [182]
+		"VOLUME_UP", // [183]
+		"", // [184]
+		"", // [185]
+		"SEMICOLON", // [186]
+		"EQUALS", // [187]
+		"COMMA", // [188]
+		"MINUS", // [189]
+		"PERIOD", // [190]
+		"SLASH", // [191]
+		"BACK QUOTE", // [192]
+		"", // [193]
+		"", // [194]
+		"", // [195]
+		"", // [196]
+		"", // [197]
+		"", // [198]
+		"", // [199]
+		"", // [200]
+		"", // [201]
+		"", // [202]
+		"", // [203]
+		"", // [204]
+		"", // [205]
+		"", // [206]
+		"", // [207]
+		"", // [208]
+		"", // [209]
+		"", // [210]
+		"", // [211]
+		"", // [212]
+		"", // [213]
+		"", // [214]
+		"", // [215]
+		"", // [216]
+		"", // [217]
+		"", // [218]
+		"OPEN_BRACKET", // [219]
+		"BACK_SLASH", // [220]
+		"CLOSE_BRACKET", // [221]
+		"QUOTE", // [222]
+		"", // [223]
+		"META", // [224]
+		"ALTGR", // [225]
+		"", // [226]
+		"WIN_ICO_HELP", // [227]
+		"WIN_ICO_00", // [228]
+		"", // [229]
+		"WIN_ICO_CLEAR", // [230]
+		"", // [231]
+		"", // [232]
+		"WIN_OEM_RESET", // [233]
+		"WIN_OEM_JUMP", // [234]
+		"WIN_OEM_PA1", // [235]
+		"WIN_OEM_PA2", // [236]
+		"WIN_OEM_PA3", // [237]
+		"WIN_OEM_WSCTRL", // [238]
+		"WIN_OEM_CUSEL", // [239]
+		"WIN_OEM_ATTN", // [240]
+		"WIN_OEM_FINISH", // [241]
+		"WIN_OEM_COPY", // [242]
+		"WIN_OEM_AUTO", // [243]
+		"WIN_OEM_ENLW", // [244]
+		"WIN_OEM_BACKTAB", // [245]
+		"ATTN", // [246]
+		"CRSEL", // [247]
+		"EXSEL", // [248]
+		"EREOF", // [249]
+		"PLAY", // [250]
+		"ZOOM", // [251]
+		"", // [252]
+		"PA1", // [253]
+		"WIN_OEM_CLEAR", // [254]
+		"" // [255]
+	];
+
+	function getOptionsHotkeysHtml() {
+		str = '<div class="flex-column flex-max" style="justify-content: flex-start;">' +
+
+			// general
+			'<div class="hotkey-header">General Hotkeys</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Character Stats</div>' +
+				'<div data-id="character-stats" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.characterStats] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Inventory</div>' +
+				'<div data-id="inventory" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.inventory] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Close Windows</div>' +
+				'<div data-id="close-windows" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.closeWindows] +
+				'</div>'+
+			'</div>' +
+
+			// social
+			'<div class="hotkey-header">Social Hotkeys</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Reply</div>' +
+				'<div data-id="reply" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.reply] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Chat</div>' +
+				'<div data-id="chat" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.chat] +
+				'</div>'+
+			'</div>' +
+
+			// dungeon
+			'<div class="hotkey-header">Dungeon Hotkeys</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Walk Forward</div>' +
+				'<div data-id="walk-forward" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.walkForward] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Walk Backward</div>' +
+				'<div data-id="walk-backward" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.walkBackward] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Auto Walk</div>' +
+				'<div data-id="auto-walk" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.autoWalk] +
+				'</div>'+
+			'</div>' +
+
+			// combat
+			'<div class="hotkey-header">Combat Hotkeys</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Auto Attack</div>' +
+				'<div data-id="auto-attack" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.autoAttack] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Next Target</div>' +
+				'<div data-id="next-target" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.nextTarget] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Target Self</div>' +
+				'<div data-id="target-player-1" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.targetPlayer1] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Target Player 2</div>' +
+				'<div data-id="target-player-2" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.targetPlayer2] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Target Player 3</div>' +
+				'<div data-id="target-player-3" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.targetPlayer3] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Target Player 4</div>' +
+				'<div data-id="target-player-4" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.targetPlayer4] +
+				'</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Target Player 5</div>' +
+				'<div data-id="target-player-5" class="options-hotkey flex-max">'+
+					keyCodes[ng.config.hotkey.targetPlayer5] +
+				'</div>'+
+			'</div>' +
+
+			// fixed
+			'<div class="hotkey-header">Fixed Hotkeys</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Options</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">ESC</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 1</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">1</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 2</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">2</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 3</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">3</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 4</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">4</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 5</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">5</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 6</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">6</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 7</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">SHIFT + 1</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 8</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">SHIFT + 2</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 9</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">SHIFT + 3</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 10</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">SHIFT + 4</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 11</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">SHIFT + 5</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Skill 12</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">SHIFT + 6</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Fast Buy</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">CTRL + LEFT CLICK</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Fast Sell</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">CTRL + LEFT CLICK</div>'+
+			'</div>' +
+			'<div class="flex align-center">' +
+				'<div style="flex-basis: 50%;">Fast Destroy</div>' +
+				'<div class="flex-max" style="color: #fff; text-align: center">CTRL + LEFT CLICK</div>'+
+			'</div>' +
+
+		'</div>'
+
+		return str
+	}
+	let keyCode = 0
+	let invalidReason = ''
+	function isValidHotkey(event) {
+		keyCode = event.keyCode
+		if (isValidKeyCode(keyCode)) {
+			return {
+				isValid: true,
+				key: keyCodes[keyCode],
+				reason: ''
+			}
+		}
+		else {
+			invalidReason = 'You cannot bind to that hotkey!'
+			if (keyCode => 16 && keyCode <=18) {
+				// alt, shift, ctrl - silently ignore
+				invalidReason = ''
+			}
+			return {
+				isValid: false,
+				reason: invalidReason
+			}
+		}
+	}
+
+	function isValidKeyCode(keyCode) {
+		return keyCode >= 65 && keyCode <= 81 // a-q
+			|| keyCode === 83 // s
+			|| keyCode >= 84 && keyCode <= 90 // u-z
+			|| keyCode >= 48 && keyCode <= 57 // 0-9
+			|| keyCode >= 112 && keyCode <= 119 // F1-F8
+			|| keyCode === 192 // `
+			|| keyCode === 189 // -
+			|| keyCode === 187 // =
+			|| keyCode === 8 // backspace
+			|| keyCode >= 33 && keyCode <= 36 // pageup, pagedown, end, home
+			|| keyCode === 45 // insert
+			|| keyCode === 46 // delete
+			|| keyCode === 32 // space
+			|| keyCode >= 37 && keyCode <= 40 // arrows
+			|| keyCode >= 219 && keyCode <= 221 // []\
+			|| keyCode === 186 // ;
+			|| keyCode === 222 // '
+			|| keyCode === 188 // ,
+			|| keyCode === 190 // .
+			|| keyCode >= 96 && keyCode <= 107 // numpad 0-9, * +
+			|| keyCode >= 109 && keyCode <= 111 // numpad - . /
+	}
+
+	function setHotkey(keyCode) {
+		console.info('setHotkey', keyCode)
+		if (Object.values(ng.config.hotkey).includes(keyCode)) {
+			// this is already mapped!
+			var camelKey = _.findKey(ng.config.hotkey, hotkey => hotkey === keyCode)
+			// console.info('keys: ', bar.hotkeyId, camelKey)
+			if (_.camelCase(bar.hotkeyId) === camelKey) {
+				stopListeningForHotkey()
+			}
+			else {
+				ng.msg('This key is already assigned: ' + _.startCase(camelKey), undefined, COLORS.yellow)
+			}
+			audio.playSound('beep-3')
+		}
+		else {
+			console.info('SETTING', _.camelCase(bar.hotkeyId), 'to', keyCode)
+			ng.config.hotkey[_.camelCase(bar.hotkeyId)] = keyCode
+			bar.hotkeyElement.textContent = keyCodes[keyCode]
+			stopListeningForHotkey()
+			audio.save()
+			audio.playSound('click-4')
+		}
+	}
+	function listenForHotkey() {
+		bar.hotkeyId = this.dataset.id
+		bar.hotkeyElement = this;
+		querySelectorAll('.options-hotkey').forEach(el => {
+			el.classList.remove('active')
+		})
+		this.classList.add('active')
+		audio.playSound('click-7')
+	}
+	function stopListeningForHotkey() {
+		bar.hotkeyId = ''
+		bar.hotkeyElement.classList.remove('active')
 	}
 })(_, $, Draggable, TweenMax);

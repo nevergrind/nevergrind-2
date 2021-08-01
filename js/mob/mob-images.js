@@ -93,7 +93,7 @@ mobs.images = {
 		imgH: 1200,
 		imgCy: 420,
 		width: 1170,
-		height: MaxHeight,
+		height: MAX_HEIGHT,
 		yPadding: 135,
 		yoyo: false,
 		cache: [],

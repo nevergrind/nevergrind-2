@@ -401,8 +401,8 @@ var battle;
 		battleLayerInitialized = true
 
 		battle.layer = new PIXI.Application({
-			width: MaxWidth,
-			height: MaxHeight,
+			width: MAX_WIDTH,
+			height: MAX_HEIGHT,
 			transparent: true
 		});
 		/*const defaultIcon = "url('css/cursor/normal.png'), auto"

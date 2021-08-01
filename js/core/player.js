@@ -17,8 +17,8 @@ let players = []; // player sprites
 		if (typeof player.layer.view === 'undefined') {
 			// player layer
 			player.layer = new PIXI.Application({
-				width: MaxWidth,
-				height: MaxHeight,
+				width: MAX_WIDTH,
+				height: MAX_HEIGHT,
 				// backgroundColor: 0x103322
 				transparent: true
 			});
@@ -57,7 +57,7 @@ let players = []; // player sprites
 		players[i].sprite.id = 'ask-' + id
 		players[i].sprite.anchor.set(.5, .5)
 		players[i].sprite.x = dungeon.centerX[i]
-		players[i].sprite.y = MaxHeight - 80
+		players[i].sprite.y = MAX_HEIGHT - 80
 		const raceMod = .8
 		players[i].sprite.width = 250 * raceMod
 		players[i].sprite.height = 500 * raceMod

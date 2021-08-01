@@ -29,7 +29,7 @@ var chat;
 		],
 		modeCommand: '/say',
 		modeName: '',
-		focusKeys: ['/', 'Enter', 't'],
+		focusKeys: [191, 13], // slash, enter, t
 		inputHasFocus: false,
 		chatLogEl: querySelector('#chat-log'),
 		log,

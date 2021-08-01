@@ -7,7 +7,7 @@ var dungeon;
 	- move end
 	- battle won (set index of entities to alive: false)
 */
-	const BOTTOM_PLAYER = MaxHeight
+	const BOTTOM_PLAYER = MAX_HEIGHT
 	const GRID_SIZE = 1920
 	const MAX_TILES = 20
 	const HALLWAY_TILE_LENGTH = 5
@@ -293,8 +293,8 @@ var dungeon;
 	function initCanvas() {
 		if (typeof dungeon.layer.view === 'object') return
 		dungeon.layer = new PIXI.Application({
-			width: MaxWidth,
-			height: MaxHeight,
+			width: MAX_WIDTH,
+			height: MAX_HEIGHT,
 			backgroundColor: 0x000000,
 			// transparent: true
 		})
@@ -314,17 +314,17 @@ var dungeon;
 		// tiling - takes whole screen, anchor and position are the same as of sprite floor
 		dungeon.tiling = new PIXI.projection.TilingSprite2d(
 			PIXI.Texture.from('images/dungeon/bg_plane-512.jpg'),
-			MaxWidth,
-			MaxHeight
+			MAX_WIDTH,
+			MAX_HEIGHT
 		)
-		dungeon.tiling.position.set(MaxWidth * .5, MaxHeight)
-		dungeon.tiling.height = MaxHeight * .5
+		dungeon.tiling.position.set(MAX_WIDTH * .5, MAX_HEIGHT)
+		dungeon.tiling.height = MAX_HEIGHT * .5
 		dungeon.tiling.anchor.set(0.5, 1.0)
 		dungeon.tiling.tint = 0xff00ff
 		dungeon.tiling.zIndex = 1
 		dungeon.tiling.tileProj.setAxisY({
 			x: 0,
-			y: MaxHeight * .5,
+			y: MAX_HEIGHT * .5,
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.tiling)*/
 
@@ -335,10 +335,10 @@ var dungeon;
 		dungeon.containerEntities.sortableChildren = true
 		dungeon.containerEntities.id = 'entities'
 		dungeon.containerEntities.zIndex = 3
-		dungeon.containerEntities.position.set(MaxWidth * .5, MaxHeight)
+		dungeon.containerEntities.position.set(MAX_WIDTH * .5, MAX_HEIGHT)
 		dungeon.containerEntities.proj.setAxisY({
 			x: 0,
-			y: MaxHeight * .5,
+			y: MAX_HEIGHT * .5,
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerEntities)
 	}
@@ -571,10 +571,10 @@ var dungeon;
 		}
 	}
 	function positionGridTile(tile) {
-		tile.position.y = ((tile.gridIndex * MaxWidth) - dungeon.distanceCurrent) * -1
+		tile.position.y = ((tile.gridIndex * MAX_WIDTH) - dungeon.distanceCurrent) * -1
 	}
 	function positionGridTileWall(tile) {
-		tile.position.x = ((tile.gridIndex * MaxWidth * AspectRatio) - (dungeon.distanceCurrent * AspectRatio)) * -1
+		tile.position.x = ((tile.gridIndex * MAX_WIDTH * ASPECT_RATIO) - (dungeon.distanceCurrent * ASPECT_RATIO)) * -1
 	}
 	function getEntityDistanceFromMe(index) {
 		if (index < 0) return
@@ -732,10 +732,10 @@ var dungeon;
 		dungeon.containerFloor = new PIXI.projection.Container2d()
 		dungeon.containerFloor.id = 'floor'
 		dungeon.containerFloor.zIndex = 3
-		dungeon.containerFloor.position.set(MaxWidth * .5, MaxHeight)
+		dungeon.containerFloor.position.set(MAX_WIDTH * .5, MAX_HEIGHT)
 		dungeon.containerFloor.proj.setAxisY({
 			x: 0,
-			y: MaxHeight * .5,
+			y: MAX_HEIGHT * .5,
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerFloor)
 
@@ -743,9 +743,9 @@ var dungeon;
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-floor.jpg'))
 			tile.anchor.set(.5, 1)
-			tile.width = MaxWidth
-			tile.height = MaxWidth
-			tile.position.y = i * MaxWidth * -1
+			tile.width = MAX_WIDTH
+			tile.height = MAX_WIDTH
+			tile.position.y = i * MAX_WIDTH * -1
 			tile.gridIndex = i
 			/*TweenMax.set(tile, {
 				pixi: { tint: '#aaa', }
@@ -757,10 +757,10 @@ var dungeon;
 	function addCeilingTiles(zoneName) {
 		dungeon.containerCeiling = new PIXI.projection.Container2d()
 		dungeon.containerCeiling.zIndex = 1
-		dungeon.containerCeiling.position.set(MaxWidth * .5, 0)
+		dungeon.containerCeiling.position.set(MAX_WIDTH * .5, 0)
 		dungeon.containerCeiling.proj.setAxisY({
 			x: 0,
-			y: MaxHeight * .5 * -1,
+			y: MAX_HEIGHT * .5 * -1,
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerCeiling)
 
@@ -768,9 +768,9 @@ var dungeon;
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-ceiling.jpg'))
 			tile.anchor.set(.5, 1)
-			tile.width = MaxWidth
-			tile.height = MaxWidth
-			tile.position.y = i * MaxWidth * -1
+			tile.width = MAX_WIDTH
+			tile.height = MAX_WIDTH
+			tile.position.y = i * MAX_WIDTH * -1
 			tile.gridIndex = i
 			/*TweenMax.set(tile, {
 				pixi: {
@@ -784,9 +784,9 @@ var dungeon;
 	function addLeftWallTiles(zoneName) {
 		dungeon.containerLeftWall = new PIXI.projection.Container2d()
 		dungeon.containerLeftWall.zIndex = 1
-		dungeon.containerLeftWall.position.set(0, MaxHeight * .5)
+		dungeon.containerLeftWall.position.set(0, MAX_HEIGHT * .5)
 		dungeon.containerLeftWall.proj.setAxisX({
-			x: MaxWidth * .5 * -1,
+			x: MAX_WIDTH * .5 * -1,
 			y: 0,
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerLeftWall)
@@ -795,9 +795,9 @@ var dungeon;
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-wall.jpg'))
 			tile.anchor.set(1, .5)
-			tile.width = MaxWidth * AspectRatio
-			tile.height = MaxHeight
-			tile.position.x = i * MaxWidth * AspectRatio * -1
+			tile.width = MAX_WIDTH * ASPECT_RATIO
+			tile.height = MAX_HEIGHT
+			tile.position.x = i * MAX_WIDTH * ASPECT_RATIO * -1
 			tile.gridIndex = i
 			/*TweenMax.set(tile, {
 				pixi: {
@@ -811,9 +811,9 @@ var dungeon;
 	function addRightWallTiles(zoneName) {
 		dungeon.containerRightWall = new PIXI.projection.Container2d()
 		dungeon.containerRightWall.zIndex = 1
-		dungeon.containerRightWall.position.set(MaxWidth, MaxHeight * .5)
+		dungeon.containerRightWall.position.set(MAX_WIDTH, MAX_HEIGHT * .5)
 		dungeon.containerRightWall.proj.setAxisX({
-			x: MaxWidth * .5,
+			x: MAX_WIDTH * .5,
 			y: 0,
 		}, -1)
 		dungeon.layer.stage.addChild(dungeon.containerRightWall)
@@ -822,9 +822,9 @@ var dungeon;
 			let tile = new PIXI.projection.Sprite2d(
 				PIXI.Texture.from('images/dungeon/'+ zoneName +'-wall-right.jpg'))
 			tile.anchor.set(1, .5)
-			tile.width = MaxWidth * AspectRatio
-			tile.height = MaxHeight
-			tile.position.x = i * MaxWidth * AspectRatio * -1
+			tile.width = MAX_WIDTH * ASPECT_RATIO
+			tile.height = MAX_HEIGHT
+			tile.position.x = i * MAX_WIDTH * ASPECT_RATIO * -1
 			tile.gridIndex = i
 			dungeon.tilesRightWall.push(tile)
 			dungeon.containerRightWall.addChild(tile)
@@ -837,8 +837,8 @@ var dungeon;
 		dungeon.endWall.factor = 1
 		dungeon.endWall.proj.affine = PIXI.projection.AFFINE.AXIS_X
 		dungeon.endWall.position.x = 0
-		dungeon.endWall.width = MaxWidth
-		dungeon.endWall.height = MaxHeight
+		dungeon.endWall.width = MAX_WIDTH
+		dungeon.endWall.height = MAX_HEIGHT
 		// size and check offset
 		setEndWallDistance()
 		dungeon.containerFloor.addChild(dungeon.endWall)

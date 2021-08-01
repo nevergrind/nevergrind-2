@@ -196,7 +196,7 @@ mobSkills = {};
 		if (row <= 0) return // player row not found?
 
 		const now = Date.now()
-		if (mob.isParalyzed(index) && rand() > ParalyzeRate) {
+		if (mob.isParalyzed(index) && rand() > PARALYZE_RATE) {
 			mobDamages = [{
 				row: row,
 				isParalyzed: true,
