@@ -166,6 +166,11 @@
 		ng.lastKey = key
 		// trying to bind a new hotkey
 		if (bar.hotkeyId) {
+			if (keyCode === 27) {
+				bar.stopListeningForHotkey()
+				e.preventDefault()
+				return false
+			}
 			let result = bar.isValidHotkey(e)
 			if (result.isValid) {
 				bar.setHotkey(keyCode)
@@ -178,7 +183,7 @@
 					// silently fail - shift etc
 				}
 			}
-			if (isPreventDefaultKeys(key)) {
+			if (isPreventDefaultKeys(key) || key === ' ') {
 				e.preventDefault()
 				return false
 			}
@@ -236,7 +241,9 @@
 					// always works town, dungeon and combat (focused)
 					if (keyCode === 27 &&
 						chat.inputHasFocus) { // ESC
-						query.el('#chat-input').blur()
+						const el = querySelector('#chat-input')
+						el.value = ''
+						el.blur()
 						return false
 					}
 					if (chat.modeChange()) {
@@ -266,7 +273,7 @@
 					}
 					else if (key === 'Enter') {
 						// enter
-						my.name && chat.sendMsg();
+						my.name && chat.sendMsg()
 					}
 				}
 				else {
@@ -285,7 +292,6 @@
 					else if (keyCode === ng.config.hotkey.characterStats) bar.toggleCharacterStats()
 					else if (keyCode === ng.config.hotkey.inventory) bar.toggleInventory()
 					else if (keyCode === ng.config.hotkey.closeWindows) bar.closeAllWindows()
-
 				}
 
 				if (ng.view === 'town') {
@@ -308,7 +314,7 @@
 							else if (keyCode === ng.config.hotkey.autoWalk) dungeon.walkForward()
 							else if (keyCode === ng.config.hotkey.walkForward) dungeon.walkForward()
 							else if (keyCode === ng.config.hotkey.walkBackward) dungeon.walkBackward()
-							else if (keyCode === ' ') spell.cancelSpell()
+							else if (keyCode === ng.config.hotkey.closeWindows) spell.cancelSpell()
 							else if (keyCode === ng.config.hotkey.targetPlayer1) my.partyTarget(0)
 							else if (keyCode === ng.config.hotkey.targetPlayer2) my.partyTarget(1)
 							else if (keyCode === ng.config.hotkey.targetPlayer3) my.partyTarget(2)
@@ -340,16 +346,15 @@
 			}
 
 			// prevent default behaviors in all scenes
-			if (!app.isApp) {
-				if (isPreventDefaultKeys(key)) {
-					e.preventDefault()
-				}
+			if (isPreventDefaultKeys(key)) {
+				e.preventDefault()
+				return false
 			}
 		}
 	}
 
 	const preventDefaultKeys = [
-		'Tab', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', ' '
+		'Tab', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8'
 	]
 	function isPreventDefaultKeys(key) {
 		return preventDefaultKeys.includes(key)

@@ -107,7 +107,7 @@ var guild;
 		}
 		else {
 			if (name) {
-				chat.log('Sent guild invite to '+ name +'.', CHAT.WARNING);
+				chat.log('Sent guild invite to '+ name +'.', CHAT.WARNING)
 				socket.publish('name' + name, {
 					row: my.guild.id,
 					msg: my.name + ' has invited you to join the guild: ' + my.guild.name.split(' ').join('&nbsp;'),

@@ -86,6 +86,7 @@
 		let tgt = spell.config.target
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
+		const spellConfig = _.cloneDeep(spell.data)
 		for (var i=0; i<3; i++) {
 			!function(i) {
 				const damages = {
@@ -93,7 +94,7 @@
 					index: tgt,
 					spellType: spellType,
 					damageType: damageType,
-					...stats.spellDamage(tgt)
+					...stats.spellDamage(tgt, undefined, spellConfig)
 				}
 				delayedCall(i * .5, () => {
 					combat.txDamageMob([damages])
@@ -135,6 +136,7 @@
 	function chainLightningCompleted() {
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
+		const spellConfig = _.cloneDeep(spell.data)
 
 		battle.getConeTargets(spell.config.target, 5).forEach((tgt, i) => {
 			const damages = {
@@ -142,7 +144,7 @@
 				index: tgt,
 				spellType: spellType,
 				damageType: damageType,
-				...stats.spellDamage(tgt)
+				...stats.spellDamage(tgt, undefined, spellConfig)
 			}
 			delayedCall(i * .125, () => {
 				combat.txDamageMob([damages])
@@ -192,6 +194,7 @@
 		let tgt = spell.config.target
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
+		const spellConfig = _.cloneDeep(spell.data)
 
 		socket.publish('party' + my.partyId, {
 			route: 'p->damage',
@@ -208,7 +211,7 @@
 				index: tgt,
 				spellType: spellType,
 				damageType: damageType,
-				...stats.spellDamage(tgt)
+				...stats.spellDamage(tgt, undefined, spellConfig)
 			})
 			// AE DoT damage
 			splashIndex = -2
@@ -220,7 +223,7 @@
 						key: 'meteorStrike',
 						index: tgt,
 						damageType: damageType,
-						...stats.spellDamage(tgt, -100)
+						...stats.spellDamage(tgt, -100, spellConfig)
 					})
 					dotDamages[i].damage = round(dotDamages[i].damage * .35)
 					if (dotDamages[i].damage < 1) dotDamages[i].damage = 1

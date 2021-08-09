@@ -55,15 +55,15 @@ var game;
 	function initSocket() {
 		// only called once
 		if (!isSocketInit) {
-			isSocketInit = true;
-			pingStart = Date.now();
-			heartbeat.activate();
-			playedStart();
-			whisper.listen();
-			listenFriendAlerts();
+			isSocketInit = true
+			pingStart = Date.now()
+			heartbeat.activate()
+			playedStart()
+			whisper.listen()
+			listenFriendAlerts()
 			updateParty()
-			guild.listen();
-			game.getPresence();
+			guild.listen()
+			game.getPresence()
 		}
 	}
 	function heartbeatTick() {
@@ -71,7 +71,7 @@ var game;
 		heartbeatTimeout()
 	}
 	function heartbeatSend() {
-		time = Date.now();
+		time = Date.now()
 		if (time - ng.clearConsoleTime > 1800000) {
 			ng.clearConsoleTime = time
 			// console.clear()
@@ -147,28 +147,21 @@ var game;
 		heartbeat.timer = setTimeout(heartbeatTick, heartbeat.interval * 1000)
 	}
 	function heartbeatReceived(data) {
-		/*if (data.name === my.name) {
-			// console.info("%c town heartbeatReceived: ", "background: #025", data.name, data);
-			// console.info('socket rx', socket.published, socket.received)
-			heartbeat.receiveTime = Date.now();
-			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
-			bar.updatePing(ping);
-		}*/
 		upsertRoom(data)
 	}
 	function heartbeatReceivedParty(data) {
-		// console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #048", data.name, data);
+		// console.info('%c party' + my.partyId + ' heartbeatReceivedParty', "background: #048", data.name, data)
 		if (data.name === my.name) {
-			heartbeat.receiveTime = Date.now();
-			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2);
-			bar.updatePing(ping);
+			heartbeat.receiveTime = Date.now()
+			ping = ~~((heartbeat.receiveTime - heartbeat.sendTime) / 2)
+			bar.updatePing(ping)
 		}
-		party.upsertParty(data);
+		party.upsertParty(data)
 	}
 	function getPresence() {
 		socket.publish(chat.getChannel(), {
 			route: 'chat->getPresence'
-		});
+		})
 	}
 	function upsertRoom(player) {
 		// console.info('upsertRoom', player)
@@ -304,10 +297,13 @@ var game;
 		heartbeatTimeout()
 	}
 	function listenFriendAlerts() {
-		ng.friends.forEach(function(v){
-			socket.unsubscribe('friend' + v);
+		ng.friends.forEach(v => {
+			socket.unsubscribe('friend' + v)
 			socket.subscribe('friend' + v, friend.notify)
-		});
+		})
+		// listen to see if I come online... boot if it happens
+		socket.unsubscribe('friend' + my.name)
+		socket.subscribe('friend' + my.name, friend.notify)
 	}
 	function playedStart() {
 		clearInterval(played.timer)

@@ -349,7 +349,8 @@ var party;
 		party.presence.forEach(player => {
 			diff = time - player.time;
 			if (diff > game.maxTimeout) {
-				removePartyMember(player);
+				console.warn("REMOVE PARTY MEMBER", player)
+				removePartyMember(player)
 			}
 		})
 	}
@@ -365,8 +366,7 @@ var party;
 			if (party.presence[index].isLeader) {
 				mission.rxReturnToTown()
 			}
-			// console.warn('r
-			// emoving party member: index', index, 'row', p.row)
+			// removing party member: index', index, 'row', p.row)
 			_.pullAt(party.presence, [ index ])
 			bar.dom[p.row] = undefined
 			$('#bar-player-wrap-' + p.row).remove()

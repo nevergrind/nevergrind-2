@@ -268,7 +268,7 @@ var battle;
 				tgts.push(splashIndex)
 			}
 		}
-		console.info('getConeTargets', tgts);
+		// console.info('getConeTargets', tgts);
 		return tgts
 	}
 	function getAllAliveMobs() {
@@ -390,9 +390,8 @@ var battle;
 			map.show(1.5)
 		}
 		else {
-			audio.playMusic('battle' + _.random(1, 3))
+			audio.playMusic('battle' + _.random(1, 3), 0, 500)
 			map.inCombat = true
-			// audio.stopAmbient()
 			map.hide()
 		}
 	}

@@ -55,6 +55,7 @@ var chat;
 		sizeTown,
 		prepare,
 		getPrefix,
+		blurChatInput,
 		focusChatInput,
 		clearChatLog,
 		help,
@@ -87,6 +88,12 @@ var chat;
 			})*/
 		}
 		chat.inputHasFocus = false
+	}
+
+	function blurChatInput() {
+		setTimeout(() => {
+			query.el('#chat-input').blur()
+		})
 	}
 
 	/**
@@ -147,12 +154,12 @@ var chat;
 		}
 		// known standard mode
 		else if (chat.modeTypes.includes(mode)) {
-			chat.modeCommand = mode;
-			chat.modeSet(mode);
+			chat.modeCommand = mode
+			chat.modeSet(mode)
 			if (!h) {
-				query.el('#chat-input').value = '';
+				query.el('#chat-input').value = ''
 			}
-			return true;
+			return true
 		}
 		// it's a whisper
 		else if ( (h && mode[0]) === '@' ||
@@ -308,8 +315,8 @@ var chat;
 		chat.log(helpArray.filter(h => h.includes(filter)).join(''))
 	}
 	function sendMsg(input) {
-		var msg = input || query.el('#chat-input').value.trim(),
-			msgLower = msg.toLowerCase();
+		var msg = input || query.el('#chat-input').value.trim()
+		var msgLower = msg.toLowerCase()
 
 		// bypass via ENTER or chat has focus
 		if (msg === '/h' || msg.startsWith('/help')) {
@@ -404,6 +411,9 @@ var chat;
 						}
 					}
 				}
+			}
+			else {
+				chat.blurChatInput()
 			}
 		}
 		chat.updateHistory(msg)

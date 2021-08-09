@@ -43,6 +43,7 @@
 	}
 	function thunderclapCompleted() {
 		let tgt = my.target
+		const spellConfig = _.cloneDeep(spell.data)
 		for (var i=0; i<3; i++) {
 			!function(i) {
 				damages = []
@@ -51,7 +52,7 @@
 					index: tgt,
 					spellType: spell.data.spellType,
 					damageType: spell.data.damageType,
-					...stats.spellDamage(tgt),
+					...stats.spellDamage(tgt, undefined, spellConfig),
 				}
 				if (i === 2) {
 					dam.buffs = [{
@@ -83,6 +84,7 @@
 		let tgts = []
 		const spellType = spell.data.spellType
 		const damageType = spell.data.damageType
+		const spellConfig = _.cloneDeep(spell.data)
 
 		for (var i=0; i<15; i++) {
 			!function(i) {
@@ -102,7 +104,7 @@
 						index: tgt,
 						spellType: spellType,
 						damageType: damageType,
-						...stats.spellDamage(tgt),
+						...stats.spellDamage(tgt, undefined, spellConfig),
 						buffs: [{
 							i: tgt, // target
 							row: my.row, // this identifies unique buff state/icon
@@ -170,15 +172,16 @@
 		let originalTarget = spell.config.target
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
+		let spellConfig = _.cloneDeep(spell.data)
 		let targets = originalTarget <= 4 ? [0,1,2,3,4] : [5,6,7,8]
 		for (let i=0; i<10; i++) {
 			!function(i) {
-				delayedCall(1 + (i * 1), fireWallBurn, [targets, spellType, damageType])
+				delayedCall(1 + (i * 1), fireWallBurn, [targets, spellType, damageType, spellConfig])
 			}(i)
 		}
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
-	function fireWallBurn(targets, spellType, damageType) {
+	function fireWallBurn(targets, spellType, damageType, spellConfig) {
 		let damages = []
 		targets.forEach(tgt => {
 			damages.push({
@@ -186,7 +189,7 @@
 				index: tgt,
 				spellType: spellType,
 				damageType: damageType,
-				...stats.spellDamage(tgt)
+				...stats.spellDamage(tgt, undefined, spellConfig)
 			})
 		})
 		combat.txDamageMob(damages)

@@ -137,10 +137,10 @@ var create;
 	}
 	function selectClass() {
 		if (!this.className.includes('disabled')) {
-			var job = $(this).text();
+			var job = $(this).text()
 			if (job === create.form.job) return
-			$('.select-class').removeClass('active');
-			$(this).addClass('active');
+			$('.select-class').removeClass('active')
+			$(this).addClass('active')
 			create.set('job', job)
 			setAvatarBg()
 			audio.playSound('click-17')

@@ -66,7 +66,7 @@ var dungeon;
 		tickUpdate: {},
 		hallwayPlayerStart: PLAYER_HALLWAY_START,
 		// centerX: [960, 1248, 672, 1536, 384],
-		centerX: [960, 1122, 798, 1284, 636],
+		centerX: [960, 1090, 830, 1220, 700],
 		headY: BOTTOM_PLAYER - 280,
 		bottomY: BOTTOM_PLAYER,
 		gridElementY: {},
@@ -74,6 +74,7 @@ var dungeon;
 		gridDuration: 2,
 		walking: 0,
 		walkDisabled: false,
+		walkTransitionDisabled: false,
 		distanceStart: 0,
 		distanceCurrent: 0,
 		hallwayTileLength: HALLWAY_TILE_LENGTH,
@@ -112,6 +113,7 @@ var dungeon;
 		preloadCombatAssets,
 		rxEnterRoomForward,
 		rxEnterRoomBackward,
+		setRunSpeed,
 	}
 	let blurValue = 0
 	const CLOSEST_MOB_DISTANCE = -200
@@ -125,6 +127,7 @@ var dungeon;
 		if (party.presence[0].isLeader) {
 			delayedCall(.5, preloadCombatAssets)
 		}
+		dungeon.walkTransitionDisabled = true
 		goTasks()
 	}
 
@@ -197,6 +200,9 @@ var dungeon;
 		if (map.inRoom) {
 			battle.go()
 		}
+		delayedCall(ROOM_TRANSITION_DURATION, () => {
+			dungeon.walkTransitionDisabled = false
+		})
 
 		ng.unlock()
 	}
@@ -247,7 +253,7 @@ var dungeon;
 		cache.preloadPlayerAsk()
 	}
 	function init() {
-		dungeon.distancePerSecond = Config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .4
+		dungeon.setRunSpeed()
 		if (zones[mission.id].mobs.length) {
 			zones[mission.id].mobs.forEach(v => {
 				cache.preloadMob(_.kebabCase(v))
@@ -280,6 +286,9 @@ var dungeon;
 		addEndWall(zoneName)
 		addEntityContainer()
 		console.warn('initDungeonTextures')
+	}
+	function setRunSpeed() {
+		dungeon.distancePerSecond = Config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .4
 	}
 	function killEntityTweens() {
 		dungeon.entities.forEach(hallway => {
@@ -651,7 +660,7 @@ var dungeon;
 		return dungeon.distanceCurrent / dungeon.distancePerSecond
 	}
 	function walkForward() {
-		if (ng.view !== 'dungeon' || map.menuPrompt || !party.presence[0].isLeader) {
+		if (ng.view !== 'dungeon' || map.menuPrompt || !party.presence[0].isLeader || dungeon.walkTransitionDisabled) {
 			return
 		}
 		if (dungeon.walking === 0) {
@@ -682,7 +691,7 @@ var dungeon;
 		})
 	}
 	function walkBackward() {
-		if (ng.view !== 'dungeon' || map.menuPrompt || !party.presence[0].isLeader) {
+		if (ng.view !== 'dungeon' || map.menuPrompt || !party.presence[0].isLeader || dungeon.walkTransitionDisabled) {
 			return
 		}
 		if (dungeon.walking === 0) {

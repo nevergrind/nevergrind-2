@@ -830,7 +830,7 @@ var skills;
 				damageType: DAMAGE_TYPE.POISON,
 				castTime: 3,
 				cooldownTime: 0,
-				description: config => 'Blast your target with toxic sports that do '+ config.damageString +' poison damage over '+ ng.toMinSecs(buffs.toxicSpores.duration) +'.',
+				description: config => 'Blast your target with toxic spores that do '+ config.damageString +' poison damage over '+ ng.toMinSecs(buffs.toxicSpores.duration) +'.',
 			}, {
 				name: 'Molten Boulder',
 				img: 'DRU-6',

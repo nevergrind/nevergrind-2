@@ -183,14 +183,16 @@ var combat;
 				audio.playSound('miss', 'combat')
 				return d
 			}
-			if (rand() * 100 < mob.dodgeChance(d.index)) {
+			if (rand() * 100 < mob.dodgeChance(d.index) &&
+				timers.mobEffects[d.index].stunDuration === 0) {
 				d.damage = 0
 				d.missed = true
 				combat.popupDamage(d.index, 'DODGE!')
 				audio.playSound('miss', 'combat')
 				return d
 			}
-			if (!d.isPiercing) {
+			if (!d.isPiercing &&
+				timers.mobEffects[d.index].stunDuration === 0) {
 				if ((now - timers.mobEffects[d.index].riposteTimestamp) > riposteCooldown &&
 					rand() * 100 < mob.riposteChance(d.index)) {
 					// mob ripostes
@@ -543,7 +545,7 @@ var combat;
 	 * @returns {*}
 	 */
 	function modifyBuffDuration(buff) {
-		console.info('modifyBuffDuration b4', buff.duration, buff)
+		// console.info('modifyBuffDuration b4', buff.duration, buff)
 		if (mobs[buff.i].traits.dauntless) {
 			if (buff.key === 'stun' ||
 				buff.key === 'fear') {
@@ -862,52 +864,56 @@ var combat;
 				return d
 			}
 			// dodge
-			if (skills.dodge[my.job].level &&
-				my.level >= skills.dodge[my.job].level) {
-				combat.levelSkillCheck(PROP.DODGE)
-				if (!d.isPiercing &&
-					rand() < stats.dodgeChance()) {
-					combat.popupDamage(d.row, 'DODGE!', {targetMob: false})
-					chat.log('You dodged ' + mobs[index].name + '\'s attack!')
-					audio.playSound('miss', 'combat')
-					d.damage = 0
-					return d
+			if (!my.isStunned()) {
+				if (skills.dodge[my.job].level &&
+					my.level >= skills.dodge[my.job].level) {
+					combat.levelSkillCheck(PROP.DODGE)
+					if (!d.isPiercing &&
+						rand() < stats.dodgeChance()) {
+						combat.popupDamage(d.row, 'DODGE!', {targetMob: false})
+						chat.log('You dodged ' + mobs[index].name + '\'s attack!')
+						audio.playSound('miss', 'combat')
+						d.damage = 0
+						return d
+					}
 				}
 			}
 		}
 		// console.info('processDamages', d)
 		if (d.damageType === DAMAGE_TYPE.PHYSICAL) {
 			// riposte
-			if (skills.riposte[my.job].level &&
-				my.level >= skills.riposte[my.job].level || skill.CRU.vengeanceOn) {
+			if (!my.isStunned()) {
+				if (skills.riposte[my.job].level &&
+					my.level >= skills.riposte[my.job].level || skill.CRU.vengeanceOn) {
 
-				if (!skill.CRU.vengeanceOn) combat.levelSkillCheck(PROP.RIPOSTE)
+					if (!skill.CRU.vengeanceOn) combat.levelSkillCheck(PROP.RIPOSTE)
 
-				if (!d.isPiercing &&
-					rand() < stats.riposteChance() || skill.CRU.vengeanceOn) {
-					if (skill.CRU.vengeanceOn) skill.CRU.vengeanceOn = false
-					combat.popupDamage(d.row, 'RIPOSTE!', {targetMob: false})
-					chat.log('You riposted ' + mobs[index].name + '\'s attack!')
-					audio.playSound('riposte', 'combat')
-					button.primaryAttack(true, index)
-					d.damage = 0
-					return d
+					if (!d.isPiercing && rand() < stats.riposteChance() || skill.CRU.vengeanceOn) {
+						if (skill.CRU.vengeanceOn) skill.CRU.vengeanceOn = false
+						combat.popupDamage(d.row, 'RIPOSTE!', {targetMob: false})
+						chat.log('You riposted ' + mobs[index].name + '\'s attack!')
+						audio.playSound('riposte', 'combat')
+						button.primaryAttack(true, index)
+						d.damage = 0
+						return d
+					}
+				}
+				// parry
+				if (skills.parry[my.job].level &&
+					my.level >= skills.parry[my.job].level) {
+					combat.levelSkillCheck(PROP.PARRY)
+					if (!d.isPiercing &&
+						rand() < stats.parryChance()) {
+						combat.popupDamage(d.row, 'PARRY!', {targetMob: false})
+						chat.log('You parried ' + mobs[index].name + '\'s attack!')
+						audio.playSound('parry', 'combat')
+						d.damage = 0
+						button.startSwing('primaryAttack')
+						return d
+					}
 				}
 			}
-			// parry
-			if (skills.parry[my.job].level &&
-				my.level >= skills.parry[my.job].level) {
-				combat.levelSkillCheck(PROP.PARRY)
-				if (!d.isPiercing &&
-					rand() < stats.parryChance()) {
-					combat.popupDamage(d.row, 'PARRY!', {targetMob: false})
-					chat.log('You parried ' + mobs[index].name + '\'s attack!')
-					audio.playSound('parry', 'combat')
-					d.damage = 0
-					button.startSwing('primaryAttack')
-					return d
-				}
-			}
+
 			if (my.buffFlags.mirageStrikeBuff &&
 				my.buffs.mirageStrikeBuff.stacks) {
 				skill.ROG.updateMirageStrikeBuff()

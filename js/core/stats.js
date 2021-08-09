@@ -328,7 +328,7 @@ var stats = {};
 		}
 
 		if (fresh || typeof stats.memo.attack === 'undefined') {
-			stats.memo.attack = setStat(getEqTotal(PROP.ATTACK) + (str().value * .35))
+			stats.memo.attack = setStat(getEqTotal(PROP.ATTACK) + (str().value * .16) + (dex().value * .24))
 			// console.info('stats.missChance', type, ~~stats.memo.attack)
 			// special percentage bonuses - should only affect base (not buffs)
 			// buffs
@@ -679,7 +679,11 @@ var stats = {};
 	 * @param config
 	 * @returns {{damage: number, min: number, max: number, isCrit: (*|boolean)}}
 	 */
-	function spellDamage(index = 0, critMod = 0, config, isRankUp = false) {
+	function spellDamage(
+		index = 0,
+		critMod = 0,
+		config,
+		isRankUp = false) {
 		if (!config) config = { ...spell.data }
 		let spellRank = isRankUp ?
 			Math.min(MAX_SKILL_LEVEL, my.skills[config.index] + 1) :

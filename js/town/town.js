@@ -70,9 +70,9 @@ var town;
 		// cloth
 		apothecary: [
 			...hasArmorType,
-			ITEM_TYPE.AMULETS,
+			/*ITEM_TYPE.AMULETS,
 			ITEM_TYPE.RINGS,
-			ITEM_TYPE.CHARMS,
+			ITEM_TYPE.CHARMS,*/
 			ITEM_TYPE.FOCUS,
 			ITEM_TYPE.STAVES,
 			ITEM_TYPE.CLOAKS,
@@ -91,6 +91,8 @@ var town;
 	////////////////////////////////////////////
 	function go() {
 		if (ng.view === 'town') return
+
+		cache.preloadImages(Object.values(academy.npcImg));
 		dungeon.suppressDoorAudio = true
 		mob.textures = {}
 		my.target = -1
@@ -129,7 +131,7 @@ var town;
 				chat.log('You have entered Vandamor.')
 				chat.log('Type /help or /h for a list of chat commands.', 'chat-warning')
 			}
-			chat.sizeTown();
+			chat.sizeTown()
 			TweenMax.set(['#bar-main-menu'], CSS.DISPLAY_FLEX)
 			// console.info('load-character: ', data)
 			// my processing
@@ -186,13 +188,15 @@ var town;
 			skills.init()
 			battle.removeAllBuffs()
 			button.setAll()
-		}).fail(function(data){
+		}).fail(data => {
 			ng.disconnect(data.responseText);
 		});
 	}
 	function socketReady() {
 		// stuff to do after the socket wakes up
-		party.listen(party.getUniquePartyChannel())
+		if (!Object.keys(socket.subs).some(channel => channel.startsWith('party'))) {
+			party.listen(party.getUniquePartyChannel())
+		}
 		chat.sendMsg('/join')
 		chat.history = [];
 		// town
@@ -213,7 +217,6 @@ var town;
 			filter: 'brightness(1)',
 			onComplete: ng.unlock
 		})
-		// console.warn('town.socketReady!')
 	}
 
 	function initItemData(obj, type) {
@@ -249,8 +252,10 @@ var town;
 				scrollItems.push(item.getIdentifyScroll())
 			}
 
-			for (i = 0; i<item.MAX_SLOTS[type]; i++) {
-				rarity = _.random(0, 7) < 7 ? ITEM_RARITY.magic : ITEM_RARITY.rare
+			const maxItems = _.random(16, item.MAX_SLOTS[type])
+			for (i = 0; i<maxItems; i++) {
+				rarity = ITEM_RARITY.magic
+				// rarity = _.random(0, 7) < 7 ? ITEM_RARITY.magic : ITEM_RARITY.rare
 				itemIndex = _.random(0, itemTypesForSale[type].length - 1)
 				storeItems[i] = item.getItem({
 					store: true,
@@ -690,6 +695,15 @@ var town;
 	}
 	function getVariousHtml() {
 		html = ''
+		const el = querySelector('#root-various')
+		if (town.openVariousWindow === 'Trade') {
+			el.style.width = '23rem'
+			el.style.height = '28rem'
+		}
+		else {
+			el.style.width = '56rem'
+			el.style.height = '40rem'
+		}
 		if (town.openVariousWindow === 'Academy') html = academyHtml()
 		else if (town.openVariousWindow === 'Apothecary') html = apothecaryHtml()
 		else if (town.openVariousWindow === 'Bank') html = bankHtml()
@@ -700,9 +714,12 @@ var town;
 		else if (town.openVariousWindow === 'Trade') html = tradeHtml()
 		return html
 	}
-	function getStoreBodyHtml() {
-		return '<div id="various-body" class="flex-column flex-max">' +
-			'<div id="various-item-wrap">'+ getStoreItemHtml() +'</div>' +
+	function getStoreBodyHtml(building) {
+		return '<div id="various-body" class="flex-column flex-max" style="min-height: 0">' +
+			'<div class="flex-row flex-max" style="min-height: 0">' +
+				academy.getTownNpcHtml(building) +
+				'<div id="various-item-wrap">'+ getStoreItemHtml() +'</div>' +
+			'</div>' +
 			'<div id="buy-sell-row" class="flex-row align-center">' +
 				'<div id="town-value-wrap" class="flex-row">'+
 					'<img class="store-gold-bar" src="images/ui/gold-bar.png">' +
@@ -723,66 +740,82 @@ var town;
 	}
 	function apothecaryHtml() {
 		html = variousHeaderHtml() +
-		getStoreBodyHtml() +
+		getStoreBodyHtml('apothecary') +
 		variousFooterHtml('images/town/npc-apothecary')
 		return html
 	}
 	function blacksmithHtml() {
 		html = variousHeaderHtml() +
-		getStoreBodyHtml() +
+		getStoreBodyHtml('blacksmith') +
 		variousFooterHtml('images/town/npc-blacksmith')
 		return html
 	}
 	function bankHtml() {
 		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max">' +
-			'<div id="bank-slot-wrap">' +
-				bankSlotHtml() +
+		'<div id="various-body" class="flex-row flex-max">' +
+			'<div class="flex-row flex-max">' +
+				academy.getTownNpcHtml('bank') +
+				'<div id="bank-slot-wrap">' +
+					bankSlotHtml() +
+				'</div>' +
 			'</div>' +
 		'</div>' +
 		'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
-			'<div class="stag-blue-top" style="' + css.name + '">Bank Details</div>' +
+			'<div class="stag-blue-top" style="' + css.name + '">'+
+				'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
+				'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+				'Bank Details'+
+			'</div>' +
 		'</div>' +
 		variousFooterHtml('images/town/npc-bank')
 		return html
 	}
 	function guildHtml() {
 		html = variousHeaderHtml() +
-		'<div id="various-body" class="flex-column flex-max" style="display: flex; flex-direction: column;">' +
-			// new stuff
-			'<div id="various-wrap">';
-			if (my.guild.name) {
-				html += '<div class="aside-frame">' +
-					'<div>Guild: '+ my.guild.name +'</div> ' +
-					'<div>Title: '+ guild.ranks[my.guild.rank] +'</div> ' +
-					'<div>Total Members: <span id="guild-member-count">'+ guild.memberList.length +'</span></div> ' +
-				'</div>' +
-				'<div class="flex" style="'+ css.header +'">' +
-					'<div class="flex-column flex-max" style="'+ css.nameWrapFull +'">' +
-						'<div class="stag-blue-top" style="' + css.name + '">Guild Members</div>' +
+		'<div class="flex-row flex-max">' +
+			academy.getTownNpcHtml('guild') +
+			'<div id="various-body" class="flex-column flex-max" style="display: flex; flex-direction: column;">' +
+				// new stuff
+				'<div id="various-wrap">';
+				if (my.guild.name) {
+					html += '<div class="aside-frame">' +
+						'<div>Guild: '+ my.guild.name +'</div> ' +
+						'<div>Title: '+ guild.ranks[my.guild.rank] +'</div> ' +
+						'<div>Total Members: <span id="guild-member-count">'+ guild.memberList.length +'</span></div> ' +
 					'</div>' +
-					'<div id="guild-member-refresh-btn" class="ng-btn">Update</div>'+
-				'</div>' +
-				'<div id="guild-member-wrap" class="aside-frame">' +
-					'<table id="aside-guild-members"></table>'+
-				'</div>' +
-				'</div>'
-			}
-			else {
-				html += '<div id="guild-create-wrap" class="flex-column flex-max">' +
-					'<input id="guild-input" class="text-shadow" type="text" maxlength="30" autocomplete="off" spellcheck="false">' +
-					'<div id="guild-create" class="ng-btn">Create Guild</div> ' +
-					'<div class="aside-frame" style="margin-top: 1rem">Only letters A through Z and apostrophes are accepted in guild names. Standarized capitalization will be automatically applied. The guild name must be between 4 and 30 characters. All guild names are subject to the royal statutes regarding common decency in Vandamor.</div>'
-				'</div>'
-			}
-			html += '</div>' +
+					'<div class="flex" style="'+ css.header +'">' +
+						'<div class="flex-column flex-max" style="'+ css.nameWrapFull +'">' +
+							'<div class="stag-blue-top" style="' + css.name + '">'+
+								'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
+								'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+								'Guild Members'+
+							'</div>' +
+						'</div>' +
+						'<div id="guild-member-refresh-btn" class="ng-btn">Update</div>'+
+					'</div>' +
+					'<div id="guild-member-wrap" class="aside-frame">' +
+						'<table id="aside-guild-members"></table>'+
+					'</div>' +
+					'</div>'
+				}
+				else {
+					html += '<div id="guild-create-wrap" class="flex-column flex-max">' +
+						'<input id="guild-input" class="text-shadow" type="text" maxlength="30" autocomplete="off" spellcheck="false">' +
+						'<div id="guild-create" class="ng-btn">Create Guild</div> ' +
+						'<div class="aside-frame" style="margin-top: 1rem">'+
+							'Only letters A through Z and apostrophes are accepted in guild names. Standarized capitalization will be automatically applied. The guild name must be between 4 and 30 characters. All guild names are subject to the royal statutes regarding common decency in Vandamor.'+
+						'</div>' +
+					'</div>'
+				}
+				html += '</div>' +
+			'</div>' +
 		'</div>' +
 		variousFooterHtml('images/town/npc-guild')
 		return html
 	}
 	function merchantHtml() {
 		html = variousHeaderHtml() +
-		getStoreBodyHtml() +
+		getStoreBodyHtml('merchant') +
 		variousFooterHtml('images/town/npc-merchant')
 		return html
 	}
@@ -790,7 +823,7 @@ var town;
 		str = ''
 		type = town.openVariousWindow.toLowerCase()
 		len = storeItems.length || item.MAX_SLOTS[type]
-		for (i=0; i<len; i++) {
+		for (i=0; i<64; i++) {
 			str += bar.getItemSlotHtml(type, i)
 		}
 		return str
@@ -811,9 +844,13 @@ var town;
 	function variousHeaderHtml() {
 		return '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">'+ town.openVariousWindow +'</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+
+					'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
+					'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+					town.openVariousWindow +
+				'</div>' +
 			'</div>' +
-			'<img data-id="various" class="close-menu" src="images/ui/close.png">' +
+			'<img data-id="various" class="close-menu" src="images/ui/close-6.png">' +
 		'</div>'
 	}
 	function variousFooterHtml(path) {

@@ -217,6 +217,8 @@
 		let isBlighted = spell.data.isBlighted
 		let targetPattern = [0, 1, 2, -2, -1]
 		let targets = []
+		const spellConfig = _.cloneDeep(spell.data)
+
 		for (var i=0; i<5; i++) {
 			targets.push(battle.getSplashTarget(targetPattern[i]))
 		}
@@ -229,7 +231,7 @@
 					spellType: spellType,
 					damageType: damageType,
 					isBlighted: isBlighted,
-					...stats.spellDamage(tgt),
+					...stats.spellDamage(tgt, undefined, spellConfig),
 				}
 				if (rand() > .5) {
 					hit.effects = { stagger: spell.data.staggers }

@@ -3,9 +3,19 @@ var academy;
 	academy = {
 		getBodyHtml,
 		trainSkill,
+		getTownNpcHtml,
 		TOTAL_SKILLS: 12,
 		MAX_RANK: 7,
 		selected: '',
+		npcImg: {
+			tavern: 'images/town/npc-tavern-full.png',
+			academy: 'images/town/npc-academy-full.png',
+			merchant: 'images/town/npc-merchant-full.png',
+			bank: 'images/town/npc-bank-full.png',
+			apothecary: 'images/town/npc-apothecary-full.png',
+			guild: 'images/town/npc-guild-full.png',
+			blacksmith: 'images/town/npc-blacksmith-full.png',
+		}
 	}
 	var i, el, str, row, html, obj, goldEl, skillData
 
@@ -115,14 +125,21 @@ var academy;
 		// my.skills = my.skills.map(() => _.random(0, 7))
 
 		str = '<div id="various-body" class="flex-column flex-max">' +
-			'<div id="academy-body" class="flex-column flex-max">' +
-				'<div id="academy-skill-wrap">' +
+			'<div id="academy-body" class="flex-row flex-max">' +
+				getTownNpcHtml('academy') +
+				'<div id="academy-skill-wrap" class="flex-max">' +
 					getAllSkillRowHtml() +
 				'</div>' +
 			'</div>' +
 			getTrainRow() +
 		'</div>'
 		return str
+	}
+
+	function getTownNpcHtml(building) {
+		return '<div id="town-npc-wrap">' +
+			'<img id="town-npc-'+ building +'" class="town-npc" src="'+ academy.npcImg[building] +'">' +
+		'</div>'
 	}
 	function getAllSkillRowHtml() {
 		html = ''

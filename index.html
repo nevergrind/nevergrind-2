@@ -14,7 +14,7 @@
 <script>
 // search: $version - only update when it is an essential update because it is sent to server to check for a match
 var app = {
-	version: '0.2.6',
+	version: '0.2.11',
 	initialized: 0,
 	isApp: location.protocol === 'chrome-extension:',
 	account: '',
@@ -93,7 +93,7 @@ app.socketUrl = app.isApp ?
 			</div>
 		</div>
 		<script>
-			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.2.10</div>')
+			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.2.12</div>')
 		</script>
 	</div>
 
@@ -142,7 +142,7 @@ app.socketUrl = app.isApp ?
 
 				<div id="gender-wrap">
 					<div class="character-info-header">Gender</div>
-					<div style="display: flex; flex-direction: column; justify-content: center; flex: 1">
+					<div style="display: flex; flex-direction: column; justify-content: center; flex: 1;">
 						<div class="flex align-center pad-4" style="margin-left: .5rem">
 							<div class="select-gender-col">
 								<div id="Male" class="select-radial select-gender active" data-gender="Male"></div>
@@ -508,7 +508,7 @@ app.socketUrl = app.isApp ?
 	<div id="mini-map-bg">
 		<div id="mini-map-button-parent" class="flex-row">
 			<img id="hearth" src="images/map/map-town.png" class="map-btn popover-icons">
-			<img id="mini-map-party" src="images/map/map-town.png" class="map-btn popover-icons" style="filter: hue-rotate(180deg)">
+			<img id="mini-map-party" src="images/map/map-center.png" class="map-btn popover-icons">
 		</div>
 		<div id="mini-map-drag-parent">
 			<div id="mini-map-drag">
@@ -568,9 +568,8 @@ app.socketUrl = app.isApp ?
 
 <!-- tooltips, popovers, context menus things -->
 <div id="character-windows" class="text-shadow">
-	<div id="bar-character-stats" class="bar-window no-select"></div>
-	<div id="root-bank" class="bar-window no-select"></div>
 	<div id="root-various" class="bar-window no-select"></div>
+	<div id="bar-character-stats" class="bar-window no-select"></div>
 	<div id="inventory" class="bar-window no-select flex-column"></div>
 </div>
 <div id="loot-wrap" class="no-select text-shadow flex-column"></div>
@@ -590,7 +589,7 @@ app.socketUrl = app.isApp ?
 	<div id="patch-notes-bg">
 		<div id="patch-notes-header">
 			<!--<div id="patch-notes-close"></div>-->
-			<img data-id="patch-notes" class="close-menu" src="images/ui/close.png">
+			<img data-id="patch-notes" class="close-menu" src="images/ui/close-6.png">
 			<div>PATCH NOTES</div>
 		</div>
 		<div id="patch-notes-content"></div>

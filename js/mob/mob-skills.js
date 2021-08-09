@@ -878,7 +878,7 @@ mobSkills = {};
 			effect: 'silence',
 			interval: 1,
 			duration: 4,
-			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, .82)), mobs[i].int * getScaledValue(i, .89)),
+			damage: ~~_.random(ceil(mobs[i].int * getScaledValue(i, .64)), mobs[i].int * getScaledValue(i, .72)),
 			damageType: DAMAGE_TYPE.ARCANE,
 		}
 	}

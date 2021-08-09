@@ -536,7 +536,9 @@ var audio;
 		if (typeof config === 'object') {
 			// set basic config
 			console.info('_', _.cloneDeep(config))
-			const resetHotkeys = typeof config.hotkey.autoAttack === 'string' || _.size(ng.getHotkeyDefaults()) > _.size(config.hotkey)
+			const resetHotkeys = typeof config.hotkey.autoAttack === 'string'
+				|| _.size(ng.getHotkeyDefaults()) > _.size(config.hotkey)
+				|| _.size(ng.getDefaultOptions()) > _.size(config)
 			ng.config = {
 				..._.cloneDeep(ng.getDefaultOptions()),
 				..._.cloneDeep(config),
@@ -673,7 +675,7 @@ var audio;
 			}
 		})
 	}
-	function playMusic(fileName, fade = .25, delay = 0) {
+	function playMusic(fileName, fade = .25, delay = .1) {
 		if (!fade) {
 			bgmusicElement.src = ''
 		}

@@ -11,9 +11,10 @@ if ($_POST['dragType'] !== $_POST['dropType']) {
 		'bank' => 2
 	];
 	$owner = $_POST['dragType'] === 'bank' ? $_SESSION['account'] : $_SESSION['row'];
+	$oldOwner = $_POST['dropType'] === 'bank' ? $_SESSION['account'] : $_SESSION['row'];
 	$type = $types[$_POST['dragType']];
-	$stmt = $db->prepare('update `items` set owner_id=?, slot=?, slot_type='. $type .' where row=?');
-	$stmt->bind_param('iii', $owner, $_POST['dragSlot'], $_POST['dragRow']);
+	$stmt = $db->prepare('update `items` set owner_id=?, slot=?, slot_type='. $type .' where row=? and owner_id=?');
+	$stmt->bind_param('iiii', $owner, $_POST['dragSlot'], $_POST['dragRow'], $oldOwner);
 	$stmt->execute();
 }
 else {

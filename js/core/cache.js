@@ -26,7 +26,7 @@ var cache;
 			path + 'fireBolt1' + ext,
 			path + 'fireBolt2' + ext,
 		]
-		cache.preloadImages(asks);
+		cache.preloadImages(asks)
 	}
 	function preloadMob(type) {
 		mob = [];

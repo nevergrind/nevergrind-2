@@ -45,21 +45,20 @@
 		let originalTarget = my.target
 		const spellType = spell.data.spellType
 		const damageType = spell.data.damageType
+		const spellConfig = _.cloneDeep(spell.data)
 		for (var j=0; j<5; j++) {
 			!function(j) {
+				let damages = []
+				battle.getConeTargets(originalTarget).forEach(tgt => {
+					damages.push({
+						key: 'fissure',
+						index: tgt,
+						spellType: spellType,
+						damageType: damageType,
+						...stats.spellDamage(tgt, undefined, spellConfig),
+					})
+				})
 				delayedCall((j + 1) * 1.5, () => {
-					let splashIndex = -1
-					let damages = []
-					for (i=0; i<3; i++) {
-						let tgt = battle.getSplashTarget(splashIndex++, originalTarget)
-						damages.push({
-							key: 'fissure',
-							index: tgt,
-							spellType: spellType,
-							damageType: damageType,
-							...stats.spellDamage(tgt),
-						})
-					}
 					combat.txDamageMob(damages)
 				})
 			}(j)
@@ -77,8 +76,7 @@
 	function lightningBlastCompleted() {
 		splashIndex = -1
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(my.target).forEach(tgt => {
 			damages.push({
 				key: 'lightningBlast',
 				index: tgt,
@@ -86,7 +84,7 @@
 				damageType: spell.data.damageType,
 				...stats.spellDamage(tgt),
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
@@ -102,27 +100,27 @@
 		let originalTarget = my.target
 		const spellType = spell.data.spellType
 		const damageType = spell.data.damageType
+		const spellConfig = _.cloneDeep(spell.data)
 		for (var j=0; j<5; j++) {
 			!function(j) {
+				let damages = []
+				battle.getConeTargets(originalTarget).forEach(tgt => {
+					damages.push({
+						key: 'blizzard',
+						index: tgt,
+						spellType: spellType,
+						damageType: damageType,
+						buffs: [{
+							i: tgt,
+							row: my.row, // this identifies unique buff state/icon
+							key: 'chill', // this sets the flag,
+							duration: buffs.blizzard.chillDuration,
+						}],
+						...stats.spellDamage(tgt, undefined, spellConfig),
+					})
+				})
+
 				delayedCall((j + 1) * 1.5, () => {
-					let splashIndex = -1
-					let damages = []
-					for (i=0; i<3; i++) {
-						tgt = battle.getSplashTarget(splashIndex++, originalTarget)
-						damages.push({
-							key: 'blizzard',
-							index: tgt,
-							spellType: spellType,
-							damageType: damageType,
-							buffs: [{
-								i: tgt,
-								row: my.row, // this identifies unique buff state/icon
-								key: 'chill', // this sets the flag,
-								duration: buffs.blizzard.chillDuration,
-							}],
-							...stats.spellDamage(tgt),
-						})
-					}
 					combat.txDamageMob(damages)
 				})
 			}(j)
@@ -163,6 +161,7 @@
 		let increment = tgt <= 2
 		let spellType = spell.data.spellType
 		let damageType = spell.data.damageType
+		const spellConfig = _.cloneDeep(spell.data)
 		let tgts = []
 
 		while (tgt >= 0 && tgt <= 4) {
@@ -191,7 +190,7 @@
 						index: tgt,
 						spellType: spellType,
 						damageType: damageType,
-						...stats.spellDamage(tgt)
+						...stats.spellDamage(tgt, undefined, spellConfig)
 					})
 					if (i + 1 < len) {
 						damages[0].damage *= buffs.moltenBoulderStrike.strikeModifier
@@ -319,15 +318,13 @@
 	}
 	function mossBreathCompleted() {
 		damages = []
-		party.presence.forEach(p => {
-			damages.push({
-				index: p.row,
-				name: p.name,
-				key: 'mossBreath',
-				spellType: spell.data.spellType,
-				damageType: spell.data.damageType,
-				...stats.spellDamage(p.row)
-			})
+		damages.push({
+			index: spell.config.target,
+			name: spell.config.targetName,
+			key: 'mossBreath',
+			spellType: spell.data.spellType,
+			damageType: spell.data.damageType,
+			...stats.spellDamage(spell.config.target, -100)
 		})
 		combat.txHotHero(damages)
 	}

@@ -3,9 +3,9 @@ require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // get my character data
-$query = 'select row, name, face, gender, level, race, job, exp, gold, data from `characters` where row=? limit 1';
+$query = 'select row, name, face, gender, level, race, job, exp, gold, data from `characters` where row=? and account=? limit 1';
 $stmt = $db->prepare($query);
-$stmt->bind_param('s', $_POST['row']);
+$stmt->bind_param('si', $_POST['row'], $_SESSION['account']);
 $stmt->execute();
 $stmt->store_result();
 $stmt->bind_result($row, $name, $face, $gender, $level, $race, $job, $exp, $gold, $data);

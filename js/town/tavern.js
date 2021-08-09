@@ -82,15 +82,17 @@ var tavern;
 	function getBodyHtml() {
 		str =
 		'<div id="various-body" class="flex-row flex-max">' +
-			'<div class="flex-column flex-max" style="margin: .1rem .2rem">' +
+			'<div class="flex-column flex-max">' +
 				'<div id="tavern-tab-wrap" class="flex-row" style="border-bottom: 1px solid #025;">'+
 					'<div id="tavern-missions" class="tavern-tabs active">Missions</div>' +
 					'<div id="tavern-tips" class="tavern-tabs">Tips</div>' +
 					'<div id="tavern-leaderboard" class="tavern-tabs">Leaderboard</div>' +
 				'</div>' +
-				'<div id="tavern-body">'+
-					mission.getMissionBodyHtml() +
-				'</div>' +
+				'<div class="flex-row flex-max" style="min-height: 0">' +
+					academy.getTownNpcHtml('tavern') +
+					'<div id="tavern-body">'+
+						mission.getMissionBodyHtml() +
+					'</div>' +
 			'</div>' +
 		'</div>'
 		return str

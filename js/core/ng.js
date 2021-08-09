@@ -32,21 +32,11 @@ var ng;
 		html,
 		getArticle,
 		getHotkeyDefaults,
-		// defaults are defined in getDefaultOptions
 		characterData: [],
 		selectIndex: 0,
 		initialized: false,
 		totalCharacters: 0,
-		config: {
-			display: 'Full Screen',
-			lang: 'English',
-			musicVolume: 50,
-			soundVolume: 50,
-			fastDestroy: false,
-			showNetwork: true,
-			selectedRowIndex: 0,
-			hotkey: getHotkeyDefaults()
-		},
+		config: getDefaultOptions(),
 		responsiveRatio: 1,
 		statMap: {
 			// job bonuses
@@ -331,24 +321,6 @@ var ng;
 	function getExitTime() {
 		if (ng.view === 'battle') return 5
 		else return 1
-	}
-
-	/**
-	 * Returns the default options object
-	 * @returns {{soundVolume: number, selectedRowIndex: number, showNetwork: boolean, display: string, hotkey: {walkForward: number, characterStats: number, walkBackward: number, inventory: number, reply: number, autoAttack: number}, fastDestroy: boolean, lang: string, musicVolume: number}}
-	 */
-	function getDefaultOptions() {
-		return {
-			display: 'Full Screen',
-			lang: 'English',
-			musicVolume: 50,
-			soundVolume: 40,
-			ambientVolume: 60,
-			fastDestroy: false,
-			showNetwork: true,
-			selectedRowIndex: 0,
-			hotkey: getHotkeyDefaults()
-		}
 	}
 	function getId() {
 		ng.id++;
@@ -715,7 +687,7 @@ var ng;
 				startAt: { y: 20 },
 				y: 0,
 				delay: .6,
-				filter: 'opacity(1)',
+				opacity: 1,
 				ease: Power1.easeOut,
 				onComplete: flashNgoLogo
 			})
@@ -861,6 +833,24 @@ var ng;
 	}
 	// do nothing!
 	function noop() {}
+
+	/**
+	 * Returns the default options object
+	 * @returns {{soundVolume: number, selectedRowIndex: number, showNetwork: boolean, display: string, hotkey: {walkForward: number, characterStats: number, walkBackward: number, inventory: number, reply: number, autoAttack: number}, fastDestroy: boolean, lang: string, musicVolume: number}}
+	 */
+	function getDefaultOptions() {
+		return {
+			display: 'Full Screen',
+			lang: 'English',
+			musicVolume: 50,
+			soundVolume: 50,
+			ambientVolume: 50,
+			fastDestroy: false,
+			showNetwork: true,
+			selectedRowIndex: 0,
+			hotkey: getHotkeyDefaults()
+		}
+	}
 
 	/**
 	 * Returns the default hotkey object

@@ -1,6 +1,7 @@
 var bar;
 (function(_, $, Draggable, TweenMax, undefined) {
 	bar = {
+		stopListeningForHotkey,
 		setWindowSize,
 		showBarMenuPopover,
 		updateInventoryGold,
@@ -197,9 +198,13 @@ var bar;
 		html =
 		'<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">' + my.name + '</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">' +
+					'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
+					'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+					my.name +
 			'</div>' +
-			'<img data-id="character-stats" class="close-menu" src="images/ui/close.png">' +
+			'</div>' +
+			'<img data-id="character-stats" class="close-menu" src="images/ui/close-6.png">' +
 		'</div>' +
 		'<div class="text-center" style="'+ css.raceJobRow +'">' +
 			'<div>Level <span id="char-sheet-level">'+ my.level +'</span> '+ my.race +' '+ my.jobLong +'</div>' +
@@ -266,7 +271,7 @@ var bar;
 			}
 		}
 		else {
-			resp = 'blank-item'
+			resp = 'blank-item-2'
 		}
 		// if an item exists it always returns that
 		if (_.get(items[type][slot], 'name') && _.get(items[type][slot], 'itemType')) {
@@ -356,9 +361,12 @@ var bar;
 		html =
 		'<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">Inventory</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+
+					'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
+					'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">Inventory'+
+				'</div>' +
 			'</div>' +
-			'<img data-id="inventory" class="close-menu" src="images/ui/close.png">' +
+			'<img data-id="inventory" class="close-menu" src="images/ui/close-6.png">' +
 		'</div>' +
 		'<div id="inventory-slot-wrap">' +
 		'<div class="inventory-slot-row">';
@@ -669,7 +677,7 @@ var bar;
 	function getOptionsHtml() {
 		html =
 		'<div style="position: relative; width: 100%">' +
-			'<img data-id="options" class="close-menu" src="images/ui/close.png" ' +
+			'<img data-id="options" class="close-menu" src="images/ui/close-6.png" ' +
 				'style="transform: translate(50%, -50%)">' +
 		'</div>' +
 		'<div class="flex">' +
@@ -930,9 +938,9 @@ var bar;
 			(player.name || '') +
 		'</div>' +
 		// avatar
-		'<div id="avatar-wrap-'+ index +'" class="bar-avatar-wrap flex-column flex-center" style="position: relative">' +
+		'<div id="avatar-wrap-'+ index +'" class="bar-avatar-wrap flex-row flex-center popover-icons">' +
 			'<img id="bar-avatar-job-'+ index+'" class="bar-job-icon" src="images/ui/job-'+ player.job +'.png">' +
-			'<img id="bar-avatar-'+ index +'" class="bar-avatar popover-icons" src="'+ player.avatar +'">' +
+			'<img id="bar-avatar-'+ index +'" class="bar-avatar" src="'+ player.avatar +'">' +
 		'</div>' +
 		// bars
 		'<div id="player-resource-'+ index +'" class="flex-column bar-col-data player-resource-column">' +
@@ -1080,7 +1088,11 @@ var bar;
 		'</div>' +
 		'<div id="inv-skill-description-wrap">' +
 			'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
-				'<div class="stag-blue-top" style="' + css.name + '">Description</div>' +
+				'<div class="stag-blue-top" style="' + css.name + '">'+
+					'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
+					'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+					'Description' +
+				'</div>' +
 			'</div>' +
 			'<div id="inv-skill-description" class="flex-max stag-blue"></div>' +
 		'</div>'
@@ -1155,13 +1167,28 @@ var bar;
 	}
 	function charStatColTwoHtml() {
 		let hit = stats.primaryAutoAttackDamage(0, true)
+		const damageRange = tooltip.getDamageRange(hit, true)
+		let fontSize = .85
+		if (damageRange.length >= 11) {
+			fontSize = .7
+		}
+		else if (damageRange.length === 10) {
+			fontSize = .75
+		}
+		else if (damageRange.length === 9) {
+			fontSize = .8
+		}
+		else if (damageRange.length === 8) {
+			fontSize = .825
+		}
+		console.info('damageRange', damageRange, damageRange.length)
 		return '<div class="flex space-between">' +
 			'<div style="color: gold">Attack:</div>'+
 			'<div style="'+ stats.attack().color +'">'+ stats.attack().value +'</div>' +
 		'</div>' +
-		'<div class="flex space-between">' +
+		'<div class="flex space-between" style="align-items: flex-end">' +
 			'<div style="color: gold">Damage:</div>'+
-			'<div>'+ tooltip.getDamageRange(hit, true) +'</div>' +
+			'<div class="ellipsis" style="font-size: '+ fontSize +'rem">'+ damageRange +'</div>' +
 		'</div>' +
 		'<div class="flex space-between">' +
 			'<div style="color: gold">Wisdom:</div>'+

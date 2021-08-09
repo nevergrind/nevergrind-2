@@ -13,6 +13,7 @@ var friend;
 		remove,
 		notify,
 	}
+	let countedSelf = 0
 	//////////////////////////////////////////
 	function parse(o) {
 		// returns lower case friend name
@@ -134,12 +135,23 @@ var friend;
 		}
 	}
 	function notify(data, obj) {
-		data = router.normalizeInput(data, obj);
+		data = router.normalizeInput(data, obj)
 		if (data.route === 'on') {
-			chat.log(data.name + ' has come online.', CHAT.WARNING);
+			if (data.name === my.name) {
+				countedSelf++
+				if (countedSelf > 1) {
+					// boot self
+					bar.appReset()
+				}
+			}
+			else {
+				chat.log(data.name + ' has come online.', CHAT.WARNING)
+			}
 		}
 		else {
-			chat.log(data.name + ' has gone offline.', CHAT.WARNING);
+			if (data.name !== my.name) {
+				chat.log(data.name + ' has gone offline.', CHAT.WARNING)
+			}
 		}
 	}
 })(_, $);

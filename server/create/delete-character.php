@@ -10,11 +10,17 @@
 	$stmt->execute();
 	$stmt->bind_result($db_row);
 	$stmt->store_result();
-	if($stmt->num_rows){
+	if ($stmt->num_rows){
 		while($stmt->fetch()){
 			$row = $db_row;
 		}
 		$query = 'update `characters` set deleted=1 where row=?';
+		$stmt = $db->prepare($query);
+		$stmt->bind_param('i', $row);
+		$stmt->execute();
+
+		// delete from guild also
+		$query = 'delete from `guild_members` where c_id=?';
 		$stmt = $db->prepare($query);
 		$stmt->bind_param('i', $row);
 		$stmt->execute();

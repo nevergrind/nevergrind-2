@@ -16,7 +16,7 @@ while ($stmt->fetch()){
 }
 $r['bankSlots'] = $_SESSION['bankSlots'];
 */
-$r['bankSlots'] = 30;
+$r['bankSlots'] = 32;
 
 $stmt = $db->prepare(
 	'select row, slot_type, slot, name, data FROM `items` where owner_id=? and slot_type=2 and slot<'. $r['bankSlots']

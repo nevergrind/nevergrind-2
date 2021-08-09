@@ -56,7 +56,7 @@ var popover;
 			'create-attr-str': 'Strength boosts the power of melee attacks and your chance to hit.',
 			'create-attr-sta': 'Stamina boosts your maximum health.',
 			'create-attr-agi': 'Agility boosts your dodge and natural armor values.',
-			'create-attr-dex': 'Dexterity boosts your parry, riposte, and critical hit rate.',
+			'create-attr-dex': 'Dexterity boosts your chance to hit and your parry, riposte, and critical hit rate.',
 			'create-attr-wis': 'Wisdom boosts your maximum spirit and the power of conjuration spells.',
 			'create-attr-int': 'Intelligence boosts your maximum mana and the power of evocation spells.',
 			'create-attr-cha': 'Charisma boosts maximum spirit and the power of alteration spells.',
@@ -82,7 +82,7 @@ var popover;
 			buffName = _.camelCase(id.split('-')[1])
 			html = buffs[buffName].name || _.startCase(buffName)
 		}
-		else if (id.startsWith('bar-avatar-')) {
+		else if (id.startsWith('avatar-wrap-')) {
 			id = id.split('-')[2] * 1
 			const partyMember = party.presence[party.getIndexByRow(id)]
 			// console.info('id player', id, partyMember)

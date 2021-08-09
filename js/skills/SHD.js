@@ -140,6 +140,8 @@
 		let firstTargets = [-2, -1, 0, 1, 2]
 		const spellType = spell.data.spellType
 		const damageType = spell.data.damageType
+		const spellConfig = _.cloneDeep(spell.data)
+
 		for (var i=0; i<12; i++) {
 			!function(i) {
 				let splashIndex
@@ -159,7 +161,7 @@
 						index: tgt,
 						spellType: spellType,
 						damageType: damageType,
-						...stats.spellDamage(tgt),
+						...stats.spellDamage(tgt, undefined, spellConfig),
 					}])
 				})
 			}(i)

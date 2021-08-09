@@ -307,6 +307,7 @@ var trade;
 		// console.info('get-inventorry', data)
 		town.initItemData(data.inv, 'inv')
 		bar.updateInventoryDOM()
+		button.updatePotionPanel()
 		ng.unlock()
 		// chat.log('Client update completed!')
 	}

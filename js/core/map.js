@@ -567,16 +567,16 @@ let map;
 	function roomCleared() {
 		socket.publish('party' + my.partyId, {
 			route: 'p->roomCleared',
-			dotX: map.dotX,
-			dotY: map.dotY,
+			roomId: map.roomId,
 		})
 	}
 	function rxRoomCleared(data) {
+		const roomData = dungeon.map.rooms[data.roomId]
 		const el = createElement('img')
 		el.className = 'map-cleared'
-		el.style.left = data.dotX + 'px'
-		el.style.top = data.dotY + 'px'
-		el.src = 'images/map/map-cleared.png'
+		el.style.left = roomData.x + 'px'
+		el.style.top = roomData.y + 'px'
+		el.src = 'images/map/map-cleared-2.png'
 		querySelector('#mini-map-drag').appendChild(el)
 		delayedCall(4, () => {
 			TweenMax.to(el, 1.5, {
@@ -603,7 +603,7 @@ let map;
 			if (mission.isQuestCompleted() &&
 				!mission.isCompleted) {
 				// quest has been completed! show Dark souls message
-				mission.getRewards();
+				mission.getRewards()
 				delayedCall(3, () => {
 					combat.showQuestMsg()
 					!isRespawn && map.show(3)
