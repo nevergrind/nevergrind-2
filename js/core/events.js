@@ -56,7 +56,7 @@
 			.on('click', '.ng-dropdown-select', dropdown.hideMenu)
 			// town
 			.on('click', '#guild-create', guild.create)
-			.on('click focus', '#guild-input', town.handleGuildInputFocus)
+			.on('focus', '#guild-input', town.handleGuildInputFocus)
 			.on('blur', '#guild-input', town.handleGuildInputBlur)
 			.on('click', '#guild-member-refresh-btn', town.refreshGuildMembers)
 			.on('click', '.town-building', town.openVarious)
@@ -87,10 +87,10 @@
 		if (app.isApp) return false // disable context menus
 	}
 	function chatInputFocus() {
-		chat.hasFocus = 1;
+		chat.hasFocus = true
 	}
 	function chatInputBlur() {
-		chat.hasFocus = 0
+		chat.hasFocus = false
 	}
 	function readyFire() {
 		ng.initGame()
@@ -148,7 +148,7 @@
 	function mousemove(e) {
 		my.mouse.x = e.clientX
 		my.mouse.y = e.clientY
-		// console.info(my.mouse.x, my.mouse.y)
+		// chat.log('coords: ' +my.mouse.x +' '+ my.mouse.y)
 		if (item.isDragging) item.updateCursorImgPosition()
 	}
 	function resize() {
@@ -189,15 +189,6 @@
 			}
 			return
 		}
-		// local only
-		/*if (!app.isApp) {
-			if (!chat.hasFocus && ng.view !== 'title') {
-				// key input view router
-				if (key === 'PageDown') battle.go()
-				else if (key === 'Home') town.go()
-				else if (key === 'PageUp') mission.embark()
-			}
-		}*/
 		// console.info('e.metaKey', e.metaKey)
 		if (e.altKey) {
 			// ALT key functions
@@ -262,13 +253,13 @@
 					else if (keyCode === 40) {
 						// chat focus history nav down
 						if (chat.history.length === chat.historyIndex + 1) {
-							chat.historyIndex++;
-							chat.clearInput();
+							chat.historyIndex++
+							chat.clearInput()
 						}
 						else if (chat.history[chat.historyIndex + 1] !== undefined) {
-							var o = chat.history[++chat.historyIndex];
-							query.el('#chat-input').value = o.msg;
-							chat.modeChange(o);
+							var o = chat.history[++chat.historyIndex]
+							query.el('#chat-input').value = o.msg
+							chat.modeChange(o)
 						}
 					}
 					else if (key === 'Enter') {
@@ -298,10 +289,13 @@
 					// town specific
 					if (!chat.hasFocus) {
 						// if no aside, focus on chat input first
-						chat.focusKeys.includes(keyCode) && chat.focusChatInput()
-
+						if (chat.focusKeys.includes(keyCode)) {
+							chat.focusChatInput()
+						}
+					}
+					else {
 						if (guild.hasFocus && key === 'Enter') {
-							guild.create();
+							guild.create()
 						}
 					}
 				}

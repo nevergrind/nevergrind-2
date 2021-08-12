@@ -181,7 +181,7 @@ var town;
 				game.initPlayedCache()
 			}
 			//!expanse.initialized && expanse.startSkyPhase()
-			expanse.startSkyPhase()
+			// expanse.startSkyPhase()
 			town.init()
 			bar.init()
 			tavern.init()
@@ -210,7 +210,7 @@ var town;
 			opacity: 1,
 			onComplete: ng.unlock
 		})
-		TweenMax.to('#town-wrap, #sky-wrap', .5, {
+		TweenMax.to('#town-wrap', .5, {
 			startAt: { filter: 'brightness(0)' },
 			overwrite: 1,
 			delay: .5,
@@ -290,15 +290,23 @@ var town;
 	function getTownHtml() {
 		html = '<div id="town-wrap">' +
 			'<div id="town-building-wrap" class="wh-100">' +
-				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/town-academy.png">' +
-				'<img id="town-background" class="town-bg" src="images/town/town-bg-3.png">' +
-				'<img data-id="Apothecary" id="town-apothecary" class="town-building" src="images/town/town-apothecary.png">' +
-				'<img data-id="Merchant" id="town-merchant" class="town-building" src="images/town/town-merchant.png">' +
-				'<img data-id="Bank" id="town-bank" class="town-building" src="images/town/town-bank.png">' +
-				'<img data-id="Tavern" id="town-tavern" class="town-building" src="images/town/town-tavern.png">' +
-				'<img data-id="Guild Hall" id="town-guild" class="town-building" src="images/town/town-guild.png">' +
-				'<img data-id="Blacksmith" id="town-blacksmith" class="town-building" src="images/town/town-blacksmith.png">' +
+				// background - sky clouds etc
+				'<img id="town-layer-sky" class="town-layer" src="images/town/'+ game.phase +'-sky.jpg">' +
+				'<img id="town-layer-clouds" class="town-layer" src="images/town/'+ game.phase +'-clouds.png">' +
+				'<img id="town-layer-bg" class="town-layer" src="images/town/'+ game.phase +'-bg.png">' +
+				// buildings
+				'<img data-id="Bank" id="town-bank" class="town-building" src="images/town/'+ game.phase +'-bank.png">' +
+				'<img data-id="Guild Hall" id="town-guild" class="town-building" src="images/town/'+ game.phase +'-guild.png">' +
+				'<img data-id="Tavern" id="town-tavern" class="town-building" src="images/town/'+ game.phase +'-tavern.png">' +
+				'<img data-id="Apothecary" id="town-apothecary" class="town-building" src="images/town/'+ game.phase +'-apothecary.png">' +
+				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/'+ game.phase +'-academy.png">' +
+				'<img data-id="Blacksmith" id="town-blacksmith" class="town-building" src="images/town/'+ game.phase +'-blacksmith.png">' +
+				'<img data-id="Merchant" id="town-merchant" class="town-building" src="images/town/'+ game.phase +'-merchant.png">' +
+				// foreground layers
+				'<img id="town-layer-haze" class="town-layer" src="images/town/'+ game.phase +'-haze.png">' +
+				'<img id="town-layer-people" class="town-layer" src="images/town/'+ game.phase +'-people.png">' +
 			'</div>' +
+
 			'<div id="town-building-label-wrap" class="text-shadow2">'+
 				'<div id="town-building-label-header"></div>' +
 				'<div id="town-build-label-description"></div>' +
@@ -307,15 +315,15 @@ var town;
 
 		return html
 	}
-	function handleGuildInputBlur() {
-		guild.hasFocus = true;
-	}
 	function handleGuildInputFocus() {
-		guild.hasFocus = false;
+		guild.hasFocus = true
+	}
+	function handleGuildInputBlur() {
+		guild.hasFocus = false
 	}
 	function refreshGuildMembers() {
 		guild.loadGuildMsg()
-		guild.getMembers(guild.throttleTime);
+		guild.getMembers(guild.throttleTime)
 	}
 	function init() {
 		town.preload();
@@ -386,50 +394,50 @@ var town;
 		if (id === 'Academy') {
 			msg = 'Train your skills and spells to achieve mastery'
 			labelConfig = {
-				left: ng.toPercentWidth(488),
-				top: ng.toPercentHeight(232)
+				left: ng.toPercentWidth(1152),
+				top: ng.toPercentHeight(255)
 			}
 		}
 		else if (id === 'Apothecary') {
 			msg = 'Buy potions, jewelry, and various arcane items to help assure your survival'
 			labelConfig = {
-				left: ng.toPercentWidth(1178),
+				left: ng.toPercentWidth(815),
 				top: ng.toPercentHeight(434)
 			}
 		}
 		else if (id === 'Bank') {
 			msg = 'Banked items may be shared with all characters on the same account'
 			labelConfig = {
-				left: ng.toPercentWidth(950),
-				top: ng.toPercentHeight(386)
+				left: ng.toPercentWidth(589),
+				top: ng.toPercentHeight(194)
 			}
 		}
 		else if (id === 'Blacksmith') {
 			msg = 'Choose from the finest selection of weapons and armor in all of Edenburg'
 			labelConfig = {
-				left: ng.toPercentWidth(1495),
-				top: ng.toPercentHeight(555)
+				left: ng.toPercentWidth(1255),
+				top: ng.toPercentHeight(432)
 			}
 		}
 		else if (id === 'Guild Hall') {
 			msg = 'Start a guild, invite friends, and build your roster for ultimate readiness'
 			labelConfig = {
-				left: ng.toPercentWidth(1519),
-				top: ng.toPercentHeight(192)
+				left: ng.toPercentWidth(292),
+				top: ng.toPercentHeight(102)
 			}
 		}
 		else if (id === 'Merchant') {
 			msg = 'Buy weapons, armor, and jewelry from the largest variety of items in all of Edenburg'
 			labelConfig = {
-				left: ng.toPercentWidth(719),
-				top: ng.toPercentHeight(429)
+				left: ng.toPercentWidth(1560),
+				top: ng.toPercentHeight(375)
 			}
 		}
 		else if (id === 'Tavern') {
 			msg = 'Select missions, seek wisdom from the innkeeper, and view the leaderboard'
 			labelConfig = {
-				left: ng.toPercentWidth(302),
-				top: ng.toPercentHeight(467)
+				left: ng.toPercentWidth(366),
+				top: ng.toPercentHeight(366)
 			}
 		}
 		if (!town.openVariousWindow) {
@@ -477,56 +485,21 @@ var town;
 
 		msg = ''
 		npc = ''
-		if (town.openVariousWindow === 'Academy') {
-			npc = 'Magda: '
-			msg = 'All of your skills may be trained here. You will never reach your full potential without diligence! Each skill must be trained individually.'
+		if (town.openVariousWindow === 'Tavern') {
+			npc = 'Eber: '
+			zones = zones.map(z => {
+				z.isOpen = 0
+				return z;
+			})
+			msg = 'Welcome to the Edenburg Tavern, '+ my.name +'. The King has requested the services of brave adventurers like yourself to complete missions in defense of our interests. How do you choose to serve?'
 			townConfig = {
 				duration: 1,
-				scale: 1.5,
-				x: 280,
-				y: 230
+				scale: 1.8,
+				x: 650,
+				y: -30
 			}
-			bar.openInventory()
-			audio.playSound('door-academy', 'town')
-		}
-		else if (town.openVariousWindow === 'Apothecary') {
-			npc = 'Briza: '
-			initStoreData()
-			msg = 'Fill your bag full of potions if you want to survive! I have a selection of items ranging from the deadly to the arcane!.'
-			townConfig = {
-				duration: 1,
-				scale: 1.4,
-				x: -100,
-				y: -50
-			}
-			bar.openInventory()
-			audio.playSound('door-apothecary', 'town')
-		}
-		else if (town.openVariousWindow === 'Bank') {
-			npc = 'Ingmar: '
-			msg = 'If you have any special items that you would like to share with other heroes, you have come to the right place. I take an interest to collecting rare treasures as well!'
-			if (!town.isBankInitialized) loadBank()
-			townConfig = {
-				duration: 1,
-				scale: 1.4,
-				x: 100,
-				y: 20
-			}
-			bar.openInventory()
-			audio.playSound('door-bank', 'town')
-		}
-		else if (town.openVariousWindow === 'Blacksmith') {
-			npc = 'Kalamin: '
-			initStoreData()
-			msg = 'Need armor or a weapon? You have come to the right place, lad. We offer the best iron and steel in all of Edenburg.'
-			townConfig = {
-				duration: 1,
-				scale: 1.2,
-				x: -130,
-				y: -100
-			}
-			bar.openInventory()
-			audio.playSound('door-blacksmith', 'town')
+			tavern.activeTab = 'tavern-missions'
+			audio.playSound('door-tavern', 'town')
 		}
 		else if (town.openVariousWindow === 'Guild Hall') {
 			npc = 'Charlotte: '
@@ -541,40 +514,75 @@ var town;
 			}
 			townConfig = {
 				duration: 1,
-				scale: 1.3,
-				x: -180,
-				y: 120
+				scale: 2.1,
+				x: 1000,
+				y: 200
 			}
 			audio.playSound('door-guild', 'town')
+		}
+		else if (town.openVariousWindow === 'Bank') {
+			npc = 'Ingmar: '
+			msg = 'If you have any special items that you would like to share with other heroes, you have come to the right place. I take an interest to collecting rare treasures as well!'
+			if (!town.isBankInitialized) loadBank()
+			townConfig = {
+				duration: 1,
+				scale: 2,
+				x: 860,
+				y: 160
+			}
+			bar.openInventory()
+			audio.playSound('door-bank', 'town')
+		}
+		else if (town.openVariousWindow === 'Apothecary') {
+			npc = 'Briza: '
+			initStoreData()
+			msg = 'Fill your bag full of potions if you want to survive! I have a selection of items ranging from the deadly to the arcane!.'
+			townConfig = {
+				duration: 1,
+				scale: 1.9,
+				x: 530,
+				y: -130
+			}
+			bar.openInventory()
+			audio.playSound('door-apothecary', 'town')
+		}
+		else if (town.openVariousWindow === 'Academy') {
+			npc = 'Magda: '
+			msg = 'All of your skills may be trained here. You will never reach your full potential without diligence! Each skill must be trained individually.'
+			townConfig = {
+				duration: 1,
+				scale: 1.75,
+				x: -140,
+				y: 80
+			}
+			bar.openInventory()
+			audio.playSound('door-academy', 'town')
+		}
+		else if (town.openVariousWindow === 'Blacksmith') {
+			npc = 'Kalamin: '
+			initStoreData()
+			msg = 'Need armor or a weapon? You have come to the right place, lad. We offer the best iron and steel in all of Edenburg.'
+			townConfig = {
+				duration: 1,
+				scale: 1.6,
+				x: -235,
+				y: 40
+			}
+			bar.openInventory()
+			audio.playSound('door-blacksmith', 'town')
 		}
 		else if (town.openVariousWindow === 'Merchant') {
 			npc = 'Roland: '
 			initStoreData()
-			msg = 'Good day, ' + my.name + ', what are you looking for? We carry the finest jewelry in all of Vandamor! Be sure to check out the latest shipment of cloaks that we just received! I have a special price just for you, my friend!'
+			msg = 'Good day, ' + my.name + ', what are you looking for? We carry the finest cloth and leather goods in all of Vandamor! Be sure to check out the latest shipment of cloaks that we just received! I have a special price just for you, my friend!'
 			townConfig = {
 				duration: 1,
-				scale: 1.4,
-				x: 250,
+				scale: 1.5,
+				x: -290,
 				y: -30
 			}
 			bar.openInventory()
 			audio.playSound('door-merchant', 'town')
-		}
-		else if (town.openVariousWindow === 'Tavern') {
-			npc = 'Eber: '
-			zones = zones.map(z => {
-				z.isOpen = 0
-				return z;
-			})
-			msg = 'Welcome to the Edenburg Tavern, '+ my.name +'. The King has requested the services of brave adventurers like yourself to complete missions in defense of our interests. How do you choose to serve?'
-			townConfig = {
-				duration: 1,
-				scale: 1.2,
-				x: 100,
-				y: -100
-			}
-			tavern.activeTab = 'tavern-missions'
-			audio.playSound('door-tavern', 'town')
 		}
 		else if (town.openVariousWindow === 'Trade') {
 			npc = ''
@@ -602,7 +610,7 @@ var town;
 		});
 	}
 	function animateBuilding(o) {
-		TweenMax.to('#town-wrap, #sky-wrap', o.duration, {
+		TweenMax.to('#town-wrap', o.duration, {
 			scale: o.scale,
 			x: o.x,
 			y: o.y,

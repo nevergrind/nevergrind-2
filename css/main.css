@@ -272,7 +272,8 @@ tbody { border: 0 }
 /* title */
 #scene-title-landing {
 	background: #000;
-	overflow: hidden
+	overflow: hidden;
+	z-index: 1;
 }
 #battle-bg {
 	position: absolute;
@@ -345,6 +346,7 @@ tbody { border: 0 }
 	display: none;
 	width: 56rem;
 	align-self: center;
+	z-index: 1;
 }
 .title-cc-wrap {
 	position: relative;
@@ -478,6 +480,7 @@ tbody { border: 0 }
 #msg {
 	position: fixed;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	text-align: center;
@@ -750,56 +753,51 @@ tbody { border: 0 }
 	position: absolute;
 }
 #town-academy {
-	bottom: 38.88vh;
-	left: 11.66vw;
-	height: 55.74vh;
-	width: 26.98vw;
+	bottom: 46vh;
+	left: 54.66vw;
+	height: 43.61vh;
+	width: 20.31vw;
 }
 #town-apothecary {
-	bottom: 31.3vh;
-	left: 54.38vw;
-	width: 14.11vw;
-	height: 28.15vh;
+	bottom: 42vh;
+	left: 30.5vw;
+	width: 14.63vw;
+	height: 19.9vh;
 }
 #town-bank {
-	bottom: 30.37vh;
-	left: 42.71vw;
-	width: 13.49vw;
-	height: 43.06vh;
+	bottom: 64.5vh;
+	left: 20.6vw;
+	width: 16.14vw;
+	height: 22.87vh;
 }
 #town-tavern {
-	bottom: 0;
-	left: 0;
-	width: 20.42vw;
-	height: 70.93vh;
+	bottom: 32.7vh;
+	left: 1vw;
+	width: 27.08vw;
+	height: 38.42vh;
 }
 #town-merchant {
-	bottom: 30.37vh;
-	left: 29.16vw;
-	width: 16.83vw;
-	height: 35vh;
+	bottom: 37.37vh;
+	left: 72.75vw;
+	width: 23.13vw;
+	height: 40.09vh;
 }
 #town-guild {
-	bottom: 29.63vh;
-	left: 69.51vw;
-	width: 30.49vw;
-	height: 64.81vh;
+	bottom: 70.9vh;
+	left: 1.9vw;
+	width: 19.84vw;
+	height: 25.83vh;
 }
 #town-blacksmith {
-	bottom: 0;
-	left: 66.2vw;
-	width: 33.8vw;
-	height: 55.55vh;
+	bottom: 39vh;
+	left: 60.62vw;
+	width: 14.95vw;
+	height: 30.55vh;
 }
 #town-background {
 	bottom: 0;
 	width: 100vw;
 	height: 85.93vh;
-}
-.town-bg {
-	position: absolute;
-	bottom: 0;
-	pointer-events: none;
 }
 .town-clouds {
 	position: absolute;
@@ -809,34 +807,23 @@ tbody { border: 0 }
 	left: 0;
 	filter: saturate(.5) brightness(.5)
 }
-#sky-wrap {
-	position: absolute;
-	top: 0;
-	left: 0;
-	filter: brightness(0);
-	z-index: 0;
-	transform: translate(0px, 0px);
-}
-#sky-elements {
-	position: relative;
-	z-index: 1;
-	pointer-events: none;
-}
-.env-rain {
-	position: absolute;
-	transform: translate(0%, -100%);
-}
-#town-sky {
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background-image: radial-gradient(farthest-corner at 50% 50%, #5bf, #05b)
-}
 #town-stars {
 	top: 0;
 	bottom: 0;
 	right: 0;
 	left: 0;
+}
+#town-building-wrap {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+.town-layer {
+	position: absolute;
+	bottom: 0;
+	pointer-events: none;
+	width: 100%;
+	height: 100%;
 }
 .town-building {
 	position: absolute;
@@ -2367,25 +2354,36 @@ background-repeat: no-repeat;
 	background-repeat: no-repeat;
 
  */
+#ng2-bg {
+	opacity: 0;
+}
+.title-layer {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	z-index: 1;
+}
 #title-gwen {
 	position: absolute;
 	width: auto;
-	height: 100%;
+	height: 70%;
 	max-width: 60%;
-	bottom: -13vh;
-	left: 2%;
+	bottom: 5%;
+	left: 27%;
 	opacity: 0;
-	transform: translate(-5%, 0%);
-	filter: brightness(0);
+	transform: translate(-50%, 0%);
 	pointer-events: none;
 	z-index: 1;
 }
 .ngo-logos {
 	position: absolute;
-	top: 4%;
-	width: 60%;
-	right: 33%;
-	transform: translate(50%) scale(.8);
+	top: -3%;
+	width: 50%;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	transform: translate(0) scale(.8);
 	opacity: 0;
 	z-index: 1;
 }
@@ -2403,12 +2401,12 @@ background-repeat: no-repeat;
 	flex-direction: column;
 	width: 35%;
 	max-width: 30rem;
-	right: 33%;
+	left: 50%;
 	margin-bottom: 3rem;
 	align-self: flex-end;
 	opacity: 0;
-	transform: translateX(50%) !important;
-	backdrop-filter: blur(2px);
+	transform: translateX(-50%);
+	z-index: 1;
 }
 .title-btn-margin {
 	margin: .2rem
@@ -2427,17 +2425,17 @@ background-repeat: no-repeat;
 	display: flex;
 	padding: .2rem 0;
 	justify-content: center;
-	background: #0008;
-}
-#title-well-bottom {
-	border: 2px ridge #000;
-	border-top: none;
-	background: #000c;
+	background: url(../images/ui/header-bg.png);
+	background-size: 100% 120%;
+	background-position: 0% 60%;
 }
 #title-well-top {
 	border: 2px ridge #000;
 	border-bottom: none;
-	background: #000c;
+}
+#title-well-bottom {
+	border: 2px ridge #000;
+	border-top: none;
 }
 #ch-index {
 	position: absolute;
@@ -2550,6 +2548,7 @@ background-repeat: no-repeat;
 	flex: 1;
 	font: 1.25rem Quatro, Roboto Slab;
 	text-transform: uppercase;
+	background: url(../images/ui/stone-bg-2.png);
 }
 .select-gender-col {
 	display: flex;
@@ -2588,7 +2587,8 @@ background-repeat: no-repeat;
 	font: 1rem Quatro, Roboto Slab, serif;
 	text-align: center;
 	border: 2px ridge #05b;
-	background: #025;
+	background: url(../images/ui/header-bg.png);
+	background-size: 100% 100%;
 	text-transform: uppercase
 }
 #create-info {
@@ -2664,7 +2664,7 @@ background-repeat: no-repeat;
 #create-details {
 	padding: .2rem;
 	border: .2rem inset #125;
-	background: #147;
+	background: url(../images/ui/stone-bg-2.png);
 	height: 7.6rem;
 }
 #create-character-name {
@@ -2674,13 +2674,13 @@ background-repeat: no-repeat;
 	text-transform: capitalize;
 	margin: .2rem;
 	border-radius: 0;
-	background: #025;
+	background: #0a0a0a;
 	color: #fff;
 	flex: 1;
 }
 
 #create-character-name:focus {
-	background: #236;
+	background: #1a1a1a;
 	transition: background .2s ease;
 }
 .guild-icon {
@@ -3410,7 +3410,7 @@ background-repeat: no-repeat;
 #inv-skill-description,
 #various-description {
 	padding: .2rem .4rem;
-	font-size: .8rem;
+	font-size: 1.35rem;
 	border: .1rem ridge #136;
 	margin: .2rem;
 	align-self: normal;
@@ -3490,7 +3490,7 @@ background-repeat: no-repeat;
 }
 #guild-create-wrap {
 	margin: .1rem;
-	background: repeating-linear-gradient(to top, #025, #025 2px, #013, #013 3px);
+	/*background: repeating-linear-gradient(to top, #025, #025 2px, #013, #013 3px);*/
 	padding: .5rem;
 	border-radius: 5px;
 	border: .1rem ridge #357;
@@ -3522,6 +3522,7 @@ background-repeat: no-repeat;
 	border: .1rem ridge #025;
 	padding: .2rem .4rem;
 	margin: .1rem;
+	background: #000b;
 }
 #aside-guild-members {
 	display: table;

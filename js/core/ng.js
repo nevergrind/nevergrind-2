@@ -1,9 +1,13 @@
 // ng.js
 var ng;
-!function($, TweenMax, SplitText, _, Power2, undefined) {
+!function($, TweenMax, SplitText, _, Power2, Power1, undefined) {
 	ng = {
+		animateTitleStart,
+		animateTitleDark,
+		animateCreateFadeIn,
+		animateCreateBack,
 		noop,
-		flashNgoLogo,
+		animateLogoMask,
 		getExitTime,
 		getDefaultOptions,
 		msg,
@@ -289,6 +293,11 @@ var ng;
 			[JOB.WARRIOR]: CLASS.WARRIOR,
 			[JOB.WIZARD]: CLASS.WIZARD
 		},
+		filterBright: 'brightness(10) contrast(5)',
+		filterNormal: 'brightness(1) contrast(1)',
+		filterGrayNone: 'grayscale(0)',
+		filterGrayMax: 'grayscale(1)',
+		titleDuration: .7
 	}
 	var msgTimer = delayedCall(0, '')
 	const vowels = 'aeiou'
@@ -383,7 +392,8 @@ var ng;
 		let ignoreList = storage.get('ignore')
 
 		console.info('ignoreList', ignoreList)
-		if (ignoreList.length) {
+		if (typeof ignoreList === 'object' &&
+			ignoreList.length) {
 			ng.ignore = ignoreList
 		}
 		else {
@@ -516,62 +526,25 @@ var ng;
 		});
 	}
 	function goCreateCharacter() {
-		ng.lock(1);
-		var prom = 0;
+		ng.lock(1)
+		audio.playSound('click-4')
+		ng.animateTitleDark()
+		$("#create-character-name").val('')
 		// hide
-		TweenMax.to('#scene-title-select-character', .6, {
+		TweenMax.to('#scene-title-select-character', ng.titleDuration, {
 			y: 20,
 			opacity: 0,
-			onComplete: allDone
-		});
-		TweenMax.to('#title-gwen', .6, {
-			startAt: { x: 0, filter: 'brightness(1) contrast(1)' },
-			x: -20,
-			filter: 'brightness(10) contrast(5)',
-			opacity: 0
-		})
-		TweenMax.to('#ngo-logo', .6, {
-			startAt: { filter: 'brightness(1) contrast(1)' },
-			filter: 'brightness(10) contrast(5)',
-		})
-		TweenMax.to('.ngo-logos', .6, {
-			startAt: { y: 0, },
-			y: -20,
-			opacity: 0
-		})
-
-		$("#create-character-name").val('')
-		audio.playSound('click-4')
-		allDone()
-		///////////////////////////////////////////////////
-		function allDone(){
-			if (++prom === 2){
-				ng.unlock();
+			onComplete: () => {
+				ng.unlock()
 				// init create screen and show
-				TweenMax.set('#scene-title-select-character', {
-					display: 'none',
-					opacity: 1
-				});
-				create.form = create.getEmptyForm();
+				create.form = create.getEmptyForm()
 				create.setRandomGender()
 				create.setRandomRace()
 				// console.info('form', create.form)
 				create.setFace()
-				TweenMax.to('#scene-title-create-character', .6, {
-					startAt: {
-						display: 'flex',
-						y: 20,
-						opacity: 0
-					},
-					y: 0,
-					opacity: 1,
-					onComplete: function(){
-						$("#create-character-name").focus();
-						ng.unlock();
-					}
-				});
+				ng.animateCreateFadeIn()
 			}
-		}
+		})
 	}
 	function initGame() {
 		if (app.isApp) {
@@ -642,63 +615,15 @@ var ng;
 				});
 		}
 	}
-	function flashNgoLogo() {
-		TweenMax.to('#ngo-logo-fg', 1.5, {
-			startAt: { webkitMaskPositionX: '-40rem', },
-			webkitMaskPositionX: '40rem',
-			ease: Power2.easeInOut,
-			repeat: -1,
-			repeatDelay: 3,
-		});
-	}
 	function handleInitGame(r) {
 		ng.msg('') // clear msg
-		/*
-		$.get('https://nevergrind.com/php/nwjs.php').done((data) => {
-			// console.info('nwjs.php data', JSON.parse(data))
-		})
-		*/
 		bar.updateDynamicStyles()
+		console.info('init-game success', r)
 		if (!ng.initialized) {
+			game.setPhase(r)
 			ng.initialized = true
-			TweenMax.to('#title-gwen', .6, {
-				startAt: { filter: 'brightness(10) contrast(5)' },
-				delay: .6,
-				x: 0,
-				filter: 'brightness(1) contrast(1)',
-				opacity: 1,
-				ease: Power1.easeOut,
-			})
-			TweenMax.to('#ngo-logo', .6, {
-				startAt: { filter: 'brightness(10) contrast(5)' },
-				delay: .6,
-				filter: 'brightness(1) contrast(1)',
-				ease: Power1.easeOut,
-			})
-			TweenMax.to('.ngo-logos', .6, {
-				startAt: { opacity: 0, },
-				delay: .6,
-				opacity: 1,
-				x: '50%',
-				scale: 1,
-				ease: Power1.easeOut,
-			})
-			TweenMax.to('#scene-title-select-character', .6, {
-				startAt: { y: 20 },
-				y: 0,
-				delay: .6,
-				opacity: 1,
-				ease: Power1.easeOut,
-				onComplete: flashNgoLogo
-			})
-			/*TweenMax.staggerTo(new SplitText(query.el('#version')).chars, .5, {
-				delay: 5,
-				rotationY: 90,
-				alpha: 0
-			}, .05);*/
+			ng.animateTitleStart()
 		}
-		// console.info('init-game', r)
-
 
 		if (r.id) {
 			my.accountId = r.id
@@ -888,4 +813,123 @@ var ng;
 			// CTRL + left click Fast Destroy
 		}
 	}
-}($, TweenMax, SplitText, _, Power2)
+	function animateLogoMask() {
+		TweenMax.to('#ngo-logo-fg', 1.5, {
+			startAt: { webkitMaskPositionX: '-40rem', },
+			webkitMaskPositionX: '40rem',
+			ease: Power2.easeInOut,
+			repeat: -1,
+			repeatDelay: 3,
+		})
+	}
+
+	function animateTitleStart() {
+		delayedCall(0, () => {
+			const dur = ng.titleDuration * 2.5
+			TweenMax.to('.title-layer', dur, {
+				opacity: 1
+			})
+			TweenMax.to('#title-gwen', dur, {
+				startAt: { filter: ng.filterBright },
+				filter: ng.filterNormal,
+				opacity: 1,
+			})
+			TweenMax.to('#ngo-logo, .title-layer', dur, {
+				startAt: { filter: ng.filterBright },
+				filter: ng.filterNormal,
+			})
+			TweenMax.to('.ngo-logos', dur, {
+				opacity: 1,
+				scale: 1,
+				ease: Power2.easeOut,
+				onComplete: animateLogoMask
+			})
+			TweenMax.to('#scene-title-select-character', dur, {
+				startAt: { y: 50 },
+				y: 0,
+				opacity: 1,
+			})
+		})
+	}
+
+	function animateTitleDark() {
+		TweenMax.to('#title-gwen', ng.titleDuration, {
+			startAt: { filter: ng.filterGrayNone },
+			filter: ng.filterGrayMax,
+		})
+		TweenMax.to('#ngo-logo', ng.titleDuration, {
+			startAt: { filter: ng.filterGrayNone },
+			filter: ng.filterGrayMax,
+		})
+	}
+
+	function animateCreateBack() {
+		TweenMax.to('#scene-title-create-character', ng.titleDuration, {
+			y: 20,
+			opacity: 0,
+			onComplete: animateCreateToTitleFadeIn
+		})
+		TweenMax.to('#title-gwen', ng.titleDuration, {
+			filter: ng.filterGrayNone,
+			opacity: 1
+		})
+		TweenMax.to('#ngo-logo', ng.titleDuration, {
+			filter: ng.filterGrayNone,
+		})
+	}
+
+	function animateCreateToTitleFadeIn() {
+		// must hide this or it blocks title screen stuff
+		TweenMax.set('#scene-title-create-character', {
+			display: 'none',
+			opacity: 1
+		})
+		TweenMax.to('#scene-title-select-character', ng.titleDuration, {
+			startAt: {
+				display: 'flex',
+				y: 50,
+				opacity: 0
+			},
+			y: 0,
+			opacity: 1,
+			onComplete: ng.unlock
+		})
+		TweenMax.set('#ngo-logo-fg', {
+			overwrite: 1,
+			webkitMaskPositionX: '-40rem',
+		});
+		TweenMax.to('#title-gwen', ng.titleDuration, {
+			startAt: { filter: ng.filterBright },
+			filter: ng.filterNormal,
+			opacity: 1,
+			onComplete: ng.animateLogoMask,
+		})
+		TweenMax.to('.ngo-logos', ng.titleDuration, {
+			opacity: 1
+		})
+		TweenMax.to('#ngo-logo', ng.titleDuration, {
+			startAt: { filter: ng.filterBright },
+			filter: ng.filterNormal,
+		})
+	}
+
+	function animateCreateFadeIn() {
+		TweenMax.set('#scene-title-select-character', {
+			display: 'none',
+			opacity: 1
+		})
+		TweenMax.to('#scene-title-create-character', ng.titleDuration, {
+			startAt: {
+				display: 'flex',
+				y: 50,
+				opacity: 0
+			},
+			y: 0,
+			opacity: 1,
+			onComplete: () => {
+				$("#create-character-name").focus();
+				ng.unlock();
+			}
+		})
+	}
+}($, TweenMax, SplitText, _, Power2, Power1)

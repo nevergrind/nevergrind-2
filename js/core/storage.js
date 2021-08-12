@@ -55,12 +55,12 @@ var storage;
 	 * @returns {string}
 	 */
 	function get(key) {
-		if (app.isApp) {
+		/*if (app.isApp) {
 			// console.info('get:', key)
 			try {
 				let val = fs.readFileSync(storage.getPath(key))
-				/*console.info('get value:', val, typeof val)
-				console.info('get value:', typeof JSON.parse(val), JSON.parse(val))*/
+				/!*console.info('get value:', val, typeof val)
+				console.info('get value:', typeof JSON.parse(val), JSON.parse(val))*!/
 				// if it's a '1' it should parse into a type of number
 				// if it's a string like 'asdf' it should parse into a string
 				// if it's a JSON string, it should convert to an object
@@ -72,7 +72,7 @@ var storage;
 				return ''
 			}
 		}
-		else {
+		else {*/
 			let data = localStorage.getItem(key)
 			if (typeof data === 'string') {
 				try {
@@ -93,7 +93,7 @@ var storage;
 				// console.info('localStorage get undefined', key, data)
 				return undefined
 			}
-		}
+		// }
 	}
 
 	/**
@@ -102,8 +102,8 @@ var storage;
 	 * @param data
 	 */
 	function set(key, value) {
-		console.info('Saving...', key, value)
-		if (app.isApp) {
+		// console.info('Saving...', key, value)
+		/*if (app.isApp) {
 			if (typeof value === 'string') {
 				fs.writeFileSync(storage.getPath(key), value)
 			}
@@ -114,18 +114,18 @@ var storage;
 				fs.writeFileSync(storage.getPath(key),  String(value))
 			}
 		}
-		else {
+		else {*/
 			localStorage.setItem(key, value)
-		}
+		// }
 	}
 
 	function remove(key) {
-		if (app.isApp) {
+		/*if (app.isApp) {
 			fs.unlinkSync(storage.getPath(key))
 		}
-		else {
+		else {*/
 			localStorage.removeItem(key)
-		}
+		// }
 	}
 
 	/**

@@ -57,20 +57,29 @@ app.socketUrl = app.isApp ?
 
 
 <!-- layer 1 -->
-<div id="sky-wrap" class="wh-100 no-select">
-	<div id="town-sky" class="wh-100 town-bg"></div>
-	<!--<img class="town-clouds" src="images/env/cloud-storm.png">-->
-	<!-- sky canvas goes here -->
-</div>
 <div id="scene-title" class="scene no-select">
 	<div id="scene-title-landing">
-		<img id="ng2-bg" src="images/title/title-merged.png" class="wh-100">
-		<img id="ngo-logo" class="ngo-logos" src="images/title/nevergrind-online-logo-2.png">
-		<img id="ngo-logo-fg" class="ngo-logos" src="images/title/nevergrind-online-logo-2.png">
-		<img id="title-gwen" src="images/title/gwendolyn.png">
+		<!--<img id="ng2-bg" src="images/title/ngo-sarvida-title.jpg" class="wh-100">-->
+		<img id="title-sky" src="images/title/title-sky.jpg" class="title-layer">
+		<img id="title-clouds" src="images/title/title-clouds.png" class="title-layer">
+		<img id="title-islands" src="images/title/title-islands.png" class="title-layer">
+		<img id="title-town" src="images/title/title-town.png" class="title-layer">
+		<img id="title-path" src="images/title/title-path.png" class="title-layer">
+		<!--<img id="title-clouds" src="images/title/title-clouds.png" class="title-layer">-->
+
+		<img id="ngo-logo"
+			 class="ngo-logos"
+			 src="images/title/nevergrind-online-logo-1.png">
+		<img id="ngo-logo-fg"
+			 class="ngo-logos"
+			 src="images/title/nevergrind-online-logo-1.png">
+		<img id="title-gwen"
+			 src="images/title/gwendolyn.png">
+
+		<img id="title-focuser" src="images/title/title-focuser.png" class="title-layer">
+		<!--<img id="title-streaks" src="images/title/title-streaks.png" class="title-layer">-->
 
 		<div id="scene-title-select-character" class="flex-column title-cc-wrap">
-
 			<!-- well top -->
 			<div id="title-well-top" class="title-ch-well text-center">
 				<script>
@@ -456,12 +465,6 @@ app.socketUrl = app.isApp ?
 <div id="scene-town" class="scene none no-select"></div>
 <div id="scene-dungeon" class="scene none no-select"></div>
 <div id="scene-battle" class="scene none no-select"></div>
-<div id="sky-elements" class="wh-100 no-select">
-	<!-- rain and snow -->
-<!--<img id="sky-rain1" class="env-rain" src="images/env/rain.png">
-	<img id="sky-rain2" class="env-rain" src="images/env/rain.png">
-	<img id="sky-rain3" class="env-rain" src="images/env/rain.png">-->
-</div>
 
 <!-- layer 2 -->
 <div id="bar-main-menu">

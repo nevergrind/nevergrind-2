@@ -3,6 +3,8 @@ var game;
 (function(TweenMax, clearTimeout, setTimeout, _, $, localStorage, undefined) {
 	/** public */
 	game = {
+		time: 0,
+		phase: 'morning',
 		maxTimeout: app.isApp ? 18000 : 18000,
 		session: {
 			timer: 0
@@ -10,6 +12,7 @@ var game;
 		storageId: '',
 		pingHistory: [],
 		start: Date.now(),
+		setPhase,
 		upsertRoom,
 		removePlayer,
 		initSocket,
@@ -210,7 +213,7 @@ var game;
 		chat.setHeader();
 	}
 	function showScene(currentScene) {
-		TweenMax.set('#sky-wrap', filterBrightnessDark)
+		// TweenMax.set('#sky-wrap', filterBrightnessDark)
 		scenes.forEach(v => {
 			if (v === '#' + currentScene) {
 				// this is the new scene - prep fading in
@@ -392,5 +395,23 @@ var game;
 		if (!minutes) {
 			storage.set(game.storageId, '0')
 		}
+	}
+
+	function setPhase(resp) {
+		game.time = resp.time * 1000
+		const hours = new Date(game.time).getHours()
+		if (hours <= 5 || hours >= 20) {
+			// 8pm to 5:59am
+			game.phase = 'night'
+		}
+		else if (hours >= 6 && hours <= 12) {
+			// 6am 12:59pm
+			game.phase = 'morning'
+		}
+		else {
+			// 1 to 7:59
+			game.phase = 'afternoon'
+		}
+
 	}
 })(TweenMax, clearTimeout, setTimeout, _, $, localStorage);

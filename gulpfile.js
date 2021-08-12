@@ -251,7 +251,7 @@ function createBinFile() {
 			'./js/ngo.js',
 			'./js/ngo.min.js',
 			'./build-ng2/js',
-			'C:/Users/maelf/AppData/Local/nevergrind-online'
+			// 'C:/Users/maelf/AppData/Local/nevergrind-online'
 		], { force: true })
 		// delete old local build folder in user folder (gets rid of old nw.js data)
 	});

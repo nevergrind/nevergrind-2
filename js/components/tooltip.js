@@ -846,7 +846,8 @@ var tooltip;
 			var {index, type} = _.pick(event.currentTarget.dataset, KEYS.ITEM_ENTER)
 			tooltip.lastHoveredType = type
 			tooltip[type].isHovering = true
-			if (items[type][index].name) {
+			if (typeof items[type][index] === 'object' &&
+				items[type][index].name) {
 				tooltip.show(items[type][index], querySelector('#' + type + '-slot-img-' + index), type)
 			}
 		}

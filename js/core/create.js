@@ -185,64 +185,10 @@ var create;
 		}
 	}
 	function goCreateToTitle() {
-		ng.lock(1);
-		ng.initGame();
+		ng.lock(1)
+		ng.initGame()
 		audio.playSound('click-4')
-		TweenMax.to('#scene-title-create-character', .6, {
-			y: 20,
-			opacity: 0,
-			onComplete: function(){
-				TweenMax.set('#scene-title-create-character', {
-					display: 'none',
-					opacity: 1
-				});
-				TweenMax.to('#scene-title-select-character', .6, {
-					startAt: {
-						display: 'flex',
-						y: 20,
-						opacity: 0
-					},
-					y: 0,
-					opacity: 1,
-					onComplete: ng.unlock
-				});
-				TweenMax.set('#ngo-logo-fg', {
-					overwrite: 1,
-					webkitMaskPositionX: '-40rem',
-				});
-				TweenMax.to('#title-gwen', .6, {
-					startAt: { x: -20, filter: 'brightness(10) contrast(5)' },
-					x: 0,
-					filter: 'brightness(1) contrast(1)',
-					opacity: 1,
-					onComplete: ng.flashNgoLogo,
-				})
-				TweenMax.to('.ngo-logos', .6, {
-					startAt: { y: -20 },
-					y: 0,
-					opacity: 1
-				})
-				TweenMax.to('#ngo-logo', .6, {
-					startAt: { filter: 'brightness(10) contrast(5)' },
-					filter: 'brightness(1) contrast(1)',
-				})
-			}
-		});
-		TweenMax.to('#title-gwen', .6, {
-			startAt: { x: 0, filter: 'brightness(1) contrast(1)' },
-			x: -20,
-			filter: 'brightness(10) contrast(5)',
-			opacity: 0
-		})
-		TweenMax.to('#ngo-logo', .6, {
-			startAt: { filter: 'brightness(1) contrast(1)' },
-			filter: 'brightness(10) contrast(5)',
-		})
-		TweenMax.to('.ngo-logos', .6, {
-			startAt: { y: 0, },
-			y: -20,
-			opacity: 0
-		})
+		ng.animateCreateBack()
 	}
 
 	function createCharacter() {
@@ -646,9 +592,9 @@ var create;
 			scale: 1.01,
 			filter: 'brightness(2) contrast(3)',
 			ease: Power2.easeIn,
-			onComplete: function() {
-				TweenMax.to(this.target, .3, {
-					filter: 'brightness(1) contrast(1)',
+			onComplete: () => {
+				TweenMax.to('#create-portrait', .3, {
+					filter: ng.filterNormal,
 					scale: 1,
 				})
 			}

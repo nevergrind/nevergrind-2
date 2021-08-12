@@ -156,7 +156,7 @@ var dungeon;
 			}
 		}
 		if (ng.view === 'town') {
-			expanse.killAllTweens()
+			// expanse.killAllTweens()
 			chat.publishRemove()
 			// clear any town-based channels
 			for (var key in socket.subs) {
@@ -189,11 +189,11 @@ var dungeon;
 			delay: .5,
 			filter: 'brightness(1)'
 		})
-		TweenMax.to('#sky-wrap', .5, {
+		/*TweenMax.to('#sky-wrap', .5, {
 			startAt: { filter: 'brightness(0)' },
 			delay: .5,
 			filter: 'brightness(1)'
-		})
+		})*/
 		// draw players
 		player.show()
 		mobSkills.initFilter()
@@ -573,9 +573,11 @@ var dungeon;
 				}
 			})
 			map.inRoom = false
-			const mobData = mob.type[dungeon.closestEntity.img]
 			map.hide(ROOM_TRANSITION_DURATION * .5)
-			audio.playSound(mobData.sfxSpecial || mobData.sfxIdle || mobData.sfxAttack, 'mobs')
+			const mobData = mob.type[dungeon.closestEntity.img]
+			if (mobData) {
+				audio.playSound(mobData.sfxSpecial || mobData.sfxIdle || mobData.sfxAttack, 'mobs')
+			}
 			// audio.playSound('sword-sharpen', 'combat')
 		}
 	}

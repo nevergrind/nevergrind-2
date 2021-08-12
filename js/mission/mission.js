@@ -254,11 +254,11 @@ var mission;
 
 		chat.log('Now departing for ' + zones[mission.id].name + '!', CHAT.WARNING)
 		ng.lock(1)
-		TweenMax.to('#sky-wrap', 3, {
+		/*TweenMax.to('#sky-wrap', 3, {
 			delay: 1,
 			filter: 'brightness(0)',
 			ease: Power4.easeOut
-		})
+		})*/
 		TweenMax.to('#scene-town', 3, {
 			startAt: { opacity: 1 },
 			delay: 1,

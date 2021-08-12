@@ -76,7 +76,7 @@ var guild;
 		$.post(app.url + 'guild/create.php', {
 			// replace
 			name: name.replace(/ +/g, " ").trim()
-		}).done(function(data) {
+		}).done(data => {
 			// console.info('create', data.guild);
 			guild.setGuildData(data);
 			chat.log('Valeska says, "By the powers vested in me, I hereby declare you supreme sovereign leader of a new guild: ' + data.guild.name +'."');
@@ -88,11 +88,10 @@ var guild;
 			guild.getMembers()
 			guild.hasFocus = false
 		}).fail(data => {
-			// console.info(data);
-			$("#guild-input").focus();
-			ng.msg(data.responseText, undefined, COLORS.yellow);
+			$("#guild-input").focus()
+			ng.msg(data.responseText, undefined, COLORS.yellow)
 		}).always(() => {
-			ng.unlock();
+			ng.unlock()
 		});
 	}
 	function invite(name) {

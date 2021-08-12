@@ -324,11 +324,11 @@ var battle;
 			delay: .5,
 			filter: 'brightness(1)'
 		});
-		TweenMax.to('#sky-wrap', .5, {
+		/*TweenMax.to('#sky-wrap', .5, {
 			startAt: { filter: 'brightness(0)' },
 			delay: .5,
 			filter: 'brightness(1)'
-		})
+		})*/
 		game.showScene('scene-battle')
 		if (chat.modeCommand === '/say') {
 			chat.modeChange(CHAT.PARTY)

@@ -1,6 +1,10 @@
 var expanse;
 !function(TweenMax, Power2, Expo, Linear, PIXI, undefined) {
-	expanse = {
+	/**
+	 * This shit has been abandoned
+	 * v1 town bullshit - keep it around just in case
+	 */
+	/*expanse = {
 		startSkyPhase,
 		killAllTweens,
 		resizeAll,
@@ -21,7 +25,7 @@ var expanse;
 	var cloudSpeed = 777
 	const phaseDuration = 2000 // 20 minutes?
 	expanse.aspectRatio = ASPECT_RATIO
-	determineStartingPhase()
+	determineStartingPhase()*/
 	//////////////////////////////
 
 	function determineStartingPhase() {
@@ -201,13 +205,13 @@ var expanse;
 	}
 
 	function setSky(obj) {
-		TweenMax.set('#town-sky', {
+		/*TweenMax.set('#town-sky', {
 			background: 'linear-gradient('+
 				'to top,'+
 				'rgb('+ obj.bottomR +', ' + obj.bottomG + ', ' + obj.bottomB + '),'+
 				'rgb('+ obj.topR +', ' + obj.topG + ', ' + obj.topB + ')' +
 			')'
-		})
+		})*/
 	}
 
 	function animateBuildings() {
