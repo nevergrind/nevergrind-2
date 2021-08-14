@@ -2,8 +2,7 @@ var town;
 (function($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo, undefined) {
 	town = {
 		go,
-		init,
-		preload,
+		animateClouds,
 		openVarious,
 		openVariousConfirmed,
 		closeVarious,
@@ -182,7 +181,7 @@ var town;
 			}
 			//!expanse.initialized && expanse.startSkyPhase()
 			// expanse.startSkyPhase()
-			town.init()
+			town.animateClouds()
 			bar.init()
 			tavern.init()
 			skills.init()
@@ -219,6 +218,14 @@ var town;
 		})
 	}
 
+	function animateClouds() {
+		TweenMax.to('#title-layer-clouds', 777, {
+			startAt: { x: '0%' },
+			x: '-100%',
+			repeat: -1,
+			ease: Power0.easeNone
+		})
+	}
 	function initItemData(obj, type) {
 		for (i=0; i<item.MAX_SLOTS[type]; i++) {
 			items[type][i] = {}
@@ -288,22 +295,32 @@ var town;
 	}
 
 	function getTownHtml() {
+		if (Config.forceTownPhase) {
+			// game.phase = 'dawn'
+		}
+		const hazeOpacity = Math.random() > .5 ? 1 : 0
 		html = '<div id="town-wrap">' +
 			'<div id="town-building-wrap" class="wh-100">' +
 				// background - sky clouds etc
 				'<img id="town-layer-sky" class="town-layer" src="images/town/'+ game.phase +'-sky.jpg">' +
-				'<img id="town-layer-clouds" class="town-layer" src="images/town/'+ game.phase +'-clouds.png">' +
+				// clouds
+				'<div id="title-layer-clouds" class="flex-row town-layer">' +
+					'<img id="town-layer-clouds-1" src="images/town/'+ game.phase +'-clouds.png" class="town-clouds">' +
+					'<img id="town-layer-clouds-2" src="images/town/'+ game.phase +'-clouds.png" class="town-clouds">' +
+				'</div>' +
+
 				'<img id="town-layer-bg" class="town-layer" src="images/town/'+ game.phase +'-bg.png">' +
 				// buildings
 				'<img data-id="Bank" id="town-bank" class="town-building" src="images/town/'+ game.phase +'-bank.png">' +
 				'<img data-id="Guild Hall" id="town-guild" class="town-building" src="images/town/'+ game.phase +'-guild.png">' +
-				'<img data-id="Tavern" id="town-tavern" class="town-building" src="images/town/'+ game.phase +'-tavern.png">' +
+				'<img data-id="Tavern" id="town-tavern" class="town-building" src="images/town/'+ game.phase +'-tavern.png?v=1">' +
 				'<img data-id="Apothecary" id="town-apothecary" class="town-building" src="images/town/'+ game.phase +'-apothecary.png">' +
 				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/'+ game.phase +'-academy.png">' +
 				'<img data-id="Blacksmith" id="town-blacksmith" class="town-building" src="images/town/'+ game.phase +'-blacksmith.png">' +
 				'<img data-id="Merchant" id="town-merchant" class="town-building" src="images/town/'+ game.phase +'-merchant.png">' +
+
 				// foreground layers
-				'<img id="town-layer-haze" class="town-layer" src="images/town/'+ game.phase +'-haze.png">' +
+				'<img id="town-layer-haze" class="town-layer" src="images/town/'+ game.phase +'-haze.png" style="opacity: '+ hazeOpacity +'">' +
 				'<img id="town-layer-people" class="town-layer" src="images/town/'+ game.phase +'-people.png">' +
 			'</div>' +
 
@@ -324,12 +341,6 @@ var town;
 	function refreshGuildMembers() {
 		guild.loadGuildMsg()
 		guild.getMembers(guild.throttleTime)
-	}
-	function init() {
-		town.preload();
-	}
-	function preload() {
-		cache.preloadImages([])
 	}
 
 	function loadBank() {
@@ -770,8 +781,7 @@ var town;
 		'</div>' +
 		'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
 			'<div class="stag-blue-top" style="' + css.name + '">'+
-				'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
-				'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+				css.gildedHeader +
 				'Bank Details'+
 			'</div>' +
 		'</div>' +
@@ -794,8 +804,7 @@ var town;
 					'<div class="flex" style="'+ css.header +'">' +
 						'<div class="flex-column flex-max" style="'+ css.nameWrapFull +'">' +
 							'<div class="stag-blue-top" style="' + css.name + '">'+
-								'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
-								'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+								css.gildedHeader +
 								'Guild Members'+
 							'</div>' +
 						'</div>' +
@@ -853,8 +862,7 @@ var town;
 		return '<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">'+
-					'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
-					'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+					css.gildedHeader +
 					town.openVariousWindow +
 				'</div>' +
 			'</div>' +

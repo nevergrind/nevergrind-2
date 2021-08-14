@@ -400,17 +400,25 @@ var game;
 	function setPhase(resp) {
 		game.time = resp.time * 1000
 		const hours = new Date(game.time).getHours()
-		if (hours <= 5 || hours >= 20) {
-			// 8pm to 5:59am
+		if (hours <= 4 || hours >= 21) {
+			// 21:00pm to 4:59am
 			game.phase = 'night'
 		}
-		else if (hours >= 6 && hours <= 12) {
-			// 6am 12:59pm
+		else if (hours >= 5 && hours <= 7) {
+			// 5am to 7:59am
+			game.phase = 'dawn'
+		}
+		else if (hours >= 8 && hours <= 11) {
+			// 8am 11:59pm
 			game.phase = 'morning'
 		}
-		else {
-			// 1 to 7:59
+		else if (hours >= 12 && hours <= 17) {
+			// 12am 17:59pm
 			game.phase = 'afternoon'
+		}
+		else {
+			// 18:00pm to 20:59
+			game.phase = 'evening'
 		}
 
 	}

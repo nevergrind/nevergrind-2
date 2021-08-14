@@ -823,17 +823,50 @@ var ng;
 		})
 	}
 
+	function animateTitleGem() {
+		if (ng.view === 'title') {
+			delayedCall(3, () => {
+				if (ng.view === 'title') {
+					TweenMax.set('#ngo-logo-gem', {
+						filter: 'brightness(1)'
+					})
+					TweenMax.to('#ngo-logo-gem', 2, {
+						filter: 'brightness(3)',
+						onComplete: () => {
+							TweenMax.to('#ngo-logo-gem', 1.5, {
+								filter: 'brightness(1)',
+								onComplete: () => {
+									delayedCall(4, () => {
+										animateTitleGem()
+									})
+								}
+							})
+						}
+					})
+				}
+			})
+		}
+	}
+
 	function animateTitleStart() {
 		delayedCall(0, () => {
 			const dur = ng.titleDuration * 2.5
-			TweenMax.to('.title-layer', dur, {
+			TweenMax.to('.title-layer, .title-clouds', dur, {
 				opacity: 1
 			})
-			TweenMax.to('#title-gwen', dur, {
+			TweenMax.to('.title-gwens', dur, {
 				startAt: { filter: ng.filterBright },
 				filter: ng.filterNormal,
 				opacity: 1,
 			})
+			TweenMax.to('#title-gwen-gem', 7, {
+				delay: .1,
+				startAt: { filter: 'hue-rotate(0deg)', },
+				filter: 'hue-rotate(360deg)',
+				repeat: -1,
+				ease: Power0.easeNone,
+			})
+			animateTitleGem()
 			TweenMax.to('#ngo-logo, .title-layer', dur, {
 				startAt: { filter: ng.filterBright },
 				filter: ng.filterNormal,
@@ -848,6 +881,41 @@ var ng;
 				startAt: { y: 50 },
 				y: 0,
 				opacity: 1,
+			})
+
+			// town animation
+			TweenMax.to('#title-town', dur, {
+				startAt: { y: 240 },
+				y: 0
+			})
+			TweenMax.to('#title-islands', dur, {
+				startAt: { y: 120 },
+				y: 0
+			})
+			TweenMax.to('#title-path, #title-gwen, #title-gwen-gem', dur, {
+				startAt: { y: 360 },
+				y: 0
+			})
+			TweenMax.to('#title-glow', .77, {
+				startAt: { scale: .95 },
+				scale: 1.15,
+				repeat: -1,
+				yoyo: true,
+				ease: Power2.easeOut
+			})
+
+			// animate clouds
+			TweenMax.to('#title-small-clouds', 600, {
+				startAt: { x: '0%' },
+				x: '-100%',
+				repeat: -1,
+				ease: Power0.easeNone
+			})
+			TweenMax.to('#title-big-clouds', 200, {
+				startAt: { x: '0%' },
+				x: '-100%',
+				repeat: -1,
+				ease: Power0.easeNone,
 			})
 		})
 	}

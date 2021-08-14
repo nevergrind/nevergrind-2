@@ -14,7 +14,7 @@
 <script>
 // search: $version - only update when it is an essential update because it is sent to server to check for a match
 var app = {
-	version: '0.2.11',
+	version: '0.3.1', // $version
 	initialized: 0,
 	isApp: location.protocol === 'chrome-extension:',
 	account: '',
@@ -59,22 +59,32 @@ app.socketUrl = app.isApp ?
 <!-- layer 1 -->
 <div id="scene-title" class="scene no-select">
 	<div id="scene-title-landing">
-		<!--<img id="ng2-bg" src="images/title/ngo-sarvida-title.jpg" class="wh-100">-->
 		<img id="title-sky" src="images/title/title-sky.jpg" class="title-layer">
-		<img id="title-clouds" src="images/title/title-clouds.png" class="title-layer">
+		<div id="title-small-clouds" class="flex-row title-layer">
+			<img id="title-clouds-small-1" src="images/title/title-clouds-small-tile.png" class="title-clouds">
+			<img id="title-clouds-small-2" src="images/title/title-clouds-small-tile.png" class="title-clouds">
+		</div>
+		<div id="title-big-clouds" class="flex-row title-layer">
+			<img id="title-clouds-big-1" src="images/title/title-clouds-big-tile-2.png?v=2" class="title-clouds">
+			<img id="title-clouds-big-2" src="images/title/title-clouds-big-tile-2.png?v=2" class="title-clouds">
+		</div>
 		<img id="title-islands" src="images/title/title-islands.png" class="title-layer">
 		<img id="title-town" src="images/title/title-town.png" class="title-layer">
+		<div id="title-glow" class="title-layer"></div>
 		<img id="title-path" src="images/title/title-path.png" class="title-layer">
-		<!--<img id="title-clouds" src="images/title/title-clouds.png" class="title-layer">-->
 
 		<img id="ngo-logo"
 			 class="ngo-logos"
 			 src="images/title/nevergrind-online-logo-1.png">
+		<img id="ngo-logo-gem"
+			 class="ngo-logos"
+			 src="images/title/nevergrind-online-logo-1-gem.png">
 		<img id="ngo-logo-fg"
 			 class="ngo-logos"
 			 src="images/title/nevergrind-online-logo-1.png">
-		<img id="title-gwen"
-			 src="images/title/gwendolyn.png">
+
+		<img id="title-gwen" class="title-gwens" src="images/title/gwendolyn.png">
+		<img id="title-gwen-gem" class="title-gwens" src="images/title/gwendolyn-gem.png">
 
 		<img id="title-focuser" src="images/title/title-focuser.png" class="title-layer">
 		<!--<img id="title-streaks" src="images/title/title-streaks.png" class="title-layer">-->
@@ -102,7 +112,7 @@ app.socketUrl = app.isApp ?
 			</div>
 		</div>
 		<script>
-			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.2.12</div>')
+			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.3.1</div>')
 		</script>
 	</div>
 

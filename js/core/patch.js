@@ -5,7 +5,21 @@ var patch;
 		close,
 	}
 	const notes = [
-		{text: 'Version 0.2.12', date: 'August 8, 2021', isHeader: true},
+		{text: 'Version 0.3.2', date: 'August 14, 2021', isHeader: true},
+		{text: "Fixed the academy's train button. It's visible now!"},
+		{text: "Adjusted the town windows' font size down a bit."},
+		{text: "Adjusted the town windows' position down a bit so it fits into all resolutions⁉"},
+		{text: "Updated the style of the town's chat header and modals (delete character)."},
+		{text: ""},
+		{text: ""},
+
+
+
+		{text: 'Version 0.3.1', date: 'August 14, 2021', isHeader: true},
+		{text: "Completely redesigned the title screen! WOW! 🤯"},
+		{text: "Completely redesigned the town scene! WOW! 🤯💥💣🧨"},
+		{text: "The town menu screens are completely different now. I'm still waiting on two assets for the Tavern and the Academy, so those are using placeholders for now."},
+		{text: "TONS of UI stuff was reworked."},
 		{text: "Fixed a bug with DRU Moss Breath. It now only targets your target as intended."},
 		{text: "Fixed the positioning of spells in relation to player cards."},
 		{text: "ESC will now cancel setting a new hotkey in the Options."},
@@ -32,9 +46,6 @@ var patch;
 		{text: "Using new assets throughout the user interface. WOW!"},
 		{text: "Improved form handling for the guild create form."},
 		{text: "Made some uhhh... adjustments... uh, to the uh, local save data. Should work great now!"},
-		{text: ""},
-		{text: ""},
-		{text: ""},
 
 		{text: 'Version 0.2.12', date: 'July 31, 2021', isHeader: true},
 		{text: "Nerfed mobs' Magic Missile damage a bit."},

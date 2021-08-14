@@ -148,7 +148,7 @@
 	function mousemove(e) {
 		my.mouse.x = e.clientX
 		my.mouse.y = e.clientY
-		// chat.log('coords: ' +my.mouse.x +' '+ my.mouse.y)
+		// console.log('coords: ' +my.mouse.x +' '+ my.mouse.y)
 		if (item.isDragging) item.updateCursorImgPosition()
 	}
 	function resize() {
@@ -338,12 +338,12 @@
 					}
 				}
 			}
+		}
 
-			// prevent default behaviors in all scenes
-			if (isPreventDefaultKeys(key)) {
-				e.preventDefault()
-				return false
-			}
+		// prevent default behaviors in all scenes
+		if (isPreventDefaultKeys(key)) {
+			e.preventDefault()
+			return false
 		}
 	}
 

@@ -199,8 +199,7 @@ var bar;
 		'<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">' +
-					'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
-					'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+					css.gildedHeader +
 					my.name +
 			'</div>' +
 			'</div>' +
@@ -362,8 +361,8 @@ var bar;
 		'<div class="flex" style="'+ css.header +'">' +
 			'<div class="flex-column flex-max" style="'+ css.nameWrap +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">'+
-					'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
-					'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">Inventory'+
+					css.gildedHeader +
+					'Inventory'+
 				'</div>' +
 			'</div>' +
 			'<img data-id="inventory" class="close-menu" src="images/ui/close-6.png">' +
@@ -1089,8 +1088,7 @@ var bar;
 		'<div id="inv-skill-description-wrap">' +
 			'<div id="inv-skill-description-head" style="'+ css.nameWrapFull +'">' +
 				'<div class="stag-blue-top" style="' + css.name + '">'+
-					'<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
-					'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">' +
+					css.gildedHeader +
 					'Description' +
 				'</div>' +
 			'</div>' +

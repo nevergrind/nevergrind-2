@@ -569,10 +569,13 @@ var chat;
 			chat.chatLogEl.scrollTop = chat.chatLogEl.scrollHeight;
 		}
 	}
+	
 	function setHeader() {
 		// or chat.presence.length ?
-		query.el('#chat-header').innerHTML =
-			'<span class="ellipsis">' + my.channel + '</span>' + '<span id="chat-header-count">&thinsp;(' + chat.presence.length + ')</span>';
+		query.el('#chat-header').innerHTML = '<span class="ellipsis">' +
+			css.gildedHeader + my.channel +
+		'</span>' +
+		'<span id="chat-header-count">&thinsp;(' + chat.presence.length + ')</span>'
 	}
 	function joinParse(msg) {
 		// 2 part parse lower case

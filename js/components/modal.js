@@ -1,24 +1,24 @@
 var modal;
-(function() {
+(function(TweenMax) {
 	modal = {
 		isOpen: 0,
 		overlay: getElementById('modal-overlay'),
 		wrap: getElementById('modal-wrap'),
 		playerIdleBoot: {
-			header: function() {
-				return '<div id="modal-header">Disconnected</div>';
+			header: () => {
+				return '<div id="modal-header">'+ css.gildedHeader + 'Disconnected</div>'
 			},
-			body: function() {
+			body: () => {
 				return '<div id="modal-body">' +
 					'<p>You have been disconnected from the server.</p>' +
 				'</div>';
 			}
 		},
 		deleteCharacter: {
-			header: function() {
-				return '<div id="modal-header">Delete '+ create.name +'?</div>';
+			header: () => {
+				return '<div id="modal-header">'+ css.gildedHeader +'Delete '+ create.name +'?</div>';
 			},
-			body: function() {
+			body: () => {
 				return '<div id="modal-body">' +
 					'<p>Are you sure you want to delete '+ create.name +'?</p>' +
 				'</div>';
@@ -92,4 +92,4 @@ var modal;
 			'</div>';
 		return str;
 	}
-})();
+})(TweenMax);

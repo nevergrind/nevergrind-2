@@ -23,6 +23,8 @@ const Config = {
 	safeAnimate: false,
 	enableMobTestClass: false, // makes it easy to test against specific mob jobs
 	forceMobSkills: false,
+	forceTownPhase: true,
+	forceHugeGuild: true,
 }
 if (app.isApp) {
 	Config.autoAttackEnabled = true
@@ -45,4 +47,6 @@ if (app.isApp) {
 	Config.safeAnimate = true
 	Config.enableMobTestClass = false
 	Config.forceMobSkills = false
+	Config.forceTownPhase = false
+	Config.forceHugeGuild = false
 }

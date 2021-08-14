@@ -301,6 +301,11 @@ var guild;
 	function setGuildList(data) {
 		html = ''
 		guild.memberList = data.memberList
+		if (Config.forceHugeGuild && guild.memberList.length) {
+			for (var i=0; i<50; i++) {
+				guild.memberList.push(guild.memberList[0])
+			}
+		}
 		html += '<tbody>'
 		guild.memberList.forEach(getGuildRow)
 		html += '</tbody>'

@@ -20,3 +20,6 @@ var css = {
 	barLagVisible: 'display: flex; justify-content: space-between; font-size: .675rem; color: #0a0; line-height: 1.2;',
 	barLagHidden: 'visibility: hidden; display: flex; justify-content: space-between; font-size: .675rem; color: #0a0; line-height: 1.2;',
 }
+// styles that use prop definitions:
+css.gildedHeader = '<img style="' + css.nameGildL + '" src="images/ui/header-bg-gild.png">' +
+	'<img style="' + css.nameGildR + '" src="images/ui/header-bg-gild.png">'
