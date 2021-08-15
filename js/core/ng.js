@@ -620,7 +620,6 @@ var ng;
 		bar.updateDynamicStyles()
 		console.info('init-game success', r)
 		if (!ng.initialized) {
-			game.setPhase(r)
 			ng.initialized = true
 			ng.animateTitleStart()
 		}

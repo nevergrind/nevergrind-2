@@ -161,7 +161,5 @@ if (isset($_SESSION['account'])) {
 	$stmt->bind_param('i', $r['id']);
 	$stmt->execute();
 }
-// time stamp
-$r['time'] = time();
 
 echo json_encode($r);

@@ -1,5 +1,5 @@
 var trade;
-!function($, _, TweenMax, undefined) {
+function tradeService($, _, TweenMax, undefined) {
 	trade = {
 		timer: new delayedCall(0, ''),
 		data: {},
@@ -554,4 +554,5 @@ var trade;
 		'</div>'
 		return str
 	}
-}($, _, TweenMax);
+}
+tradeService($, _, TweenMax)

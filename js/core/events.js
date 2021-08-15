@@ -159,7 +159,7 @@
 	}
 
 	function keydown(e) {
-		if (e.originalEvent.repeat) return
+		if (e.originalEvent.repeat || loading.isLoading) return
 		key = e.key
 		keyCode = e.keyCode
 		// console.info(key, keyCode, e.shiftKey, e.ctrlKey, e)

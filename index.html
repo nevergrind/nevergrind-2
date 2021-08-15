@@ -14,7 +14,7 @@
 <script>
 // search: $version - only update when it is an essential update because it is sent to server to check for a match
 var app = {
-	version: '0.3.1', // $version
+	version: '0.3.1', // $version // this forces a client-server match! Only change when forcing a client/server update
 	initialized: 0,
 	isApp: location.protocol === 'chrome-extension:',
 	account: '',
@@ -112,7 +112,7 @@ app.socketUrl = app.isApp ?
 			</div>
 		</div>
 		<script>
-			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.3.1</div>')
+			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.3.2</div>')
 		</script>
 	</div>
 
@@ -502,7 +502,6 @@ app.socketUrl = app.isApp ?
 </div>
 
 <div id="scene-players" class="scene none no-select no-pointer" style="z-index: 2"></div>
-<div id="bar-wrap" class="no-select text-shadow"></div>
 <div id="mini-map" class="text-shadow no-select">
 	<div id="mini-map-confirm-wrap" class="flex-column flex-center">
 		<div id="mini-map-prompt-border">
@@ -534,6 +533,7 @@ app.socketUrl = app.isApp ?
 	</div>
 </div>
 
+<div id="bar-wrap" class="no-select text-shadow"></div>
 <div id="footer-ui-component">
 	<div id="chat-component">
 		<div id="chat-log" class="text-shadow"></div>
@@ -550,6 +550,11 @@ app.socketUrl = app.isApp ?
 		</div>
 	</div>
 	<div id="button-wrap" class="no-select text-shadow"></div>
+</div>
+
+<div id="scene-loading" class="top-layer no-select">
+	<img id="loading-img">
+	<div id="loading-msg" class="stag-blue-top text-shadow3"></div>
 </div>
 
 <div id="tooltip-skill" class="no-pointer no-select text-shadow">

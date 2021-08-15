@@ -6,12 +6,23 @@ var patch;
 	}
 	const notes = [
 		{text: 'Version 0.3.2', date: 'August 14, 2021', isHeader: true},
+		{text: "The blacksmith's furnace in town is now animated."},
+		{text: "Fixed the town's afternoon clouds so they wrap properly."},
+		{text: "Fixed the displayed hotkey for Character Sheet and Inventory. It now shows the proper hotkey instead of the keyCode number."},
+		{text: "The town no longer continues animating while you're in a dungeon."},
+		{text: "Added a brief loading screen to help prevent asset-related bugs upon zoning into a dungeon. There are also some terrible loading screen tips that probably lie to you about how the game works."},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+
+
+		{text: 'Version 0.3.2', date: 'August 14, 2021', isHeader: true},
 		{text: "Fixed the academy's train button. It's visible now!"},
 		{text: "Adjusted the town windows' font size down a bit."},
 		{text: "Adjusted the town windows' position down a bit so it fits into all resolutions⁉"},
 		{text: "Updated the style of the town's chat header and modals (delete character)."},
-		{text: ""},
-		{text: ""},
 
 
 

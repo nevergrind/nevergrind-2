@@ -50,6 +50,9 @@ if ($i) {
 	$stmt->bind_param('i', $r['characterData']['row']);
 	$stmt->execute();
 
+	// time stamp
+	$r['time'] = time();
+
 	echo json_encode($r);
 }
 else {

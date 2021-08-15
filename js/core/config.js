@@ -25,6 +25,7 @@ const Config = {
 	forceMobSkills: false,
 	forceTownPhase: true,
 	forceHugeGuild: true,
+	fastQuestTransitions: false
 }
 if (app.isApp) {
 	Config.autoAttackEnabled = true
@@ -49,4 +50,5 @@ if (app.isApp) {
 	Config.forceMobSkills = false
 	Config.forceTownPhase = false
 	Config.forceHugeGuild = false
+	Config.fastQuestTransitions = false
 }

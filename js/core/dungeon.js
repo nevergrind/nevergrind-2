@@ -137,6 +137,8 @@ var dungeon;
 	function rxGo() {
 		const zoneName = mission.getZoneKey()
 		updateDungeonTextures(zoneName)
+		town.closeVarious()
+		chat.log('You have entered ' + zones[mission.id].name + '.')
 		delayedCall(.5, preloadCombatAssets)
 		goTasks()
 	}
@@ -144,7 +146,6 @@ var dungeon;
 		// cleanup sort of activities when going into dungeon
 		audio.fadeMusic()
 		audio.playAmbientLoop()
-		town.closeVarious()
 		game.showScene('scene-dungeon')
 
 		// coming out of battle - save!

@@ -253,22 +253,26 @@ var mission;
 		town.closeVarious()
 
 		chat.log('Now departing for ' + zones[mission.id].name + '!', CHAT.WARNING)
-		ng.lock(1)
-		/*TweenMax.to('#sky-wrap', 3, {
-			delay: 1,
-			filter: 'brightness(0)',
-			ease: Power4.easeOut
-		})*/
-		TweenMax.to('#scene-town', 3, {
-			startAt: { opacity: 1 },
-			delay: 1,
-			filter: 'brightness(0)',
-			ease: Power4.easeOut
-		})
 		ng.msg('Mission started: ' + mission.getTitle(mission.id, mission.questId))
-		let questDelay = app.isApp ? 3 : 0
+		ng.lock(1)
+		let fadeDuration = 1.5 // must share value
+		if (Config.fastQuestTransitions) {
+			fadeDuration = 0
+		}
+		TweenMax.to('#scene-town', fadeDuration, {
+			startAt: {
+				opacity: 1, // ?
+			},
+			delay: 1,
+			filter: 'brightness(0)',
+			ease: Power1.easeOut,
+			onComplete: () => {
+				town.killAllTweens()
+				loading.startLoading()
+				delayedCall(fadeDuration, dungeon.rxGo)
+			}
+		})
 		audio.playSound('click-4', '', 1, 500)
-		delayedCall(questDelay, dungeon.rxGo)
 	}
 	function isQuestCompleted() {
 		const type = mission.getQuestData(mission.id, mission.questId).type

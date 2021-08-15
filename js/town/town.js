@@ -2,8 +2,9 @@ var town;
 (function($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo, undefined) {
 	town = {
 		go,
-		animateClouds,
+		animateTown,
 		openVarious,
+		killAllTweens,
 		openVariousConfirmed,
 		closeVarious,
 		handleGuildInputFocus,
@@ -25,13 +26,14 @@ var town;
 			'blacksmith': false,
 			'merchant': false,
 		},
+		tweens: [],
 		firstLoad: true,
 		lastAside: {},
 		delegated: 0,
 		openVariousWindow: '',
 		isBankInitialized: false,
 	}
-	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, npc, obj, goldEl, labelObj, goldConfig, goldEl, myGoldEl, type, potionItems, potLevel, scrollItems
+	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, npc, obj, goldEl, labelObj, goldEl, type, potionItems, potLevel, scrollItems
 
 	var storeItems = []
 	const buyTypes = [
@@ -120,6 +122,7 @@ var town;
 			town.isInitialized[key] = false
 		}
 		TweenMax.set('#button-wrap', CSS.DISPLAY_NONE)
+		loading.setRandomImage()
 
 		$.post(app.url + 'character/load-character.php', {
 			row: create.selected
@@ -167,6 +170,7 @@ var town;
 			ng.setScene('town')
 			chat.init()
 
+			game.setPhase(data)
 			getElementById('scene-town').innerHTML = getTownHtml()
 
 			if (socket.enabled) {
@@ -181,7 +185,7 @@ var town;
 			}
 			//!expanse.initialized && expanse.startSkyPhase()
 			// expanse.startSkyPhase()
-			town.animateClouds()
+			town.animateTown()
 			bar.init()
 			tavern.init()
 			skills.init()
@@ -218,13 +222,34 @@ var town;
 		})
 	}
 
-	function animateClouds() {
-		TweenMax.to('#title-layer-clouds', 777, {
+	function animateTown() {
+		// clouds
+		const cloudTween = TweenMax.to('#title-layer-clouds', 777, {
 			startAt: { x: '0%' },
 			x: '-100%',
 			repeat: -1,
 			ease: Power0.easeNone
 		})
+		town.tweens.push(cloudTween)
+		// furnace
+		const furnaceDuration = 1
+		const furnaceTween = TweenMax.to('#town-blacksmith-furnace', furnaceDuration, {
+			startAt: { filter: 'brightness(.8)' },
+			repeat: -1,
+			yoyo: true,
+			ease: ANIMATE_CANDLE,
+			filter: 'brightness(1.1)'
+		})
+		town.tweens.push(furnaceTween)
+		// furnace glow
+		const glowTween = TweenMax.to('#town-blacksmith-furnace-glow', furnaceDuration, {
+			startAt: { scale: .8 },
+			repeat: -1,
+			yoyo: true,
+			ease: ANIMATE_CANDLE,
+			scale: .9
+		})
+		town.tweens.push(glowTween)
 	}
 	function initItemData(obj, type) {
 		for (i=0; i<item.MAX_SLOTS[type]; i++) {
@@ -296,7 +321,7 @@ var town;
 
 	function getTownHtml() {
 		if (Config.forceTownPhase) {
-			// game.phase = 'dawn'
+			// game.phase = 'night'
 		}
 		const hazeOpacity = Math.random() > .5 ? 1 : 0
 		html = '<div id="town-wrap">' +
@@ -317,6 +342,8 @@ var town;
 				'<img data-id="Apothecary" id="town-apothecary" class="town-building" src="images/town/'+ game.phase +'-apothecary.png">' +
 				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/'+ game.phase +'-academy.png">' +
 				'<img data-id="Blacksmith" id="town-blacksmith" class="town-building" src="images/town/'+ game.phase +'-blacksmith.png">' +
+				'<img id="town-blacksmith-furnace-glow" class="town-layer" src="images/town/blacksmith-furnace-glow.png">' +
+				'<img id="town-blacksmith-furnace" class="town-layer" src="images/town/blacksmith-furnace.png">' +
 				'<img data-id="Merchant" id="town-merchant" class="town-building" src="images/town/'+ game.phase +'-merchant.png">' +
 
 				// foreground layers
@@ -882,5 +909,10 @@ var town;
 	}
 	function isMerchantMode() {
 		return merchants.includes(town.openVariousWindow)
+	}
+	function killAllTweens() {
+		town.tweens.forEach(t => {
+			t.kill()
+		})
 	}
 })($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo);
