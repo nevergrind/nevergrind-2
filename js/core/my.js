@@ -268,11 +268,14 @@ var my;
 			party.presence[0].sp = my.sp
 		}
 	}
-	function fixTarget() {
+	function fixTarget(forceTargetMob = false) {
 		if (my.targetIsMob) {
 			if (typeof mobs[my.target] === 'undefined' || !mob.isAlive(my.target)) {
-				tabTarget({ shiftKey: false })
+				tabTarget(ShiftKeyFalse)
 			}
+		}
+		else if (forceTargetMob) {
+			tabTarget(ShiftKeyFalse)
 		}
 	}
 	function setTarget(i) {
@@ -308,6 +311,9 @@ var my;
 			}
 			else combat.targetChanged()
 		}
+		if (spell.updateSpellTarget) {
+			spell.config.target = my.target
+		}
 	}
 	function partyTarget(index, toggleEnabled = true) {
 		if (ng.view === 'dungeon' ||
@@ -323,6 +329,9 @@ var my;
 			}
 			else {
 				chat.log('Target failed! Player not found.', CHAT.WARNING)
+			}
+			if (spell.updateSpellTarget) {
+				spell.config.target = my.target
 			}
 		}
 	}
@@ -430,7 +439,8 @@ var my;
 
 	function saveCharacterData() {
 		$.post(app.url + 'character/save-data.php', {
-			data: JSON.stringify(getMyData())
+			data: JSON.stringify(getMyData()),
+			crypt: game.lastCrypt
 		})
 	}
 	function getMyData() {

@@ -2508,6 +2508,7 @@ var skills;
 		return {
 			mpCost: typeof data.mp === 'function' ? data.mp(my.skills[skillIndex]) : 0,
 			spCost: typeof data.sp === 'function' ? data.sp(my.skills[skillIndex]) : 0,
+			fixTarget: true,
 			name: data.name,
 			skillIndex: skillIndex,
 			global: true,
@@ -2557,6 +2558,27 @@ var skills;
 			// A OK
 		}
 		else {
+			// console.info('config', config.fixTarget, config.isMob, config)
+			if (config.fixTarget) {
+				spell.updateSpellTarget = true
+				if (config.isMob) {
+					// console.info('config 2', my.targetIsMob, my.target)
+					if (!my.targetIsMob || my.target === -1) {
+						my.fixTarget(true)
+					}
+				}
+				else {
+					if (my.targetIsMob || my.target === -1) {
+						my.partyTarget(0, false)
+					}
+				}
+				spell.updateSpellTarget = false
+				if (my.target === -1) {
+					ng.msg('There are no valid targets for this skill.', undefined, COLORS.red)
+					return true
+				}
+			}
+
 			if (config.isMob) {
 				if (!my.targetIsMob || my.target === -1) {
 					ng.msg('You must target a mob with this skill.', undefined, COLORS.red)
@@ -2564,6 +2586,7 @@ var skills;
 				}
 			}
 			else {
+				// targeting player
 				// console.info('config', config)
 				if (my.targetIsMob || my.target === -1) {
 					// console.info('config', config)
@@ -2574,16 +2597,6 @@ var skills;
 					ng.msg('You must target a party member with this skill.', CHAT.WARNING)
 					return true
 				}*/
-			}
-			if (config.fixTarget) {
-				if (config.isMob) my.fixTarget()
-				else {
-					my.partyTarget(0)
-				}
-				if (my.target === -1) {
-					ng.msg('There are no valid targets for this skill.', undefined, COLORS.red)
-					return true
-				}
 			}
 			if (my.target === -1) {
 				ng.msg('You must select a target to use this skill.', undefined, COLORS.red)

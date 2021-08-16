@@ -1,5 +1,5 @@
 <?php
-	require_once '../session/start.php';
+	require_once '../session/alive.php';
 	$_SESSION = [];
 	if (ini_get("session.use_cookies")) {
 		$params = session_get_cookie_params();

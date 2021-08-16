@@ -58,7 +58,8 @@ var academy;
 		ng.lock(true)
 		$.post(app.url + 'character/train-skill.php', {
 			gold: my.gold - selected.cost,
-			data: JSON.stringify(skillData)
+			data: JSON.stringify(skillData),
+			crypt: game.lastCrypt
 		}).done(trainSkillSuccess)
 			.always(ng.unlock)
 	}
@@ -67,15 +68,16 @@ var academy;
 		town.setMyGold(my.gold - selected.cost)
 		audio.playSound('upgrade')
 		// selected.cost = 0
-		selected.rank = selected.rank + 1
-		selected.cost = trainCosts[selected.rank]
 		if (town.openVariousWindow === 'Academy') {
+			// if the window is still open...
 			querySelector('#academy-skill-' + selected.index).innerHTML = getSkillRowHtml(selected.index)
 			const el = querySelector('#academy-train-' + selected.index)
 			if (el !== null) el.classList.add('active')
+			selected.cost = trainCosts[selected.rank]
 			setAcademyGold()
 			ng.splitText('various-description', 'Congratulations, '+ my.name +'. You have completed your training for ' + skills.skillNames[selected.index] + ', Rank '+ selected.rank +'!')
 			my.saveCharacterData() // trained skill
+			selected.rank = selected.rank + 1
 		}
 		button.updateBtnEnabled()
 	}

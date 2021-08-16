@@ -1,5 +1,5 @@
 <?php
-require_once '../session/start.php';
+require_once '../session/alive.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 $account = strtolower($_POST['account']);

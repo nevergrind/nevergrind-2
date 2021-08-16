@@ -3,7 +3,7 @@ require 'header.php';
 require 'db.php';
 
 // steam data if applicable
-$version = '0.3.1';
+$version = '0.3.4';
 if ($_POST['version'] !== $version) {
 	exit("Nevergrind Online is currently being upgraded. We'll be right back!");
 	/*header('HTTP/1.1 Nevergrind Online is currently being upgraded. We\'ll be right back!');*/
@@ -160,6 +160,18 @@ if (isset($_SESSION['account'])) {
 	$stmt = $db->prepare('update `accounts` set last_login=now() where row=?');
 	$stmt->bind_param('i', $r['id']);
 	$stmt->execute();
+
+	// get bank slot data
+	$stmt = $db->prepare('select character_slots, bank_slots from `accounts` where row=?');
+	$stmt->bind_param('i', $_SESSION['account']);
+	$stmt->execute();
+	$stmt->store_result();
+	$stmt->bind_result($characterSlots, $bankSlots);
+	$r['bankSlots'] = 0;
+	while ($stmt->fetch()){
+		$r['characterSlots'] = $characterSlots;
+		$r['bankSlots'] = $bankSlots;
+	}
 }
 
 echo json_encode($r);

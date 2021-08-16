@@ -1,6 +1,7 @@
 var spell;
 !function($, _, TweenMax, Power0, undefined) {
 	spell = {
+		updateSpellTarget: false,
 		index: -1,
 		data: {},
 		config: {},
@@ -103,9 +104,11 @@ var spell;
 		spell.config.cancelSpellOnMobDeath = data.cancelSpellOnMobDeath || my.targetIsMob
 		let castTimeReduction = 0
 		// console.info('startCasting', spell.data)
-		if (spell.data.img.startsWith('CLR') && spell.data.name !== 'Smite') {
+		if (skill.CLR.completedSmites &&
+			spell.data.img.startsWith('CLR') &&
+			spell.data.name === 'Deliverance') {
 			castTimeReduction = (skill.CLR.completedSmites * .5)
-			skill.CLR.completedSmites = 0
+			console.info('REDUCING', castTimeReduction)
 		}
 		const castSpeed = Math.max(data.castTime - (castTimeReduction), .5)
 		spell.castTime = castSpeed

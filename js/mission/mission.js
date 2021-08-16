@@ -1,5 +1,5 @@
 var mission;
-(function(TweenMax, $, _, undefined) {
+(function(TweenMax, $, _, Power1, undefined) {
 	mission = {
 		inProgress: false,
 		isHeroicQuest: false,
@@ -262,9 +262,10 @@ var mission;
 		TweenMax.to('#scene-town', fadeDuration, {
 			startAt: {
 				opacity: 1, // ?
+				filter: 'blur(0px) brightness(1)'
 			},
 			delay: 1,
-			filter: 'brightness(0)',
+			filter: 'blur(10px) brightness(0)',
 			ease: Power1.easeOut,
 			onComplete: () => {
 				town.killAllTweens()
@@ -388,4 +389,4 @@ var mission;
 			battle.upsertGoldExp(exp, gold, true)
 		}
 	}
-})(TweenMax, $, _);
+})(TweenMax, $, _, Power1);

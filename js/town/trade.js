@@ -274,6 +274,7 @@ function tradeService($, _, TweenMax, undefined) {
 				toRow: trade.data.row,
 				tradeFrom: convertItemsForDb(items.tradeFrom, slotsTo),
 				tradeTo: convertItemsForDb(items.tradeTo, slotsFrom),
+				crypt: game.lastCrypt
 			}
 
 			// console.info('trade postData', postData)

@@ -36,6 +36,8 @@ var ng;
 		html,
 		getArticle,
 		getHotkeyDefaults,
+		bankSlots: 32,
+		characterSlots: 8,
 		characterData: [],
 		selectIndex: 0,
 		initialized: false,
@@ -403,7 +405,7 @@ var ng;
 
 	function keepAlive() {
 		clearTimeout(game.session.timer)
-		$.get(app.url + 'session/start.php')
+		$.get(app.url + 'session/alive.php')
 			.always(handleKeepAliveAlways);
 	}
 	function handleKeepAliveAlways() {
@@ -626,6 +628,8 @@ var ng;
 
 		if (r.id) {
 			my.accountId = r.id
+			ng.bankSlots = r.bankSlots
+			ng.characterSlots = r.characterSlots
 			if (!app.isApp) {
 				getElementById('logout').textContent = storage.get('account')
 			}
@@ -880,6 +884,17 @@ var ng;
 				startAt: { y: 50 },
 				y: 0,
 				opacity: 1,
+			})
+			// streaks
+			TweenMax.to('#title-streaks', dur, {
+				startAt: {
+					filter: 'brightness(2)',
+					opacity: 1,
+					scale: 2,
+				},
+				filter: 'brightness(1)',
+				opacity: 0,
+				scale: 1,
 			})
 
 			// town animation

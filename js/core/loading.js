@@ -3,10 +3,12 @@ var loading;
 	loading = {
 		index: 0,
 		isLoading: false,
+		tweens: [],
 		setRandomImage,
 		startLoading,
 		stopLoading,
 		setLoadingMessage,
+		killAllTweens,
 	}
 	///////////////////////////////////////////
 	loading.tips = [
@@ -18,7 +20,7 @@ var loading;
 		'Ranged attacks hit the back row for full damage. This is one of the key benefits of playing a Ranger. Full physical damage to caster mobs in the back row can prove very useful.',
 		'All melee damage to the back row is reduced by 50%. Take this into consideration when choosing which target to attack first.',
 		'Each monster has its own threat list. Managing how much each mob hates you is important to your survival.',
-		'Some skills allow you to reduce how much each monster hates you. Highly efficient parties manage their hate effectively.',
+		'Some skills allow you to reduce how much each monster hates you. Highly efficient parties manage their threat effectively.',
 		'You cannot parry or riposte while casting a spell.',
 		'Shields will help any class survive longer. When you block a shield reduces melee damage by an additional 25%.',
 		'You can cancel a spell by pressing the space bar.',
@@ -36,30 +38,45 @@ var loading;
 		if (Config.fastQuestTransitions) {
 			loadDuration = 0
 		}
-		console.warn('startLoading')
 		loading.isLoading = true
 		TweenMax.set('#scene-loading', {
 			display: 'flex',
 			opacity: 0
 		})
-		TweenMax.to('#scene-loading', 1, {
+		TweenMax.to('#scene-loading', .5, {
 			opacity: 1,
 		})
-		loading.setLoadingMessage()
-		delayedCall(loadDuration, () => {
-			loading.stopLoading()
+		loading.tweens.push(TweenMax.to('#loading-logo-gem' , .5, {
+			startAt: { filter: 'brightness(.7)' },
+			repeat: -1,
+			yoyo: true,
+			ease: Power0.easeIn,
+			filter: 'brightness(2)'
+		}))
+		loading.tweens.push(TweenMax.to('#loading-logo-fg', 1.5, {
+			startAt: { webkitMaskPositionX: '-40rem', },
+			webkitMaskPositionX: '40rem',
+			ease: Power2.easeInOut,
+			repeat: -1,
+			repeatDelay: 3,
+		}))
+		TweenMax.to('#loading-img', loadDuration, {
+			startAt: { scale: 1 },
+			scale: 1.1,
+			ease: Power0.easeIn
 		})
+		loading.setLoadingMessage()
+		delayedCall(loadDuration, loading.stopLoading)
 	}
 
 	function stopLoading() {
 		loading.isLoading = false
-		console.warn('stopLoading')
+		audio.playSound('sit')
 		TweenMax.to('#scene-loading', 1, {
 			opacity: 0,
 			onComplete: () => {
-				TweenMax.set('#scene-loading', {
-					display: 'none'
-				})
+				loading.killAllTweens()
+				TweenMax.set('#scene-loading', CSS.DISPLAY_NONE)
 				querySelector('#loading-msg').innerHTML = ''
 			}
 		})
@@ -75,4 +92,9 @@ var loading;
 		querySelector('#loading-img').src = 'images/loading/' + img + '.jpg'
 	}
 
+	function killAllTweens() {
+		loading.tweens.forEach(t => {
+			t.kill()
+		})
+	}
 }($, _, TweenMax);

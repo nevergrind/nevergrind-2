@@ -1,5 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/header.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/session/crypt.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 // update with cached minutes

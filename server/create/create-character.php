@@ -47,10 +47,21 @@
 	while ($stmt->fetch()) {
 		$totalCharacters = $charCount;
 	}
-	// max is 8
+	// max is from database
+
+	$stmt = $db->prepare('select character_slots from `accounts` where row=?');
+	$stmt->bind_param('i', $_SESSION['account']);
+	$stmt->execute();
+	$stmt->store_result();
+	$stmt->bind_result($dbCharacterSlots);
+	$maxCharacterSlots = 0;
+	while ($stmt->fetch()){
+		$maxCharacterSlots = $dbCharacterSlots;
+	}
+
 	if ($_SERVER['SERVER_NAME'] !== 'localhost'){
-		if ($totalCharacters >= 100){
-			exit('The maximum number of characters you can have is 100!');
+		if ($totalCharacters >= $maxCharacterSlots){
+			exit('The maximum number of characters you can have is '. $maxCharacterSlots .'!');
 		}
 	}
 

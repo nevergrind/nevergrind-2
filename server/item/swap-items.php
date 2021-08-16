@@ -1,5 +1,6 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/session/start.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/session/alive.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/session/crypt.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/server/db.php';
 
 if ($_POST['dragType'] !== $_POST['dropType']) {

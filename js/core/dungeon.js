@@ -28,6 +28,7 @@ var dungeon;
 		}
 	]
 	dungeon = {
+		suppressDoorNoise: false,
 		mobKeys: [
 			'name',
 			'img',
@@ -35,7 +36,6 @@ var dungeon;
 			'tier',
 			'size'
 		],
-		suppressDoorAudio: true,
 		walkSoundInterval: 0,
 		initialized: false,
 		layer: {},
@@ -135,6 +135,7 @@ var dungeon;
 	 * Only called upon entering dungeon
 	 */
 	function rxGo() {
+		dungeon.suppressDoorNoise = true
 		const zoneName = mission.getZoneKey()
 		updateDungeonTextures(zoneName)
 		town.closeVarious()

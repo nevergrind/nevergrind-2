@@ -385,7 +385,7 @@
 		// check constraints
 		config = {
 			...skills.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}

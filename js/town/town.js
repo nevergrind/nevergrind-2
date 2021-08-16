@@ -1,5 +1,5 @@
 var town;
-(function($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo, undefined) {
+(function($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo, SteppedEase, undefined) {
 	town = {
 		go,
 		animateTown,
@@ -21,6 +21,7 @@ var town;
 		setMyGold,
 		socketReady,
 		initItemData,
+		isRainy: false,
 		isInitialized: {
 			'apothecary': false,
 			'blacksmith': false,
@@ -35,6 +36,8 @@ var town;
 	}
 	var i, key, id, len, html, str, foo, msg, itemIndex, rarity, townConfig, labelConfig, label, npc, obj, goldEl, labelObj, goldEl, type, potionItems, potLevel, scrollItems
 
+	const apothecarySmokeInterval = 3
+	const apothecarySmokeDuration = 24
 	var storeItems = []
 	const buyTypes = [
 		'merchant',
@@ -93,8 +96,7 @@ var town;
 	function go() {
 		if (ng.view === 'town') return
 
-		cache.preloadImages(Object.values(academy.npcImg));
-		dungeon.suppressDoorAudio = true
+		cache.preloadImages(Object.values(academy.npcImg))
 		mob.textures = {}
 		my.target = -1
 		my.targetIsMob = true
@@ -123,6 +125,8 @@ var town;
 		}
 		TweenMax.set('#button-wrap', CSS.DISPLAY_NONE)
 		loading.setRandomImage()
+		dungeon.suppressDoorNoise = true
+		map.killTorchTween()
 
 		$.post(app.url + 'character/load-character.php', {
 			row: create.selected
@@ -168,6 +172,8 @@ var town;
 
 			// init party member values
 			ng.setScene('town')
+
+			audio.playAmbientLoop()
 			chat.init()
 
 			game.setPhase(data)
@@ -238,7 +244,7 @@ var town;
 			repeat: -1,
 			yoyo: true,
 			ease: ANIMATE_CANDLE,
-			filter: 'brightness(1.1)'
+			filter: 'brightness(1.2)'
 		})
 		town.tweens.push(furnaceTween)
 		// furnace glow
@@ -250,6 +256,76 @@ var town;
 			scale: .9
 		})
 		town.tweens.push(glowTween)
+
+		// apothecary smoke
+		for (var i=1; i<8; i++) {
+			addApothecarySmoke((apothecarySmokeInterval * i) / apothecarySmokeDuration)
+		}
+		const smokeTween = TweenMax.to(EMPTY_OBJECT, apothecarySmokeInterval, {
+			repeat: -1,
+			onRepeat: addApothecarySmoke,
+		})
+		town.tweens.push(smokeTween)
+
+		// waterfall
+		if (game.phase === 'night') {
+			TweenMax.set('#town-waterfall', {
+				filter: 'grayscale(.7) brightness(.5)'
+			})
+		}
+		else {
+			TweenMax.set('#town-waterfall', {
+				filter: 'grayscale(.7) brightness(1)'
+			})
+		}
+		const tween = {
+			lastFrame: -1,
+			frame: 0
+		}
+		const waterfallTween = TweenMax.to(tween, 2, {
+			frame: 20.99,
+			ease: Power0.easeIn,
+			repeat: -1,
+			yoyo: true,
+			onUpdate: setWaterfallFrame,
+			onUpdateParams: [tween]
+		})
+		town.tweens.push(waterfallTween)
+	}
+	function setWaterfallFrame(tween) {
+		if (tween.lastFrame !== ~~tween.frame) {
+			tween.lastFrame = ~~tween.frame
+			querySelector('#town-waterfall').style.backgroundPosition = tween.lastFrame + '00% 0%'
+		}
+	}
+	function addApothecarySmoke(progress) {
+		const el = createElement('img')
+		const scaleX = _.random(.8, 1)
+		const scaleY = _.random(.9, 1)
+		el.className = 'apothecary-smoke'
+		el.src = 'images/town/apothecary-smoke.png'
+		if (game.phase === 'night') {
+			el.style.filter = 'brightness(.5)'
+		}
+		querySelector('#title-layer-smoke').appendChild(el)
+		const scaleTween = TweenMax.to(el, apothecarySmokeDuration, {
+			startAt: { x: 10 },
+			x: 0,
+			scaleX: scaleX,
+			scaleY: scaleY,
+			ease: Power0.easeOut
+		})
+		const opacityTween = TweenMax.to(el, apothecarySmokeDuration, {
+			opacity: 0,
+			ease: Power2.easeIn,
+			onComplete: () => {
+				el.parentNode.removeChild(el)
+			}
+		})
+		if (typeof progress === 'number') {
+			scaleTween.progress(progress)
+			opacityTween.progress(progress)
+		}
 	}
 	function initItemData(obj, type) {
 		for (i=0; i<item.MAX_SLOTS[type]; i++) {
@@ -321,7 +397,7 @@ var town;
 
 	function getTownHtml() {
 		if (Config.forceTownPhase) {
-			// game.phase = 'night'
+			// game.phase = 'dawn'
 		}
 		const hazeOpacity = Math.random() > .5 ? 1 : 0
 		html = '<div id="town-wrap">' +
@@ -335,6 +411,11 @@ var town;
 				'</div>' +
 
 				'<img id="town-layer-bg" class="town-layer" src="images/town/'+ game.phase +'-bg.png">' +
+				// waterfall layer
+				'<div id="town-waterfall" class="town-layer"></div>"' +
+
+				// smoke layer - dynamic
+				'<div id="title-layer-smoke" class="town-layer"></div>' +
 				// buildings
 				'<img data-id="Bank" id="town-bank" class="town-building" src="images/town/'+ game.phase +'-bank.png">' +
 				'<img data-id="Guild Hall" id="town-guild" class="town-building" src="images/town/'+ game.phase +'-guild.png">' +
@@ -376,8 +457,6 @@ var town;
 	}
 
 	function processBank(data) {
-		// console.info('bank data', data)
-		ng.bankSlots = data.bankSlots
 		for (var i=0; i<ng.bankSlots; i++) {
 			items.bank[i] = {}
 		}
@@ -915,4 +994,4 @@ var town;
 			t.kill()
 		})
 	}
-})($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo);
+})($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo, SteppedEase);

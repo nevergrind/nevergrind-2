@@ -17,7 +17,6 @@
 	///////////////////////////////////////////
 	let i, splashIndex, tgt, hit, hate, damage
 	let damages = []
-	let completedSmites = 0
 	///////////////////////////////////////////
 	function smite(index, data) {
 		if (timers.castBar < 1) return
@@ -56,6 +55,7 @@
 			isBlighted: spell.data.isBlighted,
 		}])
 		spell.triggerSkillCooldown(spell.config.skillIndex)
+		skill.CLR.completedSmites = 0
 	}
 	function condemnation(index, data) {
 		if (timers.castBar < 1) return
@@ -66,11 +66,8 @@
 		spell.startCasting(index, data, condemnationCompleted)
 	}
 	function condemnationCompleted() {
-		splashIndex = -1
-		tgt = 0
 		damages = []
-		for (i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'condemnation',
 				index: tgt,
@@ -79,7 +76,7 @@
 				...stats.spellDamage(tgt),
 				isBlighted: spell.data.isBlighted,
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
@@ -92,11 +89,8 @@
 		spell.startCasting(index, data, sacredRevelationCompleted)
 	}
 	function sacredRevelationCompleted() {
-		splashIndex = -1
-		tgt = 0
 		damages = []
-		for (var i=0; i<3; i++) {
-			tgt = battle.getSplashTarget(splashIndex++)
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'sacredRevelation',
 				index: tgt,
@@ -110,7 +104,7 @@
 				}],
 				...stats.spellDamage(tgt),
 			})
-		}
+		})
 		combat.txDamageMob(damages)
 		spell.triggerSkillCooldown(spell.config.skillIndex)
 	}
@@ -166,7 +160,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}
@@ -200,7 +194,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}
@@ -223,7 +217,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}
@@ -270,7 +264,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}
@@ -292,7 +286,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}

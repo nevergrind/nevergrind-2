@@ -1,5 +1,5 @@
 let map;
-!function($, _, TweenMax, getComputedStyle, parseInt, window, undefined) {
+!function($, _, TweenMax, getComputedStyle, parseInt, window, Power0, undefined) {
 	map = {
 		inCombat: false,
 		menuPrompt: false,
@@ -32,6 +32,7 @@ let map;
 		dragHeight: 0,
 		dragMap: {},
 		fogTween: {},
+		killTorchTween,
 		handleHearthClick,
 		init,
 		setMapScale,
@@ -741,13 +742,11 @@ let map;
 			torchGlow.tween.kill()
 		}
 	}
-	let torchOffset = 0
 	function setTorchFrame() {
 		if (torch.lastFrame !== ~~torch.frame) {
 			torch.lastFrame = ~~torch.frame
-			torchOffset = torch.lastFrame * -64
 			if (!map.inCombat) {
-				map.dotTorch.style.backgroundPosition = torchOffset +'px '
+				map.dotTorch.style.backgroundPosition = (torch.lastFrame * -64) +'px '
 			}
 		}
 	}
@@ -759,4 +758,4 @@ let map;
 			})
 		}
 	}
-}($, _, TweenMax, getComputedStyle, parseInt, window);
+}($, _, TweenMax, getComputedStyle, parseInt, window, Power0);

@@ -38,8 +38,8 @@
 			brightnessStart: 5,
 			sizeStart: 200,
 			sizeEnd: 300,
-			duration: .6,
-			frameDuration: .4,
+			duration: .3,
+			frameDuration: .2,
 			frameEase: Power0.easeIn,
 		})
 	}

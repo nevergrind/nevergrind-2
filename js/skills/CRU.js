@@ -274,7 +274,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}

@@ -765,22 +765,27 @@ tbody { border: 0 }
 	width: 14.95vw;
 	height: 30.55vh;
 }
+.apothecary-smoke {
+	position: fixed;
+	transform-origin: 0% 100%;
+	transform: scale(0);
+	bottom: 61vh;
+	left: 40vw;
+	opacity: 1;
+}
 #town-blacksmith-furnace-glow {
 	width: 2.34%;
 	height: 4.07%;
 	bottom: 41.5vh;
 	left: 71.5vw;
 }
-#town-background {
-	bottom: 0;
-	width: 100vw;
-	height: 85.93vh;
-}
-#town-stars {
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
+#town-waterfall {
+	top: 26.5%;
+	left: 44.4%;
+	width: 14.58%;
+	height: 25.93%;
+	background: url(../images/town/town-waterfall.png);
+	background-size: 2100% 100%;
 }
 #town-building-wrap {
 	position: relative;
@@ -2348,6 +2353,10 @@ background-repeat: no-repeat;
 	width: 100%;
 	opacity: 0;
 }
+#title-streaks {
+	filter: brightness(5);
+	opacity: 0;
+}
 .town-clouds {
 	position: relative;
 	width: 100%;
@@ -2389,7 +2398,7 @@ background-repeat: no-repeat;
 	opacity: 0;
 	z-index: 1;
 }
-#ngo-logo-fg {
+#ngo-logo-fg, #loading-logo-fg {
 	filter: saturate(3) brightness(3);
 	-webkit-mask-image: linear-gradient(135deg, #0000 40%, #000 50%, #0000 60%, #0000 100%);
 	-webkit-mask-repeat: no-repeat;
@@ -4288,7 +4297,7 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 }
 #loading-msg {
 	position: fixed;
-	font-size: 1.8rem;
+	font-size: 1.5rem;
 	line-height: 1.3;
 	bottom: 5rem;
 	left: 5rem;
@@ -4296,4 +4305,16 @@ input::-webkit-inner-spin-button { margin-left: .25rem; }
 	width: 45rem;
 	padding: .5rem 1rem;
 	border: 2px ridge #013;
+}
+#loading-logo, #loading-logo-fg {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 25%;
+}
+#loading-logo-gem {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 25%;
 }

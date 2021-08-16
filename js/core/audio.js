@@ -610,7 +610,18 @@ var audio;
 	}
 
 	function playAmbientLoop() {
-		audio.playAmbient(_.kebabCase(zones[mission.id].name))
+		if (ng.view === 'town') {
+			stopAmbient()
+			if (town.isRainy) {
+				audio.playAmbient('town-rainy')
+			}
+			else {
+				audio.playAmbient('town-sunny')
+			}
+		}
+		else {
+			audio.playAmbient(_.kebabCase(zones[mission.id].name))
+		}
 	}
 
 	function playAmbient(foo) {
@@ -626,7 +637,7 @@ var audio;
 		bgamb2Element.volume = (ng.config.ambientVolume / 100)
 		bgamb2Element.setAttribute('type', 'audio/mp3')
 		bgamb2Element.src = 'sound/ambient/' + foo + '.mp3'
-		// console.info('playAmbient SUCCESS', audio.isAmbientPlaying)
+		console.info('playAmbient SUCCESS', foo, audio.isAmbientPlaying)
 	}
 
 	function fadeAmbientOut(el) {
@@ -751,9 +762,9 @@ var audio;
 	}
 
 	function playEnterDoor() {
-		if (dungeon.suppressDoorAudio) {
-			dungeon.suppressDoorAudio = false
-			audio.playSound('sit')
+		if (dungeon.suppressDoorNoise) {
+			// only suppresses the first door open noise into the dungeon
+			dungeon.suppressDoorNoise = false
 			return
 		}
 		const zoneName = zones[mission.id].name

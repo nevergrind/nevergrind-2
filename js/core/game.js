@@ -1,6 +1,6 @@
 // game specific data
 var game;
-(function(TweenMax, clearTimeout, setTimeout, _, $, localStorage, undefined) {
+(function(TweenMax, clearTimeout, setTimeout, _, $, localStorage, performance, Date, undefined) {
 	/** public */
 	game = {
 		time: 0,
@@ -12,6 +12,8 @@ var game;
 		storageId: '',
 		pingHistory: [],
 		start: Date.now(),
+		lastCrypt: 0,
+		getCrypt,
 		setPhase,
 		upsertRoom,
 		removePlayer,
@@ -40,10 +42,9 @@ var game;
 		activate,
 	}
 	const scenes = ['#scene-town', '#scene-dungeon', '#scene-battle']
-	const filterBrightnessDark = { filter: 'brightness(0)' }
 	var played = {
 		timer: new delayedCall(0, ''),
-		interval: 60000
+		interval: 60000,
 	};
 	// pooled variables
 	var time;
@@ -309,6 +310,7 @@ var game;
 		socket.subscribe('friend' + my.name, friend.notify)
 	}
 	function playedStart() {
+		playedSend()
 		clearInterval(played.timer)
 		played.timer = setInterval(playedSend, played.interval)
 	}
@@ -322,19 +324,27 @@ var game;
 		minutes++
 		// console.info('playedSend 2', typeof minutes, minutes)
 		storage.set(game.storageId, minutes)
-		$.get(app.url + 'session/start.php')
+		game.lastCrypt = game.getCrypt()
+		$.post(app.url + 'session/start.php', {
+			id: game.lastCrypt
+		})
+	}
+
+	function getCrypt() {
+		return btoa(my.row + performance.now() + '')
 	}
 	function played() {
 		const minutes = storage.get(game.storageId)
-
-		console.info('minutes', minutes, typeof minutes)
+		// console.info('minutes', minutes, typeof minutes)
 		$.post(app.url + 'chat/played.php', {
-			minutes: minutes
-		}).done(r => {
-			chat.log("Character created: " + toCreateString(r.created), CHAT.WARNING)
-			chat.log("Total character playtime: " + game.toPlaytime(r.playtime), 'chat-whisper')
-			storage.set(game.storageId, '0')
-		})
+			minutes: minutes,
+			crypt: game.lastCrypt
+		}).done(reportPlayed)
+	}
+	function reportPlayed(r) {
+		chat.log("Character created: " + toCreateString(r.created), CHAT.WARNING)
+		chat.log("Total character playtime: " + game.toPlaytime(r.playtime), 'chat-whisper')
+		storage.set(game.storageId, '0')
 	}
 	function toCreateString(d) {
 		d = new Date(d);
@@ -422,4 +432,4 @@ var game;
 		}
 
 	}
-})(TweenMax, clearTimeout, setTimeout, _, $, localStorage);
+})(TweenMax, clearTimeout, setTimeout, _, $, localStorage, performance, Date);

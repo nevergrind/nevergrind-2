@@ -15,7 +15,7 @@ const Config = {
 	forceChampion: false,
 	mockFullParty: false,
 	mockFullPartySize: 5,
-	disableCooldowns: true,
+	disableCooldowns: false,
 	easeMagicItemTesting: false,
 	enableFastCast: false,
 	enablePageUpZoning: false,
@@ -25,7 +25,7 @@ const Config = {
 	forceMobSkills: false,
 	forceTownPhase: true,
 	forceHugeGuild: true,
-	fastQuestTransitions: false
+	fastQuestTransitions: true
 }
 if (app.isApp) {
 	Config.autoAttackEnabled = true

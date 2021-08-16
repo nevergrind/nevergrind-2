@@ -76,7 +76,7 @@
 	function lightningBlastCompleted() {
 		splashIndex = -1
 		damages = []
-		battle.getConeTargets(my.target).forEach(tgt => {
+		battle.getConeTargets(spell.config.target).forEach(tgt => {
 			damages.push({
 				key: 'lightningBlast',
 				index: tgt,
@@ -278,7 +278,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}
@@ -309,7 +309,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}
@@ -332,7 +332,7 @@
 		if (timers.castBar < 1) return
 		spell.config = {
 			...spell.getDefaults(index, data),
-			fixTarget: false,
+			fixTarget: true,
 			isMob: false,
 			oocEnabled: true,
 		}

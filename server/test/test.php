@@ -42,7 +42,7 @@ function onOpen(session) {
 <?php
 $now = microtime(true);
 
-require_once '../session/start.php';
+require_once '../session/alive.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/ng2/config.php';
 echo '__DIR__ ' . __DIR__ . '<br>';
 echo '$_SERVER[\'DOCUMENT_ROOT\']' . $_SERVER['DOCUMENT_ROOT'] . '<br>';

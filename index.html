@@ -14,7 +14,7 @@
 <script>
 // search: $version - only update when it is an essential update because it is sent to server to check for a match
 var app = {
-	version: '0.3.1', // $version // this forces a client-server match! Only change when forcing a client/server update
+	version: '0.3.4', // $version // this forces a client-server match! Only change when forcing a client/server update
 	initialized: 0,
 	isApp: location.protocol === 'chrome-extension:',
 	account: '',
@@ -65,8 +65,8 @@ app.socketUrl = app.isApp ?
 			<img id="title-clouds-small-2" src="images/title/title-clouds-small-tile.png" class="title-clouds">
 		</div>
 		<div id="title-big-clouds" class="flex-row title-layer">
-			<img id="title-clouds-big-1" src="images/title/title-clouds-big-tile-2.png?v=2" class="title-clouds">
-			<img id="title-clouds-big-2" src="images/title/title-clouds-big-tile-2.png?v=2" class="title-clouds">
+			<img id="title-clouds-big-1" src="images/title/title-clouds-seamless.png" class="title-clouds">
+			<img id="title-clouds-big-2" src="images/title/title-clouds-seamless.png" class="title-clouds">
 		</div>
 		<img id="title-islands" src="images/title/title-islands.png" class="title-layer">
 		<img id="title-town" src="images/title/title-town.png" class="title-layer">
@@ -76,18 +76,18 @@ app.socketUrl = app.isApp ?
 		<img id="ngo-logo"
 			 class="ngo-logos"
 			 src="images/title/nevergrind-online-logo-1.png">
-		<img id="ngo-logo-gem"
-			 class="ngo-logos"
-			 src="images/title/nevergrind-online-logo-1-gem.png">
 		<img id="ngo-logo-fg"
 			 class="ngo-logos"
 			 src="images/title/nevergrind-online-logo-1.png">
+		<img id="ngo-logo-gem"
+			 class="ngo-logos"
+			 src="images/title/nevergrind-online-logo-1-gem.png">
 
 		<img id="title-gwen" class="title-gwens" src="images/title/gwendolyn.png">
 		<img id="title-gwen-gem" class="title-gwens" src="images/title/gwendolyn-gem.png">
 
 		<img id="title-focuser" src="images/title/title-focuser.png" class="title-layer">
-		<!--<img id="title-streaks" src="images/title/title-streaks.png" class="title-layer">-->
+		<img id="title-streaks" src="images/title/title-streaks.png" class="top-layer">
 
 		<div id="scene-title-select-character" class="flex-column title-cc-wrap">
 			<!-- well top -->
@@ -112,7 +112,7 @@ app.socketUrl = app.isApp ?
 			</div>
 		</div>
 		<script>
-			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.3.2</div>')
+			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.3.3</div>')
 		</script>
 	</div>
 
@@ -555,12 +555,16 @@ app.socketUrl = app.isApp ?
 <div id="scene-loading" class="top-layer no-select">
 	<img id="loading-img">
 	<div id="loading-msg" class="stag-blue-top text-shadow3"></div>
+	<img id="loading-logo" src="images/title/nevergrind-online-logo-1.png">
+	<img id="loading-logo-fg" src="images/title/nevergrind-online-logo-1.png">
+	<img id="loading-logo-gem" src="images/title/nevergrind-online-logo-1-gem.png">
 </div>
 
 <div id="tooltip-skill" class="no-pointer no-select text-shadow">
 	<div id="tooltip-skill-name"></div>
 	<div id="tooltip-skill-description"></div>
 </div>
+
 <div id="mob-target-wrap" class="text-shadow">
 	<div class="flex-row flex-center" style="position: relative; z-index:2">
 		<div id="mob-target-level" class="mob-level text-shadow3"></div>

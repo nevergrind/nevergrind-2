@@ -1005,6 +1005,7 @@ var loot = {};
 			slot: slot,
 			name: drop.name,
 			data: JSON.stringify(_.omit(drop, KEYS.NAME)),
+			crypt: game.lastCrypt
 		}).done(data => {
 			processNewItemToInv({
 				slot: slot,
@@ -1814,6 +1815,7 @@ var loot = {};
 						dropRow: item.dropData.row,
 						dropSlot: item.dragSlot,
 						dropType: item.dragType,
+						crypt: game.lastCrypt
 					}).done(handleDropSuccess)
 						.fail(handleDropFail)
 						.always(handleDropAlways)
@@ -1830,6 +1832,7 @@ var loot = {};
 						dragSlot: item.dropSlot,
 						dragType: item.dropType,
 						dropType: item.dragType,
+						crypt: game.lastCrypt
 					}).done(handleDropSuccess)
 						.fail(handleDropFail)
 						.always(handleDropAlways)
@@ -2075,6 +2078,7 @@ var loot = {};
 			slot: buyItemSlot,
 			name: item.dragData.name,
 			data: JSON.stringify(_.omit(item.dragData, KEYS.NAME)),
+			crypt: game.lastCrypt
 		}).done(data => {
 			ng.html('#various-description', 'Thank you for buying ' + getItemNameString(item.dragData) + ' for ' + item.goldValue + ' gold!')
 			processNewItemToInv({
@@ -2111,7 +2115,8 @@ var loot = {};
 		$.post(app.url + 'item/sell-item.php', {
 			row: item.dragData.row,
 			dragType: item.dragType,
-			gold: my.gold + item.goldValue
+			gold: my.gold + item.goldValue,
+			crypt: game.lastCrypt
 		}).done(handleSellSuccess)
 			.fail(handleDropFail)
 			.always(handleDropAlways)
@@ -2125,7 +2130,8 @@ var loot = {};
 		handleDragStart()
 		$.post(app.url + 'item/destroy-item.php', {
 			row: item.dragData.row,
-			dragType: item.dragType
+			dragType: item.dragType,
+			crypt: game.lastCrypt
 		}).done(() => {
 			handleDestroySuccess(false, {
 				dragData: _.cloneDeep(item.dragData),
@@ -2250,7 +2256,8 @@ var loot = {};
 				handleDragStart()
 				$.post(app.url + 'item/destroy-item.php', {
 					row: items[type][index].row,
-					dragType: type
+					dragType: type,
+					crypt: game.lastCrypt
 				}).done(handleUseSuccess)
 					.fail(handleDropFail)
 					.always(handleDropAlways)
@@ -2322,6 +2329,7 @@ var loot = {};
 				itemRow: items[itemType][itemSlot].row,
 				data: JSON.stringify(_.omit(newItem, KEYS.NAME)),
 				scrollRow: items[scrollType][scrollIndex].row,
+				crypt: game.lastCrypt
 			}).done(resp => {
 				// console.info('okokokok', resp)
 				items[scrollType][scrollIndex] = {}

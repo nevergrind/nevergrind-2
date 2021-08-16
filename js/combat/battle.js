@@ -133,6 +133,7 @@ var battle;
 		$.post(app.url + 'character/upsert-gx.php', {
 			exp: exp,
 			gold: gold,
+			crypt: game.lastCrypt
 		}).done(() => {
 			my.exp += exp
 			// console.info('upsertGoldExp', exp, gold)
@@ -186,6 +187,7 @@ var battle;
 	function upsertLevel() {
 		$.post(app.url + 'character/upsert-level.php', {
 			level: my.level,
+			crypt: game.lastCrypt
 		})
 	}
 	function getExpBarRatio() {

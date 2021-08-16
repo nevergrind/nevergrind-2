@@ -5,17 +5,23 @@ var patch;
 		close,
 	}
 	const notes = [
-		{text: 'Version 0.3.2', date: 'August 14, 2021', isHeader: true},
+		{text: 'Version 0.3.4', date: 'August 16, 2021', isHeader: true},
+		{text: "Added new server-side checks that make cheating much more difficult."},
+		{text: "Added ambient sound to town."},
+		{text: ""},
+
+		{text: 'Version 0.3.3', date: 'August 15, 2021', isHeader: true},
 		{text: "The blacksmith's furnace in town is now animated."},
 		{text: "Fixed the town's afternoon clouds so they wrap properly."},
 		{text: "Fixed the displayed hotkey for Character Sheet and Inventory. It now shows the proper hotkey instead of the keyCode number."},
 		{text: "The town no longer continues animating while you're in a dungeon."},
 		{text: "Added a brief loading screen to help prevent asset-related bugs upon zoning into a dungeon. There are also some terrible loading screen tips that probably lie to you about how the game works."},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
-		{text: ""},
+		{text: "CLR's Smite bonus now works correctly with Deliverance only."},
+		{text: "CLR's cone targeting now works correctly with Sacred Revelation and Condemnation."},
+		{text: "Fixed several CLR and DRU spells that hit your current target instead of the target when you started casting."},
+		{text: "Most beneficial spells such as buffs or heals will now automatically target yourself when you have no target or when targeting a mob."},
+		{text: "Made the targeting much more helpful. The targeting system will attempt to automatically target a mob for a mob-targeting spell and will attempt to target yourself for a player-targeting spell. This targeting assistance will only happen when you're targeting an invalid target for that given spell."},
+		{text: "I think MNK's occasional Spirit Barrier bug was fixed. Probably!"},
 
 
 		{text: 'Version 0.3.2', date: 'August 14, 2021', isHeader: true},
