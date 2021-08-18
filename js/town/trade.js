@@ -280,7 +280,7 @@ function tradeService($, _, TweenMax, undefined) {
 			// console.info('trade postData', postData)
 			//TODO: when done load inventory and broadcast to load inventory
 
-			$.post(app.url + 'item/trade-item.php', postData).done(() => {
+			$.post(Config.url + 'item/trade-item.php', postData).done(() => {
 				// console.warn('trade done my gold:', fromGold)
 				town.setMyGold(fromGold)
 				if (trade.data.goldTotal !== toGold) {
@@ -293,7 +293,7 @@ function tradeService($, _, TweenMax, undefined) {
 					action: 'trade-update-inventory',
 				})
 				chat.log('Trade completed! Notifying ' + trade.data.name + '.')
-				$.get(app.url + 'item/get-inventory.php').done(finishTrade)
+				$.get(Config.url + 'item/get-inventory.php').done(finishTrade)
 			}).fail(data => {
 				// console.warn('fail', data)
 			})
@@ -301,7 +301,7 @@ function tradeService($, _, TweenMax, undefined) {
 	}
 	function rxUpdateInventory() {
 		// console.info('trade-update-gold rxUpdateInventory')
-		$.get(app.url + 'item/get-inventory.php').done(finishTrade)
+		$.get(Config.url + 'item/get-inventory.php').done(finishTrade)
 	}
 	function finishTrade(data) {
 		closeTradeWindow()

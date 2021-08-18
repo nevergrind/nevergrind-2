@@ -1,5 +1,5 @@
 var loading;
-!function($, _, TweenMax, undefined) {
+!function($, _, TweenMax, Power0, Power2, undefined) {
 	loading = {
 		index: 0,
 		isLoading: false,
@@ -43,9 +43,27 @@ var loading;
 			display: 'flex',
 			opacity: 0
 		})
+		let totalColorPoints = 96
+		const red = _.random(0, 48)
+		const green = _.random(0, 48)
+		totalColorPoints = totalColorPoints - red - green
+		if (totalColorPoints < 0) totalColorPoints = 0
+		const blue = _.random(0, 64) + totalColorPoints
 		TweenMax.to('#scene-loading', .5, {
 			opacity: 1,
 		})
+		loading.tweens.push(TweenMax.to('#loading-bg', 1.5, {
+			startAt: {
+				background: 'radial-gradient(farthest-side at 50% 50%, rgba('+
+					red +','+ green +','+ blue +
+				'), rgba(0,0,0))',
+				scale: 1,
+			},
+			scale: .95,
+			yoyo: true,
+			repeat: -1,
+			ease: Power1.easeInOut
+		}))
 		loading.tweens.push(TweenMax.to('#loading-logo-gem' , .5, {
 			startAt: { filter: 'brightness(.7)' },
 			repeat: -1,
@@ -62,9 +80,13 @@ var loading;
 		}))
 		TweenMax.to('#loading-img', loadDuration, {
 			startAt: { scale: 1 },
-			scale: 1.1,
+			scale: 1.2,
 			ease: Power0.easeIn
 		})
+		/*TweenMax.to(['#loading-logo', '#loading-logo-fg', '#loading-logo-gem'], loadDuration, {
+			y: '300%',
+			ease: Power0.easeIn
+		})*/
 		loading.setLoadingMessage()
 		delayedCall(loadDuration, loading.stopLoading)
 	}
@@ -88,8 +110,10 @@ var loading;
 	}
 
 	function setRandomImage() {
-		const img = _.random(0, 29)
-		querySelector('#loading-img').src = 'images/loading/' + img + '.jpg'
+		const img = _.sample(zones[mission.id].mobs)
+		const frame = _.random(1, 90)
+		// querySelector('#loading-img').src = 'images/loading/' + img + '.jpg'
+		querySelector('#loading-img').src = 'mobs/' + img + '/'+ frame +'.png'
 	}
 
 	function killAllTweens() {
@@ -97,4 +121,4 @@ var loading;
 			t.kill()
 		})
 	}
-}($, _, TweenMax);
+}($, _, TweenMax, Power0, Power2);

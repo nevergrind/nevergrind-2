@@ -130,7 +130,7 @@ var battle;
 			// max possible exp value
 			exp = battle.expThreshold[MAX_HERO_LEVEL] - my.exp
 		}
-		$.post(app.url + 'character/upsert-gx.php', {
+		$.post(Config.url + 'character/upsert-gx.php', {
 			exp: exp,
 			gold: gold,
 			crypt: game.lastCrypt
@@ -185,7 +185,7 @@ var battle;
 		})
 	}
 	function upsertLevel() {
-		$.post(app.url + 'character/upsert-level.php', {
+		$.post(Config.url + 'character/upsert-level.php', {
 			level: my.level,
 			crypt: game.lastCrypt
 		})
@@ -486,7 +486,7 @@ var battle;
 			}
 
 			// full room for testing
-			/*if (!app.isApp && (map.roomId || (!map.inRoom && map.hallwayId))) {
+			/*if (!Config.isApp && (map.roomId || (!map.inRoom && map.hallwayId))) {
 				totalMobs = 9
 			}*/
 			// console.info('levels', minLevel, maxLevel)

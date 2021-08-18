@@ -586,11 +586,11 @@ let map;
 			})
 		})
 	}
-	function endCombat(isRespawn = false) { // clear room or hallway
+	function endCombat(isPartyRespawn = false) { // clear room or hallway
 		// map stuff
 		if (map.inRoom) {
 			// in a room
-			if (!isRespawn) {
+			if (!isPartyRespawn) {
 				if (dungeon.map.rooms[map.roomId].isAlive) {
 					dungeon.map.rooms[map.roomId].isAlive = false
 					map.roomCleared()
@@ -607,11 +607,11 @@ let map;
 				mission.getRewards()
 				delayedCall(3, () => {
 					combat.showQuestMsg()
-					!isRespawn && map.show(3)
+					!isPartyRespawn && map.show(3)
 				})
 			}
 			else {
-				!isRespawn && map.show(3)
+				!isPartyRespawn && map.show(3)
 			}
 			delayedCall(1.5, () => {
 				audio.fadeMusic()
@@ -619,19 +619,20 @@ let map;
 		}
 		else {
 			// clear nearest entity and redraw
-			if (!isRespawn && dungeon.closestEntityIndex > -1) {
+			if (!isPartyRespawn && dungeon.closestEntityIndex > -1) {
 				dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].isAlive = false
 				dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].timestamp = Date.now()
 				dungeon.entities[map.hallwayId][dungeon.closestEntityIndex].sprite.alpha = 0
 			}
 			dungeon.setDungeonEntities()
 			// return to dungeon hallway
-			!isRespawn && delayedCall(4, dungeon.go, [true])
+			!isPartyRespawn && delayedCall(4, dungeon.go, [true])
 			delayedCall(1.5, () => {
 				audio.fadeMusic()
 			})
-			!isRespawn && map.show(4)
+			!isPartyRespawn && map.show(4)
 		}
+		combat.autoAttackDisable()
 	}
 	function getHallwayDistance(id) {
 		let len

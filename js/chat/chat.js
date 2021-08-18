@@ -535,7 +535,7 @@ var chat;
 
 				console.info('minutes', minutes, typeof minutes)
 				if (minutes) {
-					$.post(app.url + 'camp.php', {
+					$.post(Config.url + 'camp.php', {
 						minutes: minutes
 					}).done(() => {
 						storage.set(game.storageId, '0')
@@ -589,7 +589,7 @@ var chat;
 				console.info('joinChannel', channel)
 				// remove from channel
 				if (channel !== my.channel) {
-					$.post(app.url + 'chat/set-channel.php', {
+					$.post(Config.url + 'chat/set-channel.php', {
 						channel: channel
 					}).done(data => {
 						!keepLog && clearChatLog()
@@ -605,7 +605,7 @@ var chat;
 	}
 	function joinDefault() {
 		if (my.channel !== chat.default) {
-			$.post(app.url + 'chat/set-channel.php', {
+			$.post(Config.url + 'chat/set-channel.php', {
 				channel: chat.default
 			}).done(joinChangeCallback);
 		}

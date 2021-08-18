@@ -56,7 +56,7 @@ var academy;
 		skillData.skills[selected.index] = selected.rank
 
 		ng.lock(true)
-		$.post(app.url + 'character/train-skill.php', {
+		$.post(Config.url + 'character/train-skill.php', {
 			gold: my.gold - selected.cost,
 			data: JSON.stringify(skillData),
 			crypt: game.lastCrypt

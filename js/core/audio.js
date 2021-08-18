@@ -548,7 +548,7 @@ var audio;
 			}
 			cleanupOldHotkeys()
 
-			if (app.isApp) {
+			if (Config.isApp) {
 				bar.setWindowSize(ng.config.display)
 			}
 		}
@@ -612,11 +612,16 @@ var audio;
 	function playAmbientLoop() {
 		if (ng.view === 'town') {
 			stopAmbient()
-			if (town.isRainy) {
-				audio.playAmbient('town-rainy')
+			if (town.isRaining) {
+				audio.playAmbient('town-rain')
 			}
 			else {
-				audio.playAmbient('town-sunny')
+				if (game.phase === 'night' || game.phase === 'evening') {
+					audio.playAmbient('town-night')
+				}
+				else {
+					audio.playAmbient('town-sunny')
+				}
 			}
 		}
 		else {
@@ -637,7 +642,7 @@ var audio;
 		bgamb2Element.volume = (ng.config.ambientVolume / 100)
 		bgamb2Element.setAttribute('type', 'audio/mp3')
 		bgamb2Element.src = 'sound/ambient/' + foo + '.mp3'
-		console.info('playAmbient SUCCESS', foo, audio.isAmbientPlaying)
+		// console.info('playAmbient SUCCESS', foo, audio.isAmbientPlaying)
 	}
 
 	function fadeAmbientOut(el) {

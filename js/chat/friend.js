@@ -25,7 +25,7 @@ var friend;
 	}
 	function init() {
 		ng.friends = ng.friends || [];
-		$.get(app.url + 'chat/friend-get.php').done(data => {
+		$.get(Config.url + 'chat/friend-get.php').done(data => {
 			ng.friends = _.map(data, _.capitalize);
 		});
 	}
@@ -94,7 +94,7 @@ var friend;
 			chat.log("Names must be at least two characters long.", CHAT.WARNING);
 		}
 		else {
-			$.post(app.url + 'chat/friend-add.php', {
+			$.post(Config.url + 'chat/friend-add.php', {
 				friend: name
 			}).done(function(data){
 				if (data.error) {
@@ -117,7 +117,7 @@ var friend;
 		if (name.length > 1 &&
 			name !== my.name &&
 			ng.friends.includes(name)) {
-			$.post(app.url + 'chat/friend-remove.php', {
+			$.post(Config.url + 'chat/friend-remove.php', {
 				friend: name
 			}).done(data => {
 				if (data.error) {

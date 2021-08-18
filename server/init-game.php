@@ -173,5 +173,14 @@ if (isset($_SESSION['account'])) {
 		$r['bankSlots'] = $bankSlots;
 	}
 }
+// socket
+if ($_SERVER['SERVER_NAME'] !== 'localhost') {
+	// prod
+	$r['socketUrl'] = '34.220.110.228';
+}
+else {
+	// local
+	$r['socketUrl'] = '127.0.0.1';
+}
 
 echo json_encode($r);

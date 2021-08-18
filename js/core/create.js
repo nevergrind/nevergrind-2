@@ -85,7 +85,7 @@ var create;
 	};
 	// public //////////////////////////////////////
 	function events() {
-		if (!app.isApp) {
+		if (!Config.isApp) {
 			$("#logout").on('click', ng.logout);
 		}
 		$("#ch-card-wrap").on('click', '.ch-card', function(){
@@ -223,7 +223,7 @@ var create;
 				finalForm[key] -= create.base[key];
 			});
 			// send to server
-			$.post(app.url + 'create/create-character.php', {
+			$.post(Config.url + 'create/create-character.php', {
 				form: finalForm
 			}).done(r => {
 				ng.config.selectedRowIndex = r.id
@@ -241,7 +241,7 @@ var create;
 		if (ng.locked) return;
 		ng.lock();
 		audio.playSound('click-4')
-		$.post(app.url + 'create/delete-character.php', {
+		$.post(Config.url + 'create/delete-character.php', {
 			row: create.selected
 		}).done(r => {
 			// console.info('Deleted character: ', r);

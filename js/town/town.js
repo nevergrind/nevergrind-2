@@ -1,5 +1,5 @@
 var town;
-(function($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo, SteppedEase, undefined) {
+(function($, _, TweenMax, Power0, Power1, Power2, window,  undefined) {
 	town = {
 		go,
 		animateTown,
@@ -21,7 +21,8 @@ var town;
 		setMyGold,
 		socketReady,
 		initItemData,
-		isRainy: false,
+		isRaining: false,
+		isLightning: false,
 		isInitialized: {
 			'apothecary': false,
 			'blacksmith': false,
@@ -128,7 +129,7 @@ var town;
 		dungeon.suppressDoorNoise = true
 		map.killTorchTween()
 
-		$.post(app.url + 'character/load-character.php', {
+		$.post(Config.url + 'character/load-character.php', {
 			row: create.selected
 		}).done((data) => {
 			if (town.firstLoad) {
@@ -173,10 +174,10 @@ var town;
 			// init party member values
 			ng.setScene('town')
 
-			audio.playAmbientLoop()
 			chat.init()
 
 			game.setPhase(data)
+			audio.playAmbientLoop()
 			getElementById('scene-town').innerHTML = getTownHtml()
 
 			if (socket.enabled) {
@@ -267,23 +268,13 @@ var town;
 		})
 		town.tweens.push(smokeTween)
 
-		// waterfall
-		if (game.phase === 'night') {
-			TweenMax.set('#town-waterfall', {
-				filter: 'grayscale(.7) brightness(.5)'
-			})
-		}
-		else {
-			TweenMax.set('#town-waterfall', {
-				filter: 'grayscale(.7) brightness(1)'
-			})
-		}
 		const tween = {
+			totalFrames: 21,
 			lastFrame: -1,
-			frame: 0
+			frame: 20.99
 		}
-		const waterfallTween = TweenMax.to(tween, 2, {
-			frame: 20.99,
+		const waterfallTween = TweenMax.to(tween, 1.4, {
+			frame: 0,
 			ease: Power0.easeIn,
 			repeat: -1,
 			yoyo: true,
@@ -291,11 +282,83 @@ var town;
 			onUpdateParams: [tween]
 		})
 		town.tweens.push(waterfallTween)
+
+		// rain
+		town.isRaining = false
+		town.isLightning = false
+		if (game.phase === 'morning' || game.phase === 'afternoon' || game.phase === 'night') {
+			town.isRaining = _.random(100) > 80
+			town.isLightning = town.isRaining && Math.random() > .5
+		}
+		if (town.isRaining || Config.forceRain || Config.forceLightning) {
+			triggerRain({
+				drops: 7
+			})
+			if (town.isLightning || Config.forceLightning) {
+				triggerLightning()
+			}
+		}
 	}
+
+	function triggerLightning() {
+		console.info('triggerLightning')
+		town.tweens.push(TweenMax.to(EMPTY_OBJECT, 7, {
+			onRepeat: addLightning,
+			ease: Power0.easeIn,
+			repeat: -1,
+		}))
+	}
+
+	function addLightning() {
+		if (_.random(1, 100) > 80) {
+			TweenMax.to('#town-layer-sky', .016, {
+				onStart: () => {
+					audio.playSound('thunder-' + _.random(1, 2), 'ambient')
+				},
+				filter: 'brightness(7)',
+				onComplete: () => {
+					TweenMax.to('#town-layer-sky', .016, {
+						filter: 'brightness(1)',
+						ease: Power2.easeIn,
+					})
+				}
+			})
+		}
+	}
+
+	function addRain(i, config) {
+		const rainDuration = .4
+		const rainDelay = rainDuration / config.drops
+		const offsetX = -20
+		const rainMarginX = 20 / config.drops
+		const el = createElement('img')
+		el.className = 'town-rain'
+		el.src = 'images/town/rain.png'
+		el.style.left = offsetX + (i * rainMarginX) + '%'
+
+		querySelector('#town-rain-container').appendChild(el)
+		town.tweens.push(TweenMax.to(el, rainDuration, {
+			delay: i * rainDelay,
+			repeat: -1,
+			y: 0,
+			ease: Power0.easeIn,
+		}))
+	}
+	function triggerRain(config) {
+		for (let i=0; i<config.drops; i++) {
+			addRain(i, config)
+		}
+	}
+
+	let waterfallWidth = 0
+	let waterfallHeight = 0
 	function setWaterfallFrame(tween) {
 		if (tween.lastFrame !== ~~tween.frame) {
 			tween.lastFrame = ~~tween.frame
-			querySelector('#town-waterfall').style.backgroundPosition = tween.lastFrame + '00% 0%'
+			waterfallWidth = (window.innerWidth * .1458) * tween.totalFrames
+			waterfallHeight = window.innerHeight * .2593
+			querySelector('#town-waterfall').style.backgroundSize = waterfallWidth +'px '+ waterfallHeight + 'px'
+			querySelector('#town-waterfall').style.backgroundPosition = (tween.lastFrame * 100) + '% 0%'
 		}
 	}
 	function addApothecarySmoke(progress) {
@@ -397,7 +460,7 @@ var town;
 
 	function getTownHtml() {
 		if (Config.forceTownPhase) {
-			// game.phase = 'dawn'
+			// game.phase = 'afternoon'
 		}
 		const hazeOpacity = Math.random() > .5 ? 1 : 0
 		html = '<div id="town-wrap">' +
@@ -412,7 +475,7 @@ var town;
 
 				'<img id="town-layer-bg" class="town-layer" src="images/town/'+ game.phase +'-bg.png">' +
 				// waterfall layer
-				'<div id="town-waterfall" class="town-layer"></div>"' +
+				'<div id="town-waterfall" class="town-layer" style="background: url(images/town/town-waterfall-'+ game.phase +'.png)"></div>"' +
 
 				// smoke layer - dynamic
 				'<div id="title-layer-smoke" class="town-layer"></div>' +
@@ -430,6 +493,8 @@ var town;
 				// foreground layers
 				'<img id="town-layer-haze" class="town-layer" src="images/town/'+ game.phase +'-haze.png" style="opacity: '+ hazeOpacity +'">' +
 				'<img id="town-layer-people" class="town-layer" src="images/town/'+ game.phase +'-people.png">' +
+				// rain container
+				'<div id="town-rain-container" class="town-layer"></div>' +
 			'</div>' +
 
 			'<div id="town-building-label-wrap" class="text-shadow2">'+
@@ -452,7 +517,7 @@ var town;
 	}
 
 	function loadBank() {
-		$.get(app.url + 'town/load-bank.php')
+		$.get(Config.url + 'town/load-bank.php')
 			.done(processBank)
 	}
 
@@ -994,4 +1059,4 @@ var town;
 			t.kill()
 		})
 	}
-})($, _, TweenMax, Linear, RoughEase, Power0, Power1, Power2, Expo, SteppedEase);
+})($, _, TweenMax, Power0, Power1, Power2, window);

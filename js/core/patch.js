@@ -6,9 +6,23 @@ var patch;
 	}
 	const notes = [
 		{text: 'Version 0.3.4', date: 'August 16, 2021', isHeader: true},
+		{text: "CRU's Zealous Slam tooltip no longer indicates that it has a cooldown."},
+		{text: "Finished the waterfall animation in town for all times of day."},
+		{text: "The auto attack now properly turns off immediately when combat ends."},
+		{text: "Added rain and lightning environment effects to the town."},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+		{text: ""},
+
+		{text: 'Version 0.3.4', date: 'August 16, 2021', isHeader: true},
 		{text: "Added new server-side checks that make cheating much more difficult."},
 		{text: "Added ambient sound to town."},
-		{text: ""},
 
 		{text: 'Version 0.3.3', date: 'August 15, 2021', isHeader: true},
 		{text: "The blacksmith's furnace in town is now animated."},

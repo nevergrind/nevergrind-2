@@ -5,7 +5,7 @@ var game;
 	game = {
 		time: 0,
 		phase: 'morning',
-		maxTimeout: app.isApp ? 18000 : 18000,
+		maxTimeout: Config.isApp ? 18000 : 18000,
 		session: {
 			timer: 0
 		},
@@ -325,7 +325,7 @@ var game;
 		// console.info('playedSend 2', typeof minutes, minutes)
 		storage.set(game.storageId, minutes)
 		game.lastCrypt = game.getCrypt()
-		$.post(app.url + 'session/start.php', {
+		$.post(Config.url + 'session/start.php', {
 			id: game.lastCrypt
 		})
 	}
@@ -336,7 +336,7 @@ var game;
 	function played() {
 		const minutes = storage.get(game.storageId)
 		// console.info('minutes', minutes, typeof minutes)
-		$.post(app.url + 'chat/played.php', {
+		$.post(Config.url + 'chat/played.php', {
 			minutes: minutes,
 			crypt: game.lastCrypt
 		}).done(reportPlayed)

@@ -1268,7 +1268,6 @@ mobSkills = {};
 		}
 	}
 
-
 	// rx status
 	function txPlayerEffect(data) {
 		socket.publish('party' + my.partyId, {

@@ -139,7 +139,7 @@ var skills;
 				enhancedDamage: getSkillValues(.56, .08),
 				hitBonus: getSkillValues(4, .5),
 				critBonus: getSkillValues(-1, .5),
-				cooldownTime: 30,
+				cooldownTime: 0,
 				isRanged: true,
 				description: config => 'Unleash a powerful bash dealing '+ config.damageString +' physical damage on your target with a '+ ng.toPercent(buffs.zealousSlam.staggerRate) +'% chance to stagger your target.',
 			}, {

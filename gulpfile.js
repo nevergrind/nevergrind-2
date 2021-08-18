@@ -51,6 +51,7 @@ const jsFiles = [
 	'values/constants',
 	'util/util',
 	'util/query',
+	'core/config',
 	'core/storage',
 	'core/alias',
 	'core/login',
@@ -160,7 +161,6 @@ const jsFiles = [
 	'core/zone',
 	'core/stats',
 	'core/css',
-	'core/config',
 	'core/loading',
 	'core/patch',
 	'core/init', // should be last one

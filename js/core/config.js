@@ -3,12 +3,14 @@
  * this will help you centralize settings instead of searching throughout the code
  */
 const Config = {
+	url: '',
+	socketUrl: '',
+	isApp: location.protocol === 'chrome-extension:',
 	autoAttackEnabled: true, // huh?
 	consoleDisabled: false,
 	guaranteedLoot: false,
 	deathEnabled: true,
 	walkFast: true,
-	defaultPageUpZone: zones.find(z => z.name === ZONES.ashenflowPeak).id,
 	showMapNumbers: false,
 	autoAcceptPartyInvites: true,
 	forceUnique: false,
@@ -25,15 +27,18 @@ const Config = {
 	forceMobSkills: false,
 	forceTownPhase: true,
 	forceHugeGuild: true,
-	fastQuestTransitions: true
+	fastQuestTransitions: false,
+	forceRain: false,
+	forceLightning: false
 }
-if (app.isApp) {
+if (Config.isApp) {
+	Config.forceLightning = false
+	Config.forceRain = false
 	Config.autoAttackEnabled = true
 	Config.consoleDisabled = false
 	Config.guaranteedLoot = false
 	Config.deathEnabled = true
 	Config.walkFast = false
-	Config.defaultPageUpZone = 'Salubrin Haven'
 	Config.showMapNumbers = false
 	Config.autoAcceptPartyInvites = false
 	Config.forceUnique = false
@@ -52,3 +57,19 @@ if (app.isApp) {
 	Config.forceHugeGuild = false
 	Config.fastQuestTransitions = false
 }
+!function() {
+	Config.url = getUrl()
+	// Config.socketUrl - populated from init-game.php
+	/*
+	app.socketUrl = Config.isApp ? 'ws://34.220.110.228:9090/' : 'ws://127.0.0.1:9090'
+	 */
+
+	function getUrl() {
+		if (location.protocol === 'chrome-extension:') {
+			return 'http://34.220.110.228/ng2/server/'
+		}
+		else {
+			return 'server/'
+		}
+	}
+}()

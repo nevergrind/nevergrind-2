@@ -145,7 +145,7 @@ var bar;
 	function appExit() {
 		ng.lock()
 		ng.msg('Saving game data...')
-		if (app.isApp) {
+		if (Config.isApp) {
 			delayedCall(ng.getExitTime(), nw.App.closeAllWindows)
 		}
 		else appReset()
@@ -731,7 +731,7 @@ var bar;
 	 * @param value
 	 */
 	function setWindowSize(value) {
-		if (app.isApp) {
+		if (Config.isApp) {
 			var gui = require('nw.gui');
 			var win = gui.Window.get();
 			setTimeout(() => {
@@ -766,7 +766,7 @@ var bar;
 		if (id === ng.config.display) return
 
 		console.info('handleDisplaySizeChange', id)
-		if (app.isApp) {
+		if (Config.isApp) {
 			bar.setWindowSize(id)
 		}
 		$('#window-size-value').text(id);

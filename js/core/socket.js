@@ -18,12 +18,11 @@ var socket;
 	let len, secs
 	let broadcasts = []
 
-	const Realm = 'realm1'
 	const excludeObj = { exclude_me: true }
 	const includeObj = { exclude_me: false }
 	////////////////////////////////////////
 	function subscribe(topic, callback) {
-		topic = _.toLower(topic)
+		topic = topic.toLowerCase()
 		if (typeof socket.subs[topic] !== 'object' ||
 			!socket.subs[topic].active) {
 			// console.info("subscribing:", topic, callback.name);
@@ -65,7 +64,7 @@ var socket;
 				socket.session.unsubscribe(socket.subs[channel]);
 			}
 			catch(err) {
-				// console.warn('Could not unsubscribe: ', err);
+				console.warn('Could not unsubscribe: ', err);
 			}
 		}
 	}
@@ -89,11 +88,11 @@ var socket;
 	}*/
 	function init() {
 		socket.connection = new autobahn.Connection({
-			url: app.socketUrl,
-			realm: Realm
-		});
-		socket.connection.onopen = connectionSuccess;
-		socket.connection.open();
+			url: 'ws://' + Config.socketUrl + ':9090',
+			realm: 'realm1'
+		})
+		socket.connection.onopen = connectionSuccess
+		socket.connection.open()
 	}
 	function routeMainChat(data, obj) {
 		data = router.normalizeInput(data, obj);
@@ -106,20 +105,20 @@ var socket;
 		socket.enabled = true;
 		// chat updates
 		if (socket.initialConnection) {
-			socket.initialConnection = 0;
+			socket.initialConnection = 0
 
 			// subscribe to admin broadcasts
-			socket.subscribe('allbroadcast', broadcast.route);
-			!app.isApp && test.socketSub();
+			socket.subscribe('allbroadcast', broadcast.route)
+			Config.isApp && test.socketSub()
 			//return;
-			(function retry(){
+			!function retry() {
 				if (my.name){
 					game.initSocket();
 				}
 				else {
 					delayedCall(.2, retry);
 				}
-			})();
+			}()
 			// notify friends I'm online
 			socket.publish('friend' + my.name, {
 				name: my.name,

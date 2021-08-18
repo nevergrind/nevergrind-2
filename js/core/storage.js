@@ -8,7 +8,7 @@ var storage;
 	}
 	let fs
 	let path
-	if (app.isApp) {
+	if (Config.isApp) {
 		fs = require('fs')
 		path = require('path')
 	}
@@ -55,7 +55,7 @@ var storage;
 	 * @returns {string}
 	 */
 	function get(key) {
-		/*if (app.isApp) {
+		/*if (Config.isApp) {
 			// console.info('get:', key)
 			try {
 				let val = fs.readFileSync(storage.getPath(key))
@@ -103,7 +103,7 @@ var storage;
 	 */
 	function set(key, value) {
 		// console.info('Saving...', key, value)
-		/*if (app.isApp) {
+		/*if (Config.isApp) {
 			if (typeof value === 'string') {
 				fs.writeFileSync(storage.getPath(key), value)
 			}
@@ -120,7 +120,7 @@ var storage;
 	}
 
 	function remove(key) {
-		/*if (app.isApp) {
+		/*if (Config.isApp) {
 			fs.unlinkSync(storage.getPath(key))
 		}
 		else {*/

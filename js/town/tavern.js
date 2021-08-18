@@ -246,12 +246,12 @@ var tavern;
 	function getLeaders(job) {
 		ng.lock(true)
 		if (selectedLeaderboard === 'ALL') {
-			$.get(app.url + 'town/leaderboard.php')
+			$.get(Config.url + 'town/leaderboard.php')
 				.done(setLeaderboardData)
 				.always(ng.unlock)
 		}
 		else {
-			$.get(app.url + 'town/leaderboard.php?job=' + job)
+			$.get(Config.url + 'town/leaderboard.php?job=' + job)
 				.done(setLeaderboardData)
 				.always(ng.unlock)
 		}

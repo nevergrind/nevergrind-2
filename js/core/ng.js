@@ -308,6 +308,7 @@ var ng;
 		steamId: '',
 		handle: 0
 	}
+	let keepAliveInitialized = false
 
 	let el
 
@@ -392,8 +393,6 @@ var ng;
 	function checkPlayerData() {
 		// ignore list
 		let ignoreList = storage.get('ignore')
-
-		console.info('ignoreList', ignoreList)
 		if (typeof ignoreList === 'object' &&
 			ignoreList.length) {
 			ng.ignore = ignoreList
@@ -405,7 +404,7 @@ var ng;
 
 	function keepAlive() {
 		clearTimeout(game.session.timer)
-		$.get(app.url + 'session/alive.php')
+		$.get(Config.url + 'session/alive.php')
 			.always(handleKeepAliveAlways);
 	}
 	function handleKeepAliveAlways() {
@@ -459,10 +458,10 @@ var ng;
 		}, staggerDuration);
 	}
 	function logout() {
-		if (ng.locked || app.isApp) return;
+		if (ng.locked || Config.isApp) return;
 		ng.lock();
 		// socket.removePlayer(my.account);
-		$.get(app.url + 'account/logout.php').done(function() {
+		$.get(Config.url + 'account/logout.php').done(function() {
 			ng.msg("Logout successful");
 			storage.remove('email');
 			storage.remove('token');
@@ -549,7 +548,7 @@ var ng;
 		})
 	}
 	function initGame() {
-		if (app.isApp) {
+		if (Config.isApp) {
 			if (!ng.initialized) {
 				ng.lock();
 				ng.msg('Communicating with Steam...', 3)
@@ -567,8 +566,8 @@ var ng;
 					greenworks.getAuthSessionTicket(data => {
 						steam.handle = data.handle;
 						steam.ticket = data.ticket.toString('hex')
-						$.post(app.url + 'init-game.php', {
-							version: app.version,
+						$.post(Config.url + 'init-game.php', {
+							version: ngo.version,
 							screenName: steam.screenName,
 							steamId: steam.steamId,
 							channel: my.channel,
@@ -588,8 +587,8 @@ var ng;
 				}
 			}
 			else {
-				$.post(app.url + 'init-game.php', {
-					version: app.version,
+				$.post(Config.url + 'init-game.php', {
+					version: ngo.version,
 					screenName: steam.screenName,
 					steamId: steam.steamId,
 					channel: my.channel,
@@ -609,8 +608,8 @@ var ng;
 
 		}
 		else {
-			$.post(app.url + 'init-game.php', {
-				version: app.version
+			$.post(Config.url + 'init-game.php', {
+				version: ngo.version
 			}).done(handleInitGame)
 				.fail(err => {
 					ng.msg(err.responseText, 0, COLORS.yellow)
@@ -630,7 +629,7 @@ var ng;
 			my.accountId = r.id
 			ng.bankSlots = r.bankSlots
 			ng.characterSlots = r.characterSlots
-			if (!app.isApp) {
+			if (!Config.isApp) {
 				getElementById('logout').textContent = storage.get('account')
 			}
 			displayCharacter(r.characterData)
@@ -639,21 +638,12 @@ var ng;
 		}
 		else login.notLoggedIn()
 
-		if (!app.initialized) {
-			app.initialized = 1
+		if (!keepAliveInitialized) {
+			keepAliveInitialized = true
 			keepAlive()
 		}
 
-		/*if (typeof r.characterData === 'object' &&
-			!r.characterData.length &&
-			!routedToCharacterPage) {
-			// go-create-character
-			routedToCharacterPage = true
-			delayedCall(1.5, () => {
-				ng.goCreateCharacter()
-				ng.msg('Create your first character.', 5)
-			})
-		}*/
+		Config.socketUrl = r.socketUrl
 	}
 	function getSelectedRowIndex(r) {
 		let index = 0
@@ -770,7 +760,7 @@ var ng;
 		return {
 			display: 'Full Screen',
 			lang: 'English',
-			musicVolume: 50,
+			musicVolume: 20,
 			soundVolume: 50,
 			ambientVolume: 50,
 			fastDestroy: false,

@@ -432,13 +432,13 @@ var my;
 			else if (my.job === JOB.WIZARD) {
 				my.skills = [1,0,0,1,0,0,1,0,0,0,1,0]
 			}
-
-			saveCharacterData()
+			// need a delay upon init because start.php has not initialized yet
+			delayedCall(1, saveCharacterData)
 		}
 	}
 
 	function saveCharacterData() {
-		$.post(app.url + 'character/save-data.php', {
+		$.post(Config.url + 'character/save-data.php', {
 			data: JSON.stringify(getMyData()),
 			crypt: game.lastCrypt
 		})

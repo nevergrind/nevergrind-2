@@ -13,24 +13,18 @@
 
 <script>
 // search: $version - only update when it is an essential update because it is sent to server to check for a match
-var app = {
-	version: '0.3.4', // $version // this forces a client-server match! Only change when forcing a client/server update
-	initialized: 0,
-	isApp: location.protocol === 'chrome-extension:',
-	account: '',
+const ngo = {
+	// $version // this forces a client-server match! Only change when forcing a client/server update
+	version: '0.3.4',
+	isApp: location.protocol === 'chrome-extension:'
 }
 // remove if server goes down
-app.url = app.isApp ?
-	'http://34.220.110.228/ng2/server/' : 'server/'
-app.socketUrl = app.isApp ?
-	'ws://34.220.110.228:9090/' :
-	'ws://127.0.0.1:9090'
 !function(d){
-	const css = app.isApp ? ['ngo'] : ['main'];
-	const suffix = app.isApp ? '.min.css' : '.css';
+	const css = ngo.isApp ? ['ngo'] : ['main'];
+	const suffix = ngo.isApp ? '.min.css' : '.css';
 	for (var i=0, len = css.length; i<len; i++) {
 		var link = d.createElement('link');
-		link.href = 'css/' + css[i] + suffix + '?v='+ app.version;
+		link.href = 'css/' + css[i] + suffix + '?v='+ ngo.version;
 		link.rel = 'stylesheet';
 		d.write(link.outerHTML);
 	}
@@ -93,7 +87,7 @@ app.socketUrl = app.isApp ?
 			<!-- well top -->
 			<div id="title-well-top" class="title-ch-well text-center">
 				<script>
-					if (!app.isApp) {
+					if (!ngo.isApp) {
 						document.write('<a id="logout" class="ng-btn title-btn-margin pointer">Loading...</a>')
 					}
 				</script>
@@ -112,7 +106,7 @@ app.socketUrl = app.isApp ?
 			</div>
 		</div>
 		<script>
-			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.3.3</div>')
+			document.write('<div id="version" class="text-shadow popover-icons pointer">Alpha Version 0.3.4</div>')
 		</script>
 	</div>
 
@@ -553,8 +547,9 @@ app.socketUrl = app.isApp ?
 </div>
 
 <div id="scene-loading" class="top-layer no-select">
+	<div id="loading-bg"></div>
 	<img id="loading-img">
-	<div id="loading-msg" class="stag-blue-top text-shadow3"></div>
+	<div id="loading-msg" class="text-shadow3"></div>
 	<img id="loading-logo" src="images/title/nevergrind-online-logo-1.png">
 	<img id="loading-logo-fg" src="images/title/nevergrind-online-logo-1.png">
 	<img id="loading-logo-gem" src="images/title/nevergrind-online-logo-1-gem.png">
@@ -634,7 +629,7 @@ app.socketUrl = app.isApp ?
 
 <script>
 ((d) => {
-	if (!app.isApp){
+	if (!ngo.isApp){
 		const files = [
 			// lib files
 			'libs/jquery.min',
@@ -660,6 +655,7 @@ app.socketUrl = app.isApp ?
 			'values/constants',
 			'util/util',
 			'util/query',
+			'core/config',
 			'core/storage',
 			'core/alias',
 			'core/login',
@@ -770,14 +766,13 @@ app.socketUrl = app.isApp ?
 			'core/stats',
 			'core/css',
 			'test/test',
-			'core/config',
 			'core/loading',
 			'core/patch',
 			'core/init',
 		]
 		files.forEach((file) => {
 			const script = d.createElement('script')
-			script.src = 'js/' + file + '.js?v=' + app.version
+			script.src = 'js/' + file + '.js?v=' + ngo.version
 			d.write(script.outerHTML)
 		})
 	}

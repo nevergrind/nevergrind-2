@@ -1001,7 +1001,7 @@ var loot = {};
 		item.hideLootMenu(index)
 		item.lootTimers[index].kill()
 		handleDragStart()
-		$.post(app.url + 'item/loot-item.php', {
+		$.post(Config.url + 'item/loot-item.php', {
 			slot: slot,
 			name: drop.name,
 			data: JSON.stringify(_.omit(drop, KEYS.NAME)),
@@ -1808,7 +1808,7 @@ var loot = {};
 				if (myItemTypes.includes(item.dropType)) {
 					handleDragStart()
 					toast.hideDestroyToast()
-					$.post(app.url + 'item/swap-items.php', {
+					$.post(Config.url + 'item/swap-items.php', {
 						dragRow: item.dragData.row,
 						dragSlot: item.dropSlot,
 						dragType: item.dropType,
@@ -1827,7 +1827,7 @@ var loot = {};
 				if (myItemTypes.includes(item.dropType)) {
 					handleDragStart()
 					toast.hideDestroyToast()
-					$.post(app.url + 'item/update-item.php', {
+					$.post(Config.url + 'item/update-item.php', {
 						dragRow: item.dragData.row,
 						dragSlot: item.dropSlot,
 						dragType: item.dropType,
@@ -2073,7 +2073,7 @@ var loot = {};
 		}
 		handleDragStart()
 		// console.info('item.buy', item.dragData)
-		$.post(app.url + 'item/buy-item.php', {
+		$.post(Config.url + 'item/buy-item.php', {
 			gold: my.gold - item.goldValue,
 			slot: buyItemSlot,
 			name: item.dragData.name,
@@ -2112,7 +2112,7 @@ var loot = {};
 		// console.warn('sell start', item.dragData.row, item.dragType)
 		// console.info('item.dragType', item.dragType, item.dragSlot)
 		handleDragStart()
-		$.post(app.url + 'item/sell-item.php', {
+		$.post(Config.url + 'item/sell-item.php', {
 			row: item.dragData.row,
 			dragType: item.dragType,
 			gold: my.gold + item.goldValue,
@@ -2128,7 +2128,7 @@ var loot = {};
 		}
 		// console.warn('destroy start', item.dragData.row, item.dragType)
 		handleDragStart()
-		$.post(app.url + 'item/destroy-item.php', {
+		$.post(Config.url + 'item/destroy-item.php', {
 			row: item.dragData.row,
 			dragType: item.dragType,
 			crypt: game.lastCrypt
@@ -2254,7 +2254,7 @@ var loot = {};
 					return
 				}
 				handleDragStart()
-				$.post(app.url + 'item/destroy-item.php', {
+				$.post(Config.url + 'item/destroy-item.php', {
 					row: items[type][index].row,
 					dragType: type,
 					crypt: game.lastCrypt
@@ -2325,7 +2325,7 @@ var loot = {};
 		if (items[itemType][itemSlot].row &&
 			items[scrollType][scrollIndex].row) {
 			ng.lock(true)
-			$.post(app.url + 'item/update-item-data.php', {
+			$.post(Config.url + 'item/update-item-data.php', {
 				itemRow: items[itemType][itemSlot].row,
 				data: JSON.stringify(_.omit(newItem, KEYS.NAME)),
 				scrollRow: items[scrollType][scrollIndex].row,

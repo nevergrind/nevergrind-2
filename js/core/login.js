@@ -94,7 +94,7 @@ var login;
 		}
 		login.msg("Connecting to server...");
 		login.lock = 1;
-		$.post(app.url + 'account/create-account.php', {
+		$.post(Config.url + 'account/create-account.php', {
 			account: account
 		}).done(function(data) {
 			if (!data.includes("Account Created")){
@@ -142,7 +142,7 @@ var login;
 		login.msg("Connecting to server...")
 		login.authenticationLock = true
 		storage.set('account', account)
-		$.post(app.url + 'account/authenticate.php', {
+		$.post(Config.url + 'account/authenticate.php', {
 			account: account
 		}).done(function(data){
 			// console.info('data', data.success, data.account);

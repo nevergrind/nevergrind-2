@@ -97,7 +97,7 @@ function popoverService($, parseInt, getComputedStyle, TweenMax, _, undefined) {
 			} else if (id.startsWith('loot-cancel-')) {
 				id = 'loot-cancel'
 			}
-			console.info('id', id)
+			// console.info('id', id)
 			html = typeof mainMenuPopovers[id] === 'function'
 				? mainMenuPopovers[id]()
 				: mainMenuPopovers[id]

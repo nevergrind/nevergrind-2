@@ -178,6 +178,8 @@ var dungeon;
 		/////////////////////////// scene change
 		chat.sizeDungeon()
 		ng.setScene('dungeon')
+		audio.stopAmbient()
+		audio.playAmbientLoop()
 		dungeon.init()
 		dungeon.setGridPosition()
 
@@ -287,7 +289,7 @@ var dungeon;
 		addRightWallTiles(zoneName)
 		addEndWall(zoneName)
 		addEntityContainer()
-		console.warn('initDungeonTextures')
+		// console.warn('initDungeonTextures')
 	}
 	function setRunSpeed() {
 		dungeon.distancePerSecond = Config.walkFast ? GRID_SIZE * 3 : GRID_SIZE * .4

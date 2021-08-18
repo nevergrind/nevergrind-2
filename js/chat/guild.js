@@ -73,7 +73,7 @@ var guild;
 		var name = $("#guild-input").val().replace(/ +/g, " ").trim();
 		// console.info("Name: ", name);
 		ng.lock();
-		$.post(app.url + 'guild/create.php', {
+		$.post(Config.url + 'guild/create.php', {
 			// replace
 			name: name.replace(/ +/g, " ").trim()
 		}).done(data => {
@@ -123,7 +123,7 @@ var guild;
 	function inviteAccepted(z) {
 		if (my.guild.id) return
 		// clicked CONFIRM
-		$.post(app.url + 'guild/invite-accepted.php', {
+		$.post(Config.url + 'guild/invite-accepted.php', {
 			guildName: z.guildName,
 			guildId: z.row
 		}).done(function(data){
@@ -143,7 +143,7 @@ var guild;
 			return;
 		}
 		var o = my.guild;
-		$.get(app.url + 'guild/disband.php').done(data => {
+		$.get(Config.url + 'guild/disband.php').done(data => {
 			my.guild = guild.Guild(); // nice!
 			// console.info("guild.disband() response ", data);
 			chat.log("You have disbanded the guild: "+ o.name, CHAT.WARNING);
@@ -163,7 +163,7 @@ var guild;
 			chat.log("Only the guild leader or officers can boot people from the guild", CHAT.WARNING);
 		}
 		else {
-			$.post(app.url + 'guild/boot.php', {
+			$.post(Config.url + 'guild/boot.php', {
 				name: _.capitalize(name)
 			}).fail(function (data) {
 				chat.log(data.responseText, CHAT.WARNING);
@@ -175,7 +175,7 @@ var guild;
 		// console.info("Booting! ", data);
 		chat.log(data.msg, CHAT.WARNING);
 		if (data.name === my.name) {
-			$.post(app.url + 'guild/disband.php', {
+			$.post(Config.url + 'guild/disband.php', {
 				action: 'boot'
 			}).done(function(){
 				socket.unsubscribe('guild'+ my.guild.id);
@@ -190,7 +190,7 @@ var guild;
 			chat.log("Only the guild leader or officers can promote members.", CHAT.WARNING);
 		}
 		else {
-			$.post(app.url + 'guild/promote.php', {
+			$.post(Config.url + 'guild/promote.php', {
 				name: _.capitalize(name)
 			}).fail(function (data) {
 				chat.log(data.responseText, CHAT.WARNING);
@@ -207,7 +207,7 @@ var guild;
 			chat.log("Only the guild leader can demote members.", CHAT.WARNING);
 		}
 		else {
-			$.post(app.url + 'guild/demote.php', {
+			$.post(Config.url + 'guild/demote.php', {
 				name: _.capitalize(name)
 			}).fail(data => {
 				chat.log(data.responseText, CHAT.WARNING);
@@ -226,7 +226,7 @@ var guild;
 			chat.log("You're already the guild leader!", CHAT.WARNING);
 		}
 		else {
-			$.post(app.url + 'guild/leader.php', {
+			$.post(Config.url + 'guild/leader.php', {
 				name: _.capitalize(name)
 			}).done(function (data) {
 				// console.info('leader: ', data);
@@ -244,7 +244,7 @@ var guild;
 	}
 	function updateSession(data, bypass) {
 		if (data.name === my.name || bypass) {
-			$.get(app.url + 'guild/update-session.php').done(function (data) {
+			$.get(Config.url + 'guild/update-session.php').done(function (data) {
 				// console.info('update-session: ', data);
 				guild.setGuildData(data);
 				// nothing
@@ -260,7 +260,7 @@ var guild;
 	}
 	function motd(msg) {
 		if (my.guild.rank > 1) return;
-		$.post(app.url + 'guild/motd.php', {
+		$.post(Config.url + 'guild/motd.php', {
 			msg: msg
 		}).fail(function (data) {
 			chat.log(data.responseText, CHAT.WARNING);
@@ -286,7 +286,7 @@ var guild;
 		if (!my.guild.id) return;
 		throttleTime = throttleTime || 0
 		ng.lock(1)
-		$.get(app.url + 'guild/get-member-list.php').done(data => {
+		$.get(Config.url + 'guild/get-member-list.php').done(data => {
 			// console.info(data);
 			delayedCall(throttleTime, () => {
 				setGuildList(data)

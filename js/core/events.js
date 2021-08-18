@@ -84,7 +84,7 @@
 
 	function handleContextMenu(e) {
 		console.info('handleContext', e)
-		if (app.isApp) return false // disable context menus
+		if (Config.isApp) return false // disable context menus
 	}
 	function chatInputFocus() {
 		chat.hasFocus = true

@@ -218,7 +218,7 @@ var mission;
 			mission.inProgress = true
 			mission.isCompleted = false
 			// test mission defaults for fast test mission start-up
-			if (!app.isApp && !mission.id && Config.enablePageUpZoning) {
+			if (!Config.isApp && !mission.id && Config.enablePageUpZoning) {
 				// setup some mission data
 				test.setupMissionData()
 			}
