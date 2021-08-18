@@ -68,6 +68,7 @@ var router;
 		else if (r === 'p->casting') party.casting(data)
 		else if (r === 'p->checkWipe') party.rxCheckWipe(data)
 		else if (r === 'p->roomCleared') map.rxRoomCleared(data)
+		else if (r === 'p->mobRespawn') map.rxMobRespawn(data)
 	}
 	function toGuild(data, route) {
 		if (route === 'guild->hasJoined') guild.hasJoined(data)

@@ -32,6 +32,8 @@ let map;
 		dragHeight: 0,
 		dragMap: {},
 		fogTween: {},
+		triggerHallwayMobRespawn,
+		rxMobRespawn,
 		killTorchTween,
 		handleHearthClick,
 		init,
@@ -434,13 +436,6 @@ let map;
 		).id
 		map.inRoom = false
 
-		// check hallway respawn
-		if (triggerHallwayMobRespawn()) {
-			dungeon.map.hallways[map.hallwayId].entities.map((e, i) => {
-				dungeon.map.hallways[map.hallwayId].entities[i].isAlive = true
-			})
-		}
-
 		// set current hallway entities
 		if (typeof dungeon.entities[map.hallwayId] === 'object' && !dungeon.entities[map.hallwayId].length ||
 			typeof dungeon.entities[map.hallwayId] === 'undefined') {
@@ -462,13 +457,34 @@ let map;
 	 * Determine if mobs have respawned based on timer
 	 * @returns {boolean}
 	 */
-	const mobRespawnTime = 900000 // 15 minutes
+	const mobRespawnTime = 9000 // 15 minutes
 	function triggerHallwayMobRespawn() {
 		const now = Date.now()
-		return dungeon.map.hallways[map.hallwayId].entities.every(e =>
-			(!e.isAlive && ((now - e.timestamp) > mobRespawnTime))
-		)
+		const respawnedHallwayIds = dungeon.map.hallways.filter(h => {
+			return h.entities.every(areMobsDeadAndExpired)
+		}).map(h => h.id)
+		if (respawnedHallwayIds.length) {
+			socket.publish('party' + my.partyId, {
+				route: 'p->mobRespawn',
+				ids: respawnedHallwayIds
+			})
+		}
+		//////////
+		function areMobsDeadAndExpired(e) {
+			return (e.isAlive === false && ((now - e.timestamp) > mobRespawnTime))
+		}
 	}
+
+	function rxMobRespawn(data) {
+		console.info('p->mobRespawn', data)
+		data.ids.forEach(id => {
+			dungeon.map.hallways[id].entities.map(ent => {
+				ent.isAlive = true
+			})
+
+		})
+	}
+
 	function revealRoom() {
 		applyBounds()
 		let rooms = ['#room-' + map.roomId]

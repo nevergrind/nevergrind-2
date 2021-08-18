@@ -27,9 +27,9 @@ const Config = {
 	forceMobSkills: false,
 	forceTownPhase: true,
 	forceHugeGuild: true,
-	fastQuestTransitions: false,
+	fastQuestTransitions: true,
 	forceRain: false,
-	forceLightning: false
+	forceLightning: true
 }
 if (Config.isApp) {
 	Config.forceLightning = false

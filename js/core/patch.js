@@ -10,7 +10,7 @@ var patch;
 		{text: "Finished the waterfall animation in town for all times of day."},
 		{text: "The auto attack now properly turns off immediately when combat ends."},
 		{text: "Added rain and lightning environment effects to the town."},
-		{text: ""},
+		{text: "Improved the mob respawn multiplayer logic which maybe prevented some bugs 🤷‍"},
 		{text: ""},
 		{text: ""},
 		{text: ""},

@@ -395,6 +395,7 @@ var battle;
 			audio.playMusic('battle' + _.random(1, 3), 0, 500)
 			map.inCombat = true
 			map.hide()
+			map.triggerHallwayMobRespawn()
 		}
 	}
 	function initBattleLayer() {

@@ -808,6 +808,10 @@ tbody { border: 0 }
 	width: 120%;
 	height: 54rem;
 }
+#town-layer-lightning {
+	background: #fff;
+	opacity: 0;
+}
 #town-layer-bg {
 	width: 100.1%;
 	height: 100.1%;
@@ -827,13 +831,6 @@ tbody { border: 0 }
 .town-building:active {
 	filter: brightness(200%) saturate(140%) drop-shadow(0 0 2px #ffd) drop-shadow(0 0 4px #ffd) drop-shadow(0 0 6px #ffd);
 }
-/*background: repeating-linear-gradient(90deg, #013 0%, #025 2%, #013 4%);
-background-size: 50% 100%;
-animation: town-repeat-bg 90s linear infinite;*/
-/*@keyframes town-repeat-bg {
-	from { background-position: 0%; }
-	to { background-position: 200%; }
-}*/
 .mission-icon {
 	color: gold;
 	margin-right: .4rem;

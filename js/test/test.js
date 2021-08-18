@@ -23,7 +23,7 @@ var test;
 			brightness(100%)
 			contrast(100%)
 			shadow(100%)
-			grayscale(100%
+			grayscale(100%)
 			drop-shadow(0 0 5px #0f0)
 			invert(100%)
 			opacity(100%)

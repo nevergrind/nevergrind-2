@@ -2,6 +2,7 @@ var town;
 (function($, _, TweenMax, Power0, Power1, Power2, window,  undefined) {
 	town = {
 		go,
+		addLightning,
 		animateTown,
 		openVarious,
 		killAllTweens,
@@ -177,7 +178,6 @@ var town;
 			chat.init()
 
 			game.setPhase(data)
-			audio.playAmbientLoop()
 			getElementById('scene-town').innerHTML = getTownHtml()
 
 			if (socket.enabled) {
@@ -231,7 +231,8 @@ var town;
 
 	function animateTown() {
 		// clouds
-		const cloudTween = TweenMax.to('#title-layer-clouds', 777, {
+		const cloudDuration = _.random(333, 1000)
+		const cloudTween = TweenMax.to('#town-layer-clouds', cloudDuration, {
 			startAt: { x: '0%' },
 			x: '-100%',
 			repeat: -1,
@@ -287,10 +288,11 @@ var town;
 		town.isRaining = false
 		town.isLightning = false
 		if (game.phase === 'morning' || game.phase === 'afternoon' || game.phase === 'night') {
-			town.isRaining = _.random(100) > 80
+			town.isRaining = _.random(100) > 70
 			town.isLightning = town.isRaining && Math.random() > .5
 		}
 		if (town.isRaining || Config.forceRain || Config.forceLightning) {
+			town.isRaining = true
 			triggerRain({
 				drops: 7
 			})
@@ -298,31 +300,68 @@ var town;
 				triggerLightning()
 			}
 		}
+		audio.playAmbientLoop()
 	}
 
 	function triggerLightning() {
-		console.info('triggerLightning')
-		town.tweens.push(TweenMax.to(EMPTY_OBJECT, 7, {
+		town.tweens.push(TweenMax.to(EMPTY_OBJECT, 1, {
 			onRepeat: addLightning,
 			ease: Power0.easeIn,
 			repeat: -1,
 		}))
 	}
 
-	function addLightning() {
-		if (_.random(1, 100) > 80) {
-			TweenMax.to('#town-layer-sky', .016, {
-				onStart: () => {
-					audio.playSound('thunder-' + _.random(1, 2), 'ambient')
-				},
-				filter: 'brightness(7)',
-				onComplete: () => {
-					TweenMax.to('#town-layer-sky', .016, {
-						filter: 'brightness(1)',
-						ease: Power2.easeIn,
+	function addLightning(override = false) {
+		if (Math.random() > .93 || override) {
+			let flashDuration = .2
+			if (Math.random() > .75) {
+				flashDuration = _.random(.4, .8)
+			}
+			const lightningEl = querySelector('#town-layer-lightning')
+			TweenMax.to(EMPTY_OBJECT, flashDuration, {
+				ease: Power0.easeIn,
+				onUpdate: lightningOn,
+				onComplete: lightningOff
+			})
+			const townEls = querySelectorAll('#town-layer-clouds, #town-layer-bg, #town-layer-people, #town-rain-container')
+			let brightRoll = 0
+			TweenMax.to(EMPTY_OBJECT, flashDuration, {
+				ease: Power0.easeIn,
+				onUpdate: animateFg,
+				onComplete: resetFg
+			})
+			audio.playSound('thunder-' + _.random(1, 2), 'ambient')
+			///////////////
+			function lightningOn() {
+				lightningEl.style.opacity = Math.random() > .5 ? _.random(.5, 1) : 0
+			}
+			function lightningOff() {
+				lightningEl.style.opacity = 0
+			}
+			function animateFg() {
+				brightRoll = Math.random()
+				if (brightRoll > .66) {
+					TweenMax.set(townEls, {
+						filter: 'brightness(2)'
 					})
 				}
-			})
+				else if (brightRoll > .33) {
+					TweenMax.set(townEls, {
+						filter: 'brightness(.15)'
+					})
+				}
+				else {
+					TweenMax.set(townEls, {
+						filter: 'brightness(1.2)'
+					})
+				}
+			}
+			function resetFg() {
+				TweenMax.set(townEls, {
+					filter: 'brightness(1)'
+				})
+			}
+
 		}
 	}
 
@@ -370,7 +409,7 @@ var town;
 		if (game.phase === 'night') {
 			el.style.filter = 'brightness(.5)'
 		}
-		querySelector('#title-layer-smoke').appendChild(el)
+		querySelector('#town-layer-smoke').appendChild(el)
 		const scaleTween = TweenMax.to(el, apothecarySmokeDuration, {
 			startAt: { x: 10 },
 			x: 0,
@@ -467,8 +506,10 @@ var town;
 			'<div id="town-building-wrap" class="wh-100">' +
 				// background - sky clouds etc
 				'<img id="town-layer-sky" class="town-layer" src="images/town/'+ game.phase +'-sky.jpg">' +
+				// lightning
+				'<div id="town-layer-lightning" class="town-layer"></div>' +
 				// clouds
-				'<div id="title-layer-clouds" class="flex-row town-layer">' +
+				'<div id="town-layer-clouds" class="flex-row town-layer">' +
 					'<img id="town-layer-clouds-1" src="images/town/'+ game.phase +'-clouds.png" class="town-clouds">' +
 					'<img id="town-layer-clouds-2" src="images/town/'+ game.phase +'-clouds.png" class="town-clouds">' +
 				'</div>' +
@@ -478,7 +519,7 @@ var town;
 				'<div id="town-waterfall" class="town-layer" style="background: url(images/town/town-waterfall-'+ game.phase +'.png)"></div>"' +
 
 				// smoke layer - dynamic
-				'<div id="title-layer-smoke" class="town-layer"></div>' +
+				'<div id="town-layer-smoke" class="town-layer"></div>' +
 				// buildings
 				'<img data-id="Bank" id="town-bank" class="town-building" src="images/town/'+ game.phase +'-bank.png">' +
 				'<img data-id="Guild Hall" id="town-guild" class="town-building" src="images/town/'+ game.phase +'-guild.png">' +
