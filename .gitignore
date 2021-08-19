@@ -8,12 +8,17 @@ greenworks*
 /build-ng2
 /nwjs*
 /steamworks*
+/docs
+/fonts
 /images
+/lib
 /mobs
 /mobs-archive
 /mobs-huge
 /music
+/nwjs*
 /node_modules
+/sound
 package.json
 package-lock.json
 steam_appid.txt
