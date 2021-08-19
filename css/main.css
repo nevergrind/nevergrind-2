@@ -784,8 +784,48 @@ tbody { border: 0 }
 	left: 44.4%;
 	width: 14.58%;
 	height: 25.93%;
-	background: url(../images/town/town-waterfall.png);
+	background: url(../images/blank.png);
 	background-size: 100% 100%;
+}
+#town-guild-flag-left,
+#town-guild-flag-right {
+	width: 14.58%;
+	height: 25.93%;
+	background: url(../images/blank.png);
+	background-size: 100% 100%;
+	transition: filter .2s ease-out;
+}
+#town-guild-flag-left {
+	top: -2.5%;
+	left: -4.75%;
+	transform: scale(.24);
+}
+#town-guild-flag-right {
+	top: -5.45%;
+	left: 12.85%;
+	transform: scale(.4);
+}
+#town-academy-flag-1,
+#town-academy-flag-2,
+#town-academy-flag-3 {
+	width: 14.58%;
+	height: 25.93%;
+	background: url(../images/blank.png);
+	background-size: 100% 100%;
+	transform: scale(.5);
+	transition: filter .2s ease-out;
+}
+#town-academy-flag-1 {
+	top: 10.3%;
+	left: 49.25%;
+}
+#town-academy-flag-2 {
+	top: -2.3%;
+	left: 55.8%;
+}
+#town-academy-flag-3 {
+	top: -2.2%;
+	left: 62.35%;
 }
 #town-building-wrap {
 	position: relative;
@@ -824,12 +864,6 @@ tbody { border: 0 }
 	bottom: 0;
 	cursor: url('cursor/pointer.png'), pointer;
 	transition: filter .2s ease-out;
-}
-.town-building:hover {
-	filter: brightness(125%) saturate(120%) drop-shadow(0 0 2px #ffa) drop-shadow(0 0 4px #ffa);
-}
-.town-building:active {
-	filter: brightness(200%) saturate(140%) drop-shadow(0 0 2px #ffd) drop-shadow(0 0 4px #ffd) drop-shadow(0 0 6px #ffd);
 }
 .mission-icon {
 	color: gold;

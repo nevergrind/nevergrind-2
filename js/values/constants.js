@@ -16,3 +16,12 @@ const MAX_SKILL_LEVEL = 7
 // non-primitives
 const HybridJobs = [JOB.CRUSADER, JOB.SHADOW_KNIGHT, JOB.RANGER]
 const ShiftKeyFalse = { shiftKey: false }
+
+const ANIMATE_CANDLE = RoughEase.ease.config({
+	template: Power0.easeOut,
+	strength: 3,
+	points: 50,
+	taper: 'both',
+	randomize: true,
+	clamp: true
+})

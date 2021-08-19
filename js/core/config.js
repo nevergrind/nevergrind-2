@@ -29,7 +29,7 @@ const Config = {
 	forceHugeGuild: true,
 	fastQuestTransitions: true,
 	forceRain: false,
-	forceLightning: true
+	forceLightning: false
 }
 if (Config.isApp) {
 	Config.forceLightning = false

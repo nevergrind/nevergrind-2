@@ -269,20 +269,98 @@ var town;
 		})
 		town.tweens.push(smokeTween)
 
-		const tween = {
+		const waterfallTweenConfig = {
 			totalFrames: 21,
 			lastFrame: -1,
 			frame: 20.99
 		}
-		const waterfallTween = TweenMax.to(tween, 1.4, {
+		const waterfallTween = TweenMax.to(waterfallTweenConfig, 1.4, {
 			frame: 0,
 			ease: Power0.easeIn,
 			repeat: -1,
 			yoyo: true,
 			onUpdate: setWaterfallFrame,
-			onUpdateParams: [tween]
+			onUpdateParams: [waterfallTweenConfig]
 		})
 		town.tweens.push(waterfallTween)
+
+		// town-academy-flag-1
+		const flagDuration = 1.6
+		const academyFlagTween1Config = {
+			id: '#town-academy-flag-1',
+			totalFrames: 48,
+			lastFrame: -1,
+			frame: 47.99
+		}
+		const flagTween1 = TweenMax.to(academyFlagTween1Config, flagDuration, {
+			frame: 0,
+			ease: Power0.easeIn,
+			repeat: -1,
+			onUpdate: setAcademyFlagFrame,
+			onUpdateParams: [academyFlagTween1Config]
+		})
+		flagTween1.progress(.333)
+		town.tweens.push(flagTween1)
+		const academyFlagTween2Config = {
+			id: '#town-academy-flag-2',
+			totalFrames: 48,
+			lastFrame: -1,
+			frame: 47.99
+		}
+		const flagTween2 = TweenMax.to(academyFlagTween2Config, flagDuration, {
+			frame: 0,
+			ease: Power0.easeIn,
+			repeat: -1,
+			onUpdate: setAcademyFlagFrame,
+			onUpdateParams: [academyFlagTween2Config]
+		})
+		flagTween2.progress(.666)
+		town.tweens.push(flagTween2)
+		const academyFlagTween3Config = {
+			id: '#town-academy-flag-3',
+			totalFrames: 48,
+			lastFrame: -1,
+			frame: 47.99
+		}
+		town.tweens.push(TweenMax.to(academyFlagTween3Config, flagDuration, {
+			frame: 0,
+			ease: Power0.easeIn,
+			repeat: -1,
+			onUpdate: setAcademyFlagFrame,
+			onUpdateParams: [academyFlagTween3Config]
+		}))
+		// guild flags
+		const guildFlagDuration = 2.5
+		const guildFlagLeftConfig = {
+			id: '#town-guild-flag-left',
+			totalFrames: 48,
+			lastFrame: -1,
+			frame: 47.99
+		}
+		const guildFlagRightTween = TweenMax.to(guildFlagLeftConfig, guildFlagDuration, {
+			frame: 0,
+			ease: Power0.easeIn,
+			repeat: -1,
+			yoyo: true,
+			onUpdate: setGuildFlagFrame,
+			onUpdateParams: [guildFlagLeftConfig]
+		})
+		town.tweens.push(guildFlagRightTween)
+		const guildFlagRightConfig = {
+			id: '#town-guild-flag-right',
+			totalFrames: 48,
+			lastFrame: -1,
+			frame: 47.99
+		}
+		const guildFlagLeftTween = TweenMax.to(guildFlagRightConfig, guildFlagDuration, {
+			frame: 0,
+			ease: Power0.easeIn,
+			repeat: -1,
+			yoyo: true,
+			onUpdate: setGuildFlagFrame,
+			onUpdateParams: [guildFlagRightConfig]
+		})
+		town.tweens.push(guildFlagLeftTween)
 
 		// rain
 		town.isRaining = false
@@ -301,6 +379,30 @@ var town;
 			}
 		}
 		audio.playAmbientLoop()
+	}
+
+	let guildFlagWidth = 0
+	let guildFlagHeight = 0
+	function setGuildFlagFrame(tween) {
+		if (tween.lastFrame !== ~~tween.frame) {
+			tween.lastFrame = ~~tween.frame
+			guildFlagWidth = (window.innerWidth * .1458) * tween.totalFrames
+			guildFlagHeight = window.innerHeight * .2593
+			querySelector(tween.id).style.backgroundSize = guildFlagWidth +'px '+ guildFlagHeight + 'px'
+			querySelector(tween.id).style.backgroundPosition = (tween.lastFrame * 100) + '% 0%'
+		}
+	}
+
+	let academyFlagWidth = 0
+	let academyFlagHeight = 0
+	function setAcademyFlagFrame(tween) {
+		if (tween.lastFrame !== ~~tween.frame) {
+			tween.lastFrame = ~~tween.frame
+			academyFlagWidth = (window.innerWidth * .1458) * tween.totalFrames
+			academyFlagHeight = window.innerHeight * .2593
+			querySelector(tween.id).style.backgroundSize = academyFlagWidth +'px '+ academyFlagHeight + 'px'
+			querySelector(tween.id).style.backgroundPosition = (tween.lastFrame * 100) + '% 0%'
+		}
 	}
 
 	function triggerLightning() {
@@ -522,14 +624,23 @@ var town;
 				'<div id="town-layer-smoke" class="town-layer"></div>' +
 				// buildings
 				'<img data-id="Bank" id="town-bank" class="town-building" src="images/town/'+ game.phase +'-bank.png">' +
-				'<img data-id="Guild Hall" id="town-guild" class="town-building" src="images/town/'+ game.phase +'-guild.png">' +
+				'<img data-id="Guild Hall" id="town-guild" class="town-building" src="images/town/'+ game.phase +'-guild-crop.png">' +
 				'<img data-id="Tavern" id="town-tavern" class="town-building" src="images/town/'+ game.phase +'-tavern.png?v=1">' +
 				'<img data-id="Apothecary" id="town-apothecary" class="town-building" src="images/town/'+ game.phase +'-apothecary.png">' +
-				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/'+ game.phase +'-academy.png">' +
+				'<img data-id="Academy" id="town-academy" class="town-building" src="images/town/'+ game.phase +'-academy-crop.png">' +
 				'<img data-id="Blacksmith" id="town-blacksmith" class="town-building" src="images/town/'+ game.phase +'-blacksmith.png">' +
 				'<img id="town-blacksmith-furnace-glow" class="town-layer" src="images/town/blacksmith-furnace-glow.png">' +
 				'<img id="town-blacksmith-furnace" class="town-layer" src="images/town/blacksmith-furnace.png">' +
 				'<img data-id="Merchant" id="town-merchant" class="town-building" src="images/town/'+ game.phase +'-merchant.png">' +
+
+				// academy flags layer
+				'<div id="town-academy-flag-1" class="town-layer town-academy-flag" style="background: url(images/town/town-academy-flags-'+ game.phase +'.png)"></div>"' +
+				'<div id="town-academy-flag-2" class="town-layer town-academy-flag" style="background: url(images/town/town-academy-flags-'+ game.phase +'.png)"></div>"' +
+				'<div id="town-academy-flag-3" class="town-layer town-academy-flag" style="background: url(images/town/town-academy-flags-'+ game.phase +'.png)"></div>"' +
+
+				// guild flags
+				'<div id="town-guild-flag-left" class="town-layer town-guild-flag" style="background: url(images/town/town-guild-flag-left-'+ game.phase +'.png)"></div>"' +
+				'<div id="town-guild-flag-right" class="town-layer town-guild-flag" style="background: url(images/town/town-guild-flag-right-'+ game.phase +'.png)"></div>"' +
 
 				// foreground layers
 				'<img id="town-layer-haze" class="town-layer" src="images/town/'+ game.phase +'-haze.png" style="opacity: '+ hazeOpacity +'">' +
@@ -606,57 +717,56 @@ var town;
 		})
 	}
 	function showLabel() {
-		id = this.dataset.id
-		label = id
+		id = this.id
 		msg = ''
 		labelConfig = {
 			left: -1000,
 			top: -1000
 		}
 
-		if (id === 'Academy') {
+		if (id === 'town-academy') {
 			msg = 'Train your skills and spells to achieve mastery'
 			labelConfig = {
 				left: ng.toPercentWidth(1152),
 				top: ng.toPercentHeight(255)
 			}
 		}
-		else if (id === 'Apothecary') {
+		else if (id === 'town-apothecary') {
 			msg = 'Buy potions, jewelry, and various arcane items to help assure your survival'
 			labelConfig = {
 				left: ng.toPercentWidth(815),
 				top: ng.toPercentHeight(434)
 			}
 		}
-		else if (id === 'Bank') {
+		else if (id === 'town-bank') {
 			msg = 'Banked items may be shared with all characters on the same account'
 			labelConfig = {
 				left: ng.toPercentWidth(589),
 				top: ng.toPercentHeight(194)
 			}
 		}
-		else if (id === 'Blacksmith') {
+		else if (id === 'town-blacksmith') {
 			msg = 'Choose from the finest selection of weapons and armor in all of Edenburg'
 			labelConfig = {
 				left: ng.toPercentWidth(1255),
 				top: ng.toPercentHeight(432)
 			}
 		}
-		else if (id === 'Guild Hall') {
+		else if (id === 'town-guild') {
 			msg = 'Start a guild, invite friends, and build your roster for ultimate readiness'
 			labelConfig = {
 				left: ng.toPercentWidth(292),
 				top: ng.toPercentHeight(102)
 			}
 		}
-		else if (id === 'Merchant') {
+		else if (id === 'town-merchant') {
 			msg = 'Buy weapons, armor, and jewelry from the largest variety of items in all of Edenburg'
 			labelConfig = {
 				left: ng.toPercentWidth(1560),
 				top: ng.toPercentHeight(375)
 			}
 		}
-		else if (id === 'Tavern') {
+		else if (id === 'town-tavern') {
 			msg = 'Select missions, seek wisdom from the innkeeper, and view the leaderboard'
 			labelConfig = {
 				left: ng.toPercentWidth(366),
@@ -665,7 +775,7 @@ var town;
 		}
 		if (!town.openVariousWindow) {
 			var e = querySelector('#town-building-label-header');
-			e.textContent = id;
+			e.textContent = this.dataset.id;
 			var split = new SplitText(e, {
 				type: 'words,chars'
 			});
@@ -689,13 +799,38 @@ var town;
 				opacity: 1
 			})
 		}
+		const els = getTownBuildingElements(this)
+		TweenMax.to(els, 0, {
+			filter: 'brightness(1.25) saturate(1.2) drop-shadow(0 0 2px #ffa) drop-shadow(0 0 4px #ffa)'
+		})
 	}
+	function getTownBuildingElements(that) {
+		let els = '#' + that.id
+		if (that.id === 'town-guild') {
+			els += ', .town-guild-flag'
+		}
+		else if (that.id === 'town-academy') {
+			els += ', .town-academy-flag'
+		}
+		return els
+	}
+
 	function hideLabel() {
+		id = this.dataset.id
 		TweenMax.to('#town-building-label-wrap', .5, {
 			opacity: 0
 		})
-
+		const els = getTownBuildingElements(this)
+		TweenMax.to(els, 0, {
+			filter: 'brightness(1) saturate(1) drop-shadow(0 0 0px #ffa) drop-shadow(0 0 0px #ffa)',
+			onComplete: () => {
+				TweenMax.set(els, {
+					filter: 'none'
+				})
+			}
+		})
 	}
+
 	function updateVariousDOM() {
 		querySelector('#root-various').innerHTML = getVariousHtml()
 		querySelector('#root-various').style.display = 'flex'

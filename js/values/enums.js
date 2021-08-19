@@ -319,14 +319,6 @@ const KEYS = Object.freeze({
 	],
 })
 // animations
-const ANIMATE_CANDLE = RoughEase.ease.config({
-	template: Power0.easeOut,
-	strength: 3,
-	points: 50,
-	taper: 'both',
-	randomize: true,
-	clamp: true
-})
 const MOB_TIERS = Object.freeze({
 	normal: 'normal',
 	champion: 'champion',

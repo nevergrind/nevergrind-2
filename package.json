@@ -23,7 +23,7 @@
   ],
   "window": {
     "title": "Nevergrind Online",
-    "icon": "images/ngo.jpg",
+    "icon": "images/ngo.png",
     "toolbar": false,
     "frame": true,
     "position": "center",

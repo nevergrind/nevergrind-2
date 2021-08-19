@@ -109,7 +109,6 @@ var socket;
 
 			// subscribe to admin broadcasts
 			socket.subscribe('allbroadcast', broadcast.route)
-			Config.isApp && test.socketSub()
 			//return;
 			!function retry() {
 				if (my.name){

@@ -295,8 +295,8 @@ var ng;
 			[JOB.WARRIOR]: CLASS.WARRIOR,
 			[JOB.WIZARD]: CLASS.WIZARD
 		},
-		filterBright: 'brightness(10) contrast(5)',
-		filterNormal: 'brightness(1) contrast(1)',
+		filterBright: 'saturate(5) brightness(10)',
+		filterNormal: 'saturate(1) brightness(1)',
 		filterGrayNone: 'grayscale(0)',
 		filterGrayMax: 'grayscale(1)',
 		titleDuration: .7
@@ -848,16 +848,27 @@ var ng;
 				opacity: 1
 			})
 			TweenMax.to('.title-gwens', dur, {
-				startAt: { filter: ng.filterBright },
-				filter: ng.filterNormal,
+				startAt: {
+					x: '-65%'
+				},
+				x: '-50%',
 				opacity: 1,
+				onComplete: () => {
+					TweenMax.to('#title-gwen-gem', 7, {
+						delay: .1,
+						startAt: { filter: 'hue-rotate(0deg)', },
+						filter: 'hue-rotate(360deg)',
+						repeat: -1,
+						ease: Power0.easeNone,
+					})
+				}
 			})
-			TweenMax.to('#title-gwen-gem', 7, {
-				delay: .1,
-				startAt: { filter: 'hue-rotate(0deg)', },
-				filter: 'hue-rotate(360deg)',
-				repeat: -1,
-				ease: Power0.easeNone,
+			TweenMax.to('.title-gwens', dur, {
+				startAt: {
+					filter: 'saturate(5) brightness(5)',
+				},
+				filter: 'saturate(1) brightness(1)',
+				ease: Power2.easeInOut,
 			})
 			animateTitleGem()
 			TweenMax.to('#ngo-logo, .title-layer', dur, {
